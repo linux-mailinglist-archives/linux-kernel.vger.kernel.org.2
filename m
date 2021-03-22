@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90140344AC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E56FB344AD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhCVQM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
+        id S230519AbhCVQOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhCVQMX (ORCPT
+        with ESMTP id S231243AbhCVQNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:12:23 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEB8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:12:23 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id y6so20067293eds.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:12:23 -0700 (PDT)
+        Mon, 22 Mar 2021 12:13:33 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8C2BC061574;
+        Mon, 22 Mar 2021 09:13:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3rLm/oL3RLf373BC6U5HiKi0in0UyPoJg06mhr8jBX0=;
-        b=i5z+kS70ciBt6dOaM0rVcxRxlzKibB/h+7qoHYEnTRlw4GegHXbMsDP+xHfGuUB84w
-         /eIlbMndd/DUG7UJcJE09rKhnhnuzOaKxMUuAsZp8BJyMrHJTXSOu45GQG66cIWUUS5T
-         niGqBQXcY8t+zCAxzjQbiNL4c8gyK5QIB4oCV7bDGzSQXegPUNNPl2AlhvoQrQCkNUIe
-         ssQghePVUM+jooceQqebUsvIClRoqJHDrgRC5CSinqr01Zq+c5g5f+KgvZ2ojuBoe9Ty
-         SMJ2XwLCnUru4dspmuyXRB1ODDGLUzqyZIqPjiRtpcFnPewPy0j75i4eYDA6Ku6LMncs
-         Z0qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3rLm/oL3RLf373BC6U5HiKi0in0UyPoJg06mhr8jBX0=;
-        b=f50IVHYl1qHddv31x/3P59kGCEcK/vr3RGm4bFWOJgkLfkLS0kBavg69LxeBvKtyCm
-         IPlIMzBv+Rl8ok8UWAEmr8NnBhPR4n9CTX/zpAXfN0wHy4wnqypwdQGiHu9EtHu1GMyp
-         V3HGGb8Rzl0q0ZL2yvocU5ib9MflDrrMMwJyBzuAzlOKRw6n3Yqwo3ld3PVUyvORrCza
-         nKuBDz6OxKlTH7xQMB8Sx+PCMlul5lWpl/4FlVT2BFLxgL8YyAT/tsqyLwZmpa4l9067
-         SC1S5JIUAsUktsNnEq9tm/ayJDU0vQ224u95I31OzdCKcOzVFIwK1U/7A2oS2NiFsghr
-         6qbA==
-X-Gm-Message-State: AOAM531jYkfTrKvkFsyuwRHjRiaZ/YWTE/GNt+geQCvlrWBPNGHj+Dz4
-        CjgcqYdVD8o5um4LTrCbOJd63f0UCXTU4K+l/PIywQ==
-X-Google-Smtp-Source: ABdhPJzaVwsChvZ9VMzl1ZuBju6puAZEPiUq34CGwwdG+nyIfBCqKoTXapJxIYEhHnaAYR6njv6fDLVTc+XhSzEkOoE=
-X-Received: by 2002:aa7:cd0e:: with SMTP id b14mr328737edw.354.1616429542133;
- Mon, 22 Mar 2021 09:12:22 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=lZ3vynHBoX
+        NDbgzdI1fv77EAJHK6JfqpGU0MgGMY61I=; b=bKnQihNPjvF+27zLc6bdF4zXkQ
+        KAXXKheMFhVHxKX1JuFFrwNytbUCq27sOM5gXlCCvVH4j5aMN9+bxBKchja+ac4Q
+        fdH7ML5Cn1G/fTXZ+4baluktsIRc4sQ2l3FE47NFrmp0O6fnjS+6cL8AqyOP6PEi
+        ezcbApxd5QcE67Z/c=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXnUkowlhgrbcOAA--.5619S4;
+        Tue, 23 Mar 2021 00:13:28 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH v2] infiniband: Fix a use after free in isert_connect_request
+Date:   Mon, 22 Mar 2021 09:13:25 -0700
+Message-Id: <20210322161325.7491-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210322160200.19633-1-david@redhat.com> <20210322160200.19633-4-david@redhat.com>
-In-Reply-To: <20210322160200.19633-4-david@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 22 Mar 2021 09:12:13 -0700
-Message-ID: <CAPcyv4hGMoDYCbnFaa2A6JukE+AcOK5qvq2TZVDUomPZYkZjnA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] kernel/resource: remove first_lvl / siblings_only logic
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
-        Oscar Salvador <osalvador@suse.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, X86 ML <x86@kernel.org>,
-        Kexec Mailing List <kexec@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygCXnUkowlhgrbcOAA--.5619S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1UAw1DCr18tF1kAF13Arb_yoW8Zw17pr
+        47A3s5KrWDKrn8G3W2v3yDXF4j9w4kJ3WDKry7tw15CanIya43AFWrGa4Utrn8Jr1rGFs7
+        XFWUJ3Z5GF1DGaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJwAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUUVWlDUUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 9:03 AM David Hildenbrand <david@redhat.com> wrote:
->
-> All IORESOURCE_SYSTEM_RAM and IORESOURCE_MEM now properly consider the
-> whole resource tree, not just the first level. Let's drop the unused
-> first_lvl / siblings_only logic.
->
-> All functions properly search the whole tree, so remove documentation
-> that indicates that some functions behave differently.
+The device is got by isert_device_get() with refcount is 1,
+and is assigned to isert_conn by isert_conn->device = device.
+When isert_create_qp() failed, device will be freed with
+isert_device_put().
 
-Looks good, and the staging of the potential regressions as standalone
-lead-in patches makes sense.
+Later, the device is used in isert_free_login_buf(isert_conn)
+by the isert_conn->device->ib_device statement. This patch
+free the device in the correct order.
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/infiniband/ulp/isert/ib_isert.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+index 7305ed8976c2..18266f07c58d 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.c
++++ b/drivers/infiniband/ulp/isert/ib_isert.c
+@@ -438,23 +438,23 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+ 	isert_init_conn(isert_conn);
+ 	isert_conn->cm_id = cma_id;
+ 
+-	ret = isert_alloc_login_buf(isert_conn, cma_id->device);
+-	if (ret)
+-		goto out;
+-
+ 	device = isert_device_get(cma_id);
+ 	if (IS_ERR(device)) {
+ 		ret = PTR_ERR(device);
+-		goto out_rsp_dma_map;
++		goto out;
+ 	}
+ 	isert_conn->device = device;
+ 
++	ret = isert_alloc_login_buf(isert_conn, cma_id->device);
++	if (ret)
++		goto out_conn_dev;
++
+ 	isert_set_nego_params(isert_conn, &event->param.conn);
+ 
+ 	isert_conn->qp = isert_create_qp(isert_conn, cma_id);
+ 	if (IS_ERR(isert_conn->qp)) {
+ 		ret = PTR_ERR(isert_conn->qp);
+-		goto out_conn_dev;
++		goto out_rsp_dma_map;
+ 	}
+ 
+ 	ret = isert_login_post_recv(isert_conn);
+@@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+ 
+ out_destroy_qp:
+ 	isert_destroy_qp(isert_conn);
+-out_conn_dev:
+-	isert_device_put(device);
+ out_rsp_dma_map:
+ 	isert_free_login_buf(isert_conn);
++out_conn_dev:
++	isert_device_put(device);
+ out:
+ 	kfree(isert_conn);
+ 	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
+-- 
+2.25.1
+
+
