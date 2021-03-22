@@ -2,214 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B40934463F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2AB344645
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhCVNxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:53:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45883 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230252AbhCVNxb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:53:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616421210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YX43vCy2WUlGP7TvkvyNeq4LZoZxhLjixCZwpawUM0w=;
-        b=cqKitgi4NgCIg/ywX7uyTdp8goPb/sxjRrzq0Hq9MfzCkJKlNecO89Z+mHovRlT/+L/42I
-        Wwfv9o/jbnY6xUMDKLuQVu/BfySNtwcWOBwkcB58b2ABdxzZhOjkc+CaUgD8rde8IrSrTz
-        M41E9PY96ZIwGeBqnXHP9Q9ROnbhIRw=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-bENQiTPKM4-Zr7ovOIkERQ-1; Mon, 22 Mar 2021 09:53:28 -0400
-X-MC-Unique: bENQiTPKM4-Zr7ovOIkERQ-1
-Received: by mail-qt1-f200.google.com with SMTP id f26so2561034qtq.17
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:53:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YX43vCy2WUlGP7TvkvyNeq4LZoZxhLjixCZwpawUM0w=;
-        b=ejJKOqy7Ydv9jAYrxZw+0NPX3g5vU2JGWzVrz5y3mf5KyK1uaHt+VylcjmQXFFAGYO
-         fzE+ousjZJ1ZAJ99UjxAwyCxD3f0fB9lXyma8R4A2BrcK7JvVmVspa5gP0B1uHt6aBsB
-         3Wjrcy1PqN9AEPtFGTb1cBNezRBB3oI32tIW9LLXKoV8XXJX6RaPaLIWlDNNT9bpubSc
-         1pwe0GKfLs0qyEarpuUdu0nTt9ke9KonKOQOX3qozrQEp0dwnZYDVTlKFTltYZamPF1G
-         efdxW2W2pCA5K+rAoMTzPUp1WeukD8HIaqRwbWHn0nET7ltYUnzPNAMiR5M+QtT/eAeQ
-         hI1A==
-X-Gm-Message-State: AOAM530WijswfBQeVJmddiq12qlIP7zNkMcCWWkJrYh0V4fRiSYxnHkw
-        zJ8cRjwYg3XTmABsC7QDhp+qsQcEpSGFIoj/iUw8xR9jwTWsYmtyMINCwuR8rf0/eaVsy3Rg2cq
-        BQTMztRXNoOB+9e+/tO0XNDw6ns6dE0D4pisVIyg20R0r2CWiVq2LyhPBTfOni9jYEwkyb38=
-X-Received: by 2002:a05:620a:806:: with SMTP id s6mr152174qks.50.1616421207997;
-        Mon, 22 Mar 2021 06:53:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJygFrO8AcF6UbXAgOCygfrk+do7UcB3lzSBL1CMcFCP6Bt7B9+bXd6RV1hCFS00tg8N4MCheQ==
-X-Received: by 2002:a05:620a:806:: with SMTP id s6mr152139qks.50.1616421207623;
-        Mon, 22 Mar 2021 06:53:27 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j30sm9086495qtv.90.2021.03.22.06.53.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 06:53:27 -0700 (PDT)
-Subject: Re: FW: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and
- region
-To:     Richard Gong <richard.gong@linux.intel.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
- <21a8817a-e63e-6029-69a6-6bae5398439a@linux.intel.com>
- <1d7fd02b-4ef2-8d11-fba7-87a698699978@redhat.com>
- <MWHPR11MB0015516D86D02A0FE5423D6387669@MWHPR11MB0015.namprd11.prod.outlook.com>
- <7ef6739f-e2f6-d457-5498-1c6ed8ba2075@linux.intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <f7a0c3fb-84f6-073c-ac41-45ce249cfa1e@redhat.com>
-Date:   Mon, 22 Mar 2021 06:53:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230479AbhCVNyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:54:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:23002 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230314AbhCVNxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:53:40 -0400
+IronPort-SDR: dIUyfePe+cwlGMu72+2Ogsn7gV9UTeEDuu3UaBRMD9Fa3AGfxv9/9p9KFdXrza9MrTmFDH2J0U
+ siEgUfLjjmAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="186955058"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="186955058"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 06:53:36 -0700
+IronPort-SDR: uhSaJckHelzOrgxYwc+GSUbCgcpo2NyuNG4vnUsTOyxhTnFeTToV0H9D6DzhIPyOWvm1823CIg
+ OImkCmgb4ppA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="524463763"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by orsmga004.jf.intel.com with ESMTP; 22 Mar 2021 06:53:35 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Xiaoyao Li " <xiaoyao.li@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH v6 3/3] Documentation/admin-guide: Change doc for split_lock_detect parameter
+Date:   Mon, 22 Mar 2021 13:53:25 +0000
+Message-Id: <20210322135325.682257-4-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210322135325.682257-1-fenghua.yu@intel.com>
+References: <20210322135325.682257-1-fenghua.yu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <7ef6739f-e2f6-d457-5498-1c6ed8ba2075@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since #DB for bus lock detect changes the split_lock_detect parameter,
+update the documentation for the changes.
 
-On 3/21/21 2:05 PM, Richard Gong wrote:
->
-> Hi Tom,
->
->>
->>
->> On 3/19/21 4:22 PM, Richard Gong wrote:
->>>
->>> Hi Moritz,
->>>
->>> Thanks for approving the 1st patch of my version 5 patchest, which submitted on 02/09/21.
->>
->> This change
->>
->> e23bd83368af ("firmware: stratix10-svc: fix kernel-doc markups")
->
-> This patch e23bd83368af is not from my version 5 patch set.
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+---
+Change Log:
+v6:
+- Remove the ratelimit info which will be released later in a ratelimit
+  specific patch set (Thomas).
 
-Correct.
+v5:
+- Remove N < HZ/2 check info in the doc (Thomas).
 
-But since it is already in char-misc-next, your version 5 patchset will conflict with it.
+v4:
+- Fix a ratelimit wording issue in the doc (Randy).
+- Patch 4 is acked by Randy (Randy).
 
-I could not apply this patchset to my unoffical fpga-testing.
+v3:
+- Enable Bus Lock Detection when fatal to handle bus lock from non-WB
+  (PeterZ).
 
-I am suggesting you do a test application of your patchset against char-misc-next.
+v1:
+- Fix a few wording issues (Randy).
 
-And if you find there are issues, rebase your patchset. 
+RFC v2:
+- Simplify the documentation (Randy).
 
->>
->> Makes a lot of formatting changes in the same files as this patchset, including the first patch.
->>
->> It would be good to try applying this patchset to char-misc-next and resubmit if there are conflicts.
->>
->>>
->>> Can you help review the remaining 6 patches from the same version 5 patchset? I need your ACKs to move forward, or please let me know if additional work is need.
->>
->> These changes look good to me.
->>
->> I was looking at the patchset again seeing if the firmware/ parts could be split out.
->
-> No, we can't split out the firmware parts.
+ .../admin-guide/kernel-parameters.txt         | 22 ++++++++++++++-----
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-ok
-
-Tom
-
->>
->> Even though stratix10 is a fpga, from the MAINTAINERS file it is not clear to me if linux-fpga owns them and they come in on Moritz's branch.  I think this change is needed to the MAINTAINERS file to make that clearer.
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index aa84121c5611..1f68e9ff76de 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -9193,7 +9193,8 @@ F:    tools/power/x86/intel-speed-select/
->>     INTEL STRATIX10 FIRMWARE DRIVERS
->>   M:    Richard Gong <richard.gong@linux.intel.com>
->> -L:    linux-kernel@vger.kernel.org
->> +R:    Tom Rix <trix@redhat.com>
->> +L:    linux-fpga@vger.kernel.org
->>   S:    Maintained
->>   F:    Documentation/ABI/testing/sysfs-devices-platform-stratix10-rsu
->>   F:    Documentation/devicetree/bindings/firmware/intel,stratix10-svc.txt
->>
->> I also added myself as a reviewer because I want to help out.
->>
->> Tom
->>
->
-> Regards,
-> Richard
->
->>
->>>
->>> Many thanks for your time again!
->>>
->>> Regards,
->>> Richard
->>>
->>>
->>> On 2/25/21 7:07 AM, Gong, Richard wrote:
->>>> Hi Moritz,
->>>>
->>>> Sorry for asking.
->>>>
->>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
->>>>
->>>> Regards,
->>>> Richard
->>>>
->>>> -----Original Message-----
->>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com>
->>>> Sent: Tuesday, February 9, 2021 4:20 PM
->>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
->>>> Cc: Gong, Richard <richard.gong@intel.com>
->>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
->>>>
->>>> From: Richard Gong <richard.gong@intel.com>
->>>>
->>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
->>>>
->>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
->>>>
->>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
->>>>
->>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
->>>>
->>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature.
->>>>
->>>> Richard Gong (7):
->>>>     firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
->>>>     firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
->>>>     firmware: stratix10-svc: extend SVC driver to get the firmware version
->>>>     fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
->>>>     fpga: of-fpga-region: add authenticate-fpga-config property
->>>>     dt-bindings: fpga: add authenticate-fpga-config property
->>>>     fpga: stratix10-soc: extend driver for bitstream authentication
->>>>
->>>>    .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
->>>>    drivers/firmware/stratix10-svc.c                   | 12 ++++-
->>>>    drivers/fpga/of-fpga-region.c                      | 24 ++++++---
->>>>    drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
->>>>    include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
->>>>    .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
->>>>    include/linux/fpga/fpga-mgr.h                      |  3 ++
->>>>    7 files changed, 125 insertions(+), 18 deletions(-)
->>>>
->>>> -- 
->>>> 2.7.4
->>>>
->>>
->>
->
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 04545725f187..aef927cec602 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5100,27 +5100,37 @@
+ 	spia_peddr=
+ 
+ 	split_lock_detect=
+-			[X86] Enable split lock detection
++			[X86] Enable split lock detection or bus lock detection
+ 
+ 			When enabled (and if hardware support is present), atomic
+ 			instructions that access data across cache line
+-			boundaries will result in an alignment check exception.
++			boundaries will result in an alignment check exception
++			for split lock detection or a debug exception for
++			bus lock detection.
+ 
+ 			off	- not enabled
+ 
+-			warn	- the kernel will emit rate limited warnings
++			warn	- the kernel will emit rate-limited warnings
+ 				  about applications triggering the #AC
+-				  exception. This mode is the default on CPUs
+-				  that supports split lock detection.
++				  exception or the #DB exception. This mode is
++				  the default on CPUs that support split lock
++				  detection or bus lock detection. Default
++				  behavior is by #AC if both features are
++				  enabled in hardware.
+ 
+ 			fatal	- the kernel will send SIGBUS to applications
+-				  that trigger the #AC exception.
++				  that trigger the #AC exception or the #DB
++				  exception. Default behavior is by #AC if
++				  both features are enabled in hardware.
+ 
+ 			If an #AC exception is hit in the kernel or in
+ 			firmware (i.e. not while executing in user mode)
+ 			the kernel will oops in either "warn" or "fatal"
+ 			mode.
+ 
++			#DB exception for bus lock is triggered only when
++			CPL > 0.
++
+ 	srbds=		[X86,INTEL]
+ 			Control the Special Register Buffer Data Sampling
+ 			(SRBDS) mitigation.
+-- 
+2.31.0
 
