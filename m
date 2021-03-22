@@ -2,239 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290CD343B47
+	by mail.lfdr.de (Postfix) with ESMTP id E9C5F343B49
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCVIIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
+        id S229972AbhCVIIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhCVIIU (ORCPT
+        with ESMTP id S229879AbhCVIIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:08:20 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80DCC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:08:20 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id j11so13983824ilu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:08:20 -0700 (PDT)
+        Mon, 22 Mar 2021 04:08:40 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AB7C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:08:39 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo8689699wmq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:08:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jCujqmnYeF5w+OvdEOYZZ3e+gakgQhGORHqQozXfYGk=;
-        b=mQRjN3ZCPhjciAf23WZp7DWg5NrLJyxi8Q9XAaqO70+ifPghvZZ24aSTIpgXo9aZga
-         8S/uBfqXsA+Tuto7vo4TPv1+ioWAxWMrKwa/C9prumt36OtCCJOstxySYTB6QOA4lJqC
-         3mfAgY6+bOhGQB/fOi0Z5hoFHJqLWbkiKaVCJqb8blNYmiMsV88270A60vp+rZ8fUYMp
-         k2b5nngzD/XVpoUJ/GXaIqh2rcmJmvRhTzcWFQc5TCI+TFfaMXJLHg2/7/tBr7z83elb
-         w7NDPlWr6vKSWSNoXrQWE43M+B6H37aXEjUhal819BqAByUdSbza//CxufPwXcMATRMR
-         RgTw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=b7CN6JdpOmja3Ya9/8A0Yc6qp4xL6xo6CnNKb5MDcgU=;
+        b=Qw9T73UaV1U8h8LxfGhg+9skYAOyd6FhNRHGzS4USWYsbHsCjClsUwuTZe58023L2x
+         jfJ76qnzVXyYwINInQ3FwPaBMCdLhJfnzwcKrLrSutmCMf9CXDZGsElLC8gML9xnUPjw
+         bUOUnZCl2LhHlq7VjJBqOj0h4nRIlhWnfBccMdDByAvmxboyybHI7vFlZmiKIn+SkhZt
+         9yWNmGwUZBtkyeg+8y6P+CFg6/7TVQDcZYo6vKNR5TLFVUFr3L7JoLULclDYO+tLcNsX
+         TQQYvgSAnn3l1yzRKXJDsmmFU2xK4XLnD4D1Nc59SPi5RB/isg2iMmCK1pqeopAmq0Ql
+         Dk0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jCujqmnYeF5w+OvdEOYZZ3e+gakgQhGORHqQozXfYGk=;
-        b=hNYPGF66JQh7PHgMQUYnMKkK/oHGws78wC/I20iRnq9g8s0z12q/nqz0Uhb/MVQnBN
-         w6XpBgYlmjH+ElV89Z9RgU+SirI3RyqHDq/pG8papngbgXywBuXjAF1MHG+7OiKrlyyl
-         2Z6mJ+ubICxCkY7g6AWBWDVtaSm+5OTnC+LpfqkVpVuFB6eyYTFXx0yOdgBfskJUNtiM
-         /fCSzcYuXeY8OBRb3ucPxKqWvxLmGx74GSDdRLTest+/ZEawBp+SAILWuQlKq++QYfK0
-         gvujClBZG5n5KsalCS5ZKzq1z0WcjkGwgdLxFmCxFiBJTT1T16kTiebewNcd2ixveNV/
-         Tyjg==
-X-Gm-Message-State: AOAM5329dXyRwBDdGqgxaf7yrzKsLzAlBSeZW+VtOLS0jWLeOES3Obki
-        ntimhdNCKc2Rs9HjdXiHhU1u0A==
-X-Google-Smtp-Source: ABdhPJywyM4b1iWmxADnBtmV14EXyHvfNbYDyFhYndydv9fDdMsgZEa3QMTGhP68NOBhWdbNxbk8aA==
-X-Received: by 2002:a92:444e:: with SMTP id a14mr10601264ilm.215.1616400500024;
-        Mon, 22 Mar 2021 01:08:20 -0700 (PDT)
-Received: from google.com ([2620:15c:183:200:44ef:831f:a5ff:abb6])
-        by smtp.gmail.com with ESMTPSA id y15sm3426514ilv.70.2021.03.22.01.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 01:08:19 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 02:08:14 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
-Message-ID: <YFhQbvSq2Px25Ub5@google.com>
-References: <20210313075747.3781593-1-yuzhao@google.com>
- <20210313075747.3781593-10-yuzhao@google.com>
- <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
- <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <YFAsjP7NIZM5Ld+m@google.com>
- <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <YFBktbCH9JFcT0rL@google.com>
- <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <YFHeFslZ85/h3o/q@google.com>
- <87czvryj74.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b7CN6JdpOmja3Ya9/8A0Yc6qp4xL6xo6CnNKb5MDcgU=;
+        b=UaFmi5SujkBMnBSA0sdj2sBBS98Kgf1IQHrJU2kgYsUz+I+xo3JXgwPQR3JcAs5k+u
+         HSu3hiBVMSp3de399PCwrggOMvok0La2JrLhrDTV0ax/qZVHzEOZpc/3jx6XFfRf6LSA
+         e7T9fr3mjPCnuhlrtOLdNoCGaRycwpIag/p4hqEr/PyiD+mR3Y+/bE/nhG5Rrp+Fm8N5
+         KNMSyHFJ/wfNyQY5I5fBfrSYX5Qh4278vJPc9vp6M9NzyhY9KK+QQ9Qn/q+VBJgp0Vfk
+         zHNhQA3KjXO/4eOw+Fc4+40Bd20+F32fSLDRNDaVoTBaWAtr2fK97Z2gMVgb/S++Srkg
+         RvQQ==
+X-Gm-Message-State: AOAM530RUZ4syj87LO8NQqsSHd6gGeJz8pq4aZZubdghZpsBwMm6DEZJ
+        RKsd55n9CQg0n2gNMwrsWlLyT3pSOcG07g==
+X-Google-Smtp-Source: ABdhPJz2mztkkc3xYlJs3i61gDWH1UuGnnW5WMrLPF7qAO52KtghzeIEso0c8MS13TDrtALhC7NbYQ==
+X-Received: by 2002:a05:600c:2cd8:: with SMTP id l24mr14511400wmc.88.1616400518535;
+        Mon, 22 Mar 2021 01:08:38 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:d8b:d5f9:2138:169c? ([2a01:e34:ed2f:f020:d8b:d5f9:2138:169c])
+        by smtp.googlemail.com with ESMTPSA id v7sm16067242wme.47.2021.03.22.01.08.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 01:08:38 -0700 (PDT)
+Subject: Re: [PATCH] thermal/drivers/cpuidle_cooling: Fix use after error
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:THERMAL/CPU_COOLING" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <YFMpUDNGIiLOzr0/@mwanda>
+ <20210319202522.891061-1-daniel.lezcano@linaro.org>
+ <20210322032946.jstyrnc6dctq4fzj@vireshk-i7>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <dcbf21e2-e2da-7e0d-66bb-ae7f4dc28858@linaro.org>
+Date:   Mon, 22 Mar 2021 09:08:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czvryj74.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <20210322032946.jstyrnc6dctq4fzj@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:13:19AM +0800, Huang, Ying wrote:
-> Yu Zhao <yuzhao@google.com> writes:
+On 22/03/2021 04:29, Viresh Kumar wrote:
+> On 19-03-21, 21:25, Daniel Lezcano wrote:
+>> When the function successfully finishes it logs an information about
+>> the registration of the cooling device and use its name to build the
+>> message. Unfortunately it was freed right before:
+>>
+>> drivers/thermal/cpuidle_cooling.c:218 __cpuidle_cooling_register()
+>> 	warn: 'name' was already freed.
+>>
+>> Fix this by freeing after the message happened.
+>>
+>> Fixes: 6fd1b186d900 ("thermal/drivers/cpuidle_cooling: Use device name instead of auto-numbering")
 > 
-> > On Wed, Mar 17, 2021 at 11:37:38AM +0800, Huang, Ying wrote:
-> >> Yu Zhao <yuzhao@google.com> writes:
-> >> 
-> >> > On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
-> >> > The scanning overhead is only one of the two major problems of the
-> >> > current page reclaim. The other problem is the granularity of the
-> >> > active/inactive (sizes). We stopped using them in making job
-> >> > scheduling decision a long time ago. I know another large internet
-> >> > company adopted a similar approach as ours, and I'm wondering how
-> >> > everybody else is coping with the discrepancy from those counters.
-> >> 
-> >> From intuition, the scanning overhead of the full page table scanning
-> >> appears higher than that of the rmap scanning for a small portion of
-> >> system memory.  But form your words, you think the reality is the
-> >> reverse?  If others concern about the overhead too, finally, I think you
-> >> need to prove the overhead of the page table scanning isn't too higher,
-> >> or even lower with more data and theory.
-> >
-> > There is a misunderstanding here. I never said anything about full
-> > page table scanning. And this is not how it's done in this series
-> > either. I guess the misunderstanding has something to do with the cold
-> > memory tracking you are thinking about?
+> Why not merge this with the Fixes patch itself since it isn't there in Linus's
+> tree yet ?
 > 
-> If my understanding were correct, from the following code path in your
-> patch 10/14,
-> 
-> age_active_anon
->   age_lru_gens
->     try_walk_mm_list
->       walk_mm_list
->         walk_mm
-> 
-> So, in kswapd(), the page tables of many processes may be scanned
-> fully.  If the number of processes that are active are high, the
-> overhead may be high too.
+> Or is your branch strictly immutable ?
 
-That's correct. Just in case we have different definitions of what we
-call "full":
+Hi Viresh;
 
-  I understand it as the full range of the address space of a process
-  that was loaded by switch_mm() at least once since the last scan.
-  This is not the case because we don't scan the full range -- we skip
-  holes and VMAs that are unevictable, as well as PTE tables that have
-  no accessed entries on x86_64, by should_skip_vma() and
-  CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG.
+The changes follow the path:
 
-  If you are referring to the full range of PTE tables that have at
-  least one accessed entry, i.e., other 511 are not none  but have not
-  been accessed either since the last scan on x86_64, then yes, you
-  are right again :) This is the worse case scenario.
-  
-> > This series uses page tables to discover page accesses when a system
-> > has run out of inactive pages. Under such a situation, the system is
-> > very likely to have a lot of page accesses, and using the rmap is
-> > likely to cost a lot more because its poor memory locality compared
-> > with page tables.
-> 
-> This is the theory.  Can you verify this with more data?  Including the
-> CPU cycles or time spent scanning page tables?
+testing -> linux-next -> next
 
-Yes, I'll be happy to do so as I should, because page table scanning
-is counterintuitive. Let me add more theory in case it's still unclear
-to others.
+The branch next is never rebased. The patch above reached it. This is
+notified by the thermal-bot [1].
 
-From my understanding, the two fundamental questions we need to
-consider in terms of page reclaim are:
+  -- Daniel
 
-  What are the sizes of hot clusters (spatial locality) should we
-  expect under memory pressure?
+[1]
+https://lore.kernel.org/linux-pm/20210314111333.16551-3-daniel.lezcano@linaro.org/T/#ma257519efc70ee60faca47dbd458b05de5449bf8
 
-  On smaller systems with 4GB memory, our observations are that the
-  average size of hot clusters found during each scan is 32KB. On
-  larger systems with hundreds of gigabytes of memory, it's well
-  above this value -- 512KB or larger. These values vary under
-  different workloads and with different memory allocators. Unless
-  done deliberately by memory allocators, e.g., Scudo as I've
-  mentioned earlier, it's safe to say if a PTE entry has been
-  accessed, its neighbors are likely to have been accessed too.
 
-  What's hot memory footprint (total size of hot clusters) should we
-  expect when we have run out of inactive pages?
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-  Some numbers first: on large and heavily overcommitted systems, we
-  have observed close to 90% during a scan. Those systems have
-  millions of pages and using the rmap to find out which pages to
-  reclaim will just blow kswapd. On smaller systems with less memory
-  pressure (due to their weaker CPUs), this number is more reasonable,
-  ~50%. Here is some kswapd profiles from a smaller systems running
-  5.11:
-
-   the rmap                                 page table scan
-   ---------------------------------------------------------------------
-   31.03%  page_vma_mapped_walk             49.36%  lzo1x_1_do_compress
-   25.59%  lzo1x_1_do_compress               4.54%  page_vma_mapped_walk
-    4.63%  do_raw_spin_lock                  4.45%  memset_erms
-    3.89%  vma_interval_tree_iter_next       3.47%  walk_pte_range
-    3.33%  vma_interval_tree_subtree_search  2.88%  zram_bvec_rw
-
-  The page table scan is only twice as fast. Only larger systems,
-  it's usually more than 4 times, without THP. With THP, both are
-  negligible (<1% CPU usage). I can grab profiles from our servers
-  too if you are interested in seeing them on 4.15 kernel.
-
-> > But, page tables can be sparse too, in terms of hot memory tracking.
-> > Dave has asked me to test the worst case scenario, which I'll do.
-> > And I'd be happy to share more data. Any specific workload you are
-> > interested in?
-> 
-> We can start with some simple workloads that are easier to be reasoned.
-> For example,
-> 
-> 1. Run the workload with hot and cold pages, when the free memory
-> becomes lower than the low watermark, kswapd will be waken up to scan
-> and reclaim some cold pages.  How long will it take to do that?  It's
-> expected that almost all pages need to be scanned, so that page table
-
-A typical scenario. Otherwise why would we have run out of cold pages
-and still be under memory? Because what's in memory is hot and
-therefore most of the them need to be scanned :)
-
-> scanning is expected to have less overhead.  We can measure how well it
-> is.
-
-Sounds good to me.
-
-> 2. Run the workload with hot and cold pages, if the whole working-set
-> cannot fit in DRAM, that is, the cold pages will be reclaimed and
-> swapped in regularly (for example tens MB/s).  It's expected that less
-> pages may be scanned with rmap, but the speed of page table scanning is
-> faster.
-
-So IIUC, this is a sustained memory pressure, i.e., servers constantly
-running under memory pressure?
-
-> 3. Run the workload with hot and cold pages, the system is
-> overcommitted, that is, some cold pages will be placed in swap.  But the
-> cold pages are cold enough, so there's almost no thrashing.  Then the
-> hot working-set of the workload changes, that is, some hot pages become
-> cold, while some cold pages becomes hot, so page reclaiming and swapin
-> will be triggered.
-
-This is usually what we see on clients, i.e., bursty workloads when
-switching from an active app to an inactive one.
-
-> For each cases, we can use some different parameters.  And we can
-> measure something like the number of pages scanned, the time taken to
-> scan them, the number of page reclaimed and swapped in, etc.
-
-Thanks, I appreciate these -- very well thought test cases. I'll look
-into them and probably write some synthetic test cases. If you have
-some already, I'd love to get my hands one them.
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
