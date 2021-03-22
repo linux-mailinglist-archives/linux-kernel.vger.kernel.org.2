@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA833344F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DDB344F5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhCVS51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        id S229984AbhCVS6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhCVS4q (ORCPT
+        with ESMTP id S232164AbhCVS57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:56:46 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6275C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:56:45 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id h3so11643434pfr.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=meEW8j4RJB41y0aX/BJ31GvzjYBgkYNc3Bk1g56lS4c=;
-        b=FYmy8/b9CYLzWuaCW800x0BLr+B35vF+M0Wn/b6s6DoGAhFqP0wmC9sMN8clixXNOo
-         YpnnM9O8JHfSQ0O1sMRNIoLwYxkeS3xqyrQgefQwaxgn5zEuQio774WS6/rbxTgrISB3
-         Y7GHo0MzN1lhWqMvBYZ/z5/T5rscgDFOd11Qo7RHaAbBLSopLzxjGyQY/oPBaBROzAAF
-         qWhhDFkTwvcemMmgYzkbd3bzIEjb8jvdhFenNfjD8bSRm34h8h/0w9h/6js8wPV7A/R/
-         T/mYAY/yNGNgBvwJ98yIWbJEqxZgw3nhMit2cxBc28EmvynZSe02lZATQ/4uUENcQG05
-         Mcrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=meEW8j4RJB41y0aX/BJ31GvzjYBgkYNc3Bk1g56lS4c=;
-        b=jh9pWiL5fWORy/6wcImhD6Ql98NpqaGks5GNMTi91FT4/BgW2QqE61TX+AikeYX4Ty
-         OLjOj+8YBt0m8eApREdhhBiRveOCAHXWCLZYrxQKPwB36/nQpU8et2Y21lyLkLmcVeB9
-         NDQt7TzHDHjEFs4aGgEZ3jmbJqoi3Bs+/LueGwFSev9DLZ8/AwGJWn0GWzRlPt3C3/9V
-         m8mju6XdXAOmt15IDSZz+ZSBH7HVbpQs4up/AW4nPlofq6zrVNdyGAe8GCLfJ2hs0Vp+
-         ZtU4ZgQOu5cR9ZzgYcVCPBjD0D70KKBJaqT3aWCdxvqoFrzhOHutsLFILD4NWY8CuMpp
-         vbZQ==
-X-Gm-Message-State: AOAM532gZgmuvRHeLI4bs+5U2H6oxagStsuZkCXSWYDI8DfDzCjwIiAB
-        aeaHYIkNJ8H6WTkix7QpWwZL2w==
-X-Google-Smtp-Source: ABdhPJzlx7ODCtnwxOp81NiIrkrB0U3rG9st5XhGj7tk9HWPo8fcJAB/pG4keSmRYjCwKoAN0krdHg==
-X-Received: by 2002:a17:902:7407:b029:e4:9645:fdf6 with SMTP id g7-20020a1709027407b02900e49645fdf6mr1085992pll.19.1616439405020;
-        Mon, 22 Mar 2021 11:56:45 -0700 (PDT)
-Received: from google.com ([2620:15c:f:10:f8cd:ad3d:e69f:e006])
-        by smtp.gmail.com with ESMTPSA id a30sm14514984pfr.66.2021.03.22.11.56.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 11:56:44 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 11:56:37 -0700
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <YFjoZQwB7e3oQW8l@google.com>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
- <20210322181646.GG6481@zn.tnic>
+        Mon, 22 Mar 2021 14:57:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49651C061764;
+        Mon, 22 Mar 2021 11:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=F1VGSYHn4YFG1IOMrKB92bbrxwOjzJNXg/ULli3TtCw=; b=WA1YJUF1Tr2KfR4cyVdTjaEOCa
+        k09mPE0c/52m3XNIZJwaP1D8MB+7IpUcBEwXrCJuR4B9Oeg6puozV056mVScAWDlDgDlkvOlHAX1V
+        9Msgo91ETTpKRgPd+4sAF2ZFJONOhlU8osEIPtyI9EN9ps6bLcB9r7soLKfSm1pMe+m20u9vtGilz
+        /u1rZ5AWToRSLP1xQwveGajykaOi4JI+Y+50vn+6Hv+czzCpoO48nGfsgftxzv0fhIMU2xnSi7TuE
+        VS5H1saBWmuS68q/TtkCPCW7wzrM9acWzpsMS/FYCUW2rKa2ZV5qTAjbXd3a2q6Aw8YLiVCkEI+xP
+        SON0VqaQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOPjv-008wey-Qk; Mon, 22 Mar 2021 18:57:28 +0000
+Subject: Re: [PATCH] liquidio: Fix a typo
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, dchickles@marvell.com,
+        sburla@marvell.com, fmanlunas@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210322063122.3397260-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <865331ba-242f-fa94-e8ca-a1dbedc4832d@infradead.org>
+Date:   Mon, 22 Mar 2021 11:57:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322181646.GG6481@zn.tnic>
+In-Reply-To: <20210322063122.3397260-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021, Borislav Petkov wrote:
-> On Fri, Mar 19, 2021 at 08:22:19PM +1300, Kai Huang wrote:
-> > +/**
-> > + * sgx_encl_free_epc_page - free EPC page assigned to an enclave
-> > + * @page:	EPC page to be freed
-> > + *
-> > + * Free EPC page assigned to an enclave.  It does EREMOVE for the page, and
-> > + * only upon success, it puts the page back to free page list.  Otherwise, it
-> > + * gives a WARNING to indicate page is leaked, and require reboot to retrieve
-> > + * leaked pages.
-> > + */
-> > +void sgx_encl_free_epc_page(struct sgx_epc_page *page)
-> > +{
-> > +	int ret;
-> > +
-> > +	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
-> > +
-> > +	/*
-> > +	 * Give a message to remind EPC page is leaked when EREMOVE fails,
-> > +	 * and requires machine reboot to get leaked pages back. This can
-> > +	 * be improved in future by adding stats of leaked pages, etc.
-> > +	 */
-> > +#define EREMOVE_ERROR_MESSAGE \
-> > +	"EREMOVE returned %d (0x%x).  EPC page leaked.  Reboot required to retrieve leaked pages."
+On 3/21/21 11:31 PM, Bhaskar Chowdhury wrote:
 > 
-> A reboot? Seriously? Why?
+> s/struture/structure/
 > 
-> How are you going to explain to cloud people that they need to reboot
-> their fat server? The same cloud people who want to make sure Intel
-> supports late microcode loading no matter the effort just so to avoid
-> rebooting the machine.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  drivers/net/ethernet/cavium/liquidio/octeon_device.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> But now all of a sudden, if they wanna have SGX enclaves in guests, they
-> need to get prepared for potential rebooting.
+> diff --git a/drivers/net/ethernet/cavium/liquidio/octeon_device.h b/drivers/net/ethernet/cavium/liquidio/octeon_device.h
+> index fb380b4f3e02..b402facfdc04 100644
+> --- a/drivers/net/ethernet/cavium/liquidio/octeon_device.h
+> +++ b/drivers/net/ethernet/cavium/liquidio/octeon_device.h
+> @@ -880,7 +880,7 @@ void octeon_set_droq_pkt_op(struct octeon_device *oct, u32 q_no, u32 enable);
+>  void *oct_get_config_info(struct octeon_device *oct, u16 card_type);
+> 
+>  /** Gets the octeon device configuration
+> - *  @return - pointer to the octeon configuration struture
+> + *  @return - pointer to the octeon configuration structure
 
-Not necessarily.  This can only trigger in the host, and thus require a host
-reboot, if the host is also running enclaves.  If the CSP is not running
-enclaves, or is running its enclaves in a separate VM, then this path cannot be
-reached.
+No, that's not proper kernel-doc syntax.
 
-> I sure hope I'm missing something...
+>   */
+>  struct octeon_config *octeon_get_conf(struct octeon_device *oct);
+> 
+> --
 
-EREMOVE can only fail if there's a kernel or hardware bug (or a VMM bug if
-running as a guest).  IME, nearly every kernel/KVM bug that I introduced that
-led to EREMOVE failure was also quite fatal to SGX, i.e. this is just the canary
-in the coal mine.
 
-It's certainly possible to add more sophisticated error handling, e.g. through
-the pages onto a list and periodically try to recover them.  But, since the vast
-majority of bugs that cause EREMOVE failure are fatal to SGX, implementing
-sophisticated handling is quite low on the list of priorities.
+-- 
+~Randy
 
-Dave wanted the "page leaked" error message so that it's abundantly clear that
-the kernel is leaking pages on EREMOVE failure and that the WARN isn't "benign".
