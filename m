@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FDC343F9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98305343FA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhCVLYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:24:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37200 "EHLO mail.kernel.org"
+        id S230046AbhCVLZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:25:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhCVLYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:24:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D9416191F;
-        Mon, 22 Mar 2021 11:24:37 +0000 (UTC)
+        id S229467AbhCVLYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:24:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 971096191F;
+        Mon, 22 Mar 2021 11:24:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616412277;
-        bh=NMdc5lCANq7g/MqpzuyP26nixYfnVZ7Ldnb4i+7L3aE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ByzrHUnro6bmY3Bn6QbeZdYPNRrnXouXTxUzCF8jSmeg/eMeCD5TpyaVHJyWZqgZm
-         KnEZVE5FtlZFPAZylsrLTlpDW68NhUWcs0hJZsD83HU93yNywmt3VPP24sViHvaq5C
-         KI4SQifqwJWqr5k9TLiRKsedx2YczMnwKdQVp8GjO3FGaAzmWzVUA0IyjhWH5jB19f
-         XlhxQBYD7VRyf6FATgC08KFxpQphXWW0bD+3UWRfoXib1+jXOG3pWKLPhMY+imR9/K
-         /9/Ivc9K6Vp9uqHYE+HL3AS/TDPAmbg7jMH5bUoj2KhFgkO5JdfDQT3dWiTgHEWXod
-         fYxN+vFTT4bfA==
-Received: by mail-oi1-f179.google.com with SMTP id l79so12640550oib.1;
-        Mon, 22 Mar 2021 04:24:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531APm1P99m2nMvyjWaVGhXC/hYJByR4YQ1bUcnHq/VhoTNppOD0
-        bWXCgVoatSXmCD5DyBHqdLx7ilJ9jFGRTf5uzlw=
-X-Google-Smtp-Source: ABdhPJwr66Z36fB+BXUUOnJpLnIxz0kqOEvPXWBbl40dBClqSGVUiInBjP6i3wsEn8XJqlw8NQk9317EoDhUrbDRNQQ=
-X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr9589084oie.4.1616412276790;
- Mon, 22 Mar 2021 04:24:36 -0700 (PDT)
+        s=k20201202; t=1616412295;
+        bh=ZLi6Bd3+v6SEZ7BojqeGDRUBPIM44t1xQ82RsA0FR9E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X1/XGgKUEwjQp5cnpZHom0FOv2Wv5aaJYB7D+9Rw0EKC2/dvDBwEJcrxiYyR97pDU
+         eYn/PT/+WCDlABZbe8MpPobHdtfpAF8TYkAGpcCR8OJweh0kThjbcjPdgqZ6+yp8C6
+         bafuJ8IHT1lZ6KsjCHAipLHctHG91NWEMOK8h3E/xmoUC2T8/t23/Ft5yM0t7K6xqQ
+         w5HhDuSR+/J9+l+Cn/QyRCrEd5qWcl181B1HdL4IPUQExefVoxRsXpztnn9/sAgvRB
+         c624LvFnWaco433jFHovHRbtT6LhTK8h7dp+zoHh6jnJnEt3YrnzRqMTAE+uTqgHJM
+         2/yrTOk8JW+ZQ==
+Date:   Mon, 22 Mar 2021 11:24:49 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
+        mark.rutland@arm.com, dbrazdil@google.com
+Subject: Re: [PATCH v6 13/38] KVM: arm64: Enable access to sanitized CPU
+ features at EL2
+Message-ID: <20210322112448.GA10318@willie-the-truck>
+References: <20210319100146.1149909-1-qperret@google.com>
+ <20210319100146.1149909-14-qperret@google.com>
 MIME-Version: 1.0
-References: <20210322104343.948660-1-arnd@kernel.org> <YFh3heNXq6mqYqzI@unreal>
-In-Reply-To: <YFh3heNXq6mqYqzI@unreal>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 22 Mar 2021 12:24:20 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3WZmBB=bxNc=taaDwBksLOPVPzhXPAFJ3QCG+eA+Xxww@mail.gmail.com>
-Message-ID: <CAK8P3a3WZmBB=bxNc=taaDwBksLOPVPzhXPAFJ3QCG+eA+Xxww@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/5] misdn: avoid -Wempty-body warning
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319100146.1149909-14-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:55 AM Leon Romanovsky <leon@kernel.org> wrote:
-> On Mon, Mar 22, 2021 at 11:43:31AM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > gcc warns about a pointless condition:
-> >
-> > drivers/isdn/hardware/mISDN/hfcmulti.c: In function 'hfcmulti_interrupt':
-> > drivers/isdn/hardware/mISDN/hfcmulti.c:2752:17: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-> >  2752 |                 ; /* external IRQ */
-> >
-> > Change this as suggested by gcc, which also fits the style of the
-> > other conditions in this function.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >  drivers/isdn/hardware/mISDN/hfcmulti.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/isdn/hardware/mISDN/hfcmulti.c b/drivers/isdn/hardware/mISDN/hfcmulti.c
-> > index 7013a3f08429..8ab0fde758d2 100644
-> > --- a/drivers/isdn/hardware/mISDN/hfcmulti.c
-> > +++ b/drivers/isdn/hardware/mISDN/hfcmulti.c
-> > @@ -2748,8 +2748,9 @@ hfcmulti_interrupt(int intno, void *dev_id)
-> >               if (hc->ctype != HFC_TYPE_E1)
-> >                       ph_state_irq(hc, r_irq_statech);
-> >       }
-> > -     if (status & V_EXT_IRQSTA)
-> > -             ; /* external IRQ */
-> > +     if (status & V_EXT_IRQSTA) {
-> > +             /* external IRQ */
-> > +     }
->
-> Any reason do not delete this hunk?
+On Fri, Mar 19, 2021 at 10:01:21AM +0000, Quentin Perret wrote:
+> Introduce the infrastructure in KVM enabling to copy CPU feature
+> registers into EL2-owned data-structures, to allow reading sanitised
+> values directly at EL2 in nVHE.
+> 
+> Given that only a subset of these features are being read by the
+> hypervisor, the ones that need to be copied are to be listed under
+> <asm/kvm_cpufeature.h> together with the name of the nVHE variable that
+> will hold the copy. This introduces only the infrastructure enabling
+> this copy. The first users will follow shortly.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/cpufeature.h     |  1 +
+>  arch/arm64/include/asm/kvm_cpufeature.h | 22 ++++++++++++++++++++++
+>  arch/arm64/include/asm/kvm_host.h       |  4 ++++
+>  arch/arm64/kernel/cpufeature.c          | 13 +++++++++++++
+>  arch/arm64/kvm/sys_regs.c               | 19 +++++++++++++++++++
+>  5 files changed, 59 insertions(+)
+>  create mode 100644 arch/arm64/include/asm/kvm_cpufeature.h
 
-I don't care either way, I only kept it because it was apparently left there
-on purpose by the original author, as seen by the comment.
+Acked-by: Will Deacon <will@kernel.org>
 
-        Arnd
+Will
