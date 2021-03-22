@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08849345165
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF20B345167
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhCVVGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
+        id S230359AbhCVVJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhCVVGt (ORCPT
+        with ESMTP id S229574AbhCVVId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:06:49 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DFBC061574;
-        Mon, 22 Mar 2021 14:06:49 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f066700a9da971702d05058.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6700:a9da:9717:2d0:5058])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9430D1EC0323;
-        Mon, 22 Mar 2021 22:06:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616447205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=YuK2eDJya8CI3xvbIn6u7GalLPqKeIu/0i/IqiekymU=;
-        b=r9nMd+lvwSQdcd1zO23XG/JipVeyyxPjq78iPvi7/a9lC7W2TsQwq/T61pa6KJ+8Mg23Ll
-        6hCGp0YTzbJwDhTZo9KwM3dFDNuojdEyOTDgknQWpkI8h9m2XDwMeJlEKOkD7mZqlW3dkh
-        wko5QY7FjIGWSZ/0W0hmqydYp4MTVOE=
-Date:   Mon, 22 Mar 2021 22:06:45 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <20210322210645.GI6481@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
- <20210322181646.GG6481@zn.tnic>
- <YFjoZQwB7e3oQW8l@google.com>
- <20210322191540.GH6481@zn.tnic>
- <YFjx3vixDURClgcb@google.com>
+        Mon, 22 Mar 2021 17:08:33 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7170C061574;
+        Mon, 22 Mar 2021 14:08:31 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id j3so21039196edp.11;
+        Mon, 22 Mar 2021 14:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MeMyP6yxpEyI8O18iLMWHARj/2oI4TtzSo5lwW4fJW4=;
+        b=k5ZGdyQ0UwJMm0SwLsEVo76cQvkNMXFAqTOh+dAJ1+3/dwFvDk8Qfk9LlXI+HULT2T
+         LQekvdF2sqsyQDjh23IpBUHLWUwX7c+9LTWKmXmExAqDs5UiaBgBfrmSSFZ07G7k6WNI
+         DVWdl8ZP4p0a7AlAn1c763j8WLiEBQO8tGMwDTQZGwr1YbhM+DsMyUfUyCDNEMBP0Sw0
+         Ly8TglYJLFeUrCKRlMHPzay9ybP6GaWMOMj+lsRvyyH9TWjB5MofI9gG6Ssqif+lrfMi
+         /0SI2Fv/ppGBf8mqqBdNlbnDyOrtNF1GbWowpmAO0vlYeMwRkHWeDICTgJ61ItlzB0gk
+         YQMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=MeMyP6yxpEyI8O18iLMWHARj/2oI4TtzSo5lwW4fJW4=;
+        b=lBm3gQQCavVrg4hQGme67zQV78EWGPTyeXU63XIBOR/HyuoHuA8s9q1IltuRl3+QSX
+         pH+cR4VNDubxxWL/TrYGlwQISM/qLei6jvXNAEpDHdILLsMHGy0J0j9jsfHlkiwlHLNK
+         AFEgQI9nL78toTnZvxnQjgMxes2XCSAjxYwWoKYrlEiSeSDGlEmL83zpsRVZmXZQeWFz
+         baHaYUqQ4D59gaKls8Kn9orqW7NV51QFYfjrONXCdNkXDrWqVLYliws8pO0AWOrXfVMR
+         fNe/j5l6xw2sdtgARcTiImR/7ucj4wPfuF1bNmgaVJ3Rz6DpHqTC3OSD2QScq3y7Ngm1
+         k5lw==
+X-Gm-Message-State: AOAM532yciLPntDDbFHoc0j3mtKRphwnYhIGS02fqugWHmFHal1kd9Qe
+        YzAv2Nw8UKogoaYY0gRMcV4=
+X-Google-Smtp-Source: ABdhPJyJy6b4NgHlWF7ybHfmpOB4WIT/W3vU8jy382mzzp7k6G9l2p2gO8bGRlUepZunXM3MIpJoKg==
+X-Received: by 2002:aa7:cd16:: with SMTP id b22mr1514895edw.357.1616447310498;
+        Mon, 22 Mar 2021 14:08:30 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id v22sm10184101ejj.103.2021.03.22.14.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 14:08:30 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 22 Mar 2021 22:08:28 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Xu Yihang <xuyihang@huawei.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        johnny.chenyi@huawei.com, heying24@huawei.com
+Subject: Re: [PATCH -next] x86: Fix unused variable 'msr_val' warning
+Message-ID: <20210322210828.GA1961861@gmail.com>
+References: <20210322031713.23853-1-xuyihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YFjx3vixDURClgcb@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210322031713.23853-1-xuyihang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 12:37:02PM -0700, Sean Christopherson wrote:
-> Yes.  Note, it's still true if you strike out the "too", KVM support is completely
-> orthogonal to this code.  The purpose of this patch is to separate out the EREMOVE
-> path used for host enclaves (/dev/sgx_enclave), because EPC virtualization for
-> KVM will have non-buggy scenarios where EREMOVE can fail.  But the virt EPC code
-> is designed to handle that gracefully.
 
-"gracefully" as it won't leak EPC pages which would require a host reboot? That
-leaking is done by host enclaves only?
+* Xu Yihang <xuyihang@huawei.com> wrote:
 
-> Hmm.  I don't think it warrants BUG.  At worst, leaking EPC pages is fatal only
-> to SGX.
-
-Fatal how? If it keeps leaking, at some point it won't have any pages
-for EPC pages anymore?
-
-Btw, I probably have seen this and forgotten again so pls remind me,
-is the amount of pages available for SGX use static and limited by,
-I believe BIOS, or can a leakage in EPC pages cause system memory
-shortage?
-
-> If the underlying bug caused other fallout, e.g. didn't release a
-> lock, then obviously that could be fatal to the kernel. But I don't
-> think there's ever a case where SGX being unusuable would prevent the
-> kernel from functioning.
-
-This kinda replies my question above but still...
-
-> Probably something in between.  Odds are good SGX will eventually become
-> unusuable, e.g. either kernel SGX support is completely hosted, or it will soon
-> leak the majority of EPC pages.  Something like this?
+> Fixes the following W=1 kernel build warning(s):
+> arch/x86/hyperv/hv_spinlock.c:28:16: warning: variable ‘msr_val’ set but not used [-Wunused-but-set-variable]
+>   unsigned long msr_val;
 > 
->   "EREMOVE returned %d (0x%x), kernel bug likely.  EPC page leaked, SGX may become unusuable.  Reboot recommended to continue using SGX."
+> As Hypervisor Top-Level Functional Specification states in chapter 7.5 Virtual Processor Idle Sleep State, "A partition which possesses the AccessGuestIdleMsr privilege (refer to section 4.2.2) may trigger entry into the virtual processor idle sleep state through a read to the hypervisor-defined MSR HV_X64_MSR_GUEST_IDLE". That means only a read is necessary, msr_val is not uesed, so __maybe_unused should be added.
+> 
+> Reference:
+> https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
+> ---
+>  arch/x86/hyperv/hv_spinlock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/hyperv/hv_spinlock.c b/arch/x86/hyperv/hv_spinlock.c
+> index f3270c1fc48c..67bc15c7752a 100644
+> --- a/arch/x86/hyperv/hv_spinlock.c
+> +++ b/arch/x86/hyperv/hv_spinlock.c
+> @@ -25,7 +25,7 @@ static void hv_qlock_kick(int cpu)
+>  
+>  static void hv_qlock_wait(u8 *byte, u8 val)
+>  {
+> -	unsigned long msr_val;
+> +	unsigned long msr_val __maybe_unused;
+>  	unsigned long flags;
 
-So all this handwaving I'm doing is to provoke a proper response from
-you guys as to how a EPC page leaking is supposed to be handled by the
-users of the technology:
+Please don't add new __maybe_unused annotations to the x86 tree - 
+improve the flow instead to help GCC recognize the initialization 
+sequence better.
 
-1. Issue a warning message and forget about it, eventual reboot
+Thanks,
 
-2. Really scary message to make users reboot sooner
-
-3. Detect when host enclaves are run while guest enclaves are running
-and issue a warning then.
-
-4. Fall on knees and pray to not get sued by customers because their
-enclaves are not working anymore.
-
-....
-
-Btw, 4. needs to be considered properly so that people can cover asses.
-
-Oh and whatever we end up deciding, we should document that in
-Documentation/... somewhere and point users to it in that warning
-message where a longer treatise is explaining the whole deal properly.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+	Ingo
