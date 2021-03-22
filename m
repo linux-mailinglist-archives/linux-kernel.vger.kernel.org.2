@@ -2,125 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC52343901
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120E3343903
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhCVGBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCVGBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:01:09 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACEBC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:01:09 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id k189so20222023ybb.17
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=5I10KmTF85pJvFc7zWF/I23hQrUb++spC+kPfoWl0gs=;
-        b=c9XgGsl1zbqM2sva4joEfnSV7hDID7Lv3Hg9YmulQCxI46Pp32uMd+U93tz6FJcf9V
-         +dwPmAPherZPRSAPkRCBzDzYIYIu97H2V97Ttm5U4NWXfsUKtdsqFJgWVIBzAKCUcZTo
-         xBMxTdBDP8/4T09zUqXjktns3k7pmDbDTMghuXfiRMsHXCnRMIc5kq+Bnxn7Ul/uGbnv
-         hqMrlrHpY9fr05VsFp4rrpRL8GLQTfhnP46jRWB41y34YhEDaK+TR11g+1WarhhgRnyD
-         qk5I0dc+ciajtCCqUhXOrWwj58BMGhjxEO/UP5ll3cEIE0XQczrU2+2Cqbk5kI2RBzx1
-         k2Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=5I10KmTF85pJvFc7zWF/I23hQrUb++spC+kPfoWl0gs=;
-        b=Hu7J/JoRFpLSyUJ5ux02O3hmKlJe8nrNSEws4ImMZmy3g/MFo42UsJilwhoZU2DIA/
-         uL+edetmxFtE0Y+IR3UVRLLtpPfeND/CXQ4zPeS3HCF/VHrRcyiB2n79BgEh2KQOQYsT
-         UTL7sr0I+yIazelnj+Ax27FZgto2gguSc0YSKuq1hBvc1ujBgF5NMSZsa0avvDxjy/Kw
-         qUt636gKrAvJsIzX8IwFODf2ws8a41ejsgugFpbqCpWFnE+/hDNQm/2rtZhfCv+NLq6q
-         JuG3h1PLrB5m6o9AXs7Xz8uZcereIpY2CuVIhOWiySdYuc7D1CAwLKlsL8x7/PHVZ0gf
-         wIcA==
-X-Gm-Message-State: AOAM531pMwAHqgwwXu+9LF146LWVbeDLFlfWnoOCiOzaaTGMetib+oXi
-        uoH6Ys3Hfs45eC8p6VzEvErazMCDGZEa
-X-Google-Smtp-Source: ABdhPJyOUjg2iuItG5KmaZ6zQLnZF+LuuNxppSFBsY6NFp8yarG7SYRJ+2b6G2g8e7XiyXxlGLdY8F2+ucC9
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:fdf3:9f7d:e4e3:ccad])
- (user=apusaka job=sendgmr) by 2002:a25:390:: with SMTP id 138mr21736645ybd.130.1616392868490;
- Sun, 21 Mar 2021 23:01:08 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 14:01:01 +0800
-Message-Id: <20210322140046.1.I6c4306f6e8ba3ccc9106067d4eb70092f8cb2a49@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH] Bluetooth: check for zapped sk before connecting
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com,
-        Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S230002AbhCVGBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:01:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229865AbhCVGB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:01:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E797D61927;
+        Mon, 22 Mar 2021 06:01:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616392886;
+        bh=eq4HMF9geV0Zvppc8dzAPHkyUvIp3qmYAerIm0s7TfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g/HULiHp8O5kayQwEPqVmFLlr4vpUoHboOiFI7x5vF8rl5Saxa3SAZsTJxpQ25iH9
+         VpHXCVAer1zDUptAOiiM7dHWJXQHkQPSZOD39zZllk+yqL406+ShytUj2WzEJGkjbu
+         5bPHkLIH+yK/VN1mX/RWQyKFLVifmG4DiWa+BfDRJLds/g9NRyauoXkIz1wLTBtKfc
+         UrweOHq6br/2BJ/ihbTIZLDEdWrApJrFuXYps0T9tzBRbGHc+gHegojn6Q0HTITGfu
+         2jL783Eklh3NuzngRTnPpVRa9bFD5D+hTuy6ePDbfidLgn3fhssC4Fl5Kza/fx92cY
+         jfi42tkqeOpMA==
+Date:   Mon, 22 Mar 2021 11:31:22 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sm8150: add iommus to qups
+Message-ID: <YFgysqyYlAagyV7y@vkoul-mobl.Dlink>
+References: <20210310163024.393578-1-caleb@connolly.tech>
+ <20210310163024.393578-3-caleb@connolly.tech>
+ <YFBM5Up5caWZCMSx@vkoul-mobl>
+ <5ab5b7df-1624-10bf-f268-c32dc5bf0bb6@connolly.tech>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ab5b7df-1624-10bf-f268-c32dc5bf0bb6@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+On 20-03-21, 17:16, Caleb Connolly wrote:
+> Hi Vinod,
+> 
+> On 16/03/2021 6:15 am, Vinod Koul wrote:
+> > On 10-03-21, 16:31, Caleb Connolly wrote:
+> >> Hook up the SMMU for doing DMA over i2c. Some peripherals like
+> >> touchscreens easily exceed 32-bytes per transfer, causing errors and
+> >> lockups without this.
+> > Why not squash this to patch 1..?
+> 
+> I thought it made more sense to separate these patches to keep the 
+> history a bit cleaner. I can squash them if you'd prefer.
 
-There is a possibility of receiving a zapped sock on
-l2cap_sock_connect(). This could lead to interesting crashes, one
-such case is tearing down an already tore l2cap_sock as is happened
-with this call trace:
+The nodes should be typically added in a single patch, maybe Bjorn is
+fine with this ;-)
 
-__dump_stack lib/dump_stack.c:15 [inline]
-dump_stack+0xc4/0x118 lib/dump_stack.c:56
-register_lock_class kernel/locking/lockdep.c:792 [inline]
-register_lock_class+0x239/0x6f6 kernel/locking/lockdep.c:742
-__lock_acquire+0x209/0x1e27 kernel/locking/lockdep.c:3105
-lock_acquire+0x29c/0x2fb kernel/locking/lockdep.c:3599
-__raw_spin_lock_bh include/linux/spinlock_api_smp.h:137 [inline]
-_raw_spin_lock_bh+0x38/0x47 kernel/locking/spinlock.c:175
-spin_lock_bh include/linux/spinlock.h:307 [inline]
-lock_sock_nested+0x44/0xfa net/core/sock.c:2518
-l2cap_sock_teardown_cb+0x88/0x2fb net/bluetooth/l2cap_sock.c:1345
-l2cap_chan_del+0xa3/0x383 net/bluetooth/l2cap_core.c:598
-l2cap_chan_close+0x537/0x5dd net/bluetooth/l2cap_core.c:756
-l2cap_chan_timeout+0x104/0x17e net/bluetooth/l2cap_core.c:429
-process_one_work+0x7e3/0xcb0 kernel/workqueue.c:2064
-worker_thread+0x5a5/0x773 kernel/workqueue.c:2196
-kthread+0x291/0x2a6 kernel/kthread.c:211
-ret_from_fork+0x4e/0x80 arch/x86/entry/entry_64.S:604
-
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reported-by: syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com
-Reviewed-by: Alain Michaud <alainm@chromium.org>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
----
-
- net/bluetooth/l2cap_sock.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index f1b1edd0b697..b86fd8cc4dc1 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -182,6 +182,13 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr,
- 
- 	BT_DBG("sk %p", sk);
- 
-+	lock_sock(sk);
-+	if (sock_flag(sk, SOCK_ZAPPED)) {
-+		release_sock(sk);
-+		return -EINVAL;
-+	}
-+	release_sock(sk);
-+
- 	if (!addr || alen < offsetofend(struct sockaddr, sa_family) ||
- 	    addr->sa_family != AF_BLUETOOTH)
- 		return -EINVAL;
 -- 
-2.31.0.rc2.261.g7f71774620-goog
-
+~Vinod
