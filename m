@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B38344D1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DB1344D21
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhCVRTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:19:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53479 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231246AbhCVRTR (ORCPT
+        id S232136AbhCVRTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230198AbhCVRTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:19:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616433556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ifg8UBnvcv2ogQmlttPjHjavoKNWZ5bFson4LyffFw4=;
-        b=cVwPQDme4tZ1KQ56tFIuQYumozejhuEEPrFTiMtgg+iQEYbXY0xqroCYoPLjDyXz7UdUXM
-        Tx55X2DH+2ljrBku6m1fpXR9cs9anbD1OYZxcYXw5NuzCwpxtnufHxcXCHBrUlP5Dg6jYG
-        1NnaO3eqLWhu6HpYH1+8k0D7OTvWpcs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-uk3y9XgZMXq7xwyU-icxnw-1; Mon, 22 Mar 2021 13:19:14 -0400
-X-MC-Unique: uk3y9XgZMXq7xwyU-icxnw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1041B107BEF7;
-        Mon, 22 Mar 2021 17:19:13 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-114-80.rdu2.redhat.com [10.10.114.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5187160BE5;
-        Mon, 22 Mar 2021 17:19:12 +0000 (UTC)
-Subject: Re: [PATCH] lockdep: add a hint for "INFO: trying to register
- non-static key." message
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
-References: <20210321064913.4619-1-penguin-kernel@I-love.SAKURA.ne.jp>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <9add0c6f-d75e-388f-5a34-5633f5829fc1@redhat.com>
-Date:   Mon, 22 Mar 2021 13:19:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 22 Mar 2021 13:19:30 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96325C061574;
+        Mon, 22 Mar 2021 10:19:29 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id h10so20275703edt.13;
+        Mon, 22 Mar 2021 10:19:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=obigrzeRlsxyJhJGxEn25zyUrKSr2P3Xsf8Amp4vU2M=;
+        b=Tcqn6nVvfDHtgGKcSsiX0pdtAFdlCWdVWYDk/RZY73UZnRkciiALmC+s0vooIWhdyZ
+         HD+atSXNViZpFJITvEUePWBumO+sa4oW6XERPZD5XlPuU/maho611olKR8sSkiioTpIr
+         cR3z36CG/VF/+JyyCnbP6PrPUJkqv4uvayontO9R/ip+YU2jmTHXOtXzvCH6Loxz5w9s
+         mQX8V6JCj+3Iv1iFtYpKVqUkK1VXtYIcZisxLCEbdvSwkq60dj4gDVcFf1CrToYDECF3
+         8d8ThoT36sdgneXN+0vNbrTcbgW7BjLwLHewv9kTAxinrGC8elKCwFhH+/Lr5bq2wp9+
+         Bcyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=obigrzeRlsxyJhJGxEn25zyUrKSr2P3Xsf8Amp4vU2M=;
+        b=PCoqpqsKigArwPO/Ef55AxTDYHjlxdu00FjUJ4443125pj301PFeqHUDd/sgn0l3Tv
+         1eW4qToz0xVJGOvnEivYXNY7Ih5Uz48zjrg9kZQN2mOO2Aq1Z328sHFsS9jt4YxUWYk0
+         8nUhvmDeeKBIF1ReOGO8FdSDmz4GvBPrloFlFpcRYHNq9/pi7olDqkFGLw/V6xdw9SU4
+         dEzUtZTJbFQT2XraDENIkfsbNvg91MeVsW4S75TKpujkzirBL/eGzMYEGMz403DwNH/I
+         M2JLlDxWdYtkQbtomo/A5KOONKzjQ1WL2p4ksP4yO57Qmg6Xe3sEgivLKgMB3GEg7Nte
+         2Tig==
+X-Gm-Message-State: AOAM531X+SHA1AzGc/ByvGWKUVKlK8g9TeXp21TottCPBWYq+q+OgMIL
+        qg4oNq9oLCzETvv8k2eRiNM=
+X-Google-Smtp-Source: ABdhPJzBtQbPZaMBPwvpsqTOGHK79IKL6SlqJBghC5TY+3Akmc2NG5gnfmhIpCZhFvvpkjW0/ZLpmg==
+X-Received: by 2002:a05:6402:34c4:: with SMTP id w4mr636417edc.367.1616433568335;
+        Mon, 22 Mar 2021 10:19:28 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id bj7sm10332818ejb.28.2021.03.22.10.19.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 10:19:27 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 19:19:26 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Tobias Waldekranz <tobias@waldekranz.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH v2 net-next 16/16] net: bridge: switchdev: let
+ drivers inform which bridge ports are offloaded
+Message-ID: <20210322171926.hgfl2d6pxxxwmsts@skbuf>
+References: <20210318231829.3892920-1-olteanv@gmail.com>
+ <20210318231829.3892920-17-olteanv@gmail.com>
+ <87r1k7m9qb.fsf@waldekranz.com>
 MIME-Version: 1.0
-In-Reply-To: <20210321064913.4619-1-penguin-kernel@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1k7m9qb.fsf@waldekranz.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 2:49 AM, Tetsuo Handa wrote:
-> Since this message is printed when dynamically allocated spinlocks (e.g.
-> kzalloc()) are used without initialization (e.g. spin_lock_init()),
-> suggest developers to check whether initialization functions for objects
-> are called, before making developers wonder what annotation is missing.
->
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> ---
->   kernel/locking/lockdep.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index c6d0c1dc6253..44c549f5c061 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -931,6 +931,7 @@ static bool assign_lock_key(struct lockdep_map *lock)
->   		debug_locks_off();
->   		pr_err("INFO: trying to register non-static key.\n");
->   		pr_err("the code is fine but needs lockdep annotation.\n");
-> +		pr_err("maybe you didn't initialize this object before you use?\n");
->   		pr_err("turning off the locking correctness validator.\n");
->   		dump_stack();
->   		return false;
+On Mon, Mar 22, 2021 at 05:30:52PM +0100, Tobias Waldekranz wrote:
+> > ---
+> >  .../ethernet/freescale/dpaa2/dpaa2-switch.c   |  4 +-
+> >  .../marvell/prestera/prestera_switchdev.c     |  7 ++
+> >  .../mellanox/mlxsw/spectrum_switchdev.c       |  4 +-
+> >  drivers/net/ethernet/mscc/ocelot_net.c        |  4 +-
+> >  drivers/net/ethernet/rocker/rocker_ofdpa.c    |  8 +-
+> >  drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  7 +-
+> >  drivers/net/ethernet/ti/cpsw_new.c            |  6 +-
+> 
+> Why is not net/dsa included in this change?
 
-The only way this message is written is when the appropriate lock init 
-function isn't called for locks in dynamically allocated objects. I 
-think you can just say so without the word "maybe". Like "the code is 
-fine but needs lockdep annotation by calling appropriate lock 
-initialization function.".
-
-Cheers,
-Longman
-
+I don't know, must have went shopping somewhere?
+I'll make sure DSA is included in this change when I resend.
