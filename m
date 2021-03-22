@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFDB344734
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D6F34473C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhCVObp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:31:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37960 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229893AbhCVObI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:31:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616423467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CpPLEqSIKAx6LCad+2eiCBK8qg/o/11mDrcvfFKDJWk=;
-        b=ji/kO1BsoNTVCCNONFSEuQtUw4jSzJX56+SiBHCRVIPO9jNqYTKgymtfAsQUNhLUtTmtI+
-        +jn7603DyUTYfXgKFLoHf8nXm6iMZRMCjKAgT7OZZQr7eP84vLfG+Q/BAj5b1ap/kEL/J5
-        vLfDBjllUTVr+bWf2pLvF5l6a6Pmvi4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3BDCAACA8;
-        Mon, 22 Mar 2021 14:31:07 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 15:31:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 5/8] hugetlb: change free_pool_huge_page to
- remove_pool_huge_page
-Message-ID: <YFiqJSGjMMG3diWp@dhcp22.suse.cz>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-6-mike.kravetz@oracle.com>
+        id S230476AbhCVOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230357AbhCVOcE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:32:04 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD63C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:04 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id bf3so19634588edb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=W1CrrVQQfCM8oSgODUTN/4xbiArLi1X7MNgfBQ1mnN0=;
+        b=O9AZ9jQIbmGFs2zt0vKwAZiZefUlw7T7LkI+mJwbIbe0VQH+y9CLo5zOBVYU7rXLOg
+         jNIMqVGWoiHuH01MC+NBcJ798yjq4HDe/ZocOAEq6hbYex8UTpZMcf9bF6ovALp92ZIc
+         ECz07ohHkFm6ZtljEX/XfQuBtadxwuF9l2S5/aTTfPKIevx1kvywFVYGbWEegN7C+Ilu
+         eJZ/CNWq8V8MmfljfMWCbb2AtAkKNrRD2i0t5RaF7N+obK6HRvDndPIvXtHvmGGH+ol/
+         goT60/aOr9ZaK8s0mlXiqwU+vDYyesUTW8vApB0SQ8GVB9IiWr2tA9KB608uwVRBV2PZ
+         LeJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=W1CrrVQQfCM8oSgODUTN/4xbiArLi1X7MNgfBQ1mnN0=;
+        b=cHroHe49C0ne15ox6POn2MkS862+39RG2mrjKWfNUlwXPFpetdWlLblPdgclI0QQi8
+         PbmFVDpd8hxviYg2TipuGr3SPe64UMAVWFqEqLQT9ljL/a61Fj6fO4ZTaCQMyK1Cz3EE
+         8Idf4W/tJ4eK6C2VRKr7oqN8+8kJv9ABSBBxydYG2YdCboI6oVxvHNstnZ//20Ei3T9R
+         f6oN9ZCCr5vhfvh76kNUinFNjCnutUzpqhSX4nmpCmQ49momWw/OKtlw2RHGmlQdG/+K
+         co5FEvasYaWiE1ENV7y8/YpeoCe/Tro63RK2l7PTrKBmsyN2ROOEmayIwnpg7R3hTRs3
+         GAkw==
+X-Gm-Message-State: AOAM531L7BhZpY252juo9PjKWDoY64A12qUWeiK697F0xfDx0hNA0s2F
+        fJXkF0SDzotb/YMLJ6RXFsA=
+X-Google-Smtp-Source: ABdhPJy1CaFLoy2jBvBzDg/xv0rkaByD2eGzXIsDVKKSWGBEzdDhrAkw9n0++Y5uscvGIDcLA1ySKQ==
+X-Received: by 2002:aa7:da04:: with SMTP id r4mr26189361eds.343.1616423523117;
+        Mon, 22 Mar 2021 07:32:03 -0700 (PDT)
+Received: from agape ([151.57.176.11])
+        by smtp.gmail.com with ESMTPSA id de17sm9686534ejc.16.2021.03.22.07.32.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 07:32:02 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     joe@perches.com, apw@canonical.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH 00/11] staging: rtl8723bs: fix extern declaration checkpatch issues
+Date:   Mon, 22 Mar 2021 15:31:38 +0100
+Message-Id: <cover.1616422773.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <YFbvwZjwMa4mPsn8@kroah.com>
+References: <YFbvwZjwMa4mPsn8@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319224209.150047-6-mike.kravetz@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-03-21 15:42:06, Mike Kravetz wrote:
-[...]
-> @@ -2090,9 +2084,15 @@ static void return_unused_surplus_pages(struct hstate *h,
->  	while (nr_pages--) {
->  		h->resv_huge_pages--;
->  		unused_resv_pages--;
-> -		if (!free_pool_huge_page(h, &node_states[N_MEMORY], 1))
-> +		page = remove_pool_huge_page(h, &node_states[N_MEMORY], 1);
-> +		if (!page)
->  			goto out;
-> -		cond_resched_lock(&hugetlb_lock);
-> +
-> +		/* Drop lock and free page to buddy as it could sleep */
-> +		spin_unlock(&hugetlb_lock);
-> +		update_and_free_page(h, page);
-> +		cond_resched();
-> +		spin_lock(&hugetlb_lock);
->  	}
->  
->  out:
+Fix extern declaration issues warned by checkpatch
 
-This is likely a matter of taste but the repeated pattern of unlock,
-update_and_free_page, cond_resched and lock seems rather clumsy.
-Would it be slightly better/nicer to remove_pool_huge_page into a
-list_head under a single lock invocation and then free up the whole lot
-after the lock is dropped?
+Fabio Aiuto (11):
+  staging: rtl8723bs: delete extern declarations in core/rtw_ap.c
+  staging: rtl8723bs: moved function prototypes out of core/rtw_efuse.c
+  staging: rtl8723bs: moved function prototype out of
+    core/rtw_ioctl_set.c and core/rtw_mlme.c
+  staging: rtl8723bs: moved function prototypes out of core/rtw_recv.c
+  staging: rtl8723bs: remove argument in recv_indicatepkts_pkt_loss_cnt
+  staging: rtl8723bs: move function prototype out of core/rtw_recv.c
+  staging: rtl8723bs: delete extern declarations in core/rtw_wlan_util.c
+  staging: rtl8723bs: move function prototypes out of hal/odm.c
+  staging: rtl8723bs: move function prototypes out of os_dep/int_fs.c
+  staging: rtl8723bs: remove undefined function prototype in of
+    os_dep/sdio_intf.c
+  staging: rtl8723bs: remove unnecessary extern in os_dep/sdio_intf.c
+
+ drivers/staging/rtl8723bs/core/rtw_ap.c       |  5 --
+ drivers/staging/rtl8723bs/core/rtw_efuse.c    | 10 ---
+ .../staging/rtl8723bs/core/rtw_ioctl_set.c    |  1 -
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |  2 -
+ drivers/staging/rtl8723bs/core/rtw_recv.c     | 41 ++---------
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |  3 -
+ drivers/staging/rtl8723bs/hal/odm.c           | 68 -------------------
+ drivers/staging/rtl8723bs/hal/odm.h           | 62 +++++++++++++++++
+ .../staging/rtl8723bs/include/osdep_intf.h    |  3 +
+ drivers/staging/rtl8723bs/include/rtw_efuse.h |  3 +
+ .../staging/rtl8723bs/include/rtw_ioctl_set.h |  2 +
+ drivers/staging/rtl8723bs/include/rtw_recv.h  | 53 +++++++++++++++
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c   |  3 -
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c  |  3 -
+ 14 files changed, 129 insertions(+), 130 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
