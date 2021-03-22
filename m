@@ -2,105 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603D4343C37
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B9F343C3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCVJBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:01:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41384 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhCVJAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:00:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C4E01AD71;
-        Mon, 22 Mar 2021 09:00:43 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 10:00:36 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <20210322090036.GB10031@zn.tnic>
-References: <20210322143714.494603ed@canb.auug.org.au>
+        id S229994AbhCVJBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhCVJBh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 05:01:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F90C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:01:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8sItCnyIcck+lptyUziWI9fd9hb9cv69jnIU5uaoL74=; b=h8Ni7PCO79d5xFJzv8hc9HxzsB
+        6plktdOCEJkrx/D/QX2ltnoiBI3h/peiNaWkrZJ2Hi7mJs21W0SwdiIPn3lRLMxyQTt8HIlu8WKW7
+        Mj98O3Gz3LW8UgyVupoIyklZOpJEMu/yQCXdQl6siAMMFrjA4CGsR3pEx1SpL9mQum/g2wx+XliA8
+        09fxgNQMYEj1NJT96GnXfqZMMDpu9nGFcjSb4qaxTwhfU7m2B4o4qqGvleB1oPuhcVki+TkPKdnDl
+        IQ54a4Cmn492a0AKBPLSnJLlwMWN2hZmKpyVGCsvna8NbuhdkyaTFu4Zgwf+6JHKMYsZ4XBrR6X/8
+        S5pERiFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOGRI-00BDXu-Kg; Mon, 22 Mar 2021 09:01:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2AAC73010C8;
+        Mon, 22 Mar 2021 10:01:32 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 148692BA3A2FC; Mon, 22 Mar 2021 10:01:32 +0100 (CET)
+Date:   Mon, 22 Mar 2021 10:01:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: locking/mutex: Fix non debug version of mutex_lock_io_nested()
+Message-ID: <YFhc7CvSdPULqZ/Q@hirez.programming.kicks-ass.net>
+References: <878s6fshii.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322143714.494603ed@canb.auug.org.au>
+In-Reply-To: <878s6fshii.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:37:14PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Mar 22, 2021 at 09:46:13AM +0100, Thomas Gleixner wrote:
+> If CONFIG_DEBUG_LOCK_ALLOC=n then mutex_lock_io_nested() maps to
+> mutex_lock() which is clearly wrong because mutex_lock() lacks the
+> io_schedule_prepare()/finish() invocations.
 > 
-> After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
-> 
-> arch/x86/net/bpf_jit_comp.c: In function 'arch_prepare_bpf_trampoline':
-> arch/x86/net/bpf_jit_comp.c:2015:16: error: 'ideal_nops' undeclared (first use in this function)
->  2015 |   memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
->       |                ^~~~~~~~~~
-> arch/x86/net/bpf_jit_comp.c:2015:16: note: each undeclared identifier is reported only once for each function it appears in
-> arch/x86/net/bpf_jit_comp.c:2015:27: error: 'NOP_ATOMIC5' undeclared (first use in this function); did you mean 'GFP_ATOMIC'?
->  2015 |   memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
->       |                           ^~~~~~~~~~~
->       |                           GFP_ATOMIC
-> 
-> Caused by commit
-> 
->   a89dfde3dc3c ("x86: Remove dynamic NOP selection")
-> 
-> interacting with commit
-> 
->   b90829704780 ("bpf: Use NOP_ATOMIC5 instead of emit_nops(&prog, 5) for BPF_TRAMP_F_CALL_ORIG")
-> 
-> from the net tree.
-> 
-> I have applied the following merge fix patch.
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 22 Mar 2021 14:30:37 +1100
-> Subject: [PATCH] x86: fix up for "bpf: Use NOP_ATOMIC5 instead of
->  emit_nops(&prog, 5) for BPF_TRAMP_F_CALL_ORIG"
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index db50ab14df67..e2b5da5d441d 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -2012,7 +2012,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  		/* remember return value in a stack for bpf prog to access */
->  		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
->  		im->ip_after_call = prog;
-> -		memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
-> +		memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
->  		prog += X86_PATCH_SIZE;
->  	}
->  
-> -- 
+> Map it to mutex_lock_io().
 
-I guess we can do the same as with the hyperv tree - the folks who send the
-respective branches to Linus in the next merge window should point to this patch
-of yours which Linus can apply after merging the second branch in order.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Thanks!
