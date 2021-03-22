@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81FB34512A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639E734512E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhCVUvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
+        id S231255AbhCVUvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhCVUvE (ORCPT
+        with ESMTP id S231156AbhCVUvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:51:04 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CCBC061574;
-        Mon, 22 Mar 2021 13:51:03 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id v70so12122795qkb.8;
-        Mon, 22 Mar 2021 13:51:03 -0700 (PDT)
+        Mon, 22 Mar 2021 16:51:23 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AC6C061574;
+        Mon, 22 Mar 2021 13:51:21 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso4430429ooq.6;
+        Mon, 22 Mar 2021 13:51:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oVHrhj/lQwT+ubnljfhPrE9DJJFlumRhNceNGqFvKUw=;
-        b=nZAqLE/8UPltcAhzDK+GNKTedDen9yD2PoPafdI/EHIMkeQ385+OMHibPCuqNcHdB7
-         NYSRcaq/RlqCIH+gCfzB13j8c9jxcvy8wizGYpiEmid1w3Mkb/V9skanbi9IFUigi6M6
-         U7xfTeBfZKPWLNG+XBMPZD9nDqwc0SdNs08041TVgB8FVZ5kp+0cIL8W/Vpx0+vIX2JG
-         CXX0vcdxh2OU65xj/3N/gOU5cK4KgEc7vFVHfxvl6ALKk5C6tmVmxx97LxS7fGi4i6V6
-         HNdoSidvRqnZQA2r+5PUOUNxB6w4kgex7CRlK+jomkbuoFUKuhgVWky84/kDUxRaBY5N
-         +wxA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yM/6S6FViE7IpToxGYmVsIhNe3gv17YedRrLGkVh5iM=;
+        b=dakTJAIFUC5lWRKJ4WNCzoxcD8nuusxO0ZPD7ezRk0/ETCqga2jW4+w0XKxyjCBPiN
+         jqWI87gYljQV8OHOTiwQXhF6I+V2JGs6979WY8TclxFuxKXZuzKR1y0OxD4UkYGvAoor
+         bZAH0VLgiQGc+Q33AMfjSMtApEbQubnRsq3myM/PI2LDRSdrPqZp3dFBB5s3bsyaT8Xn
+         uO5qYtTKiWDKhPvDP1QGFvGzm1LorVRfxqCmNQd6DVGfKqatN2nPG944Bs2Bd490KsD6
+         BqESeYIoHfPjXOwbMu7VcTIzQEuOafVK0TnSoOXdwvgXY3Atfsi0R6l/NlhKMtZM3Xse
+         JDyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=oVHrhj/lQwT+ubnljfhPrE9DJJFlumRhNceNGqFvKUw=;
-        b=lzG9a+exWsKs4CaFbXrS/aPGySls2XMY2Id3L0yDiY4Bt3rTUQIv/a5xsJu5iImYlU
-         CTaCZ9gj2+rj714kK/T3vwyHoT6ecMmt8zRHvtt3+ifRqkxpifztbpjb69g3BLcRq95l
-         WDTEteo3pqd0isdDm/rBcqEshwBNDSs/iMAeIWhOB2ePj8MhMnlaXrNDFwFNy/W21eL/
-         no80STDhR0LGbzqidUhhlGRKuCzDU1Z7S9Eu6Zm6NjG0w3+VYeQhZvVBhAwPEgOOdTGc
-         ONoWSKw+w42A9h8qYYN9equm71KScdK9lk8RGRujrC03qTk0rEBh2xTVNnHJiCp3UhZM
-         pn1g==
-X-Gm-Message-State: AOAM5308BMypu+4heF/emrszdrXGpWEZ4UyVAEljWZprk5T1oUWubEHE
-        CA6FSZZkfJScn46ZjtNa144=
-X-Google-Smtp-Source: ABdhPJwVh5IWN5GxaruaNUd2anEo8GFa407KIedrI6cZNO6UPvUBbAjrdhv9CDJSl6AUzpIrXOi1HA==
-X-Received: by 2002:a37:8c42:: with SMTP id o63mr2003668qkd.449.1616446262942;
-        Mon, 22 Mar 2021 13:51:02 -0700 (PDT)
-Received: from ArchLinux ([138.199.10.68])
-        by smtp.gmail.com with ESMTPSA id d16sm11610925qka.43.2021.03.22.13.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 13:51:02 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 02:20:52 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     awalls@md.metrocast.net, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/media/pci/cx18: Fix a spelling minimze to
- minimize in the file cx18-firmware.c
-Message-ID: <YFkDLEP4EyhlJDws@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, awalls@md.metrocast.net,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210213150014.1605602-1-unixbhaskar@gmail.com>
- <cd6fbcc5-a3f5-2ee0-ce36-1ae2177dddfe@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yM/6S6FViE7IpToxGYmVsIhNe3gv17YedRrLGkVh5iM=;
+        b=VGytosfkTP0W4WvHIZl0SgO6cA1nT/RimjqTGZcmhDRv8lI+tmOFvABx0Wi41UtnEG
+         ZR0H6hi6xGgmZC1mjhF23Vrl6pZD7YXopv7QCGj5yWpAuZRZZFmtEHfLRP/hIOELv0SY
+         Roh+wCKMVewBMQAKwqgIilI63DGOJluBNJqnlWwu4d0cHT4JTBvum0PZDtLOVSDSYH/Z
+         8g8aBm6BP4eYy+LleykyyH9UwzBs927OTmlZ8azotIjOY+RuqatuyuD4IDgM96mER+Cf
+         TjsYqOxJIzUUYpYycjyhRktc8wIM6MWere9pxKzOlypgokHIzWMv/kwrvvyzsY9IUBuo
+         3k4Q==
+X-Gm-Message-State: AOAM531MnpP6vEfwVXpViIStxjG8pdVgnpeKAENJkPTlanZlQFez+7HC
+        1yzwzVA3s+cvzYQf3Hb3mbzvKO+Vf2qT7AInaWfVUwmTiA==
+X-Google-Smtp-Source: ABdhPJxfDqZznIfEqJoPvRZgE9GrpR69RJyCbfAlvZ6GCegAdfd9P6ANUWByDsxOPDNAfVKpbaV65S4EY2OnnPJusxM=
+X-Received: by 2002:a4a:d0ce:: with SMTP id u14mr1047919oor.36.1616446280734;
+ Mon, 22 Mar 2021 13:51:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="H7fncs+8nxWEtUP5"
-Content-Disposition: inline
-In-Reply-To: <cd6fbcc5-a3f5-2ee0-ce36-1ae2177dddfe@infradead.org>
+References: <20210322202650.45776-1-george.mccollister@gmail.com> <20210322204633.ptvwd2jinybnxcje@skbuf>
+In-Reply-To: <20210322204633.ptvwd2jinybnxcje@skbuf>
+From:   George McCollister <george.mccollister@gmail.com>
+Date:   Mon, 22 Mar 2021 15:51:08 -0500
+Message-ID: <CAFSKS=NRMMz5u9qjFmhrxZMCVpa2ZP1jTJ5o+eUA6H2B2aotOg@mail.gmail.com>
+Subject: Re: [PATCH net] net: dsa: don't assign an error value to tag_ops
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---H7fncs+8nxWEtUP5
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 12:02 Mon 22 Mar 2021, Randy Dunlap wrote:
->On 2/13/21 7:00 AM, Bhaskar Chowdhury wrote:
->>
->> s/minimze/minimize/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Mon, Mar 22, 2021 at 3:46 PM Vladimir Oltean <olteanv@gmail.com> wrote:
 >
->I was about to Ack this one, but really, all of these tiny cx18 patches
->should be merged into just one patch.
+> On Mon, Mar 22, 2021 at 03:26:50PM -0500, George McCollister wrote:
+> > Use a temporary variable to hold the return value from
+> > dsa_tag_driver_get() instead of assigning it to dst->tag_ops. Leaving
+> > an error value in dst->tag_ops can result in deferencing an invalid
+> > pointer when a deferred switch configuration happens later.
+> >
+> > Fixes: 357f203bb3b5 ("net: dsa: keep a copy of the tagging protocol in the DSA switch tree")
+> >
+> > Signed-off-by: George McCollister <george.mccollister@gmail.com>
+> > ---
 >
-True,I will keep that in mind, if I come across something like that in
-future.Thanks for the heads up!
+> Who dereferences the invalid pointer? dsa_tree_free I guess?
 
-ROFL :) Ingo , showed the way...
->> ---
->>  drivers/media/pci/cx18/cx18-firmware.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/media/pci/cx18/cx18-firmware.c b/drivers/media/pci/cx18/cx18-firmware.c
->> index 876b96c11290..fdac310d7477 100644
->> --- a/drivers/media/pci/cx18/cx18-firmware.c
->> +++ b/drivers/media/pci/cx18/cx18-firmware.c
->> @@ -244,7 +244,7 @@ void cx18_init_power(struct cx18 *cx, int lowpwr)
->>  	 * an error of less than 0.13 ppm which is way, way better than any off
->>  	 * the shelf crystal will have for accuracy anyway.
->>  	 *
->> -	 * Below I aim to run the PLLs' VCOs near 400 MHz to minimze errors.
->> +	 * Below I aim to run the PLLs' VCOs near 400 MHz to minimize errors.
->>  	 *
->>  	 * Many thanks to Jeff Campbell and Mike Bradley for their extensive
->>  	 * investigation, experimentation, testing, and suggested solutions of
->> --
->
->
->--
->~Randy
->
+I saw it occur just above on the following line the next time
+dsa_port_parse_cpu() is called:
+if (dst->tag_ops->proto != tag_protocol) {
 
---H7fncs+8nxWEtUP5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBZAygACgkQsjqdtxFL
-KRWcGwf7B0uLr47zTo7vC5eSgCcuMxseRH/k+ZvdyUhevC5sCwH+aD7S0kvfaGba
-ZbfOE8cS2OCFUjjTgT3M1uCIjNGS2IZ6R9HjURM+rFsE4WPfpowU+IpVtbHzSePK
-IKD/Dtu349c9g2ARiPqN59/BHvIeZ54amYVdi6nAwaWVCAAFaVD674j1qcp3A2gj
-QkWRMgK30JNYHKIU8PoYzPpCRsXBTnKkfyZJNpQZ8uVRB1N30g8IQulYTxByrO4K
-Xtc17OTY0UauWXtxzULLLeoGOgXZ0Q8d51WBX/96015rzkKOpf4HnL/GLfjmh53b
-7XODIFoH3j6mdHPblvwp/sJWDACjgQ==
-=xIqL
------END PGP SIGNATURE-----
-
---H7fncs+8nxWEtUP5--
+-George
