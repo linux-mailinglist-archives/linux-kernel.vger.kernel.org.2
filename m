@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097ED3435FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 01:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62436343601
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 01:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCVAaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 20:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
+        id S229863AbhCVAkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 20:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhCVA3p (ORCPT
+        with ESMTP id S229579AbhCVAjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 20:29:45 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0789C061574;
-        Sun, 21 Mar 2021 17:29:44 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id r14so11171526qtt.7;
-        Sun, 21 Mar 2021 17:29:44 -0700 (PDT)
+        Sun, 21 Mar 2021 20:39:47 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36057C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 17:39:47 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id u10so18968717lju.7
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 17:39:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=B6SigcP6ulMq6zpC8NopiLuX8xkC2iqoMudeRKz2q1I=;
-        b=Zp50KLfymywIXjuI4sBF/0J6Sjs4++oyXqR3N16MaXF2e9x5+hs2DJyKMHXm7eWfLA
-         6COOxYgTwPWk3uV1LzH3qaEsKCLp16BHIz0Ow2qLdjksJHV1Cj5lwUil4iTLmwohAWnu
-         WgKTOP4pSKsBJG36Ps42VfVNPpqfXF4Y3p5durjkK7EvBMlEa8n09U+rX3F1Jc7qLnSa
-         o8R5Rag7NQ1W3KXfRx8n6bwbCmRJKtatS0Fu9/PXxpUHMCOVjjXTmggbeaGG3QBFNW3P
-         V9hbbrLp40tYFo+lPDVS7xizugoEdep0Ot70dZ6xoQeqJ5H6wjWh6CdjOlA4FbZ9frjU
-         uv9A==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BgZ7HgNTm/UP99/YoRuqdj9+3TXma4Ehz1JtkcBaT5Q=;
+        b=HokPlg6gMGIZVQ4DU3bzd0RTLuMjlseq3sDQ4OyN87nORSN83HFNDj5GkksY46/M2e
+         RyfpOc7i7MwU5lKpuds78vAkNb3vLDvYNbuwaVIR8I8tzIzWjpHX0VVZdOxzOt2p8n35
+         XnBYSmJVIVrWxqMbah2EiPTQcZBsp7lpE8ucG4r3lce3VAuls+64rqhQSuhzrHSBpKdd
+         8cgXjTgdhVaaZwrc0Yu1pqcp3gLp1kRoyzMtnYw/UTHoKskR+A9ld1NnDddYEDlDexrR
+         FTlD1p0vfoBzGoz2j6ztI+JvPUY9VwuyaGQKEiXAmPT0TOXA/0yHKp1Rb+8vYPwoGDbd
+         qgYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=B6SigcP6ulMq6zpC8NopiLuX8xkC2iqoMudeRKz2q1I=;
-        b=bMaq7b6Jo1BT6VSI05TG30yIq4P1JdSnkzIGvZwtt3TLorcxHmC+ezOUsK4ULMRyFC
-         NDUZGVnJzPr3zUiOJypwDIDb57sUI0gnUOdN9Ctqu4gNhW1j7muQXUakIc1rl4+G9+At
-         jv97idFbeHSzuwdRch0ROG9q66kmMmuDfsi3JhtdoNpm/OzJ5qa++wF/ku2pZOy2Vb2/
-         tHouE5UdwzGKaljSKg/aDoLThn2eiELgR8tldlxbzfafIYa2kczHIPIo1p6K6Z7B5KTF
-         Sp6/7ucgthOUa51SoY1704ppTWL40UZataEHO1TNVG2Lo7bJdNSbVLH2/fqxBdT46flE
-         RfLA==
-X-Gm-Message-State: AOAM531h9vsUsplly76wQyBL+9Xf3fMbfhJzeSy3kY+0lOmY556vthrA
-        TS5il0pNmXoNoNm6sutXFZvMklLLqS6jOw==
-X-Google-Smtp-Source: ABdhPJwRSYDlrum2Xa6FwxzgJOELx1cYJ4xq2Lp7wgY7ih72DWZu3yfrZ5gykCijeT1vCK+2Q85NiA==
-X-Received: by 2002:a05:622a:446:: with SMTP id o6mr7540783qtx.257.1616372984233;
-        Sun, 21 Mar 2021 17:29:44 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:f925:bb4b:54d2:533])
-        by smtp.googlemail.com with ESMTPSA id j3sm9721373qki.84.2021.03.21.17.29.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BgZ7HgNTm/UP99/YoRuqdj9+3TXma4Ehz1JtkcBaT5Q=;
+        b=XZAY0JQIH0CQ2xiETDzz7YyXR5vrz2R00h/PWSPlpAg+zAEzvtn3up4/K4cOOLnSEG
+         9VoOrjnSsH1bh43CA2EGsKioSYfOWMK7z0sIXCxC6Wqt3r/Suew3MZHPRDGXDKqsghVZ
+         pQUh0gGI+DmQAoS/7dsvJ3k2TSia81PDQrlroWbvEAsQAJn8akiqKMNaOOGddTHVmSPO
+         V8yw5ID+5mB+TqwnJE62p8Z4z0fonIURa7qG+x9tiBIOct9PvBCqgboE1njUEPJT9VvL
+         DfXLRpQFDcpZ/yncxpmkSfqmEjIhTubMpsZennWqguYiooQHzogVtwR8t7ZswG0qMyA0
+         kEOw==
+X-Gm-Message-State: AOAM530yhZKc2EYPduQ8J2g+xPgakVa/8t+hKWOnQDPiWqfktu1YMnmu
+        TcLdp+IEUINDTCOWk2aRLLtoyg==
+X-Google-Smtp-Source: ABdhPJzF6sSQk4GqGecvPY0obUYGBn4a8JXhCfM6eH/VIQYzkT4p/77yJ81+X+dUVdeywWYQXSx6iQ==
+X-Received: by 2002:a2e:8185:: with SMTP id e5mr8020563ljg.138.1616373585692;
+        Sun, 21 Mar 2021 17:39:45 -0700 (PDT)
+Received: from gilgamesh.int.semihalf.com (host-193.106.246.138.static.3s.pl. [193.106.246.138])
+        by smtp.gmail.com with ESMTPSA id a10sm1381964lfu.263.2021.03.21.17.39.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 17:29:43 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Hannes Reinecke <hare@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH 2/2] scsi: myrb: fix null-ptr-dereference in myrb_probe
-Date:   Sun, 21 Mar 2021 20:29:35 -0400
-Message-Id: <20210322002936.1352871-3-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210322002936.1352871-1-ztong0001@gmail.com>
-References: <20210322002936.1352871-1-ztong0001@gmail.com>
+        Sun, 21 Mar 2021 17:39:45 -0700 (PDT)
+From:   Marcin Wojtas <mw@semihalf.com>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     andrew@lunn.ch, gregory.clement@bootlin.com, robh+dt@kernel.org,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: [PATCH] arm64: dts: ensure backward compatibility of the AP807 Xenon
+Date:   Mon, 22 Mar 2021 01:39:15 +0100
+Message-Id: <20210322003915.3199775-1-mw@semihalf.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cb->host should be initialized and set before it is used by the
-following probe logic and the interrupt handler etc.
+A recent switch to a dedicated AP807 compatible string for the Xenon
+SD/MMC controller result in the driver not being probed when
+using updated device tree with the older kernel revisions.
+It may also be problematic for other OSs/firmware that use
+Linux device tree sources as a reference. Resolve the problem
+with backward compatibility by restoring a previous compatible
+string as secondary one.
 
-[    5.073493] BUG: kernel NULL pointer dereference, address: 00000000000002cc
-[    5.075907] RIP: 0010:kobject_put+0x25/0x120
-[    5.081572] Call Trace:
-[    5.081720]  myrb_probe.cold+0x22/0xabc [myrb]
-[    5.083510]  local_pci_probe+0x6f/0xb0
-
-Fixes: 081ff398c56c ("scsi: myrb: Add Mylex RAID controller (block interface)")
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Marcin Wojtas <mw@semihalf.com>
 ---
- drivers/scsi/myrb.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/marvell/armada-ap807.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/myrb.c b/drivers/scsi/myrb.c
-index ee33d97fb92c..7de49b869128 100644
---- a/drivers/scsi/myrb.c
-+++ b/drivers/scsi/myrb.c
-@@ -3512,6 +3512,7 @@ static struct myrb_hba *myrb_detect(struct pci_dev *pdev,
- 	shost->max_cmd_len = 12;
- 	shost->max_lun = 256;
- 	cb = shost_priv(shost);
-+	cb->host = shost;
- 	mutex_init(&cb->dcmd_mutex);
- 	mutex_init(&cb->dma_mutex);
- 	cb->pdev = pdev;
+diff --git a/arch/arm64/boot/dts/marvell/armada-ap807.dtsi b/arch/arm64/boot/dts/marvell/armada-ap807.dtsi
+index d9bbbfa4b4eb..4a23f65d475f 100644
+--- a/arch/arm64/boot/dts/marvell/armada-ap807.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-ap807.dtsi
+@@ -29,6 +29,7 @@ cpu_clk: clock-cpu {
+ };
+ 
+ &ap_sdhci0 {
+-	compatible = "marvell,armada-ap807-sdhci";
++	compatible = "marvell,armada-ap807-sdhci",
++		     "marvell,armada-ap806-sdhci"; /* Backward compatibility */
+ };
+ 
 -- 
-2.25.1
+2.29.0
 
