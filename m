@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547803446FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752FA344703
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCVOUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S230113AbhCVOVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhCVOTx (ORCPT
+        with ESMTP id S230016AbhCVOV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:19:53 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4826C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:19:52 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id b9so17119145wrt.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:19:52 -0700 (PDT)
+        Mon, 22 Mar 2021 10:21:29 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB0A6C061574;
+        Mon, 22 Mar 2021 07:21:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pu5z42QVaf24rLBi+z7TEIvMrv7JJaCJisu7Lt46g5A=;
-        b=lIcT4jmSofsgtqFJrXxirehwOaHWSwyzdqjqm1XPXPhEXg3cn1xRv4m2ZG+JCrJaQE
-         yYC241C904ty8cKHg+Zy/awmqiLeS6JesA+2eVGgmMi5S4TIDscPM/ci8H9HV6uUh5Gk
-         rTqny3M4uk9AYDfZIkdMvsKdUgF76tZpEgpPz66d6WHonw7NAiTG7SdH/N3aOVPN6Pbn
-         abIO9COUceKtdP4HQc+FxP8n+rFFhpEIjYTDV0Y696YpBrmWTHVRdKByFsOWQi6oHOWo
-         tv3ry/HLxKt4iQ+CCvBuKw3X1TI4Yl7piOctl625KVXmshHcmonC3MkDBGR9IruWqEEt
-         Gosw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pu5z42QVaf24rLBi+z7TEIvMrv7JJaCJisu7Lt46g5A=;
-        b=LtG2ydeUU5AvXihvlQFaPRzhjl6vNwCDc9FMrCsSW5CCRxiBl8B6LM0GF2IlrEbUU0
-         n6QsOfyMtHuYqyy+4b2F9r0EBThAMoToHktf7p30RJJeS6dVE8MguLcBqjpUs+p0qDS1
-         FRzEST5zp8n14KwQc0dvL2ade9q0CZuZJGaFu+vlf6Y7alb/yyKV0URnWFl8ls7UlZ1a
-         Vgu2Lq2wt2V/l3mljbckX/O+wqFp9YnTlj+2eMGp1zYJCNrmMMG5ceu2AYTZz9S7mU1r
-         YkbN+Rqw7yO+OI962TfZdxDe/XmFkSUn4mWM7yHcORjVRrlvvaGt7ci+q/6yEA44S27o
-         6SCQ==
-X-Gm-Message-State: AOAM531wYgMnWkHvJl22cGBPkoEtUc41ztkcCrPlGE85BZ0QE/QsCMz0
-        w1G9UG+DfB7ecl6ghpHogLD6cg==
-X-Google-Smtp-Source: ABdhPJwj8gq5zhlHMExf+1jG9iBIEkRK4vGue0nQMyroI0Z5Wmndn2pz4FSD9q7V5hqtn9QMvKeA6Q==
-X-Received: by 2002:a5d:6c67:: with SMTP id r7mr18514820wrz.373.1616422791417;
-        Mon, 22 Mar 2021 07:19:51 -0700 (PDT)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id v3sm16837255wmj.25.2021.03.22.07.19.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:19:51 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 14:19:48 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com
-Subject: Re: [PATCH v6 13/38] KVM: arm64: Enable access to sanitized CPU
- features at EL2
-Message-ID: <YFinhL6hHWwT7ztb@google.com>
-References: <20210319100146.1149909-1-qperret@google.com>
- <20210319100146.1149909-14-qperret@google.com>
- <87o8fbgv5l.wl-maz@kernel.org>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=Y+D/Gm2scc
+        kryg7xKa8VG7X28ryTUEHzDztzCS5WwME=; b=sD6PuOkt9M4T2uxfUx5TI42rXs
+        sPoIXM6+HSGIcdcv9oUeu8OdPlPEg3C/zTsSUPhHqKR21Oh1wXiYSGxnLXGsew7R
+        usXOvLaFSgU+dRPVEWT1g5SFCL4jIyiDAEvF/FacJiy98Adf91n4xFRzkL2zznFx
+        70kHAw278pIVL7IUA=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHTKTYp1hgKCkOAA--.4791S4;
+        Mon, 22 Mar 2021 22:21:12 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, maximmi@mellanox.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] net/mlx5: Fix a potential use after free in mlx5e_ktls_del_rx
+Date:   Mon, 22 Mar 2021 07:21:09 -0700
+Message-Id: <20210322142109.6305-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8fbgv5l.wl-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygBHTKTYp1hgKCkOAA--.4791S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr17ZF1Dur45Cr4fZrWkZwb_yoW8Gr43pr
+        1fX34fuayUJFWfJayDX3ykuFn5uayDtFy293WxZwsxurn3tFWUAFy5GFW3uryUCrW5JFnx
+        tr4rZ3ZxuFZ8AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6ry5MxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20E
+        Y4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSdgPUUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Marc,
+My static analyzer tool reported a potential uaf in
+mlx5e_ktls_del_rx. In this function, if the condition
+cancel_work_sync(&resync->work) is true, and then
+priv_rx could be freed. But priv_rx is used later.
 
-On Monday 22 Mar 2021 at 13:44:38 (+0000), Marc Zyngier wrote:
-> I can't say I'm thrilled with this. Actually, it is fair to say that I
-> don't like it at all! ;-)
+I'm unfamiliar with how this function works. Maybe the
+maintainer forgot to add return after freeing priv_rx?
 
-:-)
+Fixes: b850bbff96512 ("net/mlx5e: kTLS, Use refcounts to free kTLS RX priv context")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> Copying whole structures with pointers that
-> make no sense at EL2 feels... wrong.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
+index d06532d0baa4..54a77df42316 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
+@@ -663,8 +663,10 @@ void mlx5e_ktls_del_rx(struct net_device *netdev, struct tls_context *tls_ctx)
+ 		 */
+ 		wait_for_completion(&priv_rx->add_ctx);
+ 	resync = &priv_rx->resync;
+-	if (cancel_work_sync(&resync->work))
++	if (cancel_work_sync(&resync->work)) {
+ 		mlx5e_ktls_priv_rx_put(priv_rx);
++		return;
++	}
+ 
+ 	priv_rx->stats->tls_del++;
+ 	if (priv_rx->rule.rule)
+-- 
+2.25.1
 
-And I don't disagree at all. I tried to keep this as small as possible
-as the series is already quite intrusive, but I certainly understand the
-concern.
 
-> As we discussed offline, the main reason for this infrastructure is
-> that the read_ctr macro directly uses arm64_ftr_reg_ctrel0.sys_val
-> when ARM64_MISMATCHED_CACHE_TYPE is set.
-
-Indeed that is the only reason.
-
-> One thing to realise is that with the protected mode, we can rely on
-> patching as there is no such thing as a "late" CPU. So by specialising
-> read_ctr when compiled for nVHE, we can just make it give us the final
-> value, provided that KVM's own __flush_dcache_area() is limited to
-> protected mode.
-> 
-> Once this problem is solved, this whole patch can mostly go, as we are
-> left with exactly *two* u64 quantities to be populated, something that
-> we can probably do in kvm_sys_reg_table_init().
-> 
-> I'll post some patches later today to try and explain what I have in
-> mind.
-
-Sounds great, thank you very much for the help!
-Quentin
