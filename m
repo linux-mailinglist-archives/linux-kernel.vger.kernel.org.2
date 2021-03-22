@@ -2,137 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC3934390E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA80343917
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhCVGCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhCVGCV (ORCPT
+        id S229621AbhCVGDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:03:13 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:5830 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229944AbhCVGCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:02:21 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998FFC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:02:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id k189so20225655ybb.17
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=w4n6Y6TRgjyD9SHfdO058vXR1r4LRwmUmHS4TxN0IUQ=;
-        b=VvvFYSfyRxpvJOTLwaDhC7q5by4hb3byrVlKjP5CT/9X60WGM6qnHuYV8DfJmC/Z+7
-         o8pZFJ7UEM1RhFbr9o5LQo/t5qgl3Or+rnmqF4MY5tCf0kNH81N+1rEYvkXcV02DDao4
-         U8BVCCGXj2lPmZB3SB0JUBCdiIidnIFo6XUJUj1G+DDRyeAmOG8oCoDJxxTvQ8wBV1uq
-         Wf/CCelq59jPEaaVT2Mynjon5YFSWCuOXnSsWG/yLXXNoPhlm36NB68yD6Zmd6k+BOBj
-         XP8j0F2L9cUeX7Ws4iip+JqRFY+8cU44AL6a9BX1/vOpXomx/y5KxmCKtsGzFqL8i73M
-         p0vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=w4n6Y6TRgjyD9SHfdO058vXR1r4LRwmUmHS4TxN0IUQ=;
-        b=CKW4mLYPQu5Sex5PmvPvHubOS+Fd62yHlZ9Vl9bNbsYhzAf8Aahp677y9ZKLVQQHjH
-         nCTY2yejFKlBj/EhTuJj8kZqxie1A/ujk5lR5LlF2kU2Sy4V1mujGCeCS1W8WegMR6e3
-         ecjg+oC7hRPWU5gSh0M0OhS4ETbpQlPP/yaYe8krOlCxQICsXCrQ3CDUWouM2pg5xy8L
-         2FPUQJAUoCd89T7VY5Gne7FMMHtANv7Yk7HEAkfM+UjugDRvR+3X6TCrl9iBV36astsV
-         y07JAUVUr6pp55x97wENQoe17WYfMc9j2Khv5isYZ7PGVfwWgClSvwTB7YdtZXicvlUz
-         AWxQ==
-X-Gm-Message-State: AOAM533ZgGGq1sRU+DAEevXce5p74WGXCaLpZ5OsMjP6qYFgUamgTw3y
-        V42iGBrKK0lzx5IvOqITYxExcWE7X2ya
-X-Google-Smtp-Source: ABdhPJz18QXc98nJNotAJXH1w16tomxxC41Sm171H6xFFCDRDaArBTvl2SSZayQp3Fzd2/rQeafanaLF0jHr
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:fdf3:9f7d:e4e3:ccad])
- (user=apusaka job=sendgmr) by 2002:a25:b0f:: with SMTP id 15mr22845240ybl.467.1616392940803;
- Sun, 21 Mar 2021 23:02:20 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 14:02:15 +0800
-Message-Id: <20210322140154.1.I2ce9acd6cc6766e6789fc5742951b21b7ab27067@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH] Bluetooth: Set CONF_NOT_COMPLETE as l2cap_chan default
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        syzbot+338f014a98367a08a114@syzkaller.appspotmail.com,
-        Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 22 Mar 2021 02:02:34 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12M5gtiG018795;
+        Sun, 21 Mar 2021 23:02:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=f0bWMCCszRdlWh4M9xwCwr8Cg1oLTzodxoleplys9IE=;
+ b=JFflzFubHIuK4Ph1HfrbjycM1Py4Ei8SERGRZRWgnxpSaIETdYJ3z2KN/1ooubMiR4kO
+ DjtCILbL5yMmipGpSdUiqsmOViALF6ysLlzBHXaIohFTMWTcM+LJO3vwt84hK7+zJWQB
+ dswmDuOapCfNIDY6tsv288oFvMIQALj2lpjM0LzRC72F+P51Q3YIvRWXBrhIqVXf2mwH
+ PwA3fVGv5sbeToiBC8BDrnBLXbER8apLwVZPY/3iqZaKWdJaG7jaFQfBzsr9w2AEGMrx
+ FQYnkOZCZDkA9Wgo4I2prwhRg48BSJYLSyqKRSIHoRFUF6mHW1r07lspb0BVEV8ea5VL lw== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 37ddkxc4uq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 21 Mar 2021 23:02:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pi4KnRlz5c+Kuz7WRYvGpo2XHDf9vQTXdVvt6HUQJKuyu+fTcdA8ef4Kdpx0tC7dRKGflT7++4aCMAOMUXiv+OTzXB5AEb1Sr9Kq0jDs+y8TxzgYLcpKlajhlfgqZwVpnwp+Opky465Thpq6x6i7RmH+iEdSXGn2HwvCxQAK/AND3+L+7kGEff+Nw6CIXQS8duPAwl/xwnGVG5K08aPcqKMaVS+hH8O4l3cBuzVO2KEgCWjeKc+jLCqCPGrdUDRe0brqaXulJDgMcErLCkFLFE3eVTRPKBvh5Tm9rIC71ACei3hwNo+GY9uRE1H29jZAgZU0scioXORYmIoNBQ32Kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f0bWMCCszRdlWh4M9xwCwr8Cg1oLTzodxoleplys9IE=;
+ b=aBnJIKSJlxlxsramBa71VWpQ6aqWnBmzX7wwqDFBEp9rGveEfdSaffwPlzgZavbG95Z8hua+HXC4OMKhIHnicOEcsVzcOMW1Iab/yqPHu3oqFBwKVdBTrBF4/ec+9+jFr9uTr/LcewT++H9tdLIv2cHGY226OsTTkOyOEFwCSorjEcZ/6sROaFWplGaeiH8nNgvdZO88mxpL6L1KNSI+odPPOF3f5xueeyov8akcMJIahZLVm8mcud5Q/VaI0HBiRe3hh4zngbpsrJrAOlNTccslPMmR1RpVqM1CiGWq+G6OE9csQCidftuNJ1q46K9nLrk80aIZh9MwhXWhM0YEiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f0bWMCCszRdlWh4M9xwCwr8Cg1oLTzodxoleplys9IE=;
+ b=rbmP6T+V19UItG1zVIbzwXX/AVNiA9Xpk6g7mF62dWMz4H2OL1JahlZ1d5yIntQByS4Lgc8KhqqaDiZCspl4yA0Puf9lRNf2YHqVvi+GfpYYRnaFSUqXBUOhYpP1pL4wa4gf6oGpHvtmzHaLGoV/M1jA3KY3EizTIq39o3WcDnY=
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com (2603:10b6:a03:6d::24)
+ by SJ0PR07MB7712.namprd07.prod.outlook.com (2603:10b6:a03:282::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.25; Mon, 22 Mar
+ 2021 06:02:20 +0000
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::5a:c16d:31b1:bcd0]) by BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::5a:c16d:31b1:bcd0%7]) with mapi id 15.20.3933.032; Mon, 22 Mar 2021
+ 06:02:20 +0000
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Chen <peter.chen@nxp.com>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: RE: linux-next: Fixes tag needs some work in the usb-chipidea-fixes
+ tree
+Thread-Topic: linux-next: Fixes tag needs some work in the usb-chipidea-fixes
+ tree
+Thread-Index: AQHXHpPylwX6juIPW0+Gdqmwrz2QP6qPgk1A
+Date:   Mon, 22 Mar 2021 06:02:20 +0000
+Message-ID: <BYAPR07MB53812093379E4370B572A142DD659@BYAPR07MB5381.namprd07.prod.outlook.com>
+References: <20210322075108.3967d5d1@canb.auug.org.au>
+In-Reply-To: <20210322075108.3967d5d1@canb.auug.org.au>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctMjc4ZTI4NjktOGFkNC0xMWViLTg3ODctMWM0ZDcwMWRmYmE0XGFtZS10ZXN0XDI3OGUyODZhLThhZDQtMTFlYi04Nzg3LTFjNGQ3MDFkZmJhNGJvZHkudHh0IiBzej0iNTMwIiB0PSIxMzI2MDg2NjUzNzcxOTcxMTYiIGg9IlFRVkpsWjFzcGxtSHdrUXBqaVZzemUvODFLRT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none
+ header.from=cadence.com;
+x-originating-ip: [185.217.253.59]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ba2cba06-4f8f-4841-4f95-08d8ecf80e2b
+x-ms-traffictypediagnostic: SJ0PR07MB7712:
+x-microsoft-antispam-prvs: <SJ0PR07MB7712FDF0050082209D463D71DD659@SJ0PR07MB7712.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Ovrb2LADtzz3ZmiZYXpMc0wwv6M6SvA3jJ66Kq2iJcURsDK9C8JzKjjKW9l2oPM5ITxATu/bqlDRWzBmfvNfa7NNpQKiP630JjpDDLnykF/PJos3FpsUMad5pS/zKrXxDSJGUeG7KnBg/++rUj1arwpQFdUlz5jFrVShaq7a7J1IiGSSKWiQKW+TjKimySK5Y8FdJs5wlYzs72c5TqdXmR6lC3hKvNEZRxmUTx8R5zaFnlBPRV6CGFejDRfkfsez/6TS5stqs0k/tCEKn4PgRtCXc/HadPQFZBETawjxVA/sBM37mrQAeGXkLTteoBGnoSAPhqkt+BOoIpimCQNlpds33mTKjqZyL7hd7ShzW5PP8Fni0bgKc4VTNxmEW1LKG7veOx3lIyCzlwxngqpv79Ae4UDMsIOfvmofe1cEceLa2kmWOb1SciO/Q3KxPU+vMSETL+5XlG1Szub7kt1YP/pMBgn9/Vc/MYOUnTuAWRI2R/cgSFoXEfjBw4ZAwsfaL9m1+vTgfarsjsb3Z9S71MQbrUAjQmrqpOjf3oSf/J7zgx+tz7F1Dsv3fbCpe3tLxc8twOisVx2nPR68/elbmQam5yNBRZC8NetACOVnWhwc6UJHVQvARX2w3Gli5jlUJwVxd0XTLrumtQR0bdUWT9jauJG98OJpfHablCMPwp/rebueJayoZFhOHohFjdWB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR07MB5381.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(39860400002)(396003)(36092001)(6506007)(83380400001)(52536014)(4326008)(86362001)(7696005)(54906003)(33656002)(110136005)(478600001)(71200400001)(76116006)(9686003)(55016002)(186003)(8676002)(2906002)(316002)(8936002)(66946007)(26005)(4744005)(38100700001)(5660300002)(66556008)(66476007)(66446008)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?puKEvcR4LnnlHgKnSbCAD71hdVKDanE3F3BL70td94YA+lU81tC7xIvymISB?=
+ =?us-ascii?Q?6h6XoED/bP9b2niN3VsAAZa6FlYQT7AFWyJdhVu7phzOg5ykXumqPZT9vfvG?=
+ =?us-ascii?Q?29rh1FBin3LabRJf0u/1Dv1dhQ95oEAVB3wlf7BYPuYY74iz5VB2A5FE2Q/u?=
+ =?us-ascii?Q?JXls1Cn4VCh8v13VLA1zTCLiHcrAuzCsTXUGmLt9gRUeZ4RlrQLsKoDZAM1Y?=
+ =?us-ascii?Q?Zy7hQk8KuwWCdqwdna+hgGtMymE0xPGUcDRQdchBMuDPZ6mYXj2DyHiEKko7?=
+ =?us-ascii?Q?GPhCq3UChbKABeoL4CGD1UUK9qQ7i3ICGW5FI+t3ZsX2yugDegdp80pv8Ugk?=
+ =?us-ascii?Q?p4FMC6bu37p4uNIJWYTuxjbp7d3HqVfBzcnpro1pmjHY5ttQXiMAyPwowruc?=
+ =?us-ascii?Q?QQ/bx3m3+MxMtosNfmx7jfpsWkWlLJRNLAEAh+eiMp42yX42S1oVGIwH2dbg?=
+ =?us-ascii?Q?ReKznEtzbKEuwYHVeIdapw4hjlnJxcE4nTnGO7RdL3HDj+VQLH/FNjv0Lqhn?=
+ =?us-ascii?Q?kDdz8jGv/aU2Fa2FrxFDviSFklhSCDwDmuwngz4s6my/5rQud9PUkI0pxQcF?=
+ =?us-ascii?Q?Raov+zEO8vM0lEuenQu+5sTi+ebe3vs9eYq4MkGAiFOiR+4wbjcOsZyx9sB0?=
+ =?us-ascii?Q?LIopFyU0nP0b8B8mB/oCWFunQGuj+cJSRyyf7nkjrqO4Sejd1wkgsltwqmF+?=
+ =?us-ascii?Q?H2qJARvXcNh/2unLmrSfT3/39JWruxLI2t+7ypam4/6hHTP/Ylxa/ShoXyPl?=
+ =?us-ascii?Q?BLbgsFtJ0VSP+VeOQe2WbwSdFIo9lDpvw5QwId/95dxAPorIDqiN+R7Ynm8Z?=
+ =?us-ascii?Q?eSuQJQXJ7YrZ98jus0uXCrwqoE6UQEd4OkRaKPCVJMzgynM458F+4MatXpDc?=
+ =?us-ascii?Q?SGMa1CqBwAGo4bFIqa+VvPLrblfG7bPXWGP6/eEKAgbR6K/Q1C3lp5X46+wf?=
+ =?us-ascii?Q?Xybhr8C0qHl4eomT1pODh5nsfeD4i6VqDxYPW8lz4EmWKGXvuFhVBlscLsQo?=
+ =?us-ascii?Q?9tTYDXxvYEQ0kWpvj1+lIRSrr8TRD+wimgvP4MfYHouu+M4lwWBpn72up5k0?=
+ =?us-ascii?Q?+Q9RBGrT9uTKrGGY+N/U9BrcQcbg6D8m8GsoicHnIR94sNRZIJmnW7+/0P93?=
+ =?us-ascii?Q?6g/ODRJmASKwMwXGG2R3+RgL2+20BFwqRAeOFnSbrbPU+y/Nh7qiV9DeMjCT?=
+ =?us-ascii?Q?Mc1apRC135JbXi+cuwy/JJLj1BW5I4ZhmLEpGZ3LBJSPCloRCy4ntVMr69hl?=
+ =?us-ascii?Q?Jx9S4bLvKUchLGpLRHAY5FwM5/ZEpM41WEe8J1ITAtMJ3YTHIduc+5EkZn/x?=
+ =?us-ascii?Q?nvvtch2srx2QyS8o0UEKZpzk?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR07MB5381.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba2cba06-4f8f-4841-4f95-08d8ecf80e2b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2021 06:02:20.4810
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bSYiOHur3WzCOXpVMQZxUjcNj6Mp5wl7chgZEONP4ydJwGWUpybrWfdFCMlvJHc6tTph9p96iM17ssPYHaGJzHaunICxVAio+PDI+I0y18s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR07MB7712
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_02:2021-03-22,2021-03-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 adultscore=0
+ phishscore=0 mlxlogscore=890 clxscore=1011 impostorscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103220045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+Hi Stephen,
 
-Currently l2cap_chan_set_defaults() reset chan->conf_state to zero.
-However, there is a flag CONF_NOT_COMPLETE which is set when
-creating the l2cap_chan. It is suggested that the flag should be
-cleared when l2cap_chan is ready, but when l2cap_chan_set_defaults()
-is called, l2cap_chan is not yet ready. Therefore, we must set this
-flag as the default.
+I've send the new version
 
-Example crash call trace:
-__dump_stack lib/dump_stack.c:15 [inline]
-dump_stack+0xc4/0x118 lib/dump_stack.c:56
-panic+0x1c6/0x38b kernel/panic.c:117
-__warn+0x170/0x1b9 kernel/panic.c:471
-warn_slowpath_fmt+0xc7/0xf8 kernel/panic.c:494
-debug_print_object+0x175/0x193 lib/debugobjects.c:260
-debug_object_assert_init+0x171/0x1bf lib/debugobjects.c:614
-debug_timer_assert_init kernel/time/timer.c:629 [inline]
-debug_assert_init kernel/time/timer.c:677 [inline]
-del_timer+0x7c/0x179 kernel/time/timer.c:1034
-try_to_grab_pending+0x81/0x2e5 kernel/workqueue.c:1230
-cancel_delayed_work+0x7c/0x1c4 kernel/workqueue.c:2929
-l2cap_clear_timer+0x1e/0x41 include/net/bluetooth/l2cap.h:834
-l2cap_chan_del+0x2d8/0x37e net/bluetooth/l2cap_core.c:640
-l2cap_chan_close+0x532/0x5d8 net/bluetooth/l2cap_core.c:756
-l2cap_sock_shutdown+0x806/0x969 net/bluetooth/l2cap_sock.c:1174
-l2cap_sock_release+0x64/0x14d net/bluetooth/l2cap_sock.c:1217
-__sock_release+0xda/0x217 net/socket.c:580
-sock_close+0x1b/0x1f net/socket.c:1039
-__fput+0x322/0x55c fs/file_table.c:208
-____fput+0x17/0x19 fs/file_table.c:244
-task_work_run+0x19b/0x1d3 kernel/task_work.c:115
-exit_task_work include/linux/task_work.h:21 [inline]
-do_exit+0xe4c/0x204a kernel/exit.c:766
-do_group_exit+0x291/0x291 kernel/exit.c:891
-get_signal+0x749/0x1093 kernel/signal.c:2396
-do_signal+0xa5/0xcdb arch/x86/kernel/signal.c:737
-exit_to_usermode_loop arch/x86/entry/common.c:243 [inline]
-prepare_exit_to_usermode+0xed/0x235 arch/x86/entry/common.c:277
-syscall_return_slowpath+0x3a7/0x3b3 arch/x86/entry/common.c:348
-int_ret_from_sys_call+0x25/0xa3
+Thanks,
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reported-by: syzbot+338f014a98367a08a114@syzkaller.appspotmail.com
-Reviewed-by: Alain Michaud <alainm@chromium.org>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
----
+>
+>Hi all,
+>
+>In commit
+>
+>  67a788c7c3e7 ("usb: cdnsp: Fixes issue with dequeuing requests after dis=
+abling endpoint")
+>
+>Fixes tag
+>
+>  Fixes: commit 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence =
+USBSSP DRD Driver")
+>
+>has these problem(s):
+>
+>  - leading word 'commit' unexpected
+>
+>--
+>Cheers,
+>Stephen Rothwell
 
- net/bluetooth/l2cap_core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index 374cc32d7138..59ab9689b37d 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -516,7 +516,9 @@ void l2cap_chan_set_defaults(struct l2cap_chan *chan)
- 	chan->flush_to = L2CAP_DEFAULT_FLUSH_TO;
- 	chan->retrans_timeout = L2CAP_DEFAULT_RETRANS_TO;
- 	chan->monitor_timeout = L2CAP_DEFAULT_MONITOR_TO;
-+
- 	chan->conf_state = 0;
-+	set_bit(CONF_NOT_COMPLETE, &chan->conf_state);
- 
- 	set_bit(FLAG_FORCE_ACTIVE, &chan->flags);
- }
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
+Regards,
+Pawel Laszczak
