@@ -2,74 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80104343BCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A44343BD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhCVI2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:28:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11146 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhCVI2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:28:38 -0400
-IronPort-SDR: PHWMEBfO6tyGokH0FhaGvqjcKkx21ntI2UjFJAEE100i4PvkySWWG8cyD+zN2+3lJkT2NxTPoj
- c/zorXn1CNiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="210291437"
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="210291437"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 01:28:37 -0700
-IronPort-SDR: B4r06u5gEarLdb3pVnUy1PVeMTpmrYqd8XYUNiKF5/HB8KAV+XHWfMu96lCnaN4TZykDLrFMaW
- rGBQ89h+itBw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="414390082"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga008.jf.intel.com with ESMTP; 22 Mar 2021 01:28:32 -0700
-Subject: Re: [PATCH v9] i2c: virtio: add a virtio i2c frontend driver
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com, pbonzini@redhat.com
-References: <e09c07532f5456816eb91ef4176bf910284df4ff.1616418890.git.jie.deng@intel.com>
- <20210322041857-mutt-send-email-mst@kernel.org>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <5f4aec88-3131-ca20-e28e-383642c9a2ad@intel.com>
-Date:   Mon, 22 Mar 2021 16:28:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S229647AbhCVIaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:30:55 -0400
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:49739 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229665AbhCVIan (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 04:30:43 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 5D946272A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:30:41 +0000 (GMT)
+Received: (qmail 12857 invoked from network); 22 Mar 2021 08:30:41 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Mar 2021 08:30:41 -0000
+Date:   Mon, 22 Mar 2021 08:30:39 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 3/7] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210322083039.GD3697@techsingularity.net>
+References: <20210312154331.32229-1-mgorman@techsingularity.net>
+ <20210312154331.32229-4-mgorman@techsingularity.net>
+ <7c520bbb-efd7-7cad-95df-610000832a67@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210322041857-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <7c520bbb-efd7-7cad-95df-610000832a67@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 07:18:32PM +0100, Vlastimil Babka wrote:
+> On 3/12/21 4:43 PM, Mel Gorman wrote:
+> > This patch adds a new page allocator interface via alloc_pages_bulk,
+> > and __alloc_pages_bulk_nodemask. A caller requests a number of pages
+> > to be allocated and added to a list. They can be freed in bulk using
+> > free_pages_bulk().
+> > 
+> > The API is not guaranteed to return the requested number of pages and
+> > may fail if the preferred allocation zone has limited free memory, the
+> > cpuset changes during the allocation or page debugging decides to fail
+> > an allocation. It's up to the caller to request more pages in batch
+> > if necessary.
+> > 
+> > Note that this implementation is not very efficient and could be improved
+> > but it would require refactoring. The intent is to make it available early
+> > to determine what semantics are required by different callers. Once the
+> > full semantics are nailed down, it can be refactored.
+> > 
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> Although maybe premature, if it changes significantly due to the users'
+> performance feedback, let's see :)
+> 
 
-On 2021/3/22 16:19, Michael S. Tsirkin wrote:
-> On Mon, Mar 22, 2021 at 09:35:59PM +0800, Jie Deng wrote:
->> diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
->> index bc1c062..6ae32db 100644
->> --- a/include/uapi/linux/virtio_ids.h
->> +++ b/include/uapi/linux/virtio_ids.h
->> @@ -54,5 +54,6 @@
->>   #define VIRTIO_ID_FS			26 /* virtio filesystem */
->>   #define VIRTIO_ID_PMEM			27 /* virtio pmem */
->>   #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
->> +#define VIRTIO_ID_I2C_ADPTER		34 /* virtio i2c adpter */
-> ADPTER -> ADAPTER?
-> adpter -> adapter?
+Indeed. The next version will have no users so that Jesper and Chuck
+can check if an array-based or LRU based version is better. There were
+also bugs such as broken accounting of stats that had to be fixed which
+increases overhead.
 
+> Some nits below:
+> 
+> ...
+> 
+> > @@ -4963,6 +4978,107 @@ static inline bool prepare_alloc_pages(gfp_t gfp, unsigned int order,
+> >  	return true;
+> >  }
+> >  
+> > +/*
+> > + * This is a batched version of the page allocator that attempts to
+> > + * allocate nr_pages quickly from the preferred zone and add them to list.
+> > + *
+> > + * Returns the number of pages allocated.
+> > + */
+> > +int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> > +			nodemask_t *nodemask, int nr_pages,
+> > +			struct list_head *alloc_list)
+> > +{
+> > +	struct page *page;
+> > +	unsigned long flags;
+> > +	struct zone *zone;
+> > +	struct zoneref *z;
+> > +	struct per_cpu_pages *pcp;
+> > +	struct list_head *pcp_list;
+> > +	struct alloc_context ac;
+> > +	gfp_t alloc_gfp;
+> > +	unsigned int alloc_flags;
+> > +	int allocated = 0;
+> > +
+> > +	if (WARN_ON_ONCE(nr_pages <= 0))
+> > +		return 0;
+> > +
+> > +	if (nr_pages == 1)
+> > +		goto failed;
+> > +
+> > +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+> > +	if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask, &ac,
+> > +	&alloc_gfp, &alloc_flags))
+> 
+> Unusual identation here.
+> 
 
-Good catch. Thanks Michael.
+Fixed
 
+> > +		return 0;
+> > +	gfp = alloc_gfp;
+> > +
+> > +	/* Find an allowed local zone that meets the high watermark. */
+> > +	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
+> > +		unsigned long mark;
+> > +
+> > +		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
+> > +		    !__cpuset_zone_allowed(zone, gfp)) {
+> > +			continue;
+> > +		}
+> > +
+> > +		if (nr_online_nodes > 1 && zone != ac.preferred_zoneref->zone &&
+> > +		    zone_to_nid(zone) != zone_to_nid(ac.preferred_zoneref->zone)) {
+> > +			goto failed;
+> > +		}
+> > +
+> > +		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK) + nr_pages;
+> > +		if (zone_watermark_fast(zone, 0,  mark,
+> > +				zonelist_zone_idx(ac.preferred_zoneref),
+> > +				alloc_flags, gfp)) {
+> > +			break;
+> > +		}
+> > +	}
+> > +	if (!zone)
+> > +		return 0;
+> 
+> Why not also "goto failed;" here?
 
+Good question. When first written, it was because the zone search for the
+normal allocator was almost certainly going to fail to find a zone and
+it was expected that callers would prefer to fail fast over blocking.
+Now we know that sunrpc can sleep on a failing allocation and it would
+be better to enter the single page allocator and reclaim pages instead of
+"sleep and hope for the best".
+
+-- 
+Mel Gorman
+SUSE Labs
