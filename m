@@ -2,263 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA021344F86
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56C7344F8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhCVTBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        id S232156AbhCVTCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbhCVTBD (ORCPT
+        with ESMTP id S231651AbhCVTB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:01:03 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44817C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:01:02 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id b7so23078557ejv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:01:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EgzBGxEy0DIFa0CcEUK6NEKja39j0w1/XI4Nrd9WRT4=;
-        b=NqE1fCTLKKRZEZc/bNdnFRm+Pt11QwEax2feflGrBEqi8nVetDFXRr16+beCaw/KIx
-         NQni1q1IGD1ZwKSN5cEd9S/JU2UqnaUQpk+/iBUhGhRUcdNXPSvLqkVmfvCqQAjPNY/J
-         QxGlVGLM+wtEDa8vwjCpS73u3AO6NmpPY9HD0w4S7T6NJg5XvkNfPtXCE39gn53MhMFw
-         XjHV4AqV4ki83JxNgn4dA/MVEdM2Z+lqVlDj9YpMeh1g0Hf+GqqbgFW/Gz4cQf+QZIMY
-         1252usAs4z51rxtbhUgKAJJ7I8W2TYib9QH7PKUkzfPmei6hnmnRV76cInS13nBnyTgL
-         1LqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EgzBGxEy0DIFa0CcEUK6NEKja39j0w1/XI4Nrd9WRT4=;
-        b=nnUZwg53tGVDcym5qXKgOQ6InInaiy7CAJvpYvg3rtn/Q27U8ZSNJxHrkuNYEEIB/Y
-         Gb2YCfL3W5oqrk6CFHvAe03RztA9McMKbWL7ZTmeBfyTTAf4L0ZdTTer63Ubd/qImJr/
-         S9tU8YeCMqEvgyf/DWzsOpogcG/Y/34yvgaZN9GZ604FRvQrnUAR2pJw5rvkdR/lUypI
-         kEjNqMhp1WTQKnlgEEz3UuGtCw4jzxgCPVuP7cqgnIKJ6WNWxvmaVFkkVQA4s5Ai3eI3
-         p2sOlOwZ4prx7ko3zlKRfm2PiFQ8biOo7SNNtFfGErYtiNw87BWGCas51LVbSSXoP3ud
-         Dbjw==
-X-Gm-Message-State: AOAM532CwNHPcrpbNnam5qBiceI86XJnuIR/+XdxMcphEkrELusZmMkX
-        Ks4HroJC3T0lUOrVX6eXeuY/NoY+04BI61Mycl3hdA==
-X-Google-Smtp-Source: ABdhPJy09k43Wxiy1w0EXf9IM4aFUGLp23DQXknwtRT2qw1/YmniweDpWaO4fIRR0Zyef/Hyn0sllQvuzxEz9SJBF74=
-X-Received: by 2002:a17:906:2a16:: with SMTP id j22mr1218375eje.247.1616439660844;
- Mon, 22 Mar 2021 12:01:00 -0700 (PDT)
+        Mon, 22 Mar 2021 15:01:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C2EC061574;
+        Mon, 22 Mar 2021 12:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=PqoPQc7AEbXzxG+B43ywR2urtRwkAdqziap8FsINiiw=; b=T5o7ES6g3Ork9494taW79YM0vQ
+        +MwQRAgET2k0h/fxYTOnpSHbnb6URBkZKxIKQmZwaDPTQq/O7IdgX3h+P2xyjwHhZvqbAd1IkbA1Q
+        zehS28DJ0O0OCvat3eH9+rG77JyfTUNvonpawrERyMs/TcT0YKc2U0WYR+ABRThm8S6nSsqncj++e
+        6098FLosAWKIBmTrc2d8BjQvEglwXn8mVOG4imQKq+tRShHAoCRlmmHqUYCasZvZg7oQCssm/JHQ2
+        t/F7evobp0G9MY0qgct47DXHdJ/w1wE2JAJLjRLVfKpu7iLt6N9ZBtn6TO7kT11EIMdVSGgxpo7z1
+        y/DEc4CA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOPni-008wtt-MT; Mon, 22 Mar 2021 19:01:32 +0000
+Subject: Re: [PATCH] thermal: Fix a typo in the file soctherm.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amitk@kernel.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        p.zabel@pengutronix.de, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210305015320.7614-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <176c4f5c-44d2-f29b-49fe-dd4bcec36f7e@infradead.org>
+Date:   Mon, 22 Mar 2021 12:01:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210322121929.669628946@linuxfoundation.org>
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Mar 2021 00:30:49 +0530
-Message-ID: <CA+G9fYtKsQfO1QnH-KZ7MU4VQeRegMJo7_=qC5Df-LXeSxR9JQ@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/120] 5.11.9-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210305015320.7614-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 at 18:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.9 release.
-> There are 120 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.9-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 3/4/21 5:53 PM, Bhaskar Chowdhury wrote:
+> 
+> s/calibaration/calibration/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.11.9-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: 3f03c425f75c4a6828beda5de7774ce0b75d55f2
-git describe: v5.11.8-121-g3f03c425f75c
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.8-121-g3f03c425f75c
-
-No regressions (compared to build v5.11.8)
+> ---
+>  drivers/thermal/tegra/soctherm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/tegra/soctherm.c b/drivers/thermal/tegra/soctherm.c
+> index 66e0639da4bf..8b8fbd49679b 100644
+> --- a/drivers/thermal/tegra/soctherm.c
+> +++ b/drivers/thermal/tegra/soctherm.c
+> @@ -2195,7 +2195,7 @@ static int tegra_soctherm_probe(struct platform_device *pdev)
+>  	if (err)
+>  		return err;
+> 
+> -	/* calculate tsensor calibaration data */
+> +	/* calculate tsensor calibration data */
+>  	for (i = 0; i < soc->num_tsensors; ++i) {
+>  		err = tegra_calc_tsensor_calib(&soc->tsensors[i],
+>  					       &shared_calib,
+> --
 
 
-No fixes (compared to build v5.11.8)
+-- 
+~Randy
 
-
-Ran 65573 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm-debug
-- qemu-arm64-clang
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-i386-debug
-- qemu-x86_64-clang
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-vm
-* kselftest-x86
-* kselftest-bpf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* kselftest-lkdtm
-* ltp-fs-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* fwts
-* rcutorture
-* kunit
-* igt-gpu-tools
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
