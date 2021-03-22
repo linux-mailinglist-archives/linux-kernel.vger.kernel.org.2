@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E80343619
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4062134361B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhCVBBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 21:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S229900AbhCVBCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 21:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhCVBBF (ORCPT
+        with ESMTP id S229696AbhCVBBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:01:05 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB229C061574;
-        Sun, 21 Mar 2021 18:01:04 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id cx5so7911586qvb.10;
-        Sun, 21 Mar 2021 18:01:04 -0700 (PDT)
+        Sun, 21 Mar 2021 21:01:54 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A931C061574;
+        Sun, 21 Mar 2021 18:01:53 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id x82so4817837ybg.5;
+        Sun, 21 Mar 2021 18:01:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n5P9MnMgzEhc4X4YhEwr2zl9SZ+jCJFUsF5LT3vR+xg=;
-        b=hZVirO+FhaKGwKadBY3nNV43GUaG5aRFFtCGpJQYo/vA+di3WN0uK3ot9zPVHpmj9Y
-         doO1oczoogt5uhBHlRfujr4oeVYIA8+uyNoW9crt+5RrXP9tHBzALnuup2uQ1LdupJLI
-         ZotFvu5TCTHVJ/IORuR31VjetJDN3+lYfqam1st0jSgVOweP1CUKW6VXMBm0n0joH9pl
-         G1p6HT8FOG0VW1lpOjZZP8uSGzM9TXAZkmZddDVF5SY0c67dqu1ExCwcV2/pa1zwnHZT
-         +cpkIMghed77ljUhyzu9wfJzyjHOSVBVel4L+7qypsx8xGbe67y9JmdDqk3/ppMMpi0M
-         5jdw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nl4OYmv9YuQQ6cekAX/d8VH6rON0g3qhC7O/Vawr8PA=;
+        b=ufpZtW6BkPRDohQl+giQbBAs7odfOIWo2wU5bfbI34udu3MP3IbNw3Qtj6BFyFw4kW
+         gsDJRv3UDgB04yuJtO8SFsdZKsFImvrZt/5Dwr+llaKwQ0sh1nQV68BC35Qx4nf7RTyf
+         Kk1JYg+C/1A3pD7hVjP46Y3e/ehRCWcy6grmMmg6v/K/OfrNz572JLeyuJnMI5+YLL1Z
+         xOubECCRLhIDNI7jtRIDG84EoaOGYMZxbOPpnDfPBE0/i0KwYx12VPeypJ0KQtXqJWPM
+         SXbOwxZzqMnJlS152eXuH+Tg0sjX6UXTOEJj6QDyVxN/532rtHT76s6kgzlO5WRb0hTK
+         WSnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n5P9MnMgzEhc4X4YhEwr2zl9SZ+jCJFUsF5LT3vR+xg=;
-        b=MU7BO4oblXCC+kvoxzAYK0OSSlM5wT6IDKyRUxbCIOf7rwVMMuwZv5scAwQ8VagKmA
-         byUw+ohzQaaI5Kdvn0mOLVHCKU1FFXpTWSCWo3+F7PByw0AzR+ZdIefWW1ylBOWZgfXd
-         HRE5b1f632HLX44WlSaxMKFnN2fOVnnlQPzh5jXaMuqcfZg0klYR63oheto0A1T6kdtd
-         Zhd947oPN3qUDuaYtbHMgB4mmlGNBzQmHpaOGuRfJYmpeacB7Zh42LoDse0nHEhb8fhV
-         5m6afIDGDhZZg3LV+ibQsqzk8s+kCODsDVmRVWfyhzI/LWBv80Q8AOPhOrV8RdAmFfxo
-         0Lew==
-X-Gm-Message-State: AOAM533DcXA25tgieCVA2Qdufr4FRTP7pYfHi36fWBf+B4/GAsImyyWK
-        z118jmm2G2KoW5utqTA+QPN/bSscAjczbPYB
-X-Google-Smtp-Source: ABdhPJwfogQzOjutwBTv9Czk26SXAL3887ylV/e9n/riDJr4EKsXGVVAz5IvSSDkf0KYjp4biIB7Kg==
-X-Received: by 2002:ad4:560f:: with SMTP id ca15mr19265767qvb.42.1616374864178;
-        Sun, 21 Mar 2021 18:01:04 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id x1sm7919076qtr.97.2021.03.21.18.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 18:01:03 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] Bluetooth: hci_qca: Mundane typo fix
-Date:   Mon, 22 Mar 2021 06:30:51 +0530
-Message-Id: <20210322010051.483622-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nl4OYmv9YuQQ6cekAX/d8VH6rON0g3qhC7O/Vawr8PA=;
+        b=o8e3oogrFM6XOIRXebIaf/fRFvM1YAiVHex1nTWGnZzKMT5kFX+jXh7rKMMVjcC3eW
+         acY8Bsw+Py7g5w77XZjJh+CGD75PvFCiu4yfZDWQgw1vMnVRYVPhkmUlTn+ZQzavZ2tc
+         CnsAX09JUXAImALdYwZh2RLQJwtqPrIUxJBKMKwYvZf2k5Ko3IAKqknY/LtWVXczk4B3
+         zePiI+rwatz6IVRq0VADUsFIWKaYa6tnc/4/fdVmAiCpzuIU8mtERmsHJ3aCUoMmMQmH
+         2UFtUXWm2XBQUBSG55W9DtRtP8Iwmns6HonSUzwXeyjnNuPxNOsIIRSDE2AIbNo7qIva
+         d+Rw==
+X-Gm-Message-State: AOAM532wVN/0osR7nyXbMmC9yUVlnIx+7OgS0YLKjVmsespH34Ql/GCx
+        AQVIhBVqrIguV/fceHZo4b9XbOYrjIk1zCxekT4=
+X-Google-Smtp-Source: ABdhPJx7eyLpFs8kDeEV7ipBeo9HzjTZp/4wNuLsBNWeo3M0AsEtBUFSeBJPugswQBSxCAbXXkByGwgdWHVYFefp3Fw=
+X-Received: by 2002:a25:d94b:: with SMTP id q72mr20098976ybg.135.1616374912665;
+ Sun, 21 Mar 2021 18:01:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAMmOe3SaBn9+XzjhZC8QxmZnHQkvB0R=nV4NaRRyMRF6EfcvvA@mail.gmail.com>
+In-Reply-To: <CAMmOe3SaBn9+XzjhZC8QxmZnHQkvB0R=nV4NaRRyMRF6EfcvvA@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 22 Mar 2021 02:01:41 +0100
+Message-ID: <CANiq72m=kDd97+n1Zxwi5+7M8cwreoq1P_u5YZ25Dcyx40jNdA@mail.gmail.com>
+Subject: Re: drivers/char/rust_example fails to load
+To:     Joshua Abraham <j.abraham1776@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        rust-for-linux@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Joshua,
 
-s/packat/packet/
+On Mon, Mar 22, 2021 at 1:13 AM Joshua Abraham <j.abraham1776@gmail.com> wrote:
+>
+> $ rustc --version
+> rustc 1.52.0-nightly (61edfd591 2021-03-20)
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/bluetooth/hci_qca.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please give a go to the nightly from a month ago, i.e. 2021-02-20.
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index de36af63e182..f2eee9112e41 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1066,7 +1066,7 @@ static void qca_controller_memdump(struct work_struct *work)
- 		 * packets in the buffer.
- 		 */
- 		/* For QCA6390, controller does not lost packets but
--		 * sequence number field of packat sometimes has error
-+		 * sequence number field of packet sometimes has error
- 		 * bits, so skip this checking for missing packet.
- 		 */
- 		while ((seq_no > qca_memdump->current_seq_no + 1) &&
---
-2.31.0
-
+Cheers,
+Miguel
