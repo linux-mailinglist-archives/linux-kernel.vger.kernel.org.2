@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B404344BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C5B344BF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhCVQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:41:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34736 "EHLO mail.kernel.org"
+        id S231979AbhCVQmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:42:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231989AbhCVQlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:41:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3D6461983;
-        Mon, 22 Mar 2021 16:41:37 +0000 (UTC)
+        id S232058AbhCVQmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:42:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEB161983;
+        Mon, 22 Mar 2021 16:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616431299;
-        bh=wTCQr9EWReJqtv/s8uqRSPBYWLbukkFUAZ7BJJhYHhI=;
+        s=k20201202; t=1616431327;
+        bh=9xvqTNezw3tYuoVfeeADeGM3s9v4JWgUTmRGf4uQ2NU=;
         h=From:To:Cc:Subject:Date:From;
-        b=FPrmYxwLnsZstci9axXyytZZzCy9y3Cevl1KqesKwOuenXzXvlVzxhadzwKXI54mr
-         aSjFBZSVdDt22a6tXaI7+rJMgbES/VMyJGT6D0V0jpWtdKNJjJBI7i+FF1Cxm2JvSz
-         Df/icB4sJaXsfPKndnUEX+SJzndY/e/Moin0GZrEgqjqDA1WPy4+f/S3jS/eSYmgQR
-         cX1/5h5kq98Nru1lJO0vBoWrejwnli8I7gsqb9nlCSypsvDhhCyy5J4kLgSCWnWpTO
-         6APc7UdRuJKkdl0BJr4RE5gCy+vyln4Nw7PNsov+iQZrMrG1+gfPGHmvVsIRo0WQH4
-         09iB9yXFo/YoA==
+        b=effL3sJznDj8ualeXh5XCrDafKag1c2smDyLYgtFi/TZ/nhyq+qP6dzFvy6zU0uXJ
+         YI+BBE7mnNAxmrU9dukG9Gx6vnYPWGd+GJCr8g8UiFalENeznr9qCd0/2H+hOO/rHN
+         ZnmXT92X720doHPJh3OF2eUW6l8NWz1YDCZLRYPLsfrIBMEGcy/YmKiuxVZv2FPadm
+         kYshsDZEnmPM+0VOoE6BRjTAsal86mIFHv+gh7f1/6hPRfSqKpwt1Ot2KfEID/pw+1
+         0N5DTaoT3xy7ZfhBogPXIM0BmhyPogSTNRGhogZ3LcSKOXvOlk0jzLTZ5lJfHCcFgl
+         rANd6JpBL/4iw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Kristoffer Ericson <kristoffer.ericson@gmail.com>,
-        Richard Purdie <rpurdie@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] backlight: journada720: fix Wmisleading-indentation warning
-Date:   Mon, 22 Mar 2021 17:41:28 +0100
-Message-Id: <20210322164134.827091-1-arnd@kernel.org>
+To:     Tomi Valkeinen <tomba@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jyri Sarha <jsarha@ti.com>, Tony Lindgren <tony@atomide.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/omap: fix misleading indentation in pixinc()
+Date:   Mon, 22 Mar 2021 17:41:57 +0100
+Message-Id: <20210322164203.827324-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,79 +44,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-With gcc-11, we get a warning about code that looks correct
-but badly indented:
+An old patch added a 'return' statement after each BUG() in this driver,
+which was necessary at the time, but has become redundant after the BUG()
+definition was updated to handle this properly.
 
-drivers/video/backlight/jornada720_bl.c: In function ‘jornada_bl_update_status’:
-drivers/video/backlight/jornada720_bl.c:66:11: error: this ‘else’ clause does not guard... [-Werror=misleading-indentation]
-   66 |         } else  /* turn on backlight */
-      |           ^~~~
+gcc-11 now warns about one such instance, where the 'return' statement
+was incorrectly indented:
 
-Change the formatting according to our normal conventions.
+drivers/gpu/drm/omapdrm/dss/dispc.c: In function ‘pixinc’:
+drivers/gpu/drm/omapdrm/dss/dispc.c:2093:9: error: this ‘else’ clause does not guard... [-Werror=misleading-indentation]
+ 2093 |         else
+      |         ^~~~
+drivers/gpu/drm/omapdrm/dss/dispc.c:2095:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+ 2095 |                 return 0;
+      |                 ^~~~~~
 
-Fixes: 13a7b5dc0d17 ("backlight: Adds HP Jornada 700 series backlight driver")
+Address this by removing the return again and changing the BUG()
+to be unconditional to make this more intuitive.
+
+Fixes: c6eee968d40d ("OMAPDSS: remove compiler warnings when CONFIG_BUG=n")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/video/backlight/jornada720_bl.c | 44 ++++++++++++-------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ drivers/gpu/drm/omapdrm/dss/dispc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/video/backlight/jornada720_bl.c b/drivers/video/backlight/jornada720_bl.c
-index 996f7ba3b373..066d0dc98f60 100644
---- a/drivers/video/backlight/jornada720_bl.c
-+++ b/drivers/video/backlight/jornada720_bl.c
-@@ -66,30 +66,30 @@ static int jornada_bl_update_status(struct backlight_device *bd)
- 	} else  /* turn on backlight */
- 		PPSR |= PPC_LDD1;
+diff --git a/drivers/gpu/drm/omapdrm/dss/dispc.c b/drivers/gpu/drm/omapdrm/dss/dispc.c
+index f4cbef8ccace..5619420cc2cc 100644
+--- a/drivers/gpu/drm/omapdrm/dss/dispc.c
++++ b/drivers/gpu/drm/omapdrm/dss/dispc.c
+@@ -2090,9 +2090,8 @@ static s32 pixinc(int pixels, u8 ps)
+ 		return 1 + (pixels - 1) * ps;
+ 	else if (pixels < 0)
+ 		return 1 - (-pixels + 1) * ps;
+-	else
+-		BUG();
+-		return 0;
++
++	BUG();
+ }
  
--		/* send command to our mcu */
--		if (jornada_ssp_byte(SETBRIGHTNESS) != TXDUMMY) {
--			dev_info(&bd->dev, "failed to set brightness\n");
--			ret = -ETIMEDOUT;
--			goto out;
--		}
-+	/* send command to our mcu */
-+	if (jornada_ssp_byte(SETBRIGHTNESS) != TXDUMMY) {
-+		dev_info(&bd->dev, "failed to set brightness\n");
-+		ret = -ETIMEDOUT;
-+		goto out;
-+	}
- 
--		/*
--		 * at this point we expect that the mcu has accepted
--		 * our command and is waiting for our new value
--		 * please note that maximum brightness is 255,
--		 * but due to physical layout it is equal to 0, so we simply
--		 * invert the value (MAX VALUE - NEW VALUE).
--		 */
--		if (jornada_ssp_byte(BL_MAX_BRIGHT - bd->props.brightness)
--			!= TXDUMMY) {
--			dev_err(&bd->dev, "set brightness failed\n");
--			ret = -ETIMEDOUT;
--		}
-+	/*
-+	 * at this point we expect that the mcu has accepted
-+	 * our command and is waiting for our new value
-+	 * please note that maximum brightness is 255,
-+	 * but due to physical layout it is equal to 0, so we simply
-+	 * invert the value (MAX VALUE - NEW VALUE).
-+	 */
-+	if (jornada_ssp_byte(BL_MAX_BRIGHT - bd->props.brightness)
-+		!= TXDUMMY) {
-+		dev_err(&bd->dev, "set brightness failed\n");
-+		ret = -ETIMEDOUT;
-+	}
- 
--		/*
--		 * If infact we get an TXDUMMY as output we are happy and dont
--		 * make any further comments about it
--		 */
-+	/*
-+	 * If infact we get an TXDUMMY as output we are happy and dont
-+	 * make any further comments about it
-+	 */
- out:
- 	jornada_ssp_end();
- 
+ static void calc_offset(u16 screen_width, u16 width,
 -- 
 2.29.2
 
