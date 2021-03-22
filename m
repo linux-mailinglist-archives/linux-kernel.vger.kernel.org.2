@@ -2,255 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52DE34506F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47AE345075
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhCVUGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:06:40 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36123 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229771AbhCVUGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:06:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616443580; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=vv0v6NJmTLIZNDt8MH4F4BHNlSRRS0JrKCQ7jSldjvk=; b=BAwWLuQ8U+a2OrVCRi+a+V6a/bvDwJWqPe7ZyBnafx7h7VNdWv76oa8xX2e7aPLZ2CcvzQFv
- 5Tv6ZtkRyoT5Z8rK0pEZkQvw5hD2Np2CUGuR47EX5tlkiXA2Ryo9p4eb0e67ZO0EM1Y96t2g
- xMrIoBmCFw4rqXiLwgL2nEBE4k8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6058f8b96dc1045b7d05c44c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Mar 2021 20:06:16
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2023EC43461; Mon, 22 Mar 2021 20:06:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.91.149] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 701ECC433C6;
-        Mon, 22 Mar 2021 20:06:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 701ECC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v3] usb: dwc3: gadget: Prevent EP queuing while stopping
- transfers
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>
-References: <1615507142-23097-1-git-send-email-wcheng@codeaurora.org>
- <CAHp75VfUVCB4gzgOWf=bUpCjfyerQLPN_p-vOnVfxUKHi1WJkg@mail.gmail.com>
- <716dca12-2bfc-789f-ca74-5555852e4c8b@codeaurora.org>
- <CAHp75VeynZArUkrogdJdR9oh+6Ocuqz3ySeDoRBFWusm8F6NRQ@mail.gmail.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <39fdd3c8-9682-6109-f47d-7f7bffc4b85e@codeaurora.org>
-Date:   Mon, 22 Mar 2021 13:06:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231500AbhCVUIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:08:16 -0400
+Received: from mail-bn7nam10on2077.outbound.protection.outlook.com ([40.107.92.77]:62656
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230479AbhCVUHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 16:07:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AKWVaIg2UnxJQUN5V8Wv+XEx8ZXj9CIAR3kFNe8N2oge3xNWC5iOb8fWhjbsUckKeT2FvWEPLYa77j87UT/7tVMoeTwrdq4JVtymqXuP0y6wy98LS19qiE5Luxpw2Pxstw1IWlgE/0D/GMMdtIAnQSI1nkbrHCnGuzZBN6Lll/+8Hqp1K237BxwGFNETGu8AFJe3v11/aK98R4Y4pYJdpW6Bis0I+Gx2Ie/sdnq+Hnrx6pohFvdYgiYue92ON4czShOf3WqRe34xCwDn0oSDFvQ1xMKOk/iUgPLYyxbUYFigQA7WqRpi7dLMeDfSx23riLAR+I4acGRTKozbjnC6wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lKXJhiaAvXQNW8Hh9HWq2aiTSMjnM2dhqGNg0B/7di8=;
+ b=AZkZXn9iNYYwDG3YC6fZ134wfogFuY7uDrgxPcP5F0nUrnHEOyvq+67SFETd5cZCBbA8lLGz1msz5GE1jHuum6izOdUSho0pF5ijMSAFtnPlvPrbLQaRyxUuvciXxhAVghWST6eM3kkGI8P5xoUDLRfbzCfYofDcmJNbzifTSBogzcpYo1vEcqilHHyjtO5DdEFCusn6NbkIoebCIQrPLWvZQmKamsQ7a0KE+f4iZSE/zxfW12nLqTTutnSMiwQ48oObefzMBUeDzUmLJRo1yvOpBz/y4QwTJrGeAh/kaGa01VWGu7DTZWEEQazN40T6s+YsqZPszhBKpn283kF8lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lKXJhiaAvXQNW8Hh9HWq2aiTSMjnM2dhqGNg0B/7di8=;
+ b=UbqAywfWN/py5y3f1TRe8UwezswkLIC8od0AGoNyNM6axY99JPE9Lsoyx6zGQCeudMyKcbn/60mQn7pvNMB4vJpJIphMJ/bwwEX4Tc3UtbvMzWWpFoHBcklpMhPR9Vu36JNq+d35ki5FtfXLyDemsrHbS+99hnYrE7XcmN9kmXs=
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ (2603:10b6:910:45::21) by CY4PR10MB1398.namprd10.prod.outlook.com
+ (2603:10b6:903:30::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
+ 2021 20:07:37 +0000
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79]) by CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79%5]) with mapi id 15.20.3955.025; Mon, 22 Mar 2021
+ 20:07:37 +0000
+From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To:     Zhe Li <lizhe67@huawei.com>, "richard@nod.at" <richard@nod.at>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
+        "xukunkun1@huawei.com" <xukunkun1@huawei.com>,
+        "zhongjubin@huawei.com" <zhongjubin@huawei.com>,
+        "chenjie6@huawei.com" <chenjie6@huawei.com>
+Subject: Re: [PATCH] jffs2: fix kasan slab-out-of-bounds problem
+Thread-Topic: [PATCH] jffs2: fix kasan slab-out-of-bounds problem
+Thread-Index: AQHXG6TtC8xnwV9O+02ylI57ffrSdKqQdg+D
+Date:   Mon, 22 Mar 2021 20:07:37 +0000
+Message-ID: <CY4PR1001MB2389E99ECB5B04A65BE35E22F4659@CY4PR1001MB2389.namprd10.prod.outlook.com>
+References: <20210318030657.22840-1-lizhe67@huawei.com>
+In-Reply-To: <20210318030657.22840-1-lizhe67@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=infinera.com;
+x-originating-ip: [178.174.231.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e640d3bb-50c6-4c30-2844-08d8ed6e23b2
+x-ms-traffictypediagnostic: CY4PR10MB1398:
+x-microsoft-antispam-prvs: <CY4PR10MB139884BA2C47C95530079748F4659@CY4PR10MB1398.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kElvTonxKE+2mU9tTutchHKQwsG9AxRKgCuJkjmvvDjC5Az6lsasvQHstHcHCLFTzWThCIvOzN+Q+k+Td8pRF4p+9ehz4J3qYthjEDiQ0wzdWT/voguEYWVnih4dGrlNubU18XtFb0yPgrC+cdX/Bw8RyrWrCMe3qU7E70SKlyFIZIkc/juHpytFXnFsL7+5/7IEHBfazegbwh1aEO72ipE7XlyUIDi+VXRJbZ2qAFFoctv/j+GdUIwSRHjkah7SEh1kRQMnqGSrfE/mqnxcYSoc7SW5heErrwhim9ccgTnlUwvh2EIDMw74yE+MJ8Kb1+XKP9wuOkVZkZEUvzKZM1z4d2JHkWQZbZrFrCPr4UxPpAclR4mwJqszA6GzbEzSVSsUyDz87SaQRX0XxLBNWeD8HRfORepJtKfc0k2m0eWC9fq1I6Gf2Hm5vd8nHXFndqBdWNtYt87pH9ZpiS714rqZqfpzCeRzp1nuCZUO7w++/Sw4GnHovhOHR3DsLh1kFUYspawZp05zSUavd3be7DU1+w+75UXY6+L79yU+C4q/EwHY97dyvORoE1BRDgPil9SvfZ3OSviZG2ca4xMLyn7vKpSnnmyIeZcsgAa+mna4QFxXrh7bg5iFkSgA5pmhWVpdI/c+CWE9wo3fqN+cUiMhHpTQd8haR1NKv4bPW7vsGZzUbxQP1xYp+PHdb+wyJRtE530nZAZhm0vkgBkV0lYvRDT5iJ/pMFYAeIC9l9/iu9CPGvcYnr5TA0Rgw+9S
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(39860400002)(376002)(136003)(110136005)(186003)(9686003)(52536014)(5660300002)(86362001)(7696005)(966005)(54906003)(316002)(53546011)(45080400002)(6506007)(76116006)(66476007)(478600001)(26005)(55016002)(91956017)(8936002)(66946007)(66556008)(64756008)(66446008)(33656002)(83380400001)(4326008)(8676002)(2906002)(38100700001)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?GabfbNWLr3WsvGghYU/R2RGBryJbCdYFcu35PyF/wuPs7fwj9BZLTQr4Ub?=
+ =?iso-8859-1?Q?aijRxOQjZjP4/Thri8+EWRe9FMAzWGtITOCYMu4wbzm/+UeBxUMdFnqaYO?=
+ =?iso-8859-1?Q?YQodGAaAqkq+CY2oquyFm1XSXokyvNe9L5wcdJIETAU+i2O3XP6QKpPmmQ?=
+ =?iso-8859-1?Q?zwKJ92hOu/9tn0Do/xfbWP8lXLiuIrt+w0XFbrSnbJxFp7Y6O4zs6HMB+O?=
+ =?iso-8859-1?Q?tmKNlFpvu03gkQCmQmKcJv8iJOBzvkv8ESircN4lqchwYSLXb214cnIwfH?=
+ =?iso-8859-1?Q?y4UesW2JuQQwF5Tdx20QzY2gxeuQFQEXeiDeKPLvqcYqlnhOP5PDFdORaM?=
+ =?iso-8859-1?Q?aUv117bXwLWdH6A2G9hFGsQPQBn2NeCjEa/q4028kKfLB6lZm35gd6yZw5?=
+ =?iso-8859-1?Q?5SMlj7MRNSs0rQlJjEHST1begSQfys9LNGJkSwqYy8q4HRuRHv8AW13jI3?=
+ =?iso-8859-1?Q?FtimUsB2HOnSnlH6p0fXl+RQ8rUjhkNgLZ+AVePVe1aRGrijT+3O9d3t2c?=
+ =?iso-8859-1?Q?3yXvc69rEXmOZ0i82FhiO6ZQ9+m/0rxzXzX+FE+1ulaWHqxO8Fn6s5Mjrg?=
+ =?iso-8859-1?Q?wo9BkVbcpsFO6BShWeMUDg52mBnPT9KSFoO8bIphkJhzWUZWD+VMQcJsgN?=
+ =?iso-8859-1?Q?HU4EQdaQXkkQnZS7qup8n+2l8I7767s9uQRtganKFSwtkzhUM+wGdHrGDU?=
+ =?iso-8859-1?Q?GjPnoim8pXjhYxCFXjEHorSHl1MiWziC8lGhOWKLamgHWayvCz9o4h9Gjz?=
+ =?iso-8859-1?Q?VSa3FbI3DaC9XwzyX5NAnlmBqOtCPwYih/LimWylBrArSX1Ukad9azkqOi?=
+ =?iso-8859-1?Q?inVh/ptaNEmJPVa3/lP9EUusbaKemgYaNz6fD3Brw/CY8MSYbMVN7WmPKQ?=
+ =?iso-8859-1?Q?LQW/NKj5We7cfN6r7eEvvqqD+Y5yd5TsbmoWfaViHwdY5KWC5N0PxYyFAE?=
+ =?iso-8859-1?Q?2WKPYgQDQKj53yf785wb/cvaou+Gf439TWxQBiIQsx0EMpK/QakL8dvneV?=
+ =?iso-8859-1?Q?4BX/OHQTFEZT+5eq7MeYc442UDvO1VJpDHnWtPEG2mIQx2cseLLHK0GxfT?=
+ =?iso-8859-1?Q?tMfRtKRyyVjsMBv0ctQ+4g1iqGfnrOdIuP6bBPDCpJPb0oBKEpNTEyFsTh?=
+ =?iso-8859-1?Q?nKC8FuEWEo1VWc+B9ZUhEHLxigBsvgbYERRSnUkqwm1/j8cOEFICNITQde?=
+ =?iso-8859-1?Q?CLDfA8yWdPIutClPyO9SaIRBXOBTS1BidsVmUicczG5UAGrU7gpDRFDV8n?=
+ =?iso-8859-1?Q?U8o9jkUIU1Kexpxotw500Kl37nF1pV6EysXmCybbKGuFSS5BE9snydwOXP?=
+ =?iso-8859-1?Q?ze9NKNz+FugM8AtaKDcUcHActvIPk37ZpivWxes/OttB60HCJ1zanRICDq?=
+ =?iso-8859-1?Q?1/ScMB5tU1?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeynZArUkrogdJdR9oh+6Ocuqz3ySeDoRBFWusm8F6NRQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e640d3bb-50c6-4c30-2844-08d8ed6e23b2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2021 20:07:37.2267
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r280XigVAZDxPnBgFjzBy0c0+cTvNYJ8K+rfbXkwKJFVPzkk7D2HJb2W3n9Cmy7rSofCyvc3r+7CCjtAxAdT5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1398
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On 3/22/2021 12:34 PM, Andy Shevchenko wrote:
-> On Mon, Mar 22, 2021 at 8:49 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
->>
->> Hi Andy,
->>
->> On 3/22/2021 5:48 AM, Andy Shevchenko wrote:
->>> On Fri, Mar 12, 2021 at 2:01 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
->>>>
->>>> In the situations where the DWC3 gadget stops active transfers, once
->>>> calling the dwc3_gadget_giveback(), there is a chance where a function
->>>> driver can queue a new USB request in between the time where the dwc3
->>>> lock has been released and re-aquired.  This occurs after we've already
->>>> issued an ENDXFER command.  When the stop active transfers continues
->>>> to remove USB requests from all dep lists, the newly added request will
->>>> also be removed, while controller still has an active TRB for it.
->>>> This can lead to the controller accessing an unmapped memory address.
->>>>
->>>> Fix this by ensuring parameters to prevent EP queuing are set before
->>>> calling the stop active transfers API.
->>>
->>>
->>> commit f09ddcfcb8c569675066337adac2ac205113471f
->>> Author: Wesley Cheng <wcheng@codeaurora.org>
->>> Date:   Thu Mar 11 15:59:02 2021 -0800
->>>
->>>    usb: dwc3: gadget: Prevent EP queuing while stopping transfers
->>>
->>> effectively broke my gadget setup.
->>>
->>> The output of the kernel (followed by non responsive state of USB controller):
->>>
->>> [  195.228586] using random self ethernet address
->>> [  195.233104] using random host ethernet address
->>> [  195.245306] usb0: HOST MAC aa:bb:cc:dd:ee:f2
->>> [  195.249732] usb0: MAC aa:bb:cc:dd:ee:f1
->>> # [  195.773594] IPv6: ADDRCONF(NETDEV_CHANGE): usb0: link becomes ready
->>> [  195.780585] ------------[ cut here ]------------
->>> [  195.785217] dwc3 dwc3.0.auto: No resource for ep2in
->>> [  195.790162] WARNING: CPU: 0 PID: 217 at
->>> drivers/usb/dwc3/gadget.c:360 dwc3_send_gadget_ep_cmd+0x4b9/0x670
->>> [  195.799760] Modules linked in: usb_f_eem u_ether libcomposite
->>> brcmfmac brcmutil mmc_block pwm_lpss_pci pwm_lps
->>> s snd_sof_pci_intel_tng snd_sof_pci snd_sof_acpi_intel_byt
->>> snd_sof_intel_ipc snd_sof_acpi snd_sof snd_sof_nocodec
->>> spi_pxa2xx_platform snd_sof_xtensa_dsp spi_pxa2xx_pci
->>> extcon_intel_mrfld intel_mrfld_adc sdhci_pci cqhci sdhci m
->>> mc_core intel_mrfld_pwrbtn intel_soc_pmic_mrfld hci_uart btbcm btintel
->>> [  195.835604] CPU: 0 PID: 217 Comm: irq/16-dwc3 Not tainted 5.12.0-rc4+ #60
->>> [  195.842403] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
->>> BIOS 542 2015.01.21:18.19.48
->>> [  195.851191] RIP: 0010:dwc3_send_gadget_ep_cmd+0x4b9/0x670
->>> [  195.856608] Code: cd 00 00 00 44 89 44 24 20 48 89 4c 24 18 e8 ee
->>> f7 e4 ff 48 8b 4c 24 18 4c 89 f2 48 c7 c7 b9
->>> ed 4f a0 48 89 c6 e8 ef 24 43 00 <0f> 0b 41 be ea ff ff ff 44 8b 44 24
->>> 20 e9 80 fc ff ff 41 83 fe 92
->>> [  195.875381] RSP: 0000:ffffa53c00373ba8 EFLAGS: 00010086
->>> [  195.880617] RAX: 0000000000000000 RBX: 0000000000001387 RCX: 00000000ffffdfff
->>> [  195.887755] RDX: 00000000ffffdfff RSI: 00000000ffffffea RDI: 0000000000000000
->>> [  195.894893] RBP: ffff9ce8c8f2b028 R08: ffffffffa0732288 R09: 0000000000009ffb
->>> [  195.902034] R10: 00000000ffffe000 R11: 3fffffffffffffff R12: 0000000000041006
->>> [  195.909170] R13: ffffa53c00373c24 R14: ffff9ce8c11dadb0 R15: ffff9ce8c2861700
->>> [  195.916310] FS:  0000000000000000(0000) GS:ffff9ce8fe200000(0000)
->>> knlGS:0000000000000000
->>> [  195.924409] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [  195.930161] CR2: 00000000f7f694a0 CR3: 0000000038e0c000 CR4: 00000000001006f0
->>> [  195.937300] Call Trace:
->>> [  195.939755]  __dwc3_gadget_ep_enable+0x2d4/0x4e0
->>> [  195.944393]  ? dwc3_remove_requests.constprop.0+0x86/0x170
->>
->> Odd that this change would affect the USB enablment path, as they were
->> focused on the pullup disable path.  Would you happen to have any
->> downstream changes on top of v5.12-rc4 we could review to see if they
->> are still required? (ie where is the dwc3_remove_requests() coming from
->> during ep enable)
-> 
-> You may check my branch [1] on GH. Basically you may be interested in
-> the commit:
-> 0f86df1294ee7523060cc16eafaf4898c693eab0 REVERTME: usb: dwc3: gadget:
-> skip endpoints ep[18]{in,out}
-> Otherwise it's a clean v5.12-rc4 with a revert and another USB PHY
-> suspend fix (which also shouldn't affect this).
-
-Can you link your GH reference?
-
-> 
-> But I don't believe it should have affected this.
-> 
->>> [  195.949897]  dwc3_gadget_ep_enable+0x5d/0x120
->>> [  195.954274]  usb_ep_enable+0x27/0x80
->>> [  195.957869]  gether_connect+0x32/0x1f0 [u_ether]
->>> [  195.962512]  eem_set_alt+0x6d/0x140 [usb_f_eem]
->>> [  195.967061]  composite_setup+0x224/0x1ba0 [libcomposite]
->>> [  195.972405]  ? debug_dma_unmap_page+0x79/0x80
->>> [  195.976782]  ? configfs_composite_setup+0x6b/0x90 [libcomposite]
->>> [  195.982811]  configfs_composite_setup+0x6b/0x90 [libcomposite]
->>> [  195.988668]  dwc3_ep0_interrupt+0x459/0xa50
->>> [  195.992869]  dwc3_thread_interrupt+0x8e2/0xee0
->>> [  195.997327]  ? __schedule+0x237/0x6d0
->>> [  196.001005]  ? disable_irq_nosync+0x10/0x10
->>> [  196.005200]  irq_thread_fn+0x1b/0x60
->>> [  196.008789]  irq_thread+0xd6/0x170
->>> [  196.012202]  ? irq_thread_check_affinity+0x70/0x70
->>> [  196.017004]  ? irq_forced_thread_fn+0x70/0x70
->>> [  196.021373]  kthread+0x116/0x130
->>> [  196.024617]  ? kthread_create_worker_on_cpu+0x60/0x60
->>> [  196.029680]  ret_from_fork+0x22/0x30
->>> [  196.033272] ---[ end trace 8dd104a950d8d248 ]---
->>>
->>>
->> Also, as I mentioned above, the changes should affect the pullup disable
->> path, so when you 'echo "" > UDC' or something similar to that
->> operation, did you see any errors?
-> 
-> After your patch I see a warning as above. Before — no errors or warnings.
-> 
->> Can you provide a ftrace output w/
->> the DWC3 tracing enabled once removing the UDC?
-> 
-> Can you provide step-by-step instructions what should I do?
-> 
-Let me try with your kernel, and steps below first.
-
-Thanks
-Wesley Cheng
-
->>> Revert helps (I'm on v5.12-rc4 now with a revert).
->>>
->>> The script to enable gadget:
->>>
->>> #!/bin/sh -efu
->>>
->>> # Mounting CONFIGFS
->>> grep -q -w /sys/kernel/config /proc/mounts || mount -t configfs none
->>> /sys/kernel/config
->>>
->>> # Addresses and files
->>> readonly GADGET_BASE_DIR="/sys/kernel/config/usb_gadget/g1"
->>> readonly DEV_ETH_ADDR="aa:bb:cc:dd:ee:f1"
->>> readonly HOST_ETH_ADDR="aa:bb:cc:dd:ee:f2"
->>> readonly USBDISK="/usbdisk.img"
->>>
->>> # Insert modules
->>> modprobe libcomposite
->>>
->>> # Create directory structure
->>> mkdir "${GADGET_BASE_DIR}"
->>> cd "${GADGET_BASE_DIR}"
->>> mkdir -p configs/c.1/strings/0x409
->>> mkdir -p strings/0x409
->>>
->>> # Ethernet device
->>> mkdir functions/eem.usb0
->>> echo "${DEV_ETH_ADDR}" > functions/eem.usb0/dev_addr
->>> echo "${HOST_ETH_ADDR}" > functions/eem.usb0/host_addr
->>> ln -s functions/eem.usb0 configs/c.1/
->>>
->>> # Composite Gadget Setup
->>> echo 0x1d6b > idVendor          # Linux Foundation
->>> echo 0x0104 > idProduct         # Multifunction Composite Gadget
->>> echo 0x0100 > bcdDevice         # v1.0.0
->>> echo 0x0200 > bcdUSB            # USB2
->>> echo "0123456789abcdef" > strings/0x409/serialnumber
->>> echo "USBArmory"        > strings/0x409/manufacturer
->>> echo "USBArmory Gadget" > strings/0x409/product
->>> echo "Conf1"            > configs/c.1/strings/0x409/configuration
->>> echo 120                > configs/c.1/MaxPower
->>>
->>> # Activate gadgets
->>> echo dwc3.0.auto > UDC
->>>
->>> Please, tell me how to fix this, otherwise I will have to send a revert.
->>>
->> This also fixes a potential SMMU fault on targets with that enabled.  It
->> causes the controller to access a stale TRB DMA address after it has
->> already been unmapped.  I think we should figure out what is causing the
->> issue on your set up instead of reverting the entire change.
-> 
-> If we find a cause and have a fix during this week, otherwise it's
-> rc5:ish timing when we may not have more time to play.
-> 
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Reviewe-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>=0A=
+=0A=
+It would be interesting to known how you managed to create such a dir entry=
+ as that is a bug too.=0A=
+________________________________________=0A=
+From: linux-mtd <linux-mtd-bounces@lists.infradead.org> on behalf of Zhe Li=
+ <lizhe67@huawei.com>=0A=
+Sent: 18 March 2021 04:06=0A=
+To: richard@nod.at; dwmw2@infradead.org; linux-mtd@lists.infradead.org; lin=
+ux-kernel@vger.kernel.org=0A=
+Cc: lizhe67@huawei.com; wangfangpeng1@huawei.com; xukunkun1@huawei.com; zho=
+ngjubin@huawei.com; chenjie6@huawei.com=0A=
+Subject: [PATCH] jffs2: fix kasan slab-out-of-bounds problem=0A=
+=0A=
+From: lizhe <lizhe67@huawei.com>=0A=
+=0A=
+KASAN report a slab-out-of-bounds problem. The logs are listed below.=0A=
+It is because in function jffs2_scan_dirent_node, we alloc "checkedlen+1"=
+=0A=
+bytes for fd->name and we check crc with length rd->nsize. If checkedlen=0A=
+is less than rd->nsize, it will cause the slab-out-of-bounds problem.=0A=
+=0A=
+jffs2: Dirent at *** has zeroes in name. Truncating to %d char=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
+BUG: KASAN: slab-out-of-bounds in crc32_le+0x1ce/0x260 at addr ffff8800842c=
+f2d1=0A=
+Read of size 1 by task test_JFFS2/915=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=0A=
+BUG kmalloc-64 (Tainted: G    B      O   ): kasan: bad access detected=0A=
+---------------------------------------------------------------------------=
+--=0A=
+INFO: Allocated in jffs2_alloc_full_dirent+0x2a/0x40 age=3D0 cpu=3D1 pid=3D=
+915=0A=
+        ___slab_alloc+0x580/0x5f0=0A=
+        __slab_alloc.isra.24+0x4e/0x64=0A=
+        __kmalloc+0x170/0x300=0A=
+        jffs2_alloc_full_dirent+0x2a/0x40=0A=
+        jffs2_scan_eraseblock+0x1ca4/0x3b64=0A=
+        jffs2_scan_medium+0x285/0xfe0=0A=
+        jffs2_do_mount_fs+0x5fb/0x1bbc=0A=
+        jffs2_do_fill_super+0x245/0x6f0=0A=
+        jffs2_fill_super+0x287/0x2e0=0A=
+        mount_mtd_aux.isra.0+0x9a/0x144=0A=
+        mount_mtd+0x222/0x2f0=0A=
+        jffs2_mount+0x41/0x60=0A=
+        mount_fs+0x63/0x230=0A=
+        vfs_kern_mount.part.6+0x6c/0x1f4=0A=
+        do_mount+0xae8/0x1940=0A=
+        SyS_mount+0x105/0x1d0=0A=
+INFO: Freed in jffs2_free_full_dirent+0x22/0x40 age=3D27 cpu=3D1 pid=3D915=
+=0A=
+        __slab_free+0x372/0x4e4=0A=
+        kfree+0x1d4/0x20c=0A=
+        jffs2_free_full_dirent+0x22/0x40=0A=
+        jffs2_build_remove_unlinked_inode+0x17a/0x1e4=0A=
+        jffs2_do_mount_fs+0x1646/0x1bbc=0A=
+        jffs2_do_fill_super+0x245/0x6f0=0A=
+        jffs2_fill_super+0x287/0x2e0=0A=
+        mount_mtd_aux.isra.0+0x9a/0x144=0A=
+        mount_mtd+0x222/0x2f0=0A=
+        jffs2_mount+0x41/0x60=0A=
+        mount_fs+0x63/0x230=0A=
+        vfs_kern_mount.part.6+0x6c/0x1f4=0A=
+        do_mount+0xae8/0x1940=0A=
+        SyS_mount+0x105/0x1d0=0A=
+        entry_SYSCALL_64_fastpath+0x1e/0x97=0A=
+Call Trace:=0A=
+ [<ffffffff815befef>] dump_stack+0x59/0x7e=0A=
+ [<ffffffff812d1d65>] print_trailer+0x125/0x1b0=0A=
+ [<ffffffff812d82c8>] object_err+0x34/0x40=0A=
+ [<ffffffff812dadef>] kasan_report.part.1+0x21f/0x534=0A=
+ [<ffffffff81132401>] ? vprintk+0x2d/0x40=0A=
+ [<ffffffff815f1ee2>] ? crc32_le+0x1ce/0x260=0A=
+ [<ffffffff812db41a>] kasan_report+0x26/0x30=0A=
+ [<ffffffff812d9fc1>] __asan_load1+0x3d/0x50=0A=
+ [<ffffffff815f1ee2>] crc32_le+0x1ce/0x260=0A=
+ [<ffffffff814764ae>] ? jffs2_alloc_full_dirent+0x2a/0x40=0A=
+ [<ffffffff81485cec>] jffs2_scan_eraseblock+0x1d0c/0x3b64=0A=
+ [<ffffffff81488813>] ? jffs2_scan_medium+0xccf/0xfe0=0A=
+ [<ffffffff81483fe0>] ? jffs2_scan_make_ino_cache+0x14c/0x14c=0A=
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50=0A=
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50=0A=
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70=0A=
+ [<ffffffff812d5d90>] ? kmem_cache_alloc_trace+0x10c/0x2cc=0A=
+ [<ffffffff818169fb>] ? mtd_point+0xf7/0x130=0A=
+ [<ffffffff81487dc9>] jffs2_scan_medium+0x285/0xfe0=0A=
+ [<ffffffff81487b44>] ? jffs2_scan_eraseblock+0x3b64/0x3b64=0A=
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50=0A=
+ [<ffffffff812da3e9>] ? kasan_unpoison_shadow+0x35/0x50=0A=
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70=0A=
+ [<ffffffff812d57df>] ? __kmalloc+0x12b/0x300=0A=
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70=0A=
+ [<ffffffff814a2753>] ? jffs2_sum_init+0x9f/0x240=0A=
+ [<ffffffff8148b2ff>] jffs2_do_mount_fs+0x5fb/0x1bbc=0A=
+ [<ffffffff8148ad04>] ? jffs2_del_noinode_dirent+0x640/0x640=0A=
+ [<ffffffff812da462>] ? kasan_kmalloc+0x5e/0x70=0A=
+ [<ffffffff81127c5b>] ? __init_rwsem+0x97/0xac=0A=
+ [<ffffffff81492349>] jffs2_do_fill_super+0x245/0x6f0=0A=
+ [<ffffffff81493c5b>] jffs2_fill_super+0x287/0x2e0=0A=
+ [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594=0A=
+ [<ffffffff81819bea>] mount_mtd_aux.isra.0+0x9a/0x144=0A=
+ [<ffffffff81819eb6>] mount_mtd+0x222/0x2f0=0A=
+ [<ffffffff814939d4>] ? jffs2_parse_options+0x594/0x594=0A=
+ [<ffffffff81819c94>] ? mount_mtd_aux.isra.0+0x144/0x144=0A=
+ [<ffffffff81258757>] ? free_pages+0x13/0x1c=0A=
+ [<ffffffff814fa0ac>] ? selinux_sb_copy_data+0x278/0x2e0=0A=
+ [<ffffffff81492b35>] jffs2_mount+0x41/0x60=0A=
+ [<ffffffff81302fb7>] mount_fs+0x63/0x230=0A=
+ [<ffffffff8133755f>] ? alloc_vfsmnt+0x32f/0x3b0=0A=
+ [<ffffffff81337f2c>] vfs_kern_mount.part.6+0x6c/0x1f4=0A=
+ [<ffffffff8133ceec>] do_mount+0xae8/0x1940=0A=
+ [<ffffffff811b94e0>] ? audit_filter_rules.constprop.6+0x1d10/0x1d10=0A=
+ [<ffffffff8133c404>] ? copy_mount_string+0x40/0x40=0A=
+ [<ffffffff812cbf78>] ? alloc_pages_current+0xa4/0x1bc=0A=
+ [<ffffffff81253a89>] ? __get_free_pages+0x25/0x50=0A=
+ [<ffffffff81338993>] ? copy_mount_options.part.17+0x183/0x264=0A=
+ [<ffffffff8133e3a9>] SyS_mount+0x105/0x1d0=0A=
+ [<ffffffff8133e2a4>] ? copy_mnt_ns+0x560/0x560=0A=
+ [<ffffffff810e8391>] ? msa_space_switch_handler+0x13d/0x190=0A=
+ [<ffffffff81be184a>] entry_SYSCALL_64_fastpath+0x1e/0x97=0A=
+ [<ffffffff810e9274>] ? msa_space_switch+0xb0/0xe0=0A=
+Memory state around the buggy address:=0A=
+ ffff8800842cf180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc=0A=
+ ffff8800842cf200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc=0A=
+>ffff8800842cf280: fc fc fc fc fc fc 00 00 00 00 01 fc fc fc fc fc=0A=
+                                                 ^=0A=
+ ffff8800842cf300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc=0A=
+ ffff8800842cf380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc=0A=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
+=0A=
+Reported-by: Kunkun Xu <xukunkun1@huawei.com>=0A=
+Signed-off-by: lizhe <lizhe67@huawei.com>=0A=
+---=0A=
+ fs/jffs2/scan.c | 2 +-=0A=
+ 1 file changed, 1 insertion(+), 1 deletion(-)=0A=
+=0A=
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c=0A=
+index db72a9d..b676056 100644=0A=
+--- a/fs/jffs2/scan.c=0A=
++++ b/fs/jffs2/scan.c=0A=
+@@ -1079,7 +1079,7 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_inf=
+o *c, struct jffs2_eraseblo=0A=
+        memcpy(&fd->name, rd->name, checkedlen);=0A=
+        fd->name[checkedlen] =3D 0;=0A=
+=0A=
+-       crc =3D crc32(0, fd->name, rd->nsize);=0A=
++       crc =3D crc32(0, fd->name, checkedlen);=0A=
+        if (crc !=3D je32_to_cpu(rd->name_crc)) {=0A=
+                pr_notice("%s(): Name CRC failed on node at 0x%08x: Read 0x=
+%08x, calculated 0x%08x\n",=0A=
+                          __func__, ofs, je32_to_cpu(rd->name_crc), crc);=
+=0A=
+--=0A=
+2.7.4=0A=
+=0A=
+=0A=
+______________________________________________________=0A=
+Linux MTD discussion mailing list=0A=
+https://nam11.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Flists.in=
+fradead.org%2Fmailman%2Flistinfo%2Flinux-mtd%2F&amp;data=3D04%7C01%7Cjoakim=
+.tjernlund%40infinera.com%7C7ec1d950724f4995dc9c08d8e9bc0e35%7C285643de5f5b=
+4b03a1530ae2dc8aaf77%7C1%7C1%7C637516341206870320%7CUnknown%7CTWFpbGZsb3d8e=
+yJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&am=
+p;sdata=3DV0RwumJqxPlGWG6qBjSfu%2FDk5lon3vjB23S2h4w0DDg%3D&amp;reserved=3D0=
+=0A=
