@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7912B344C94
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC4C344C9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhCVRBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:01:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35349 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231518AbhCVRBT (ORCPT
+        id S231607AbhCVRD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:03:27 -0400
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:33665 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhCVRDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:01:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616432478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kI6JCUton9Pw1WTmpNMH1+Wj/jifPkleYuBOY5L9rd8=;
-        b=Rp6BH5UChMLPZvUrspq7nDNAALV4kApmYZhuVLOnIQN0eUPnTTQGxc5BYt+aOnbSd7Y4A4
-        OVVGVUyBT4PfhEw4WxXZh9Y/BKE6pKFJ2TdwojmaJqkhuQ0hTj38xwoos7VKVcVh+YMdO8
-        patTlbgxcxbmSZrATbmg87uo6+2VGAw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-eTs5gemHNB2cz_t9qTRHAQ-1; Mon, 22 Mar 2021 13:01:17 -0400
-X-MC-Unique: eTs5gemHNB2cz_t9qTRHAQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20406513F;
-        Mon, 22 Mar 2021 17:01:15 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-132.rdu2.redhat.com [10.10.114.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 066662B0A9;
-        Mon, 22 Mar 2021 17:01:11 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 603BD220BCF; Mon, 22 Mar 2021 13:01:11 -0400 (EDT)
-Date:   Mon, 22 Mar 2021 13:01:11 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Christian Brauner <christian.brauner@canonical.com>
-Cc:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
-        <andreas.gruenbacher@gmail.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtio-fs@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
-        lhenriques@suse.de, dgilbert@redhat.com,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Jan Kara <jack@suse.cz>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 1/3] posic_acl: Add a helper determine if SGID should be
- cleared
-Message-ID: <20210322170111.GE446288@redhat.com>
-References: <20210319195547.427371-1-vgoyal@redhat.com>
- <20210319195547.427371-2-vgoyal@redhat.com>
- <CAHpGcMKhFxotKDxPryfKdhNMMDWO4Ws33s6fEm2NP0u_4vffnQ@mail.gmail.com>
- <20210320100322.ox5gzgauo7iqf2fv@gmail.com>
+        Mon, 22 Mar 2021 13:03:11 -0400
+Received: by mail-ed1-f46.google.com with SMTP id w18so20292349edc.0;
+        Mon, 22 Mar 2021 10:03:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hiS2EpWobHI9LUAiVe5wAQU0vX3JpbvHUOvmyCBf7ug=;
+        b=pG9Eh1AOavelW9I6wDd3MW/mdgpcO24ng/5Cczt1SdghMjkfegXz4UOf+205Ia5Tcm
+         FexvUfaxAA5q6j39ezx0XCA1IvDvYzI4MprKM5/Dgdk2EkBf0mtEDhvmzopeuw9VzYth
+         ImlS9/YqwLG3K4GKXc+Eivi44RINRvimaSCBuRWoKMEWjCi2+SiER4PDqhsCoSahetaT
+         wz41Vzljh6X0XZ9RhS/HIr2pUuQDfELTUf0MJQUvwtup4wOCe1uHQSUOrL0pw6iHeIEm
+         eWS1O9YcWDMJIgTX7/WYGxCSb+aFhKvP+fqgBwO4cnWg4e5R70NsOkaX7wd8xkM2m2Qt
+         QKKw==
+X-Gm-Message-State: AOAM530shd7KwRukx8Nb+bnjty+ybRSy3MtD/9tHaDSk+FREQdUJGswy
+        5mSaLrRhXgWeLNFSHZNbvDA3T+O0Hrs=
+X-Google-Smtp-Source: ABdhPJxbTAXrNsbW7kwIKKL5u68tbfli8yNSyW4D/O4niGv6aeQC0u0A6aFw8ZDocMSs2yeDpDyppw==
+X-Received: by 2002:a05:6402:510b:: with SMTP id m11mr570402edd.103.1616432590087;
+        Mon, 22 Mar 2021 10:03:10 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-2-34-63-208.cust.vodafonedsl.it. [2.34.63.208])
+        by smtp.gmail.com with ESMTPSA id h22sm9891589eji.80.2021.03.22.10.03.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 10:03:09 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH net-next 0/6] page_pool: recycle buffers
+Date:   Mon, 22 Mar 2021 18:02:55 +0100
+Message-Id: <20210322170301.26017-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210320100322.ox5gzgauo7iqf2fv@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 11:03:22AM +0100, Christian Brauner wrote:
-> On Fri, Mar 19, 2021 at 11:42:48PM +0100, Andreas Grünbacher wrote:
-> > Hi,
-> > 
-> > Am Fr., 19. März 2021 um 20:58 Uhr schrieb Vivek Goyal <vgoyal@redhat.com>:
-> > > posix_acl_update_mode() determines what's the equivalent mode and if SGID
-> > > needs to be cleared or not. I need to make use of this code in fuse
-> > > as well. Fuse will send this information to virtiofs file server and
-> > > file server will take care of clearing SGID if it needs to be done.
-> > >
-> > > Hence move this code in a separate helper so that more than one place
-> > > can call into it.
-> > >
-> > > Cc: Jan Kara <jack@suse.cz>
-> > > Cc: Andreas Gruenbacher <agruenba@redhat.com>
-> > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > > ---
-> > >  fs/posix_acl.c            |  3 +--
-> > >  include/linux/posix_acl.h | 11 +++++++++++
-> > >  2 files changed, 12 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-> > > index f3309a7edb49..2d62494c4a5b 100644
-> > > --- a/fs/posix_acl.c
-> > > +++ b/fs/posix_acl.c
-> > > @@ -684,8 +684,7 @@ int posix_acl_update_mode(struct user_namespace *mnt_userns,
-> > >                 return error;
-> > >         if (error == 0)
-> > >                 *acl = NULL;
-> > > -       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> > > -           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
-> > > +       if (posix_acl_mode_clear_sgid(mnt_userns, inode))
-> > >                 mode &= ~S_ISGID;
-> > >         *mode_p = mode;
-> > >         return 0;
-> > > diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
-> > > index 307094ebb88c..073c5e546de3 100644
-> > > --- a/include/linux/posix_acl.h
-> > > +++ b/include/linux/posix_acl.h
-> > > @@ -59,6 +59,17 @@ posix_acl_release(struct posix_acl *acl)
-> > >  }
-> > >
-> > >
-> > > +static inline bool
-> > > +posix_acl_mode_clear_sgid(struct user_namespace *mnt_userns,
-> > > +                         struct inode *inode)
-> > > +{
-> > > +       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> > > +           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
-> > > +               return true;
-> > > +
-> > > +       return false;
-> > 
-> > That's just
-> > 
-> > return !in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> >     !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID);
-> > 
-> > The same pattern we have in posix_acl_update_mode also exists in
-> > setattr_copy and inode_init_owner, and almost the same pattern exists
-> > in setattr_prepare, so can this be cleaned up as well? The function
-> > also isn't POSIX ACL specific, so the function name is misleading.
-> 
-> Good idea but that should probably be spun into a separate patchset that
-> only touches the vfs parts.
+From: Matteo Croce <mcroce@microsoft.com>
 
-IIUC, suggestion is that I should write a VFS helper (and not posix
-acl helper) and use that helper at other places too in the code. 
+This series enables recycling of the buffers allocated with the page_pool API.
+The first two patches are just prerequisite to save space in a struct and
+avoid recycling pages allocated with other API.
+Patch 2 was based on a previous idea from Jonathan Lemon.
 
-I will do that and post in a separate patch series.
+The third one is the real recycling, 4 fixes the compilation of __skb_frag_unref
+users, and 5,6 enable the recycling on two drivers.
 
-Thanks
-Vivek
+In the last two patches I reported the improvement I have with the series.
+
+The recycling as is can't be used with drivers like mlx5 which do page split,
+but this is documented in a comment.
+In the future, a refcount can be used so to support mlx5 with no changes.
+
+Ilias Apalodimas (2):
+  page_pool: DMA handling and allow to recycles frames via SKB
+  net: change users of __skb_frag_unref() and add an extra argument
+
+Jesper Dangaard Brouer (1):
+  xdp: reduce size of struct xdp_mem_info
+
+Matteo Croce (3):
+  mm: add a signature in struct page
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
+ drivers/net/ethernet/marvell/mvneta.c         |  4 +-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm_types.h                      |  1 +
+ include/linux/skbuff.h                        | 33 +++++++++++--
+ include/net/page_pool.h                       | 15 ++++++
+ include/net/xdp.h                             |  5 +-
+ net/core/page_pool.c                          | 47 +++++++++++++++++++
+ net/core/skbuff.c                             | 20 +++++++-
+ net/core/xdp.c                                | 14 ++++--
+ net/tls/tls_device.c                          |  2 +-
+ 13 files changed, 138 insertions(+), 26 deletions(-)
+
+-- 
+2.30.2
 
