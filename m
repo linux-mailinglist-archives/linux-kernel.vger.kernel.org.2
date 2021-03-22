@@ -2,60 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D694E344082
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC151344086
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhCVMLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:11:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48260 "EHLO mail.kernel.org"
+        id S230064AbhCVMLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:11:41 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:41656 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229905AbhCVMKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:10:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D64EE6196F;
-        Mon, 22 Mar 2021 12:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616415046;
-        bh=sKtlNsySk+3lyJOkySuRpOVg/xOmHDzdz+lMwu8QQCw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oRYjw8ZCNBp0L7vFuUU45dCImCBbOYOxgFBqhA5Qx0CFcNxdwQwhft+e1OnYkEZF6
-         nQ6i6kR5mq2BwC3uZpBz5j5d8xr/GmJRLA6pNOn2q4N+UOocTKD6Xo0TiicpTKIr8a
-         oXgKPnXZ+cCyyI77ZGIQYeIrRMW4B/1Ved9UcArf4oyQFw5ybpUH/MsJRo+pMTXJe3
-         zrb/DHRmKAWMBUYaUqMdnLKPtViPw/D0r+vVdvFNA+nDp+6ASPoEISa93gLj7m5pVv
-         kXO5wQfDakTV7/T8b8q/D3zxR/SfpCIJ7gEFNFs/o9yz4/8+Bu5aXhxQhMpY8GH6Ez
-         0QpnLB/rymcvw==
-Date:   Mon, 22 Mar 2021 17:40:42 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH v2 0/3] soundwire: clear bus clash/parity interrupt
- before the mask is enabled
-Message-ID: <YFiJQlmJH8TX46IU@vkoul-mobl.Dlink>
-References: <20210302082720.12322-1-yung-chuan.liao@linux.intel.com>
+        id S229933AbhCVMLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:11:10 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lOJOW-0005vX-Up; Mon, 22 Mar 2021 23:10:54 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 22 Mar 2021 23:10:52 +1100
+Date:   Mon, 22 Mar 2021 23:10:52 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     yi.zhang@huawei.com, torvalds@linux-foundation.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] ext4 fixes for v5.12
+Message-ID: <20210322121052.GA17398@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210302082720.12322-1-yung-chuan.liao@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFgIZe4vMRDm+g8u@mit.edu>
+X-Newsgroups: apana.lists.os.linux.kernel
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-03-21, 16:27, Bard Liao wrote:
-> The SoundWire specification allows a Slave device to report a bus clash
-> or parity error with the in-band interrupt mechanism.
-> Unfortunately, on some platforms, these errors are randomly reported and
-> don't seem to be valid.
-> This series suggests the addition of a Master level quirk to discard such
-> interrupts. The quirk should in theory have been added at the Slave level,
-> but since the problem was detected with different generations of Slave
-> devices it's hard to point to a specific IP. The problem might also be
-> board-dependent and hence dealing with a Master quirk is simpler.
+Theodore Ts'o <tytso@mit.edu> wrote:
+> 
+> From: 曹子德(Theodore Y Ts'o) <tytso@mit.edu>
 
-I think this is fine approach to deal with quirks... Controllers can set
-the quirk as required. I have fixed up blank line in patch 1 and applied
+"Yue" doesn't seem to match your second character which is usually
+romanised as "Tze" in Cantonese, could it be
 
+	曹予德
+
+Cheers,
 -- 
-~Vinod
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
