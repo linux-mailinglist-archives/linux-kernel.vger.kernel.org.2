@@ -2,80 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535BB3448A2
+	by mail.lfdr.de (Postfix) with ESMTP id C428A3448A3
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhCVPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:05:47 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:39750 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbhCVPFU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:05:20 -0400
-Received: by mail-ua1-f53.google.com with SMTP id x8so5636144ual.6;
-        Mon, 22 Mar 2021 08:05:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QKcelu+NmBcULRnt/75BGuY/1w8xytannxFSZVcT4b8=;
-        b=llZv96kktIHOjydl5JKy5J7X51A5MZAfTFYcE5gFCr7w/DL63KuWPDv/0Umj6vzCKm
-         XPcsXX4UjBfu2ojyJeU1qsi3e5jq6/oRfWiUJwC/EmVT8RkPPHhPzEcJ6mUM5OrWFs8r
-         IDMxuqoQCh46TY07DYfFTGIoeQh2vOgfUXRd9en/7bY6DPXzIldE5ZcycgIc8qIlKdZs
-         6PdgEs17lqNIdj0C4glClTNki80e6PqIPU9LDopbwl9X+5iJP2jZTruwKT5/1PoZfSGP
-         GNWEgXF8+l6BkBfTNYhHFhR60Mj4Q7UHxvGVZaXabdaaj73B/MmnUzeXvJev5OW4zDgO
-         MQQA==
-X-Gm-Message-State: AOAM530tnN6KVmvpCh8NMR9ekq7Tz+eDvYIWYc6+GB9wGatvgUwedPeH
-        8J0IlWfAHaVxs0QnHRoHpjSTxNgnz+jNHJ0/Sy60r6eC
-X-Google-Smtp-Source: ABdhPJz0b1s1oTOxCucwqAxWp5R67A8XGklstumBCcjoVt+uAGLhQvuzSA30ih2KS6v8elIzwhSfkW8ymWhFpvRQgjg=
-X-Received: by 2002:ab0:30b3:: with SMTP id b19mr307821uam.58.1616425518872;
- Mon, 22 Mar 2021 08:05:18 -0700 (PDT)
+        id S231585AbhCVPFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:05:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231546AbhCVPF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:05:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD02461983;
+        Mon, 22 Mar 2021 15:05:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616425528;
+        bh=c4yP7LH8IBW/QR/vQG5f43s6dXD+rwLuJrpHYufaYPg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fs29X7UnIjE+Bl8ZhIKrYh5yNaYulJZGHlE+nNA9MKMIARjndFhJZSrJOathwSV8R
+         uugjpqF1mpuEJF/pZKPn/dQVsYEh1ewpWy7X3z/6fDBA6opAV4iC11ODWBZ1jQFf0r
+         HAyho/s5aElYWAPrdEl6cG3qvDBIC0YvolWrvSom6nj/v+DYAyZCqkyNKcbjXYc/Q0
+         nwk+k9SAPvQg1qezFKJJUXHqFVWcpyruK0W3yM+OrLYYDXbfHP9oVb2/PAskylPqbo
+         vnmqZT64DQJHD40k1NfcR59h304u+irrl89Gk/ROKyANR7qmPxofwImf2iuD/96Tzo
+         YRmHXbNZF4wug==
+Received: by mail-ej1-f51.google.com with SMTP id u21so3872120ejo.13;
+        Mon, 22 Mar 2021 08:05:27 -0700 (PDT)
+X-Gm-Message-State: AOAM531B3/XAPkd5WuiAC/BAEmEXaRfq4jLUiOl+8JYRcD1100+22kul
+        hdKL6W02BIpbul9JkaBwGnDbieQvXorZpAGPvg==
+X-Google-Smtp-Source: ABdhPJyZsV8x+yYZywL3lcsQsXOxgCOh3eH/w6d7o0h5Iv9aWzDffRX6YSUicNu0SInCh4YA5/zW5+whL6f4MGzx6i4=
+X-Received: by 2002:a17:907:7651:: with SMTP id kj17mr184000ejc.127.1616425526252;
+ Mon, 22 Mar 2021 08:05:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210322105307.1291840-1-arnd@kernel.org>
-In-Reply-To: <20210322105307.1291840-1-arnd@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Mar 2021 16:05:07 +0100
-Message-ID: <CAMuHMdUrALGRaxgrOMUjhEzYUrHataDDNaMr8qs+EMwjrr9hfg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] fbdev: omapfb: avoid -Wempty-body warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1609144630-14721-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1609144630-14721-5-git-send-email-yongqiang.niu@mediatek.com> <CAAOTY_98vrwQrefD9KwvsM+9+tDpNcUwbLoVwu_mXRf17imuTA@mail.gmail.com>
+In-Reply-To: <CAAOTY_98vrwQrefD9KwvsM+9+tDpNcUwbLoVwu_mXRf17imuTA@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 22 Mar 2021 23:05:15 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-yegJy-z4E_A0=3uxHHgre0jH2syQOY==PLe6yvx0vYA@mail.gmail.com>
+Message-ID: <CAAOTY_-yegJy-z4E_A0=3uxHHgre0jH2syQOY==PLe6yvx0vYA@mail.gmail.com>
+Subject: Re: [PATCH v3, 4/8] soc: mediatek: mmsys: add component OVL_2L2
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:54 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+Hi, Matthias:
+
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=882=
+9=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:23=E5=AF=AB=E9=81=93=EF=
+=BC=9A
 >
-> Building with 'make W=1' shows a few harmless warnings:
+> Hi, Yongqiang:
 >
-> drivers/video/fbdev/omap2/omapfb/omapfb-main.c: In function 'omapfb_calc_addr':
-> drivers/video/fbdev/omap2/omapfb/omapfb-main.c:823:56: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->   823 |                     var->xoffset, var->yoffset, offset);
->       |                                                        ^
-> drivers/video/fbdev/omap2/omapfb/omapfb-ioctl.c: In function 'omapfb_ioctl':
-> drivers/video/fbdev/omap2/omapfb/omapfb-ioctl.c:911:45: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->   911 |                 DBG("ioctl failed: %d\n", r);
+> Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=
+=9C=8828=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=884:37=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+> >
+> > This patch add component OVL_2L2
 >
-> Avoid these by using no_printk(), which adds format string checking as
-> well.
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+
+How do you think about this patch? One drm patch [1] depends on this patch.
+
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/2021020208123=
+7.774442-2-hsinyi@chromium.org/
+
+Regards,
+Chun-Kuang.
+
+
 >
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> >
+> > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> > ---
+> >  include/linux/soc/mediatek/mtk-mmsys.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc=
+/mediatek/mtk-mmsys.h
+> > index 4b6c514..42476c2 100644
+> > --- a/include/linux/soc/mediatek/mtk-mmsys.h
+> > +++ b/include/linux/soc/mediatek/mtk-mmsys.h
+> > @@ -29,6 +29,7 @@ enum mtk_ddp_comp_id {
+> >         DDP_COMPONENT_OVL0,
+> >         DDP_COMPONENT_OVL_2L0,
+> >         DDP_COMPONENT_OVL_2L1,
+> > +       DDP_COMPONENT_OVL_2L2,
+> >         DDP_COMPONENT_OVL1,
+> >         DDP_COMPONENT_PWM0,
+> >         DDP_COMPONENT_PWM1,
+> > --
+> > 1.8.1.1.dirty
+> > _______________________________________________
+> > Linux-mediatek mailing list
+> > Linux-mediatek@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
