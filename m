@@ -2,207 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C377334456D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC093344570
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhCVNSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:18:46 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43694 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbhCVNOb (ORCPT
+        id S231830AbhCVNTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232464AbhCVNOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:14:31 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12MDCOa6108076;
-        Mon, 22 Mar 2021 08:12:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616418744;
-        bh=Pu6omYLnSsfdHXNiWifmVPFAJ9OsK1lc+CVG8b8jZU8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=M5LXaW+Bn6rIBJQvGg7cWxrkv2Rt+7RE+3vHrvHVaHp0m0E5ME7jkami4G1yZRWoA
-         TuaFfmzVHLmMlS37mt0bYcrZycBuPG7kkeFcw/CZ9ro6oBzAw4y19oisIWrrn74rQd
-         m7vYK+3iDgOqElD3J9n7nkg27YLPHjJhiAN9aUFg=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12MDCOQ6029556
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Mar 2021 08:12:24 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 22
- Mar 2021 08:12:24 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 22 Mar 2021 08:12:24 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12MDC8Nu074875;
-        Mon, 22 Mar 2021 08:12:21 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 3/3] arm64: dts: ti: k3-j7200: Add support for higher speed modes and update delay select values for MMCSD subsystems
-Date:   Mon, 22 Mar 2021 18:42:06 +0530
-Message-ID: <20210322131206.24887-4-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210322131206.24887-1-a-govindraju@ti.com>
-References: <20210322131206.24887-1-a-govindraju@ti.com>
+        Mon, 22 Mar 2021 09:14:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B200C061762;
+        Mon, 22 Mar 2021 06:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VyQ3noBGBl7to0Ak709SJOEr1ptQB/CJ1kxoLr54qT0=; b=edSZN6BOpAbq5FBQQED410br1I
+        nNsiy00bAQ3OUcYzccL77Cbmmu7+y++WWG/0mXFTh7DHsjhiXjz632U0FBbKu7Vna+QF2hAvyz30B
+        2udCgvhVRUMTIR4vOG93bJ+t61y4KQ5/Vyh5Ja3RRslUEFlOkScXT04AlrE3/gmBMebZlvmhq3TNf
+        irv8tjdsheQBjYUQZNtaD0EPuCZvtS+VsHQuX4Up1T+0vT/uAdLvpcKAJFkQzrrVnPajt3WABKJNx
+        ux0XzLlWRz1avusjMTJt5y4B1u/WrVF2FXw0PDKGjxWe/5nE/6zi//4NR9uF5szM5qkT3n3VRNHD8
+        f4s3rs/A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOKMO-008YL0-9B; Mon, 22 Mar 2021 13:13:00 +0000
+Date:   Mon, 22 Mar 2021 13:12:44 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
+        hyc.lee@gmail.com, viro@zeniv.linux.org.uk, hch@lst.de,
+        hch@infradead.org, ronniesahlberg@gmail.com,
+        aurelien.aptel@gmail.com, aaptel@suse.com, sandeen@sandeen.net,
+        dan.carpenter@oracle.com, colin.king@canonical.com,
+        rdunlap@infradead.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: Re: [PATCH 2/5] cifsd: add server-side procedures for SMB3
+Message-ID: <20210322131244.GM1719932@casper.infradead.org>
+References: <20210322051344.1706-1-namjae.jeon@samsung.com>
+ <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
+ <20210322051344.1706-3-namjae.jeon@samsung.com>
+ <20210322083445.GJ1719932@casper.infradead.org>
+ <YFhw932H8BZalhmu@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFhw932H8BZalhmu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following speed modes are now supported in J7200 SoC,
-- HS200 and HS400 modes at 1.8 V card voltage, in MMCSD0 subsystem [1].
-- UHS-I speed modes in MMCSD1 subsystem [1].
+On Mon, Mar 22, 2021 at 07:27:03PM +0900, Sergey Senozhatsky wrote:
+> On (21/03/22 08:34), Matthew Wilcox wrote:
+> > > +++ b/fs/cifsd/mgmt/ksmbd_ida.c
+> > > @@ -0,0 +1,69 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > > +/*
+> > > + *   Copyright (C) 2018 Samsung Electronics Co., Ltd.
+> > > + */
+> > > +
+> > > +#include "ksmbd_ida.h"
+> > > +
+> > > +struct ksmbd_ida *ksmbd_ida_alloc(void)
+> > > +{
+> > > +	struct ksmbd_ida *ida;
+> > > +
+> > > +	ida = kmalloc(sizeof(struct ksmbd_ida), GFP_KERNEL);
+> > > +	if (!ida)
+> > > +		return NULL;
+> > > +
+> > > +	ida_init(&ida->map);
+> > > +	return ida;
+> > > +}
+> >
+> > ... why?  Everywhere that you call ksmbd_ida_alloc(), you would
+> > be better off just embedding the struct ida into the struct that
+> > currently has a pointer to it.  Or declaring it statically.  Then
+> > you can even initialise it statically using DEFINE_IDA() and
+> > eliminate the initialiser functions.
+> 
+> IIRC this ida is per SMB session, so it probably cannot be static.
 
-Add support for UHS-I modes by adding voltage regulator device tree nodes
-and corresponding pinmux details, to power cycle and voltage switch cards.
-Set respective tags in sdhci0 and remove no-1-8-v tag from sdhci1
-device tree nodes.
+Depends which IDA you're talking about.
 
-Also update the delay values for various speed modes supported, based on
-the revised january 2021 J7200 datasheet[2].
++struct ksmbd_conn *ksmbd_conn_alloc(void)
++	conn->async_ida = ksmbd_ida_alloc();
+Embed into 'conn'.
 
-[1] - section 12.3.6.1.1 MMCSD Features, in
-      https://www.ti.com/lit/ug/spruiu1a/spruiu1a.pdf,
-      (SPRUIU1A – JULY 2020 – REVISED JANUARY 2021)
++static struct ksmbd_ida *ida;
++int ksmbd_ipc_init(void)
++	ida = ksmbd_ida_alloc();
+Should be static.
 
-[2] - https://www.ti.com/lit/ds/symlink/dra821u.pdf,
-      (SPRSP57B – APRIL 2020 – REVISED JANUARY 2021)
+> And Windows, IIRC, doesn't like "just any IDs". Some versions of Windows
+> would fail the session login if server would return the first id == 0,
+> instead of 1. Or vice versa. I don't remember all the details, the last
+> time I looked into this was in 2019.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- .../dts/ti/k3-j7200-common-proc-board.dts     | 42 +++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 14 ++++++-
- 2 files changed, 54 insertions(+), 2 deletions(-)
+Sure, you can keep that logic.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index b493f939b09a..de8c06bdc825 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -16,6 +16,29 @@
- 		stdout-path = "serial2:115200n8";
- 		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
- 	};
-+
-+	vdd_mmc1: fixedregulator-sd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_mmc1";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-boot-on;
-+		enable-active-high;
-+		gpios = <&exp2 2 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	vdd_sd_dv: gpio-regulator-vdd-sd-dv {
-+		compatible = "regulator-gpio";
-+		regulator-name = "vdd_sd_dv";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&vdd_sd_dv_pins_default>;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-boot-on;
-+		gpios = <&main_gpio0 55 GPIO_ACTIVE_HIGH>;
-+		states = <1800000 0x0
-+			  3300000 0x1>;
-+	};
- };
- 
- &wkup_pmx0 {
-@@ -45,6 +68,13 @@
- };
- 
- &main_pmx0 {
-+	main_i2c0_pins_default: main-i2c0-pins-default {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0xd4, PIN_INPUT_PULLUP, 0) /* (V3) I2C0_SCL */
-+			J721E_IOPAD(0xd8, PIN_INPUT_PULLUP, 0) /* (W2) I2C0_SDA */
-+		>;
-+	};
-+
- 	main_i2c1_pins_default: main-i2c1-pins-default {
- 		pinctrl-single,pins = <
- 			J721E_IOPAD(0xdc, PIN_INPUT_PULLUP, 3) /* (U3) ECAP0_IN_APWM_OUT.I2C1_SCL */
-@@ -70,6 +100,12 @@
- 			J721E_IOPAD(0x120, PIN_OUTPUT, 0) /* (T4) USB0_DRVVBUS */
- 		>;
- 	};
-+
-+	vdd_sd_dv_pins_default: vdd-sd-dv-pins-default {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0xd0, PIN_INPUT, 7) /* (T5) SPI0_D1.GPIO0_55 */
-+		>;
-+	};
- };
- 
- &wkup_uart0 {
-@@ -157,6 +193,10 @@
- };
- 
- &main_i2c0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_i2c0_pins_default>;
-+	clock-frequency = <400000>;
-+
- 	exp1: gpio@20 {
- 		compatible = "ti,tca6416";
- 		reg = <0x20>;
-@@ -206,6 +246,8 @@
- 	/* SD card */
- 	pinctrl-0 = <&main_mmc1_pins_default>;
- 	pinctrl-names = "default";
-+	vmmc-supply = <&vdd_mmc1>;
-+	vqmmc-supply = <&vdd_sd_dv>;
- 	ti,driver-strength-ohm = <50>;
- 	disable-wp;
- };
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index e60650a62b14..f86c493a44f1 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -512,11 +512,16 @@
- 		ti,otap-del-sel-mmc-hs = <0x0>;
- 		ti,otap-del-sel-ddr52 = <0x6>;
- 		ti,otap-del-sel-hs200 = <0x8>;
--		ti,otap-del-sel-hs400 = <0x0>;
-+		ti,otap-del-sel-hs400 = <0x5>;
-+		ti,itap-del-sel-legacy = <0x10>;
-+		ti,itap-del-sel-mmc-hs = <0xa>;
- 		ti,strobe-sel = <0x77>;
-+		ti,clkbuf-sel = <0x7>;
- 		ti,trm-icp = <0x8>;
- 		bus-width = <8>;
- 		mmc-ddr-1_8v;
-+		mmc-hs200-1_8v;
-+		mmc-hs400-1_8v;
- 		dma-coherent;
- 	};
- 
-@@ -534,7 +539,12 @@
- 		ti,otap-del-sel-sdr50 = <0xc>;
- 		ti,otap-del-sel-sdr104 = <0x5>;
- 		ti,otap-del-sel-ddr50 = <0xc>;
--		no-1-8-v;
-+		ti,itap-del-sel-legacy = <0x0>;
-+		ti,itap-del-sel-sd-hs = <0x0>;
-+		ti,itap-del-sel-sdr12 = <0x0>;
-+		ti,itap-del-sel-sdr25 = <0x0>;
-+		ti,clkbuf-sel = <0x7>;
-+		ti,trm-icp = <0x8>;
- 		dma-coherent;
- 	};
- 
--- 
-2.17.1
+> > ... walk the linked list looking for an ID match.  You'd be much better
+> > off using an allocating XArray:
+> > https://www.kernel.org/doc/html/latest/core-api/xarray.html
+> 
+> I think cifsd code predates XArray ;)
 
+Sure, but you could have used an IDR ;-)
+
+> > Then you could lookup tree connections in O(log(n)) time instead of
+> > O(n) time.
+> 
+> Agreed. Not sure I remember why the code does list traversal here.
