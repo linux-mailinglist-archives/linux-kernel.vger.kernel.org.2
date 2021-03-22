@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E4A34388A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE173438B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCVF3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 01:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCVF33 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 01:29:29 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22D3C061574;
-        Sun, 21 Mar 2021 22:29:28 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id c3so9429189qkc.5;
-        Sun, 21 Mar 2021 22:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+NandHOUNqJJLy4t3N0mJCzMm5aUJ7mG9Y8NFGBMAxQ=;
-        b=OwpzLLvtOhzPSLZTBUC1BpgjANuSHkBU31yGtsqU+J2kMIBiMBNTHPBCHhjTqRqJyE
-         P2J+4v1o6ik2mLChqtbyA+btgNlbJ006M9GmjVEDrRQXzirU8j6uvxqj8eAMQSdU3RPj
-         U/SWXfMgbd3yOYAw6bzNmtpj7/fkUbmjsCuxyWfvT8b1wjFUA3QkGw+7azSQi7nL7rYz
-         BN5cUPkW48F1t3v61isQ2uSE5jXJ8AoxgFAzM604LAW/P4tpFpyxyb3wOtcQstORRtwS
-         C7Ihbud7Fqu1ij5ovIvldOTdVQOlQz6wgybEpnayqsQpnfZzC51fJLvTAJFIFHpHtIV6
-         1UIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=+NandHOUNqJJLy4t3N0mJCzMm5aUJ7mG9Y8NFGBMAxQ=;
-        b=TarCO+GnId2R+sA+vpBwQPzqwLbMUAIHpNwNHjynqgD6dqdbGn23wIH38/+/HTiCOp
-         IB9jvD/lWPcPEq+kF0IalQosP0SX5/fWVmnvm2G/7HaxJcBBaPRAAOoT1ddZUebRJSo0
-         fylkKXq5NeLsJ5/2I2svGivWn5OtBrHJaEx04S0qE+Vcy7z+TvVr9z40K8hB8Vdz/xst
-         sx060i/tPIQx3oSA1ZKB+PuBYlVD6O9Ld22xc8cG2OFpe1PxOO2NyKTweya7Gu6vXuqn
-         BJDtC3n9kwMN+il3JuKvIMctTxeTmODVOZ1JxHvjBbR+iLP//RbtLq9e92Ln8MduYJ94
-         HQOQ==
-X-Gm-Message-State: AOAM531HzXxbRlkWvyVGrn7wX3hZMJZ20j15xBXfEPpe0h9XkH7ZSX7B
-        ujV9u99TjPKDNPHb85yAb9E=
-X-Google-Smtp-Source: ABdhPJy2/kTOfNVgI15cCI5Gwb2/VQwxZZOtWll/keVq1gPn4jFKr7GwBhOBOmzpbsWYsMMbGDHBxw==
-X-Received: by 2002:a37:6244:: with SMTP id w65mr9292357qkb.393.1616390968184;
-        Sun, 21 Mar 2021 22:29:28 -0700 (PDT)
-Received: from ArchLinux ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id g14sm10152340qkm.98.2021.03.21.22.29.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 22:29:27 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 10:59:14 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Randy Dunlap <rdunlap@bombadil.infradead.org>, pbonzini@redhat.com,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: A typo fix
-Message-ID: <YFgrKpNbWvCRQA4/@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@bombadil.infradead.org>, pbonzini@redhat.com,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210320190425.18743-1-unixbhaskar@gmail.com>
- <f9d4429-d594-8898-935a-e222bb8c247@bombadil.infradead.org>
- <20210321225428.GA1885130@gmail.com>
+        id S229771AbhCVFiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 01:38:19 -0400
+Received: from mail-eopbgr10071.outbound.protection.outlook.com ([40.107.1.71]:10643
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229455AbhCVFhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 01:37:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NbbEll5xQ+sISwsU6g6Fq1M899+Jd9cjbMfVZZNP8KCir/QQ6PySKjCdFGQC1Ob2cdWrOUqzAZ1gg2I4BrglI82ibR80b744+vPOC4ntNbLGFJ0wptDxuQ6HoppfowdOn7hv/68ytgtY1Fkm3RZ2daIEaIGHx2rILTFBxlBKK3HmUzq5VDUesZ1PjE654/IzxcDpdR5Tqj2VX8fRzqYN6OkdA2ZdidEcGwi+qDyYmhOm6ITtMwZ9Zl6z5mB0cv3k9R0lX5KZPJPpTS8kkaAfRw4kHcQIkC1eQ9mn54YrQgyxw3V1VTr7bdtqfdoLdLk8PggBCjgIAlsoGVXmFiK/Og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HpwuJNNpVX8ai3Yg++Ep7MI2l4Sjc4nP3uy8qhKDtIE=;
+ b=AnemrYiOzuUoxyYbgHBACCBEcQe8e1JtiiknMRTR0l5r5P7gyssHHPQwdquShNRjadSd0yleeCysEB/XoORdoeMhAPAcNg82jSPrczOse7dYL+kt+LEJJDm3hkKCa5C0DYtifYaUE+hltTq6FU6oLiw+ItLFN3MXAqm0jcO+9iGDAPu7SyB02kvAXp7lZm0RzB9js6VL6yyIcKvtmAyehaaeoqbzMoTIqUZWxZES38wQ6v/V2C2jj72sLt4Q3aS5/3IKHKUmm9XgxEYogNF8ivrj6XtRqRUWvKV9L/puztd35aFueHhb+EsARUyMM5Ol+iKqFnynVKnQzZvHmLuicA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HpwuJNNpVX8ai3Yg++Ep7MI2l4Sjc4nP3uy8qhKDtIE=;
+ b=g5jRP+09wi4eVFRJ+byjyctsu/GpfwcF66IuiHiJQ2Cw3tzY/FjrXd2PnhaxJzJ26hu/vIocShlWEYIPSH8LcowIyavYBps46yglphJe47LppTRzeE9mp90DlL0+0FqqUlI5oBczoBTwbBt65mbGEClOZ9xzA4q8ePcwmcBw9QA=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR04MB4654.eurprd04.prod.outlook.com (2603:10a6:803:71::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
+ 2021 05:37:50 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::3ce1:4759:5c33:514c]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::3ce1:4759:5c33:514c%5]) with mapi id 15.20.3955.025; Mon, 22 Mar 2021
+ 05:37:50 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, l.stach@pengutronix.de
+Subject: [PATCH] drm/imx: ipuv3-plane: Remove two unnecessary export symbols
+Date:   Mon, 22 Mar 2021 13:24:00 +0800
+Message-Id: <1616390640-22289-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HK2PR0401CA0009.apcprd04.prod.outlook.com
+ (2603:1096:202:2::19) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yYKjLYK+Hby8LEgc"
-Content-Disposition: inline
-In-Reply-To: <20210321225428.GA1885130@gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by HK2PR0401CA0009.apcprd04.prod.outlook.com (2603:1096:202:2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 05:37:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e553a953-32dc-4d9e-60e5-08d8ecf4a18d
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4654:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4654501209E5C175A2C144CD98659@VI1PR04MB4654.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +UM+LBWi+E3JCgyN0QpPTpoHKzvzcg7FKWqFVGI5hW7n6EVtKF8vg9lXxIdA70jeAlYnVr9iJCAf0FWvHr+AjRytNnROCdYlmVfE1x1NAOuAF7ATnModExb0QZyH46o7iEp3/20hVCvjyElzFhEvnu3Wi4MhVtVjToY+jiCAKm2n4/2gsr3bjtJBmZu0GHaTTAlP93GUgv/HlPhchiun46Tklv49o7+UKrOsMujQb0/yaH6jvQAnGtX3QCLc0/D1oS6BdsMZJAVlOmr7+N8Qv76iV84Kq/YIGKWPJDksfGIa8WjMdpoGq1z/3+2JC/AmwlGHPJjx5Vm56LGZCJomnwV5fZ2m6lj7TLU7uZBELP7Ey/1Q3mM4j/CeQqHObyKikeJhAMyjmPzYZZYpyXHR3LtBQzJKgWeDQHyOLNKHjSSvZRi9fl01N0LjwnGWAeaZ8kyGuRFJx768/fromSh+Cg2aYXHi3/9oArrAppolBtmx+Hl72UK6pzbV/BQGhrMCaWijvODsv6B5sS8PdGUF6AKMXYfx9US2xTbDFgadS6KmbztsOL+HsTf9VeU8iVanlsDM4rgQruN2Y7f0ZTou8D+fnf2Qkth/xU+38V4i6C04nq5TAbFzJxX/rlbx7MAVFbRBZZAw2VM3QVQN0DZG1P79Lur/uk2n6HJ8SR0KdmM6UipHQjpdHBpJ9pzA+/0h
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(36756003)(66946007)(16526019)(316002)(66556008)(52116002)(66476007)(83380400001)(478600001)(5660300002)(186003)(6506007)(8936002)(26005)(6666004)(956004)(2616005)(6512007)(38100700001)(86362001)(6486002)(2906002)(69590400012)(4326008)(8676002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MGVx7m1mM/hXp2ZwnzyXNSs5j2oF1EEUX8O//KSKenDvPoZyRMOxQbb8kypI?=
+ =?us-ascii?Q?L6V4O6f90mGV5ujMxMDxAfacP/qslbTq5pRgJbAvpH3hGrx24XqRZsV7Z1oO?=
+ =?us-ascii?Q?9Jszc/lgW4XuT/0EnA97mNiA4zHNVmUs/00or+ZJNWVOcrB0AI8det5X3bn7?=
+ =?us-ascii?Q?+kgL8rcy8H4ipUVwG9mivt9JhxkCIyVrASmxsVD9nSNubD2BNhm8u7rjhoD+?=
+ =?us-ascii?Q?ViIY8//icXQf6OaVSLVutBHBOhgaiLuy+tK8K/DXJDcBmm9SXrJ1PWsmXX9V?=
+ =?us-ascii?Q?tUMkClJ/blC8U+IBMb/+tJheUGKT+q0jqr/dAu+i/dpOBm5afBxDGTc4VOS2?=
+ =?us-ascii?Q?cWZ7jrwGdZ2sXHVNYQT+7fzoxkCqidsYbCPmCiZq0iuW0sQzk8RwMoVcm4Qg?=
+ =?us-ascii?Q?EL8PTGeY/kMZOqWtL9nEyg6kWrsBep1xCyKPWXM7itcw9xYZG8576LcuNvRW?=
+ =?us-ascii?Q?bqWMm7qcepHOlQ4kTItK+mCYD/dqVejzWyDXxCfq+x4DQmgzuabx3DoYFiG4?=
+ =?us-ascii?Q?QtHoCIo/m77Yi9AS+h1+W1f4dPimpkwCel3ogxsboDZcvKVrtnx8qFAsUeQf?=
+ =?us-ascii?Q?ppUkuYYvJ9iH9sgZt/lhCN+yiwtBQkUmdItSb+QqNjJQABSp/MGPGk9hRT/c?=
+ =?us-ascii?Q?twcXIUSv2OSUyZxy7klS8iz4h+hMivIuB2pafxI2/52O+ZLNVKD7io1putSf?=
+ =?us-ascii?Q?TZ2vpo6N9is2NNnfsCw1zIUid8vmgPk5zaFvy8D8f2QIAON0h3HiAhvPcQvL?=
+ =?us-ascii?Q?7kDK7wponyxGRYfikFRIH4n1qzVP72jO26Xop9CHTsXtQHN9FzBKe6L5jtpp?=
+ =?us-ascii?Q?npVPF1VODgl7/EwvaOxV7zuEny+Gx1Pbf6w0kF+NrDNtHfhUb7bsDrd/Bwf3?=
+ =?us-ascii?Q?5rv3z0nUQPwv9ARJWyLsvVqheAGAgbkT1+DPGceFAoz5W+4PGLDGKwN/dgGo?=
+ =?us-ascii?Q?f+U6mz6v6tDYZ0PxRSyDnUp5DpJTs2/F3jDcTnGbsW18RvAHkrojzyqznU2a?=
+ =?us-ascii?Q?OdjMQR3L5kUU/+6tKvreSfjL7jKlDpjvXFev8Dby7Fs5U0P2avlO/MxDnKYe?=
+ =?us-ascii?Q?XvpggNydqIEQCyUO2tcso/JS6uptetU+fwUgAOOh+HIdHzcw8NevuzQli7uD?=
+ =?us-ascii?Q?bYBvyXzClTX+i02ubrf77UKWwnR6X0/d3UzGH84LTNH5WxZHr9u4BujJIJKG?=
+ =?us-ascii?Q?2pjwMO5OE0X59u0cS+Xlrgr6cv5QhKjzcU04ahvpnoUtfQvxBfMT4qkGwb2N?=
+ =?us-ascii?Q?73KprfZv+AD6x+5M8vCxO7GkUkmYzRV3uQUl5MUb4fOjOZx5hRjWcaiR+FDJ?=
+ =?us-ascii?Q?3BG5qpsV5AsylWx/vNIns9ru?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e553a953-32dc-4d9e-60e5-08d8ecf4a18d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 05:37:50.3905
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l3RcBg0pFVcdEqrSnl0sRrYUIRPE5pYdY7DVruH1e4xyZuu4WCXu13KJFEmQxk/ft8kCrOlcgofwo1kUMe9YBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4654
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ipu_plane_disable_deferred() and ipu_plane_assign_pre() functions have
+not been used by any other modules but only imxdrm itself internally since
+imxdrm and imx-ipuv3-crtc were merged in one module. So, this patch removes
+export symbols for the two functions.
 
---yYKjLYK+Hby8LEgc
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+Fixes: 3d1df96ad468 (drm/imx: merge imx-drm-core and ipuv3-crtc in one module)
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
+---
+ drivers/gpu/drm/imx/ipuv3-plane.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-On 23:54 Sun 21 Mar 2021, Ingo Molnar wrote:
->
->
->These single file typo fixes are a bad idea for another reason as
->well, as they create a lot of unnecessary churn.
->
-Huh! I was expecting it from the moment I started doing it ...finally it arrives.
+diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
+index 0755080..4bd39bb 100644
+--- a/drivers/gpu/drm/imx/ipuv3-plane.c
++++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+@@ -264,7 +264,6 @@ void ipu_plane_disable_deferred(struct drm_plane *plane)
+ 		ipu_plane_disable(ipu_plane, false);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(ipu_plane_disable_deferred);
+ 
+ static void ipu_plane_state_reset(struct drm_plane *plane)
+ {
+@@ -813,7 +812,6 @@ int ipu_planes_assign_pre(struct drm_device *dev,
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(ipu_planes_assign_pre);
+ 
+ struct ipu_plane *ipu_plane_init(struct drm_device *dev, struct ipu_soc *ipu,
+ 				 int dma, int dp, unsigned int possible_crtcs,
+-- 
+2.7.4
 
-I am not sure about "so called workflowo of others" ..I am gonna do it in my
-way as long as it providing good.
-
-I think this is best way to do it.
-
-~Bhaskar
-
-
---yYKjLYK+Hby8LEgc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBYKyYACgkQsjqdtxFL
-KRUAegf+L64kCxotColN3uHDYT9YxhrAh6GXTqprXYYcJCt+SsXePhx9FA5QcpYT
-dfDEdWQ3Y1+TtTtjGfxKMWdTRPqxzylZDwV0bgfhTZtC7C8AxIrp56xGHr/FA0qj
-dYtkB0QLGd2dyN2qfgK+Z5dYiWAmMlnfjM/CD9fpRAZQbMbi+P0UAeOXKQ/3/JMP
-c9uPHW2g3Xa7OBSJfI8LTRs7oe4+dxEA+J9IMZOaIkh7u3tejsT4N6vFOkqE9CnQ
-wlS5qj7wV3PC5hKI2qnBrJg6USFMGIRn7wgHKjzlf3xlgyEX3iN6CVxVTu/xV6nH
-qCLPOB7S9Ib/Bhn5CwIMFiGPX4n5lQ==
-=GEUZ
------END PGP SIGNATURE-----
-
---yYKjLYK+Hby8LEgc--
