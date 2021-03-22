@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC776343F6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36122343F74
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhCVLQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:16:40 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:38892 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhCVLQ0 (ORCPT
+        id S229526AbhCVLRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:17:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31531 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230156AbhCVLQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:16:26 -0400
-Received: by mail-wr1-f53.google.com with SMTP id z2so16246210wrl.5;
-        Mon, 22 Mar 2021 04:16:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UkbQHhRFu3VCem8wMbYGSCHnBOT7NZBm3cb0xTaOfF0=;
-        b=jFOahz2DY2y/DDIDWItBo+DTjtqHrA85pvlDoNSUxXQQUN9I4SZyEpKgriuxYWLYIX
-         F/du/WtoC2LPJHYyO+Zav7UmNdaDkENo3OwSIMn8jZHYXLCYBkpPNj9hfabZRseTlkti
-         8NboPo0Ynb/4fXE7J1isTzGUeyd77+hyVh5Ift+JO89Dw4IniGaUo10zMHgABYf67PQ9
-         iOou6GlnllcoiNrfWOz/t3HKSz7Dd5aS9aMnPfVuS7pZxRnhidbi0HbJOmoy1E+VUak5
-         aHJ6gyEEeBM8ZRqGXe+uPUQ/L3fU5ya/hFFQUxUm9Ve1WNhMjHW8AMXowZB/g6uTBoUb
-         CBWg==
-X-Gm-Message-State: AOAM531MMJ6ssQDETU4G4cgHSAovNeq54W9dX4pdbuRbmaFIf/A9Ewn3
-        JDWResRjtBB8owjETURXdHnHGka4/zU=
-X-Google-Smtp-Source: ABdhPJxONToZF/zYJgJuQYMDI6ZY4mH5zGY9bhnz1Ws/t2BZvxSpu6NNWHPzKlavMQhoByPSHAGsAw==
-X-Received: by 2002:a05:6000:1563:: with SMTP id 3mr17541609wrz.211.1616411783637;
-        Mon, 22 Mar 2021 04:16:23 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id o15sm13518844wra.93.2021.03.22.04.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 04:16:23 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 11:16:21 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Matheus Castello <matheus@castello.eng.br>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, vkuznets <vkuznets@redhat.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/Hyper-V: Support for free page reporting
-Message-ID: <20210322111621.kdjsaxxioxo6k7dl@liuwe-devbox-debian-v2>
-References: <SN4PR2101MB088069A91BC5DB6B16C8950BC0699@SN4PR2101MB0880.namprd21.prod.outlook.com>
- <MWHPR21MB1593BF61E959AC8F056CDFF5D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
- <SN4PR2101MB088036B8892891C5408067BEC0689@SN4PR2101MB0880.namprd21.prod.outlook.com>
- <MWHPR21MB15932DFEE4F0756419D58525D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Mon, 22 Mar 2021 07:16:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616411814;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cWEFybr+IaJN8OOZQO/MBfevyb+n5hnb9KMLfpdHKIg=;
+        b=Gw9/vn5TAYBsDK618a2e683Gnap4DLdyJ2odXWAJN939XXJ1rPqVai41MSbYiKnzgn0EXK
+        TQh8G1OdL28yFgdJFN2tRqXib1heeY3ar29J6ykh58qq/dQJIRw5Af4E9blJa/GKdNq9Yf
+        KmOXLpLZkzigbuKfxhNmX69q2ZHB3VQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-345-VrV3kUaENmGrlw0NErUbWA-1; Mon, 22 Mar 2021 07:16:53 -0400
+X-MC-Unique: VrV3kUaENmGrlw0NErUbWA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8417E108BD0A;
+        Mon, 22 Mar 2021 11:16:51 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 30DC619C78;
+        Mon, 22 Mar 2021 11:16:48 +0000 (UTC)
+Subject: Re: [PATCH v1 1/2] s390/kvm: split kvm_s390_real_to_abs
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Thomas Huth <thuth@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+References: <20210319193354.399587-1-imbrenda@linux.ibm.com>
+ <20210319193354.399587-2-imbrenda@linux.ibm.com>
+ <fa583ab0-36ac-47a7-7fa3-4ce88c518488@redhat.com>
+ <f76f770c-908e-4f4f-f060-15f4d30652d8@redhat.com> <YFh7nGfVZRD15Cbp@osiris>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <c394c3ce-2d13-b3d1-c886-22478fee7dcb@redhat.com>
+Date:   Mon, 22 Mar 2021 12:16:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15932DFEE4F0756419D58525D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <YFh7nGfVZRD15Cbp@osiris>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 09:30:50PM +0000, Michael Kelley wrote:
-> From: Sunil Muthuswamy <sunilmut@microsoft.com>  Sent: Friday, March 19, 2021 2:21 PM
-> > 
-> > > What's the strategy for this flag in the unlikely event that the hypercall fails?
-> > > It doesn't seem right to have hv_query_ext_cap() fail, but leave the
-> > > static flag set to true.  Just move that line down to after the status check
-> > > has succeeded?
-> > 
-> > That call should not fail in any normal circumstances. The current idea was to
-> > avoid repeating the same call on persistent failure. 
+On 22.03.21 12:12, Heiko Carstens wrote:
+> On Mon, Mar 22, 2021 at 10:53:46AM +0100, David Hildenbrand wrote:
+>>>> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+>>>> index daba10f76936..7c72a5e3449f 100644
+>>>> --- a/arch/s390/kvm/gaccess.h
+>>>> +++ b/arch/s390/kvm/gaccess.h
+>>>> @@ -18,17 +18,14 @@
+>>>>     /**
+>>>>      * kvm_s390_real_to_abs - convert guest real address to guest absolute address
+>>>> - * @vcpu - guest virtual cpu
+>>>> + * @prefix - guest prefix
+>>>>      * @gra - guest real address
+>>>>      *
+>>>>      * Returns the guest absolute address that corresponds to the passed guest real
+>>>> - * address @gra of a virtual guest cpu by applying its prefix.
+>>>> + * address @gra of by applying the given prefix.
+>>>>      */
+>>>> -static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
+>>>> -						 unsigned long gra)
+>>>> +static inline unsigned long _kvm_s390_real_to_abs(u32 prefix, unsigned long gra)
+>>>
+>>> <bikeshedding>
+>>> Just a matter of taste, but maybe this could be named differently?
+>>> kvm_s390_real2abs_prefix() ? kvm_s390_prefix_real_to_abs()?
+>>> </bikeshedding>
+>>
+>> +1, I also dislike these "_.*" style functions here.
 > 
-> OK, I can see that as a valid strategy.  And the assumption is that a failed
-> hypercall would leave hv_extended_cap unmodified and hence all zeros.
+> Yes, let's bikeshed then :)
 > 
-> I'm OK with this approach if you want to keep it.  But perhaps add a short
-> comment about the intent so it doesn't look like a bug. :-)
-> 
+> Could you then please try to rename page_to* and everything that looks
+> similar to page2* please? I'm wondering what the response will be..
 
-Sunil, if you can send an updated version of your patch by either
-providing a comment or moving the code around, I can queue it up for
-hyperv-next.
+Oh, we're bikeshedding about anything now? Cool.
 
-I think adding a comment is perhaps the easier thing to do.
+-- 
+Thanks,
 
-Wei.
+David / dhildenb
+
