@@ -2,371 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABD23439AA
+	by mail.lfdr.de (Postfix) with ESMTP id 964863439AB
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhCVGkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:40:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
+        id S230131AbhCVGko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:40:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhCVGkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:40:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C29EC6196B;
-        Mon, 22 Mar 2021 06:40:11 +0000 (UTC)
+        id S230027AbhCVGkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:40:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D69C6195D;
+        Mon, 22 Mar 2021 06:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616395212;
-        bh=JFVOrWIAdGWahfEP9JmbRmvN6rewFMu0HiNx1mRw+FU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MxKcexQs8n01h5LOR3M1acsaNY8jljvcW38djaNbUFhpUlUclPgnSR/CiSLylP7wV
-         FhrFCDU74enGLXC38FgID0tsawa+FJ/QqzArFFuAUkIFBJ0zsm1ak+hk6Ixp7f4bKi
-         ZQUtHjU0GE4CQ3IJMIAh0K/G7IyyUdK2Do6siSXQ5iuj7khzkHFBiLZR9zwjru5YKd
-         UcahXnNSkharx+tpEKO5A/NWbpqNakBnxoWDJLlM0FnjGKuG0nPEOI6hhnetnrbGkG
-         2yn4vjmgWXGM6rYCmHYfXyg6TYDQHxSSW+sbfz0Kd91eftTpODWbm2OgieYIigOxM7
-         z2A6YcoTEP3Eg==
-Date:   Mon, 22 Mar 2021 08:40:08 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] net: ipa: fix IPA validation
-Message-ID: <YFg7yHUeYvQZt+/Z@unreal>
-References: <20210320141729.1956732-1-elder@linaro.org>
- <20210320141729.1956732-3-elder@linaro.org>
- <YFcCAr19ZXJ9vFQ5@unreal>
- <dd4619e2-f96a-122f-2cf6-ec19445c6a5c@linaro.org>
- <YFdO6UnWsm4DAkwc@unreal>
- <7bc3e7d7-d32f-1454-eecc-661b5dc61aeb@linaro.org>
+        s=k20201202; t=1616395224;
+        bh=+4EmNUqdJWP56LqWJMexLYGYsOE1auRLj9RaYGlSxKs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IKfxpE/19RnIG46pOE4xlfRfuAqUA6ADtLdgD859TIn4Gi5EwcsBm+GQV1uhNnF4i
+         /CfPFMAKVQXY/+yeSADF8qGWIIuaDBjhZcbSFvTmAjfWTb2nwq5ntSJWslJiwLTUUY
+         wUIyh6v9L/iQIBWOC1+2a5JGlBfGRkjIafTAK77F8QzVjUxP9Jqd6V73uSjyOjM5gk
+         NQk2l8rGL7gBJk8buYCbCt5X/kI6nsvrGiq6kYdA62L7PQTfSEyxsuP858rw1B20uq
+         DKoh9BRQ1nFEYpZluwrSC7rX6cymLJxFW/PojUjXPDixZPXpktJawqEnaI9trijy1a
+         UKOGJLyE9xIoQ==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: [PATCH -tip v4 03/12] kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+Date:   Mon, 22 Mar 2021 15:40:18 +0900
+Message-Id: <161639521870.895304.18081138109939857491.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <161639518354.895304.15627519393073806809.stgit@devnote2>
+References: <161639518354.895304.15627519393073806809.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7bc3e7d7-d32f-1454-eecc-661b5dc61aeb@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 12:19:02PM -0500, Alex Elder wrote:
-> On 3/21/21 8:49 AM, Leon Romanovsky wrote:
-> > On Sun, Mar 21, 2021 at 08:21:24AM -0500, Alex Elder wrote:
-> >> On 3/21/21 3:21 AM, Leon Romanovsky wrote:
-> >>> On Sat, Mar 20, 2021 at 09:17:29AM -0500, Alex Elder wrote:
-> >>>> There are blocks of IPA code that sanity-check various values, at
-> >>>> compile time where possible.  Most of these checks can be done once
-> >>>> during development but skipped for normal operation.  These checks
-> >>>> permit the driver to make certain assumptions, thereby avoiding the
-> >>>> need for runtime error checking.
-> >>>>
-> >>>> The checks are defined conditionally, but not consistently.  In
-> >>>> some cases IPA_VALIDATION enables the optional checks, while in
-> >>>> others IPA_VALIDATE is used.
-> >>>>
-> >>>> Fix this by using IPA_VALIDATION consistently.
-> >>>>
-> >>>> Signed-off-by: Alex Elder <elder@linaro.org>
-> >>>> ---
-> >>>>   drivers/net/ipa/Makefile       | 2 +-
-> >>>>   drivers/net/ipa/gsi_trans.c    | 8 ++++----
-> >>>>   drivers/net/ipa/ipa_cmd.c      | 4 ++--
-> >>>>   drivers/net/ipa/ipa_cmd.h      | 6 +++---
-> >>>>   drivers/net/ipa/ipa_endpoint.c | 6 +++---
-> >>>>   drivers/net/ipa/ipa_main.c     | 6 +++---
-> >>>>   drivers/net/ipa/ipa_mem.c      | 6 +++---
-> >>>>   drivers/net/ipa/ipa_table.c    | 6 +++---
-> >>>>   drivers/net/ipa/ipa_table.h    | 6 +++---
-> >>>>   9 files changed, 25 insertions(+), 25 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/net/ipa/Makefile b/drivers/net/ipa/Makefile
-> >>>> index afe5df1e6eeee..014ae36ac6004 100644
-> >>>> --- a/drivers/net/ipa/Makefile
-> >>>> +++ b/drivers/net/ipa/Makefile
-> >>>> @@ -1,5 +1,5 @@
-> >>>>   # Un-comment the next line if you want to validate configuration data
-> >>>> -#ccflags-y		+=	-DIPA_VALIDATE
-> >>>> +# ccflags-y		+=	-DIPA_VALIDATION
-> >>>
-> >>> Maybe netdev folks think differently here, but general rule that dead
-> >>> code and closed code is such, is not acceptable to in Linux kernel.
-> >>>
-> >>> <...>
-> >>
-> >> What is the purpose of CONFIG_KGDB?  Or CONFIG_DEBUG_KERNEL?
-> >> Would you prefer I expose this through a kconfig option?  I
-> >> intentionally did not do that, because I really intended it
-> >> to be only for development, so defined it in the Makefile.
-> >> But I have no objection to making it configurable that way.
-> > 
-> > I prefer you to follow netdev/linux kernel rules of development.
-> > The upstream repository and drivers/net/* folder especially are not
-> > the place to put code used for the development.
-> 
-> How do I add support for new versions of the hardware as
-> it evolves?
+Remove trampoline_address from kretprobe_trampoline_handler().
+Instead of passing the address, kretprobe_trampoline_handler()
+can use new kretprobe_trampoline_addr().
 
-Exactly like all other driver developers do. You are not different here.
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ Changes in v3:
+   - Remove wrong kretprobe_trampoline declaration from
+     arch/x86/include/asm/kprobes.h.
+ Changes in v2:
+   - Remove arch_deref_entry_point() from comment.
+---
+ arch/arc/kernel/kprobes.c          |    2 +-
+ arch/arm/probes/kprobes/core.c     |    3 +--
+ arch/arm64/kernel/probes/kprobes.c |    3 +--
+ arch/csky/kernel/probes/kprobes.c  |    2 +-
+ arch/ia64/kernel/kprobes.c         |    5 ++---
+ arch/mips/kernel/kprobes.c         |    3 +--
+ arch/parisc/kernel/kprobes.c       |    4 ++--
+ arch/powerpc/kernel/kprobes.c      |    2 +-
+ arch/riscv/kernel/probes/kprobes.c |    2 +-
+ arch/s390/kernel/kprobes.c         |    2 +-
+ arch/sh/kernel/kprobes.c           |    2 +-
+ arch/sparc/kernel/kprobes.c        |    2 +-
+ arch/x86/include/asm/kprobes.h     |    1 -
+ arch/x86/kernel/kprobes/core.c     |    2 +-
+ include/linux/kprobes.h            |   18 +++++++++++++-----
+ kernel/kprobes.c                   |    3 +--
+ 16 files changed, 29 insertions(+), 27 deletions(-)
 
-1. Clean your driver to have stable base without dead/debug code.
-2. Send patch series per-feature/hardware enablement on top of this base.
+diff --git a/arch/arc/kernel/kprobes.c b/arch/arc/kernel/kprobes.c
+index cabef45f11df..3ae01bb5820c 100644
+--- a/arch/arc/kernel/kprobes.c
++++ b/arch/arc/kernel/kprobes.c
+@@ -397,7 +397,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ 					      struct pt_regs *regs)
+ {
+-	regs->ret = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	regs->ret = __kretprobe_trampoline_handler(regs, NULL);
+ 
+ 	/* By returning a non zero value, we are telling the kprobe handler
+ 	 * that we don't want the post_handler to run
+diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+index a9653117ca0d..1782b41df095 100644
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -413,8 +413,7 @@ void __naked __kprobes kretprobe_trampoline(void)
+ /* Called from kretprobe_trampoline */
+ static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
+-						    (void *)regs->ARM_fp);
++	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->ARM_fp);
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 66aac2881ba8..fce681fdfce6 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -412,8 +412,7 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline,
+-					(void *)kernel_stack_pointer(regs));
++	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/csky/kernel/probes/kprobes.c b/arch/csky/kernel/probes/kprobes.c
+index 589f090f48b9..cc589bc11904 100644
+--- a/arch/csky/kernel/probes/kprobes.c
++++ b/arch/csky/kernel/probes/kprobes.c
+@@ -404,7 +404,7 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	return (void *)kretprobe_trampoline_handler(regs, NULL);
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
+index 15871eb170c0..a008df8e7203 100644
+--- a/arch/ia64/kernel/kprobes.c
++++ b/arch/ia64/kernel/kprobes.c
+@@ -392,14 +392,13 @@ static void __kprobes set_current_kprobe(struct kprobe *p,
+ 	__this_cpu_write(current_kprobe, p);
+ }
+ 
+-static void kretprobe_trampoline(void)
++void kretprobe_trampoline(void)
+ {
+ }
+ 
+ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	regs->cr_iip = __kretprobe_trampoline_handler(regs,
+-		dereference_function_descriptor(kretprobe_trampoline), NULL);
++	regs->cr_iip = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
+index 54dfba8fa77c..001a2f07ef44 100644
+--- a/arch/mips/kernel/kprobes.c
++++ b/arch/mips/kernel/kprobes.c
+@@ -489,8 +489,7 @@ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ 						struct pt_regs *regs)
+ {
+-	instruction_pointer(regs) = __kretprobe_trampoline_handler(regs,
+-						kretprobe_trampoline, NULL);
++	instruction_pointer(regs) = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+diff --git a/arch/parisc/kernel/kprobes.c b/arch/parisc/kernel/kprobes.c
+index 6d21a515eea5..4a35ac6e2ca2 100644
+--- a/arch/parisc/kernel/kprobes.c
++++ b/arch/parisc/kernel/kprobes.c
+@@ -175,7 +175,7 @@ int __kprobes parisc_kprobe_ss_handler(struct pt_regs *regs)
+ 	return 1;
+ }
+ 
+-static inline void kretprobe_trampoline(void)
++void kretprobe_trampoline(void)
+ {
+ 	asm volatile("nop");
+ 	asm volatile("nop");
+@@ -193,7 +193,7 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ {
+ 	unsigned long orig_ret_address;
+ 
+-	orig_ret_address = __kretprobe_trampoline_handler(regs, trampoline_p.addr, NULL);
++	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
+ 	instruction_pointer_set(regs, orig_ret_address);
+ 
+ 	return 1;
+diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+index eb0460949e1b..dfd532c43525 100644
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -399,7 +399,7 @@ static int trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+ 	unsigned long orig_ret_address;
+ 
+-	orig_ret_address = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * We get here through one of two paths:
+ 	 * 1. by taking a trap -> kprobe_handler() -> here
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index a2ec18662fee..619339f1d3ba 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -376,7 +376,7 @@ int __init arch_populate_kprobe_blacklist(void)
+ 
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+ {
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	return (void *)kretprobe_trampoline_handler(regs, NULL);
+ }
+ 
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+index aae24dc75df6..b149e9169709 100644
+--- a/arch/s390/kernel/kprobes.c
++++ b/arch/s390/kernel/kprobes.c
+@@ -351,7 +351,7 @@ static void __used kretprobe_trampoline_holder(void)
+  */
+ static int trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	regs->psw.addr = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	regs->psw.addr = __kretprobe_trampoline_handler(regs, NULL);
+ 	/*
+ 	 * By returning a non-zero value, we are telling
+ 	 * kprobe_handler() that we don't want the post_handler
+diff --git a/arch/sh/kernel/kprobes.c b/arch/sh/kernel/kprobes.c
+index 756100b01e84..48356e81836a 100644
+--- a/arch/sh/kernel/kprobes.c
++++ b/arch/sh/kernel/kprobes.c
+@@ -303,7 +303,7 @@ static void __used kretprobe_trampoline_holder(void)
+  */
+ int __kprobes trampoline_probe_handler(struct kprobe *p, struct pt_regs *regs)
+ {
+-	regs->pc = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	regs->pc = __kretprobe_trampoline_handler(regs, NULL);
+ 
+ 	return 1;
+ }
+diff --git a/arch/sparc/kernel/kprobes.c b/arch/sparc/kernel/kprobes.c
+index 217c21a6986a..fa30f9dadff8 100644
+--- a/arch/sparc/kernel/kprobes.c
++++ b/arch/sparc/kernel/kprobes.c
+@@ -468,7 +468,7 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
+ {
+ 	unsigned long orig_ret_address = 0;
+ 
+-	orig_ret_address = __kretprobe_trampoline_handler(regs, &kretprobe_trampoline, NULL);
++	orig_ret_address = __kretprobe_trampoline_handler(regs, NULL);
+ 	regs->tpc = orig_ret_address;
+ 	regs->tnpc = orig_ret_address + 4;
+ 
+diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
+index d20a3d6be36e..bec07252a0a3 100644
+--- a/arch/x86/include/asm/kprobes.h
++++ b/arch/x86/include/asm/kprobes.h
+@@ -49,7 +49,6 @@ extern __visible kprobe_opcode_t optprobe_template_end[];
+ extern const int kretprobe_blacklist_size;
+ 
+ void arch_remove_kprobe(struct kprobe *p);
+-asmlinkage void kretprobe_trampoline(void);
+ 
+ extern void arch_kprobe_override_function(struct pt_regs *regs);
+ 
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 71e91f16720c..427d648fffcd 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -811,7 +811,7 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ 	regs->ip = (unsigned long)&kretprobe_trampoline;
+ 	regs->orig_ax = ~0UL;
+ 
+-	return (void *)kretprobe_trampoline_handler(regs, &kretprobe_trampoline, &regs->sp);
++	return (void *)kretprobe_trampoline_handler(regs, &regs->sp);
+ }
+ NOKPROBE_SYMBOL(trampoline_handler);
+ 
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index d65c041b5c22..65dadd4238a2 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -205,15 +205,23 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				   struct pt_regs *regs);
+ extern int arch_trampoline_kprobe(struct kprobe *p);
+ 
++void kretprobe_trampoline(void);
++/*
++ * Since some architecture uses structured function pointer,
++ * use dereference_function_descriptor() to get real function address.
++ */
++static nokprobe_inline void *kretprobe_trampoline_addr(void)
++{
++	return dereference_function_descriptor(kretprobe_trampoline);
++}
++
+ /* If the trampoline handler called from a kprobe, use this version */
+ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+-				void *trampoline_address,
+-				void *frame_pointer);
++					     void *frame_pointer);
+ 
+ static nokprobe_inline
+ unsigned long kretprobe_trampoline_handler(struct pt_regs *regs,
+-				void *trampoline_address,
+-				void *frame_pointer)
++					   void *frame_pointer)
+ {
+ 	unsigned long ret;
+ 	/*
+@@ -222,7 +230,7 @@ unsigned long kretprobe_trampoline_handler(struct pt_regs *regs,
+ 	 * be running at this point.
+ 	 */
+ 	kprobe_busy_begin();
+-	ret = __kretprobe_trampoline_handler(regs, trampoline_address, frame_pointer);
++	ret = __kretprobe_trampoline_handler(regs, frame_pointer);
+ 	kprobe_busy_end();
+ 
+ 	return ret;
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 2913de07f4a3..75c0a58c19c2 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1859,7 +1859,6 @@ static struct notifier_block kprobe_exceptions_nb = {
+ #ifdef CONFIG_KRETPROBES
+ 
+ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+-					     void *trampoline_address,
+ 					     void *frame_pointer)
+ {
+ 	kprobe_opcode_t *correct_ret_addr = NULL;
+@@ -1874,7 +1873,7 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 
+ 		BUG_ON(ri->fp != frame_pointer);
+ 
+-		if (ri->ret_addr != trampoline_address) {
++		if (ri->ret_addr != kretprobe_trampoline_addr()) {
+ 			correct_ret_addr = ri->ret_addr;
+ 			/*
+ 			 * This is the real return address. Any other
 
-> 
-> What I started supporting (v3.5.1) was in some respects
-> relatively old.  Version 4.2 is newer, and the v4.5 and
-> beyond are for products that are relatively new on the
-> market.
-
-I see that it was submitted in 2018, we have many large drivers
-that by far older than IPA. For example, mlx5 supports more than 5
-generations of hardware and was added in 2013.
-
-> 
-> Some updates to IPA (like 4.0+ after 3.5.1, or 4.5+
-> after 4.2) include substantial updates to the way the
-> hardware works.  The code can't support the new hardware
-> without being adapted and generalized to support both
-> old and new.
-
-It is ok.
-
-> 
-> My goal is to get upstream support for IPA for all
-> Qualcomm SoCs that have it.  But the hardware design
-> is evolving; Qualcomm is actively developing their
-> architecture so they can support new technologies
-> (e.g. cellular 5G).  Development of the driver is
-> simply *necessary*.
-
-No argue here.
-
-> 
-> The assertions I proposed and checks like this are
-> intended as an *aid* to the active development I
-> have been doing.
-
-They need to be local to your development environment.
-It is perfectly fine if you keep extra debug patch internally.
-
-> 
-> They may look like hacky debugging--checking errors
-> that can't happen.  They aren't that at all--they're
-> intended to the compiler help me develop correct code,
-> given I *know* it will be evolving.
-
-It is wrong assumption that you are alone who are reading this code.
-I presented my view as a casual developer who sometimes need to change
-code that is not my expertise.
-
-The extra checks, unreachable and/or for non-existing code are very similar
-to the bad comments - they make simple tasks too complex, it causes to us
-wonder why they exist, maybe I broke something, e.t.c.
-
-Unreachable code and checks sometimes serve as a hint for code deletion
-and this is exactly how I spotted your driver.
-
-> 
-> But the assertions are gone, and I accept/agree that
-> these specific checks "look funny."  More below.
-> 
-> >>>> -#ifdef IPA_VALIDATE
-> >>>> +#ifdef IPA_VALIDATION
-> >>>>   	if (!size || size % 8)
-> >>>>   		return -EINVAL;
-> >>>>   	if (count < max_alloc)
-> >>>>   		return -EINVAL;
-> >>>>   	if (!max_alloc)
-> >>>>   		return -EINVAL;
-> >>>> -#endif /* IPA_VALIDATE */
-> >>>> +#endif /* IPA_VALIDATION */
-> >>>
-> >>> If it is possible to supply those values, the check should be always and
-> >>> not only under some closed config option.
-> >>
-> >> These are assertions.
-> >>
-> >> There is no need to test them for working code.  If
-> >> I run the code successfully with these tests enabled
-> >> exactly once, and they are satisfied, then every time
-> >> the code is run thereafter they will pass.  So I want
-> >> to check them when debugging/developing only.  That
-> >> way there is a mistake, it gets caught, but otherwise
-> >> there's no pointless argument checking done.
-
-Like I said below, you are not alone who are reading this code.
-The kernel has three ways to handle wrong flow:
-1. if ... return; -- used for runtime checks of possible but wrong input, or userspace input
-2. BUILD_BUG_ON() -- used for compilation checks
-3. WARN_ON*()     -- used for runtime checks of not-possible kernel flows
-
-You are trying to use something different which is not needed.
-
-> >>
-> >> I'll explain the first check; the others have similar
-> >> explanation.
-> >>
-> >> In the current code, the passed size is sizeof(struct)
-> >> for three separate structures.
-> >>   - If the structure size changes, I want to be
-> >>     sure the constraint is still honored
-> >>   - The code will break of someone happens
-> >>     to pass a size of 0.  I don't expect that to
-> >>     ever happen, but this states that requirement.
-> >>
-> >> This is an optimization, basically, but one that
-> >> allows the assumed conditions to be optionally
-> >> verified.
-> > 
-> > Everything above as an outcome of attempting to mix constant vs. run-time
-> > checks. If "size" is constant, the use of BUILD_BIG_ON() will help not only
-> > you but other developers to catch the errors too. The assumption that you alone
-> > are working on this code, can or can't be correct.
-> 
-> Right now I am the only one doing substantive development.
-> I am listed as the maintainer, and I trust anything more
-> than simple fixes will await my review before being
-> merged.
-
-It is wrong assumption too. Major changes are performed all the time and
-not always maintainers have say, sometimes it is because of timing, sometimes
-it is because right thing to do.
-
-> 
-> > If "size" is not constant, you should check it always.
-> 
-> To do that I might need to make this function (and others
-> like it) inline, or maybe __always_inline.  Regardless,
-> I generally agree with your suggestion of defensively
-> testing the argument value.  But this is an *internal
-> interface*.  The only callers are inside the driver.
-
-This is checked with WARN_ON*().
-
-> 
-> It's basically putting the burden on the caller to verify
-> parameters, because often the caller already knows.
-> 
-> I think this is more of a philosophical argument than
-> a technical one.  The check isn't *that* expensive.
-
-My complain is lack of readability and maintainability for random kernel
-developers and not performance concerns. 
-
-> 
-> >>>>   	/* By allocating a few extra entries in our pool (one less
-> >>>>   	 * than the maximum number that will be requested in a
-> >>>> @@ -140,14 +140,14 @@ int gsi_trans_pool_init_dma(struct device *dev, struct gsi_trans_pool *pool,
-> >>>>   	dma_addr_t addr;
-> >>>>   	void *virt;
-> >>>> -#ifdef IPA_VALIDATE
-> >>>> +#ifdef IPA_VALIDATION
-> >>>>   	if (!size || size % 8)
-> >>>>   		return -EINVAL;
-> >>>>   	if (count < max_alloc)
-> >>>>   		return -EINVAL;
-> >>>>   	if (!max_alloc)
-> >>>>   		return -EINVAL;
-> >>>> -#endif /* IPA_VALIDATE */
-> >>>> +#endif /* IPA_VALIDATION */
-> >>>
-> >>> Same
-> >>>
-> >>> <...>
-> >>>
-> >>>>   {
-> >>>> -#ifdef IPA_VALIDATE
-> >>>> +#ifdef IPA_VALIDATION
-> >>>>   	/* At one time we assumed a 64-bit build, allowing some do_div()
-> >>>>   	 * calls to be replaced by simple division or modulo operations.
-> >>>>   	 * We currently only perform divide and modulo operations on u32,
-> >>>> @@ -768,7 +768,7 @@ static void ipa_validate_build(void)
-> >>>>   	BUILD_BUG_ON(!ipa_aggr_granularity_val(IPA_AGGR_GRANULARITY));
-> >>>>   	BUILD_BUG_ON(ipa_aggr_granularity_val(IPA_AGGR_GRANULARITY) >
-> >>>>   			field_max(AGGR_GRANULARITY_FMASK));
-> >>>> -#endif /* IPA_VALIDATE */
-> >>>> +#endif /* IPA_VALIDATION */
-> >>>
-> >>> BUILD_BUG_ON()s are checked during compilation and not during runtime
-> >>> like IPA_VALIDATION promised.
-> >>
-> >> So I should update the description.  But I'm not sure where
-> >> you are referring to.  Here is the first line of the patch
-> >> description:
-> >>   There are blocks of IPA code that sanity-check various
-> >>   values, at compile time where possible.
-> > 
-> > I'm suggesting to review if IPA_VALIDATION is truly needed.
-> 
-> *That* is a suggestion I can act on...
-> 
-> Right now, it's *there*.  These few patches were the beginning
-> of a side task to simplify and/or get rid of it.  The first
-> step is to get it so it's not fundamentally broken.  Then I
-> can work on getting rid of (or at least refactor) pieces.
-> 
-> The code I started with did lots of checks of these things
-> (including build-time checkable ones).  Many, many functions
-> needlessly returned values, just so these checks could be made.
-> The possibility of returning an error meant all callers had
-> to check for it, and that complicated things all the way up.
-> 
-> So I tried to gather such things into foo_validate() functions,
-> which just grouped these checks without having to clutter the
-> normal code path with them.  That way called functions could
-> have void return type, and calling functions would be simpler,
-> and so on.
-> 
-> So I guess to respond again to your comment, I really would
-> like to get rid of IPA_VALIDATION, or most of it.  As it is,
-> many things are checked with BUILD_BUG_ON(), but they need
-> not really be conditionally built.  That is a fix I intend
-> to make, but haven't yet.
-> 
-> But the code is there, and if I am going to fix it, I need
-> to do it with patches.  And I try to make my patches small
-> enough to be easily reviewable.
-> 
-> >>> IMHO, the issue here is that this IPA code isn't release quality but
-> >>> some debug drop variant and it is far from expected from submitted code.
-> >>
-> >> Doesn't sound very humble, IMHO.
-> > 
-> > Sorry about that.
-> 
-> I'd like to suggest a plan so I can begin to make progress,
-> but do so in a way you/others think is satisfactory.
-> - I would first like to fix the existing bugs, namely that
->   if IPA_VALIDATION is defined there are build errors, and
->   that IPA_VALIDATION is not consistently used.  That is
->   this 2-patch series.
-
-The thing is that IPA_VALIDATION is not defined in the upstream kernel.
-There is nothing to be fixed in netdev repository
-
-> - I assure you that my goal is to simplify the code that
->   does this sort of checking.  So here are some specific
->   things I can implement in the coming weeks toward that:
->     - Anything that can be checked at build time, will
->       be checked with BUILD_BUG_ON().
-
-+1
-
->     - Anything checked with BUILD_BUG_ON() will *not*
->       be conditional.  I.e. it won't be inside an
->       #ifdef IPA_VALIDATION block.
->     - I will review all remaining VALIDATION code (which
->       can't--or can't always--be checked at build time),
->       If it looks prudent to make it *always* be checked,
->       I will make it always be checked (not conditional
->       on IPA_VALIDATION).
-
-+1
-
-> The result should clearly separate checks that can be done
-> at build time from those that can't.
-> 
-> And with what's left (especially on that third sub-bullet)
-> I might have some better examples with which to argue
-> for something different.  Or I might just concede that
-> you were right all along.
-
-I hope so.
-
-Thanks
