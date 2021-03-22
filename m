@@ -2,432 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E56234524E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F6C345258
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhCVWMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhCVWMF (ORCPT
+        id S229946AbhCVWSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:18:23 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:59627 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229639AbhCVWRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:12:05 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079FAC061574;
-        Mon, 22 Mar 2021 15:12:04 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id s21so9197103pjq.1;
-        Mon, 22 Mar 2021 15:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bxUT8Hyw6zwaKGRxOQzuiuSuvDlzwGQguxgLGJCF1XA=;
-        b=qVrP6QSIWHenhJW7R9a3kffxDombxNNSPr3ikMJthafgrqdqPK7e7XrEUP/WFSHDIN
-         H7VxAZtdudNrOcgRU2cCBV5YMJ2Whc+cOrGLCvjwL50VuyjU7w5QxHbIrKU8VomDo8Pj
-         q54jSwEQoXVjlEXOevP/22/MbF/oLtEoKivgbtaOC7LUNcp9cIZ3ZMNcuEcM+k2YL/ub
-         nNHDPSb0DMluGPD4PacRQ0g7Rju2DNvr/OO2vWlJVM2uxHZaq/wPlqOEc4mRjjrkmszu
-         0AxxSCa0XzUCOCkwmbqbjdT4TgNSqtfFf67I1Ro4D7mfeFsXBoBn8873rIZMZnCMcECw
-         QhBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=bxUT8Hyw6zwaKGRxOQzuiuSuvDlzwGQguxgLGJCF1XA=;
-        b=FB3u3I48R3y/4omQSVjqFKmN17dgOo3GVH4vRp9vjCPwLk/6HfB0D7NLQf87BLXHU1
-         z9mBLwTUMePxNE9MvT614Ub1cgRa1WemL2O0KWdQxfIkxne/pvTLjAeOKPFSX1sr/r/s
-         n3SAiP7RxSMsKs51PE5zZPJuDpkevsrQh2b9sJbKgH8I1HvOug1DmLnRJISTO9+3+05C
-         jMWXMjXe1l0GXsW7SSDVDQeZRxpppXEGEW9K1PkcEMH3akD3qAlhqXvGXr4Rxeu0iUNp
-         SnaDPAWXso3K7trGW6E8WLlNI1v0O3psMKZMA2Uz0TYnMD5NtsWY43CbDb1NohOeB8Kz
-         HDGQ==
-X-Gm-Message-State: AOAM533BAHf2SJU5NmZe4+lFFxXXSyY9r3uxAZgsSGjZ0H5w1hX2Z/CT
-        J8tTfQ0iXIBTpciPFEqfZ8k=
-X-Google-Smtp-Source: ABdhPJzTOiJbM3Aple0zV1WdpoWQV/EYEo4OChULDHazYqCwjCTuDx6w37stzGkfojBBeEkygCQIhg==
-X-Received: by 2002:a17:90a:8505:: with SMTP id l5mr1193620pjn.100.1616451124092;
-        Mon, 22 Mar 2021 15:12:04 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:48b8:cb13:3227:ef89])
-        by smtp.gmail.com with ESMTPSA id x2sm13825129pga.60.2021.03.22.15.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 15:12:03 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 22 Mar 2021 15:12:01 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     gregkh@linuxfoundation.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YFkWMZ0m9nKCT69T@google.com>
-References: <20210306022035.11266-1-mcgrof@kernel.org>
- <20210306022035.11266-2-mcgrof@kernel.org>
- <YEbjom8FIclEgRYv@google.com>
- <20210310212128.GR4332@42.do-not-panic.com>
- <YErOkGrvtQODXtB0@google.com>
- <20210312183238.GW4332@42.do-not-panic.com>
- <YEvA1dzDsFOuKdZ/@google.com>
- <20210319190924.GK4332@42.do-not-panic.com>
- <YFjHvUolScp3btJ9@google.com>
- <20210322204156.GM4332@42.do-not-panic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322204156.GM4332@42.do-not-panic.com>
+        Mon, 22 Mar 2021 18:17:55 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 685E45804DD;
+        Mon, 22 Mar 2021 18:17:54 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute3.internal (MEProxy); Mon, 22 Mar 2021 18:17:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=ZWi4GtAKz6MJnR4YgJPLnmK6aRpu
+        RQjPkHSWuDbn2hw=; b=FTv+4FlaBI3nXkxsa7BojoAkYJrOjRcOzmC3RGEeEswA
+        zcn8SGPQ5MDiSZvzFOoQaHhYWjY5Zfu8w6RbXJIlX/lkeoihJehq7b3DmVqRdgei
+        Kc31ki6aj6L015JQbET5Eo+gfJ7zO7PslknCI2/93BWPjgsxaLRbjE1bW3T7mVBR
+        zrqQ9K5WjwtmcJBrjd5qLVRW85hTHBXmKYntfSL6+AJkRc0qmIUPWUq4hZlJjpbf
+        r1ruGJJJChwjGlb0/NQb8Opdu7Mq8uLmMy0F1VqyKPl5RfAjj/NVnueqQrE7PzM1
+        lU3fIxS5Wo9wPleZ1Sm+QuIck8u4mVcse0bDVuFM5g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ZWi4Gt
+        AKz6MJnR4YgJPLnmK6aRpuRQjPkHSWuDbn2hw=; b=jYDkRuJqLc1gQX1YIg6lJR
+        EsuKs8DlVizuIL6jBEDPwauOF4v77Kf+sA44eeK22O9inufF2Le8r+aQUVL7fEtH
+        +nQvt9LISbklUqPjiIyJfcQajHG4NmUSYBDewSwt57lE8KoxivY8N7SV0jO+Pl6Q
+        HXb3wzkG9q6sPDM3NPQlw/BYj/iX0pNPAzIYQDckl2qN52KbgZQyKAVuVdbhvbzy
+        o4jvi2muKlUsKldoEMnLCgtvPzIIjr/Tt2zIG9NVAU/5DKsyXQqrx7DUF0lhjM/u
+        CYCZpRIfrXF3/mWtyx6EB6Q2wswoZY4f5xEnolb9K48m3Jq+WRcvY37Db8IlkOaw
+        ==
+X-ME-Sender: <xms:kBdZYNZa_zfBQyNVqg09XWG6y_omDyN7S6Hvrsx8qMyDD4TFPPNKfA>
+    <xme:kBdZYEYNlNxESbTnoJGMgIF6hSh_bxnzoFNENRh0y4wTcKfFAkxk-UaC0XN3dVazd
+    nBK6VLtV0Dy9crO_H4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggedgudehlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
+    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:kBdZYP_i3tbdtKRRVGfAidaUBrJnQ0ERc1r6toG6BtKRdzoY2EmZiA>
+    <xmx:kBdZYLosz2ZP4J8_IYekp6RhbP_T-TOe8aNKqDu9Ba2iqYePJKy8DQ>
+    <xmx:kBdZYIrrIKxv0MGFn75u8QDj-K-S7v1xpZwhrzL4eJ_vaKdBK_pOsw>
+    <xmx:khdZYNShY084XZvHOtsreFHxtDtzB6GQOSOVksjUZj2QLQvb6XLGLNuk4ys>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 811F851C005E; Mon, 22 Mar 2021 18:17:52 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-271-g88286cf463-fm-20210318.001-g88286cf4
+Mime-Version: 1.0
+Message-Id: <d280843b-77e3-4fa8-9452-5a2f8a45052e@www.fastmail.com>
+In-Reply-To: <c1bcc0be8ae6e500@bloch.sibelius.xs4all.nl>
+References: <20210320151903.60759-1-sven@svenpeter.dev>
+ <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
+ <8360b3b3-296c-450d-abc3-bb47159bf4e1@www.fastmail.com>
+ <c1bcc0be8ae6e500@bloch.sibelius.xs4all.nl>
+Date:   Mon, 22 Mar 2021 23:17:31 +0100
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Mark Kettenis" <mark.kettenis@xs4all.nl>
+Cc:     iommu@lists.linux-foundation.org, joro@8bytes.org, will@kernel.org,
+        robin.murphy@arm.com, robh+dt@kernel.org, arnd@kernel.org,
+        marcan@marcan.st, maz@kernel.org, mohamed.mediouni@caramail.com,
+        stan@corellium.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 08:41:56PM +0000, Luis Chamberlain wrote:
-> On Mon, Mar 22, 2021 at 09:37:17AM -0700, Minchan Kim wrote:
-> > On Fri, Mar 19, 2021 at 07:09:24PM +0000, Luis Chamberlain wrote:
-> > > Indeed one issue is a consequence of the other but a bit better
-> > > description can be put together for both separately.
-> > > 
-> > > The warning comes up when cpu hotplug detects that the callback
-> > > is being removed, but yet "instances" for multistate are left behind,
-> > > ie, not removed. CPU hotplug multistate allows us to dedicate a callback
-> > > for zram so that it gets called every time a CPU hot plugs or unplugs.
-> > > In the zram driver's case we want to trigger the callback per each
-> > > struct zcomp, one is used per supported and used supported compression
-> > 
-> >      you meant "each one is used per supported compression"?
-> 
-> Yup.
-> 
-> > > algorithm. The zram driver allocates a struct zcomp for an compression
-> > > algorithm on a need basis. The default compressor is CONFIG_ZRAM_DEF_COMP
-> > > which today is CONFIG_ZRAM_DEF_COMP_LZORLE ("lzo-rle"). Although we may
-> > > have different zram devices, zram devices which use the same compression
-> > > algorithm share the same struct zcomp. The "multi" in CPU hotplug multstate
-> > 
-> > It allocates each own zcomp, not sharing even though zram devices
-> > use the same compression algorithm.
-> 
-> Right.
-> 
-> > > refers to these different struct zcomp instances, each of these will
-> > > have the callback routine registered run for it. The kernel's CPU
-> > > hotplug multistate keeps a linked list of these different structures
-> > > so that it will iterate over them on CPU transitions. By default at
-> > > driver initialization we will create just one zram device (num_devices=1)
-> > > and a zcomp structure then set for the lzo-rle comrpession algorithm.
-> > > At driver removal we first remove each zram device, and so we destroy
-> > > the struct zcomp. But since we expose sysfs attributes to create new
-> > > devices or reset / initialize existing ones, we can easily end up
-> > > re-initializing a struct zcomp before the exit routine of the module
-> > > removes the cpu hotplug callback. When this happens the kernel's
-> > > CPU hotplug will detect that at least one instance (struct zcomp for
-> > > us) exists.
-> > 
-> > It's very helpful to understand. Thanks a lot!S
-> > 
-> > So IIUC, it's fundamentally race between destroy_devices(i.e., module
-> > unload) and every sysfs knobs in zram. Isn't it?
-> 
-> I would not call it *every* syfs knob as not all deal with things which
-> are related to CPU hotplug multistate, right? Note that using just
-> try_module_get() alone (that is the second patch only, does not fix the
-> race I am describing above).
 
-It wouldn't be CPU hotplug multistate issue but I'd like to call it
-as more "zram instance race" bug.
-What happens in this case?
+Hi Mark,
 
-        CPU 1                            CPU 2
+On Sun, Mar 21, 2021, at 19:35, Mark Kettenis wrote:
+>
+> Guess we do need to understand a little bit better how the USB DART
+> actually works.  My hypothesis (based on our discussion on #asahi) is
+> that the XHCI host controller and the peripheral controller of the
+> DWC3 block use different DMA "streams" that are handled by the
+> different sub-DARTs.
 
-destroy_devices
-..
-                                 compact_store()
-                                 zram = dev_to_zram(dev);
-idr_for_each(zram_remove_cb
-  zram_remove
-  ..
-  kfree(zram)
-                                 down_read(&zram->init_lock);
+I've done some more experiments and the situation is unfortunately more
+complicated: Most DMA transfers are translated with the first DART.
+But sometimes (and I have not been able to figure out the exact conditions)
+transfers instead have to go through the second DART. 
+This happens e.g. with one of my USB keyboards after a stop EP command
+is issued: Suddenly the xhci_ep_ctx struct must be translated through the
+second DART.
 
-
-        CPU 1                            CPU 2
-
-hot_remove_store
-                                 compact_store()
-                                 zram = dev_to_zram(dev);
-  zram_remove
-    kfree(zram)
-                                 down_read(&zram->init_lock);
-    				
-So, for me we need to close the zram instance create/removal
-with sysfs rather than focusing on CPU hotplug issue.
-Maybe, we could reuse zram_index_mutex with modifying it with
-rw_semaphore. What do you think?
+What this likely means is that we'll need to point both DARTs
+to the same pagetables and just issue the TLB maintenance operations
+as a group.
 
 > 
-> There are two issues.
-> 
-> > Below specific example is one of them and every sysfs code in zram
-> > could access freed object(e.g., zram->something).
-> > And you are claiming there isn't good way to fix it in kernfs(please
-> > add it in the description, too) even though it's general problem.
-> 
-> Correct, the easier route would have been through the block layer as
-> its the one adding our syfs attributes for us but even it canno deal
-> with this race on behalf of drivers given the currently exposed
-> semantics on kernfs.
-> 
-> > (If we had, we may detect the race and make zram_remove_cb fails
-> > so unloading modulies fails, finally)
-> > 
-> > So, shouldn't we introcude a global rw_semaphore?
-> > 
-> > destroy_devices
-> >   class_unregister
-> >   down_write(&zram_unload);
-> >   idr_for_each(zram_remove_cb);
-> >   up_write(&zram_unload);
-> > 
-> > And every sysfs code hold the lock with down_read in the first place
-> > and release the lock right before return. So, introduce a zram sysfs
-> > wrapper to centralize all of locking logic.
-> 
-> Actually that does work but only if we use write lock attempts so to
-> be able to knock two birds with one stone, so to address the deadlock
-> with sysfs attribute removal. We're not asking politely to read some
-> value off of a zram devices with these locks, we're ensuring to not
-> run if our driver is going to be removed, so replacing the
-> try_module_get() with something similar.
-> 
-> > Does it make sense?
-> > 
-> > > 
-> > > And so we can have:
-> > > 
-> > > static void destroy_devices(void)
-> > > {
-> > > 	class_unregister(&zram_control_class);
-> > > 	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
-> > > 	zram_debugfs_destroy();
-> > > 	idr_destroy(&zram_index_idr);
-> > > 	unregister_blkdev(zram_major, "zram");
-> > > 	cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-> > > }
-> > > 
-> > > While destroy_devices() runs we can have this race:
-> > > 
-> > > 
-> > > CPU 1                            CPU 2
-> > > 
-> > > class_unregister(...);
-> > > idr_for_each(...);
-> > 				  I think sysfs was already remove here.
-> > > zram_debugfs_destroy();
-> > >                                 disksize_store(...)
-> > > idr_destroy(...);
-> > > unregister_blkdev(...);
-> > > cpuhp_remove_multi_state(...);
-> > 
-> > So,
-> > 
-> > 	CPU 1                            CPU 2
-> >  
-> > destroy_devices
-> > ..
-> > 				 disksize_store()
-> > 				   zcomp_create
-> > 				   zcomp_init
-> > idr_for_each(zram_remove_cb
-> >   zram_remove
-> >   zram_reset
-> >   zcomp_destroy
-> >   cpuhp_state_remove_instance
-> > 				   cpuhp_state_add_instance
-> > ..
-> > 
-> > cpuhp_remove_multi_state(...)
-> >   Detect!
-> >     kernel: Error: Removing state 63 which has instances left.
-> 
-> Yup true.
-> 
-> > > The warning comes up on cpuhp_remove_multi_state() when it sees
-> > > that the state for CPUHP_ZCOMP_PREPARE does not have an empty
-> > > instance linked list.
-> > > 
-> > > After the idr_destory() its also easy to run into a crash. The
-> > > above predicament also leads to memory leaks.
-> > > 
-> > > And so we need to have a state machine for when we're up and when
-> > > we're going down generically.
-> > > 
-> > > Let me know if it makes sense now, if so I can amend the commit log
-> > > accordingly.
-> > 
-> > Yub, It's much better. Let's have it in the commit log.
-> 
-> Sure OK, well the following is what I end up with. With this approach
-> only one patch is needed.
-> 
-> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> index a711a2e2a794..3b86ee94309e 100644
-> --- a/drivers/block/zram/zram_drv.c
-> +++ b/drivers/block/zram/zram_drv.c
-> @@ -41,6 +41,15 @@ static DEFINE_IDR(zram_index_idr);
->  /* idr index must be protected */
->  static DEFINE_MUTEX(zram_index_mutex);
->  
-> +/*
-> + * Protects against:
-> + * a) Hotplug cpu multistate races against compression algorithm removals
-> + *    and additions prior to its removal of the zram CPU hotplug callback
-> + * b) Deadlock which is possible when sysfs attributes are used and we
-> + *    share a lock on removal.
-> + */
-> +DECLARE_RWSEM(zram_unload);
-> +
->  static int zram_major;
->  static const char *default_compressor = CONFIG_ZRAM_DEF_COMP;
->  
-> @@ -1723,6 +1732,9 @@ static ssize_t disksize_store(struct device *dev,
->  	if (!disksize)
->  		return -EINVAL;
->  
-> +	if (!down_write_trylock(&zram_unload))
-> +		return -ENODEV;
-> +
->  	down_write(&zram->init_lock);
->  	if (init_done(zram)) {
->  		pr_info("Cannot change disksize for initialized device\n");
-> @@ -1748,6 +1760,7 @@ static ssize_t disksize_store(struct device *dev,
->  	zram->disksize = disksize;
->  	set_capacity_and_notify(zram->disk, zram->disksize >> SECTOR_SHIFT);
->  	up_write(&zram->init_lock);
-> +	up_write(&zram_unload);
->  
->  	return len;
->  
-> @@ -1755,6 +1768,7 @@ static ssize_t disksize_store(struct device *dev,
->  	zram_meta_free(zram, disksize);
->  out_unlock:
->  	up_write(&zram->init_lock);
-> +	up_write(&zram_unload);
->  	return err;
->  }
->  
-> @@ -1773,14 +1787,17 @@ static ssize_t reset_store(struct device *dev,
->  	if (!do_reset)
->  		return -EINVAL;
->  
-> +	if (!down_write_trylock(&zram_unload))
-> +		return -ENODEV;
-> +
->  	zram = dev_to_zram(dev);
->  	bdev = zram->disk->part0;
->  
->  	mutex_lock(&bdev->bd_mutex);
->  	/* Do not reset an active device or claimed device */
->  	if (bdev->bd_openers || zram->claim) {
-> -		mutex_unlock(&bdev->bd_mutex);
-> -		return -EBUSY;
-> +		len = -EBUSY;
-> +		goto out;
->  	}
->  
->  	/* From now on, anyone can't open /dev/zram[0-9] */
-> @@ -1793,7 +1810,10 @@ static ssize_t reset_store(struct device *dev,
->  
->  	mutex_lock(&bdev->bd_mutex);
->  	zram->claim = false;
-> +
-> +out:
->  	mutex_unlock(&bdev->bd_mutex);
-> +	up_write(&zram_unload);
->  
->  	return len;
->  }
-> @@ -2015,10 +2035,15 @@ static ssize_t hot_add_show(struct class *class,
->  {
->  	int ret;
->  
-> +	if (!down_write_trylock(&zram_unload))
-> +		return -ENODEV;
-> +
->  	mutex_lock(&zram_index_mutex);
->  	ret = zram_add();
->  	mutex_unlock(&zram_index_mutex);
->  
-> +	up_write(&zram_unload);
-> +
->  	if (ret < 0)
->  		return ret;
->  	return scnprintf(buf, PAGE_SIZE, "%d\n", ret);
-> @@ -2041,6 +2066,9 @@ static ssize_t hot_remove_store(struct class *class,
->  	if (dev_id < 0)
->  		return -EINVAL;
->  
-> +	if (!down_write_trylock(&zram_unload))
-> +		return -ENODEV;
-> +
->  	mutex_lock(&zram_index_mutex);
->  
->  	zram = idr_find(&zram_index_idr, dev_id);
-> @@ -2053,6 +2081,7 @@ static ssize_t hot_remove_store(struct class *class,
->  	}
->  
->  	mutex_unlock(&zram_index_mutex);
-> +	up_write(&zram_unload);
->  	return ret ? ret : count;
->  }
->  static CLASS_ATTR_WO(hot_remove);
-> @@ -2078,12 +2107,14 @@ static int zram_remove_cb(int id, void *ptr, void *data)
->  
->  static void destroy_devices(void)
->  {
-> +	down_write(&zram_unload);
->  	class_unregister(&zram_control_class);
->  	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
->  	zram_debugfs_destroy();
->  	idr_destroy(&zram_index_idr);
->  	unregister_blkdev(zram_major, "zram");
->  	cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-> +	up_write(&zram_unload);
->  }
->  
->  static int __init zram_init(void)
-> @@ -2095,10 +2126,13 @@ static int __init zram_init(void)
->  	if (ret < 0)
->  		return ret;
->  
-> +	down_write(&zram_unload);
-> +
->  	ret = class_register(&zram_control_class);
->  	if (ret) {
->  		pr_err("Unable to register zram-control class\n");
->  		cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-> +		up_write(&zram_unload);
->  		return ret;
->  	}
->  
-> @@ -2108,6 +2142,7 @@ static int __init zram_init(void)
->  		pr_err("Unable to get major number\n");
->  		class_unregister(&zram_control_class);
->  		cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-> +		up_write(&zram_unload);
->  		return -EBUSY;
->  	}
->  
-> @@ -2119,10 +2154,12 @@ static int __init zram_init(void)
->  			goto out_error;
->  		num_devices--;
->  	}
-> +	up_write(&zram_unload);
->  
->  	return 0;
->  
->  out_error:
-> +	up_write(&zram_unload);
->  	destroy_devices();
->  	return ret;
->  }
+> The Corellium folks use a DART + sub-DART model in their driver and a
+> single node in the device tree that represents both.  That might sense
+> since the error registers and interrupts are shared.  Maybe it would
+> make sense to select the appropriate sub-DART based on the DMA stream
+> ID?
 
-As I mentioned above, it didn't close the race I gave as examples
-unless I miss something. Let's discuss further.
+dwc3 specifically seems to require stream id #1 from the DART
+at <0x5 0x02f00000> and stream id #0 from the DART at <0x5 0x02f80000>.
+Both of these only share a IRQ line but are otherwise completely independent.
+Each has their own error registers, etc. and we need some way to
+specify these two DARTs + the appropriate stream ID.
 
-Thank you!
+Essentially we have three options to represent this now:
+
+1) Add both DARTs as separate regs, use #iommu-cells = <2> and have the
+   first cell select the DART and the second one the stream ID.
+   We could allow #iommu-cells = <1> in case only one reg is specified
+   for the PCIe DART:
+
+   usb_dart1@502f00000 {
+     compatible = "apple,t8103-dart";
+     reg = <0x5 0x02f00000 0x0 0x4000>, <0x5 0x02f80000 0x0 0x4000>;
+     #iommu-cells = <2>;
+     ...
+   };
+
+   usb1 {
+     iommus = <&usb_dart1 0 1>, <&usb_dart1 1 0>;
+     ...
+   };
+
+   I prefer this option because we fully describe the DART in a single
+   device node here. It also feels natural to group them like this because
+   they need to share some properties (like dma-window and the interrupt)
+   anyway. 
+
+2) Create two DART nodes which share the same IRQ line and attach them
+   both to the master node:
+
+   usb_dart1a@502f00000 {
+     compatible = "apple,t8103-dart";
+     reg = <0x5 0x02f00000 0x0 0x4000>;
+     #iommu-cells = <1>;
+     ...
+   };
+   usb_dart1b@502f80000 {
+     compatible = "apple,t8103-dart";
+     reg = <0x5 0x02f80000 0x0 0x4000>;
+     #iommu-cells = <1>;
+     ...
+   };
+
+   usb1 {
+     iommus = <&usb_dart1a 1>, <&usb_dart1b 0>;
+     ...
+   };
+
+   I dislike this one because attaching those two DARTs to a single device
+   seems rather unusual. We'd also have to duplicate the dma-window setting,
+   make sure it's the same for both DARTs and there are probably even more
+   complications I can't think of right now. It seems like this would also
+   make the device tree very verbose and the implementation itself more
+   complicated.
+
+3) Introduce another property and let the DART driver take care of
+   mirroring the pagetables. I believe this would be similar to
+   the sid-remap property:
+
+   usb_dart1@502f00000 {
+     compatible = "apple,t8103-dart";
+     reg = <0x5 0x02f00000 0x0 0x4000>, <0x5 0x02f80000 0x0 0x4000>;
+     #iommu-cells = <1>;
+     sid-remap = <0 1>;
+   };
+   usb1 {
+     iommus = <&usb_dart1 0>;
+   };
+
+   I slightly dislike this one because we now specify which stream id 
+   to use in two places: Once in the device node and another time in the
+   new property in the DART node. I also don't think the binding is much
+   simpler than the first one.
+
+
+> > where #dma-address-cells and #dma-size-cells default to
+> > #address-cells and #size-cells respectively if I understand
+> > the code correctly. That way we could also just always use
+> > a 64bit address and size in the DT, e.g.
+> > 
+> >   pcie_dart {
+> >       [ ... ]
+> >       dma-window = <0 0x100000 0 0x3fe00000>;
+> >       [ ... ]
+> >   };
+> 
+> That sounds like a serious contender to me!  Hopefully one of the
+> Linux kernel developers can give this some sort of blessing.
+> 
+> I think it would make sense for us to just rely on the #address-cells
+> and #size-cells defaults for the M1 device tree.
+>
+
+Agreed.
+
+
+Best,
+
+Sven
