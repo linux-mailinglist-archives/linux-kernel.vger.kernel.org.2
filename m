@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700133442D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9783441A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhCVMpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:45:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
+        id S231332AbhCVMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:35:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231387AbhCVMiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 436CD619A0;
-        Mon, 22 Mar 2021 12:37:26 +0000 (UTC)
+        id S230196AbhCVMcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:32:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3F2661992;
+        Mon, 22 Mar 2021 12:32:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416646;
-        bh=qZ8CtAubEETq0hjuoxRlHxWl/vHQSMOfCTA7Kp6wJwM=;
+        s=korg; t=1616416356;
+        bh=Rqh84oPfGpkLWryE55UI1gfvz+d8MIqsBpn7j7LeXzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oYYkk8FELbgLOVmQUv6gJ2DulxAV1wfnX51aHQv3rbXxNRs6mVptSiDXTM0S8Ko1J
-         tffDo++S+uOZg6c9FQpNL7rDS6oybzlCy5NugJ/PGA3NrlmuSudyfeOHs2SIQCnlKG
-         xvUKSVC9DFfbwCitjh2e4NMZINJTkX715b6uHvo0=
+        b=IwOV4VoU6ILOT4H8IW20iXIYb8YEuLMZ6cwwZI0dHZmLd0Pqhv6s2Qkh7qGb24L2m
+         OvKCGu2LRVuhyAiYMDRoi3j4bHuFK67pICucfZGmZD0zDbI/0G8rjcJMa5vPU3EnBv
+         p8DBwt8BXRODUCzqVd3mDNMpVcb+CezwHLJzUYk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Gerald Baeza <gerald.baeza@st.com>,
-        linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 065/157] tty: serial: stm32-usart: Remove set but unused cookie variables
-Date:   Mon, 22 Mar 2021 13:27:02 +0100
-Message-Id: <20210322121935.827607612@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 040/120] ALSA: usb-audio: Fix unintentional sign extension issue
+Date:   Mon, 22 Mar 2021 13:27:03 +0100
+Message-Id: <20210322121930.996167381@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,72 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Jones <lee.jones@linaro.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 24832ca3ee85a14c42a4f23a5c8841ef5db3d029 ]
+commit 50b1affc891cbc103a2334ce909a026e25f4c84d upstream.
 
-Fixes the following W=1 kernel build warning(s):
+The shifting of the u8 integer device by 24 bits to the left will
+be promoted to a 32 bit signed int and then sign-extended to a
+64 bit unsigned long. In the event that the top bit of device is
+set then all then all the upper 32 bits of the unsigned long will
+end up as also being set because of the sign-extension. Fix this
+by casting device to an unsigned long before the shift.
 
- drivers/tty/serial/stm32-usart.c: In function ‘stm32_transmit_chars_dma’:
- drivers/tty/serial/stm32-usart.c:353:15: warning: variable ‘cookie’ set but not used [-Wunused-but-set-variable]
- drivers/tty/serial/stm32-usart.c: In function ‘stm32_of_dma_rx_probe’:
- drivers/tty/serial/stm32-usart.c:1090:15: warning: variable ‘cookie’ set but not used [-Wunused-but-set-variable]
-
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Cc: Gerald Baeza <gerald.baeza@st.com>
-Cc: linux-serial@vger.kernel.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20201104193549.4026187-29-lee.jones@linaro.org
+Addresses-Coverity: ("Unintended sign extension")
+Fixes: a07df82c7990 ("ALSA: usb-audio: Add DJM750 to Pioneer mixer quirk")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210318132008.15266-1-colin.king@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/stm32-usart.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/usb/mixer_quirks.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index ee6c7762d355..f4de32d3f2af 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -350,7 +350,6 @@ static void stm32_transmit_chars_dma(struct uart_port *port)
- 	struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
- 	struct circ_buf *xmit = &port->state->xmit;
- 	struct dma_async_tx_descriptor *desc = NULL;
--	dma_cookie_t cookie;
- 	unsigned int count, i;
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -2883,7 +2883,7 @@ static int snd_djm_controls_put(struct s
+ 	u8 group = (private_value & SND_DJM_GROUP_MASK) >> SND_DJM_GROUP_SHIFT;
+ 	u16 value = elem->value.enumerated.item[0];
  
- 	if (stm32port->tx_dma_busy)
-@@ -394,7 +393,7 @@ static void stm32_transmit_chars_dma(struct uart_port *port)
- 	desc->callback_param = port;
+-	kctl->private_value = ((device << SND_DJM_DEVICE_SHIFT) |
++	kctl->private_value = (((unsigned long)device << SND_DJM_DEVICE_SHIFT) |
+ 			      (group << SND_DJM_GROUP_SHIFT) |
+ 			      value);
  
- 	/* Push current DMA TX transaction in the pending queue */
--	cookie = dmaengine_submit(desc);
-+	dmaengine_submit(desc);
- 
- 	/* Issue pending DMA TX requests */
- 	dma_async_issue_pending(stm32port->tx_ch);
-@@ -1087,7 +1086,6 @@ static int stm32_of_dma_rx_probe(struct stm32_port *stm32port,
- 	struct device *dev = &pdev->dev;
- 	struct dma_slave_config config;
- 	struct dma_async_tx_descriptor *desc = NULL;
--	dma_cookie_t cookie;
- 	int ret;
- 
- 	/* Request DMA RX channel */
-@@ -1132,7 +1130,7 @@ static int stm32_of_dma_rx_probe(struct stm32_port *stm32port,
- 	desc->callback_param = NULL;
- 
- 	/* Push current DMA transaction in the pending queue */
--	cookie = dmaengine_submit(desc);
-+	dmaengine_submit(desc);
- 
- 	/* Issue pending DMA requests */
- 	dma_async_issue_pending(stm32port->rx_ch);
--- 
-2.30.1
-
+@@ -2921,7 +2921,7 @@ static int snd_djm_controls_create(struc
+ 		value = device->controls[i].default_value;
+ 		knew.name = device->controls[i].name;
+ 		knew.private_value = (
+-			(device_idx << SND_DJM_DEVICE_SHIFT) |
++			((unsigned long)device_idx << SND_DJM_DEVICE_SHIFT) |
+ 			(i << SND_DJM_GROUP_SHIFT) |
+ 			value);
+ 		err = snd_djm_controls_update(mixer, device_idx, i, value);
 
 
