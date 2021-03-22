@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9396B34499D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E873449A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCVPsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230163AbhCVPro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:47:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BCA36198D;
-        Mon, 22 Mar 2021 15:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616428064;
-        bh=1g/LClqVpf7FnoXgXc6QupXxejYIzphT5/fE3lsVOww=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=X/QpGV5F5rlDQQDsJjzJ67kCC2MfGfUmBjMPIsWRwRY/3uYiByGZyawgVXTimtiRr
-         mfWOzfbReFlAVXzpq4rBcFHg8qO753+VEXVQeF6D7uEo9hJea4SMUmMU/Kiy1oYOFL
-         j69v2kzwlHlojum2tTo1JhW17ArBh9FyNLevIojYQx8JwvlEerX5U32PbQydW+LveO
-         ZJtjrCHQdzPsujVebTwX+3J8MPH6a171UGXHWucwkLFuoH9G8gNECA5VCvSskniYLj
-         6i2N5BSgkB1AhkgqEye6qE0pq7ztrWcmg4z2+tPrdQa2P0Fc6MB+dszPAKwsiLmIck
-         EYqXRfJl2zVlw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5DD5735239E6; Mon, 22 Mar 2021 08:47:44 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 08:47:44 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
- Tiny RCU grace periods
-Message-ID: <20210322154744.GM2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
- <20210304002632.23870-2-paulmck@kernel.org>
- <20210321222855.GA863290@lothringen>
+        id S230173AbhCVPtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhCVPsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:48:35 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3318C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:48:33 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 10DB722235;
+        Mon, 22 Mar 2021 16:48:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1616428112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T3qa2pPQdTQJVJwKBRlFL0u42AQ4SJ4FARdq7h1EuZw=;
+        b=lO1d6jyaMhQtRpC6Q6rpr/+nNMsVXAO9o+/jwg8BoCnK0jSFGoDbUpi0wFrfJ4Tg+CqLbW
+        /mEzwKUBCNEFCcm0/ElK9GSWpTIorKFrfWkzfH4Aixo+U4UJn8La/QGrY8twqtB/qH8EbT
+        rJtzF07IrJcNF0FARrPEGSjTf0j2TxQ=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210321222855.GA863290@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 22 Mar 2021 16:48:31 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
+In-Reply-To: <0efba47de8737059b4f3c593c26297bf@walle.cc>
+References: <20210318092406.5340-1-michael@walle.cc>
+ <20210318092406.5340-2-michael@walle.cc>
+ <20210322142141.pd7ondg6l76idz7d@ti.com>
+ <0efba47de8737059b4f3c593c26297bf@walle.cc>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <9690ceb44cb1a09c03e2ac16569f3c6d@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 11:28:55PM +0100, Frederic Weisbecker wrote:
-> On Wed, Mar 03, 2021 at 04:26:31PM -0800, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > There is a need for a non-blocking polling interface for RCU grace
-> > periods, so this commit supplies start_poll_synchronize_rcu() and
-> > poll_state_synchronize_rcu() for this purpose.  Note that the existing
-> > get_state_synchronize_rcu() may be used if future grace periods are
-> > inevitable (perhaps due to a later call_rcu() invocation).  The new
-> > start_poll_synchronize_rcu() is to be used if future grace periods
-> > might not otherwise happen.  Finally, poll_state_synchronize_rcu()
-> > provides a lockless check for a grace period having elapsed since
-> > the corresponding call to either of the get_state_synchronize_rcu()
-> > or start_poll_synchronize_rcu().
-> > 
-> > As with get_state_synchronize_rcu(), the return value from either
-> > get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
-> > to a later call to either poll_state_synchronize_rcu() or the existing
-> > (might_sleep) cond_synchronize_rcu().
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  include/linux/rcutiny.h | 11 ++++++-----
-> >  kernel/rcu/tiny.c       | 40 ++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 46 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> > index 2a97334..69108cf4 100644
-> > --- a/include/linux/rcutiny.h
-> > +++ b/include/linux/rcutiny.h
-> > @@ -17,14 +17,15 @@
-> >  /* Never flag non-existent other CPUs! */
-> >  static inline bool rcu_eqs_special_set(int cpu) { return false; }
-> >  
-> > -static inline unsigned long get_state_synchronize_rcu(void)
-> > -{
-> > -	return 0;
-> > -}
-> > +unsigned long get_state_synchronize_rcu(void);
-> > +unsigned long start_poll_synchronize_rcu(void);
-> > +bool poll_state_synchronize_rcu(unsigned long oldstate);
-> >  
-> >  static inline void cond_synchronize_rcu(unsigned long oldstate)
-> >  {
-> > -	might_sleep();
-> > +	if (poll_state_synchronize_rcu(oldstate))
-> > +		return;
-> > +	synchronize_rcu();
+Am 2021-03-22 16:32, schrieb Michael Walle:
+>>> +
+>>> +	sfdp->num_dwords = DIV_ROUND_UP(sfdp_size, sizeof(*sfdp->dwords));
+>> 
+>> The SFDP spec says that Parameter Table Pointer should be DWORD 
+>> aligned
+>> and Parameter Table length is specified in number of DWORDs. So,
+>> sfdp_size should always be a multiple of 4. Any SFDP table where this 
+>> is
+>> not true is an invalid one.
+>> 
+>> Also, the spec says "Device behavior when the Read SFDP command 
+>> crosses
+>> the SFDP structure boundary is not defined".
+>> 
+>> So I think this should be a check for alignment instead of a round-up.
 > 
-> Perhaps cond_synchronize_rcu() could stay as it was. If it might
-> call synchronize_rcu() then it inherits its constraint to be
-> called from a quiescent state.
+> Well, that woundn't help for debugging. I.e. you also want the SFDP 
+> data
+> in cases like this. IMHO we should try hard enough to actually get a
+> reasonable dump.
+> 
+> OTOH we also rely on the header and the pointers in the header. Any
+> other ideas, but just to chicken out?
 
-As in leave the might_sleep()?  How about something like this?
+Oh, forgot to mention, sfdp_size is used to read the data. I just want
+to make sure, the allocated area is large enough. We shouldn't hit the
+undefined behavior by reading past the SFDP.
 
-static inline void cond_synchronize_rcu(unsigned long oldstate)
-{
-	if (!poll_state_synchronize_rcu(oldstate))
-		synchronize_rcu();
-	else
-		might_sleep();
-}
+Maybe that check should be part of the parsing code.
 
-One advantage of this is that the Tiny and Tree implementations
-become identical and can then be consolidated.
-
-Or did I miss your point?
-
-						Thanx, Paul
+-michael
