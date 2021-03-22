@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BABA344474
+	by mail.lfdr.de (Postfix) with ESMTP id E8B33344475
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232789AbhCVNA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:00:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42228 "EHLO mail.kernel.org"
+        id S231839AbhCVNAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:00:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232760AbhCVMsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232766AbhCVMsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 08:48:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BA17619B6;
-        Mon, 22 Mar 2021 12:44:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF0AE619CC;
+        Mon, 22 Mar 2021 12:44:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417044;
-        bh=m6DurxuMzZEzMMTp7cKzfYTjjKPLthFr8l+qTYn8IJQ=;
+        s=korg; t=1616417047;
+        bh=vRM6U3XQPzYZ/vO6pDovKg8Objfa3kJjfPwjSM7U9HY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jL2tQz8VEJlt8nPCgaAQMZ3qGocIAwB0Vl+Fn5OkI+yWgqz+wxbwp/MkWTUADouS+
-         MVsTQGBUa2f6IhK64Ph4GUluNDgj83RMrmWLycJ92mgNR/eN5ayiyRSr6sIzaQTh/w
-         LYJFp4oGlpoqM70Z4o1HmpzrU+66QuSOMraNmkMo=
+        b=I1UrPmDOB0BgMfNtP5IVk0pHVNijwe+Dla0bdfznBq9SR/CunpqcEA4sUWWu/DL0R
+         2PRbrzivJuyIOJGXEUWg7tMn2ewWuzWIted1yBiBea+Rn7R+kOGKMO4AGeJAY7FUP/
+         JW+S9m4y48Xg3uGWF6oYtc/pUm23gcSdnhDSfA8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 32/60] counter: stm32-timer-cnt: Report count function when SLAVE_MODE_DISABLED
-Date:   Mon, 22 Mar 2021 13:28:20 +0100
-Message-Id: <20210322121923.447284395@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 33/60] nvme-rdma: fix possible hang when failing to set io queues
+Date:   Mon, 22 Mar 2021 13:28:21 +0100
+Message-Id: <20210322121923.477871583@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
 References: <20210322121922.372583154@linuxfoundation.org>
@@ -44,136 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William Breathitt Gray <vilhelm.gray@gmail.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit fae6f62e6a580b663ecf42c2120a0898deae9137 ]
+[ Upstream commit c4c6df5fc84659690d4391d1fba155cd94185295 ]
 
-When in SLAVE_MODE_DISABLED mode, the count still increases if the
-counter is enabled because an internal clock is used. This patch fixes
-the stm32_count_function_get() and stm32_count_function_set() functions
-to properly handle this behavior.
+We only setup io queues for nvme controllers, and it makes absolutely no
+sense to allow a controller (re)connect without any I/O queues.  If we
+happen to fail setting the queue count for any reason, we should not allow
+this to be a successful reconnect as I/O has no chance in going through.
+Instead just fail and schedule another reconnect.
 
-Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
-Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Link: https://lore.kernel.org/r/20210226012931.161429-1-vilhelm.gray@gmail.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reported-by: Chao Leng <lengchao@huawei.com>
+Fixes: 711023071960 ("nvme-rdma: add a NVMe over Fabrics RDMA host driver")
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chao Leng <lengchao@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/counter/stm32-timer-cnt.c | 39 ++++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+ drivers/nvme/host/rdma.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 644ba18a72ad..c680c7abdd26 100644
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -35,13 +35,14 @@ struct stm32_timer_cnt {
-  * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
-  */
- enum stm32_count_function {
--	STM32_COUNT_SLAVE_MODE_DISABLED = -1,
-+	STM32_COUNT_SLAVE_MODE_DISABLED,
- 	STM32_COUNT_ENCODER_MODE_1,
- 	STM32_COUNT_ENCODER_MODE_2,
- 	STM32_COUNT_ENCODER_MODE_3,
- };
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index da6030010432..b8c0f75bfb7b 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -666,8 +666,11 @@ static int nvme_rdma_alloc_io_queues(struct nvme_rdma_ctrl *ctrl)
+ 		return ret;
  
- static enum counter_count_function stm32_count_functions[] = {
-+	[STM32_COUNT_SLAVE_MODE_DISABLED] = COUNTER_COUNT_FUNCTION_INCREASE,
- 	[STM32_COUNT_ENCODER_MODE_1] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_A,
- 	[STM32_COUNT_ENCODER_MODE_2] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_B,
- 	[STM32_COUNT_ENCODER_MODE_3] = COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
-@@ -88,6 +89,9 @@ static int stm32_count_function_get(struct counter_device *counter,
- 	regmap_read(priv->regmap, TIM_SMCR, &smcr);
- 
- 	switch (smcr & TIM_SMCR_SMS) {
-+	case 0:
-+		*function = STM32_COUNT_SLAVE_MODE_DISABLED;
-+		return 0;
- 	case 1:
- 		*function = STM32_COUNT_ENCODER_MODE_1;
- 		return 0;
-@@ -97,9 +101,9 @@ static int stm32_count_function_get(struct counter_device *counter,
- 	case 3:
- 		*function = STM32_COUNT_ENCODER_MODE_3;
- 		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return -EINVAL;
- }
- 
- static int stm32_count_function_set(struct counter_device *counter,
-@@ -110,6 +114,9 @@ static int stm32_count_function_set(struct counter_device *counter,
- 	u32 cr1, sms;
- 
- 	switch (function) {
-+	case STM32_COUNT_SLAVE_MODE_DISABLED:
-+		sms = 0;
-+		break;
- 	case STM32_COUNT_ENCODER_MODE_1:
- 		sms = 1;
- 		break;
-@@ -120,8 +127,7 @@ static int stm32_count_function_set(struct counter_device *counter,
- 		sms = 3;
- 		break;
- 	default:
--		sms = 0;
--		break;
-+		return -EINVAL;
- 	}
- 
- 	/* Store enable status */
-@@ -269,31 +275,36 @@ static int stm32_action_get(struct counter_device *counter,
- 	size_t function;
- 	int err;
- 
--	/* Default action mode (e.g. STM32_COUNT_SLAVE_MODE_DISABLED) */
--	*action = STM32_SYNAPSE_ACTION_NONE;
--
- 	err = stm32_count_function_get(counter, count, &function);
- 	if (err)
+ 	ctrl->ctrl.queue_count = nr_io_queues + 1;
+-	if (ctrl->ctrl.queue_count < 2)
 -		return 0;
-+		return err;
++	if (ctrl->ctrl.queue_count < 2) {
++		dev_err(ctrl->ctrl.device,
++			"unable to set any I/O queues\n");
++		return -ENOMEM;
++	}
  
- 	switch (function) {
-+	case STM32_COUNT_SLAVE_MODE_DISABLED:
-+		/* counts on internal clock when CEN=1 */
-+		*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_1:
- 		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
- 		if (synapse->signal->id == count->synapses[0].signal->id)
- 			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		else
-+			*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_2:
- 		/* counts up/down on TI2FP2 edge depending on TI1FP1 level */
- 		if (synapse->signal->id == count->synapses[1].signal->id)
- 			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		else
-+			*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_3:
- 		/* counts up/down on both TI1FP1 and TI2FP2 edges */
- 		*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return 0;
- }
- 
- static const struct counter_ops stm32_timer_cnt_ops = {
+ 	dev_info(ctrl->ctrl.device,
+ 		"creating %d I/O queues.\n", nr_io_queues);
 -- 
 2.30.1
 
