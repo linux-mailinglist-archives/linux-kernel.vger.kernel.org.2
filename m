@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D182343C29
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78149343C2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhCVI4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:56:14 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:59746 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhCVI4B (ORCPT
+        id S229920AbhCVI5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhCVI5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:56:01 -0400
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id C91DF9EFE09;
-        Mon, 22 Mar 2021 09:55:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1616403354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xSJ5Ap+46km1aE8osAQyVANKaDuVxgcRqcTd8szaIaU=;
-        b=gyjnP6aH/3aA4JB07GBqsIly5SLW1zbnBD3EenNf47HzhdL/z3RBQQ7D36zGqhtq2m/144
-        IAecKhZnEROQvlWhPt8LG+gRjS/uW8IZzjAEDKgrZDv4qXkTKBx+JRoRVGIFacCqVIsvZy
-        VmDcyiAgqfwmPXwZqNakCTtKON5wJBk=
-Date:   Mon, 22 Mar 2021 09:55:54 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Gao Xiang <hsiangkao@redhat.com>,
-        "zhangyi (F)" <yi.zhang@huawei.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] ext4 fixes for v5.12
-Message-ID: <20210322085554.rlnehum5gklvjrzv@spock.localdomain>
-References: <YFeQ9eBFn5JELyYo@mit.edu>
- <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
- <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
- <20210322030513.GA1925732@xiangao.remote.csb>
- <YFgQqjkSmCmvZ7LK@mit.edu>
+        Mon, 22 Mar 2021 04:57:11 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9806DC061574;
+        Mon, 22 Mar 2021 01:57:10 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id r20so20064302ljk.4;
+        Mon, 22 Mar 2021 01:57:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RABOW3vLVSon7z+xmw1AN4LsWgRUfXSREm0MZvyOp+I=;
+        b=uV6+VtLxkVleYOErjwhJ5y6R+uh1cg+P97eZ8ERs43LvVp1a8SqmKFZ+gN0nfJc0UK
+         y/6EY61Q9K1E5nlnYl0di/a/zhZqCTdV/X/EYI4IUhlWMW44a6aDlrhXUOJg2rnGGUp1
+         OuQI4r0pqDXLYIzomIhuvzUnonSuC/Lc6L2rPXZcSqH1EOTn2b/X4v33mBvuBSwsVln/
+         l33ydwoYJ3xAgQwHqYy8jZVyT65idAyHvbl/vFmAw3/6H3ZQlxDTuUacvrnB94lhq+jG
+         DlH/zfXT8xtv8pJBSCUcUTLBMFvJmCT3ym7DybSnbPZW8EJF8z3fOpulcexvGEYzmt9/
+         Lz9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=RABOW3vLVSon7z+xmw1AN4LsWgRUfXSREm0MZvyOp+I=;
+        b=WmrqByejff5kDMV3cR+MJF2+k51d7vdDTZ98Allo1SFkRzJJ5BMa0plC4psHiTP81k
+         SBJpqtaTg8iP3Qi6JBItsnB7KguoWCxIiavFh9q/PJVYuwMv6bDhz7ykugQgxgIFGFtU
+         OBVmZreZp5HbT2PEtHK4LqcDHq6LyBasWrdm2uhHkkN8Y/27AO6OUqgS0K4+5RGDqF/U
+         y489ZF6UkDHgvjQqQLkGfAhdJzrfSwMEMLZd6x4nI3KfLChUp+pwIXzB8UjpQob9619P
+         7yqFkXyPjbq0UkF0j1R/7G+oWT15eev3PJ/8mPwqc4ORcG0vAzMlwB79EcWnnhYUQVsk
+         41bw==
+X-Gm-Message-State: AOAM530qDgJMljZH3OR31mLRe6F7Hrwa57u+AL1IGjXQkxwbCFr0qvYB
+        27So6njCWy+CyXLJiORyIWU=
+X-Google-Smtp-Source: ABdhPJy0T5rI4v4i/DWJYPXbO/RLuo0lOwhPUhWCMlZCVeRpkurmIMC/GJRMw+xJXkrg6C7lgCcafw==
+X-Received: by 2002:a2e:5315:: with SMTP id h21mr8697762ljb.299.1616403429065;
+        Mon, 22 Mar 2021 01:57:09 -0700 (PDT)
+Received: from [192.168.1.100] ([178.176.79.3])
+        by smtp.gmail.com with ESMTPSA id 68sm1494178lfd.9.2021.03.22.01.57.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 01:57:08 -0700 (PDT)
+Subject: Re: [PATCH 10/13] usb: mtu3: support ip-sleep wakeup for MT8183
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Eddie Hung <eddie.hung@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+References: <1616382832-28450-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1616382832-28450-10-git-send-email-chunfeng.yun@mediatek.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <47c8e339-114c-9693-222b-173e54bf298e@gmail.com>
+Date:   Mon, 22 Mar 2021 11:57:01 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFgQqjkSmCmvZ7LK@mit.edu>
+In-Reply-To: <1616382832-28450-10-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+Same comments as to the patch #6.
 
-On Sun, Mar 21, 2021 at 11:36:10PM -0400, Theodore Ts'o wrote:
-> On Mon, Mar 22, 2021 at 11:05:13AM +0800, Gao Xiang wrote:
-> > I think the legel name would be "Zhang Yi" (family name goes first [1])
-> > according to
-> > The Chinese phonetic alphabet spelling rules for Chinese names [2].
-> > 
-> > Indeed, that is also what the legel name is written in alphabet on our
-> > passport or credit/debit cards.
-> > 
-> > Also, many official English-written materials use it in that way, for
-> > example, a somewhat famous bastetball player Yao Ming [3][4][5].
-> > 
-> > That is what I wrote my own name as this but I also noticed the western
-> > ordering of names is quite common for Chinese people in Linux kernel.
-> > Anyway, it's just my preliminary personal thought (might be just my
-> > own perference) according to (I think, maybe) formal occasions.
-> 
-> Yeah, there doesn't seem to be a lot of consistency with the ordering
-> of Chinese names when they are written in Roman characters.  Some
-> people put the family name first, and other people will put the
-> personal (first) name first.  In some cases it may be because the
-> developer in question is living in America, and so they've decided to
-> use the American naming convention.  (Two example of this are former
-> ext4 developers Mingming Cao and Jiaying Zhang, who live in Portland
-> and Los Angelos, and their family names are Cao and Zhang,
-> respectively.)
-> 
-> My personal opinion is people should use whatever name they are
-> comfortable with, using whatever characters they prefer.  The one
-> thing that would be helpful for me is for people to give a hint about
-> how they would prefer to be called --- for example, would you prefer
-> that start an e-mail with the salutation, "Hi Gao", "Hi Xiang", or "Hi
-> Gao Xiang"?
-
-Is there a common way to indicate that? Like, erm, SPDX, but for names?
-
-Saying, instead of just writing "Oleksandr Natalenko" in the email
-footer, I'll write "Oleksandr Natalenko / RMNA:NS" meaning "read my name
-as name-surname".
-
-Hm?
-
-> 
-> And if I don't know, and I guess wrong, please feel free to correct
-> me, either privately, or publically on the e-mail list, if you think
-> it would be helpful for more people to understand how you'd prefer to
-> be called.
-> 
-> Cheers,
-> 
-> 					- Ted
-
--- 
-  Oleksandr Natalenko (post-factum)
+MBR, Sergei
