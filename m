@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6137A344634
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78792344631
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCVNu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:50:56 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2724 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbhCVNuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:50:50 -0400
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F3wf75TNnz682gS;
-        Mon, 22 Mar 2021 21:42:07 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Mar 2021 14:50:48 +0100
-Received: from localhost (10.47.84.0) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 22 Mar
- 2021 13:50:47 +0000
-Date:   Mon, 22 Mar 2021 13:49:29 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        <kbuild-all@lists.01.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: include/linux/unaligned/be_byteshift.h:46:19: error:
- redefinition of 'get_unaligned_be32'
-Message-ID: <20210322134929.0000498b@Huawei.com>
-In-Reply-To: <CACRpkda5ofCs=nkpZXVyekw2LoeYZUNrFTu1iGPt47ZSMa-6eg@mail.gmail.com>
-References: <202103191536.9cD1TuQQ-lkp@intel.com>
-        <CAHp75Vchoe2Z00ODh_AWos3Chfa1AoQMjZw7aD=5cGsTFtK7hQ@mail.gmail.com>
-        <CACRpkda5ofCs=nkpZXVyekw2LoeYZUNrFTu1iGPt47ZSMa-6eg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S230106AbhCVNtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:49:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37004 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229467AbhCVNtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:49:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616420975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5aJOCSImLqPAApaY0++1sOTv38yGygKLihUtVg+NGj4=;
+        b=Bfh0Z3YBO7L1DsnYWYefFxQ2lRzNUaof7O/l1GcCBrtxGvepR9goz2264zEC041xAnVSEb
+        /mSE2m9DY8gAwvZE2R3QVFfC8afoAt17iVWFkzQ81+emRnTkCI/C1Np2q21SfyCfj43ic8
+        7K68RPMoN+7Xvy31vpojeJb5tOH18aA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 55447AC1F;
+        Mon, 22 Mar 2021 13:49:35 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 14:49:34 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Bui Quang Minh <minhquangbui99@gmail.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH] userfaultfd: Write protect when virtual memory range has
+ no page table entry
+Message-ID: <YFigbjaTT+YEEAO6@dhcp22.suse.cz>
+References: <20210319152428.52683-1-minhquangbui99@gmail.com>
+ <YFhuDf6L7nkUoT7q@dhcp22.suse.cz>
+ <YFiU9YWbYpLnlnde@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.84.0]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFiU9YWbYpLnlnde@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 14:33:46 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
-
-> On Fri, Mar 19, 2021 at 10:57 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Fri, Mar 19, 2021 at 9:05 AM kernel test robot <lkp@intel.com> wrote:  
-> > >
-> > > Hi Linus,
-> > >
-> > > FYI, the error/warning still remains.  
-> (...)
-> > >    In file included from include/linux/build_bug.h:5,
-> > >                     from include/linux/bitfield.h:10,
-> > >                     from drivers/iio/magnetometer/yamaha-yas530.c:22:  
-> >
-> > Isn't it fixed already somewhere?  
+On Mon 22-03-21 15:00:37, Mike Rapoport wrote:
+> On Mon, Mar 22, 2021 at 11:14:37AM +0100, Michal Hocko wrote:
+> > Le'ts Andrea and Mike
+> > 
+> > On Fri 19-03-21 22:24:28, Bui Quang Minh wrote:
+> > > userfaultfd_writeprotect() use change_protection() to clear write bit in
+> > > page table entries (pte/pmd). So, later write to this virtual address
+> > > range causes a page fault, which is then handled by userspace program.
+> > > However, change_protection() has no effect when there is no page table
+> > > entries associated with that virtual memory range (a newly mapped memory
+> > > range). As a result, later access to that memory range causes allocating a
+> > > page table entry with write bit still set (due to VM_WRITE flag in
+> > > vma->vm_flags).
+> > > 
+> > > Add checks for VM_UFFD_WP in vma->vm_flags when allocating new page table
+> > > entry in missing page table entry page fault path.
+> > 
+> > From the above it is not really clear whether this is a usability
+> > problem or a bug of the interface.
 > 
-> It is, I think Jonathan already applied the fix, it is just waiting to
-> percolate up
-> to Greg and then to Torvals:
-> https://lore.kernel.org/linux-iio/20210221154511.75b3d8a6@archlinux/
-
-I'm being slow.  Can apply it now as previous set of fixes have gone in.
-I'll pick it up when I'm the right machine.
-
-Jonathan
-
+> I'd say it's usability/documentation clarity issue. 
+> Userspace can register an area with
 > 
-> >> Kconfig warnings: (for reference only)
-> >>    WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-> >>    Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
-> >>    Selected by
-> >>    - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
-> >>    - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC  
-> >
-> > This one though is interesting.  
+> 	UFFDIO_REGISTER_MODE_MISSING | UFFDIO_REGISTER_MODE_WP
 > 
-> This looks like nothing to me :/
-> As confused as ever about Kconfig.
-> 
-> Yours,
-> Linus Walleij
+> and then it will be notified either when page table has no entry for a
+> virtual address or when there is a write to a write protected address.
 
+Thanks for the clarification! I have suspected this to be the case but
+I am not really familiar with the interface to have any strong statement
+here. Maybe we want to document this explicitly.
+-- 
+Michal Hocko
+SUSE Labs
