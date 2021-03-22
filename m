@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD66334474C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7194234474E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhCVOdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        id S231244AbhCVOdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhCVOc3 (ORCPT
+        with ESMTP id S230417AbhCVOcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:32:29 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1103EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:29 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id e7so19553920edu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:28 -0700 (PDT)
+        Mon, 22 Mar 2021 10:32:32 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657CEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:31 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id ce10so21628922ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4BEr+U22XVWAeunLqffU23P7ZmiKVWme3aB7fB0BhsU=;
-        b=vRgM409JQtnaRPNCwgrkhaPbRUwTSPN7dO4zkE0qRY7n4AVs4z/J05XI3BUQCIJmM/
-         mGJTKIqdpDgogPfs6603CGeQgY0E1HV69uMBNkPAKfgbjYiYkZaZfXQUFzNzNMBHrqPm
-         oe2jZGqRxVebAp/b6Q9F45Fd4mz2nATSnHJUq/yaLUysOAH/FmWGaHJZjRdOnWdoQ6Wv
-         LciAueRc7O52PqBAFxfqjC/Nz3papznAA0+Qb8VHouGFGwwLuz9XAiE5U4LnV3X9swDT
-         IIkdKNQ1uPR398m2nlqhakxKbrc9LppnqfErieu6SfJ2tajNYUdOMm+s63w145DlIC5h
-         wK6A==
+        bh=YLMtNnT3e6GvAIhoidxNIb4VuJXw+DLUdbOqSYM6/t4=;
+        b=CdJjWq4UHDY/vooDiXd3hFEy31e3/ROZp3MoFcNi03Eyf5GJ0nWXjqytWJc528i1CM
+         p4jtdaiCg/w0yRuoqDhlvjf/nA1Imtxx99FGj2l2lTJXsVbhcxA0wzthMhX5F6jbTyNU
+         wz+PQ05nDXfnP3i1nM9eqM6AuLRn3xQwd0giLDq+FGkTEvvJZye12sYHXvfMT8YEtGVe
+         8WhKmr6lH0I/8p+88JLoxzEEddHcq32sZbjToHVHcJpfm4gYdK35FTiXBgq/IjlE5HQg
+         0kQTla/kYMIa0WkfRKW2kCGekaP/QNXB5Nt9+VZukPH0wYkxZujDLzXDmTwovCqwtBL8
+         V60A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4BEr+U22XVWAeunLqffU23P7ZmiKVWme3aB7fB0BhsU=;
-        b=MzYp61v+0VPc/NpcBdE3ZKwRhdiX0It9FFEmg0sGS3IZJ4mAXuW4jUu8E6PCRcP+cP
-         CY0fu66hvcHPHtAHeChTv+KFuqhPOwXUdmDkL0lyirLtKf4by1rF7R8s0vxBkDahaHgd
-         U+evzf6D9ynhTkCzaaTddF1OOUAOpcAmRXgmBP31O25iP/daRmTvEXwcxxIEiF+hWNqc
-         +VniSq1SYLD7ErCaPz2/wLOCyaVTtdPgC4kfuX3GLww3D8On0FC3VpKg2L+N7fxa/ODC
-         +jT93LGf0C2c5Cx1+asuTzc0OrkUTnQJUVJ8dZLo1bAqo+6qqwUaxD8wSHR+DnBOfmwx
-         TVFw==
-X-Gm-Message-State: AOAM531DRpCr1ykvn2gV8LhZH/8FU+VT/F51rQqj1ZG+GD1E3uxcen/7
-        N5pJuKv4VEL3L8AOcAgLUZA=
-X-Google-Smtp-Source: ABdhPJyPBriehihrYHP4J6IqMkH+J388wKRJBSIJkfPlD/9VgyKvBz8dBo5mY6zis1Ypdk35A021RA==
-X-Received: by 2002:a05:6402:438f:: with SMTP id o15mr26161782edc.123.1616423547888;
-        Mon, 22 Mar 2021 07:32:27 -0700 (PDT)
+        bh=YLMtNnT3e6GvAIhoidxNIb4VuJXw+DLUdbOqSYM6/t4=;
+        b=Hj7NaD8EGIrGxDCAOQVsVa4f3QhXUkYHHS+3e5uktKIQrYrCAhf27H9ci8L5t8f+0q
+         zCR+wjkpcyAnqndy5Qh/o92FFAv0KzZzKFeQKwkfj5yfLNReBwLsZ3YUn54R6b8UEE9T
+         ZmxIkV0+JflTwDE9/zWCFKv1CyrhTUipFdod0A1NjmYP+N8kR9mC/JEBfm7V8g14Prfo
+         LpZzB3wa7w2TW+WMGOdLVZU8iseG18pNU0vWQdZiqNBT3nYK4ubxvB51iQYb2IjrwHUS
+         CL+wDAEEf2JpO4HldelJ+Ty6OdgN2NKtmPAMcF5Xdu+mEmHFfA/vkmAqy805+lKOxUoi
+         ZWqw==
+X-Gm-Message-State: AOAM533MquXBdbiGsqBBhB0w7/Y/6s+Gv1FfEAo7yLCga6CMxL8oRmA3
+        A0GLUwksYI0Hyg8aj/hJ43E=
+X-Google-Smtp-Source: ABdhPJyG7iox4/GiXK1ZM8ksBlVtJuSVh1flw51HprQRcyqEwjZUN1sZ/2NucObxgHvhX4lMuwb0DQ==
+X-Received: by 2002:a17:907:9152:: with SMTP id l18mr39979ejs.376.1616423550188;
+        Mon, 22 Mar 2021 07:32:30 -0700 (PDT)
 Received: from agape ([151.57.176.11])
-        by smtp.gmail.com with ESMTPSA id t12sm11828460edy.56.2021.03.22.07.32.27
+        by smtp.gmail.com with ESMTPSA id k12sm11564768edr.60.2021.03.22.07.32.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:32:27 -0700 (PDT)
+        Mon, 22 Mar 2021 07:32:29 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, apw@canonical.com, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 07/11] staging: rtl8723bs: delete extern declarations in core/rtw_wlan_util.c
-Date:   Mon, 22 Mar 2021 15:31:45 +0100
-Message-Id: <8dcec67cedad47b2e7d54ad90507658b1c5747ce.1616422773.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 08/11] staging: rtl8723bs: move function prototypes out of hal/odm.c
+Date:   Mon, 22 Mar 2021 15:31:46 +0100
+Message-Id: <efbd319bc6199fbb06d6c4996ae2d9b81d2f6922.1616422773.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1616422773.git.fabioaiuto83@gmail.com>
 References: <cover.1616422773.git.fabioaiuto83@gmail.com>
@@ -67,32 +67,245 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 fix the following checkpatch issues:
 
 WARNING: externs should be avoided in .c files
-28: FILE: drivers/staging/rtl8723bs/core/rtw_wlan_util.c:28:
-+extern unsigned char RTW_WPA_OUI[];
+285: FILE: drivers/staging/rtl8723bs/hal/odm.c:285:
++void odm_CommonInfoSelfInit(struct dm_odm_t *pDM_Odm);
 --
 WARNING: externs should be avoided in .c files
-29: FILE: drivers/staging/rtl8723bs/core/rtw_wlan_util.c:29:
-+extern unsigned char WPA_TKIP_CIPHER[4];
+287: FILE: drivers/staging/rtl8723bs/hal/odm.c:287:
++void odm_CommonInfoSelfUpdate(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+289: FILE: drivers/staging/rtl8723bs/hal/odm.c:289:
++void odm_CmnInfoInit_Debug(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+291: FILE: drivers/staging/rtl8723bs/hal/odm.c:291:
++void odm_BasicDbgMessage(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+305: FILE: drivers/staging/rtl8723bs/hal/odm.c:305:
++void odm_RefreshRateAdaptiveMaskCE(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+309: FILE: drivers/staging/rtl8723bs/hal/odm.c:309:
++void odm_RSSIMonitorInit(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+311: FILE: drivers/staging/rtl8723bs/hal/odm.c:311:
++void odm_RSSIMonitorCheckCE(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+313: FILE: drivers/staging/rtl8723bs/hal/odm.c:313:
++void odm_RSSIMonitorCheck(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+315: FILE: drivers/staging/rtl8723bs/hal/odm.c:315:
++void odm_SwAntDetectInit(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+317: FILE: drivers/staging/rtl8723bs/hal/odm.c:317:
++void odm_SwAntDivChkAntSwitchCallback(void *FunctionContext);
+--
+WARNING: externs should be avoided in .c files
+321: FILE: drivers/staging/rtl8723bs/hal/odm.c:321:
++void odm_GlobalAdapterCheck(void);
+--
+WARNING: externs should be avoided in .c files
+323: FILE: drivers/staging/rtl8723bs/hal/odm.c:323:
++void odm_RefreshRateAdaptiveMask(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+325: FILE: drivers/staging/rtl8723bs/hal/odm.c:325:
++void ODM_TXPowerTrackingCheck(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+327: FILE: drivers/staging/rtl8723bs/hal/odm.c:327:
++void odm_RateAdaptiveMaskInit(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+330: FILE: drivers/staging/rtl8723bs/hal/odm.c:330:
++void odm_TXPowerTrackingInit(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+338: FILE: drivers/staging/rtl8723bs/hal/odm.c:338:
++void odm_InitHybridAntDiv(struct dm_odm_t *pDM_Odm);
+--
+WARNING: externs should be avoided in .c files
+340: FILE: drivers/staging/rtl8723bs/hal/odm.c:340:
++bool odm_StaDefAntSel(
+--
+WARNING: externs should be avoided in .c files
+349: FILE: drivers/staging/rtl8723bs/hal/odm.c:349:
++void odm_SetRxIdleAnt(struct dm_odm_t *pDM_Odm, u8 Ant, bool bDualPath);
+--
+WARNING: externs should be avoided in .c files
+353: FILE: drivers/staging/rtl8723bs/hal/odm.c:353:
++void odm_HwAntDiv(struct dm_odm_t *pDM_Odm);
+
+moved function prototypes in hal/odm.h
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/staging/rtl8723bs/hal/odm.c | 68 -----------------------------
+ drivers/staging/rtl8723bs/hal/odm.h | 62 ++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+), 68 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index bfd55a0356f5..760b0ea4e9bd 100644
---- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -25,9 +25,6 @@ static unsigned char AIRGOCAP_OUI[] = {0x00, 0x0a, 0xf5};
- static unsigned char RSN_TKIP_CIPHER[4] = {0x00, 0x0f, 0xac, 0x02};
- static unsigned char WPA_TKIP_CIPHER[4] = {0x00, 0x50, 0xf2, 0x02};
+diff --git a/drivers/staging/rtl8723bs/hal/odm.c b/drivers/staging/rtl8723bs/hal/odm.c
+index 49d552105a65..1ede10f0b9da 100644
+--- a/drivers/staging/rtl8723bs/hal/odm.c
++++ b/drivers/staging/rtl8723bs/hal/odm.c
+@@ -279,80 +279,12 @@ u32 TxScalingTable_Jaguar[TXSCALE_TABLE_SIZE] = {
+ 	0x3FE  /*  36, +6.0dB */
+ };
  
--extern unsigned char RTW_WPA_OUI[];
--extern unsigned char WPA_TKIP_CIPHER[4];
+-/*  Local Function predefine. */
 -
- #define R2T_PHY_DELAY	(0)
+-/* START------------COMMON INFO RELATED--------------- */
+-void odm_CommonInfoSelfInit(struct dm_odm_t *pDM_Odm);
+-
+-void odm_CommonInfoSelfUpdate(struct dm_odm_t *pDM_Odm);
+-
+-void odm_CmnInfoInit_Debug(struct dm_odm_t *pDM_Odm);
+-
+-void odm_BasicDbgMessage(struct dm_odm_t *pDM_Odm);
+-
+-/* END------------COMMON INFO RELATED--------------- */
+-
+-/* START---------------DIG--------------------------- */
+-
+-/* Remove by Yuchen */
+-
+-/* END---------------DIG--------------------------- */
+-
+-/* START-------BB POWER SAVE----------------------- */
+-/* Remove BB power Saving by YuChen */
+-/* END---------BB POWER SAVE----------------------- */
+-
+-void odm_RefreshRateAdaptiveMaskCE(struct dm_odm_t *pDM_Odm);
+-
+-/* Remove by YuChen */
+-
+-void odm_RSSIMonitorInit(struct dm_odm_t *pDM_Odm);
+-
+-void odm_RSSIMonitorCheckCE(struct dm_odm_t *pDM_Odm);
+-
+-void odm_RSSIMonitorCheck(struct dm_odm_t *pDM_Odm);
+-
+-void odm_SwAntDetectInit(struct dm_odm_t *pDM_Odm);
+-
+-void odm_SwAntDivChkAntSwitchCallback(void *FunctionContext);
+-
+-
+-
+-void odm_GlobalAdapterCheck(void);
+-
+-void odm_RefreshRateAdaptiveMask(struct dm_odm_t *pDM_Odm);
+-
+-void ODM_TXPowerTrackingCheck(struct dm_odm_t *pDM_Odm);
+-
+-void odm_RateAdaptiveMaskInit(struct dm_odm_t *pDM_Odm);
+-
+-
+-void odm_TXPowerTrackingInit(struct dm_odm_t *pDM_Odm);
+-
+ /* Remove Edca by Yu Chen */
  
- /* define WAIT_FOR_BCN_TO_MIN	(3000) */
+ 
+ #define RxDefaultAnt1		0x65a9
+ #define RxDefaultAnt2		0x569a
+ 
+-void odm_InitHybridAntDiv(struct dm_odm_t *pDM_Odm);
+-
+-bool odm_StaDefAntSel(
+-	struct dm_odm_t *pDM_Odm,
+-	u32 OFDM_Ant1_Cnt,
+-	u32 OFDM_Ant2_Cnt,
+-	u32 CCK_Ant1_Cnt,
+-	u32 CCK_Ant2_Cnt,
+-	u8 *pDefAnt
+-);
+-
+-void odm_SetRxIdleAnt(struct dm_odm_t *pDM_Odm, u8 Ant, bool bDualPath);
+-
+-
+-
+-void odm_HwAntDiv(struct dm_odm_t *pDM_Odm);
+-
+-
+ /*  */
+ /* 3 Export Interface */
+ /*  */
+diff --git a/drivers/staging/rtl8723bs/hal/odm.h b/drivers/staging/rtl8723bs/hal/odm.h
+index 3c8d76e42c99..42fb01aa15cd 100644
+--- a/drivers/staging/rtl8723bs/hal/odm.h
++++ b/drivers/staging/rtl8723bs/hal/odm.h
+@@ -1429,4 +1429,66 @@ void ODM_AntselStatistics_88C(
+ 
+ void ODM_DynamicARFBSelect(struct dm_odm_t *pDM_Odm, u8 rate, bool Collision_State);
+ 
++/*  Local Function predefine. */
++
++/* START------------COMMON INFO RELATED--------------- */
++void odm_CommonInfoSelfInit(struct dm_odm_t *pDM_Odm);
++
++void odm_CommonInfoSelfUpdate(struct dm_odm_t *pDM_Odm);
++
++void odm_CmnInfoInit_Debug(struct dm_odm_t *pDM_Odm);
++
++void odm_BasicDbgMessage(struct dm_odm_t *pDM_Odm);
++
++/* END------------COMMON INFO RELATED--------------- */
++
++/* START---------------DIG--------------------------- */
++
++/* Remove by Yuchen */
++
++/* END---------------DIG--------------------------- */
++
++/* START-------BB POWER SAVE----------------------- */
++/* Remove BB power Saving by YuChen */
++/* END---------BB POWER SAVE----------------------- */
++
++void odm_RefreshRateAdaptiveMaskCE(struct dm_odm_t *pDM_Odm);
++
++/* Remove by YuChen */
++
++void odm_RSSIMonitorInit(struct dm_odm_t *pDM_Odm);
++
++void odm_RSSIMonitorCheckCE(struct dm_odm_t *pDM_Odm);
++
++void odm_RSSIMonitorCheck(struct dm_odm_t *pDM_Odm);
++
++void odm_SwAntDetectInit(struct dm_odm_t *pDM_Odm);
++
++void odm_SwAntDivChkAntSwitchCallback(void *FunctionContext);
++
++void odm_GlobalAdapterCheck(void);
++
++void odm_RefreshRateAdaptiveMask(struct dm_odm_t *pDM_Odm);
++
++void ODM_TXPowerTrackingCheck(struct dm_odm_t *pDM_Odm);
++
++void odm_RateAdaptiveMaskInit(struct dm_odm_t *pDM_Odm);
++
++void odm_TXPowerTrackingInit(struct dm_odm_t *pDM_Odm);
++
++void odm_InitHybridAntDiv(struct dm_odm_t *pDM_Odm);
++
++bool odm_StaDefAntSel(
++	struct dm_odm_t *pDM_Odm,
++	u32 OFDM_Ant1_Cnt,
++	u32 OFDM_Ant2_Cnt,
++	u32 CCK_Ant1_Cnt,
++	u32 CCK_Ant2_Cnt,
++	u8 *pDefAnt
++);
++
++void odm_SetRxIdleAnt(struct dm_odm_t *pDM_Odm, u8 Ant, bool bDualPath);
++
++void odm_HwAntDiv(struct dm_odm_t *pDM_Odm);
++
+ #endif
 -- 
 2.20.1
 
