@@ -2,66 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B9B3443C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819E43443E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhCVMyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:54:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:59154 "EHLO foss.arm.com"
+        id S232525AbhCVMzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:55:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59886 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231156AbhCVMnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:43:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C6891063;
-        Mon, 22 Mar 2021 05:43:31 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 667843F718;
-        Mon, 22 Mar 2021 05:43:29 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 12:43:26 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        minghuan.Lian@nxp.com, Mingkai Hu <mingkai.hu@nxp.com>,
-        Roy Zang <roy.zang@nxp.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>, robh@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] pci/controller/dwc: convert comma to semicolon
-Message-ID: <20210322124326.GD11469@e121166-lin.cambridge.arm.com>
-References: <20201216131944.14990-1-zhengyongjun3@huawei.com>
- <20210106190722.GA1327553@bjorn-Precision-5520>
- <20210115113654.GA22508@e121166-lin.cambridge.arm.com>
- <YEUdSZpwzg0k5z2+@rocinante>
+        id S231979AbhCVMof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:44:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616417071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g7NjXJ5P50fjj+9kPayWsEIvX1rQdbi78jgM0gsDnQA=;
+        b=kJ7bsVwLKhYrBKxaTcbYFYPQmjPyNMCytUvEraNMyWaSvj6iN6sqbUXySdFNBTyzavXrIw
+        IQjXAdcV5ni0QN3Oo9OT95l445orlp9d96g1Wv1qXWRrpwBCyv18i+gcc8yfzGLH1d/QXl
+        O2CXS3+a827ccB4hiJ7IWF/17R92fHs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B51BEACFC;
+        Mon, 22 Mar 2021 12:44:31 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 13:44:31 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.com>
+X-X-Sender: mbenes@pobox.suse.cz
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/14] objtool: Fix static_call list generation
+In-Reply-To: <20210318171919.764599543@infradead.org>
+Message-ID: <alpine.LSU.2.21.2103221343080.12460@pobox.suse.cz>
+References: <20210318171103.577093939@infradead.org> <20210318171919.764599543@infradead.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEUdSZpwzg0k5z2+@rocinante>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 07:36:57PM +0100, Krzysztof Wilczyński wrote:
-> Hi,
-> 
-> [...]
-> > I would request NXP maintainers to take this patch, rewrite it as
-> > Bjorn requested and resend it as fast as possible, this is a very
-> > relevant fix.
-> [...]
-> 
-> Looking at the state of the pci-layerscape-ep.c file in Linus' tree,
-> this still hasn't been fixed, and it has been a while.
-> 
-> NXP folks, are you intend to pick this up?  Do let us know.
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -1045,6 +1045,12 @@ static int add_call_destinations(struct
+>  		} else
+>  			insn->call_dest = reloc->sym;
+>  
+> +		if (insn->call_dest && insn->call_dest->static_call_tramp) {
+> +			list_add_tail(&insn->static_call_node,
+> +				      &file->static_call_list);
+> +		}
+> +
+> +
 
-Minghuan, Mingkai, Roy,
+A nit, but too many new lines here.
 
-either one of you reply and follow up this patch or I will have to
-update the MAINTAINERS entry and take action accordingly, you are
-not maintaining this driver and I won't maintain your code, sorry.
-
-Lorenzo
-
-> Krzysztof
+Miroslav
