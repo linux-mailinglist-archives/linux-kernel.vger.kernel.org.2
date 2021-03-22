@@ -2,140 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C856D343D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D96343D4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhCVJ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:56:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57292 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229913AbhCVJzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:55:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616406947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S230080AbhCVJ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:56:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26850 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230001AbhCVJzz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 05:55:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616406952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=B/2ozR1dCacTTh1U7cY+Z5HNl+3fI6dqE+W2ZDjDPYM=;
-        b=Z6gyafmxwULS2CLLmU6+9rxjA+6VdYu/ZVVzqZlu7ZW2khYcqWt3VZyW5URwptKGH6FfHt
-        sOevZnUMpkVLYHYkXIePZhVkyMlsMuiNktVNXkSE6PL2a/NmVOtnGSkGFZjvGIPtrfHSNB
-        S8V4aYfbUQ73RzmerBVBOySZw2B6MjI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 817FFAD38;
+        bh=QUufmyh3A4V077KACg1M3I/o1FkYLmY5QIZxvkVvBnY=;
+        b=LWV3GxlzhO2DGZhmJqEDtozPG727OvsdsGcTbG57Dd1fUC0WqsCwrBd/fLBa8X5NHY6E4N
+        tXCHSYm/Rzz2Ud6eUD7ZEX7X/Cchx+5zWRq8IinT71jGo3LaZw1NjizOn/ll2KxD/PNwVg
+        iThAewlxibEsRsZnPf87dqKWM7rVpYc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-ErAyjmyPMFCqQrecXqZX2g-1; Mon, 22 Mar 2021 05:55:50 -0400
+X-MC-Unique: ErAyjmyPMFCqQrecXqZX2g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9AA48B5DC2;
+        Mon, 22 Mar 2021 09:55:48 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3650521ECB;
         Mon, 22 Mar 2021 09:55:47 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 10:55:30 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Zhou Guanghui <zhouguanghui1@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
- cache lookup
-Message-ID: <YFhpkrK7MZ1mDQhi@dhcp22.suse.cz>
-References: <20210319071547.60973-1-hannes@cmpxchg.org>
+Subject: Re: [PATCH v1 2/2] s390/kvm: VSIE: fix MVPG handling for prefixing
+ and MSO
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210319193354.399587-1-imbrenda@linux.ibm.com>
+ <20210319193354.399587-3-imbrenda@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <f7c8dd7d-34ab-95b9-dac4-bf2b9e37ae37@redhat.com>
+Date:   Mon, 22 Mar 2021 10:55:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319071547.60973-1-hannes@cmpxchg.org>
+In-Reply-To: <20210319193354.399587-3-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-03-21 03:15:47, Johannes Weiner wrote:
-> When the freeing of a higher-order page block (non-compound) races
-> with a speculative page cache lookup, __free_pages() needs to leave
-> the first order-0 page in the chunk to the lookup but free the buddy
-> pages that the lookup doesn't know about separately.
+On 19.03.21 20:33, Claudio Imbrenda wrote:
+> Prefixing needs to be applied to the guest real address to translate it
+> into a guest absolute address.
 > 
-> However, if such a higher-order page is charged to a memcg (e.g. !vmap
-> kernel stack)), only the first page of the block has page->memcg
-> set. That means we'll uncharge only one order-0 page from the entire
-> block, and leak the remainder.
+> The value of MSO needs to be added to a guest-absolute address in order to
+> obtain the host-virtual.
 > 
-> Add a split_page_memcg() to __free_pages() right before it starts
-> taking the higher-order page apart and freeing its individual
-> constituent pages. This ensures all of them will have the memcg
-> linkage set up for correct uncharging. Also update the comments a bit
-> to clarify what exactly is happening to the page during that race.
-> 
-> This bug is old and has its roots in the speculative page cache patch
-> and adding cgroup accounting of kernel pages. There are no known user
-> reports. A backport to stable is therefor not warranted.
-> 
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-
+> Fixes: 223ea46de9e79 ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 > ---
->  mm/page_alloc.c | 33 +++++++++++++++++++++++++++------
->  1 file changed, 27 insertions(+), 6 deletions(-)
+>   arch/s390/kvm/vsie.c | 10 +++++++---
+>   1 file changed, 7 insertions(+), 3 deletions(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index c53fe4fa10bf..f4bd56656402 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
->   * the allocation, so it is easy to leak memory.  Freeing more memory
->   * than was allocated will probably emit a warning.
->   *
-> - * If the last reference to this page is speculative, it will be released
-> - * by put_page() which only frees the first page of a non-compound
-> - * allocation.  To prevent the remaining pages from being leaked, we free
-> - * the subsequent pages here.  If you want to use the page's reference
-> + * This function isn't a put_page(). Don't let the put_page_testzero()
-> + * fool you, it's only to deal with speculative cache references. It
-> + * WILL free pages directly. If you want to use the page's reference
->   * count to decide when to free the allocation, you should allocate a
->   * compound page, and use put_page() instead of __free_pages().
->   *
-> @@ -5124,11 +5123,33 @@ static inline void free_the_page(struct page *page, unsigned int order)
->   */
->  void __free_pages(struct page *page, unsigned int order)
->  {
-> -	if (put_page_testzero(page))
-> +	/*
-> +	 * Drop the base reference from __alloc_pages and free. In
-> +	 * case there is an outstanding speculative reference, from
-> +	 * e.g. the page cache, it will put and free the page later.
-> +	 */
-> +	if (likely(put_page_testzero(page))) {
->  		free_the_page(page, order);
-> -	else if (!PageHead(page))
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * The speculative reference will put and free the page.
-> +	 *
-> +	 * However, if the speculation was into a higher-order page
-> +	 * chunk that isn't marked compound, the other side will know
-> +	 * nothing about our buddy pages and only free the order-0
-> +	 * page at the start of our chunk! We must split off and free
-> +	 * the buddy pages here.
-> +	 *
-> +	 * The buddy pages aren't individually refcounted, so they
-> +	 * can't have any pending speculative references themselves.
-> +	 */
-> +	if (!PageHead(page) && order > 0) {
-> +		split_page_memcg(page, 1 << order);
->  		while (order-- > 0)
->  			free_the_page(page + (1 << order), order);
-> +	}
->  }
->  EXPORT_SYMBOL(__free_pages);
->  
-> -- 
-> 2.30.1
+> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> index 48aab6290a77..92864f9b3d84 100644
+> --- a/arch/s390/kvm/vsie.c
+> +++ b/arch/s390/kvm/vsie.c
+> @@ -1002,7 +1002,7 @@ static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page,
+>   static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>   {
+>   	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
+> -	unsigned long pei_dest, pei_src, src, dest, mask;
+> +	unsigned long pei_dest, pei_src, r1, r2, src, dest, mask, mso, prefix;
+>   	u64 *pei_block = &vsie_page->scb_o->mcic;
+>   	int edat, rc_dest, rc_src;
+>   	union ctlreg0 cr0;
+> @@ -1010,9 +1010,13 @@ static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>   	cr0.val = vcpu->arch.sie_block->gcr[0];
+>   	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
+>   	mask = _kvm_s390_logical_to_effective(&scb_s->gpsw, PAGE_MASK);
+> +	mso = READ_ONCE(vsie_page->scb_o->mso) & ~(1UL << 20);
+
+I think we should use the one stored in the shadow page - this is what 
+the SIE saw and will see when retrying.
+
+> +	prefix = scb_s->prefix << GUEST_PREFIX_SHIFT;
+>   
+> -	dest = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16) & mask;
+> -	src = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20) & mask;
+> +	r1 = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16);
+> +	r2 = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20);
+
+Just reuse dest and src here?
+
+> +	dest = _kvm_s390_real_to_abs(prefix, r1 & mask) + mso;
+> +	src = _kvm_s390_real_to_abs(prefix, r2 & mask) + mso;
+>   
+>   	rc_dest = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, dest, &pei_dest);
+>   	rc_src = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, src, &pei_src);
 > 
+
+Apart from that, looks good to me.
 
 -- 
-Michal Hocko
-SUSE Labs
+Thanks,
+
+David / dhildenb
+
