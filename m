@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522E9343F8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 493CC343F92
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCVLWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:22:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhCVLW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:22:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4900D6198E
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:22:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616412148;
-        bh=7O5Y064sMQOOqOMY6OVkzxT800PL2d3moQtD+GZ6tnQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BQ9GjdMI6QpoEYrjTgKYbYorgs0l3IkOz+yPJRKtEu0XYXsdX9Q8E65Xh+/x8n25d
-         KG0eWUPs4PHOT/10cQfUgGb1wgX7Ihvl3KRyjASrVE3uKY2Nl94VaCB528haqpc5nq
-         DlnJPsoE3tm83dW4quDpZZHzbmEVZhhyoaZ7KlpLhhptYeLMEj/OrzhC0aumO82JB5
-         yDBrCnyRvPDS/OeUMpH0tu1j4YAL6Ifdjy5ATvmZrbeFTyvnL72M4LaA7cZAF3z8pr
-         nsyIulqAq9RAwVLNkSF8Yaf2SLdfz3TRgWAvp5GQJOcQC9rJuDg3UnCfo9Z1UhsXhm
-         T5RSmP7EvHCHw==
-Received: by mail-oi1-f178.google.com with SMTP id n140so12639586oig.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:22:28 -0700 (PDT)
-X-Gm-Message-State: AOAM532nHDYNWXSeDvWRoLkaGEo4OoSLllD4EYN3MsPAmL5zjgb0y2ft
-        LKojcA/K6FTfpk8CXLdNdv/4d4OWoVF25GeRI08=
-X-Google-Smtp-Source: ABdhPJwufCrfVhjdpJ6yEaYN/r05FrmAE5SWGZfTHqEo8IjCyEFrO+tYBa7BSbfsZMkQ7O6hVatQPDMg+Muv+B4zehU=
-X-Received: by 2002:a05:6808:313:: with SMTP id i19mr9170398oie.67.1616412147659;
- Mon, 22 Mar 2021 04:22:27 -0700 (PDT)
+        id S230022AbhCVLXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:23:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54077 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230009AbhCVLWi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:22:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616412158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H7FM+EfpOKgcYU35xLw4tXyD/liddu9m0RQO74OmR04=;
+        b=ix4pXxWIytgB46N0VpdUR0/1dCkljbprqN3r+vrrUrqBwUUObWDMsWUtBKBbbC7lIhLmGw
+        sR+wZXZFdqjAjV4QxqZrMgnA/S/J5GrQhfry0zN+YZGpsPSPuv7AFyjZj6JeZxp1GmTCV7
+        chxj8wZzeP2avlQxzYLLe8VUHuFAj94=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-7RJwYWYiMDyDj_DdUXUzCA-1; Mon, 22 Mar 2021 07:22:34 -0400
+X-MC-Unique: 7RJwYWYiMDyDj_DdUXUzCA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAE141034AE7;
+        Mon, 22 Mar 2021 11:22:32 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D4751B49E;
+        Mon, 22 Mar 2021 11:22:30 +0000 (UTC)
+Subject: Re: [PATCH v1 1/2] s390/kvm: split kvm_s390_real_to_abs
+From:   David Hildenbrand <david@redhat.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Thomas Huth <thuth@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+References: <20210319193354.399587-1-imbrenda@linux.ibm.com>
+ <20210319193354.399587-2-imbrenda@linux.ibm.com>
+ <fa583ab0-36ac-47a7-7fa3-4ce88c518488@redhat.com>
+ <f76f770c-908e-4f4f-f060-15f4d30652d8@redhat.com> <YFh7nGfVZRD15Cbp@osiris>
+ <c394c3ce-2d13-b3d1-c886-22478fee7dcb@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <71822096-fb31-e2ca-0cac-c6b4400a8118@redhat.com>
+Date:   Mon, 22 Mar 2021 12:22:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210322102002.28990-1-arnd@kernel.org> <YFhxhyXLyTqp4ppH@kroah.com>
-In-Reply-To: <YFhxhyXLyTqp4ppH@kroah.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 22 Mar 2021 12:22:11 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2B4X98VMy-1E=mNX+96Dmika8Y-YdTn5E-_uWqK9JnWQ@mail.gmail.com>
-Message-ID: <CAK8P3a2B4X98VMy-1E=mNX+96Dmika8Y-YdTn5E-_uWqK9JnWQ@mail.gmail.com>
-Subject: Re: [PATCH] devcoredump: avoid -Wempty-body warnings
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c394c3ce-2d13-b3d1-c886-22478fee7dcb@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:29 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Mon, Mar 22, 2021 at 11:19:53AM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > +      * These should normally not fail, but there is no problem
-> > +      * continuing without the links, so just warn instead of
-> > +      * failing.
-> > +      */
-> > +     WARN_ON_ONCE(sysfs_create_link(&devcd->devcd_dev.kobj, &dev->kobj,
-> > +                                    "failing_device"));
-> >
-> > -     if (sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
-> > -                           "devcoredump"))
-> > -             /* nothing - symlink will be missing */;
-> > +     WARN_ON_ONCE(sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
-> > +                                    "devcoredump"));
->
-> We do not want to reboot machines that have panic-on-warn set,
+On 22.03.21 12:16, David Hildenbrand wrote:
+> On 22.03.21 12:12, Heiko Carstens wrote:
+>> On Mon, Mar 22, 2021 at 10:53:46AM +0100, David Hildenbrand wrote:
+>>>>> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+>>>>> index daba10f76936..7c72a5e3449f 100644
+>>>>> --- a/arch/s390/kvm/gaccess.h
+>>>>> +++ b/arch/s390/kvm/gaccess.h
+>>>>> @@ -18,17 +18,14 @@
+>>>>>      /**
+>>>>>       * kvm_s390_real_to_abs - convert guest real address to guest absolute address
+>>>>> - * @vcpu - guest virtual cpu
+>>>>> + * @prefix - guest prefix
+>>>>>       * @gra - guest real address
+>>>>>       *
+>>>>>       * Returns the guest absolute address that corresponds to the passed guest real
+>>>>> - * address @gra of a virtual guest cpu by applying its prefix.
+>>>>> + * address @gra of by applying the given prefix.
+>>>>>       */
+>>>>> -static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
+>>>>> -						 unsigned long gra)
+>>>>> +static inline unsigned long _kvm_s390_real_to_abs(u32 prefix, unsigned long gra)
+>>>>
+>>>> <bikeshedding>
+>>>> Just a matter of taste, but maybe this could be named differently?
+>>>> kvm_s390_real2abs_prefix() ? kvm_s390_prefix_real_to_abs()?
+>>>> </bikeshedding>
+>>>
+>>> +1, I also dislike these "_.*" style functions here.
+>>
+>> Yes, let's bikeshed then :)
+>>
+>> Could you then please try to rename page_to* and everything that looks
+>> similar to page2* please? I'm wondering what the response will be..
+> 
+> Oh, we're bikeshedding about anything now? Cool.
 
-Fair enough.
+(I agree that real2abs is not such a good idea ;) )
 
-> so if this really needs a trace dump, please do that instead...
+-- 
+Thanks,
 
-I don't think the backtrace is needed here, if it ever happens it's either
-going to be -ENOMEM or completely reproducible. I can instead
-do the cast to (void) that Linus suggested, or a simple if(...) dev_warn()
-or dev_warn_once() to have some indication of the failure.
+David / dhildenb
 
-          Arnd
