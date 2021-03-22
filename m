@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586E7343F6D
+	by mail.lfdr.de (Postfix) with ESMTP id CC776343F6E
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhCVLQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhCVLQT (ORCPT
+        id S230290AbhCVLQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:16:40 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:38892 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhCVLQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:16:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB41C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:16:19 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616411776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d6MCD7pdLm1m9o0nSZfcGVynnHaaFFKisNBi8FUOUDI=;
-        b=HGQ4Dq/QId1GFRVx1HMe3bnD4P4EIomI4JZ4cANiCSDYQJY6xdBYfGImEqIIUdflHSb2eG
-        AG5nGJdk4lX5XVjaaiqS//GrJsVJP9Ijq8bdaIbrE7SKJoEIGdLpM/EDcpQBAB2lQgk6MU
-        X8oZeFM6ONCXtShUT3/k50CnKRxnUQZBn4N/a/5fbdnrL+44mEG7qAdlWW2Tg8FmxwI7Oq
-        VShNPK4jV2pQROn0KgdIlW5lbfX0nvRrf220GY7eMXUDCtKPCuFUg0M0FJO/mwUwNdxzQ1
-        QbMS2AQMn4FOISkPvPjbMNIlD+XNpFoBkR2xwJ+6iO0Nm/Vq0xMd3c4LvxLrUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616411776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d6MCD7pdLm1m9o0nSZfcGVynnHaaFFKisNBi8FUOUDI=;
-        b=GVJkDM5NKKZT5EVSKd6owK/h9IbxTC3ADU1q8YrkwIBQ319MtYvZb+Ca0JzfmiT2F1P3nA
-        kRaLvwiQ6+lXkyDA==
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Rafael Aquini <aquini@redhat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
-Subject: Re: [PATCH next v1 2/3] printk: remove safe buffers
-In-Reply-To: <YFbY8kF7ilYoxvYp@google.com>
-References: <20210316233326.10778-1-john.ogness@linutronix.de> <20210316233326.10778-3-john.ogness@linutronix.de> <YFbY8kF7ilYoxvYp@google.com>
-Date:   Mon, 22 Mar 2021 12:16:15 +0100
-Message-ID: <87k0pzmoao.fsf@jogness.linutronix.de>
+        Mon, 22 Mar 2021 07:16:26 -0400
+Received: by mail-wr1-f53.google.com with SMTP id z2so16246210wrl.5;
+        Mon, 22 Mar 2021 04:16:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UkbQHhRFu3VCem8wMbYGSCHnBOT7NZBm3cb0xTaOfF0=;
+        b=jFOahz2DY2y/DDIDWItBo+DTjtqHrA85pvlDoNSUxXQQUN9I4SZyEpKgriuxYWLYIX
+         F/du/WtoC2LPJHYyO+Zav7UmNdaDkENo3OwSIMn8jZHYXLCYBkpPNj9hfabZRseTlkti
+         8NboPo0Ynb/4fXE7J1isTzGUeyd77+hyVh5Ift+JO89Dw4IniGaUo10zMHgABYf67PQ9
+         iOou6GlnllcoiNrfWOz/t3HKSz7Dd5aS9aMnPfVuS7pZxRnhidbi0HbJOmoy1E+VUak5
+         aHJ6gyEEeBM8ZRqGXe+uPUQ/L3fU5ya/hFFQUxUm9Ve1WNhMjHW8AMXowZB/g6uTBoUb
+         CBWg==
+X-Gm-Message-State: AOAM531MMJ6ssQDETU4G4cgHSAovNeq54W9dX4pdbuRbmaFIf/A9Ewn3
+        JDWResRjtBB8owjETURXdHnHGka4/zU=
+X-Google-Smtp-Source: ABdhPJxONToZF/zYJgJuQYMDI6ZY4mH5zGY9bhnz1Ws/t2BZvxSpu6NNWHPzKlavMQhoByPSHAGsAw==
+X-Received: by 2002:a05:6000:1563:: with SMTP id 3mr17541609wrz.211.1616411783637;
+        Mon, 22 Mar 2021 04:16:23 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id o15sm13518844wra.93.2021.03.22.04.16.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 04:16:23 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 11:16:21 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Matheus Castello <matheus@castello.eng.br>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <liuwe@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, vkuznets <vkuznets@redhat.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] x86/Hyper-V: Support for free page reporting
+Message-ID: <20210322111621.kdjsaxxioxo6k7dl@liuwe-devbox-debian-v2>
+References: <SN4PR2101MB088069A91BC5DB6B16C8950BC0699@SN4PR2101MB0880.namprd21.prod.outlook.com>
+ <MWHPR21MB1593BF61E959AC8F056CDFF5D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <SN4PR2101MB088036B8892891C5408067BEC0689@SN4PR2101MB0880.namprd21.prod.outlook.com>
+ <MWHPR21MB15932DFEE4F0756419D58525D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB15932DFEE4F0756419D58525D7689@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-21, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
->> @@ -369,7 +70,10 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
->>  	 * Use the main logbuf even in NMI. But avoid calling console
->>  	 * drivers that might have their own locks.
->>  	 */
->> -	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
->> +	if (this_cpu_read(printk_context) &
->> +	    (PRINTK_NMI_DIRECT_CONTEXT_MASK |
->> +	     PRINTK_NMI_CONTEXT_MASK |
->> +	     PRINTK_SAFE_CONTEXT_MASK)) {
->
-> Do we need printk_nmi_direct_enter/exit() and
-> PRINTK_NMI_DIRECT_CONTEXT_MASK?  Seems like all printk_safe() paths
-> are now DIRECT - we store messages to the prb, but don't call console
-> drivers.
+On Fri, Mar 19, 2021 at 09:30:50PM +0000, Michael Kelley wrote:
+> From: Sunil Muthuswamy <sunilmut@microsoft.com>  Sent: Friday, March 19, 2021 2:21 PM
+> > 
+> > > What's the strategy for this flag in the unlikely event that the hypercall fails?
+> > > It doesn't seem right to have hv_query_ext_cap() fail, but leave the
+> > > static flag set to true.  Just move that line down to after the status check
+> > > has succeeded?
+> > 
+> > That call should not fail in any normal circumstances. The current idea was to
+> > avoid repeating the same call on persistent failure. 
+> 
+> OK, I can see that as a valid strategy.  And the assumption is that a failed
+> hypercall would leave hv_extended_cap unmodified and hence all zeros.
+> 
+> I'm OK with this approach if you want to keep it.  But perhaps add a short
+> comment about the intent so it doesn't look like a bug. :-)
+> 
 
-I was planning on waiting until the kthreads are introduced, in which
-case printk_safe.c is completely removed. But I suppose I could switch
-the 1 printk_nmi_direct_enter() user to printk_nmi_enter() so that
-PRINTK_NMI_DIRECT_CONTEXT_MASK can be removed now. I would do this in a
-4th patch of the series.
+Sunil, if you can send an updated version of your patch by either
+providing a comment or moving the code around, I can queue it up for
+hyperv-next.
 
-John Ogness
+I think adding a comment is perhaps the easier thing to do.
+
+Wei.
