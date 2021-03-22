@@ -2,141 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33743452D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1A73452DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhCVXMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 19:12:53 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:45912 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhCVXMU (ORCPT
+        id S230335AbhCVXOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 19:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhCVXNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:12:20 -0400
-Received: by mail-oi1-f174.google.com with SMTP id d12so14951401oiw.12;
-        Mon, 22 Mar 2021 16:12:20 -0700 (PDT)
+        Mon, 22 Mar 2021 19:13:37 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070BAC061574;
+        Mon, 22 Mar 2021 16:13:37 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x16so18864450wrn.4;
+        Mon, 22 Mar 2021 16:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tYvb3I5DkX3N6jN+5U7mg9SkFokyTC7DYO1POXsmyXA=;
+        b=JAukgRqBFlBqYxoTg07QIe3L0u4Zd4pnU8/KawSiQ9CobCuM3gzIOiljfx6LuzgDWA
+         UowTprAJ6pvQSXvs4KSQRoxyhk97bRV/HvA6p2Z7/U2jyU55VRoMchp/WW94qOWwfctx
+         xjztqDCBK6KyOMwxPOwi4e26tFik5N8gD8ME46WI4P9N9+IGYjmYXftjUoCOmT9YRUhI
+         oxS7NQe6LKxh0Fe3YkrHljuKHXVZGAd59GORjepGb1sCy/oTzRkzKEYxW8PIJ/sFr1d6
+         zI5HyhOjX7JC0HU1eEG4mNxiJ04gBc9w35eUnfsZO8LW67/ihxMVwREYJPst2Xb0XGu3
+         JGJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=McQT4s4j4Lcn3Ti7MbeKUQbdrUGlmk29d7hOHsI/ts0=;
-        b=lhwKYsR/eKSewzvsyqNWVxsnAYgo3Ado9f2V1yqTzn6aDwYrglvIPVxmDb9ydh6gQm
-         2c7rDQAK8pA1Sh1D0/WVVZCQQjHZZ7nutTl82bZZCbx7Z1tF/CtGLEVkl3CludJ2iyYi
-         1kGPwQlIJGCt8DOYAjyYOPw7rOHNRRVdqpLA5vhi9CWl4L8tTqq0Z5jE7pzUa3z1pdQf
-         LM03iorCaWnQ5VH2g4HQ3yz1Rk36xt7umW6z/KXZjDQdPUzphnpTXBWnlRT9Utajuhhd
-         EgijnD0+eAQektSmT7prTg6Liv1YM6r+3kb6F8QBS6Bo+20M96O7gwLS506EAS0A/vOm
-         yJBQ==
-X-Gm-Message-State: AOAM532Fo+6iHamJRnBIU3L2BKicdL7M5ZeJ/eXAGGUfMyoCkSGehNrh
-        cXB5XzT+xTmb+EKFtyygwABBlfDdovg=
-X-Google-Smtp-Source: ABdhPJxPt5TwswTrvlJO6XxM4Tpe3zdnqW/9eFPTjO90E4sAAuGkVTWYB7wZck6o23Zvb5PAMTe5EA==
-X-Received: by 2002:aca:ab86:: with SMTP id u128mr1040692oie.47.1616454739781;
-        Mon, 22 Mar 2021 16:12:19 -0700 (PDT)
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com. [209.85.210.43])
-        by smtp.gmail.com with ESMTPSA id h59sm3818999otb.29.2021.03.22.16.12.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 16:12:19 -0700 (PDT)
-Received: by mail-ot1-f43.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so17660372ota.9;
-        Mon, 22 Mar 2021 16:12:18 -0700 (PDT)
-X-Received: by 2002:a05:6830:2043:: with SMTP id f3mr1853763otp.63.1616454738360;
- Mon, 22 Mar 2021 16:12:18 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=tYvb3I5DkX3N6jN+5U7mg9SkFokyTC7DYO1POXsmyXA=;
+        b=YWEIQudAlD8UPdpfZbMw7eFHAPO4URDrfWpUqcL/ddYKm4xwcS86t5pnE+Fa0yyTLY
+         uRFMFx9nzVj4tAEp88qh4eei9VlLkTJTU3e3bq1FCItb3W+4ity+WGwQs1ewiFJOPcMd
+         8rwojnFSaozI5v7OFW+Qhf69y8zmNbnlVWtiQL338fUQwiK+/FB2APQ8Alg0crLkMMpM
+         LtKepgiTCrvRJsAv8J9RTsW8qxCXL31kKfvDGhJ3/dOdzHu0plT6oeFIDr16DEe+l7Zh
+         2TKcDfWVQ8reCNgb976fsOQa6oXA8+Jf2OiTF66fuixeTWxPdX9/cpk1/+pMCP/rxFO9
+         PeKQ==
+X-Gm-Message-State: AOAM531LI619K+9GVV7hIhi5qgtJ3KmDtV6vICLoPzaykVQP8ZtGzJuJ
+        aUsOe7PtC1Ri7DNmu9B5NpA=
+X-Google-Smtp-Source: ABdhPJwD5sKWkDZI+WUiEv9LaU8t0tl7e3Sco91hCCQ6VjFxt+KbUyFjpi5+6SIPcvWKZoMwC1DUgg==
+X-Received: by 2002:adf:b642:: with SMTP id i2mr867183wre.8.1616454815721;
+        Mon, 22 Mar 2021 16:13:35 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id w6sm20916828wrl.49.2021.03.22.16.13.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 16:13:35 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 23 Mar 2021 00:13:32 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Martin Sebor <msebor@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        Martin Sebor <msebor@gcc.gnu.org>,
+        Ning Sun <ning.sun@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 02/11] x86: tboot: avoid Wstringop-overread-warning
+Message-ID: <20210322231332.GA1984184@gmail.com>
+References: <20210322160253.4032422-1-arnd@kernel.org>
+ <20210322160253.4032422-3-arnd@kernel.org>
+ <20210322202958.GA1955909@gmail.com>
+ <b944a853-0e4b-b767-0175-cc2c1edba759@gmail.com>
 MIME-Version: 1.0
-References: <20210318083438.26536-1-michael@walle.cc>
-In-Reply-To: <20210318083438.26536-1-michael@walle.cc>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Mon, 22 Mar 2021 18:12:06 -0500
-X-Gmail-Original-Message-ID: <CADRPPNR=xy_oBZFS+hmO1k+uu2ckFyrK9EUP77N3buU5XpuHrw@mail.gmail.com>
-Message-ID: <CADRPPNR=xy_oBZFS+hmO1k+uu2ckFyrK9EUP77N3buU5XpuHrw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: ls1028a: fix optee node
-To:     Michael Walle <michael@walle.cc>
-Cc:     "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        "kernelci.org bot" <bot@kernelci.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b944a853-0e4b-b767-0175-cc2c1edba759@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 3:36 AM Michael Walle <michael@walle.cc> wrote:
->
-> Don't enable the optee node in the SoC include. It is an optional
-> component and actually, if enabled, breaks boards which doesn't have it.
 
-Hi Shawn,
+* Martin Sebor <msebor@gmail.com> wrote:
 
-Shall we make this a general rule?  I see quite a few SoC dtsi files
-are having the optee node enabled by default.
+> > I.e. the real workaround might be to turn off the -Wstringop-overread-warning,
+> > until GCC-11 gets fixed?
+> 
+> In GCC 10 -Wstringop-overread is a subset of -Wstringop-overflow.
+> GCC 11 breaks it out as a separate warning to make it easier to
+> control.  Both warnings have caught some real bugs but they both
+> have a nonzero rate of false positives.  Other than bug reports
+> we don't have enough data to say what their S/N ratio might be
+> but my sense is that it's fairly high in general.
+> 
+>   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=wstringop-overread
+>   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=wstringop-overflow
+> 
+> In GCC 11, all access warnings expect objects to be either declared
+> or allocated.  Pointers with constant values are taken to point to
+> nothing valid (as Arnd mentioned above, this is to detect invalid
+> accesses to members of structs at address zero).
+> 
+> One possible solution to the known address problem is to extend GCC
+> attributes address and io that pin an object to a hardwired address
+> to all targets (at the moment they're supported on just one or two
+> targets).  I'm not sure this can still happen before GCC 11 releases
+> sometime in April or May.
+> 
+> Until then, another workaround is to convert the fixed address to
+> a volatile pointer before using it for the access, along the lines
+> below.  It should have only a negligible effect on efficiency.
 
-Regards,
-Leo
+Thank you for the detailed answer!
 
->
-> This reverts commit 48787485f8de ("arm64: dts: ls1028a: enable optee
-> node") and enables the node per board, assuming the intend of the
-> original author was to enable OPTEE for the LS1028A-RDB and the
-> LS1028A-QDS.
->
-> Fixes: 48787485f8de ("arm64: dts: ls1028a: enable optee node")
-> Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-> Reported-by: "kernelci.org bot" <bot@kernelci.org>
-> Tested-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts | 4 ++++
->  arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts | 4 ++++
->  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi    | 3 ++-
->  3 files changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-> index fbcba9cb8503..060d3c79244d 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-> @@ -327,6 +327,10 @@
->         status = "okay";
->  };
->
-> +&optee {
-> +       status = "okay";
-> +};
-> +
->  &sai1 {
->         status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> index 41ae6e7675ba..1bdf0104d492 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> @@ -274,6 +274,10 @@
->         status = "okay";
->  };
->
-> +&optee {
-> +       status = "okay";
-> +};
-> +
->  &sai4 {
->         status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> index 50d277eb2a54..e2007ebacd69 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> @@ -92,9 +92,10 @@
->         };
->
->         firmware {
-> -               optee {
-> +               optee: optee {
->                         compatible = "linaro,optee-tz";
->                         method = "smc";
-> +                       status = "disabled";
->                 };
->         };
->
-> --
-> 2.20.1
->
+I think I'll go with Arnd's original patch - which makes the code a 
+slightly bit cleaner by separating out the check_tboot_version() check 
+into a standalone function.
+
+The only ugly aspect is the global nature of the 'tboot' pointer - but 
+that's a self-inflicted wound.
+
+I'd also guess that the S/N ratio somewhat unfairly penalizes this 
+warning right now, because the kernel had a decade of growing real 
+fixes via other efforts such as static and dynamic instrumentation as 
+well.
+
+So the probability of false positive remaining is in fact higher, and 
+going forward we should see a better S/N ratio of this warning. Most 
+of which will never be seen by upstream maintainers, as the mishaps 
+will stay at the individual developer level. :-)
+
+Thanks,
+
+	Ingo
