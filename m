@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697F334454B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E613F344550
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhCVNPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:15:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233406AbhCVNDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFBBE60238;
-        Mon, 22 Mar 2021 13:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616418191;
-        bh=FlXXjoEDVcyQ5x6OCJ5zCQMEdy6VKfBQ7cry3HNMhW8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RdlKB1bCw62yHLdCKBwsz4bRs9BI44ldN+kY4HItrqSySM0JjRuIHFk65QkdftpTL
-         EhnWh2XuViKPZpMcUXtwXTkLq15UKzvK/sdMp+J7tpZf2mp1AQGlz5qSAe3s8Cohm6
-         jCilRmKk3/Stzy8pqz3jGlG7gkxgxbqTWJhw74+/iL/hi/vrUFvfuTjU3WGfspFmAg
-         /Pw2RFjh4I/qfUEWOSZjTr9BpncQJhIjyHlCcTFDyOukejL2Qdb0sAVcmIXDGvW9zV
-         Q6139NsoE+1AcFssVke4nIYY7VCRVM44fWqyntqg1s6/jaU9fTbB02GENY7K3/RY47
-         3rJsQyQGxtjgQ==
-Received: by mail-oi1-f171.google.com with SMTP id k25so12909534oic.4;
-        Mon, 22 Mar 2021 06:03:11 -0700 (PDT)
-X-Gm-Message-State: AOAM533BVMvKZ+HGFBEAe38qxseWC/h+PQseon00DVn9Z+mE9VSIS3Jq
-        cG4SS9sdkcRr6hnJEc0Yj6yOfXAnwqc8zIgzqwE=
-X-Google-Smtp-Source: ABdhPJw2y9AwQUsZ+YoAXBGHsI/NEpc9BMWLAKxpCWcENCYr5K3h5UtwVnm2hO3nmUInqXTNzRxEChUPO4XERmOpzm4=
-X-Received: by 2002:a05:6808:313:: with SMTP id i19mr9440187oie.67.1616418190622;
- Mon, 22 Mar 2021 06:03:10 -0700 (PDT)
+        id S231561AbhCVNQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232845AbhCVNFr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:05:47 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0B2C061756;
+        Mon, 22 Mar 2021 06:05:47 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id y5so8820286qkl.9;
+        Mon, 22 Mar 2021 06:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=801QFsuMh5/bXT7iDGLM8P3LIQI2jpvEZ62QIecOMdw=;
+        b=g7aI/jvx2znrl1EyXPcFMm56+a5ShivFYZZ9ennJJNFYkMLttLz8Vj7hCqf7nA8MIf
+         NcOoj3cd0rR8rYJYFNH2wrHub0iLAhwMp16IPriKiNqC1ohnCWyQJzC6btBsnbM0JPej
+         p4o4sMERKZVv0dJbh6m2Qk1p0OP+OmbDq/VDd6UKcsdCwhn76ypRmjNmrtFgnUlJ9vxK
+         //DULu3p9tfRRIswQxfQG9bTpGs2N4qi+yGzLYtNGrfpt/m8b2FaEqev5Q8/XwlhW4R6
+         ikoygTYVztwcUI3QDjbiT7BDZBVI5V6p2Tyz89jvbBBPSpnw4KxN7/1uU6/sm/an/F0k
+         cYWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=801QFsuMh5/bXT7iDGLM8P3LIQI2jpvEZ62QIecOMdw=;
+        b=HB2OPEx2NkJ/w61fZdCDmyTIe5IaV0iJeKk0lvZf4N8/TWQQzi0wubyup0fgXB/TdH
+         IxgQ3PAUg7mzwzaMZX2kQ98t8A+LSYcGrIHbRzmZVB7wh0NfPvECqo0h0+jNkgfX1dKg
+         MOSROBcCQTX5mz7QvThgq4NDeC5eBYQnMVg8cVJ/K1Fwns8ByDVw5mujzIdo5G8w2085
+         +f89pyqgd/PNjtFivxjWXoPPeZZS5CaO7ycWE0ILHamOXyQcCwcA4wHAXmKEu9ZqPVnE
+         3TpEVVtwNG8Z9zmqNtluqx1vuRs/3qKVl8kXvr8/MV1zAV8B1PZ2HxOwDHeO1TftavfO
+         RT0Q==
+X-Gm-Message-State: AOAM531FKLPaPH93nNtFWjcJvVrSVzuhMKlD+bNUNfEc143pGnz4APUA
+        gJeKK7jGOx7WRyppuj2jqj4=
+X-Google-Smtp-Source: ABdhPJyEEhJj8SFIQBJSsr3d4eJcQbj9s3I/grK8x+/NEg7D0hoRx+x1KVAgNoIEtF5eSZAqa3Yv3g==
+X-Received: by 2002:a05:620a:553:: with SMTP id o19mr2511279qko.491.1616418346402;
+        Mon, 22 Mar 2021 06:05:46 -0700 (PDT)
+Received: from localhost.localdomain ([143.244.44.200])
+        by smtp.gmail.com with ESMTPSA id r125sm10703324qkf.132.2021.03.22.06.05.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 06:05:45 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] s390/crc32-vx: Couple of typo fixes
+Date:   Mon, 22 Mar 2021 18:35:33 +0530
+Message-Id: <20210322130533.3805976-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20210322113829.3239999-1-arnd@kernel.org> <20210322121506.r4yx6n6652nvrz6m@wittgenstein>
-In-Reply-To: <20210322121506.r4yx6n6652nvrz6m@wittgenstein>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 22 Mar 2021 14:02:54 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0HgsKzez13cSWZ-HVGM86UXB5a58MozY+BupfpMuB2gw@mail.gmail.com>
-Message-ID: <CAK8P3a0HgsKzez13cSWZ-HVGM86UXB5a58MozY+BupfpMuB2gw@mail.gmail.com>
-Subject: Re: [PATCH] posix-acl: avoid -Wempty-body warning
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 1:15 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
-> On Mon, Mar 22, 2021 at 12:38:24PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The fallthrough comment for an ignored cmpxchg() return value
-> > produces a harmless warning with 'make W=1':
-> >
-> > fs/posix_acl.c: In function 'get_acl':
-> > fs/posix_acl.c:127:36: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-> >   127 |                 /* fall through */ ;
-> >       |                                    ^
-> >
-> > Rewrite it as gcc suggests as a step towards a clean W=1 build.
-> > On most architectures, we could just drop the if() entirely, but
-> > in some cases this causes a different warning.
->
-> And you don't see the warning for the second unconditional
-> cmpxchg(p, sentinel, ACL_NOT_CACHED);
-> below?
 
-I would have expected both to show that warning, didn't notice the other
-one.  I now see that all architectures use statement expressions for cmpxchg()
-and xchg() these days, after we fixed m68k, alpha and ia64, so the
-changelog text here no longer makes sense.
+s/defintions/definitions/
+s/intermedate/intermediate/
 
-Should I just remove the if() then?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/s390/crypto/crc32be-vx.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-        Arnd
+diff --git a/arch/s390/crypto/crc32be-vx.S b/arch/s390/crypto/crc32be-vx.S
+index 0099044e2c86..6b3d1009c392 100644
+--- a/arch/s390/crypto/crc32be-vx.S
++++ b/arch/s390/crypto/crc32be-vx.S
+@@ -32,7 +32,7 @@
+  * process particular chunks of the input data stream in parallel.
+  *
+  * For the CRC-32 variants, the constants are precomputed according to
+- * these defintions:
++ * these definitions:
+  *
+  *	R1 = x4*128+64 mod P(x)
+  *	R2 = x4*128    mod P(x)
+@@ -189,7 +189,7 @@ ENTRY(crc32_be_vgfm_16)
+ 	 * Note: To compensate the division by x^32, use the vector unpack
+ 	 * instruction to move the leftmost word into the leftmost doubleword
+ 	 * of the vector register.  The rightmost doubleword is multiplied
+-	 * with zero to not contribute to the intermedate results.
++	 * with zero to not contribute to the intermediate results.
+ 	 */
+
+ 	/* T1(x) = floor( R(x) / x^32 ) GF2MUL u */
+--
+2.31.0
+
