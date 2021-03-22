@@ -2,86 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A2A3446BC
+	by mail.lfdr.de (Postfix) with ESMTP id 8699B3446BD
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhCVOID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCVOHk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:07:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC6DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qxtJ7diB0tR2FAXTes+upzfZuzt5kGzcUNJOQzpCjwI=; b=Vaqaqmc4Oh0L8c6SRLKnmG2hZB
-        bcUQ3jq8ELCIqU7R4nwon3ggrKdW2xQT482xV7pRMyvT4YDNEnTVEniyJ6eIuS0bYDjUXrPcl9uy8
-        jzkZVEm7UyE77l62KGbK/a5APvaA5fkanjbZnmHsAqwoKH4IThr+2qafXskEZBMgYdPq8j+/ltG9N
-        K+EX1gkLpYut/dxZZfmd8Ikt1JtPMHgCVaqaMfcsBpa9ab7piNwCgoiE1Ia0AvTFrcus67/Z08Y+i
-        sKp8oWtQ00Ycx1EfGnCix8GFcde8nLTcewwJfbJETfgCB5Tuql7XMJA79WcaVA7lRulKD2198chvo
-        d0Hrm3Mg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOLCY-008c70-AI; Mon, 22 Mar 2021 14:06:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24CC53003E1;
-        Mon, 22 Mar 2021 15:06:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 03C532BE591E5; Mon, 22 Mar 2021 15:06:36 +0100 (CET)
-Date:   Mon, 22 Mar 2021 15:06:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        jbaron@akamai.com, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
-Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
-Message-ID: <YFikbJfytBSqBPDU@hirez.programming.kicks-ass.net>
-References: <20210318113156.407406787@infradead.org>
- <20210318113610.739542434@infradead.org>
- <20210318161308.vu3dhezp2lczch6f@treble>
- <YFOGvmWiJUDOHy7D@hirez.programming.kicks-ass.net>
- <YFSfwimq/VLmo1Lw@hirez.programming.kicks-ass.net>
- <20210319140005.7ececb11@gandalf.local.home>
- <YFiWqvEsswDHBDPX@gunter>
+        id S230194AbhCVOIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:08:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48630 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230096AbhCVOHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:07:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616422067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CvcYWkfFq9PJh9O1Ss2tX6oEUxfsWFJNOcab7Fz4Fvc=;
+        b=b8uYwC9diI01M+DXE8nWtbMoFcgWQzEns9qXcBZVMvHeX1VhoEtIyMk2q0jSuV/HnPnVuV
+        Rvgw8otzZD6FbVX2TLQH8StF/vmE4DJ2W0M0DcuKB7Wvij30T5mT9X2Dt1GbdE9RuE6N1p
+        TFn1g53iiGJwcseVFMoR3ihB6ucg1Lg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 821B6AC1F;
+        Mon, 22 Mar 2021 14:07:47 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 15:07:41 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 2/8] hugetlb: recompute min_count when dropping
+ hugetlb_lock
+Message-ID: <YFikrdN6DHQSEm6a@dhcp22.suse.cz>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-3-mike.kravetz@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFiWqvEsswDHBDPX@gunter>
+In-Reply-To: <20210319224209.150047-3-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:07:54PM +0100, Jessica Yu wrote:
-> +++ Steven Rostedt [19/03/21 14:00 -0400]:
-> > On Fri, 19 Mar 2021 13:57:38 +0100
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > > Jessica, can you explain how !MODULE_UNLOAD is supposed to work?
-> > > Alternatives, jump_labels and static_call all can have relocations into
-> > > __exit code. Not loading it at all would be BAD.
-> > 
-> > According to the description:
-> > 
-> > " Without this option you will not be able to unload any
-> >  modules (note that some modules may not be unloadable anyway), which
-> >  makes your kernel smaller, faster and simpler.
-> >  If unsure, say Y."
-> > 
-> > Seems there's no reason to load the "exit" portion, as that's what makes it
-> > "smaller".
-> 
-> Exactly. If you disable MODULE_UNLOAD, then you don't intend to ever
-> unload any modules, and so you'll never end up calling the module's
-> cleanup/exit function. That code would basically be never used, so
-> that's why it's not loaded in the first place.
+On Fri 19-03-21 15:42:03, Mike Kravetz wrote:
+> The routine set_max_huge_pages reduces the number of hugetlb_pages,
+> by calling free_pool_huge_page in a loop.  It does this as long as
+> persistent_huge_pages() is above a calculated min_count value.
+> However, this loop can conditionally drop hugetlb_lock and in some
+> circumstances free_pool_huge_page can drop hugetlb_lock.  If the
+> lock is dropped, counters could change the calculated min_count
+> value may no longer be valid.
 
-As explained, that's broken. Has always been for as long as we've had
-alternatives.
+OK, this one looks like a real bug fix introduced by 55f67141a8927.
+Unless I am missing something we could release pages which are reserved
+already.
+ 
+> The routine try_to_free_low has the same issue.
+> 
+> Recalculate min_count in each loop iteration as hugetlb_lock may have
+> been dropped.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  mm/hugetlb.c | 25 +++++++++++++++++++++----
+>  1 file changed, 21 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index d5be25f910e8..c537274c2a38 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2521,11 +2521,20 @@ static void __init report_hugepages(void)
+>  	}
+>  }
+>  
+> +static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
+> +{
+> +	unsigned long min_count;
+> +
+> +	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
+> +	return max(count, min_count);
+
+Just out of curiousity, is compiler allowed to inline this piece of code
+and then cache the value? In other words do we need to make these
+READ_ONCE or otherwise enforce the no-caching behavior?
+
+> +}
+> +
+>  #ifdef CONFIG_HIGHMEM
+>  static void try_to_free_low(struct hstate *h, unsigned long count,
+>  						nodemask_t *nodes_allowed)
+>  {
+>  	int i;
+> +	unsigned long min_count = min_hp_count(h, count);
+>  
+>  	if (hstate_is_gigantic(h))
+>  		return;
+> @@ -2534,7 +2543,7 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+>  		struct page *page, *next;
+>  		struct list_head *freel = &h->hugepage_freelists[i];
+>  		list_for_each_entry_safe(page, next, freel, lru) {
+> -			if (count >= h->nr_huge_pages)
+> +			if (min_count >= h->nr_huge_pages)
+>  				return;
+>  			if (PageHighMem(page))
+>  				continue;
+> @@ -2542,6 +2551,12 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+>  			update_and_free_page(h, page);
+>  			h->free_huge_pages--;
+>  			h->free_huge_pages_node[page_to_nid(page)]--;
+> +
+> +			/*
+> +			 * update_and_free_page could have dropped lock so
+> +			 * recompute min_count.
+> +			 */
+> +			min_count = min_hp_count(h, count);
+>  		}
+>  	}
+>  }
+> @@ -2695,13 +2710,15 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  	 * and won't grow the pool anywhere else. Not until one of the
+>  	 * sysctls are changed, or the surplus pages go out of use.
+>  	 */
+> -	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
+> -	min_count = max(count, min_count);
+> -	try_to_free_low(h, min_count, nodes_allowed);
+> +	min_count = min_hp_count(h, count);
+> +	try_to_free_low(h, count, nodes_allowed);
+>  	while (min_count < persistent_huge_pages(h)) {
+>  		if (!free_pool_huge_page(h, nodes_allowed, 0))
+>  			break;
+>  		cond_resched_lock(&hugetlb_lock);
+> +
+> +		/* Recompute min_count in case hugetlb_lock was dropped */
+> +		min_count = min_hp_count(h, count);
+>  	}
+>  	while (count < persistent_huge_pages(h)) {
+>  		if (!adjust_pool_surplus(h, nodes_allowed, 1))
+> -- 
+> 2.30.2
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
