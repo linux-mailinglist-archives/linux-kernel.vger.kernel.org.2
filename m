@@ -2,74 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CD9343F69
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586E7343F6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhCVLQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:16:03 -0400
-Received: from mga03.intel.com ([134.134.136.65]:18325 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhCVLPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:15:50 -0400
-IronPort-SDR: jMTwT692utJOlRRq09ynxbXbqoceqjChbM1sd5jchBRcuJw+sXMH4OIOpDcsj31Ne3NX+FsXPY
- YM+TWdJ3U1eQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="190277867"
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="190277867"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 04:15:49 -0700
-IronPort-SDR: OZYOA7tC0CHfja+cK3Xk0PnYeZUrqfiub50aZ+Gl01U3wJwp2DiEO7xYO89sTqz0sRPFjKq3Tv
- V9uFY11KGI5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="513270783"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 22 Mar 2021 04:15:47 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 22 Mar 2021 13:15:46 +0200
-Date:   Mon, 22 Mar 2021 13:15:46 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: tegra: paz00: Handle device properties with
- software node API
-Message-ID: <YFh8Yt+XV9LCHBan@kuha.fi.intel.com>
-References: <20210322111245.3784-1-heikki.krogerus@linux.intel.com>
+        id S230205AbhCVLQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhCVLQT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:16:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB41C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:16:19 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616411776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d6MCD7pdLm1m9o0nSZfcGVynnHaaFFKisNBi8FUOUDI=;
+        b=HGQ4Dq/QId1GFRVx1HMe3bnD4P4EIomI4JZ4cANiCSDYQJY6xdBYfGImEqIIUdflHSb2eG
+        AG5nGJdk4lX5XVjaaiqS//GrJsVJP9Ijq8bdaIbrE7SKJoEIGdLpM/EDcpQBAB2lQgk6MU
+        X8oZeFM6ONCXtShUT3/k50CnKRxnUQZBn4N/a/5fbdnrL+44mEG7qAdlWW2Tg8FmxwI7Oq
+        VShNPK4jV2pQROn0KgdIlW5lbfX0nvRrf220GY7eMXUDCtKPCuFUg0M0FJO/mwUwNdxzQ1
+        QbMS2AQMn4FOISkPvPjbMNIlD+XNpFoBkR2xwJ+6iO0Nm/Vq0xMd3c4LvxLrUg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616411776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d6MCD7pdLm1m9o0nSZfcGVynnHaaFFKisNBi8FUOUDI=;
+        b=GVJkDM5NKKZT5EVSKd6owK/h9IbxTC3ADU1q8YrkwIBQ319MtYvZb+Ca0JzfmiT2F1P3nA
+        kRaLvwiQ6+lXkyDA==
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Rafael Aquini <aquini@redhat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH next v1 2/3] printk: remove safe buffers
+In-Reply-To: <YFbY8kF7ilYoxvYp@google.com>
+References: <20210316233326.10778-1-john.ogness@linutronix.de> <20210316233326.10778-3-john.ogness@linutronix.de> <YFbY8kF7ilYoxvYp@google.com>
+Date:   Mon, 22 Mar 2021 12:16:15 +0100
+Message-ID: <87k0pzmoao.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322111245.3784-1-heikki.krogerus@linux.intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:12:45PM +0300, Heikki Krogerus wrote:
-> The old device property API is going to be removed.
-> Replacing the device_add_properties() call with the software
-> node API equivalent, device_create_managed_software_node().
-> 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
->  arch/arm/mach-tegra/board-paz00.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-tegra/board-paz00.c b/arch/arm/mach-tegra/board-paz00.c
-> index b5c990a7a5af5..18d37f90cdfe3 100644
-> --- a/arch/arm/mach-tegra/board-paz00.c
-> +++ b/arch/arm/mach-tegra/board-paz00.c
-> @@ -36,7 +36,7 @@ static struct gpiod_lookup_table wifi_gpio_lookup = {
->  
->  void __init tegra_paz00_wifikill_init(void)
->  {
-> -	platform_device_add_properties(&wifi_rfkill_device, wifi_rfkill_prop);
-> +	device_create_managed_software_node(&wifi_rfkill_device.dev, wifi_rfkill_prop, NULL);
->  	gpiod_add_lookup_table(&wifi_gpio_lookup);
->  	platform_device_register(&wifi_rfkill_device);
->  }
+On 2021-03-21, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+>> @@ -369,7 +70,10 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
+>>  	 * Use the main logbuf even in NMI. But avoid calling console
+>>  	 * drivers that might have their own locks.
+>>  	 */
+>> -	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
+>> +	if (this_cpu_read(printk_context) &
+>> +	    (PRINTK_NMI_DIRECT_CONTEXT_MASK |
+>> +	     PRINTK_NMI_CONTEXT_MASK |
+>> +	     PRINTK_SAFE_CONTEXT_MASK)) {
+>
+> Do we need printk_nmi_direct_enter/exit() and
+> PRINTK_NMI_DIRECT_CONTEXT_MASK?  Seems like all printk_safe() paths
+> are now DIRECT - we store messages to the prb, but don't call console
+> drivers.
 
-Sorry, I forgot that I had already send this. Please ignore this one.
+I was planning on waiting until the kthreads are introduced, in which
+case printk_safe.c is completely removed. But I suppose I could switch
+the 1 printk_nmi_direct_enter() user to printk_nmi_enter() so that
+PRINTK_NMI_DIRECT_CONTEXT_MASK can be removed now. I would do this in a
+4th patch of the series.
 
-Thanks,
-
--- 
-heikki
+John Ogness
