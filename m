@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B06345062
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 617CB345060
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhCVUAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:00:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43302 "EHLO mail.kernel.org"
+        id S231307AbhCVUAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:00:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhCVUAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230284AbhCVUAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 16:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BA1756198E;
+Received: by mail.kernel.org (Postfix) with ESMTPS id C9BE16199F;
         Mon, 22 Mar 2021 20:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616443208;
-        bh=4jgTN6ojCCD0JVn9q1wWywSnw2YcEIzNqGndcCOVxqU=;
+        bh=Mx+4yesAAt8zxAS8dCbjEkLsBLoushBulk3gsUSDggk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ZB7p3nGoqs8Xp5bsm+vJEHKGE78hmMMtHqYiEGqWd/zRhXfVWyXU0aAGCYx5DzEb5
-         4je9ezzMW79ykLuzeZEvI+JnXuieYBbaa6ejIfq8SEeiQcLec+KlZCcNsyzSDpiATI
-         EgPq7S54rPyQHZzLGvXBb1Fmy2Wdjrjq+0mJ9yWoi8+zm4Z7qOaW6C4kETZHVlNlYI
-         hXnh4Iid7w8P+2o4UvFVLyyHGF2kFFBZLLSWOLmUdpgkH5hjSQzLvb2wSAoPeF3C5G
-         VhdEk9yOREoRspPEaY3oYG9VGrPgLlf3+xNIJo/MFjsPlxDjbH9TBsgfu4nHvDaBAY
-         LG2Rz99ojJCAA==
+        b=flUdDDpHNr8aIS0TZNWRW6iPJo5ZssMCPNDV0CEK9J7L8VqUqKc8LAPTtlI8i3TzL
+         1+TuBHKXCV0AvcX1DdekI6toRb1HMZykCB6DdhxGtOmd9RUPOF5RJmhp+oRmERsTmx
+         Dz2mEBVkhPFB6GPOafFsowVgKNTKurcKr5dE9KEyY6FFBmz7grey88w7wjGCOno5J+
+         7hb0WVnxaFlh31iwSp3EhVQxhCf6gT90Ihe4n8wM9X8OEDwar+/nJ1CkHV3qsn05DN
+         b2QkY6neJK2IxPdNhiSuYX8TyFheln/bhcqidYmDcrmYNgj8jbLUcCgCVJg8Z3T18Z
+         4jfCd9Q1KyhmQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AAC7E609F6;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BCAF960A6A;
         Mon, 22 Mar 2021 20:00:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 0/3] Add support for Actions Semi Owl Ethernet MAC
+Subject: Re: [PATCH v3 0/1] Allow drivers to modify dql.min_limit value
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161644320869.18911.13353114414768088371.git-patchwork-notify@kernel.org>
+Message-Id: <161644320876.18911.1629441011525783752.git-patchwork-notify@kernel.org>
 Date:   Mon, 22 Mar 2021 20:00:08 +0000
-References: <cover.1616368101.git.cristian.ciocaltea@gmail.com>
-In-Reply-To: <cover.1616368101.git.cristian.ciocaltea@gmail.com>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     davem@davemloft.net, andrew@lunn.ch, kuba@kernel.org,
-        robh+dt@kernel.org, afaerber@suse.de, mani@kernel.org,
-        p.zabel@pengutronix.de, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210321134849.463560-1-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20210321134849.463560-1-mailhol.vincent@wanadoo.fr>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     mkl@pengutronix.de, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        eric.dumazet@gmail.com, dave.taht@gmail.com, peterz@infradead.org,
+        rdunlap@infradead.org, davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 22 Mar 2021 01:29:42 +0200 you wrote:
-> This patch series adds support for the Ethernet MAC found on the Actions
-> Semi Owl family of SoCs.
+On Sun, 21 Mar 2021 22:48:48 +0900 you wrote:
+> Abstract: would like to directly set dql.min_limit value inside a
+> driver to improve BQL performances of a CAN USB driver.
 > 
-> For the moment I have only tested the driver on RoseapplePi SBC, which is
-> based on the S500 SoC variant. It might work on S900 as well, but I cannot
-> tell for sure since the S900 datasheet I currently have doesn't provide
-> any information regarding the MAC registers - so I couldn't check the
-> compatibility with S500.
+> CAN packets have a small PDU: for classical CAN maximum size is
+> roughly 16 bytes (8 for payload and 8 for arbitration, CRC and
+> others).
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3,1/3] dt-bindings: net: Add Actions Semi Owl Ethernet MAC binding
-    https://git.kernel.org/netdev/net-next/c/fd42327f31bb
-  - [v3,2/3] net: ethernet: actions: Add Actions Semi Owl Ethernet MAC driver
-    https://git.kernel.org/netdev/net-next/c/de6e0b198239
-  - [v3,3/3] MAINTAINERS: Add entries for Actions Semi Owl Ethernet MAC
-    https://git.kernel.org/netdev/net-next/c/b31f51832acf
+  - [v3,1/1] netdev: add netdev_queue_set_dql_min_limit()
+    https://git.kernel.org/netdev/net-next/c/f57bac3c33e7
 
 You are awesome, thank you!
 --
