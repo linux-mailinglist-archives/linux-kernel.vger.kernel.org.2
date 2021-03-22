@@ -2,111 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52584343E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D880B343E84
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhCVKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhCVKyf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:54:35 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CAEC061574;
-        Mon, 22 Mar 2021 03:54:35 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id i81so11080139oif.6;
-        Mon, 22 Mar 2021 03:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4btGnEyoNuVChZYQdjnSeuZUMKkjapFAE1UjjfFOhXg=;
-        b=AXSN3tkM/O+AP8mifoDYebSrDhypdDFA9bIsFvE5KVjYYFhKewHRdSrP2xlEH338Ye
-         B5IsGT7pdRwi5OhPQV7ac884568cL/y2GFCGxYTn2VF8nKhN4kPr4P90UQktyRQSiSdC
-         lGFPjEETdE3WM9X+q7HbQp1xem8xk+qNsA+H4K7l6F/mdPAY54I8k7Airj4adsZq6hd2
-         X1etzfzBj459ebL2L46klon9a2hc9n7ldemCwGtKKuJgc6M50qANR21zXDWY8PklcKDk
-         MVzSZGANIzKVZmTLcqGUnbypNtZDlT4vNa1Wl5TIAZIE9f3CBn/FGZrv/XkfrRc9gLY1
-         0MDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4btGnEyoNuVChZYQdjnSeuZUMKkjapFAE1UjjfFOhXg=;
-        b=QqIZYEb/uca2TKuvShb6Ehxg6iYKmvUUQ8c+R4zg5CgqzExfDi7XR2dT1BDB7o93ZH
-         kDTc5dXhdm3uJDefLJsEBsH/d8Tym+rn+IpCLEuN/RCbvcLT9Q1pOOmBtJNu1OycdoEf
-         aAheLcDd7WeFRuYbIYLgJEr/GVHu+EuQDtL9B7NogLGloTj6V4dzh9+IWeKz+vyDQgr3
-         LexTRoWQBGkQOcFR1e8jVKvag7f8cre0Zvq1LbUd25Q65rGpglRRSZDCQs39qP3LDU7S
-         ZVDoP9uHT5AA+Khu5w+WgsIwP0rqo+0jow9OeuffKygqfaY6Ko8MiCOfKXetjuU2e0NA
-         P9lg==
-X-Gm-Message-State: AOAM533pC/QkWESfghyxAzXhVFUs/3b6QkNI/Pb1dllUDJ0cpordvcX5
-        ZDZlOmLg+Jc0h1h7INA4VBW7m9L0I4Fl2MGfvpo=
-X-Google-Smtp-Source: ABdhPJxiyHeNB8axrMRnudukjDpmAsBj09fDs/WjMXObgtI2684KhRJG7sNOZQx2D4NZTsnAJZgIPi138fY+Ik+P+O4=
-X-Received: by 2002:a05:6808:14c8:: with SMTP id f8mr9860256oiw.55.1616410474915;
- Mon, 22 Mar 2021 03:54:34 -0700 (PDT)
+        id S230379AbhCVKzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230293AbhCVKzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:55:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1B956191F;
+        Mon, 22 Mar 2021 10:55:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616410505;
+        bh=sBEVRtDSTxe0WuT8RPrnMFt+2BQK5Vh/XhTj5EwDsOM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zk717Y47xuc95xk+TI5dDukstFCr9Q3wSkyWsddUtQqj+ml69gZxG8DLlUCbz1peA
+         mZeykmkZq8tdlz2Z2udxQNMmCyIzqRNC1B19rGjL9IdkhMnQKdIx2QUYrzqXkkHMad
+         gsPmZLOFF2QE1P/qpPQmJ7v6rnM9VmQHyWeo6k8zkU1N8h9rXFBRiog6db3+iRd0eH
+         P3h2LzAYV0ZStRBeZ56RFoqCI+h+QRYQJ69M42x1kae4xyz1wp/NCqbQzbCD+ZZdpE
+         PlWvlYjWU7e682wIrQlQgb/qbZlVcV6czza0rYdFuNNf2+8rRTiKAHl7x77IRwJExh
+         0Gu4VbyHRxzPQ==
+Date:   Mon, 22 Mar 2021 12:55:01 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev@vger.kernel.org, Karsten Keil <isdn@linux-pingi.de>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/5] misdn: avoid -Wempty-body warning
+Message-ID: <YFh3heNXq6mqYqzI@unreal>
+References: <20210322104343.948660-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <1608547554-6602-1-git-send-email-gene.chen.richtek@gmail.com>
- <1608547554-6602-4-git-send-email-gene.chen.richtek@gmail.com>
- <20210219104724.GC19207@duo.ucw.cz> <CAE+NS36NvH-s_UOR8RUZA_gd+FUZ5oLqb=n0s41dSMYWDn9DnA@mail.gmail.com>
-In-Reply-To: <CAE+NS36NvH-s_UOR8RUZA_gd+FUZ5oLqb=n0s41dSMYWDn9DnA@mail.gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Mon, 22 Mar 2021 18:54:23 +0800
-Message-ID: <CAE+NS37XOgRotVTBLeFtbLYEksRydOLBHdCfMH9fTFNZ5J+2Dw@mail.gmail.com>
-Subject: Re: [PATCH v13 3/5] dt-bindings: leds: Add LED_FUNCTION_MOONLIGHT definitions
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322104343.948660-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=882=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=882:08=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Pavel Machek <pavel@ucw.cz> =E6=96=BC 2021=E5=B9=B42=E6=9C=8819=E6=97=A5 =
-=E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=886:47=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > Hi!
-> >
-> > > From: Gene Chen <gene_chen@richtek.com>
-> > >
-> > > Add LED_FUNCTION_MOONLIGHT definitions
-> > >
-> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> > > Acked-by: Rob Herring <robh@kernel.org>
-> >
-> > No, sorry, I don't believe we need another define for flash/torch.
-> >
->
-> As previous discuss,
-> > We use term "Moonlight" as reference says
-> > "When you are trying to imitate moonlight you need to use low voltage,
-> > softer lighting. You don=E2=80=99t want something that=E2=80=99s too br=
-ight"
-> > which is focus on brightness instead of color.
->
-> If any concern about this change, maybe we use LED_FUNCTION_INDICATOR ins=
-tead?
-> (refs: https://lkml.org/lkml/2020/11/24/1267)
+On Mon, Mar 22, 2021 at 11:43:31AM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc warns about a pointless condition:
+> 
+> drivers/isdn/hardware/mISDN/hfcmulti.c: In function 'hfcmulti_interrupt':
+> drivers/isdn/hardware/mISDN/hfcmulti.c:2752:17: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>  2752 |                 ; /* external IRQ */
+> 
+> Change this as suggested by gcc, which also fits the style of the
+> other conditions in this function.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/isdn/hardware/mISDN/hfcmulti.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/isdn/hardware/mISDN/hfcmulti.c b/drivers/isdn/hardware/mISDN/hfcmulti.c
+> index 7013a3f08429..8ab0fde758d2 100644
+> --- a/drivers/isdn/hardware/mISDN/hfcmulti.c
+> +++ b/drivers/isdn/hardware/mISDN/hfcmulti.c
+> @@ -2748,8 +2748,9 @@ hfcmulti_interrupt(int intno, void *dev_id)
+>  		if (hc->ctype != HFC_TYPE_E1)
+>  			ph_state_irq(hc, r_irq_statech);
+>  	}
+> -	if (status & V_EXT_IRQSTA)
+> -		; /* external IRQ */
+> +	if (status & V_EXT_IRQSTA) {
+> +		/* external IRQ */
+> +	}
 
-Is there any update?
+Any reason do not delete this hunk?
 
-> > Best regards,
-> >                                                                 Pavel
-> > --
-> > http://www.livejournal.com/~pavelmachek
+>  	if (status & V_LOST_STA) {
+>  		/* LOST IRQ */
+>  		HFC_outb(hc, R_INC_RES_FIFO, V_RES_LOST); /* clear irq! */
+> -- 
+> 2.29.2
+> 
