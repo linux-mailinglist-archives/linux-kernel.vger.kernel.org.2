@@ -2,62 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E86634522F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F7C345231
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhCVWAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230195AbhCVWAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:00:44 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F6B9619A3;
-        Mon, 22 Mar 2021 22:00:42 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 18:00:40 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ftrace: shut up -Wcast-function-type warning for
- ftrace_ops_no_ops
-Message-ID: <20210322180040.77a00e86@gandalf.local.home>
-In-Reply-To: <20210322215006.1028517-1-arnd@kernel.org>
-References: <20210322215006.1028517-1-arnd@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229884AbhCVWCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230113AbhCVWCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:02:07 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C33C061574;
+        Mon, 22 Mar 2021 15:02:07 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id c6so13580640qtc.1;
+        Mon, 22 Mar 2021 15:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e8lmPL9l7tYar2avzvzIi16QrccP2sceEgsZ0/+5kWM=;
+        b=Rxb76km2s7iu6iziIs0aQYLlSwN9TTCu37Sj8+CSOLsy5u/dIHb3Lox5r59lNhrE/a
+         GdT9tJsyMNifGMWrIAuzIMl8HeImE2RPaMlfHbHFKtaIJhRyF7Vu4otiztHnW9xlSXCV
+         4NUtUf0YQK4PRjvV815Qo17WwynOUbQXrj1S4O9FVgfKEFUUBzlyxvriaiZQ9XmeeT0n
+         4utMiMwaApzwhdGvkTsvd+bnfN6iYI4WRhXY0TTy7P3M2z8HKLqX4pK+SgGcyfVAF0o5
+         COaJ1D4SY6xQQDTCn7FcsIW+upzmkXLNX+TGoTk0Xo+NC2AziB6vENTcDlZ6ki57MK5c
+         sqZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e8lmPL9l7tYar2avzvzIi16QrccP2sceEgsZ0/+5kWM=;
+        b=VNLIikyYOCDdHD0qiXG8RT6SqE2ZpIZaIpOCb77CvhHDsH9/qkEPFeFZZfL6xmCWt+
+         S1hOJThAMHMn303hKR2NdwxZvn9yPza0A8fOgM6BktTRdGJQI2BW+bXoGxK/U2+sk+W9
+         g/uT9ZFzd+YTWbxXfw7nLKw61giNIZ48rH3ALXlvGqFanwVF4B1t1aXBG23XZAC5JLgF
+         BWMw9CZcDkj2ZwEuFydhO1udcucx4SFA3W3RE+LhiTzw1tStOA28ip7Y0sjI2HTAk89+
+         PzCR6JLilM/0UbUDgj6liMYZyljQ/wR0wPB7WV2AH8C98b+OGu3WzokB6z2Kegeb03cG
+         efOw==
+X-Gm-Message-State: AOAM532UNoTDuG9/Z9VFbMMi9HUaLJOXun0xBsIjkn6C5wgLKPwATwY6
+        Jk82q2VKVPIm8VnbQq8BMQ0=
+X-Google-Smtp-Source: ABdhPJx/0ftrYy+tnKvj5Gkgv2O8gsI1TOJnGHNS/5dMdXeJ8dWdN1I72FxMpiiDnDSOn5B+Jbdn3g==
+X-Received: by 2002:a05:622a:14d3:: with SMTP id u19mr1946284qtx.226.1616450526101;
+        Mon, 22 Mar 2021 15:02:06 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id m21sm11968219qka.28.2021.03.22.15.02.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 15:02:05 -0700 (PDT)
+Subject: Re: [PATCH] of: overlay: fix for_each_child.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        kbuild-all@lists.01.org
+References: <alpine.DEB.2.22.394.2103221918450.2918@hadrien>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <2783d37c-cdb7-9d86-a5e0-07bc523854c1@gmail.com>
+Date:   Mon, 22 Mar 2021 17:02:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <alpine.DEB.2.22.394.2103221918450.2918@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 22:49:58 +0100
-Arnd Bergmann <arnd@kernel.org> wrote:
-
-> From: Arnd Bergmann <arnd@arndb.de>
+On 3/22/21 1:21 PM, Julia Lawall wrote:
+> From: kernel test robot <lkp@intel.com>
 > 
-> With 'make W=1', gcc warns about casts between incompatible function
-> types:
+> Function "for_each_child_of_node" should have of_node_put() before goto.
 > 
-> kernel/trace/ftrace.c:128:31: error: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Werror=cast-function-type]
->   128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
->       |                               ^
+> Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 > 
-> As the commet here explains, this one was intentional, so shut up the
-> warning harder by using a double cast.
+> Fixes: 82c2d81361ec ("coccinelle: iterators: Add for_each_child.cocci script")
+> CC: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> ---
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   812da4d39463a060738008a46cfc9f775e4bfcf6
+> commit: 82c2d81361ecd142a54e84a9da1e287113314a4f coccinelle: iterators: Add for_each_child.cocci script
+> :::::: branch date: 13 hours ago
+> :::::: commit date: 5 months ago
+> 
+>  overlay.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- a/drivers/of/overlay.c
+> +++ b/drivers/of/overlay.c
+> @@ -796,6 +796,7 @@ static int init_overlay_changeset(struct
+>  		if (!fragment->target) {
+>  			of_node_put(fragment->overlay);
+>  			ret = -EINVAL;
+> +			of_node_put(node);
+>  			goto err_free_fragments;
+>  		}
+> 
 
-Bonus points for reading the comment ;-)
+Reviewed-by: Frank Rowand <frank.rowand@sony.com>
+Tested-by: Frank Rowand <frank.rowand@sony.com>
 
-I'll take this patch for the next merge window, thanks!
+While reading through the code touched by the patch I noticed that
+the clean up at label err_free_fragments does not do the required
+of_node_put() calls.  I'll add creating a patch to fix that to my
+todo list.
 
--- Steve
+-Frank
