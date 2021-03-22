@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FE5344423
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CACA4344495
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhCVM6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:58:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40066 "EHLO mail.kernel.org"
+        id S232898AbhCVNCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232377AbhCVMrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C4CC619BD;
-        Mon, 22 Mar 2021 12:43:18 +0000 (UTC)
+        id S231297AbhCVMsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:48:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72971619EF;
+        Mon, 22 Mar 2021 12:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416998;
-        bh=mPKvOZYrPigyMhFOYXa7eMHDRkDfryfRB9QhISGllk8=;
+        s=korg; t=1616417088;
+        bh=gKFKmJmz7gWC8mnLNoc9cdcCFERF3Ke9B1hJzweRw6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qAXfa1xXmVRDxx++7DSkFnQeCdmw+FfsXWKgpP0nmoA95epuHrCvhVRnXTjxAfL/Z
-         RvT66EzKO1+dXuK6fMGBlsvh+F4JK2NragggqUp/FLoNUQO0Q4wneDBLl3ZVAApSpr
-         xNnb7T9EiuqS3t/09sFP2r0VFGRhkGY7Wng1eS2o=
+        b=K6WaYJ56xlO2fClUQFPXN15vCPUF+H7BSMb7usDe/XbXkmL9Q0H0HW8Oaija9lWK0
+         /DczfCfWVvBppUwEACeYPklebj8eF6WfWU7kAoMC1exivrM6aybWkg3Z20LtFKZmNQ
+         KycK/CaRwb3PYpYz15lJo/oxbrZ2zdi19Jp5MDMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 47/60] counter: stm32-timer-cnt: fix ceiling write max value
-Date:   Mon, 22 Mar 2021 13:28:35 +0100
-Message-Id: <20210322121923.943439617@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Matthias Schwarzott <zzam@gentoo.org>
+Subject: [PATCH 4.19 22/43] usb-storage: Add quirk to defeat Kindles automatic unload
+Date:   Mon, 22 Mar 2021 13:28:36 +0100
+Message-Id: <20210322121920.645574687@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +39,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-commit e4c3e133294c0a292d21073899b05ebf530169bd upstream.
+commit 546aa0e4ea6ed81b6c51baeebc4364542fa3f3a7 upstream.
 
-The ceiling value isn't checked before writing it into registers. The user
-could write a value higher than the counter resolution (e.g. 16 or 32 bits
-indicated by max_arr). This makes most significant bits to be truncated.
-Fix it by checking the max_arr to report a range error [1] to the user.
+Matthias reports that the Amazon Kindle automatically removes its
+emulated media if it doesn't receive another SCSI command within about
+one second after a SYNCHRONIZE CACHE.  It does so even when the host
+has sent a PREVENT MEDIUM REMOVAL command.  The reason for this
+behavior isn't clear, although it's not hard to make some guesses.
 
-[1] https://lkml.org/lkml/2021/2/12/358
+At any rate, the results can be unexpected for anyone who tries to
+access the Kindle in an unusual fashion, and in theory they can lead
+to data loss (for example, if one file is closed and synchronized
+while other files are still in the middle of being written).
 
-Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1614696235-24088-1-git-send-email-fabrice.gasnier@foss.st.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To avoid such problems, this patch creates a new usb-storage quirks
+flag telling the driver always to issue a REQUEST SENSE following a
+SYNCHRONIZE CACHE command, and adds an unusual_devs entry for the
+Kindle with the flag set.  This is sufficient to prevent the Kindle
+from doing its automatic unload, without interfering with proper
+operation.
+
+Another possible way to deal with this would be to increase the
+frequency of TEST UNIT READY polling that the kernel normally carries
+out for removable-media storage devices.  However that would increase
+the overall load on the system and it is not as reliable, because the
+user can override the polling interval.  Changing the driver's
+behavior is safer and has minimal overhead.
+
+CC: <stable@vger.kernel.org>
+Reported-and-tested-by: Matthias Schwarzott <zzam@gentoo.org>
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20210317190654.GA497856@rowland.harvard.edu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/counter/stm32-timer-cnt.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/storage/transport.c    |    7 +++++++
+ drivers/usb/storage/unusual_devs.h |   12 ++++++++++++
+ include/linux/usb_usual.h          |    2 ++
+ 3 files changed, 21 insertions(+)
 
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -25,6 +25,7 @@ struct stm32_timer_cnt {
- 	struct regmap *regmap;
- 	struct clk *clk;
- 	u32 ceiling;
-+	u32 max_arr;
- };
+--- a/drivers/usb/storage/transport.c
++++ b/drivers/usb/storage/transport.c
+@@ -651,6 +651,13 @@ void usb_stor_invoke_transport(struct sc
+ 		need_auto_sense = 1;
+ 	}
  
- /**
-@@ -189,6 +190,9 @@ static ssize_t stm32_count_ceiling_write
- 	if (ret)
- 		return ret;
- 
-+	if (ceiling > priv->max_arr)
-+		return -ERANGE;
++	/* Some devices (Kindle) require another command after SYNC CACHE */
++	if ((us->fflags & US_FL_SENSE_AFTER_SYNC) &&
++			srb->cmnd[0] == SYNCHRONIZE_CACHE) {
++		usb_stor_dbg(us, "-- sense after SYNC CACHE\n");
++		need_auto_sense = 1;
++	}
 +
- 	/* TIMx_ARR register shouldn't be buffered (ARPE=0) */
- 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
- 	regmap_write(priv->regmap, TIM_ARR, ceiling);
-@@ -366,6 +370,7 @@ static int stm32_timer_cnt_probe(struct
- 	priv->regmap = ddata->regmap;
- 	priv->clk = ddata->clk;
- 	priv->ceiling = ddata->max_arr;
-+	priv->max_arr = ddata->max_arr;
+ 	/*
+ 	 * If we have a failure, we're going to do a REQUEST_SENSE 
+ 	 * automatically.  Note that we differentiate between a command
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -2212,6 +2212,18 @@ UNUSUAL_DEV( 0x1908, 0x3335, 0x0200, 0x0
+ 		US_FL_NO_READ_DISC_INFO ),
  
- 	priv->counter.name = dev_name(dev);
- 	priv->counter.parent = dev;
+ /*
++ * Reported by Matthias Schwarzott <zzam@gentoo.org>
++ * The Amazon Kindle treats SYNCHRONIZE CACHE as an indication that
++ * the host may be finished with it, and automatically ejects its
++ * emulated media unless it receives another command within one second.
++ */
++UNUSUAL_DEV( 0x1949, 0x0004, 0x0000, 0x9999,
++		"Amazon",
++		"Kindle",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_SENSE_AFTER_SYNC ),
++
++/*
+  * Reported by Oliver Neukum <oneukum@suse.com>
+  * This device morphes spontaneously into another device if the access
+  * pattern of Windows isn't followed. Thus writable media would be dirty
+--- a/include/linux/usb_usual.h
++++ b/include/linux/usb_usual.h
+@@ -86,6 +86,8 @@
+ 		/* lies about caching, so always sync */	\
+ 	US_FLAG(NO_SAME, 0x40000000)				\
+ 		/* Cannot handle WRITE_SAME */			\
++	US_FLAG(SENSE_AFTER_SYNC, 0x80000000)			\
++		/* Do REQUEST_SENSE after SYNCHRONIZE_CACHE */	\
+ 
+ #define US_FLAG(name, value)	US_FL_##name = value ,
+ enum { US_DO_ALL_FLAGS };
 
 
