@@ -2,149 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27108344E24
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 219DF344E1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhCVSKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:10:34 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:37808 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230165AbhCVSKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:10:24 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12MIAD3O000529
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Mar 2021 19:10:13 +0100
-Received: from [167.87.37.70] ([167.87.37.70])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12MI5CsM007874;
-        Mon, 22 Mar 2021 19:05:12 +0100
-Subject: Re: [PATCH] of/fdt: Make sure no-map does not remove already reserved
- regions
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Phil Elwell <phil@raspberrypi.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ian Campbell <ian.campbell@citrix.com>,
-        Grant Likely <grant.likely@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-References: <20190703050827.173284-1-drinkcat@chromium.org>
- <12b02977-d038-8fc7-d61e-e694a6b90f7b@siemens.com>
-Message-ID: <5154396c-fffd-8e9d-3e2e-860fff35e9fc@siemens.com>
-Date:   Mon, 22 Mar 2021 19:05:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230071AbhCVSHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:07:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21412 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229746AbhCVSHW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:07:22 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MI2n3c074628;
+        Mon, 22 Mar 2021 14:07:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vD80fTKfR53hEebwYlY0bT8fkb2aJdGP78ge/EwmS+c=;
+ b=QjkEd3VzvzarDec3GfF//Y1ZYmrp72At0ZkOr5ZjXsze406nfuGr6sgUt2ncM4afov3j
+ nyNZv8M7GTaempirQfrkYOM4qlxyLj9HSvTFa2eSLA3fKTAsFEgFv9dJfNDp+H+VLv2l
+ EVOguApvuojT06niF0a02VtoVKPyGCcRe4McYt+Ax2RL6jqwKUb5qNwBsafMGaGBmtj8
+ aaCRorlqaNHkzLcXYh2xqi9dA3dmD4VDgJzNLBvC++3VdXvVxAc4RnMl+Px7OtQ85pTN
+ 2T+/+uI8Vm+FTn2FgUiMIPudwM8l5M2L5E4AT8/2vy9bn4hcCEnO/MGCf7UlAXmBUZlj FA== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4a95rc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 14:07:05 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12MI2Txn001973;
+        Mon, 22 Mar 2021 18:07:04 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma02dal.us.ibm.com with ESMTP id 37d9amc8af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 18:07:04 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12MI73DY28770602
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 18:07:03 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2F7C5C6055;
+        Mon, 22 Mar 2021 18:07:03 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C401CC605D;
+        Mon, 22 Mar 2021 18:07:02 +0000 (GMT)
+Received: from [9.211.32.185] (unknown [9.211.32.185])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Mar 2021 18:07:02 +0000 (GMT)
+Subject: Re: [PATCH linux-next tag: next-20210322] ARM: aspeed: Add CPU
+ hotplug callbacks for kexec support
+From:   Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
+To:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        Eddie James <eajames@linux.ibm.com>
+References: <20210322155720.2161941-1-bruce.mitchell@linux.vnet.ibm.com>
+ <ddb2757d-36df-8695-ce9b-ab9e26f3d457@linux.vnet.ibm.com>
+Message-ID: <7c8ca40f-3f73-d8ea-08e2-ee7c0b0b6ab1@linux.vnet.ibm.com>
+Date:   Mon, 22 Mar 2021 11:07:02 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <12b02977-d038-8fc7-d61e-e694a6b90f7b@siemens.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <ddb2757d-36df-8695-ce9b-ab9e26f3d457@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_10:2021-03-22,2021-03-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103220132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.03.21 08:58, Jan Kiszka wrote:
-> On 03.07.19 07:08, Nicolas Boichat wrote:
->> If the device tree is incorrectly configured, and attempts to
->> define a "no-map" reserved memory that overlaps with the kernel
->> data/code, the kernel would crash quickly after boot, with no
->> obvious clue about the nature of the issue.
+On 3/22/2021 09:40, Bruce Mitchell wrote:
+> On 3/22/2021 08:57, Bruce Mitchell wrote:
+>> These callbacks are required for kexec to function. The AST2600 does not
+>> expose any controls for powering down it's CPU cores, so we borrow the
+>> approach taken from socfpga and wait in the idle loop.
 >>
->> For example, this would happen if we have the kernel mapped at
->> these addresses (from /proc/iomem):
->> 40000000-41ffffff : System RAM
->>   40080000-40dfffff : Kernel code
->>   40e00000-411fffff : reserved
->>   41200000-413e0fff : Kernel data
+>> Author: Joel Stanley <joel@jms.id.au>
 >>
->> And we declare a no-map shared-dma-pool region at a fixed address
->> within that range:
->> mem_reserved: mem_region {
->> 	compatible = "shared-dma-pool";
->> 	reg = <0 0x40000000 0 0x01A00000>;
->> 	no-map;
->> };
->>
->> To fix this, when removing memory regions at early boot (which is
->> what "no-map" regions do), we need to make sure that the memory
->> is not already reserved. If we do, __reserved_mem_reserve_reg
->> will throw an error:
->> [    0.000000] OF: fdt: Reserved memory: failed to reserve memory
->>    for node 'mem_region': base 0x0000000040000000, size 26 MiB
->> and the code that will try to use the region should also fail,
->> later on.
->>
->> We do not do anything for non-"no-map" regions, as memblock
->> explicitly allows reserved regions to overlap, and the commit
->> that this fixes removed the check for that precise reason.
->>
->> Fixes: 094cb98179f19b7 ("of/fdt: memblock_reserve /memreserve/ regions in the case of partial overlap")
->> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+>> Signed-off-by: Bruce Mitchell <bruce.mitchell@linux.vnet.ibm.com>
 >> ---
->>  drivers/of/fdt.c | 10 +++++++++-
->>  1 file changed, 9 insertions(+), 1 deletion(-)
+>>   arch/arm/mach-aspeed/platsmp.c | 20 ++++++++++++++++++++
+>>   1 file changed, 20 insertions(+)
 >>
->> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
->> index cd17dc62a71980a..a1ded43fc332d0c 100644
->> --- a/drivers/of/fdt.c
->> +++ b/drivers/of/fdt.c
->> @@ -1138,8 +1138,16 @@ int __init __weak early_init_dt_mark_hotplug_memory_arch(u64 base, u64 size)
->>  int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
->>  					phys_addr_t size, bool nomap)
->>  {
->> -	if (nomap)
->> +	if (nomap) {
->> +		/*
->> +		 * If the memory is already reserved (by another region), we
->> +		 * should not allow it to be removed altogether.
->> +		 */
->> +		if (memblock_is_region_reserved(base, size))
->> +			return -EBUSY;
+>> diff --git a/arch/arm/mach-aspeed/platsmp.c 
+>> b/arch/arm/mach-aspeed/platsmp.c
+>> index 2324becf7991..1ae3ff5a9701 100644
+>> --- a/arch/arm/mach-aspeed/platsmp.c
+>> +++ b/arch/arm/mach-aspeed/platsmp.c
+>> @@ -7,6 +7,8 @@
+>>   #include <linux/of.h>
+>>   #include <linux/smp.h>
+>>
+>> +#include <asm/proc-fns.h>
 >> +
->>  		return memblock_remove(base, size);
->> +	}
->>  	return memblock_reserve(base, size);
->>  }
->>  
+>>   #define BOOT_ADDR    0x00
+>>   #define BOOT_SIG    0x04
+>>
+>> @@ -53,9 +55,27 @@ static void __init 
+>> aspeed_g6_smp_prepare_cpus(unsigned int max_cpus)
+>>       iounmap(base);
+>>   }
+>>
+>> +#ifdef CONFIG_HOTPLUG_CPU
+>> +static void aspeed_g6_cpu_die(unsigned int cpu)
+>> +{
+>> +        /* Do WFI. If we wake up early, go back into WFI */
+>> +        while (1)
+>> +                cpu_do_idle();
+>> +}
+>> +
+>> +static int aspeed_g6_cpu_kill(unsigned int cpu)
+>> +{
+>> +        return 1;
+>> +}
+>> +#endif
+>> +
+>>   static const struct smp_operations aspeed_smp_ops __initconst = {
+>>       .smp_prepare_cpus    = aspeed_g6_smp_prepare_cpus,
+>>       .smp_boot_secondary    = aspeed_g6_boot_secondary,
+>> +#ifdef CONFIG_HOTPLUG_CPU
+>> +    .cpu_die        = aspeed_g6_cpu_die,
+>> +    .cpu_kill        = aspeed_g6_cpu_kill,
+>> +#endif
+>>   };
+>>
+>>   CPU_METHOD_OF_DECLARE(aspeed_smp, "aspeed,ast2600-smp", 
+>> &aspeed_smp_ops);
 >>
 > 
-> Likely the wrong patch to blame but hopefully the right audience:
-> 
-> I'm trying to migrate my RPi4 setup to mainline, and this commit breaks 
-> booting with TF-A (current master) in the loop. Error:
-> 
-> [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd083]                                                                                                                                                                        
-> [    0.000000] Linux version 5.10.24+ (jan@md1f2u6c) (aarch64-linux-gnu-gcc (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)) 9.2.1 20191025, GNU ld (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)1
-> [    0.000000] Machine model: Raspberry Pi 4 Model B Rev 1.1                                                                                                                                                                                  
-> [    0.000000] efi: UEFI not found.                                                                                                                                                                                                           
-> [    0.000000] OF: fdt: Reserved memory: failed to reserve memory for node 'atf@0': base 0x0000000000000000, size 0 MiB                                                                                                                       
-> 
-> And then we hang later on when Linux does start to use that memory and 
-> seems to trigger an exception.
-> 
-> Is there a bug in the upstream RPi4 DT?
+> Adding Andrew Jeffery and Eddie James to the CC list.
 > 
 
-FWIW, this is triggering the conflict:
-
-(arch/arm/boot/dts/bcm283x.dtsi)
-
-/* firmware-provided startup stubs live here, where the secondary CPUs are
- * spinning.
- */
-/memreserve/ 0x00000000 0x00001000;
-
-I strongly suspect this is only needed in case of TF-A-free boot. With 
-TF-A we have standard PCSI (my motivation to use TF-A in the first 
-place) - and then this is in conflict with the firmware's reservation.
-
-Do we need separate DTs for this use case? Or should TF-A account for 
-this?
-
-Jan
-
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+Adding linux-kernel@vger.kernel.org and 
+linux-arm-kernel@lists.infradead.org based feedback.
