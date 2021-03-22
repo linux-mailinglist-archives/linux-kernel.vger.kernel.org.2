@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8113442DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFBB344104
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhCVMqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:46:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57450 "EHLO mail.kernel.org"
+        id S230406AbhCVMaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:30:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231631AbhCVMi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E9CE619CF;
-        Mon, 22 Mar 2021 12:37:40 +0000 (UTC)
+        id S229905AbhCVM3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:29:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C3306198E;
+        Mon, 22 Mar 2021 12:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416661;
-        bh=BB4kcriIzzYm2PLNBQqg8ElTg9CHjOH+YsUkav71SX4=;
+        s=korg; t=1616416182;
+        bh=85xbLg0N24rYjYG9rU+hPSlW4FE4imDZ2NNfjYfcj2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ak5cGALD35033K8RCfnAbpHcOAx8Z3ujpY6Vtd2lzACN8REdEJwA0x1DDeq7NkXZy
-         yc8BeL7PQHce/CqSRMfjGdQZFvjTW5T6vueLcQCce3rjuyE97uZEvJENBPRs2cLuzo
-         EFACDEzi8S5aog6Tw/leFGTMc+ybDHM/e5R4CG7U=
+        b=g+Dj34A36PGRf2wwKkrnmavwB0NePdw7XfUQYmCDxoISsT2G4Ba5WeZtTU1O502H/
+         e8cxYnHiLhcqSXmXCfb1xf+yikoN/k6XiXpxtbJ7BAVhy3XtCIW/CNPe2v7KcJ8JD+
+         iD8W/uhzyAZQkXIV8tV0bo+Wbcmwb+jG2MGHyM50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Yi Zhang <yi.zhang@redhat.com>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.10 037/157] nvme-tcp: fix misuse of __smp_processor_id with preemption enabled
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.11 011/120] Revert "PM: runtime: Update device status before letting suppliers suspend"
 Date:   Mon, 22 Mar 2021 13:26:34 +0100
-Message-Id: <20210322121934.933389369@linuxfoundation.org>
+Message-Id: <20210322121930.033921203@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit bb83337058a7000644cdeffc67361d2473534756 upstream.
+commit 0cab893f409c53634d0d818fa414641cbcdb0dab upstream.
 
-For our pure advisory use-case, we only rely on this call as a hint, so
-fix the warning complaints of using the smp_processor_id variants with
-preemption enabled.
+Revert commit 44cc89f76464 ("PM: runtime: Update device status
+before letting suppliers suspend") that introduced a race condition
+into __rpm_callback() which allowed a concurrent rpm_resume() to
+run and resume the device prematurely after its status had been
+changed to RPM_SUSPENDED by __rpm_callback().
 
-Fixes: db5ad6b7f8cd ("nvme-tcp: try to send request in queue_rq context")
-Fixes: ada831772188 ("nvme-tcp: Fix warning with CONFIG_DEBUG_PREEMPT")
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 44cc89f76464 ("PM: runtime: Update device status before letting suppliers suspend")
+Link: https://lore.kernel.org/linux-pm/24dfb6fc-5d54-6ee2-9195-26428b7ecf8a@intel.com/
+Reported-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/tcp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/power/runtime.c |   62 +++++++++++++++++--------------------------
+ 1 file changed, 25 insertions(+), 37 deletions(-)
 
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -287,7 +287,7 @@ static inline void nvme_tcp_queue_reques
- 	 * directly, otherwise queue io_work. Also, only do that if we
- 	 * are on the same cpu, so we don't introduce contention.
- 	 */
--	if (queue->io_cpu == __smp_processor_id() &&
-+	if (queue->io_cpu == raw_smp_processor_id() &&
- 	    sync && empty && mutex_trylock(&queue->send_mutex)) {
- 		queue->more_requests = !last;
- 		nvme_tcp_send_all(queue);
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -325,22 +325,22 @@ static void rpm_put_suppliers(struct dev
+ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+ 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
+ {
+-	bool use_links = dev->power.links_count > 0;
+-	bool get = false;
+ 	int retval, idx;
+-	bool put;
++	bool use_links = dev->power.links_count > 0;
+ 
+ 	if (dev->power.irq_safe) {
+ 		spin_unlock(&dev->power.lock);
+-	} else if (!use_links) {
+-		spin_unlock_irq(&dev->power.lock);
+ 	} else {
+-		get = dev->power.runtime_status == RPM_RESUMING;
+-
+ 		spin_unlock_irq(&dev->power.lock);
+ 
+-		/* Resume suppliers if necessary. */
+-		if (get) {
++		/*
++		 * Resume suppliers if necessary.
++		 *
++		 * The device's runtime PM status cannot change until this
++		 * routine returns, so it is safe to read the status outside of
++		 * the lock.
++		 */
++		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
+ 			idx = device_links_read_lock();
+ 
+ 			retval = rpm_get_suppliers(dev);
+@@ -355,36 +355,24 @@ static int __rpm_callback(int (*cb)(stru
+ 
+ 	if (dev->power.irq_safe) {
+ 		spin_lock(&dev->power.lock);
+-		return retval;
+-	}
+-
+-	spin_lock_irq(&dev->power.lock);
+-
+-	if (!use_links)
+-		return retval;
+-
+-	/*
+-	 * If the device is suspending and the callback has returned success,
+-	 * drop the usage counters of the suppliers that have been reference
+-	 * counted on its resume.
+-	 *
+-	 * Do that if the resume fails too.
+-	 */
+-	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
+-	if (put)
+-		__update_runtime_status(dev, RPM_SUSPENDED);
+-	else
+-		put = get && retval;
+-
+-	if (put) {
+-		spin_unlock_irq(&dev->power.lock);
+-
+-		idx = device_links_read_lock();
++	} else {
++		/*
++		 * If the device is suspending and the callback has returned
++		 * success, drop the usage counters of the suppliers that have
++		 * been reference counted on its resume.
++		 *
++		 * Do that if resume fails too.
++		 */
++		if (use_links
++		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
++		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
++			idx = device_links_read_lock();
+ 
+-fail:
+-		rpm_put_suppliers(dev);
++ fail:
++			rpm_put_suppliers(dev);
+ 
+-		device_links_read_unlock(idx);
++			device_links_read_unlock(idx);
++		}
+ 
+ 		spin_lock_irq(&dev->power.lock);
+ 	}
 
 
