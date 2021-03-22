@@ -2,115 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BC7343CA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7128343CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCVJUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:20:40 -0400
-Received: from mail-bn7nam10on2060.outbound.protection.outlook.com ([40.107.92.60]:49376
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230087AbhCVJUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:20:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ncU4kAkpGlI8KH59+ib9bu57bA2pCA59eAeXa3jfZl8sbX4I2ihThNsczeJXJUvgQZI05wqzemsAV9H+dUO5bBwY+TI+OpYWiJxbYX9X5/LGKk0+J3x22L11OhelsEECKtYZW3RiKbo+fRkzqGYofBvN9jVe38owM/qljrwmvN3fNssoSgLo+B+Zu9+CYuWZKax9psEXUVTdwqTuDgPAwwOmPHzmm6ko5ENOBfolUEvWdmX0F+tuW+EMl3y1sJUdjIL+VyiJQ6+WJB4x1DHQip3mcmRRmDoHxtGcOq3MTan5H68GsKW1pkIX28im22H7H5ykh7MZl8Pe/oqnNzY/+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7PjgjOoPIn79dcehwmI54t/6L4wBBoa0m84RXRN81Pg=;
- b=kwp7+eMr0ZktJD8c+2XdRm8Owwuo7jDI3MjqKr5Rk568dmVkiIE5MWQ1cWZcTWKuowP2yH976WFXMEPsnWKJt1ocNW0xdkjMml/gdBTfBXTEDux2PgBh4+o34ky9CJUcBv9hiPh3WOgScXHN9dzXY68J2QYi5ieUVZgr7h/8JWWFciOZgwcdDFVq8Lg4uW1pxHMEUPyGCOGWCn8EwyEaJa1thkhQd5aMyXM6ua93GqIU9JCsDxTQrO3zeB/QOLizN+oWrIbgcEqXBuaVV7GPJs41Fd04/5cM7oPHkTfNLH82caJDvAom5usVNCtFgKLaHugq8nAMjGxM2Airouo2FA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=lists.freedesktop.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7PjgjOoPIn79dcehwmI54t/6L4wBBoa0m84RXRN81Pg=;
- b=stog+HaaPlb3GxW4BbXKqcfC3ADcm5TmaMazu2ZgeSHyMqMoMGA1PcBS3pHLp+AzSe/Az7nXyY46LSZPFQuP9GnwLneddjYrBTI3EDxeDcw5uTB2UbxACrro6mW6jB3biXwcfcrX71ZDkPhmSSIg9rl5j8kW48CHbfNG+WwSv+T7NtN4EURjelY2F5yhZ3Nuwl45UI1Ha1peoJNOE2QUqgxN264bE1bgGm4yGKL0nCvRBcey3Zf+uFBGcMPl0A5r1wOc5sWJMyS3IoTGjXXTrKo9V5hejVU2oWEa6X3rw4IC13yrEZWryDi+sth7krjFhuDOpMZNwcVTy2iB1a615A==
-Received: from MWHPR20CA0018.namprd20.prod.outlook.com (2603:10b6:300:13d::28)
- by DM6PR12MB3257.namprd12.prod.outlook.com (2603:10b6:5:184::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24; Mon, 22 Mar
- 2021 09:20:11 +0000
-Received: from CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:13d:cafe::e3) by MWHPR20CA0018.outlook.office365.com
- (2603:10b6:300:13d::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Mon, 22 Mar 2021 09:20:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; lists.freedesktop.org; dkim=none (message not
- signed) header.d=none;lists.freedesktop.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT019.mail.protection.outlook.com (10.13.175.57) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 09:20:10 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
- 2021 09:20:07 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, <jgg@nvidia.com>, <daniel@ffwll.ch>,
-        <willy@infradead.org>
-Subject: Re: [PATCH v6 1/8] mm: Remove special swap entry functions
-Date:   Mon, 22 Mar 2021 20:20:05 +1100
-Message-ID: <13488904.3iE9EkMCc7@nvdebian>
-In-Reply-To: <20210315072757.GA4136862@infradead.org>
-References: <20210312083851.15981-1-apopple@nvidia.com> <20210312083851.15981-2-apopple@nvidia.com> <20210315072757.GA4136862@infradead.org>
+        id S229715AbhCVJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhCVJYV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 05:24:21 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CB1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:24:20 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id j7so15873299wrd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VWtR8KlOcQ/dRYdCQQ3jM8KP7ad2PsBUuVXGD0LTdjA=;
+        b=fRHQUYdDILcpfmFZPajioQDe1shm3v7+PmX5riSU+Vb7du56hShPmszeNHz0p/JF9y
+         WTn6C5cEfg3ce/85Q7Kgah0vZQs2SFfUDSNZVFAQtr0wsI4SgRLyLibvoq7Da6+08ssd
+         10TtaDTn5PcmmrJytU8mqDpFISfcb7jO/8AnkGDlwZjlCeIV7lUHeN2p8Z5W70DgtTSR
+         yOICtMTkYMH0fw2uiuAreQp7KiLv2YZIglHPoO/CYtvH4r7U72jol+yJMW79TFddAWef
+         53y1ZeP8GZWBt0HrJX17YbHxxhHzYno2MU+OuPWrsQ7wL8BCnLivBFxpPRGvZ7K9kz2y
+         Mr+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VWtR8KlOcQ/dRYdCQQ3jM8KP7ad2PsBUuVXGD0LTdjA=;
+        b=RRdu9lONxHkIuKSLWHUH7qjiHX2AJ7Vxp7nHqFgXGGGZN8BopC7LaoTY9V5MxHByUU
+         LubP9qkWH9XxI25g4rMsyGRrGemcEqP4YOJbqB0QL8xjsTkaMxPiDWHaRtR2x2uHos0I
+         LVUYlZVXZQHL0Erd+haCqcY5JX+jZbn0OG6QpKaRVE2QiWnkPVOF7UHJis/Ai2SHA/H8
+         IRb7bPsZ8spc+nuSKUvUM4Qfqe+y+PYAkgfh1UjYvAILwuWngTMEqMFkZzDleEgDS0Vj
+         4T8Rcc2+RXffXf+4quKy1urcAUIqqvWDDO80gzJjQzvEqLolCTR2HRcywPOpTdXVypQF
+         bjMw==
+X-Gm-Message-State: AOAM532QHwa6g4dcFAf6UYiw/K8r/ay5UaP+jA7ry9DwXf/w7Q6QhktH
+        pW8WFlqSU+7bcvD7zgA5bYgCuw==
+X-Google-Smtp-Source: ABdhPJyWqQjRwjDKuYXT4l/U+wYd8vDYnHlFON2Z+w206Gu8iy4wPDPpZvHQprkb+ZsZNf5evw0SKg==
+X-Received: by 2002:adf:fd91:: with SMTP id d17mr17275764wrr.0.1616405059461;
+        Mon, 22 Mar 2021 02:24:19 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id g16sm20103641wrs.76.2021.03.22.02.24.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 02:24:18 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 10:24:00 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YFhiMLR35WWMW/Hu@myrica>
+References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
+ <20210318172234.3e8c34f7@jacob-builder>
+ <YFR10eeDVf5ZHV5l@myrica>
+ <20210319124645.GP2356281@nvidia.com>
+ <YFSqDNJ5yagk4eO+@myrica>
+ <20210319135432.GT2356281@nvidia.com>
+ <20210319112221.5123b984@jacob-builder>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 400be08d-5f3a-43cd-a6be-08d8ed13b172
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3257:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB325797E4F4DF173B5BF601F6DF659@DM6PR12MB3257.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C4uG3LeY5M3MA8lEsSXCTnNll2QeHbuRwIyZmLpR09/3PzJEZgxAv7bHsOjRTtH31hwTqIu2kLlHXBeEczQFdo8K/4aXQfDlNfMirdPb3SJ0xNxcI/4yVAI2RwJFpgKo6BdmJG7gGumTpVbyNbkTI/nFlCEt5dZ2ENpSBgy7U6AP2ZxG1hiVpmrlXQ3oyier34gNWhm4esrZCrobKGh/GUp6BbsH1Usmpe5FWKLqViqf8j1hz0xgINhUdMcsU9m49fkw+fUFCcLqY+yALdTyOHztTIdfXM9r3eO+uUQAMJjrk9UOuH7aNlcjwmzUpQyHOors2+2QXzxo3txs2pwl5rh5kj/JramWfmTDXLDG4UufRtRpTW429UYBOjU/ZlMkeTzLU4FoYh+y2/rthpZzMRtFUttizQDmmASwluCk7V/izwH9yLZBHu3PjPSExdTuZYjYU9P+MKf+5ReKPBduuObEsV5hfDmhlPFkHqVpOfmOIOSi4KtfGaB9JKKlkthZ7wjmsRQDiwifW+GYMD4vwXZz5efL2vzriY9pMp0LquELP+3uMaaDrLA6N+gTHcSR7x1UIvp90EpYBzHmjrRYSnEtBUbZamxV5fLqcEouyfYhrXB+9wgInBvCk/YwRJHtlRNFPlexgaf3+wbUUMo7g3u5RyNHGQczbqPWuXRFDabuvuev8Mp0mOhjjnq520vX
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(376002)(396003)(36840700001)(46966006)(9686003)(26005)(54906003)(16526019)(5660300002)(186003)(4744005)(47076005)(7416002)(426003)(82310400003)(336012)(36860700001)(2906002)(70586007)(36906005)(316002)(70206006)(8936002)(6916009)(33716001)(8676002)(86362001)(4326008)(478600001)(7636003)(356005)(9576002)(82740400003)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 09:20:10.8948
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 400be08d-5f3a-43cd-a6be-08d8ed13b172
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3257
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210319112221.5123b984@jacob-builder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, 15 March 2021 6:27:57 PM AEDT Christoph Hellwig wrote:
-> On Fri, Mar 12, 2021 at 07:38:44PM +1100, Alistair Popple wrote:
-> > Remove the migration and device private entry_to_page() and
-> > entry_to_pfn() inline functions and instead open code them directly.
-> > This results in shorter code which is easier to understand.
+On Fri, Mar 19, 2021 at 11:22:21AM -0700, Jacob Pan wrote:
+> Hi Jason,
 > 
-> I think this commit log should mention pfn_swap_entry_to_page() now.
-
-Will add. Thanks for the review.
-
-> Otherwise looks good:
+> On Fri, 19 Mar 2021 10:54:32 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > On Fri, Mar 19, 2021 at 02:41:32PM +0100, Jean-Philippe Brucker wrote:
+> > > On Fri, Mar 19, 2021 at 09:46:45AM -0300, Jason Gunthorpe wrote:  
+> > > > On Fri, Mar 19, 2021 at 10:58:41AM +0100, Jean-Philippe Brucker wrote:
+> > > >   
+> > > > > Although there is no use for it at the moment (only two upstream
+> > > > > users and it looks like amdkfd always uses current too), I quite
+> > > > > like the client-server model where the privileged process does
+> > > > > bind() and programs the hardware queue on behalf of the client
+> > > > > process.  
+> > > > 
+> > > > This creates a lot complexity, how do does process A get a secure
+> > > > reference to B? How does it access the memory in B to setup the HW?  
+> > > 
+> > > mm_access() for example, and passing addresses via IPC  
+> > 
+> > I'd rather the source process establish its own PASID and then pass
+> > the rights to use it to some other process via FD passing than try to
+> > go the other way. There are lots of security questions with something
+> > like mm_access.
+> > 
 > 
+> Thank you all for the input, it sounds like we are OK to remove mm argument
+> from iommu_sva_bind_device() and iommu_sva_alloc_pasid() for now?
 
+Fine by me. By the way the IDXD currently missues the bind API for
+supervisor PASID, and the drvdata parameter isn't otherwise used. This
+would be a good occasion to clean both. The new bind prototype could be:
 
+struct iommu_sva *iommu_sva_bind_device(struct device *dev, int flags)
 
+And a flag IOMMU_SVA_BIND_SUPERVISOR (not that I plan to implement it in
+the SMMU, but I think we need to clean the current usage)
 
+> 
+> Let me try to summarize PASID allocation as below:
+> 
+> Interfaces	| Usage	|  Limit	| bind¹ |User visible
+> --------------------------------------------------------------------
+> /dev/ioasid²	| G-SVA/IOVA	|  cgroup	| No	|Yes
+> --------------------------------------------------------------------
+> char dev³	| SVA		|  cgroup	| Yes	|No
+> --------------------------------------------------------------------
+> iommu driver	| default PASID|  no		| No	|No
+
+Is this PASID #0?
+
+> --------------------------------------------------------------------
+> kernel		| super SVA	| no		| yes   |No
+> --------------------------------------------------------------------
+
+Also wondering about device driver allocating auxiliary domains for their
+private use, to do iommu_map/unmap on private PASIDs (a clean replacement
+to super SVA, for example). Would that go through the same path as
+/dev/ioasid and use the cgroup of current task?
+
+Thanks,
+Jean
+
+> 
+> ¹ Allocated during SVA bind
+> ² PASIDs allocated via /dev/ioasid are not bound to any mm. But its
+>   ownership is assigned to the process that does the allocation.
+> ³ Include uacce, other private device driver char dev such as idxd
+> 
+> Currently, the proposed /dev/ioasid interface does not map individual PASID
+> with an FD. The FD is at the ioasid_set granularity and bond to the current
+> mm. We could extend the IOCTLs to cover individual PASID-FD passing case
+> when use cases arise. Would this work?
+> 
+> Thanks,
+> 
+> Jacob
