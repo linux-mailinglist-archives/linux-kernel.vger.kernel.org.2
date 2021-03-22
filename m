@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2448E343D6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF75E343D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhCVKDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:03:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:26041 "EHLO mga06.intel.com"
+        id S229920AbhCVKER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:04:17 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:46956 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhCVKDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:03:36 -0400
-IronPort-SDR: ETFuzQAPFEbSVhWJXxB9Y+w0LR3VAz12wz8wQbF5A1yY+yeK58LVphG6wIiZ285574EQt/kepR
- 4RJC0Fcuy6Fg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="251593999"
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="251593999"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 03:03:35 -0700
-IronPort-SDR: +bT4eNAUlnvHiNxoIKm/o8CmhiCLdRep513I5wu/BZ7FyMAwZWhP2mmsdhM9BXLoDS1EJ5psj+
- QTEbNajHwycQ==
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="414423453"
-Received: from zssigmon-mobl.amr.corp.intel.com ([10.254.92.253])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 03:03:30 -0700
-Message-ID: <d876e5abb1a7e4fce160bfcb217bf3ab675f44a8.camel@intel.com>
-Subject: Re: [PATCH v3 00/25] KVM SGX virtualization support
-From:   Kai Huang <kai.huang@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        jethro@fortanix.com, b.thiel@posteo.de, jmattson@google.com,
-        joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        corbet@lwn.net
-Date:   Mon, 22 Mar 2021 23:03:28 +1300
-In-Reply-To: <YFS6kTe1SuAjiMFN@kernel.org>
-References: <cover.1616136307.git.kai.huang@intel.com>
-         <YFS6kTe1SuAjiMFN@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229482AbhCVKEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:04:14 -0400
+Received: from p5b127c0a.dip0.t-ipconnect.de ([91.18.124.10] helo=phil.fritz.box)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lOHPd-0003jN-LW; Mon, 22 Mar 2021 11:03:53 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Marty Jones <mj8263788@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        David Bauer <mail@david-bauer.net>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Chen-Yu Tsai <wens@csie.org>, Tianling Shen <cnsztl@gmail.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
+Date:   Mon, 22 Mar 2021 11:03:52 +0100
+Message-Id: <161640742725.808893.3666594351389773587.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210319051627.814-1-cnsztl@gmail.com>
+References: <20210319051627.814-1-cnsztl@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 19 Mar 2021 13:16:26 +0800, Tianling Shen wrote:
+> Add devicetree binding documentation for the FriendlyARM NanoPi R4S.
 > 
-> I just say add my ack to SGX specific patches where it is missing.
-> Good enough.
+> Changes in v6:
+> - Fixed format of LED nodes
 > 
-> /Jarkko
+> Changes in v5:
+> - Dropped the empty PCIe node
+> - Dropped useless `/delete-property/`
+> - Renamed LED nodes
+> 
+> [...]
 
-Thank you Jarkko!
+Applied, thanks!
 
-Hi Boris,
+[1/2] dt-bindings: Add doc for FriendlyARM NanoPi R4S
+      commit: 1003888415e83e15ddb63d1d96189b4f2c5f1d48
+[2/2] rockchip: rk3399: Add support for FriendlyARM NanoPi R4S
+      commit: db792e9adbf85ffc9d6b0b060ac3c8e3148c8992
 
-If there's no other comments, should I send another version adding Jarkko's Acked-by
-for the x86 SGX patches that don't have it (patch 2, 5, 6, 7, 8, 13 -- in which patch
-2 and 6 are changes to generic x86)?
-
-
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
