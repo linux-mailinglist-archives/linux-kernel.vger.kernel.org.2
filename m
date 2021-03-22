@@ -2,225 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3F03439C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D493439CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhCVGmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbhCVGlv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:41:51 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53CDC061762
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:41:50 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id g1so6018341plg.7
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 23:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=25e+rVTq6nmYhuAojcLUW2P+GB1w8LaJw5ypKr+Sczk=;
-        b=TYnfM7XE1Qa3Iq7SmsE5a3/MRZynV+7j2355zKZn59b3S9bf6mc17sC7eAtLoA89JM
-         pC0M8j3adQ667VwrgSt37BBW8ghKfVgzrTBXvhmfg9uUBnfMjzbxUfn5fur9A9as8ASX
-         UH6pYiB8nD5WOUsneqY5gS3n8Y3spSFi+ta6+TnmyUNUQyZLO0XOnExj8UIBaLICZS0A
-         DIk9AGqHH/4cXHyOQCtdzfs5id7ZUIq/84fMm7c28cHhN6ZuEfwGyZmRLf/+mhWbDkj7
-         sDpkkEdg7i4qAZP8nZV7Vov4FWwRJplCEkjgbLK9ciSFOK/iIATi8/MDQESlE+IoTkSs
-         dIgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=25e+rVTq6nmYhuAojcLUW2P+GB1w8LaJw5ypKr+Sczk=;
-        b=tVVYzb5rhUilrmHWeQwkrBRiIXZiIzZ5fS+7kM/lQf/mK22iGaSzNlCr0g2etmCFb/
-         HYYT3WFcVTRb6SDx5Gymt2EYHgWfJ9FpVhSc93Vj+g0Pmo7pacMIgVbXOrhUzqnK3ED9
-         5EIGAljnRhP3g6YCTilhojSV3F5k3E8eh1dsd4Py3VZs2PanFb2hYxD7ZyjgVonrgZFi
-         V1ztHRH29UigQEQHkV4zFYljKKfO/G86ymqO9Gzieps7jYicU/2yq6wGMR7oRaV8Gerx
-         k9Oes0/zbJ3uYSqFuugRKmVsgHhgFqm3BKvSdSPJamfIP+o9yECiIhRDjlwIv85GgCDt
-         1KUA==
-X-Gm-Message-State: AOAM533xr5id5dmbMNKtt4xNajDnJWcIl7C/clD9CclBuEMWUnbAU0OQ
-        YNuTFkLYn1HD6//lCw7Xn9I1tA==
-X-Google-Smtp-Source: ABdhPJyBTNNi7bloWfXEusU8O8X8CG45cGV4ObEvWP9owpM0MwmKw5Se9MbbIJ2HwAkXsSi3oChc4A==
-X-Received: by 2002:a17:90a:b115:: with SMTP id z21mr11884479pjq.162.1616395307719;
-        Sun, 21 Mar 2021 23:41:47 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id n16sm12356347pff.119.2021.03.21.23.41.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 21 Mar 2021 23:41:46 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 12:11:44 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v9] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210322064144.y6kpajolwh2kd3lj@vireshk-i7>
-References: <e09c07532f5456816eb91ef4176bf910284df4ff.1616418890.git.jie.deng@intel.com>
+        id S230045AbhCVGmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230031AbhCVGl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:41:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7ED06195D;
+        Mon, 22 Mar 2021 06:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616395317;
+        bh=dUWgkQqcROXVRy2P/Kgm2tfPQp3l6P6++YBCLK7lZck=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GzxBDep8hM9IBCV4ic7ejokykzZAsiZh8YVeRAFH95vCIWHiCOX8kMAY3bGNgBeHK
+         oHlRwENTJgcaJ434j5hJ0qYznB1QJfCLIs7RzeyuvjXAkR7VtAMnunLejqN7kqRVAe
+         coAEzEajG+P2IRhVOb76r/3Fehw5j3m3eg5SrOyuyijmcP7dWnQirJGP2yxrCr16WB
+         /f4y3AtIMoNr6j+zNNqjsylVDpXYfrfIMpxC9xW9tKNj6Jlt+VMueHL+CweVuiKxXB
+         RtkBCde7xERGfw7zEXG7QcTcBnBbgrOnsV4eaS555EDUb++KJyCRDZyDZJmwX5zXdd
+         6j6BoQ5X+47HA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: [PATCH -tip v4 11/12] x86/unwind: Recover kretprobe trampoline entry
+Date:   Mon, 22 Mar 2021 15:41:51 +0900
+Message-Id: <161639531150.895304.17043680062940996079.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <161639518354.895304.15627519393073806809.stgit@devnote2>
+References: <161639518354.895304.15627519393073806809.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e09c07532f5456816eb91ef4176bf910284df4ff.1616418890.git.jie.deng@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-03-21, 21:35, Jie Deng wrote:
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> new file mode 100644
-> index 0000000..316986e
-> --- /dev/null
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -0,0 +1,286 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Virtio I2C Bus Driver
-> + *
-> + * The Virtio I2C Specification:
-> + * https://raw.githubusercontent.com/oasis-tcs/virtio-spec/master/virtio-i2c.tex
-> + *
-> + * Copyright (c) 2021 Intel Corporation. All rights reserved.
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/completion.h>
-> +#include <linux/err.h>
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/virtio.h>
-> +#include <linux/virtio_ids.h>
-> +#include <linux/virtio_config.h>
-> +#include <linux/virtio_i2c.h>
-> +
-> +/**
-> + * struct virtio_i2c - virtio I2C data
-> + * @vdev: virtio device for this controller
-> + * @completion: completion of virtio I2C message
-> + * @adap: I2C adapter for this controller
-> + * @i2c_lock: lock for virtqueue processing
+Since the kretprobe replaces the function return address with
+the kretprobe_trampoline on the stack, x86 unwinders can not
+continue the stack unwinding at that point, or record
+kretprobe_trampoline instead of correct return address.
 
-Name mismatch here.
+To fix this issue, find the correct return address from task's
+kretprobe_instances as like as function-graph tracer does.
 
-> + * @vq: the virtio virtqueue for communication
-> + */
-> +struct virtio_i2c {
-> +	struct virtio_device *vdev;
-> +	struct completion completion;
-> +	struct i2c_adapter adap;
-> +	struct mutex lock;
-> +	struct virtqueue *vq;
-> +};
+With this fix, the unwinder can correctly unwind the stack
+from kretprobe event on x86, as below.
+
+           <...>-135     [003] ...1     6.722338: r_full_proxy_read_0: (vfs_read+0xab/0x1a0 <- full_proxy_read)
+           <...>-135     [003] ...1     6.722377: <stack trace>
+ => kretprobe_trace_func+0x209/0x2f0
+ => kretprobe_dispatcher+0x4a/0x70
+ => __kretprobe_trampoline_handler+0xca/0x150
+ => trampoline_handler+0x44/0x70
+ => kretprobe_trampoline+0x2a/0x50
+ => vfs_read+0xab/0x1a0
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x33/0x40
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
 
 
-> +static int virtio_i2c_complete_reqs(struct virtqueue *vq,
-> +					struct virtio_i2c_req *reqs,
-> +					struct i2c_msg *msgs, int nr,
-> +					bool timeout)
-> +{
-> +	struct virtio_i2c_req *req;
-> +	bool err_found = false;
-> +	unsigned int len;
-> +	int i, j = 0;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		/* Detach the ith request from the vq */
-> +		req = virtqueue_get_buf(vq, &len);
-> +
-> +		if (timeout || err_found)  {
-> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
-> +			continue;
-> +		}
-> +
-> +		/*
-> +		 * Condition (req && req == &reqs[i]) should always meet since
-> +		 * we have total nr requests in the vq.
-> +		 */
-> +		if (WARN_ON(!(req && req == &reqs[i])) ||
-> +		    (req->in_hdr.status != VIRTIO_I2C_MSG_OK)) {
-> +			err_found = true;
-> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
-> +			continue;
-> +		}
-> +
-> +		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], true);
-> +		++j;
-> +	}
+Reported-by: Daniel Xu <dxu@dxuuu.xyz>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+  Changes in v3:
+   - Split out the kretprobe side patch
+   - Fix build error when CONFIG_KRETPROBES=n.
+  Changes in v2:
+   - Remove kretprobe wrapper functions from unwind_orc.c
+   - Do not fixup state->ip when unwinding with regs because
+     kretprobe fixup instruction pointer before calling handler.
+---
+ arch/x86/include/asm/unwind.h  |   17 +++++++++++++++++
+ arch/x86/kernel/unwind_frame.c |    4 ++--
+ arch/x86/kernel/unwind_guess.c |    3 +--
+ arch/x86/kernel/unwind_orc.c   |    6 +++---
+ 4 files changed, 23 insertions(+), 7 deletions(-)
 
-I think you can simplify the code like this here:
+diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
+index 70fc159ebe69..332aa6174b10 100644
+--- a/arch/x86/include/asm/unwind.h
++++ b/arch/x86/include/asm/unwind.h
+@@ -4,6 +4,7 @@
+ 
+ #include <linux/sched.h>
+ #include <linux/ftrace.h>
++#include <linux/kprobes.h>
+ #include <asm/ptrace.h>
+ #include <asm/stacktrace.h>
+ 
+@@ -15,6 +16,7 @@ struct unwind_state {
+ 	unsigned long stack_mask;
+ 	struct task_struct *task;
+ 	int graph_idx;
++	struct llist_node *kr_cur;
+ 	bool error;
+ #if defined(CONFIG_UNWINDER_ORC)
+ 	bool signal, full_regs;
+@@ -99,6 +101,21 @@ void unwind_module_init(struct module *mod, void *orc_ip, size_t orc_ip_size,
+ 			void *orc, size_t orc_size) {}
+ #endif
+ 
++/* Recover the return address modified by instrumentation (e.g. kretprobe) */
++static inline
++unsigned long unwind_recover_ret_addr(struct unwind_state *state,
++				     unsigned long addr, unsigned long *addr_p)
++{
++	unsigned long ret;
++
++	ret = ftrace_graph_ret_addr(state->task, &state->graph_idx,
++				    addr, addr_p);
++	if (is_kretprobe_trampoline(ret))
++		ret = kretprobe_find_ret_addr(state->task, addr_p,
++					      &state->kr_cur);
++	return ret;
++}
++
+ /*
+  * This disables KASAN checking when reading a value from another task's stack,
+  * since the other task could be running on another CPU and could have poisoned
+diff --git a/arch/x86/kernel/unwind_frame.c b/arch/x86/kernel/unwind_frame.c
+index d7c44b257f7f..24e33b44b2be 100644
+--- a/arch/x86/kernel/unwind_frame.c
++++ b/arch/x86/kernel/unwind_frame.c
+@@ -3,6 +3,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/interrupt.h>
++#include <linux/kprobes.h>
+ #include <asm/sections.h>
+ #include <asm/ptrace.h>
+ #include <asm/bitops.h>
+@@ -240,8 +241,7 @@ static bool update_stack_state(struct unwind_state *state,
+ 	else {
+ 		addr_p = unwind_get_return_address_ptr(state);
+ 		addr = READ_ONCE_TASK_STACK(state->task, *addr_p);
+-		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+-						  addr, addr_p);
++		state->ip = unwind_recover_ret_addr(state, addr, addr_p);
+ 	}
+ 
+ 	/* Save the original stack pointer for unwind_dump(): */
+diff --git a/arch/x86/kernel/unwind_guess.c b/arch/x86/kernel/unwind_guess.c
+index c49f10ffd8cd..884d68a6e714 100644
+--- a/arch/x86/kernel/unwind_guess.c
++++ b/arch/x86/kernel/unwind_guess.c
+@@ -15,8 +15,7 @@ unsigned long unwind_get_return_address(struct unwind_state *state)
+ 
+ 	addr = READ_ONCE_NOCHECK(*state->sp);
+ 
+-	return ftrace_graph_ret_addr(state->task, &state->graph_idx,
+-				     addr, state->sp);
++	return unwind_recover_ret_addr(state, addr, state->sp);
+ }
+ EXPORT_SYMBOL_GPL(unwind_get_return_address);
+ 
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index a1202536fc57..839a0698342a 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -2,6 +2,7 @@
+ #include <linux/objtool.h>
+ #include <linux/module.h>
+ #include <linux/sort.h>
++#include <linux/kprobes.h>
+ #include <asm/ptrace.h>
+ #include <asm/stacktrace.h>
+ #include <asm/unwind.h>
+@@ -534,9 +535,8 @@ bool unwind_next_frame(struct unwind_state *state)
+ 		if (!deref_stack_reg(state, ip_p, &state->ip))
+ 			goto err;
+ 
+-		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+-						  state->ip, (void *)ip_p);
+-
++		state->ip = unwind_recover_ret_addr(state, state->ip,
++						    (unsigned long *)ip_p);
+ 		state->sp = sp;
+ 		state->regs = NULL;
+ 		state->prev_regs = NULL;
 
-	bool err_found = timeout;
-
-	for (i = 0; i < nr; i++) {
-		/* Detach the ith request from the vq */
-		req = virtqueue_get_buf(vq, &len);
-
-		/*
-		 * Condition (req && req == &reqs[i]) should always meet since
-		 * we have total nr requests in the vq.
-		 */
-		if (!err_found &&
-                    (WARN_ON(!(req && req == &reqs[i])) ||
-		     (req->in_hdr.status != VIRTIO_I2C_MSG_OK))) {
-			err_found = true;
-			continue;
-		}
-
-		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], err_found);
-                if (!err_found)
-                        ++j;
-
-> +
-> +	return (timeout ? -ETIMEDOUT : j);
-> +}
-> +
-> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
-> +{
-> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
-> +	struct virtqueue *vq = vi->vq;
-> +	struct virtio_i2c_req *reqs;
-> +	unsigned long time_left;
-> +	int ret, nr;
-> +
-> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
-> +	if (!reqs)
-> +		return -ENOMEM;
-> +
-> +	mutex_lock(&vi->lock);
-> +
-> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
-> +	if (ret == 0)
-> +		goto err_unlock_free;
-> +
-> +	nr = ret;
-> +	reinit_completion(&vi->completion);
-> +	virtqueue_kick(vq);
-> +
-> +	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-> +	if (!time_left) {
-> +		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
-> +		ret = virtio_i2c_complete_reqs(vq, reqs, msgs, nr, true);
-> +		goto err_unlock_free;
-> +	}
-> +
-> +	ret = virtio_i2c_complete_reqs(vq, reqs, msgs, nr, false);
-
-And this can be optimized as well:
-
-	time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-	if (!time_left)
-		dev_err(&adap->dev, "virtio i2c backend timeout.\n");
-
-        ret = virtio_i2c_complete_reqs(vq, reqs, msgs, nr, !time_left);
-
--- 
-viresh
