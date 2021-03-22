@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7408D344525
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A873444C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233551AbhCVNNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:13:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50908 "EHLO mail.kernel.org"
+        id S232878AbhCVNFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:05:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233189AbhCVM5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:57:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB712619C4;
-        Mon, 22 Mar 2021 12:49:41 +0000 (UTC)
+        id S231536AbhCVMvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83D8B619FF;
+        Mon, 22 Mar 2021 12:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417382;
-        bh=Q5RhL7XHwJL05v8amT0TiRX+i9gJwIhVfctROJ1vIWY=;
+        s=korg; t=1616417185;
+        bh=OILm6jBGESXvps1Cv1pDxw5hs8Llohqh1bqGZ1w2/vY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L6Nx8qdkg8T7kP5p7S1Q1pizDWNgMRbOsZi1znx7UjronmiaUg4qP3a8DUtkf7idN
-         lkMWGlV5JE3/1qauL5S0kw05ImwALVCLsbCBfqhMyj/qYdFo+lnsBX4InVQDciAJLD
-         CPqVpoVdMQ+bQrJfGqwOkqYbpSW+VbzI4487M/5Q=
+        b=RRTvzUwfWQVECfsJk6bDmd+/nbSy21TtESv7wXHcbXFwRST4DsRr+4xxVWulq6Xeu
+         tL0OZkrzXuU8WZo8ZdQ9pL+uLilVIDD1DGIieHtNMvLOep1avmkMIFfsRhSmY0o/n/
+         1jVjOVONANDmGlS1FncMQb4n/WXstDlDlUIR9s48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Kobras <kobras@puzzle-itc.de>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 4.14 20/43] sunrpc: fix refcount leak for rpc auth modules
-Date:   Mon, 22 Mar 2021 13:29:01 +0100
-Message-Id: <20210322121920.693130124@linuxfoundation.org>
+        stable@vger.kernel.org, Macpaul Lin <macpaul.lin@mediatek.com>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: [PATCH 4.4 08/14] USB: replace hardcode maximum usb string length by definition
+Date:   Mon, 22 Mar 2021 13:29:02 +0100
+Message-Id: <20210322121919.460579586@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
-References: <20210322121920.053255560@linuxfoundation.org>
+In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
+References: <20210322121919.202392464@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Kobras <kobras@puzzle-itc.de>
+From: Macpaul Lin <macpaul.lin@mediatek.com>
 
-commit f1442d6349a2e7bb7a6134791bdc26cb776c79af upstream.
+commit 81c7462883b0cc0a4eeef0687f80ad5b5baee5f6 upstream.
 
-If an auth module's accept op returns SVC_CLOSE, svc_process_common()
-enters a call path that does not call svc_authorise() before leaving the
-function, and thus leaks a reference on the auth module's refcount. Hence,
-make sure calls to svc_authenticate() and svc_authorise() are paired for
-all call paths, to make sure rpc auth modules can be unloaded.
+Replace hardcoded maximum USB string length (126 bytes) by definition
+"USB_MAX_STRING_LEN".
 
-Signed-off-by: Daniel Kobras <kobras@puzzle-itc.de>
-Fixes: 4d712ef1db05 ("svcauth_gss: Close connection when dropping an incoming message")
-Link: https://lore.kernel.org/linux-nfs/3F1B347F-B809-478F-A1E9-0BE98E22B0F0@oracle.com/T/#t
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/1592471618-29428-1-git-send-email-macpaul.lin@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sunrpc/svc.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/composite.c |    4 ++--
+ drivers/usb/gadget/configfs.c  |    2 +-
+ drivers/usb/gadget/usbstring.c |    4 ++--
+ include/uapi/linux/usb/ch9.h   |    3 +++
+ 4 files changed, 8 insertions(+), 5 deletions(-)
 
---- a/net/sunrpc/svc.c
-+++ b/net/sunrpc/svc.c
-@@ -1329,7 +1329,7 @@ svc_process_common(struct svc_rqst *rqst
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -933,7 +933,7 @@ static void collect_langs(struct usb_gad
+ 	while (*sp) {
+ 		s = *sp;
+ 		language = cpu_to_le16(s->language);
+-		for (tmp = buf; *tmp && tmp < &buf[126]; tmp++) {
++		for (tmp = buf; *tmp && tmp < &buf[USB_MAX_STRING_LEN]; tmp++) {
+ 			if (*tmp == language)
+ 				goto repeat;
+ 		}
+@@ -1008,7 +1008,7 @@ static int get_string(struct usb_composi
+ 			collect_langs(sp, s->wData);
+ 		}
  
-  sendit:
- 	if (svc_authorise(rqstp))
--		goto close;
-+		goto close_xprt;
- 	return 1;		/* Caller can now send it */
+-		for (len = 0; len <= 126 && s->wData[len]; len++)
++		for (len = 0; len <= USB_MAX_STRING_LEN && s->wData[len]; len++)
+ 			continue;
+ 		if (!len)
+ 			return -EINVAL;
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -117,7 +117,7 @@ static int usb_string_copy(const char *s
+ 	char *str;
+ 	char *copy = *s_copy;
+ 	ret = strlen(s);
+-	if (ret > 126)
++	if (ret > USB_MAX_STRING_LEN)
+ 		return -EOVERFLOW;
  
-  dropit:
-@@ -1338,6 +1338,8 @@ svc_process_common(struct svc_rqst *rqst
- 	return 0;
+ 	str = kstrdup(s, GFP_KERNEL);
+--- a/drivers/usb/gadget/usbstring.c
++++ b/drivers/usb/gadget/usbstring.c
+@@ -59,9 +59,9 @@ usb_gadget_get_string (struct usb_gadget
+ 		return -EINVAL;
  
-  close:
-+	svc_authorise(rqstp);
-+close_xprt:
- 	if (rqstp->rq_xprt && test_bit(XPT_TEMP, &rqstp->rq_xprt->xpt_flags))
- 		svc_close_xprt(rqstp->rq_xprt);
- 	dprintk("svc: svc_process close\n");
-@@ -1346,7 +1348,7 @@ svc_process_common(struct svc_rqst *rqst
- err_short_len:
- 	svc_printk(rqstp, "short len %zd, dropping request\n",
- 			argv->iov_len);
--	goto close;
-+	goto close_xprt;
+ 	/* string descriptors have length, tag, then UTF16-LE text */
+-	len = min ((size_t) 126, strlen (s->s));
++	len = min((size_t)USB_MAX_STRING_LEN, strlen(s->s));
+ 	len = utf8s_to_utf16s(s->s, len, UTF16_LITTLE_ENDIAN,
+-			(wchar_t *) &buf[2], 126);
++			(wchar_t *) &buf[2], USB_MAX_STRING_LEN);
+ 	if (len < 0)
+ 		return -EINVAL;
+ 	buf [0] = (len + 1) * 2;
+--- a/include/uapi/linux/usb/ch9.h
++++ b/include/uapi/linux/usb/ch9.h
+@@ -333,6 +333,9 @@ struct usb_config_descriptor {
  
- err_bad_rpc:
- 	serv->sv_stats->rpcbadfmt++;
+ /*-------------------------------------------------------------------------*/
+ 
++/* USB String descriptors can contain at most 126 characters. */
++#define USB_MAX_STRING_LEN	126
++
+ /* USB_DT_STRING: String descriptor */
+ struct usb_string_descriptor {
+ 	__u8  bLength;
 
 
