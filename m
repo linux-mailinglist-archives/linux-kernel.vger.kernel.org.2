@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94688345093
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB82F345096
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbhCVURA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
+        id S232355AbhCVURc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhCVUQt (ORCPT
+        with ESMTP id S232299AbhCVURH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:16:49 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE4AC061574;
-        Mon, 22 Mar 2021 13:16:48 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id kt15so13902054ejb.12;
-        Mon, 22 Mar 2021 13:16:48 -0700 (PDT)
+        Mon, 22 Mar 2021 16:17:07 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218A7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:17:06 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id x16so9340806qvk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9MgTlf1yAFXA1SMLrg9uUz/Zx0G39O4yukxveacwuqA=;
-        b=Hq65TokTTybC8WE57EfUDp9sTV9M9Uj3qvRaRzNi56m04h1hFo9nTnoLkJEMMfoV9Y
-         5efIFo+Xg8z+/7Cy1EnJQ5kKNCD3mcS0837WtZLhVeL1Ywv6D2fLWYo6tObqONtEbkGe
-         z4VY3XAL/fxZA4adZG8L2HbkQLKc1EQ/f2jAh85bj1+oHOPQFUth9rEm1z5oSsFI68ks
-         unegnSmcVgmWnXYbIDvM1vUGELf09x8qDEbGg1PUbXV4B1SrOAQ2vvqZ5s9TsIFvYtIU
-         0f5Z/BBoigW593g05pxWgCw56jGKV8VIN+PeAdSJYmMFeDAi8gJ47ZFMAzvz/hGyQvIR
-         OxpA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tcS5dQnvT0EiMWmTQeHKxUtGPVRxLUYjS83TJVzvx+k=;
+        b=MDK780PDa68smMWy8dlBgBO1PT8Mm/nclrmBTOUsf+/+6uS2UU4D7XjM1CKAoBMCNI
+         m+hTtLDuF6QSo4iSwAamrGHUvBE1m21GD1FKUqdhKgGRm3R2WM6ToZK2sur0Xv+ZGIf0
+         lBmP/KyGYi/HW2XADCxat3UK3LYGnfdbr0a0NqOw5heZABYTzS5papkYBDEJD94CUUwm
+         tUU9DG42JoWdlTzMSQBEiZ6ORiJD6FPOOQ6F95zSHzXM9Iw16VQBtenrGUxa5A9p9oas
+         010SKR0FoPRb7nGby+ifI51atFOkIWkoRjo1Lma+k6z+DlRvf2KlwGHbKGJqBzoIJHXW
+         S6wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9MgTlf1yAFXA1SMLrg9uUz/Zx0G39O4yukxveacwuqA=;
-        b=lpy+5+O5FlTShE5mLfFOkZQjxZ/0fr2iBjWXy7EpVN7IRoVa+RHvlXQF7zVi9AoCIr
-         Fx0qQFFyeizvFtFP7B8FfQt1sqfv+9not4gTRBM5Z7WV4VXHv9txGbtcl8J73pi8XcmE
-         tqT+ram+wM6EefXG9+gD9mdAR/S2r62trc5kRJ5cG3u8DLP9iMBpyS9d9PiQbW9Jyekz
-         2969bUVs31cFcvpkVIBcIRTPf5ztbqYU1jiFZnqq2xUmRIhKKVqvmkCOIncta79i3EnO
-         AVsJ0A3zM61xBFDuiVPXX+SLXoPWMNL7JUcLabPeQMmZZ9e2b89qPDGhEWw61eL+Q3Bz
-         wlWQ==
-X-Gm-Message-State: AOAM5330YnFes3qbd43QR5aeQfpMa0kpS/pEQZw9wKNpAMVUsfwlCJY0
-        jNEyYOUEsPTgZG+BL8ya+Tc=
-X-Google-Smtp-Source: ABdhPJzr+jqpvKPNXdzFVykPB4evgT36hacay7YqEiM9TqMNmG4Ay2EymQyc6TGf8SZzaBg3WUKMlQ==
-X-Received: by 2002:a17:907:20e4:: with SMTP id rh4mr1473531ejb.369.1616444207247;
-        Mon, 22 Mar 2021 13:16:47 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id n26sm11857852eds.22.2021.03.22.13.16.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tcS5dQnvT0EiMWmTQeHKxUtGPVRxLUYjS83TJVzvx+k=;
+        b=Tv3WmFvqtnh8opbO7hwgmylhbIMRGOWm3eXQjtG53nGT2t2E+7q8/HNMLoPHIp4wIn
+         uRcmXkpV1UbxGIttCe4ILQxDw7RJJ0NvTI8WB0T3gHO+WljdtYWV9spuzWf9Hll//NBH
+         mql6eoWn/yaHOiLdDO2ocstNXTcNR9M6Hz+j7SnH16BuAwYuDdAgiCTP8adUWZaOuuHm
+         z3LG7FLUJ57h1FW8RRkfL51Q06nIEMuryxdzoz76uGryZSpzgOgzCfXUY7PaJ6jBliIl
+         eKu+oCjNi3adDsoimax8T20EpEmATu3ZDQDu7Mdx4qZbdXLaCL0Q3VWR71A/IuKfevmZ
+         8PpA==
+X-Gm-Message-State: AOAM533DWLAlIllB7k7UM/5aftt7F0VofXz0bmy0s83cbMwF8sFfRo8M
+        bWLKCXIbV1Kkv1bj3l5H6Tw=
+X-Google-Smtp-Source: ABdhPJxWjJ772wUsSBvj273tJJK9LFsIcXBnimb0hW8Ojb6Lm03STXD2Twf4k5u4V3OXiK336FQPvg==
+X-Received: by 2002:a0c:908d:: with SMTP id p13mr1450243qvp.11.1616444225007;
+        Mon, 22 Mar 2021 13:17:05 -0700 (PDT)
+Received: from localhost.localdomain ([138.199.10.68])
+        by smtp.gmail.com with ESMTPSA id y9sm11530620qkm.19.2021.03.22.13.17.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 13:16:46 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 22 Mar 2021 21:16:44 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH V2] KVM: x86: A typo fix
-Message-ID: <20210322201644.GA1955593@gmail.com>
-References: <20210322060409.2605006-1-unixbhaskar@gmail.com>
+        Mon, 22 Mar 2021 13:17:04 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     gregkh@linuxfoundation.org, unixbhaskar@gmail.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH V2] staging: rtl8723bs: Mundane typo fixes
+Date:   Tue, 23 Mar 2021 01:46:48 +0530
+Message-Id: <20210322201648.137317-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322060409.2605006-1-unixbhaskar@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+s/stoping/stopping/
+s/arragement/arrangement/
+s/eralier/earlier/
 
-* Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+Plus one extra word in the sentence "the" removed.
 
-> s/resued/reused/
-> 
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  Changes from V1:
->  As Ingo found the correct word for replacement, so incorporating.
-> 
->  arch/x86/include/asm/kvm_host.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3768819693e5..e37c2ebc02e5 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1488,7 +1488,7 @@ extern u64 kvm_mce_cap_supported;
->  /*
->   * EMULTYPE_NO_DECODE - Set when re-emulating an instruction (after completing
->   *			userspace I/O) to indicate that the emulation context
-> - *			should be resued as is, i.e. skip initialization of
-> + *			should be reused as is, i.e. skip initialization of
->   *			emulation context, instruction fetch and decode.
->   *
->   * EMULTYPE_TRAP_UD - Set when emulating an intercepted #UD from hardware.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+  Changes from V1:
+  Greg,pointed out my mistake of introducing typo to typo , corrected.
 
-I already fixed this typo - and another 185 typos, in this 
-comprehensive cleanup of arch/x86/ typos in tip:x86/cleanups:
+ drivers/staging/rtl8723bs/include/hal_com_reg.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-  d9f6e12fb0b7: ("x86: Fix various typos in comments")
-  163b099146b8: ("x86: Fix various typos in comments, take #2")
+diff --git a/drivers/staging/rtl8723bs/include/hal_com_reg.h b/drivers/staging/rtl8723bs/include/hal_com_reg.h
+index 37fa59a352d6..b555826760d0 100644
+--- a/drivers/staging/rtl8723bs/include/hal_com_reg.h
++++ b/drivers/staging/rtl8723bs/include/hal_com_reg.h
+@@ -1002,9 +1002,9 @@ Current IOREG MAP
+ 	/* 		 8192C (TXPAUSE) transmission pause	(Offset 0x522, 8 bits) */
+ 	/*  */
+ /*  Note: */
+-/* 	The the bits of stoping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
+-/* 	the correct arragement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
+-/* 	8723 and 88E may be not correct either in the eralier version. Confirmed with DD Tim. */
++/* 	The  bits of stopping AC(VO/VI/BE/BK) queue in datasheet RTL8192S/RTL8192C are wrong, */
++/* 	the correct arrangement is VO - Bit0, VI - Bit1, BE - Bit2, and BK - Bit3. */
++/* 	8723 and 88E may be not correct either in the earlier version. Confirmed with DD Tim. */
+ /*  By Bruce, 2011-09-22. */
+ #define StopBecon		BIT6
+ #define StopHigh			BIT5
+--
+2.31.0
 
-Please check future typo fixes against tip:master.
-
-Thanks,
-
-	Ingo
