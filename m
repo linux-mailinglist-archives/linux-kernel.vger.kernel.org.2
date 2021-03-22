@@ -2,146 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F033E3452F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2783452F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhCVXUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 19:20:36 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:23807 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhCVXUF (ORCPT
+        id S230335AbhCVXXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 19:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhCVXW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:20:05 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210322232002epoutp015e0796ceca46d9edc80a3e6317a79cf5~uzXFVh3uR1783517835epoutp01L
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 23:20:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210322232002epoutp015e0796ceca46d9edc80a3e6317a79cf5~uzXFVh3uR1783517835epoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616455202;
-        bh=yowKQ1DnxB8uGC1tQdSiUvOwMNgjSuCBnJg0zNuQ6PE=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=CD9dyxQ6tZoGEMIn4RgZVLxu9s50KNITXdxKjCkUQUAbtcN1p5xceaPhOVlu4YcOw
-         VXThFdv9/FX+3M+dicKo5ide/BkaOIJUp3f3T4XxIRbfXvPD+YgFivJu0SnOdj+d2s
-         y83SjInUB9aLT8Nj0Q2kCOqoHfQr5kiNLNZz4Cqs=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210322232002epcas1p1bd6995b330ced2b6df351969588303e7~uzXEtgrgz0920509205epcas1p1G;
-        Mon, 22 Mar 2021 23:20:02 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4F49Sx4sfBz4x9Pp; Mon, 22 Mar
-        2021 23:20:01 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4C.01.02418.12629506; Tue, 23 Mar 2021 08:20:01 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210322232000epcas1p28c05deccaa1120af13d28963a593a2a7~uzXDUgWB43231532315epcas1p2H;
-        Mon, 22 Mar 2021 23:20:00 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210322232000epsmtrp167db0ff674fa23739420669df358175d~uzXDTUBtv0793707937epsmtrp18;
-        Mon, 22 Mar 2021 23:20:00 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-90-605926213cf2
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        55.7B.08745.02629506; Tue, 23 Mar 2021 08:20:00 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210322232000epsmtip257b5a3c74ffd1dcd5ded4c027b94b782~uzXDEqXag1241312413epsmtip2S;
-        Mon, 22 Mar 2021 23:20:00 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Christoph Hellwig'" <hch@lst.de>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-cifs@vger.kernel.org>,
-        <linux-cifsd-devel@lists.sourceforge.net>, <smfrench@gmail.com>,
-        <senozhatsky@chromium.org>, <hyc.lee@gmail.com>,
-        <viro@zeniv.linux.org.uk>, <hch@infradead.org>,
-        <ronniesahlberg@gmail.com>, <aurelien.aptel@gmail.com>,
-        <aaptel@suse.com>, <sandeen@sandeen.net>,
-        <colin.king@canonical.com>, <rdunlap@infradead.org>,
-        "'Sergey Senozhatsky'" <sergey.senozhatsky@gmail.com>,
-        "'Steve French'" <stfrench@microsoft.com>,
-        "'Dan Carpenter'" <dan.carpenter@oracle.com>
-In-Reply-To: <20210322065011.GA2909@lst.de>
-Subject: RE: [PATCH 2/5] cifsd: add server-side procedures for SMB3
-Date:   Tue, 23 Mar 2021 08:20:00 +0900
-Message-ID: <009c01d71f71$e1a5e470$a4f1ad50$@samsung.com>
+        Mon, 22 Mar 2021 19:22:56 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB21C061574;
+        Mon, 22 Mar 2021 16:22:55 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so17715668otn.1;
+        Mon, 22 Mar 2021 16:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rEOq8jouDmNbvyAXswJnkUQLH0QL0JMja4dqJ2WDisk=;
+        b=ISlrFUnda5jFNUE02BastwVdi6XdZae8P/mpaH9nvAOR20ijhe2+OdQapEP6Z9eHb7
+         IUF/zUYkB5cFN1qOIbNj03/x0JDte75+ed0B/71CI+UqPlVpW2tFwKXZ4y1uxioeW88b
+         qHhuVpyYMZux5DCEc771CtfmWKrakwBgFHhsCghifKaXRzLkiKGnvNHVR0/HdjtdYBNF
+         cwuX53sjCt0bPtrWptfVXi/D2n7gL/DKqpiCTmzWJoFCrWFmMGBetFd6riwSMja6NRuY
+         GDxWbNP4kzEC03rTbHgS2ut/BS9KA7ES78LQKEg035BTzUdFrT7SBHwDC76F9nbmFfLC
+         OoCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rEOq8jouDmNbvyAXswJnkUQLH0QL0JMja4dqJ2WDisk=;
+        b=PGE3TwaUUxHobGyF7oGTDalpzpstOeLawStxSN8smj2FYLrrN9b+3iFz/3Yb0xJzT6
+         RpN68BmpYsZF75WkUGmdIlnbCufItujLc5yTk78PKDL67l1bnPMLV//W+rMKKhhqT5Nh
+         B0YOGYdTBZ+7JuSEQ4T052DgnHnxDbRenQhWrCwp2V6qjW6+wPPN6c6y7eEG0aKfycg9
+         JdKjfVyevyqwbQphZNY+ajeQxSGGhViSyl5jsaJP0MFy6IGs7l/jiQpSkOGOIa9cAY/Y
+         951y1bZc+40axrPgYhU0lY31o1EiFMiO2/6NwvFJ4+8SLFU3hkSkVRYcd2ymIk1OfEa2
+         uMmA==
+X-Gm-Message-State: AOAM530opqFkqZmnwrkK7pakL9yPvAgUvmF0J/zBTB8trNXMs1QvoPDK
+        fZCWiH3gPcYyfRDArnkTKO28XhOrpdg=
+X-Google-Smtp-Source: ABdhPJyF1pL8NGG0KLMccy4wAdLy3VIsJQsZZBUVkdUtyaPEsF9GLXnZOcC1aL/9XW5ArXANFD6fCw==
+X-Received: by 2002:a9d:7a44:: with SMTP id z4mr1854880otm.272.1616455374904;
+        Mon, 22 Mar 2021 16:22:54 -0700 (PDT)
+Received: from ?IPv6:2600:1700:dfe0:49f0:e55c:4df0:791b:af23? ([2600:1700:dfe0:49f0:e55c:4df0:791b:af23])
+        by smtp.gmail.com with ESMTPSA id z3sm3520787oix.2.2021.03.22.16.22.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 16:22:54 -0700 (PDT)
+Subject: Re: [PATCH net] net: dsa: don't assign an error value to tag_ops
+To:     George McCollister <george.mccollister@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210322202650.45776-1-george.mccollister@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a838e69d-c286-65ba-2e29-73b9240e7191@gmail.com>
+Date:   Mon, 22 Mar 2021 16:22:52 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210322202650.45776-1-george.mccollister@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGKnGOaYF8FWW41Vo1OapoCvoUV0QJx6VhoAkDjIaQCMP/z3QDRv4r9quv+OfA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMJsWRmVeSWpSXmKPExsWy7bCmrq6iWmSCwdS1KhaNb0+zWBx//Zfd
-        4vfqXjaL1/+ms1icnrCIyWLl6qNMFtfuv2e3ePF/F7PFz//fGS327D3JYnF51xw2i7d3gOp6
-        +z6xWrRe0bLYvXERm8Xaz4/ZLd68OMxmcWvifDaL83+PszoIe8xq6GXzmN1wkcVj56y77B6b
-        V2h57F7wmclj980GNo/WHX/ZPT4+vcXisWXxQyaP9Vuusnh83iTnsenJW6YAnqgcm4zUxJTU
-        IoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygH5UUyhJzSoFCAYnF
-        xUr6djZF+aUlqQoZ+cUltkqpBSk5BYYGBXrFibnFpXnpesn5uVaGBgZGpkCVCTkZbw/3sBb8
-        Zanoa17J1MD4hLmLkZNDQsBEYsHiRjBbSGAHo8TJSRZdjFxA9idGibPLnjBCOJ8ZJdru9TPB
-        dHROncMEkdjFKPH45X92iPaXjBLf7sqC2GwCuhL//uxnA7FFBNQkzvxsYwdpYBbYwSKxceY1
-        sH2cAtoSt/YdBlrBwSEs4CyxcasMSJhFQFXiVHsPI4jNK2ApsWjDJTYIW1Di5MwnLCA2s4C8
-        xPa3c6BeUJD4+XQZK8QuP4k7V89A1YhIzO5sYwbZKyGwmFNi/f8pUB+4SKz4/AGqWVji1fEt
-        7BC2lMTLfpBDOYDsaomP+6FKOhglXny3hbCNJW6u38AKUsIsoCmxfpc+RFhRYufvuYwQa/kk
-        3n3tYYWYwivR0SYEUaIq0XfpMNQB0hJd7R/YJzAqzULy2Cwkj81C8sAshGULGFlWMYqlFhTn
-        pqcWGxYYIkf1JkZw6tcy3cE48e0HvUOMTByMhxglOJiVRHhbwiMShHhTEiurUovy44tKc1KL
-        DzGaAoN6IrOUaHI+MPvklcQbmhoZGxtbmJiZm5kaK4nzJhk8iBcSSE8sSc1OTS1ILYLpY+Lg
-        lGpgMqrdW6MTe/RfXFnz1v3b20Tqa7r7Ll6duHLi2hczJDycf89069g4qaeueSLbDX/+e3k3
-        12ov3Sz5akb2nTchi39NXSvxl/1JRd4H28L+7PuromM1fT2Cz24XWLNlp+eF5vKV9w8e+Xr8
-        9+IHznZ/fwr4Km86LnKff/7ZbnWvpuwU8znK5TXXQyyuOOmKTmM6uG1Z/+vF3XfD8vd9ipnG
-        XX1M+NkdLe2Pq/rzJr/pdyy8M/eB423J/ct/s381v3zgWPn3fbPy7oYeXCxbs3xyR/91NZ+5
-        DFe5RMsCjVWK+y9dam04d1Kp/sG6R8apAtEduo/zJhTsnKBy7+wC2bKFn6/6vZJO+SHbcG1P
-        34F5768qsRRnJBpqMRcVJwIAJ4seUIYEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRmVeSWpSXmKPExsWy7bCSvK6CWmSCwbVXGhaNb0+zWBx//Zfd
-        4vfqXjaL1/+ms1icnrCIyWLl6qNMFtfuv2e3ePF/F7PFz//fGS327D3JYnF51xw2i7d3gOp6
-        +z6xWrRe0bLYvXERm8Xaz4/ZLd68OMxmcWvifDaL83+PszoIe8xq6GXzmN1wkcVj56y77B6b
-        V2h57F7wmclj980GNo/WHX/ZPT4+vcXisWXxQyaP9Vuusnh83iTnsenJW6YAnigum5TUnMyy
-        1CJ9uwSujLeHe1gL/rJU9DWvZGpgfMLcxcjJISFgItE5dQ5TFyMXh5DADkaJ60v6oRLSEsdO
-        nAGyOYBsYYnDh4shap4zSvxatJkVpIZNQFfi35/9bCC2iICaxJmfbewgRcwCZ1gkVtxuYYbo
-        +MUosWHvF0aQKk4BbYlb+w4zgkwVFnCW2LhVBiTMIqAqcaq9B6yEV8BSYtGGS2wQtqDEyZlP
-        WEDKmQX0JNo2gpUwC8hLbH87B+pOBYmfT5exQtzgJ3Hn6hkWiBoRidmdbcwTGIVnIZk0C2HS
-        LCSTZiHpWMDIsopRMrWgODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzgJaGntYNyz6oPeIUYm
-        DsZDjBIczEoivC3hEQlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhPLEnNTk0tSC2C
-        yTJxcEo1MKWvKNN+eU30hmrNg6fxmstKT7cphC+7WZjUsFb5+p/3+/XaVkUGdOt5G+usnvHh
-        Xs/dW3ZfqzSFguLPxu99ZxIxc35Y/XKelUyhuU9/iOpNmZn08uQT7bUMMkkGkx6vXbb/S3Nv
-        iybLQuOzW+s3rZ0yTWMiy/EVN5sj7kt0JJgynl7xg7nyv8kjV/FvLzRXHGvbcausXj75Dpu3
-        E5/qyuuL3mxZOuV2QbfGUc70lbXWLxiYzVpNy231l0vv0Uucrpz3OSVE9OLcF5axRx+8OXbJ
-        XTVh4+5UB85Pr5q2bfBdufOspodZTLZFz8vtelc0rSY3WrH/SUnfdXBbSOg7DuOcBTce3buy
-        /qri8+t8D4uUWIozEg21mIuKEwEt1fyQcQMAAA==
-X-CMS-MailID: 20210322232000epcas1p28c05deccaa1120af13d28963a593a2a7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210322052206epcas1p438f15851216f07540537c5547a0a2c02
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
-        <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
-        <20210322051344.1706-3-namjae.jeon@samsung.com>
-        <20210322064712.GD1667@kadam> <20210322065011.GA2909@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On Mon, Mar 22, 2021 at 09:47:13AM +0300, Dan Carpenter wrote:
-> > On Mon, Mar 22, 2021 at 02:13:41PM +0900, Namjae Jeon wrote:
-> > > +static unsigned char
-> > > +asn1_octet_decode(struct asn1_ctx *ctx, unsigned char *ch) {
-> > > +	if (ctx->pointer >= ctx->end) {
-> > > +		ctx->error = ASN1_ERR_DEC_EMPTY;
-> > > +		return 0;
-> > > +	}
-> > > +	*ch = *(ctx->pointer)++;
-> > > +	return 1;
-> > > +}
-> >
-> >
-> > Make this bool.
-> >
-> 
-> More importantly don't add another ANS1 parser, but use the generic one in lib/asn1_decoder.c instead.
-> CIFS should also really use it.
-Okay, Let me check it, cifs also...
-Thanks!
 
+On 3/22/2021 1:26 PM, George McCollister wrote:
+> Use a temporary variable to hold the return value from
+> dsa_tag_driver_get() instead of assigning it to dst->tag_ops. Leaving
+> an error value in dst->tag_ops can result in deferencing an invalid
+> pointer when a deferred switch configuration happens later.
+> 
+> Fixes: 357f203bb3b5 ("net: dsa: keep a copy of the tagging protocol in the DSA switch tree")
+> 
+> Signed-off-by: George McCollister <george.mccollister@gmail.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
