@@ -2,112 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B741343C02
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD27343C07
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCVIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhCVIo0 (ORCPT
+        id S229846AbhCVIqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:46:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52676 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhCVIqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:44:26 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB5AC061574;
-        Mon, 22 Mar 2021 01:44:25 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id e7so18201636edu.10;
-        Mon, 22 Mar 2021 01:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1rnkMpGsCf/4BnBYAYXXRx86itQPydiaEV5BqDF9/qw=;
-        b=PSp+DW8HY4S5LbW9uyOCmE/4pZe+0jMXvcLhKhdY5ccVq9Bjkhr1tm+fEbhH+iFiPm
-         PpRvcUKmNAPztWu1lkTxTNT9einv/4U3b9wmVA5/lPvaRQVeKrUsm2DdvQZIDW1qgdax
-         ZgCNQzHhoS55dWOIb+lqnq4cVzcGZrlRgjxzFhY6mWlp6UVcBiWFTDaNVR9Td2/vm3KU
-         hnpWewO9lx2c9Uj+LvB8qJa7KzxAAXOs4tFO83cACUykDW0mcFM23T1aTeJQnzarSg24
-         VgAJpVN/rilBtJjVcJGiVAMzytegbyBRIjUTTCl4X5pt2E1aqIOhY+VQPQiJ83E8Owf3
-         I8AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1rnkMpGsCf/4BnBYAYXXRx86itQPydiaEV5BqDF9/qw=;
-        b=HZC+O7z7pcVuQbjGVrqbwzBwR9aR37eynb7oS58kCFzn4VbiQ6qn6GP+SgQGE+Ml5s
-         o2XEbJkEnmAjjZXSPxmnRt/1OBjKFcX4sDJt0b/BgIn49TXy9BE2a4pDUeWn9zS9b0+a
-         DZmOQ5HxbMDIngsEb5BnlmaQokVmE7h0r7iElT09Dcb5PiD99p8Y6BVZKvZWuogBnR/j
-         FAX3FApDYEWX19959Zlc2AZDt1JzXIzgERbjIhH7Iu1BpSO7tWvq+51cJITlGlxnwHTu
-         LrPoeIHFwRrvnhAOKohjS5Cchrzv24pxK4F6npd+5R2slRwq1BRiQCPopmoe2bpurCY8
-         B+lA==
-X-Gm-Message-State: AOAM533N00YNQl/42UUq9R/BFmyAbCfFXp5XXswmXylTeP4uGXrOsOoX
-        Rp0RVNRocsz1w1+xU0r3kYE=
-X-Google-Smtp-Source: ABdhPJz41xCpO0VkuEmg6Jb1VNkaQeMfiyhoRJqY33tLy16EFE29vissNcZ5Ec4C8iIUDArvay0YaQ==
-X-Received: by 2002:a05:6402:105a:: with SMTP id e26mr24256372edu.164.1616402664114;
-        Mon, 22 Mar 2021 01:44:24 -0700 (PDT)
-Received: from BV030612LT ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id hd8sm9111614ejc.92.2021.03.22.01.44.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 01:44:23 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 10:44:20 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] net: ethernet: actions: Add Actions Semi Owl
- Ethernet MAC driver
-Message-ID: <20210322084420.GA1503756@BV030612LT>
-References: <cover.1616368101.git.cristian.ciocaltea@gmail.com>
- <ab25bd143589d3c1894cdb3189670efa62ed1440.1616368101.git.cristian.ciocaltea@gmail.com>
- <17876c6e-4688-59e6-216f-445f91a8b884@gmail.com>
+        Mon, 22 Mar 2021 04:46:15 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616402773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Hqq4ausxSlWz7cdyqfKkvEhB7Sd6oMXfttdJKeC344o=;
+        b=ZTvqbdjozHCmrtEW8ymzK0l6X7XboaeK17UTt6S8EUvTYdyzfAMinGXLEzDeMfHuOEE/au
+        aYOvm9bwHJw7THDaP83e0eTDaDP24KARfX/cFS+++/q932yny9x7+hn4TJBTLb7cC88Tce
+        INnYaiidTEmvVjOMu2AyuQKIUYBc/Iu6+A6gwTeTlyjocmsV1ylVUcgnC5ox+DgCJtVOHq
+        FBxLa5IPRT4cNmsR9H3bkvGv0U9hbSF/fdMXDovDiUek+kKOaysk8/olvdcPj1mabeEdId
+        q2fL7EB9UiQgIf6HAJVdZY8uPwxBC/Kjf02f5azYNrUqVNbFvAmBvL86QLSTpg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616402773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Hqq4ausxSlWz7cdyqfKkvEhB7Sd6oMXfttdJKeC344o=;
+        b=QVafu7DLlP8GlOjA9mogD9f9btMcTodKb/uI2iEBDLE36l++H/RrbvVuCgJtbZDU0lra3F
+        DS7FJ4mP/js3aeCA==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: locking/mutex: Fix non debug version of mutex_lock_io_nested()
+Date:   Mon, 22 Mar 2021 09:46:13 +0100
+Message-ID: <878s6fshii.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17876c6e-4688-59e6-216f-445f91a8b884@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+If CONFIG_DEBUG_LOCK_ALLOC=n then mutex_lock_io_nested() maps to
+mutex_lock() which is clearly wrong because mutex_lock() lacks the
+io_schedule_prepare()/finish() invocations.
 
-On Sun, Mar 21, 2021 at 08:30:07PM -0700, Florian Fainelli wrote:
-> Hi Christian,
-> 
-> On 3/21/2021 4:29 PM, Cristian Ciocaltea wrote:
-> > Add new driver for the Ethernet MAC used on the Actions Semi Owl
-> > family of SoCs.
-> > 
-> > Currently this has been tested only on the Actions Semi S500 SoC
-> > variant.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> 
-> [snip]
-> 
-> Do you know the story behind this Ethernet controller? 
+Map it to mutex_lock_io().
 
-I just happened to get a board based on the S500 SoC, so I took this
-opportunity to help improving the mainline kernel support, but other
-than that I do not really know much about the hardware history.
+Fixes: f21860bac05b ("locking/mutex, sched/wait: Fix the mutex_lock_io_nested() define")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+---
+ include/linux/mutex.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> The various
-> receive/transmit descriptor definitions are 99% those defined in
-> drivers/net/ethernet/stmmicro/stmmac/descs.h for the normal descriptor.
-
-That's an interesting observation. I could only assume the vendor did
-not want to reinvent the wheel here, but I cannot say if this is a
-common design scheme or is something specific to STMicroelectronics
-only.
-
-> The register layout of the MAC looks completely different from a
-> dwmac100 or dwmac1000 however.
-
-Most probably this is Actions specific.. 
-
-> -- 
-> Florian
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -185,7 +185,7 @@ extern void mutex_lock_io(struct mutex *
+ # define mutex_lock_interruptible_nested(lock, subclass) mutex_lock_interruptible(lock)
+ # define mutex_lock_killable_nested(lock, subclass) mutex_lock_killable(lock)
+ # define mutex_lock_nest_lock(lock, nest_lock) mutex_lock(lock)
+-# define mutex_lock_io_nested(lock, subclass) mutex_lock(lock)
++# define mutex_lock_io_nested(lock, subclass) mutex_lock_io(lock)
+ #endif
+ 
+ /*
