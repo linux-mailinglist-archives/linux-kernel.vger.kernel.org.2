@@ -2,177 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A5F344750
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083C934475E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhCVOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230482AbhCVOch (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:32:37 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89CAC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:36 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id o19so19611189edc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=chWlvvM+R8+Nda51a8aii3oOtn9NRHzXgHWY/tWJNes=;
-        b=05P7zw0tsPCH0lkJ4IJWK6rQhq0iLu6STD9jyRTbwyhVhZmqY4InkSeFh37+emrYYw
-         wr+8HIFPwHEyiFrnZO4OyYvntZCN+eM8GP07HOelEq4xNS4oPiZeML8W89f1n04NUVpL
-         7Fl5hRXg6UwkyofR+jUZWed9M7WzxZVcAudOsL9B5YnDxY5qZDNYaA2ch1lxKFlhz7GT
-         i/xarewa/2rMudBLAosj/p9RNJDtM2SNArMRxkAXy4+GPBOrMsWm9HqPiqhOQ0AfFM49
-         l47SLVzefAIGGeKk5h/uFBLhZeHjdM9Jk/1qDi7SeoziApYdbNmYZKFTojxjrEl8PVJl
-         9kNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=chWlvvM+R8+Nda51a8aii3oOtn9NRHzXgHWY/tWJNes=;
-        b=hUPXodsbNvex+xXPdA3m2fk/fdxrIu/AVPwszhbeAy+aqNrd8ZiWkEPYxzLqRLnuvJ
-         1g+XR5+nfU258SP1M8wVdsT3iTdWURn6R1UVyfsFWCT4S6D/Yyce5W2/1neIZnsGe3Zo
-         UYSyp2FvO0Qy9jxAte0701zsKVQzdgzdFewp22uZWrC8xu2Q2+mt95E9CoZhSm18INw8
-         J7u9iugSH+fH+KWwZ/fgh4js1VzMt/Hh50Yy3yrocteDfTt1mu1QDfbi3VNUCm+HnGgt
-         gJ4snXhmYPnXkAwHnxeO98TlI+e4y7xIahhGt4VMHfgi1qXXk0mh+o3of8AN80m5FGbE
-         Dlog==
-X-Gm-Message-State: AOAM532Q4UAWDhxs9GTxFne5/lzfEf70MtArWsCJdj4Fqn9RLgDI3z75
-        JOIr7H1s5l8QPiihlHvrpeq08X93plRhUugHqQRhFg==
-X-Google-Smtp-Source: ABdhPJw/qkhZqdtkjOclpC5fJbhhHCbMBE7GUaaaOreGNmjMwpYaceJ/cmgop4G0BQNlEFUtPoQIUhipTBCnhOKseCY=
-X-Received: by 2002:a05:6402:4309:: with SMTP id m9mr27072328edc.25.1616423555361;
- Mon, 22 Mar 2021 07:32:35 -0700 (PDT)
+        id S231285AbhCVOdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:33:22 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:43038 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhCVOc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:32:57 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F3xmf1Jcpz9tyhT;
+        Mon, 22 Mar 2021 15:32:50 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Ddg49OyYyGfy; Mon, 22 Mar 2021 15:32:50 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F3xmd5qZNz9tyhR;
+        Mon, 22 Mar 2021 15:32:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1785C8B79F;
+        Mon, 22 Mar 2021 15:32:55 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 6Tx7BT7WTY9N; Mon, 22 Mar 2021 15:32:54 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3E4318B79C;
+        Mon, 22 Mar 2021 15:32:54 +0100 (CET)
+Subject: Re: [PATCH v11 0/6] KASAN for powerpc64 radix
+To:     Daniel Axtens <dja@axtens.net>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        kasan-dev@googlegroups.com, aneesh.kumar@linux.ibm.com,
+        bsingharora@gmail.com
+References: <20210319144058.772525-1-dja@axtens.net>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <5a3b5952-b31f-42bf-eaf4-ea24444f8df6@csgroup.eu>
+Date:   Mon, 22 Mar 2021 15:32:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210315091400.13772-1-brgl@bgdev.pl>
-In-Reply-To: <20210315091400.13772-1-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 22 Mar 2021 15:32:24 +0100
-Message-ID: <CAMRc=MfQnofWQKz9tbnTA_1M8BkN37FcxbJpK4hs0RoRebWWkw@mail.gmail.com>
-Subject: Re: [PATCH v5 00/11] gpio: implement the configfs testing module
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210319144058.772525-1-dja@axtens.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 10:14 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> This series adds a new GPIO testing module based on configfs committable items
-> and sysfs. The goal is to provide a testing driver that will be configurable
-> at runtime (won't need module reload) and easily extensible. The control over
-> the attributes is also much more fine-grained than in gpio-mockup.
->
-> This series also contains a respin of the patches I sent separately to the
-> configfs maintainers - these patches implement the concept of committable
-> items that was well defined for a long time but never actually completed.
->
-> Apart from the new driver itself, its selftests and the configfs patches, this
-> series contains some changes to the bitmap API - most importantly: it adds
-> devres managed variants of bitmap_alloc() and bitmap_zalloc().
->
-> v1 -> v2:
-> - add selftests for gpio-sim
-> - add helper programs for selftests
-> - update the configfs rename callback to work with the new API introduced in
->   v5.11
-> - fix a missing quote in the documentation
-> - use !! whenever using bits operation that are required to return 0 or 1
-> - use provided bitmap API instead of reimplementing copy or fill operations
-> - fix a deadlock in gpio_sim_direction_output()
-> - add new read-only configfs attributes for mapping of configfs items to GPIO
->   device names
-> - and address other minor issues pointed out in reviews of v1
->
-> v2 -> v3:
-> - use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
->   the bitmap with 1s
-> - drop the patch exporting device_is_bound()
-> - don't return -ENODEV from dev_nam and chip_name configfs attributes, return
->   a string indicating that the device is not available yet ('n/a')
-> - fix indentation where it makes sense
-> - don't protect IDA functions which use their own locking and where it's not
->   needed
-> - use kmemdup() instead of kzalloc() + memcpy()
-> - collected review tags
-> - minor coding style fixes
->
-> v3 -> v4:
-> - return 'none' instead of 'n/a' from dev_name and chip_name before the device
->   is registered
-> - use sysfs_emit() instead of s*printf()
-> - drop GPIO_SIM_MAX_PROP as it's only used in an array's definition where it's
->   fine to hardcode the value
->
-> v4 -> v5:
-> - export devm bitmap functions with EXPORT_SYMBOL_GPL() instead of a simple
->   EXPORT_SYMBOL()
->
-> Bartosz Golaszewski (11):
->   configfs: increase the item name length
->   configfs: use (1UL << bit) for internal flags
->   configfs: implement committable items
->   samples: configfs: add a committable group
->   lib: bitmap: remove the 'extern' keyword from function declarations
->   lib: bitmap: order includes alphabetically
->   lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
->   gpio: sim: new testing module
->   selftests: gpio: provide a helper for reading chip info
->   selftests: gpio: add a helper for reading GPIO line names
->   selftests: gpio: add test cases for gpio-sim
->
->  Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
->  Documentation/filesystems/configfs.rst        |   6 +-
->  drivers/gpio/Kconfig                          |   8 +
->  drivers/gpio/Makefile                         |   1 +
->  drivers/gpio/gpio-sim.c                       | 874 ++++++++++++++++++
->  fs/configfs/configfs_internal.h               |  22 +-
->  fs/configfs/dir.c                             | 245 ++++-
->  include/linux/bitmap.h                        | 127 +--
->  include/linux/configfs.h                      |   3 +-
->  lib/bitmap.c                                  |  42 +-
->  samples/configfs/configfs_sample.c            | 153 +++
->  tools/testing/selftests/gpio/.gitignore       |   2 +
->  tools/testing/selftests/gpio/Makefile         |   4 +-
->  tools/testing/selftests/gpio/config           |   1 +
->  tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
->  tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
->  tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
->  17 files changed, 1815 insertions(+), 86 deletions(-)
->  create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
->  create mode 100644 drivers/gpio/gpio-sim.c
->  create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
->  create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
->  create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
->
-> --
-> 2.30.1
->
 
-Hi Joel, Christoph,
 
-FYI The configfs patches from this series have been on the mailing
-list for months (long before the GPIO part) and have been re-sent
-several times. You have neither acked or opposed these changes. I
-don't want to delay the new testing driver anymore so I intend to
-apply the entire series and take it upstream through the GPIO tree by
-the end of this week.
+Le 19/03/2021 à 15:40, Daniel Axtens a écrit :
+> Building on the work of Christophe, Aneesh and Balbir, I've ported
+> KASAN to 64-bit Book3S kernels running on the Radix MMU.
+> 
+> v11 applies to next-20210317. I had hoped to have it apply to
+> powerpc/next but once again there are changes in the kasan core that
+> clash. Also, thanks to mpe for fixing a build break with KASAN off.
+> 
+> I'm not sure how best to progress this towards actually being merged
+> when it has impacts across subsystems. I'd appreciate any input. Maybe
+> the first four patches could go in via the kasan tree, that should
+> make things easier for powerpc in a future cycle?
+> 
+> v10 rebases on top of next-20210125, fixing things up to work on top
+> of the latest changes, and fixing some review comments from
+> Christophe. I have tested host and guest with 64k pages for this spin.
+> 
+> There is now only 1 failing KUnit test: kasan_global_oob - gcc puts
+> the ASAN init code in a section called '.init_array'. Powerpc64 module
+> loading code goes through and _renames_ any section beginning with
+> '.init' to begin with '_init' in order to avoid some complexities
+> around our 24-bit indirect jumps. This means it renames '.init_array'
+> to '_init_array', and the generic module loading code then fails to
+> recognise the section as a constructor and thus doesn't run it. This
+> hack dates back to 2003 and so I'm not going to try to unpick it in
+> this series. (I suspect this may have previously worked if the code
+> ended up in .ctors rather than .init_array but I don't keep my old
+> binaries around so I have no real way of checking.)
+> 
+> (The previously failing stack tests are now skipped due to more
+> accurate configuration settings.)
+> 
+> Details from v9: This is a significant reworking of the previous
+> versions. Instead of the previous approach which supported inline
+> instrumentation, this series provides only outline instrumentation.
+> 
+> To get around the problem of accessing the shadow region inside code we run
+> with translations off (in 'real mode'), we we restrict checking to when
+> translations are enabled. This is done via a new hook in the kasan core and
+> by excluding larger quantites of arch code from instrumentation. The upside
+> is that we no longer require that you be able to specify the amount of
+> physically contiguous memory on the system at compile time. Hopefully this
+> is a better trade-off. More details in patch 6.
+> 
+> kexec works. Both 64k and 4k pages work. Running as a KVM host works, but
+> nothing in arch/powerpc/kvm is instrumented. It's also potentially a bit
+> fragile - if any real mode code paths call out to instrumented code, things
+> will go boom.
+> 
 
-Best Regards,
-Bartosz Golaszewski
+In the discussion we had long time ago, 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20190806233827.16454-5-dja@axtens.net/#2321067 
+, I challenged you on why it was not possible to implement things the same way as other 
+architectures, in extenso with an early mapping.
+
+Your first answer was that too many things were done in real mode at startup. After some discussion 
+you said that finally there was not that much things at startup but the issue was KVM.
+
+Now you say that instrumentation on KVM is fully disabled.
+
+So my question is, if KVM is not a problem anymore, why not go the standard way with an early shadow 
+? Then you could also support inline instrumentation.
+
+Christophe
