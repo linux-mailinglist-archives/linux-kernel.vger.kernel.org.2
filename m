@@ -2,60 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1057C343D9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ACD343DA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCVKRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:17:52 -0400
-Received: from muru.com ([72.249.23.125]:45606 "EHLO muru.com"
+        id S229870AbhCVKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:20:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhCVKR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:17:27 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 4DC5C804C;
-        Mon, 22 Mar 2021 10:18:17 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 12:17:19 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Keerthy <j-keerthy@ti.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Tero Kristo <kristo@kernel.org>
-Subject: Re: [PATCH 2/2] clocksource/drivers/timer-ti-dm: Handle dra7 timer
- wrap errata i940
-Message-ID: <YFhurzhHvusXbvyU@atomide.com>
-References: <20210304073737.15810-1-tony@atomide.com>
- <20210304073737.15810-3-tony@atomide.com>
- <1edba5bd-5408-c545-85ea-689b4171cb5b@linaro.org>
+        id S229547AbhCVKUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:20:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A5D56197F;
+        Mon, 22 Mar 2021 10:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616408407;
+        bh=xUPvoccOHTqaMWLwk7M/QzM3U8CIOa5zv4qejCYM16A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y2iAO8QMhT5MnhRvYEnLa8p9FndyFg3/Y938bWLCYBay+4xlNQ7+CVqi4BCtSyDBY
+         lfvFRpadkBQgcW4wcV2mJVQNHGY60bpUn16Q5HE/80KY/UpzC64SVE3Nht2SdWboI3
+         TBeMNMaYTZDaE7t15vCrMLATEmEruSLnb7LDRXIlqcksFWyfi1Br5a0f/ZhejAIisg
+         YJmXQ94BTwePUTKx4yH8l3mA0tIM1hZiFV8q36fcvYPuHaAKBqvf7H3fFA5PZULID4
+         Gz8A33DR9lD/uXk087HIk2W+ho+p1SpoaE5W37MSeLVYzBLNNWcM7+7Y1h2DcChVdw
+         BeMWD31BQWFXw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] devcoredump: avoid -Wempty-body warnings
+Date:   Mon, 22 Mar 2021 11:19:53 +0100
+Message-Id: <20210322102002.28990-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1edba5bd-5408-c545-85ea-689b4171cb5b@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Arnd Bergmann <arnd@arndb.de>
 
-* Daniel Lezcano <daniel.lezcano@linaro.org> [210322 10:16]:
-> On 04/03/2021 08:37, Tony Lindgren wrote:
-> > There is a timer wrap issue on dra7 for the ARM architected timer.
-> > In a typical clock configuration the timer fails to wrap after 388 days.
-> > 
-> > To work around the issue, we need to use timer-ti-dm percpu timers instead.
-> > 
-> > Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
-> > the issue if the dtb is not configured properly.
-> > 
-> > Let's do this as a single patch so it can be backported to v5.8 and later
-> > kernels easily. 
-> 
-> Cc: <stable@vger.kernel.org> # v5.8+
-> 
-> ??
+Cleaning out the last -Wempty-body warnings found some interesting
+cases with empty macros, along with harmless warnings like this one:
 
-Yes please, that would be great.
+drivers/base/devcoredump.c: In function 'dev_coredumpm':
+drivers/base/devcoredump.c:297:56: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  297 |                 /* nothing - symlink will be missing */;
+      |                                                        ^
+drivers/base/devcoredump.c:301:56: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  301 |                 /* nothing - symlink will be missing */;
+      |                                                        ^
 
-Thanks,
+Randy tried addressing this one before, and there were multiple
+other ideas in that thread.
 
-Tony
+Pick up the one that Matthew Wilcox suggested by adding a
+WARN_ON_ONCE() and a comment.
+
+Link: https://lore.kernel.org/lkml/20200418184111.13401-8-rdunlap@infradead.org/
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/base/devcoredump.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
+index 9243468e2c99..88e0d931439e 100644
+--- a/drivers/base/devcoredump.c
++++ b/drivers/base/devcoredump.c
+@@ -292,13 +292,16 @@ void dev_coredumpm(struct device *dev, struct module *owner,
+ 	if (device_add(&devcd->devcd_dev))
+ 		goto put_device;
+ 
+-	if (sysfs_create_link(&devcd->devcd_dev.kobj, &dev->kobj,
+-			      "failing_device"))
+-		/* nothing - symlink will be missing */;
++	/*
++	 * These should normally not fail, but there is no problem
++	 * continuing without the links, so just warn instead of
++	 * failing.
++	 */
++	WARN_ON_ONCE(sysfs_create_link(&devcd->devcd_dev.kobj, &dev->kobj,
++				       "failing_device"));
+ 
+-	if (sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
+-			      "devcoredump"))
+-		/* nothing - symlink will be missing */;
++	WARN_ON_ONCE(sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
++				       "devcoredump"));
+ 
+ 	INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
+ 	schedule_delayed_work(&devcd->del_wk, DEVCD_TIMEOUT);
+-- 
+2.29.2
+
