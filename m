@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C74B3447A3
+	by mail.lfdr.de (Postfix) with ESMTP id A85DA3447A4
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhCVOoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:44:39 -0400
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:42785 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhCVOn7 (ORCPT
+        id S230121AbhCVOoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhCVOoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:43:59 -0400
-Received: by mail-vs1-f54.google.com with SMTP id b5so7583568vsl.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:43:59 -0700 (PDT)
+        Mon, 22 Mar 2021 10:44:04 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE33C061574;
+        Mon, 22 Mar 2021 07:44:03 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i26so5848779lfl.1;
+        Mon, 22 Mar 2021 07:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zI0qMXNSeXWkmjLx/rxCTs/IrQfMrB84lSC45WohEb8=;
+        b=NySQEmQrIYpVG8gZNVHI3CiB/LYRUq/j8d2JALKnJeonlnt7lcmfMUIyIATzNJcA7f
+         UB1avLvIgVeKONz/Rixb5wh6B2NKqnLLEXmt/cGnAuL5EVT5dlc8hNMXZLCAWsBiDIFm
+         MPAWxXiHDIFJwO9jEAMvsTiVQgSLnRnasdCvrJe/WKG90OqoUqPSUczbv69B1RPjnRha
+         hx6Bs/PP2zkB3qEf6BKSrALmVvYmWdlJa1aW/boTGtFHSGEkFgfRJxpaY5z+7xkrPTBY
+         vdzzVxqef/hI9b73tdbhPSu8ek0zFLYHAPjpniXsclLfX8rjB8QTfGvDnc8mxOy/13Nr
+         2YbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=774bKKZoTYGcoc/Le9OSHYdVSPTCoe+uLV/vgU44wII=;
-        b=hfuht6ij+w8zPrnk60FUEmp6Q5amvQY7ccXA4hblpwMLLsmm7lUiCtIhU/2UsAmxog
-         /zwW/uIQa//rcBYAvgAaMm9QeY0m9ja53DPoJ5MHMZWcxZCm0bsbUlSgZYZdA4eGLlMC
-         4jh7cxPXlcGIph1dCZI01uPlkxArZsGgzIrNGSYVNw6NQnDYKEtf0nYiMZgWvfhPJSNC
-         5LsYbjJxlZCl8YDsfh8HStn9tQLLfal9ziT+NcJl352TIQJJ12IGnM64EYLx5fFjL3xi
-         WPYJ9RUs7uqMtlUSz64Oxl+WnImg6ruvShb0p1+UsomTopuMJ65QCqozZnoLqxB/SY3G
-         DeHw==
-X-Gm-Message-State: AOAM530HU/PSiuJLRfv6ZfZeoaFSKhwGI0Z665Y2FMI2rgsNj7O3zAkt
-        V6YUwU+HNEZSLfVG+ZTcnsyo2dsOZHUjq79qhwyxtADNYxc=
-X-Google-Smtp-Source: ABdhPJywyJKb0gjcxY0LRKIfM1O6u4fLaHWi5CAkdj94OJ52lwNB+oaKhpjcDYuRsztD1B6JzmE825MHdCQmsIJCuus=
-X-Received: by 2002:a67:ef0e:: with SMTP id j14mr41333vsr.40.1616424238569;
- Mon, 22 Mar 2021 07:43:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zI0qMXNSeXWkmjLx/rxCTs/IrQfMrB84lSC45WohEb8=;
+        b=kcV3ZOJE8fl401K/UBpGyNnz7X9BQ3oHAzgBkioiGJhAsnJNa8H6DJ8E6eHGN3yFTZ
+         w5UYbD86jb2jvOvgc3KGPaOf382Y7R7IcBN90OCRhUHXRg24mMIUZFwuzHOy/Ms2fumi
+         fexCdf8774kDIzSZU8eNFIEgfFlzhZnvcD2JwE3edzeUYZo+HiSclOolT/q2cjMPsFHs
+         0ViOxbN2+7TYLLsFd0DKXI0Ron0lu+A0qT2ZDsI+eTdrxAHvKAx4INDQztum6ntd2ZcZ
+         zRjcjWXn5Z734mM8xHx0eo+52VYVjobTF5z9udZ62c1rJHfrSI8QeosVtiCecZLPax99
+         yBjw==
+X-Gm-Message-State: AOAM530NNxyXbCcWbAvv5HKdxiuVnzFJQFTzLA258fOTemyHY/4aeH4E
+        BhWslZbE3c3yDe08rQJLob7fmWEolys=
+X-Google-Smtp-Source: ABdhPJx2YjtSABIyhLogShpdxcRRiP93mE0TfM35++ovOTjixhAhhfSNg7EBX0ODwNki3akHFtGy8w==
+X-Received: by 2002:ac2:5449:: with SMTP id d9mr8856236lfn.172.1616424241809;
+        Mon, 22 Mar 2021 07:44:01 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-47.dynamic.spd-mgts.ru. [109.252.193.47])
+        by smtp.googlemail.com with ESMTPSA id v6sm648251lft.167.2021.03.22.07.44.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 07:44:00 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: cma: support sysfs
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com,
+        willy@infradead.org, david@redhat.com, surenb@google.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <YFS06OLp70nWWLFi@kroah.com>
+ <78883205-e6da-5bc4-dcec-b6eb921567b1@gmail.com> <YFTITw73Wga0/F0V@kroah.com>
+ <72db59eb-75dc-d1ed-7a83-17052e8f22a8@gmail.com>
+ <YFTRkBEr5T37NFpV@google.com>
+ <071c6681-f492-2c94-5686-30c30778f39d@gmail.com>
+ <YFTrpN8Qkv6ZY0Ci@google.com>
+ <007c0317-8819-a6b8-fdff-c0b5899c4f51@gmail.com>
+ <YFT1klxSFMlIXLHb@google.com>
+ <d2e24e65-9c9d-6b18-81bf-bc1c46c6e0f3@gmail.com> <YFWp0ZpO+uKC1ziR@kroah.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e82e475a-cf18-2c63-e66a-ebefa24b6c31@gmail.com>
+Date:   Mon, 22 Mar 2021 17:44:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210322141417.1062111-1-geert@linux-m68k.org>
-In-Reply-To: <20210322141417.1062111-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Mar 2021 15:43:47 +0100
-Message-ID: <CAMuHMdVvCGa6SaumOOA-hM=WDEb7WHgXTNRsTrU=BnCXGqcr2g@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.12-rc4
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Gary Guo <gary@garyguo.net>, Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        linux-um <linux-um@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YFWp0ZpO+uKC1ziR@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 3:16 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.12-rc4[1] to v5.12-rc3[3], the summaries are:
->   - build errors: +6/-2
+20.03.2021 10:52, Greg Kroah-Hartman пишет:
+..
+>> I found the Greg's original argument and not sure that it's really
+>> worthwhile to worry about the copycats since this is not a driver's code..
+>>
+>> Maybe we could just add a clarifying comment for the kobj, telling why
+>> it's okay for CMA. Greg, doesn't it sound like a good compromise to you?
+> 
+> Please no.
+> 
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b/ (all 192 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/1e28eed17697bcf343c6743f0028cc3b5dd88bf0/ (all 192 configs)
-
-> 6 error regressions:
->   + error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
->   + error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emaclite.ko] undefined!:  => N/A
->   + error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
->   + error: modpost: "devm_platform_ioremap_resource" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
->   + error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
-
-x86_64/um-allmodconfig
-
->   + error: rk3399_gru_sound.c: relocation truncated to fit: R_NDS32_WORD_9_PCREL_RELA against `.text':  => (.text+0x6a8)
-
-nds32le-gcc8/nds32-allyesconfig
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+In the case of a static objects, like CMA, this creates more bad than
+good, IMO. Even experienced developers are getting confused. In the end
+it's up to you guys to decide what to choose, either way will work.
