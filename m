@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC1E344371
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F8C3441E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhCVMue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
+        id S231675AbhCVMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:36:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231797AbhCVMlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:41:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11B11619AA;
-        Mon, 22 Mar 2021 12:39:30 +0000 (UTC)
+        id S231488AbhCVMdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:33:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D5B61990;
+        Mon, 22 Mar 2021 12:33:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416771;
-        bh=gKFKmJmz7gWC8mnLNoc9cdcCFERF3Ke9B1hJzweRw6A=;
+        s=korg; t=1616416395;
+        bh=Thj2BLnJy/B5q8Mr7PuHRR4CrJMZD4dBO5VAgv42dNU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dTq7z7kb6QVm5aC4LQfz/i7yZA0x89vYMGPRj4afOmZRuhg6kcqTf1ERrTmeGQivd
-         qxMv4dKCtYKCryTI98DjY49H3rOX0zWXEVGF5LOR8ht2RRgy6thZHRaqarjt/VJ9Ye
-         q5lsRlfatDj5zEpC/p712BGwcd4pZ9U8IQmH/aCo=
+        b=uWgUPeM782tjnX8PnrmYBzlDgoIYY17h/g2bHSbutzkYxZb4FxrWYeH5KlTxEN6li
+         lWMZ0yLAMd09P/ZzcFnPDrowZXnRV1KEl8VS/wHS4H/szNBlwn71mjAwn+jplhhzuv
+         r0S0xvdvawvQdv+ncB9jgGxKCSDHEpUVIpIbldDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Matthias Schwarzott <zzam@gentoo.org>
-Subject: [PATCH 5.10 116/157] usb-storage: Add quirk to defeat Kindles automatic unload
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.11 090/120] iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
 Date:   Mon, 22 Mar 2021 13:27:53 +0100
-Message-Id: <20210322121937.449778980@linuxfoundation.org>
+Message-Id: <20210322121932.687859713@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,93 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 546aa0e4ea6ed81b6c51baeebc4364542fa3f3a7 upstream.
+commit 6dbbbe4cfd398704b72b21c1d4a5d3807e909d60 upstream.
 
-Matthias reports that the Amazon Kindle automatically removes its
-emulated media if it doesn't receive another SCSI command within about
-one second after a SYNCHRONIZE CACHE.  It does so even when the host
-has sent a PREVENT MEDIUM REMOVAL command.  The reason for this
-behavior isn't clear, although it's not hard to make some guesses.
+There is one regmap_bulk_read() call in mpu3050_trigger_handler
+that we have caught its return value bug lack further handling.
+Check and terminate the execution flow just like the other three
+regmap_bulk_read() calls in this function.
 
-At any rate, the results can be unexpected for anyone who tries to
-access the Kindle in an unusual fashion, and in theory they can lead
-to data loss (for example, if one file is closed and synchronized
-while other files are still in the middle of being written).
-
-To avoid such problems, this patch creates a new usb-storage quirks
-flag telling the driver always to issue a REQUEST SENSE following a
-SYNCHRONIZE CACHE command, and adds an unusual_devs entry for the
-Kindle with the flag set.  This is sufficient to prevent the Kindle
-from doing its automatic unload, without interfering with proper
-operation.
-
-Another possible way to deal with this would be to increase the
-frequency of TEST UNIT READY polling that the kernel normally carries
-out for removable-media storage devices.  However that would increase
-the overall load on the system and it is not as reliable, because the
-user can override the polling interval.  Changing the driver's
-behavior is safer and has minimal overhead.
-
-CC: <stable@vger.kernel.org>
-Reported-and-tested-by: Matthias Schwarzott <zzam@gentoo.org>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20210317190654.GA497856@rowland.harvard.edu
+Fixes: 3904b28efb2c7 ("iio: gyro: Add driver for the MPU-3050 gyroscope")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210301080421.13436-1-dinghao.liu@zju.edu.cn
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/transport.c    |    7 +++++++
- drivers/usb/storage/unusual_devs.h |   12 ++++++++++++
- include/linux/usb_usual.h          |    2 ++
- 3 files changed, 21 insertions(+)
+ drivers/iio/gyro/mpu3050-core.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/storage/transport.c
-+++ b/drivers/usb/storage/transport.c
-@@ -651,6 +651,13 @@ void usb_stor_invoke_transport(struct sc
- 		need_auto_sense = 1;
- 	}
+--- a/drivers/iio/gyro/mpu3050-core.c
++++ b/drivers/iio/gyro/mpu3050-core.c
+@@ -551,6 +551,8 @@ static irqreturn_t mpu3050_trigger_handl
+ 					       MPU3050_FIFO_R,
+ 					       &fifo_values[offset],
+ 					       toread);
++			if (ret)
++				goto out_trigger_unlock;
  
-+	/* Some devices (Kindle) require another command after SYNC CACHE */
-+	if ((us->fflags & US_FL_SENSE_AFTER_SYNC) &&
-+			srb->cmnd[0] == SYNCHRONIZE_CACHE) {
-+		usb_stor_dbg(us, "-- sense after SYNC CACHE\n");
-+		need_auto_sense = 1;
-+	}
-+
- 	/*
- 	 * If we have a failure, we're going to do a REQUEST_SENSE 
- 	 * automatically.  Note that we differentiate between a command
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -2212,6 +2212,18 @@ UNUSUAL_DEV( 0x1908, 0x3335, 0x0200, 0x0
- 		US_FL_NO_READ_DISC_INFO ),
- 
- /*
-+ * Reported by Matthias Schwarzott <zzam@gentoo.org>
-+ * The Amazon Kindle treats SYNCHRONIZE CACHE as an indication that
-+ * the host may be finished with it, and automatically ejects its
-+ * emulated media unless it receives another command within one second.
-+ */
-+UNUSUAL_DEV( 0x1949, 0x0004, 0x0000, 0x9999,
-+		"Amazon",
-+		"Kindle",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_SENSE_AFTER_SYNC ),
-+
-+/*
-  * Reported by Oliver Neukum <oneukum@suse.com>
-  * This device morphes spontaneously into another device if the access
-  * pattern of Windows isn't followed. Thus writable media would be dirty
---- a/include/linux/usb_usual.h
-+++ b/include/linux/usb_usual.h
-@@ -86,6 +86,8 @@
- 		/* lies about caching, so always sync */	\
- 	US_FLAG(NO_SAME, 0x40000000)				\
- 		/* Cannot handle WRITE_SAME */			\
-+	US_FLAG(SENSE_AFTER_SYNC, 0x80000000)			\
-+		/* Do REQUEST_SENSE after SYNCHRONIZE_CACHE */	\
- 
- #define US_FLAG(name, value)	US_FL_##name = value ,
- enum { US_DO_ALL_FLAGS };
+ 			dev_dbg(mpu3050->dev,
+ 				"%04x %04x %04x %04x %04x\n",
 
 
