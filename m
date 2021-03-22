@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E7B343CBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DB3343CCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhCVJ1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhCVJ0m (ORCPT
+        id S230016AbhCVJ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:27:52 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35602 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230009AbhCVJ1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:26:42 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B14C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:26:41 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so8167633pjg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j6MQYdgV4+wrTyHhu2dfzLl8kL+VrmbYPGbkoPs/QS8=;
-        b=diQyqW5ujUZUblbt4D/7jo9LBNUMguG/HQqovdtOTW5/q+hkldXGSyg+FkHbv01hyy
-         pUndIPR3X/gJ3G/x8gM0LA/D2ePJo2eb3QW6+pkYkNCtdfxqQX7KuGb2YNsSJqf5x6sv
-         21L0K+LjYZvr9lCqfiLvM0CYvifCgk+G4PIXo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j6MQYdgV4+wrTyHhu2dfzLl8kL+VrmbYPGbkoPs/QS8=;
-        b=fEX0WLxvdEYPGrr34YinUy3Ziz8lXOOLPS0MJYI94z6aBRSlzWsg9xytHTvJincH3p
-         urzcJaqfW/8Eoc4TyMrqY6Eum6BZrHaGIjGOcTIrXB4xxL6cz4AG5ISYrI9q3d7o/4vX
-         icfxoHblak8i7bwP+sQRl2+HTInOKaww3uIdd8sb2y/ZAZPvy4/CeTfp2o4DuiNmrr3g
-         qUtwIiQw6Wa5oGjc0gCAPabPg2xdC4RyPS/EFtjrgc5DSn90YQwB+pYk7r7kZbMbLin1
-         wh+OaDuXb7zmTo+8WZKJkLp/xGc75/AZuEhzShjr+c7ogCqMzCo0EEd59l13FNYkFS+w
-         ymhg==
-X-Gm-Message-State: AOAM532o5kdky/0/PZTupWBtDLInvrPXZoJivALxilt6Lgjk6TPabGn0
-        OlXZ2V8pTB3nqd+3JOG6WaDHkQ==
-X-Google-Smtp-Source: ABdhPJy+c1RRte8KJzydWERQtlrVDreSmQJ8y8cuu6lFGFvXDdmgRUBmxUwiwQ0qSUtwvjRUqfv/1A==
-X-Received: by 2002:a17:90a:5898:: with SMTP id j24mr12508922pji.103.1616405200556;
-        Mon, 22 Mar 2021 02:26:40 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:b1b5:270:5df6:6d6e])
-        by smtp.gmail.com with ESMTPSA id v25sm13197661pfn.51.2021.03.22.02.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 02:26:40 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 18:26:33 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        senozhatsky@chromium.org, hyc.lee@gmail.com, hch@lst.de,
-        hch@infradead.org, ronniesahlberg@gmail.com,
-        aurelien.aptel@gmail.com, aaptel@suse.com, sandeen@sandeen.net,
-        dan.carpenter@oracle.com, colin.king@canonical.com,
-        rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 3/5] cifsd: add file operations
-Message-ID: <YFhiySJYbWW8bq6C@google.com>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052207epcas1p3f0a5bdfd2c994a849a67b465479d0721@epcas1p3.samsung.com>
- <20210322051344.1706-4-namjae.jeon@samsung.com>
- <YFhBHScj4QxLl/Ef@zeniv-ca.linux.org.uk>
+        Mon, 22 Mar 2021 05:27:20 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12M9C3da004899;
+        Mon, 22 Mar 2021 10:27:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=B67FY6jTfzzsdmxUxttaj3WI2MPfYdjMKlH6oXhdOxk=;
+ b=6aKtsmhqv3XiNYvKYjPVyE2W7Hemg0zHijEE9SLAWOrIJHqVQ0jGV7KWG0f+/etWmOL3
+ F6r3npRf+jZGTUXPHpJoAWGNdBtL6/LHD/THuJ6FeYPdcvU4HWH1EVS4xacuTvMY5yLf
+ TkjdQaFwyiRq2mcDh3xTTXSYdqOj2YWH/9yS+wf4Zo4XgpRBaini8C2h9bRCMQ8cFeI0
+ M6ss5fJ+plqKc3TL8ai7/WUYcbZQItUtyNVi3QTC3R3cb1ksdUanfEecWX5xOS2gR4Cf
+ kCCABctfe7m+sbz+jlb31B6duwjTfDUMkB2evrZzq16pFEuFQTBIc7mJwmW+fmCFuXIK qA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37d8tp8h8t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 10:27:08 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7DE7510002A;
+        Mon, 22 Mar 2021 10:27:06 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4C12C231DE9;
+        Mon, 22 Mar 2021 10:27:06 +0100 (CET)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar 2021 10:27:05
+ +0100
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v2 0/2] remoteproc: stm32: add support of detaching a remote processor
+Date:   Mon, 22 Mar 2021 10:26:49 +0100
+Message-ID: <20210322092651.7381-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFhBHScj4QxLl/Ef@zeniv-ca.linux.org.uk>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_03:2021-03-22,2021-03-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/22 07:02), Al Viro wrote:
-> On Mon, Mar 22, 2021 at 02:13:42PM +0900, Namjae Jeon wrote:
-> > +static struct ksmbd_file *__ksmbd_lookup_fd(struct ksmbd_file_table *ft,
-> > +					    unsigned int id)
-> > +{
-> > +	bool unclaimed = true;
-> > +	struct ksmbd_file *fp;
-> > +
-> > +	read_lock(&ft->lock);
-> > +	fp = idr_find(ft->idr, id);
-> > +	if (fp)
-> > +		fp = ksmbd_fp_get(fp);
-> > +
-> > +	if (fp && fp->f_ci) {
-> > +		read_lock(&fp->f_ci->m_lock);
-> > +		unclaimed = list_empty(&fp->node);
-> > +		read_unlock(&fp->f_ci->m_lock);
-> > +	}
-> > +	read_unlock(&ft->lock);
-> > +
-> > +	if (fp && unclaimed) {
-> > +		atomic_dec(&fp->refcount);
-> > +		return NULL;
-> > +	}
->
-> Can that atomic_dec() end up dropping the last remaining reference?
+Update from V1:
+Fix bindings issue, reported by Rob Herring.
 
-Yes, I think it should increment refcount only for "claimed" fp.
+This patchset is the stm32mp1 platform implementation of the detach operation
+added in series [1].
+
+On detach, the stm32 rproc driver sends a mailbox signal to the remote 
+processor to inform it that it will be detached. 
+
+Applied and tested on Bjorn's "for_next" branch (2b81aa17008e)
+
+[1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=447171
+
+Arnaud Pouliquen (2):
+  dt-bindings: remoteproc: stm32-rproc: add new mailbox channel for
+    detach
+  remoteproc: stm32: add capability to detach
+
+ .../bindings/remoteproc/st,stm32-rproc.yaml   | 11 +++++-
+ drivers/remoteproc/stm32_rproc.c              | 38 ++++++++++++++++++-
+ 2 files changed, 45 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
