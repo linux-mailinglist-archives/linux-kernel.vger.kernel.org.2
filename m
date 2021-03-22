@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D11A343DE6
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADB7343DE5
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhCVKai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:30:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:57074 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhCVKaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:30:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 963211063;
-        Mon, 22 Mar 2021 03:30:20 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.23.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B81A03F718;
-        Mon, 22 Mar 2021 03:30:18 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 10:29:38 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        marcan@marcan.st, maz@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCHv3 2/6] arm64: don't use GENERIC_IRQ_MULTI_HANDLER
-Message-ID: <20210322102938.GA75892@C02TD0UTHF1T.local>
-References: <20210315115629.57191-1-mark.rutland@arm.com>
- <20210315115629.57191-3-mark.rutland@arm.com>
- <20210315192803.GB154861@infradead.org>
+        id S229639AbhCVKad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhCVK37 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:29:59 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03060C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:29:57 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s17so20357497ljc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:29:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=yU+qIvBWk1kJvqdslxYHWF/zXGgpGkmRQmk9Yu+vJtA=;
+        b=r0ghP52A1I0uK8WlxBsk21Vewm9OLJClR44DhKlfZKCXyrioNxYpwjBM7kKeXabHOE
+         I5C6O4n+XNx3CuKswcA5ftZ6Hqn9T/5QhtdRjAPf+bC9FNnLWMtangd4u3Y3KJsgOYJ+
+         Kl5w5c8BhfGncbU0z6dj4xCwwOVAQa/DAFZm7BFTLXVXyWeaJ/M0aANZMFYoC/Su8TVH
+         xEDaW7XV88B1kWZozNEfHJIvq4q7m5/4Un/HibUUkkirt+2tKs6yjFvI0rGcTHErUNYA
+         jM0ZeoCcRgtQ0OsCs62/8HBCxxkwUbvKYbSAhyBb1nMQ5GMG32almrLZwu2ZxLTYuTk7
+         AlRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=yU+qIvBWk1kJvqdslxYHWF/zXGgpGkmRQmk9Yu+vJtA=;
+        b=F/+hNWYOy4ZRiQcCUJFsFzGqTXv50i57cAQcd4dyGtNp8SiliuLD0u9HrLmJa9qXn3
+         5wZ0ecOUCjlAE8WQyWe/2cQ4YXAHnLXCaQwLukRWH+SfdaqZS9rGousL6cXiAK+we8E+
+         xrvtyNOrvH93MpAX6d0Al/NyLAD1EDMaZPoO2sOPf0H2h/LHKaJSbRfRSavnfq+MqWSJ
+         M/fEfnhi9kIOBLXb0DVrdO73EQDePA+3jpcW9VC4VujBbrtFwzzGw2WW/VEJtWnl5mnR
+         1Ge5NW5FxNP6rfAfyyUpaLSzns3a78M6k9xPZkR4sbHbvY6Lq0QvC+/BG29lsOR8o2Ii
+         6NYA==
+X-Gm-Message-State: AOAM5339Ux3O3lRBNsrl6MtXr7raEU4fCqmByc14PCpW7hCZUav5E/As
+        JLLp57Gnz3ySmhzve7OuMKVKAw==
+X-Google-Smtp-Source: ABdhPJyT8YpHeks7w6/UwXq2lpPnHww4i0cs8C5c3gqi0y5gdESK5JvKAMLWbbzgWY74pBougy9feQ==
+X-Received: by 2002:a2e:9a98:: with SMTP id p24mr9379943lji.265.1616408995470;
+        Mon, 22 Mar 2021 03:29:55 -0700 (PDT)
+Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id x8sm1530380lfc.8.2021.03.22.03.29.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 03:29:55 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [RFC PATCH v2 net-next 04/16] net: dsa: sync up with bridge port's STP state when joining
+In-Reply-To: <20210318231829.3892920-5-olteanv@gmail.com>
+References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-5-olteanv@gmail.com>
+Date:   Mon, 22 Mar 2021 11:29:54 +0100
+Message-ID: <878s6fo50d.fsf@waldekranz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315192803.GB154861@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>
+> It may happen that we have the following topology:
+>
+> ip link add br0 type bridge stp_state 1
+> ip link add bond0 type bond
+> ip link set bond0 master br0
+> ip link set swp0 master bond0
+> ip link set swp1 master bond0
+>
+> STP decides that it should put bond0 into the BLOCKING state, and
+> that's that. The ports that are actively listening for the switchdev
+> port attributes emitted for the bond0 bridge port (because they are
+> offloading it) and have the honor of seeing that switchdev port
+> attribute can react to it, so we can program swp0 and swp1 into the
+> BLOCKING state.
+>
+> But if then we do:
+>
+> ip link set swp2 master bond0
+>
+> then as far as the bridge is concerned, nothing has changed: it still
+> has one bridge port. But this new bridge port will not see any STP state
+> change notification and will remain FORWARDING, which is how the
+> standalone code leaves it in.
+>
+> Add a function to the bridge which retrieves the current STP state, such
+> that drivers can synchronize to it when they may have missed switchdev
+> events.
+>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
 
-On Mon, Mar 15, 2021 at 07:28:03PM +0000, Christoph Hellwig wrote:
-> On Mon, Mar 15, 2021 at 11:56:25AM +0000, Mark Rutland wrote:
-> > From: Marc Zyngier <maz@kernel.org>
-> > 
-> > In subsequent patches we want to allow irqchip drivers to register as
-> > FIQ handlers, with a set_handle_fiq() function. To keep the IRQ/FIQ
-> > paths similar, we want arm64 to provide both set_handle_irq() and
-> > set_handle_fiq(), rather than using GENERIC_IRQ_MULTI_HANDLER for the
-> > former.
-> 
-> Having looked through the series I do not understand this rationale
-> at all.  You've only added the default_handle_irq logic, which seems
-> perfectly suitable and desirable for the generic version. 
-
-The default_handle_irq thing isn't the point of the series, that part is
-all preparatory work. I agree that probably makes sense for the generic
-code, and I'm happy to update core code with this.
-
-The big thing here is that (unlike most architectures), with arm64 a CPU
-has two interrupt pins, IRQ and FIQ, and we need separate root handlers
-for these. That's what this series aims to do, and patches 1-5 are all
-preparatory work with that appearing in patch 6.
-
-Our initial stab at this did try to add that support to core code, but
-that was more painful to deal with, since you either add abstractions to
-make this look generic that make the code more complex for bot hthe
-genreic code and arch code, or you place arch-specific assumptions in
-the core code. See Marc's eariler stab at this, where in effect we had
-to duplicate the logic in the core code so that we didn't adversely
-affect existing entry assembly on other architectures due to the way the
-function pointers were stored.
-
-> Please don't fork off generic code for no good reason.
-
-I appreciate that this runs counter to the general goal of making things
-generic wherever possible, but I do think in this case we have good
-reasons, and the duplication is better than adding single-user
-abstractions in the generic code that complicate the generic code and
-arch code.
-
-Thanks,
-Mark.
+Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
