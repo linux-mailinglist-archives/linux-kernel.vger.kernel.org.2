@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E0334438F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78BA344417
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhCVMw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:52:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34646 "EHLO mail.kernel.org"
+        id S233036AbhCVM5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232429AbhCVMmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:42:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F36161998;
-        Mon, 22 Mar 2021 12:40:27 +0000 (UTC)
+        id S231205AbhCVMqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:46:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E661961992;
+        Mon, 22 Mar 2021 12:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416827;
-        bh=J0Y3sIMV2n/Y1OuK3iAET8+O3YG9ezdpmXSxTGcPkOQ=;
+        s=korg; t=1616416963;
+        bh=Dfn8oYX9JYKM317QVmGQPZ8TTdeHgMjJZ0CjXSLw9Iw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yzesrRCN1WCQ5SVz+rfcoCXf/oyvzB3c7Jc4BJEC6ser/BrTS9JyR/P4e+b5RRVk3
-         /bxjk0HiW6DgDdkjYsUaXK+MH+EmQOJ3FvnGiP6bPZ2NacFLMef7H4CDMedPS0NKjH
-         IWqKYALMBG51vsqrK3fY1fNRP5EXnqPIJeUY+B2M=
+        b=S++hWhJneYM8H1/BnM9is7TpxW38VWxJKvxLJzDmGTPIuiCfK84nt/xLWKM4X6TK9
+         NzD8Y3dcxaDHkyYNwBQ0BZfCwkTqgJL8Mtf2pJd26ugsQShxLHKb/5MzDUNu0L5Z+P
+         FycwqVlvFmc2u9D/YY+8uI7tbe80ykn0m64BI3C8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 136/157] counter: stm32-timer-cnt: fix ceiling miss-alignment with reload register
-Date:   Mon, 22 Mar 2021 13:28:13 +0100
-Message-Id: <20210322121938.068069851@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Kobras <kobras@puzzle-itc.de>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 5.4 26/60] sunrpc: fix refcount leak for rpc auth modules
+Date:   Mon, 22 Mar 2021 13:28:14 +0100
+Message-Id: <20210322121923.249779494@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,85 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+From: Daniel Kobras <kobras@puzzle-itc.de>
 
-commit b14d72ac731753708a7c1a6b3657b9312b6f0042 upstream.
+commit f1442d6349a2e7bb7a6134791bdc26cb776c79af upstream.
 
-Ceiling value may be miss-aligned with what's actually configured into the
-ARR register. This is seen after probe as currently the ARR value is zero,
-whereas ceiling value is set to the maximum. So:
-- reading ceiling reports zero
-- in case the counter gets enabled without any prior configuration,
-  it won't count.
-- in case the function gets set by the user 1st, (priv->ceiling) is used.
+If an auth module's accept op returns SVC_CLOSE, svc_process_common()
+enters a call path that does not call svc_authorise() before leaving the
+function, and thus leaks a reference on the auth module's refcount. Hence,
+make sure calls to svc_authenticate() and svc_authorise() are paired for
+all call paths, to make sure rpc auth modules can be unloaded.
 
-Fix it by getting rid of the cached "priv->ceiling" variable. Rather use
-the ARR register value directly by using regmap read or write when needed.
-There should be no drawback on performance as priv->ceiling isn't used in
-performance critical path.
-There's also no point in writing ARR while setting function (sms), so
-it can be safely removed.
-
-Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
-Suggested-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1614793789-10346-1-git-send-email-fabrice.gasnier@foss.st.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Daniel Kobras <kobras@puzzle-itc.de>
+Fixes: 4d712ef1db05 ("svcauth_gss: Close connection when dropping an incoming message")
+Link: https://lore.kernel.org/linux-nfs/3F1B347F-B809-478F-A1E9-0BE98E22B0F0@oracle.com/T/#t
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/counter/stm32-timer-cnt.c |   11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ net/sunrpc/svc.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -31,7 +31,6 @@ struct stm32_timer_cnt {
- 	struct counter_device counter;
- 	struct regmap *regmap;
- 	struct clk *clk;
--	u32 ceiling;
- 	u32 max_arr;
- 	bool enabled;
- 	struct stm32_timer_regs bak;
-@@ -75,8 +74,10 @@ static int stm32_count_write(struct coun
- 			     const unsigned long val)
- {
- 	struct stm32_timer_cnt *const priv = counter->priv;
-+	u32 ceiling;
+--- a/net/sunrpc/svc.c
++++ b/net/sunrpc/svc.c
+@@ -1417,7 +1417,7 @@ svc_process_common(struct svc_rqst *rqst
  
--	if (val > priv->ceiling)
-+	regmap_read(priv->regmap, TIM_ARR, &ceiling);
-+	if (val > ceiling)
- 		return -EINVAL;
+  sendit:
+ 	if (svc_authorise(rqstp))
+-		goto close;
++		goto close_xprt;
+ 	return 1;		/* Caller can now send it */
  
- 	return regmap_write(priv->regmap, TIM_CNT, val);
-@@ -138,10 +139,6 @@ static int stm32_count_function_set(stru
+ release_dropit:
+@@ -1429,6 +1429,8 @@ release_dropit:
+ 	return 0;
  
- 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_CEN, 0);
+  close:
++	svc_authorise(rqstp);
++close_xprt:
+ 	if (rqstp->rq_xprt && test_bit(XPT_TEMP, &rqstp->rq_xprt->xpt_flags))
+ 		svc_close_xprt(rqstp->rq_xprt);
+ 	dprintk("svc: svc_process close\n");
+@@ -1437,7 +1439,7 @@ release_dropit:
+ err_short_len:
+ 	svc_printk(rqstp, "short len %zd, dropping request\n",
+ 			argv->iov_len);
+-	goto close;
++	goto close_xprt;
  
--	/* TIMx_ARR register shouldn't be buffered (ARPE=0) */
--	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
--	regmap_write(priv->regmap, TIM_ARR, priv->ceiling);
--
- 	regmap_update_bits(priv->regmap, TIM_SMCR, TIM_SMCR_SMS, sms);
- 
- 	/* Make sure that registers are updated */
-@@ -199,7 +196,6 @@ static ssize_t stm32_count_ceiling_write
- 	regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
- 	regmap_write(priv->regmap, TIM_ARR, ceiling);
- 
--	priv->ceiling = ceiling;
- 	return len;
- }
- 
-@@ -374,7 +370,6 @@ static int stm32_timer_cnt_probe(struct
- 
- 	priv->regmap = ddata->regmap;
- 	priv->clk = ddata->clk;
--	priv->ceiling = ddata->max_arr;
- 	priv->max_arr = ddata->max_arr;
- 
- 	priv->counter.name = dev_name(dev);
+ err_bad_rpc:
+ 	serv->sv_stats->rpcbadfmt++;
 
 
