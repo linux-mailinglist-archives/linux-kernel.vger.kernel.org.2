@@ -2,166 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD46344950
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B270A344956
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhCVPdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:33:38 -0400
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:56298 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230374AbhCVPdY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:33:24 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 62152CCCD7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:33:22 +0000 (GMT)
-Received: (qmail 30621 invoked from network); 22 Mar 2021 15:33:22 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Mar 2021 15:33:22 -0000
-Date:   Mon, 22 Mar 2021 15:33:20 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v2] sched/fair: bring back select_idle_smt, but
- differently
-Message-ID: <20210322153320.GG3697@techsingularity.net>
-References: <20210321150358.71ef52b1@imladris.surriel.com>
- <20210322110306.GE3697@techsingularity.net>
- <982f027e3a91b74cfa93e6fa91e2883d6c2f5dfd.camel@surriel.com>
+        id S230376AbhCVPeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:34:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230455AbhCVPde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:33:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D549F61994;
+        Mon, 22 Mar 2021 15:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616427214;
+        bh=KzP4v3tkS2uLc6oExhJwyYXag2zCF3wXfwH/syF61Fc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LhOmt0R/2cqLUcoiL7VNXseG8mb15jcvsaG0nbycY6FdzpJWlBAfqxzUoSXca4IHB
+         KEHTDSyTLRgQz6Ei9Rwu+scz+azSLZWrCutipQP9hL7ctcuUrMTHLHuKcnjRus/cdw
+         vdBGbHYLkv3S8Vp6OQTX+ReTeHI/i7ufu/bjJZP/mF3kWapkIYAsdX5CuNp7bOPk7l
+         j3WSpdXdrdFlI8P1r1S6R1yWbHR5OMukVGZTig3Oay+ZKYGESDCVJlEtzF62WHQElL
+         B2JLzLJka7SccULysH7unwSifpcjl0vYI0yloFRH1M7IvHUknjnPlkRaaZUKffyeGp
+         u+0T8PROuuPbg==
+Date:   Mon, 22 Mar 2021 16:33:29 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Marc Gonzalez <marc.w.gonzalez@free.fr>
+Cc:     linux-media <linux-media@vger.kernel.org>,
+        Brad Love <brad@nextdimension.cc>, Sean Young <sean@mess.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 4/4] media: dvb_frontend: disable zigzag mode if not
+ possible
+Message-ID: <20210322163329.4afe27ed@coco.lan>
+In-Reply-To: <20bb2501-8307-185e-ebec-a83488353a0b@free.fr>
+References: <cover.1592419750.git.mchehab+huawei@kernel.org>
+        <974065921c41fa0c97700196de1d921c95fafaaf.1592419750.git.mchehab+huawei@kernel.org>
+        <20bb2501-8307-185e-ebec-a83488353a0b@free.fr>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <982f027e3a91b74cfa93e6fa91e2883d6c2f5dfd.camel@surriel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:07:47AM -0400, Rik van Riel wrote:
-> > >     The flip side of this is that we see more task migrations
-> > > (about
-> > >     30% more), higher cache misses, higher memory bandwidth
-> > > utilization,
-> > >     and higher CPU use, for the same number of requests/second.
-> > >     
+Em Thu, 18 Jun 2020 11:50:54 +0200
+Marc Gonzalez <marc.w.gonzalez@free.fr> escreveu:
+
+> On 17/06/2020 20:52, Mauro Carvalho Chehab wrote:
+> 
+> > For the zigzag to work, the core needs to have a frequency
+> > shift. Without that, the zigzag code will just try re-tuning
+> > several times at the very same frequency, with seems wrong.  
+> 
+> s/with/which
+> 
+> Suggest: "the core requires a frequency shift value"
+> 
+> > So, add a warning when this happens, and fall back to the
+> > single-shot mode.
 > > 
-> > I am having difficulty with this part and whether this patch affects
-> > task
-> > migrations in particular.
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  drivers/media/dvb-core/dvb_frontend.c | 141 +++++++++++++++-----------
+> >  1 file changed, 79 insertions(+), 62 deletions(-)  
 > 
-> Sorry, I should be more clear in the changelog for the
-> next version. Task migrations continue to be high with
-> this patch applied, but memory bandwidth and L2 cache
-> misses go back down, due to better cache locality.
+> It's hard to discern in the diff what is just white-space adjustment
+> from one less tab, and what is new code that requires more scrutiny.
+> I'll try applying the patch, and then diff -w.
+> Yes, that's much better.
 > 
-
-That's completely fine and matches what I expected.
-
-> > >     This is most pronounced on a memcache type workload, which saw
-
-> > >     a consistent 1-3% increase in total CPU use on the system, due
-> > >     to those increased task migrations leading to higher L2 cache
-> > >     miss numbers, and higher memory utilization. The exclusive L3
-> > >     cache on Skylake does us no favors there.
-> > >     
-> > 
-> > Out of curiousity, what is the load generator for memcache or is this
-> > based on analysis of a production workload? I ask because mutilate
-> > (https://github.com/leverich/mutilate) is allegedly a load generator
-> > that can simulate FaceBook patterns but it is old. I would be
-> > interested
-> > in hearing if mutilate is used and if so, what parameters the load
-> > generator is given.
+> > diff --git a/drivers/media/dvb-core/dvb_frontend.c b/drivers/media/dvb-core/dvb_frontend.c
+> > index ed85dc2a9183..cb577924121e 100644
+> > --- a/drivers/media/dvb-core/dvb_frontend.c
+> > +++ b/drivers/media/dvb-core/dvb_frontend.c
+> > @@ -642,6 +642,9 @@ static void dvb_frontend_wakeup(struct dvb_frontend *fe)
+> >  	wake_up_interruptible(&fepriv->wait_queue);
+> >  }
+> >  
+> > +static u32 dvb_frontend_get_stepsize(struct dvb_frontend *fe);
+> > +static void prepare_tuning_algo_parameters(struct dvb_frontend *fe);
+> > +
+> >  static int dvb_frontend_thread(void *data)
+> >  {
+> >  	struct dvb_frontend *fe = data;
+> > @@ -696,78 +699,92 @@ static int dvb_frontend_thread(void *data)
+> >  			fepriv->reinitialise = 0;
+> >  		}
+> >  
+> > -		/* do an iteration of the tuning loop */
+> > -		if (fe->ops.get_frontend_algo) {
+> > +		if (fe->ops.get_frontend_algo)
+> >  			algo = fe->ops.get_frontend_algo(fe);
+> > -			switch (algo) {
+> > -			case DVBFE_ALGO_HW:
+> > -				dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_HW\n", __func__);
+> > +		else
+> > +			algo = DVBFE_ALGO_SW;
+> >  
+> > -				if (fepriv->state & FESTATE_RETUNE) {
+> > -					dev_dbg(fe->dvb->device, "%s: Retune requested, FESTATE_RETUNE\n", __func__);
+> > -					re_tune = true;
+> > -					fepriv->state = FESTATE_TUNED;
+> > -				} else {
+> > -					re_tune = false;
+> > -				}
+> > +		/* do an iteration of the tuning loop */
+> > +		switch (algo) {
+> > +		case DVBFE_ALGO_SW:
+> > +			prepare_tuning_algo_parameters(fe);
+> >  
+> > -				if (fe->ops.tune)
+> > -					fe->ops.tune(fe, re_tune, fepriv->tune_mode_flags, &fepriv->delay, &s);
+> > -
+> > -				if (s != fepriv->status && !(fepriv->tune_mode_flags & FE_TUNE_MODE_ONESHOT)) {
+> > -					dev_dbg(fe->dvb->device, "%s: state changed, adding current state\n", __func__);
+> > -					dvb_frontend_add_event(fe, s);
+> > -					fepriv->status = s;
+> > -				}
+> > -				break;
+> > -			case DVBFE_ALGO_SW:
+> > +			if (fepriv->max_drift) {
+> >  				dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_SW\n", __func__);
+> >  				dvb_frontend_swzigzag(fe);
+> >  				break;
+> > -			case DVBFE_ALGO_CUSTOM:
+> > -				dev_dbg(fe->dvb->device, "%s: Frontend ALGO = DVBFE_ALGO_CUSTOM, state=%d\n", __func__, fepriv->state);
+> > -				if (fepriv->state & FESTATE_RETUNE) {
+> > -					dev_dbg(fe->dvb->device, "%s: Retune requested, FESTAT_RETUNE\n", __func__);
+> > -					fepriv->state = FESTATE_TUNED;
+> > +			}
+> > +
+> > +			/*
+> > +			 * See prepare_tuning_algo_parameters():
+> > +			 *   - Some standards may not use zigzag.
+> > +			 */
+> > +			if (!dvb_frontend_get_stepsize(fe))
+> > +				dev_warn(fe->dvb->device,
+> > +					"disabling sigzag, as frontend doesn't set frequency step size\n");  
 > 
-> I had never heard of mutilate, I'll take a look at that.
+> s/sigzag/zigzag
 > 
-> I am running systems that get real production queries, but
-> at a higher average load than regular production systems.
-> Also, the same queries get replicated out to 3 systems on
-> the A and B side each, which seems to be enough to factor
-> out random noise for this workload.
+> I don't understand why you're calling dvb_frontend_get_stepsize() again?
+> prepare_tuning_algo_parameters() already tried its best to set fepriv->step_size
 > 
-
-If you do look into mutilate and can give it a distribution that
-approximates the production test then then I'd love to hear the
-configuration details so I can put it into mmtests. If that is not feasible
-or it's excessively time consuming, don't worry about it.
-
-> > > <SNIP>
-> > > +	if (!smt && cpus_share_cache(prev, target)) {
-> > > +		/* No idle core. Check if prev has an idle sibling. */
-> > > +		i = select_idle_smt(p, sd, prev);
-> > > +		if ((unsigned int)i < nr_cpumask_bits)
-> > > +			return i;
-> > > +	}
-> > > +
-> > >  	for_each_cpu_wrap(cpu, cpus, target) {
-> > >  		if (smt) {
-> > >  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> > 
-> > Please consider moving this block within the SIS_PROP && !smt check
-> > above. It could become something like
+> Why not just:
 > 
-> I'll try that right now. That is a nice cleanup, and
-> potential optimization.
+> 	if (fepriv->max_drift)
+> 		do the zigzag
+> 	else
+> 		warn that zigzag is disabled
 > 
-
-Great.
-
-> > Second, select_idle_smt() does not use the cpus mask so consider
-> > moving
-> > the cpus initialisation after select_idle_smt() has been called.
-> > Specifically this initialisation
-> > 
-> > 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> > 
-> > Alternatively, clear the bits in the SMT sibling scan to avoid
-> > checking
-> > the siblings twice. It's a tradeoff because initialising and clearing
-> > bits is not free and the cost is wasted if a sibling is free.
+> > +
+> > +			/* fall through */  
 > 
-> If we're doing that, should we also clear "target" and "prev"
-> from the mask?  After all, we might scan those twice with
-> the current code...
-> 
+> Why would you want to fall through from DVBFE_ALGO_SW to DVBFE_ALGO_HW?
+> I think this changes the behavior before the patch.
 
-If trying that, I would put that in a separate patch. At one point
-I did play with clearing prev, target and recent but hit problems.
-Initialising the mask and clearing them in select_idle_sibling() hurt
-the fast path and doing it later was not much better. IIRC, the problem
-I hit was that the cost of clearing multiple CPUs before the search was
-not offset by gains from a more efficient search.
+I double-checked this patch. What happens is that there are 3 
+types of DVB devices:
 
-If I had to guess, simply initialising cpumask after calling
-select_idle_smt() will be faster for your particular case because you
-have a reasonable expectation that prev's SMT sibling is idle when there
-are no idle cores. Checking if prev's sibling is free when there are no
-idle cores is fairly cheap in comparison to a cpumask initialisation and
-partial clearing.
+1. Devices where the Zigzag happens at the hardware level,
+   automatically (DVBFE_ALGO_HW). All they need is to call 
+   fe->ops.tune() logic once;
 
-If you have the testing capacity and time, test both.
+2. Devices that have their own hardware-assisted zigzag logic.
+   Those are handled via DVBFE_ALGO_CUSTOM logic. Those use
+   an special callback: fe->ops.search(fe).
 
-> > A third concern, although it is mild, is that the SMT scan ignores
-> > the
-> > SIS_PROP limits on the depth search. This patch may increase the scan
-> > depth as a result. It's only a mild concern as limiting the depth of
-> > a
-> > search is a magic number anyway. 
-> 
-> Agreed, placing the search inside the SIS_PROP block is
-> going to clip the search differently than placing it
-> outside, too.
-> 
-> Probably no big deal, but I'll push a kernel with
-> that change into the tests, anyway :)
-> 
+3. Devices that require the Kernel to do zigzag (DVBFE_ALGO_SW).
+   Those should set max_drift and other fields, in order to
+   setup the zigzag steps.
 
-Best plan because select_idle_sibling is always surprising :)
+In other words, a device driver which uses DVBFE_ALGO_SW should 
+provide the vars that are needed for the zigzag to work, as
+otherwise, the software zigzag would be just wasting time, as
+it won't be different than a device driver using DVBFE_ALGO_HW.
 
--- 
-Mel Gorman
-SUSE Labs
+What the above patch does is to generate a warning when
+DVBFE_ALGO_SW is used without setting the frequency shift,
+which is an uAPI/kAPI violation. On such cases, it will fallback
+to DVBFE_ALGO_HW.
+
+The main issue is that testing this patch is not trivial.
+As you pointed, it can cause regressions. So, instead of this
+patch, I'll merge one that will just print a warning. We need
+to fix the frontend drivers case by case.
+
+Thanks,
+Mauro
