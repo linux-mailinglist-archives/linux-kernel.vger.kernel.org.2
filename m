@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F08C34419E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD093441A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhCVMeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:34:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54908 "EHLO mail.kernel.org"
+        id S231219AbhCVMex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:34:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231481AbhCVMcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:32:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B936C619A0;
-        Mon, 22 Mar 2021 12:32:17 +0000 (UTC)
+        id S231486AbhCVMcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:32:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E7D261990;
+        Mon, 22 Mar 2021 12:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416338;
-        bh=v604UhnfAOcV6/lLI85/Rvp8vQDeW4X5WTHjoJMBMCE=;
+        s=korg; t=1616416340;
+        bh=yiXvwz2Os9RG+jra+SAuODCPOe8zgnvxJPTMRo3X3+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hW6NeepUnu1FuZHCmTPC3v0uZRTt3+RnHzgyRla4OxOs1x0jNZgun/9crHC2+cBkJ
-         IctciCM1h8zk9Oxd/oMB6frIiId5A7LLe7YqYokd531DaGcW8S6yYZUGwTMcPFJ8Zs
-         ri/ZV/erVcmOthym3Zdg7qSWE372XInJ3ccMsk/g=
+        b=FJPU/HP40bz1DZgUZtQ2Z5942EGsHRemjq3UwLGC0VlOHpQOfvXpbrNCB1RutjBhm
+         jetvRePssVzOsAjEfRtjnHzrCExmM7uzoaJvggd04DKwPOccdmDFgq698XrW2xfcnM
+         D3qY6HioUZUjo0aCZow6dUy11pjOeaymY7LQw6Lk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.11 067/120] scsi: mpt3sas: Do not use GFP_KERNEL in atomic context
-Date:   Mon, 22 Mar 2021 13:27:30 +0100
-Message-Id: <20210322121931.909896134@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Anderson <seanga2@gmail.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH 5.11 068/120] RISC-V: correct enum sbi_ext_rfence_fid
+Date:   Mon, 22 Mar 2021 13:27:31 +0100
+Message-Id: <20210322121931.948706417@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -40,39 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
 
-commit a50bd64616907ed126ffbdbaa06c5ce708c4a404 upstream.
+commit 6dd4879f59b0a0679ed8c3ebaff3d79f37930778 upstream.
 
-mpt3sas_get_port_by_id() can be called when a spinlock is held. Use
-GFP_ATOMIC instead of GFP_KERNEL when allocating memory.
+The constants in enum sbi_ext_rfence_fid should match the SBI
+specification. See
+https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc#78-function-listing
 
-Issue spotted by call_kern.cocci:
-./drivers/scsi/mpt3sas/mpt3sas_scsih.c:416:42-52: ERROR: function mpt3sas_get_port_by_id called on line 7125 inside lock on line 7123 but uses GFP_KERNEL
-./drivers/scsi/mpt3sas/mpt3sas_scsih.c:416:42-52: ERROR: function mpt3sas_get_port_by_id called on line 6842 inside lock on line 6839 but uses GFP_KERNEL
-./drivers/scsi/mpt3sas/mpt3sas_scsih.c:416:42-52: ERROR: function mpt3sas_get_port_by_id called on line 6854 inside lock on line 6851 but uses GFP_KERNEL
-./drivers/scsi/mpt3sas/mpt3sas_scsih.c:416:42-52: ERROR: function mpt3sas_get_port_by_id called on line 7706 inside lock on line 7702 but uses GFP_KERNEL
-./drivers/scsi/mpt3sas/mpt3sas_scsih.c:416:42-52: ERROR: function mpt3sas_get_port_by_id called on line 10260 inside lock on line 10256 but uses GFP_KERNEL
+| Function Name               | FID | EID
+| sbi_remote_fence_i          |   0 | 0x52464E43
+| sbi_remote_sfence_vma       |   1 | 0x52464E43
+| sbi_remote_sfence_vma_asid  |   2 | 0x52464E43
+| sbi_remote_hfence_gvma_vmid |   3 | 0x52464E43
+| sbi_remote_hfence_gvma      |   4 | 0x52464E43
+| sbi_remote_hfence_vvma_asid |   5 | 0x52464E43
+| sbi_remote_hfence_vvma      |   6 | 0x52464E43
 
-Link: https://lore.kernel.org/r/20210220093951.905362-1-christophe.jaillet@wanadoo.fr
-Fixes: 324c122fc0a4 ("scsi: mpt3sas: Add module parameter multipath_on_hba")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: ecbacc2a3efd ("RISC-V: Add SBI v0.2 extension definitions")
+Reported-by: Sean Anderson <seanga2@gmail.com>
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_scsih.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/include/asm/sbi.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -407,7 +407,7 @@ mpt3sas_get_port_by_id(struct MPT3SAS_AD
- 	 * And add this object to port_table_list.
- 	 */
- 	if (!ioc->multipath_on_hba) {
--		port = kzalloc(sizeof(struct hba_port), GFP_KERNEL);
-+		port = kzalloc(sizeof(struct hba_port), GFP_ATOMIC);
- 		if (!port)
- 			return NULL;
+--- a/arch/riscv/include/asm/sbi.h
++++ b/arch/riscv/include/asm/sbi.h
+@@ -51,10 +51,10 @@ enum sbi_ext_rfence_fid {
+ 	SBI_EXT_RFENCE_REMOTE_FENCE_I = 0,
+ 	SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
+ 	SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
+-	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
+ 	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA_VMID,
+-	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
++	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
+ 	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA_ASID,
++	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
+ };
  
+ enum sbi_ext_hsm_fid {
 
 
