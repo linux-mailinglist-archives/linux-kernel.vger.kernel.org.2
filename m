@@ -2,235 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7853446C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AFC3446C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhCVOJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhCVOIY (ORCPT
+        id S230198AbhCVOJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:09:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60776 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230119AbhCVOIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:08:24 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8DCC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:08:23 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lOLE6-0002AP-Q6; Mon, 22 Mar 2021 15:08:14 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lOLE6-0003Fv-4W; Mon, 22 Mar 2021 15:08:14 +0100
-Date:   Mon, 22 Mar 2021 15:08:14 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v3 3/3] iio: adc: add ADC driver for the TI TSC2046
- controller
-Message-ID: <20210322140814.kp23m4b3xx7bapag@pengutronix.de>
-References: <20210319144509.7627-1-o.rempel@pengutronix.de>
- <20210319144509.7627-4-o.rempel@pengutronix.de>
- <CAHp75Vcn=g-3NRXAEd5jEu4uxD_fHbybiDg=t9QiY80TNZuTgQ@mail.gmail.com>
- <20210322103034.bd6swzn2udpvm66o@pengutronix.de>
- <CAHp75VeemLnMJWQOHL8qrqaher2kOn1xTye1tK2OPtpSHhwOcA@mail.gmail.com>
+        Mon, 22 Mar 2021 10:08:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616422107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FVgT8cREJNNCZgsvwdo4IVCZkhVlPEV4H/HRfF+vQHs=;
+        b=CHZliN66hPXgCQNWamKXsT2D0mInGwS8uG4hgCmsTfQi5FLDKkc6QSeA1HeoyfwVbZsGef
+        lty5iL/GSY3FJOovgyCFuyKJi3E9xoKDQ+Pchl8Z0C0wm3gw3MyXZ9g6umWnZ1RG9mNorM
+        7MhIcuURK9RTjjX61xkl+oWWx/zWMik=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-513-eK7cFVmaMW6mdIcgfIuOyA-1; Mon, 22 Mar 2021 10:08:26 -0400
+X-MC-Unique: eK7cFVmaMW6mdIcgfIuOyA-1
+Received: by mail-qt1-f199.google.com with SMTP id t5so31879854qti.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:08:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=FVgT8cREJNNCZgsvwdo4IVCZkhVlPEV4H/HRfF+vQHs=;
+        b=hEjGbwVMCcjigjuStj1nP/eptQVk0gZfvxbBmcY7chrYI3O86jcIhrgOJwoYoLV4zs
+         QluOfF9U18IBKnI749hN5sKJMVajjCQ7yJk0aIImRWHQ/RVXhmMYQDqkgRvBTCyp4ae5
+         q+xcwfxK9jczSPCI++PCvLem6NsJWHjz48iahxljJ9/80BJAW/woXga7M2SGfz56kz6/
+         +SJ3fHg8LWHYDTsmDvtjioLcZyCo8gsuBeHmz0Xmo7gXuowyoeq6y4LyW9hJ97PILlJw
+         Siyhs3XXFRZGcEdwW+Ulf9uTez1BMNSUDmWmuDX6Lf5vSx7+rkYFHvbN+aecAV/SAEWG
+         yheQ==
+X-Gm-Message-State: AOAM532XiXVmclzHFG4XShaKaBzLn0pziuYenBz0g04z6u0/VcCuD0ES
+        yDXSNnYNfcOmjUyDLbC7GsvpgILWhapCN391bKnbUeaX9l/i4KTXK/vP637SYFEiyDXRxR/VZqj
+        d2tqUttqZDMiRRZ1QHjB9vs9j
+X-Received: by 2002:a37:a74e:: with SMTP id q75mr170967qke.165.1616422105589;
+        Mon, 22 Mar 2021 07:08:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrUVuJJE09nrcOBM4NdtiV05nyirk+Tg8pFgeTN9VypOp5y986vzL315hHiWdFn7UBNMA7CQ==
+X-Received: by 2002:a37:a74e:: with SMTP id q75mr170943qke.165.1616422105378;
+        Mon, 22 Mar 2021 07:08:25 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id z8sm9014413qtn.12.2021.03.22.07.08.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 07:08:25 -0700 (PDT)
+Subject: Re: [PATCH] amdgpu: avoid incorrect %hu format string
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Chen Li <chenli@uniontech.com>,
+        Sonny Jiang <sonny.jiang@amd.com>,
+        xinhui pan <xinhui.pan@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210322115458.3961825-1-arnd@kernel.org>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <eefe9a55-4212-4d51-6add-9eb9ead0b5ed@redhat.com>
+Date:   Mon, 22 Mar 2021 07:08:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <20210322115458.3961825-1-arnd@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeemLnMJWQOHL8qrqaher2kOn1xTye1tK2OPtpSHhwOcA@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:53:44 up 110 days,  4:00, 42 users,  load average: 0.11, 0.05,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:41:22PM +0200, Andy Shevchenko wrote:
-> On Mon, Mar 22, 2021 at 12:30 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> > On Fri, Mar 19, 2021 at 07:42:41PM +0200, Andy Shevchenko wrote:
-> > > On Fri, Mar 19, 2021 at 4:45 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> 
-> ...
-> 
-> > > > +static u16 tsc2046_adc_get_value(struct tsc2046_adc_atom *buf)
-> > > > +{
-> > > > +       /* Last 3 bits on the wire are empty */
-> > >
-> > > Last?! You meant Least significant?
-> >
-> > ACK. LSB
-> >
-> > > Also, don't we lose precision if a new compatible chip appears that
-> > > does fill those bits?
-> >
-> > ACK. All of controllers supported by this driver:
-> > drivers/input/touchscreen/ads7846.c:
-> > - ti,tsc2046
-> > - ti,ads7843
-> > - ti,ads7845
-> > - ti,ads7846
-> > - ti,ads7873 (hm, there is no ti,ads7873, is it actually analog devices AD7873?)
-> >
-> > support 8- or 12-bit resolution. Only 12 bit mode is supported by this
-> > driver. It is possible that some one can produce a resistive touchscreen
-> > controller based on X > 12bit ADC, but this will probably not increase precision
-> > of this construction (there is a lot of noise any ways...). With other
-> > words, it is possible, but not probably that some one will really do it.
-> >
-> > > Perhaps define the constant and put a comment why it's like this.
-> 
-> Okay, and what happens here is something like cutting LSBs, but it
-> sounds strange to me. If you get 16 bit values, the MSBs should not be
-> used?
-> 
-> So, a good comment is required to explain the logic behind.
-> 
-> > > > +       return get_unaligned_be16(&buf->data) >> 3;
-> > > > +}
-> 
-> ...
-> 
-> > > > +static size_t tsc2046_adc_group_set_layout(struct tsc2046_adc_priv *priv,
-> > > > +                                          unsigned int group,
-> > > > +                                          unsigned int ch_idx)
-> > > > +{
-> > > > +       struct tsc2046_adc_ch_cfg *ch = &priv->ch_cfg[ch_idx];
-> > > > +       struct tsc2046_adc_group_layout *prev, *cur;
-> > > > +       unsigned int max_count, count_skip;
-> > > > +       unsigned int offset = 0;
-> > > > +
-> > > > +       if (group) {
-> > > > +               prev = &priv->l[group - 1];
-> > > > +               offset = prev->offset + prev->count;
-> > > > +       }
-> > >
-> > > I guess you may easily refactor this by supplying a pointer to the
-> > > current layout + current size.
-> >
-> > Sure, but this will not make code more readable and it will not affect
-> > the performance. Are there any other reason to do it? Just to make one
-> > line instead of two?
-> 
-> It's still N - 1 unneeded checks and code is slightly harder to read.
 
-fixed
+On 3/22/21 4:54 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang points out that the %hu format string does not match the type
+> of the variables here:
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:263:7: warning: format specifies type 'unsigned short' but the argument has type 'unsigned int' [-Wformat]
+>                                   version_major, version_minor);
+>                                   ^~~~~~~~~~~~~
+> include/drm/drm_print.h:498:19: note: expanded from macro 'DRM_ERROR'
+>         __drm_err(fmt, ##__VA_ARGS__)
+>                   ~~~    ^~~~~~~~~~~
+>
+> Change it to a regular %u, the same way a previous patch did for
+> another instance of the same warning.
 
-> > > > +       cur = &priv->l[group];
-> > >
-> > > Also, can you move it down closer to the (single?) caller.
-> > >
-> > > > +}
-> 
-> ...
-> 
-> > > > +               dev_err_ratelimited(dev, "SPI transfer filed: %pe\n",
-> > > > +                                   ERR_PTR(ret));
-> > >
-> > > One line?
-> >
-> > it will exceed the 80 char rule
-> 
-> It's fine here.
+It would be good to explicitly call out the change.
 
-fixed
+ex/ do you mean mine ?
 
-> ...
-> 
-> > > > +       spin_lock_irqsave(&priv->trig_lock, flags);
-> > > > +
-> > > > +       disable_irq_nosync(priv->spi->irq);
-> > >
-> > > > +       atomic_inc(&priv->trig_more_count);
-> > >
-> > > You already have a spin lock, do you need to use the atomic API?
-> >
-> > I can only pass review comment from my other driver:
-> > Memory locations that are concurrently accessed needs to be
-> > marked as such, otherwise the compiler is allowed to funky stuff:
-> > https://lore.kernel.org/lkml/CAGzjT4ez+gWr3BFQsEr-wma+vs6UZNJ+mRARx_BWoAKEJSsN=w@mail.gmail.com/
-> >
-> > And here is one more link:
-> > https://lwn.net/Articles/793253/#How%20Real%20Is%20All%20This?
-> >
-> > Starting with commit 62e8a3258bda atomic API is using READ/WRITE_ONCE,
-> > so I assume, I do nothing wrong by using it. Correct?
-> 
-> Hmm... What I don't understand here is why you need a second level of
-> atomicity. spin lock already makes this access atomic (at least I have
-> checked couple of places and in both the variable is being accessed
-> under spin lock).
+0b437e64e0af ("drm/amdgpu: remove h from printk format specifier")
 
-fixed
+This was for a different reason.
 
-> > > > +       iio_trigger_poll(priv->trig);
-> > > > +
-> > > > +       spin_unlock_irqrestore(&priv->trig_lock, flags);
-> 
-> ...
-> 
-> > > > +       name = devm_kasprintf(dev, GFP_KERNEL, "%s-%s",
-> > > > +                             TI_TSC2046_NAME, dev_name(dev));
-> > >
-> > > No NULL check?
-> > > Should be added or justified.
-> >
-> > name is set not optionally  by the spi_add_device()->spi_dev_set_name()
-> 
-> I didn't get it.
-> You allocate memory and haven't checked against NULL. Why?
+imo, you do not need to include what another patch did.
 
-> If the name field is optional and having it's NULL is okay (non-fatal
-> error), put a comment.
+so you could also just remove this bit from the commit log.
 
-ah... I missed the point. You was talking about name == NULL, i was
-thinking about dev_name(dev) == NULL.
 
-fixed
+The change itself looks good.
 
-> ...
-> 
-> > > > +       trig->dev.parent = indio_dev->dev.parent;
-> > >
-> > > Don't we have this done by core (some recent patches in upstream)?
-> >
-> > can you please point to the code which is doing it?
-> 
-> I believe it's this one:
-> 
-> commit 970108185a0be29d1dbb25202d8c12d798e1c3a5
-> Author: Gwendal Grignou <gwendal@chromium.org>
-> Date:   Tue Mar 9 11:36:13 2021 -0800
-> 
->    iio: set default trig->dev.parent
+Reviewed-by: Tom Rix <trix@redhat.com>
 
-ok, found it on iio/testing and rebased against it..
+>
+> Fixes: 0b437e64e0af ("drm/amdgpu: remove h from printk format specifier")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+> index e2ed4689118a..c6dbc0801604 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
+> @@ -259,7 +259,7 @@ int amdgpu_uvd_sw_init(struct amdgpu_device *adev)
+>  		if ((adev->asic_type == CHIP_POLARIS10 ||
+>  		     adev->asic_type == CHIP_POLARIS11) &&
+>  		    (adev->uvd.fw_version < FW_1_66_16))
+> -			DRM_ERROR("POLARIS10/11 UVD firmware version %hu.%hu is too old.\n",
+> +			DRM_ERROR("POLARIS10/11 UVD firmware version %u.%u is too old.\n",
+>  				  version_major, version_minor);
+>  	} else {
+>  		unsigned int enc_major, enc_minor, dec_minor;
 
-fixed
-
-Thank you,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
