@@ -2,158 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527E2343BDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC241343BDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCVIfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        id S229840AbhCVIfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCVIfg (ORCPT
+        with ESMTP id S229771AbhCVIex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:35:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87E0C061574;
-        Mon, 22 Mar 2021 01:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QoevHkEyhDjxsOKj6fJ4R4SgOfRQylQoV4S5iGinLZU=; b=D1nWnujJVHJ4MgUjzDSpImYZAf
-        /0UT4qq4l0rO6u1vGolh/id2xfThwNNw5HdMWaZxUGPcTXKXqO1LDhF39j5rCORszzvOoltjdYdzi
-        vdHViRlfbrRePQfgaOZCC0sekOtwgXBHtiMrNLHVCi1LdnOCUS1ybjRcqei7y1qQAOoLfxKMsYwW1
-        GtrmEnJdbEh1Z0+7iF0yKKJTBLQh+IxCENArr9jqTOQebxFH9r5aSDx0/1efNNz0tdVOs54ENgh3q
-        eDpsL/6Vn0RAcDq9U/SJnruG64G1sNujBf3bVTc6pEqv/tudiNTP1WTpcmuoBn5tUTKLWmOxk6VRB
-        bCblmvMg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOG1N-008DOR-LV; Mon, 22 Mar 2021 08:34:55 +0000
-Date:   Mon, 22 Mar 2021 08:34:45 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        senozhatsky@chromium.org, hyc.lee@gmail.com,
-        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
-        colin.king@canonical.com, rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 2/5] cifsd: add server-side procedures for SMB3
-Message-ID: <20210322083445.GJ1719932@casper.infradead.org>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
- <20210322051344.1706-3-namjae.jeon@samsung.com>
+        Mon, 22 Mar 2021 04:34:53 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C91C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:34:52 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id hq27so19787022ejc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BBF8DIkoQQBUBd0KpgS6B4Sfzebh5T00LVb2n/RkXjU=;
+        b=DG3sytqOl9JAsShSSpGYHMmpeKDr/QvaT+FUc4L/et+jBGldZEkDRV5MmGFeOJUIRk
+         XVEuW1Ms1HGUAi1eUXKCEOAKb++Xth1RGm2ZPdTn7GKRz8YIVbVkzjbxZag55s3O+Wht
+         524nBj05bnQGW5VEgMfvtHVNwKJnbQNiEpSNM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BBF8DIkoQQBUBd0KpgS6B4Sfzebh5T00LVb2n/RkXjU=;
+        b=uUHsxGCU/Y4OMDqsi6eWMTj1MK+vcbU14LLVTZuv1LZNJB7PjC7Q1CHxy94l9urvw2
+         FyC43K4dMc4WWk0iHwqHesMJIHYWovMxoNj4ht337afgvcqBkjciEdtWI+Q6HrzVkleV
+         LKkWByHO+he2dJerYlaRyygnRmZEbC8EoYYnlUWQdmb7UrOZIYLl9TSC2MAkW/19jKJK
+         7B2LWvYstDsjuqshuAF5qWUP5JofqNMo2uj2v3BZexufhisr9xXcy1HEXlpZIGrL+5kN
+         eFBmK5LT+fOQqQKynJnutJqiHU36oORR0MSXM612IDrSz50IfIe14xvbJSKH3OcFFwEd
+         zcmA==
+X-Gm-Message-State: AOAM533FbsDvKqMEyKhYgynZGh5o5K6r5o03qQ2uctN2utzv3cPn4Y9t
+        VGEdhWGaPnIuhZRZ2KddHyVgSQ==
+X-Google-Smtp-Source: ABdhPJwyTEl4Fnp8uqqgeSJXZsxHuLMe2rbTMi/8LPgpGvZiqZBjIMfQj0VdA7vl6TX3TRGENrg4xw==
+X-Received: by 2002:a17:906:3b41:: with SMTP id h1mr17454517ejf.506.1616402091330;
+        Mon, 22 Mar 2021 01:34:51 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id u13sm9444384ejn.59.2021.03.22.01.34.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 01:34:50 -0700 (PDT)
+Subject: Re: [PATCH 06/12] tools: sync small_const_nbits() macro with the
+ kernel
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210321215457.588554-1-yury.norov@gmail.com>
+ <20210321215457.588554-7-yury.norov@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <ef470d38-073d-2c6c-f9f8-909689a52212@rasmusvillemoes.dk>
+Date:   Mon, 22 Mar 2021 09:34:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322051344.1706-3-namjae.jeon@samsung.com>
+In-Reply-To: <20210321215457.588554-7-yury.norov@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:13:41PM +0900, Namjae Jeon wrote:
-> +++ b/fs/cifsd/mgmt/ksmbd_ida.c
-> @@ -0,0 +1,69 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + *   Copyright (C) 2018 Samsung Electronics Co., Ltd.
-> + */
-> +
-> +#include "ksmbd_ida.h"
-> +
-> +struct ksmbd_ida *ksmbd_ida_alloc(void)
-> +{
-> +	struct ksmbd_ida *ida;
-> +
-> +	ida = kmalloc(sizeof(struct ksmbd_ida), GFP_KERNEL);
-> +	if (!ida)
-> +		return NULL;
-> +
-> +	ida_init(&ida->map);
-> +	return ida;
-> +}
+On 21/03/2021 22.54, Yury Norov wrote:
+> Move the macro from tools/include/asm-generic/bitsperlong.h
+> to tools/include/linux/bitmap.h
 
-... why?  Everywhere that you call ksmbd_ida_alloc(), you would
-be better off just embedding the struct ida into the struct that
-currently has a pointer to it.  Or declaring it statically.  Then
-you can even initialise it statically using DEFINE_IDA() and
-eliminate the initialiser functions.
+The patch does it the other way around :)
 
-I'd remove the ksmbd_ida abstraction, although I like this wrapper:
-
-> +int ksmbd_acquire_smb2_tid(struct ksmbd_ida *ida)
-> +{
-> +	int id;
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  tools/include/asm-generic/bitsperlong.h | 3 +++
+>  tools/include/linux/bitmap.h            | 3 ---
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/include/asm-generic/bitsperlong.h b/tools/include/asm-generic/bitsperlong.h
+> index 8f2283052333..f530da2506cc 100644
+> --- a/tools/include/asm-generic/bitsperlong.h
+> +++ b/tools/include/asm-generic/bitsperlong.h
+> @@ -18,4 +18,7 @@
+>  #define BITS_PER_LONG_LONG 64
+>  #endif
+>  
+> +#define small_const_nbits(nbits) \
+> +	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG)
 > +
-> +	do {
-> +		id = __acquire_id(ida, 0, 0);
-> +	} while (id == 0xFFFF);
-> +
-> +	return id;
 
-Very clever, given your constraint.  I might do it as:
+Well, the movement is consistent with the kernel, but shouldn't the
+definition also be updated to exclude constant-zero-size? It's not that
+they exist or ever have, in tools/ or kernel proper, but just if some
+day some oddball CONFIG_ combination ends up creating such a beast, I'd
+rather not have code like
 
-	int id = ida_alloc(ida, GFP_KERNEL);
-	if (id == 0xffff)
-		id = ida_alloc(ida, GFP_KERNEL);
-	return id;
++	if (small_const_nbits(size)) {
++		unsigned long val = *addr & GENMASK(size - 1, 0);
 
-Although ...
+blow up at run-time.
 
-> +	tree_conn = ksmbd_alloc(sizeof(struct ksmbd_tree_connect));
-> +	if (!tree_conn) {
-> +		status.ret = -ENOMEM;
-> +		goto out_error;
-> +	}
-> +
-> +	tree_conn->id = ksmbd_acquire_tree_conn_id(sess);
-> +	if (tree_conn->id < 0) {
-> +		status.ret = -EINVAL;
-> +		goto out_error;
-> +	}
-> +
-> +	peer_addr = KSMBD_TCP_PEER_SOCKADDR(sess->conn);
-> +	resp = ksmbd_ipc_tree_connect_request(sess,
-> +					      sc,
-> +					      tree_conn,
-> +					      peer_addr);
-> +	if (!resp) {
-> +		status.ret = -EINVAL;
-> +		goto out_error;
-> +	}
-> +
-> +	status.ret = resp->status;
-> +	if (status.ret != KSMBD_TREE_CONN_STATUS_OK)
-> +		goto out_error;
-> +
-> +	tree_conn->flags = resp->connection_flags;
-> +	tree_conn->user = sess->user;
-> +	tree_conn->share_conf = sc;
-> +	status.tree_conn = tree_conn;
-> +
-> +	list_add(&tree_conn->list, &sess->tree_conn_list);
+Other than that (and the above commit log typo), consider the series
 
-This is basically the only function which calls that, and this is a relatively
-common anti-pattern when using the IDA -- you've allocated a unique ID,
-but then you stuff the object in a list and ...
-
-> +struct ksmbd_tree_connect *ksmbd_tree_conn_lookup(struct ksmbd_session *sess,
-> +						  unsigned int id)
-> +{
-> +	struct ksmbd_tree_connect *tree_conn;
-> +	struct list_head *tmp;
-> +
-> +	list_for_each(tmp, &sess->tree_conn_list) {
-> +		tree_conn = list_entry(tmp, struct ksmbd_tree_connect, list);
-> +		if (tree_conn->id == id)
-> +			return tree_conn;
-> +	}
-
-... walk the linked list looking for an ID match.  You'd be much better
-off using an allocating XArray:
-https://www.kernel.org/doc/html/latest/core-api/xarray.html
-
-Then you could lookup tree connections in O(log(n)) time instead of
-O(n) time.
+Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
