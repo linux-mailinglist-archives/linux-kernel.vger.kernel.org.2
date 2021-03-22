@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3730344FD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFA7344FD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhCVTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
+        id S232141AbhCVTYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhCVTXR (ORCPT
+        with ESMTP id S232000AbhCVTXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:23:17 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75844C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:23:16 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id u21so5198019ejo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:23:16 -0700 (PDT)
+        Mon, 22 Mar 2021 15:23:47 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E343CC061574;
+        Mon, 22 Mar 2021 12:23:46 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id g15so11729980pfq.3;
+        Mon, 22 Mar 2021 12:23:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DX81xpKR3NVOCyK3ejwbrnW+v8s68jGVqeWwVOT6Amo=;
-        b=l5t0AGwxS1yfpVVoibj20aQMIcGvSdZuLwxDieUjzW4trn6U6txHei1HKNBTfVPI1c
-         oun4GVakBxDjSEIu4y2qge3Vk9c87gY8aPGDOAUczeuKzfkMYIzA+BmW92PoCNXBhcbd
-         AQOW95FYeEvnxCsb852kHor4PVhaKkpyuO2DiXwP/ZTLO3paU5KiYF/oOYvJbxzvWzX/
-         qy+6M0sZ/EYk35nvCoGp93xP8hekRsRHGpzhS9XK5kMkduubPpeu8bbmyPwB0fNpe+ob
-         fOT6ZVzwfyCImD9yQYXz1vqMy9OQO8WZy2Nb9N4QrsNNO3npl/7pnH6qhT1lPfDdRgEH
-         d39g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9AAvPymr4tpxLm42SP+faWQoSpFLg5bCR39CG7uClTU=;
+        b=dhYnWef16fQzTrRovO69AmJc57Lqox4zXfAJOf8aXF8xOscoSSadbX/Vp7qub9XbZA
+         XqukvkGCm5RZ9agcs9Ph3voWXyms00ChFJOz8h7DxbUNlvbBmnn6gZW8BVDu4RuQQR/H
+         P4hamiOtb/N31RqpYC5s1AE0AK5Jp70i0VZCd7Vco2ZhXBobu9+IExElICUBAIPVfiSi
+         Bpm7lm7yrsbzhfQjILDK+tciuQQ0LzzPJW70SJyxohMYCA1uKM64pcxbxB7EWaF9UdQh
+         2jkpNGj3EAaSPvP2PtaG5DKjNg5Qrt0bKp0o/5TbIFDo35rWKM5yzMQuH4QDI9R9LqRi
+         9TFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DX81xpKR3NVOCyK3ejwbrnW+v8s68jGVqeWwVOT6Amo=;
-        b=rhESbISGB7g/qEZy4lNLa0XyW9s1w18+KwlIL1avu9oBNwIk/173GcfIlN7Mx7zHN2
-         glHTKjhrMPKScYNmDN4KtsLjoKjnNte+xNOSzHZaI47lKwx4HEFTbShFaEJn7zGEivjG
-         tHs4E3zTzU5ROoByudYPiMrqzh6jzoVzyzd97SqCKnvLZk/+GUHDqstGJulV/vjOV4OI
-         QnCf8W2NCj/2y8/mmP4tJGbBS2WwgEtOCr7VrFYMO5SyyIzFGqPC5hBGKuy62/6wdl6e
-         4RaBX6V0s/hVf8V6TAoypWp5znuHHRaUbVzC+Gsi9eP7g0pD9xCIgdtnez6IzkwRZcoc
-         qEHQ==
-X-Gm-Message-State: AOAM532ljkmUmInDFOpzHIm243rndvqk8yZE/RiOfrgFZpB2RuR/zVca
-        BopvU6ExkyzYFJhn6TVuSEqgTA==
-X-Google-Smtp-Source: ABdhPJyplTOh79M3+bB6N3SgTZlTu+XSpnp6lzlPNLrGB2iHs6PVOXKuYGyBm9zQpxMkTw5huPIf2A==
-X-Received: by 2002:a17:906:2759:: with SMTP id a25mr1373890ejd.122.1616440995158;
-        Mon, 22 Mar 2021 12:23:15 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id u59sm12384865edc.73.2021.03.22.12.23.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 12:23:14 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 19:23:13 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@elte.hu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kgdb: fix gcc-11 warning on indentation
-Message-ID: <20210322192313.fw46yficc7mfjinu@maple.lan>
-References: <20210322164308.827846-1-arnd@kernel.org>
- <CAD=FV=WY6yxx+vkH+UU4VYei29xBftdnyRBE1OpEELmJ-kLfFg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9AAvPymr4tpxLm42SP+faWQoSpFLg5bCR39CG7uClTU=;
+        b=V3xI+N2ME+5rHcfAhxQ/SgqKe+l1lxPe87IAThVQ6MDRNGNI5ZWKJkpENke8S338KW
+         qzRq6YZ3s6QccDpUJtBFnZKbQG8WRre4UC3Sj2oWBbZStUhdMwvxxh4ZzOIOpWWAcXie
+         f6ESGDOiZUuIA+FfgSsWl+9O1VyKdMU+m5aeuEKc/o4SioT+HrUvXqh1M0NPDX0gn0ES
+         QeAai5Z2dBB87RzdDeClvrG6viMy8QzgoGHRP0YtJlKTCk8lTRhsP4MDSrbE+FuY+n4C
+         GEInVqvTt1PffjUJg3KkuRZyarQf+vGAxr3uVENs9Rerf5ZiWB8Z5qVXQiP37jylxYIF
+         kP4g==
+X-Gm-Message-State: AOAM5311GFonPnvtD0ClvLQ2yrDHJfPCQupDMisFtwqUiiU+r2VQfrEU
+        DG75DazdVhi0+EIBm82Hu/bmCqtqON8=
+X-Google-Smtp-Source: ABdhPJzkFm0eGT/pbtjmM4D4ugGoya1rao2bnk8amAOwEc2h3j6nGtCvkgYCmAZgLiXQ9pOgkWdp3w==
+X-Received: by 2002:a63:7d4:: with SMTP id 203mr920447pgh.423.1616441025904;
+        Mon, 22 Mar 2021 12:23:45 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gt22sm201455pjb.35.2021.03.22.12.23.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 12:23:45 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/25] 4.9.263-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210322121920.399826335@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <15ee2cf7-9d8c-f043-859e-f9b979b5c084@gmail.com>
+Date:   Mon, 22 Mar 2021 12:23:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=WY6yxx+vkH+UU4VYei29xBftdnyRBE1OpEELmJ-kLfFg@mail.gmail.com>
+In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:04:57AM -0700, Doug Anderson wrote:
-> > +       if (verbose)                    \
-> > +               printk(KERN_INFO a);    \
-> > +} while (0)
-> > +#define v2printk(a...) do {            \
-> > +       if (verbose > 1)                \
-> > +               printk(KERN_INFO a);    \
-> > +       touch_nmi_watchdog();           \
+
+
+On 3/22/2021 5:28 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.263 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This touch_nmi_watchdog() is pretty wonky. I guess maybe the
-> assumption is that the "verbose level 2" prints are so chatty that the
-> printing might prevent us from touching the NMI watchdog in the way
-> that we normally do and thus we need an extra one here?
+> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
+> Anything received after that time might be too late.
 > 
-> ...but, in that case, I think the old code was _wrong_ and that the
-> intention was that the touch_nmi_watchdog() should only be if "verose
-> > 1" as the indentation implied. There doesn't feel like a reason to
-> touch the watchdog if we're not doing anything slow.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.263-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-I'm not entirely sure I'd like to second guess the intent here. This
-macro has been there since this file was introduced but several callers
-have been added since then. We have to guess their intent too!
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 
-So, whilst I think you are probably right, v2printk() does appears in
-places such as the single step test loop which makes it pretty
-difficult to decide by inspection whether or not touching the watchdog
-is useful.
-
-It's something that could be further examined... but I'd be a little
-reluctant to combine it directly with a whitespace change!
-
-
-Daniel.
+Still seeing the futex warning reported before, I will try to zero in on
+what we may be missing this week.
+--
+Florian
