@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91952344FDE
+	by mail.lfdr.de (Postfix) with ESMTP id 1E226344FDC
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhCVT0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:26:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29004 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231676AbhCVT0d (ORCPT
+        id S231982AbhCVT0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:26:53 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:40644 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhCVT0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:26:33 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MJ3bjF061866;
-        Mon, 22 Mar 2021 15:26:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ZXzOB4AtbWH6ok2w4tbefXFbVHdFar+z3GCtgxuZ1R4=;
- b=tGgzK/ibORyg3Hbr6sj6NsfK3REKIDPR/W6JmfJOj4H/FCMO7W8HqMVdBGxZClQX/spz
- 5YcZd3NQm34+AnB3GheG/fe/oJ7RjMKarabESwym/v5bKh1wWRUT875+a2ttRxa1TiU6
- Rl8bmve3qCgoLguXagsIAHMmhJNYcRLiGsb6UNeWNXUBRHHzUjEvjKEEIk/oC8GqVmOh
- Dh/NO6ztWW++3HGsFIUpKKhsehs/4tsbOohjEGqYDu2ydnX3msyfCk8UNwpcVt+u4ExM
- w7uUw1xhgxaUCTmgWGoT+Lj7ZQD1TwbIS4khPYaclR0ss+5eAM+f6jkrY2R44qwM2yeS mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37dxc9t8nv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 15:26:18 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12MJ3vSd062996;
-        Mon, 22 Mar 2021 15:26:17 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37dxc9t8nb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 15:26:17 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12MJNRlo019308;
-        Mon, 22 Mar 2021 19:26:16 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 37df68a85p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 19:26:15 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12MJQDw049021402
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Mar 2021 19:26:13 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 076FB42041;
-        Mon, 22 Mar 2021 19:26:13 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 90F4942042;
-        Mon, 22 Mar 2021 19:26:12 +0000 (GMT)
-Received: from osiris (unknown [9.171.41.112])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 22 Mar 2021 19:26:12 +0000 (GMT)
-Date:   Mon, 22 Mar 2021 20:26:11 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] s390/crc32-vx: Couple of typo fixes
-Message-ID: <YFjvU0ocfwa9WLA7@osiris>
-References: <20210322130533.3805976-1-unixbhaskar@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322130533.3805976-1-unixbhaskar@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-22_11:2021-03-22,2021-03-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=816
- lowpriorityscore=0 phishscore=0 spamscore=0 priorityscore=1501
- impostorscore=0 suspectscore=0 mlxscore=0 bulkscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103220138
+        Mon, 22 Mar 2021 15:26:19 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 3858E4D249275;
+        Mon, 22 Mar 2021 12:26:18 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 12:26:13 -0700 (PDT)
+Message-Id: <20210322.122613.1113183432857887657.davem@davemloft.net>
+To:     dvyukov@google.com
+Cc:     edumazet@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: make unregister netdev warning timeout
+ configurable
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20210320142851.1328291-1-dvyukov@google.com>
+References: <20210320142851.1328291-1-dvyukov@google.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 22 Mar 2021 12:26:18 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:35:33PM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/defintions/definitions/
-> s/intermedate/intermediate/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  arch/s390/crypto/crc32be-vx.S | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Sat, 20 Mar 2021 15:28:51 +0100
 
-Applied, thanks.
+> netdev_wait_allrefs() issues a warning if refcount does not drop to 0
+> after 10 seconds. While 10 second wait generally should not happen
+> under normal workload in normal environment, it seems to fire falsely
+> very often during fuzzing and/or in qemu emulation (~10x slower).
+> At least it's not possible to understand if it's really a false
+> positive or not. Automated testing generally bumps all timeouts
+> to very high values to avoid flake failures.
+> Make the timeout configurable for automated testing systems.
+> Lowering the timeout may also be useful for e.g. manual bisection.
+> The default value matches the current behavior.
+> 
+> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+
+I'd say a sysctl knob is much better than a compile time setting for this.
+That way stock kernels can be used in these testing scenerios.
+
+Thanks.
