@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B62034513D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA95345143
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhCVU6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        id S230237AbhCVU64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCVU6L (ORCPT
+        with ESMTP id S229526AbhCVU6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:58:11 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B526CC061574;
-        Mon, 22 Mar 2021 13:58:07 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F46K82F5Tz9sWK;
-        Tue, 23 Mar 2021 07:58:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616446684;
-        bh=stf9dUonGNZPblUQtB9jmz0xyjCIWPBCu0UCWIn4smY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ExNCGuC+JKkFegpSqspS7V5WgjrscBbSvGXRtbJGVQ9xyo1g5+oHJvjZaPmIRcKKR
-         BlSv8MJ9kcb91dzGle+6omS+qqwG+pstkWdS+mRlVfs+fVZsxyxZrzou+7o/Dn29T+
-         5a91ikRZREiWmdg6Jvx7IUAX7W94tarfOEqEbYxZJPvwNQr8QxTvBQ+l4O+dno3/oT
-         vS6zZD0grDkr9cP3PBMOwlZRzJrAjLSa4R6CSWjFPvW31VsYeQAtQGspAgIcZkoDNM
-         I9EEpydRgVq4JiZR0oGFpxE3tE6wjR7RicNUxpTdd87TnfrvPDMSOKFhg+FP2fk2au
-         vk/xVUmBpNs3w==
-Date:   Tue, 23 Mar 2021 07:58:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the v4l-dvb tree
-Message-ID: <20210323075803.744a5ff9@canb.auug.org.au>
+        Mon, 22 Mar 2021 16:58:38 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C6BC061574;
+        Mon, 22 Mar 2021 13:58:37 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id dc12so8503242qvb.4;
+        Mon, 22 Mar 2021 13:58:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+i64MrNHZeNipUIh6gltiMTjMH/gV+ocvWjnAF2kjp0=;
+        b=mAFh5WEgO1INbLn/eAZO6mUQDJl99WcSTfFk44CRc70nKKFGV3W43ma1h7eMc31vGS
+         C23yLw1c6k2RfsuEkQAOOXKMsPmlMG/iniAcwporLUoTKO5dgqmWs35kT02o/BkXrihI
+         +t6uTMQfcv6UTbjglr85NpXPN3EUN0o2CDT0HxesHRI1lJ3rJs5aDKIp4X2nJX85a/yK
+         NgtLcFJ3beJeg/Xpddm5z3Pi24QshysdmbfCgYvLa6gMY8Nz7nkn6VzxXwkB9ktD2DS4
+         Jxx6V9PDIOaAf3+Y7fa4zWkgMBjxcoHT7ZliglyjyUiF2zhb9u1nh3KzGL+POjy8ouSx
+         usBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+i64MrNHZeNipUIh6gltiMTjMH/gV+ocvWjnAF2kjp0=;
+        b=Ky9sbqLRLTPTYU0hTgXncNf5R82b3b+0KW8Y2szEDMHa3iepG1rhYREDO41m4FeqzG
+         HHTnabsxPtYL+d8rxRDDlYss1JgXAOxOnI0aRWVAolT1RfAaeal2IUGD1ED2+aopaPFS
+         bqeBoRWD4MnqPPjWTwOKm2Hs37+dR0ytnYLDQ581LEI4+knJPqhTtnJLaX4h0d5zP5xG
+         Yz/s/+hsPUT4OCui1oh8qLn3WRTt9Ju3JklNU3NqYBEcMBXySrYjEPAP6hrHXUmBos5t
+         RluwcLWUHQsQxh/jMlPNZO16d3zsDT9FaBvpFwymX6s4Rr4SUdn1FVRpBDftsuap44jn
+         LiVA==
+X-Gm-Message-State: AOAM531+4hJzhkb+7Bqs3z+7LL5jiESbAjDPwkIG7y+ysp3yfY/3lrvi
+        U+Wex1dvbMKxbzpRosURpnd4IniZUDaCCtr+
+X-Google-Smtp-Source: ABdhPJwF8WFth20bf6P3IQm/LFI6HDq1NZYOnO5OihwSX9M8OzJ9sqcWalEZi/vsddM5iLFgRW9QRQ==
+X-Received: by 2002:a0c:f541:: with SMTP id p1mr2030073qvm.14.1616446716414;
+        Mon, 22 Mar 2021 13:58:36 -0700 (PDT)
+Received: from localhost.localdomain ([138.199.10.68])
+        by smtp.gmail.com with ESMTPSA id h75sm11784134qke.80.2021.03.22.13.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 13:58:35 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     anil.gurumurthy@qlogic.com, sudarsana.kalluru@qlogic.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] scsi: bfa: Fix a typo in two places
+Date:   Tue, 23 Mar 2021 02:28:21 +0530
+Message-Id: <20210322205821.1449844-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/aK616+QWiXzaHmE6gz=xmxb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/aK616+QWiXzaHmE6gz=xmxb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+s/defintions/definitions/  ....two different places.
 
-In commit
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/scsi/bfa/bfa_fc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  16a5dcf7fbc2 ("media: atomisp: Fixed error handling path")
+diff --git a/drivers/scsi/bfa/bfa_fc.h b/drivers/scsi/bfa/bfa_fc.h
+index d536270bbe9f..0314e4b9e1fb 100644
+--- a/drivers/scsi/bfa/bfa_fc.h
++++ b/drivers/scsi/bfa/bfa_fc.h
+@@ -1193,7 +1193,7 @@ enum {
+ };
 
-Fixes tag
+ /*
+- * defintions for CT reason code
++ * definitions for CT reason code
+  */
+ enum {
+ 	CT_RSN_INV_CMD		= 0x01,
+@@ -1240,7 +1240,7 @@ enum {
+ };
 
-  Fixes: 14a638ab96c5 ("media: atomisp: use pin_user_pages() for memory
+ /*
+- * defintions for the explanation code for all servers
++ * definitions for the explanation code for all servers
+  */
+ enum {
+ 	CT_EXP_AUTH_EXCEPTION		= 0xF1,
+--
+2.31.0
 
-has these problem(s):
-
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more than one line.  Split tags get
-mishandles (as has happened here with the second line being moved above
-the rest of the tags).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/aK616+QWiXzaHmE6gz=xmxb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBZBNsACgkQAVBC80lX
-0GyU3wf46Wyj93geFmQhEgMUlk+xnVckIjzuDLh3ZajxF+DpPfpP66cCGzRefevr
-g3wfnvrkdcP2+0zHFcf7ziQtOphuzOd2Q8/JgXrgHU6dc09rJn8sL9ZrXSqfRb31
-XJBpXhmmWedebua9jEU754NhSKcDPLtyIxgdSSJHBHrUccASxscnxC7kX9PAunrC
-j+ierf2zLvOgVDoFK/QX2i17FOHvhSpALc0BLgKNKc5BUhNTMOc7NWVM6Qt95lGm
-SnBNQagxhNWjkY3K3NerVf9zviYoaeb5+MjGkh3YquYyhELG5TSWMNNH6kEkL8/N
-75GEPGyuoN4+BOtmlMu40CB6byqL
-=DYas
------END PGP SIGNATURE-----
-
---Sig_/aK616+QWiXzaHmE6gz=xmxb--
