@@ -2,80 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A14344637
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670033444B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCVNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230042AbhCVNu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:50:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F90619A3;
-        Mon, 22 Mar 2021 13:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616421058;
-        bh=YA9YxD1Hu+DERDZ6cRSWdcGKGXcYVO3XLjCTjk6a89c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=M4CHKLXyIARQtuW0IHzOkTDnqSQjfjn6Zt5hkAnIQ2Monol6/1f4qAbjvZQnQNSI4
-         PRcVXi/vGJHG9kujjdUlGwmtX8sbmqkDQT0+4Tw1Ox2gTKiM4SiMZABZLJTxpf1Es0
-         gV2V/BTEQWIB6kXzKnW3rgwwNal+yqcOCUSkEOiyfTa7xBSbRVu7c9ycTVsh/VUcS4
-         5F562g4ZIA6aClkEnxF2Nv2jXlr/t5+bR5BmsKoWw+45JshZ/4f1+B6KlRT/P7OBCP
-         jctyHT6dR6P5Q+jm0P4Eewm+7aN86ETIod/MOFuAABy3gocbOXdZN89D3EjzEilcCl
-         1kzdMHSpYnh6g==
-Date:   Mon, 22 Mar 2021 07:50:50 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] drm/amd/display: Fix sizeof arguments in
- bw_calcs_init()
-Message-ID: <20210322125050.GA236782@embeddedor>
+        id S232720AbhCVNE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:04:56 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:60287 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232118AbhCVMvS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:18 -0400
+X-Originating-IP: 82.63.7.72
+Received: from uno.localdomain (host-82-63-7-72.business.telecomitalia.it [82.63.7.72])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1D170E0010;
+        Mon, 22 Mar 2021 12:51:12 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 13:51:44 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 05/19] media: v4l2-subdev: De-deprecate init() subdev
+ op
+Message-ID: <20210322125144.xd4yky6jmaw56x4a@uno.localdomain>
+References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
+ <20210319164148.199192-6-jacopo+renesas@jmondi.org>
+ <YFYX1KHi74XPEWLi@pendragon.ideasonboard.com>
+ <20210321205256.GE3@valkosipuli.retiisi.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20210321205256.GE3@valkosipuli.retiisi.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrong sizeof values are currently being used as arguments to
-kzalloc().
+Hi Sakari,
 
-Fix this by using the right arguments *dceip and *vbios,
-correspondingly.
+On Sun, Mar 21, 2021 at 10:52:56PM +0200, Sakari Ailus wrote:
+> Hi Laurent and Jacopo,
+>
+> Thanks for cc'ing me.
+>
+> On Sat, Mar 20, 2021 at 05:42:12PM +0200, Laurent Pinchart wrote:
+> > Hi Jacopo,
+> >
+> > Thank you for the patch.
+> >
+> > CC'ing Sakari on v3 to get feedback.
+> >
+> > On Fri, Mar 19, 2021 at 05:41:34PM +0100, Jacopo Mondi wrote:
+> > > The init() subdev core operation is deemed to be deprecated for new
+> > > subdevice drivers. However it could prove useful for complex
+> > > architectures to defer operation that require access to the
+> > > communication bus if said bus is not available (or fully configured)
+> > > at the time when the subdevice probe() function is run.
+> > >
+> > > As an example, the GMSL architecture requires the GMSL configuration
+> > > link to be configured on the host side after the remote subdevice
+> > > has completed its probe function. After the configuration on the host
+> > > side has been performed, the subdevice registers can be accessed through
+> > > the communication bus.
+>
+> What does the remote device's probe do that needs to be done before bus
+> config on the host side?
 
-Addresses-Coverity-ID: 1502901 ("Wrong sizeof argument")
-Fixes: fca1e079055e ("drm/amd/display/dc/calcs/dce_calcs: Remove some large variables from the stack")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+A few lines here below:
 
-diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-index 556ecfabc8d2..1244fcb0f446 100644
---- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-+++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-@@ -2051,11 +2051,11 @@ void bw_calcs_init(struct bw_calcs_dceip *bw_dceip,
- 
- 	enum bw_calcs_version version = bw_calcs_version_from_asic_id(asic_id);
- 
--	dceip = kzalloc(sizeof(dceip), GFP_KERNEL);
-+	dceip = kzalloc(sizeof(*dceip), GFP_KERNEL);
- 	if (!dceip)
- 		return;
- 
--	vbios = kzalloc(sizeof(vbios), GFP_KERNEL);
-+	vbios = kzalloc(sizeof(*vbios), GFP_KERNEL);
- 	if (!vbios) {
- 		kfree(dceip);
- 		return;
--- 
-2.27.0
+ In the GMSL use case the bus configuration requires the enablement of the
+ noise immunity threshold on the remote side which ensures reliability
+ of communications in electrically noisy environments. After the subdevice
+ has enabled the threshold at the end of its probe() sequence the host
+ side shall compensate it with an higher signal amplitude. Once this
+ sequence has completed the bus can be accessed with noise protection
+ enabled and all the operations that require a considerable number of
+ transactions on the bus (such as the image sensor configuration
+ sequence) are run in the subdevice init() operation implementation.
 
+>
+> Alternatively, could the remote init() work be done at the time streaming
+> is started?
+
+That would require programing the sensor, the embedded ISP at s_stream
+time which would take some time.
+
+I'll take this suggestion into account though and run some more tests.
+
+Thanks
+  j
+
+>
+> > >
+> > > In particular:
+> > >
+> > > 	HOST			REMOTE
+> > >
+> > > 	probe()
+> > > 	   |
+> > > 	   ---------------------> |
+> > > 				  probe() {
+> > > 				     bus config()
+> > > 				  }
+> > > 	   |<--------------------|
+> > > 	v4l2 async bound {
+> > > 	    bus config()
+> > > 	    call subdev init()
+> > > 	   |-------------------->|
+> > > 				 init() {
+> > > 				     access register on the bus()
+> > > 				}
+> > > 	   |<-------------------
+> > > 	}
+> > >
+> > > In the GMSL use case the bus configuration requires the enablement of the
+> > > noise immunity threshold on the remote side which ensures reliability
+> > > of communications in electrically noisy environments. After the subdevice
+> > > has enabled the threshold at the end of its probe() sequence the host
+> > > side shall compensate it with an higher signal amplitude. Once this
+> > > sequence has completed the bus can be accessed with noise protection
+> > > enabled and all the operations that require a considerable number of
+> > > transactions on the bus (such as the image sensor configuration
+> > > sequence) are run in the subdevice init() operation implementation.
+> > >
+> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > > ---
+> > >  include/media/v4l2-subdev.h | 15 ++++++++++++---
+> > >  1 file changed, 12 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> > > index d0e9a5bdb08b..3068d9940669 100644
+> > > --- a/include/media/v4l2-subdev.h
+> > > +++ b/include/media/v4l2-subdev.h
+> > > @@ -148,9 +148,18 @@ struct v4l2_subdev_io_pin_config {
+> > >   *	each pin being configured.  This function could be called at times
+> > >   *	other than just subdevice initialization.
+> > >   *
+> > > - * @init: initialize the sensor registers to some sort of reasonable default
+> > > - *	values. Do not use for new drivers and should be removed in existing
+> > > - *	drivers.
+> > > + * @init: initialize the subdevice registers to some sort of reasonable default
+> > > + *	values. Do not use for new drivers (and should be removed in existing
+> > > + *	ones) for regular architectures where the image sensor is connected to
+> > > + *	the host receiver. For more complex architectures where the subdevice
+> > > + *	initialization should be deferred to the completion of the probe
+> > > + *	sequence of some intermediate component, or the communication bus
+> > > + *	requires configurations on the host side that depend on the completion
+> > > + *	of the probe sequence of the remote subdevices, the usage of this
+> > > + *	operation could be considered to allow the devices along the pipeline to
+> > > + *	probe and register in the media graph and to defer any operation that
+> > > + *	require actual access to the communication bus to their init() function
+> > > + *	implementation.
+> > >   *
+> > >   * @load_fw: load firmware.
+> > >   *
+>
+> --
+> Kind regards,
+>
+> Sakari Ailus
