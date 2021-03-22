@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51CF3444DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF5234450E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbhCVNIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:08:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47788 "EHLO mail.kernel.org"
+        id S232935AbhCVNL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:11:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232970AbhCVMxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:53:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74F0061A09;
-        Mon, 22 Mar 2021 12:47:17 +0000 (UTC)
+        id S231570AbhCVM4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:56:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38E7561606;
+        Mon, 22 Mar 2021 12:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417238;
-        bh=pIy5eDMAczWNZKbWlbidKpKQos4RcwLCTn8JQSO41i0=;
+        s=korg; t=1616417329;
+        bh=II35uXHXJRoSeJQrJyP72BFCEHlT/G3RVEpjJnJH0SQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZTxmeGi5Ap92gAX7JifcSkl3t2+KXjJbD8Xbm/w0xZRM4WL4G00tu09KWPcMYhMc4
-         m5EPhtv8nqnMBUBs8/tRRUBBweJEe/03XEbxfdTYvzXcskAKQK7QBIieFAee+j6lqY
-         FmKsQ0yFDHsek1SQUplxYbysHA+n1wf4Glscnh90=
+        b=pWTXO0kqMK/zSClTK737/hinIYqv+4Jg3YKv4A81LjP7OEFfsvnT/tcZH9Nx9U0Qw
+         8iSboE3idGwtQTbZYjoWg8UM/0e++yD6+oKqBpwS89o+mX+teo22iC5OC4+leswtw2
+         mW7+hUEZ9wqIn/vO0rzV72pMMZpFlySEVKswCaEg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.9 22/25] x86: Introduce TS_COMPAT_RESTART to fix get_nr_restart_syscall()
-Date:   Mon, 22 Mar 2021 13:29:12 +0100
-Message-Id: <20210322121921.100885114@linuxfoundation.org>
+        stable@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.14 32/43] iio: hid-sensor-prox: Fix scale not correct issue
+Date:   Mon, 22 Mar 2021 13:29:13 +0100
+Message-Id: <20210322121921.060686632@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
-References: <20210322121920.399826335@linuxfoundation.org>
+In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
+References: <20210322121920.053255560@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,129 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Ye Xiang <xiang.ye@intel.com>
 
-commit 8c150ba2fb5995c84a7a43848250d444a3329a7d upstream.
+commit d68c592e02f6f49a88e705f13dfc1883432cf300 upstream.
 
-The comment in get_nr_restart_syscall() says:
+Currently, the proxy sensor scale is zero because it just return the
+exponent directly. To fix this issue, this patch use
+hid_sensor_format_scale to process the scale first then return the
+output.
 
-	 * The problem is that we can get here when ptrace pokes
-	 * syscall-like values into regs even if we're not in a syscall
-	 * at all.
-
-Yes, but if not in a syscall then the
-
-	status & (TS_COMPAT|TS_I386_REGS_POKED)
-
-check below can't really help:
-
-	- TS_COMPAT can't be set
-
-	- TS_I386_REGS_POKED is only set if regs->orig_ax was changed by
-	  32bit debugger; and even in this case get_nr_restart_syscall()
-	  is only correct if the tracee is 32bit too.
-
-Suppose that a 64bit debugger plays with a 32bit tracee and
-
-	* Tracee calls sleep(2)	// TS_COMPAT is set
-	* User interrupts the tracee by CTRL-C after 1 sec and does
-	  "(gdb) call func()"
-	* gdb saves the regs by PTRACE_GETREGS
-	* does PTRACE_SETREGS to set %rip='func' and %orig_rax=-1
-	* PTRACE_CONT		// TS_COMPAT is cleared
-	* func() hits int3.
-	* Debugger catches SIGTRAP.
-	* Restore original regs by PTRACE_SETREGS.
-	* PTRACE_CONT
-
-get_nr_restart_syscall() wrongly returns __NR_restart_syscall==219, the
-tracee calls ia32_sys_call_table[219] == sys_madvise.
-
-Add the sticky TS_COMPAT_RESTART flag which survives after return to user
-mode. It's going to be removed in the next step again by storing the
-information in the restart block. As a further cleanup it might be possible
-to remove also TS_I386_REGS_POKED with that.
-
-Test-case:
-
-  $ cvs -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/systemtap co ptrace-tests
-  $ gcc -o erestartsys-trap-debuggee ptrace-tests/tests/erestartsys-trap-debuggee.c --m32
-  $ gcc -o erestartsys-trap-debugger ptrace-tests/tests/erestartsys-trap-debugger.c -lutil
-  $ ./erestartsys-trap-debugger
-  Unexpected: retval 1, errno 22
-  erestartsys-trap-debugger: ptrace-tests/tests/erestartsys-trap-debugger.c:421
-
-Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
-Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210201174709.GA17895@redhat.com
+Fixes: 39a3a0138f61 ("iio: hid-sensors: Added Proximity Sensor Driver")
+Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+Link: https://lore.kernel.org/r/20210130102530.31064-1-xiang.ye@intel.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/thread_info.h |   14 +++++++++++++-
- arch/x86/kernel/signal.c           |   24 +-----------------------
- 2 files changed, 14 insertions(+), 24 deletions(-)
+ drivers/iio/light/hid-sensor-prox.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -230,10 +230,22 @@ static inline int arch_within_stack_fram
-  */
- #define TS_COMPAT		0x0002	/* 32bit syscall active (64BIT)*/
+--- a/drivers/iio/light/hid-sensor-prox.c
++++ b/drivers/iio/light/hid-sensor-prox.c
+@@ -37,6 +37,9 @@ struct prox_state {
+ 	struct hid_sensor_common common_attributes;
+ 	struct hid_sensor_hub_attribute_info prox_attr;
+ 	u32 human_presence;
++	int scale_pre_decml;
++	int scale_post_decml;
++	int scale_precision;
+ };
  
-+#ifndef __ASSEMBLY__
- #ifdef CONFIG_COMPAT
- #define TS_I386_REGS_POKED	0x0004	/* regs poked by 32-bit ptracer */
-+#define TS_COMPAT_RESTART	0x0008
+ /* Channel definitions */
+@@ -107,8 +110,9 @@ static int prox_read_raw(struct iio_dev
+ 		ret_type = IIO_VAL_INT;
+ 		break;
+ 	case IIO_CHAN_INFO_SCALE:
+-		*val = prox_state->prox_attr.units;
+-		ret_type = IIO_VAL_INT;
++		*val = prox_state->scale_pre_decml;
++		*val2 = prox_state->scale_post_decml;
++		ret_type = prox_state->scale_precision;
+ 		break;
+ 	case IIO_CHAN_INFO_OFFSET:
+ 		*val = hid_sensor_convert_exponent(
+@@ -249,6 +253,11 @@ static int prox_parse_report(struct plat
+ 			HID_USAGE_SENSOR_HUMAN_PRESENCE,
+ 			&st->common_attributes.sensitivity);
+ 
++	st->scale_precision = hid_sensor_format_scale(
++				hsdev->usage,
++				&st->prox_attr,
++				&st->scale_pre_decml, &st->scale_post_decml);
 +
-+#define arch_set_restart_data	arch_set_restart_data
-+
-+static inline void arch_set_restart_data(struct restart_block *restart)
-+{
-+	struct thread_info *ti = current_thread_info();
-+	if (ti->status & TS_COMPAT)
-+		ti->status |= TS_COMPAT_RESTART;
-+	else
-+		ti->status &= ~TS_COMPAT_RESTART;
-+}
- #endif
--#ifndef __ASSEMBLY__
+ 	return ret;
+ }
  
- #ifdef CONFIG_X86_32
- #define in_ia32_syscall() true
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -767,30 +767,8 @@ handle_signal(struct ksignal *ksig, stru
- 
- static inline unsigned long get_nr_restart_syscall(const struct pt_regs *regs)
- {
--	/*
--	 * This function is fundamentally broken as currently
--	 * implemented.
--	 *
--	 * The idea is that we want to trigger a call to the
--	 * restart_block() syscall and that we want in_ia32_syscall(),
--	 * in_x32_syscall(), etc. to match whatever they were in the
--	 * syscall being restarted.  We assume that the syscall
--	 * instruction at (regs->ip - 2) matches whatever syscall
--	 * instruction we used to enter in the first place.
--	 *
--	 * The problem is that we can get here when ptrace pokes
--	 * syscall-like values into regs even if we're not in a syscall
--	 * at all.
--	 *
--	 * For now, we maintain historical behavior and guess based on
--	 * stored state.  We could do better by saving the actual
--	 * syscall arch in restart_block or (with caveats on x32) by
--	 * checking if regs->ip points to 'int $0x80'.  The current
--	 * behavior is incorrect if a tracer has a different bitness
--	 * than the tracee.
--	 */
- #ifdef CONFIG_IA32_EMULATION
--	if (current_thread_info()->status & (TS_COMPAT|TS_I386_REGS_POKED))
-+	if (current_thread_info()->status & TS_COMPAT_RESTART)
- 		return __NR_ia32_restart_syscall;
- #endif
- #ifdef CONFIG_X86_X32_ABI
 
 
