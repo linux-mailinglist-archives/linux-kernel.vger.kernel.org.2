@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C603343794
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07835343791
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhCVDpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhCVDpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:45:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47882C061574;
-        Sun, 21 Mar 2021 20:45:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GGkOGVhZgHqYkFP66Hj97U7dOqehk9nNJRdnojaxdPk=; b=FSS2t7zYpc7zLQX8LModz5Zdn3
-        m9QHrb34dhzEVeiyBJlsdjWTjhNadcfmawyloZ+wmbRSE4eaKmyJ+zBWBe2imburjgAKKPYyLZ5cw
-        o6xCfTo5GkU7YP/jQw8TtKpHffBg9UhFNwFy6hriA/dzLXMUIPu/X3AS+uLfHfstkuaH67r9BWqlT
-        J+IjIxeF4+6HYLFWt74CzV0TocdEd20SBFHm504OkOrS9gELP1tN8K3zNtyrz4ot29sLQScJLfINV
-        yOdExw9wOUS1I+R0QvziNqKKJSpHXjlWqI4KKZGh4h/o4cCRQjab4ZXldYanEcwSVBwIIckBduRPR
-        PRiI0IIg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOBUx-007wfZ-JD; Mon, 22 Mar 2021 03:45:02 +0000
-Date:   Mon, 22 Mar 2021 03:44:59 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     corbet@lwn.net, sir@cmpwn.com, gregkh@linuxfoundation.org,
-        lee.jones@linaro.org, bp@alien8.de, huawei@kernel.org,
-        krzk@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] docs: submitting-patches Fix a typo
-Message-ID: <20210322034459.GE1719932@casper.infradead.org>
-References: <20210322033000.2523887-1-unixbhaskar@gmail.com>
+        id S229912AbhCVDpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:45:22 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44881 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229614AbhCVDpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 23:45:07 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3gPD342Bz9sW4;
+        Mon, 22 Mar 2021 14:45:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616384705;
+        bh=y5zl+b8knrXFb5tRNYcr64U2woI+Jjhequ0OvtRkpfU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cM6HvbOoK6iMG76jTu864lMolzeFWsMmNX+LwDpYRw9zx2vxVx9tgXnZPXQ8POzsw
+         41z2rcOVXFhvE8VutjddLp2mMn2YS2GGA6ujZXSY4o1V/HFCZe/rX7wPQ1KgcIlFM4
+         VMBU/p8CdTRelMAJaQsuwWxifCC27QjCOGpiDA/QQy5kPXDREdtZUWRmqiaqolXdCL
+         9PQ4qkFrbxp3eAR6SYOfKfaXpf17N4zcwapCHTIT9oTBdXSlWBg0zI0zHGfXHVRa67
+         vGL5NgA7rKoZzRebrymtgqrsIJu/g/J07ddb+dePvVL9U+aIvzgAa60LXG1LfhS4W1
+         quJWg2TwCKS0g==
+Date:   Mon, 22 Mar 2021 14:45:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the ftrace tree with the tip tree
+Message-ID: <20210322144503.26e2b6ca@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322033000.2523887-1-unixbhaskar@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/RfTJIQQUr_9FkywWzfjddYi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:00:00AM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/mesages/messages/
+--Sig_/RfTJIQQUr_9FkywWzfjddYi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-did you test the build afterwards?  you forgot to do something.
+Hi all,
 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  Documentation/process/submitting-patches.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> index 91de63b201c1..8b2676527b7e 100644
-> --- a/Documentation/process/submitting-patches.rst
-> +++ b/Documentation/process/submitting-patches.rst
-> @@ -679,7 +679,7 @@ generates appropriate diffstats by default.)
->  See more details on the proper patch format in the following
->  references.
-> 
-> -Backtraces in commit mesages
-> +Backtraces in commit messages
->  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
->  Backtraces help document the call chain leading to a problem. However,
-> --
-> 2.31.0
-> 
+Today's linux-next merge of the ftrace tree got a conflict in:
+
+  arch/x86/kernel/kprobes/ftrace.c
+
+between commit:
+
+  d9f6e12fb0b7 ("x86: Fix various typos in comments")
+
+from the tip tree and commit:
+
+  e0196ae73234 ("ftrace: Fix spelling mistake "disabed" -> "disabled"")
+
+from the ftrace tree.
+
+I fixed it up (I used the former - it fixed a second typo in the same
+comment) and can carry the fix as necessary. This is now fixed as far
+as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/RfTJIQQUr_9FkywWzfjddYi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBYEr8ACgkQAVBC80lX
+0GwOEgf+Jr/UkBFDiY1w+66zXjvBD21avD1ugtkmvEjMayiIVNRTVjK8zr/1rRNB
+dz+I8BTDakp46UvviviRF2mV3HEUHMBVDfscGQSxRXzwlr+O8KH7ewGjCT8bAFZ+
+0TCsbgehHPu/eOVsQ6NLxYEo0F2nHuTMJonv5qJPtJVFNj7U7FXOlEbj3LkFVt5P
+yYnTlEj/qitbwfEB4tULpBj3Woqi/BiMSEfL851PuYTtMKzaLVGX9ekfCtr8lin7
+FxviRuw9jCWuL18Njo28xTfv6kQ7oKNenwFvGYsh75D2Di+4NkxJaKAXlKJ4u4IF
+Q9g+aGXZyK9HlFFjGClECULlpRkgSQ==
+=cUes
+-----END PGP SIGNATURE-----
+
+--Sig_/RfTJIQQUr_9FkywWzfjddYi--
