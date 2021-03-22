@@ -2,115 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADB7343DE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BAB343DF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhCVKad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhCVK37 (ORCPT
+        id S230310AbhCVKcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:32:08 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21405 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230321AbhCVKbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:29:59 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03060C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:29:57 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id s17so20357497ljc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=yU+qIvBWk1kJvqdslxYHWF/zXGgpGkmRQmk9Yu+vJtA=;
-        b=r0ghP52A1I0uK8WlxBsk21Vewm9OLJClR44DhKlfZKCXyrioNxYpwjBM7kKeXabHOE
-         I5C6O4n+XNx3CuKswcA5ftZ6Hqn9T/5QhtdRjAPf+bC9FNnLWMtangd4u3Y3KJsgOYJ+
-         Kl5w5c8BhfGncbU0z6dj4xCwwOVAQa/DAFZm7BFTLXVXyWeaJ/M0aANZMFYoC/Su8TVH
-         xEDaW7XV88B1kWZozNEfHJIvq4q7m5/4Un/HibUUkkirt+2tKs6yjFvI0rGcTHErUNYA
-         jM0ZeoCcRgtQ0OsCs62/8HBCxxkwUbvKYbSAhyBb1nMQ5GMG32almrLZwu2ZxLTYuTk7
-         AlRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=yU+qIvBWk1kJvqdslxYHWF/zXGgpGkmRQmk9Yu+vJtA=;
-        b=F/+hNWYOy4ZRiQcCUJFsFzGqTXv50i57cAQcd4dyGtNp8SiliuLD0u9HrLmJa9qXn3
-         5wZ0ecOUCjlAE8WQyWe/2cQ4YXAHnLXCaQwLukRWH+SfdaqZS9rGousL6cXiAK+we8E+
-         xrvtyNOrvH93MpAX6d0Al/NyLAD1EDMaZPoO2sOPf0H2h/LHKaJSbRfRSavnfq+MqWSJ
-         M/fEfnhi9kIOBLXb0DVrdO73EQDePA+3jpcW9VC4VujBbrtFwzzGw2WW/VEJtWnl5mnR
-         1Ge5NW5FxNP6rfAfyyUpaLSzns3a78M6k9xPZkR4sbHbvY6Lq0QvC+/BG29lsOR8o2Ii
-         6NYA==
-X-Gm-Message-State: AOAM5339Ux3O3lRBNsrl6MtXr7raEU4fCqmByc14PCpW7hCZUav5E/As
-        JLLp57Gnz3ySmhzve7OuMKVKAw==
-X-Google-Smtp-Source: ABdhPJyT8YpHeks7w6/UwXq2lpPnHww4i0cs8C5c3gqi0y5gdESK5JvKAMLWbbzgWY74pBougy9feQ==
-X-Received: by 2002:a2e:9a98:: with SMTP id p24mr9379943lji.265.1616408995470;
-        Mon, 22 Mar 2021 03:29:55 -0700 (PDT)
-Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id x8sm1530380lfc.8.2021.03.22.03.29.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 03:29:55 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [RFC PATCH v2 net-next 04/16] net: dsa: sync up with bridge port's STP state when joining
-In-Reply-To: <20210318231829.3892920-5-olteanv@gmail.com>
-References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-5-olteanv@gmail.com>
-Date:   Mon, 22 Mar 2021 11:29:54 +0100
-Message-ID: <878s6fo50d.fsf@waldekranz.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Mon, 22 Mar 2021 06:31:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616409077; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Z0AeLhHSXJJ4eQali/z66O65y911KYkpjBlrNTVRIrQ=; b=iv9rhSheZqwdBwHRnAU7k8wUuLni4GrQ/wxP8O3KYITIlrC4gXRj3tgepOfPg/LOqVMnfN/V
+ lMM3P+28ZmHOXJeUesAf1aX5cz6BeHtdjfmSSeiMz/QvG7zN9eIFWqweAerFTbFFfWFBALfj
+ t/zQ+ha5QFahgPZZhpeMwuwWqvw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 605871d421031618f6ac6c34 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Mar 2021 10:30:44
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EDF79C43463; Mon, 22 Mar 2021 10:30:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5CDE7C433CA;
+        Mon, 22 Mar 2021 10:30:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5CDE7C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     swboyd@chromium.org, bjorn.andersson@linaro.org, maz@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, dianders@chromium.org, rnayak@codeaurora.org,
+        lsrao@codeaurora.org, Maulik Shah <mkshah@codeaurora.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: interrupt-controller: Convert bindings to yaml for qcom,pdc
+Date:   Mon, 22 Mar 2021 16:00:15 +0530
+Message-Id: <1616409015-27682-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->
-> It may happen that we have the following topology:
->
-> ip link add br0 type bridge stp_state 1
-> ip link add bond0 type bond
-> ip link set bond0 master br0
-> ip link set swp0 master bond0
-> ip link set swp1 master bond0
->
-> STP decides that it should put bond0 into the BLOCKING state, and
-> that's that. The ports that are actively listening for the switchdev
-> port attributes emitted for the bond0 bridge port (because they are
-> offloading it) and have the honor of seeing that switchdev port
-> attribute can react to it, so we can program swp0 and swp1 into the
-> BLOCKING state.
->
-> But if then we do:
->
-> ip link set swp2 master bond0
->
-> then as far as the bridge is concerned, nothing has changed: it still
-> has one bridge port. But this new bridge port will not see any STP state
-> change notification and will remain FORWARDING, which is how the
-> standalone code leaves it in.
->
-> Add a function to the bridge which retrieves the current STP state, such
-> that drivers can synchronize to it when they may have missed switchdev
-> events.
->
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
+This change converts PDC interrupt controller bindings to yaml.
 
-Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+---
+This change depends on [1] which adds sc7280 compatible for PDC
+
+Changes in v2:
+- Document optional PDC's GIC interface reg
+- Update example to mention optional reg.
+
+[1] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=449725
+---
+ .../bindings/interrupt-controller/qcom,pdc.txt     | 76 -----------------
+ .../bindings/interrupt-controller/qcom,pdc.yaml    | 96 ++++++++++++++++++++++
+ 2 files changed, 96 insertions(+), 76 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
+deleted file mode 100644
+index 98d89e5..0000000
+--- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.txt
++++ /dev/null
+@@ -1,76 +0,0 @@
+-PDC interrupt controller
+-
+-Qualcomm Technologies Inc. SoCs based on the RPM Hardened architecture have a
+-Power Domain Controller (PDC) that is on always-on domain. In addition to
+-providing power control for the power domains, the hardware also has an
+-interrupt controller that can be used to help detect edge low interrupts as
+-well detect interrupts when the GIC is non-operational.
+-
+-GIC is parent interrupt controller at the highest level. Platform interrupt
+-controller PDC is next in hierarchy, followed by others. Drivers requiring
+-wakeup capabilities of their device interrupts routed through the PDC, must
+-specify PDC as their interrupt controller and request the PDC port associated
+-with the GIC interrupt. See example below.
+-
+-Properties:
+-
+-- compatible:
+-	Usage: required
+-	Value type: <string>
+-	Definition: Should contain "qcom,<soc>-pdc" and "qcom,pdc"
+-		    - "qcom,sc7180-pdc": For SC7180
+-		    - "qcom,sc7280-pdc": For SC7280
+-		    - "qcom,sdm845-pdc": For SDM845
+-		    - "qcom,sdm8250-pdc": For SM8250
+-		    - "qcom,sdm8350-pdc": For SM8350
+-
+-- reg:
+-	Usage: required
+-	Value type: <prop-encoded-array>
+-	Definition: Specifies the base physical address for PDC hardware.
+-
+-- interrupt-cells:
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Specifies the number of cells needed to encode an interrupt
+-		    source.
+-		    Must be 2.
+-		    The first element of the tuple is the PDC pin for the
+-		    interrupt.
+-		    The second element is the trigger type.
+-
+-- interrupt-controller:
+-	Usage: required
+-	Value type: <bool>
+-	Definition: Identifies the node as an interrupt controller.
+-
+-- qcom,pdc-ranges:
+-	Usage: required
+-	Value type: <u32 array>
+-	Definition: Specifies the PDC pin offset and the number of PDC ports.
+-		    The tuples indicates the valid mapping of valid PDC ports
+-		    and their hwirq mapping.
+-		    The first element of the tuple is the starting PDC port.
+-		    The second element is the GIC hwirq number for the PDC port.
+-		    The third element is the number of interrupts in sequence.
+-
+-Example:
+-
+-	pdc: interrupt-controller@b220000 {
+-		compatible = "qcom,sdm845-pdc";
+-		reg = <0xb220000 0x30000>;
+-		qcom,pdc-ranges = <0 512 94>, <94 641 15>, <115 662 7>;
+-		#interrupt-cells = <2>;
+-		interrupt-parent = <&intc>;
+-		interrupt-controller;
+-	};
+-
+-DT binding of a device that wants to use the GIC SPI 514 as a wakeup
+-interrupt, must do -
+-
+-	wake-device {
+-		interrupts-extended = <&pdc 2 IRQ_TYPE_LEVEL_HIGH>;
+-	};
+-
+-In this case interrupt 514 would be mapped to port 2 on the PDC as defined by
+-the qcom,pdc-ranges property.
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+new file mode 100644
+index 0000000..8b4151c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/qcom,pdc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. PDC interrupt controller
++
++maintainers:
++  - Maulik Shah <mkshah@codeaurora.org>
++
++description: |
++  Qualcomm Technologies, Inc. SoCs based on the RPM Hardened architecture have a
++  Power Domain Controller (PDC) that is on always-on domain. In addition to
++  providing power control for the power domains, the hardware also has an
++  interrupt controller that can be used to help detect edge low interrupts as
++  well detect interrupts when the GIC is non-operational.
++
++  GIC is parent interrupt controller at the highest level. Platform interrupt
++  controller PDC is next in hierarchy, followed by others. Drivers requiring
++  wakeup capabilities of their device interrupts routed through the PDC, must
++  specify PDC as their interrupt controller and request the PDC port associated
++  with the GIC interrupt. See example below.
++
++properties:
++ compatible:
++   items:
++     - enum:
++        # Should contain "qcom,<soc>-pdc" and "qcom,pdc"
++         - qcom,sc7180-pdc #For SC7180
++         - qcom,sc7280-pdc #For SC7280
++         - qcom,sdm845-pdc #For SDM845
++         - qcom,sm8250-pdc #For SM8250
++         - qcom,sm8350-pdc #For SM8350
++     - const: qcom,pdc
++
++ reg:
++    description: |
++      Specifies the base physical address for PDC hardware followed by optional
++      PDC's GIC interface registers that need to be configured for wakeup capable
++      GPIOs routed to the PDC.
++    minItems: 1
++    maxItems: 2
++
++ '#interrupt-cells':
++    # Specifies the number of cells needed to encode an interrupt.
++    # The first element of the tuple is the PDC pin for the interrupt.
++    # The second element is the trigger type.
++    const: 2
++
++ interrupt-controller: true
++
++ qcom,pdc-ranges:
++   description: |
++      Specifies the PDC pin offset and the number of PDC ports.
++      The tuples indicates the valid mapping of valid PDC ports
++      and their hwirq mapping.
++   $ref: /schemas/types.yaml#/definitions/uint32-matrix
++   items:
++      items:
++        - description: |
++           "a" The first element of the tuple is the starting PDC port.
++        - description: |
++           "b" The second element is the GIC SPI number for the PDC port.
++        - description: |
++           "c" The third element is the number of interrupts in sequence.
++
++required:
++    - compatible
++    - reg
++    - '#interrupt-cells'
++    - interrupt-controller
++    - qcom,pdc-ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    pdc: interrupt-controller@b220000 {
++            compatible = "qcom,sdm845-pdc", "qcom,pdc";
++            reg = <0xb220000 0x30000>, <0x17c000f0 0x60>;
++            qcom,pdc-ranges = <0 512 94>, <94 641 15>, <115 662 7>;
++            #interrupt-cells = <2>;
++            interrupt-parent = <&intc>;
++            interrupt-controller;
++    };
++
++   # DT binding of a device that wants to use the GIC SPI 514 as a wakeup
++   # interrupt, must do -
++   # wake-device {
++   #     interrupts-extended = <&pdc 2 IRQ_TYPE_LEVEL_HIGH>;
++   # };
++
++   # In this case interrupt 514 would be mapped to port 2 on the PDC as defined
++   # by the qcom,pdc-ranges property.
++...
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
