@@ -2,165 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7128343CAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B121343CC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 10:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhCVJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 05:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229467AbhCVJYV (ORCPT
+        id S229761AbhCVJ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 05:27:23 -0400
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:33776 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229987AbhCVJ0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 05:24:21 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CB1C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:24:20 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id j7so15873299wrd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 02:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VWtR8KlOcQ/dRYdCQQ3jM8KP7ad2PsBUuVXGD0LTdjA=;
-        b=fRHQUYdDILcpfmFZPajioQDe1shm3v7+PmX5riSU+Vb7du56hShPmszeNHz0p/JF9y
-         WTn6C5cEfg3ce/85Q7Kgah0vZQs2SFfUDSNZVFAQtr0wsI4SgRLyLibvoq7Da6+08ssd
-         10TtaDTn5PcmmrJytU8mqDpFISfcb7jO/8AnkGDlwZjlCeIV7lUHeN2p8Z5W70DgtTSR
-         yOICtMTkYMH0fw2uiuAreQp7KiLv2YZIglHPoO/CYtvH4r7U72jol+yJMW79TFddAWef
-         53y1ZeP8GZWBt0HrJX17YbHxxhHzYno2MU+OuPWrsQ7wL8BCnLivBFxpPRGvZ7K9kz2y
-         Mr+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VWtR8KlOcQ/dRYdCQQ3jM8KP7ad2PsBUuVXGD0LTdjA=;
-        b=RRdu9lONxHkIuKSLWHUH7qjiHX2AJ7Vxp7nHqFgXGGGZN8BopC7LaoTY9V5MxHByUU
-         LubP9qkWH9XxI25g4rMsyGRrGemcEqP4YOJbqB0QL8xjsTkaMxPiDWHaRtR2x2uHos0I
-         LVUYlZVXZQHL0Erd+haCqcY5JX+jZbn0OG6QpKaRVE2QiWnkPVOF7UHJis/Ai2SHA/H8
-         IRb7bPsZ8spc+nuSKUvUM4Qfqe+y+PYAkgfh1UjYvAILwuWngTMEqMFkZzDleEgDS0Vj
-         4T8Rcc2+RXffXf+4quKy1urcAUIqqvWDDO80gzJjQzvEqLolCTR2HRcywPOpTdXVypQF
-         bjMw==
-X-Gm-Message-State: AOAM532QHwa6g4dcFAf6UYiw/K8r/ay5UaP+jA7ry9DwXf/w7Q6QhktH
-        pW8WFlqSU+7bcvD7zgA5bYgCuw==
-X-Google-Smtp-Source: ABdhPJyWqQjRwjDKuYXT4l/U+wYd8vDYnHlFON2Z+w206Gu8iy4wPDPpZvHQprkb+ZsZNf5evw0SKg==
-X-Received: by 2002:adf:fd91:: with SMTP id d17mr17275764wrr.0.1616405059461;
-        Mon, 22 Mar 2021 02:24:19 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id g16sm20103641wrs.76.2021.03.22.02.24.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 02:24:18 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 10:24:00 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YFhiMLR35WWMW/Hu@myrica>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
- <20210318172234.3e8c34f7@jacob-builder>
- <YFR10eeDVf5ZHV5l@myrica>
- <20210319124645.GP2356281@nvidia.com>
- <YFSqDNJ5yagk4eO+@myrica>
- <20210319135432.GT2356281@nvidia.com>
- <20210319112221.5123b984@jacob-builder>
+        Mon, 22 Mar 2021 05:26:49 -0400
+Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12M9IIAM013460;
+        Mon, 22 Mar 2021 05:25:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=XnIyJjJYinS7RTmri1/UR6PRUw9V+9To3VInJf6rF2M=;
+ b=ExXdhL6QGI3VrahzhzX9WllgXQBHitbkelZGQu4bK/42d3SDqqpkPCtW2lgZ0X3AeJ8s
+ xgI2kcZs4CAWnpAcrBzB7hJ4MamSQ7z/G1sVL9mFdQLvFkA9VsjiP0W4L5qpNhmLbVyF
+ PDaCeIhjXEWjvaMQ6sp3m76OzaRDNjEDmyhL9SoxzNA7TRP1P7wXZqoLFq+EN9iMMncz
+ wWquigSqUCjQtFDlUm06Plr4hDIbsZNwvbMl2aNtmEtRyWfWFqVKEZCYDspJYEyRTrtM
+ vXk8J8ohyME/ruE6DDcilEAsSQAagc11Rl9opP1v65bpLYm07w6tbqIV0HWRwgbnVwLn xQ== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 37dcch4826-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 05:25:28 -0400
+Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12M7b8Tj056901;
+        Mon, 22 Mar 2021 05:25:28 -0400
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
+        by mx0a-00154901.pphosted.com with ESMTP id 37dxq2kp1r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 05:25:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NyUrWhco2lg55N/kj/GfJg+QD8OJlB0mEc4HblmR73sqSv7nvZstWOYbfX5Qrmu3fJDUsQ6D2pHifO/6jyHM3aAytY29rWFfaopWYYVRtB/+WHWVrMlHeVOuY7WBXkEQTHVT4lwioyStVLf9/xtJXvOp60Y1JTIdyTD6bNkPOEd4rg4BVLuCsIpe6ZWB5yqaI3EwOQjIyG7DLyCARQlWA0qlTjL2/OlEstx9fbyJyB1sOZjOa7Jbhnt1qU12tCIyTzWfWdpcJNwXgr+kEfiWIefdRmSXVwaQQ4UvKYqiQ1CWK+MAqE5y9uLMdSgRO4/Ut0nE+vG4+X4v3xylbrnF+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XnIyJjJYinS7RTmri1/UR6PRUw9V+9To3VInJf6rF2M=;
+ b=bwUqEYj2XqGWMal0EAdX6Ok2MijNy05+gE0oqrMyt+zi8Mf1sdJGe5zfIIASMxhZ3pqBrF4q0X2xQPV3cqZEDmhHLpKPQreHu6SaADzEN8UHUn+DEM+53POb5+ZiaUa3O1Nco4Qv1tkbToLDv9saSnnwtY3eOcgjSQmIPOvBQ/RFMVY4gaxuP/4nHrH6hNUxkPq7tCTrARkJslxEo03GOiW+2hE1OX6AWw9mH3dwVEouwDAgCjj/w61tDYurB517I0rFYHJrBlT8FH6L58yPYCj+6++Kd0QG9mxw0KSSpoGUt0D4x5ifs5GRf4d+BRhtcZiPPwRR17WS99hkbKVNFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+Received: from SJ0PR19MB4528.namprd19.prod.outlook.com (2603:10b6:a03:28a::6)
+ by BY5PR19MB3571.namprd19.prod.outlook.com (2603:10b6:a03:1c3::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.23; Mon, 22 Mar
+ 2021 09:25:25 +0000
+Received: from SJ0PR19MB4528.namprd19.prod.outlook.com
+ ([fe80::8863:ccf2:c6a:d43a]) by SJ0PR19MB4528.namprd19.prod.outlook.com
+ ([fe80::8863:ccf2:c6a:d43a%7]) with mapi id 15.20.3955.027; Mon, 22 Mar 2021
+ 09:25:25 +0000
+From:   "Yuan, Perry" <Perry.Yuan@dell.com>
+To:     Mark Brown <broonie@kernel.org>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>
+CC:     "pobrn@protonmail.com" <pobrn@protonmail.com>,
+        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: RE: [PATCH v4 2/2] ASoC: rt715:add micmute led state control supports
+Thread-Topic: [PATCH v4 2/2] ASoC: rt715:add micmute led state control
+ supports
+Thread-Index: AQHXDn6s4PfzwhTth0aZP8v1kYirtKp6YrWAgBVxBJA=
+Date:   Mon, 22 Mar 2021 09:25:25 +0000
+Message-ID: <SJ0PR19MB4528847687FEEE4A4DED8E3F84659@SJ0PR19MB4528.namprd19.prod.outlook.com>
+References: <20210301093834.19524-1-Perry_Yuan@Dell.com>
+ <20210308172409.GF4656@sirena.org.uk>
+In-Reply-To: <20210308172409.GF4656@sirena.org.uk>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [163.244.246.215]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f338e5b7-e415-454a-f125-08d8ed146cea
+x-ms-traffictypediagnostic: BY5PR19MB3571:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR19MB3571281B1E5DCDEA17BA643384659@BY5PR19MB3571.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: M7rZg0Uf1SK+gGQta/gxWRlNBxauRJhDKrYw2FBct/7/9a+ibAoYw/Z6UKiPpfv8boHH09Jyc3Qv6HvVizWRvN7HP161d1FPFUnU4+OTwJuvXCBPlfgJZcnxM/tqbsSsIHSxZpztrrUYCj0VOMBVOu5zNkFZ5OTRHYbdCaamJ82Z5qcafsr+m+X1DjRZAX5oGUjZd+yYoWDEDPQUoz4mJvvDkLUQhPljTkH343PTnb7TmRhAM6ErnpQZ/8Q4z+HSX28VFK77RxgyhBu+oUGSCvgSKHu51z4AmWfzYON92jQSM5sE2NA1bOiV2JejApKQu4B7wwKUYquM52xf2wRGDu4bM90S9Pz+2yojdQhQOAVgMGALzeX6P+mNXy6HMXNJ82qWZzG5UCxJ1mi+5sOicyujN1v7ZYIPRX8N9ojHDQDY83bzGKy9KwEEmRnhnBKicYsccE/YzQ6PYSVISAQv2O73ikUQPkwc3uq7H1p2QcyHD8sgN6nw8LNxmHAP1YeHsIe91caAoQ06flFrzRSuio7NkNBa/hpMjR4vOARolPIQnR5x7SqOyPMQkvJxnQ2sE4kEJAmlJrN3CXE4bXBibGrbv0vPHLoFu4Vwx9SYq4Gtmz0oWYqyMb40GnqnPzarFVJXqasKYlDKKREHVksy6tyU9nEcoSu2vOSv7ha7sykwmDg8C2Z5y2gjkrDhvyW6sQTPpRvwfm6LoePxcS5lMZV05jMM0TxPp7xs70J8MQ/8VUIdazPbaFow7E0irAwW
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR19MB4528.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(71200400001)(83380400001)(86362001)(478600001)(7416002)(33656002)(110136005)(54906003)(52536014)(76116006)(9686003)(66946007)(55016002)(5660300002)(66476007)(66556008)(64756008)(66446008)(2906002)(966005)(7696005)(8676002)(8936002)(186003)(53546011)(6506007)(38100700001)(786003)(26005)(4326008)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?2F4OCekMjB+9LEsWe8O/8caxSn4fY0hsMVl6LsZ5G+MIY1XoM0t20ti1hu+X?=
+ =?us-ascii?Q?DIuitwYuuo4lQ2KtBNcYEE+s0aN+CJQCAYfsqsTaukf5TLWeHNPeUln//iJK?=
+ =?us-ascii?Q?2kzUECPv1sWzhqJOSGJuiCboyKvG74PPi6IgNqvG8zL2kQPC2y/IY6dphXDt?=
+ =?us-ascii?Q?y+xfwPDJHkDZp1DhG/uCjOCtMrhllgAD6IQ9T/MWdlN6H1kDk7xgBlXmmG8o?=
+ =?us-ascii?Q?UCgKBdwuexJFIkNbeahFSnUKoZQvwFAUjgLlrIu2GRtz5IaYL45kP6VHwN9v?=
+ =?us-ascii?Q?kBLMTKoZPd2L3s8Omgk4O60YusZk7iYJ7M2vweG7K0K1ieDq5iWPt8bQuMpr?=
+ =?us-ascii?Q?fQWEsQT7+A6PVUlAa85GGsryJ5NLMzpDophjpeSpjp4jyrQIxAZVHatScfIj?=
+ =?us-ascii?Q?MFZJET+4Y3vZDrsJC+WvsaQxLcBUgvxRyFBKNEAu2ZsHAZPRK/0Da874qPfA?=
+ =?us-ascii?Q?J8ePMxzomeThQCsF9ac7yNcfaWXph3zQ6JJx4mbQdZ+kkRDpjHjzS/sjGRcQ?=
+ =?us-ascii?Q?YewumA69Btttz8oZG/5Clqdq3yNaaENAISKmjDJ0KwYj+ZyGCjfiI/OBU+uA?=
+ =?us-ascii?Q?E4qLOf1n9wUSHppyOLyRYghTUbn9VaOtdZiVqVrfCik9P3YOtCMTx+M1tKmZ?=
+ =?us-ascii?Q?nddYpX1Ly10pqgEUuNB+vsghsC2OFoe1+XerYFbEnzUsZ7rYEzl2/KQUiBS7?=
+ =?us-ascii?Q?wp1bmtuCH5Tbpuh/K+AD0EMhOEtrGMiWQUcp3wemrSwL1p7+c4YSNk050gWj?=
+ =?us-ascii?Q?g0p9sg/UmGFxiZY77aPmCcm2Auewe23WXNjkzs0IcV1V/PtZRiIWp0LkGpuy?=
+ =?us-ascii?Q?/tjNv+4tM/o4DfQVzC7Y2Lw7cT395mVOOh6agVa0PpChmi1lwnZp+VOliSgI?=
+ =?us-ascii?Q?LHIy8KLqLblpSQLEGA1yMU/PYyPhno5A7Ofk6mBifyKctYw0YtmBsmoRxVvF?=
+ =?us-ascii?Q?cBElZyzQoEHyVZPrBmoWdW+b1xJAT9wP4AGkyVyxicLHnB1Pg7mCZVRov5IZ?=
+ =?us-ascii?Q?uSp/6Afii1QuqE+7JqeKuqxd/QA7R+1pujq9ogfrlljyEaE4MeNKo/mcC5rA?=
+ =?us-ascii?Q?rWVgYShITUOylmVMHS/sTaJdhKAdQ7UfnbSBYlxk6AqN5nsf1jvpeQfYY0Uz?=
+ =?us-ascii?Q?dWYyLAs0MeZUoMTF/HZPMWusrE9pBrCd4enRoac8U2mBbxBIApbobL36g6Ke?=
+ =?us-ascii?Q?EQNGhtZKhN3mLMu3TMLFp/dO8tfhWviY5FG46KAd+LY/uCnD9/QqKCYtiZ0o?=
+ =?us-ascii?Q?dRgC3/4W0qhj+D9dCgSHTe3kLsNI1y8cus9jAOywuSFq+7Xay8TQk/q8cjOS?=
+ =?us-ascii?Q?HnUn3vb+XQzGrJnoANLxbUiu?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210319112221.5123b984@jacob-builder>
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR19MB4528.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f338e5b7-e415-454a-f125-08d8ed146cea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2021 09:25:25.4116
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GABbFsEjAEBlEvLB1Qj1A9OuMo678LFY0Axav6FX7H+G0ImHVvUarQ929fPqFb3mtmCl/+bcxbN67btGqqOxRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR19MB3571
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-20_13:2021-03-19,2021-03-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 impostorscore=0 spamscore=0 priorityscore=1501
+ suspectscore=0 adultscore=0 mlxlogscore=880 mlxscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103210026
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
+ spamscore=0 mlxlogscore=993 phishscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103220072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 11:22:21AM -0700, Jacob Pan wrote:
-> Hi Jason,
-> 
-> On Fri, 19 Mar 2021 10:54:32 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Fri, Mar 19, 2021 at 02:41:32PM +0100, Jean-Philippe Brucker wrote:
-> > > On Fri, Mar 19, 2021 at 09:46:45AM -0300, Jason Gunthorpe wrote:  
-> > > > On Fri, Mar 19, 2021 at 10:58:41AM +0100, Jean-Philippe Brucker wrote:
-> > > >   
-> > > > > Although there is no use for it at the moment (only two upstream
-> > > > > users and it looks like amdkfd always uses current too), I quite
-> > > > > like the client-server model where the privileged process does
-> > > > > bind() and programs the hardware queue on behalf of the client
-> > > > > process.  
-> > > > 
-> > > > This creates a lot complexity, how do does process A get a secure
-> > > > reference to B? How does it access the memory in B to setup the HW?  
-> > > 
-> > > mm_access() for example, and passing addresses via IPC  
-> > 
-> > I'd rather the source process establish its own PASID and then pass
-> > the rights to use it to some other process via FD passing than try to
-> > go the other way. There are lots of security questions with something
-> > like mm_access.
-> > 
-> 
-> Thank you all for the input, it sounds like we are OK to remove mm argument
-> from iommu_sva_bind_device() and iommu_sva_alloc_pasid() for now?
+Hi Mark:
 
-Fine by me. By the way the IDXD currently missues the bind API for
-supervisor PASID, and the drvdata parameter isn't otherwise used. This
-would be a good occasion to clean both. The new bind prototype could be:
+> -----Original Message-----
+> From: Mark Brown <broonie@kernel.org>
+> Sent: Tuesday, March 9, 2021 1:24 AM
+> To: Yuan, Perry
+> Cc: pobrn@protonmail.com; pierre-louis.bossart@linux.intel.com;
+> oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
+> hdegoede@redhat.com; mgross@linux.intel.com; Limonciello, Mario;
+> lgirdwood@gmail.com; alsa-devel@alsa-project.org; linux-
+> kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org
+> Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state control
+> supports
+>=20
+> On Mon, Mar 01, 2021 at 05:38:34PM +0800, Perry Yuan wrote:
+>=20
+> > +	/* Micmute LED state changed by muted/unmute switch */
+> > +	if (mc->invert) {
+> > +		if (ucontrol->value.integer.value[0] || ucontrol-
+> >value.integer.value[1]) {
+> > +			micmute_led =3D LED_OFF;
+> > +		} else {
+> > +			micmute_led =3D LED_ON;
+> > +		}
+> > +		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
+> > +	}
+>=20
+> These conditionals on inversion seem weird and counterintuitive.  If we'r=
+e
+> going with this approach it would probably be clearer to define a custom
+> operation for the affected controls that wraps the standard one and adds =
+the
+> LED setting rather than keying off invert like this.
 
-struct iommu_sva *iommu_sva_bind_device(struct device *dev, int flags)
+Currently the sof soundwire driver has no generic led control yet.
+This patch can handle the led control needs for MIC mute LED, definitely th=
+e patch is a short term solution.
+There is a feature request discussion when we started to implement this sol=
+ution.
+https://github.com/thesofproject/linux/issues/2496#issuecomment-713892620
 
-And a flag IOMMU_SVA_BIND_SUPERVISOR (not that I plan to implement it in
-the SMMU, but I think we need to clean the current usage)
+The workable way for now is that we put the LED mute control to the codec d=
+river.
+When there is new and full sound LED solution implemented, this part will b=
+e also optimized.
+The Hardware privacy feature needs this patch to handle the Mic mute led st=
+ate change.
+Before that full solution ready in kernel, could we take this as short term=
+ solution?
 
-> 
-> Let me try to summarize PASID allocation as below:
-> 
-> Interfaces	| Usage	|  Limit	| bind¹ |User visible
-> --------------------------------------------------------------------
-> /dev/ioasid²	| G-SVA/IOVA	|  cgroup	| No	|Yes
-> --------------------------------------------------------------------
-> char dev³	| SVA		|  cgroup	| Yes	|No
-> --------------------------------------------------------------------
-> iommu driver	| default PASID|  no		| No	|No
-
-Is this PASID #0?
-
-> --------------------------------------------------------------------
-> kernel		| super SVA	| no		| yes   |No
-> --------------------------------------------------------------------
-
-Also wondering about device driver allocating auxiliary domains for their
-private use, to do iommu_map/unmap on private PASIDs (a clean replacement
-to super SVA, for example). Would that go through the same path as
-/dev/ioasid and use the cgroup of current task?
-
-Thanks,
-Jean
-
-> 
-> ¹ Allocated during SVA bind
-> ² PASIDs allocated via /dev/ioasid are not bound to any mm. But its
->   ownership is assigned to the process that does the allocation.
-> ³ Include uacce, other private device driver char dev such as idxd
-> 
-> Currently, the proposed /dev/ioasid interface does not map individual PASID
-> with an FD. The FD is at the ioasid_set granularity and bond to the current
-> mm. We could extend the IOCTLs to cover individual PASID-FD passing case
-> when use cases arise. Would this work?
-> 
-> Thanks,
-> 
-> Jacob
+Perry
