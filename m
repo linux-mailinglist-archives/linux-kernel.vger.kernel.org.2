@@ -2,416 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702F3344642
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B40934463F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCVNyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:54:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:23012 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhCVNxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230273AbhCVNxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 22 Mar 2021 09:53:39 -0400
-IronPort-SDR: 8kc2uYgRYuKCHXoZZdXwKBs30pqRnjHAdE46D2swqjfiVvYfJRIr1lcpQBCuEwl81NlM/OEXqA
- l1rjdOpvPnag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="186955057"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="186955057"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 06:53:35 -0700
-IronPort-SDR: f9wByUwCO5z5of7ZaYkkZ4urfM6CAFti4aUxQHzBYFDZcfvQ9rE4caBrMv0Zjr96+8+k1XJHST
- jVdQwlbSkj9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="524463760"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by orsmga004.jf.intel.com with ESMTP; 22 Mar 2021 06:53:35 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Xiaoyao Li " <xiaoyao.li@intel.com>,
-        "Ravi V Shankar" <ravi.v.shankar@intel.com>
-Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v6 2/3] x86/bus_lock: Handle #DB for bus lock
-Date:   Mon, 22 Mar 2021 13:53:24 +0000
-Message-Id: <20210322135325.682257-3-fenghua.yu@intel.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322135325.682257-1-fenghua.yu@intel.com>
-References: <20210322135325.682257-1-fenghua.yu@intel.com>
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45883 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230252AbhCVNxb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:53:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616421210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YX43vCy2WUlGP7TvkvyNeq4LZoZxhLjixCZwpawUM0w=;
+        b=cqKitgi4NgCIg/ywX7uyTdp8goPb/sxjRrzq0Hq9MfzCkJKlNecO89Z+mHovRlT/+L/42I
+        Wwfv9o/jbnY6xUMDKLuQVu/BfySNtwcWOBwkcB58b2ABdxzZhOjkc+CaUgD8rde8IrSrTz
+        M41E9PY96ZIwGeBqnXHP9Q9ROnbhIRw=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-bENQiTPKM4-Zr7ovOIkERQ-1; Mon, 22 Mar 2021 09:53:28 -0400
+X-MC-Unique: bENQiTPKM4-Zr7ovOIkERQ-1
+Received: by mail-qt1-f200.google.com with SMTP id f26so2561034qtq.17
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:53:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=YX43vCy2WUlGP7TvkvyNeq4LZoZxhLjixCZwpawUM0w=;
+        b=ejJKOqy7Ydv9jAYrxZw+0NPX3g5vU2JGWzVrz5y3mf5KyK1uaHt+VylcjmQXFFAGYO
+         fzE+ousjZJ1ZAJ99UjxAwyCxD3f0fB9lXyma8R4A2BrcK7JvVmVspa5gP0B1uHt6aBsB
+         3Wjrcy1PqN9AEPtFGTb1cBNezRBB3oI32tIW9LLXKoV8XXJX6RaPaLIWlDNNT9bpubSc
+         1pwe0GKfLs0qyEarpuUdu0nTt9ke9KonKOQOX3qozrQEp0dwnZYDVTlKFTltYZamPF1G
+         efdxW2W2pCA5K+rAoMTzPUp1WeukD8HIaqRwbWHn0nET7ltYUnzPNAMiR5M+QtT/eAeQ
+         hI1A==
+X-Gm-Message-State: AOAM530WijswfBQeVJmddiq12qlIP7zNkMcCWWkJrYh0V4fRiSYxnHkw
+        zJ8cRjwYg3XTmABsC7QDhp+qsQcEpSGFIoj/iUw8xR9jwTWsYmtyMINCwuR8rf0/eaVsy3Rg2cq
+        BQTMztRXNoOB+9e+/tO0XNDw6ns6dE0D4pisVIyg20R0r2CWiVq2LyhPBTfOni9jYEwkyb38=
+X-Received: by 2002:a05:620a:806:: with SMTP id s6mr152174qks.50.1616421207997;
+        Mon, 22 Mar 2021 06:53:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygFrO8AcF6UbXAgOCygfrk+do7UcB3lzSBL1CMcFCP6Bt7B9+bXd6RV1hCFS00tg8N4MCheQ==
+X-Received: by 2002:a05:620a:806:: with SMTP id s6mr152139qks.50.1616421207623;
+        Mon, 22 Mar 2021 06:53:27 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j30sm9086495qtv.90.2021.03.22.06.53.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 06:53:27 -0700 (PDT)
+Subject: Re: FW: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and
+ region
+To:     Richard Gong <richard.gong@linux.intel.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+ <21a8817a-e63e-6029-69a6-6bae5398439a@linux.intel.com>
+ <1d7fd02b-4ef2-8d11-fba7-87a698699978@redhat.com>
+ <MWHPR11MB0015516D86D02A0FE5423D6387669@MWHPR11MB0015.namprd11.prod.outlook.com>
+ <7ef6739f-e2f6-d457-5498-1c6ed8ba2075@linux.intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <f7a0c3fb-84f6-073c-ac41-45ce249cfa1e@redhat.com>
+Date:   Mon, 22 Mar 2021 06:53:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <7ef6739f-e2f6-d457-5498-1c6ed8ba2075@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bus locks degrade performance for the whole system, not just for the CPU
-that requested the bus lock. Two CPU features "#AC for split lock" and
-"#DB for bus lock" provide hooks so that the operating system may choose
-one of several mitigation strategies.
 
-#AC for split lock is already implemented. Add code to use the #DB for
-bus lock feature to cover additional situations with new options to
-mitigate.
+On 3/21/21 2:05 PM, Richard Gong wrote:
+>
+> Hi Tom,
+>
+>>
+>>
+>> On 3/19/21 4:22 PM, Richard Gong wrote:
+>>>
+>>> Hi Moritz,
+>>>
+>>> Thanks for approving the 1st patch of my version 5 patchest, which submitted on 02/09/21.
+>>
+>> This change
+>>
+>> e23bd83368af ("firmware: stratix10-svc: fix kernel-doc markups")
+>
+> This patch e23bd83368af is not from my version 5 patch set.
 
-split_lock_detect=
-		#AC for split lock		#DB for bus lock
+Correct.
 
-off		Do nothing			Do nothing
+But since it is already in char-misc-next, your version 5 patchset will conflict with it.
 
-warn		Kernel OOPs			Warn once per task and
-		Warn once per task and		and continues to run.
-		disable future checking
-	 	When both features are
-		supported, warn in #AC
+I could not apply this patchset to my unoffical fpga-testing.
 
-fatal		Kernel OOPs			Send SIGBUS to user.
-		Send SIGBUS to user
-		When both features are
-		supported, fatal in #AC
+I am suggesting you do a test application of your patchset against char-misc-next.
 
-ratelimit:N	Do nothing			Limit bus lock rate to
-						N per second in the
-						current non-root user.
+And if you find there are issues, rebase your patchset. 
 
-Default option is "warn".
+>>
+>> Makes a lot of formatting changes in the same files as this patchset, including the first patch.
+>>
+>> It would be good to try applying this patchset to char-misc-next and resubmit if there are conflicts.
+>>
+>>>
+>>> Can you help review the remaining 6 patches from the same version 5 patchset? I need your ACKs to move forward, or please let me know if additional work is need.
+>>
+>> These changes look good to me.
+>>
+>> I was looking at the patchset again seeing if the firmware/ parts could be split out.
+>
+> No, we can't split out the firmware parts.
 
-Hardware only generates #DB for bus lock detect when CPL>0 to avoid
-nested #DB from multiple bus locks while the first #DB is being handled.
-So no need to handle #DB for bus lock detected in the kernel.
+ok
 
-#DB for bus lock is enabled by bus lock detection bit 2 in DEBUGCTL MSR
-while #AC for split lock is enabled by split lock detection bit 29 in
-TEST_CTRL MSR.
+Tom
 
-Both breakpoint and bus lock in the same instruction can trigger one #DB.
-The bus lock is handled before the breakpoint in the #DB handler.
-
-Delivery of #DB for bus lock in userspace clears DR6[11]. To avoid
-confusion in identifying #DB, #DB handler sets the bit to 1 before
-returning to the interrupted task.
-
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
-Change Log:
-v6:
-- Split the v5 patch set into two patch sets: the one for warn and fatal
-  and the one for ratelimit. The warn and fatal patch set is released
-  here first and the ratelimit patch set will be released later (Thomas).
-
-v5:
-Address all comments from Thomas:
-- Merge patch 2 and patch 3 into one patch so all "split_lock_detect="
-  options are processed in one patch.
-- Change warn to #AC if both #AC and #DB are supported.
-- Remove sld and bld variables and use boot_cpu_has() to check bus lock
-  split lock support.
-- Remove bus lock checking in handle_bus_lock().
-- Remove bld_ratelimit < HZ/2 check.
-- Add rate limit handling comment in bus lock #DB.
-- Define bld_ratelimit only for Intel CPUs.
-
-v3:
-- Enable Bus Lock Detection when fatal to handle bus lock from non-WB
-  (PeterZ).
-
-v2:
-- Send SIGBUS in fatal case for bus lock #DB (PeterZ).
-
-v1::
-- Check bus lock bit by its positive polarity (Xiaoyao).
-
-RFC v3:
-- Remove DR6_RESERVED change (PeterZ).
-
- arch/x86/include/asm/cpu.h           |   9 ++-
- arch/x86/include/asm/msr-index.h     |   1 +
- arch/x86/include/uapi/asm/debugreg.h |   1 +
- arch/x86/kernel/cpu/common.c         |   2 +-
- arch/x86/kernel/cpu/intel.c          | 111 ++++++++++++++++++++++-----
- arch/x86/kernel/traps.c              |   7 ++
- 6 files changed, 109 insertions(+), 22 deletions(-)
-
-diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
-index da78ccbd493b..c16b9bab502f 100644
---- a/arch/x86/include/asm/cpu.h
-+++ b/arch/x86/include/asm/cpu.h
-@@ -41,12 +41,13 @@ unsigned int x86_family(unsigned int sig);
- unsigned int x86_model(unsigned int sig);
- unsigned int x86_stepping(unsigned int sig);
- #ifdef CONFIG_CPU_SUP_INTEL
--extern void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c);
-+extern void __init sld_setup(struct cpuinfo_x86 *c);
- extern void switch_to_sld(unsigned long tifn);
- extern bool handle_user_split_lock(struct pt_regs *regs, long error_code);
- extern bool handle_guest_split_lock(unsigned long ip);
-+extern void handle_bus_lock(struct pt_regs *regs);
- #else
--static inline void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c) {}
-+static inline void __init sld_setup(struct cpuinfo_x86 *c) {}
- static inline void switch_to_sld(unsigned long tifn) {}
- static inline bool handle_user_split_lock(struct pt_regs *regs, long error_code)
- {
-@@ -57,6 +58,10 @@ static inline bool handle_guest_split_lock(unsigned long ip)
- {
- 	return false;
- }
-+
-+static inline void handle_bus_lock(struct pt_regs *regs)
-+{
-+}
- #endif
- #ifdef CONFIG_IA32_FEAT_CTL
- void init_ia32_feat_ctl(struct cpuinfo_x86 *c);
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 546d6ecf0a35..558485965f21 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -265,6 +265,7 @@
- #define DEBUGCTLMSR_LBR			(1UL <<  0) /* last branch recording */
- #define DEBUGCTLMSR_BTF_SHIFT		1
- #define DEBUGCTLMSR_BTF			(1UL <<  1) /* single-step on branches */
-+#define DEBUGCTLMSR_BUS_LOCK_DETECT	(1UL <<  2) /* Bus lock detect */
- #define DEBUGCTLMSR_TR			(1UL <<  6)
- #define DEBUGCTLMSR_BTS			(1UL <<  7)
- #define DEBUGCTLMSR_BTINT		(1UL <<  8)
-diff --git a/arch/x86/include/uapi/asm/debugreg.h b/arch/x86/include/uapi/asm/debugreg.h
-index d95d080b30e3..0007ba077c0c 100644
---- a/arch/x86/include/uapi/asm/debugreg.h
-+++ b/arch/x86/include/uapi/asm/debugreg.h
-@@ -24,6 +24,7 @@
- #define DR_TRAP3	(0x8)		/* db3 */
- #define DR_TRAP_BITS	(DR_TRAP0|DR_TRAP1|DR_TRAP2|DR_TRAP3)
- 
-+#define DR_BUS_LOCK	(0x800)		/* bus_lock */
- #define DR_STEP		(0x4000)	/* single-step */
- #define DR_SWITCH	(0x8000)	/* task switch */
- 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ab640abe26b6..1a4e260b9027 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1330,7 +1330,7 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
- 
- 	cpu_set_bug_bits(c);
- 
--	cpu_set_core_cap_bits(c);
-+	sld_setup(c);
- 
- 	fpu__init_system(c);
- 
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 0e422a544835..750bc77dfe0f 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -44,9 +44,9 @@ enum split_lock_detect_state {
- };
- 
- /*
-- * Default to sld_off because most systems do not support split lock detection
-- * split_lock_setup() will switch this to sld_warn on systems that support
-- * split lock detect, unless there is a command line override.
-+ * Default to sld_off because most systems do not support split lock detection.
-+ * sld_state_setup() will switch this to sld_warn on systems that support
-+ * split lock/bus lock detect, unless there is a command line override.
-  */
- static enum split_lock_detect_state sld_state __ro_after_init = sld_off;
- static u64 msr_test_ctrl_cache __ro_after_init;
-@@ -603,6 +603,7 @@ static void init_intel_misc_features(struct cpuinfo_x86 *c)
- }
- 
- static void split_lock_init(void);
-+static void bus_lock_init(void);
- 
- static void init_intel(struct cpuinfo_x86 *c)
- {
-@@ -720,6 +721,7 @@ static void init_intel(struct cpuinfo_x86 *c)
- 		tsx_disable();
- 
- 	split_lock_init();
-+	bus_lock_init();
- 
- 	intel_init_thermal(c);
- }
-@@ -1020,16 +1022,15 @@ static bool split_lock_verify_msr(bool on)
- 	return ctrl == tmp;
- }
- 
--static void __init split_lock_setup(void)
-+static void __init sld_state_setup(void)
- {
- 	enum split_lock_detect_state state = sld_warn;
- 	char arg[20];
- 	int i, ret;
- 
--	if (!split_lock_verify_msr(false)) {
--		pr_info("MSR access failed: Disabled\n");
-+	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) &&
-+	    !boot_cpu_has(X86_FEATURE_BUS_LOCK_DETECT))
- 		return;
--	}
- 
- 	ret = cmdline_find_option(boot_command_line, "split_lock_detect",
- 				  arg, sizeof(arg));
-@@ -1041,17 +1042,14 @@ static void __init split_lock_setup(void)
- 			}
- 		}
- 	}
-+	sld_state = state;
-+}
- 
--	switch (state) {
--	case sld_off:
--		pr_info("disabled\n");
-+static void __init __split_lock_setup(void)
-+{
-+	if (!split_lock_verify_msr(false)) {
-+		pr_info("MSR access failed: Disabled\n");
- 		return;
--	case sld_warn:
--		pr_info("warning about user-space split_locks\n");
--		break;
--	case sld_fatal:
--		pr_info("sending SIGBUS on user-space split_locks\n");
--		break;
- 	}
- 
- 	rdmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
-@@ -1061,7 +1059,9 @@ static void __init split_lock_setup(void)
- 		return;
- 	}
- 
--	sld_state = state;
-+	/* Restore the MSR to its cached value. */
-+	wrmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
-+
- 	setup_force_cpu_cap(X86_FEATURE_SPLIT_LOCK_DETECT);
- }
- 
-@@ -1118,6 +1118,29 @@ bool handle_guest_split_lock(unsigned long ip)
- }
- EXPORT_SYMBOL_GPL(handle_guest_split_lock);
- 
-+static void bus_lock_init(void)
-+{
-+	u64 val;
-+
-+	/*
-+	 * Warn and fatal are handled by #AC for split lock if #AC for
-+	 * split lock is supported.
-+	 */
-+	if (!boot_cpu_has(X86_FEATURE_BUS_LOCK_DETECT) ||
-+	    (boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) &&
-+	    (sld_state == sld_warn || sld_state == sld_fatal)) ||
-+	    sld_state == sld_off)
-+		return;
-+
-+	/*
-+	 * Enable #DB for bus lock. All bus locks are handled in #DB except
-+	 * split locks are handled in #AC in fatal case.
-+	 */
-+	rdmsrl(MSR_IA32_DEBUGCTLMSR, val);
-+	val |= DEBUGCTLMSR_BUS_LOCK_DETECT;
-+	wrmsrl(MSR_IA32_DEBUGCTLMSR, val);
-+}
-+
- bool handle_user_split_lock(struct pt_regs *regs, long error_code)
- {
- 	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
-@@ -1126,6 +1149,21 @@ bool handle_user_split_lock(struct pt_regs *regs, long error_code)
- 	return true;
- }
- 
-+void handle_bus_lock(struct pt_regs *regs)
-+{
-+	switch (sld_state) {
-+	case sld_off:
-+		break;
-+	case sld_warn:
-+		pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
-+				    current->comm, current->pid, regs->ip);
-+		break;
-+	case sld_fatal:
-+		force_sig_fault(SIGBUS, BUS_ADRALN, NULL);
-+		break;
-+	}
-+}
-+
- /*
-  * This function is called only when switching between tasks with
-  * different split-lock detection modes. It sets the MSR for the
-@@ -1166,7 +1204,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
- 	{}
- };
- 
--void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
-+static void __init split_lock_setup(struct cpuinfo_x86 *c)
- {
- 	const struct x86_cpu_id *m;
- 	u64 ia32_core_caps;
-@@ -1193,5 +1231,40 @@ void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
- 	}
- 
- 	cpu_model_supports_sld = true;
--	split_lock_setup();
-+	__split_lock_setup();
-+}
-+
-+static void sld_state_show(void)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_BUS_LOCK_DETECT) &&
-+	    !boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
-+		return;
-+
-+	switch (sld_state) {
-+	case sld_off:
-+		pr_info("disabled\n");
-+		break;
-+	case sld_warn:
-+		if (boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
-+			pr_info("#AC: crashing the kernel on kernel split_locks and warning on user-space split_locks\n");
-+		else if (boot_cpu_has(X86_FEATURE_BUS_LOCK_DETECT))
-+			pr_info("#DB: warning on user-space bus_locks\n");
-+		break;
-+	case sld_fatal:
-+		if (boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT)) {
-+			pr_info("#AC: crashing the kernel on kernel split_locks and sending SIGBUS on user-space split_locks\n");
-+		} else if (boot_cpu_has(X86_FEATURE_BUS_LOCK_DETECT)) {
-+			pr_info("#DB: sending SIGBUS on user-space bus_locks%s\n",
-+				boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) ?
-+				" from non-WB" : "");
-+		}
-+		break;
-+	}
-+}
-+
-+void __init sld_setup(struct cpuinfo_x86 *c)
-+{
-+	split_lock_setup(c);
-+	sld_state_setup();
-+	sld_state_show();
- }
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index ac1874a2a70e..acb4d2767780 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -978,6 +978,13 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
- 		goto out_irq;
- 	}
- 
-+	/*
-+	 * Handle bus lock. #DB for bus lock can only be triggered from
-+	 * userspace. The bus lock bit was flipped to positive polarity.
-+	 */
-+	if (dr6 & DR_BUS_LOCK)
-+		handle_bus_lock(regs);
-+
- 	/* Add the virtual_dr6 bits for signals. */
- 	dr6 |= current->thread.virtual_dr6;
- 	if (dr6 & (DR_STEP | DR_TRAP_BITS) || icebp)
--- 
-2.31.0
+>>
+>> Even though stratix10 is a fpga, from the MAINTAINERS file it is not clear to me if linux-fpga owns them and they come in on Moritz's branch.  I think this change is needed to the MAINTAINERS file to make that clearer.
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index aa84121c5611..1f68e9ff76de 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -9193,7 +9193,8 @@ F:    tools/power/x86/intel-speed-select/
+>>     INTEL STRATIX10 FIRMWARE DRIVERS
+>>   M:    Richard Gong <richard.gong@linux.intel.com>
+>> -L:    linux-kernel@vger.kernel.org
+>> +R:    Tom Rix <trix@redhat.com>
+>> +L:    linux-fpga@vger.kernel.org
+>>   S:    Maintained
+>>   F:    Documentation/ABI/testing/sysfs-devices-platform-stratix10-rsu
+>>   F:    Documentation/devicetree/bindings/firmware/intel,stratix10-svc.txt
+>>
+>> I also added myself as a reviewer because I want to help out.
+>>
+>> Tom
+>>
+>
+> Regards,
+> Richard
+>
+>>
+>>>
+>>> Many thanks for your time again!
+>>>
+>>> Regards,
+>>> Richard
+>>>
+>>>
+>>> On 2/25/21 7:07 AM, Gong, Richard wrote:
+>>>> Hi Moritz,
+>>>>
+>>>> Sorry for asking.
+>>>>
+>>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
+>>>>
+>>>> Regards,
+>>>> Richard
+>>>>
+>>>> -----Original Message-----
+>>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com>
+>>>> Sent: Tuesday, February 9, 2021 4:20 PM
+>>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
+>>>> Cc: Gong, Richard <richard.gong@intel.com>
+>>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+>>>>
+>>>> From: Richard Gong <richard.gong@intel.com>
+>>>>
+>>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
+>>>>
+>>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
+>>>>
+>>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
+>>>>
+>>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
+>>>>
+>>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature.
+>>>>
+>>>> Richard Gong (7):
+>>>>     firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+>>>>     firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+>>>>     firmware: stratix10-svc: extend SVC driver to get the firmware version
+>>>>     fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+>>>>     fpga: of-fpga-region: add authenticate-fpga-config property
+>>>>     dt-bindings: fpga: add authenticate-fpga-config property
+>>>>     fpga: stratix10-soc: extend driver for bitstream authentication
+>>>>
+>>>>    .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
+>>>>    drivers/firmware/stratix10-svc.c                   | 12 ++++-
+>>>>    drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+>>>>    drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+>>>>    include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+>>>>    .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
+>>>>    include/linux/fpga/fpga-mgr.h                      |  3 ++
+>>>>    7 files changed, 125 insertions(+), 18 deletions(-)
+>>>>
+>>>> -- 
+>>>> 2.7.4
+>>>>
+>>>
+>>
+>
 
