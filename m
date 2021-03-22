@@ -2,140 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE173438B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80976343895
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 06:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhCVFiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 01:38:19 -0400
-Received: from mail-eopbgr10071.outbound.protection.outlook.com ([40.107.1.71]:10643
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229455AbhCVFhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 01:37:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NbbEll5xQ+sISwsU6g6Fq1M899+Jd9cjbMfVZZNP8KCir/QQ6PySKjCdFGQC1Ob2cdWrOUqzAZ1gg2I4BrglI82ibR80b744+vPOC4ntNbLGFJ0wptDxuQ6HoppfowdOn7hv/68ytgtY1Fkm3RZ2daIEaIGHx2rILTFBxlBKK3HmUzq5VDUesZ1PjE654/IzxcDpdR5Tqj2VX8fRzqYN6OkdA2ZdidEcGwi+qDyYmhOm6ITtMwZ9Zl6z5mB0cv3k9R0lX5KZPJPpTS8kkaAfRw4kHcQIkC1eQ9mn54YrQgyxw3V1VTr7bdtqfdoLdLk8PggBCjgIAlsoGVXmFiK/Og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HpwuJNNpVX8ai3Yg++Ep7MI2l4Sjc4nP3uy8qhKDtIE=;
- b=AnemrYiOzuUoxyYbgHBACCBEcQe8e1JtiiknMRTR0l5r5P7gyssHHPQwdquShNRjadSd0yleeCysEB/XoORdoeMhAPAcNg82jSPrczOse7dYL+kt+LEJJDm3hkKCa5C0DYtifYaUE+hltTq6FU6oLiw+ItLFN3MXAqm0jcO+9iGDAPu7SyB02kvAXp7lZm0RzB9js6VL6yyIcKvtmAyehaaeoqbzMoTIqUZWxZES38wQ6v/V2C2jj72sLt4Q3aS5/3IKHKUmm9XgxEYogNF8ivrj6XtRqRUWvKV9L/puztd35aFueHhb+EsARUyMM5Ol+iKqFnynVKnQzZvHmLuicA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HpwuJNNpVX8ai3Yg++Ep7MI2l4Sjc4nP3uy8qhKDtIE=;
- b=g5jRP+09wi4eVFRJ+byjyctsu/GpfwcF66IuiHiJQ2Cw3tzY/FjrXd2PnhaxJzJ26hu/vIocShlWEYIPSH8LcowIyavYBps46yglphJe47LppTRzeE9mp90DlL0+0FqqUlI5oBczoBTwbBt65mbGEClOZ9xzA4q8ePcwmcBw9QA=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB4654.eurprd04.prod.outlook.com (2603:10a6:803:71::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
- 2021 05:37:50 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c%5]) with mapi id 15.20.3955.025; Mon, 22 Mar 2021
- 05:37:50 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, l.stach@pengutronix.de
-Subject: [PATCH] drm/imx: ipuv3-plane: Remove two unnecessary export symbols
-Date:   Mon, 22 Mar 2021 13:24:00 +0800
-Message-Id: <1616390640-22289-1-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2PR0401CA0009.apcprd04.prod.outlook.com
- (2603:1096:202:2::19) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S229962AbhCVFan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 01:30:43 -0400
+Received: from mga01.intel.com ([192.55.52.88]:39465 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229728AbhCVFa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 01:30:29 -0400
+IronPort-SDR: wu6sgsl0feGFhWZuOjqo67CPSwyXtilvEmyLohTA6kpy52aPpMILK4rd9tCtuhjyTNbwmpKckL
+ +BpCi7E6e1Mw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="210268981"
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="210268981"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 22:30:28 -0700
+IronPort-SDR: vua1iuQv0xQomTn+IqFstN87l1bST0a1k/HBecwFbUPrrVZoV2xUI+M63k8vZTxog/zbWAisIv
+ MFJ4Hoq5yeSg==
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="414339804"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 22:30:28 -0700
+From:   ira.weiny@intel.com
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH V4 00/10] PKS Add Protection Key Supervisor support
+Date:   Sun, 21 Mar 2021 22:30:10 -0700
+Message-Id: <20210322053020.2287058-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by HK2PR0401CA0009.apcprd04.prod.outlook.com (2603:1096:202:2::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 05:37:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e553a953-32dc-4d9e-60e5-08d8ecf4a18d
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4654:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4654501209E5C175A2C144CD98659@VI1PR04MB4654.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +UM+LBWi+E3JCgyN0QpPTpoHKzvzcg7FKWqFVGI5hW7n6EVtKF8vg9lXxIdA70jeAlYnVr9iJCAf0FWvHr+AjRytNnROCdYlmVfE1x1NAOuAF7ATnModExb0QZyH46o7iEp3/20hVCvjyElzFhEvnu3Wi4MhVtVjToY+jiCAKm2n4/2gsr3bjtJBmZu0GHaTTAlP93GUgv/HlPhchiun46Tklv49o7+UKrOsMujQb0/yaH6jvQAnGtX3QCLc0/D1oS6BdsMZJAVlOmr7+N8Qv76iV84Kq/YIGKWPJDksfGIa8WjMdpoGq1z/3+2JC/AmwlGHPJjx5Vm56LGZCJomnwV5fZ2m6lj7TLU7uZBELP7Ey/1Q3mM4j/CeQqHObyKikeJhAMyjmPzYZZYpyXHR3LtBQzJKgWeDQHyOLNKHjSSvZRi9fl01N0LjwnGWAeaZ8kyGuRFJx768/fromSh+Cg2aYXHi3/9oArrAppolBtmx+Hl72UK6pzbV/BQGhrMCaWijvODsv6B5sS8PdGUF6AKMXYfx9US2xTbDFgadS6KmbztsOL+HsTf9VeU8iVanlsDM4rgQruN2Y7f0ZTou8D+fnf2Qkth/xU+38V4i6C04nq5TAbFzJxX/rlbx7MAVFbRBZZAw2VM3QVQN0DZG1P79Lur/uk2n6HJ8SR0KdmM6UipHQjpdHBpJ9pzA+/0h
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(36756003)(66946007)(16526019)(316002)(66556008)(52116002)(66476007)(83380400001)(478600001)(5660300002)(186003)(6506007)(8936002)(26005)(6666004)(956004)(2616005)(6512007)(38100700001)(86362001)(6486002)(2906002)(69590400012)(4326008)(8676002)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MGVx7m1mM/hXp2ZwnzyXNSs5j2oF1EEUX8O//KSKenDvPoZyRMOxQbb8kypI?=
- =?us-ascii?Q?L6V4O6f90mGV5ujMxMDxAfacP/qslbTq5pRgJbAvpH3hGrx24XqRZsV7Z1oO?=
- =?us-ascii?Q?9Jszc/lgW4XuT/0EnA97mNiA4zHNVmUs/00or+ZJNWVOcrB0AI8det5X3bn7?=
- =?us-ascii?Q?+kgL8rcy8H4ipUVwG9mivt9JhxkCIyVrASmxsVD9nSNubD2BNhm8u7rjhoD+?=
- =?us-ascii?Q?ViIY8//icXQf6OaVSLVutBHBOhgaiLuy+tK8K/DXJDcBmm9SXrJ1PWsmXX9V?=
- =?us-ascii?Q?tUMkClJ/blC8U+IBMb/+tJheUGKT+q0jqr/dAu+i/dpOBm5afBxDGTc4VOS2?=
- =?us-ascii?Q?cWZ7jrwGdZ2sXHVNYQT+7fzoxkCqidsYbCPmCiZq0iuW0sQzk8RwMoVcm4Qg?=
- =?us-ascii?Q?EL8PTGeY/kMZOqWtL9nEyg6kWrsBep1xCyKPWXM7itcw9xYZG8576LcuNvRW?=
- =?us-ascii?Q?bqWMm7qcepHOlQ4kTItK+mCYD/dqVejzWyDXxCfq+x4DQmgzuabx3DoYFiG4?=
- =?us-ascii?Q?QtHoCIo/m77Yi9AS+h1+W1f4dPimpkwCel3ogxsboDZcvKVrtnx8qFAsUeQf?=
- =?us-ascii?Q?ppUkuYYvJ9iH9sgZt/lhCN+yiwtBQkUmdItSb+QqNjJQABSp/MGPGk9hRT/c?=
- =?us-ascii?Q?twcXIUSv2OSUyZxy7klS8iz4h+hMivIuB2pafxI2/52O+ZLNVKD7io1putSf?=
- =?us-ascii?Q?TZ2vpo6N9is2NNnfsCw1zIUid8vmgPk5zaFvy8D8f2QIAON0h3HiAhvPcQvL?=
- =?us-ascii?Q?7kDK7wponyxGRYfikFRIH4n1qzVP72jO26Xop9CHTsXtQHN9FzBKe6L5jtpp?=
- =?us-ascii?Q?npVPF1VODgl7/EwvaOxV7zuEny+Gx1Pbf6w0kF+NrDNtHfhUb7bsDrd/Bwf3?=
- =?us-ascii?Q?5rv3z0nUQPwv9ARJWyLsvVqheAGAgbkT1+DPGceFAoz5W+4PGLDGKwN/dgGo?=
- =?us-ascii?Q?f+U6mz6v6tDYZ0PxRSyDnUp5DpJTs2/F3jDcTnGbsW18RvAHkrojzyqznU2a?=
- =?us-ascii?Q?OdjMQR3L5kUU/+6tKvreSfjL7jKlDpjvXFev8Dby7Fs5U0P2avlO/MxDnKYe?=
- =?us-ascii?Q?XvpggNydqIEQCyUO2tcso/JS6uptetU+fwUgAOOh+HIdHzcw8NevuzQli7uD?=
- =?us-ascii?Q?bYBvyXzClTX+i02ubrf77UKWwnR6X0/d3UzGH84LTNH5WxZHr9u4BujJIJKG?=
- =?us-ascii?Q?2pjwMO5OE0X59u0cS+Xlrgr6cv5QhKjzcU04ahvpnoUtfQvxBfMT4qkGwb2N?=
- =?us-ascii?Q?73KprfZv+AD6x+5M8vCxO7GkUkmYzRV3uQUl5MUb4fOjOZx5hRjWcaiR+FDJ?=
- =?us-ascii?Q?3BG5qpsV5AsylWx/vNIns9ru?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e553a953-32dc-4d9e-60e5-08d8ecf4a18d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 05:37:50.3905
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l3RcBg0pFVcdEqrSnl0sRrYUIRPE5pYdY7DVruH1e4xyZuu4WCXu13KJFEmQxk/ft8kCrOlcgofwo1kUMe9YBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4654
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ipu_plane_disable_deferred() and ipu_plane_assign_pre() functions have
-not been used by any other modules but only imxdrm itself internally since
-imxdrm and imx-ipuv3-crtc were merged in one module. So, this patch removes
-export symbols for the two functions.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Fixes: 3d1df96ad468 (drm/imx: merge imx-drm-core and ipuv3-crtc in one module)
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
- drivers/gpu/drm/imx/ipuv3-plane.c | 2 --
- 1 file changed, 2 deletions(-)
+Introduce a new page protection mechanism for supervisor pages, Protection Key
+Supervisor (PKS).
 
-diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
-index 0755080..4bd39bb 100644
---- a/drivers/gpu/drm/imx/ipuv3-plane.c
-+++ b/drivers/gpu/drm/imx/ipuv3-plane.c
-@@ -264,7 +264,6 @@ void ipu_plane_disable_deferred(struct drm_plane *plane)
- 		ipu_plane_disable(ipu_plane, false);
- 	}
- }
--EXPORT_SYMBOL_GPL(ipu_plane_disable_deferred);
- 
- static void ipu_plane_state_reset(struct drm_plane *plane)
- {
-@@ -813,7 +812,6 @@ int ipu_planes_assign_pre(struct drm_device *dev,
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(ipu_planes_assign_pre);
- 
- struct ipu_plane *ipu_plane_init(struct drm_device *dev, struct ipu_soc *ipu,
- 				 int dma, int dp, unsigned int possible_crtcs,
+Generally PKS enables protections on 'domains' of supervisor pages to limit
+supervisor mode access to pages beyond the normal paging protections.  PKS
+works in a similar fashion to user space pkeys, PKU.  As with PKU, supervisor
+pkeys are checked in addition to normal paging protections and Access or Writes
+can be disabled via a MSR update without TLB flushes when permissions change.
+
+Also like PKU, a page mapping is assigned to a domain by setting pkey bits in
+the page table entry for that mapping.
+
+Access is controlled through a PKRS register which is updated via WRMSR/RDMSR.
+
+XSAVE is not supported for the PKRS MSR.  Therefore the implementation
+saves/restores the MSR across context switches and during exceptions.  Nested
+exceptions are supported by each exception getting a new PKS state.
+
+For consistent behavior with current paging protections, pkey 0 is reserved and
+configured to allow full access via the pkey mechanism, thus preserving the
+default paging protections on mappings with the default pkey value of 0.
+
+Other keys, (1-15) are allocated by an allocator which prepares us for key
+contention from day one.  Kernel users should be prepared for the allocator to
+fail either because of key exhaustion or due to PKS not being supported on the
+CPU instance.
+
+The following are key attributes of PKS.
+
+   1) Fast switching of permissions
+	1a) Prevents access without page table manipulations
+	1b) No TLB flushes required
+   2) Works on a per thread basis
+
+PKS is available with 4 and 5 level paging.  Like PKRU it consumes 4 bits from
+the PTE to store the pkey within the entry.
+
+All code to support PKS is configured via ARCH_ENABLE_SUPERVISOR_PKEYS which
+is designed to only be turned on when a user is configured on in the kernel.
+Those users must depend on ARCH_HAS_SUPERVISOR_PKEYS to properly work with
+other architectures which do not yet support PKS.
+
+Originally this series was submitted as part of a large patch set which
+converted the kmap call sites.[1]
+
+Many follow on discussions revealed a few problems.  The first of which was
+that some callers leak a kmap mapping across threads rather than containing it
+to a critical section.  Attempts were made to see if these 'global kmaps' could
+be supported.[2]  However, supporting global kmaps had many problems.  Work is
+being done in parallel on converting as many kmap calls to the new
+kmap_local_page().[3]
+
+
+Changes from V3 [4]
+	Add ARCH_ENABLE_SUPERVISOR_PKEYS config which is selected by kernel
+	users to add the functionality to the core.  However, they should only
+	select this if ARCH_HAS_SUPERVISOR_PKEYS is available.
+	Clean up test code for context switching
+		Adjust for extended_pt_regs
+		Reduce output unless --debug is specified
+        Address internal review comments from Dan Williams and Dave Hansen
+		Help with macros and assembly coding
+		Change names of various functions
+                Clean up documentation
+                Move all #ifdefery into header files.
+                Clean up cover letter.
+		Make extended_pt_regs handling a macro rather than coding
+			around every call to C
+                Add macross for PKS shift/mask
+                        New patch : x86/pks: Add additional PKEY helper macros
+		Preserve pkrs_cache as static when PKS_TEST is not configured
+		Remove unnecessary pr_* prints
+		Clarify pks_key_alloc flags parameter
+		Change CONFIG_PKS_TESTING to CONFIG_PKS_TEST
+		Clean up test code separation from main code in fault.c
+		Remove module boilerplate from test code
+		Clean up all commit messages
+	Address comments from Thomas Gleixner
+		Provide a warning and fallback to no protection if a global
+		mapping is requested.
+		Fix context switch.  Fix where pks_sched_in() is called.
+		Fix test to actually do a context switch
+		Remove unecessary noinstr's
+	From Andy Lutomirski
+		Use extended_pt_regs idea to stash pks values on the stack
+		Drop patches 5/10 and 7/10
+			And use extended_pt_regs to print pkey info on fault
+		Adjust tests
+	Comments from Randy Dunlap:
+		Fix gramatical errors in doc
+	Clean up kernel docs
+	Rebase to 5.12
+
+
+[1] https://lore.kernel.org/lkml/20201009195033.3208459-1-ira.weiny@intel.com/
+
+[2] https://lore.kernel.org/lkml/87mtycqcjf.fsf@nanos.tec.linutronix.de/
+
+[3] https://lore.kernel.org/lkml/20210128061503.1496847-1-ira.weiny@intel.com/
+    https://lore.kernel.org/lkml/20210210062221.3023586-1-ira.weiny@intel.com/
+    https://lore.kernel.org/lkml/20210205170030.856723-1-ira.weiny@intel.com/
+    https://lore.kernel.org/lkml/20210217024826.3466046-1-ira.weiny@intel.com/
+
+[4] https://lore.kernel.org/lkml/20201106232908.364581-1-ira.weiny@intel.com/
+
+</proposed cover letter>
+
+
+Fenghua Yu (1):
+  x86/pks: Add PKS kernel API
+
+Ira Weiny (9):
+  x86/pkeys: Create pkeys_common.h
+  x86/fpu: Refactor arch_set_user_pkey_access() for PKS support
+  x86/pks: Add additional PKEY helper macros
+  x86/pks: Add PKS defines and Kconfig options
+  x86/pks: Add PKS setup code
+  x86/fault: Adjust WARN_ON for PKey fault
+  x86/pks: Preserve the PKRS MSR on context switch
+  x86/entry: Preserve PKRS MSR across exceptions
+  x86/pks: Add PKS test code
+
+ Documentation/core-api/protection-keys.rst  | 111 +++-
+ arch/x86/Kconfig                            |   1 +
+ arch/x86/entry/calling.h                    |  26 +
+ arch/x86/entry/common.c                     |  58 ++
+ arch/x86/entry/entry_64.S                   |  22 +-
+ arch/x86/entry/entry_64_compat.S            |   6 +-
+ arch/x86/include/asm/cpufeatures.h          |   1 +
+ arch/x86/include/asm/disabled-features.h    |   8 +-
+ arch/x86/include/asm/msr-index.h            |   1 +
+ arch/x86/include/asm/pgtable.h              |  10 +-
+ arch/x86/include/asm/pgtable_types.h        |  12 +
+ arch/x86/include/asm/pkeys.h                |   4 +
+ arch/x86/include/asm/pkeys_common.h         |  34 +
+ arch/x86/include/asm/pks.h                  |  54 ++
+ arch/x86/include/asm/processor-flags.h      |   2 +
+ arch/x86/include/asm/processor.h            |  43 +-
+ arch/x86/include/uapi/asm/processor-flags.h |   2 +
+ arch/x86/kernel/cpu/common.c                |   2 +
+ arch/x86/kernel/fpu/xstate.c                |  22 +-
+ arch/x86/kernel/head_64.S                   |   7 +-
+ arch/x86/kernel/process.c                   |   3 +
+ arch/x86/kernel/process_64.c                |   2 +
+ arch/x86/mm/fault.c                         |  27 +-
+ arch/x86/mm/pkeys.c                         | 218 +++++-
+ include/linux/pgtable.h                     |   4 +
+ include/linux/pkeys.h                       |  34 +
+ kernel/entry/common.c                       |  14 +-
+ lib/Kconfig.debug                           |  11 +
+ lib/Makefile                                |   3 +
+ lib/pks/Makefile                            |   3 +
+ lib/pks/pks_test.c                          | 693 ++++++++++++++++++++
+ mm/Kconfig                                  |   5 +
+ tools/testing/selftests/x86/Makefile        |   3 +-
+ tools/testing/selftests/x86/test_pks.c      | 150 +++++
+ 34 files changed, 1519 insertions(+), 77 deletions(-)
+ create mode 100644 arch/x86/include/asm/pkeys_common.h
+ create mode 100644 arch/x86/include/asm/pks.h
+ create mode 100644 lib/pks/Makefile
+ create mode 100644 lib/pks/pks_test.c
+ create mode 100644 tools/testing/selftests/x86/test_pks.c
+
 -- 
-2.7.4
+2.28.0.rc0.12.gb6a658bd00c9
 
