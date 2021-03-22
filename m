@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF8634442F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40613444C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhCVM7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42924 "EHLO mail.kernel.org"
+        id S233360AbhCVNDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232583AbhCVMry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6517161984;
-        Mon, 22 Mar 2021 12:43:48 +0000 (UTC)
+        id S231435AbhCVMtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:49:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B211619F7;
+        Mon, 22 Mar 2021 12:45:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417028;
-        bh=gVfnFnjTC2fFXMN1w+fHi++XtIG5tUS1zq291Lj0EsU=;
+        s=korg; t=1616417118;
+        bh=+N/vEXPFA2h7Hs+Xp+Ysnyf4OFcbKK4iAvPi5aDZgn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BCjz8iUuTtFlky++HNNrXkdgjIzoqPVUS/IyCDMHtWqxuHd1GyDKab7R4OXntPMdL
-         Yav++sx7hbohI9vsOA31gdQJ+vCSH5n7hPSMvhfd5y+hXgbw/BRdFETTpHbA0MbxsZ
-         iVP4GY98Bo5T5AW4P7VcpxpHdlhOOno5h1FAIO9c=
+        b=dPeuV4lIzFpdfgMY+NOWEEwLN0D1VGRKk9QTMMKJovgn/tQ7TNE8K5WPjtpJEsRXV
+         GcW/n1ZL5sj821lezpbsI4bEFo4BFwWBFATg0QHK/LVaUX/I/Vwlu8EPYyekt5isWk
+         59/jrjDlG/6JmYeSHERux4qzy2c2SCnmJDjX31Qw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 5.4 58/60] firmware/efi: Fix a use after bug in efi_mem_reserve_persistent
-Date:   Mon, 22 Mar 2021 13:28:46 +0100
-Message-Id: <20210322121924.290681526@linuxfoundation.org>
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 33/43] PCI: rpadlpar: Fix potential drc_name corruption in store functions
+Date:   Mon, 22 Mar 2021 13:28:47 +0100
+Message-Id: <20210322121920.976130085@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit 9ceee7d0841a8f7d7644021ba7d4cc1fbc7966e3 upstream.
+commit cc7a0bb058b85ea03db87169c60c7cfdd5d34678 upstream.
 
-In the for loop in efi_mem_reserve_persistent(), prsv = rsv->next
-use the unmapped rsv. Use the unmapped pages will cause segment
-fault.
+Both add_slot_store() and remove_slot_store() try to fix up the
+drc_name copied from the store buffer by placing a NUL terminator at
+nbyte + 1 or in place of a '\n' if present. However, the static buffer
+that we copy the drc_name data into is not zeroed and can contain
+anything past the n-th byte.
 
-Fixes: 18df7577adae6 ("efi/memreserve: deal with memreserve entries in unmapped memory")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+This is problematic if a '\n' byte appears in that buffer after nbytes
+and the string copied into the store buffer was not NUL terminated to
+start with as the strchr() search for a '\n' byte will mark this
+incorrectly as the end of the drc_name string resulting in a drc_name
+string that contains garbage data after the n-th byte.
+
+Additionally it will cause us to overwrite that '\n' byte on the stack
+with NUL, potentially corrupting data on the stack.
+
+The following debugging shows an example of the drmgr utility writing
+"PHB 4543" to the add_slot sysfs attribute, but add_slot_store()
+logging a corrupted string value.
+
+  drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
+  add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+
+Fix this by using strscpy() instead of memcpy() to ensure the string
+is NUL terminated when copied into the static drc_name buffer.
+Further, since the string is now NUL terminated the code only needs to
+change '\n' to '\0' when present.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+[mpe: Reformat change log and add mention of possible stack corruption]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210315214821.452959-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/efi.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/hotplug/rpadlpar_sysfs.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -1006,7 +1006,7 @@ int __ref efi_mem_reserve_persistent(phy
- 	}
+--- a/drivers/pci/hotplug/rpadlpar_sysfs.c
++++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
+@@ -34,12 +34,11 @@ static ssize_t add_slot_store(struct kob
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
  
- 	/* first try to find a slot in an existing linked list entry */
--	for (prsv = efi_memreserve_root->next; prsv; prsv = rsv->next) {
-+	for (prsv = efi_memreserve_root->next; prsv; ) {
- 		rsv = memremap(prsv, sizeof(*rsv), MEMREMAP_WB);
- 		index = atomic_fetch_add_unless(&rsv->count, 1, rsv->size);
- 		if (index < rsv->size) {
-@@ -1016,6 +1016,7 @@ int __ref efi_mem_reserve_persistent(phy
- 			memunmap(rsv);
- 			return efi_mem_reserve_iomem(addr, size);
- 		}
-+		prsv = rsv->next;
- 		memunmap(rsv);
- 	}
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
  
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_add_slot(drc_name);
+ 	if (rc)
+@@ -65,12 +64,11 @@ static ssize_t remove_slot_store(struct
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
+ 
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_remove_slot(drc_name);
+ 	if (rc)
 
 
