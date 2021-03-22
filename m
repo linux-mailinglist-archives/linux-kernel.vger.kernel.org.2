@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9B834392E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3852343942
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhCVGFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbhCVGFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:05:05 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C86EC061574;
-        Sun, 21 Mar 2021 23:05:05 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id o66so5353883ybg.10;
-        Sun, 21 Mar 2021 23:05:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FG1+KPUwtgZN7XZD2JCE4xNXJ7HzuOOFg2FJVhM4QhQ=;
-        b=oPnk/Y1ykO+u3txb/44/zCiUU5ZJZYtb3Rr4GzqTyv8t4DW2J1DMnd/5FUGlpWjIxQ
-         W/oSo0CKqknuLMj1G5UbP3ohY1Gz7Th3gXWpGWOWP9vqbEOq++7kbP35HwbQTQxTebBH
-         /tsmG67csbb4r520awj32c+1Oi2Wjf2fHB01tXtOvLqQoLYrzzZEyBG6gI2m32y/bTrN
-         zQRkHdrfNdLUW4lLY78U/yX1ogvElBWce0IA9Mwnxs692BxPKMDM8eb5n3gj4lzCDwmi
-         2iJUcMYAIX5yeGRF8SIqkLHqSXBOMffa/DVoKZPB9stDV5pyCFawcjAiyAbJ9pnp/XY3
-         4xYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FG1+KPUwtgZN7XZD2JCE4xNXJ7HzuOOFg2FJVhM4QhQ=;
-        b=mIWgmDwCEL+ophdLVn3TVaoWgVDB1mxHYsPt3aklvtsMBTR/IY8eb5n1o8L2FN0NYI
-         3h2iB0KvNEDZQ+2XVg0UV3XOdQbgczqRPCYl4+4coHOaH013temr0Iav0kC7JIHBHMbI
-         pJf+nl8PWSIqrBc8pfEjEcz4esYNlA8UU0gvYqaB8jlBhBqFFriIZBNCL1FdjiMYUgkj
-         kuP6nfZgizd1iaJQ+XTs4eAN2qmYzCgqDUmPmIaEi5rFVdw3PYxEwB7ikiScaQQ1YHSL
-         iHrWgLug5XzE8dsr3W4LVT2bJCouoeFEy2Epfr2W7J8Qx1ZUPH8DMhzc4INgrSZ/GHMJ
-         H5WQ==
-X-Gm-Message-State: AOAM532I6S8pSoIM6rhVL1EsCTggDVQlXLLMsO2bp3TbBDeUlMwHuswf
-        wfyhBvA2ZE2UzuipvjREphSWN4Rxx4gwLz/V9cg=
-X-Google-Smtp-Source: ABdhPJxWgca5VI06/RCVPsjBtrXwQqqxodp7vU6Cewbx3Y20Z6XhZNod70oYZjN+Jz3v0YlBYVtnIYLkvKlLuYsYM2E=
-X-Received: by 2002:a25:d28b:: with SMTP id j133mr20820720ybg.517.1616393104871;
- Sun, 21 Mar 2021 23:05:04 -0700 (PDT)
+        id S229866AbhCVGOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:14:34 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15223 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229728AbhCVGON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:14:13 -0400
+IronPort-SDR: SkkmbfP1yHW+AFjglXZM+fvjOZFj0nw6qpceYzo9xaE0xQxJAhoZ7YTVJ8NjDA/eKjHUCx+OGy
+ zpsd4Dzz+g2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="186889246"
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="186889246"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 23:14:13 -0700
+IronPort-SDR: ZxxNthmSMV11c1LDwRs46tGtYC6PuxYcTebC8S9qDM5RBi0ponAQo/fIhIHAqZJwi/Nuww+oFC
+ EULSejX1B06g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="441026231"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Mar 2021 23:14:09 -0700
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+Subject: [PATCH v4 RESEND 0/5] x86: The perf/x86 changes to support guest Arch LBR
+Date:   Mon, 22 Mar 2021 14:06:30 +0800
+Message-Id: <20210322060635.821531-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210303200253.1827553-1-atish.patra@wdc.com> <20210303200253.1827553-4-atish.patra@wdc.com>
-In-Reply-To: <20210303200253.1827553-4-atish.patra@wdc.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Mon, 22 Mar 2021 14:04:53 +0800
-Message-ID: <CAEUhbmUYfZ=wnb0L=qgzvo73V5rM-cdKbMshGxKYQ-sph_nSSA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] RISC-V: Initial DTS for Microchip ICICLE board
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <Conor.Dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Ivan.Griffin@microchip.com, Lewis.Hanly@microchip.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 8:48 PM Atish Patra <atish.patra@wdc.com> wrote:
->
-> Add initial DTS for Microchip ICICLE board having only
-> essential devices (clocks, sdhci, ethernet, serial, etc).
-> The device tree is based on the U-Boot patch.
->
-> https://patchwork.ozlabs.org/project/uboot/patch/20201110103414.10142-6-padmarao.begari@microchip.com/
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/boot/dts/Makefile                  |   1 +
->  arch/riscv/boot/dts/microchip/Makefile        |   2 +
->  .../microchip/microchip-mpfs-icicle-kit.dts   |  72 ++++
->  .../boot/dts/microchip/microchip-mpfs.dtsi    | 329 ++++++++++++++++++
->  4 files changed, 404 insertions(+)
->  create mode 100644 arch/riscv/boot/dts/microchip/Makefile
->  create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
->  create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
->
+Hi Peter,
 
-Reviewed-by: Bin Meng <bin.meng@windriver.com>
+Please help review these minor perf/x86 changes in this patch set,
+and we need some of them to support Guest Architectural LBR in KVM.
+
+If you are interested in the KVM emulation, please check
+https://lore.kernel.org/kvm/20210314155225.206661-1-like.xu@linux.intel.com/
+
+Please check more details in each commit and feel free to comment.
+
+Like Xu (5):
+  perf/x86/intel: Fix the comment about guest LBR support on KVM
+  perf/x86/lbr: Simplify the exposure check for the LBR_INFO registers
+  perf/x86/lbr: Move cpuc->lbr_xsave allocation out of sleeping region
+  perf/x86/lbr: Skip checking for the existence of LBR_TOS for Arch LBR
+  perf/x86: Move ARCH_LBR_CTL_MASK definition to include/asm/msr-index.h
+
+ arch/x86/events/core.c           |  8 +++++---
+ arch/x86/events/intel/bts.c      |  2 +-
+ arch/x86/events/intel/core.c     |  6 +++---
+ arch/x86/events/intel/lbr.c      | 28 +++++++++++++++++-----------
+ arch/x86/events/perf_event.h     |  8 +++++++-
+ arch/x86/include/asm/msr-index.h |  1 +
+ 6 files changed, 34 insertions(+), 19 deletions(-)
+
+-- 
+2.29.2
+
