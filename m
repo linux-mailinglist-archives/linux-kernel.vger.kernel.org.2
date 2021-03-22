@@ -2,277 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB1F344E88
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C45344E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhCVS0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:26:21 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:36774 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232210AbhCVSZo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:25:44 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MIOGLR158440;
-        Mon, 22 Mar 2021 18:25:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=Z2dk7K7T9DAppWx/xHWRtkZuAUvhZOoYyufY6yoM9pk=;
- b=YAgg9HmRIzgAZg88AtEh91JXhGsbdf0kfGAskLxHHYgbnD/sL2etP7ANV1m1vXiH2pDG
- iqjCkB/uL5sY08wVLplHhyCiHM90UCLZYEjMZOLtyKWiMCh+VgcJqqoFNU5of7iS26TC
- acTaaV37MWPsDoU4MaB+sqOcA8LrpPV2hMzgu878iZZPunNYQIMohOSCVlLjMxrisTBq
- pO0EB//9xUGHXZ4RyGQ507A65MOLyH4qJOIMaGPj74jQf+5FY9eUJrL15jtRhhmThFi4
- ++EpX762dOfVxWaO70Fl4mzqBsvVswGpbDEJNYNAISVDCq3TnbSjfYBdmN4gKqt6iuBe nA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 37d9pmvd6c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Mar 2021 18:25:07 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MIA8Lk187091;
-        Mon, 22 Mar 2021 18:25:06 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
-        by userp3020.oracle.com with ESMTP id 37dttqwx5m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Mar 2021 18:25:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jE/OhS0t0bxbly7qivKCMymQPAd5GtyuWFQSS8B5DW2JohDPuylVC+/3blgCo+y57/1qYfuEodkYpy490LpVpyGdCiDfFZMAfHuk7kdvkpjHlWcfquNeQoi/vtkYQ15pcFXa06i2iTfnRE1Tu3Tv3SMSnRBljBfBTvuLkuWIomIeZZYTl0QSSjWu59MSbpwOfmkPjN6xL9q8rPoP6XvXvzWyYIFxgCdAwrEc2daxgdiGt7UGAhDSQ6G6z4+C1n1OVeQQImOuMh2+6jvDDUIlgJqBCrCbRQ29REF7cUKVkhHMKdGeGn+QqYUU1jkYaJpl7IXizvFm8afmAxcLDtCYkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z2dk7K7T9DAppWx/xHWRtkZuAUvhZOoYyufY6yoM9pk=;
- b=LupkM5j0F6UKzNEJDcNXzpPgJphMBs/IaQTj1T5beWCtLFxqD54MCKv9PqieNxXX8+2kkwundn4a9XligzRKjzV3OV5YeewdZ/u6QSYfWghQ0ORZfMRfW/f+xthanEpRE+OOV0nBXx56SYFAXhXvPOtjOfG2cBnRJ+KvMQNAp7uPHjKmtLxMnIJVF82XUuBLHrFJCYDsk4ykCIKbnZxmSoFMreMbnI/4iIu6ENYiC6wyzK/DUefu5hLLr60kysPOm1Kj7uzrepRXzIQVGbjCY8Xn1EosQw7ch9AAhYkac5CzVToCNtlJFVj/sIA8fnIf9Qew81l8dAbrtKZVcCTFdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z2dk7K7T9DAppWx/xHWRtkZuAUvhZOoYyufY6yoM9pk=;
- b=bwwiNZ0p7NTkbkIuh9dx/T4PsUIj4dAmDg56zyL2qvXY9+DPDhAyOLmax2AWv6TqI+idkgUfQfKR+t+A23XnJfpH4B4eQW+XwkPl1pqM5GyjPzmF6k5dm/hPo4Hm3o0itU24MtIliTYGZVOuOydEFhIXFb3G7F6aNGmPnAR+01Y=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BY5PR10MB4034.namprd10.prod.outlook.com (2603:10b6:a03:1b1::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
- 2021 18:25:04 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9%4]) with mapi id 15.20.3955.027; Mon, 22 Mar 2021
- 18:25:04 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Thread-Topic: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Thread-Index: AQHXHvxh39vYR/ByH0SHQRVYSjGN/KqQU18A
-Date:   Mon, 22 Mar 2021 18:25:03 +0000
-Message-ID: <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
-In-Reply-To: <20210322091845.16437-1-mgorman@techsingularity.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: techsingularity.net; dkim=none (message not signed)
- header.d=none;techsingularity.net; dmarc=none action=none
- header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c986b3ef-c477-49a1-3b67-08d8ed5fcffd
-x-ms-traffictypediagnostic: BY5PR10MB4034:
-x-microsoft-antispam-prvs: <BY5PR10MB403405E19A0247784AD37DEE93659@BY5PR10MB4034.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tcicPTytUdJGLyA57TLfs4Ljmb2YUheBsMH84w4OSqS1ntpLHtKfuRqF0Xs/biPD4mzffOPugw7FrkkScLQCqL8fnxnH4IWZXc6QU1Jil2gycUDrn/FZpmUP0bDvYkp56oxpuk0gUMBF3hBxgRIl43qBf9CXk+5ITSdVmpcH/DsGUfK/MLxySSUwi95VoI3W6nT/CIsobnFE7tJRm2QLo+nRR7M/VgtBF+zY0WK1Fyf8tMHTxWv8ScORuK6pIHKKx5Chu/EPvqBZ0J1RDT/G/C0S1L2IRlC+T9ZWiET98Yhuqf68o0W5xsijb2STdr2nJraXF94kkbylphbmXAlRjJ9RZBMQACsW+52ZPJPlbxlvi5DICV5ouiQ4/uwlBFXwWj6T2kQcc1louymFltv4JPhpVtdYt2ybvJGTTi7713qKd8oia37DwdOFjI1AP13FO3T+wTeDIxyQvFX1RyVOUXc84AR4p9gwFs1Lbzesiqr63ADJFotUZGn2lU2GSwKew4yf5ZXatfZq7SA6gsezXGTC8uPTImyWAAvE2HD4+RqS6cuUXKRr2lXmUd5bggJGusnzYbHsYmKvUTKh05J49oE3QWGI3gOrtO/jvwYn1cZjmWzDYM/OmGw4YsN3FLAoPbftZHN7KN/EbXAPAHwJDunPTpj6HH2bhQacjrsdUjt/tavvdFsagtbbVY0d9NIl
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(346002)(366004)(136003)(376002)(7416002)(8676002)(8936002)(83380400001)(6486002)(86362001)(478600001)(2906002)(6916009)(66946007)(66556008)(38100700001)(64756008)(66446008)(76116006)(91956017)(66476007)(54906003)(316002)(5660300002)(6506007)(53546011)(71200400001)(33656002)(36756003)(2616005)(4326008)(6512007)(26005)(186003)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?d2pXZS+ZgXYbU+Ry3kwiI+gmj+hXwQhZ9dYL8EOUyCv3fNheifB2UdXjhFT6?=
- =?us-ascii?Q?PEPwU+1kndjJdnBCkgQpp907foxGZZxGZDzuTyq/wQe4YTXlgJzS+aG+xLuI?=
- =?us-ascii?Q?IJ27yN0hYKiw/MI3iK85p7zsLuYwPOEKF+aFAFQNVUsaNOUrOO65Vsb5eIES?=
- =?us-ascii?Q?KIJn1cFsKnjZwB/CrvTx1Pk4rwpAQ+Ux4MBKCXHpyqrpZQ9peaWsNTXl2bui?=
- =?us-ascii?Q?1DJ4//i3ZkbCYrOeZWu7GjLcuVlR8hyhe+xdFROCtqePmSrSHfYLyYNX4gEF?=
- =?us-ascii?Q?f4f0d37UoJcytothDdDPh+jBvhUtjAbI49U4yuyjyDJAIEPtTh8PWagjH9+k?=
- =?us-ascii?Q?x6nOFOSl5GPv29UOdt8SbokKM0EwTY33ztj9w94/qr4p7Kb/gJKHaqPp7cBd?=
- =?us-ascii?Q?eIH1WqINPaL/rr7BaYLZ3F6vUzhXg1g7fV1n+Bxf791caCEjsCSf6spkYMAd?=
- =?us-ascii?Q?AFaxGTYNz1IIptCg1VqttrfYU2HkO6SXR0fRykj7M+8BfX9+0ZbBdtTD/Av/?=
- =?us-ascii?Q?E6UiluHbE1NL+ZiIi60FM1WgknpKYhHgq9LRIBNMHHiFzGItlQYHLTUNmIdw?=
- =?us-ascii?Q?ZKIU4eoIN441jvB+olZoKWhPxt2dsWsuFLHhzZAPR52WOX9Ft3Df4DUPuTyV?=
- =?us-ascii?Q?9g3zFBWxkR9YjMZn3lMgqMkAt36VbDPgn35prP8TaAlkSupADQ7k+GUTq+hq?=
- =?us-ascii?Q?UlBpDBAJ9QKZCEq2DZqcYwMco53LO8n9lJIypxAfBgapUdaoXgmXazBCGd6x?=
- =?us-ascii?Q?mQ7VyBi8Hc8qY2edFBuqRFI6VUUyJ3PrtM7GnrhPft3ogBDAfOZRkrJg75ys?=
- =?us-ascii?Q?X21zX3bf65is41Xx3bkqkS4QOPhyUs/vgc/j04yV1Rhfn6ovfR8+eOk6jQws?=
- =?us-ascii?Q?HkJikNVvzdCxt8+TTPIX4w4FslRAjg9etMMZNaqN/ExIsFhfl6M4w3wmKzqC?=
- =?us-ascii?Q?aiLTkD1SkQzOKm1tMat4hQdAZd4DDDTku/0TaX7oJhzlnNd2dKAHcA7v1ldK?=
- =?us-ascii?Q?LbGMHbmkZYzyGxc5XhJrOSLSZYLq3Pla4Dk2UTlqTyDVWMlq9RsfMsWRPMhE?=
- =?us-ascii?Q?wEKQeXW1u108NJFxqj/I2U42NsZlGW5Xc3y9ZW0HBywn123t1sR82sInxh6p?=
- =?us-ascii?Q?ILVAm9qZHueGnB3kEZNIL/YgPyrynkHElHSri7iWdO+TRcn5aa62OzpxMysJ?=
- =?us-ascii?Q?33b6NcGkhD93WSe0WDy+RYx26YOMpElTNZQe3y3uL+7ib0numZwgySW3CLtD?=
- =?us-ascii?Q?63+I2A0OKk2IZkx5CybC1lFSbJBZxjgzfapgXLObMzqVgGtZL10XpBjLayri?=
- =?us-ascii?Q?8O4mICAn0An1zNLQXnSDgcnw?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <605D5AD6155EF3448FBD4206E1189DD6@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S232223AbhCVSZt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 14:25:49 -0400
+Received: from aposti.net ([89.234.176.197]:60246 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230195AbhCVSZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:25:21 -0400
+Date:   Mon, 22 Mar 2021 18:25:08 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v3 09/10] pinctrl: Ingenic: Add pinctrl driver for JZ4775.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        sernia.zhou@foxmail.com
+Message-Id: <W5VDQQ.VB9HP582KGC7@crapouillou.net>
+In-Reply-To: <1615975084-68203-10-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1615975084-68203-10-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c986b3ef-c477-49a1-3b67-08d8ed5fcffd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2021 18:25:03.8895
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oq0gDaNaYLFXqo1xQYEY/Kn012n8JtgGg44TamRvQAoHpSTHgtNH8ug7m6GSTEzt0t0wDHeR9t8cMdzjxz+hOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4034
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103220133
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
- adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103220134
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Mar 22, 2021, at 5:18 AM, Mel Gorman <mgorman@techsingularity.net> wro=
-te:
->=20
-> This series is based on top of Matthew Wilcox's series "Rationalise
-> __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
-> test and are not using Andrew's tree as a baseline, I suggest using the
-> following git tree
->=20
-> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebas=
-e-v5r9
->=20
-> The users of the API have been dropped in this version as the callers
-> need to check whether they prefer an array or list interface (whether
-> preference is based on convenience or performance).
+Le mer. 17 mars 2021 à 17:58, 周琰杰 (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a écrit :
+> Add support for probing the pinctrl-ingenic driver on the
+> JZ4775 SoC from Ingenic.
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+> 
+> Notes:
+>     v3:
+>     New patch.
+> 
+>  drivers/pinctrl/pinctrl-ingenic.c | 259 
+> ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 259 insertions(+)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
+> b/drivers/pinctrl/pinctrl-ingenic.c
+> index d8b37fa..eb4912d 100644
+> --- a/drivers/pinctrl/pinctrl-ingenic.c
+> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+> @@ -89,6 +89,7 @@ enum jz_version {
+>  	ID_JZ4755,
+>  	ID_JZ4760,
+>  	ID_JZ4770,
+> +	ID_JZ4775,
+>  	ID_JZ4780,
+>  	ID_X1000,
+>  	ID_X1500,
+> @@ -1237,6 +1238,259 @@ static const struct ingenic_chip_info 
+> jz4770_chip_info = {
+>  	.pull_downs = jz4770_pull_downs,
+>  };
+> 
+> +static const u32 jz4775_pull_ups[7] = {
+> +	0x28ff00ff, 0xf030f3fc, 0x0fffffff, 0xfffe4000, 0xf0f0000c, 
+> 0x0000f00f, 0x0000f3c0,
+> +};
+> +
+> +static const u32 jz4775_pull_downs[7] = {
+> +	0x00000000, 0x00030c03, 0x00000000, 0x00008000, 0x00000403, 
+> 0x00000ff0, 0x00030c00,
+> +};
+> +
+> +static int jz4775_uart0_data_pins[] = { 0xa0, 0xa3, };
+> +static int jz4775_uart0_hwflow_pins[] = { 0xa1, 0xa2, };
+> +static int jz4775_uart1_data_pins[] = { 0x7a, 0x7c, };
+> +static int jz4775_uart1_hwflow_pins[] = { 0x7b, 0x7d, };
+> +static int jz4775_uart2_data_c_pins[] = { 0x54, 0x4a, };
+> +static int jz4775_uart2_data_f_pins[] = { 0xa5, 0xa4, };
+> +static int jz4775_uart3_data_pins[] = { 0x1e, 0x1f, };
+> +static int jz4775_ssi_dt_a_pins[] = { 0x13, };
+> +static int jz4775_ssi_dt_d_pins[] = { 0x75, };
+> +static int jz4775_ssi_dr_a_pins[] = { 0x14, };
+> +static int jz4775_ssi_dr_d_pins[] = { 0x74, };
+> +static int jz4775_ssi_clk_a_pins[] = { 0x12, };
+> +static int jz4775_ssi_clk_d_pins[] = { 0x78, };
+> +static int jz4775_ssi_gpc_pins[] = { 0x76, };
+> +static int jz4775_ssi_ce0_a_pins[] = { 0x17, };
+> +static int jz4775_ssi_ce0_d_pins[] = { 0x79, };
+> +static int jz4775_ssi_ce1_pins[] = { 0x77, };
+> +static int jz4775_mmc0_1bit_a_pins[] = { 0x12, 0x13, 0x14, };
+> +static int jz4775_mmc0_4bit_a_pins[] = { 0x15, 0x16, 0x17, };
+> +static int jz4775_mmc0_8bit_a_pins[] = { 0x04, 0x05, 0x06, 0x07, };
+> +static int jz4775_mmc0_1bit_e_pins[] = { 0x9c, 0x9d, 0x94, };
+> +static int jz4775_mmc0_4bit_e_pins[] = { 0x95, 0x96, 0x97, };
+> +static int jz4775_mmc1_1bit_d_pins[] = { 0x78, 0x79, 0x74, };
+> +static int jz4775_mmc1_4bit_d_pins[] = { 0x75, 0x76, 0x77, };
+> +static int jz4775_mmc1_1bit_e_pins[] = { 0x9c, 0x9d, 0x94, };
+> +static int jz4775_mmc1_4bit_e_pins[] = { 0x95, 0x96, 0x97, };
+> +static int jz4775_mmc2_1bit_b_pins[] = { 0x3c, 0x3d, 0x34, };
+> +static int jz4775_mmc2_4bit_b_pins[] = { 0x35, 0x3e, 0x3f, };
+> +static int jz4775_mmc2_1bit_e_pins[] = { 0x9c, 0x9d, 0x94, };
+> +static int jz4775_mmc2_4bit_e_pins[] = { 0x95, 0x96, 0x97, };
+> +static int jz4775_nemc_8bit_data_pins[] = {
+> +	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+> +};
+> +static int jz4775_nemc_16bit_data_pins[] = {
+> +	0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf, 0xd0, 0xd1,
+> +};
+> +static int jz4775_nemc_cle_ale_pins[] = { 0x20, 0x21, };
+> +static int jz4775_nemc_addr_pins[] = { 0x22, 0x23, 0x24, 0x25, };
+> +static int jz4775_nemc_rd_we_pins[] = { 0x10, 0x11, };
+> +static int jz4775_nemc_frd_fwe_pins[] = { 0x12, 0x13, };
+> +static int jz4775_nemc_wait_pins[] = { 0x1b, };
+> +static int jz4775_nemc_cs1_pins[] = { 0x15, };
+> +static int jz4775_nemc_cs2_pins[] = { 0x16, };
+> +static int jz4775_nemc_cs3_pins[] = { 0x17, };
+> +static int jz4775_i2c0_pins[] = { 0x7e, 0x7f, };
+> +static int jz4775_i2c1_pins[] = { 0x9e, 0x9f, };
+> +static int jz4775_i2c2_pins[] = { 0x80, 0x83, };
+> +static int jz4775_i2s_data_tx_pins[] = { 0xa3, };
+> +static int jz4775_i2s_data_rx_pins[] = { 0xa2, };
+> +static int jz4775_i2s_clk_txrx_pins[] = { 0xa0, 0xa1, };
+> +static int jz4775_i2s_sysclk_pins[] = { 0x83, };
+> +static int jz4775_cim_pins[] = {
+> +	0x26, 0x27, 0x28, 0x29,
+> +	0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31,
+> +};
+> +static int jz4775_lcd_24bit_pins[] = {
+> +	0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47,
+> +	0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
+> +	0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,
+> +	0x58, 0x59, 0x5a, 0x5b,
+> +};
+> +static int jz4775_pwm_pwm0_pins[] = { 0x80, };
+> +static int jz4775_pwm_pwm1_pins[] = { 0x81, };
+> +static int jz4775_pwm_pwm2_pins[] = { 0x82, };
+> +static int jz4775_pwm_pwm3_pins[] = { 0x83, };
+> +static int jz4775_mac_rmii_pins[] = {
+> +	0xa9, 0xab, 0xaa, 0xac, 0xa5, 0xa4, 0xad, 0xae, 0xa6, 0xa8,
+> +};
+> +static int jz4775_mac_mii_pins[] = {
+> +	0x7b, 0x7a, 0x7d, 0x7c, 0xa7, 0x24, 0xaf,
+> +};
+> +static int jz4775_mac_rgmii_pins[] = {
+> +	0xa9, 0x7b, 0x7a, 0xab, 0xaa, 0xac, 0x7d, 0x7c, 0xa5, 0xa4,
+> +	0xad, 0xae, 0xa7, 0xa6,
+> +};
+> +static int jz4775_mac_gmii_pins[] = {
+> +	0x31, 0x30, 0x2f, 0x2e, 0x2d, 0x2c, 0x2b, 0x2a,
+> +	0xa8, 0x28, 0x24, 0xaf,
+> +};
+> +static int jz4775_otg_pins[] = { 0x8a, };
+> +
+> +static u8 jz4775_uart3_data_funcs[] = { 0, 1, };
+> +static u8 jz4775_mac_mii_funcs[] = { 1, 1, 1, 1, 0, 1, 0, };
+> +static u8 jz4775_mac_rgmii_funcs[] = {
+> +	0, 1, 1, 0, 0, 0, 1, 1, 0, 0,
+> +	0, 0, 0, 0,
+> +};
+> +static u8 jz4775_mac_gmii_funcs[] = {
+> +	1, 1, 1, 1, 1, 1, 1, 1,
+> +	0, 1, 1, 0,
+> +};
+> +
+> +static const struct group_desc jz4775_groups[] = {
+> +	INGENIC_PIN_GROUP("uart0-data", jz4775_uart0_data, 0),
+> +	INGENIC_PIN_GROUP("uart0-hwflow", jz4775_uart0_hwflow, 0),
+> +	INGENIC_PIN_GROUP("uart1-data", jz4775_uart1_data, 0),
+> +	INGENIC_PIN_GROUP("uart1-hwflow", jz4775_uart1_hwflow, 0),
+> +	INGENIC_PIN_GROUP("uart2-data-c", jz4775_uart2_data_c, 2),
+> +	INGENIC_PIN_GROUP("uart2-data-f", jz4775_uart2_data_f, 1),
+> +	INGENIC_PIN_GROUP_FUNCS("uart3-data", jz4775_uart3_data,
+> +				jz4775_uart3_data_funcs),
+> +	INGENIC_PIN_GROUP("ssi-dt-a", jz4775_ssi_dt_a, 2),
+> +	INGENIC_PIN_GROUP("ssi-dt-d", jz4775_ssi_dt_d, 1),
+> +	INGENIC_PIN_GROUP("ssi-dr-a", jz4775_ssi_dr_a, 2),
+> +	INGENIC_PIN_GROUP("ssi-dr-d", jz4775_ssi_dr_d, 1),
+> +	INGENIC_PIN_GROUP("ssi-clk-a", jz4775_ssi_clk_a, 2),
+> +	INGENIC_PIN_GROUP("ssi-clk-d", jz4775_ssi_clk_d, 1),
+> +	INGENIC_PIN_GROUP("ssi-gpc", jz4775_ssi_gpc, 1),
+> +	INGENIC_PIN_GROUP("ssi-ce0-a", jz4775_ssi_ce0_a, 2),
+> +	INGENIC_PIN_GROUP("ssi-ce0-d", jz4775_ssi_ce0_d, 1),
+> +	INGENIC_PIN_GROUP("ssi-ce1", jz4775_ssi_ce1, 1),
+> +	INGENIC_PIN_GROUP("mmc0-1bit-a", jz4775_mmc0_1bit_a, 1),
+> +	INGENIC_PIN_GROUP("mmc0-4bit-a", jz4775_mmc0_4bit_a, 1),
+> +	INGENIC_PIN_GROUP("mmc0-8bit-a", jz4775_mmc0_8bit_a, 1),
+> +	INGENIC_PIN_GROUP("mmc0-1bit-e", jz4775_mmc0_1bit_e, 0),
+> +	INGENIC_PIN_GROUP("mmc0-4bit-e", jz4775_mmc0_4bit_e, 0),
+> +	INGENIC_PIN_GROUP("mmc1-1bit-d", jz4775_mmc1_1bit_d, 0),
+> +	INGENIC_PIN_GROUP("mmc1-4bit-d", jz4775_mmc1_4bit_d, 0),
+> +	INGENIC_PIN_GROUP("mmc1-1bit-e", jz4775_mmc1_1bit_e, 1),
+> +	INGENIC_PIN_GROUP("mmc1-4bit-e", jz4775_mmc1_4bit_e, 1),
+> +	INGENIC_PIN_GROUP("mmc2-1bit-b", jz4775_mmc2_1bit_b, 0),
+> +	INGENIC_PIN_GROUP("mmc2-4bit-b", jz4775_mmc2_4bit_b, 0),
+> +	INGENIC_PIN_GROUP("mmc2-1bit-e", jz4775_mmc2_1bit_e, 2),
+> +	INGENIC_PIN_GROUP("mmc2-4bit-e", jz4775_mmc2_4bit_e, 2),
+> +	INGENIC_PIN_GROUP("nemc-8bit-data", jz4775_nemc_8bit_data, 0),
+> +	INGENIC_PIN_GROUP("nemc-16bit-data", jz4775_nemc_16bit_data, 1),
+> +	INGENIC_PIN_GROUP("nemc-cle-ale", jz4775_nemc_cle_ale, 0),
+> +	INGENIC_PIN_GROUP("nemc-addr", jz4775_nemc_addr, 0),
+> +	INGENIC_PIN_GROUP("nemc-rd-we", jz4775_nemc_rd_we, 0),
+> +	INGENIC_PIN_GROUP("nemc-frd-fwe", jz4775_nemc_frd_fwe, 0),
+> +	INGENIC_PIN_GROUP("nemc-wait", jz4775_nemc_wait, 0),
+> +	INGENIC_PIN_GROUP("nemc-cs1", jz4775_nemc_cs1, 0),
+> +	INGENIC_PIN_GROUP("nemc-cs2", jz4775_nemc_cs2, 0),
+> +	INGENIC_PIN_GROUP("nemc-cs3", jz4775_nemc_cs3, 0),
+> +	INGENIC_PIN_GROUP("i2c0-data", jz4775_i2c0, 0),
+> +	INGENIC_PIN_GROUP("i2c1-data", jz4775_i2c1, 0),
+> +	INGENIC_PIN_GROUP("i2c2-data", jz4775_i2c2, 1),
+> +	INGENIC_PIN_GROUP("i2s-data-tx", jz4775_i2s_data_tx, 1),
+> +	INGENIC_PIN_GROUP("i2s-data-rx", jz4775_i2s_data_rx, 1),
+> +	INGENIC_PIN_GROUP("i2s-clk-txrx", jz4775_i2s_clk_txrx, 1),
+> +	INGENIC_PIN_GROUP("i2s-sysclk", jz4775_i2s_sysclk, 2),
+> +	INGENIC_PIN_GROUP("cim-data", jz4775_cim, 0),
+> +	INGENIC_PIN_GROUP("lcd-24bit", jz4775_lcd_24bit, 0),
 
-I now have a consumer implementation that uses the array
-API. If I understand the contract correctly, the return
-value is the last array index that __alloc_pages_bulk()
-visits. My consumer uses the return value to determine
-if it needs to call the allocator again.
+Same comments as the previous patch.
 
-It is returning some confusing (to me) results. I'd like
-to get these resolved before posting any benchmark
-results.
+> +	{ "lcd-no-pins", },
 
-1. When it has visited every array element, it returns the
-same value as was passed in @nr_pages. That's the N + 1th
-array element, which shouldn't be touched. Should the
-allocator return nr_pages - 1 in the fully successful case?
-Or should the documentation describe the return value as
-"the number of elements visited" ?
+And here too.
 
-2. Frequently the allocator returns a number smaller than
-the total number of elements. As you may recall, sunrpc
-will delay a bit (via a call to schedule_timeout) then call
-again. This is supposed to be a rare event, and the delay
-is substantial. But with the array-based API, a not-fully-
-successful allocator call seems to happen more than half
-the time. Is that expected? I'm calling with GFP_KERNEL,
-seems like the allocator should be trying harder.
+Cheers,
+-Paul
 
-3. Is the current design intended so that if the consumer
-does call again, is it supposed to pass in the array address
-+ the returned index (and @nr_pages reduced by the returned
-index) ?
-
-Thanks for all your hard work, Mel.
-
-
-> Changelog since v4
-> o Drop users of the API
-> o Remove free_pages_bulk interface, no users
-> o Add array interface
-> o Allocate single page if watermark checks on local zones fail
->=20
-> Changelog since v3
-> o Rebase on top of Matthew's series consolidating the alloc_pages API
-> o Rename alloced to allocated
-> o Split out preparation patch for prepare_alloc_pages
-> o Defensive check for bulk allocation or <=3D 0 pages
-> o Call single page allocation path only if no pages were allocated
-> o Minor cosmetic cleanups
-> o Reorder patch dependencies by subsystem. As this is a cross-subsystem
->  series, the mm patches have to be merged before the sunrpc and net
->  users.
->=20
-> Changelog since v2
-> o Prep new pages with IRQs enabled
-> o Minor documentation update
->=20
-> Changelog since v1
-> o Parenthesise binary and boolean comparisons
-> o Add reviewed-bys
-> o Rebase to 5.12-rc2
->=20
-> This series introduces a bulk order-0 page allocator with the
-> intent that sunrpc and the network page pool become the first users.
-> The implementation is not particularly efficient and the intention is to
-> iron out what the semantics of the API should have for users. Despite
-> that, this is a performance-related enhancement for users that require
-> multiple pages for an operation without multiple round-trips to the page
-> allocator. Quoting the last patch for the prototype high-speed networking
-> use-case.
->=20
->    For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
->    redirecting xdp_frame packets into a veth, that does XDP_PASS to
->    create an SKB from the xdp_frame, which then cannot return the page
->    to the page_pool. In this case, we saw[1] an improvement of 18.8%
->    from using the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
->=20
-> Both potential users in this series are corner cases (NFS and high-speed
-> networks) so it is unlikely that most users will see any benefit in the
-> short term. Other potential other users are batch allocations for page
-> cache readahead, fault around and SLUB allocations when high-order pages
-> are unavailable. It's unknown how much benefit would be seen by convertin=
-g
-> multiple page allocation calls to a single batch or what difference it ma=
-y
-> make to headline performance. It's a chicken and egg problem given that
-> the potential benefit cannot be investigated without an implementation
-> to test against.
->=20
-> Light testing passed, I'm relying on Chuck and Jesper to test their
-> implementations, choose whether to use lists or arrays and document
-> performance gains/losses in the changelogs.
->=20
-> Patch 1 renames a variable name that is particularly unpopular
->=20
-> Patch 2 adds a bulk page allocator
->=20
-> Patch 3 adds an array-based version of the bulk allocator
->=20
-> include/linux/gfp.h |  18 +++++
-> mm/page_alloc.c     | 171 ++++++++++++++++++++++++++++++++++++++++++--
-> 2 files changed, 185 insertions(+), 4 deletions(-)
->=20
-> --=20
-> 2.26.2
->=20
-
---
-Chuck Lever
-
+> +	INGENIC_PIN_GROUP("pwm0", jz4775_pwm_pwm0, 0),
+> +	INGENIC_PIN_GROUP("pwm1", jz4775_pwm_pwm1, 0),
+> +	INGENIC_PIN_GROUP("pwm2", jz4775_pwm_pwm2, 0),
+> +	INGENIC_PIN_GROUP("pwm3", jz4775_pwm_pwm3, 0),
+> +	INGENIC_PIN_GROUP("mac-rmii", jz4775_mac_rmii, 0),
+> +	INGENIC_PIN_GROUP_FUNCS("mac-mii", jz4775_mac_mii,
+> +				jz4775_mac_mii_funcs),
+> +	INGENIC_PIN_GROUP_FUNCS("mac-rgmii", jz4775_mac_rgmii,
+> +				jz4775_mac_rgmii_funcs),
+> +	INGENIC_PIN_GROUP_FUNCS("mac-gmii", jz4775_mac_gmii,
+> +				jz4775_mac_gmii_funcs),
+> +	INGENIC_PIN_GROUP("otg-vbus", jz4775_otg, 0),
+> +};
+> +
+> +static const char *jz4775_uart0_groups[] = { "uart0-data", 
+> "uart0-hwflow", };
+> +static const char *jz4775_uart1_groups[] = { "uart1-data", 
+> "uart1-hwflow", };
+> +static const char *jz4775_uart2_groups[] = { "uart2-data-c", 
+> "uart2-data-f", };
+> +static const char *jz4775_uart3_groups[] = { "uart3-data", };
+> +static const char *jz4775_ssi_groups[] = {
+> +	"ssi-dt-a", "ssi-dt-d",
+> +	"ssi-dr-a", "ssi-dr-d",
+> +	"ssi-clk-a", "ssi-clk-d",
+> +	"ssi-gpc",
+> +	"ssi-ce0-a", "ssi-ce0-d",
+> +	"ssi-ce1",
+> +};
+> +static const char *jz4775_mmc0_groups[] = {
+> +	"mmc0-1bit-a", "mmc0-4bit-a", "mmc0-8bit-a",
+> +	"mmc0-1bit-e", "mmc0-4bit-e",
+> +};
+> +static const char *jz4775_mmc1_groups[] = {
+> +	"mmc1-1bit-d", "mmc1-4bit-d",
+> +	"mmc1-1bit-e", "mmc1-4bit-e",
+> +};
+> +static const char *jz4775_mmc2_groups[] = {
+> +	"mmc2-1bit-b", "mmc2-4bit-b",
+> +	"mmc2-1bit-e", "mmc2-4bit-e",
+> +};
+> +static const char *jz4775_nemc_groups[] = {
+> +	"nemc-8bit-data", "nemc-16bit-data", "nemc-cle-ale",
+> +	"nemc-addr", "nemc-rd-we", "nemc-frd-fwe", "nemc-wait",
+> +};
+> +static const char *jz4775_cs1_groups[] = { "nemc-cs1", };
+> +static const char *jz4775_cs2_groups[] = { "nemc-cs2", };
+> +static const char *jz4775_cs3_groups[] = { "nemc-cs3", };
+> +static const char *jz4775_i2c0_groups[] = { "i2c0-data", };
+> +static const char *jz4775_i2c1_groups[] = { "i2c1-data", };
+> +static const char *jz4775_i2c2_groups[] = { "i2c2-data", };
+> +static const char *jz4775_i2s_groups[] = {
+> +	"i2s-data-tx", "i2s-data-rx", "i2s-clk-txrx", "i2s-sysclk",
+> +};
+> +static const char *jz4775_cim_groups[] = { "cim-data", };
+> +static const char *jz4775_lcd_groups[] = { "lcd-24bit", 
+> "lcd-no-pins", };
+> +static const char *jz4775_pwm0_groups[] = { "pwm0", };
+> +static const char *jz4775_pwm1_groups[] = { "pwm1", };
+> +static const char *jz4775_pwm2_groups[] = { "pwm2", };
+> +static const char *jz4775_pwm3_groups[] = { "pwm3", };
+> +static const char *jz4775_mac_groups[] = {
+> +	"mac-rmii", "mac-mii", "mac-rgmii", "mac-gmii",
+> +};
+> +static const char *jz4775_otg_groups[] = { "otg-vbus", };
+> +
+> +static const struct function_desc jz4775_functions[] = {
+> +	{ "uart0", jz4775_uart0_groups, ARRAY_SIZE(jz4775_uart0_groups), },
+> +	{ "uart1", jz4775_uart1_groups, ARRAY_SIZE(jz4775_uart1_groups), },
+> +	{ "uart2", jz4775_uart2_groups, ARRAY_SIZE(jz4775_uart2_groups), },
+> +	{ "uart3", jz4775_uart3_groups, ARRAY_SIZE(jz4775_uart3_groups), },
+> +	{ "ssi", jz4775_ssi_groups, ARRAY_SIZE(jz4775_ssi_groups), },
+> +	{ "mmc0", jz4775_mmc0_groups, ARRAY_SIZE(jz4775_mmc0_groups), },
+> +	{ "mmc1", jz4775_mmc1_groups, ARRAY_SIZE(jz4775_mmc1_groups), },
+> +	{ "mmc2", jz4775_mmc2_groups, ARRAY_SIZE(jz4775_mmc2_groups), },
+> +	{ "nemc", jz4775_nemc_groups, ARRAY_SIZE(jz4775_nemc_groups), },
+> +	{ "nemc-cs1", jz4775_cs1_groups, ARRAY_SIZE(jz4775_cs1_groups), },
+> +	{ "nemc-cs2", jz4775_cs2_groups, ARRAY_SIZE(jz4775_cs2_groups), },
+> +	{ "nemc-cs3", jz4775_cs3_groups, ARRAY_SIZE(jz4775_cs3_groups), },
+> +	{ "i2c0", jz4775_i2c0_groups, ARRAY_SIZE(jz4775_i2c0_groups), },
+> +	{ "i2c1", jz4775_i2c1_groups, ARRAY_SIZE(jz4775_i2c1_groups), },
+> +	{ "i2c2", jz4775_i2c2_groups, ARRAY_SIZE(jz4775_i2c2_groups), },
+> +	{ "i2s", jz4775_i2s_groups, ARRAY_SIZE(jz4775_i2s_groups), },
+> +	{ "cim", jz4775_cim_groups, ARRAY_SIZE(jz4775_cim_groups), },
+> +	{ "lcd", jz4775_lcd_groups, ARRAY_SIZE(jz4775_lcd_groups), },
+> +	{ "pwm0", jz4775_pwm0_groups, ARRAY_SIZE(jz4775_pwm0_groups), },
+> +	{ "pwm1", jz4775_pwm1_groups, ARRAY_SIZE(jz4775_pwm1_groups), },
+> +	{ "pwm2", jz4775_pwm2_groups, ARRAY_SIZE(jz4775_pwm2_groups), },
+> +	{ "pwm3", jz4775_pwm3_groups, ARRAY_SIZE(jz4775_pwm3_groups), },
+> +	{ "mac", jz4775_mac_groups, ARRAY_SIZE(jz4775_mac_groups), },
+> +	{ "otg", jz4775_otg_groups, ARRAY_SIZE(jz4775_otg_groups), },
+> +};
+> +
+> +static const struct ingenic_chip_info jz4775_chip_info = {
+> +	.num_chips = 7,
+> +	.reg_offset = 0x100,
+> +	.version = ID_JZ4775,
+> +	.groups = jz4775_groups,
+> +	.num_groups = ARRAY_SIZE(jz4775_groups),
+> +	.functions = jz4775_functions,
+> +	.num_functions = ARRAY_SIZE(jz4775_functions),
+> +	.pull_ups = jz4775_pull_ups,
+> +	.pull_downs = jz4775_pull_downs,
+> +};
+> +
+>  static const u32 jz4780_pull_ups[6] = {
+>  	0x3fffffff, 0xfff0f3fc, 0x0fffffff, 0xffff4fff, 0xfffffb7c, 
+> 0x7fa7f00f,
+>  };
+> @@ -2775,6 +3029,7 @@ static const struct of_device_id 
+> ingenic_gpio_of_match[] __initconst = {
+>  	{ .compatible = "ingenic,jz4755-gpio", },
+>  	{ .compatible = "ingenic,jz4760-gpio", },
+>  	{ .compatible = "ingenic,jz4770-gpio", },
+> +	{ .compatible = "ingenic,jz4775-gpio", },
+>  	{ .compatible = "ingenic,jz4780-gpio", },
+>  	{ .compatible = "ingenic,x1000-gpio", },
+>  	{ .compatible = "ingenic,x1830-gpio", },
+> @@ -2997,6 +3252,10 @@ static const struct of_device_id 
+> ingenic_pinctrl_of_match[] = {
+>  		.data = IF_ENABLED(CONFIG_MACH_JZ4770, &jz4770_chip_info)
+>  	},
+>  	{
+> +		.compatible = "ingenic,jz4775-pinctrl",
+> +		.data = IF_ENABLED(CONFIG_MACH_JZ4775, &jz4775_chip_info)
+> +	},
+> +	{
+>  		.compatible = "ingenic,jz4780-pinctrl",
+>  		.data = IF_ENABLED(CONFIG_MACH_JZ4780, &jz4780_chip_info)
+>  	},
+> --
+> 2.7.4
+> 
 
 
