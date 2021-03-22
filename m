@@ -2,114 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FA7343EE3
+	by mail.lfdr.de (Postfix) with ESMTP id 447B2343EE2
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhCVLGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:06:12 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40512 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230384AbhCVLFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:05:35 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MAudE4013707;
-        Mon, 22 Mar 2021 12:05:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=selector1;
- bh=Pymfk/EgZE9Sai/go/LCUbW5Sj5kXKwBZSorsF6E/JM=;
- b=AS1MsmI1/uy4Sqoh816U7Rf3Y4jB9++nFcdz5kCsetmSk2Iey3fDSAJZWiUPA8dmOsan
- cg1qUuooc9ceCD1crogkfyUqwd7vOUTAmK4ul6KOWPoiephnLdt88q8+Uh68SLUEsmVt
- FqBo76MwbFm7NEuC0Al0+j1GsRNXc8j89xjU4BK1CbkbRAtnP1jgdK6qLJSx9xxxEK0E
- 9MPtSVMMKqxiJ6cimeucoxj0T4rBVpJddbanKv+r8pCWWRAatphwWnGEcq5MXjAzC0lk
- Mv9/0lymVBMCXAur+C/5mrNwpfWb+0AsyR/6BZSByxKWhOFsmRuygl8gnSBDLHL+Lpku lg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37d9968xhu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Mar 2021 12:05:06 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4829C10002A;
-        Mon, 22 Mar 2021 12:05:04 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1B8BF2463CD;
-        Mon, 22 Mar 2021 12:05:04 +0100 (CET)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
- 2021 12:05:03 +0100
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1497.012; Mon, 22 Mar 2021 12:05:03 +0100
-From:   Valentin CARON - foss <valentin.caron@foss.st.com>
-To:     "dillon.minfei@gmail.com" <dillon.minfei@gmail.com>,
-        "Alexandre TORGUE - foss" <alexandre.torgue@foss.st.com>,
-        "rong.a.chen@intel.com" <rong.a.chen@intel.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "vladimir.murzin@arm.com" <vladimir.murzin@arm.com>,
-        "afzal.mohd.ma@gmail.com" <afzal.mohd.ma@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Erwan LE-RAY - foss" <erwan.leray@foss.st.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Subject: Re: [Linux-stm32] [PATCH v4 9/9] dt-bindings: serial: stm32: Use
- 'unevaluatedProperties' instead of 'additionalProperties'
-Thread-Topic: [Linux-stm32] [PATCH v4 9/9] dt-bindings: serial: stm32: Use
- 'unevaluatedProperties' instead of 'additionalProperties'
-Thread-Index: AQHXHws10grT1ARp1UKFub73w++Z4Q==
-Date:   Mon, 22 Mar 2021 11:05:03 +0000
-Message-ID: <5f95b6ad-ddbe-8394-8599-e78f30c8b62c@foss.st.com>
-References: <1616205383-24114-1-git-send-email-dillon.minfei@gmail.com>
- <1616205383-24114-8-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1616205383-24114-8-git-send-email-dillon.minfei@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.48]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3C33FA9F1EEDA74F9DCE468962861821@st.com>
-Content-Transfer-Encoding: base64
+        id S230429AbhCVLGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:06:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230209AbhCVLFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:05:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A044E61879;
+        Mon, 22 Mar 2021 11:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616411131;
+        bh=9PoZ2UOAkMcPPEoghhVL5b7gkf7yE9xH1RgjLaPzkno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V59K6zDFWymyp9QUxzwsidE+vdao8WL9jfLDqvUnzP1Bw6NWUx8SoOCNYizS3o9ep
+         j8EJhCp56mRpfs+cASmFJRUoxCofOcIuhRskcKo0beTF0nBD7Qb5fOqrGM0noW17d2
+         jjinYW3wnDZNoCxX7mV0o/rQtfVDjEPq9juhKOyuI13iTW8rbVUN9TEL0Q0vLf6oWV
+         ps3SZQfAJosZCvVn/224d9O780yAAnfNIcFRiHfYrdvRZqmPYEgeF8uMe/PpE9qvGR
+         wZgMgAEFN+I7t00zLsCLtY3K8VXWisHZo0l5XxA1xcRykgTfeMOAmKsQDqmLkTTPT3
+         ElWDyHmxaTYmw==
+Date:   Mon, 22 Mar 2021 13:05:26 +0200
+From:   Abel Vesa <abelvesa@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Abel Vesa <abel.vesa@nxp.com>, Stephen Boyd <sboyd@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH V4] clk: imx: Fix reparenting of UARTs not associated
+ with stdout
+Message-ID: <YFh59k4LJQ964Q/u@ryzen.lan>
+References: <20210313122818.445228-1-aford173@gmail.com>
+ <e754a185-4aa2-295a-37a8-dd0c7ebc289f@pengutronix.de>
+ <0361ab5b-a26e-7631-9bae-8909715f6354@pengutronix.de>
+ <CAHCN7xLSMGOe6E0YQU=n0aKX53_CV2cz9BgqO2OA96S1-eTMgg@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-22_04:2021-03-22,2021-03-22 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHCN7xLSMGOe6E0YQU=n0aKX53_CV2cz9BgqO2OA96S1-eTMgg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGlsbG9uLA0KDQpJdCB3b3JrcyBmb3IgbWUuDQoNCk9uIDMvMjAvMjEgMjo1NiBBTSwgZGls
-bG9uLm1pbmZlaUBnbWFpbC5jb20gd3JvdGU6DQo+IEZyb206IGRpbGxvbiBtaW4gPGRpbGxvbi5t
-aW5mZWlAZ21haWwuY29tPg0KPg0KPiBUbyB1c2UgYWRkaXRpb25hbCBwcm9wZXJ0aWVzICdibHVl
-dG9vdGgnLCBuZWVkIHVzZSB1bmV2YWx1YXRlZFByb3BlcnRpZXMNCj4gdG8gZml4IGR0YnNfY2hl
-Y2sgd2FybmluZ3MuDQo+DQo+ICdhcmNoL2FybS9ib290L2R0cy9zdG0zMmg3NTBpLWFydC1waS5k
-dC55YW1sOiBzZXJpYWxANDAwMDQ4MDA6ICdibHVldG9vdGgnDQo+IGRvZXMgbm90IG1hdGNoIGFu
-eSBvZiB0aGUgcmVnZXhlczogJ3BpbmN0cmwtWzAtOV0rJw0KPg0KPiBSZXBvcnRlZC1ieToga2Vy
-bmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+IEZpeGVzOiBhZjFjMmQ4MTY5NWIgKCJk
-dC1iaW5kaW5nczogc2VyaWFsOiBDb252ZXJ0IFNUTTMyIFVBUlQgdG8ganNvbi1zY2hlbWEiKQ0K
-DQpZb3UgY2FuIGFkZCBteToNClRlc3RlZC1ieTogVmFsZW50aW4gQ2Fyb24gPHZhbGVudGluLmNh
-cm9uQGZvc3Muc3QuY29tPg0KDQo+IFNpZ25lZC1vZmYtYnk6IGRpbGxvbiBtaW4gPGRpbGxvbi5t
-aW5mZWlAZ21haWwuY29tPg0KPiAtLS0NCj4NCj4gdjQ6DQo+IC0gYWRkIFJlcG9ydGVkLWJ5IGFu
-ZCBGaXhlcyB0YWcNCj4gLSB1c2UgdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOiBmYWxzZSB0byBmaXgg
-ZHRic19jaGVjayB3YXJybmluZ3MgaW5zdGVhZCBvZg0KPiAgICBhZGQgJ2JsdWV0b290aCcgaW4g
-c3Qsc3RtMzItdWFydC55YW1sDQo+DQo+ICAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3NlcmlhbC9zdCxzdG0zMi11YXJ0LnlhbWwgfCAyICstDQo+ICAgMSBmaWxlIGNoYW5nZWQs
-IDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMyLXVhcnQueWFtbCBiL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zZXJpYWwvc3Qsc3RtMzItdWFydC55YW1s
-DQo+IGluZGV4IDg2MzE2NzgyODNmOS4uMzA1OTQxYjFkNWEwIDEwMDY0NA0KPiAtLS0gYS9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMyLXVhcnQueWFtbA0K
-PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMy
-LXVhcnQueWFtbA0KPiBAQCAtODAsNyArODAsNyBAQCByZXF1aXJlZDoNCj4gICAgIC0gaW50ZXJy
-dXB0cw0KPiAgICAgLSBjbG9ja3MNCj4gICANCj4gLWFkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxz
-ZQ0KPiArdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOiBmYWxzZQ0KPiAgIA0KPiAgIGV4YW1wbGVzOg0K
-PiAgICAgLSB8DQoNClJlZ2FyZHMsDQpWYWxlbnRpbg0K
+On 21-03-20 18:00:25, Adam Ford wrote:
+> On Sun, Mar 14, 2021 at 4:40 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >
+> > On 13.03.21 16:16, Ahmad Fatoum wrote:
+> > >> +/* i.MX boards use device trees now.  For build tests without CONFIG_OF, do nothing */
+> > >> +#ifdef CONFIG_OF
+> > >>      if (imx_keep_uart_clocks) {
+> > >>              int i;
+> > >>
+> > >> -            imx_uart_clocks = clks;
+> > >> -            for (i = 0; imx_uart_clocks[i]; i++)
+> > >> -                    clk_prepare_enable(*imx_uart_clocks[i]);
+> > >> +            imx_uart_clocks = kcalloc(clk_count, sizeof(struct clk *), GFP_KERNEL);
+> > >> +
+> > >> +            if (!of_stdout)
+> > >> +                    return;
+> > >
+> > > Memory leak. Just do if (imx_keep_uart_clocks && of_stdout)
+> >
+> > Please dismiss. I overlooked that you free it in a later initcall.
+> 
+> Abel,
+> 
+> Are you OK with this?  I also have a V5 posted [1] which does what
+> Ahmad suggested.
+> 
+
+I'm OK with this version. Applied it on my clk/imx branch:
+git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git
+
+Thanks a lot for all the effort.
+
+> Either of these will fix reparenting issues, but I need this for
+> Bluetooth to operate correctly, because both beacon imx8mn and imx8mn
+> kits switch the UART parent to an 80MHz clock in order to run at
+> 4Mbps.
+> 
+> thank you,
+> 
+> adam
+> >
+> > >>  static int __init imx_clk_disable_uart(void)
+> > >>  {
+> > >> -    if (imx_keep_uart_clocks && imx_uart_clocks) {
+> > >> +    if (imx_keep_uart_clocks && imx_enabled_uart_clocks) {
+> > >>              int i;
+> > >>
+> > >> -            for (i = 0; imx_uart_clocks[i]; i++)
+> > >> -                    clk_disable_unprepare(*imx_uart_clocks[i]);
+> > >> +            for (i = 0; i < imx_enabled_uart_clocks; i++) {
+> > >> +                    clk_disable_unprepare(imx_uart_clocks[i]);
+> > >> +                    clk_put(imx_uart_clocks[i]);
+> > >> +            };
+> > >> +            kfree(imx_uart_clocks);
+> > >>      }
+> >
+> > --
+> > Pengutronix e.K.                           |                             |
+> > Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> > 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> > Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
