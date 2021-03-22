@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8693436AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B0A3436AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 03:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCVCa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 22:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
+        id S229771AbhCVCdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 22:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhCVCaI (ORCPT
+        with ESMTP id S229574AbhCVCdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 22:30:08 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DE3C061574;
-        Sun, 21 Mar 2021 19:30:08 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id g24so11303573qts.6;
-        Sun, 21 Mar 2021 19:30:08 -0700 (PDT)
+        Sun, 21 Mar 2021 22:33:21 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A99C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 19:33:20 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id q9so7983962qvm.6
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 19:33:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zvjZTnV0KXTOt6FoMEGeyuaARj6MWBBMh4fFyNUYLHc=;
-        b=vKqNSZUg+4uP25F352kby1rk0lcESPnXbY/EH6+UcPNaGuBORCpLwQtO124775KkQM
-         E+Lvn23aU0kTmfajV6c9rxTEdbg9QkHmhI1Rb2ED0clQ8SXGmjLoxePQHPPgGwHU/uYG
-         J5whb5Ei4bDtymvIkxtyAkkzatbfAGEdmrEQL5Eikug+ZAL07EWXdtLfR4EHhGn6Uy3Q
-         LMT4BRFM+7k0Z9S7r7WqNC32NBaScceHAUhmz2zbDRKXzoAN8XAFDv5cHKM7X1uvNrwu
-         N9RQbP466NE75ds4abTnccq7yYKH/z60f+0Y5vmzTIoj9t1UxGguuzjUYTtmhYDbHsnv
-         j/oQ==
+        bh=mc1N3GtZ1bTFeJ11aXl2/W65kfbaBX9thn6otmVgR90=;
+        b=BgMjtwc054TbqFkhEF8nmK+g4+BTge2Md+mjcddUPsW1bCZ7smtPL5Vhh1Ya5FCEyG
+         SrIdQOONSssBoTjcpmXWLiBwHG97qlKUFn1YeV4mABuA1CAPWbIrnCk2tepNCyFaN4h7
+         25bKg/1FwigNN37HwubMehutew45kl/1lz2L6FXJ6kmBdudSsf9DxLrRCcGbyujzrf+2
+         oXbsMxjjdD9PIHOGDhnxQi87vOZKD24z4dVMNC/TnkgYkf9RCbDAR3xpTiM0UT2Mluh9
+         8ibxoQr9HiCgz3yqn6OBCMHmp5kIGA3eU7I7Y4Vy3A0uUkRDpW0W9JvD66gOSYreq5v6
+         qkbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zvjZTnV0KXTOt6FoMEGeyuaARj6MWBBMh4fFyNUYLHc=;
-        b=cbCSsNaCeaYVE0dGotFlxe1BlByaoEUwiPCBmUzCq9AwFVZ/xyyKXFunIBXg52hTHm
-         3ikNY3eUDLldmWa0hU8LxvQhP5HbReTtr8iLaJE00EgWHbXmvB7hCsdZ2KAuXjnJz+N9
-         A6O3TVzl6x91ahvqASBeApdRsOO+9vyffhCfQtkejSrupkiJZ6uw8mkwOSKEdnntI0Cg
-         omtnC69MEGYgdPox+f8flrw/1y+jZWmU+/Akl3i3HTOs3Jly13N+OdG0F6Fn0PjXhGJd
-         fvPmfl/doTalMJKm4oKE47ISDOxChqRXCeY0OW1RLcMkIIz/YI1MGVKA+7mpLe1MrCF6
-         Jeig==
-X-Gm-Message-State: AOAM532qc4vNIEf/A3cbnCiv06z6zfD7FkMDOAM2aRDlQ7b/v7PQ3wpr
-        RdHq7MOgNBRqGz8yAOq78J8=
-X-Google-Smtp-Source: ABdhPJzOxpAVcvDY/QGh4hA1ktphV1/piQaxf6ge4I+IkDQwgK+SVmv3s1Yc8Nc3EZeFC4vcDYJnKA==
-X-Received: by 2002:ac8:3984:: with SMTP id v4mr8253221qte.90.1616380207926;
-        Sun, 21 Mar 2021 19:30:07 -0700 (PDT)
+        bh=mc1N3GtZ1bTFeJ11aXl2/W65kfbaBX9thn6otmVgR90=;
+        b=d9dJ/69bPTSROss0t+Nh9xeNOZRo0covUfJ9DBXH2/R8EgUSwozcsAxTQheIozXamK
+         UUqe3U0eLF8jQQ4tlreZ/BB0qbEbYihdvarV2AnhPALy581hqm6oZjUnLFifBZwmxYCm
+         9PTyarmhR+51wWo0CmVlFM3sDLiJjT107RV7vUasS7zVgQ2bYFSaQzvAGpSTe1GNnHkp
+         sDlYKzrzTA7eGV/jMEQLCduc8zjNrwdpKAothbM8lHkf1QaeDbNXkJZpjwQERkgTuzkX
+         RnV6avVfjrUcuVv48OhvJkTCXwtYuAr7dCAeppAueA/CAdRo9ptJBS6zkzOEn3cCVVjz
+         f2CA==
+X-Gm-Message-State: AOAM530ZHk+aCgoQ/PwWrhWaDbRGWIL5TT2bx9UE3gj6sbNToT7AqL+d
+        h1JVgaygnnSHruCWHmBQ688=
+X-Google-Smtp-Source: ABdhPJwnwqqrcZY6jMNWHf4bis+/45QG9/GksAxj3Ld3jKCRUquKvDERF4B71eVqw3wU5Sp/VtWiUQ==
+X-Received: by 2002:a0c:c345:: with SMTP id j5mr8059007qvi.52.1616380399358;
+        Sun, 21 Mar 2021 19:33:19 -0700 (PDT)
 Received: from localhost.localdomain ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id j24sm9809004qka.67.2021.03.21.19.30.02
+        by smtp.gmail.com with ESMTPSA id 77sm10139906qko.48.2021.03.21.19.33.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 19:30:07 -0700 (PDT)
+        Sun, 21 Mar 2021 19:33:18 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
 Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] dt-bindings: display:  Fix a typo
-Date:   Mon, 22 Mar 2021 07:59:53 +0530
-Message-Id: <20210322022953.40901-1-unixbhaskar@gmail.com>
+Subject: [PATCH] cxl: Fix couple of spellings
+Date:   Mon, 22 Mar 2021 08:03:07 +0530
+Message-Id: <20210322023307.168754-1-unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,26 +64,27 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/Subsytem/Subsystem/
+s/filesytem/filesystem/
+s/symantics/semantics/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- Documentation/devicetree/bindings/display/msm/mdp5.txt | 2 +-
+ drivers/misc/cxl/context.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/display/msm/mdp5.txt b/Documentation/devicetree/bindings/display/msm/mdp5.txt
-index 43d11279c925..4b335baa3fd2 100644
---- a/Documentation/devicetree/bindings/display/msm/mdp5.txt
-+++ b/Documentation/devicetree/bindings/display/msm/mdp5.txt
-@@ -2,7 +2,7 @@ Qualcomm adreno/snapdragon MDP5 display controller
-
- Description:
-
--This is the bindings documentation for the Mobile Display Subsytem(MDSS) that
-+This is the bindings documentation for the Mobile Display Subsystem(MDSS) that
- encapsulates sub-blocks like MDP5, DSI, HDMI, eDP etc, and the MDP5 display
- controller found in SoCs like MSM8974, APQ8084, MSM8916, MSM8994 and MSM8996.
-
+diff --git a/drivers/misc/cxl/context.c b/drivers/misc/cxl/context.c
+index fb2eff69e449..e627b4056623 100644
+--- a/drivers/misc/cxl/context.c
++++ b/drivers/misc/cxl/context.c
+@@ -52,7 +52,7 @@ int cxl_context_init(struct cxl_context *ctx, struct cxl_afu *afu, bool master)
+ 		 * can always access it when dereferenced from IDR. For the same
+ 		 * reason, the segment table is only destroyed after the context is
+ 		 * removed from the IDR.  Access to this in the IOCTL is protected by
+-		 * Linux filesytem symantics (can't IOCTL until open is complete).
++		 * Linux filesystem semantics (can't IOCTL until open is complete).
+ 		 */
+ 		i = cxl_alloc_sst(ctx);
+ 		if (i)
 --
 2.31.0
 
