@@ -2,194 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9AE343EBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E44B8343ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhCVLBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
+        id S230459AbhCVLDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhCVLAr (ORCPT
+        with ESMTP id S230209AbhCVLCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:00:47 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5910C061574;
-        Mon, 22 Mar 2021 04:00:46 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so15488110oto.2;
-        Mon, 22 Mar 2021 04:00:46 -0700 (PDT)
+        Mon, 22 Mar 2021 07:02:52 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1FF6C061574;
+        Mon, 22 Mar 2021 04:02:51 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id o19so18743785edc.3;
+        Mon, 22 Mar 2021 04:02:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MswKZYYZouzZ/DJU9aD32Wwz0ahxahnd05UPrcoeNOA=;
-        b=bHl2ngaRSyHYtV22hVZZ6s070a52j+vhIZRPFwlNBJqUV5RHtpgQ1313zSO07TYVfP
-         q48jTzvA9OhsPj4xm2oaAfgBkQM7uezv6rSrsOZhh8Ow7pKoARb6djnaedWViqL3DSNA
-         InS6OsrgcmVMkcmH5XB4xOZV4G0kcANkF+qWP1ulnSbU7ATHbIDjhDNayAKQuemobgeX
-         QnGfZ6ZYefAx6BrzVf/DZYwj7UYb3bv1jMh+59XMrDbJDZLt0L80g25H+GfkrjyeHmwg
-         ptyFHv+X/8pFjU/X0jZ6lC0QtkQrKhjpUj0wYKcfHHul+5Pz5GkSsMl85cgp3e3QomgC
-         e7DA==
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-transfer-encoding;
+        bh=bP+9z6+/AkKUxzaywvKK+rP+LUX4mnyV5vUY0XfiapI=;
+        b=U5A5HLjn1OM9WQMo02CnQFoZT61qpIexv+AYTEiQV8KkU8A993NDIWHj1SSlsr+jh3
+         LJAYURPXOwBg8QK5wHvw9nEbrnotmZDTWaOAgDWf0ZfLTU8YeTjND/XVWrWgYASDMVtu
+         DLhHKO87djD3auYQ+5pCZCDynOFIzb2ueBNZyiMleMJYWn98RKv69PvRsFQuwi/szjJS
+         NcefUZWOeQf7IKCShLRQEKfS7MyLy/N01NeKO+JLpc64E01o3eUvPzNBOF1isNJo6I5V
+         WppEE+UkE59L3NZtvdN7IuDfVCIIb5mGi/KKQV0N+6UYnTpMDVikH/qNM4xE7yNhe8GZ
+         fc2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MswKZYYZouzZ/DJU9aD32Wwz0ahxahnd05UPrcoeNOA=;
-        b=ZkT2FFZyBL4EmunRPpWA33dzUV20fNmRWoxc5uxMTsb6aBpH//yZPLC4Bve1mfJ1U7
-         bVzikHfKmSiUrsBHdh6svXlVNTvrEYy08go38vz2/w9V1jN/TphNybF5l4JQH8ejLl8A
-         RgZSQ9SbRMfu5yT7lI0AroMyjabrDHzHbieF++fNhXlHTMtwAKW/vcTsiqkiZYlL4rm9
-         zCOzTamx0MOTk86QUimF9DDjGV+grt6XvmjntWWeYVJKeuzhyGBLSHjuUi9vG0o70Ndu
-         3ntQCpceD1LakHWCO6H4DzTGEMUx4z8iPmlb5QVkwdAJ2SLeo6n4TA9wjlmDguD9yD8O
-         grGg==
-X-Gm-Message-State: AOAM531JIgcIyyvuQhn4nsvBv2F+qOzhR+GOBMaaqEzGjs6pUzNdQOL/
-        R7Zm3KTHvMv8euYWE7ubujE1YoLM8laJxdQuF6E=
-X-Google-Smtp-Source: ABdhPJzYWNIUnBRsr9jYj9MV52giagykpnsYjr14zOl/4YFf/K65sxbnlRqoSwlT4Hvbw7E4/QTnbwFn6qCYx5b35eg=
-X-Received: by 2002:a9d:370:: with SMTP id 103mr10793042otv.232.1616410845129;
- Mon, 22 Mar 2021 04:00:45 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
+         :cc:subject:references:in-reply-to:content-transfer-encoding;
+        bh=bP+9z6+/AkKUxzaywvKK+rP+LUX4mnyV5vUY0XfiapI=;
+        b=j+FbfrxSsTPqrd7xcFuNQkQj70m1dbBfrJ4nNgwumIZOveEivI9XVAaNx6CqCr69WG
+         t3Od3D4Ns9CeVE2NJNhXJq2msGWM5JuDR8M7jBnJms11lgV46wjLUqevMY+XUk9kKSbu
+         K8h9h+c4Xc5202UCOqH9ituxwEoNsJYqmnWk+AnR+99GG59kX8Qoi7aa6gogw1DZ9UmG
+         R+od4UxzJX++k6r605ykAZ682ALtj3jJGkm7SnIO/xGVuHgvezM+rOImJ1BQ9Cz2Ig+U
+         YNrx+I+jejCf2vwsfEijjLwc3hmhUB/ckSORWX8cJjjuW2CayuV6o9N/nIPJ/50T5MOa
+         x+Pw==
+X-Gm-Message-State: AOAM532BeHU9NdTGSmm/FxZqMsPVkBPZVV7rzt/qLRuIQt+h2xXFxMAW
+        A81c5OzAimjRVN4/gmmwlI4=
+X-Google-Smtp-Source: ABdhPJzf/qlCLC5yeB8AWurXmXJOGGXXV5jfC4r8FY0SKsW+7CbDGnuB4Xh+HdZ1h6zlHChYCMYn3g==
+X-Received: by 2002:aa7:cf90:: with SMTP id z16mr24987525edx.273.1616410970752;
+        Mon, 22 Mar 2021 04:02:50 -0700 (PDT)
+Received: from [93.173.65.134] (93-173-65-134.bb.netvision.net.il. [93.173.65.134])
+        by smtp.gmail.com with ESMTPSA id v8sm11125318edc.30.2021.03.22.04.02.49
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 22 Mar 2021 04:02:50 -0700 (PDT)
+Message-ID: <60587922.2040903@gmail.com>
+Date:   Mon, 22 Mar 2021 13:01:54 +0200
+From:   Eli Billauer <eli.billauer@gmail.com>
+User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
 MIME-Version: 1.0
-References: <1605177598-23501-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605177598-23501-5-git-send-email-gene.chen.richtek@gmail.com>
- <74b127eb-9a3c-20c9-5692-b00b982f4da3@gmail.com> <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
- <20210115073241.GC3975472@dell> <CAE+NS37hVMVJA04ZmdcfKvw05ga1-vT=fGRAf=bh17XOJHEh4A@mail.gmail.com>
-In-Reply-To: <CAE+NS37hVMVJA04ZmdcfKvw05ga1-vT=fGRAf=bh17XOJHEh4A@mail.gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Mon, 22 Mar 2021 19:00:34 +0800
-Message-ID: <CAE+NS35R3y=mLcZWXtWbWrmoZLVfXc31a-xMqGuDD+CNbfqitA@mail.gmail.com>
-Subject: Re: [PATCH v7 04/11] mfd: mt6360: Combine mt6360 pmic/ldo resources
- into mt6360 regulator resources
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, sre@kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     arnd@arndb.de, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH v4 2/2] staging: Add driver for XillyUSB (Xillybus variant
+ for USB)
+References: <20210311095033.20956-1-eli.billauer@gmail.com> <20210311095033.20956-3-eli.billauer@gmail.com> <YFc6z9REEo27FMA+@kroah.com>
+In-Reply-To: <YFc6z9REEo27FMA+@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=882=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=883:16=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Lee Jones <lee.jones@linaro.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8815=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=883:32=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > On Fri, 15 Jan 2021, Gene Chen wrote:
-> >
-> > > Matthias Brugger <matthias.bgg@gmail.com> =E6=96=BC 2021=E5=B9=B41=E6=
-=9C=8812=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:32=E5=AF=AB=E9=81=
-=93=EF=BC=9A
-> > > >
-> > > >
-> > > >
-> > > > On 12/11/2020 11:39, Gene Chen wrote:
-> > > > > From: Gene Chen <gene_chen@richtek.com>
-> > > > >
-> > > > > Combine mt6360 pmic/ldo resources into mt6360 regulator resources
-> > > > > to simplify the similar resources object.
-> > > > >
-> > > > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >  drivers/mfd/mt6360-core.c | 11 +++--------
-> > > > >  1 file changed, 3 insertions(+), 8 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.=
-c
-> > > > > index 692e47b..5119e51 100644
-> > > > > --- a/drivers/mfd/mt6360-core.c
-> > > > > +++ b/drivers/mfd/mt6360-core.c
-> > > > > @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resou=
-rces[] =3D {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_=
-to_evt"),
-> > > > >  };
-> > > > >
-> > > > > -static const struct resource mt6360_pmic_resources[] =3D {
-> > > > > +static const struct resource mt6360_regulator_resources[] =3D {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt")=
-,
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
-> > > > > @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_reso=
-urces[] =3D {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
-> > > > > -};
-> > > > > -
-> > > > > -static const struct resource mt6360_ldo_resources[] =3D {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
-> > > > > @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] =
-=3D {
-> > > > >                   NULL, 0, 0, "mediatek,mt6360-chg"),
-> > > > >       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
-> > > > >                   NULL, 0, 0, "mediatek,mt6360-led"),
-> > > > > -     OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
-> > > > > -                 NULL, 0, 0, "mediatek,mt6360-pmic"),
-> > > > > -     OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
-> > > > > -                 NULL, 0, 0, "mediatek,mt6360-ldo"),
-> > > > > +     OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
-> > > > > +                 NULL, 0, 0, "mediatek,mt6360-regulator"),
-> > > >
-> > > > As discussed with the MFD maintainer [1], the regulator (and probab=
-ly all cells)
-> > > > shouldn't have a DT binding.
-> > > >
-> > > > So please send a new version which fixes that.
-> > > >
-> > > > Regards,
-> > > > Matthias
-> > > >
-> > > > [1] https://lore.kernel.org/linux-mediatek/20210111164118.GE4728@si=
-rena.org.uk/
-> >
-> > I don't think Mark is correct here.
-> >
-> > We usually do implement compatible strings for sub-devices and they do
-> > tend to have their own device nodes.
-> >
-> > It's a very long time ago since I coded this up myself, but from
-> > memory, you can't have 2 devices share a compatible string.
-> >
->
-> Either Mark or Lee suggestion is work.
-> Is there a conclusion that we can apply it?
-> If MFD is already supported of_compatible, we prefer use of_compatible ma=
-pping.
->
+Hello, Greg.
 
-Is there any update?
+Thanks for your comments. I'd like to address a couple of them.
 
-> > > Should I use parent's device to find sub-devices of_node if without
-> > > compatible name?
-> > > I trace the function mfd_add_device,
-> > >
-> > > if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell->of_compatible) =
-{
-> > >     .....
-> > >     ret =3D mfd_match_of_node_to_dev(pdev, np, cell);
-> > >     .....
-> > > }
-> > >
-> > > which is binding mfd sub-device with compatible. Does it be removed i=
-n
-> > > the feature?
-> > >
-> > > > >       OF_MFD_CELL("mt6360-tcpc", NULL,
-> > > > >                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
-> > > > >  };
-> > > > >
-> >
-> > --
-> > Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> > Senior Technical Lead - Developer Services
-> > Linaro.org =E2=94=82 Open source software for Arm SoCs
-> > Follow Linaro: Facebook | Twitter | Blog
+First, there's the lockless FIFO that is implemented in the driver:
+
+On 21/03/21 14:23, Greg KH wrote:
+>
+>> +
+>> +static unsigned int fifo_read(struct xillyfifo *fifo,
+>> +			      void *data, unsigned int len,
+>> +			      int (*copier)(void *, const void *, int))
+>> +{
+>> +	unsigned int done = 0;
+>> +	unsigned int todo = len;
+>> +	unsigned int fill;
+>> +	unsigned int readpos = fifo->readpos;
+>> +	unsigned int readbuf = fifo->readbuf;
+>> +
+>> +	fill = atomic_read(&fifo->fill);
+>>      
+> And the number changed right after reading it :(
+>
+> Again, no atomics, use a lock please.
+>
+> This is a USB device, you are NOT doing high-speed data transfers at
+> all.
+>
+>    
+The current XillyUSB hardware is USB 3.0 based, running at ~400 MB/s, 
+and this is just the beginning. For comparison, when the PCIe-based 
+Xillybus started at 200 MB/s, I didn't believe it would reach 6.6 GB/s.
+
+So that's why I made the effort to implement a lockless FIFO, with all 
+the extra synchronization fuss. And yes, it works perfectly, and has 
+been heavily fuzz tested on an x86_64 machine. The memory barriers are 
+carefully placed to make this work on less favorable platforms as well, 
+but even if I got it wrong -- odds are that the fix will be a line or two.
+
+Replacing atomics with spinlocks is a piece of cake, of course. But 
+given this extra information, do you still think it's a good idea?
+
+As for the specific remark on fifo->fill changing after reading it -- 
+that's OK, since it would just mean that the reader of the FIFO doesn't 
+see the extra data that has just been written to it. This doesn't break 
+anything.
+
+Moving on to the second topic:
+
+>> +static loff_t xillyusb_llseek(struct file *filp, loff_t offset, int whence)
+>>      
+> USB devices do not have a "seek", why is this needed?
+>
+>    
+Xillybus' device nodes are optionally seekable, which gives the user 
+application access to a RAM array on the FPGA (or logic emulating it, 
+such as registers). This holds true for the existing Xillybus API as 
+well as the one for XillyUSB.
+
+Thanks and regards,
+    Eli
