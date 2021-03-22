@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AE7344131
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F603442B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhCVMb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:31:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
+        id S231960AbhCVMoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:44:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230374AbhCVMae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:30:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEB2260C3D;
-        Mon, 22 Mar 2021 12:30:33 +0000 (UTC)
+        id S231997AbhCVMhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:37:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66F95619AB;
+        Mon, 22 Mar 2021 12:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416234;
-        bh=ZB97km9wZK85oCKCyWjxtmlx6xbYJF/8/5iRqzEhMIk=;
+        s=korg; t=1616416620;
+        bh=L1ZHneKGMBBfnSCptUGOuoVALo40O+L2+86LCfvOks0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VzAVqY+QhTZVauLOAItKKOwTbDj+J2CMqFmf6VruJU5xjIw1O/YbLDAy+c6KN4ZlC
-         y2jSzyPIvqkHiG3MAVFIEJKrqqNAJmg1wATgAqZmY6ldwB/Xmw5dFEu8Gb7WjIeoE2
-         QVynabzxpYxW72DkqUTVc6ADFX2fNpIdsvxJOrqQ=
+        b=RZhO2wKWFjG/8x0Jm7BsVJP1ZTs+E0m6nur2nySB3s0sId3jnMGCW4luO/PPwN2uF
+         PKw0icJ31iohm83+LiOOAVIPHqXozAS2hBT+be4z/dG7MI8HhmmgyBMurQTiHIjELi
+         31c55YiRjmWB6ICUf/J7sVREOmum25/h02BvgT+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.11 029/120] ASoC: fsl_ssi: Fix TDM slot setup for I2S mode
-Date:   Mon, 22 Mar 2021 13:26:52 +0100
-Message-Id: <20210322121930.627945492@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 056/157] scsi: lpfc: Fix some error codes in debugfs
+Date:   Mon, 22 Mar 2021 13:26:53 +0100
+Message-Id: <20210322121935.529415430@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shiyan <shc_work@mail.ru>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 87263968516fb9507d6215d53f44052627fae8d8 upstream.
+commit 19f1bc7edf0f97186810e13a88f5b62069d89097 upstream.
 
-When using the driver in I2S TDM mode, the _fsl_ssi_set_dai_fmt()
-function rewrites the number of slots previously set by the
-fsl_ssi_set_dai_tdm_slot() function to 2 by default.
-To fix this, let's use the saved slot count value or, if TDM
-is not used and the slot count is not set, proceed as before.
+If copy_from_user() or kstrtoull() fail then the correct behavior is to
+return a negative error code.
 
-Fixes: 4f14f5c11db1 ("ASoC: fsl_ssi: Fix number of words per frame for I2S-slave mode")
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20210216114221.26635-1-shc_work@mail.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/YEsbU/UxYypVrC7/@mwanda
+Fixes: f9bb2da11db8 ("[SCSI] lpfc 8.3.27: T10 additions for SLI4")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/fsl/fsl_ssi.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/scsi/lpfc/lpfc_debugfs.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -878,6 +878,7 @@ static int fsl_ssi_hw_free(struct snd_pc
- static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
- {
- 	u32 strcr = 0, scr = 0, stcr, srcr, mask;
-+	unsigned int slots;
+--- a/drivers/scsi/lpfc/lpfc_debugfs.c
++++ b/drivers/scsi/lpfc/lpfc_debugfs.c
+@@ -2423,7 +2423,7 @@ lpfc_debugfs_dif_err_write(struct file *
+ 	memset(dstbuf, 0, 33);
+ 	size = (nbytes < 32) ? nbytes : 32;
+ 	if (copy_from_user(dstbuf, buf, size))
+-		return 0;
++		return -EFAULT;
  
- 	ssi->dai_fmt = fmt;
+ 	if (dent == phba->debug_InjErrLBA) {
+ 		if ((dstbuf[0] == 'o') && (dstbuf[1] == 'f') &&
+@@ -2432,7 +2432,7 @@ lpfc_debugfs_dif_err_write(struct file *
+ 	}
  
-@@ -909,10 +910,11 @@ static int _fsl_ssi_set_dai_fmt(struct f
- 			return -EINVAL;
- 		}
+ 	if ((tmp == 0) && (kstrtoull(dstbuf, 0, &tmp)))
+-		return 0;
++		return -EINVAL;
  
-+		slots = ssi->slots ? : 2;
- 		regmap_update_bits(ssi->regs, REG_SSI_STCCR,
--				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
-+				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(slots));
- 		regmap_update_bits(ssi->regs, REG_SSI_SRCCR,
--				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
-+				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(slots));
- 
- 		/* Data on rising edge of bclk, frame low, 1clk before data */
- 		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP | SSI_STCR_TEFS;
+ 	if (dent == phba->debug_writeGuard)
+ 		phba->lpfc_injerr_wgrd_cnt = (uint32_t)tmp;
 
 
