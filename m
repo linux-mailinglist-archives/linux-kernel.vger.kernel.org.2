@@ -2,85 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B374343B10
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EAA343B0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhCVH6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:58:20 -0400
-Received: from m12-12.163.com ([220.181.12.12]:40245 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229874AbhCVH5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:57:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=lccNb8YaEAjPPXxCBA
-        p/evI28UzSVyDrx8A8IWVBdd0=; b=nxq+M0/UKkX0S3GPuiHOtiO0S9HGw+/glA
-        AwzKDD8b6aYMwp3M9rxZc/Hl2q5iZ3EpZMRVb5cNH66MdQ/EMv8sr5lz7FbFsBwb
-        g9W9IushwXI4L1P+9MmC3rtsfssMy5Y1iVdUiTWNyplqBihhH1WXfPqjU1xLHdty
-        sCda3UC7s=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.63])
-        by smtp8 (Coremail) with SMTP id DMCowABn1qqyTVhgnzXJVw--.62207S2;
-        Mon, 22 Mar 2021 15:56:37 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] scsi: lpfc: Fix some typo error
-Date:   Mon, 22 Mar 2021 15:56:45 +0800
-Message-Id: <20210322075645.25636-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DMCowABn1qqyTVhgnzXJVw--.62207S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr1UWF47Gr45Jw13XF1rtFb_yoW8WrW7p3
-        yak3W8JryDA345Z343Crs8J34fAa1rX34qkF4I934ruF13Zry2grZ5KrWjvry8CFy8Zr1j
-        qrsFka48uw18GrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j61vsUUUUU=
-X-Originating-IP: [119.137.55.63]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiRRVdsVl91ovlYQAAsB
+        id S229614AbhCVH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhCVH5D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 03:57:03 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281DBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:57:03 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e33so8090883pgm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=M+2HFgW2jdtORIhlyVvl5rL4yI8zxgxaI/oq1YFfvHs=;
+        b=Sd3qglXwSuRLTMwBSVfK2iULoJm7Z+RpLKgnsODcxzKbCRyQKwUXbShX4bvlVvvTQV
+         MbzrK2wtPyLSgTnvJ0GGwq1uLy5s3sFRfUYVZoF5CPpJahHiFMhJuxAoKj4NsmkRuJH1
+         HWsV8mJDs0WsDh+TszBCSHsPJov6jv1XJgSlN7FPJF4SOoeUWk8AOnSyTTQgyd0uMdWV
+         A6hkDREsIW2r8s+5xR4meFZOw9Dj0ta9Tw3wqRRSFPg+XpF2ED6E0tNchNOKqTGF3PdF
+         0KxlOmYFoqKE8FtE5OTD/EkUF2LD5loR8GpoAnd3FhMWncINdch+Fo4iI0S6i6xt1FyY
+         7u2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=M+2HFgW2jdtORIhlyVvl5rL4yI8zxgxaI/oq1YFfvHs=;
+        b=tGH+KnUQzn41cOvklAyJARppA6+wIW5OX564xVrPY7tvPcw5Wa3fOnFOQRgU0aeNvD
+         mawiP6ur9x5ZHhiOIEtxUlFfTg3cPKyyj5GwMuaa7INNDimXXCio6d7f+sT4hkL8RjM/
+         cbc9LCGcXquk7e5KTUAqDfbChwkTcC0ARMdem4LNBsQH8Qecp70WMUcyoXO1z8E1tGLJ
+         YRNZAlUsxIm2C0pZodBDCgu+NBKbyeAmEAEUkG+3cFey6oa7NBth+Pcp01S/nh/Eh1hK
+         yG1AMGx8WSQ4CgWKO6Y2HPfzAWAi1FAQAGPj2LvzzDeiz+KmqwRcrV2RlxeCetz2pxmV
+         e3ZQ==
+X-Gm-Message-State: AOAM530N+DY/4sHzoBP6PI8QI8A4Td6HsKX5ImZHtUYThpqKZ+HzhAib
+        jyR9BjMdTR+4uUeHQQkibZiPAg==
+X-Google-Smtp-Source: ABdhPJzuiciLTGYWRea94KBh93YsOSeq9vB+/9f6I88HY0JTUWaYHO6T2nzIAq7AXnv3sqiO9Wkyug==
+X-Received: by 2002:aa7:96cc:0:b029:202:6873:8ab4 with SMTP id h12-20020aa796cc0000b029020268738ab4mr20445357pfq.42.1616399822659;
+        Mon, 22 Mar 2021 00:57:02 -0700 (PDT)
+Received: from localhost ([122.172.6.13])
+        by smtp.gmail.com with ESMTPSA id gt22sm13328631pjb.35.2021.03.22.00.57.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Mar 2021 00:57:02 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 13:27:00 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v9] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210322075700.gzxx6s3jrkv3sfai@vireshk-i7>
+References: <e09c07532f5456816eb91ef4176bf910284df4ff.1616418890.git.jie.deng@intel.com>
+ <20210322064144.y6kpajolwh2kd3lj@vireshk-i7>
+ <dbb5dfe9-8ee6-e3f8-3681-d0ec83282930@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbb5dfe9-8ee6-e3f8-3681-d0ec83282930@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On 22-03-21, 15:53, Jie Deng wrote:
+> On 2021/3/22 14:41, Viresh Kumar wrote:
+> I think your optimization has problems...
+> 
+> 
+> > 	bool err_found = timeout;
+> > 
+> > 	for (i = 0; i < nr; i++) {
+> > 		/* Detach the ith request from the vq */
+> > 		req = virtqueue_get_buf(vq, &len);
+> > 
+> > 		/*
+> > 		 * Condition (req && req == &reqs[i]) should always meet since
+> > 		 * we have total nr requests in the vq.
+> > 		 */
+> > 		if (!err_found &&
+> >                      (WARN_ON(!(req && req == &reqs[i])) ||
+> > 		     (req->in_hdr.status != VIRTIO_I2C_MSG_OK))) {
+> > 			err_found = true;
+> > 			continue;
+> 
+> 
+> Just continue here, the ith buf leaks ?
 
-change 'lenth' to 'length'.
+Ahh, this needs to be dropped. You are fight.
+ 
+> > 		}
+> > 
+> > 		i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], err_found);
+> 
+> 
+> i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], !err_found); ?
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/scsi/lpfc/lpfc_debugfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Yes again, my mistake :)
 
-diff --git a/drivers/scsi/lpfc/lpfc_debugfs.c b/drivers/scsi/lpfc/lpfc_debugfs.c
-index 8c23806..658a962 100644
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -5154,7 +5154,7 @@ static int lpfc_idiag_cmd_get(const char __user *buf, size_t nbytes,
-  * This routine is to get the available extent information.
-  *
-  * Returns:
-- * overall lenth of the data read into the internal buffer.
-+ * overall length of the data read into the internal buffer.
-  **/
- static int
- lpfc_idiag_extacc_avail_get(struct lpfc_hba *phba, char *pbuffer, int len)
-@@ -5205,7 +5205,7 @@ static int lpfc_idiag_cmd_get(const char __user *buf, size_t nbytes,
-  * This routine is to get the allocated extent information.
-  *
-  * Returns:
-- * overall lenth of the data read into the internal buffer.
-+ * overall length of the data read into the internal buffer.
-  **/
- static int
- lpfc_idiag_extacc_alloc_get(struct lpfc_hba *phba, char *pbuffer, int len)
-@@ -5277,7 +5277,7 @@ static int lpfc_idiag_cmd_get(const char __user *buf, size_t nbytes,
-  * This routine is to get the driver extent information.
-  *
-  * Returns:
-- * overall lenth of the data read into the internal buffer.
-+ * overall length of the data read into the internal buffer.
-  **/
- static int
- lpfc_idiag_extacc_drivr_get(struct lpfc_hba *phba, char *pbuffer, int len)
 -- 
-1.9.1
-
-
+viresh
