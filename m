@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA7E34452E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811413444A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhCVNOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:14:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50726 "EHLO mail.kernel.org"
+        id S230031AbhCVNDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:03:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231210AbhCVM4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:56:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 969CD61A39;
-        Mon, 22 Mar 2021 12:48:31 +0000 (UTC)
+        id S230170AbhCVMtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:49:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56DDC619D4;
+        Mon, 22 Mar 2021 12:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417312;
-        bh=k8FE2Gsif1w1ejXL4TjjzV6AUO6S8xjbtI7a4EYTkvg=;
+        s=korg; t=1616417123;
+        bh=ox17xXF2WS6do4zmq3tGsBWJXw+xcZVI1uv4dyQTbVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCppyJM27o2FNhDeCMrX5ST0G4KeQeULvrm42YJzGbUwlbjiOC29NFihzbV/t0EtN
-         gdNOTiDB3+vEG9kSS8nSRm3+G8rwHyKg7IjLRtbXsZzWBX/HhnccYxzBCKVY8Dnwfn
-         /FTozK5HSciRoqT4cLAr+HPZxoP6rxHPHOPZpwf4=
+        b=c7TNaI8Eop9cfemqCX8+y7cuWeSVpIC/DWAIzvTAV7RDdpo9evMskrFHbwXtTMNGv
+         wrRdhwzVQsaIuhymwF4Iyv3aHDYHl0wLKup4CNehRBWKVDITEr3eBMMBFqeRptcvd+
+         wYiItmT5QNrrrU6jCQ5mfcZhsLcLl5znGb5mG9sc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 07/43] net: dsa: b53: Support setting learning on port
-Date:   Mon, 22 Mar 2021 13:28:48 +0100
-Message-Id: <20210322121920.292640228@linuxfoundation.org>
+        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 4.19 35/43] x86/ioapic: Ignore IRQ2 again
+Date:   Mon, 22 Mar 2021 13:28:49 +0100
+Message-Id: <20210322121921.042626173@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
-References: <20210322121920.053255560@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,121 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit f9b3827ee66cfcf297d0acd6ecf33653a5f297ef upstream.
+commit a501b048a95b79e1e34f03cac3c87ff1e9f229ad upstream.
 
-Add support for being able to set the learning attribute on port, and
-make sure that the standalone ports start up with learning disabled.
+Vitaly ran into an issue with hotplugging CPU0 on an Amazon instance where
+the matrix allocator claimed to be out of vectors. He analyzed it down to
+the point that IRQ2, the PIC cascade interrupt, which is supposed to be not
+ever routed to the IO/APIC ended up having an interrupt vector assigned
+which got moved during unplug of CPU0.
 
-We can remove the code in bcm_sf2 that configured the ports learning
-attribute because we want the standalone ports to have learning disabled
-by default and port 7 cannot be bridged, so its learning attribute will
-not change past its initial configuration.
+The underlying issue is that IRQ2 for various reasons (see commit
+af174783b925 ("x86: I/O APIC: Never configure IRQ2" for details) is treated
+as a reserved system vector by the vector core code and is not accounted as
+a regular vector. The Amazon BIOS has an routing entry of pin2 to IRQ2
+which causes the IO/APIC setup to claim that interrupt which is granted by
+the vector domain because there is no sanity check. As a consequence the
+allocation counter of CPU0 underflows which causes a subsequent unplug to
+fail with:
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+  [ ... ] CPU 0 has 4294967295 vectors, 589 available. Cannot disable CPU
+
+There is another sanity check missing in the matrix allocator, but the
+underlying root cause is that the IO/APIC code lost the IRQ2 ignore logic
+during the conversion to irqdomains.
+
+For almost 6 years nobody complained about this wreckage, which might
+indicate that this requirement could be lifted, but for any system which
+actually has a PIC IRQ2 is unusable by design so any routing entry has no
+effect and the interrupt cannot be connected to a device anyway.
+
+Due to that and due to history biased paranoia reasons restore the IRQ2
+ignore logic and treat it as non existent despite a routing entry claiming
+otherwise.
+
+Fixes: d32932d02e18 ("x86/irq: Convert IOAPIC to use hierarchical irqdomain interfaces")
+Reported-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210318192819.636943062@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/dsa/b53/b53_common.c |   20 ++++++++++++++++++++
- drivers/net/dsa/b53/b53_regs.h   |    1 +
- drivers/net/dsa/bcm_sf2.c        |    5 +++++
- drivers/net/dsa/bcm_sf2_regs.h   |    2 ++
- 4 files changed, 28 insertions(+)
+ arch/x86/kernel/apic/io_apic.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -501,6 +501,19 @@ static void b53_imp_vlan_setup(struct ds
+--- a/arch/x86/kernel/apic/io_apic.c
++++ b/arch/x86/kernel/apic/io_apic.c
+@@ -1043,6 +1043,16 @@ static int mp_map_pin_to_irq(u32 gsi, in
+ 	if (idx >= 0 && test_bit(mp_irqs[idx].srcbus, mp_bus_not_pci)) {
+ 		irq = mp_irqs[idx].srcbusirq;
+ 		legacy = mp_is_legacy_irq(irq);
++		/*
++		 * IRQ2 is unusable for historical reasons on systems which
++		 * have a legacy PIC. See the comment vs. IRQ2 further down.
++		 *
++		 * If this gets removed at some point then the related code
++		 * in lapic_assign_system_vectors() needs to be adjusted as
++		 * well.
++		 */
++		if (legacy && irq == PIC_CASCADE_IR)
++			return -EINVAL;
  	}
- }
  
-+static void b53_port_set_learning(struct b53_device *dev, int port,
-+				  bool learning)
-+{
-+	u16 reg;
-+
-+	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
-+	if (learning)
-+		reg &= ~BIT(port);
-+	else
-+		reg |= BIT(port);
-+	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
-+}
-+
- static int b53_enable_port(struct dsa_switch *ds, int port,
- 			   struct phy_device *phy)
- {
-@@ -508,6 +521,8 @@ static int b53_enable_port(struct dsa_sw
- 	unsigned int cpu_port = dev->cpu_port;
- 	u16 pvlan;
- 
-+	b53_port_set_learning(dev, port, false);
-+
- 	/* Clear the Rx and Tx disable bits and set to no spanning tree */
- 	b53_write8(dev, B53_CTRL_PAGE, B53_PORT_CTRL(port), 0);
- 
-@@ -551,6 +566,8 @@ static void b53_enable_cpu_port(struct b
- 		    PORT_CTRL_RX_MCST_EN |
- 		    PORT_CTRL_RX_UCST_EN;
- 	b53_write8(dev, B53_CTRL_PAGE, B53_PORT_CTRL(cpu_port), port_ctrl);
-+
-+	b53_port_set_learning(dev, cpu_port, false);
- }
- 
- static void b53_enable_mib(struct b53_device *dev)
-@@ -1342,6 +1359,8 @@ int b53_br_join(struct dsa_switch *ds, i
- 	b53_write16(dev, B53_PVLAN_PAGE, B53_PVLAN_PORT_MASK(port), pvlan);
- 	dev->ports[port].vlan_ctl_mask = pvlan;
- 
-+	b53_port_set_learning(dev, port, true);
-+
- 	return 0;
- }
- EXPORT_SYMBOL(b53_br_join);
-@@ -1392,6 +1411,7 @@ void b53_br_leave(struct dsa_switch *ds,
- 		vl->untag |= BIT(port) | BIT(dev->cpu_port);
- 		b53_set_vlan_entry(dev, pvid, vl);
- 	}
-+	b53_port_set_learning(dev, port, false);
- }
- EXPORT_SYMBOL(b53_br_leave);
- 
---- a/drivers/net/dsa/b53/b53_regs.h
-+++ b/drivers/net/dsa/b53/b53_regs.h
-@@ -112,6 +112,7 @@
- #define B53_UC_FLOOD_MASK		0x32
- #define B53_MC_FLOOD_MASK		0x34
- #define B53_IPMC_FLOOD_MASK		0x36
-+#define B53_DIS_LEARNING		0x3c
- 
- /*
-  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -252,6 +252,11 @@ static int bcm_sf2_port_setup(struct dsa
- 	reg &= ~P_TXQ_PSM_VDD(port);
- 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
- 
-+	/* Disable learning */
-+	reg = core_readl(priv, CORE_DIS_LEARN);
-+	reg |= BIT(port);
-+	core_writel(priv, reg, CORE_DIS_LEARN);
-+
- 	/* Enable Broadcom tags for that port if requested */
- 	if (priv->brcm_tag_mask & BIT(port))
- 		bcm_sf2_brcm_hdr_setup(priv, port);
---- a/drivers/net/dsa/bcm_sf2_regs.h
-+++ b/drivers/net/dsa/bcm_sf2_regs.h
-@@ -150,6 +150,8 @@ enum bcm_sf2_reg_offs {
- #define CORE_SWITCH_CTRL		0x00088
- #define  MII_DUMB_FWDG_EN		(1 << 6)
- 
-+#define CORE_DIS_LEARN			0x000f0
-+
- #define CORE_SFT_LRN_CTRL		0x000f8
- #define  SW_LEARN_CNTL(x)		(1 << (x))
- 
+ 	mutex_lock(&ioapic_mutex);
 
 
