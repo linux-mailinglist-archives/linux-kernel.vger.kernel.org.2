@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6153442C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35E1344185
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhCVMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58776 "EHLO mail.kernel.org"
+        id S231660AbhCVMeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhCVMhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:37:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8405619AF;
-        Mon, 22 Mar 2021 12:37:10 +0000 (UTC)
+        id S231459AbhCVMcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:32:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 174F161992;
+        Mon, 22 Mar 2021 12:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416631;
-        bh=yiXvwz2Os9RG+jra+SAuODCPOe8zgnvxJPTMRo3X3+4=;
+        s=korg; t=1616416319;
+        bh=oXE1iUftqQGBVpvJSf3ey9Cgm92izoSfFtkaZ/CNuuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xe1eFNA7cnB+qu+chp6fQuZcARfYwtgueN+UJhc87VGK8jU5/hd609qoz6BBVBxhN
-         0b1bU8MSiaLjOUVMGtXvtc+s/XNhl1F2uNBm6Tmx+le1nlG6tmmPT/8h4sSqcT5oVz
-         qFO1dJkFzmgl9DZQ+ufCWL+kbUOYN6yWQGmTMFwU=
+        b=b6Z5Tq/o1y48hHrAGxi0Th7fOx0J4mW7QlLepj3seSqwROe2yA00azkJ7+ARoe8bu
+         T4VCJ6JirIAkkrsdMDgQt0LdDux4g91stYPXkPhOL++mwBnRXPUHbYn7rypx0KMWEC
+         6MLYc7JvJgwH7da00nz2HloQqq5T5iLFm6CX1TaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Anderson <seanga2@gmail.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 5.10 059/157] RISC-V: correct enum sbi_ext_rfence_fid
-Date:   Mon, 22 Mar 2021 13:26:56 +0100
-Message-Id: <20210322121935.627248248@linuxfoundation.org>
+        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.11 034/120] ASoC: qcom: sdm845: Fix array out of range on rx slim channels
+Date:   Mon, 22 Mar 2021 13:26:57 +0100
+Message-Id: <20210322121930.799909440@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-commit 6dd4879f59b0a0679ed8c3ebaff3d79f37930778 upstream.
+commit 4800fe6ea1022eb240215b1743d2541adad8efc7 upstream.
 
-The constants in enum sbi_ext_rfence_fid should match the SBI
-specification. See
-https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc#78-function-listing
+WCD934x has only 13 RX SLIM ports however we are setting it as 16
+in set_channel_map, this will lead to array out of bounds error!
 
-| Function Name               | FID | EID
-| sbi_remote_fence_i          |   0 | 0x52464E43
-| sbi_remote_sfence_vma       |   1 | 0x52464E43
-| sbi_remote_sfence_vma_asid  |   2 | 0x52464E43
-| sbi_remote_hfence_gvma_vmid |   3 | 0x52464E43
-| sbi_remote_hfence_gvma      |   4 | 0x52464E43
-| sbi_remote_hfence_vvma_asid |   5 | 0x52464E43
-| sbi_remote_hfence_vvma      |   6 | 0x52464E43
+Orignally caught by enabling USBAN array out of bounds check:
 
-Fixes: ecbacc2a3efd ("RISC-V: Add SBI v0.2 extension definitions")
-Reported-by: Sean Anderson <seanga2@gmail.com>
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Fixes: 5caf64c633a3 ("ASoC: qcom: sdm845: add support to DB845c and Lenovo Yoga")
+Reported-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210309142129.14182-3-srinivas.kandagatla@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/riscv/include/asm/sbi.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/sdm845.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/riscv/include/asm/sbi.h
-+++ b/arch/riscv/include/asm/sbi.h
-@@ -51,10 +51,10 @@ enum sbi_ext_rfence_fid {
- 	SBI_EXT_RFENCE_REMOTE_FENCE_I = 0,
- 	SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
- 	SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
--	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
- 	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA_VMID,
--	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
-+	SBI_EXT_RFENCE_REMOTE_HFENCE_GVMA,
- 	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA_ASID,
-+	SBI_EXT_RFENCE_REMOTE_HFENCE_VVMA,
- };
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -27,7 +27,7 @@
+ #define SPK_TDM_RX_MASK         0x03
+ #define NUM_TDM_SLOTS           8
+ #define SLIM_MAX_TX_PORTS 16
+-#define SLIM_MAX_RX_PORTS 16
++#define SLIM_MAX_RX_PORTS 13
+ #define WCD934X_DEFAULT_MCLK_RATE	9600000
  
- enum sbi_ext_hsm_fid {
+ struct sdm845_snd_data {
 
 
