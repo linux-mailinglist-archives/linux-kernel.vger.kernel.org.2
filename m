@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E18B343F5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B9A343F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhCVLN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:13:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhCVLMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:12:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0959261984;
-        Mon, 22 Mar 2021 11:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616411566;
-        bh=t1MYx5aUZFlCch7gUWh/6mVYccvkxqMykhxOqpoK5zI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tds2Btir1wi9mjV/WNuTXrD4sePcVbK2iXaTo+5tg7BeVjTDpy9XrUxbx+azS30I3
-         XaCfDeYEqN6eEef6BoNAF3iKUodjkRWGoBbzt2x8odDW3e8yJyIy4w2g1vhIAG7y4h
-         j/PJrNthAAaVASEoaLmWnanfAfGPDn87k13nTbAJNC1NKmAEFq1fXjobStsB4Or8mr
-         Xf0KUhwu7AkgjkufjuR3z8tuqF8H3meoU75oYeR5fHZUTrSXM98dLI4/ZPAN4itxUX
-         mV634SPqFQSKysBnClM5nZ+drFaeXZtjZDy8t+9FWt4+O8iLsod/EUafOrx6swDje4
-         z00Hh4eSRn9NQ==
-Received: from johan by xi with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lOIUZ-0008N9-74; Mon, 22 Mar 2021 12:13:03 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Stanislaw Gruszka <sgruszka@redhat.com>,
+        id S230321AbhCVLOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230264AbhCVLN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:13:58 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E42C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:13:58 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id v186so8391537pgv.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Mbopn8hzCJgUALAOGDhuLMSj1tx4x0j6ipILFpuFSzQ=;
+        b=f68vkjYTiuGcTqFEoHapQbG5ylfOWafOjzmqlNZdljtrxiNmv5VK+S7Su7x6A+JXFa
+         SnRUYIxf03iuND+4bvswWYhnDHHI5WoTsMcKa5OUHg1ziboSxGEs7YOJfssyhrsk7led
+         F6aLDttYUWU7JN3NNlByOVnrgd+7vqjZFKn08=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mbopn8hzCJgUALAOGDhuLMSj1tx4x0j6ipILFpuFSzQ=;
+        b=L0EXQL53E8/XhSTZbovCdiDQUfV4brUY4Ejl9MuISbeNL9xD5fqTf97DyDubhjU15Q
+         jDJz/f4RXPJoPEEdjIXcbK9EUdGhVDJoHpa4zUzZVZHvqilckNO0W3ZS9B/82CsbnGVJ
+         xFfKaJ7b7kOMaTX4elbsBXDEP97XWGtYDgphs5uP8cNCf3oIfbWn42LC0ugkXJ+bm7X4
+         OHO0nlBMJILzCyZfwLmDPjuCGUVGNY9y/7F52SjqTa6F4prcPntLLnIixe4aIyfAHg94
+         4mv2Vs2z2TQLm8SGxjjRQfgu5b86m2/RO3C24Sl0+sjFMe2Q5V+9m9C4Z8U3wiDyXV1+
+         mZFg==
+X-Gm-Message-State: AOAM533qvwog8UkPVwIunuEknJzxKq88oQJ93L/JnMrg5AkUugvCdO0a
+        0GM39XmdIWug/euT6bXWbfnxYw==
+X-Google-Smtp-Source: ABdhPJw0QI1cJEhLFlzExbGqhMW+fHkQw3w/CI8P9NRyr88PBFWKS/Clhvv+CGHGR3katJPaXCL2rQ==
+X-Received: by 2002:a65:5585:: with SMTP id j5mr2986904pgs.316.1616411637538;
+        Mon, 22 Mar 2021 04:13:57 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:b1b5:270:5df6:6d6e])
+        by smtp.gmail.com with ESMTPSA id 193sm3822466pfa.148.2021.03.22.04.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 04:13:57 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 20:13:51 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] USB: ehci: drop workaround for forced irq threading
-Date:   Mon, 22 Mar 2021 12:12:49 +0100
-Message-Id: <20210322111249.32141-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v1 1/3] printk: track/limit recursion
+Message-ID: <YFh770T97jwQLRKu@google.com>
+References: <20210316233326.10778-1-john.ogness@linutronix.de>
+ <20210316233326.10778-2-john.ogness@linutronix.de>
+ <YFba1Fje6+TeIiGW@google.com>
+ <87mtuvmpcl.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mtuvmpcl.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Force-threaded interrupt handlers used to run with interrupts enabled,
-something which could lead to deadlocks in case a threaded handler
-shared a lock with code running in hard interrupt context (e.g. timer
-callbacks) and did not explicitly disable interrupts.
+On (21/03/22 11:53), John Ogness wrote:
+> On 2021-03-21, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+> >> @@ -2055,6 +2122,9 @@ int vprintk_store(int facility, int level,
+> >>  	 */
+> >>  	ts_nsec = local_clock();
+> >>  
+> >> +	if (!printk_enter_irqsave(&irqflags))
+> >> +		return 0;
+> >
+> > I guess it can be interesting to somehow signal us that we had
+> > printk() recursion overflow, and how many messages we lost.
+> 
+> Honestly, if we hit 3 levels of recursion, we are probably dealing with
+> an infinite recursion issue.
 
-Since commit 81e2073c175b ("genirq: Disable interrupts for force
-threaded handlers") interrupt handlers always run with interrupts
-disabled on non-RT so that drivers no longer need to do handle forced
-threading ("threadirqs").
+I tend to agree.
 
-Drop the now obsolete workaround added by commit a1227f3c1030 ("usb:
-ehci: fix deadlock when threadirqs option is used").
+> I do not see the value of counting the overflows in that case. The
+> logged messages at that recursion level would ben enough to point
+> us to the problem.
+>
+> > 3 levels of recursion seem like reasonable limit, but I maybe wouldn't
+> > mind one extra level.
+>
+> With 3 levels, we will see all the messages of:
+>
+>     printk -> WARN_ON -> WARN_ON -> WARN_ON
 
-Cc: Stanislaw Gruszka <sgruszka@redhat.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/host/ehci-hcd.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+Well, not necessarily this simple.
 
-diff --git a/drivers/usb/host/ehci-hcd.c b/drivers/usb/host/ehci-hcd.c
-index 1926b328b6aa..403bd3d6991f 100644
---- a/drivers/usb/host/ehci-hcd.c
-+++ b/drivers/usb/host/ehci-hcd.c
-@@ -705,15 +705,8 @@ static irqreturn_t ehci_irq (struct usb_hcd *hcd)
- 	struct ehci_hcd		*ehci = hcd_to_ehci (hcd);
- 	u32			status, masked_status, pcd_status = 0, cmd;
- 	int			bh;
--	unsigned long		flags;
- 
--	/*
--	 * For threadirqs option we use spin_lock_irqsave() variant to prevent
--	 * deadlock with ehci hrtimer callback, because hrtimer callbacks run
--	 * in interrupt context even when threadirqs is specified. We can go
--	 * back to spin_lock() variant when hrtimer callbacks become threaded.
--	 */
--	spin_lock_irqsave(&ehci->lock, flags);
-+	spin_lock(&ehci->lock);
- 
- 	status = ehci_readl(ehci, &ehci->regs->status);
- 
-@@ -731,7 +724,7 @@ static irqreturn_t ehci_irq (struct usb_hcd *hcd)
- 
- 	/* Shared IRQ? */
- 	if (!masked_status || unlikely(ehci->rh_state == EHCI_RH_HALTED)) {
--		spin_unlock_irqrestore(&ehci->lock, flags);
-+		spin_unlock(&ehci->lock);
- 		return IRQ_NONE;
- 	}
- 
-@@ -842,7 +835,7 @@ static irqreturn_t ehci_irq (struct usb_hcd *hcd)
- 
- 	if (bh)
- 		ehci_work (ehci);
--	spin_unlock_irqrestore(&ehci->lock, flags);
-+	spin_unlock(&ehci->lock);
- 	if (pcd_status)
- 		usb_hcd_poll_rh_status(hcd);
- 	return IRQ_HANDLED;
--- 
-2.26.3
+printk
+ vsprintf
+  handle_foo_specifier
+   printk
+    call_console_drivers
+     timekeeping
+      printk
+       vsprintf
 
+We saw in the past that enabling CONFIG_DEBUG_OBJECTS (if I'm not
+mistaken) can add quite a bit of extra printk recursion paths.
+
+We also have other CONFIG_DEBUG_* config options that can pop up as
+recursive printk-s here and there. For instance, from vsprintf::foo_specifier()
+where we escape from printk() to various kernel subsystems: net, block,
+etc.
+
+Maybe sometimes on level 3+ we'll see something interesting,
+but I've no strong opinion on this.
+
+> Keep in mind that each additional level causes the reading of the logs
+> to be significantly more complex. Each level increases the output
+> exponentially:
+
+Yes, I realize that. That's why I suggested that maybe recursive
+printk-s can have some special extra prefix. Recursive printk-s
+will interleave with whatever is being printed on this_cpu, so
+prefix might be helpful.
+
+	-ss
