@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDDA34374D
+	by mail.lfdr.de (Postfix) with ESMTP id B14C034374E
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhCVDOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:14:55 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:52620 "EHLO
+        id S229912AbhCVDPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:15:00 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52635 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229956AbhCVDOG (ORCPT
+        with ESMTP id S229961AbhCVDOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:14:06 -0400
-X-UUID: fd297d4a22b0471da613f0553770305e-20210322
-X-UUID: fd297d4a22b0471da613f0553770305e-20210322
+        Sun, 21 Mar 2021 23:14:07 -0400
+X-UUID: 4d105154a0254477a4bec2d166e51367-20210322
+X-UUID: 4d105154a0254477a4bec2d166e51367-20210322
 Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1888485629; Mon, 22 Mar 2021 11:14:03 +0800
+        with ESMTP id 1998239859; Mon, 22 Mar 2021 11:14:03 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
  mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 22 Mar 2021 11:14:02 +0800
+ 15.0.1497.2; Mon, 22 Mar 2021 11:14:03 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 22 Mar 2021 11:14:01 +0800
+ Transport; Mon, 22 Mar 2021 11:14:02 +0800
 From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -36,9 +36,9 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-kernel@vger.kernel.org>,
         Eddie Hung <eddie.hung@mediatek.com>,
         Nicolas Boichat <drinkcat@chromium.org>
-Subject: [PATCH 11/13] usb: mtu3: add support ip-sleep wakeup for MT8192
-Date:   Mon, 22 Mar 2021 11:13:50 +0800
-Message-ID: <1616382832-28450-11-git-send-email-chunfeng.yun@mediatek.com>
+Subject: [PATCH 12/13] usb: mtu3: drop CONFIG_OF
+Date:   Mon, 22 Mar 2021 11:13:51 +0800
+Message-ID: <1616382832-28450-12-git-send-email-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1616382832-28450-1-git-send-email-chunfeng.yun@mediatek.com>
 References: <1616382832-28450-1-git-send-email-chunfeng.yun@mediatek.com>
@@ -49,49 +49,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add add support ip-sleep wakeup for MT8192, it's a specific
-revision, not follow IP rule.
+The driver can match only the devices created by the OF core
+via the DT table, so the table should be always used.
 
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- drivers/usb/mtu3/mtu3_host.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/mtu3/mtu3_plat.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/usb/mtu3/mtu3_host.c b/drivers/usb/mtu3/mtu3_host.c
-index e35b17e5f58e..601656f436a1 100644
---- a/drivers/usb/mtu3/mtu3_host.c
-+++ b/drivers/usb/mtu3/mtu3_host.c
-@@ -30,6 +30,10 @@
- #define WC0_IS_P	BIT(12)	/* polarity */
- #define WC0_IS_EN	BIT(6)
+diff --git a/drivers/usb/mtu3/mtu3_plat.c b/drivers/usb/mtu3/mtu3_plat.c
+index d44d5417438d..7786a95a874e 100644
+--- a/drivers/usb/mtu3/mtu3_plat.c
++++ b/drivers/usb/mtu3/mtu3_plat.c
+@@ -502,25 +502,20 @@ static const struct dev_pm_ops mtu3_pm_ops = {
  
-+/* mt8192 */
-+#define WC0_SSUSB0_CDEN		BIT(6)
-+#define WC0_IS_SPM_EN		BIT(1)
-+
- /* mt2712 etc */
- #define PERI_SSUSB_SPM_CTRL	0x0
- #define SSC_IP_SLEEP_EN	BIT(4)
-@@ -39,6 +43,7 @@ enum ssusb_uwk_vers {
- 	SSUSB_UWK_V1 = 1,
- 	SSUSB_UWK_V2,
- 	SSUSB_UWK_V11 = 11,	/* specific revision 1.1 */
-+	SSUSB_UWK_V12,		/* specific revision 1.2 */
+ #define DEV_PM_OPS (IS_ENABLED(CONFIG_PM) ? &mtu3_pm_ops : NULL)
+ 
+-#ifdef CONFIG_OF
+-
+ static const struct of_device_id mtu3_of_match[] = {
+ 	{.compatible = "mediatek,mt8173-mtu3",},
+ 	{.compatible = "mediatek,mtu3",},
+ 	{},
  };
+-
+ MODULE_DEVICE_TABLE(of, mtu3_of_match);
  
- /*
-@@ -60,6 +65,11 @@ static void ssusb_wakeup_ip_sleep_set(struct ssusb_mtk *ssusb, bool enable)
- 		msk = WC0_IS_EN | WC0_IS_C(0xf) | WC0_IS_P;
- 		val = enable ? (WC0_IS_EN | WC0_IS_C(0x8)) : 0;
- 		break;
-+	case SSUSB_UWK_V12:
-+		reg = ssusb->uwk_reg_base + PERI_WK_CTRL0;
-+		msk = WC0_SSUSB0_CDEN | WC0_IS_SPM_EN;
-+		val = enable ? msk : 0;
-+		break;
- 	case SSUSB_UWK_V2:
- 		reg = ssusb->uwk_reg_base + PERI_SSUSB_SPM_CTRL;
- 		msk = SSC_IP_SLEEP_EN | SSC_SPM_INT_EN;
+-#endif
+-
+ static struct platform_driver mtu3_driver = {
+ 	.probe = mtu3_probe,
+ 	.remove = mtu3_remove,
+ 	.driver = {
+ 		.name = MTU3_DRIVER_NAME,
+ 		.pm = DEV_PM_OPS,
+-		.of_match_table = of_match_ptr(mtu3_of_match),
++		.of_match_table = mtu3_of_match,
+ 	},
+ };
+ module_platform_driver(mtu3_driver);
 -- 
 2.18.0
 
