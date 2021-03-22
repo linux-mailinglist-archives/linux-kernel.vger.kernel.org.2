@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13E43442F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C7D344197
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhCVMrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:47:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35450 "EHLO mail.kernel.org"
+        id S230419AbhCVMe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:34:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232030AbhCVMji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9773619A7;
-        Mon, 22 Mar 2021 12:38:20 +0000 (UTC)
+        id S231460AbhCVMcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:32:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD71E619A8;
+        Mon, 22 Mar 2021 12:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416701;
-        bh=de7KSPCn/vKHgnF74A4g8ZAF6SNVlFjTZPvpLoyD3rk=;
+        s=korg; t=1616416322;
+        bh=FF+/HZal6UdekTFYU1FwbwMDwy1bNdTFtT35oxYa1yQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htWC4IxUIs+P88FaS5Ix/YYNw8c0TrEvs7UBAkA+chGzWhMwCJujOb7wC2h1Q2Ebe
-         ebzkEqDT4QCBRmfBhcdbmC+QmQoae+IkhTsfCA4lSSaKot+emj0Hqr0VXs1ZXOZhOv
-         QjpW4kA2rDCx0dXd0Cm0DawVrl6zR8mzVJzx9TP0=
+        b=wySULFtfFb4dp6W1xLdnNEWHDlyXn8jVnxMdZ3rYJaX6d4lGszEoPn3qVVilN+3ur
+         lL+w3gMRUzkTU4GFrqehcypDSnOouaHWh2vQFsJxrGaxpyMyHQR6Bwm6VE03KxtN0/
+         qW8X6xix2nIhiLJUFdOSEXgvhtSj0jkNvFniwFw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sandipan Das <sandipan@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 087/157] powerpc/sstep: Fix darn emulation
+        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        Aurelien Aptel <aaptel@suse.com>
+Subject: [PATCH 5.11 061/120] cifs: fix allocation size on newly created files
 Date:   Mon, 22 Mar 2021 13:27:24 +0100
-Message-Id: <20210322121936.545824464@linuxfoundation.org>
+Message-Id: <20210322121931.724084948@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandipan Das <sandipan@linux.ibm.com>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit 22b89ba178dd0a66a26699ead014a3e73ff8e044 ]
+commit 65af8f0166f4d15e61c63db498ec7981acdd897f upstream.
 
-Commit 8813ff49607e ("powerpc/sstep: Check instruction validity
-against ISA version before emulation") introduced a proper way to skip
-unknown instructions. This makes sure that the same is used for the
-darn instruction when the range selection bits have a reserved value.
+Applications that create and extend and write to a file do not
+expect to see 0 allocation size.  When file is extended,
+set its allocation size to a plausible value until we have a
+chance to query the server for it.  When the file is cached
+this will prevent showing an impossible number of allocated
+blocks (like 0).  This fixes e.g. xfstests 614 which does
 
-Fixes: a23987ef267a ("powerpc: sstep: Add support for darn instruction")
-Signed-off-by: Sandipan Das <sandipan@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210204080744.135785-2-sandipan@linux.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    1) create a file and set its size to 64K
+    2) mmap write 64K to the file
+    3) stat -c %b for the file (to query the number of allocated blocks)
+
+It was failing because we returned 0 blocks.  Even though we would
+return the correct cached file size, we returned an impossible
+allocation size.
+
+Signed-off-by: Steve French <stfrench@microsoft.com>
+CC: <stable@vger.kernel.org>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/lib/sstep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/cifs/inode.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index 0f228ee11ca4..a2e067f68dee 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -1853,7 +1853,7 @@ int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
- 				goto compute_done;
- 			}
+--- a/fs/cifs/inode.c
++++ b/fs/cifs/inode.c
+@@ -2383,7 +2383,7 @@ int cifs_getattr(const struct path *path
+ 	 * We need to be sure that all dirty pages are written and the server
+ 	 * has actual ctime, mtime and file length.
+ 	 */
+-	if ((request_mask & (STATX_CTIME | STATX_MTIME | STATX_SIZE)) &&
++	if ((request_mask & (STATX_CTIME | STATX_MTIME | STATX_SIZE | STATX_BLOCKS)) &&
+ 	    !CIFS_CACHE_READ(CIFS_I(inode)) &&
+ 	    inode->i_mapping && inode->i_mapping->nrpages != 0) {
+ 		rc = filemap_fdatawait(inode->i_mapping);
+@@ -2573,6 +2573,14 @@ set_size_out:
+ 	if (rc == 0) {
+ 		cifsInode->server_eof = attrs->ia_size;
+ 		cifs_setsize(inode, attrs->ia_size);
++		/*
++		 * i_blocks is not related to (i_size / i_blksize), but instead
++		 * 512 byte (2**9) size is required for calculating num blocks.
++		 * Until we can query the server for actual allocation size,
++		 * this is best estimate we have for blocks allocated for a file
++		 * Number of blocks must be rounded up so size 1 is not 0 blocks
++		 */
++		inode->i_blocks = (512 - 1 + attrs->ia_size) >> 9;
  
--			return -1;
-+			goto unknown_opcode;
- #ifdef __powerpc64__
- 		case 777:	/* modsd */
- 			if (!cpu_has_feature(CPU_FTR_ARCH_300))
--- 
-2.30.1
-
+ 		/*
+ 		 * The man page of truncate says if the size changed,
 
 
