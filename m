@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC973441CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE19334431A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhCVMgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:36:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
+        id S230107AbhCVMsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:48:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231455AbhCVMdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:33:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01FC36199E;
-        Mon, 22 Mar 2021 12:33:09 +0000 (UTC)
+        id S232063AbhCVMkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:40:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56C5A6188B;
+        Mon, 22 Mar 2021 12:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416390;
-        bh=j0QFhI8HCGhgTiQpwmtxdHudmHhdOsdih43jzjiJEDY=;
+        s=korg; t=1616416731;
+        bh=ZEtzDDbnh3c/hw/gbw38AJehE2J3aSW+9X5J2FREbdk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hZtgVzg85FqMTrz4crbmlPkJCEZ28j8vvaYQMUGhSEtrtCzhun+TdUjXBrl+n4Bsz
-         d5+o+AsrsLLD5q5z/a0zmuc3w3PC7Y9pnaieDrDjcALhFfV/Wt5avNcf6uR0SN4+4O
-         NrdBl6efg5o1TvbMsAr2FYEoxbxXvL1lQJXssWnE=
+        b=ObQiOg0PzTsqShgxFscfd/pHcMSfBB3M+HVhIXdKyWazR7xahcWJfkwHPkSRla6zg
+         LNGY20u6kX+V08cc0UzzSNss1xoPD4HFsube8nA8L5qF5Ack0Hgm/dFrMaFkfLi614
+         blX082/TrocdWpiQltIfUYUrWPbrq7MSm7b1epp8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 071/120] ASoC: codecs: lpass-wsa-macro: fix RX MIX input controls
-Date:   Mon, 22 Mar 2021 13:27:34 +0100
-Message-Id: <20210322121932.048812396@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+81d17233a2b02eafba33@syzkaller.appspotmail.com,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 098/157] io_uring: fix inconsistent lock state
+Date:   Mon, 22 Mar 2021 13:27:35 +0100
+Message-Id: <20210322121936.884364967@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,81 +41,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit e4b8b7c916038c1ffcba2c4ce92d5523c4cc2f46 ]
+[ Upstream commit 9ae1f8dd372e0e4c020b345cf9e09f519265e981 ]
 
-Attempting to use the RX MIX path at 48kHz plays at 96kHz, because these
-controls are incorrectly toggling the first bit of the register, which
-is part of the FS_RATE field.
+WARNING: inconsistent lock state
 
-Fix the problem by using the same method used by the "WSA RX_MIX EC0_MUX"
-control, which is to use SND_SOC_NOPM as the register and use an enum in
-the shift field instead.
+inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
+syz-executor217/8450 [HC1[1]:SC0[0]:HE0:SE1] takes:
+ffff888023d6e620 (&fs->lock){?.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff888023d6e620 (&fs->lock){?.+.}-{2:2}, at: io_req_clean_work fs/io_uring.c:1398 [inline]
+ffff888023d6e620 (&fs->lock){?.+.}-{2:2}, at: io_dismantle_req+0x66f/0xf60 fs/io_uring.c:2029
 
-Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210305005049.24726-1-jonathan@marek.ca
-Signed-off-by: Mark Brown <broonie@kernel.org>
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&fs->lock);
+  <Interrupt>
+    lock(&fs->lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor217/8450:
+ #0: ffff88802417c3e8 (&ctx->uring_lock){+.+.}-{3:3}, at: __do_sys_io_uring_enter+0x1071/0x1f30 fs/io_uring.c:9442
+
+stack backtrace:
+CPU: 1 PID: 8450 Comm: syz-executor217 Not tainted 5.11.0-rc5-next-20210129-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+[...]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_req_clean_work fs/io_uring.c:1398 [inline]
+ io_dismantle_req+0x66f/0xf60 fs/io_uring.c:2029
+ __io_free_req+0x3d/0x2e0 fs/io_uring.c:2046
+ io_free_req fs/io_uring.c:2269 [inline]
+ io_double_put_req fs/io_uring.c:2392 [inline]
+ io_put_req+0xf9/0x570 fs/io_uring.c:2388
+ io_link_timeout_fn+0x30c/0x480 fs/io_uring.c:6497
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x334/0x940 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1085 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x540 arch/x86/kernel/apic/apic.c:1102
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+ sysvec_apic_timer_interrupt+0xbd/0x100 arch/x86/kernel/apic/apic.c:1096
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:629
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:169 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x25/0x40 kernel/locking/spinlock.c:199
+ spin_unlock_irq include/linux/spinlock.h:404 [inline]
+ io_queue_linked_timeout+0x194/0x1f0 fs/io_uring.c:6525
+ __io_queue_sqe+0x328/0x1290 fs/io_uring.c:6594
+ io_queue_sqe+0x631/0x10d0 fs/io_uring.c:6639
+ io_queue_link_head fs/io_uring.c:6650 [inline]
+ io_submit_sqe fs/io_uring.c:6697 [inline]
+ io_submit_sqes+0x19b5/0x2720 fs/io_uring.c:6960
+ __do_sys_io_uring_enter+0x107d/0x1f30 fs/io_uring.c:9443
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Don't free requests from under hrtimer context (softirq) as it may sleep
+or take spinlocks improperly (e.g. non-irq versions).
+
+Cc: stable@vger.kernel.org # 5.6+
+Reported-by: syzbot+81d17233a2b02eafba33@syzkaller.appspotmail.com
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/lpass-wsa-macro.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ fs/io_uring.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 25f1df214ca5..cd59aa439373 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1214,14 +1214,16 @@ static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
- 				     struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
--	u16 gain_reg;
-+	u16 path_reg, gain_reg;
- 	int val;
- 
--	switch (w->reg) {
--	case CDC_WSA_RX0_RX_PATH_MIX_CTL:
-+	switch (w->shift) {
-+	case WSA_MACRO_RX_MIX0:
-+		path_reg = CDC_WSA_RX0_RX_PATH_MIX_CTL;
- 		gain_reg = CDC_WSA_RX0_RX_VOL_MIX_CTL;
- 		break;
--	case CDC_WSA_RX1_RX_PATH_MIX_CTL:
-+	case WSA_MACRO_RX_MIX1:
-+		path_reg = CDC_WSA_RX1_RX_PATH_MIX_CTL;
- 		gain_reg = CDC_WSA_RX1_RX_VOL_MIX_CTL;
- 		break;
- 	default:
-@@ -1234,7 +1236,7 @@ static int wsa_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
- 		snd_soc_component_write(component, gain_reg, val);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		snd_soc_component_update_bits(component, w->reg,
-+		snd_soc_component_update_bits(component, path_reg,
- 					      CDC_WSA_RX_PATH_MIX_CLK_EN_MASK,
- 					      CDC_WSA_RX_PATH_MIX_CLK_DISABLE);
- 		break;
-@@ -2071,14 +2073,14 @@ static const struct snd_soc_dapm_widget wsa_macro_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("WSA_RX0 INP0", SND_SOC_NOPM, 0, 0, &rx0_prim_inp0_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX0 INP1", SND_SOC_NOPM, 0, 0, &rx0_prim_inp1_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX0 INP2", SND_SOC_NOPM, 0, 0, &rx0_prim_inp2_mux),
--	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", CDC_WSA_RX0_RX_PATH_MIX_CTL,
--			   0, 0, &rx0_mix_mux, wsa_macro_enable_mix_path,
-+	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX0,
-+			   0, &rx0_mix_mux, wsa_macro_enable_mix_path,
- 			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_MUX("WSA_RX1 INP0", SND_SOC_NOPM, 0, 0, &rx1_prim_inp0_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX1 INP1", SND_SOC_NOPM, 0, 0, &rx1_prim_inp1_mux),
- 	SND_SOC_DAPM_MUX("WSA_RX1 INP2", SND_SOC_NOPM, 0, 0, &rx1_prim_inp2_mux),
--	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", CDC_WSA_RX1_RX_PATH_MIX_CTL,
--			   0, 0, &rx1_mix_mux, wsa_macro_enable_mix_path,
-+	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX1,
-+			   0, &rx1_mix_mux, wsa_macro_enable_mix_path,
- 			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 
- 	SND_SOC_DAPM_MIXER_E("WSA_RX INT0 MIX", SND_SOC_NOPM, 0, 0, NULL, 0,
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index dcc77af5320e..5746998799ab 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6234,9 +6234,10 @@ static enum hrtimer_restart io_link_timeout_fn(struct hrtimer *timer)
+ 	if (prev) {
+ 		req_set_fail_links(prev);
+ 		io_async_find_and_cancel(ctx, req, prev->user_data, -ETIME);
+-		io_put_req(prev);
++		io_put_req_deferred(prev, 1);
+ 	} else {
+-		io_req_complete(req, -ETIME);
++		io_cqring_add_event(req, -ETIME, 0);
++		io_put_req_deferred(req, 1);
+ 	}
+ 	return HRTIMER_NORESTART;
+ }
 -- 
 2.30.1
 
