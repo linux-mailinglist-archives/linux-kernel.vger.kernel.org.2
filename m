@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED093443EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678FF3441F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbhCVMz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:55:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        id S230449AbhCVMhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230042AbhCVMow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBBBD619E2;
-        Mon, 22 Mar 2021 12:41:49 +0000 (UTC)
+        id S230289AbhCVMdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:33:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 210AA619B4;
+        Mon, 22 Mar 2021 12:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416910;
-        bh=aoYiavtlJP2pJskaK6NkDrKcbc5G/xS+wV15QxO6LxA=;
+        s=korg; t=1616416421;
+        bh=+N/vEXPFA2h7Hs+Xp+Ysnyf4OFcbKK4iAvPi5aDZgn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QEc47Mc8YCWW/4EMF456J9cfyZc0Ytu2cZotQjposIlnRb0XsyT223mIOUZeHWvb1
-         KOg6vVhYnzjEJRUqPitZnAlUwBOHCUvOAREqCQfNrfSOWCCTOPWRl0/ni/A3gtAG6h
-         7qdLdJL47GpNec5WzhnYdZaAYB1b5vdsHb62Iykg=
+        b=H3ln04TnIKL3LtxTnm7z2CebpAzwIZwrncb4n0ITXfB3ilMYCI1davu9A04tPLMlE
+         i/UhLhpe5Ha6GQ9YxfaILZYr0ICi9KktNmL8+MOhpUOQIXnsFozWRX5mzLWwotEhPI
+         PRpSkWFohOE3iODovGiVoo4NqQU2sGrDZ9nj2bvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 13/60] ASoC: fsl_ssi: Fix TDM slot setup for I2S mode
-Date:   Mon, 22 Mar 2021 13:28:01 +0100
-Message-Id: <20210322121922.807776259@linuxfoundation.org>
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.11 099/120] PCI: rpadlpar: Fix potential drc_name corruption in store functions
+Date:   Mon, 22 Mar 2021 13:28:02 +0100
+Message-Id: <20210322121932.993988366@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Shiyan <shc_work@mail.ru>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit 87263968516fb9507d6215d53f44052627fae8d8 upstream.
+commit cc7a0bb058b85ea03db87169c60c7cfdd5d34678 upstream.
 
-When using the driver in I2S TDM mode, the _fsl_ssi_set_dai_fmt()
-function rewrites the number of slots previously set by the
-fsl_ssi_set_dai_tdm_slot() function to 2 by default.
-To fix this, let's use the saved slot count value or, if TDM
-is not used and the slot count is not set, proceed as before.
+Both add_slot_store() and remove_slot_store() try to fix up the
+drc_name copied from the store buffer by placing a NUL terminator at
+nbyte + 1 or in place of a '\n' if present. However, the static buffer
+that we copy the drc_name data into is not zeroed and can contain
+anything past the n-th byte.
 
-Fixes: 4f14f5c11db1 ("ASoC: fsl_ssi: Fix number of words per frame for I2S-slave mode")
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20210216114221.26635-1-shc_work@mail.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This is problematic if a '\n' byte appears in that buffer after nbytes
+and the string copied into the store buffer was not NUL terminated to
+start with as the strchr() search for a '\n' byte will mark this
+incorrectly as the end of the drc_name string resulting in a drc_name
+string that contains garbage data after the n-th byte.
+
+Additionally it will cause us to overwrite that '\n' byte on the stack
+with NUL, potentially corrupting data on the stack.
+
+The following debugging shows an example of the drmgr utility writing
+"PHB 4543" to the add_slot sysfs attribute, but add_slot_store()
+logging a corrupted string value.
+
+  drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
+  add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+
+Fix this by using strscpy() instead of memcpy() to ensure the string
+is NUL terminated when copied into the static drc_name buffer.
+Further, since the string is now NUL terminated the code only needs to
+change '\n' to '\0' when present.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+[mpe: Reformat change log and add mention of possible stack corruption]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210315214821.452959-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/fsl/fsl_ssi.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pci/hotplug/rpadlpar_sysfs.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -873,6 +873,7 @@ static int fsl_ssi_hw_free(struct snd_pc
- static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
- {
- 	u32 strcr = 0, scr = 0, stcr, srcr, mask;
-+	unsigned int slots;
+--- a/drivers/pci/hotplug/rpadlpar_sysfs.c
++++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
+@@ -34,12 +34,11 @@ static ssize_t add_slot_store(struct kob
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
  
- 	ssi->dai_fmt = fmt;
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
  
-@@ -904,10 +905,11 @@ static int _fsl_ssi_set_dai_fmt(struct f
- 			return -EINVAL;
- 		}
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
  
-+		slots = ssi->slots ? : 2;
- 		regmap_update_bits(ssi->regs, REG_SSI_STCCR,
--				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
-+				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(slots));
- 		regmap_update_bits(ssi->regs, REG_SSI_SRCCR,
--				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(2));
-+				   SSI_SxCCR_DC_MASK, SSI_SxCCR_DC(slots));
+ 	rc = dlpar_add_slot(drc_name);
+ 	if (rc)
+@@ -65,12 +64,11 @@ static ssize_t remove_slot_store(struct
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
  
- 		/* Data on rising edge of bclk, frame low, 1clk before data */
- 		strcr |= SSI_STCR_TFSI | SSI_STCR_TSCKP | SSI_STCR_TEFS;
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_remove_slot(drc_name);
+ 	if (rc)
 
 
