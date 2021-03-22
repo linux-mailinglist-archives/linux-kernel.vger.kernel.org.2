@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5B23443C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B639034448F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhCVMxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35514 "EHLO mail.kernel.org"
+        id S232340AbhCVNBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232692AbhCVMnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:43:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BED619D9;
-        Mon, 22 Mar 2021 12:41:11 +0000 (UTC)
+        id S232871AbhCVMsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:48:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CC94619D6;
+        Mon, 22 Mar 2021 12:44:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416872;
-        bh=YdLyxp6fhlQYLz6pYfC/t2FkHexcokPN7Lb+Pp/CBDI=;
+        s=korg; t=1616417083;
+        bh=+isXnmSQfrOqGIrhksB+INXNepR1esQtm6vum+oiXr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nNIzyqM9eOjn/Orh3vdlC72gES/Kqp4vz25Qs0T5AxYbtQo2CqnrxGnkzrtJqucLR
-         /0UOCVN9FGdmwRrJH8HuoqvUGjo5BVUAYLNALIaMmQsKqNdsplo6Y+ttz0zdLHZi17
-         I8i4p1yaDQko+7R7WH6YrAkM2hDDxPhlFuyvXhJs=
+        b=ai14Uj6yGzZ7u5/MqjnbfuMoTZ3NWhd7WZiVV1ZXePXHKZ6P3dVw8Hq54nuh61bIi
+         ozH/Ut+BzAnrezaErhZppBnk12Hao8Kw3n8PeTubQzXzGAh2Ec0MHMb20lnyVDjJV/
+         GC4qwzulFBAMem7KkyfsAsE8H0Db59Pqbstzok0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 5.10 156/157] genirq: Disable interrupts for force threaded handlers
-Date:   Mon, 22 Mar 2021 13:28:33 +0100
-Message-Id: <20210322121938.687591951@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Leng <lengchao@huawei.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 20/43] nvme-rdma: fix possible hang when failing to set io queues
+Date:   Mon, 22 Mar 2021 13:28:34 +0100
+Message-Id: <20210322121920.578850591@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-commit 81e2073c175b887398e5bca6c004efa89983f58d upstream.
+[ Upstream commit c4c6df5fc84659690d4391d1fba155cd94185295 ]
 
-With interrupt force threading all device interrupt handlers are invoked
-from kernel threads. Contrary to hard interrupt context the invocation only
-disables bottom halfs, but not interrupts. This was an oversight back then
-because any code like this will have an issue:
+We only setup io queues for nvme controllers, and it makes absolutely no
+sense to allow a controller (re)connect without any I/O queues.  If we
+happen to fail setting the queue count for any reason, we should not allow
+this to be a successful reconnect as I/O has no chance in going through.
+Instead just fail and schedule another reconnect.
 
-thread(irq_A)
-  irq_handler(A)
-    spin_lock(&foo->lock);
-
-interrupt(irq_B)
-  irq_handler(B)
-    spin_lock(&foo->lock);
-
-This has been triggered with networking (NAPI vs. hrtimers) and console
-drivers where printk() happens from an interrupt which interrupted the
-force threaded handler.
-
-Now people noticed and started to change the spin_lock() in the handler to
-spin_lock_irqsave() which affects performance or add IRQF_NOTHREAD to the
-interrupt request which in turn breaks RT.
-
-Fix the root cause and not the symptom and disable interrupts before
-invoking the force threaded handler which preserves the regular semantics
-and the usefulness of the interrupt force threading as a general debugging
-tool.
-
-For not RT this is not changing much, except that during the execution of
-the threaded handler interrupts are delayed until the handler
-returns. Vs. scheduling and softirq processing there is no difference.
-
-For RT kernels there is no issue.
-
-Fixes: 8d32a307e4fa ("genirq: Provide forced interrupt threading")
-Reported-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Johan Hovold <johan@kernel.org>
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/20210317143859.513307808@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Chao Leng <lengchao@huawei.com>
+Fixes: 711023071960 ("nvme-rdma: add a NVMe over Fabrics RDMA host driver")
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chao Leng <lengchao@huawei.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/irq/manage.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/nvme/host/rdma.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1072,11 +1072,15 @@ irq_forced_thread_fn(struct irq_desc *de
- 	irqreturn_t ret;
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 134e14e778f8..8798274dc3ba 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -644,8 +644,11 @@ static int nvme_rdma_alloc_io_queues(struct nvme_rdma_ctrl *ctrl)
+ 		return ret;
  
- 	local_bh_disable();
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_disable();
- 	ret = action->thread_fn(action->irq, action->dev_id);
- 	if (ret == IRQ_HANDLED)
- 		atomic_inc(&desc->threads_handled);
+ 	ctrl->ctrl.queue_count = nr_io_queues + 1;
+-	if (ctrl->ctrl.queue_count < 2)
+-		return 0;
++	if (ctrl->ctrl.queue_count < 2) {
++		dev_err(ctrl->ctrl.device,
++			"unable to set any I/O queues\n");
++		return -ENOMEM;
++	}
  
- 	irq_finalize_oneshot(desc, action);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_enable();
- 	local_bh_enable();
- 	return ret;
- }
+ 	dev_info(ctrl->ctrl.device,
+ 		"creating %d I/O queues.\n", nr_io_queues);
+-- 
+2.30.1
+
 
 
