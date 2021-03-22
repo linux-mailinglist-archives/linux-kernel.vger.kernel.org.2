@@ -2,71 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CD33449A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202EF34499F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhCVPtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhCVPtY (ORCPT
+        id S230062AbhCVPsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:48:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37445 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230076AbhCVPrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:49:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42C5C061574;
-        Mon, 22 Mar 2021 08:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xFkVl9GtHpru0bLv4N3vvuoNepAVBKJ0zyP6LRIKoyE=; b=H1NLAfgzVh7fuL7xk8M4VD3TbL
-        /hGvSs6RAxUHYCcDNbGL55p6SAVPlXB+9riC1SmB3ZbaIQmLy2+xKgJkKWkOuHsfzzjvQ8sHPFUHr
-        OR+c2g20qrCmEi8Bn8/M8op8ktcrIA73JEcMnM/JKEIdo5pemCV4pKqMWQj+u9w65h8wMzYgNLzDt
-        gC4XnH9l+IkFnbpmSwg6pIM1V0ICfq9en08QmbEnU+RiNXJ40LW/pjSPGzG3e3J9OGVHJCVmsmJ8r
-        WR60p4c4iZbp2TDS8vx9hq6E45K2kZWPdQNNQrviNIPmxNFY8xiAFzHCLtY16ohK40+hU+l0D6Jmx
-        LOBfOSaA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOMmF-008jhA-Vh; Mon, 22 Mar 2021 15:47:43 +0000
-Date:   Mon, 22 Mar 2021 15:47:35 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] target: pscsi: avoid Wempty-body warning
-Message-ID: <20210322154735.GA2079192@infradead.org>
-References: <20210322114441.3479365-1-arnd@kernel.org>
+        Mon, 22 Mar 2021 11:47:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616428072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kF05X3XUjORG7bqce6qEvZk7r7MroqA/dhygkFI8iGg=;
+        b=IeRZBYFeFetQcdsGucuKf9kEuavOGe2SrkqfGac7b2lRpLTdXXN4/bzDq4vBboMKH3+bja
+        YZvWoX+9Jh+5OnpRCwksSLeNhlXxK2yMtPLQEl/7UKB3CWV8EG6xFV2Cuw55TvGj0HNLxt
+        AqfCBgibGpnD5gvYCsIp9s5Q4vK2YFE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-QYnxL-zNOQmSnNKMTqai6Q-1; Mon, 22 Mar 2021 11:47:48 -0400
+X-MC-Unique: QYnxL-zNOQmSnNKMTqai6Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A541110866A9;
+        Mon, 22 Mar 2021 15:47:46 +0000 (UTC)
+Received: from localhost (ovpn-114-89.ams2.redhat.com [10.36.114.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2CEDF10023AB;
+        Mon, 22 Mar 2021 15:47:39 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 15:47:37 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     virtio-fs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, vgoyal@redhat.com,
+        miklos@szeredi.hu, jasowang@redhat.com, mst@redhat.com
+Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
+Message-ID: <YFi8GYrRG/ks2BBz@stefanha-x1.localdomain>
+References: <20210318135223.1342795-1-ckuehl@redhat.com>
+ <20210318135223.1342795-3-ckuehl@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="EBlwIFYriryzFVKW"
 Content-Disposition: inline
-In-Reply-To: <20210322114441.3479365-1-arnd@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210318135223.1342795-3-ckuehl@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 12:44:34PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Building with 'make W=1' shows a harmless warning for pscsi:
-> 
-> drivers/target/target_core_pscsi.c: In function 'pscsi_complete_cmd':
-> drivers/target/target_core_pscsi.c:624:33: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->   624 |                                 ; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
->       |                                 ^
-> 
-> Rework the coding style as suggested by gcc to avoid the warning.
 
-I would much, much prefer to drop the bogus warning;
+--EBlwIFYriryzFVKW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	if (foo)
-		; /* comment */
+On Thu, Mar 18, 2021 at 08:52:22AM -0500, Connor Kuehl wrote:
+> If an incoming FUSE request can't fit on the virtqueue, the request is
+> placed onto a workqueue so a worker can try to resubmit it later where
+> there will (hopefully) be space for it next time.
+>=20
+> This is fine for requests that aren't larger than a virtqueue's maximum
+> capacity. However, if a request's size exceeds the maximum capacity of
+> the virtqueue (even if the virtqueue is empty), it will be doomed to a
+> life of being placed on the workqueue, removed, discovered it won't fit,
+> and placed on the workqueue yet again.
+>=20
+> Furthermore, from section 2.6.5.3.1 (Driver Requirements: Indirect
+> Descriptors) of the virtio spec:
+>=20
+>   "A driver MUST NOT create a descriptor chain longer than the Queue
+>   Size of the device."
+>=20
+> To fix this, limit the number of pages FUSE will use for an overall
+> request. This way, each request can realistically fit on the virtqueue
+> when it is decomposed into a scattergather list and avoid violating
+> section 2.6.5.3.1 of the virtio spec.
+>=20
+> Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
+> ---
+>  fs/fuse/fuse_i.h    |  5 +++++
+>  fs/fuse/inode.c     |  7 +++++++
+>  fs/fuse/virtio_fs.c | 14 ++++++++++++++
+>  3 files changed, 26 insertions(+)
 
-is a fairly usual and absolutely sensible style.  The warning on hte
-other hand is completely stupid.
+Nice that FUSE already has max_pages :-).
+
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+
+--EBlwIFYriryzFVKW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmBYvBkACgkQnKSrs4Gr
+c8gL7Qf+MIRWqCCYkNEZwL6tftu8+lg4QxBigZvpmryZKX9xCLbLzcTZuUzPQC6I
+HiFj77t2jUhUbSv9edImKSWoSYad0kT0bCsWnwghojx+ta5lIXveKMwv4qHCkF9J
+CsnZqKYSW+9gCyjC/mCLLl1lHKSoSHJsDSVuJQ7gwlGg1n1Bv5IKE4ZX2+hlXGY3
+FWtCTz17sqzrlCIceUnG5jN10TcXqsXSDEH3oOV6ZSWl8HTXWFyJjcRWau4u9S2R
+iIZJEcByDMVqWWCHWVySksdompYzM9xFbXLebPE5Rnn9BaK5m/BdISHbS1R5dZaU
+LPExG+DiEtEx/j/imqIq7YtJlXxA5g==
+=KXHl
+-----END PGP SIGNATURE-----
+
+--EBlwIFYriryzFVKW--
+
