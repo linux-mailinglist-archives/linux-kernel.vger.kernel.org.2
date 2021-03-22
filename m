@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95049344DE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C924D344DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhCVR62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:58:28 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2728 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbhCVR6K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:58:10 -0400
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F42B73Xq5z6829K;
-        Tue, 23 Mar 2021 01:51:43 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Mar 2021 18:58:08 +0100
-Received: from [10.210.167.192] (10.210.167.192) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Mar 2021 17:58:07 +0000
-Subject: Re: [PATCH 0/3] iommu/iova: Add CPU hotplug handler to flush rcaches
- to core code
-To:     <dwmw2@infradead.org>, <baolu.lu@linux.intel.com>,
-        <joro@8bytes.org>, <will@kernel.org>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <robin.murphy@arm.com>
-References: <1614600741-15696-1-git-send-email-john.garry@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <7ff533de-d9da-6325-4275-79951fa5657c@huawei.com>
-Date:   Mon, 22 Mar 2021 17:55:53 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S230246AbhCVR5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:57:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230021AbhCVR4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:56:45 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD28C6196E;
+        Mon, 22 Mar 2021 17:56:44 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lOOnC-0038Fj-Oz; Mon, 22 Mar 2021 17:56:42 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     catalin.marinas@arm.com, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com, kvmarm@lists.cs.columbia.edu,
+        tabba@google.com, ardb@kernel.org, mark.rutland@arm.com,
+        dbrazdil@google.com
+Subject: [PATCH v2 0/3] KVM:arm64: Proposed host stage-2 improvements
+Date:   Mon, 22 Mar 2021 17:56:36 +0000
+Message-Id: <20210322175639.801566-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <1614600741-15696-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.167.192]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: qperret@google.com, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel-team@android.com, kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org, mark.rutland@arm.com, dbrazdil@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/03/2021 12:12, John Garry wrote:
-> The Intel IOMMU driver supports flushing the per-CPU rcaches when a CPU is
-> offlined.
-> 
-> Let's move it to core code, so everyone can take advantage.
-> 
-> Also correct a code comment.
-> 
-> Based on v5.12-rc1. Tested on arm64 only.
+[apologies for the noise: this is the real thing, please ignore the
+previous posting... :-(]
 
-Hi guys,
+Hi all,
 
-Friendly reminder ...
+Since Quentin's series is pretty close to final, I though that instead
+of asking for additional rework, I'd have a go at it myself. These
+patches try to bring some simplifications to the cpufeature
+duplication that has been introduced between EL1 and EL2.
 
-Thanks
-John
+This whole infrastructure exists for a single reason: making the
+*sanitised* versions of ID_AA64MMFR{0,1}_EL1 available to EL2. On top
+of that, the read_ctr macro gets in the way as it needs direct access
+to arm64_ftr_reg_ctrel0 to cope with ARM64_MISMATCHED_CACHE_TYPE.
 
-> 
-> John Garry (3):
->    iova: Add CPU hotplug handler to flush rcaches
->    iommu/vt-d: Remove IOVA domain rcache flushing for CPU offlining
->    iova: Correct comment for free_cpu_cached_iovas()
-> 
->   drivers/iommu/intel/iommu.c | 31 -------------------------------
->   drivers/iommu/iova.c        | 32 ++++++++++++++++++++++++++++++--
->   include/linux/cpuhotplug.h  |  2 +-
->   include/linux/iova.h        |  1 +
->   4 files changed, 32 insertions(+), 34 deletions(-)
-> 
+This series tackles the latest point first by taking advantage of the
+fact that with pKVM enabled, late CPUs aren't allowed to boot, and
+thus that we know the final CTR_EL0 value before KVM starts, no matter
+whether there is a mismatch or not. We can thus specialise read_ctr to
+do the right thing without requiring access to the EL1 data structure.
+
+Once that's sorted, we can easily simplify the whole infrastructure to
+only snapshot the two u64 we need before enabling the protected mode.
+
+Tested on a Synquacer system.
+
+	M.
+
+* From v1:
+  - Send the *right* branch, and not whatever was in my sandbox...
+
+Marc Zyngier (3):
+  KVM: arm64: Constraint KVM's own __flush_dcache_area to protectected
+    mode
+  KVM: arm64: Generate final CTR_EL0 value when running in Protected
+    mode
+  KVM: arm64: Drop the CPU_FTR_REG_HYP_COPY infrastructure
+
+ arch/arm64/include/asm/assembler.h      |  9 +++++++++
+ arch/arm64/include/asm/cpufeature.h     |  1 -
+ arch/arm64/include/asm/kvm_cpufeature.h | 26 -------------------------
+ arch/arm64/include/asm/kvm_host.h       |  4 ----
+ arch/arm64/include/asm/kvm_hyp.h        |  3 +++
+ arch/arm64/kernel/cpufeature.c          | 13 -------------
+ arch/arm64/kernel/image-vars.h          |  1 +
+ arch/arm64/kvm/arm.c                    |  3 +++
+ arch/arm64/kvm/hyp/nvhe/cache.S         |  4 ++++
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c       |  8 --------
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c   | 16 ++++++++-------
+ arch/arm64/kvm/sys_regs.c               | 22 ---------------------
+ arch/arm64/kvm/va_layout.c              |  7 +++++++
+ 13 files changed, 36 insertions(+), 81 deletions(-)
+ delete mode 100644 arch/arm64/include/asm/kvm_cpufeature.h
+
+-- 
+2.29.2
 
