@@ -2,97 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA95345143
+	by mail.lfdr.de (Postfix) with ESMTP id DA549345144
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhCVU64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhCVU6i (ORCPT
+        id S230284AbhCVU7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:59:00 -0400
+Received: from outbound-smtp16.blacknight.com ([46.22.139.233]:50647 "EHLO
+        outbound-smtp16.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229574AbhCVU6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:58:38 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C6BC061574;
-        Mon, 22 Mar 2021 13:58:37 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id dc12so8503242qvb.4;
-        Mon, 22 Mar 2021 13:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+i64MrNHZeNipUIh6gltiMTjMH/gV+ocvWjnAF2kjp0=;
-        b=mAFh5WEgO1INbLn/eAZO6mUQDJl99WcSTfFk44CRc70nKKFGV3W43ma1h7eMc31vGS
-         C23yLw1c6k2RfsuEkQAOOXKMsPmlMG/iniAcwporLUoTKO5dgqmWs35kT02o/BkXrihI
-         +t6uTMQfcv6UTbjglr85NpXPN3EUN0o2CDT0HxesHRI1lJ3rJs5aDKIp4X2nJX85a/yK
-         NgtLcFJ3beJeg/Xpddm5z3Pi24QshysdmbfCgYvLa6gMY8Nz7nkn6VzxXwkB9ktD2DS4
-         Jxx6V9PDIOaAf3+Y7fa4zWkgMBjxcoHT7ZliglyjyUiF2zhb9u1nh3KzGL+POjy8ouSx
-         usBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+i64MrNHZeNipUIh6gltiMTjMH/gV+ocvWjnAF2kjp0=;
-        b=Ky9sbqLRLTPTYU0hTgXncNf5R82b3b+0KW8Y2szEDMHa3iepG1rhYREDO41m4FeqzG
-         HHTnabsxPtYL+d8rxRDDlYss1JgXAOxOnI0aRWVAolT1RfAaeal2IUGD1ED2+aopaPFS
-         bqeBoRWD4MnqPPjWTwOKm2Hs37+dR0ytnYLDQ581LEI4+knJPqhTtnJLaX4h0d5zP5xG
-         Yz/s/+hsPUT4OCui1oh8qLn3WRTt9Ju3JklNU3NqYBEcMBXySrYjEPAP6hrHXUmBos5t
-         RluwcLWUHQsQxh/jMlPNZO16d3zsDT9FaBvpFwymX6s4Rr4SUdn1FVRpBDftsuap44jn
-         LiVA==
-X-Gm-Message-State: AOAM531+4hJzhkb+7Bqs3z+7LL5jiESbAjDPwkIG7y+ysp3yfY/3lrvi
-        U+Wex1dvbMKxbzpRosURpnd4IniZUDaCCtr+
-X-Google-Smtp-Source: ABdhPJwF8WFth20bf6P3IQm/LFI6HDq1NZYOnO5OihwSX9M8OzJ9sqcWalEZi/vsddM5iLFgRW9QRQ==
-X-Received: by 2002:a0c:f541:: with SMTP id p1mr2030073qvm.14.1616446716414;
-        Mon, 22 Mar 2021 13:58:36 -0700 (PDT)
-Received: from localhost.localdomain ([138.199.10.68])
-        by smtp.gmail.com with ESMTPSA id h75sm11784134qke.80.2021.03.22.13.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 13:58:35 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     anil.gurumurthy@qlogic.com, sudarsana.kalluru@qlogic.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] scsi: bfa: Fix a typo in two places
-Date:   Tue, 23 Mar 2021 02:28:21 +0530
-Message-Id: <20210322205821.1449844-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Mon, 22 Mar 2021 16:58:51 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp16.blacknight.com (Postfix) with ESMTPS id E99A11C41A1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 20:58:28 +0000 (GMT)
+Received: (qmail 5808 invoked from network); 22 Mar 2021 20:58:28 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Mar 2021 20:58:28 -0000
+Date:   Mon, 22 Mar 2021 20:58:27 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
+Message-ID: <20210322205827.GJ3697@techsingularity.net>
+References: <20210322091845.16437-1-mgorman@techsingularity.net>
+ <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
+ <20210322194948.GI3697@techsingularity.net>
+ <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 08:32:54PM +0000, Chuck Lever III wrote:
+> >> It is returning some confusing (to me) results. I'd like
+> >> to get these resolved before posting any benchmark
+> >> results.
+> >> 
+> >> 1. When it has visited every array element, it returns the
+> >> same value as was passed in @nr_pages. That's the N + 1th
+> >> array element, which shouldn't be touched. Should the
+> >> allocator return nr_pages - 1 in the fully successful case?
+> >> Or should the documentation describe the return value as
+> >> "the number of elements visited" ?
+> >> 
+> > 
+> > I phrased it as "the known number of populated elements in the
+> > page_array".
+> 
+> The comment you added states:
+> 
+> + * For lists, nr_pages is the number of pages that should be allocated.
+> + *
+> + * For arrays, only NULL elements are populated with pages and nr_pages
+> + * is the maximum number of pages that will be stored in the array.
+> + *
+> + * Returns the number of pages added to the page_list or the index of the
+> + * last known populated element of page_array.
+> 
+> 
+> > I did not want to write it as "the number of valid elements
+> > in the array" because that is not necessarily the case if an array is
+> > passed in with holes in the middle. I'm open to any suggestions on how
+> > the __alloc_pages_bulk description can be improved.
+> 
+> The comments states that, for the array case, a /count/ of
+> pages is passed in, and an /index/ is returned. If you want
+> to return the same type for lists and arrays, it should be
+> documented as a count in both cases, to match @nr_pages.
+> Consumers will want to compare @nr_pages with the return
+> value to see if they need to call again.
+> 
 
-s/defintions/definitions/  ....two different places.
+Then I'll just say it's the known count of pages in the array. That
+might still be less than the number of requested pages if holes are
+encountered.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/scsi/bfa/bfa_fc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > The definition of the return value as-is makes sense for either a list
+> > or an array. Returning "nr_pages - 1" suits an array because it's the
+> > last valid index but it makes less sense when returning a list.
+> > 
+> >> 2. Frequently the allocator returns a number smaller than
+> >> the total number of elements. As you may recall, sunrpc
+> >> will delay a bit (via a call to schedule_timeout) then call
+> >> again. This is supposed to be a rare event, and the delay
+> >> is substantial. But with the array-based API, a not-fully-
+> >> successful allocator call seems to happen more than half
+> >> the time. Is that expected? I'm calling with GFP_KERNEL,
+> >> seems like the allocator should be trying harder.
+> >> 
+> > 
+> > It's not expected that the array implementation would be worse *unless*
+> > you are passing in arrays with holes in the middle. Otherwise, the success
+> > rate should be similar.
+> 
+> Essentially, sunrpc will always pass an array with a hole.
+> Each RPC consumes the first N elements in the rq_pages array.
+> Sometimes N == ARRAY_SIZE(rq_pages). AFAIK sunrpc will not
+> pass in an array with more than one hole. Typically:
+> 
+> .....PPPP
+> 
+> My results show that, because svc_alloc_arg() ends up calling
+> __alloc_pages_bulk() twice in this case, it ends up being
+> twice as expensive as the list case, on average, for the same
+> workload.
+> 
 
-diff --git a/drivers/scsi/bfa/bfa_fc.h b/drivers/scsi/bfa/bfa_fc.h
-index d536270bbe9f..0314e4b9e1fb 100644
---- a/drivers/scsi/bfa/bfa_fc.h
-+++ b/drivers/scsi/bfa/bfa_fc.h
-@@ -1193,7 +1193,7 @@ enum {
- };
+Ok, so in this case the caller knows that holes are always at the
+start. If the API returns an index that is a valid index and populated,
+it can check the next index and if it is valid then the whole array
+must be populated.
 
- /*
-- * defintions for CT reason code
-+ * definitions for CT reason code
-  */
- enum {
- 	CT_RSN_INV_CMD		= 0x01,
-@@ -1240,7 +1240,7 @@ enum {
- };
+Right now, the implementation checks for populated elements at the *start*
+because it is required for calling prep_new_page starting at the correct
+index and the API cannot make assumptions about the location of the hole.
 
- /*
-- * defintions for the explanation code for all servers
-+ * definitions for the explanation code for all servers
-  */
- enum {
- 	CT_EXP_AUTH_EXCEPTION		= 0xF1,
---
-2.31.0
+The patch below would check the rest of the array but note that it's
+slower for the API to do this check because it has to check every element
+while the sunrpc user could check one element. Let me know if a) this
+hunk helps and b) is desired behaviour.
 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c83d38dfe936..4bf20650e5f5 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5107,6 +5107,9 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	} else {
+ 		while (prep_index < nr_populated)
+ 			prep_new_page(page_array[prep_index++], 0, gfp, 0);
++
++		while (nr_populated < nr_pages && page_array[nr_populated])
++			nr_populated++;
+ 	}
+ 
+ 	return nr_populated;
+
+-- 
+Mel Gorman
+SUSE Labs
