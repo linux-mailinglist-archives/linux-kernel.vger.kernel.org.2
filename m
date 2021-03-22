@@ -2,110 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FF8344D85
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6721344D8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhCVRhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:37:25 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:34819 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhCVRhT (ORCPT
+        id S232120AbhCVRjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:39:10 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:34336 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhCVRi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:37:19 -0400
-Received: by mail-il1-f200.google.com with SMTP id y8so18059297ill.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:37:19 -0700 (PDT)
+        Mon, 22 Mar 2021 13:38:29 -0400
+Received: by mail-io1-f45.google.com with SMTP id x16so14814662iob.1;
+        Mon, 22 Mar 2021 10:38:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rkdcotk5HOcDiurwBRIaTvqYjgL/Vtw/KTZrCesEFXI=;
-        b=OHFoPVm2tifPZ3//VADRp65SRbZ3mVm1lRuCR7mYiS4PoYsearibcAp9a0xgkLdU5A
-         eBjArcNRrMvzk46annPHHjO9d7In3azr0C2IqqlCxKHDThQ8WdM9pPfsqWhvUKc7Yyt+
-         NZ41u9uZgOt2f5s8axdODtbUcHI+a48IhGziugoDmScQmavNJQrT+++3bOji/YhpJS8B
-         Qocz+p6C07HRff9t8O43HrXltSh0rSKKJ14YESaTrpxtGSBDhE6zE1fHGgAT6JBwEZXe
-         Dke6s/32tJucGDEWkmql6LZC/NTWxyRkDmCccJ3AMvH4ItHW/v1eQ7pM8xuhrBx9WS8L
-         nzAQ==
-X-Gm-Message-State: AOAM533QlPQ5lxpTe8+7YQIUTkxLR47JNZNtNjOpC7WCEwgQ+6yksVii
-        zrNe5ETYs4E3ij48DgKc1nvmNN7O6HViUjYiPxtqpQAkG3R3
-X-Google-Smtp-Source: ABdhPJycftI3/yD7GVxsMH7LD7AhkMCiVZcH28hBOOlJBnrORDqkabU/G68btuywBAj5A6NjPe9qxE2z7t2nybWehLUhBXTSxsk5
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:737:: with SMTP id g23mr722577iox.130.1616434639137;
- Mon, 22 Mar 2021 10:37:19 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 10:37:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000077ef5d05be23841a@google.com>
-Subject: [syzbot] WARNING in io_wq_destroy
-From:   syzbot <syzbot+831debb250650baf4827@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=plEDx3yODuuc0oDuUUpuI2VfkI3CKfscVxs+yXbJJYw=;
+        b=G0p1hrLm23ypgOeRLAqVVNtZSp7za21DcFXtXb/7pG3XPm6FvVWd5xWTCORtCyMKXw
+         2tg0WCQiaZ01hVeQ1OHHz/x7VyeDdAn+JpJmp4QpBfds23fpekuAN3pk+n/qcTcRjFCf
+         1lKr+dmMJxLcuagoAGr0eMkkSLZMKmVy0ncYl8/vUnXHrU6v3CMSaGxZ7fQ9j6HuDz3O
+         V1MuZLypnBwbhkPlukaWe8bbG7yuBmWlR0V5owsCp14cWZOXrVRcMhD1xQa16Ox77Ygi
+         KiBSNLwcSY5X1yshJQ2CjxTQRsSNUXNn6NqI8964xkUCys/O9rGfsEiCeXs9qZUo3O9G
+         kIpg==
+X-Gm-Message-State: AOAM531i2XQNodXB2KRIBuuV6TVH17AsqWQJDKFcUGJA5Xr0YYFe6C+Q
+        ueim/sBjIodHYi4xUF696A==
+X-Google-Smtp-Source: ABdhPJyewsMNUula+4VN8UXChdp+DNLqtLdxAkqFQimXzm+foycbj2gxhUuukwaAaSLd+7g4S8ZNiQ==
+X-Received: by 2002:a5d:93c2:: with SMTP id j2mr728270ioo.166.1616434709207;
+        Mon, 22 Mar 2021 10:38:29 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id c19sm8270300ile.17.2021.03.22.10.38.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 10:38:28 -0700 (PDT)
+Received: (nullmailer pid 2887760 invoked by uid 1000);
+        Mon, 22 Mar 2021 17:38:18 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robin van der Gracht <robin@protonic.nl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20210322144848.1065067-3-geert@linux-m68k.org>
+References: <20210322144848.1065067-1-geert@linux-m68k.org> <20210322144848.1065067-3-geert@linux-m68k.org>
+Subject: Re: [PATCH 02/17] dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
+Date:   Mon, 22 Mar 2021 11:38:18 -0600
+Message-Id: <1616434698.367681.2887759.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 22 Mar 2021 15:48:33 +0100, Geert Uytterhoeven wrote:
+> The Holtek HT16K33 LED controller is not only used for driving
+> dot-matrix displays, but also for driving segment displays.
+> 
+> Document compatible values for the Adafruit 7-segment[1] and
+> 14-segment[2] FeatherWing expansion boards with red displays.  According
+> to the schematics, all other Adafruit 7-segment and 14-segment display
+> backpack and FeatherWing expansion boards (including bare boards and
+> boards fitted with displays) are compatible with these two boards.
+> Add a "color" property to support the different color variants.
+> 
+> [1] https://www.adafruit.com/product/3108
+> [2] https://www.adafruit.com/product/3130
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> Alternatives I considered:
+>   1. Document the attached display type in a child node.
+>      I.e. specify segment type, number of characters, and wiring.
+>      Especially the latter would become really complex, due to the sheer
+>      amount of possible wiring combinations.
+>      Using this method, you also loose the ability to just connect a
+>      display to an i2c bus, and instantiate the device from sysfs,
+>      without using DT:
+> 
+> 	echo adafruit,3130 0x70 > /sys/class/i2c/i2c-adapter/.../new_device
+> 
+>   2. Do not use the "color" property, but document all Adafruit
+>      7-segment and 14-segment display backpack and FeatherWing expansion
+>      boards.
+>      This would lead to a myriad of compatible values:
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,878      # 0.56" 4-Digit 7-Segment Display Backpack (Red)
+> 	      - adafruit,879      # 0.56" 4-Digit 7-Segment Display Backpack (Yellow)
+> 	      - adafruit,880      # 0.56" 4-Digit 7-Segment Display Backpack (Green)
+> 	      - adafruit,881      # 0.56" 4-Digit 7-Segment Display Backpack (Blue)
+> 	      - adafruit,1002     # 0.56" 4-Digit 7-Segment Display Backpack (White)
+> 	  - const: adafruit,877   # 0.56" 4-Digit 7-Segment Backpack
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,1268     # 1.2" 4-Digit 7-Segment Display Backpack (Green)
+> 	      - adafruit,1269     # 1.2" 4-Digit 7-Segment Display Backpack (Yellow)
+> 	      - adafruit,1270     # 1.2" 4-Digit 7-Segment Display Backpack (Red)
+> 	  - const: adafruit,1271  # 1.2" 4-Digit 7-Segment Backpack
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,1911     # 0.54" Quad Alphanumeric Display Backpack (Red)
+> 	      - adafruit,1912     # 0.54" Quad Alphanumeric Display Backpack (Blue)
+> 	      - adafruit,2157     # 0.54" Quad Alphanumeric Display Backpack (White)
+> 	      - adafruit,2158     # 0.54" Quad Alphanumeric Display Backpack (Yellow)
+> 	      - adafruit,2159     # 0.54" Quad Alphanumeric Display Backpack (Yellow-Green)
+> 	      - adafruit,2160     # 0.54" Quad Alphanumeric Display Backpack (Green)
+> 	  - const: adafruit,1910  # 0.54" Quad 14-segment Alphanumeric Backpack
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,3106     # 0.56" 4-Digit 7-Segment FeatherWing Display (Blue)
+> 	      - adafruit,3107     # 0.56" 4-Digit 7-Segment FeatherWing Display (Green)
+> 	      - adafruit,3108     # 0.56" 4-Digit 7-Segment FeatherWing Display (Red)
+> 	      - adafruit,3109     # 0.56" 4-Digit 7-Segment FeatherWing Display (White)
+> 	      - adafruit,3110     # 0.56" 4-Digit 7-Segment FeatherWing Display (Yellow)
+> 	  - const: adafruit,3088  # 0.56" 4-Digit 7-Segment FeatherWing
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,3127     # 0.54" Quad Alphanumeric FeatherWing Display (White)
+> 	      - adafruit,3128     # 0.54" Quad Alphanumeric FeatherWing Display (Blue)
+> 	      - adafruit,3129     # 0.54" Quad Alphanumeric FeatherWing Display (Green)
+> 	      - adafruit,3130     # 0.54" Quad Alphanumeric FeatherWing Display (Red)
+> 	      - adafruit,3131     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow)
+> 	      - adafruit,3132     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow-Green)
+> 	  - const: adafruit,3089  # 0.54" Quad 14-segment Alphanumeric FeatherWing
+> 	  - const: holtek,ht16k33
+> ---
+>  .../bindings/auxdisplay/holtek,ht16k33.yaml   | 22 ++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+> 
 
-syzbot found the following issue on:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-HEAD commit:    0d02ec6b Linux 5.12-rc4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1739e4aad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
-dashboard link: https://syzkaller.appspot.com/bug?extid=831debb250650baf4827
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml:54:16: [error] syntax error: mapping values are not allowed here (syntax)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: mapping values are not allowed in this context
+  in "<unicode string>", line 54, column 16
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml:  mapping values are not allowed in this context
+  in "<unicode string>", line 54, column 16
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+make: *** [Makefile:1380: dt_binding_check] Error 2
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+831debb250650baf4827@syzkaller.appspotmail.com
+See https://patchwork.ozlabs.org/patch/1456639
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 15234 at fs/io-wq.c:1068 io_wq_destroy+0x1dd/0x240 fs/io-wq.c:1068
-Modules linked in:
-CPU: 1 PID: 15234 Comm: syz-executor.5 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_wq_destroy+0x1dd/0x240 fs/io-wq.c:1068
-Code: 48 c1 ea 03 80 3c 02 00 75 6e 49 8b 3c 24 e8 2a b3 d8 ff 4c 89 e7 5b 5d 41 5c 41 5d 41 5e 41 5f e9 18 b3 d8 ff e8 73 b1 95 ff <0f> 0b e9 02 ff ff ff e8 67 b1 95 ff 48 89 ef e8 ff b2 d8 ff eb ae
-RSP: 0018:ffffc90016cb7950 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801362d4c0 RSI: ffffffff81de3cbd RDI: ffff888022177840
-RBP: ffff888022177800 R08: 000000000000003f R09: ffff8880254cb80f
-R10: ffffffff81de3b50 R11: 0000000000000000 R12: ffff8880254cb800
-R13: dffffc0000000000 R14: ffffed1004a99700 R15: 0000000000000040
-FS:  00007f51c4a75700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b32424000 CR3: 000000002a3f7000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_wq_put fs/io-wq.c:1079 [inline]
- io_wq_put_and_exit+0x8d/0xc0 fs/io-wq.c:1086
- io_uring_clean_tctx+0xed/0x160 fs/io_uring.c:8890
- __io_uring_files_cancel+0x503/0x5f0 fs/io_uring.c:8955
- io_uring_files_cancel include/linux/io_uring.h:22 [inline]
- do_exit+0x299/0x2a60 kernel/exit.c:780
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x42c/0x2100 kernel/signal.c:2777
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x466459
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f51c4a75188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000000100 RBX: 000000000056bf60 RCX: 0000000000466459
-RDX: 0000000000000000 RSI: 0000000000002039 RDI: 0000000000000003
-RBP: 00000000004bf9fb R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 0000000000a9fb1f R14: 00007f51c4a75300 R15: 0000000000022000
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+pip3 install dtschema --upgrade
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Please check and re-submit.
+
