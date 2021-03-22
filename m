@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F9A34442B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3F0344392
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhCVM6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:58:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40966 "EHLO mail.kernel.org"
+        id S232658AbhCVMwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:52:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232545AbhCVMrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4384061998;
-        Mon, 22 Mar 2021 12:43:38 +0000 (UTC)
+        id S232521AbhCVMmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:42:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A891619B6;
+        Mon, 22 Mar 2021 12:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417018;
-        bh=MzPnXL8wXz1wTRy1tfGCo/Df+IPc0EHxuz5Qex7v8DI=;
+        s=korg; t=1616416835;
+        bh=hbIgt19IBV9LMeLYRgLcF9U819AFktoNC+UNDW3kUVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bG8xPwF32xKheQN9X2PLA20uADvl1PVBT/Jr329Bs/bApdZHZJ5gzgYkHNxVgdGv7
-         o+XMfJEavVkoGL4sQYBhb0Gfi2FYIryYSMQh6DWiFETuS4xnhNPAuaPPUkm2mSniAh
-         hTwNB9x+LkptxfAIwvzuaAaDZFJjPCJZjKzxyYBg=
+        b=EtUipxiR6OtLuTuTHC8UbreYIi8emWBc4qZRtPVRUdPWlvNCqW+ylJPzcrHm8n4PE
+         TLI78pi0AwlVD3sK3sZ5EOlHjB5pOIe/4S0rZfgGW1dQdaO+MotzMZHpSFuG2mH069
+         Dztq99vfcDwZ7sgm/R4CAB+uwAgg8NPK+1GNh5E4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 28/60] kbuild: Fix <linux/version.h> for empty SUBLEVEL or PATCHLEVEL again
+        stable@vger.kernel.org, Vince Weaver <vincent.weaver@maine.edu>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.10 139/157] perf/x86/intel: Fix unchecked MSR access error caused by VLBR_EVENT
 Date:   Mon, 22 Mar 2021 13:28:16 +0100
-Message-Id: <20210322121923.314340599@linuxfoundation.org>
+Message-Id: <20210322121938.160000191@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit 207da4c82ade9a6d59f7e794d737ba0748613fa2 upstream.
+commit 2dc0572f2cef87425147658698dce2600b799bd3 upstream.
 
-Commit 78d3bb4483ba ("kbuild: Fix <linux/version.h> for empty SUBLEVEL
-or PATCHLEVEL") fixed the build error for empty SUBLEVEL or PATCHLEVEL
-by prepending a zero.
+On a Haswell machine, the perf_fuzzer managed to trigger this message:
 
-Commit 9b82f13e7ef3 ("kbuild: clamp SUBLEVEL to 255") re-introduced
-this issue.
+[117248.075892] unchecked MSR access error: WRMSR to 0x3f1 (tried to
+write 0x0400000000000000) at rIP: 0xffffffff8106e4f4
+(native_write_msr+0x4/0x20)
+[117248.089957] Call Trace:
+[117248.092685]  intel_pmu_pebs_enable_all+0x31/0x40
+[117248.097737]  intel_pmu_enable_all+0xa/0x10
+[117248.102210]  __perf_event_task_sched_in+0x2df/0x2f0
+[117248.107511]  finish_task_switch.isra.0+0x15f/0x280
+[117248.112765]  schedule_tail+0xc/0x40
+[117248.116562]  ret_from_fork+0x8/0x30
 
-This time, we cannot take the same approach because we have C code:
+A fake event called VLBR_EVENT may use the bit 58 of the PEBS_ENABLE, if
+the precise_ip is set. The bit 58 is reserved by the HW. Accessing the
+bit causes the unchecked MSR access error.
 
-  #define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL)
-  #define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
+The fake event doesn't support PEBS. The case should be rejected.
 
-Replace empty SUBLEVEL/PATCHLEVEL with a zero.
-
-Fixes: 9b82f13e7ef3 ("kbuild: clamp SUBLEVEL to 255")
-Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-and-tested-by: Sasha Levin <sashal@kernel.org>
+Fixes: 097e4311cda9 ("perf/x86: Add constraint to create guest LBR event without hw counter")
+Reported-by: Vince Weaver <vincent.weaver@maine.edu>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/1615555298-140216-2-git-send-email-kan.liang@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Makefile |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/events/intel/core.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -1177,15 +1177,17 @@ endef
- define filechk_version.h
- 	if [ $(SUBLEVEL) -gt 255 ]; then                                 \
- 		echo \#define LINUX_VERSION_CODE $(shell                 \
--		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
-+		expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + 255); \
- 	else                                                             \
- 		echo \#define LINUX_VERSION_CODE $(shell                 \
--		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
-+		expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
- 	fi;                                                              \
- 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
- 	((c) > 255 ? 255 : (c)))'
- endef
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3562,6 +3562,9 @@ static int intel_pmu_hw_config(struct pe
+ 		return ret;
  
-+$(version_h): PATCHLEVEL := $(if $(PATCHLEVEL), $(PATCHLEVEL), 0)
-+$(version_h): SUBLEVEL := $(if $(SUBLEVEL), $(SUBLEVEL), 0)
- $(version_h): FORCE
- 	$(call filechk,version.h)
- 	$(Q)rm -f $(old_version_h)
+ 	if (event->attr.precise_ip) {
++		if ((event->attr.config & INTEL_ARCH_EVENT_MASK) == INTEL_FIXED_VLBR_EVENT)
++			return -EINVAL;
++
+ 		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
+ 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
+ 			if (!(event->attr.sample_type &
 
 
