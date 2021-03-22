@@ -2,146 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F2C344E03
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326AF344E06
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhCVSBl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 14:01:41 -0400
-Received: from aposti.net ([89.234.176.197]:56252 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231182AbhCVSBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:01:19 -0400
-Date:   Mon, 22 Mar 2021 18:01:04 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 05/10] dt-bindings: pinctrl: Add bindings for new
- Ingenic SoCs.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <S1UDQQ.OKUWFQAJJIVA2@crapouillou.net>
-In-Reply-To: <1615975084-68203-6-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1615975084-68203-6-git-send-email-zhouyanjie@wanyeetech.com>
+        id S230260AbhCVSCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhCVSCE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:02:04 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A43C061574;
+        Mon, 22 Mar 2021 11:02:03 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id h25so9128128pgm.3;
+        Mon, 22 Mar 2021 11:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6n8LQDiEpWfSi3CrR6UldqapfBm+HvBgVi4dTHd5tBc=;
+        b=mFTl2fa+mhkuhIeZvfP2OVx1IX8MmqovM9xsY/zKl6JmFxs/61Qx8YUSy3tHb269GY
+         e4F03HoXaL/n1hwJZw+/0T8SXprUJbobgQ/nNE7qQiL0141673FEo9xlxdWgGVjazEiW
+         KOiUGUoJT42vPI4cxCFt3OQefxfQhLjscFL6xnqJOEANkYe/Qpi23ZCKg5S3+djJ4gBD
+         3XFrf9401Vvew2A3Z+qrYttCNv76YifgBSHuqYyjEuJYtkb/5j5JLIEOFdntTF+M1M0b
+         C9SFl+n0t4PuFduivplJkuAqIDKL/aT0B6vpv83tg/w1qeVFrabNCs8I+T1dHvCJLl8C
+         wrfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6n8LQDiEpWfSi3CrR6UldqapfBm+HvBgVi4dTHd5tBc=;
+        b=tFEH2s2DsDkNOqkXS8KdImNhNr98UxVgBd7Ru/QNWBnEg3XRDDpjX+a5tSQT9ozhk8
+         +4dSg/wFAnBiZ7s8QB9Zrz/Mt4RMt2J3HBz3i5KOPVM2lzfUrae658zf8rwhA/2Y/l7P
+         0FBBfhG1JuuSf+/HchnjB8Z0NujEFQRoZtWC70s9a0oIuTFF0zSEsk7qNYTdS/G0MjqD
+         SU7DmbHFigqgPIoUMeFpI7Ner2jonWzj+mJNqXTHac7BoqcFmB2ePOGEsdsJ9sQKAFPi
+         uhYV7Zf8mz4I3T8QyDNqio7KdWWoREbGBkYucjyBiD6Eu7LKdCroXcpxguzjF91kcwKF
+         welg==
+X-Gm-Message-State: AOAM533Yc6OwnyNM0quoVpujIlGa6i1FYxZd3pl9pGCpxAOOLQ4ASWNF
+        gjymdVOTiSxHyGuEA691WaywDKA5Ca0=
+X-Google-Smtp-Source: ABdhPJxZbIxkYnPLp1ENa8d0vfYFblOkKu2wEUaaYgy2IPxONllLG5DJmktgrzglVCJbleFW2IZiww==
+X-Received: by 2002:aa7:9e5b:0:b029:1f1:5ba4:57a2 with SMTP id z27-20020aa79e5b0000b02901f15ba457a2mr956448pfq.59.1616436122677;
+        Mon, 22 Mar 2021 11:02:02 -0700 (PDT)
+Received: from [10.230.2.227] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id k127sm14962367pfd.63.2021.03.22.11.02.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 11:02:02 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/60] 5.4.108-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210322121922.372583154@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <739491b5-456f-7fe8-7c19-5af725ec0ae0@gmail.com>
+Date:   Mon, 22 Mar 2021 11:01:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Le mer. 17 mars 2021 à 17:57, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add the pinctrl bindings for the JZ4730 SoC, the JZ4750 SoC,
-> the JZ4755 SoC, the JZ4775 SoC and the X2000 SoC from Ingenic.
+On 3/22/2021 5:27 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.108 release.
+> There are 60 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
+> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
+> Anything received after that time might be too late.
 > 
-> Notes:
->     v2:
->     New patch.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.108-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
 > 
->     v2->v3:
->     No change.
+> thanks,
 > 
->  .../bindings/pinctrl/ingenic,pinctrl.yaml          | 23 
-> ++++++++++++++++++----
->  1 file changed, 19 insertions(+), 4 deletions(-)
-> 
-> diff --git 
-> a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml 
-> b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
-> index 44c04d1..60604fc 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
-> @@ -17,10 +17,12 @@ description: >
->    naming scheme "PxN" where x is a character identifying the GPIO 
-> port with
->    which the pin is associated and N is an integer from 0 to 31 
-> identifying the
->    pin within that GPIO port. For example PA0 is the first pin in 
-> GPIO port A,
-> -  and PB31 is the last pin in GPIO port B. The JZ4740, the X1000 and 
-> the X1830
-> -  contains 4 GPIO ports, PA to PD, for a total of 128 pins. The 
-> JZ4760, the
-> -  JZ4770 and the JZ4780 contains 6 GPIO ports, PA to PF, for a total 
-> of 192
-> -  pins.
-> +  and PB31 is the last pin in GPIO port B. The JZ4730, the JZ4740, 
-> the X1000
-> +  and the X1830 contains 4 GPIO ports, PA to PD, for a total of 128 
-> pins. The
-> +  X2000 contains 5 GPIO ports, PA to PE, for a total of 160 pins. 
-> The JZ4750,
-> +  the JZ4755 the JZ4760, the JZ4770 and the JZ4780 contains 6 GPIO 
-> ports, PA
-> +  to PF, for a total of 192 pins. The JZ4775 contains 7 GPIO ports, 
-> PA to PG,
-> +  for a total of 224 pins.
+> greg k-h
 
-While we're at it, the JZ4725B has also 4 GPIO ports.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-> 
->  maintainers:
->    - Paul Cercueil <paul@crapouillou.net>
-> @@ -32,20 +34,28 @@ properties:
->    compatible:
->      oneOf:
->        - enum:
-> +          - ingenic,jz4730-pinctrl
->            - ingenic,jz4740-pinctrl
->            - ingenic,jz4725b-pinctrl
-> +          - ingenic,jz4750-pinctrl
-> +          - ingenic,jz4755-pinctrl
->            - ingenic,jz4760-pinctrl
->            - ingenic,jz4770-pinctrl
-> +          - ingenic,jz4775-pinctrl
->            - ingenic,jz4780-pinctrl
->            - ingenic,x1000-pinctrl
->            - ingenic,x1500-pinctrl
->            - ingenic,x1830-pinctrl
-> +          - ingenic,x2000-pinctrl
->        - items:
->            - const: ingenic,jz4760b-pinctrl
->            - const: ingenic,jz4760-pinctrl
->        - items:
->            - const: ingenic,x1000e-pinctrl
->            - const: ingenic,x1000-pinctrl
-> +      - items:
-> +          - const: ingenic,x2000e-pinctrl
-> +          - const: ingenic,x2000-pinctrl
-> 
->    reg:
->      maxItems: 1
-> @@ -62,14 +72,19 @@ patternProperties:
->      properties:
->        compatible:
->          enum:
-> +          - ingenic,jz4730-gpio
->            - ingenic,jz4740-gpio
->            - ingenic,jz4725b-gpio
-> +          - ingenic,jz4750-gpio
-> +          - ingenic,jz4755-gpio
->            - ingenic,jz4760-gpio
->            - ingenic,jz4770-gpio
-> +          - ingenic,jz4775-gpio
->            - ingenic,jz4780-gpio
->            - ingenic,x1000-gpio
->            - ingenic,x1500-gpio
->            - ingenic,x1830-gpio
-> +          - ingenic,x2000-gpio
-> 
->        reg:
->          items:
-> --
-> 2.7.4
-> 
-
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
