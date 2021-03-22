@@ -2,130 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29380345034
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DED345040
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhCVTpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhCVTpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:45:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E8016198E;
-        Mon, 22 Mar 2021 19:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616442322;
-        bh=1mW3GjxQpOUUF7rnpu/CAYNiHhbFCIaPtk6jpTGlrRM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rulDXakl0oynUcW5drTvihIxl7AjnGtsHlHZYiBtRLeDotQiD1KqJnWB6gm1x/qt4
-         uxUneaS8DjMdeLz+PoeFnfJMBtye1HRE134Ac/7bZwmuTwVyJBeMN5OOCuJu8PrZLb
-         iMXDXKHdtAE1uGiPMm9m2IRGfgn/gXCY83YovYkUJL0R9lP0yPVnP/XXN0UiFT8q9N
-         uzbfyIqjEcBZVEQgbFUlVzl4GaycSM6u0zNMUORYyvMR/aZwW1OW+C+5N/8WluZvAA
-         Um2VOCcCLOeCEVEbY0Tga12iwyEk65/DeUMq2eZHdG9pUup33vkU+xzDBF0iUvBN7/
-         2AaGd24aZPeqg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4C81535239E8; Mon, 22 Mar 2021 12:45:22 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 12:45:22 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
- Tiny RCU grace periods
-Message-ID: <20210322194522.GO2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
- <20210304002632.23870-2-paulmck@kernel.org>
- <20210321222855.GA863290@lothringen>
- <20210322154744.GM2696@paulmck-ThinkPad-P72>
- <20210322190035.GA874833@lothringen>
+        id S230218AbhCVTuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:50:25 -0400
+Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:53743 "EHLO
+        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230337AbhCVTtv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 15:49:51 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id D64F02439
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 19:49:49 +0000 (GMT)
+Received: (qmail 32117 invoked from network); 22 Mar 2021 19:49:49 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Mar 2021 19:49:49 -0000
+Date:   Mon, 22 Mar 2021 19:49:48 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
+Message-ID: <20210322194948.GI3697@techsingularity.net>
+References: <20210322091845.16437-1-mgorman@techsingularity.net>
+ <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210322190035.GA874833@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 08:00:35PM +0100, Frederic Weisbecker wrote:
-> On Mon, Mar 22, 2021 at 08:47:44AM -0700, Paul E. McKenney wrote:
-> > On Sun, Mar 21, 2021 at 11:28:55PM +0100, Frederic Weisbecker wrote:
-> > > On Wed, Mar 03, 2021 at 04:26:31PM -0800, paulmck@kernel.org wrote:
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > 
-> > > > There is a need for a non-blocking polling interface for RCU grace
-> > > > periods, so this commit supplies start_poll_synchronize_rcu() and
-> > > > poll_state_synchronize_rcu() for this purpose.  Note that the existing
-> > > > get_state_synchronize_rcu() may be used if future grace periods are
-> > > > inevitable (perhaps due to a later call_rcu() invocation).  The new
-> > > > start_poll_synchronize_rcu() is to be used if future grace periods
-> > > > might not otherwise happen.  Finally, poll_state_synchronize_rcu()
-> > > > provides a lockless check for a grace period having elapsed since
-> > > > the corresponding call to either of the get_state_synchronize_rcu()
-> > > > or start_poll_synchronize_rcu().
-> > > > 
-> > > > As with get_state_synchronize_rcu(), the return value from either
-> > > > get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
-> > > > to a later call to either poll_state_synchronize_rcu() or the existing
-> > > > (might_sleep) cond_synchronize_rcu().
-> > > > 
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >  include/linux/rcutiny.h | 11 ++++++-----
-> > > >  kernel/rcu/tiny.c       | 40 ++++++++++++++++++++++++++++++++++++++++
-> > > >  2 files changed, 46 insertions(+), 5 deletions(-)
-> > > > 
-> > > > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> > > > index 2a97334..69108cf4 100644
-> > > > --- a/include/linux/rcutiny.h
-> > > > +++ b/include/linux/rcutiny.h
-> > > > @@ -17,14 +17,15 @@
-> > > >  /* Never flag non-existent other CPUs! */
-> > > >  static inline bool rcu_eqs_special_set(int cpu) { return false; }
-> > > >  
-> > > > -static inline unsigned long get_state_synchronize_rcu(void)
-> > > > -{
-> > > > -	return 0;
-> > > > -}
-> > > > +unsigned long get_state_synchronize_rcu(void);
-> > > > +unsigned long start_poll_synchronize_rcu(void);
-> > > > +bool poll_state_synchronize_rcu(unsigned long oldstate);
-> > > >  
-> > > >  static inline void cond_synchronize_rcu(unsigned long oldstate)
-> > > >  {
-> > > > -	might_sleep();
-> > > > +	if (poll_state_synchronize_rcu(oldstate))
-> > > > +		return;
-> > > > +	synchronize_rcu();
-> > > 
-> > > Perhaps cond_synchronize_rcu() could stay as it was. If it might
-> > > call synchronize_rcu() then it inherits its constraint to be
-> > > called from a quiescent state.
-> > 
-> > As in leave the might_sleep()?  How about something like this?
-> > 
-> > static inline void cond_synchronize_rcu(unsigned long oldstate)
-> > {
-> > 	if (!poll_state_synchronize_rcu(oldstate))
-> > 		synchronize_rcu();
-> > 	else
-> > 		might_sleep();
-> > }
-> > 
-> > One advantage of this is that the Tiny and Tree implementations
-> > become identical and can then be consolidated.
-> > 
-> > Or did I miss your point?
+On Mon, Mar 22, 2021 at 06:25:03PM +0000, Chuck Lever III wrote:
 > 
-> But poll_state_synchronize_rcu() checks that the gp_num has changed,
-> which is not needed for cond_synchronize_rcu() since this it is
-> only allowed to be called from a QS.
+> 
+> > On Mar 22, 2021, at 5:18 AM, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > 
+> > This series is based on top of Matthew Wilcox's series "Rationalise
+> > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
+> > test and are not using Andrew's tree as a baseline, I suggest using the
+> > following git tree
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v5r9
+> > 
+> > The users of the API have been dropped in this version as the callers
+> > need to check whether they prefer an array or list interface (whether
+> > preference is based on convenience or performance).
+> 
+> I now have a consumer implementation that uses the array
+> API. If I understand the contract correctly, the return
+> value is the last array index that __alloc_pages_bulk()
+> visits. My consumer uses the return value to determine
+> if it needs to call the allocator again.
+> 
 
-Good catch, and thank you!  Back to a single might_sleep() it is!
+For either arrays or lists, the return value is the number of valid
+pages. For arrays, the pattern is expected to be
 
-						Thanx, Paul
+nr_pages = alloc_pages_bulk(gfp, nr_requested, page_array);
+for (i = 0; i < nr_pages; i++) {
+	do something with page_array[i] 
+}
+
+There *could* be populated valid elements on and after nr_pages but the
+implementation did not visit those elements. The implementation can abort
+early if the array looks like this
+
+PPP....PPP
+
+Where P is a page and . is NULL. The implementation would skip the
+first three pages, allocate four pages and then abort when a new page
+was encountered. This is an implementation detail around how I handled
+prep_new_page. It could be addressed if many callers expect to pass in
+an array that has holes in the middle.
+
+> It is returning some confusing (to me) results. I'd like
+> to get these resolved before posting any benchmark
+> results.
+> 
+> 1. When it has visited every array element, it returns the
+> same value as was passed in @nr_pages. That's the N + 1th
+> array element, which shouldn't be touched. Should the
+> allocator return nr_pages - 1 in the fully successful case?
+> Or should the documentation describe the return value as
+> "the number of elements visited" ?
+> 
+
+I phrased it as "the known number of populated elements in the
+page_array". I did not want to write it as "the number of valid elements
+in the array" because that is not necessarily the case if an array is
+passed in with holes in the middle. I'm open to any suggestions on how
+the __alloc_pages_bulk description can be improved.
+
+The definition of the return value as-is makes sense for either a list
+or an array. Returning "nr_pages - 1" suits an array because it's the
+last valid index but it makes less sense when returning a list.
+
+> 2. Frequently the allocator returns a number smaller than
+> the total number of elements. As you may recall, sunrpc
+> will delay a bit (via a call to schedule_timeout) then call
+> again. This is supposed to be a rare event, and the delay
+> is substantial. But with the array-based API, a not-fully-
+> successful allocator call seems to happen more than half
+> the time. Is that expected? I'm calling with GFP_KERNEL,
+> seems like the allocator should be trying harder.
+> 
+
+It's not expected that the array implementation would be worse *unless*
+you are passing in arrays with holes in the middle. Otherwise, the success
+rate should be similar.
+
+> 3. Is the current design intended so that if the consumer
+> does call again, is it supposed to pass in the array address
+> + the returned index (and @nr_pages reduced by the returned
+> index) ?
+> 
+
+The caller does not have to pass in array address + returned index but
+it's more efficient if it does.
+
+If you are passing in arrays with holes in the middle then the following
+might work (not tested)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c83d38dfe936..4dc38516a5bd 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5002,6 +5002,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	gfp_t alloc_gfp;
+ 	unsigned int alloc_flags;
+ 	int nr_populated = 0, prep_index = 0;
++	bool hole = false;
+ 
+ 	if (WARN_ON_ONCE(nr_pages <= 0))
+ 		return 0;
+@@ -5057,6 +5058,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	if (!zone)
+ 		goto failed;
+ 
++retry_hole:
+ 	/* Attempt the batch allocation */
+ 	local_irq_save(flags);
+ 	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+@@ -5069,6 +5071,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		 * IRQs are enabled.
+ 		 */
+ 		if (page_array && page_array[nr_populated]) {
++			hole = true;
+ 			nr_populated++;
+ 			break;
+ 		}
+@@ -5109,6 +5112,9 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 			prep_new_page(page_array[prep_index++], 0, gfp, 0);
+ 	}
+ 
++	if (hole && nr_populated < nr_pages && hole)
++		goto retry_hole;
++
+ 	return nr_populated;
+ 
+ failed_irq:
+
+-- 
+Mel Gorman
+SUSE Labs
