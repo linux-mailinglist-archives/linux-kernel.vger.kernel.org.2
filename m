@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF14343F9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 522E9343F8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhCVLXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:23:36 -0400
-Received: from m12-14.163.com ([220.181.12.14]:49311 "EHLO m12-14.163.com"
+        id S229951AbhCVLWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:22:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230053AbhCVLXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:23:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=wB68+CyVPyDWhl9O4d
-        ZeU9hVVE2ad/rS8YLHzypn1qY=; b=fA2lV0q5Bgw4QZWlJ7SkLEsSOSGYbxqlPF
-        2HMIvbaUt4c7eQfIZCTAW5sKwUc/DOWi9JAnTyO/EmLxgMHUryEiqTMaJcVhKZr/
-        RWmCExVjm1v7iDnE3QliNsj8QStJLjPGyzDO45mqQZBvIGmFOYfPl0nIGBA4p5hO
-        vykBoeIpo=
-Received: from bf-rmnj-02.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowAAnNVHqfVhgfZ+hqg--.21114S2;
-        Mon, 22 Mar 2021 19:22:24 +0800 (CST)
-From:   Jian Dong <dj0227@163.com>
-To:     milo.kim@ti.com, sre@kernel.org
-Cc:     huyue2@yulong.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongjian <dongjian@yulong.com>
-Subject: [PATCH] power-supply: Use IRQF_ONESHOT
-Date:   Mon, 22 Mar 2021 19:21:33 +0800
-Message-Id: <1616412093-144386-1-git-send-email-dj0227@163.com>
-X-Mailer: git-send-email 1.9.1
-X-CM-TRANSID: DsCowAAnNVHqfVhgfZ+hqg--.21114S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXw1DGw48Aw1fKrWxtr4xZwb_yoW5AF4Upa
-        95AF93ArWYgayUJF1DKayUGFy5Kay5AFy5CrWxt345Z3W3Z3yvqr1UKFW3Gry7JrW3XF4S
-        qa4aqw4IqF13GrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jFv38UUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: dgmqjjqx6rljoofrz/1tbiOxBd3VXlrfgrxgAAsj
+        id S229482AbhCVLW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:22:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4900D6198E
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 11:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616412148;
+        bh=7O5Y064sMQOOqOMY6OVkzxT800PL2d3moQtD+GZ6tnQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BQ9GjdMI6QpoEYrjTgKYbYorgs0l3IkOz+yPJRKtEu0XYXsdX9Q8E65Xh+/x8n25d
+         KG0eWUPs4PHOT/10cQfUgGb1wgX7Ihvl3KRyjASrVE3uKY2Nl94VaCB528haqpc5nq
+         DlnJPsoE3tm83dW4quDpZZHzbmEVZhhyoaZ7KlpLhhptYeLMEj/OrzhC0aumO82JB5
+         yDBrCnyRvPDS/OeUMpH0tu1j4YAL6Ifdjy5ATvmZrbeFTyvnL72M4LaA7cZAF3z8pr
+         nsyIulqAq9RAwVLNkSF8Yaf2SLdfz3TRgWAvp5GQJOcQC9rJuDg3UnCfo9Z1UhsXhm
+         T5RSmP7EvHCHw==
+Received: by mail-oi1-f178.google.com with SMTP id n140so12639586oig.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:22:28 -0700 (PDT)
+X-Gm-Message-State: AOAM532nHDYNWXSeDvWRoLkaGEo4OoSLllD4EYN3MsPAmL5zjgb0y2ft
+        LKojcA/K6FTfpk8CXLdNdv/4d4OWoVF25GeRI08=
+X-Google-Smtp-Source: ABdhPJwufCrfVhjdpJ6yEaYN/r05FrmAE5SWGZfTHqEo8IjCyEFrO+tYBa7BSbfsZMkQ7O6hVatQPDMg+Muv+B4zehU=
+X-Received: by 2002:a05:6808:313:: with SMTP id i19mr9170398oie.67.1616412147659;
+ Mon, 22 Mar 2021 04:22:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210322102002.28990-1-arnd@kernel.org> <YFhxhyXLyTqp4ppH@kroah.com>
+In-Reply-To: <YFhxhyXLyTqp4ppH@kroah.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 22 Mar 2021 12:22:11 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2B4X98VMy-1E=mNX+96Dmika8Y-YdTn5E-_uWqK9JnWQ@mail.gmail.com>
+Message-ID: <CAK8P3a2B4X98VMy-1E=mNX+96Dmika8Y-YdTn5E-_uWqK9JnWQ@mail.gmail.com>
+Subject: Re: [PATCH] devcoredump: avoid -Wempty-body warnings
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dongjian <dongjian@yulong.com>
+On Mon, Mar 22, 2021 at 11:29 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Mon, Mar 22, 2021 at 11:19:53AM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > +      * These should normally not fail, but there is no problem
+> > +      * continuing without the links, so just warn instead of
+> > +      * failing.
+> > +      */
+> > +     WARN_ON_ONCE(sysfs_create_link(&devcd->devcd_dev.kobj, &dev->kobj,
+> > +                                    "failing_device"));
+> >
+> > -     if (sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
+> > -                           "devcoredump"))
+> > -             /* nothing - symlink will be missing */;
+> > +     WARN_ON_ONCE(sysfs_create_link(&dev->kobj, &devcd->devcd_dev.kobj,
+> > +                                    "devcoredump"));
+>
+> We do not want to reboot machines that have panic-on-warn set,
 
-Fixes coccicheck error:
+Fair enough.
 
-drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR:
-drivers/power/supply/lp8788-charger.c:502:8-28: ERROR:
-drivers/power/supply/tps65217_charger.c:239:8-33: ERROR:
-drivers/power/supply/tps65090-charger.c:303:8-33: ERROR:
+> so if this really needs a trace dump, please do that instead...
 
-Threaded IRQ with no primary handler requested without IRQF_ONESHOT
+I don't think the backtrace is needed here, if it ever happens it's either
+going to be -ENOMEM or completely reproducible. I can instead
+do the cast to (void) that Linus suggested, or a simple if(...) dev_warn()
+or dev_warn_once() to have some indication of the failure.
 
-Signed-off-by: dongjian <dongjian@yulong.com>
----
- drivers/power/supply/lp8788-charger.c   | 2 +-
- drivers/power/supply/pm2301_charger.c   | 2 +-
- drivers/power/supply/tps65090-charger.c | 2 +-
- drivers/power/supply/tps65217_charger.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
-index e7931ff..397e5a0 100644
---- a/drivers/power/supply/lp8788-charger.c
-+++ b/drivers/power/supply/lp8788-charger.c
-@@ -501,7 +501,7 @@ static int lp8788_set_irqs(struct platform_device *pdev,
- 
- 		ret = request_threaded_irq(virq, NULL,
- 					lp8788_charger_irq_thread,
--					0, name, pchg);
-+					IRQF_ONESHOT, name, pchg);
- 		if (ret)
- 			break;
- 	}
-diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply/pm2301_charger.c
-index ac06ecf..a3bfb96 100644
---- a/drivers/power/supply/pm2301_charger.c
-+++ b/drivers/power/supply/pm2301_charger.c
-@@ -1089,7 +1089,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
- 	ret = request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
- 				NULL,
- 				pm2xxx_charger_irq[0].isr,
--				pm2->pdata->irq_type,
-+				pm2->pdata->irq_type | IRQF_ONESHOT,
- 				pm2xxx_charger_irq[0].name, pm2);
- 
- 	if (ret != 0) {
-diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supply/tps65090-charger.c
-index 6b0098e..0990b2f 100644
---- a/drivers/power/supply/tps65090-charger.c
-+++ b/drivers/power/supply/tps65090-charger.c
-@@ -301,7 +301,7 @@ static int tps65090_charger_probe(struct platform_device *pdev)
- 
- 	if (irq != -ENXIO) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
--			tps65090_charger_isr, 0, "tps65090-charger", cdata);
-+			tps65090_charger_isr, IRQF_ONESHOT, "tps65090-charger", cdata);
- 		if (ret) {
- 			dev_err(cdata->dev,
- 				"Unable to register irq %d err %d\n", irq,
-diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supply/tps65217_charger.c
-index 814c2b8..ba33d16 100644
---- a/drivers/power/supply/tps65217_charger.c
-+++ b/drivers/power/supply/tps65217_charger.c
-@@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_device *pdev)
- 	for (i = 0; i < NUM_CHARGER_IRQS; i++) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq[i], NULL,
- 						tps65217_charger_irq,
--						0, "tps65217-charger",
-+						IRQF_ONESHOT, "tps65217-charger",
- 						charger);
- 		if (ret) {
- 			dev_err(charger->dev,
--- 
-1.9.1
-
-
+          Arnd
