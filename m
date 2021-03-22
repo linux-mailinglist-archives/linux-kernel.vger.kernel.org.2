@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5AE344480
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24573444B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbhCVNAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:00:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40066 "EHLO mail.kernel.org"
+        id S230091AbhCVNFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:05:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232767AbhCVMsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:48:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A39AA619C0;
-        Mon, 22 Mar 2021 12:44:09 +0000 (UTC)
+        id S232249AbhCVMv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C8D461A00;
+        Mon, 22 Mar 2021 12:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417050;
-        bh=gKFKmJmz7gWC8mnLNoc9cdcCFERF3Ke9B1hJzweRw6A=;
+        s=korg; t=1616417164;
+        bh=d770M/aN5daPlinx+dD1eupvA013sflFsP8cIE0hJ+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zX9RW2Eq2VA5U4F0S7Z8d66kGZAIXFgmt71ael14z4rybv+pzC2JSiEBCJahmBqpd
-         I8VDl83k1iSMiEOmCnoyc2RrkZleapHaG5ruXA4mOQDCmxGCDgXkLJrIO4q/qn+R8F
-         0RDg+s5N66GUMQHgrFsrB0OqokMYER8lUJ8aFiUk=
+        b=Jd1MtX1XHTOV7bPOp1/JTeCN6DWab98UdOG5lNYIidBSMQ55Wt+eUYIrVNmJ9S5Rg
+         iZgLhOX9fGi4fWuzJfFULl9B5aqHBO7OcQsXhNctOwGDjNt9qpw6AcDta3f1GPnI3D
+         1J28jZiqtaosPhWCGDeJ6ShKkFZ9D7jg0fH+5qMU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Matthias Schwarzott <zzam@gentoo.org>
-Subject: [PATCH 5.4 34/60] usb-storage: Add quirk to defeat Kindles automatic unload
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        David Ahern <dsahern@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wang Nan <wangnan0@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 08/43] tools build feature: Check if get_current_dir_name() is available
 Date:   Mon, 22 Mar 2021 13:28:22 +0100
-Message-Id: <20210322121923.515744316@linuxfoundation.org>
+Message-Id: <20210322121920.201000545@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,93 +43,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-commit 546aa0e4ea6ed81b6c51baeebc4364542fa3f3a7 upstream.
+commit 8feb8efef97a134933620071e0b6384cb3238b4e upstream.
 
-Matthias reports that the Amazon Kindle automatically removes its
-emulated media if it doesn't receive another SCSI command within about
-one second after a SYNCHRONIZE CACHE.  It does so even when the host
-has sent a PREVENT MEDIUM REMOVAL command.  The reason for this
-behavior isn't clear, although it's not hard to make some guesses.
+As the namespace support code will use this, which is not available in
+some non _GNU_SOURCE libraries such as Android's bionic used in my
+container build tests (r12b and r15c at the moment).
 
-At any rate, the results can be unexpected for anyone who tries to
-access the Kindle in an unusual fashion, and in theory they can lead
-to data loss (for example, if one file is closed and synchronized
-while other files are still in the middle of being written).
-
-To avoid such problems, this patch creates a new usb-storage quirks
-flag telling the driver always to issue a REQUEST SENSE following a
-SYNCHRONIZE CACHE command, and adds an unusual_devs entry for the
-Kindle with the flag set.  This is sufficient to prevent the Kindle
-from doing its automatic unload, without interfering with proper
-operation.
-
-Another possible way to deal with this would be to increase the
-frequency of TEST UNIT READY polling that the kernel normally carries
-out for removable-media storage devices.  However that would increase
-the overall load on the system and it is not as reliable, because the
-user can override the polling interval.  Changing the driver's
-behavior is safer and has minimal overhead.
-
-CC: <stable@vger.kernel.org>
-Reported-and-tested-by: Matthias Schwarzott <zzam@gentoo.org>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20210317190654.GA497856@rowland.harvard.edu
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: David Ahern <dsahern@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Wang Nan <wangnan0@huawei.com>
+Link: https://lkml.kernel.org/n/tip-x56ypm940pwclwu45d7jfj47@git.kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/transport.c    |    7 +++++++
- drivers/usb/storage/unusual_devs.h |   12 ++++++++++++
- include/linux/usb_usual.h          |    2 ++
- 3 files changed, 21 insertions(+)
+ tools/build/Makefile.feature                    |    1 +
+ tools/build/feature/Makefile                    |    4 ++++
+ tools/build/feature/test-all.c                  |    5 +++++
+ tools/build/feature/test-get_current_dir_name.c |   10 ++++++++++
+ tools/perf/Makefile.config                      |    5 +++++
+ tools/perf/util/Build                           |    1 +
+ tools/perf/util/get_current_dir_name.c          |   18 ++++++++++++++++++
+ tools/perf/util/util.h                          |    4 ++++
+ 8 files changed, 48 insertions(+)
+ create mode 100644 tools/build/feature/test-get_current_dir_name.c
+ create mode 100644 tools/perf/util/get_current_dir_name.c
 
---- a/drivers/usb/storage/transport.c
-+++ b/drivers/usb/storage/transport.c
-@@ -651,6 +651,13 @@ void usb_stor_invoke_transport(struct sc
- 		need_auto_sense = 1;
- 	}
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -33,6 +33,7 @@ FEATURE_TESTS_BASIC :=
+         dwarf_getlocations              \
+         fortify-source                  \
+         sync-compare-and-swap           \
++        get_current_dir_name            \
+         glibc                           \
+         gtk2                            \
+         gtk2-infobar                    \
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -7,6 +7,7 @@ FILES=
+          test-dwarf_getlocations.bin            \
+          test-fortify-source.bin                \
+          test-sync-compare-and-swap.bin         \
++         test-get_current_dir_name.bin          \
+          test-glibc.bin                         \
+          test-gtk2.bin                          \
+          test-gtk2-infobar.bin                  \
+@@ -99,6 +100,9 @@ $(OUTPUT)test-bionic.bin:
+ $(OUTPUT)test-libelf.bin:
+ 	$(BUILD) -lelf
  
-+	/* Some devices (Kindle) require another command after SYNC CACHE */
-+	if ((us->fflags & US_FL_SENSE_AFTER_SYNC) &&
-+			srb->cmnd[0] == SYNCHRONIZE_CACHE) {
-+		usb_stor_dbg(us, "-- sense after SYNC CACHE\n");
-+		need_auto_sense = 1;
-+	}
++$(OUTPUT)test-get_current_dir_name.bin:
++	$(BUILD)
 +
- 	/*
- 	 * If we have a failure, we're going to do a REQUEST_SENSE 
- 	 * automatically.  Note that we differentiate between a command
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -2212,6 +2212,18 @@ UNUSUAL_DEV( 0x1908, 0x3335, 0x0200, 0x0
- 		US_FL_NO_READ_DISC_INFO ),
+ $(OUTPUT)test-glibc.bin:
+ 	$(BUILD)
  
- /*
-+ * Reported by Matthias Schwarzott <zzam@gentoo.org>
-+ * The Amazon Kindle treats SYNCHRONIZE CACHE as an indication that
-+ * the host may be finished with it, and automatically ejects its
-+ * emulated media unless it receives another command within one second.
-+ */
-+UNUSUAL_DEV( 0x1949, 0x0004, 0x0000, 0x9999,
-+		"Amazon",
-+		"Kindle",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_SENSE_AFTER_SYNC ),
+--- a/tools/build/feature/test-all.c
++++ b/tools/build/feature/test-all.c
+@@ -34,6 +34,10 @@
+ # include "test-libelf-mmap.c"
+ #undef main
+ 
++#define main main_test_get_current_dir_name
++# include "test-get_current_dir_name.c"
++#undef main
 +
-+/*
-  * Reported by Oliver Neukum <oneukum@suse.com>
-  * This device morphes spontaneously into another device if the access
-  * pattern of Windows isn't followed. Thus writable media would be dirty
---- a/include/linux/usb_usual.h
-+++ b/include/linux/usb_usual.h
-@@ -86,6 +86,8 @@
- 		/* lies about caching, so always sync */	\
- 	US_FLAG(NO_SAME, 0x40000000)				\
- 		/* Cannot handle WRITE_SAME */			\
-+	US_FLAG(SENSE_AFTER_SYNC, 0x80000000)			\
-+		/* Do REQUEST_SENSE after SYNCHRONIZE_CACHE */	\
+ #define main main_test_glibc
+ # include "test-glibc.c"
+ #undef main
+@@ -174,6 +178,7 @@ int main(int argc, char *argv[])
+ 	main_test_hello();
+ 	main_test_libelf();
+ 	main_test_libelf_mmap();
++	main_test_get_current_dir_name();
+ 	main_test_glibc();
+ 	main_test_dwarf();
+ 	main_test_dwarf_getlocations();
+--- /dev/null
++++ b/tools/build/feature/test-get_current_dir_name.c
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <unistd.h>
++#include <stdlib.h>
++
++int main(void)
++{
++	free(get_current_dir_name());
++	return 0;
++}
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -310,6 +310,11 @@ ifndef NO_BIONIC
+   endif
+ endif
  
- #define US_FLAG(name, value)	US_FL_##name = value ,
- enum { US_DO_ALL_FLAGS };
++ifeq ($(feature-get_current_dir_name), 1)
++  CFLAGS += -DHAVE_GET_CURRENT_DIR_NAME
++endif
++
++
+ ifdef NO_LIBELF
+   NO_DWARF := 1
+   NO_DEMANGLE := 1
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -10,6 +10,7 @@ libperf-y += evlist.o
+ libperf-y += evsel.o
+ libperf-y += evsel_fprintf.o
+ libperf-y += find_bit.o
++libperf-y += get_current_dir_name.o
+ libperf-y += kallsyms.o
+ libperf-y += levenshtein.o
+ libperf-y += llvm-utils.o
+--- /dev/null
++++ b/tools/perf/util/get_current_dir_name.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (C) 2018, Red Hat Inc, Arnaldo Carvalho de Melo <acme@redhat.com>
++//
++#ifndef HAVE_GET_CURRENT_DIR_NAME
++#include "util.h"
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdlib.h>
++
++/* Android's 'bionic' library, for one, doesn't have this */
++
++char *get_current_dir_name(void)
++{
++	char pwd[PATH_MAX];
++
++	return getcwd(pwd, sizeof(pwd)) == NULL ? NULL : strdup(pwd);
++}
++#endif // HAVE_GET_CURRENT_DIR_NAME
+--- a/tools/perf/util/util.h
++++ b/tools/perf/util/util.h
+@@ -57,6 +57,10 @@ int fetch_kernel_version(unsigned int *p
+ 
+ const char *perf_tip(const char *dirpath);
+ 
++#ifndef HAVE_GET_CURRENT_DIR_NAME
++char *get_current_dir_name(void);
++#endif
++
+ #ifndef HAVE_SCHED_GETCPU_SUPPORT
+ int sched_getcpu(void);
+ #endif
 
 
