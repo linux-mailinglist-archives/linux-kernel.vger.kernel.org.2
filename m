@@ -2,210 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F6C345258
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0F234525B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCVWSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:18:23 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:59627 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229639AbhCVWRz (ORCPT
+        id S230008AbhCVWTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230016AbhCVWTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:17:55 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 685E45804DD;
-        Mon, 22 Mar 2021 18:17:54 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute3.internal (MEProxy); Mon, 22 Mar 2021 18:17:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=ZWi4GtAKz6MJnR4YgJPLnmK6aRpu
-        RQjPkHSWuDbn2hw=; b=FTv+4FlaBI3nXkxsa7BojoAkYJrOjRcOzmC3RGEeEswA
-        zcn8SGPQ5MDiSZvzFOoQaHhYWjY5Zfu8w6RbXJIlX/lkeoihJehq7b3DmVqRdgei
-        Kc31ki6aj6L015JQbET5Eo+gfJ7zO7PslknCI2/93BWPjgsxaLRbjE1bW3T7mVBR
-        zrqQ9K5WjwtmcJBrjd5qLVRW85hTHBXmKYntfSL6+AJkRc0qmIUPWUq4hZlJjpbf
-        r1ruGJJJChwjGlb0/NQb8Opdu7Mq8uLmMy0F1VqyKPl5RfAjj/NVnueqQrE7PzM1
-        lU3fIxS5Wo9wPleZ1Sm+QuIck8u4mVcse0bDVuFM5g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ZWi4Gt
-        AKz6MJnR4YgJPLnmK6aRpuRQjPkHSWuDbn2hw=; b=jYDkRuJqLc1gQX1YIg6lJR
-        EsuKs8DlVizuIL6jBEDPwauOF4v77Kf+sA44eeK22O9inufF2Le8r+aQUVL7fEtH
-        +nQvt9LISbklUqPjiIyJfcQajHG4NmUSYBDewSwt57lE8KoxivY8N7SV0jO+Pl6Q
-        HXb3wzkG9q6sPDM3NPQlw/BYj/iX0pNPAzIYQDckl2qN52KbgZQyKAVuVdbhvbzy
-        o4jvi2muKlUsKldoEMnLCgtvPzIIjr/Tt2zIG9NVAU/5DKsyXQqrx7DUF0lhjM/u
-        CYCZpRIfrXF3/mWtyx6EB6Q2wswoZY4f5xEnolb9K48m3Jq+WRcvY37Db8IlkOaw
-        ==
-X-ME-Sender: <xms:kBdZYNZa_zfBQyNVqg09XWG6y_omDyN7S6Hvrsx8qMyDD4TFPPNKfA>
-    <xme:kBdZYEYNlNxESbTnoJGMgIF6hSh_bxnzoFNENRh0y4wTcKfFAkxk-UaC0XN3dVazd
-    nBK6VLtV0Dy9crO_H4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggedgudehlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
-    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:kBdZYP_i3tbdtKRRVGfAidaUBrJnQ0ERc1r6toG6BtKRdzoY2EmZiA>
-    <xmx:kBdZYLosz2ZP4J8_IYekp6RhbP_T-TOe8aNKqDu9Ba2iqYePJKy8DQ>
-    <xmx:kBdZYIrrIKxv0MGFn75u8QDj-K-S7v1xpZwhrzL4eJ_vaKdBK_pOsw>
-    <xmx:khdZYNShY084XZvHOtsreFHxtDtzB6GQOSOVksjUZj2QLQvb6XLGLNuk4ys>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 811F851C005E; Mon, 22 Mar 2021 18:17:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-271-g88286cf463-fm-20210318.001-g88286cf4
-Mime-Version: 1.0
-Message-Id: <d280843b-77e3-4fa8-9452-5a2f8a45052e@www.fastmail.com>
-In-Reply-To: <c1bcc0be8ae6e500@bloch.sibelius.xs4all.nl>
-References: <20210320151903.60759-1-sven@svenpeter.dev>
- <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
- <8360b3b3-296c-450d-abc3-bb47159bf4e1@www.fastmail.com>
- <c1bcc0be8ae6e500@bloch.sibelius.xs4all.nl>
-Date:   Mon, 22 Mar 2021 23:17:31 +0100
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Mark Kettenis" <mark.kettenis@xs4all.nl>
-Cc:     iommu@lists.linux-foundation.org, joro@8bytes.org, will@kernel.org,
-        robin.murphy@arm.com, robh+dt@kernel.org, arnd@kernel.org,
-        marcan@marcan.st, maz@kernel.org, mohamed.mediouni@caramail.com,
-        stan@corellium.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
-Content-Type: text/plain
+        Mon, 22 Mar 2021 18:19:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44614C061574;
+        Mon, 22 Mar 2021 15:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NHsFX5MxjeF+VaAwcwyWFoKD78wZlg9OURQbD+OIWjI=; b=lRF/zob9BaEhB0ShW00Zg6tQC4
+        GYTJS0a3vdB87rFIsddE92qBPvZez5JPYt5PPnZhpyZcPWMFw6E6PWJsk8Nll/c5p6M4q3NLH4Dv+
+        iVSaJQjLNW9dbd4gBjHUBlB52OTsTx/lfg8jfOQ0dO+GhlnWwQW4bwsAuBq4nRCuT4IzeH3Q/6Zri
+        zq5tVOo5meCFreI34KxT+59bGXMex4D+q+QV0RoumOPpOCk+OFo5xevvWcpp08LZtVY1cjeoUxDIC
+        Lf9GeU0rjy/X6n6X1etT3+jIowXBTUqzMBOHDl6c8aU8odIlj/QCQNXIwsvOHDgW993Bwbua8mlc7
+        6U3bCzGg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOSsK-009A1r-Qz; Mon, 22 Mar 2021 22:18:28 +0000
+Date:   Mon, 22 Mar 2021 22:18:16 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
+        senozhatsky@chromium.org, hyc.lee@gmail.com,
+        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
+        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
+        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
+        colin.king@canonical.com, rdunlap@infradead.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: Re: [PATCH 1/5] cifsd: add server handler and tranport layers
+Message-ID: <20210322221816.GW1719932@casper.infradead.org>
+References: <20210322051344.1706-1-namjae.jeon@samsung.com>
+ <CGME20210322052204epcas1p1382cadbfe958d156c0ad9f7fcb8532b7@epcas1p1.samsung.com>
+ <20210322051344.1706-2-namjae.jeon@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322051344.1706-2-namjae.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 02:13:40PM +0900, Namjae Jeon wrote:
+> +#define RESPONSE_BUF(w)		((void *)(w)->response_buf)
+> +#define REQUEST_BUF(w)		((void *)(w)->request_buf)
 
-Hi Mark,
+Why do you do this obfuscation?
 
-On Sun, Mar 21, 2021, at 19:35, Mark Kettenis wrote:
->
-> Guess we do need to understand a little bit better how the USB DART
-> actually works.  My hypothesis (based on our discussion on #asahi) is
-> that the XHCI host controller and the peripheral controller of the
-> DWC3 block use different DMA "streams" that are handled by the
-> different sub-DARTs.
+> +#define RESPONSE_BUF_NEXT(w)	\
+> +	((void *)((w)->response_buf + (w)->next_smb2_rsp_hdr_off))
+> +#define REQUEST_BUF_NEXT(w)	\
+> +	((void *)((w)->request_buf + (w)->next_smb2_rcv_hdr_off))
 
-I've done some more experiments and the situation is unfortunately more
-complicated: Most DMA transfers are translated with the first DART.
-But sometimes (and I have not been able to figure out the exact conditions)
-transfers instead have to go through the second DART. 
-This happens e.g. with one of my USB keyboards after a stop EP command
-is issued: Suddenly the xhci_ep_ctx struct must be translated through the
-second DART.
+These obfuscations aren't even used; delete them
 
-What this likely means is that we'll need to point both DARTs
-to the same pagetables and just issue the TLB maintenance operations
-as a group.
+> +#define RESPONSE_SZ(w)		((w)->response_sz)
+> +
+> +#define INIT_AUX_PAYLOAD(w)	((w)->aux_payload_buf = NULL)
+> +#define HAS_AUX_PAYLOAD(w)	((w)->aux_payload_sz != 0)
 
-> 
-> The Corellium folks use a DART + sub-DART model in their driver and a
-> single node in the device tree that represents both.  That might sense
-> since the error registers and interrupts are shared.  Maybe it would
-> make sense to select the appropriate sub-DART based on the DMA stream
-> ID?
+I mean, do you really find it clearer to write:
 
-dwc3 specifically seems to require stream id #1 from the DART
-at <0x5 0x02f00000> and stream id #0 from the DART at <0x5 0x02f80000>.
-Both of these only share a IRQ line but are otherwise completely independent.
-Each has their own error registers, etc. and we need some way to
-specify these two DARTs + the appropriate stream ID.
+	if (HAS_AUX_PAYLOAD(work))
+than
+	if (work->aux_payload_sz)
 
-Essentially we have three options to represent this now:
+The unobfuscated version is actually shorter!
 
-1) Add both DARTs as separate regs, use #iommu-cells = <2> and have the
-   first cell select the DART and the second one the stream ID.
-   We could allow #iommu-cells = <1> in case only one reg is specified
-   for the PCIe DART:
-
-   usb_dart1@502f00000 {
-     compatible = "apple,t8103-dart";
-     reg = <0x5 0x02f00000 0x0 0x4000>, <0x5 0x02f80000 0x0 0x4000>;
-     #iommu-cells = <2>;
-     ...
-   };
-
-   usb1 {
-     iommus = <&usb_dart1 0 1>, <&usb_dart1 1 0>;
-     ...
-   };
-
-   I prefer this option because we fully describe the DART in a single
-   device node here. It also feels natural to group them like this because
-   they need to share some properties (like dma-window and the interrupt)
-   anyway. 
-
-2) Create two DART nodes which share the same IRQ line and attach them
-   both to the master node:
-
-   usb_dart1a@502f00000 {
-     compatible = "apple,t8103-dart";
-     reg = <0x5 0x02f00000 0x0 0x4000>;
-     #iommu-cells = <1>;
-     ...
-   };
-   usb_dart1b@502f80000 {
-     compatible = "apple,t8103-dart";
-     reg = <0x5 0x02f80000 0x0 0x4000>;
-     #iommu-cells = <1>;
-     ...
-   };
-
-   usb1 {
-     iommus = <&usb_dart1a 1>, <&usb_dart1b 0>;
-     ...
-   };
-
-   I dislike this one because attaching those two DARTs to a single device
-   seems rather unusual. We'd also have to duplicate the dma-window setting,
-   make sure it's the same for both DARTs and there are probably even more
-   complications I can't think of right now. It seems like this would also
-   make the device tree very verbose and the implementation itself more
-   complicated.
-
-3) Introduce another property and let the DART driver take care of
-   mirroring the pagetables. I believe this would be similar to
-   the sid-remap property:
-
-   usb_dart1@502f00000 {
-     compatible = "apple,t8103-dart";
-     reg = <0x5 0x02f00000 0x0 0x4000>, <0x5 0x02f80000 0x0 0x4000>;
-     #iommu-cells = <1>;
-     sid-remap = <0 1>;
-   };
-   usb1 {
-     iommus = <&usb_dart1 0>;
-   };
-
-   I slightly dislike this one because we now specify which stream id 
-   to use in two places: Once in the device node and another time in the
-   new property in the DART node. I also don't think the binding is much
-   simpler than the first one.
-
-
-> > where #dma-address-cells and #dma-size-cells default to
-> > #address-cells and #size-cells respectively if I understand
-> > the code correctly. That way we could also just always use
-> > a 64bit address and size in the DT, e.g.
-> > 
-> >   pcie_dart {
-> >       [ ... ]
-> >       dma-window = <0 0x100000 0 0x3fe00000>;
-> >       [ ... ]
-> >   };
-> 
-> That sounds like a serious contender to me!  Hopefully one of the
-> Linux kernel developers can give this some sort of blessing.
-> 
-> I think it would make sense for us to just rely on the #address-cells
-> and #size-cells defaults for the M1 device tree.
->
-
-Agreed.
-
-
-Best,
-
-Sven
