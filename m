@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027DF343607
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 01:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDDE34360C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 01:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCVAvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 20:51:00 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:60248 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCVAuY (ORCPT
+        id S229904AbhCVAyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 20:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhCVAyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 20:50:24 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210322005021epoutp03e063357e2facfa7eeabe9ce04a2c7ad1~ug8pY1-zx2690426904epoutp03v
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:50:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210322005021epoutp03e063357e2facfa7eeabe9ce04a2c7ad1~ug8pY1-zx2690426904epoutp03v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616374221;
-        bh=L/hkVWVKzZgrw24gfzg50jfNud1P1BWJRoRwzfTU8jI=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=GMcpTgJ4fE4Vw06S1qkOmpJOZ+a6a1J0N224pi2nw98sepP+nHVmSLaweEKkEeTis
-         TsarXg9MqOXdn73FtdP9PW/eUnjIBHpOCfvbrClKK0m1+qyhKOTgIbu/+crk3W9M6s
-         YF5QClKVoOX8HB5h3m+t1nPVpSmY7I+4LH87e0mY=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210322005020epcas2p2184e952c241f3a3f2691f9d3f3609c7f~ug8oZh-bR0196001960epcas2p2L;
-        Mon, 22 Mar 2021 00:50:20 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.183]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4F3bWZ63Bpz4x9QX; Mon, 22 Mar
-        2021 00:50:18 +0000 (GMT)
-X-AuditID: b6c32a45-337ff7000001297d-47-6057e9c87c1d
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        75.B6.10621.8C9E7506; Mon, 22 Mar 2021 09:50:16 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v29 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB6575DEC175CD1D3895F1AF2BFC669@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210322005016epcms2p189894f11a157ed783e086d4523b85016@epcms2p1>
-Date:   Mon, 22 Mar 2021 09:50:16 +0900
-X-CMS-MailID: 20210322005016epcms2p189894f11a157ed783e086d4523b85016
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPJsWRmVeSWpSXmKPExsWy7bCmhe6Jl+EJBrc3mlo8mLeNzWJv2wl2
-        i5c/r7JZHL79jt1i2oefzBaf1i9jtXh5SNNi1YNwi+bF69ks5pxtYLLo7d/KZvH4zmd2i0U3
-        tjFZ9P9rZ7G4vGsOm0X39R1sFsuP/2OyuL2Fy2Lp1puMFp3T17A4iHhcvuLtcbmvl8lj56y7
-        7B4TFh1g9Ng/dw27R8vJ/SweH5/eYvHo27KK0ePzJjmP9gPdTAFcUTk2GamJKalFCql5yfkp
-        mXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUDPKSmUJeaUAoUCEouLlfTtbIry
-        S0tSFTLyi0tslVILUnIKDA0L9IoTc4tL89L1kvNzrQwNDIxMgSoTcjJ+nW5nKbgkXHHi8mSW
-        BsY3PF2MnBwSAiYSjS8esnYxcnEICexglGi7uJWti5GDg1dAUOLvDmGQGmEBe4mVTRtYQWwh
-        ASWJ9RdnsUPE9SRuPVzDCGKzCehITD9xnx1kjojAb2aJi2+ngQ1lFvjNJLH45H82iG28EjPa
-        n7JA2NIS25dvBevmFIiVaD07CapGQ+LHsl5mCFtU4ubqt+ww9vtj8xkhbBGJ1ntnoWoEJR78
-        3A0Vl5Q4tvsDE4RdL7H1zi9GkCMkBHoYJQ7vvMUKkdCXuNaxEewIXgFficUvl4MtZhFQlXj1
-        eQvUcS4ST6/vBIszC8hLbH87hxkUKswCmhLrd+mDmBICyhJHbrHAvNWw8Tc7OptZgE+i4/Bf
-        uPiOeU+gTlOTWPdzPdMERuVZiKCehWTXLIRdCxiZVzGKpRYU56anFhsVGCLH7iZGcErXct3B
-        OPntB71DjEwcjIcYJTiYlUR4TySHJAjxpiRWVqUW5ccXleakFh9iNAX6ciKzlGhyPjCr5JXE
-        G5oamZkZWJpamJoZWSiJ8xYbPIgXEkhPLEnNTk0tSC2C6WPi4JRqYJpxYOnno/EiZiZ/D+/X
-        KPM9vKz8EG8qa52xSeu0zTfMeWxZs662Z39ffELtGUuy34+IooPPVkR88+766SfZd98w5Wai
-        3BeGtKsnvtU5BK/ncNc2z1v8X+Sn0bzYuBMihpKbpl8JNjc6HMD7Omnm2mX8OR+7z4Uf/3az
-        gb9e+ppVEwPbs7aUc2ks+5PeHo6Jjv3WpBmSvYbp++QXbnUhDtXGUwXae9+fvcHcO/301dMK
-        f9ubuRa2OzWp2rxu/q7Knc4gE/Nce/3Th61W+d3zZ369I+P2K+JL1+HMdKMFMUETvPw3vvdd
-        evnCNCPPt3zRlTsdJKaIf9+3NSd9ZjhPr/XrfBsGARnGtv/Pg1g3KbEUZyQaajEXFScCAC2B
-        ZtRyBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210315012850epcms2p361447b689e925561c48aa9ca54434eb5
-References: <DM6PR04MB6575DEC175CD1D3895F1AF2BFC669@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p3>
-        <20210315013137epcms2p861f06e66be9faff32b6648401778434a@epcms2p8>
-        <CGME20210315012850epcms2p361447b689e925561c48aa9ca54434eb5@epcms2p1>
+        Sun, 21 Mar 2021 20:54:12 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2D1C061574;
+        Sun, 21 Mar 2021 17:54:11 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c17so2929711pfn.6;
+        Sun, 21 Mar 2021 17:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ZqTdh65re5NOM88Bvn/Ypjdea75IBIwk3x5yx/WoBHk=;
+        b=mAjRKsiHwBtW0yF3hWXsRMbk6nXYqyDwKcILPuoELgnTAbFFFLJ4l7AfkO5Dy6mC8e
+         vTct0XhX3cAlVrolU2tzrlFqgf7DkTXloU3xKURQbKglhtlZ7OFXJx52AfnFZwpvb/X9
+         gYlfrTjc58M0cKOQ7R+Ociy/5xKopHigb+fMdf+u4AEjalojcUcnBnJ9oPaJH7RM4+nZ
+         36ZUhq1mA4r/n87dHdGc9Vn1zISngvOIYWJAjME4EaeAUs8aj1ffVbbHhg+ZXbVooelq
+         LsrIdWCMLt+Oyrob/4zJP53WLSKpvC1SEKqHpaoCeS+yPIKjOcooJR6/S5Ag6Tz+TdVp
+         OvWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZqTdh65re5NOM88Bvn/Ypjdea75IBIwk3x5yx/WoBHk=;
+        b=OiSqiBLB8jnp/3L+rzN5tMTqTXRlVMDzOeamIyiRN/Fv0qpSa4XG5zhk0Wq8tc9ayI
+         7aToxEPFZhkHp7pU4Z1haexOytG0ndH01YIvdBKtF8C1bhlex6uDmrBGyrpSNdmJL5OL
+         ilO/P+kEJj5WqVuHPL1BhCZsvEbgu0xDJ2yLRghIir8aNSpG/q8LElI09GTyREcP25BS
+         eJ3dmrbv0UZ2PHsMwZYt7dRBn/G5Ft9PJOFyydZvKmD6/W7xJ9fUAhABkwb+MHvNZe9/
+         v6DwVJbGu1XYIT/fLxt+S/ES0mndLT95twRrahGHZgM+whcIabrIcoCbrB9PlH+JEqto
+         HNNQ==
+X-Gm-Message-State: AOAM530JFtDol0dY8Kc7Pf+TGKIzHSIEq8qymYC+9ZyXYZfWcg+F0Ked
+        uQUQ2PMwPmo/tKbygu/OtAQ=
+X-Google-Smtp-Source: ABdhPJw4lpgpAKfGRVTZaPAl07QBplRcpsy2yzbtRBV88WTFH8ZitWQYeVsNFR8P76uyq4NxVdoUCA==
+X-Received: by 2002:a62:3706:0:b029:211:3d70:a55a with SMTP id e6-20020a6237060000b02902113d70a55amr16219198pfa.16.1616374450057;
+        Sun, 21 Mar 2021 17:54:10 -0700 (PDT)
+Received: from DESKTOP-8REGVGF.localdomain ([211.25.125.254])
+        by smtp.gmail.com with ESMTPSA id i10sm17589687pjm.1.2021.03.21.17.54.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 21 Mar 2021 17:54:09 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 08:54:01 +0800
+From:   Sieng Piaw Liew <liew.s.piaw@gmail.com>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] atl1c: optimize rx loop
+Message-ID: <20210322005326.GA24403@DESKTOP-8REGVGF.localdomain>
+References: <20210319040447.527-1-liew.s.piaw@gmail.com>
+ <20210319041535.GA3441@1wt.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319041535.GA3441@1wt.eu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
-
->> +static int ufshpb_execute_umap_req(struct ufshpb_lu *hpb,
->> +                                  struct ufshpb_req *umap_req,
->> +                                  struct ufshpb_region *rgn)
->> +{
->> +       struct request *req;
->> +       struct scsi_request *rq;
->> +
->> +       req = umap_req->req;
->> +       req->timeout = 0;
->> +       req->end_io_data = (void *)umap_req;
->> +       rq = scsi_req(req);
->> +       ufshpb_set_unmap_cmd(rq->cmd, rgn);
->> +       rq->cmd_len = HPB_WRITE_BUFFER_CMD_LENGTH;
->> +
->> +       blk_execute_rq_nowait(NULL, req, 1, ufshpb_umap_req_compl_fn);
->Typo? Forgot the struct request_queue *q?
-
-The argument of q is removed after this patch.
-
-https://lore.kernel.org/linux-scsi/1611550198-17142-1-git-send-email-guoqing.jiang@cloud.ionos.com/#r
-
-Thanks,
-Daejun
-
->> +
->> +       return 0;
->> +}
->> +
->>  static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
->>                                   struct ufshpb_req *map_req, bool last)
->>  {
->> @@ -533,12 +878,12 @@ static int ufshpb_execute_map_req(struct ufshpb_lu
->> *hpb,
->> 
->>         q = hpb->sdev_ufs_lu->request_queue;
->>         for (i = 0; i < hpb->pages_per_srgn; i++) {
->> -               ret = bio_add_pc_page(q, map_req->bio, map_req->mctx->m_page[i],
->> +               ret = bio_add_pc_page(q, map_req->bio, map_req->rb.mctx-
->> >m_page[i],
->>                                       PAGE_SIZE, 0);
->>                 if (ret != PAGE_SIZE) {
->>                         dev_err(&hpb->sdev_ufs_lu->sdev_dev,
->>                                    "bio_add_pc_page fail %d - %d\n",
->> -                                  map_req->rgn_idx, map_req->srgn_idx);
->> +                                  map_req->rb.rgn_idx, map_req->rb.srgn_idx);
->>                         return ret;
->>                 }
->>         }
->> @@ -554,8 +899,8 @@ static int ufshpb_execute_map_req(struct ufshpb_lu
->> *hpb,
->>         if (unlikely(last))
->>                 mem_size = hpb->last_srgn_entries * HPB_ENTRY_SIZE;
->> 
->> -       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
->> -                               map_req->srgn_idx, mem_size);
->> +       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rb.rgn_idx,
->> +                               map_req->rb.srgn_idx, mem_size);
->>         rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
->> 
->>         blk_execute_rq_nowait(NULL, req, 1, ufshpb_map_req_compl_fn);
->Ditto
+On Fri, Mar 19, 2021 at 05:15:35AM +0100, Willy Tarreau wrote:
+> On Fri, Mar 19, 2021 at 12:04:47PM +0800, Sieng Piaw Liew wrote:
+> > Remove this trivial bit of inefficiency from the rx receive loop,
+> > results in increase of a few Mbps in iperf3. Tested on Intel Core2
+> > platform.
+> > 
+> > Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
+> > ---
+> >  drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+> > index 3f65f2b370c5..b995f9a0479c 100644
+> > --- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+> > +++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+> > @@ -1796,9 +1796,7 @@ static void atl1c_clean_rx_irq(struct atl1c_adapter *adapter,
+> >  	struct atl1c_recv_ret_status *rrs;
+> >  	struct atl1c_buffer *buffer_info;
+> >  
+> > -	while (1) {
+> > -		if (*work_done >= work_to_do)
+> > -			break;
+> > +	while (*work_done < work_to_do) {
 > 
+> It should not change anything, or only based on the compiler's optimization
+> and should not result in a measurable difference because what it does is
+> exactly the same. Have you really compared the compiled output code to
+> explain the difference ? I strongly suspect you'll find no difference at
+> all.
 > 
->Thanks,
->Avri
+> Thus for me it's certainly not an optimization, it could be qualified as
+> a cleanup to improve code readability however.
 > 
-> 
->  
+> Willy
+
+You're right. Objdump and diff showed no difference.
+
+Regards,
+Sieng Piaw
