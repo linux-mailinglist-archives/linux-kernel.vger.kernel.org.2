@@ -2,133 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FDF344660
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC4234465F
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhCVN7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhCVN7A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:59:00 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEECAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:58:59 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id h3-20020a4ae8c30000b02901b68b39e2d3so4121534ooe.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ycw4kh6uo5mWPlwHrkQbviI/KYMjUPq3rp+uHfdtBN8=;
-        b=WaafIrkRt7VtbLiAqIvMQ7prtR+nbO+j3A/PsAroCb42gPmrFUj0dDALDmw1qiVf4r
-         QZ0NZtKuEHyYU8j4D1oQ4EyDnGSwIY8B6E+FcEACoxi3oYTFnf4gJm+60NHNXcdz8Tuw
-         TGXNA/HE78qtHiS4kXBXalgoxVHD73NaxNxsyfE5QjBGsuJB9E7o1txUYPYC/dCwb2ln
-         FWnHO0cqAzYkjWL7dKD1/snl7HuhXmqqMgnocwz3B0zQ7qy3I8ABnUUb1VB4bfWLsScH
-         e2AowhcZLFchuJ6vl7u6FXEF1vmvTHQ09AdIrv5S5VgJUU1OYCOnXbWgjZA/8pZAH2g+
-         BREw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ycw4kh6uo5mWPlwHrkQbviI/KYMjUPq3rp+uHfdtBN8=;
-        b=Wyit0BkgG+jINZglbi50KA/O6Vz4ShVYJy/a6dhsrEK/zc9LYI0xFxQG3A0hPydpfr
-         E0iYFWa7EIc/KkIVnyEoj75mvvIkaHrKDOqGhEniBlu8kNTox/COJHNDp2MoamKAfnlv
-         BAObAY5GtQ5VLLJbc0zQahuiaXO2YS0Uhv7yu3It9p+8z8u6Q9HKuz54gCVvaJYjlLNU
-         b3xJCkic2zkY1G6hT9V2Rjw0cYaGJ7CfDp29xvprhphyrhoFAuk92SFZDPyhMhGDxHeO
-         nRE7diRHE3cnE2eWtcF6+YixGxMgTkX0hVpohwSNXZMaOOoQyBlFM1QIkoqgOTCu21gg
-         Xf9A==
-X-Gm-Message-State: AOAM53252NgXrVZM3wl7uSULhOfMLytSpdTg+++XIp5KqH2Rhau+J+4H
-        AaqJcVMOnYxqzgCvX7UXe/BLO7Uxj1vOyDCbUZg=
-X-Google-Smtp-Source: ABdhPJxDOzZh9ZxCV6hb/mMM8UpqW475cGLkyoKO6WoioK+ZUYE8oTQejvUEuqG3V1Cq8b3Lbb3PcktRVUC+7Y8yAPo=
-X-Received: by 2002:a4a:8845:: with SMTP id e5mr11120361ooi.90.1616421539106;
- Mon, 22 Mar 2021 06:58:59 -0700 (PDT)
+        id S231241AbhCVN7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:59:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42478 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230461AbhCVN7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:59:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616421544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H1wE9M9DWXuluUKR8Qj2wGfHLDajLI5FXvrzLsmocR0=;
+        b=d5MguF6wk6o+RmQvTzMCV8DXZNd3ndl+x98QktgeEcOPu8OgmuuCEowuvJ95nmBM74Bi2J
+        TM/4NMENqSrBsPfykLIJhwJQriEIIlIRfbTQFEuFhXlQtr40VmePkuOdrKpqjAWPNRY3qI
+        LfI2VVjPV3ScpGjlbhgH0bDTVCASRa8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7310EAD4A;
+        Mon, 22 Mar 2021 13:59:04 +0000 (UTC)
+Date:   Mon, 22 Mar 2021 14:59:03 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/8] hugetlb: add per-hstate mutex to synchronize
+ user adjustments
+Message-ID: <YFiipzEs0wuL/Qdl@dhcp22.suse.cz>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-2-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-References: <20210318202414.10547-1-unixbhaskar@gmail.com> <3cc678f2-36d1-1af1-5759-37aea82f41ea@bombadil.infradead.org>
-In-Reply-To: <3cc678f2-36d1-1af1-5759-37aea82f41ea@bombadil.infradead.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 22 Mar 2021 09:58:48 -0400
-Message-ID: <CADnq5_Muaa7MLsiUL+pyV16_HuhKJg=jwS8FwCSvgWgGH11LvQ@mail.gmail.com>
-Subject: Re: [PATCH V2] drm/amdgpu: Fix a typo
-To:     Randy Dunlap <rdunlap@bombadil.infradead.org>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Chen, Guchun" <guchun.chen@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Tao Zhou <tao.zhou1@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Huang Rui <ray.huang@amd.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Jiansong Chen <Jiansong.Chen@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>,
-        John Clements <John.Clements@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319224209.150047-2-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 3:52 AM Randy Dunlap
-<rdunlap@bombadil.infradead.org> wrote:
->
->
->
-> On Fri, 19 Mar 2021, Bhaskar Chowdhury wrote:
->
-> > s/traing/training/
-> >
-> > ...Plus the entire sentence construction for better readability.
-> >
-> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> > ---
-> > Changes from V1:
-> >  Alex and Randy's suggestions incorporated.
-> >
-> > drivers/gpu/drm/amd/amdgpu/psp_v11_0.c | 8 ++++----
-> > 1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> > index c325d6f53a71..bf3857867f51 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/psp_v11_0.c
-> > @@ -661,10 +661,10 @@ static int psp_v11_0_memory_training(struct psp_context *psp, uint32_t ops)
-> >
-> >       if (ops & PSP_MEM_TRAIN_SEND_LONG_MSG) {
-> >               /*
-> > -              * Long traing will encroach certain mount of bottom VRAM,
-> > -              * saving the content of this bottom VRAM to system memory
-> > -              * before training, and restoring it after training to avoid
-> > -              * VRAM corruption.
-> > +              * Long training will encroach a certain amount on the bottom of VRAM;
-> > +                 * save the content from the bottom VRAM to system memory
-> > +                 * before training, and restore it after training to avoid
-> > +                 * VRAM corruption.
->
-> These 3 new lines are indented with spaces instead of tabs. Oops.  :(
->
-> (I may be too late with this comment -- sorry about that.)
+On Fri 19-03-21 15:42:02, Mike Kravetz wrote:
+> The number of hugetlb pages can be adjusted by writing to the
+> sysps/proc files nr_hugepages, nr_hugepages_mempolicy or
+> nr_overcommit_hugepages.  There is nothing to prevent two
+> concurrent modifications via these files.  The underlying routine
+> set_max_huge_pages() makes assumptions that only one occurrence is
+> running at a time.  Specifically, alloc_pool_huge_page uses a
+> hstate specific variable without any synchronization.
 
-I fixed that up when I applied it.
+From the above it is not really clear whether the unsynchronized nature
+of set_max_huge_pages is really a problem or a mere annoynce. I suspect
+the later because counters are properly synchronized with the
+hugetlb_lock. It would be great to clarify that.
+ 
+> Add a mutex to the hstate and use it to only allow one hugetlb
+> page adjustment at a time.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  include/linux/hugetlb.h | 1 +
+>  mm/hugetlb.c            | 5 +++++
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index cccd1aab69dd..f42d44050548 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -555,6 +555,7 @@ HPAGEFLAG(Freed, freed)
+>  #define HSTATE_NAME_LEN 32
+>  /* Defines one hugetlb page size */
+>  struct hstate {
+> +	struct mutex mutex;
+>  	int next_nid_to_alloc;
+>  	int next_nid_to_free;
+>  	unsigned int order;
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 5b1ab1f427c5..d5be25f910e8 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2601,6 +2601,8 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  	else
+>  		return -ENOMEM;
+>  
+> +	/* mutex prevents concurrent adjustments for the same hstate */
+> +	mutex_lock(&h->mutex);
+>  	spin_lock(&hugetlb_lock);
+>  
+>  	/*
+> @@ -2633,6 +2635,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  	if (hstate_is_gigantic(h) && !IS_ENABLED(CONFIG_CONTIG_ALLOC)) {
+>  		if (count > persistent_huge_pages(h)) {
+>  			spin_unlock(&hugetlb_lock);
+> +			mutex_unlock(&h->mutex);
+>  			NODEMASK_FREE(node_alloc_noretry);
+>  			return -EINVAL;
+>  		}
+> @@ -2707,6 +2710,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  out:
+>  	h->max_huge_pages = persistent_huge_pages(h);
+>  	spin_unlock(&hugetlb_lock);
+> +	mutex_unlock(&h->mutex);
+>  
+>  	NODEMASK_FREE(node_alloc_noretry);
+>  
+> @@ -3194,6 +3198,7 @@ void __init hugetlb_add_hstate(unsigned int order)
+>  	BUG_ON(hugetlb_max_hstate >= HUGE_MAX_HSTATE);
+>  	BUG_ON(order == 0);
+>  	h = &hstates[hugetlb_max_hstate++];
+> +	mutex_init(&h->mutex);
+>  	h->order = order;
+>  	h->mask = ~(huge_page_size(h) - 1);
+>  	for (i = 0; i < MAX_NUMNODES; ++i)
+> -- 
+> 2.30.2
+> 
 
-Thanks,
-
-Alex
-
-
->
-> >                */
-> >               sz = GDDR6_MEM_TRAINING_ENCROACHED_SIZE;
-> >
-> > --
-> > 2.26.2
-> >
-> >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+-- 
+Michal Hocko
+SUSE Labs
