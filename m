@@ -2,165 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E4A343965
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6373F343969
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhCVGYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:24:35 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14051 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCVGX7 (ORCPT
+        id S229840AbhCVGZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhCVGZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:23:59 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F3ksg4qRZzNq40;
-        Mon, 22 Mar 2021 14:21:27 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Mar 2021 14:23:49 +0800
-Subject: Re: [PATCH v14 05/13] iommu/smmuv3: Implement
- attach/detach_pasid_table
-To:     Auger Eric <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <will@kernel.org>, <maz@kernel.org>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <alex.williamson@redhat.com>, <tn@semihalf.com>
-References: <20210223205634.604221-1-eric.auger@redhat.com>
- <20210223205634.604221-6-eric.auger@redhat.com>
- <5a22a597-0fba-edcc-bcf0-50d92346af08@huawei.com>
- <31290c71-25d9-2b49-fb4d-7250ed9f70e7@redhat.com>
-CC:     <jacob.jun.pan@linux.intel.com>, <yi.l.liu@intel.com>,
-        <wangxingang5@huawei.com>, <jiangkunkun@huawei.com>,
-        <jean-philippe@linaro.org>, <zhangfei.gao@linaro.org>,
-        <zhangfei.gao@gmail.com>, <vivek.gautam@arm.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <yuzenghui@huawei.com>,
-        <nicoleotsuka@gmail.com>, <lushenming@huawei.com>,
-        <vsethi@nvidia.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <0769efb0-0a22-7cb1-b831-ec75845dde98@huawei.com>
-Date:   Mon, 22 Mar 2021 14:23:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 22 Mar 2021 02:25:15 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B2AC061574;
+        Sun, 21 Mar 2021 23:25:13 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id c3so9508428qkc.5;
+        Sun, 21 Mar 2021 23:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZVcmpP+UhARS/m30lTvHE+dZzN9PzNCkFcm7OvwBa0=;
+        b=fI4TX7ek17FCkiIKIik/zYR/zzXube6XqFTXl7ypQK2fQV/SS0wvIIamtkm5pFpGvY
+         oVGegTi/XwVv8s3ye7H7dmfe+Vk3sNOWHLY6WaOmfjbfwTE2H/wCMQgzCbLy2q/WKjax
+         TnLOWbzq1eaVtxiIeAXjjlnUaLOrm/eDC+BOcBPVpg1I6N79DqKnhdiHhdBBL67jp7uW
+         8q/OfW0HvP7hA2Po/PuSKgacoIBsrXKfOxU2NDN+qIgYYNLwDkDRqVQ2447WzwzGV2vI
+         /aO8SOr0UNcQaLoow4N1j7LzumtgSdl8hxooOS4OqndLa+PhlLwatyAKK+JenSU1qZkP
+         yxNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZVcmpP+UhARS/m30lTvHE+dZzN9PzNCkFcm7OvwBa0=;
+        b=D6r+NS9wTbQgAahEhx6pdcDGwlBmO/xcSCZtFRagoC8L9iKINaZY4jhvE1zn8s/Mgx
+         cwmWluOJbgusuHbL7Ju888S4/WOz/00yAuz2mKm7aJgvrzSnjhBmleszO1Yj7Aru/kry
+         Vv97GsY7b5dpoEHP83n4ah8DNSwcAbn+tLHSj7Wx8vLhlt8VLjI/qLcmZlpvb8sl1z7N
+         66AdISu6VMvabdP3fR0Ye/G/ekzdFMqGmHHf76sOCT9B10yuyB/D19ne7ebW93iKBao1
+         OaGv25i2pX0bsgp03SxBOy/2D/MIYObt2bXUn4VBQaA6LCstf/Vn4hIjfJ8qmyyC+gXx
+         tMdQ==
+X-Gm-Message-State: AOAM531kwuDJrvyssCTA40Ldjstc6+zR8jGFqlpn441lCJ0id7Xmso/9
+        MVXa0M7eS3KFfhEdWSUKIF8=
+X-Google-Smtp-Source: ABdhPJzDteIeotbCZo7rUyWGV2nQDEyu7pM6SIXZRyMwH6OPizPZEwwcf8mfAqB+8yLNZc22NP7/eg==
+X-Received: by 2002:a05:620a:981:: with SMTP id x1mr9141795qkx.501.1616394313206;
+        Sun, 21 Mar 2021 23:25:13 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.40])
+        by smtp.gmail.com with ESMTPSA id t188sm10402244qke.91.2021.03.21.23.25.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 23:25:12 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        unixbhaskar@gmail.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] s390/kernel: Fix a typo
+Date:   Mon, 22 Mar 2021 11:55:00 +0530
+Message-Id: <20210322062500.3109603-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <31290c71-25d9-2b49-fb4d-7250ed9f70e7@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
 
-On 2021/3/19 21:15, Auger Eric wrote:
-> Hi Keqian,
-> 
-> On 3/2/21 9:35 AM, Keqian Zhu wrote:
->> Hi Eric,
->>
->> On 2021/2/24 4:56, Eric Auger wrote:
->>> On attach_pasid_table() we program STE S1 related info set
->>> by the guest into the actual physical STEs. At minimum
->>> we need to program the context descriptor GPA and compute
->>> whether the stage1 is translated/bypassed or aborted.
->>>
->>> On detach, the stage 1 config is unset and the abort flag is
->>> unset.
->>>
->>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>>
->> [...]
->>
->>> +
->>> +		/*
->>> +		 * we currently support a single CD so s1fmt and s1dss
->>> +		 * fields are also ignored
->>> +		 */
->>> +		if (cfg->pasid_bits)
->>> +			goto out;
->>> +
->>> +		smmu_domain->s1_cfg.cdcfg.cdtab_dma = cfg->base_ptr;
->> only the "cdtab_dma" field of "cdcfg" is set, we are not able to locate a specific cd using arm_smmu_get_cd_ptr().
->>
->> Maybe we'd better use a specialized function to fill other fields of "cdcfg" or add a sanity check in arm_smmu_get_cd_ptr()
->> to prevent calling it under nested mode?
->>
->> As now we just call arm_smmu_get_cd_ptr() during finalise_s1(), no problem found. Just a suggestion ;-)
-> 
-> forgive me for the delay. yes I can indeed make sure that code is not
-> called in nested mode. Please could you detail why you would need to
-> call arm_smmu_get_cd_ptr()?
-I accidentally called this function in nested mode when verify the smmu mpam feature. :)
+s/struture/structure/
 
-Yes, in nested mode, context descriptor is owned by guest, hypervisor does not need to care about its content.
-Maybe we'd better give an explicit comment for arm_smmu_get_cd_ptr() to let coder pay attention to this? :)
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/s390/kernel/os_info.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Keqian
+diff --git a/arch/s390/kernel/os_info.c b/arch/s390/kernel/os_info.c
+index 0a5e4bafb6ad..5a7420b23aa8 100644
+--- a/arch/s390/kernel/os_info.c
++++ b/arch/s390/kernel/os_info.c
+@@ -52,7 +52,7 @@ void os_info_entry_add(int nr, void *ptr, u64 size)
+ }
 
-> 
-> Thanks
-> 
-> Eric
->>
->> Thanks,
->> Keqian
->>
->>
->>> +		smmu_domain->s1_cfg.set = true;
->>> +		smmu_domain->abort = false;
->>> +		break;
->>> +	default:
->>> +		goto out;
->>> +	}
->>> +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
->>> +	list_for_each_entry(master, &smmu_domain->devices, domain_head)
->>> +		arm_smmu_install_ste_for_dev(master);
->>> +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
->>> +	ret = 0;
->>> +out:
->>> +	mutex_unlock(&smmu_domain->init_mutex);
->>> +	return ret;
->>> +}
->>> +
->>> +static void arm_smmu_detach_pasid_table(struct iommu_domain *domain)
->>> +{
->>> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->>> +	struct arm_smmu_master *master;
->>> +	unsigned long flags;
->>> +
->>> +	mutex_lock(&smmu_domain->init_mutex);
->>> +
->>> +	if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
->>> +		goto unlock;
->>> +
->>> +	smmu_domain->s1_cfg.set = false;
->>> +	smmu_domain->abort = false;
->>> +
->>> +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
->>> +	list_for_each_entry(master, &smmu_domain->devices, domain_head)
->>> +		arm_smmu_install_ste_for_dev(master);
->>> +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
->>> +
->>> +unlock:
->>> +	mutex_unlock(&smmu_domain->init_mutex);
->>> +}
->>> +
->>>  static bool arm_smmu_dev_has_feature(struct device *dev,
->>>  				     enum iommu_dev_features feat)
->>>  {
->>> @@ -2939,6 +3026,8 @@ static struct iommu_ops arm_smmu_ops = {
->>>  	.of_xlate		= arm_smmu_of_xlate,
->>>  	.get_resv_regions	= arm_smmu_get_resv_regions,
->>>  	.put_resv_regions	= generic_iommu_put_resv_regions,
->>> +	.attach_pasid_table	= arm_smmu_attach_pasid_table,
->>> +	.detach_pasid_table	= arm_smmu_detach_pasid_table,
->>>  	.dev_has_feat		= arm_smmu_dev_has_feature,
->>>  	.dev_feat_enabled	= arm_smmu_dev_feature_enabled,
->>>  	.dev_enable_feat	= arm_smmu_dev_enable_feature,
->>>
->>
-> 
-> .
-> 
+ /*
+- * Initialize OS info struture and set lowcore pointer
++ * Initialize OS info structure and set lowcore pointer
+  */
+ void __init os_info_init(void)
+ {
+--
+2.31.0
+
