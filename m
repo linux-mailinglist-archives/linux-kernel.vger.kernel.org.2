@@ -2,132 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A09C343AEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD0D343AF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhCVHxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:53:02 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:40063 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhCVHw0 (ORCPT
+        id S229992AbhCVHxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhCVHw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:52:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1616399546; x=1647935546;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ABEJG5RkSChbcetRBk6+q1bGur85qi1KrJf4/KyP+XE=;
-  b=lOQTouVG1VREOZ7Llsg+qiyWLh0941g9q8+MHJvHlc/pU97AbXe4ZRZ5
-   jVVZahp9ZjbTnbJbWLPLPfWAmM9oRo/TVdaBPzBmUehlrs5/olaMlJelU
-   7ir6D0I0j6dU222TWDHS3SXnLVx0AWPUHYAgmizEFb6vNLH1lROIN8ZUm
-   RO1HigAV2H9Seyic6Ueliye6IMUdKOgNMGOs8qF+JvqNGzBeAMZyW1by/
-   5CzGhMky9dpdimBsuGYVPTQCnZyCBb9B+uM/LaWHgFjOOXSkDqBhPBxcb
-   OjQaANbA3NaSe1rl5K0HMmJDTbsuPUENmUNL92kO0raNjv8tTJgeSRC+A
-   g==;
-IronPort-SDR: Yg9nL2mIDLCuNQX7JiGNkr9BNx5Ep2gnzyBfbRgx6KUblfoMwfHOV9vpEkO5ozL5kc5yw3pDkw
- JKB2sHSVTdfI+S6s9d/Ea1UTFo9uHrrAC2ye/BK3nxPw3qYokAy92G1v0W1FkcdOkG+C0tIQ/I
- brhtVMGT0Jx053UBvvl4nUyTalfPnEX15yI4iyKdoUyOYLhXQZ9MuFPi8qwVlRqGb4TRaA+AB3
- uFIJYtNUO8bqLgG5SmCEsdQhS+s2LOwH0iWSRhStuDU2zNzKvl65Nl0o3mMP9j8vPnO+Ei6Mjm
- hYw=
-X-IronPort-AV: E=Sophos;i="5.81,268,1610434800"; 
-   d="scan'208";a="113597886"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Mar 2021 00:51:40 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 22 Mar 2021 00:51:40 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 22 Mar 2021 00:51:38 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <vigneshr@ti.com>, <michael@walle.cc>, <p.yadav@ti.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH v3 2/2] mtd: spi-nor: swp: Improve code around spi_nor_check_lock_status_sr()
-Date:   Mon, 22 Mar 2021 09:51:31 +0200
-Message-ID: <20210322075131.45093-3-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210322075131.45093-1-tudor.ambarus@microchip.com>
-References: <20210322075131.45093-1-tudor.ambarus@microchip.com>
+        Mon, 22 Mar 2021 03:52:59 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57BEC061756;
+        Mon, 22 Mar 2021 00:52:58 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id x16so12917853iob.1;
+        Mon, 22 Mar 2021 00:52:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mfyVLjNNTM8+/QZpvr999C+UF8zqwK2EPElm0pDtBJ0=;
+        b=CcqdTMUTKrb4AvlfL5F86RnWHr7dikqWnsnt++WGOTFFhLvFhWyLQXi1TDqd94AvNz
+         UF7UCcrBER1FSVE1xS8/NOGI5weafoyQC8enHc/FHbMClsW4MkIffccmGqJ69jjdsFp4
+         p1C/EoUXyfwsjdSgv7H0MIkL7PDD7IXzlrBuyv9O2GpJp6S3w7gF0AVbOs8Oy2ovXHX7
+         dUQSsa5Eh8dhF1e7tPAYaiwRSuO5gU/3VyNiVLLI10YKE7xDHLH8BcBVTF6RdmggqIuy
+         rl/0YYpQDxDntpFdw2yIgmVbH/nwo7naYbZNhbhALjtfmCrJ205ipLEP10ZnidarFlKl
+         u8Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mfyVLjNNTM8+/QZpvr999C+UF8zqwK2EPElm0pDtBJ0=;
+        b=Gp4pguA/x0GnPB6L2UviB2n+icZO0t6K0+FnbVsqAf+LpWuZ0UnWVra8ffKDKn+QHX
+         YsBv7hKg8vaHIeiEsXnHgGnkcY6rXYc9aFy8HoYDKeRl6GErctE3ulsmQyL7MFasRhiy
+         +tTlGgI6F+SVUq+iNh+r0jEoMIP7kMvh96fMuAjOTOSm3+zTvd3CjsFMARwkLUxKai0/
+         SGFDfNcb9f1hlDw9IlwjT6wDQYIRAwMxFvF/yOOYM1zaandyzHuf+z7eqtN5uAco2c9h
+         c2zyXvIRuC/Fw37dIkxKtOj/Y1blh8R2Ae2cpMijMEDGyzcWZAgTbH3mZPgWjjktvVkm
+         /MMQ==
+X-Gm-Message-State: AOAM530QxQFsjeaUJ9Bt2kJ/P+v9nQT4ojLnTc+rDG6JrztgylxX+d0K
+        u4Ov99Ru+e9ccA8HKtDCzo2V2g8KcmubRPqLwaUsM+z5
+X-Google-Smtp-Source: ABdhPJwFfT/k4yUVHgU6P7QHyKrSqrki69jZ0SZYDWK0aq9VANjury8vtw1oS/s7/aM1vvH4KmdL4y1cmdz4CKD6Q5M=
+X-Received: by 2002:a5e:8d05:: with SMTP id m5mr9777547ioj.114.1616399578170;
+ Mon, 22 Mar 2021 00:52:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20210222161905.1153-1-lukas.bulwahn@gmail.com>
+ <alpine.DEB.2.21.2102221836030.1900@angie.orcam.me.uk> <BY5PR22MB1841658D64FB8D8B619BC870C7819@BY5PR22MB1841.namprd22.prod.outlook.com>
+In-Reply-To: <BY5PR22MB1841658D64FB8D8B619BC870C7819@BY5PR22MB1841.namprd22.prod.outlook.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 22 Mar 2021 08:52:47 +0100
+Message-ID: <CAKXUXMxOXCZyG3cw0NrNYfWjoTPuBahbT-sZo1N90PDvSJakZQ@mail.gmail.com>
+Subject: Re: [EXTERNAL]Re: [PATCH 0/5] Remove dead linux-mips.org references
+To:     Kurt Martin <kmartin@wavecomp.com>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- bool return value for spi_nor_check_lock_status_sr(), gets rid of
-  the return 1,
-- introduce temporary variables for better readability.
+On Mon, Feb 22, 2021 at 7:19 PM Kurt Martin <kmartin@wavecomp.com> wrote:
+>
+> Hi Everybody,
+>
+> This is Kurt Martin.  I'm part of the MIPS Customer Engineering team at W=
+ave Computing.  Some of you may remember me.  I have just established conta=
+ct with Ralf, and I will be working with him to restore linux-mips.org back=
+ to life.  I just got the account and login information for the linux-mips.=
+org hosting account at Hetzner from Chris Dearman.
+>
+> So as Maciej says, please hold off any actions at this time, and I will a=
+ttempt to get linux-mips.org working again as quickly as possible.  Thanks!
+>
 
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
-v3: new patch
+It has been a month by now... I just wanted to check if linux-mips.org
+is back on its way to be available. Or should Thomas pick up the
+remaining patches of this series?
 
- drivers/mtd/spi-nor/swp.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 5b236db6bb56..8594bcbb7dbe 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -81,36 +81,39 @@ static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
- }
- 
- /*
-- * Return 1 if the entire region is locked (if @locked is true) or unlocked (if
-- * @locked is false); 0 otherwise
-+ * Return true if the entire region is locked (if @locked is true) or unlocked
-+ * (if @locked is false); false otherwise.
-  */
--static int spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
--					uint64_t len, u8 sr, bool locked)
-+static bool spi_nor_check_lock_status_sr(struct spi_nor *nor, loff_t ofs,
-+					 uint64_t len, u8 sr, bool locked)
- {
--	loff_t lock_offs;
-+	loff_t lock_offs, lock_offs_max, offs_max;
- 	uint64_t lock_len;
- 
- 	if (!len)
--		return 1;
-+		return true;
- 
- 	spi_nor_get_locked_range_sr(nor, sr, &lock_offs, &lock_len);
- 
-+	lock_offs_max = lock_offs + lock_len;
-+	offs_max = ofs + len;
-+
- 	if (locked)
- 		/* Requested range is a sub-range of locked range */
--		return (ofs + len <= lock_offs + lock_len) && (ofs >= lock_offs);
-+		return (offs_max <= lock_offs_max) && (ofs >= lock_offs);
- 	else
- 		/* Requested range does not overlap with locked range */
--		return (ofs >= lock_offs + lock_len) || (ofs + len <= lock_offs);
-+		return (ofs >= lock_offs_max) || (offs_max <= lock_offs);
- }
- 
--static int spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
--				u8 sr)
-+static bool spi_nor_is_locked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
-+				 u8 sr)
- {
- 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, true);
- }
- 
--static int spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs, uint64_t len,
--				  u8 sr)
-+static bool spi_nor_is_unlocked_sr(struct spi_nor *nor, loff_t ofs,
-+				   uint64_t len, u8 sr)
- {
- 	return spi_nor_check_lock_status_sr(nor, ofs, len, sr, false);
- }
--- 
-2.25.1
-
+Lukas
