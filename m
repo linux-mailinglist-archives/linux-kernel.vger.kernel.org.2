@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9667344D6A
+	by mail.lfdr.de (Postfix) with ESMTP id 9E590344D69
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbhCVRde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:33:34 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33528 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231854AbhCVRcw (ORCPT
+        id S230230AbhCVRda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:33:30 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35840 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhCVRcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:32:52 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MHU3QL079588;
-        Mon, 22 Mar 2021 17:32:30 GMT
+        Mon, 22 Mar 2021 13:32:53 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MHTle2094073;
+        Mon, 22 Mar 2021 17:32:36 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : mime-version;
- s=corp-2020-01-29; bh=3aV+WchaCNV/O1lpv6Fa2Ms7ISysX7FXMKp4oUkJ+34=;
- b=MC4tDixfbKft1rLHhLTiwUMfT5l8idUOscV+B8nJEY2Dchjpou0cISlCj+oxAIgycQ2f
- lhWL98n21qCuYywMa8HoMInwqHRSIzFx54qjz6fuWtQmQP1mmBSwhgwnWN/P4aDWrLiS
- ucchm8Y9jyInzdD0zrgDdkwKbXVFd4hG2ek8JgHkC8AnzPB6bctNf0UmSUd5luuobZQ4
- FrQRu2ZVbk5LXqVNCNoxqhhYAR1T+UNVk+GUSMJwqxlZeDD48eskam1y7Fvd9t/WQTnK
- NMQnDv7EVNFZ7YnYHAYV+evWVdVyj2G7O8nMn55ska1PA7ZB28fNNme4a9JS4jcpll3V sw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 37d9pmv7vk-1
+ subject : date : message-id : in-reply-to : references : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=Mn5EQRwQCJgub3nH6W5hdJejwI4P/1jAOnNWwouxeJU=;
+ b=UU3tg3p88PKxzXlK8FT3xA9f2hWeoypSmz0z/O4RNi8NO9Vt8c2jUtqDr89+ooYlTdO3
+ vFpIBVNEZvssqUvIC5b9BPTuinz20/1ezNwQww9WxwaFedELsoOoo1RQbGdBes2YLuO0
+ u0XRQ57YxqE8K33i3VUbbPO1lnJVN0KR8VYVAKul853mqcXqOeTyIlH34/kg12l8V6jW
+ lTKge2S/3rOSno8SrAr1gQw/6771G/1dyzVZXQVlyeR1ZGvTBmoXyWJxI1FKtRsMrjNf
+ aO9R/Sebepyum19e1cyrnlWfG5T87Vsepiwz+9A6Mo5JDTAQsX/n29sWt6f8lOjhXNOb RA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 37d90mc90t-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Mar 2021 17:32:30 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MHU5gL033319;
-        Mon, 22 Mar 2021 17:32:29 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
-        by userp3020.oracle.com with ESMTP id 37dttqv7e3-1
+        Mon, 22 Mar 2021 17:32:36 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12MHUdds113076;
+        Mon, 22 Mar 2021 17:32:35 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
+        by userp3030.oracle.com with ESMTP id 37dtywcepc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Mar 2021 17:32:29 +0000
+        Mon, 22 Mar 2021 17:32:35 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K0O0K3yOZ3s+d65JxfygD2IJkyqIATHhpeMgUXPbxqNpMML6FNLhmKzMa+9I1q5KaPGgfzATtHBqSqE3RmjevFfCRy0zdk1YC5kRypAJS6l+fQF2PNLURB990A1CpsgrIKaopkIPNwfBdtDUsGZpZqYdrpHthv3hlK6NHLmpZ0KNQfo9+OwcV9PK44lA2oHtXkNpzto/oaURGVTRAvU5MKZPoaUeZNiKzPBrFM46hpjMUlEMdyB2VH5r35qnyK0yO+q6wy5+DF2xZs5iZOGLn6eiHyibWpVP4ACuyW7ko1Ihz9bxueaBun4oYZkE2ad11W0Cq/5sD4YDzteiXtUSmg==
+ b=BRGUmZm3OgoVeUz6FWkrY8rKrC5UIarJz811zLtIFpdeHdXb9EhTRrrdyKB+WRRz/8dinuFoafdT4MVeO0siI63EAAUfZVeA8WC4d+Q0AbqUP2YlLn2AK5XaegVWfSbZl4pFWZuMcykn1DD3igQh/u6tlsJaooAbimR21ueQ+9zkiCtPkEMOLpRIkc/r5hlX8GrK33d7Gj2gqNosbq47W4FFmbEoZmAVCU+GgIVhS1LNq8pRdg4+gSPugjOHydTEuCA1wgRsFOe/DHIbzTYYDbtVuAcXwPdSfZWRyzms15DS34wc5DkAuaBM4X+wlXRClLsC6/89C5bHrR5jaAAx9A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3aV+WchaCNV/O1lpv6Fa2Ms7ISysX7FXMKp4oUkJ+34=;
- b=LWrQs+GmZpFqCpZV01B0ztSrbxVkilR/wkahyE+MAaP0ab/yBn2iqKvhHNb7RwepGWvXdKx7SmHkbT9D+maaQkFGeLK6XhANH5x4sbqi5N5d+amy0w+Qup96pQpuAAseJkfMsxQQBwnOePm6wuLH/7VhMucAe9HJD1wtVUyJ0Ebcx/XuXX2J1W7JhUf/nele+xpIOg0B+w+6Yx9IGtXAjfay1qIqJQWxq6p4X7k/JjC2Sp58SZeKYo9oXr2xpW0Gnl9TO5l30MAeQWzvrKxLnHFgWDf/1BDvSZRzMJWGZW/qPjJ9n15CeqGWnMx71Wty/1nsBveHrqQ4n5YJ3bt5WQ==
+ bh=Mn5EQRwQCJgub3nH6W5hdJejwI4P/1jAOnNWwouxeJU=;
+ b=ccfn6n0OAT2kwS2ZVRuO+4fUWkttQJH0zYWH1nS2CueDXF+cUWInjiOIKdmu/XLOZNN3lW3TjFkhxdYD5eU18XXVJyJZuRleN4LNSqJHIgSpO6gfw/i3TebUm+V7L9ZjSx/CY/Y1+Td3bPbkTEtVPYO3j1bELpBmM0wIJmHjQ4xx+6MYbKBpiyBBG5kice9FmPHyL72UukI0KUMp0EeUlXh/KU0O753SCNVifT7mjlpZh82JyVz8KaDwgBBEELvJcIdxwW1uJMOGhTA7LSdQW3uJXvszH4qcnwL646/y3EDt8Yco5UhyxdzcK+1eDvhvHXZ8Ki7VcM+mujY13iCA2g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3aV+WchaCNV/O1lpv6Fa2Ms7ISysX7FXMKp4oUkJ+34=;
- b=oG/u3f/YAhMjOazKzr+SS5WtA06RT7TQ0cpdrDFX8Tq7nP+Ufk9pfL4BGT+9Prp8BAGq/zPkbkvFKYKDuPomHWo15S2sR2Xr6mkCbXhDTbC2sTAEqt9c86FOzhpTeGf/mjsNRFz7ZjXqCcdaX/VPuCzkfFlbslTWMKlspc7AhlA=
+ bh=Mn5EQRwQCJgub3nH6W5hdJejwI4P/1jAOnNWwouxeJU=;
+ b=t8m9h+D6EZ2FXtFpyfeXKRAdqudrxpeYQNo4j+V/fk6E2Lit/DLe2C0z3uY0k8/ScVPf5ZU8OurvQ1Vxy94tWoz8h2VwzRy3UUh6EdUak9mLCrVQMM25B33unDQOQ0BPAkQe9VC6iS5II3aB+7R/NNhJTBgExDqyo4GyEwkGYEc=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
 Received: from MWHPR1001MB2285.namprd10.prod.outlook.com
  (2603:10b6:301:2e::32) by CO1PR10MB4451.namprd10.prod.outlook.com
  (2603:10b6:303:96::9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
- 2021 17:32:27 +0000
+ 2021 17:32:33 +0000
 Received: from MWHPR1001MB2285.namprd10.prod.outlook.com
  ([fe80::b94a:32db:11f5:d65c]) by MWHPR1001MB2285.namprd10.prod.outlook.com
  ([fe80::b94a:32db:11f5:d65c%4]) with mapi id 15.20.3933.033; Mon, 22 Mar 2021
- 17:32:27 +0000
+ 17:32:33 +0000
 From:   Mihai Carabas <mihai.carabas@oracle.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
         bobo.shaobowang@huawei.com, rdunlap@infradead.org,
         Mihai Carabas <mihai.carabas@oracle.com>
-Subject: [PATCH v6] add support for pci in the pvpanic driver
-Date:   Mon, 22 Mar 2021 18:44:24 +0200
-Message-Id: <1616431467-14173-1-git-send-email-mihai.carabas@oracle.com>
+Subject: [PATCH v6 1/3] misc/pvpanic: split-up generic and platform dependent code
+Date:   Mon, 22 Mar 2021 18:44:25 +0200
+Message-Id: <1616431467-14173-2-git-send-email-mihai.carabas@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1616431467-14173-1-git-send-email-mihai.carabas@oracle.com>
+References: <1616431467-14173-1-git-send-email-mihai.carabas@oracle.com>
 Content-Type: text/plain
 X-Originating-IP: [138.3.201.25]
 X-ClientProxiedBy: SJ0PR13CA0092.namprd13.prod.outlook.com
@@ -76,144 +79,577 @@ X-ClientProxiedBy: SJ0PR13CA0092.namprd13.prod.outlook.com
  (2603:10b6:301:2e::32)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mihai.localdomain (138.3.201.25) by SJ0PR13CA0092.namprd13.prod.outlook.com (2603:10b6:a03:2c5::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.9 via Frontend Transport; Mon, 22 Mar 2021 17:32:25 +0000
+Received: from mihai.localdomain (138.3.201.25) by SJ0PR13CA0092.namprd13.prod.outlook.com (2603:10b6:a03:2c5::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.9 via Frontend Transport; Mon, 22 Mar 2021 17:32:31 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a9db70bf-39cc-4a5b-c5ab-08d8ed587612
+X-MS-Office365-Filtering-Correlation-Id: f7252cae-b547-465a-bb10-08d8ed5879b2
 X-MS-TrafficTypeDiagnostic: CO1PR10MB4451:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4451EAEFF6DF6D88628660C988659@CO1PR10MB4451.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-Microsoft-Antispam-PRVS: <CO1PR10MB445160E2D9D76E6FD1CAFCE788659@CO1PR10MB4451.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hIxFcPSV5nP1Yn/eK5gCp3v5YieCQz4pG1d0CWgBA49w5FDSVTUHzkaNmjqvOyvyzebMXA5ekyHCsskCmL2tfzErnAwWgiapMTyAUSlOz1sL3haeUp+fIXd6pKqrLxaStsBh21BnbKRCWGrU3RJQHFiPFvF10tiO7f1q3FCAx7ATHH65/jH2dK1thN6DXmCcWbNjy8UXxnUeBG5cBOlY03A8bysusT8Q6hGjs+VVQijrrPOEdsY8ZflFjycHacUNypbSxNLQ2ACIYSZ8PcGXuVfqaEgaCpMx5VdnuM0/ztZw4XnG8f7s6jnt8rTv/cNy0sIk447MCEYnfNjLFhLnyp/bZ5SeINwe7SilH2VXKtYjDzuVFJUpVWodSIctYBz7cz+pxgW7pHxUOyDvs4eBJ9b8LyCoLF/Ep2mKKr+d1Hr8wwh4CZjg2+REj8/DXtwssx1yqeNeXx7sdI2wOqbsgzoSr2bJKCidVXhJ/bLW9uI3ElX7e62qiMwdlQEKcjhi+mqhNl9fL9zvv/z6SNQubqlU5WkjC7U0R54UGjqVukeVMffBtHdrtaeF7SoXvPE0gY/xfHU2BSmWlBEingRv3HH2BdCjiwGDzVHzAZSedR7GdJAAAnearD9V/W4Upj1GuPuAv/Nlm0nW/YVSGxw2TuuHkLRpDI+xy23dDbhroo2HTTcqrO/vsmuxIdLJmtrE9suQUF3bMXevki7+z8mFKYPgPpMBTjlU4MQVK5Z1XUY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2285.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(966005)(4326008)(2616005)(956004)(66476007)(66946007)(8676002)(107886003)(83380400001)(498600001)(8936002)(38100700001)(36756003)(6916009)(186003)(6486002)(2906002)(16526019)(26005)(6506007)(66556008)(52116002)(86362001)(6512007)(5660300002)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?FMl481J92EBGjjEV0b20g72usGs9mJ/U41fgzFl95M9S8naQpfR0Po8F55Kh?=
- =?us-ascii?Q?5eFFZwidS04mPgjqTAogKqxuO2oYRXjcv7H+f3S0SVjiYMPvrbeLnLHU6kup?=
- =?us-ascii?Q?PW1rhZegBmXvKYQBJaAxeqvTun3ArMvCcylMJLqETSQHqzQkP8K/w799InQ7?=
- =?us-ascii?Q?hBVRQil8RDL4/2sdlHKnsUFs8dtZIQBSWg0N27oyVzkFnOcMpUFiw9NXWJVQ?=
- =?us-ascii?Q?hi7IaOxznNsKrbsanx0Y3d2FE6uDVratXu04gyEQ7n0v0tZbMQEoic+Qvsfa?=
- =?us-ascii?Q?Lz/AgR9R1Hul7SYgwK5ZMg92tPIq0+AMpbRObcBjaWrtaAZ6k92Vk22pvdT+?=
- =?us-ascii?Q?Ze5N/sI7RwycvJiVZ/4mpnHQ9J6KlLQD+eD/mewfaDPnmdccKi67El0PbBOe?=
- =?us-ascii?Q?W0XQ6jJvfF0nTqp8Sp1zPi+/7iTSJ5N8xMMYmoTpw28CehCwgsUpgC4WJia9?=
- =?us-ascii?Q?75UNOKiqnoIP1ozlSWYhnfBmysxO8s2E8h/n8/O97m1aTlbWKY9XjCz9NXp9?=
- =?us-ascii?Q?5ihSZpx7lesRWwipzr7ycz8LCHgqYvDOfpve5UwXqcwZ/tkMBoMTwLtX0SGB?=
- =?us-ascii?Q?yMrkWKB7GyJ26H+jggttwaxnhHbWaD21q+pql9d8ywVM7rw78OoNNTXvdVI5?=
- =?us-ascii?Q?LSooF8Yka4a9f3teHUDnxZXp9B2Twxweiosp9nBDscP4+T5bBIZCnEw6VY7M?=
- =?us-ascii?Q?uXQJDT4COEt96T6/mU88EvyajH8+sisYEH0XR59CKTHOf4eCPpgZooaNbm8m?=
- =?us-ascii?Q?Ver8HeGUwzOy7+6hG755sKbTK5j94ZVyYm9kKyuTsb2Y8DYoQs/klfdABBTE?=
- =?us-ascii?Q?PQEo0Xd3TKdNeAFrxDU3P4nHFmQkVM7efiZjsDlKbwv+3eIGxgMeHXnlE0gX?=
- =?us-ascii?Q?eYUqNnPCljcSTEYpm5IcOWoxT2AE8dDpgYnLp4MmNrbNsUyrs2JLE5wewB7G?=
- =?us-ascii?Q?GaejKZ2EHyNZeQeV7l0ZWGDgIbzejdtdmCQ4JVpx6Fd1Xg47j2jFHWCgToLe?=
- =?us-ascii?Q?ZYpXBhpU5vhbnQ9fUZdi96nM1crNrWCfPaFFc5mcpErkfkFfEP9v3Yy+cfoF?=
- =?us-ascii?Q?r4ji4DI0nCksV+HFyeMjShyv5+qptxpN3mypG707A0o1/NMiq2kYPyvPQxWj?=
- =?us-ascii?Q?1JPBgdfJZb73V9p61M5QwcgL8Ty89hg+bzCpgPXJAq5G+ubt7tPre7KwB3po?=
- =?us-ascii?Q?PaJUQtsUX0R0mPv/AFqh6vaFOpzorFNvYVFxh2EzdLNERp66y4Ip3WV0poKL?=
- =?us-ascii?Q?JWyDluBr+noP1SwZk5y9lkMa7p3RbRhZpn0TTk0+2ipyD9zsGJJrxZEhUMJB?=
- =?us-ascii?Q?iqYrXR6Pqwn0YW1nqDU+Qbg/?=
+X-Microsoft-Antispam-Message-Info: jN6GDy10WC9BhN4JLPGYMTPCNnqNfLg8JR0O2RDqJ6AoTW8MuiTdXIcgUwcHcX4zlMExYRwyXv+lk+9Q4XiutonICXrN2utowHxVHmYzM+msYvZ7dKsUzn54mdg++KFtAZpP6D3BxKqI9JAmG/oFKGGKqIODhp/kT4g0wRX/Z7jFME3OuMnlYCgOz1DTHQoNuJAjty9on3ryWAHpTAofAxFctPaZHhL43A/GH8nRUy45LUfEitzT3/wcoiuUgyWgfgVrX0Fy8aPb1InXs5xleQeK8l0dEJdl5QSp8Wehhj/yz+3GJaIzcuKYfKWtDxnvf84NfHmJagco6WVAUvGCHanzfcngP/7W94K+Kq75I0McqTG2Oaz+ZJ0Ur6l395shgDFOLW7rgzBuS3e1PdWqEWk3a6nfdvAefFcot6re2ez5in222ppcD8TUp4W2dRllc6qlt3dCGudJqGAwnS+AHnGddJ4ixIWNyNBazo1Et/CG9SKtaMv8TIwla1cr60gWmD2J4rxNAqhXMQg6T4kM1XclKv/cjhEzNJ1DupjzDjI6twmQt4aPMzX+d7X+tXrmw6oEHF1o2yuaMEv5ZkKS3pp/y9DvUAFrQAC3OHxMjH52ZHeiXXhQmclPw3X9bS65+GRAZsdLZMDLiB6LpJGcAKTp09WTRpTM9e9rsU8U0oM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2285.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(366004)(136003)(346002)(39860400002)(316002)(4326008)(2616005)(956004)(66476007)(478600001)(66946007)(8676002)(107886003)(83380400001)(8936002)(38100700001)(36756003)(6916009)(6666004)(186003)(6486002)(2906002)(16526019)(26005)(6506007)(66556008)(52116002)(86362001)(6512007)(30864003)(5660300002)(44832011)(41533002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?IjF9Ty6ltU0UXLl0nqQ0D/0GK1v3hr6I5bNRtk/aCcnJJhP8Rdqpn+ZDZNqV?=
+ =?us-ascii?Q?TvCxQ4d01x6H33iuOiuiQpOX4Pin3cteQIo7zF9vodlK+VQEyZ2ZQEXqRM5U?=
+ =?us-ascii?Q?TNSCfRCS0PUU67W2bu12T7UQR1go1Q5UlF5TOHRIh0c1k4wvrZhaZ0ipr3+w?=
+ =?us-ascii?Q?QvHEmq6bG0JAY500uEZTkDEa+01TXQAIKd5BcWpLh1VjLXVsUusJwqgeHGhj?=
+ =?us-ascii?Q?MoHHwnA7V2aGOHh7QG/cBE1kCVO+WIh9APFWb0rd0nveIP8xtC8Mk9UYsnID?=
+ =?us-ascii?Q?rkwtj1gk4vPBzNyz7qmrmHWdzQU2VZp74hb79mgh08G+kuaBRkXoqiPz9MrS?=
+ =?us-ascii?Q?+DXrOuxH2uKSqSf3A1AH5DyTjRHhCua017L+u2a3PLk3LO5LfD6lCONCVTGU?=
+ =?us-ascii?Q?Ey8zxMT6whVoEgqqae14yKeEjfXgHxRp4I08lsBkITuseC4JKhCvLjq7mli+?=
+ =?us-ascii?Q?rKBfk5PHqhmhadfvDlzETXuTIMxu1EG3S9DO3b5qT6yB4Rk/dMT3DNfu8M4c?=
+ =?us-ascii?Q?BHJVrIpx2LP7OU1/URXhrr36YwBzzBRCXg2zMyXRiWr4kcbYuJz+/tF+nQ8D?=
+ =?us-ascii?Q?C0kEaIV8bGyO2BEwmuF1AuYzGZOlIkBEX40Vh6+B4ME0g6oq4bFJcw7V5agZ?=
+ =?us-ascii?Q?i7IztFADF+V94fOTvOxQGAAzV+3H79xSQ1L+wy6DbTYtXlj7ShA3HzzaYlOC?=
+ =?us-ascii?Q?im24v1QEHdv02EBsv0tu+1UplAJTI7Nv1w7hREsfOyBPFvHaQKm5LJOc3jqw?=
+ =?us-ascii?Q?RorplcWBG6lrv8SHiiLpkaMdernveK9DUi5gxHyk/ApPsSpec7Vo6hLgl43M?=
+ =?us-ascii?Q?pwWfsRWERHiPcNnqyPPNXvkYGyXWlv6YFT7tGyAcv17EgdubloHmacWdsfK0?=
+ =?us-ascii?Q?9Tg/IO5JsJK9NhQk6/ZrrnX1Qsma4kQMDBD6858xokPsADVlmDFjuZZ4vCY6?=
+ =?us-ascii?Q?QhyJv+rxC1JE3IJ72Pmr60mhqakI6chgh7yv+tFLW+0eEmnuUKOR3rZH5/77?=
+ =?us-ascii?Q?5b1lrEFjmK3CW+DRSEJb8uM5e/p8Py31gLO4rraZ2sjz1i4vaWCq+6ZkUy0Q?=
+ =?us-ascii?Q?1I0nnhKXfBxpVbsNB67mbD4tMprQemJXq9de68WuykPiQ0SMH8LVxDQMm/ND?=
+ =?us-ascii?Q?U9oeBVuxrblFGkyX4i+d6jhzsFqVyQUKKnaqoYRNc3fslFSt/jhupV1C3sIZ?=
+ =?us-ascii?Q?iRaS3c99d7ryOlJIsWo5aEaNYhVvaIWknLw+BfBhaRXN0ExIJHWXcxeq9BXA?=
+ =?us-ascii?Q?xJbEXRj8SvCWTmbtw81QDKZca4kC+j/78SJPkLKUXvyL8o+b5+1lTGC7g2uA?=
+ =?us-ascii?Q?iocgWIMjNiHdM2AOgoOypqEs?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9db70bf-39cc-4a5b-c5ab-08d8ed587612
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7252cae-b547-465a-bb10-08d8ed5879b2
 X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2285.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 17:32:26.9820
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 17:32:32.9225
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZwTi2bdAhxrWPmzTy1HMNyM/bRtL2L1hXUbZB54YiFtxTELiXNVejbBIx3DFhbi/CaeogNIxDB7rRm4jUOnFrT+vmwXlH7IWPEfYr1G/CaM=
+X-MS-Exchange-CrossTenant-UserPrincipalName: y4CtdffR87ql6nl17U6SMIDyL0cY33EioghGbN+CXm2xDEY+GrhRsQZboswor5YbGKcwCOrU/vc4T7tUq/BPclyCtWfX3RVGWZwW5znuh7k=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4451
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103220127
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
- adultscore=0 clxscore=1015 malwarescore=0 mlxscore=0 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103220127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds support for PCI in the pvpanic driver. The device already
-got in qemu [1].
+Split-up generic and platform dependent code in order to be able to re-use
+generic event handling code in pvpanic PCI device driver in the next patches.
 
-v2:
-- mmio -> MMIO, pci -> PCI suggested by Randy Dunlap.
-- group pvpanic-common.c and mmio.c in the same module. The intention was to
-  have only one module and the common code splitted up to be re-used by the
-  pvpanic-pci module in the next patch.
-- add a new patch where add the licenses for the new files (when I moved the
-  code to mmio.c I preserved the original licenses there)
-- properly clean-up PCI device when driver removed.
+The code from pvpanic.c was split in two new files:
+- pvpanic.c: generic code that handles pvpanic events
+- pvpanic-mmio.c: platform/bus dependent code
 
-v3:
-- drop patch 3 with licenses and add them when creating files
-- create a new patch (2/3) which allowes multiple pvpanic instances
-
-v4:
-- fix Makefile in patch 1/3 and 3/3 for pvpanic.o as suggested by Arnd
-
-v5:
-- rebase on 5.12
-- fix a warning caused by one of the patches
-
-v6:
-- remove pr_fmt as were not used
-- "remove" functions of type void
-- moved events/capability per-device structure
-
-How to test:
-
-Run a VM with latest qemu which has the pvpanic-pci device:
-qemu-system-aarch64  -device pvpanic-pci
-
-Generate a panic in the guest:
-echo 1 > /proc/sys/kernel/sysrq
-echo c > /proc/sysrq-trigger
-
-Observe in the QMP console the panic events received by the device:
-
-{"timestamp": {"seconds": 1613122186, "microseconds": 141729}, "event":
-"GUEST_PANICKED", "data": {"action": "pause"}}
-
-{"timestamp": {"seconds": 1613122186, "microseconds": 141833}, "event":
-"GUEST_PANICKED", "data": {"action": "poweroff"}}
-
-{"timestamp": {"seconds": 1613122186, "microseconds": 141896}, "event":
-"SHUTDOWN", "data": {"guest": true, "reason": "guest-panic"}}
-
-
-[1] https://github.com/qemu/qemu/commit/9df52f58e76e904fb141b10318362d718f470db2
-
-
-*** BLURB HERE ***
-
-Mihai Carabas (3):
-  misc/pvpanic: split-up generic and platform dependent code
-  misc/pvpanic: probe multiple instances
-  misc/pvpanic: add PCI driver
-
- .../ABI/testing/sysfs-bus-pci-devices-pvpanic      |   4 +-
- drivers/misc/Kconfig                               |   9 +-
- drivers/misc/Makefile                              |   2 +-
- drivers/misc/pvpanic.c                             | 160 ---------------------
- drivers/misc/pvpanic/Kconfig                       |  27 ++++
- drivers/misc/pvpanic/Makefile                      |   8 ++
- drivers/misc/pvpanic/pvpanic-mmio.c                | 143 ++++++++++++++++++
- drivers/misc/pvpanic/pvpanic-pci.c                 | 121 ++++++++++++++++
- drivers/misc/pvpanic/pvpanic.c                     | 109 ++++++++++++++
- drivers/misc/pvpanic/pvpanic.h                     |  21 +++
- 10 files changed, 434 insertions(+), 170 deletions(-)
+Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
+---
+ drivers/misc/Kconfig                |   9 +-
+ drivers/misc/Makefile               |   2 +-
+ drivers/misc/pvpanic.c              | 160 ------------------------------------
+ drivers/misc/pvpanic/Kconfig        |  19 +++++
+ drivers/misc/pvpanic/Makefile       |   7 ++
+ drivers/misc/pvpanic/pvpanic-mmio.c | 134 ++++++++++++++++++++++++++++++
+ drivers/misc/pvpanic/pvpanic.c      |  77 +++++++++++++++++
+ drivers/misc/pvpanic/pvpanic.h      |  15 ++++
+ 8 files changed, 254 insertions(+), 169 deletions(-)
  delete mode 100644 drivers/misc/pvpanic.c
  create mode 100644 drivers/misc/pvpanic/Kconfig
  create mode 100644 drivers/misc/pvpanic/Makefile
  create mode 100644 drivers/misc/pvpanic/pvpanic-mmio.c
- create mode 100644 drivers/misc/pvpanic/pvpanic-pci.c
  create mode 100644 drivers/misc/pvpanic/pvpanic.c
  create mode 100644 drivers/misc/pvpanic/pvpanic.h
 
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index f532c59..c5f20e9 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -427,14 +427,6 @@ config MISC_RTSX
+ 	tristate
+ 	default MISC_RTSX_PCI || MISC_RTSX_USB
+ 
+-config PVPANIC
+-	tristate "pvpanic device support"
+-	depends on HAS_IOMEM && (ACPI || OF)
+-	help
+-	  This driver provides support for the pvpanic device.  pvpanic is
+-	  a paravirtualized device provided by QEMU; it lets a virtual machine
+-	  (guest) communicate panic events to the host.
+-
+ config HISI_HIKEY_USB
+ 	tristate "USB GPIO Hub on HiSilicon Hikey 960/970 Platform"
+ 	depends on (OF && GPIOLIB) || COMPILE_TEST
+@@ -461,4 +453,5 @@ source "drivers/misc/bcm-vk/Kconfig"
+ source "drivers/misc/cardreader/Kconfig"
+ source "drivers/misc/habanalabs/Kconfig"
+ source "drivers/misc/uacce/Kconfig"
++source "drivers/misc/pvpanic/Kconfig"
+ endmenu
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 99b6f15..fd5f87e 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -51,7 +51,7 @@ obj-$(CONFIG_PCI_ENDPOINT_TEST)	+= pci_endpoint_test.o
+ obj-$(CONFIG_OCXL)		+= ocxl/
+ obj-$(CONFIG_BCM_VK)		+= bcm-vk/
+ obj-y				+= cardreader/
+-obj-$(CONFIG_PVPANIC)   	+= pvpanic.o
++obj-$(CONFIG_PVPANIC)   	+= pvpanic/
+ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+ obj-$(CONFIG_UACCE)		+= uacce/
+ obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
+deleted file mode 100644
+index 9f350e0..00000000
+--- a/drivers/misc/pvpanic.c
++++ /dev/null
+@@ -1,160 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0+
+-/*
+- *  Pvpanic Device Support
+- *
+- *  Copyright (C) 2013 Fujitsu.
+- *  Copyright (C) 2018 ZTE.
+- */
+-
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-
+-#include <linux/io.h>
+-#include <linux/kernel.h>
+-#include <linux/kexec.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/types.h>
+-
+-#include <uapi/misc/pvpanic.h>
+-
+-static void __iomem *base;
+-static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
+-static unsigned int events;
+-
+-static ssize_t capability_show(struct device *dev,
+-			       struct device_attribute *attr, char *buf)
+-{
+-	return sysfs_emit(buf, "%x\n", capability);
+-}
+-static DEVICE_ATTR_RO(capability);
+-
+-static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
+-{
+-	return sysfs_emit(buf, "%x\n", events);
+-}
+-
+-static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
+-			    const char *buf, size_t count)
+-{
+-	unsigned int tmp;
+-	int err;
+-
+-	err = kstrtouint(buf, 16, &tmp);
+-	if (err)
+-		return err;
+-
+-	if ((tmp & capability) != tmp)
+-		return -EINVAL;
+-
+-	events = tmp;
+-
+-	return count;
+-
+-}
+-static DEVICE_ATTR_RW(events);
+-
+-static struct attribute *pvpanic_dev_attrs[] = {
+-	&dev_attr_capability.attr,
+-	&dev_attr_events.attr,
+-	NULL
+-};
+-ATTRIBUTE_GROUPS(pvpanic_dev);
+-
+-MODULE_AUTHOR("Hu Tao <hutao@cn.fujitsu.com>");
+-MODULE_DESCRIPTION("pvpanic device driver");
+-MODULE_LICENSE("GPL");
+-
+-static void
+-pvpanic_send_event(unsigned int event)
+-{
+-	if (event & capability & events)
+-		iowrite8(event, base);
+-}
+-
+-static int
+-pvpanic_panic_notify(struct notifier_block *nb, unsigned long code,
+-		     void *unused)
+-{
+-	unsigned int event = PVPANIC_PANICKED;
+-
+-	if (kexec_crash_loaded())
+-		event = PVPANIC_CRASH_LOADED;
+-
+-	pvpanic_send_event(event);
+-
+-	return NOTIFY_DONE;
+-}
+-
+-static struct notifier_block pvpanic_panic_nb = {
+-	.notifier_call = pvpanic_panic_notify,
+-	.priority = 1, /* let this called before broken drm_fb_helper */
+-};
+-
+-static int pvpanic_mmio_probe(struct platform_device *pdev)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct resource *res;
+-
+-	res = platform_get_mem_or_io(pdev, 0);
+-	if (!res)
+-		return -EINVAL;
+-
+-	switch (resource_type(res)) {
+-	case IORESOURCE_IO:
+-		base = devm_ioport_map(dev, res->start, resource_size(res));
+-		if (!base)
+-			return -ENOMEM;
+-		break;
+-	case IORESOURCE_MEM:
+-		base = devm_ioremap_resource(dev, res);
+-		if (IS_ERR(base))
+-			return PTR_ERR(base);
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	/* initlize capability by RDPT */
+-	capability &= ioread8(base);
+-	events = capability;
+-
+-	if (capability)
+-		atomic_notifier_chain_register(&panic_notifier_list,
+-					       &pvpanic_panic_nb);
+-
+-	return 0;
+-}
+-
+-static int pvpanic_mmio_remove(struct platform_device *pdev)
+-{
+-
+-	if (capability)
+-		atomic_notifier_chain_unregister(&panic_notifier_list,
+-						 &pvpanic_panic_nb);
+-
+-	return 0;
+-}
+-
+-static const struct of_device_id pvpanic_mmio_match[] = {
+-	{ .compatible = "qemu,pvpanic-mmio", },
+-	{}
+-};
+-
+-static const struct acpi_device_id pvpanic_device_ids[] = {
+-	{ "QEMU0001", 0 },
+-	{ "", 0 }
+-};
+-MODULE_DEVICE_TABLE(acpi, pvpanic_device_ids);
+-
+-static struct platform_driver pvpanic_mmio_driver = {
+-	.driver = {
+-		.name = "pvpanic-mmio",
+-		.of_match_table = pvpanic_mmio_match,
+-		.acpi_match_table = pvpanic_device_ids,
+-		.dev_groups = pvpanic_dev_groups,
+-	},
+-	.probe = pvpanic_mmio_probe,
+-	.remove = pvpanic_mmio_remove,
+-};
+-module_platform_driver(pvpanic_mmio_driver);
+diff --git a/drivers/misc/pvpanic/Kconfig b/drivers/misc/pvpanic/Kconfig
+new file mode 100644
+index 00000000..454f1ee
+--- /dev/null
++++ b/drivers/misc/pvpanic/Kconfig
+@@ -0,0 +1,19 @@
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Pvpanic Kconfig
++#
++# Copyright (C) 2021 Oracle.
++#
++
++config PVPANIC
++	bool "pvpanic device support"
++	help
++	  This option allows to select a specific pvpanic device driver.
++	  pvpanic is a paravirtualized device provided by QEMU; it lets
++	  a virtual machine (guest) communicate panic events to the host.
++
++config PVPANIC_MMIO
++	tristate "pvpanic MMIO device support"
++	depends on HAS_IOMEM && (ACPI || OF) && PVPANIC
++	help
++	  This driver provides support for the MMIO pvpanic device.
+diff --git a/drivers/misc/pvpanic/Makefile b/drivers/misc/pvpanic/Makefile
+new file mode 100644
+index 00000000..e12a2dc
+--- /dev/null
++++ b/drivers/misc/pvpanic/Makefile
+@@ -0,0 +1,7 @@
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Pvpanic Makefile
++#
++# Copyright (C) 2021 Oracle.
++#
++obj-$(CONFIG_PVPANIC_MMIO)	+= pvpanic.o pvpanic-mmio.o
+diff --git a/drivers/misc/pvpanic/pvpanic-mmio.c b/drivers/misc/pvpanic/pvpanic-mmio.c
+new file mode 100644
+index 00000000..801d892
+--- /dev/null
++++ b/drivers/misc/pvpanic/pvpanic-mmio.c
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ *  Pvpanic MMIO Device Support
++ *
++ *  Copyright (C) 2013 Fujitsu.
++ *  Copyright (C) 2018 ZTE.
++ *  Copyright (C) 2021 Oracle.
++ */
++
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/kexec.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/types.h>
++
++#include <uapi/misc/pvpanic.h>
++
++#include "pvpanic.h"
++
++MODULE_AUTHOR("Hu Tao <hutao@cn.fujitsu.com>");
++MODULE_DESCRIPTION("pvpanic device driver");
++MODULE_LICENSE("GPL");
++
++static void __iomem *base;
++static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
++static unsigned int events;
++
++static ssize_t capability_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
++{
++	return sysfs_emit(buf, "%x\n", capability);
++}
++static DEVICE_ATTR_RO(capability);
++
++static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
++{
++	return sysfs_emit(buf, "%x\n", events);
++}
++
++static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	unsigned int tmp;
++	int err;
++
++	err = kstrtouint(buf, 16, &tmp);
++	if (err)
++		return err;
++
++	if ((tmp & capability) != tmp)
++		return -EINVAL;
++
++	events = tmp;
++
++	pvpanic_set_events(events);
++
++	return count;
++
++}
++static DEVICE_ATTR_RW(events);
++
++static struct attribute *pvpanic_mmio_dev_attrs[] = {
++	&dev_attr_capability.attr,
++	&dev_attr_events.attr,
++	NULL
++};
++ATTRIBUTE_GROUPS(pvpanic_mmio_dev);
++
++static int pvpanic_mmio_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct resource *res;
++	void __iomem *base;
++
++	res = platform_get_mem_or_io(pdev, 0);
++	if (!res)
++		return -EINVAL;
++
++	switch (resource_type(res)) {
++	case IORESOURCE_IO:
++		base = devm_ioport_map(dev, res->start, resource_size(res));
++		if (!base)
++			return -ENOMEM;
++		break;
++	case IORESOURCE_MEM:
++		base = devm_ioremap_resource(dev, res);
++		if (IS_ERR(base))
++			return PTR_ERR(base);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* initlize capability by RDPT */
++	capability &= ioread8(base);
++	events = capability;
++
++	pvpanic_probe(base, capability);
++
++	return 0;
++}
++
++static int pvpanic_mmio_remove(struct platform_device *pdev)
++{
++
++	pvpanic_remove();
++
++	return 0;
++}
++
++static const struct of_device_id pvpanic_mmio_match[] = {
++	{ .compatible = "qemu,pvpanic-mmio", },
++	{}
++};
++
++static const struct acpi_device_id pvpanic_device_ids[] = {
++	{ "QEMU0001", 0 },
++	{ "", 0 }
++};
++MODULE_DEVICE_TABLE(acpi, pvpanic_device_ids);
++
++static struct platform_driver pvpanic_mmio_driver = {
++	.driver = {
++		.name = "pvpanic-mmio",
++		.of_match_table = pvpanic_mmio_match,
++		.acpi_match_table = pvpanic_device_ids,
++		.dev_groups = pvpanic_mmio_dev_groups,
++	},
++	.probe = pvpanic_mmio_probe,
++	.remove = pvpanic_mmio_remove,
++};
++module_platform_driver(pvpanic_mmio_driver);
+diff --git a/drivers/misc/pvpanic/pvpanic.c b/drivers/misc/pvpanic/pvpanic.c
+new file mode 100644
+index 00000000..11d029c
+--- /dev/null
++++ b/drivers/misc/pvpanic/pvpanic.c
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ *  Pvpanic Device Support
++ *
++ *  Copyright (C) 2013 Fujitsu.
++ *  Copyright (C) 2018 ZTE.
++ *  Copyright (C) 2021 Oracle.
++ */
++
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/kexec.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/types.h>
++
++#include <uapi/misc/pvpanic.h>
++
++#include "pvpanic.h"
++
++static void __iomem *base;
++static unsigned int capability;
++static unsigned int events;
++
++static void
++pvpanic_send_event(unsigned int event)
++{
++	if (event & capability & events)
++		iowrite8(event, base);
++}
++
++static int
++pvpanic_panic_notify(struct notifier_block *nb, unsigned long code,
++		     void *unused)
++{
++	unsigned int event = PVPANIC_PANICKED;
++
++	if (kexec_crash_loaded())
++		event = PVPANIC_CRASH_LOADED;
++
++	pvpanic_send_event(event);
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block pvpanic_panic_nb = {
++	.notifier_call = pvpanic_panic_notify,
++	.priority = 1, /* let this called before broken drm_fb_helper */
++};
++
++void pvpanic_probe(void __iomem *pbase, unsigned int dev_cap)
++{
++	base = pbase;
++	capability = dev_cap;
++	events = capability;
++
++	if (capability)
++		atomic_notifier_chain_register(&panic_notifier_list,
++					       &pvpanic_panic_nb);
++}
++EXPORT_SYMBOL_GPL(pvpanic_probe);
++
++void pvpanic_remove(void)
++{
++	if (capability)
++		atomic_notifier_chain_unregister(&panic_notifier_list,
++						 &pvpanic_panic_nb);
++	base = NULL;
++}
++EXPORT_SYMBOL_GPL(pvpanic_remove);
++
++void pvpanic_set_events(unsigned int dev_events)
++{
++	events = dev_events;
++}
++EXPORT_SYMBOL_GPL(pvpanic_set_events);
+diff --git a/drivers/misc/pvpanic/pvpanic.h b/drivers/misc/pvpanic/pvpanic.h
+new file mode 100644
+index 00000000..3abe15f
+--- /dev/null
++++ b/drivers/misc/pvpanic/pvpanic.h
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ *  Pvpanic Device Support
++ *
++ *  Copyright (C) 2021 Oracle.
++ */
++
++#ifndef PVPANIC_H_
++#define PVPANIC_H_
++
++void pvpanic_probe(void __iomem *base, unsigned int dev_cap);
++void pvpanic_remove(void);
++void pvpanic_set_events(unsigned int dev_events);
++
++#endif /* PVPANIC_H_ */
 -- 
 1.8.3.1
 
