@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96623444C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB693444E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhCVNGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:06:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47238 "EHLO mail.kernel.org"
+        id S233650AbhCVNIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232761AbhCVMwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:52:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5B4561A05;
-        Mon, 22 Mar 2021 12:46:34 +0000 (UTC)
+        id S231286AbhCVMyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2AFB6198E;
+        Mon, 22 Mar 2021 12:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417195;
-        bh=ypH6T07oS2o0Ii2W5CZoIz2+UGBbn/mvE5ZbpHsw1Pw=;
+        s=korg; t=1616417261;
+        bh=tuDwqJSVaxAyHAeSHBnhsVr6A6uaxFYVqJWuuRxSIx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A2DH2CIL3kYz5gRfjojVfau7CcmCW7TJ/h1t/SDcuwYS7PTJCNJ5R1JdtkNlL15GX
-         13+drUnH9hbmkmfG5uri6mQPGtfeYJMg2GtqIpruS47AKkDoYASGkpXsRNxNzFMRh1
-         0at8ioWtCL5tRvajw0Oc1hgfW+QJ4qtxmc5poMYA=
+        b=GbKHoJ5jueD8j4gCJEKshYLs6NGFR5Pj0So5IbgZd0eUzSSPCPJL5yNBRgdtGXhVS
+         oLppIxzwD2mO033llZUaVnctHqb1yYnwwutfOWnS7BN12eQqwOPnauox/jM8kMKArh
+         85UcloBVOJ5pdxr+JlgEoR7PGcl4tUeWT7Zb/fbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.4 12/14] ext4: find old entry again if failed to rename whiteout
-Date:   Mon, 22 Mar 2021 13:29:06 +0100
-Message-Id: <20210322121919.578142529@linuxfoundation.org>
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 17/25] PCI: rpadlpar: Fix potential drc_name corruption in store functions
+Date:   Mon, 22 Mar 2021 13:29:07 +0100
+Message-Id: <20210322121920.943207169@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
-References: <20210322121919.202392464@linuxfoundation.org>
+In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
+References: <20210322121920.399826335@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,73 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangyi (F) <yi.zhang@huawei.com>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit b7ff91fd030dc9d72ed91b1aab36e445a003af4f upstream.
+commit cc7a0bb058b85ea03db87169c60c7cfdd5d34678 upstream.
 
-If we failed to add new entry on rename whiteout, we cannot reset the
-old->de entry directly, because the old->de could have moved from under
-us during make indexed dir. So find the old entry again before reset is
-needed, otherwise it may corrupt the filesystem as below.
+Both add_slot_store() and remove_slot_store() try to fix up the
+drc_name copied from the store buffer by placing a NUL terminator at
+nbyte + 1 or in place of a '\n' if present. However, the static buffer
+that we copy the drc_name data into is not zeroed and can contain
+anything past the n-th byte.
 
-  /dev/sda: Entry '00000001' in ??? (12) has deleted/unused inode 15. CLEARED.
-  /dev/sda: Unattached inode 75
-  /dev/sda: UNEXPECTED INCONSISTENCY; RUN fsck MANUALLY.
+This is problematic if a '\n' byte appears in that buffer after nbytes
+and the string copied into the store buffer was not NUL terminated to
+start with as the strchr() search for a '\n' byte will mark this
+incorrectly as the end of the drc_name string resulting in a drc_name
+string that contains garbage data after the n-th byte.
 
-Fixes: 6b4b8e6b4ad ("ext4: fix bug for rename with RENAME_WHITEOUT")
+Additionally it will cause us to overwrite that '\n' byte on the stack
+with NUL, potentially corrupting data on the stack.
+
+The following debugging shows an example of the drmgr utility writing
+"PHB 4543" to the add_slot sysfs attribute, but add_slot_store()
+logging a corrupted string value.
+
+  drmgr: drmgr: -c phb -a -s PHB 4543 -d 1
+  add_slot_store: drc_name = PHB 4543°|<82>!, rc = -19
+
+Fix this by using strscpy() instead of memcpy() to ensure the string
+is NUL terminated when copied into the static drc_name buffer.
+Further, since the string is now NUL terminated the code only needs to
+change '\n' to '\0' when present.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Link: https://lore.kernel.org/r/20210303131703.330415-1-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+[mpe: Reformat change log and add mention of possible stack corruption]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210315214821.452959-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/namei.c |   29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ drivers/pci/hotplug/rpadlpar_sysfs.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3375,6 +3375,31 @@ static int ext4_setent(handle_t *handle,
- 	return 0;
- }
+--- a/drivers/pci/hotplug/rpadlpar_sysfs.c
++++ b/drivers/pci/hotplug/rpadlpar_sysfs.c
+@@ -39,12 +39,11 @@ static ssize_t add_slot_store(struct kob
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
  
-+static void ext4_resetent(handle_t *handle, struct ext4_renament *ent,
-+			  unsigned ino, unsigned file_type)
-+{
-+	struct ext4_renament old = *ent;
-+	int retval = 0;
-+
-+	/*
-+	 * old->de could have moved from under us during make indexed dir,
-+	 * so the old->de may no longer valid and need to find it again
-+	 * before reset old inode info.
-+	 */
-+	old.bh = ext4_find_entry(old.dir, &old.dentry->d_name, &old.de, NULL);
-+	if (IS_ERR(old.bh))
-+		retval = PTR_ERR(old.bh);
-+	if (!old.bh)
-+		retval = -ENOENT;
-+	if (retval) {
-+		ext4_std_error(old.dir->i_sb, retval);
-+		return;
-+	}
-+
-+	ext4_setent(handle, &old, ino, file_type);
-+	brelse(old.bh);
-+}
-+
- static int ext4_find_delete_entry(handle_t *handle, struct inode *dir,
- 				  const struct qstr *d_name)
- {
-@@ -3674,8 +3699,8 @@ static int ext4_rename(struct inode *old
- end_rename:
- 	if (whiteout) {
- 		if (retval) {
--			ext4_setent(handle, &old,
--				old.inode->i_ino, old_file_type);
-+			ext4_resetent(handle, &old,
-+				      old.inode->i_ino, old_file_type);
- 			drop_nlink(whiteout);
- 		}
- 		unlock_new_inode(whiteout);
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_add_slot(drc_name);
+ 	if (rc)
+@@ -70,12 +69,11 @@ static ssize_t remove_slot_store(struct
+ 	if (nbytes >= MAX_DRC_NAME_LEN)
+ 		return 0;
+ 
+-	memcpy(drc_name, buf, nbytes);
++	strscpy(drc_name, buf, nbytes + 1);
+ 
+ 	end = strchr(drc_name, '\n');
+-	if (!end)
+-		end = &drc_name[nbytes];
+-	*end = '\0';
++	if (end)
++		*end = '\0';
+ 
+ 	rc = dlpar_remove_slot(drc_name);
+ 	if (rc)
 
 
