@@ -2,143 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DAF3439AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982D93439AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhCVGkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhCVGk2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:40:28 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B426C061574;
-        Sun, 21 Mar 2021 23:40:27 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F3lHX2qYkz9sS8;
-        Mon, 22 Mar 2021 17:40:24 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616395225;
-        bh=1nixCOUzlIxfcWyrKNO05b2wI9KlMHWHaMpD+huHV50=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ceQiKo4JilnACfC/u2LG8c6c06QATLMBMBRYNz+eYb7hc2x4fRT3CrfNe9AQX6/Ux
-         Hy2WWCe9ENY+6yiD88oWJvRA1uazzuuM3ELuIMbu1DwddT/F7PlzqurPwqSGCXLIJr
-         FLThTA5oZaVhIgVIHUMRZRc/6nc5waz0oSj/uQL6w2mjFdQNJcMwRC2ZJNmURCw2Zd
-         ahns8TN5dj1JE+p5IvvNCYcandRnJn2N16quCsboS5Az4cf2UDD0Pp8FvPcha+7PpW
-         zKlSMaYURw/7cwx9h3sdGDtxAGPEF9wJfKA+WRKfkKFS/drDz6TV9NNMjbmdasDm5L
-         rRdb7MajAAwsw==
-Date:   Mon, 22 Mar 2021 17:40:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: linux-next: manual merge of the akpm tree with the arm64 tree
-Message-ID: <20210322174023.602a110b@canb.auug.org.au>
+        id S230173AbhCVGkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:40:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230031AbhCVGkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:40:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34DA26196B;
+        Mon, 22 Mar 2021 06:40:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616395235;
+        bh=BmKp/FA0g7ZOg1oLsp7e01PpVXipfwCQdHRKfNzoDDM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vI0yJlX8iF10HszeHQDt5wlUk5dlc5n54rU+CLTC5nptxfDQfsc02LIhWQ2NfnTbC
+         L9NJmB8C/uo4vcZNS/qCdz1GQp1JibFnEJ+4mM7MrjJMRUbxEZHzCTBLWMflprvRwp
+         uV/iaQ7mic2fH1H86mtRGnu+SwXTvG+XVbdCSMusvAm1KabGID92Ywe10T+956fXhP
+         5mJR0u+2A4LNwLm4AxwBXjQ/+pp2Ebn92q3Sk3AU43rTs753L0oOsd1sTedSzoRbUX
+         T0ZPai+t6S3Ta83R5P1JBLioOMkBfkn+ig5hkSJWe6IeAGUUAwiY857CjnpQG6GsyW
+         JhQ6kN8FNyv3Q==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: [PATCH -tip v4 04/12] kprobes: Add kretprobe_find_ret_addr() for searching return address
+Date:   Mon, 22 Mar 2021 15:40:30 +0900
+Message-Id: <161639522987.895304.1462086540923250943.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <161639518354.895304.15627519393073806809.stgit@devnote2>
+References: <161639518354.895304.15627519393073806809.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gF60RUGOCeApvhNL8GKktWw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gF60RUGOCeApvhNL8GKktWw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add kretprobe_find_ret_addr() for searching correct return address
+from kretprobe instance list.
 
-Hi all,
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ Changes in v3:
+  - Remove generic stacktrace fixup. Instead, it should be solved in
+    each unwinder. This just provide the generic interface.
+ Changes in v2:
+  - Add is_kretprobe_trampoline() for checking address outside of
+    kretprobe_find_ret_addr()
+  - Remove unneeded addr from kretprobe_find_ret_addr()
+  - Rename fixup_kretprobe_tramp_addr() to fixup_kretprobe_trampoline()
+---
+ include/linux/kprobes.h |   22 +++++++++++
+ kernel/kprobes.c        |   90 +++++++++++++++++++++++++++++++++--------------
+ 2 files changed, 86 insertions(+), 26 deletions(-)
 
-Today's linux-next merge of the akpm tree got a conflict in:
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 65dadd4238a2..f530f82a046d 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -215,6 +215,14 @@ static nokprobe_inline void *kretprobe_trampoline_addr(void)
+ 	return dereference_function_descriptor(kretprobe_trampoline);
+ }
+ 
++static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
++{
++	return (void *)addr == kretprobe_trampoline_addr();
++}
++
++unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
++				      struct llist_node **cur);
++
+ /* If the trampoline handler called from a kprobe, use this version */
+ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 					     void *frame_pointer);
+@@ -514,6 +522,20 @@ static inline bool is_kprobe_optinsn_slot(unsigned long addr)
+ }
+ #endif
+ 
++#if !defined(CONFIG_KRETPROBES)
++static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
++{
++	return false;
++}
++
++static nokprobe_inline
++unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
++				      struct llist_node **cur)
++{
++	return 0;
++}
++#endif
++
+ /* Returns true if kprobes handled the fault */
+ static nokprobe_inline bool kprobe_page_fault(struct pt_regs *regs,
+ 					      unsigned int trap)
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 75c0a58c19c2..cf19edc038e4 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1858,45 +1858,68 @@ static struct notifier_block kprobe_exceptions_nb = {
+ 
+ #ifdef CONFIG_KRETPROBES
+ 
+-unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+-					     void *frame_pointer)
++/* This assumes the tsk is current or the task which is not running. */
++static unsigned long __kretprobe_find_ret_addr(struct task_struct *tsk,
++					       struct llist_node **cur)
+ {
+-	kprobe_opcode_t *correct_ret_addr = NULL;
+ 	struct kretprobe_instance *ri = NULL;
+-	struct llist_node *first, *node;
+-	struct kretprobe *rp;
++	struct llist_node *node = *cur;
++
++	if (!node)
++		node = tsk->kretprobe_instances.first;
++	else
++		node = node->next;
+ 
+-	/* Find all nodes for this frame. */
+-	first = node = current->kretprobe_instances.first;
+ 	while (node) {
+ 		ri = container_of(node, struct kretprobe_instance, llist);
+-
+-		BUG_ON(ri->fp != frame_pointer);
+-
+ 		if (ri->ret_addr != kretprobe_trampoline_addr()) {
+-			correct_ret_addr = ri->ret_addr;
+-			/*
+-			 * This is the real return address. Any other
+-			 * instances associated with this task are for
+-			 * other calls deeper on the call stack
+-			 */
+-			goto found;
++			*cur = node;
++			return (unsigned long)ri->ret_addr;
+ 		}
+-
+ 		node = node->next;
+ 	}
+-	pr_err("Oops! Kretprobe fails to find correct return address.\n");
+-	BUG_ON(1);
++	return 0;
++}
++NOKPROBE_SYMBOL(__kretprobe_find_ret_addr);
+ 
+-found:
+-	/* Unlink all nodes for this frame. */
+-	current->kretprobe_instances.first = node->next;
+-	node->next = NULL;
++unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
++				      struct llist_node **cur)
++{
++	struct kretprobe_instance *ri = NULL;
++	unsigned long ret;
++
++	do {
++		ret = __kretprobe_find_ret_addr(tsk, cur);
++		if (!ret)
++			return ret;
++		ri = container_of(*cur, struct kretprobe_instance, llist);
++	} while (ri->fp != fp);
++
++	return ret;
++}
++NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
+ 
+-	/* Run them..  */
++unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
++					     void *frame_pointer)
++{
++	kprobe_opcode_t *correct_ret_addr = NULL;
++	struct kretprobe_instance *ri = NULL;
++	struct llist_node *first, *node = NULL;
++	struct kretprobe *rp;
++
++	/* Find correct address and all nodes for this frame. */
++	correct_ret_addr = (void *)__kretprobe_find_ret_addr(current, &node);
++	if (!correct_ret_addr) {
++		pr_err("Oops! Kretprobe fails to find correct return address.\n");
++		BUG_ON(1);
++	}
++
++	/* Run them. */
++	first = current->kretprobe_instances.first;
+ 	while (first) {
+ 		ri = container_of(first, struct kretprobe_instance, llist);
+-		first = first->next;
++
++		BUG_ON(ri->fp != frame_pointer);
+ 
+ 		rp = get_kretprobe(ri);
+ 		if (rp && rp->handler) {
+@@ -1907,6 +1930,21 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 			rp->handler(ri, regs);
+ 			__this_cpu_write(current_kprobe, prev);
+ 		}
++		if (first == node)
++			break;
++
++		first = first->next;
++	}
++
++	/* Unlink all nodes for this frame. */
++	first = current->kretprobe_instances.first;
++	current->kretprobe_instances.first = node->next;
++	node->next = NULL;
++
++	/* Recycle them.  */
++	while (first) {
++		ri = container_of(first, struct kretprobe_instance, llist);
++		first = first->next;
+ 
+ 		recycle_rp_inst(ri);
+ 	}
 
-  arch/arm64/mm/mmu.c
-
-between commit:
-
-  87143f404f33 ("arm64: mm: use XN table mapping attributes for the linear =
-region")
-
-from the arm64 tree and commit:
-
-  0a2634348ef8 ("set_memory: allow querying whether set_direct_map_*() is a=
-ctually enabled")
-
-from the akpm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/mm/mmu.c
-index 4c2305cca6d2,fb675069a3b7..000000000000
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@@ -503,20 -490,11 +504,20 @@@ static void __init map_mem(pgd_t *pgdp
-  	phys_addr_t kernel_start =3D __pa_symbol(_stext);
-  	phys_addr_t kernel_end =3D __pa_symbol(__init_begin);
-  	phys_addr_t start, end;
- -	int flags =3D 0;
- +	int flags =3D NO_EXEC_MAPPINGS;
-  	u64 i;
- =20
- +	/*
- +	 * Setting hierarchical PXNTable attributes on table entries covering
- +	 * the linear region is only possible if it is guaranteed that no table
- +	 * entries at any level are being shared between the linear region and
- +	 * the vmalloc region. Check whether this is true for the PGD level, in
- +	 * which case it is guaranteed to be true for all other levels as well.
- +	 */
- +	BUILD_BUG_ON(pgd_index(direct_map_end - 1) =3D=3D pgd_index(direct_map_e=
-nd));
- +
-- 	if (rodata_full || crash_mem_map || debug_pagealloc_enabled())
-+ 	if (can_set_direct_map() || crash_mem_map)
- -		flags =3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- +		flags |=3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- =20
-  	/*
-  	 * Take care not to create a writable alias for the
-@@@ -1468,9 -1446,8 +1469,8 @@@ int arch_add_memory(int nid, u64 start
-  	 * KFENCE requires linear map to be mapped at page granularity, so that
-  	 * it is possible to protect/unprotect single pages in the KFENCE pool.
-  	 */
-- 	if (rodata_full || debug_pagealloc_enabled() ||
-- 	    IS_ENABLED(CONFIG_KFENCE))
-+ 	if (can_set_direct_map() || IS_ENABLED(CONFIG_KFENCE))
- -		flags =3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- +		flags |=3D NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- =20
-  	__create_pgd_mapping(swapper_pg_dir, start, __phys_to_virt(start),
-  			     size, params->pgprot, __pgd_pgtable_alloc,
-
---Sig_/gF60RUGOCeApvhNL8GKktWw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBYO9cACgkQAVBC80lX
-0GzopQgAkFk4g2CloXVbQ7aGEuYVvztOWu0M6JXZe742iQPibykojvIKMk0Kc0GK
-o0cNm8ZM8ekUpf3pLfpipIJzCcF2e4Di4mW9/c9JzC74Klv6re5L+XlyrzkZRjv6
-Ij3bwor6pz5zmUwvEIq6E2Dav+mLp/qF0Q5DUbMx0YRf4iznA0SoMhxJHwuGxGNx
-Ei+MoKAEWD22QWk2fBD6KCszGKN0ZhUcP0kzaj7lN9ls8NxomYJfuVGFv4glZkk+
-SSY2l7VMLI8DP5yqa6+T/BCM8e1pkna276WuPdQ3QrcNr/BsFcTnH+OBZSGlFgPS
-xh5r2rRr3+rmL01FdQyVnfn+2Z0heA==
-=KAyZ
------END PGP SIGNATURE-----
-
---Sig_/gF60RUGOCeApvhNL8GKktWw--
