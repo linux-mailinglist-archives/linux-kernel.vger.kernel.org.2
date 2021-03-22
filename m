@@ -2,52 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B178344065
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43CA34406C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhCVMD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:03:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230273AbhCVMD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:03:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32F1761998;
-        Mon, 22 Mar 2021 12:03:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616414609;
-        bh=mwKIvD3m2a8udoDntSattWkpAVmBGFOPr8WfGq95e5w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TsCHUKqbad1Wh33Bea4g9m/NbKCxtd0quqqHcu+kxT+7QvQ3dHmQ8Ut0hWZKV0V5U
-         zwhVGlyg2LmKZzFmMwgYNeSy1gzQ+BGxQrIdeDMGMrrEogIujd39vg18ABIiduyh96
-         /LyoBX/DHB+ihdsJOF+kmqERg1HFARqqoKBLj+otOdGwT3Rx8BjhCxL/BDMBDVVAwo
-         qxV3aWJr8toqzRFfEvNH2cWL9N67BL+2hv467A4hHpe0RjI3yJxVGrbKgH0lVPq+ig
-         h9BApB998sTSVGnQM+9hJYqca/hvcEFAwDoNSmGcl4Z8jtvmxc49NCj31XbjWoA0Si
-         uhu4mYL/P88XA==
-Date:   Mon, 22 Mar 2021 17:33:24 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH v2 0/3] soundwire: add DMI quirks for overridind addr
-Message-ID: <YFiHjPawbh8dId7h@vkoul-mobl.Dlink>
-References: <20210302075105.11515-1-yung-chuan.liao@linux.intel.com>
+        id S230355AbhCVMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:05:07 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:31664 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhCVMEx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:04:53 -0400
+Date:   Mon, 22 Mar 2021 12:04:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1616414690; bh=AFgCbLguriV3CwFF1nhSPTfmyyoAQpRcEnd0zBssKuA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=R2bsUqhAg7Fb96oKF1Og1ulpJbeTnxg9Y4uLtwnit83vvh+9uG8Nj3KGjQyjUaZLT
+         ikLY5u/4aOVlDvfJARcJxogpArdlynErRRX8V5/fp561LEUK8LeB2dn8E7MAR0hxsS
+         xBwLtBEqYJ508r6yD5t1DYRVXjGprSBF/Yqt/KZ7zEywTVG/GMbC9+ATTmQ7/uNtHA
+         eFC7xLk5UUIO/0GHIFgmbR8smuGILktzsL545NR2h+78m1pQfSabQ1CF/oWLuDRP2K
+         ETKrOCCrmL8qkf/qeRziA0e8cL0VbN1Da+8EyJpoGAglypHPZAjhog9mXW+FumsQDE
+         k+5sAKgbGuR4w==
+To:     Paul Cercueil <paul@crapouillou.net>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH] MIPS: generic: Support linking with LLVM ld.lld
+Message-ID: <20210322120429.3706-1-alobakin@pm.me>
+In-Reply-To: <20210321131805.98422-1-paul@crapouillou.net>
+References: <20210321131805.98422-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302075105.11515-1-yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-03-21, 15:51, Bard Liao wrote:
-> Platform firmware may have incorrect _ADR values causing the driver
-> probes to fail. Adding the override_ops allows people to override the
-> addr values.
+From: Paul Cercueil <paul@crapouillou.net>
+Date: Sun, 21 Mar 2021 13:18:05 +0000
 
-Applied, thanks
+> LLVM's ld.lld chokes on the 64-bit sign-extended load addresses. Use
+> 32-bit addresses if the linker is LLVM's ld.lld.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  arch/mips/generic/Platform | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
+> index b871af16b5b6..19b7d92a4ca7 100644
+> --- a/arch/mips/generic/Platform
+> +++ b/arch/mips/generic/Platform
+> @@ -12,8 +12,8 @@
+>  cflags-$(CONFIG_MACH_INGENIC_SOC)=09+=3D -I$(srctree)/arch/mips/include/=
+asm/mach-ingenic
+>  cflags-$(CONFIG_MIPS_GENERIC)=09+=3D -I$(srctree)/arch/mips/include/asm/=
+mach-generic
+>
+> -load-$(CONFIG_MIPS_GENERIC)=09+=3D 0xffffffff80100000
+> -zload-$(CONFIG_MIPS_GENERIC)=09+=3D 0xffffffff81000000
+> +load-$(CONFIG_MIPS_GENERIC)=09=09+=3D $(if $(CONFIG_LD_IS_LLD),0x8010000=
+0,0xffffffff80100000)
+> +zload-$(CONFIG_MIPS_GENERIC)=09+=3D $(if $(CONFIG_LD_IS_LLD),0x81000000,=
+0xffffffff81000000)
+>  all-$(CONFIG_MIPS_GENERIC)=09:=3D vmlinux.gz.itb
 
--- 
-~Vinod
+For load-y, it's handled in arch/mips/Makefile:289 arch-wide.
+For zload-y, it's not handled at all, but the proper way to do this
+is to add a similar to load-ld logics in
+arch/mips/boot/compressed/Makefile.
+
+>  its-y=09=09=09=09=09:=3D vmlinux.its.S
+> --
+> 2.30.2
+
+Thanks,
+Al
+
