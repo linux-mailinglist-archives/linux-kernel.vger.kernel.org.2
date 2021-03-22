@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00F8344AFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1765A344AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhCVQSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhCVQSQ (ORCPT
+        id S231688AbhCVQS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:18:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56898 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231626AbhCVQSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:18:16 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46791C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:18:14 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id kt15so12758918ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5fPU70P+apIZaZ90738281RBQVtiFO6xyPzB24/nFj0=;
-        b=PPVMKoO2LmrxB/EqF6MdsVCuOvCwzdnYIGu2CT53plAQh+yZIwJP+JPbBQG8Mez/X4
-         dL+oIx21/VF4Hq39I/bVUmtrzWJmFH7xgszYCiT6J/He6X7upD15585k4QOPFADu+/eD
-         QGre1T0qcLb0GWCg+tAd2MOaQpSFdYMLRvJ9ocygy2vTtaMWSScKS0tdYl6wOAWqz4wo
-         LuanlAHsC/rGWiQE/jkEUFFhBiiHpYDaYCa8eUN8gX7TC4Pna+GrsqForZ85Nrxp3sbW
-         U9FgvTr2gCIpDVhOQvLw9b1r+gGjYEy2RnlbmW5LH+1/GPpC1dGpGaafVjfP69uGspZ+
-         3Chg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5fPU70P+apIZaZ90738281RBQVtiFO6xyPzB24/nFj0=;
-        b=qGtiwXnEqDlE5hIfpunFidgFBzRCFJOIxc+gXBNtPXhVj2z4b9PT6u6rH/pfFwnM9A
-         wzoHioOmN4oXYVqq+cIP9GUMgpofRluggpCHDkyF/F+sYicojRSRTcsvfwmJY9qTUJNA
-         jUgBTj5XZBlvp4nrxYHQM2MFG0fb2mBE2TYigTISIKaaHLXi2yO+/x51SjDQL8NYEGlK
-         A/4PXWlgNGYbg8Pq5qo8si8b1cFifYkvQ4qLOJipPSlmvhgLxPLPshxbfQq70V256Ff0
-         lzNoqBAsY/z1E6IKyG5xC78DbzLl90UwKPkcEWvNUmjUzmOyjSKqfdPYLb9tOkp8IIvw
-         JCSw==
-X-Gm-Message-State: AOAM532VYW34bh0gbW6OYvNeq8GjXb6zXAi+5ZvjdkWVZJ8hH56PIIsU
-        YChtEAa2V910yX5MfY4czJ/mUw==
-X-Google-Smtp-Source: ABdhPJxWxOTWcNLPwlbFuHUTnCQvbb7chDavRLIX6ffZBF7loKDa89ZLnniTNDnUEtQqJ6ccAuewSw==
-X-Received: by 2002:a17:906:b316:: with SMTP id n22mr539237ejz.249.1616429892990;
-        Mon, 22 Mar 2021 09:18:12 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id q12sm9950268ejy.91.2021.03.22.09.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 09:18:12 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 16:18:10 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH 2/2] video: backlight: qcom-wled: Add PMI8994 compatible
-Message-ID: <20210322161810.biagj2qro66rv4gt@maple.lan>
-References: <20210228124106.135812-1-konrad.dybcio@somainline.org>
- <20210228124106.135812-2-konrad.dybcio@somainline.org>
+        Mon, 22 Mar 2021 12:18:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616429909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i5OZl+2uG3qd5KjzQMzycc1zUhTUOaFHbDQTpG9xOvc=;
+        b=YPQWy7RiWrSQ84GUsoPNWAssobf5RwLsgA9twwDowp1BDwq+WKQEDrRm635zepBCF5GoZI
+        potBOyuFoVvymwBBlaN4QiKEmmTnjjhH7YlEukewlvXTVV9njsFERG7Krw2q4W8B0Tkz93
+        ubC0csPNZY7d5pzUnTfBR1JSNfptJS4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-KLWOxJSgNQazoZUoCy9bjw-1; Mon, 22 Mar 2021 12:18:27 -0400
+X-MC-Unique: KLWOxJSgNQazoZUoCy9bjw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45A6785EE8B;
+        Mon, 22 Mar 2021 16:18:26 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.114])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 540E160C0F;
+        Mon, 22 Mar 2021 16:18:24 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 22 Mar 2021 17:18:25 +0100 (CET)
+Date:   Mon, 22 Mar 2021 17:18:23 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Stefan Metzmacher <metze@samba.org>
+Subject: Re: [PATCH 2/2] signal: don't allow STOP on PF_IO_WORKER threads
+Message-ID: <20210322161822.GC20390@redhat.com>
+References: <20210320153832.1033687-1-axboe@kernel.dk>
+ <20210320153832.1033687-3-axboe@kernel.dk>
+ <m1sg4paj8h.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210228124106.135812-2-konrad.dybcio@somainline.org>
+In-Reply-To: <m1sg4paj8h.fsf@fess.ebiederm.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 01:41:05PM +0100, Konrad Dybcio wrote:
-> Add a compatible for PMI8994 WLED. It uses the V4 of WLED IP.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+On 03/20, Eric W. Biederman wrote:
+>
+> But please tell me why is it not the right thing to have the io_uring
+> helper threads stop?  Why is it ok for that process to go on consuming
+> cpu resources in a non-stoppable way.
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Yes, I have the same question ;)
 
+Oleg.
 
-Daniel.
-
-
-> ---
->  drivers/video/backlight/qcom-wled.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> index 3bc7800eb0a9..497b9035a908 100644
-> --- a/drivers/video/backlight/qcom-wled.c
-> +++ b/drivers/video/backlight/qcom-wled.c
-> @@ -1704,6 +1704,7 @@ static int wled_remove(struct platform_device *pdev)
->  
->  static const struct of_device_id wled_match_table[] = {
->  	{ .compatible = "qcom,pm8941-wled", .data = (void *)3 },
-> +	{ .compatible = "qcom,pmi8994-wled", .data = (void *)4 },
->  	{ .compatible = "qcom,pmi8998-wled", .data = (void *)4 },
->  	{ .compatible = "qcom,pm660l-wled", .data = (void *)4 },
->  	{ .compatible = "qcom,pm8150l-wled", .data = (void *)5 },
-> -- 
-> 2.30.1
