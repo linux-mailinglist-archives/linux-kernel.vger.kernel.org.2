@@ -2,145 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0433448D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7779344943
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhCVPJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:09:33 -0400
-Received: from mga07.intel.com ([134.134.136.100]:15234 "EHLO mga07.intel.com"
+        id S230105AbhCVPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:31:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhCVPJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:09:22 -0400
-IronPort-SDR: RmCQUz1UvwoWLXOBe/pIk3i/gjpB/+T/Ru9+9kTeMFU8+m2R/nDT4P4E5d5eeU8n5J1wV4yRpk
- xgofuBB0yM9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="254288287"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="254288287"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 08:09:21 -0700
-IronPort-SDR: rYPX1yAniq4hVTdHu57nyKOja/Sm9o+/0Q5YMXq1wJrsKkf6tfa1OfsPVQHtMxLkbv0MJaoCC/
- +PC7DUAcHxGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="441213761"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Mar 2021 08:09:20 -0700
-Subject: Re: [PATCH] firmware: stratix10-svc: build only on 64-bit ARM
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>, kbuild-all@lists.01.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-References: <20210321184650.10926-1-krzysztof.kozlowski@canonical.com>
- <CAK8P3a2mN0stqiGSMqyY7neODfqFv700KkVecaYS0Ck3D7LRnQ@mail.gmail.com>
- <2ae8379f-c79f-3257-e54c-fa17c576e929@canonical.com>
- <26fe4358-4ebd-7346-8944-13b13da75c6f@linux.intel.com>
- <5c4ede72-b937-586b-78d7-1f6770c23b09@canonical.com>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <af80b8de-3e55-d0e4-f5ee-7fc90e60c4c2@linux.intel.com>
-Date:   Mon, 22 Mar 2021 10:29:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229665AbhCVPbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:31:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 518196198D;
+        Mon, 22 Mar 2021 15:31:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616427072;
+        bh=QTeCwb79KDXmtdPk8PR3/zJRadw5L3iAmL7vbC+YvBg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=suWjKqKFxJWLKY/0OqlJVAvmG0Nb8Kg/ZVKrYgj1DKiKgtXx696y51TR0YdIpekVV
+         pQvsxgYicIyuNe6uZo4SRiTe6MyB45w7X/vM8iL6tiKGZJT2UV3S3+3r49+umR9Xyy
+         b2V9w9uSseYBaZtlO2NztzKOAVBM9WnrOtEPD+NkwWt0zgMD0fqi+gMcdNlqK7h4tO
+         +771/M2yRlxyTzWMj7FT7f3iH+GNtv036EboTj05waOJmjreLwClKaLvXdMjPjFr5p
+         7HVVtjc5yf470mHaPOZYH4UXtnmiy+Fv2VGtB79XajJ/zPu3bGf7eTe6+ySa/PU2m+
+         V0361Vp8kaDpA==
+Date:   Mon, 22 Mar 2021 17:31:08 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     lyl2019@mail.ustc.edu.cn
+Cc:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] infiniband: Fix a use after free in
+ isert_connect_request
+Message-ID: <YFi4PKJLjMkIXmas@unreal>
+References: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
+ <YFipRTHpr8Xqho4V@unreal>
+ <1af3e912.b6e4.1785a6b7802.Coremail.lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <5c4ede72-b937-586b-78d7-1f6770c23b09@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1af3e912.b6e4.1785a6b7802.Coremail.lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/22/21 7:41 AM, Krzysztof Kozlowski wrote:
-> On 22/03/2021 13:58, Richard Gong wrote:
->>
->>
->> On 3/22/21 3:26 AM, Krzysztof Kozlowski wrote:
->>>
->>> On 21/03/2021 22:09, Arnd Bergmann wrote:
->>>> On Sun, Mar 21, 2021 at 7:46 PM Krzysztof Kozlowski
->>>> <krzysztof.kozlowski@canonical.com> wrote:
->>>>>
->>>>> The Stratix10 service layer and RCU drivers are useful only on
->>>>> Stratix10, so on ARMv8.  Compile testing the RCU driver on 32-bit ARM
->>>>> fails:
->>>>>
->>>>>     drivers/firmware/stratix10-rsu.c: In function 'rsu_status_callback':
->>>>>     include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_179'
->>>>>       declared with attribute error: FIELD_GET: type of reg too small for mask
->>>>>       _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->>>>>     ...
->>>>>     drivers/firmware/stratix10-rsu.c:96:26: note: in expansion of macro 'FIELD_GET'
->>>>>       priv->status.version = FIELD_GET(RSU_VERSION_MASK,
->>>>>
->>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>
->>>> While I agree that one shouldn't run 32-bit kernels on this, we should also try
->>>> to write drivers portably, and in theory any SoC that can run a 64-bit
->>>> Arm kernel
->>>> should also be able to run a 32-bit kernel if you include the same drivers.
->>>>
->>>> It seems that the problem here is in the smccc definition
->>>>
->>>> struct arm_smccc_res {
->>>>           unsigned long a0;
->>>>           unsigned long a1;
->>>>           unsigned long a2;
->>>>           unsigned long a3;
->>>> };
->>>>
->>>> so the result of
->>>>
->>>> #define RSU_VERSION_MASK                GENMASK_ULL(63, 32)
->>>>             priv->status.version = FIELD_GET(RSU_VERSION_MASK, res->a2);
->>>>
->>>> tries to access bits that are just not returned by the firmware here,
->>>> which indicates that it probably won't work in this case.
->>>>
->>>> What I'm not entirely sure about is whether this is a problem in
->>>> the Intel firmware implementation requiring the smccc caller to
->>>> run in a 64-bit context, or if it's a mistake in the way the driver
->>>> extracts the information if the firmware can actually pass it down
->>>> correctly.
->>>
->>> The SMC has two calling conventions - SMC32/HVC32 and SMC64/HVC64. The
->>> Stratix 10 driver uses the 64-bit calling convention (see
->>> INTEL_SIP_SMC_FAST_CALL_VAL in
->>> include/linux/firmware/intel/stratix10-smc.h), so it should not run in
->>> aarch32 (regardless of type of hardware).
->>>
->>> I think that my patch limiting the support to 64-bit makes sense.
->>>
->>
->> The stratix10 service layer and RSU driver are only used in Intel 64-bit
->> SoCFPGA platforms.
+On Mon, Mar 22, 2021 at 10:51:35PM +0800, lyl2019@mail.ustc.edu.cn wrote:
 > 
-> This we know, however the questions were:
-> 1. Why the driver cannot be made portable? Why it cannot be developed in
-> a way it allows building on different platforms?
-
-The drivers was originally developed for Intel Stratix10 SoCFPGA 
-platform, which is ARM 64-bit architecture. The same drivers can be used 
-for other Intel ARM 64-bit SoCFPGA platforms (Agilex, eASIC N5X as 
-example), which have the same SDM architecture as Stratix10 has.
-
-SDM = Secure Device Manager
-
-So far Intel 32-bit SoCFPGA platform doesn't support SDM architecture.
-
-> 2. Does the actual firmware support 32-bit SMC convention call?
-
-No.
-
 > 
-> Best regards,
-> Krzysztof
 > 
+> > -----原始邮件-----
+> > 发件人: "Leon Romanovsky" <leon@kernel.org>
+> > 发送时间: 2021-03-22 22:27:17 (星期一)
+> > 收件人: "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
+> > 抄送: sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+> > 主题: Re: [PATCH] infiniband: Fix a use after free in isert_connect_request
+> > 
+> > On Mon, Mar 22, 2021 at 06:53:55AM -0700, Lv Yunlong wrote:
+> > > The device is got by isert_device_get() with refcount is 1,
+> > > and is assigned to isert_conn by isert_conn->device = device.
+> > > When isert_create_qp() failed, device will be freed with
+> > > isert_device_put().
+> > > 
+> > > Later, the device is used in isert_free_login_buf(isert_conn)
+> > > by the isert_conn->device->ib_device statement. My patch
+> > > exchanges the callees order to free the device late.
+> > > 
+> > > Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> > > ---
+> > >  drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > The fix needs to be change of isert_free_login_buf() from
+> > isert_free_login_buf(isert_conn) to be isert_free_login_buf(isert_conn, cma_id->device)
+> > 
+> > Thanks
+> > 
+> > > 
+> > > diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+> > > index 7305ed8976c2..d8a533e346b0 100644
+> > > --- a/drivers/infiniband/ulp/isert/ib_isert.c
+> > > +++ b/drivers/infiniband/ulp/isert/ib_isert.c
+> > > @@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+> > >  
+> > >  out_destroy_qp:
+> > >  	isert_destroy_qp(isert_conn);
+> > > -out_conn_dev:
+> > > -	isert_device_put(device);
+> > >  out_rsp_dma_map:
+> > >  	isert_free_login_buf(isert_conn);
+> > > +out_conn_dev:
+> > > +	isert_device_put(device);
+> > >  out:
+> > >  	kfree(isert_conn);
+> > >  	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
+> > > -- 
+> > > 2.25.1
+> > > 
+> > > 
+> 
+> I see that function isert_free_login_buf(struct isert_conn *isert_conn) has only
+> a parameter,  do you mean i need change the implementation of isert_free_login_buf?
+> 
+> I'm sorry to say that i am unfamilar with this module and afraid of making more mistakes,
+> because this function is being called elsewhere as well.
+> Could you help me to fix this issue? Or just fix it and tell me your commit number?
 
-Regards,
-Richard
+After checking how isert_connect_release() is implemented, it looks like
+this will fix:
+
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+index 7305ed8976c2..18266f07c58d 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.c
++++ b/drivers/infiniband/ulp/isert/ib_isert.c
+@@ -438,23 +438,23 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+ 	isert_init_conn(isert_conn);
+ 	isert_conn->cm_id = cma_id;
+ 
+-	ret = isert_alloc_login_buf(isert_conn, cma_id->device);
+-	if (ret)
+-		goto out;
+-
+ 	device = isert_device_get(cma_id);
+ 	if (IS_ERR(device)) {
+ 		ret = PTR_ERR(device);
+-		goto out_rsp_dma_map;
++		goto out;
+ 	}
+ 	isert_conn->device = device;
+ 
++	ret = isert_alloc_login_buf(isert_conn, cma_id->device);
++	if (ret)
++		goto out_conn_dev;
++
+ 	isert_set_nego_params(isert_conn, &event->param.conn);
+ 
+ 	isert_conn->qp = isert_create_qp(isert_conn, cma_id);
+ 	if (IS_ERR(isert_conn->qp)) {
+ 		ret = PTR_ERR(isert_conn->qp);
+-		goto out_conn_dev;
++		goto out_rsp_dma_map;
+ 	}
+ 
+ 	ret = isert_login_post_recv(isert_conn);
+@@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
+ 
+ out_destroy_qp:
+ 	isert_destroy_qp(isert_conn);
+-out_conn_dev:
+-	isert_device_put(device);
+ out_rsp_dma_map:
+ 	isert_free_login_buf(isert_conn);
++out_conn_dev:
++	isert_device_put(device);
+ out:
+ 	kfree(isert_conn);
+ 	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
