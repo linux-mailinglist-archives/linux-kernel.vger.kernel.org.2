@@ -2,127 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B29343651
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B3F343652
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 02:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhCVBeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 21:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
+        id S230001AbhCVBgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 21:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhCVBeF (ORCPT
+        with ESMTP id S229746AbhCVBgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:34:05 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7BBC061574;
-        Sun, 21 Mar 2021 18:34:05 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id t5so7959518qvs.5;
-        Sun, 21 Mar 2021 18:34:05 -0700 (PDT)
+        Sun, 21 Mar 2021 21:36:19 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7AFC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 18:36:19 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id d2so13380164ilm.10
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 18:36:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D0VAsMBx9s6m1EfahMT+VBysZ6Gxa9IY/nOLkqBzFhk=;
-        b=eBaaTkLUCus7nTvlLiatH03Odbq9DQ+K5k3ne4E6gdVCDVggflDcqRM/jTRnR2e9Xo
-         /vQWuVOr8zK3Zfa4p74CgsWshUUJpqi/3smRun/4Pjjl3Jj/h6GYZmMWne5bQdJqtn6J
-         AODeDpdwrWYFKD7XW/1351AByKR2Xxnn2ZqYabGi+cEJ2DVRX4RnRT9vmSYDnWLcn0tM
-         EYzKX7DqSzRVvf/n9P3NznFYXppSkJjUMS1P2moT8xdvUUFAcH1MvFYTQJDn9z+FFrKQ
-         Aex4uXpfgLfynHi24LxPlKaGJSKBxoKw1c60BbJFe9szR0k7NkXqtMTdXuxIYYFt++mI
-         JzkQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5P3FnGvvFEq3w5k+fDoeNErW7w8oAG1qbo2SONBJzWo=;
+        b=HIyjGI/d4S7sb4SiCR3WWj0k+BR6EODOreHMXL+lWaWbNRQTKZak6/m/CbocpjXoWK
+         GheNCrBDLHjz5ZoxWBBNWJQKn1rzX0+OVrczFe2R4zseLHF6dfZ47m9db66ULf3HLjyX
+         gWU6aOC4aZ6oqAEXD5L1hwvGmgxykFdmNYU2JngBt8sj7d0qEvUABvmIlVcQypYQNuCx
+         m0JDJJB7w30FnAIHmwXy7MVnuunL49rP6XaKzupZMryx0YRxj/XehE4DzEaZiemo+U2i
+         rKk7ks1tNqHVy3IrS+6hAMJK6VPAB/wvMbcUB3RW0znTOh5llqFv0TtD0kl0pDA2UvhQ
+         MxEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=D0VAsMBx9s6m1EfahMT+VBysZ6Gxa9IY/nOLkqBzFhk=;
-        b=XVCpJLHl7UXv8DC/SCItzHg2DJ5IPkKQ54GSTzdPTJv/xx8JYD/TYNQXNQa/N8dgW7
-         frbOdixPgPe7zOT8eNt+fea75+s2osFfnzpo+ReYraSTdXJ7qT8axsQEA27nhWCFi2Rc
-         bJpnWHzxIaM5FsLfMnsGBSrT6n8l6Zg1xLXcoquX13rQFJXmQlhcF0vSVcFE5CF6Str6
-         jD1RVdkKbd1MirCpi3V1BIFuhJ+28E4KcSKqGQLZJ7sCIYok9CjyQdlpaZCqMhsQbWEj
-         gTUbmQDfHPDbSTOjXOmSFvA97RCWrMlGTrn9lK2ipnyQzOOOamO13EIQLzEZtQqALjox
-         /ghA==
-X-Gm-Message-State: AOAM531fp8CKEXW6d6UVLKZfFR1w3zsUrByvhhQUnSCdvO/SHY3e2eW8
-        Kystwp54XXJCqm++buc8lCY=
-X-Google-Smtp-Source: ABdhPJzDPBHuVxDpqyKT1JgQJ1757/8uz6T/nnATCSXJ/aKaZnJMtQdzYC6hUL6z9eD5J1ot3Yae+w==
-X-Received: by 2002:ad4:4904:: with SMTP id bh4mr18953829qvb.53.1616376844461;
-        Sun, 21 Mar 2021 18:34:04 -0700 (PDT)
-Received: from ArchLinux ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id c19sm9571055qkl.78.2021.03.21.18.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 18:34:03 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 07:03:54 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Bluetooth: hci_qca: Mundane typo fix
-Message-ID: <YFf0AmJN0fz5Z3Og@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210322010051.483622-1-unixbhaskar@gmail.com>
- <b1867efb-afcc-1f9e-fbab-75a7793a2649@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5P3FnGvvFEq3w5k+fDoeNErW7w8oAG1qbo2SONBJzWo=;
+        b=oc6TFCdvHHs7/KkYHe2PqX2B19dABqVFzBsi/dSwCCq8NqmXnLuxMARJF5uiZOuLoj
+         bWfoECcwoMmx2vyPb/Pos3bAv2rSfnqwg9YW1BAYBZYycUJFLAFk5umq0i8vpsqVtR+B
+         MhFW1+enSJzTIZQLz+s7YbG3tD75/due+HNdks62QHe0De22L2qhdJSwWbtduJhbW73F
+         ogN392ta2puel5ClMVm+rg8RCcbpCvfSfkyw7nZ55aV603ptIF8gbHr2i/2lVa+w3NjA
+         qz+NVOCU+rY1CReqYecxMxRofV3315QC+Fkp8mJ+oiTSJZcFo6PaDvd72SoNlFJqPIAl
+         FzNA==
+X-Gm-Message-State: AOAM531q7neFev6G7BdUQNUM6melFdcChbtQtp/QiWwE32Jn3VMbzuTs
+        NppSDnXYxwTwNvR19gpHlYkkHawUSXA6NfesYg==
+X-Google-Smtp-Source: ABdhPJxW9Bh+pO3vwANocNTDMFgSqsRyB88k7iZw8tY8IldUCWXD3w9aMO1BBUAmOXKw18Fc0K2cx5DL8B3wjtRjQNI=
+X-Received: by 2002:a05:6e02:eaf:: with SMTP id u15mr9258087ilj.45.1616376978691;
+ Sun, 21 Mar 2021 18:36:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="f+1bav2gwg7CE5Fk"
-Content-Disposition: inline
-In-Reply-To: <b1867efb-afcc-1f9e-fbab-75a7793a2649@infradead.org>
+References: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
+In-Reply-To: <20210303002230.1083176-1-pasha.tatashin@soleen.com>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Mon, 22 Mar 2021 09:36:07 +0800
+Message-ID: <CAFgQCTtthPoxMyNX=epHHNqG8O1ZykQaLtCCObnHSUP5hS9+Ag@mail.gmail.com>
+Subject: Re: [PATCH v12 00/17] arm64: MMU enabled kexec relocation
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     jmorris@namei.org, sashal@kernel.org,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        matthias.bgg@gmail.com, Linux-MM <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steve Capper <steve.capper@arm.com>, rfontana@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>, selindag@gmail.com,
+        tyhicks@linux.microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pavel,
 
---f+1bav2gwg7CE5Fk
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+After going through this series, I think if this can be done by using
+identity map through ttbr0.
 
-On 18:30 Sun 21 Mar 2021, Randy Dunlap wrote:
->On 3/21/21 6:00 PM, Bhaskar Chowdhury wrote:
->>
->> s/packat/packet/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  drivers/bluetooth/hci_qca.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
->> index de36af63e182..f2eee9112e41 100644
->> --- a/drivers/bluetooth/hci_qca.c
->> +++ b/drivers/bluetooth/hci_qca.c
->> @@ -1066,7 +1066,7 @@ static void qca_controller_memdump(struct work_struct *work)
->>  		 * packets in the buffer.
->>  		 */
->>  		/* For QCA6390, controller does not lost packets but
+Then the processes may be neat (I hope so):
+-1. set up identity map in machine_kexec_post_load(), instead of
+copying linear map.
+-2. Also past this temporary identity map to arm64_relocate_new_kernel()
+-3. in arm64_relocate_new_kernel(), just load identity map and
+re-enable MMU. After copying, just turn off MMU.
+
+Thanks,
+Pingfan
+
+On Thu, Mar 4, 2021 at 3:47 PM Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
 >
->		                                    lose
+> Changelog:
+> v12:
+>         - A major change compared to previous version. Instead of using
+>           contiguous VA range a copy of linear map is now used to perform
+>           copying of segments during relocation as it was agreed in the
+>           discussion of version 11 of this project.
+>         - In addition to using linear map, I also took several ideas from
+>           James Morse to better organize the kexec relocation:
+>                 1. skip relocation function entirely if that is not needed
+>                 2. remove the PoC flushing function since it is not needed
+>                    anymore with MMU enabled.
+> v11:
+>         - Fixed missing KEXEC_CORE dependency for trans_pgd.c
+>         - Removed useless "if(rc) return rc" statement (thank you Tyler Hicks)
+>         - Another 12 patches were accepted into maintainer's get.
+>           Re-based patches against:
+>           https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+>           Branch: for-next/kexec
+> v10:
+>         - Addressed a lot of comments form James Morse and from  Marc Zyngier
+>         - Added review-by's
+>         - Synchronized with mainline
 >
->> -		 * sequence number field of packat sometimes has error
->> +		 * sequence number field of packet sometimes has error
->>  		 * bits, so skip this checking for missing packet.
->>  		 */
->>  		while ((seq_no > qca_memdump->current_seq_no + 1) &&
->> --
+> v9:     - 9 patches from previous series landed in upstream, so now series
+>           is smaller
+>         - Added two patches from James Morse to address idmap issues for machines
+>           with high physical addresses.
+>         - Addressed comments from Selin Dag about compiling issues. He also tested
+>           my series and got similar performance results: ~60 ms instead of ~580 ms
+>           with an initramfs size of ~120MB.
+> v8:
+>         - Synced with mainline to keep series up-to-date
+> v7:
+>         -- Addressed comments from James Morse
+>         - arm64: hibernate: pass the allocated pgdp to ttbr0
+>           Removed "Fixes" tag, and added Added Reviewed-by: James Morse
+>         - arm64: hibernate: check pgd table allocation
+>           Sent out as a standalone patch so it can be sent to stable
+>           Series applies on mainline + this patch
+>         - arm64: hibernate: add trans_pgd public functions
+>           Remove second allocation of tmp_pg_dir in swsusp_arch_resume
+>           Added Reviewed-by: James Morse <james.morse@arm.com>
+>         - arm64: kexec: move relocation function setup and clean up
+>           Fixed typo in commit log
+>           Changed kern_reloc to phys_addr_t types.
+>           Added explanation why kern_reloc is needed.
+>           Split into four patches:
+>           arm64: kexec: make dtb_mem always enabled
+>           arm64: kexec: remove unnecessary debug prints
+>           arm64: kexec: call kexec_image_info only once
+>           arm64: kexec: move relocation function setup
+>         - arm64: kexec: add expandable argument to relocation function
+>           Changed types of new arguments from unsigned long to phys_addr_t.
+>           Changed offset prefix to KEXEC_*
+>           Split into four patches:
+>           arm64: kexec: cpu_soft_restart change argument types
+>           arm64: kexec: arm64_relocate_new_kernel clean-ups
+>           arm64: kexec: arm64_relocate_new_kernel don't use x0 as temp
+>           arm64: kexec: add expandable argument to relocation function
+>         - arm64: kexec: configure trans_pgd page table for kexec
+>           Added invalid entries into EL2 vector table
+>           Removed KEXEC_EL2_VECTOR_TABLE_SIZE and KEXEC_EL2_VECTOR_TABLE_OFFSET
+>           Copy relocation functions and table into separate pages
+>           Changed types in kern_reloc_arg.
+>           Split into three patches:
+>           arm64: kexec: offset for relocation function
+>           arm64: kexec: kexec EL2 vectors
+>           arm64: kexec: configure trans_pgd page table for kexec
+>         - arm64: kexec: enable MMU during kexec relocation
+>           Split into two patches:
+>           arm64: kexec: enable MMU during kexec relocation
+>           arm64: kexec: remove head from relocation argument
+> v6:
+>         - Sync with mainline tip
+>         - Added Acked's from Dave Young
+> v5:
+>         - Addressed comments from Matthias Brugger: added review-by's, improved
+>           comments, and made cleanups to swsusp_arch_resume() in addition to
+>           create_safe_exec_page().
+>         - Synced with mainline tip.
+> v4:
+>         - Addressed comments from James Morse.
+>         - Split "check pgd table allocation" into two patches, and moved to
+>           the beginning of series  for simpler backport of the fixes.
+>           Added "Fixes:" tags to commit logs.
+>         - Changed "arm64, hibernate:" to "arm64: hibernate:"
+>         - Added Reviewed-by's
+>         - Moved "add PUD_SECT_RDONLY" earlier in series to be with other
+>           clean-ups
+>         - Added "Derived from:" to arch/arm64/mm/trans_pgd.c
+>         - Removed "flags" from trans_info
+>         - Changed .trans_alloc_page assumption to return zeroed page.
+>         - Simplify changes to trans_pgd_map_page(), by keeping the old
+>           code.
+>         - Simplify changes to trans_pgd_create_copy, by keeping the old
+>           code.
+>         - Removed: "add trans_pgd_create_empty"
+>         - replace init_mm with NULL, and keep using non "__" version of
+>           populate functions.
+> v3:
+>         - Split changes to create_safe_exec_page() into several patches for
+>           easier review as request by Mark Rutland. This is why this series
+>           has 3 more patches.
+>         - Renamed trans_table to tans_pgd as agreed with Mark. The header
+>           comment in trans_pgd.c explains that trans stands for
+>           transitional page tables. Meaning they are used in transition
+>           between two kernels.
+> v2:
+>         - Fixed hibernate bug reported by James Morse
+>         - Addressed comments from James Morse:
+>           * More incremental changes to trans_table
+>           * Removed TRANS_FORCEMAP
+>           * Added kexec reboot data for image with 380M in size.
 >
->As Ingo said, please try to fix more than one thing at a time.
+> Enable MMU during kexec relocation in order to improve reboot performance.
 >
-Okay.
->--
->~Randy
-
---f+1bav2gwg7CE5Fk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBX9AIACgkQsjqdtxFL
-KRVCogf/dBPIjlC1CpUjwXJHOylINjrXf7sBL7Mqfr85DLz6lyUGSj0rYo2JES4x
-OJFM0HkyFOoipZH1a36M2ajTrW0lGCOsYOPjZjqN2hXW4oxU8og+3nlcX6Dddoy3
-lLkO3/Reo9iB9mVXLPFJvGSVpPMw4Wk4hzyeNrVHugDjN9xi1/sbzEhp0ZCKjh2G
-P34si32rpjts2idzSi/GZmwlArsTl2UpOFXAU3p/npaAL375hBX3AC2ks/kCRG+D
-FHu50pbvC4Awbiah8kUkfSYvuW9rZ+mgehBv8m/RDh2H2IMJZBtC8GHxV8thqB6M
-VhV5U6ZQJHh7jT8Tt4Ze8tCwT21BbA==
-=xyPK
------END PGP SIGNATURE-----
-
---f+1bav2gwg7CE5Fk--
+> If kexec functionality is used for a fast system update, with a minimal
+> downtime, the relocation of kernel + initramfs takes a significant portion
+> of reboot.
+>
+> The reason for slow relocation is because it is done without MMU, and thus
+> not benefiting from D-Cache.
+>
+> Performance data
+> ----------------
+> For this experiment, the size of kernel plus initramfs is small, only 25M.
+> If initramfs was larger, than the improvements would be greater, as time
+> spent in relocation is proportional to the size of relocation.
+>
+> Previously:
+> kernel shutdown 0.022131328s
+> relocation      0.440510736s
+> kernel startup  0.294706768s
+>
+> Relocation was taking: 58.2% of reboot time
+>
+> Now:
+> kernel shutdown 0.032066576s
+> relocation      0.022158152s
+> kernel startup  0.296055880s
+>
+> Now: Relocation takes 6.3% of reboot time
+>
+> Total reboot is x2.16 times faster.
+>
+> With bigger userland (fitImage 380M), the reboot time is improved by 3.57s,
+> and is reduced from 3.9s down to 0.33s
+>
+> Previous approaches and discussions
+> -----------------------------------
+> v11: https://lore.kernel.org/lkml/20210127172706.617195-1-pasha.tatashin@soleen.com
+> v10: https://lore.kernel.org/linux-arm-kernel/20210125191923.1060122-1-pasha.tatashin@soleen.com
+> v9: https://lore.kernel.org/lkml/20200326032420.27220-1-pasha.tatashin@soleen.com
+> v8: https://lore.kernel.org/lkml/20191204155938.2279686-1-pasha.tatashin@soleen.com
+> v7: https://lore.kernel.org/lkml/20191016200034.1342308-1-pasha.tatashin@soleen.com
+> v6: https://lore.kernel.org/lkml/20191004185234.31471-1-pasha.tatashin@soleen.com
+> v5: https://lore.kernel.org/lkml/20190923203427.294286-1-pasha.tatashin@soleen.com
+> v4: https://lore.kernel.org/lkml/20190909181221.309510-1-pasha.tatashin@soleen.com
+> v3: https://lore.kernel.org/lkml/20190821183204.23576-1-pasha.tatashin@soleen.com
+> v2: https://lore.kernel.org/lkml/20190817024629.26611-1-pasha.tatashin@soleen.com
+> v1: https://lore.kernel.org/lkml/20190801152439.11363-1-pasha.tatashin@soleen.com
+>
+> James Morse (4):
+>   arm64: hyp-stub: Check the size of the HYP stub's vectors
+>   arm64: hyp-stub: Move invalid vector entries into the vectors
+>   arm64: hyp-stub: Move el1_sync into the vectors
+>   arm64: kexec: Use dcache ops macros instead of open-coding
+>
+> Pavel Tatashin (13):
+>   arm64: kernel: add helper for booted at EL2 and not VHE
+>   arm64: trans_pgd: hibernate: Add trans_pgd_copy_el2_vectors
+>   arm64: hibernate: abstract ttrb0 setup function
+>   arm64: kexec: flush image and lists during kexec load time
+>   arm64: kexec: skip relocation code for inplace kexec
+>   arm64: kexec: pass kimage as the only argument to relocation function
+>   arm64: kexec: kexec may require EL2 vectors
+>   arm64: kexec: relocate in EL1 mode
+>   arm64: kexec: use ld script for relocation function
+>   arm64: kexec: install a copy of the linear-map
+>   arm64: kexec: keep MMU enabled during kexec relocation
+>   arm64: kexec: remove the pre-kexec PoC maintenance
+>   arm64: kexec: Remove cpu-reset.h
+>
+>  arch/arm64/Kconfig                   |   2 +-
+>  arch/arm64/include/asm/assembler.h   |  31 ++++-
+>  arch/arm64/include/asm/kexec.h       |  12 ++
+>  arch/arm64/include/asm/mmu_context.h |  24 ++++
+>  arch/arm64/include/asm/sections.h    |   1 +
+>  arch/arm64/include/asm/trans_pgd.h   |   3 +
+>  arch/arm64/include/asm/virt.h        |   8 ++
+>  arch/arm64/kernel/asm-offsets.c      |  11 ++
+>  arch/arm64/kernel/cpu-reset.S        |   7 +-
+>  arch/arm64/kernel/cpu-reset.h        |  32 -----
+>  arch/arm64/kernel/hibernate-asm.S    |  20 ----
+>  arch/arm64/kernel/hibernate.c        |  56 +++------
+>  arch/arm64/kernel/hyp-stub.S         |  95 +++++++--------
+>  arch/arm64/kernel/machine_kexec.c    | 168 +++++++++++++++------------
+>  arch/arm64/kernel/relocate_kernel.S  |  72 ++++++------
+>  arch/arm64/kernel/sdei.c             |   2 +-
+>  arch/arm64/kernel/vmlinux.lds.S      |  19 +++
+>  arch/arm64/mm/trans_pgd.c            |  20 ++++
+>  18 files changed, 314 insertions(+), 269 deletions(-)
+>  delete mode 100644 arch/arm64/kernel/cpu-reset.h
+>
+> --
+> 2.25.1
+>
