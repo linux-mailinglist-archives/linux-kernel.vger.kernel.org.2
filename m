@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833FC343E29
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C06343E34
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhCVKme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCVKmM (ORCPT
+        id S230258AbhCVKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:43:38 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:53762 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhCVKnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:42:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E557CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jQV77Royvcf/qH4I7ot8EfNxqmNWD9CpDSENY6wCPko=; b=GJUFpV2mF6WwvD8GDwr0HUsxRn
-        M4HG/F2jjYVmNAb/7gg07pQyqf5WLWyFVeUw7GyFHB7N/enh28sD/gUvOUGgxGbeA0qgbqdRW6FTt
-        9HFmktPlPIj600f6Fn6yJK//8iwMtlTnQeBSntAfbIGsWAHQXIR05Hp8MFFcybMmE0eErBTHb3yVn
-        v4Fu7n0+Rjihh9Nv5mGv2b1PJgtfoqOszEN8EGufSkrdoBvFI3dfDCAbiKTr01g0d51tQnK/D+ZKD
-        y7ZImbXFvF/kj3q4L5hGM3yRjm9Px91v0AxBHpR31X9+LIIs5l71cH9eiLIdElmKVrxCiC4p/xScw
-        CRINE8hg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOHzg-008MNG-AG; Mon, 22 Mar 2021 10:41:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D43A03010C8;
-        Mon, 22 Mar 2021 11:41:06 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B206C23D3F374; Mon, 22 Mar 2021 11:41:06 +0100 (CET)
-Date:   Mon, 22 Mar 2021 11:41:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Barret Rhoden <brho@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: sched: allow resubmits to queue_balance_callback()
-Message-ID: <YFh0QjnoGPmbykyE@hirez.programming.kicks-ass.net>
-References: <20210318195734.3579799-1-brho@google.com>
+        Mon, 22 Mar 2021 06:43:20 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id BA41AF3227;
+        Mon, 22 Mar 2021 18:43:13 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P24306T139685293258496S1616409792243826_;
+        Mon, 22 Mar 2021 18:43:13 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d2a69f0cb541076f56fdc6182079d62f>
+X-RL-SENDER: jay.xu@rock-chips.com
+X-SENDER: xjq@rock-chips.com
+X-LOGIN-NAME: jay.xu@rock-chips.com
+X-FST-TO: huangtao@rock-chips.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jianqun Xu <jay.xu@rock-chips.com>
+To:     huangtao@rock-chips.com, kever.yang@rock-chips.com,
+        linus.walleij@linaro.org, heiko@sntech.de
+Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH 0/3] gpio-rockchip driver
+Date:   Mon, 22 Mar 2021 18:43:07 +0800
+Message-Id: <20210322104310.863029-1-jay.xu@rock-chips.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318195734.3579799-1-brho@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 03:57:34PM -0400, Barret Rhoden wrote:
-> Prior to this commit, if you submitted the same callback_head twice, it
-> would be enqueued twice, but only if it was the last callback on the
-> list.  The first time it was submitted, rq->balance_callback was NULL,
-> so head->next is NULL.  That defeated the check in
-> queue_balance_callback().
-> 
-> This commit changes the callback list such that whenever an item is on
-> the list, its head->next is not NULL.  The last element (first inserted)
-> will point to itself.  This allows us to detect and ignore any attempt
-> to reenqueue a callback_head.
-> 
-> Signed-off-by: Barret Rhoden <brho@google.com>
+Separate gpio driver from pinctrl driver.
 
-AFAICT you're patching dead code, please check a current tree.
+Jianqun Xu (3):
+  pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
+  pinctrl/pinctrl-rockchip.h: add pinctrl device to gpio bank struct
+  gpio: separate gpio driver from pinctrl-rockchip driver
+
+ drivers/gpio/Kconfig               |   8 +
+ drivers/gpio/Makefile              |   1 +
+ drivers/gpio/gpio-rockchip.c       | 650 +++++++++++++++++++++
+ drivers/pinctrl/pinctrl-rockchip.c | 909 +----------------------------
+ drivers/pinctrl/pinctrl-rockchip.h | 246 ++++++++
+ 5 files changed, 924 insertions(+), 890 deletions(-)
+ create mode 100644 drivers/gpio/gpio-rockchip.c
+ create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
+
+-- 
+2.25.1
+
+
+
