@@ -2,127 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEFB344969
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128F334496E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhCVPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:38:24 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:39817 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhCVPiQ (ORCPT
+        id S229810AbhCVPmI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Mar 2021 11:42:08 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:51176 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230034AbhCVPmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:38:16 -0400
-Received: by mail-vs1-f46.google.com with SMTP id e72so2232004vsc.6;
-        Mon, 22 Mar 2021 08:38:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HeaWu7NQhqTg67+28QJCmBXaQRsdudr3ZwUMLAQvMow=;
-        b=pxJp6kwcs2WRp/H7USwaqjME4s4abgdyDbFEL0aZTRRWtWMwwWPca8sq8JjFDUouMF
-         mP3PhHoUu6jpj2G6rja5KTcJNXGashBWBJQo2mvNmtGFp8ZXa9vnjruHzzwa0YeIlEFo
-         w8br3x8E47ceHueurHwui310Ro2R51xUIe7L/dz8mY21EmWS3wqjQRi6D70HZhZETW8j
-         EaJlHPRRMXE62uPp4MKGeG67SxAXDyv3c7eXosARVXk2LRRL8sQxhaaJc+jhLwm+i2op
-         lxXVkzTYPE9aIsk2ad9tCArTkYPgyIq4KULkE86xxBkvZb2/V4tr21kPC0SIpB9ugRI0
-         P3YQ==
-X-Gm-Message-State: AOAM533I+WX2zMqHD/JKmigePgZYo4r+RtLm1rgWg4Y6zf2cEihb/1LB
-        U63vdtubpwR6IfJ7XNXgnuzv6L43rUtqPTnj1DE=
-X-Google-Smtp-Source: ABdhPJxNe+DMTZdB2lWgUCE5StB9yp5TTZKT2HloywUXMNLbDmvZ6gW30OxDfaCQ8FunvzXfxRMyQk6bPYmPn8SKULg=
-X-Received: by 2002:a67:8883:: with SMTP id k125mr515895vsd.18.1616427495528;
- Mon, 22 Mar 2021 08:38:15 -0700 (PDT)
+        Mon, 22 Mar 2021 11:42:04 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-81-2QDzD-rpMcmpMMzi0vifRw-1; Mon, 22 Mar 2021 15:41:58 +0000
+X-MC-Unique: 2QDzD-rpMcmpMMzi0vifRw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 22 Mar 2021 15:41:56 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Mon, 22 Mar 2021 15:41:56 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "mbenes@suse.com" <mbenes@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 03/14] x86/retpoline: Simplify retpolines
+Thread-Topic: [PATCH v2 03/14] x86/retpoline: Simplify retpolines
+Thread-Index: AQHXHBuOjMKa9Pnfuk6RUu8GKds+rKqLhqcggAQ9ywCAACWHIA==
+Date:   Mon, 22 Mar 2021 15:41:56 +0000
+Message-ID: <b8e8cea6ac884c04b8c9e7a479fd2208@AcuMS.aculab.com>
+References: <20210318171103.577093939@infradead.org>
+ <20210318171919.580212227@infradead.org>
+ <f7a36237052f4c09ad101431653038a5@AcuMS.aculab.com>
+ <YFhkRN8dxHqItHy8@hirez.programming.kicks-ass.net>
+In-Reply-To: <YFhkRN8dxHqItHy8@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <1599734644-4791-1-git-send-email-sagar.kadam@sifive.com>
- <1599734644-4791-3-git-send-email-sagar.kadam@sifive.com> <20200922203429.GA3188204@bogus>
-In-Reply-To: <20200922203429.GA3188204@bogus>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Mar 2021 16:38:04 +0100
-Message-ID: <CAMuHMdXPG-+EOCrQZi1deKv1yYMBtohprUVYW_-Shdp_gfQs5Q@mail.gmail.com>
-Subject: Re: [PATCH v1 2/3] dt-bindings: riscv: convert plic bindings to json-schema
-To:     Sagar Kadam <sagar.kadam@sifive.com>, Rob Herring <robh@kernel.org>
-Cc:     Linux PWM List <linux-pwm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yash Shah <yash.shah@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sagar, Rob,
-
-(replying to an old email, as this one seems to be the most appropriate)
-
-On Tue, Sep 22, 2020 at 10:34 PM Rob Herring <robh@kernel.org> wrote:
-> On Thu, Sep 10, 2020 at 04:14:03PM +0530, Sagar Kadam wrote:
-> > Convert device tree bindings for SiFive's PLIC to YAML format
+From: Peter Zijlstra
+> Sent: 22 March 2021 09:33
+> 
+> On Fri, Mar 19, 2021 at 05:18:14PM +0000, David Laight wrote:
+> > From: Peter Zijlstra
+> > > Sent: 18 March 2021 17:11
+> > >
+> > > Due to commit c9c324dc22aa ("objtool: Support stack layout changes
+> > > in alternatives"), it is possible to simplify the retpolines.
+> > >
+> > ...
+> > > Notice that since the longest alternative sequence is now:
+> > >
+> > >    0:   e8 07 00 00 00          callq  c <.altinstr_replacement+0xc>
+> > >    5:   f3 90                   pause
+> > >    7:   0f ae e8                lfence
+> > >    a:   eb f9                   jmp    5 <.altinstr_replacement+0x5>
+> > >    c:   48 89 04 24             mov    %rax,(%rsp)
+> > >   10:   c3                      retq
+> > >
+> > > 17 bytes, we have 15 bytes NOP at the end of our 32 byte slot. (IOW,
+> > > if we can shrink the retpoline by 1 byte we can pack it more dense)
 > >
-> > Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
+> > I'm intrigued about the lfence after the pause.
+> > Clearly this is for very warped cpu behaviour.
+> > To get to the pause you have to be speculating past an
+> > unconditional call.
+> 
+> Please read up on retpoline... That's the speculation trap. The warped
+> CPU behaviour is called Spectre-v2.
 
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+There is 'warped' and 'very warped' :-)
+Most of Spectre-v2 (don't search for Spectra v2 by mistake) is avoiding
+the indirect branch prediction - which I knew.
 
-> > +
-> > +  '#address-cells':
-> > +    const: 0
-> > +    description: Should be <0> or more.
->
-> Drop. 'or more' is wrong. If there's a case with more, it will need to
-> be documented.
+I think the 'pause' is only executed is the cpu speculates through
+the mov and retq; rather the speculating past the 'call' - which
+some ARM cpu seem to do.
 
-Why do we have the "'#address-cells': const: 0" at all...
+> For others, the obvious alternative is the below; and possibly we could
+> then also remove the loop.
 
-> > +required:
-> > +  - compatible
-> > +  - '#address-cells'
+Another alternative is 'hlt' with the loop (rather than int3).
 
-... and why is it required?
+> The original retpoline, as per Paul's article has: 1: pause; jmp 1b;.
+> That is, it lacks the LFENCE we have and would also fit 16 bytes.
 
-> > +  - '#interrupt-cells'
-> > +  - interrupt-controller
-> > +  - reg
-> > +  - interrupts-extended
-> > +  - riscv,ndev
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    plic: interrupt-controller@c000000 {
-> > +      #address-cells = <0>;
-> > +      #interrupt-cells = <1>;
-> > +      compatible = "sifive,plic-1.0.0", "sifive,fu540-c000-plic";
-> > +      interrupt-controller;
-> > +      interrupts-extended = <
-> > +        &cpu0_intc 11
-> > +        &cpu1_intc 11 &cpu1_intc 9
-> > +        &cpu2_intc 11 &cpu2_intc 9
-> > +        &cpu3_intc 11 &cpu3_intc 9
-> > +        &cpu4_intc 11 &cpu4_intc 9>;
-> > +      reg = <0xc000000 0x4000000>;
-> > +      riscv,ndev = <10>;
-> > +    };
+Yes. Just 'jmps .' ought to be enough to block any side effects
+of speculative execution.
+Adding 'pause' is 'a good idea' for any spin loop.
 
-Gr{oetje,eeting}s,
+There might be another lurking performance issue.
+Skylake increased the execution time of pause from ~10 to ~140 clocks.
+Reading between the lines I suspect this applies to speculatively
+executed pause.
+If that happens on a regular basis it might be noticeable.
+So it may even be best to remove the pause!
 
-                        Geert
+As you say, the original retpoline lacked the lfence.
+The only 'load' instruction in that sequence is the 'retq'.
+It has to be said that given all (normal) loads are executed
+in program order and all (normal) stores are also executed
+in program order I've never actually seen what either
+lfence or sfence actually do for you.
+(mfence synchronises reads and writes - so may be useful.)
+The (pre spectre) copies of the intel pdf's I have don't say
+anything about lfence being any kind of a barrier against
+speculative memory reads.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+If the retpoline doesn't fit in 16 bytes it is almost certainly
+(probably) worth putting the called label at offset 16.
+This would mean that there is only one 16-byte code block
+read from the call target.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
