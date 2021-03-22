@@ -2,81 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD87343C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371C5343C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhCVIvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhCVIvp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:51:45 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A370C061574;
-        Mon, 22 Mar 2021 01:51:45 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id o66so5729422ybg.10;
-        Mon, 22 Mar 2021 01:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zZUxxolYENOQUENZ+lfutKQF2Z8w97jGbJjNKrdcc9g=;
-        b=Z7CGvbRXcrH2XSgFW9+mh2v0GRrKstIS8N0qY5Rphs3xkClbYWn68vvaomgnjmRkN2
-         hASXnD6t7XWGn4QHKx43+lL5PUBNR4IinpLdcW6JB2FuoeCp0ectnCHu77GBrKFE5txL
-         EIlRkWu6KoGPMR7LHBV7hWtRJ+hCMBxlMN/GHO1b3JVZPh+mWgs4BVhGwjP4DNUfueuq
-         3vC3aH6hCcsRxBSJg5u9e2OH059B1K4y9jYFTGeFPSSZkSdxXTwVOYmRlWjICwNa4hfX
-         5dUN4oBuJc5zQ8d0a1GgSsIeQ/GC/V0BgylyklV9ha8nuN9MStBoqM9sLxIOh0CqqiF1
-         Sh4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zZUxxolYENOQUENZ+lfutKQF2Z8w97jGbJjNKrdcc9g=;
-        b=DPDWhMwwSNWwYRtnRfaeC8uzaXivrESAmy7Yw3F2IAus+hDjO11T52TwGaETs7vZnw
-         6SllTN1kVkHf8Cxr2m5cr2MXxZlxNJXIkIvWcfIYHt/eK/HQ0nBXYawwrzZlB5dg5HvJ
-         iK6oRbdFBZyAYcnq3q8gH0ENnbre0C3gTibj0P6XqUYDQzL0HBuP9BUSzkrQM/4wA9HG
-         bqR486Bxxdyyp7WZD8Sy9lY+jfqA4zAK6bFna16u/QZx3J0001o46QP37AsuRYsT5X4M
-         sXU4+pIiTymTrRXnab+YiTe+ABbeO5TZM9n/WpzdRT2ga17kztzIcV3vTN1a7o4SVTsE
-         rB7A==
-X-Gm-Message-State: AOAM533x+3bqRSCNo9R+ZPy14tVVVlOC9ZcfEw/y1scjDb0/GRRRcALE
-        WaBef2c7/jmKPkFViW8KUx/SYgJ1KlHvJXsWWC8=
-X-Google-Smtp-Source: ABdhPJzeZH+/7T21996w0VxHXZr5xna1/hURv2Axs+T48Vx91u9Ni1YOP3GghPknR0e9eDKcRVxrSjoWb8Bz7InFJlA=
-X-Received: by 2002:a5b:3cc:: with SMTP id t12mr23113193ybp.144.1616403105033;
- Mon, 22 Mar 2021 01:51:45 -0700 (PDT)
+        id S229930AbhCVIxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:53:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:49744 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229879AbhCVIw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 04:52:58 -0400
+IronPort-SDR: 6zc6txGcS4Y6JzCRGFIf1ZG3qCq12VP25sNOT/U7HrTW0Me8gXE7eqCWaAxLlpQhGngFm8tp3c
+ KfXPCNo2Iy6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="189629312"
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="189629312"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 01:52:58 -0700
+IronPort-SDR: U+8QV2gFOrWwZcdat02hWXGptCAX25cHkbKYOjzBjsGMRFsb0iZ0v7ArN9tTM7oOOlN2j4bV12
+ vMVAW1cnWy6w==
+X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
+   d="scan'208";a="414397791"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 01:52:56 -0700
+Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
+ call to '__compiletime_assert_536' declared with attribute error:
+ BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
+ canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+References: <202103210435.I0fiBGAC-lkp@intel.com>
+ <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
+Date:   Mon, 22 Mar 2021 16:52:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <00000000000053da9405bd7d2644@google.com>
-In-Reply-To: <00000000000053da9405bd7d2644@google.com>
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Mon, 22 Mar 2021 16:51:33 +0800
-Message-ID: <CACVXFVO-6A_u-zNvkUt4x57gAwxJBDHx=Arc6KPKh560X3G29w@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
-To:     syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 7:10 PM syzbot
-<syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15ade5aed00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=952047a9dbff6a6a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com
 
-#syz test: https://github.com/ming1/linux.git v5.12-block-test
+
+On 3/21/21 10:19 PM, Oliver Hartkopp wrote:
+> Two reminders in two days? ;-)
+>
+> Did you check my answer here?
+> https://lore.kernel.org/lkml/afffeb73-ba4c-ca2c-75d0-9e7899e5cbe1@hartkopp.net/ 
+>
+>
+> And did you try the partly revert?
+
+Hi Oliver,
+
+Sorry for the delay, we tried the revert patch and the problem still 
+exists,
+we also found that commit c7b74967 changed the error message which 
+triggered
+the report.
+
+The problem is that offsetof(struct can_frame, data) != offsetof(struct 
+canfd_frame, data)
+the following struct layout shows that the offset has been changed by union:
+
+struct can_frame {
+         canid_t                    can_id;               /* 0     4 */
+         union {
+                 __u8               len;                  /* 4     1 */
+                 __u8               can_dlc;              /* 4     1 */
+         };                                               /* 4     4 */
+         __u8                       __pad;                /* 8     1 */
+         __u8                       __res0;               /* 9     1 */
+         __u8                       len8_dlc;             /* 10     1 */
+
+         /* XXX 5 bytes hole, try to pack */
+
+         __u8                       data[8] 
+__attribute__((__aligned__(8))); /*    16     8 */
+
+         /* size: 24, cachelines: 1, members: 6 */
+         /* sum members: 19, holes: 1, sum holes: 5 */
+         /* forced alignments: 1, forced holes: 1, sum forced holes: 5 */
+         /* last cacheline: 24 bytes */
+} __attribute__((__aligned__(8)));
+
+struct canfd_frame {
+         canid_t                    can_id;               /* 0     4 */
+         __u8                       len;                  /* 4     1 */
+         __u8                       flags;                /* 5     1 */
+         __u8                       __res0;               /* 6     1 */
+         __u8                       __res1;               /* 7     1 */
+         __u8                       data[64] 
+__attribute__((__aligned__(8))); /*     8    64 */
+
+         /* size: 72, cachelines: 2, members: 6 */
+         /* forced alignments: 1 */
+         /* last cacheline: 8 bytes */
+} __attribute__((__aligned__(8)))
+
+
+and I tried to add "__attribute__((packed))" to the union, the issue is 
+gone:
+
+diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
+index f75238ac6dce..9842bb55ffd9 100644
+--- a/include/uapi/linux/can.h
++++ b/include/uapi/linux/can.h
+@@ -113,7 +113,7 @@ struct can_frame {
+                  */
+                 __u8 len;
+                 __u8 can_dlc; /* deprecated */
+-       };
++       } __attribute__((packed));
+         __u8 __pad; /* padding */
+         __u8 __res0; /* reserved / padding */
+         __u8 len8_dlc; /* optional DLC for 8 byte payload length (9 .. 
+15) */
+
+Best Regards,
+Rong Chen
+
+>
+> Maybe there's a mismatch in include files - or BUILD_BUG_ON() 
+> generally does not work with unions on ARM as assumed here:
+>
+> https://lore.kernel.org/lkml/6e57d5d2-9b88-aee6-fb7a-82e24144d179@hartkopp.net/ 
+>
+>
+> In both cases I can not really fix the issue.
+> When the partly revert (suggested above) works, this would be a hack too.
+>
+> Best,
+> Oliver
+>
+> On 20.03.21 21:43, kernel test robot wrote:
+>> Hi Oliver,
+>>
+>> FYI, the error/warning still remains.
+>>
+>> tree: 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
+>> master
+>> head:   812da4d39463a060738008a46cfc9f775e4bfcf6
+>> commit: c7b74967799b1af52b3045d69d4c26836b2d41de can: replace can_dlc 
+>> as variable/element for payload length
+>> date:   4 months ago
+>> config: arm-randconfig-r016-20210321 (attached as .config)
+>> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+>> reproduce (this is a W=1 build):
+>>          wget 
+>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>> -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c7b74967799b1af52b3045d69d4c26836b2d41de
+>>          git remote add linus 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout c7b74967799b1af52b3045d69d4c26836b2d41de
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 
+>> make.cross ARCH=arm
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     In file included from <command-line>:
+>>     net/can/af_can.c: In function 'can_init':
+>>>> include/linux/compiler_types.h:315:38: error: call to 
+>>>> '__compiletime_assert_536' declared with attribute error: 
+>>>> BUILD_BUG_ON failed: offsetof(struct can_frame, len) != 
+>>>> offsetof(struct canfd_frame, len) || offsetof(struct can_frame, 
+>>>> data) != offsetof(struct canfd_frame, data)
+>>       315 |  _compiletime_assert(condition, msg, 
+>> __compiletime_assert_, __COUNTER__)
+>>           |                                      ^
+>>     include/linux/compiler_types.h:296:4: note: in definition of 
+>> macro '__compiletime_assert'
+>>       296 |    prefix ## suffix();    \
+>>           |    ^~~~~~
+>>     include/linux/compiler_types.h:315:2: note: in expansion of macro 
+>> '_compiletime_assert'
+>>       315 |  _compiletime_assert(condition, msg, 
+>> __compiletime_assert_, __COUNTER__)
+>>           |  ^~~~~~~~~~~~~~~~~~~
+>>     include/linux/build_bug.h:39:37: note: in expansion of macro 
+>> 'compiletime_assert'
+>>        39 | #define BUILD_BUG_ON_MSG(cond, msg) 
+>> compiletime_assert(!(cond), msg)
+>>           | ^~~~~~~~~~~~~~~~~~
+>>     include/linux/build_bug.h:50:2: note: in expansion of macro 
+>> 'BUILD_BUG_ON_MSG'
+>>        50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " 
+>> #condition)
+>>           |  ^~~~~~~~~~~~~~~~
+>>     net/can/af_can.c:891:2: note: in expansion of macro 'BUILD_BUG_ON'
+>>       891 |  BUILD_BUG_ON(offsetof(struct can_frame, len) !=
+>>           |  ^~~~~~~~~~~~
+>>
+>>
+>> vim +/__compiletime_assert_536 +315 include/linux/compiler_types.h
+>>
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  301
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  302  #define 
+>> _compiletime_assert(condition, msg, prefix, suffix) \
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  303 
+>> __compiletime_assert(condition, msg, prefix, suffix)
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  304
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  /**
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  306   * compiletime_assert - 
+>> break build and emit msg if condition is false
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  307   * @condition: a 
+>> compile-time constant condition to check
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  308   * @msg:       a message 
+>> to emit if condition is false
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  309   *
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * In tradition of POSIX 
+>> assert, this macro will break the build if the
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * supplied condition is 
+>> *false*, emitting the supplied error message if the
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * compiler has support 
+>> to do so.
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   */
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  #define 
+>> compiletime_assert(condition, msg) \
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @315 
+>> _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316
+>>
+>> :::::: The code at line 315 was first introduced by commit
+>> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move 
+>> compiletime_assert() macros into compiler_types.h
+>>
+>> :::::: TO: Will Deacon <will@kernel.org>
+>> :::::: CC: Will Deacon <will@kernel.org>
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+
