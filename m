@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A8F34511F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25545345121
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 21:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhCVUtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 16:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
+        id S231600AbhCVUtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 16:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhCVUsc (ORCPT
+        with ESMTP id S230449AbhCVUsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 16:48:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C031BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PWFVsqo2+tmo86qmOXZPL8ousuA0MG9MCP1WV2GoPnA=; b=MOC8swxiH0Iy8deGmrTB4CJ9h4
-        rGRCisS7myKlS4UK4A7UILa28+a7mPJHfp+c8cnNqsApt6rWk+JrdXuB2UtOe98kh7ttx+h2ejTzr
-        6TE1dLEdj9d6GSkiolWQxncB4MAFLm+sD4jddySpVFD0ZNoQDhTlij/VSJ0SiqpJLlq3PDN0teau7
-        NuhMjHZaMypR8et2OxBNkX1jj51Nwxpa9Lk9nVMYlnzD94QtBEfMhrwlb0oFNauYYRCjlRLyyMGwe
-        k/7r+Ft73x5aAjJsQ4i7t47cOxtzwNjhozFirHYHGIpbImK5zpS8Sb56H7T/GDsMx1vLIPp0E7MrS
-        qn1DzXdg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lORSa-0093gr-8m; Mon, 22 Mar 2021 20:47:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0427830377D;
-        Mon, 22 Mar 2021 21:47:34 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D81582CEE4988; Mon, 22 Mar 2021 21:47:34 +0100 (CET)
-Date:   Mon, 22 Mar 2021 21:47:34 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] static_call: fix function type mismatch
-Message-ID: <YFkCZuOwe37d2bV+@hirez.programming.kicks-ass.net>
-References: <20210322170711.1855115-1-arnd@kernel.org>
- <20210322153214.25d869b1@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322153214.25d869b1@gandalf.local.home>
+        Mon, 22 Mar 2021 16:48:55 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E9AC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:48:55 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id m11so117980qtx.19
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 13:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=qLtE7Q7O336Jr0xZrje9a6J8mVVfCsw4DlLIJJKkdv8=;
+        b=qhnxD7UOUyW2EyGJrUhKII5iqbLDIC0i63t3PapQiA28sK5rBwE+j7RIaM2f0S1LXa
+         0zzFB/if4Hn5zXCLfxYIwCMKqzTmjc+DR/Y99e/w6V56JM7+bL6XkIl3d4raLenafKKe
+         XGlFYlfznWFJWE/zUzXuAAM8G+jU/tKjkNpuFb8XvMycK3+MlwuzOCK+LtXuAB2Ofs7d
+         pvSYDfM4ApnwE+GTaX2th2gnll9nZYCPKPTyI3gnmqFwpcPoQr0zUWLGhuTF2Lq21FlC
+         +f95/vtfOiCHQamP3P435yVYxIm/RKM9FlMZmNELc0hzVB34+10mMaq8uFvlJdyqTrbJ
+         CVWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=qLtE7Q7O336Jr0xZrje9a6J8mVVfCsw4DlLIJJKkdv8=;
+        b=ALg0GjMwdpg/aV7e6Xqdzh45Ovkax31Zm684EolEnSioOVZKpZ5SKncoiJFNoRFgQh
+         h9+fpU7lSZj1ZEmnW6O/cVii2dK1lzpjVmcD03c8rgSW4pzlRpPvnmxhob9zrIYZ8Q+7
+         mqjNeyE6Ggahsg3imgEaakSkd1nU2sziAuxQKMr3FtMxakBhGhw/PmQkEwwI6E9X2iNj
+         I66UW47IbtYHCwcGKbzQmoGuAExGrsfjEFtTonQyFAJA1I3ODpFIQZi4Y+V279YTRzF9
+         vf8A4bdcK7IxnBOyzFO4uCibKpiQ4fiCbA3drAuwgScf+jHGu18A5RtGw1+s+Hlm6oKp
+         Xv+A==
+X-Gm-Message-State: AOAM531HDWnxjxJ9FjnwVQB+iKPhIUYX5z7NpnAc8AdphOkNKTo+GBGi
+        wFLBe5MFZtuzmizhQHsEuyVMZVgX44xxkB9XmoF/
+X-Google-Smtp-Source: ABdhPJwWMDOeA+n+91jwJi4YMPmlBexpd3rTePiPuanO5jlXlCFfbUZAzUxKXMfWUSyqODoOyan+18PMKUY4TmLpvV7U
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:d23:3b75:1338:2e4e])
+ (user=axelrasmussen job=sendgmr) by 2002:ad4:59c6:: with SMTP id
+ el6mr1615660qvb.15.1616446134063; Mon, 22 Mar 2021 13:48:54 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 13:48:35 -0700
+Message-Id: <20210322204836.1650221-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] userfaultfd/shmem: fix minor fault page leak
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:32:14PM -0400, Steven Rostedt wrote:
-> On Mon, 22 Mar 2021 18:06:37 +0100
-> Arnd Bergmann <arnd@kernel.org> wrote:
-> 
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > The __static_call_return0() function is declared to return a 'long',
-> > while it aliases a couple of functions that all return 'int'. When
-> > building with 'make W=1', gcc warns about this:
-> > 
-> > kernel/sched/core.c:5420:37: error: cast between incompatible function types from 'long int (*)(void)' to 'int (*)(void)' [-Werror=cast-function-type]
-> >  5420 |   static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
-> > 
-> > Change the function to return 'int' as well, but remove the cast to
-> > ensure we get a warning if any of the types ever change.
-> 
-> I think the answer is the other way around. That is, to make the functions
-> it references return long instead. __static_call_return0 is part of the
-> dynamic call infrastructure. Perhaps it is currently only used by functions
-> that return int, but what happens when it is used for a function that
-> returns a pointer?
+This fix is analogous to Peter Xu's fix for hugetlb [0]. If we don't
+put_page() after getting the page out of the page cache, we leak the
+reference.
 
-Steve is correct. Also, why is that warning correct? On x86 we return in
-RAX, and using int will simply not inspect the upper 32 bits there.
+The fix can be verified by checking /proc/meminfo and running the
+userfaultfd selftest in shmem mode. Without the fix, we see MemFree /
+MemAvailable steadily decreasing with each run of the test. With the
+fix, memory is correctly freed after the test program exits.
 
-And I'm fairly sure I had a pointer user somewhere recently.
+Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ mm/shmem.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index ef8c9f5e92fc..d2e0e81b7d2e 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1831,6 +1831,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 
+ 	if (page && vma && userfaultfd_minor(vma)) {
+ 		unlock_page(page);
++		put_page(page);
+ 		*fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
+ 		return 0;
+ 	}
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
