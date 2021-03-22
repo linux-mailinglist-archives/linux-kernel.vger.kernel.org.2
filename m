@@ -2,143 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E393444BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDC63444D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbhCVNFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:05:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47790 "EHLO mail.kernel.org"
+        id S232580AbhCVNHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:07:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231582AbhCVMvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:51:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B545961A02;
-        Mon, 22 Mar 2021 12:46:26 +0000 (UTC)
+        id S232884AbhCVMw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:52:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80FB561A07;
+        Mon, 22 Mar 2021 12:46:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417187;
-        bh=tz2b2WYOM9Z4kb5YCilU09n3DbCCl66/iOOZH0ChIOQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Aj4gDDqvlbj0Ndp0nPWze0yPvzWKptk9rVKDzXn5/m3S8NK6f+kkUHONKWtyLD6cD
-         WZW5cz526G+J1N3/4YtLfFGH3wkfFmUPl4iWL3wKwQPGqdYJJnv01NlszSNtlrFXAA
-         aPoHVu9WTcjSCJNdGcNTLdul4YqGSEYX7AYqD8xk=
+        s=korg; t=1616417213;
+        bh=rr4dgAez+QCARyJmqRSwNdnmTvC1e5aVRhG0qTkQoFM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sAD8toIQnaPwZn3A/AEUhGPQJnNZMK8hSva2jSmM6SoIGxMWoBemR46J8PHdo1rq+
+         EONsscawdjj9hjtkbokbWN2dsGGlwom3819cbCHWqnjC2k+zE75yAzJgdDZ+e5LTql
+         RLW+XNlTARxL0aPFYaBlmGf9bt3BklLndkBdO0fg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.4 00/14] 4.4.263-rc1 review
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 04/25] net: dsa: b53: Support setting learning on port
 Date:   Mon, 22 Mar 2021 13:28:54 +0100
-Message-Id: <20210322121919.202392464@linuxfoundation.org>
+Message-Id: <20210322121920.541213076@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-MIME-Version: 1.0
+In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
+References: <20210322121920.399826335@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.263-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.263-rc1
-X-KernelTest-Deadline: 2021-03-24T12:19+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.4.263 release.
-There are 14 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
-Anything received after that time might be too late.
+commit f9b3827ee66cfcf297d0acd6ecf33653a5f297ef upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.263-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-and the diffstat can be found below.
+Add support for being able to set the learning attribute on port, and
+make sure that the standalone ports start up with learning disabled.
 
-thanks,
+We can remove the code in bcm_sf2 that configured the ports learning
+attribute because we want the standalone ports to have learning disabled
+by default and port 7 cannot be bridged, so its learning attribute will
+not change past its initial configuration.
 
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.4.263-rc1
-
-Thomas Gleixner <tglx@linutronix.de>
-    genirq: Disable interrupts for force threaded handlers
-
-Shijie Luo <luoshijie1@huawei.com>
-    ext4: fix potential error in ext4_do_update_inode
-
-zhangyi (F) <yi.zhang@huawei.com>
-    ext4: find old entry again if failed to rename whiteout
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/ioapic: Ignore IRQ2 again
-
-Tyrel Datwyler <tyreld@linux.ibm.com>
-    PCI: rpadlpar: Fix potential drc_name corruption in store functions
-
-Jim Lin <jilin@nvidia.com>
-    usb: gadget: configfs: Fix KASAN use-after-free
-
-Macpaul Lin <macpaul.lin@mediatek.com>
-    USB: replace hardcode maximum usb string length by definition
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    scsi: lpfc: Fix some error codes in debugfs
-
-Joe Korty <joe.korty@concurrent-rt.com>
-    NFSD: Repair misuse of sv_lock in 5.10.16-rt30.
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix race when cloning extent buffer during rewind of an old root
-
-Gwendal Grignou <gwendal@chromium.org>
-    platform/chrome: cros_ec_dev - Fix security issue
-
-Jan Kara <jack@suse.cz>
-    ext4: check journal inode extents more carefully
-
-Jan Kara <jack@suse.cz>
-    ext4: don't allow overlapping system zones
-
-Jan Kara <jack@suse.cz>
-    ext4: handle error of ext4_setup_system_zone() on remount
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 
--------------
+---
+ drivers/net/dsa/b53/b53_common.c |   20 ++++++++++++++++++++
+ drivers/net/dsa/b53/b53_regs.h   |    1 +
+ drivers/net/dsa/bcm_sf2.c        |    5 +++++
+ drivers/net/dsa/bcm_sf2_regs.h   |    2 ++
+ 4 files changed, 28 insertions(+)
 
-Diffstat:
-
- Makefile                                |  4 +-
- arch/x86/kernel/apic/io_apic.c          | 10 +++++
- drivers/pci/hotplug/rpadlpar_sysfs.c    | 14 +++----
- drivers/platform/chrome/cros_ec_dev.c   |  4 ++
- drivers/platform/chrome/cros_ec_proto.c |  4 +-
- drivers/scsi/lpfc/lpfc_debugfs.c        |  4 +-
- drivers/usb/gadget/composite.c          |  4 +-
- drivers/usb/gadget/configfs.c           | 16 +++++---
- drivers/usb/gadget/usbstring.c          |  4 +-
- fs/btrfs/ctree.c                        |  2 +
- fs/ext4/block_validity.c                | 71 +++++++++++++++------------------
- fs/ext4/ext4.h                          |  6 +--
- fs/ext4/extents.c                       | 16 +++-----
- fs/ext4/indirect.c                      |  6 +--
- fs/ext4/inode.c                         | 13 +++---
- fs/ext4/mballoc.c                       |  4 +-
- fs/ext4/namei.c                         | 29 +++++++++++++-
- fs/ext4/super.c                         |  5 ++-
- include/linux/mfd/cros_ec.h             |  6 ++-
- include/uapi/linux/usb/ch9.h            |  3 ++
- kernel/irq/manage.c                     |  4 ++
- net/sunrpc/svc_xprt.c                   |  4 +-
- 22 files changed, 139 insertions(+), 94 deletions(-)
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -502,6 +502,19 @@ static void b53_imp_vlan_setup(struct ds
+ 	}
+ }
+ 
++static void b53_port_set_learning(struct b53_device *dev, int port,
++				  bool learning)
++{
++	u16 reg;
++
++	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
++	if (learning)
++		reg &= ~BIT(port);
++	else
++		reg |= BIT(port);
++	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
++}
++
+ static int b53_enable_port(struct dsa_switch *ds, int port,
+ 			   struct phy_device *phy)
+ {
+@@ -509,6 +522,8 @@ static int b53_enable_port(struct dsa_sw
+ 	unsigned int cpu_port = dev->cpu_port;
+ 	u16 pvlan;
+ 
++	b53_port_set_learning(dev, port, false);
++
+ 	/* Clear the Rx and Tx disable bits and set to no spanning tree */
+ 	b53_write8(dev, B53_CTRL_PAGE, B53_PORT_CTRL(port), 0);
+ 
+@@ -552,6 +567,8 @@ static void b53_enable_cpu_port(struct b
+ 		    PORT_CTRL_RX_MCST_EN |
+ 		    PORT_CTRL_RX_UCST_EN;
+ 	b53_write8(dev, B53_CTRL_PAGE, B53_PORT_CTRL(cpu_port), port_ctrl);
++
++	b53_port_set_learning(dev, cpu_port, false);
+ }
+ 
+ static void b53_enable_mib(struct b53_device *dev)
+@@ -1375,6 +1392,8 @@ static int b53_br_join(struct dsa_switch
+ 	b53_write16(dev, B53_PVLAN_PAGE, B53_PVLAN_PORT_MASK(port), pvlan);
+ 	dev->ports[port].vlan_ctl_mask = pvlan;
+ 
++	b53_port_set_learning(dev, port, true);
++
+ 	return 0;
+ }
+ 
+@@ -1426,6 +1445,7 @@ static void b53_br_leave(struct dsa_swit
+ 		vl->untag |= BIT(port) | BIT(dev->cpu_port);
+ 		b53_set_vlan_entry(dev, pvid, vl);
+ 	}
++	b53_port_set_learning(dev, port, false);
+ }
+ 
+ static void b53_br_set_stp_state(struct dsa_switch *ds, int port, u8 state)
+--- a/drivers/net/dsa/b53/b53_regs.h
++++ b/drivers/net/dsa/b53/b53_regs.h
+@@ -112,6 +112,7 @@
+ #define B53_UC_FLOOD_MASK		0x32
+ #define B53_MC_FLOOD_MASK		0x34
+ #define B53_IPMC_FLOOD_MASK		0x36
++#define B53_DIS_LEARNING		0x3c
+ 
+ /*
+  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -224,6 +224,11 @@ static int bcm_sf2_port_setup(struct dsa
+ 	reg &= ~P_TXQ_PSM_VDD(port);
+ 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
+ 
++	/* Disable learning */
++	reg = core_readl(priv, CORE_DIS_LEARN);
++	reg |= BIT(port);
++	core_writel(priv, reg, CORE_DIS_LEARN);
++
+ 	/* Clear the Rx and Tx disable bits and set to no spanning tree */
+ 	core_writel(priv, 0, CORE_G_PCTL_PORT(port));
+ 
+--- a/drivers/net/dsa/bcm_sf2_regs.h
++++ b/drivers/net/dsa/bcm_sf2_regs.h
+@@ -138,6 +138,8 @@
+ #define CORE_SWITCH_CTRL		0x00088
+ #define  MII_DUMB_FWDG_EN		(1 << 6)
+ 
++#define CORE_DIS_LEARN			0x000f0
++
+ #define CORE_SFT_LRN_CTRL		0x000f8
+ #define  SW_LEARN_CNTL(x)		(1 << (x))
+ 
 
 
