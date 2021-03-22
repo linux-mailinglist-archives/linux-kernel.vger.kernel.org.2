@@ -2,52 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B6C344654
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834AB34465C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCVN5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:57:52 -0400
-Received: from verein.lst.de ([213.95.11.211]:55847 "EHLO verein.lst.de"
+        id S230414AbhCVN7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhCVN5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:57:25 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9A71868BEB; Mon, 22 Mar 2021 14:57:18 +0100 (CET)
-Date:   Mon, 22 Mar 2021 14:57:18 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        hyc.lee@gmail.com, viro@zeniv.linux.org.uk, hch@lst.de,
-        hch@infradead.org, ronniesahlberg@gmail.com,
-        aurelien.aptel@gmail.com, aaptel@suse.com, sandeen@sandeen.net,
-        dan.carpenter@oracle.com, colin.king@canonical.com,
-        rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 3/5] cifsd: add file operations
-Message-ID: <20210322135718.GA28451@lst.de>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com> <CGME20210322052207epcas1p3f0a5bdfd2c994a849a67b465479d0721@epcas1p3.samsung.com> <20210322051344.1706-4-namjae.jeon@samsung.com> <20210322081512.GI1719932@casper.infradead.org> <YFhdWeedjQQgJdbi@google.com>
+        id S230192AbhCVN6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 09:58:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD2D61923;
+        Mon, 22 Mar 2021 13:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616421514;
+        bh=Fr4p/GXKjU8qqQHWq6CZhTjllnvGtGT+L9E7s6EYGjw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XNaOa2SxfVu1ATT4/CILk+jfaVpV0xXm/GXP0IJPeglUrWhcmFsXg2BJFzbk44VIh
+         AB8KgDtVXU9zEGKcpviBiDN86ZIgJox2bucDo7Lss8fzb85GQOcdp2l0JhVbVE+0lL
+         /GzrtwYziHhC9vQXtecE428xRNmgXlfmpqFK3VFAyxRWOGlNkpMN046wQE9ayhg7aQ
+         L9uhfkH9ZC7LodAubJqoYTvR6di1JgS2I89uPauZDiurANOdu/hqS+GejlE54MUEHX
+         uSfPZm2agVJTgNAUFR3CyI/8hEie94a/MpPRF9+mfr8i+I6RLfHfgdI9Ym6ktKC7Jk
+         gdggr2u87NzJg==
+Date:   Mon, 22 Mar 2021 15:58:30 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev@vger.kernel.org, Karsten Keil <isdn@linux-pingi.de>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] [v2] misdn: avoid -Wempty-body warning
+Message-ID: <YFiihvb1TLFaAZdH@unreal>
+References: <20210322121453.653228-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFhdWeedjQQgJdbi@google.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210322121453.653228-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:03:21PM +0900, Sergey Senozhatsky wrote:
-> On (21/03/22 08:15), Matthew Wilcox wrote:
-> > 
-> > What's the scenario for which your allocator performs better than slub
-> > 
+On Mon, Mar 22, 2021 at 01:14:47PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> IIRC request and reply buffers can be up to 4M in size. So this stuff
-> just allocates a number of fat buffers and keeps them around so that
-> it doesn't have to vmalloc(4M) for every request and every response.
+> gcc warns about a pointless condition:
+> 
+> drivers/isdn/hardware/mISDN/hfcmulti.c: In function 'hfcmulti_interrupt':
+> drivers/isdn/hardware/mISDN/hfcmulti.c:2752:17: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>  2752 |                 ; /* external IRQ */
+> 
+> As the check has no effect, just remove it.
+> 
+> Suggested-by: Leon Romanovsky <leon@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2: remove the line instead of adding {}
+> ---
+>  drivers/isdn/hardware/mISDN/hfcmulti.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
 
-Do we have any data suggesting it is faster than vmalloc?
+Thanks, interesting when we will delete whole drivers/isdn :)
+
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
