@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61740343DB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D02343DBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCVKZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        id S230170AbhCVK0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhCVKYy (ORCPT
+        with ESMTP id S230136AbhCVK0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:24:54 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92597C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:24:53 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 184so20312780ljf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:24:53 -0700 (PDT)
+        Mon, 22 Mar 2021 06:26:00 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2155CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:26:00 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id e5so7164237vse.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:26:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=Wecwnopc86KzaaAOKv3X7oG8HgwPY9eS80QiSLYB0eM=;
-        b=o9gsBfuKJWDHOxBZKihm/vEqdDWAXNrVhlxycxZQy37pipJyW6ONJLOzKcmRQ7Gbv7
-         20vv+UH8W6QiL92d9C03a9mGmq+d3WJtH8UTQK6cC2JXyhHfIw52FegIVpNGOSGKh/YI
-         GjY9n5N9xGsur6m/KKgcl7dSP/flaS44MD/wNnhm6nwrKa+LvnXRMZQTRn3TEfZmgKLO
-         ctd8p1gnGt6gpwYqBW9V8pL41/4m/xFURw+aUyScIQol/mcO23KMYVuisAxzHcMpIchQ
-         mcDpDqn9s335ondAHMjhHolvXGBPHbKeGjsS9TEHiDezPTDTPkiUiwN6qlrlgA6Q3NZa
-         iWnQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nlgBwg2/OpoiuLdTjiONySB1mOVhMpjYXASTM5AYXtc=;
+        b=vKw7B+Wu8kUfIj79tr/6OWZCUMbwLLOqWrzzSbvl5AgKPINw+l3P2PAd12yQ95ycO9
+         PJCedxj3+roD8V0WlEcxBRwiqZqOPVWFj5jiYEmnkjEL2eQfN7x5JHGxPr3uK1ZhuvLz
+         CL2vnURayg/QDXlUeS1+8qFazYLHbcEZxNMO0BAbORU0GYJOyE/MbNq2Fni3Hvoqkjjk
+         J4zRn38kAlV3Na8cyxpNZ4lXVhPR9kbvTAN1/aPESqg6Dsqbq2lXxMRpq3RkCS7rDhNB
+         MOSmCrmJel+Sfu1pNZwg2NUX5JY8Zvvzoh2Ztt0cgxtmDQURymgvcnhgg4Ch59cPf/Mb
+         lveg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Wecwnopc86KzaaAOKv3X7oG8HgwPY9eS80QiSLYB0eM=;
-        b=qYpDOizyAH5ptu922H8mkAVvx9RTSD/FQfNmxuPbVaYbOUZJwG9blLYoQwXkzEQ0XR
-         D8g/4CAe8dLW6oL2elN1fdGPAXesU5foNUQYwQI/Gnj00MZ+Bf8Gx/3ZO7K12pPmAqvQ
-         cu1Bz8TiIJiugbD7/pQjWknRetUV2KPYduu8aMe8xwQtq4VGgKT5YoDpQr1yvRq3jzKq
-         WOtc79xl+egb8HzG3lHDs3h+o+AomFQFBmHLqQPwcV3qJyzCFurT7MLSmZfjpzEqV/Vj
-         fkQVPiSYDbQ3yICcMKM937Y/EoAnKY8ualgZANY0aAxO8igcDYmGmOpfDznrFiJG8Mub
-         /ItA==
-X-Gm-Message-State: AOAM530GCUBnfr/+LJgZKcl5ad7VoO1YXh1VpeX5WsY5ZgUrmGBGVj+G
-        jO3aRH09tcpTP7bHuA21H3vCaQ==
-X-Google-Smtp-Source: ABdhPJzsmd+NyeqccDbrblkBWBsQe0ffnkHfCmbHXOn/TJZBCABBdJ8Ef6kPsWWYQtRBB5tf2BaQfw==
-X-Received: by 2002:a05:651c:50f:: with SMTP id o15mr9209716ljp.389.1616408690762;
-        Mon, 22 Mar 2021 03:24:50 -0700 (PDT)
-Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id r15sm1904337ljj.88.2021.03.22.03.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 03:24:50 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [RFC PATCH v2 net-next 01/16] net: dsa: call dsa_port_bridge_join when joining a LAG that is already in a bridge
-In-Reply-To: <20210318231829.3892920-2-olteanv@gmail.com>
-References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-2-olteanv@gmail.com>
-Date:   Mon, 22 Mar 2021 11:24:49 +0100
-Message-ID: <87eeg7o58u.fsf@waldekranz.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nlgBwg2/OpoiuLdTjiONySB1mOVhMpjYXASTM5AYXtc=;
+        b=bbZ1SwC+wE9Z9HM8yzN69E44ofqPRfhM04pYRQyIrgnDk0ydXPkV2vfKXFZg2c2sME
+         JMgUO9nsBy+xwMVTGT0WFc/5s5OzzVUpIWEEB4N4JesUM3/Ll727BtcXfLHQGir2AdTu
+         6/kP5ix4mbf+tuIqJ4LixzA++gPE2qY/5FRF/RlSfrGnNy7oM1cLGYFMQT+tI6QVLxhF
+         uxkA9JeKe+MSva3Y+KmXEy0mUXm2jFFFQslaunjCABCXqxALIo3E1KeFEgW69NVFlM/p
+         vbEoHkAPqHkQ/Q17FypHtn/xShYPPTAKtco8vVvq/kv8WiiROlfuIsg8k+qurOtk8bRT
+         /ElQ==
+X-Gm-Message-State: AOAM531/MsVuSCw4ymMyOfR4ifpg/QHlgkdyXjvzBaQovMNrA3EPH8+a
+        iM5MbNitCU2zmV3HWTHGF4llN+u0SFUr2URjDRN9dA==
+X-Google-Smtp-Source: ABdhPJzzKFkpgT2QJlRkBleFqHPf6IQZzE/sYVHJ46Tfs8wrpgPq1bPGl5XLoyve//kAW6Uh5KEmxbAwdw5EduVrROo=
+X-Received: by 2002:a67:77c1:: with SMTP id s184mr8066406vsc.55.1616408759303;
+ Mon, 22 Mar 2021 03:25:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210320045720.11872-1-chgokhl@gmail.com>
+In-Reply-To: <20210320045720.11872-1-chgokhl@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 22 Mar 2021 11:25:23 +0100
+Message-ID: <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
+To:     kehuanlin <chgokhl@gmail.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kehuanlin@fishsemi.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:18, Vladimir Oltean <olteanv@gmail.com> wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Sat, 20 Mar 2021 at 05:57, kehuanlin <chgokhl@gmail.com> wrote:
 >
-> DSA can properly detect and offload this sequence of operations:
->
-> ip link add br0 type bridge
-> ip link add bond0 type bond
-> ip link set swp0 master bond0
-> ip link set bond0 master br0
->
-> But not this one:
->
-> ip link add br0 type bridge
-> ip link add bond0 type bond
-> ip link set bond0 master br0
-> ip link set swp0 master bond0
->
-> Actually the second one is more complicated, due to the elapsed time
-> between the enslavement of bond0 and the offloading of it via swp0, a
-> lot of things could have happened to the bond0 bridge port in terms of
-> switchdev objects (host MDBs, VLANs, altered STP state etc). So this is
-> a bit of a can of worms, and making sure that the DSA port's state is in
-> sync with this already existing bridge port is handled in the next
-> patches.
->
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
+> The rpm_resume() will call parent's resume callback recursively.
+> Since mmc_host has no its own pm_runtime callbacks, the mmc devices
+> may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
+> device with pm_runtime_no_callbacks can fix the issue.
 
-Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
+Can you please elaborate more on this? What do you mean by "sometimes"?
+
+More precisely, how do you trigger the rpm_callback() for mmc class
+device to return -ENOSYS?
+
+Don't get me wrong, the patch is fine, but I want to understand if it
+actually solves a problem for you - or that it's better considered as
+an optimization?
+
+Kind regards
+Uffe
+
+>
+> Signed-off-by: kehuanlin <chgokhl@gmail.com>
+> ---
+>  drivers/mmc/core/host.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> index 9b89a91b6b47..177bebd9a6c4 100644
+> --- a/drivers/mmc/core/host.c
+> +++ b/drivers/mmc/core/host.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/pagemap.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/pm_wakeup.h>
+>  #include <linux/export.h>
+>  #include <linux/leds.h>
+> @@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
+>         host->class_dev.class = &mmc_host_class;
+>         device_initialize(&host->class_dev);
+>         device_enable_async_suspend(&host->class_dev);
+> +       pm_runtime_no_callbacks(&host->class_dev);
+>
+>         if (mmc_gpio_alloc(host)) {
+>                 put_device(&host->class_dev);
+> --
+> 2.30.0
+>
