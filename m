@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921A1343953
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C18734395E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCVGSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:18:54 -0400
-Received: from mga02.intel.com ([134.134.136.20]:35103 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229771AbhCVGSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:18:47 -0400
-IronPort-SDR: 6QIDA+Mjo+qMqYlN78DmRyr/7NpCf8BMpzZw7x0N9CYBU6qnYl7zB0Q44kL6dntjFZQI2b1Xk1
- vemT67/PHOhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="177341164"
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="177341164"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 23:18:46 -0700
-IronPort-SDR: YTveGvMP9t0Ge6gSWq4Ybq4PyunSpEJbJ9fw6pikIrAx9W88+KSNkm1c2gLfkFVWjI8uD/IZPn
- 6oU+qk3J89NA==
-X-IronPort-AV: E=Sophos;i="5.81,268,1610438400"; 
-   d="scan'208";a="407672739"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 23:18:42 -0700
-Subject: Re: [PATCH v4 00/11] KVM: x86/pmu: Guest Architectural LBR Enabling
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, wei.w.wang@intel.com, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210314155225.206661-1-like.xu@linux.intel.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <c73abc8d-a67b-6a6d-b052-682b8cf32351@intel.com>
-Date:   Mon, 22 Mar 2021 14:18:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229897AbhCVGW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhCVGWx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:22:53 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478DDC061574;
+        Sun, 21 Mar 2021 23:22:53 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id v70so9511228qkb.8;
+        Sun, 21 Mar 2021 23:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fWgRUYEuMUUVkXBcd2OYwANj6EMz7TTGepw25B/1h0c=;
+        b=Tq3EIIttN+HTALS/Lx/GIwHllpnrxvs27w/1RaoEyxBrrkiIFNqAPzQodvY3zWnHXJ
+         hSN16evPv0o8ANqEDnHeu43njqMf/ZKnFNcQshux7/Bdue3m4qUwZedQc1dEHdUUwwMn
+         IOWLpbik2kPCe8KRTjHG2B+i6QJJu+bWTZINxKuKLAHIbm4JaalVgnSsqojT2b8T/T27
+         mACmwyeBgVyT6d2BNn3feilfG/S2aDkWUNdMYpG3rCqofT4HDzxHVSOV4RIdZqeAHEOf
+         h4Pbxrdt5YYZzNz2X+d2zR895ipdx9Io46hTH5oI5m/HUG/4ukozrxhrwaFPQI2EE9r+
+         R49A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fWgRUYEuMUUVkXBcd2OYwANj6EMz7TTGepw25B/1h0c=;
+        b=bruvzWWPkoHhUi/yC+KXg9USzZb+VlJF1Rz23dS76EtyMtK1TunjHCl+YtHv6TRQw/
+         mX+rsOrIKCLQESbXCv3CHcdPygl2mCZBcTsmzDhy5IWLdNa/HdelwBDFHK7xyKMb9gCQ
+         tV5g1eF8CptEKliGe1mSuuOXUC2R6j7/IKcC4o1lhWy/ioQM0T9H6BwsacT6Bv7gJ4uX
+         8qYSEoXevinhB4Z7AdhUBaPfFv5wjaCUXVFm3QVIyLSXG2odR6+11mYvFkXsaQTMyyNe
+         yPacvZB9IGcgEUeVxpdMxIYDzHiacs1WWslMPQ2oJD/qtlZkw5AYU9yssW1FqqRPanRL
+         AKJQ==
+X-Gm-Message-State: AOAM530UF8NBrbNfMq3Xs9swIPP9amOenntJF98lw7knF+qPioQlAhpe
+        ViPQImmn+oDEDT4OBKtZGV2X0SOLVElyaBFs
+X-Google-Smtp-Source: ABdhPJx7XfGH8Jy1ODOOB9Mm1UUAZ5d4LPz7WKIupSLPG/SfdW8m7tZ2OZeqX0h0yGYuDu2WvlnVCg==
+X-Received: by 2002:ae9:f80b:: with SMTP id x11mr9504441qkh.220.1616394172611;
+        Sun, 21 Mar 2021 23:22:52 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.40])
+        by smtp.gmail.com with ESMTPSA id i93sm8673119qtd.48.2021.03.21.23.22.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 23:22:51 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        corbet@lwn.net, linuxppc-dev@lists.ozlabs.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] docs: powerpc: Fix a typo
+Date:   Mon, 22 Mar 2021 11:52:37 +0530
+Message-Id: <20210322062237.2971314-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210314155225.206661-1-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, do we have any comments on this patch set?
 
-On 2021/3/14 23:52, Like Xu wrote:
-> Hi geniuses,
->
-> Please help review the new version of Arch LBR enabling patch set.
->
-> The Architectural Last Branch Records (LBRs) is publiced
-> in the 319433-040 release of Intel Architecture Instruction
-> Set Extensions and Future Features Programming Reference[0].
-> ---
-> v3->v4 Changelog:
-> - Add one more host patch to reuse ARCH_LBR_CTL_MASK;
-> - Add reserve_lbr_buffers() instead of using GFP_ATOMIC;
-> - Fia a bug in the arch_lbr_depth_is_valid();
-> - Add LBR_CTL_EN to unify DEBUGCTLMSR_LBR and ARCH_LBR_CTL_LBREN;
-> - Add vmx->host_lbrctlmsr to save/restore host values;
-> - Add KVM_SUPPORTED_XSS to refactoring supported_xss;
-> - Clear Arch_LBR ans its XSS bit if it's not supported;
-> - Add negative testing to the related kvm-unit-tests;
-> - Refine code and commit messages;
->
-> Previous:
-> https://lore.kernel.org/kvm/20210303135756.1546253-1-like.xu@linux.intel.com/
->
-> Like Xu (11):
->    KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation for Arch LBR
->    KVM: vmx/pmu: Add MSR_ARCH_LBR_CTL emulation for Arch LBR
->    KVM: vmx/pmu: Add Arch LBR emulation and its VMCS field
->    KVM: x86: Expose Architectural LBR CPUID leaf
->    KVM: x86: Refine the matching and clearing logic for supported_xss
->    KVM: x86: Add XSAVE Support for Architectural LBRs
->
->   arch/x86/events/core.c           |   8 ++-
->   arch/x86/events/intel/bts.c      |   2 +-
->   arch/x86/events/intel/core.c     |   6 +-
->   arch/x86/events/intel/lbr.c      |  28 +++++----
->   arch/x86/events/perf_event.h     |   8 ++-
->   arch/x86/include/asm/msr-index.h |   1 +
->   arch/x86/include/asm/vmx.h       |   4 ++
->   arch/x86/kvm/cpuid.c             |  25 +++++++-
->   arch/x86/kvm/vmx/capabilities.h  |  25 +++++---
->   arch/x86/kvm/vmx/pmu_intel.c     | 103 ++++++++++++++++++++++++++++---
->   arch/x86/kvm/vmx/vmx.c           |  50 +++++++++++++--
->   arch/x86/kvm/vmx/vmx.h           |   4 ++
->   arch/x86/kvm/x86.c               |   6 +-
->   13 files changed, 227 insertions(+), 43 deletions(-)
->
+s/struture/structure/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Documentation/powerpc/firmware-assisted-dump.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/powerpc/firmware-assisted-dump.rst b/Documentation/powerpc/firmware-assisted-dump.rst
+index 20ea8cdee0aa..6c0ae070ba67 100644
+--- a/Documentation/powerpc/firmware-assisted-dump.rst
++++ b/Documentation/powerpc/firmware-assisted-dump.rst
+@@ -171,7 +171,7 @@ that were present in CMA region::
+                                            (meta area)    |
+                                                           |
+                                                           |
+-                      Metadata: This area holds a metadata struture whose
++                      Metadata: This area holds a metadata structure whose
+                       address is registered with f/w and retrieved in the
+                       second kernel after crash, on platforms that support
+                       tags (OPAL). Having such structure with info needed
+--
+2.31.0
 
