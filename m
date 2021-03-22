@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0EA343789
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA02634378E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhCVDkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:40:52 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:16392 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCVDk1 (ORCPT
+        id S229865AbhCVDnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:43:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28609 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229613AbhCVDnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:40:27 -0400
-X-AuditID: 0a580155-1f5ff7000005482e-ed-605809cbbef2
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 98.80.18478.BC908506; Mon, 22 Mar 2021 11:06:51 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 22 Mar
- 2021 11:40:24 +0800
-Date:   Mon, 22 Mar 2021 11:40:23 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>,
-        <naoya.horiguchi@nec.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <yangfeng1@kingsoft.com>,
-        <sunhao2@kingsoft.com>, Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>, <yaoaili@kingsoft.com>
-Subject: Re: [PATCH v3] mm/gup: check page posion status for coredump.
-Message-ID: <20210322114023.79140596@alex-virtual-machine>
-In-Reply-To: <20210320003516.GC3420@casper.infradead.org>
-References: <20210317163714.328a038d@alex-virtual-machine>
-        <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
-        <20210318044600.GJ3420@casper.infradead.org>
-        <20210318133412.12078eb7@alex-virtual-machine>
-        <20210319104437.6f30e80d@alex-virtual-machine>
-        <20210320003516.GC3420@casper.infradead.org>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Sun, 21 Mar 2021 23:43:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616384588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s9aeaOu4BBMArdsItvL2pkshodWNoERpCDLkQgAkiDQ=;
+        b=a9EKVYkjrbLE6JVcb2aXY0hjGMdWLi0BCERrJllvDYovg2brwGXMEIpFHNP+iUBgT7/77h
+        OUwgV+AkebsFGR8wJtDm4Nyj62taC9sm+lkGEpJlwVD/K043SxzDq2dZJtU7MUYDnrIkQo
+        BI+Y3MuIkCbDThVjb7B9WFkwTwsnSOg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-mj6K3magMeiHqJy22sSI8w-1; Sun, 21 Mar 2021 23:43:03 -0400
+X-MC-Unique: mj6K3magMeiHqJy22sSI8w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C8DD080006E;
+        Mon, 22 Mar 2021 03:43:02 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-188.pek2.redhat.com [10.72.13.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A0CE462A23;
+        Mon, 22 Mar 2021 03:42:47 +0000 (UTC)
+Subject: Re: [PATCH 3/3] fuse: fix typo for fuse_conn.max_pages comment
+To:     Connor Kuehl <ckuehl@redhat.com>, virtio-fs@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        vgoyal@redhat.com, miklos@szeredi.hu, mst@redhat.com
+References: <20210318135223.1342795-1-ckuehl@redhat.com>
+ <20210318135223.1342795-4-ckuehl@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <71b3495d-655e-2258-969d-076c48d9f265@redhat.com>
+Date:   Mon, 22 Mar 2021 11:42:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrELMWRmVeSWpSXmKPExsXCFcGooHuaMyLB4OEDAYs569ewWXxd/4vZ
-        4vKuOWwW99b8Z7X4uD/Y4mLjAUaLM9OKLH7/mMPmwOGxeYWWx6ZPk9g9Tsz4zeLx4upGFo+P
-        T2+xeLzfd5XNY/Ppao/Pm+QCOKK4bFJSczLLUov07RK4Ml7M0Sm4IVBxcdJt1gbGczxdjJwc
-        EgImEkeur2DqYuTiEBKYziRxac4DKOcVo8S5z7uZQapYBFQlpvfuB7PZgOxd92axdjFycIgI
-        aEi82WIEUs8ssIVJYnfLF7AaYQE3icU3ljCC2LwCVhKXP5xnA7E5BSwlzu2bzwixYB2TxKoF
-        k1hBEvwCYhK9V/4zQZxkL9G2ZRFUs6DEyZlPWEBsZgEdiROrjjFD2PIS29/OAbOFBBQlDi/5
-        xQ7RqyRxpHsGG4QdK7Fs3ivWCYzCs5CMmoVk1CwkoxYwMq9iZCnOTTfaxAiJltAdjDOaPuod
-        YmTiYDzEKMHBrCTCeyI5JEGINyWxsiq1KD++qDQntfgQozQHi5I4r2NkQIKQQHpiSWp2ampB
-        ahFMlomDU6qBab9IV3Nbmo7xw61HzWq+vnZ4EVP06kD9HUGF7H0KUzg2lCr6Ne0yzXEMU1sg
-        8fi8c+6NDbt61l9aepbZpaldvOK3o+P7xRNtcpKO19RsUpe0q3v3eqLLieoI3RiGu2VHvPcc
-        5uG72jR/15rJPzf8ZmBzkVdNtrTxmmIvylXbobJveuqdvd4P//uvPc4Qo3i55XLroZlXF1fG
-        ppiuf8T6aa3h2qvs3QvVI3OYo/O7A7xPS7X9bFu3YI9wpGB1w+/PSwrOLTXczT/xHb+72OOd
-        t+Kcpyvs1i79F3exRXjGv/c2B5X6YvZfTM644bBv+bbX6bNnf45vrvJkd5reIMSWEfrpkvUR
-        3bl10p3qyutrlFiKMxINtZiLihMBGMtIVQUDAAA=
+In-Reply-To: <20210318135223.1342795-4-ckuehl@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 00:35:16 +0000
-Matthew Wilcox <willy@infradead.org> wrote:
 
-> On Fri, Mar 19, 2021 at 10:44:37AM +0800, Aili Yao wrote:
-> > +++ b/mm/gup.c
-> > @@ -1536,6 +1536,10 @@ struct page *get_dump_page(unsigned long addr)
-> >  				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
-> >  	if (locked)
-> >  		mmap_read_unlock(mm);
-> > +
-> > +	if (ret == 1 && is_page_poisoned(page))
-> > +		return NULL;
-> > +
-> >  	return (ret == 1) ? page : NULL;
-> >  }
-> >  #endif /* CONFIG_ELF_CORE */
-> > diff --git a/mm/internal.h b/mm/internal.h
-> > index 25d2b2439..902d993 100644
-> > --- a/mm/internal.h
-> > +++ b/mm/internal.h
-> > @@ -97,6 +97,27 @@ static inline void set_page_refcounted(struct page *page)
-> >  	set_page_count(page, 1);
-> >  }
-> >  
-> > +/*
-> > + * When kernel touch the user page, the user page may be have been marked
-> > + * poison but still mapped in user space, if without this page, the kernel
-> > + * can guarantee the data integrity and operation success, the kernel is
-> > + * better to check the posion status and avoid touching it, be good not to
-> > + * panic, coredump for process fatal signal is a sample case matching this
-> > + * scenario. Or if kernel can't guarantee the data integrity, it's better
-> > + * not to call this function, let kernel touch the poison page and get to
-> > + * panic.
-> > + */
-> > +static inline bool is_page_poisoned(struct page *page)
-> > +{
-> > +	if (page != NULL) {  
-> 
-> Why are you checking page for NULL here?  How can it possibly be NULL?
+ÔÚ 2021/3/18 ÏÂÎç9:52, Connor Kuehl Ð´µÀ:
+> 'Maxmum' -> 'Maximum'
 
-For this get_dump_page() case, it can't be NULL, I thougt may other place
-will call this function and may not guarantee this, But yes, kernel is a more
-safer place and checking page NULL is not a common behavior.
 
-Better to remove it, Thanks you very much for pointing this!
+Need a better log here.
 
-> > +		if (PageHWPoison(page))
-> > +			return true;
-> > +		else if (PageHuge(page) && PageHWPoison(compound_head(page)))
-> > +			return true;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> >  extern unsigned long highest_memmap_pfn;
-> >  
-> >  /*
-> > -- 
-> > 1.8.3.1
-> > 
-> >   
--- 
-Thanks!
-Aili Yao
+With the commit log fixed.
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+>
+> Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
+> ---
+>   fs/fuse/fuse_i.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> index f0e4ee906464..8bdee79ba593 100644
+> --- a/fs/fuse/fuse_i.h
+> +++ b/fs/fuse/fuse_i.h
+> @@ -552,7 +552,7 @@ struct fuse_conn {
+>   	/** Maximum write size */
+>   	unsigned max_write;
+>   
+> -	/** Maxmum number of pages that can be used in a single request */
+> +	/** Maximum number of pages that can be used in a single request */
+>   	unsigned int max_pages;
+>   
+>   #if IS_ENABLED(CONFIG_VIRTIO_FS)
+
