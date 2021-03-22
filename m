@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61E1344422
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A43B344494
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbhCVM6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:58:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42260 "EHLO mail.kernel.org"
+        id S232840AbhCVNCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:02:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232374AbhCVMrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:47:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B648E60C3D;
-        Mon, 22 Mar 2021 12:43:15 +0000 (UTC)
+        id S232878AbhCVMsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:48:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAF01619D1;
+        Mon, 22 Mar 2021 12:44:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416996;
-        bh=R4WIYEhC1BKBbmCob2bSPx5SevjcQwQV18i32/yGP1Y=;
+        s=korg; t=1616417085;
+        bh=tZRn+Vu1XqxZcpRhh5mmMuSn+vWEiKbxnsy2KN8kuWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cLzuMG4rij93drM9bE84n0jy8mefyxHW7QIbsj4aVeryLP8hNP4I9FortIeR3e5Qc
-         oi1X+okC0Ml0Vz1Fs1Hhu5gjpLpl3+Oqsb7SAt+xYM/wjAHZigl5niqhBIlR4+nl6p
-         5DdAEjg9AjKnSwimLQeqyyP0bm5tcQmWfaLLvnL0=
+        b=LyAtYotIFbl/Btcpf379DdZ+3Dlh+mlqiysx7tWck7pvK+BMvr9hdnku2mGecJIFr
+         i0REkzYb2QWPUoND1UhXWdaXbt6SvFqN1en3O2+RskQ7CcUKbAzmgUa/XOnUkpN0Ex
+         ZecdOnw78u9+uu+cBqVGERaLdOf9sU1dQrKHTVLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 46/60] iio: hid-sensor-temperature: Fix issues of timestamp channel
-Date:   Mon, 22 Mar 2021 13:28:34 +0100
-Message-Id: <20210322121923.912938670@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 21/43] powerpc: Force inlining of cpu_has_feature() to avoid build failure
+Date:   Mon, 22 Mar 2021 13:28:35 +0100
+Message-Id: <20210322121920.616443287@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Xiang <xiang.ye@intel.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit 141e7633aa4d2838d1f6ad5c74cccc53547c16ac upstream.
+commit eed5fae00593ab9d261a0c1ffc1bdb786a87a55a upstream.
 
-This patch fixes 2 issues of timestamp channel:
-1. This patch ensures that there is sufficient space and correct
-alignment for the timestamp.
-2. Correct the timestamp channel scan index.
+The code relies on constant folding of cpu_has_feature() based
+on possible and always true values as defined per
+CPU_FTRS_ALWAYS and CPU_FTRS_POSSIBLE.
 
-Fixes: 59d0f2da3569 ("iio: hid: Add temperature sensor support")
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210303063615.12130-4-xiang.ye@intel.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Build failure is encountered with for instance
+book3e_all_defconfig on kisskb in the AMDGPU driver which uses
+cpu_has_feature(CPU_FTR_VSX_COMP) to decide whether calling
+kernel_enable_vsx() or not.
+
+The failure is due to cpu_has_feature() not being inlined with
+that configuration with gcc 4.9.
+
+In the same way as commit acdad8fb4a15 ("powerpc: Force inlining of
+mmu_has_feature to fix build failure"), for inlining of
+cpu_has_feature().
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/b231dfa040ce4cc37f702f5c3a595fdeabfe0462.1615378209.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/temperature/hid-sensor-temperature.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ arch/powerpc/include/asm/cpu_has_feature.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/temperature/hid-sensor-temperature.c
-+++ b/drivers/iio/temperature/hid-sensor-temperature.c
-@@ -17,7 +17,10 @@
- struct temperature_state {
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info temperature_attr;
--	s32 temperature_data;
-+	struct {
-+		s32 temperature_data;
-+		u64 timestamp __aligned(8);
-+	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
- 	int scale_precision;
-@@ -34,7 +37,7 @@ static const struct iio_chan_spec temper
- 			BIT(IIO_CHAN_INFO_SAMP_FREQ) |
- 			BIT(IIO_CHAN_INFO_HYSTERESIS),
- 	},
--	IIO_CHAN_SOFT_TIMESTAMP(3),
-+	IIO_CHAN_SOFT_TIMESTAMP(1),
- };
+diff --git a/arch/powerpc/include/asm/cpu_has_feature.h b/arch/powerpc/include/asm/cpu_has_feature.h
+index 7897d16e0990..727d4b321937 100644
+--- a/arch/powerpc/include/asm/cpu_has_feature.h
++++ b/arch/powerpc/include/asm/cpu_has_feature.h
+@@ -7,7 +7,7 @@
+ #include <linux/bug.h>
+ #include <asm/cputable.h>
  
- /* Adjust channel real bits based on report descriptor */
-@@ -125,9 +128,8 @@ static int temperature_proc_event(struct
- 	struct temperature_state *temp_st = iio_priv(indio_dev);
- 
- 	if (atomic_read(&temp_st->common_attributes.data_ready))
--		iio_push_to_buffers_with_timestamp(indio_dev,
--				&temp_st->temperature_data,
--				iio_get_time_ns(indio_dev));
-+		iio_push_to_buffers_with_timestamp(indio_dev, &temp_st->scan,
-+						   iio_get_time_ns(indio_dev));
- 
- 	return 0;
+-static inline bool early_cpu_has_feature(unsigned long feature)
++static __always_inline bool early_cpu_has_feature(unsigned long feature)
+ {
+ 	return !!((CPU_FTRS_ALWAYS & feature) ||
+ 		  (CPU_FTRS_POSSIBLE & cur_cpu_spec->cpu_features & feature));
+@@ -46,7 +46,7 @@ static __always_inline bool cpu_has_feature(unsigned long feature)
+ 	return static_branch_likely(&cpu_feature_keys[i]);
  }
-@@ -142,7 +144,7 @@ static int temperature_capture_sample(st
- 
- 	switch (usage_id) {
- 	case HID_USAGE_SENSOR_DATA_ENVIRONMENTAL_TEMPERATURE:
--		temp_st->temperature_data = *(s32 *)raw_data;
-+		temp_st->scan.temperature_data = *(s32 *)raw_data;
- 		return 0;
- 	default:
- 		return -EINVAL;
+ #else
+-static inline bool cpu_has_feature(unsigned long feature)
++static __always_inline bool cpu_has_feature(unsigned long feature)
+ {
+ 	return early_cpu_has_feature(feature);
+ }
+-- 
+2.31.0
+
 
 
