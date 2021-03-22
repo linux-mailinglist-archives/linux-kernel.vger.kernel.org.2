@@ -2,133 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C7A344095
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731CF34409C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhCVMPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhCVMOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:14:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975BEC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 05:14:50 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1lOJSD-0004KF-HJ; Mon, 22 Mar 2021 13:14:41 +0100
-Message-ID: <cf739f3dcc02c57ce7ac1cba64765a015ffe6f16.camel@pengutronix.de>
-Subject: Re: Re: [PATCH 1/3] dt-bindings: imx6q-pcie: specify the imx8mq
- pcie phy voltage
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Richard Zhu <hongxing.zhu@nxp.com>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kw@linux.com" <kw@linux.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "stefan@agner.ch" <stefan@agner.ch>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
-Cc:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Date:   Mon, 22 Mar 2021 13:14:39 +0100
-In-Reply-To: <VI1PR04MB585364FC420972C538281F2B8C659@VI1PR04MB5853.eurprd04.prod.outlook.com>
-References: <VI1PR04MB585364FC420972C538281F2B8C659@VI1PR04MB5853.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229951AbhCVMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:15:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230319AbhCVMPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:15:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73A016196F;
+        Mon, 22 Mar 2021 12:14:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616415300;
+        bh=9XRfjBpAAKr1LuYTDPxAQk/Vc1HEIU4R46I0OKcvdyA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kWrFeu94yiks68xf9Su1xbk0lhpBE2tdzQhBZCjDfmibnTj7S8BNNPFioYPsgTJxX
+         ZqG15QgONoDZCsHAq7x1CX4S2PsWZyEGHbFpaINZ0UqSaOLCmRkURQFIZPy0XxwWc7
+         zronma+/2bvp48sGebVqG7k8NdkQFqwVJWpFnmjWj04ResVi+Fx9dRhpGLnDdO32vh
+         cbcP/xvg4vwGPBrG+k1zNRZIgE4ms1McyAGib5eGDzj1I3fIlG7p0XTmdWh27A9ISk
+         Lw9kfTYpQlVcwZ/D2CiF7ivFhXIZ30/HMIrILQh5XEvUalbiq6XOd4AxnMNIENS1Fm
+         tHR+u450YvznA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     netdev@vger.kernel.org, Karsten Keil <isdn@linux-pingi.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Leon Romanovsky <leon@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] [v2] misdn: avoid -Wempty-body warning
+Date:   Mon, 22 Mar 2021 13:14:47 +0100
+Message-Id: <20210322121453.653228-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+From: Arnd Bergmann <arnd@arndb.de>
 
-Am Montag, dem 22.03.2021 um 09:06 +0000 schrieb Richard Zhu:
-> > -----Original Message-----
-> > From: Lucas Stach <l.stach@pengutronix.de>
-> > Sent: Friday, March 19, 2021 5:49 PM
-> > To: Richard Zhu <hongxing.zhu@nxp.com>; andrew.smirnov@gmail.com;
-> > shawnguo@kernel.org; kw@linux.com; bhelgaas@google.com;
-> > stefan@agner.ch; lorenzo.pieralisi@arm.com
-> > Cc: linux-pci@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
-> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> > kernel@pengutronix.de
-> > Subject: [EXT] Re: [PATCH 1/3] dt-bindings: imx6q-pcie: specify the
-> > imx8mq
-> > pcie phy voltage
-> > Am Freitag, dem 19.03.2021 um 16:24 +0800 schrieb Richard Zhu:
-> > > Both 1.8v and 3.3v power supplies can be feeded to i.MX8MQ PCIe
-> > > PHY.
-> > > In default, the PCIE_VPH voltage is suggested to be 1.8v refer to
-> > > data
-> > > sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic
-> > > design,
-> > > the VREG_BYPASS bits of GPR registers should be cleared from
-> > > default
-> > > value 1b'1 to 1b'0.
-> > > 
-> > > Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt | 4
-> > > ++++
-> > >  1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-
-> > > pcie.txt
-> > > b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> > > index de4b2baf91e8..23efbad9e804 100644
-> > > --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> > > +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> > > @@ -59,6 +59,10 @@ Additional required properties for imx7d-pcie
-> > > and
-> > imx8mq-pcie:
-> > >  Additional required properties for imx8mq-pcie:
-> > >  - clock-names: Must include the following additional entries:
-> > >       - "pcie_aux"
-> > > +- pcie-vph-3v3: If present then PCIE_VPH is feeded by 3.3v in
-> > > the HW
-> > > +  schematic design. The PCIE_VPH is suggested to be 1.8v refer
-> > > to the
-> > > +  data sheet. If the PCIE_VPH is supplied by 3.3V, the
-> > > VREG_BYPASS
-> > > +  should be cleared to zero accordingly.
-> > 
-> > Uhm, no. Please don't add boolean DT properties for random parts of
-> > the
-> > board design.
-> > 
-> > If we need to know the voltage of PCIE_VPH, we should really add
-> > the VPH
-> > regulator as a supply to the PCIe controller node, then work out
-> > the voltage
-> > the usual way by using the Linux regulator API.
-> > 
-> [Richard Zhu] Hi Lucas:
-> Thanks for your comments. Since the vgen5_reg is used to power up
-> PCIe PHY on i.MX8MQ EVK board,
->  and it's set to be "regulator-always-on;".
-> Did only the regulator_get_voltage or combined with
-> regulator_enable/regulator_disable can be used in the driver?
+gcc warns about a pointless condition:
 
-The regulator API doesn't care, you can call enable/disable in the
-driver as normal. If the regulator is marked as always-on it will just
-stay enabled even if the use-count drops to 0.
+drivers/isdn/hardware/mISDN/hfcmulti.c: In function 'hfcmulti_interrupt':
+drivers/isdn/hardware/mISDN/hfcmulti.c:2752:17: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+ 2752 |                 ; /* external IRQ */
 
-The other question however is if it's even allowed by the SoC design to
-disable this supply outside of deep power down. A quick look into the
-reference manual and datasheet didn't yield any information about this.
+As the check has no effect, just remove it.
 
-Regards,
-Lucas
+Suggested-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: remove the line instead of adding {}
+---
+ drivers/isdn/hardware/mISDN/hfcmulti.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/isdn/hardware/mISDN/hfcmulti.c b/drivers/isdn/hardware/mISDN/hfcmulti.c
+index 7013a3f08429..14092152b786 100644
+--- a/drivers/isdn/hardware/mISDN/hfcmulti.c
++++ b/drivers/isdn/hardware/mISDN/hfcmulti.c
+@@ -2748,8 +2748,6 @@ hfcmulti_interrupt(int intno, void *dev_id)
+ 		if (hc->ctype != HFC_TYPE_E1)
+ 			ph_state_irq(hc, r_irq_statech);
+ 	}
+-	if (status & V_EXT_IRQSTA)
+-		; /* external IRQ */
+ 	if (status & V_LOST_STA) {
+ 		/* LOST IRQ */
+ 		HFC_outb(hc, R_INC_RES_FIFO, V_RES_LOST); /* clear irq! */
+-- 
+2.29.2
 
