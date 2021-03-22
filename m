@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB8C344142
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4120C3442C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhCVMbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:31:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53240 "EHLO mail.kernel.org"
+        id S232085AbhCVMov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:44:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhCVMar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:30:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F238D619A0;
-        Mon, 22 Mar 2021 12:30:46 +0000 (UTC)
+        id S230253AbhCVMhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:37:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F01DE619AE;
+        Mon, 22 Mar 2021 12:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416247;
-        bh=6Odjv0BGUfVmqIuSNmD1m0vv9DcjMHPVid+ivTgBQ60=;
+        s=korg; t=1616416628;
+        bh=hvrnbfS4nOx/L3MlJrKfQRHaw3x9igwyNNF23FUJdeI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NhNLCTJ3S8k1EQl38kl9cIe+ZFR6B8bEavmWpjddrPdYyRru6MJ/DZsFp7gRdWlqk
-         a6OwdABXNzps2p+OGtVyGFymDpzWtfdBYHjPk4VgScrIamjRtnTgXtDRYvcYL/b4hs
-         yMFBb3RDjQE1pq+dZjfRsZqGeRWfoP+s3/Mx5xxI=
+        b=RI/dRvX6jCg8Lv0NAx48vHD9zfg4ahUpdfTphYNQX1PBNNItn+N6zZOSkFiREKsp2
+         1Xchk6azEJXAzRqIUDVlwMekEMuiuTyIjt6aEKSCdaXVsVvmLvIIkDW0LB0TVXDN7v
+         ZkTsBtEPNXkYFG92z2eDych0Fv1OjuWDu52yinOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.11 006/120] ALSA: hda: generic: Fix the micmute led init state
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Mark Brown <broonie@kernel.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH 5.10 032/157] ASoC: simple-card-utils: Do not handle device clock
 Date:   Mon, 22 Mar 2021 13:26:29 +0100
-Message-Id: <20210322121929.876223206@linuxfoundation.org>
+Message-Id: <20210322121934.783045168@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Sameer Pujar <spujar@nvidia.com>
 
-commit 2bf44e0ee95f39cc54ea1b942f0a027e0181ca4e upstream.
+commit 8ca88d53351cc58d535b2bfc7386835378fb0db2 upstream.
 
-Recently we found the micmute led init state is not correct after
-freshly installing the ubuntu linux on a Lenovo AIO machine. The
-internal mic is not muted, but the micmute led is on and led mode is
-'follow mute'. If we mute internal mic, the led is keeping on, then
-unmute the internal mic, the led is off. And from then on, the
-micmute led will work correctly.
+This reverts commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device
+module clock"). The original patch ended up breaking following platform,
+which depends on set_sysclk() to configure internal PLL on wm8904 codec
+and expects simple-card-utils to not update the MCLK rate.
+ - "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
 
-So the micmute led init state is not correct. The led is controlled
-by codec gpio (ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY), in the
-patch_realtek, the gpio data is set to 0x4 initially and the led is
-on with this data. In the hda_generic, the led_value is set to
-0 initially, suppose users set the 'capture switch' to on from
-user space and the micmute led should change to be off with this
-operation, but the check "if (val == spec->micmute_led.led_value)" in
-the call_micmute_led_update() will skip the led setting.
+It would be best if codec takes care of setting MCLK clock via DAI
+set_sysclk() callback.
 
-To guarantee the led state will be set by the 1st time of changing
-"Capture Switch", set -1 to the init led_value.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210312041408.3776-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reported-by: Michael Walle <michael@walle.cc>
+Suggested-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Michael Walle <michael@walle.cc>
+Fixes: 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module clock")
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Tested-by: Michael Walle <michael@walle.cc>
+Link: https://lore.kernel.org/r/1615829492-8972-2-git-send-email-spujar@nvidia.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/hda_generic.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/generic/simple-card-utils.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -4065,7 +4065,7 @@ static int add_micmute_led_hook(struct h
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -172,15 +172,16 @@ int asoc_simple_parse_clk(struct device
+ 	 *  or device's module clock.
+ 	 */
+ 	clk = devm_get_clk_from_child(dev, node, NULL);
+-	if (IS_ERR(clk))
+-		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
+-
+ 	if (!IS_ERR(clk)) {
+-		simple_dai->clk = clk;
+ 		simple_dai->sysclk = clk_get_rate(clk);
+-	} else if (!of_property_read_u32(node, "system-clock-frequency",
+-					 &val)) {
++
++		simple_dai->clk = clk;
++	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
+ 		simple_dai->sysclk = val;
++	} else {
++		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
++		if (!IS_ERR(clk))
++			simple_dai->sysclk = clk_get_rate(clk);
+ 	}
  
- 	spec->micmute_led.led_mode = MICMUTE_LED_FOLLOW_MUTE;
- 	spec->micmute_led.capture = 0;
--	spec->micmute_led.led_value = 0;
-+	spec->micmute_led.led_value = -1;
- 	spec->micmute_led.old_hook = spec->cap_sync_hook;
- 	spec->cap_sync_hook = update_micmute_led;
- 	if (!snd_hda_gen_add_kctl(spec, NULL, &micmute_led_mode_ctl))
+ 	if (of_property_read_bool(node, "system-clock-direction-out"))
 
 
