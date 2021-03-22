@@ -2,153 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6D83437B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE293437B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 05:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhCVD7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        id S229548AbhCVEBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 00:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhCVD7E (ORCPT
+        with ESMTP id S229760AbhCVEBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:59:04 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 20:59:03 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c4so9307047qkg.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 20:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N2eyEXwKYprrVEqEb1kH0B4OY0RaQBUaEpvA9yRQ4Yk=;
-        b=eAWVu6KSl4RSKqbWKiNEPoeWZvSxhkCjVoP378cMSlwXGcwY3su2IHoohKRiLy+ebS
-         +Ubo78QH1GO+mEJf3cvWWvdBGT29bvlpHWR42uZhubyeVgwspeGx0QatOMZ3cJ/ohuDi
-         kIw+1QGmKb26U7WAE4gufuRITWzCr+hv3XtmtEuvAJFoGF5jEsjF4dUxIIbhFsWpXqfE
-         EZYZsp3ttrfMX54Ev/sbRpeFoGkOADYFL+CsTjhRA6Borv7LGZpsBsUicebpiO9VxkKy
-         snJtYtIf6F2S3tnNsKqAzb9ZjZImTBxhZV7dWuQLWu5oXm0KlAdQpCdh4lwVhHYciwiu
-         SRxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=N2eyEXwKYprrVEqEb1kH0B4OY0RaQBUaEpvA9yRQ4Yk=;
-        b=Lh8Pr5OZgdoTr0aHiy7NQgHIBYnpcQPyBpKZvY32c3a79WFYz95D/ho+sYhrgYaWsi
-         tQRqQGfvjkwK9GIzvXz2enKf/Q+/U6oAKJhlAFCP2OHs/jsp/gkQDVfKW4+OxpmiQOli
-         nz0W7k2kVuU7EBff7t3Sokej8pXqE3EQSbthXrZ1xBPJKSjior98lCrHXMP+QDt4wue9
-         SxH03J77PmnrTyznMvXHbH/gt+qrBWOD0lswwywkTrl6Sz2l9UgCK/8NS6YOL8j15UGr
-         o7ORQJsIb2teaFv8nEsFSx68fPJ1A5jlr8f+69JqaMgxJx6nW0mfDqQeuHzSJz8ScGGZ
-         wrgA==
-X-Gm-Message-State: AOAM532+UMczSTPwAxj0e7kQ1nUWxBXTah7JY6rxfaxyF7XwxumJuIUh
-        QTVJ3S52hSHIizIXukvW0VY=
-X-Google-Smtp-Source: ABdhPJx6WLNvYlfLBdnNOlu2902OI161LvTaIyBQN8u1w50JY5k9SU2TWmLCBXiLj+sRIHJCC6GfMQ==
-X-Received: by 2002:a37:46d5:: with SMTP id t204mr8963306qka.211.1616385542992;
-        Sun, 21 Mar 2021 20:59:02 -0700 (PDT)
-Received: from ArchLinux ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id r2sm8314006qti.4.2021.03.21.20.58.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 20:59:02 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 09:28:52 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Rik van Riel <riel@redhat.com>
+        Mon, 22 Mar 2021 00:01:20 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D88C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 21:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=/PNbB4Hs0P8VQvycE2RHeV03E5g+vzC0dusBDgCGN8Y=; b=V4Xzv9EDO5mfSxevQTyWoompd9
+        +SZhKCbWHzTRbJJet/cvCtbVPysHyoapEY/kCOVBMuFr152fYXIx81d0PU0LW0yim1D8h5wurAY1U
+        Pxa0t/CVAO8tfCG9gItVTrGXQ0dwm3S9GPzA/MgQ9vGGTt02FEzQlukxowUa3tC5j8MfVHGRnQcmr
+        SkQ+iksSx1KS5Eu/HdEaoJjQja3KSzu/519wpXYJSyubf3oIsllgN6yYxwOqoV+UgV3I1vqLVA3Z9
+        6uVobhTm5gI5fuAHAny+wCvXeu3lA95OTbK9CxsJ3BdQ2XYmOoWCkvaw9Fpd9Xk9dpvBMEWxe2ZL9
+        GVl3t1pQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOBkh-00Apyn-KP; Mon, 22 Mar 2021 04:01:16 +0000
 Subject: Re: [PATCH] mm: Fix typos in comments
-Message-ID: <YFgV/Np4ps8zFG6j@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+To:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Rik van Riel <riel@redhat.com>
 References: <20210322025152.GA1922846@gmail.com>
- <20210322034408.GD1719932@casper.infradead.org>
- <2cc83cd7-6fd2-2b4f-b03a-5e1a384aa137@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1c098463-9db9-372f-82ba-48a12849707f@infradead.org>
+Date:   Sun, 21 Mar 2021 21:01:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bpPMA1ta5HytA2u7"
-Content-Disposition: inline
-In-Reply-To: <2cc83cd7-6fd2-2b4f-b03a-5e1a384aa137@infradead.org>
+In-Reply-To: <20210322025152.GA1922846@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/21/21 7:51 PM, Ingo Molnar wrote:
+> 
+> Fix ~93 single-word typos in locking code comments, plus a few very 
+> obvious grammar mistakes.
+> 
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Rik van Riel <riel@redhat.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  include/linux/mm.h      |  2 +-
+>  include/linux/vmalloc.h |  4 ++--
+>  mm/balloon_compaction.c |  4 ++--
+>  mm/compaction.c         |  2 +-
+>  mm/filemap.c            |  2 +-
+>  mm/gup.c                |  2 +-
+>  mm/highmem.c            |  2 +-
+>  mm/huge_memory.c        |  4 ++--
+>  mm/hugetlb.c            |  4 ++--
+>  mm/internal.h           |  2 +-
+>  mm/kasan/kasan.h        |  8 ++++----
+>  mm/kasan/quarantine.c   |  4 ++--
+>  mm/kasan/shadow.c       |  4 ++--
+>  mm/kfence/report.c      |  2 +-
+>  mm/khugepaged.c         |  2 +-
+>  mm/kmemleak.c           |  2 +-
+>  mm/ksm.c                |  4 ++--
+>  mm/madvise.c            |  4 ++--
+>  mm/memcontrol.c         | 18 +++++++++---------
+>  mm/memory-failure.c     |  2 +-
+>  mm/memory.c             | 12 ++++++------
+>  mm/mempolicy.c          |  4 ++--
+>  mm/migrate.c            |  8 ++++----
+>  mm/mmap.c               |  4 ++--
+>  mm/mprotect.c           |  2 +-
+>  mm/mremap.c             |  2 +-
+>  mm/oom_kill.c           |  2 +-
+>  mm/page-writeback.c     |  4 ++--
+>  mm/page_alloc.c         | 14 +++++++-------
+>  mm/page_owner.c         |  2 +-
+>  mm/page_reporting.c     |  2 +-
+>  mm/percpu-internal.h    |  2 +-
+>  mm/percpu.c             |  2 +-
+>  mm/pgalloc-track.h      |  6 +++---
+>  mm/slab.c               |  8 ++++----
+>  mm/slub.c               | 10 +++++-----
+>  mm/swap_slots.c         |  2 +-
+>  mm/swap_state.c         |  2 +-
+>  mm/swapfile.c           |  4 ++--
+>  mm/util.c               |  2 +-
+>  mm/vmalloc.c            |  8 ++++----
+>  mm/vmstat.c             |  2 +-
+>  mm/zpool.c              |  2 +-
+>  mm/zsmalloc.c           |  2 +-
+>  44 files changed, 93 insertions(+), 93 deletions(-)
 
---bpPMA1ta5HytA2u7
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f4476e68e..048686fba230 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1977,7 +1977,7 @@ static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
+>  	unsigned int wmark_low;
+>  
+>  	/*
+> -	 * Cap the low watermak to avoid excessive compaction
+> +	 * Cap the low watermark to avoid excessive compaction
+>  	 * activity in case a user sets the proactivess tunable
 
-On 20:52 Sun 21 Mar 2021, Randy Dunlap wrote:
->On 3/21/21 8:44 PM, Matthew Wilcox wrote:
->> On Mon, Mar 22, 2021 at 03:51:52AM +0100, Ingo Molnar wrote:
->>> +++ b/mm/huge_memory.c
->>> @@ -1794,7 +1794,7 @@ bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
->>>  /*
->>>   * Returns
->>>   *  - 0 if PMD could not be locked
->>> - *  - 1 if PMD was locked but protections unchange and TLB flush unnecessary
->>> + *  - 1 if PMD was locked but protections unchanged and TLB flush unnecessary
->>>   *  - HPAGE_PMD_NR is protections changed and TLB flush necessary
->>
->> s/is/if/
->>
->>> @@ -5306,7 +5306,7 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
->>>
->>>  	/*
->>>  	 * vma need span at least one aligned PUD size and the start,end range
->>> -	 * must at least partialy within it.
->>> +	 * must at least partially within it.
->>
->> 	 * vma needs to span at least one aligned PUD size, and the range
->> 	 * must be at least partially within in.
->>
->>>  /*
->>>   * swapon tell device that all the old swap contents can be discarded,
->>> - * to allow the swap device to optimize its wear-levelling.
->>> + * to allow the swap device to optimize its wear-leveling.
->>>   */
->>
->> Levelling is british english, leveling is american english.  we don't
->> usually "correct" one into the other.
->
->How about "labelled" (from mm/kasan/shadow.c):
->
+	                                    proactiveness
+?
 
-Not sure , "levelling" and "labelling" is the same thing...I think all of us
-missed the context ...isn't that dictated by the context(soruce code,
-effecets) ...
+>  	 * close to 100 (maximum).
+>  	 */
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 5efa07fb6cdc..a0d4fedd5e9b 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4463,7 +4463,7 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
+>   * @flags: the fault flags.
+>   * @ret: the fault retcode.
+>   *
+> - * This will take care of most of the page fault accountings.  Meanwhile, it
+> + * This will take care of most of the page fault accounting.  Meanwhile, it
+>   * will also include the PERF_COUNT_SW_PAGE_FAULTS_[MAJ|MIN] perf counter
+>   * updates.  However note that the handling of PERF_COUNT_SW_PAGE_FAULTS should
 
->@@ -384,7 +384,7 @@ static int kasan_depopulate_vmalloc_pte(pte_t *ptep, unsigned long addr,
->  * How does this work?
->  * -------------------
->  *
->- * We have a region that is page aligned, labelled as A.
->+ * We have a region that is page aligned, labeled as A.
->  * That might not map onto the shadow in a way that is page-aligned:
->
->
->--
->~Randy
->
+                However,
 
---bpPMA1ta5HytA2u7
-Content-Type: application/pgp-signature; name="signature.asc"
+>   * still be in per-arch page fault handlers at the entry of page fault.
+> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+> index c50d93ffa252..8b9197074632 100644
+> --- a/mm/page_reporting.c
+> +++ b/mm/page_reporting.c
+> @@ -86,7 +86,7 @@ page_reporting_drain(struct page_reporting_dev_info *prdev,
+>  			continue;
+>  
+>  		/*
+> -		 * If page was not comingled with another page we can
+> +		 * If page was not commingled with another page we can
 
------BEGIN PGP SIGNATURE-----
+Either spelling seems to be acceptable.
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBYFfwACgkQsjqdtxFL
-KRVWRgf+Ofw0pOzddjp1LIPtWP66embFXJcc+md/xGyTRWWYMg7RFVlMGOA8/5CG
-tmbYrBvrNHZo/7t6bif12CIlfWBqjl7k6PFAbnhUVLzg19NcOUe4eoHaooUaCPdO
-s1PCnQ5tLN1sOOx9j9pc/DSvPl1fjCu7MynHxxkhlE0rV2dMMvesr8ourt08UWyh
-2jQo5wjo3OapjZVZrRMmr/RmJTuM3tsLQxd9O4bZAk/HIvOujR/dslENqPmfzaGb
-eNXWrLuJJkbknSBL5514ueZKy5D5wAY4RlGniOLvVnQ2CqkhKs/wBQ3NKGnWX6sS
-CTlheGikZr5Zf7SUhAGPdA1MVlb+tg==
-=jV6V
------END PGP SIGNATURE-----
+>  		 * consider the result to be "reported" since the page
+>  		 * hasn't been modified, otherwise we will need to
+>  		 * report on the new larger page when we make our way
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3021ce9bf1b3..a48892cc8359 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index be9de6d5b516..0158aa9c3e55 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -16,7 +16,7 @@
+>   * to local caches without needing to acquire swap_info
+>   * lock.  We do not reuse the returned slots directly but
+>   * move them back to the global pool in a batch.  This
+> - * allows the slots to coaellesce and reduce fragmentation.
+> + * allows the slots to coalescence and reduce fragmentation.
 
---bpPMA1ta5HytA2u7--
+                       to coalesce
+
+>   *
+>   * The swap entry allocated is marked with SWAP_HAS_CACHE
+>   * flag in map_count that prevents it from being allocated
+
+
+Mostly looks like a good, big cleanup. Thanks.
+
+-- 
+~Randy
+
