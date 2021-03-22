@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A64D343774
+	by mail.lfdr.de (Postfix) with ESMTP id A6A41343775
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCVDat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
+        id S229999AbhCVDau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhCVDaP (ORCPT
+        with ESMTP id S229941AbhCVDaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:30:15 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD94C061762;
-        Sun, 21 Mar 2021 20:30:15 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id v70so9264015qkb.8;
-        Sun, 21 Mar 2021 20:30:15 -0700 (PDT)
+        Sun, 21 Mar 2021 23:30:14 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110F7C061574;
+        Sun, 21 Mar 2021 20:30:12 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id v3so7733296pgq.2;
+        Sun, 21 Mar 2021 20:30:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JHAdv31lJiyavDMsRd7gTkVNlAx0wcbfCil7edmgyZA=;
-        b=ZP7rc55HJWuS+079akH1GgH4KYySrznjsd3hlpLQ6KE7vC2in2J0nacX7ECspeG73S
-         QAbvEwfsrUJMPQsRBwAKS0ymBU3vAoApIM5a1+ISNOz8u6rNF5zff1K4o2/RHbFeYL5r
-         IQ6a9lDtjfJZVFQs2FHrtEGb4QXu3G7FED3qltFKaF6IqwcC94ku3wiMzHuzLa+rnw+q
-         Hy3zTLpqC8K6jpkpMR4usKZJuMW+3eORghOLjB/eYvspJIwxxBHUFaVa1l/Pr4TMAdf/
-         hZ13Ogx9EExntRDFTkeTZQEkWBuCNCd2ZPsytZg3S4JBsXZbM4Up+wKY1jb/4CRVOlkk
-         huWQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YC55n+nEQVXWx2jWMnvmQnF5PDmoYdD2StH0ZPzYESE=;
+        b=ngiALxpO6zUsiAPQy3oR0GiT54vhutwDNc247RMHNWbOQ9XCnQus1mjUtZEmNNXySr
+         ozhI3Ewg3hMMNgMVa/YDHph27Ak2wI+mlrcA3mn+um/ZgaIhV4+0JL6VPR1/f1yYMk+s
+         e0TT+SFLJVRO7QAbL6aVG6wnRMliBDG8NuO5b+ml7yQxKZHAEmH+XhuijBCDq4xCXyCd
+         aGXqPE+J8mEb24oL6abR6AucfHLiEzJcZdWTmheudDGooDLYS3G1sHLSK7mqeGBe0rgR
+         Y+ecaVd9cA0P7KBCiRQxGBihawCsaqwtGtHadp13ZhpRQnpRehKUA10QByATfC5tVZK6
+         MGeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=JHAdv31lJiyavDMsRd7gTkVNlAx0wcbfCil7edmgyZA=;
-        b=TOwnkkoePum03K/fE92BZHHzNEG63d2QQpKEAmGH6NLDNX/IlSGfrHxI39WtIQk/i3
-         Yze+NjVvXX4Y1ZLtihw71lbOhXQT5syx+PYCaqQ04HdLqmxz1py+ObGo6f14ESTZdSWO
-         qjENzGvP+zKt+cFRA89FmMWN2qhGj0yfjdB2yZ2HGTdESKqmFQh5x8OMUeJkHFP5Vteu
-         0eNAJQt+Npamn1DxFhqPyoh5j3h82RnBf41aa0cS046ej1/2KR4KlxrzdT1VbjyYxehb
-         q3dvTpzqHKp/C190D6HEaByJuanvijJMSxmmxoBMcdovMH48CWuXsSqf8CeP1rkZEy0E
-         sSrA==
-X-Gm-Message-State: AOAM533hfPajoAQqe602Q1t1iYz9UtGaIsUKMoJDn/hQBD9bNoKvP2Iv
-        Zy3jJpqoaWSQoFIdehXcl3VwxWy021RSVYNM
-X-Google-Smtp-Source: ABdhPJzBDQCduCDKGfR8NxS15hrkiy4tLKQEf4P0xT9beBZvnQvy4uxEGsumDCMMC4iWNEoXRdFaXQ==
-X-Received: by 2002:a05:620a:31a:: with SMTP id s26mr9031145qkm.355.1616383814576;
-        Sun, 21 Mar 2021 20:30:14 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.190])
-        by smtp.gmail.com with ESMTPSA id y19sm10082402qky.111.2021.03.21.20.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 20:30:14 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     corbet@lwn.net, unixbhaskar@gmail.com, sir@cmpwn.com,
-        gregkh@linuxfoundation.org, lee.jones@linaro.org, bp@alien8.de,
-        huawei@kernel.org, krzk@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] docs: submitting-patches Fix a typo
-Date:   Mon, 22 Mar 2021 09:00:00 +0530
-Message-Id: <20210322033000.2523887-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        bh=YC55n+nEQVXWx2jWMnvmQnF5PDmoYdD2StH0ZPzYESE=;
+        b=EyWygjZGR5V3xoYsBY9Mx1BPD1bUeXLmNA3/yMnWgYg/kfjWsVSSgVtYeCNtQqHvzD
+         Tfu2bM1H7NEE/vdVjS7WwhXjjvv8LTL3fJtazj7FhtOZ3UPoeoFUeevIA0pWLUTcLlxm
+         ihJCODXzEXdLhg2BcF5MJgKCuxRQR4eTGpDyp9PsTx377a1DI9r4hmSp9k0Yfq+7g87t
+         pk1ptcpxIIgGlELCuSP09vXiM/5AxlLW4btCnee5Ch6kYG2zChZk+P4CNM1wc2MZi8hY
+         7vX5XmZgYkTTOzu4gZpf9ckKOEtggvZ6pqTBUailEl1TtwoTV5egLyi8HGJbZESLkxYM
+         /aWQ==
+X-Gm-Message-State: AOAM530+DwSwvP+THtTFBIlnCg3yzmwMee9uEhtydhMiEPX4yW8MZG/V
+        5eY1aBmg7VqRTKOSgTojkE1F7Y8RZJM=
+X-Google-Smtp-Source: ABdhPJxikkODGWqC6H/nFrMgDo437J9DOX54/CKLLhSXZw7jbQdoT3eH3eX2K2YaF2D5gp4zwImtxw==
+X-Received: by 2002:aa7:9e5b:0:b029:1f1:5ba4:57a2 with SMTP id z27-20020aa79e5b0000b02901f15ba457a2mr19647252pfq.59.1616383811020;
+        Sun, 21 Mar 2021 20:30:11 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b24sm10824272pgj.58.2021.03.21.20.30.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Mar 2021 20:30:10 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] net: ethernet: actions: Add Actions Semi Owl
+ Ethernet MAC driver
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1616368101.git.cristian.ciocaltea@gmail.com>
+ <ab25bd143589d3c1894cdb3189670efa62ed1440.1616368101.git.cristian.ciocaltea@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <17876c6e-4688-59e6-216f-445f91a8b884@gmail.com>
+Date:   Sun, 21 Mar 2021 20:30:07 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <ab25bd143589d3c1894cdb3189670efa62ed1440.1616368101.git.cristian.ciocaltea@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christian,
 
-s/mesages/messages/
+On 3/21/2021 4:29 PM, Cristian Ciocaltea wrote:
+> Add new driver for the Ethernet MAC used on the Actions Semi Owl
+> family of SoCs.
+> 
+> Currently this has been tested only on the Actions Semi S500 SoC
+> variant.
+> 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Documentation/process/submitting-patches.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[snip]
 
-diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-index 91de63b201c1..8b2676527b7e 100644
---- a/Documentation/process/submitting-patches.rst
-+++ b/Documentation/process/submitting-patches.rst
-@@ -679,7 +679,7 @@ generates appropriate diffstats by default.)
- See more details on the proper patch format in the following
- references.
+Do you know the story behind this Ethernet controller? The various
+receive/transmit descriptor definitions are 99% those defined in
+drivers/net/ethernet/stmmicro/stmmac/descs.h for the normal descriptor.
 
--Backtraces in commit mesages
-+Backtraces in commit messages
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
- Backtraces help document the call chain leading to a problem. However,
---
-2.31.0
-
+The register layout of the MAC looks completely different from a
+dwmac100 or dwmac1000 however.
+-- 
+Florian
