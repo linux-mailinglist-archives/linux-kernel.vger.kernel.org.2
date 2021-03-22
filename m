@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E76C344FD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3730344FD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhCVTXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
+        id S231968AbhCVTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhCVTWm (ORCPT
+        with ESMTP id S231913AbhCVTXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:22:42 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730E3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:22:41 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id g20so11797860qkk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:22:41 -0700 (PDT)
+        Mon, 22 Mar 2021 15:23:17 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75844C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:23:16 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u21so5198019ejo.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cLy5RBMbVv+7pgZZbo/ExjQRPvzPQKaVh0hhl1CwHas=;
-        b=K2riKvcAmdu/6NO7DSJFQtQ2uYZUr7E5HDWpXE31+ZFW8NxoYeo8HJgbdTPWvJx2uk
-         WY9Pi6gT4xhXUayqnk8iDMB8EC3rLJl0XcimZpWlq6TcZVvPcjyvQQkXJ7x+kuOoQtIp
-         KcD5qL+JutHFOFev+kfSzRWannf7vB/GeqbPo=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DX81xpKR3NVOCyK3ejwbrnW+v8s68jGVqeWwVOT6Amo=;
+        b=l5t0AGwxS1yfpVVoibj20aQMIcGvSdZuLwxDieUjzW4trn6U6txHei1HKNBTfVPI1c
+         oun4GVakBxDjSEIu4y2qge3Vk9c87gY8aPGDOAUczeuKzfkMYIzA+BmW92PoCNXBhcbd
+         AQOW95FYeEvnxCsb852kHor4PVhaKkpyuO2DiXwP/ZTLO3paU5KiYF/oOYvJbxzvWzX/
+         qy+6M0sZ/EYk35nvCoGp93xP8hekRsRHGpzhS9XK5kMkduubPpeu8bbmyPwB0fNpe+ob
+         fOT6ZVzwfyCImD9yQYXz1vqMy9OQO8WZy2Nb9N4QrsNNO3npl/7pnH6qhT1lPfDdRgEH
+         d39g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cLy5RBMbVv+7pgZZbo/ExjQRPvzPQKaVh0hhl1CwHas=;
-        b=pZi3JjA8dgMfAc5i5rfeNKdVaWSQ1SJBI2c1+SnoWYweP6C+h5RUuYwd6L14tFHYDP
-         wA4csxN+MPFw2m2Kh8l+c7ZU+/LCS2x0Ox5HfFBZUhYrZm/0mv1Of7Lp71tM5b8mF0/C
-         GZ99/H1pXjGlYrD5hIT0IA0UpSGskU1Vdpw8gJ9m1MLENeyj+hGYqGEt1dGTvsr8tpCa
-         YYr3U5zldf33dg5h6ybXnihavGPCiia0Hr25eWH+n40NlpBuBEDAQsFSP0BhjPRf9lNY
-         DF0qzHyZl92FeSRBe77IzGp7uMI0HPqf4ESOTrTCCJFZlCTBukBCH8Rk3PEtN5aSn7ZG
-         mfuw==
-X-Gm-Message-State: AOAM5303S/eHQeVkoLzsOiHTz5d0vmtKKJRLelWtvs55Qjw3vOJOwinD
-        gWExgx5UwZnVUL6Nzpryxq6FQ0QiR8SRSg==
-X-Google-Smtp-Source: ABdhPJzgG8GhDBlexzwLzO2YedFHAF8bzXf2IvPUulmqE3sM2j/luhb8+rnX0wj+JiKgFEjbcVtXzA==
-X-Received: by 2002:a37:a0d1:: with SMTP id j200mr1673411qke.426.1616440960302;
-        Mon, 22 Mar 2021 12:22:40 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id q2sm11562304qkq.59.2021.03.22.12.22.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 12:22:39 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id x189so433523ybg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 12:22:39 -0700 (PDT)
-X-Received: by 2002:a25:ab54:: with SMTP id u78mr194252ybi.276.1616440959152;
- Mon, 22 Mar 2021 12:22:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210322164308.827846-1-arnd@kernel.org> <CAD=FV=WY6yxx+vkH+UU4VYei29xBftdnyRBE1OpEELmJ-kLfFg@mail.gmail.com>
- <CAK8P3a33qv79GedMCwA=GFBWYCMB2fYrq2QmGpN3TWfqgg8j2A@mail.gmail.com>
-In-Reply-To: <CAK8P3a33qv79GedMCwA=GFBWYCMB2fYrq2QmGpN3TWfqgg8j2A@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 22 Mar 2021 12:22:27 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WaOFJEnZ=b+UTaTXDWMs8JOeBw1gRFYrtSJK-+CXGPyw@mail.gmail.com>
-Message-ID: <CAD=FV=WaOFJEnZ=b+UTaTXDWMs8JOeBw1gRFYrtSJK-+CXGPyw@mail.gmail.com>
-Subject: Re: [PATCH] kgdb: fix gcc-11 warning on indentation
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DX81xpKR3NVOCyK3ejwbrnW+v8s68jGVqeWwVOT6Amo=;
+        b=rhESbISGB7g/qEZy4lNLa0XyW9s1w18+KwlIL1avu9oBNwIk/173GcfIlN7Mx7zHN2
+         glHTKjhrMPKScYNmDN4KtsLjoKjnNte+xNOSzHZaI47lKwx4HEFTbShFaEJn7zGEivjG
+         tHs4E3zTzU5ROoByudYPiMrqzh6jzoVzyzd97SqCKnvLZk/+GUHDqstGJulV/vjOV4OI
+         QnCf8W2NCj/2y8/mmP4tJGbBS2WwgEtOCr7VrFYMO5SyyIzFGqPC5hBGKuy62/6wdl6e
+         4RaBX6V0s/hVf8V6TAoypWp5znuHHRaUbVzC+Gsi9eP7g0pD9xCIgdtnez6IzkwRZcoc
+         qEHQ==
+X-Gm-Message-State: AOAM532ljkmUmInDFOpzHIm243rndvqk8yZE/RiOfrgFZpB2RuR/zVca
+        BopvU6ExkyzYFJhn6TVuSEqgTA==
+X-Google-Smtp-Source: ABdhPJyplTOh79M3+bB6N3SgTZlTu+XSpnp6lzlPNLrGB2iHs6PVOXKuYGyBm9zQpxMkTw5huPIf2A==
+X-Received: by 2002:a17:906:2759:: with SMTP id a25mr1373890ejd.122.1616440995158;
+        Mon, 22 Mar 2021 12:23:15 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id u59sm12384865edc.73.2021.03.22.12.23.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 12:23:14 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 19:23:13 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ingo Molnar <mingo@elte.hu>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         kgdb-bugreport@lists.sourceforge.net,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] kgdb: fix gcc-11 warning on indentation
+Message-ID: <20210322192313.fw46yficc7mfjinu@maple.lan>
+References: <20210322164308.827846-1-arnd@kernel.org>
+ <CAD=FV=WY6yxx+vkH+UU4VYei29xBftdnyRBE1OpEELmJ-kLfFg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=WY6yxx+vkH+UU4VYei29xBftdnyRBE1OpEELmJ-kLfFg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Mar 22, 2021 at 10:04:57AM -0700, Doug Anderson wrote:
+> > +       if (verbose)                    \
+> > +               printk(KERN_INFO a);    \
+> > +} while (0)
+> > +#define v2printk(a...) do {            \
+> > +       if (verbose > 1)                \
+> > +               printk(KERN_INFO a);    \
+> > +       touch_nmi_watchdog();           \
+> 
+> This touch_nmi_watchdog() is pretty wonky. I guess maybe the
+> assumption is that the "verbose level 2" prints are so chatty that the
+> printing might prevent us from touching the NMI watchdog in the way
+> that we normally do and thus we need an extra one here?
+> 
+> ...but, in that case, I think the old code was _wrong_ and that the
+> intention was that the touch_nmi_watchdog() should only be if "verose
+> > 1" as the indentation implied. There doesn't feel like a reason to
+> touch the watchdog if we're not doing anything slow.
 
-On Mon, Mar 22, 2021 at 11:19 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Mon, Mar 22, 2021 at 6:07 PM Doug Anderson <dianders@chromium.org> wrote:
-> > On Mon, Mar 22, 2021 at 9:43 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > -#define v1printk(a...) do { \
-> > > -       if (verbose) \
-> > > -               printk(KERN_INFO a); \
-> > > -       } while (0)
-> > > -#define v2printk(a...) do { \
-> > > -       if (verbose > 1) \
-> > > -               printk(KERN_INFO a); \
-> > > -               touch_nmi_watchdog();   \
-> > > -       } while (0)
-> > > -#define eprintk(a...) do { \
-> > > -               printk(KERN_ERR a); \
-> > > -               WARN_ON(1); \
-> > > -       } while (0)
-> > > +#define v1printk(a...) do {            \
-> >
-> > nit: In addition to the indentation change you're also lining up the
-> > backslashes. Is that just personal preference, or is there some
-> > official recommendation in the kernel? I don't really have a strong
-> > opinion either way (IMO each style has its advantages).
->
-> I don't think there is an official recommendation, I just think the
-> style is more common, and it helped my figure out what the
-> indentation should look like in this case.
+I'm not entirely sure I'd like to second guess the intent here. This
+macro has been there since this file was introduced but several callers
+have been added since then. We have to guess their intent too!
 
-OK, makes sense. I just wasn't sure if there was some standard that I
-wasn't aware of. Given that you have to touch all these lines anyway
-then making them all pretty like this seems fine to me.
+So, whilst I think you are probably right, v2printk() does appears in
+places such as the single step test loop which makes it pretty
+difficult to decide by inspection whether or not touching the watchdog
+is useful.
+
+It's something that could be further examined... but I'd be a little
+reluctant to combine it directly with a whitespace change!
 
 
-> > > +       if (verbose)                    \
-> > > +               printk(KERN_INFO a);    \
-> > > +} while (0)
-> > > +#define v2printk(a...) do {            \
-> > > +       if (verbose > 1)                \
-> > > +               printk(KERN_INFO a);    \
-> > > +       touch_nmi_watchdog();           \
-> >
-> > This touch_nmi_watchdog() is pretty wonky. I guess maybe the
-> > assumption is that the "verbose level 2" prints are so chatty that the
-> > printing might prevent us from touching the NMI watchdog in the way
-> > that we normally do and thus we need an extra one here?
-> >
-> > ...but, in that case, I think the old code was _wrong_ and that the
-> > intention was that the touch_nmi_watchdog() should only be if "verose
-> > > 1" as the indentation implied. There doesn't feel like a reason to
-> > touch the watchdog if we're not doing anything slow.
->
-> No idea. It was like this in Jason's original version from 2008.
-
-Yeah, I noticed the same. I'd be curious what Daneil (or Jason if he's
-reading) says. I suppose i could always wait until your patch lands
-and then send a new patch that puts it inside the "if" statement and
-we can debate it then.
-
--Doug
+Daniel.
