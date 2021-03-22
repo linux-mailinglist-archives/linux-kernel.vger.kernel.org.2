@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E613F344550
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA803446AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhCVNQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232845AbhCVNFr (ORCPT
+        id S230133AbhCVOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:07:36 -0400
+Received: from gateway31.websitewelcome.com ([192.185.143.36]:17204 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231252AbhCVOHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:05:47 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0B2C061756;
-        Mon, 22 Mar 2021 06:05:47 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id y5so8820286qkl.9;
-        Mon, 22 Mar 2021 06:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=801QFsuMh5/bXT7iDGLM8P3LIQI2jpvEZ62QIecOMdw=;
-        b=g7aI/jvx2znrl1EyXPcFMm56+a5ShivFYZZ9ennJJNFYkMLttLz8Vj7hCqf7nA8MIf
-         NcOoj3cd0rR8rYJYFNH2wrHub0iLAhwMp16IPriKiNqC1ohnCWyQJzC6btBsnbM0JPej
-         p4o4sMERKZVv0dJbh6m2Qk1p0OP+OmbDq/VDd6UKcsdCwhn76ypRmjNmrtFgnUlJ9vxK
-         //DULu3p9tfRRIswQxfQG9bTpGs2N4qi+yGzLYtNGrfpt/m8b2FaEqev5Q8/XwlhW4R6
-         ikoygTYVztwcUI3QDjbiT7BDZBVI5V6p2Tyz89jvbBBPSpnw4KxN7/1uU6/sm/an/F0k
-         cYWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=801QFsuMh5/bXT7iDGLM8P3LIQI2jpvEZ62QIecOMdw=;
-        b=HB2OPEx2NkJ/w61fZdCDmyTIe5IaV0iJeKk0lvZf4N8/TWQQzi0wubyup0fgXB/TdH
-         IxgQ3PAUg7mzwzaMZX2kQ98t8A+LSYcGrIHbRzmZVB7wh0NfPvECqo0h0+jNkgfX1dKg
-         MOSROBcCQTX5mz7QvThgq4NDeC5eBYQnMVg8cVJ/K1Fwns8ByDVw5mujzIdo5G8w2085
-         +f89pyqgd/PNjtFivxjWXoPPeZZS5CaO7ycWE0ILHamOXyQcCwcA4wHAXmKEu9ZqPVnE
-         3TpEVVtwNG8Z9zmqNtluqx1vuRs/3qKVl8kXvr8/MV1zAV8B1PZ2HxOwDHeO1TftavfO
-         RT0Q==
-X-Gm-Message-State: AOAM531FKLPaPH93nNtFWjcJvVrSVzuhMKlD+bNUNfEc143pGnz4APUA
-        gJeKK7jGOx7WRyppuj2jqj4=
-X-Google-Smtp-Source: ABdhPJyEEhJj8SFIQBJSsr3d4eJcQbj9s3I/grK8x+/NEg7D0hoRx+x1KVAgNoIEtF5eSZAqa3Yv3g==
-X-Received: by 2002:a05:620a:553:: with SMTP id o19mr2511279qko.491.1616418346402;
-        Mon, 22 Mar 2021 06:05:46 -0700 (PDT)
-Received: from localhost.localdomain ([143.244.44.200])
-        by smtp.gmail.com with ESMTPSA id r125sm10703324qkf.132.2021.03.22.06.05.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 06:05:45 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] s390/crc32-vx: Couple of typo fixes
-Date:   Mon, 22 Mar 2021 18:35:33 +0530
-Message-Id: <20210322130533.3805976-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Mon, 22 Mar 2021 10:07:15 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 3FB9D10AC7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 09:07:12 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id OLD6lmvAab8LyOLD6lEDP1; Mon, 22 Mar 2021 09:07:12 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=cUnSQxPQKJaaBLNa5F4iOd/DRePu6SyoFMhjlo3t0aY=; b=Wdg5z/ykxmBWAAPH5LBsYOWdvx
+        RIrc2FuXw3dVtbZlZN4A9qkmNkhbCgiA3ILklNr2NXdL618tZNWK3jvKs5bPZ/bCV+h/LjlhrhJK/
+        efaOOvs0P+tafocRNUnC+jmsVDWwgcxgBs2uyLdXgpD6cGDyfS4iwRmhrUEAlBSl2kjYFxLZ97q4z
+        0gh8LGx06x8/z2pauN3A1nanrpZn7ts5/9ne0gPn4ybMmO17yhjv+gaxuve6N/vXmFg9XVrYOalQh
+        68yIuFtFXnoUQ1kZfjINe+OppzJK0KRNbxSqSyKx3fKBAika7OfMHlrWK/9Q9a2320ebT7BpsRfM9
+        BH7llxjg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:55746 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lOLD5-000Q4E-Mq; Mon, 22 Mar 2021 09:07:11 -0500
+Subject: Re: [PATCH][next] drm/amd/display: Fix sizeof arguments in
+ bw_calcs_init()
+To:     "Chen, Guchun" <Guchun.Chen@amd.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210322125050.GA236782@embeddedor>
+ <CY4PR12MB128770E0A2502A3CA0A26650F1659@CY4PR12MB1287.namprd12.prod.outlook.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <408ff15d-81ba-0a0b-113d-96d5cb49a2a6@embeddedor.com>
+Date:   Mon, 22 Mar 2021 08:07:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CY4PR12MB128770E0A2502A3CA0A26650F1659@CY4PR12MB1287.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lOLD5-000Q4E-Mq
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:55746
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 12
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/defintions/definitions/
-s/intermedate/intermediate/
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/s390/crypto/crc32be-vx.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 3/22/21 09:04, Chen, Guchun wrote:
+> [AMD Public Use]
+> 
+> Thanks for your patch, Silva. The issue has been fixed by " a5c6007e20e1 drm/amd/display: fix modprobe failure on vega series".
 
-diff --git a/arch/s390/crypto/crc32be-vx.S b/arch/s390/crypto/crc32be-vx.S
-index 0099044e2c86..6b3d1009c392 100644
---- a/arch/s390/crypto/crc32be-vx.S
-+++ b/arch/s390/crypto/crc32be-vx.S
-@@ -32,7 +32,7 @@
-  * process particular chunks of the input data stream in parallel.
-  *
-  * For the CRC-32 variants, the constants are precomputed according to
-- * these defintions:
-+ * these definitions:
-  *
-  *	R1 = x4*128+64 mod P(x)
-  *	R2 = x4*128    mod P(x)
-@@ -189,7 +189,7 @@ ENTRY(crc32_be_vgfm_16)
- 	 * Note: To compensate the division by x^32, use the vector unpack
- 	 * instruction to move the leftmost word into the leftmost doubleword
- 	 * of the vector register.  The rightmost doubleword is multiplied
--	 * with zero to not contribute to the intermedate results.
-+	 * with zero to not contribute to the intermediate results.
- 	 */
+Great. :)
+Good to know this is already fixed.
 
- 	/* T1(x) = floor( R(x) / x^32 ) GF2MUL u */
+Thanks!
 --
-2.31.0
-
+Gustavo
