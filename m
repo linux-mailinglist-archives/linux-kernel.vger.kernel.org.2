@@ -2,173 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D413343BF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A511A343BF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCVIkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhCVIjy (ORCPT
+        id S229883AbhCVIko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:40:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13655 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhCVIkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:39:54 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132EFC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:39:52 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id x21so18238491eds.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 01:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WosURJkM/PKSCOw9xPERzj9fjDA03BThhpk0x/4VEXg=;
-        b=Xmw1I0kVglEkkyuysEP1PPTcEa0qNfUT+YiRUf21xzme6vAcGVqGQFhILRd5KF6HQT
-         oAFfhdwqyw/7k+Z2aHghIGttZFXr1qMivDnMOZCpx8s5pSWybC9p5wS1T/12dE6axlRE
-         XAlEAguYbFxtFpFCih0t7ANGSfFkAXJPAyhS+Jg6Q8zR7vgp8MQJsJZwV5QH4Lv271/e
-         lMaD1/D08eqYnnkHs2fb3tKFeeRsUuQqLNmnsRV+6ktK6/aHy3TmEZc2QmGgIgILxbUb
-         0fyOqeOpSaLYJh4YvLz/ximI7JeQMp89Wpc2roOfrbULHCS6TVt3Xn9qBMNloAPNH+ra
-         IZWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WosURJkM/PKSCOw9xPERzj9fjDA03BThhpk0x/4VEXg=;
-        b=o/UA7Ya2Gmbsx58V4BJzUqgn6iKA3tduhH8Rhs8JoJqPeF8EOrGI/DVRqmk7KFv6dN
-         Qn2y5j6+X6/fwKckKNDMAZwppqET97uaYPkB1Q6TSCX73Gqc2Q1LDogqfzj8jWtLs6hi
-         7N74WincWROerNdxVSTBsaGzspo2E3l9F3cIcyiaoZiOzH4JHWs2FoJ8upLmRXDHxmed
-         FhJRvWiEfyLwxK7Sqxf5HIE1n0K0gBhOZSKUBTxmsHZiXRbb7PLOH8MYDamgt64l+fdw
-         /zA4dAVu4GRw9ABKWbUt2+qQpgnSjGFFsj7aoXtjdzDq+R2pg7wra7I5RACdZJAGL/Qo
-         JExA==
-X-Gm-Message-State: AOAM531JQ5jebqkXDNCwm+AsEDu5ncDCjQ4+6QfXOHI2sKpmu0iP5v/a
-        Mvb46DIPyQncAPdRMDEfUDzKbA==
-X-Google-Smtp-Source: ABdhPJw6q+bFZcIwo/y4uN0oE8skM7XUnmmeJDRr9QTv/JOzMN54LLFvW9KELWO6DcVO4jr2DhMgiA==
-X-Received: by 2002:a05:6402:1713:: with SMTP id y19mr23148734edu.52.1616402390537;
-        Mon, 22 Mar 2021 01:39:50 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id ga28sm4809735ejc.82.2021.03.22.01.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 01:39:50 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 08:39:47 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Roland Scheidegger <sroland@vmware.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Anthony Koo <Anthony.Koo@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Jeremy Kolb <jkolb@brandeis.edu>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Leo Li <sunpeng.li@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Lyude Paul <lyude@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>
-Subject: Re: [RESEND 00/53] Rid GPU from W=1 warnings
-Message-ID: <20210322083947.GM2916463@dell>
-References: <20210303134319.3160762-1-lee.jones@linaro.org>
- <16d4300e-bf29-1e85-317b-53d257890cb9@vmware.com>
- <20210308091932.GB4931@dell>
- <YEobySvG0zPs9xhc@phenom.ffwll.local>
- <20210311135152.GT701493@dell>
- <20210317081729.GH701493@dell>
- <CAKMK7uEibsgXXTEM1d2CGSswp-koouPSouseP_rwLHTdpxfRpw@mail.gmail.com>
- <CAKMK7uHkJGDL8k3FfAqAM78honZR0euMcacW8UpdPZfS1J-7cA@mail.gmail.com>
- <20210319082407.GG2916463@dell>
- <YFTlhh1ZSFffO+Nr@phenom.ffwll.local>
+        Mon, 22 Mar 2021 04:40:42 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F3nvM1KDtznV3M;
+        Mon, 22 Mar 2021 16:38:07 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Mon, 22 Mar 2021
+ 16:40:26 +0800
+Subject: Re: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as
+ NODATA
+To:     John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        "Jolly Shah" <jollys@google.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <a.darwish@linutronix.de>,
+        <dan.carpenter@oracle.com>, <b.zolnierkie@samsung.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210318225632.2481291-1-jollys@google.com>
+ <5e7ea537-86ab-f654-1df4-765364116e18@huawei.com>
+ <993f97da-01f0-262b-3fbe-66fa1769698a@huawei.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <f74c0003-dbbf-5b4a-87f2-cd5571ea412e@huawei.com>
+Date:   Mon, 22 Mar 2021 16:40:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <993f97da-01f0-262b-3fbe-66fa1769698a@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFTlhh1ZSFffO+Nr@phenom.ffwll.local>
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021, Daniel Vetter wrote:
 
-> On Fri, Mar 19, 2021 at 08:24:07AM +0000, Lee Jones wrote:
-> > On Thu, 18 Mar 2021, Daniel Vetter wrote:
-> > 
-> > > On Wed, Mar 17, 2021 at 9:32 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > >
-> > > > On Wed, Mar 17, 2021 at 9:17 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > >
-> > > > > On Thu, 11 Mar 2021, Lee Jones wrote:
-> > > > >
-> > > > > > On Thu, 11 Mar 2021, Daniel Vetter wrote:
-> > > > > >
-> > > > > > > On Mon, Mar 08, 2021 at 09:19:32AM +0000, Lee Jones wrote:
-> > > > > > > > On Fri, 05 Mar 2021, Roland Scheidegger wrote:
-> > > > > > > >
-> > > > > > > > > The vmwgfx ones look all good to me, so for
-> > > > > > > > > 23-53: Reviewed-by: Roland Scheidegger <sroland@vmware.com>
-> > > > > > > > > That said, they were already signed off by Zack, so not sure what
-> > > > > > > > > happened here.
-> > > > > > > >
-> > > > > > > > Yes, they were accepted at one point, then dropped without a reason.
-> > > > > > > >
-> > > > > > > > Since I rebased onto the latest -next, I had to pluck them back out of
-> > > > > > > > a previous one.
-> > > > > > >
-> > > > > > > They should show up in linux-next again. We merge patches for next merge
-> > > > > > > window even during the current merge window, but need to make sure they
-> > > > > > > don't pollute linux-next. Occasionally the cut off is wrong so patches
-> > > > > > > show up, and then get pulled again.
-> > > > > > >
-> > > > > > > Unfortunately especially the 5.12 merge cycle was very wobbly due to some
-> > > > > > > confusion here. But your patches should all be in linux-next again (they
-> > > > > > > are queued up for 5.13 in drm-misc-next, I checked that).
-> > > > > > >
-> > > > > > > Sorry for the confusion here.
-> > > > > >
-> > > > > > Oh, I see.  Well so long as they don't get dropped, I'll be happy.
-> > > > > >
-> > > > > > Thanks for the explanation Daniel
-> > > > >
-> > > > > After rebasing today, all of my GPU patches have remained.  Would
-> > > > > someone be kind enough to check that everything is still in order
-> > > > > please?
-> > > >
-> > > > It's still broken somehow. I've kiced Maxime and Maarten again,
-> > > > they're also on this thread.
-> > > 
-> > > You're patches have made it into drm-next meanwhile, so they should
-> > > show up in linux-next through that tree at least. Except if that one
-> > > also has some trouble.
-> > 
-> > Thanks for letting me know.
-> > 
-> > I see some patches made it back in, others didn't.
-> > 
-> > I'll resend the stragglers - bear with.
-> 
-> The vmwgfx ones should all be back, the others I guess just werent ever
-> applied. I'll vacuum them all up if you resend. Apologies for the wobbly
-> ride.
+On 2021/3/20 20:14, John Garry wrote:
+> On 19/03/2021 01:43, Jason Yan wrote:
+>>
+>>
+>> 在 2021/3/19 6:56, Jolly Shah 写道:
+>>> When the cache_type for the scsi device is changed, the scsi layer
+>>> issues a MODE_SELECT command. The caching mode details are communicated
+>>> via a request buffer associated with the scsi command with data
+>>> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
+>>> reaches the libata layer, as a part of generic initial setup, libata
+>>> layer sets up the scatterlist for the command using the scsi command
+>>> (ata_scsi_qc_new). This command is then translated by the libata layer
+>>> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
+>>> treats this as a non data command (ata_mselect_caching), since it only
+>>> needs an ata taskfile to pass the caching on/off information to the
+>>> device. It does not need the scatterlist that has been setup, so it 
+>>> does
+>>> not perform dma_map_sg on the scatterlist (ata_qc_issue). 
+>>> Unfortunately,
+>>> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
+>>> layer sees it as a non data command with a scatterlist. It cannot
+>>> extract the correct dma length, since the scatterlist has not been
+>>> mapped with dma_map_sg for a DMA operation. When this partially
+>>> constructed SAS task reaches pm80xx LLDD, it results in below warning.
+>>>
+>>> "pm80xx_chip_sata_req 6058: The sg list address
+>>> start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
+>>> end_addr_low=0xffffffff has crossed 4G boundary"
+>>>
+>>> This patch updates code to handle ata non data commands separately so
+>>> num_scatter and total_xfer_len remain 0.
+>>>
+>>> Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if 
+>>> libata marks qc as NODATA")
+>>> Signed-off-by: Jolly Shah <jollys@google.com>
+>
+> Reviewed-by: John Garry <john.garry@huawei.com>
+>
+> @luojiaxing, can you please test this?
 
-NP, it happens.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Sure, let me take a look, and reply the test result here later
+
+
+Thanks
+
+Jiaxing
+
+
+>
+>>> ---
+>>> v2:
+>>> - reorganized code to avoid setting num_scatter twice
+>>>
+>>>   drivers/scsi/libsas/sas_ata.c | 9 ++++-----
+>>>   1 file changed, 4 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/scsi/libsas/sas_ata.c 
+>>> b/drivers/scsi/libsas/sas_ata.c
+>>> index 024e5a550759..8b9a39077dba 100644
+>>> --- a/drivers/scsi/libsas/sas_ata.c
+>>> +++ b/drivers/scsi/libsas/sas_ata.c
+>>> @@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct 
+>>> ata_queued_cmd *qc)
+>>>           memcpy(task->ata_task.atapi_packet, qc->cdb, 
+>>> qc->dev->cdb_len);
+>>>           task->total_xfer_len = qc->nbytes;
+>>>           task->num_scatter = qc->n_elem;
+>>> +        task->data_dir = qc->dma_dir;
+>>> +    } else if (qc->tf.protocol == ATA_PROT_NODATA) {
+>>> +        task->data_dir = DMA_NONE;
+>>
+>> Hi Jolly & John,
+>>
+>> We only set DMA_NONE for ATA_PROT_NODATA, I'm curious about why 
+>> ATA_PROT_NCQ_NODATA and ATAPI_PROT_NODATA do not need to set DMA_NONE?
+>
+> So we can see something like atapi_eh_tur() -> ata_exec_internal(), 
+> which is a ATAPI NONDATA and has DMA_NONE, so should be ok.
+>
+> Other cases, like those using the xlate function on the qc for 
+> ATA_PROT_NCQ_NODATA, could be checked further.
+>
+> For now, we're just trying to fix the fix.
+>
+>>
+>> Thanks,
+>> Jason
+>>
+>>
+>>>       } else {
+>>>           for_each_sg(qc->sg, sg, qc->n_elem, si)
+>>>               xfer += sg_dma_len(sg);
+>>>           task->total_xfer_len = xfer;
+>>>           task->num_scatter = si;
+>>> -    }
+>>> -
+>>> -    if (qc->tf.protocol == ATA_PROT_NODATA)
+>>> -        task->data_dir = DMA_NONE;
+>>> -    else
+>>>           task->data_dir = qc->dma_dir;
+>>> +    }
+>>>       task->scatter = qc->sg;
+>>>       task->ata_task.retry_count = 1;
+>>>       task->task_state_flags = SAS_TASK_STATE_PENDING;
+>>>
+>> .
+>
+>
+> .
+>
+
