@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01521344226
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97949344360
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhCVMjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:39:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57520 "EHLO mail.kernel.org"
+        id S230484AbhCVMt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:49:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230425AbhCVMeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:34:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 845B7619A1;
-        Mon, 22 Mar 2021 12:34:15 +0000 (UTC)
+        id S231749AbhCVMlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:41:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6686B6191A;
+        Mon, 22 Mar 2021 12:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416456;
-        bh=OoSPEFPINv6Vx+HXN6zcG0dnP7MfFtDo4GM5s4E6C8g=;
+        s=korg; t=1616416763;
+        bh=0PoQavVuGTknLHfldFaFZTD4CViIkpBtQw2co5v1IB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZhxYcjHMrpBRgQnsEGgCOBNzMbtJHc8AscI9NnN0odzbCeN5X/W2Vz6PImO1Nvssd
-         bBTKTGXKa6hxOWfFN5IkdNM/LzUnpsXlSissB5kHW9RMpr4AaL+Y3UkLvRaxFsFRK4
-         LvGectE6rlSL/UwxplEXeGae6Di6/WuF2/do1Q0w=
+        b=kVLX7J6h5aqk6K+Of36rpxPtFRA3N51WXHHiT0+pPqMOs76gCQWw/6xFhugSXLFVB
+         aIeCskeGaKLU8tfGRMlPHL5Gfnl76DHK36Y/MXuqvHoi6LLuSVThfdxRlqnpNUqhRn
+         8kMRFHrISuGi5F6PqF4Fj/GhtltW8529CahvI2rU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Matthias Schwarzott <zzam@gentoo.org>
-Subject: [PATCH 5.11 078/120] usb-storage: Add quirk to defeat Kindles automatic unload
-Date:   Mon, 22 Mar 2021 13:27:41 +0100
-Message-Id: <20210322121932.277196402@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 105/157] io_uring: dont attempt IO reissue from the ring exit path
+Date:   Mon, 22 Mar 2021 13:27:42 +0100
+Message-Id: <20210322121937.100575291@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,93 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 546aa0e4ea6ed81b6c51baeebc4364542fa3f3a7 upstream.
+[ Upstream commit 7c977a58dc83366e488c217fd88b1469d242bee5 ]
 
-Matthias reports that the Amazon Kindle automatically removes its
-emulated media if it doesn't receive another SCSI command within about
-one second after a SYNCHRONIZE CACHE.  It does so even when the host
-has sent a PREVENT MEDIUM REMOVAL command.  The reason for this
-behavior isn't clear, although it's not hard to make some guesses.
+If we're exiting the ring, just let the IO fail with -EAGAIN as nobody
+will care anyway. It's not the right context to reissue from.
 
-At any rate, the results can be unexpected for anyone who tries to
-access the Kindle in an unusual fashion, and in theory they can lead
-to data loss (for example, if one file is closed and synchronized
-while other files are still in the middle of being written).
-
-To avoid such problems, this patch creates a new usb-storage quirks
-flag telling the driver always to issue a REQUEST SENSE following a
-SYNCHRONIZE CACHE command, and adds an unusual_devs entry for the
-Kindle with the flag set.  This is sufficient to prevent the Kindle
-from doing its automatic unload, without interfering with proper
-operation.
-
-Another possible way to deal with this would be to increase the
-frequency of TEST UNIT READY polling that the kernel normally carries
-out for removable-media storage devices.  However that would increase
-the overall load on the system and it is not as reliable, because the
-user can override the polling interval.  Changing the driver's
-behavior is safer and has minimal overhead.
-
-CC: <stable@vger.kernel.org>
-Reported-and-tested-by: Matthias Schwarzott <zzam@gentoo.org>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20210317190654.GA497856@rowland.harvard.edu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/storage/transport.c    |    7 +++++++
- drivers/usb/storage/unusual_devs.h |   12 ++++++++++++
- include/linux/usb_usual.h          |    2 ++
- 3 files changed, 21 insertions(+)
+ fs/io_uring.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/storage/transport.c
-+++ b/drivers/usb/storage/transport.c
-@@ -656,6 +656,13 @@ void usb_stor_invoke_transport(struct sc
- 		need_auto_sense = 1;
- 	}
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 5746998799ab..7625b3e2db2c 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2617,6 +2617,13 @@ static bool io_rw_reissue(struct io_kiocb *req, long res)
+ 		return false;
+ 	if ((res != -EAGAIN && res != -EOPNOTSUPP) || io_wq_current_is_worker())
+ 		return false;
++	/*
++	 * If ref is dying, we might be running poll reap from the exit work.
++	 * Don't attempt to reissue from that path, just let it fail with
++	 * -EAGAIN.
++	 */
++	if (percpu_ref_is_dying(&req->ctx->refs))
++		return false;
  
-+	/* Some devices (Kindle) require another command after SYNC CACHE */
-+	if ((us->fflags & US_FL_SENSE_AFTER_SYNC) &&
-+			srb->cmnd[0] == SYNCHRONIZE_CACHE) {
-+		usb_stor_dbg(us, "-- sense after SYNC CACHE\n");
-+		need_auto_sense = 1;
-+	}
-+
- 	/*
- 	 * If we have a failure, we're going to do a REQUEST_SENSE 
- 	 * automatically.  Note that we differentiate between a command
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -2212,6 +2212,18 @@ UNUSUAL_DEV( 0x1908, 0x3335, 0x0200, 0x0
- 		US_FL_NO_READ_DISC_INFO ),
+ 	ret = io_sq_thread_acquire_mm(req->ctx, req);
  
- /*
-+ * Reported by Matthias Schwarzott <zzam@gentoo.org>
-+ * The Amazon Kindle treats SYNCHRONIZE CACHE as an indication that
-+ * the host may be finished with it, and automatically ejects its
-+ * emulated media unless it receives another command within one second.
-+ */
-+UNUSUAL_DEV( 0x1949, 0x0004, 0x0000, 0x9999,
-+		"Amazon",
-+		"Kindle",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_SENSE_AFTER_SYNC ),
-+
-+/*
-  * Reported by Oliver Neukum <oneukum@suse.com>
-  * This device morphes spontaneously into another device if the access
-  * pattern of Windows isn't followed. Thus writable media would be dirty
---- a/include/linux/usb_usual.h
-+++ b/include/linux/usb_usual.h
-@@ -86,6 +86,8 @@
- 		/* lies about caching, so always sync */	\
- 	US_FLAG(NO_SAME, 0x40000000)				\
- 		/* Cannot handle WRITE_SAME */			\
-+	US_FLAG(SENSE_AFTER_SYNC, 0x80000000)			\
-+		/* Do REQUEST_SENSE after SYNCHRONIZE_CACHE */	\
- 
- #define US_FLAG(name, value)	US_FL_##name = value ,
- enum { US_DO_ALL_FLAGS };
+-- 
+2.30.1
+
 
 
