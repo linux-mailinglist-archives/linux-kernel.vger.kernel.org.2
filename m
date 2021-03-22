@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C413436F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAF0343705
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCVDBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:01:46 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36628 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229761AbhCVDBM (ORCPT
+        id S229913AbhCVDCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhCVDBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:01:12 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12M30rIo010178
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 21 Mar 2021 23:00:54 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6616815C39CA; Sun, 21 Mar 2021 23:00:53 -0400 (EDT)
-Date:   Sun, 21 Mar 2021 23:00:53 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] ext4 fixes for v5.12
-Message-ID: <YFgIZe4vMRDm+g8u@mit.edu>
-References: <YFeQ9eBFn5JELyYo@mit.edu>
- <CAHk-=wjahvxdYmEgZEOqSSOVdTP-Njqbh6e8=PDVtt4Md7qHNg@mail.gmail.com>
- <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
+        Sun, 21 Mar 2021 23:01:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A49CC061574;
+        Sun, 21 Mar 2021 20:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=AbUtbbw+++6dvKZRwYZxzd/vcNNKSLCJwxvZNKR2U74=; b=fjcPpKY3kVLV8XG8xhpuH1l5Ut
+        PobnVEpAd9gENsqJHY9hP1v2vwzP67y7Fyp0DOfUfqsIgJrBuD3j17ohl5xaI1ehGbK8n0mJ3dn0I
+        hK3rAq/cnlvFr2KTFfYt535gAHR/47jAuJbdF4CPMaMmxEuEdF9P2ozXeiOsKwEW0AKoxsTzAu/Ei
+        DZFSUa5vvEZdRevc8bVXHelAirpbauCrGZszeWktGOQucWZUNMNd5ef487vu9tJhHQ0TEbW1ozP7Y
+        su8Q8theLQbgiHySN+i0AJt9Sy4mv8AAev5Y3FdA84zRIL1d1ZVnmtLs1RYVF6f8euN0pRijnvdOr
+        wpbqaung==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOAp3-00AjrX-DI; Mon, 22 Mar 2021 03:01:42 +0000
+Subject: Re: [PATCH] media: Fix a typo
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210322022431.3992890-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0124fc9c-6d96-e9ce-8c69-7362871fdecf@infradead.org>
+Date:   Sun, 21 Mar 2021 20:01:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <20210322022431.3992890-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ca33cb6a-9be9-1a2c-efa3-1dc5996897f6@huawei.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:33:54AM +0800, zhangyi (F) wrote:
+On 3/21/21 7:24 PM, Bhaskar Chowdhury wrote:
 > 
-> I will use my real name "Yi Zhang" next time.
->
+> s/Sysytem/System/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Hi Yi,
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-I think what Linus was suggsting was that if people wanted, they could
-do something like this in their git commits:
+> ---
+>  drivers/staging/media/atomisp/i2c/gc2235.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/i2c/gc2235.h b/drivers/staging/media/atomisp/i2c/gc2235.h
+> index 68252b8f516d..ba5db1230033 100644
+> --- a/drivers/staging/media/atomisp/i2c/gc2235.h
+> +++ b/drivers/staging/media/atomisp/i2c/gc2235.h
+> @@ -218,7 +218,7 @@ static struct gc2235_reg const gc2235_stream_off[] = {
+>  };
+> 
+>  static struct gc2235_reg const gc2235_init_settings[] = {
+> -	/* Sysytem */
+> +	/* System */
+>  	{ GC2235_8BIT, 0xfe, 0x80 },
+>  	{ GC2235_8BIT, 0xfe, 0x80 },
+>  	{ GC2235_8BIT, 0xfe, 0x80 },
+> --
 
-From: 曹子德(Theodore Y Ts'o) <tytso@mit.edu>
 
-I don't do this because my legal name is actually Theodore Yue Tak
-Ts'o (where Ts'o Yue Tak is the standard romanization of my Chinese
-name in Cantonese --- my parents were from Hong Kong), and even though
-Cantonese is technically the first langauge I learned as a child, at
-this point I'm probably more fluent in Spanish (my third language)
-than Cantonese.  :-)
+-- 
+~Randy
 
-In any case, git and e-mail should be able to handle non-Roman
-characters so if you want to insert your name in Chinese in your Git
-authorship, please feel free to do so.  Or not --- it's totally up to
-you.
-
-Cheers,
-
-					- Ted
