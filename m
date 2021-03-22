@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7429F344D80
+	by mail.lfdr.de (Postfix) with ESMTP id E6042344D81
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhCVRg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:36:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhCVRgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:36:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64EA961930;
-        Mon, 22 Mar 2021 17:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616434592;
-        bh=nsiN0ccJDMcIaK2Y/72J2a7a9Rr7WSaIOkvhW+vl9iE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OpDSRZwWLECkjWk+rbp6M4kwjOfTHiiv52IsuESLLqislGir6dLUjg+vgNL3CvxoN
-         U1ypg2lLX+0O2EQ/2K9A4Rh8YXKnEAOiBYOkh12KsyBUMJpIuzRsbK5UkHoFXFonQf
-         C3JDGTXgFj+ZlhxjfIiOHjnU6jh6bl/jYnZwryIymwgtqiG1KyMhTWBj4wP6ekQkZv
-         W1MxGF/2kR0sGCWT+15l7oq5jQtZ7FP50rk2ieWX/fHIzDXXKh+NiT2m9ek0iBpUVf
-         KoTgyZbpMyerR+Y2fWFITlNMSR2CGV8DwvQXS3aTXnpdcTJW+PU2X18A4DM8K7Fche
-         AiFeHkJFPb53A==
-Date:   Mon, 22 Mar 2021 18:36:24 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        jbaron@akamai.com, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
-Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
-Message-ID: <YFjVmFgXdsIIkGRV@gunter>
-References: <20210318113156.407406787@infradead.org>
- <20210318113610.739542434@infradead.org>
- <20210318161308.vu3dhezp2lczch6f@treble>
- <YFOGvmWiJUDOHy7D@hirez.programming.kicks-ass.net>
- <YFSfwimq/VLmo1Lw@hirez.programming.kicks-ass.net>
- <20210319140005.7ececb11@gandalf.local.home>
- <YFT8wDrWvfpQoIWw@hirez.programming.kicks-ass.net>
- <20210319165749.0f3c8281@gandalf.local.home>
- <YFiuphGw0RKehWsQ@gunter>
- <YFjLqKV9GxGSXcAr@hirez.programming.kicks-ass.net>
+        id S232107AbhCVRhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:37:02 -0400
+Received: from mail-il1-f176.google.com ([209.85.166.176]:34309 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhCVRgk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 13:36:40 -0400
+Received: by mail-il1-f176.google.com with SMTP id h1so15620402ilr.1;
+        Mon, 22 Mar 2021 10:36:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xQUjNuHYH7XMWAm47YqJRg5aTzrqz/XmeXkLwUmyQa4=;
+        b=OtP42r32dBlHszlNvirK9K2DtxwB0diOQqw0xqBhmrHresWXEEhgOKH6gxedaoq+JV
+         +k/R3dIaUlfI4ei4YL+Rng82P+aKy3EG/qSPi5aKXVkcdfyL0LiKtzSPOG2q2TdDixhN
+         u3aDHlYcQ+UG2pfL8pVmcYNgCnKs51D85Pk3nnmnaS4HS6N1pvPmIeEAdMKN8NfF+DEl
+         +qosuOPXTEnRa1FRfCddUnZSS9fcqF4a6BeYnyt8WAeiCXpvNBRJhFzRo8aFa5fsScR1
+         re5FZJpzRBcrjZFeVB82K06yFyKxsUriqlUB1wvbTSr8yAs3GaztRKiCnqdD1aKXyb3B
+         DrlA==
+X-Gm-Message-State: AOAM530MayX+fBVr6/TJyheomHIgtEF/fUQzbuQv0WIM/Tj+di50nCjO
+        Ehi5VV84wE/WD69okr54Eg==
+X-Google-Smtp-Source: ABdhPJz0JG49VkPhTiL2TvHFN9lMzCKwmiz4gcgj6j7qQOhQ3jUPxoFkxwEQmOy2s0WF8gnhh5Tufw==
+X-Received: by 2002:a92:b003:: with SMTP id x3mr996149ilh.15.1616434599213;
+        Mon, 22 Mar 2021 10:36:39 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m5sm8194929ilq.65.2021.03.22.10.36.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 10:36:38 -0700 (PDT)
+Received: (nullmailer pid 2885394 invoked by uid 1000);
+        Mon, 22 Mar 2021 17:36:36 -0000
+Date:   Mon, 22 Mar 2021 11:36:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        devicetree@vger.kernel.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v7 2/3] devicetree: nvmem: nvmem: drop $nodename
+ restriction
+Message-ID: <20210322173636.GA2885364@robh.at.kernel.org>
+References: <20210312062830.20548-1-ansuelsmth@gmail.com>
+ <20210312062830.20548-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFjLqKV9GxGSXcAr@hirez.programming.kicks-ass.net>
-X-OS:   Linux gunter 5.11.2-1-default x86_64
+In-Reply-To: <20210312062830.20548-2-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Peter Zijlstra [22/03/21 17:54 +0100]:
->On Mon, Mar 22, 2021 at 03:50:14PM +0100, Jessica Yu wrote:
->
->> It should be doable. If you want the exit sections to be treated the same as
->> module init, the following patch should stuff any exit sections into the module
->> init "region" (completely untested). Hence it should be freed together with the
->> init sections and it would identify as init through within_module_init(). Let
->> me know if this works for you.
->
->That does indeed seem to DTRT from a quick scan of module.c. Very nice
->tidy patch. I was afraid it'd be much worse.
->
->Assuming it actually works; for your Changelog:
->
->"Dynamic code patching (alternatives, jump_label and static_call) can
->have sites in __exit code, even it __exit is never executed. Therefore
->__exit must be present at runtime, at least for as long as __init code
->is.
->
->Additionally, for jump_label and static_call, the __exit sites must also
->identify as within_module_init(), such that the infrastructure is aware
->to never touch them after module init -- alternatives are only ran once
->at init and hence don't have this particular constraint.
->
->By making __exit identify as __init for UNLOAD_MODULE, the above is
->satisfied."
+On Fri, 12 Mar 2021 07:28:20 +0100, Ansuel Smith wrote:
+> Drop $nodename restriction as now mtd partition can also be used as
+> nvmem provider.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/nvmem/nvmem.yaml | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
 
-Thanks a lot for the changelog :-) I'll turn this into a formal patch
-after some testing tomorrow.
-
-Jessica
+Reviewed-by: Rob Herring <robh@kernel.org>
