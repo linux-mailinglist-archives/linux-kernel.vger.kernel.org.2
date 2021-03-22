@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E293441C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD53D344460
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhCVMff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55266 "EHLO mail.kernel.org"
+        id S232544AbhCVM7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:59:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231406AbhCVMcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:32:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60DE26199E;
-        Mon, 22 Mar 2021 12:32:46 +0000 (UTC)
+        id S232310AbhCVMmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:42:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 341D5619CC;
+        Mon, 22 Mar 2021 12:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416366;
-        bh=m0x2fiiWRpm+GbCOB1gUeQYkZ1jaK5WjwHb/FPiolgY=;
+        s=korg; t=1616416791;
+        bh=WwQCH5+fOgSh3lPnUj1VIZVKF9X8El3gXDN/q2/vJ+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wo2jhq1qg3M/JGBWDg69Q+sNylh9/TTmAlLx9NP0IAW7kxmQX3LY2e8PG8Mx07SFr
-         E68IiZ50ujE6ZVlio2NusM8MzY+6xZ5JAv+I51maXBXUi6/50CMDjmwdCdySxAAWQo
-         FGZPO2mPsFE0jUJVhDzxC/9iEyfEbA5P0SYli9ZQ=
+        b=jd/+w5heZmnyADHLNuPcDXCQMTaAccX6KZy7/5iYjNW8SF6Qmq2nheJzJdp1ayZ8s
+         4NtUhlrOp70EkQ2wI9bFDbxEiIVLki58BzOHaa+KXJsuhZaLV8sZliIirmXwn/xE3O
+         XOMaZ0LrqRI0TLmNnWmL5TEHJOZvb9EDbobNTuQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Lin <jilin@nvidia.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>
-Subject: [PATCH 5.11 080/120] usb: gadget: configfs: Fix KASAN use-after-free
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 106/157] io_uring: clear IOCB_WAITQ for non -EIOCBQUEUED return
 Date:   Mon, 22 Mar 2021 13:27:43 +0100
-Message-Id: <20210322121932.338646904@linuxfoundation.org>
+Message-Id: <20210322121937.129579242@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
-References: <20210322121929.669628946@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,83 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Lin <jilin@nvidia.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 98f153a10da403ddd5e9d98a3c8c2bb54bb5a0b6 upstream.
+[ Upstream commit b5b0ecb736f1ce1e68eb50613c0cfecff10198eb ]
 
-When gadget is disconnected, running sequence is like this.
-. composite_disconnect
-. Call trace:
-  usb_string_copy+0xd0/0x128
-  gadget_config_name_configuration_store+0x4
-  gadget_config_name_attr_store+0x40/0x50
-  configfs_write_file+0x198/0x1f4
-  vfs_write+0x100/0x220
-  SyS_write+0x58/0xa8
-. configfs_composite_unbind
-. configfs_composite_bind
+The callback can only be armed, if we get -EIOCBQUEUED returned. It's
+important that we clear the WAITQ bit for other cases, otherwise we can
+queue for async retry and filemap will assume that we're armed and
+return -EAGAIN instead of just blocking for the IO.
 
-In configfs_composite_bind, it has
-"cn->strings.s = cn->configuration;"
-
-When usb_string_copy is invoked. it would
-allocate memory, copy input string, release previous pointed memory space,
-and use new allocated memory.
-
-When gadget is connected, host sends down request to get information.
-Call trace:
-  usb_gadget_get_string+0xec/0x168
-  lookup_string+0x64/0x98
-  composite_setup+0xa34/0x1ee8
-
-If gadget is disconnected and connected quickly, in the failed case,
-cn->configuration memory has been released by usb_string_copy kfree but
-configfs_composite_bind hasn't been run in time to assign new allocated
-"cn->configuration" pointer to "cn->strings.s".
-
-When "strlen(s->s) of usb_gadget_get_string is being executed, the dangling
-memory is accessed, "BUG: KASAN: use-after-free" error occurs.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Jim Lin <jilin@nvidia.com>
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-Link: https://lore.kernel.org/r/1615444961-13376-1-git-send-email-macpaul.lin@mediatek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org # 5.9+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/configfs.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ fs/io_uring.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/gadget/configfs.c
-+++ b/drivers/usb/gadget/configfs.c
-@@ -97,6 +97,8 @@ struct gadget_config_name {
- 	struct list_head list;
- };
- 
-+#define USB_MAX_STRING_WITH_NULL_LEN	(USB_MAX_STRING_LEN+1)
-+
- static int usb_string_copy(const char *s, char **s_copy)
- {
- 	int ret;
-@@ -106,12 +108,16 @@ static int usb_string_copy(const char *s
- 	if (ret > USB_MAX_STRING_LEN)
- 		return -EOVERFLOW;
- 
--	str = kstrdup(s, GFP_KERNEL);
--	if (!str)
--		return -ENOMEM;
-+	if (copy) {
-+		str = copy;
-+	} else {
-+		str = kmalloc(USB_MAX_STRING_WITH_NULL_LEN, GFP_KERNEL);
-+		if (!str)
-+			return -ENOMEM;
-+	}
-+	strcpy(str, s);
- 	if (str[ret - 1] == '\n')
- 		str[ret - 1] = '\0';
--	kfree(copy);
- 	*s_copy = str;
- 	return 0;
- }
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 7625b3e2db2c..06e9c2181995 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3501,6 +3501,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock,
+ 		goto out_free;
+ 	} else if (ret > 0 && ret < io_size) {
+ 		/* we got some bytes, but not all. retry. */
++		kiocb->ki_flags &= ~IOCB_WAITQ;
+ 		goto retry;
+ 	}
+ done:
+-- 
+2.30.1
+
 
 
