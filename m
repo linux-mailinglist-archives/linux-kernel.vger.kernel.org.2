@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6B834436D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A33AF3441E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCVMuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:50:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34646 "EHLO mail.kernel.org"
+        id S231758AbhCVMhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:37:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232177AbhCVMlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:41:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AF3C619AB;
-        Mon, 22 Mar 2021 12:39:35 +0000 (UTC)
+        id S231562AbhCVMdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:33:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4603260C3D;
+        Mon, 22 Mar 2021 12:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416776;
-        bh=m0x2fiiWRpm+GbCOB1gUeQYkZ1jaK5WjwHb/FPiolgY=;
+        s=korg; t=1616416400;
+        bh=TFKVahvGzm+GotE0wtrWTzAStF8C/uxtKaR3tJVLvec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mui8M1Bm753crB83E0JQaUaddUvm1Aiu10vqyvWGQz7nQrbXhsWjrdPiTXFdCpXqB
-         PlDaCSihSatfw/eTs7O2wYvKdMgzRZhKrKdR+eaotRzGT5hyG3Tubgc+lwFiuuhPps
-         ElUg2CiP4kaoqwwxPgTaD/o4gcSg94ZAQg9Ly7mI=
+        b=o2NIcTaaqAxrMozCxzR+AOfEWzYs6j4lmwuIB1MjexXQNI1ipD72zBOoXK8YZg1nI
+         1a5q4TouU7SHIwwPMEQEE0NfaAmAIx8LCGh19qWlyRsMuMIGIvZ5ucZkI1W2sDlAhU
+         XP2Bk1wB2GgeeGfSwSmQjiyxPoIY46irMU1cxQs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Lin <jilin@nvidia.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>
-Subject: [PATCH 5.10 118/157] usb: gadget: configfs: Fix KASAN use-after-free
+        stable@vger.kernel.org,
+        Wilfried Wessner <wilfried.wessner@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles-Antoine Couret <charles-antoine.couret@essensium.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.11 092/120] iio: adc: ad7949: fix wrong ADC result due to incorrect bit mask
 Date:   Mon, 22 Mar 2021 13:27:55 +0100
-Message-Id: <20210322121937.509967454@linuxfoundation.org>
+Message-Id: <20210322121932.756876908@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,83 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Lin <jilin@nvidia.com>
+From: Wilfried Wessner <wilfried.wessner@gmail.com>
 
-commit 98f153a10da403ddd5e9d98a3c8c2bb54bb5a0b6 upstream.
+commit f890987fac8153227258121740a9609668c427f3 upstream.
 
-When gadget is disconnected, running sequence is like this.
-. composite_disconnect
-. Call trace:
-  usb_string_copy+0xd0/0x128
-  gadget_config_name_configuration_store+0x4
-  gadget_config_name_attr_store+0x40/0x50
-  configfs_write_file+0x198/0x1f4
-  vfs_write+0x100/0x220
-  SyS_write+0x58/0xa8
-. configfs_composite_unbind
-. configfs_composite_bind
+Fixes a wrong bit mask used for the ADC's result, which was caused by an
+improper usage of the GENMASK() macro. The bits higher than ADC's
+resolution are undefined and if not masked out correctly, a wrong result
+can be given. The GENMASK() macro indexing is zero based, so the mask has
+to go from [resolution - 1 , 0].
 
-In configfs_composite_bind, it has
-"cn->strings.s = cn->configuration;"
-
-When usb_string_copy is invoked. it would
-allocate memory, copy input string, release previous pointed memory space,
-and use new allocated memory.
-
-When gadget is connected, host sends down request to get information.
-Call trace:
-  usb_gadget_get_string+0xec/0x168
-  lookup_string+0x64/0x98
-  composite_setup+0xa34/0x1ee8
-
-If gadget is disconnected and connected quickly, in the failed case,
-cn->configuration memory has been released by usb_string_copy kfree but
-configfs_composite_bind hasn't been run in time to assign new allocated
-"cn->configuration" pointer to "cn->strings.s".
-
-When "strlen(s->s) of usb_gadget_get_string is being executed, the dangling
-memory is accessed, "BUG: KASAN: use-after-free" error occurs.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Jim Lin <jilin@nvidia.com>
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-Link: https://lore.kernel.org/r/1615444961-13376-1-git-send-email-macpaul.lin@mediatek.com
+Fixes: 7f40e0614317f ("iio:adc:ad7949: Add AD7949 ADC driver family")
+Signed-off-by: Wilfried Wessner <wilfried.wessner@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Charles-Antoine Couret <charles-antoine.couret@essensium.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210208142705.GA51260@ubuntu
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/configfs.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/iio/adc/ad7949.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/configfs.c
-+++ b/drivers/usb/gadget/configfs.c
-@@ -97,6 +97,8 @@ struct gadget_config_name {
- 	struct list_head list;
- };
- 
-+#define USB_MAX_STRING_WITH_NULL_LEN	(USB_MAX_STRING_LEN+1)
-+
- static int usb_string_copy(const char *s, char **s_copy)
- {
+--- a/drivers/iio/adc/ad7949.c
++++ b/drivers/iio/adc/ad7949.c
+@@ -91,7 +91,7 @@ static int ad7949_spi_read_channel(struc
  	int ret;
-@@ -106,12 +108,16 @@ static int usb_string_copy(const char *s
- 	if (ret > USB_MAX_STRING_LEN)
- 		return -EOVERFLOW;
- 
--	str = kstrdup(s, GFP_KERNEL);
--	if (!str)
--		return -ENOMEM;
-+	if (copy) {
-+		str = copy;
-+	} else {
-+		str = kmalloc(USB_MAX_STRING_WITH_NULL_LEN, GFP_KERNEL);
-+		if (!str)
-+			return -ENOMEM;
-+	}
-+	strcpy(str, s);
- 	if (str[ret - 1] == '\n')
- 		str[ret - 1] = '\0';
--	kfree(copy);
- 	*s_copy = str;
- 	return 0;
- }
+ 	int i;
+ 	int bits_per_word = ad7949_adc->resolution;
+-	int mask = GENMASK(ad7949_adc->resolution, 0);
++	int mask = GENMASK(ad7949_adc->resolution - 1, 0);
+ 	struct spi_message msg;
+ 	struct spi_transfer tx[] = {
+ 		{
 
 
