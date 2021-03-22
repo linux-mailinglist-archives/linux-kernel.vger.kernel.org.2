@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DE9344501
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF8634442F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhCVNKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:10:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50516 "EHLO mail.kernel.org"
+        id S230348AbhCVM7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:59:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231494AbhCVM4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:56:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9473D619B3;
-        Mon, 22 Mar 2021 12:48:26 +0000 (UTC)
+        id S232583AbhCVMry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:47:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6517161984;
+        Mon, 22 Mar 2021 12:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417307;
-        bh=jqJcBmEi+b0x47+Nj2hWl1lgcgvC4/LQapDnsBycC3c=;
+        s=korg; t=1616417028;
+        bh=gVfnFnjTC2fFXMN1w+fHi++XtIG5tUS1zq291Lj0EsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dn035BOL1DgzFsfYOSnj4p+497kI47RSzevZwfmGmmEa606ujtyNovN++B2qmNWqT
-         S8/j692Gq2mPLbj3UsXaxdssLu4zYYABAEt6EOII5eGQsCfjafJLX+C4XDjN/hSE+v
-         9EW6TNhxcml5gPPj24u+5qyr0Qw17sUo5OefHg5Y=
+        b=BCjz8iUuTtFlky++HNNrXkdgjIzoqPVUS/IyCDMHtWqxuHd1GyDKab7R4OXntPMdL
+         Yav++sx7hbohI9vsOA31gdQJ+vCSH5n7hPSMvhfd5y+hXgbw/BRdFETTpHbA0MbxsZ
+         iVP4GY98Bo5T5AW4P7VcpxpHdlhOOno5h1FAIO9c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Piotr Krysiuk <piotras@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 4.14 05/43] bpf: Simplify alu_limit masking for pointer arithmetic
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.4 58/60] firmware/efi: Fix a use after bug in efi_mem_reserve_persistent
 Date:   Mon, 22 Mar 2021 13:28:46 +0100
-Message-Id: <20210322121920.230234974@linuxfoundation.org>
+Message-Id: <20210322121924.290681526@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
-References: <20210322121920.053255560@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piotr Krysiuk <piotras@gmail.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-commit b5871dca250cd391885218b99cc015aca1a51aea upstream.
+commit 9ceee7d0841a8f7d7644021ba7d4cc1fbc7966e3 upstream.
 
-Instead of having the mov32 with aux->alu_limit - 1 immediate, move this
-operation to retrieve_ptr_limit() instead to simplify the logic and to
-allow for subsequent sanity boundary checks inside retrieve_ptr_limit().
-This avoids in future that at the time of the verifier masking rewrite
-we'd run into an underflow which would not sign extend due to the nature
-of mov32 instruction.
+In the for loop in efi_mem_reserve_persistent(), prsv = rsv->next
+use the unmapped rsv. Use the unmapped pages will cause segment
+fault.
 
-Signed-off-by: Piotr Krysiuk <piotras@gmail.com>
-Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 18df7577adae6 ("efi/memreserve: deal with memreserve entries in unmapped memory")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/firmware/efi/efi.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2035,16 +2035,16 @@ static int retrieve_ptr_limit(const stru
- 	case PTR_TO_STACK:
- 		off = ptr_reg->off + ptr_reg->var_off.value;
- 		if (mask_to_left)
--			*ptr_limit = MAX_BPF_STACK + off + 1;
-+			*ptr_limit = MAX_BPF_STACK + off;
- 		else
--			*ptr_limit = -off;
-+			*ptr_limit = -off - 1;
- 		return 0;
- 	case PTR_TO_MAP_VALUE:
- 		if (mask_to_left) {
--			*ptr_limit = ptr_reg->umax_value + ptr_reg->off + 1;
-+			*ptr_limit = ptr_reg->umax_value + ptr_reg->off;
- 		} else {
- 			off = ptr_reg->smin_value + ptr_reg->off;
--			*ptr_limit = ptr_reg->map_ptr->value_size - off;
-+			*ptr_limit = ptr_reg->map_ptr->value_size - off - 1;
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -1006,7 +1006,7 @@ int __ref efi_mem_reserve_persistent(phy
+ 	}
+ 
+ 	/* first try to find a slot in an existing linked list entry */
+-	for (prsv = efi_memreserve_root->next; prsv; prsv = rsv->next) {
++	for (prsv = efi_memreserve_root->next; prsv; ) {
+ 		rsv = memremap(prsv, sizeof(*rsv), MEMREMAP_WB);
+ 		index = atomic_fetch_add_unless(&rsv->count, 1, rsv->size);
+ 		if (index < rsv->size) {
+@@ -1016,6 +1016,7 @@ int __ref efi_mem_reserve_persistent(phy
+ 			memunmap(rsv);
+ 			return efi_mem_reserve_iomem(addr, size);
  		}
- 		return 0;
- 	default:
-@@ -4802,7 +4802,7 @@ static int fixup_bpf_calls(struct bpf_ve
- 			off_reg = issrc ? insn->src_reg : insn->dst_reg;
- 			if (isneg)
- 				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
--			*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit - 1);
-+			*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
- 			*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
- 			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
- 			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
++		prsv = rsv->next;
+ 		memunmap(rsv);
+ 	}
+ 
 
 
