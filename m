@@ -2,136 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD123439B5
+	by mail.lfdr.de (Postfix) with ESMTP id AE2EA3439B6
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhCVGlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230029AbhCVGkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:40:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB12E61937;
-        Mon, 22 Mar 2021 06:40:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616395246;
-        bh=L1amE4pN+dzCxhegh4FIiZ3BtGj/dNOZfgKXrmzrSOI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmgtgkA8V5sK1N0mMfvmcKpP3Dbe1eaN6k5soNDsiU2/ImD082ZQinnz5QRG1sMu+
-         z5wd77kRsu5gobaScxtkTsJpauf0Jg6IJA+yWjzmcyBCu5C32oBLftag2XXzlVX72U
-         E+qfVhvB7oHAg0aJp8Tm0dIXyWZslrRVMgConAMen49rj9Bvw7y0IZtzSoHbpioVrF
-         rZowZHGhnSOdNiaAm209ZSwVarpAgNxZ5QqBg3S8/sWTEj4DCHOPpiC0F86SWf0Unu
-         QTtPrH33EoyuMb469Y23zx92v6HtxUudw+R+qAqJV3w1arUa+cxSxNipVeFR1txcVG
-         KO2w8lWXPIayA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: [PATCH -tip v4 05/12] x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
-Date:   Mon, 22 Mar 2021 15:40:41 +0900
-Message-Id: <161639524092.895304.18260567810957090246.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <161639518354.895304.15627519393073806809.stgit@devnote2>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S230215AbhCVGlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:41:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13999 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230182AbhCVGk6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 02:40:58 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F3lFs6xPxzwPYL;
+        Mon, 22 Mar 2021 14:38:57 +0800 (CST)
+Received: from [127.0.0.1] (10.40.193.166) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Mon, 22 Mar 2021
+ 14:40:47 +0800
+Subject: Re: [Linuxarm] Re: [PATCH v14 07/13] iommu/smmuv3: Implement
+ cache_invalidate
+To:     Auger Eric <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <will@kernel.org>, <maz@kernel.org>, <robin.murphy@arm.com>,
+        <joro@8bytes.org>, <alex.williamson@redhat.com>, <tn@semihalf.com>,
+        <zhukeqian1@huawei.com>
+References: <20210223205634.604221-1-eric.auger@redhat.com>
+ <20210223205634.604221-8-eric.auger@redhat.com>
+ <c10c6405-5efe-5a41-2b3a-f3af85a528ba@hisilicon.com>
+ <d5dcb7fe-2e09-b1fb-24d6-36249f047632@redhat.com>
+CC:     <jean-philippe@linaro.org>, <wangxingang5@huawei.com>,
+        <lushenming@huawei.com>, <jiangkunkun@huawei.com>,
+        <vivek.gautam@arm.com>, <vsethi@nvidia.com>,
+        <zhangfei.gao@linaro.org>, <linuxarm@openeuler.org>
+From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
+Message-ID: <1cf3fa95-45c6-5846-e1c2-12c222ebed46@hisilicon.com>
+Date:   Mon, 22 Mar 2021 14:40:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <d5dcb7fe-2e09-b1fb-24d6-36249f047632@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.193.166]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+Hi Eric,
 
-Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
-information is generated on the kretprobe_trampoline correctly.
 
-Note that when the CONFIG_FRAME_POINTER=y, since the
-kretprobe_trampoline skips updating frame pointer, the stack frame
-of the kretprobe_trampoline seems non-standard. So this marks it
-is STACK_FRAME_NON_STANDARD() and undefine UNWIND_HINT_FUNC.
-Anyway, with the frame pointer, FP unwinder can unwind the stack
-frame correctly without that hint.
+在 2021/3/20 1:36, Auger Eric 写道:
+> Hi Chenxiang,
+>
+> On 3/4/21 8:55 AM, chenxiang (M) wrote:
+>> Hi Eric,
+>>
+>>
+>> 在 2021/2/24 4:56, Eric Auger 写道:
+>>> Implement domain-selective, pasid selective and page-selective
+>>> IOTLB invalidations.
+>>>
+>>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>>
+>>> ---
+>>>
+>>> v13 -> v14:
+>>> - Add domain invalidation
+>>> - do global inval when asid is not provided with addr
+>>>    granularity
+>>>
+>>> v7 -> v8:
+>>> - ASID based invalidation using iommu_inv_pasid_info
+>>> - check ARCHID/PASID flags in addr based invalidation
+>>> - use __arm_smmu_tlb_inv_context and __arm_smmu_tlb_inv_range_nosync
+>>>
+>>> v6 -> v7
+>>> - check the uapi version
+>>>
+>>> v3 -> v4:
+>>> - adapt to changes in the uapi
+>>> - add support for leaf parameter
+>>> - do not use arm_smmu_tlb_inv_range_nosync or arm_smmu_tlb_inv_context
+>>>    anymore
+>>>
+>>> v2 -> v3:
+>>> - replace __arm_smmu_tlb_sync by arm_smmu_cmdq_issue_sync
+>>>
+>>> v1 -> v2:
+>>> - properly pass the asid
+>>> ---
+>>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 74 +++++++++++++++++++++
+>>>   1 file changed, 74 insertions(+)
+>>>
+>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> index 4c19a1114de4..df3adc49111c 100644
+>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>> @@ -2949,6 +2949,79 @@ static void arm_smmu_detach_pasid_table(struct iommu_domain *domain)
+>>>   	mutex_unlock(&smmu_domain->init_mutex);
+>>>   }
+>>>   
+>>> +static int
+>>> +arm_smmu_cache_invalidate(struct iommu_domain *domain, struct device *dev,
+>>> +			  struct iommu_cache_invalidate_info *inv_info)
+>>> +{
+>>> +	struct arm_smmu_cmdq_ent cmd = {.opcode = CMDQ_OP_TLBI_NSNH_ALL};
+>>> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+>>> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>> +
+>>> +	if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
+>>> +		return -EINVAL;
+>>> +
+>>> +	if (!smmu)
+>>> +		return -EINVAL;
+>>> +
+>>> +	if (inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
+>>> +		return -EINVAL;
+>>> +
+>>> +	if (inv_info->cache & IOMMU_CACHE_INV_TYPE_PASID ||
+>>> +	    inv_info->cache & IOMMU_CACHE_INV_TYPE_DEV_IOTLB) {
+>>> +		return -ENOENT;
+>>> +	}
+>>> +
+>>> +	if (!(inv_info->cache & IOMMU_CACHE_INV_TYPE_IOTLB))
+>>> +		return -EINVAL;
+>>> +
+>>> +	/* IOTLB invalidation */
+>>> +
+>>> +	switch (inv_info->granularity) {
+>>> +	case IOMMU_INV_GRANU_PASID:
+>>> +	{
+>>> +		struct iommu_inv_pasid_info *info =
+>>> +			&inv_info->granu.pasid_info;
+>>> +
+>>> +		if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
+>>> +			return -ENOENT;
+>>> +		if (!(info->flags & IOMMU_INV_PASID_FLAGS_ARCHID))
+>>> +			return -EINVAL;
+>>> +
+>>> +		__arm_smmu_tlb_inv_context(smmu_domain, info->archid);
+>>> +		return 0;
+>>> +	}
+>>> +	case IOMMU_INV_GRANU_ADDR:
+>>> +	{
+>>> +		struct iommu_inv_addr_info *info = &inv_info->granu.addr_info;
+>>> +		size_t size = info->nb_granules * info->granule_size;
+>>> +		bool leaf = info->flags & IOMMU_INV_ADDR_FLAGS_LEAF;
+>>> +
+>>> +		if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
+>>> +			return -ENOENT;
+>>> +
+>>> +		if (!(info->flags & IOMMU_INV_ADDR_FLAGS_ARCHID))
+>>> +			break;
+>>> +
+>>> +		arm_smmu_tlb_inv_range_domain(info->addr, size,
+>>> +					      info->granule_size, leaf,
+>>> +					      info->archid, smmu_domain);
+>> Is it possible to add a check before the function to make sure that
+>> info->granule_size can be recognized by SMMU?
+>> There is a scenario which will cause TLBI issue: RIL feature is enabled
+>> on guest but is disabled on host, and then on
+>> host it just invalidate 4K/2M/1G once a time, but from QEMU,
+>> info->nb_granules is always 1 and info->granule_size = size,
+>> if size is not equal to 4K or 2M or 1G (for example size = granule_size
+>> is 5M), it will only part of the size it wants to invalidate.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v4:
-  - Apply UNWIND_HINT_FUNC only if CONFIG_FRAME_POINTER=n.
----
- arch/x86/include/asm/unwind_hints.h |    5 +++++
- arch/x86/kernel/kprobes/core.c      |   17 +++++++++++++++--
- 2 files changed, 20 insertions(+), 2 deletions(-)
+Do you have any idea about this issue?
 
-diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
-index 8e574c0afef8..8b33674288ea 100644
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -52,6 +52,11 @@
- 	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
- .endm
- 
-+#else
-+
-+#define UNWIND_HINT_FUNC \
-+	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_X86_UNWIND_HINTS_H */
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 427d648fffcd..23255663c434 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -760,6 +760,19 @@ int kprobe_int3_handler(struct pt_regs *regs)
- }
- NOKPROBE_SYMBOL(kprobe_int3_handler);
- 
-+#ifdef CONFIG_FRAME_POINTER
-+/*
-+ * kretprobe_trampoline skips updating frame pointer. The frame pointer
-+ * saved in trampoline_handler points to the real caller function's
-+ * frame pointer. Thus the kretprobe_trampoline doesn't seems to have a
-+ * standard stack frame with CONFIG_FRAME_POINTER=y.
-+ * Let's mark it non-standard function. Anyway, FP unwinder can correctly
-+ * unwind without the hint.
-+ */
-+STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-+#undef UNWIND_HINT_FUNC
-+#define UNWIND_HINT_FUNC
-+#endif
- /*
-  * When a retprobed function returns, this code saves registers and
-  * calls trampoline_handler() runs, which calls the kretprobe's handler.
-@@ -772,6 +785,7 @@ asm(
- 	/* We don't bother saving the ss register */
- #ifdef CONFIG_X86_64
- 	"	pushq %rsp\n"
-+	UNWIND_HINT_FUNC
- 	"	pushfq\n"
- 	SAVE_REGS_STRING
- 	"	movq %rsp, %rdi\n"
-@@ -782,6 +796,7 @@ asm(
- 	"	popfq\n"
- #else
- 	"	pushl %esp\n"
-+	UNWIND_HINT_FUNC
- 	"	pushfl\n"
- 	SAVE_REGS_STRING
- 	"	movl %esp, %eax\n"
-@@ -795,8 +810,6 @@ asm(
- 	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
- );
- NOKPROBE_SYMBOL(kretprobe_trampoline);
--STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
--
- 
- /*
-  * Called from kretprobe_trampoline
+>>
+>> I think maybe we can add a check here: if RIL is not enabled and also
+>> size is not the granule_size (4K/2M/1G) supported by
+>> SMMU hardware, can we just simply use the smallest granule_size
+>> supported by hardware all the time?
+>>
+>>> +
+>>> +		arm_smmu_cmdq_issue_sync(smmu);
+>>> +		return 0;
+>>> +	}
+>>> +	case IOMMU_INV_GRANU_DOMAIN:
+>>> +		break;
+>> I check the qemu code
+>> (https://github.com/eauger/qemu/tree/v5.2.0-2stage-rfcv8), for opcode
+>> CMD_TLBI_NH_ALL or CMD_TLBI_NSNH_ALL from guest OS
+>> it calls smmu_inv_notifiers_all() to unamp all notifiers of all mr's,
+>> but it seems not set event.entry.granularity which i think it should set
+>> IOMMU_INV_GRAN_ADDR.
+> this is because IOMMU_INV_GRAN_ADDR = 0. But for clarity I should rather
+> set it explicitly ;-)
+
+ok
+
+>> BTW, for opcode CMD_TLBI_NH_ALL or CMD_TLBI_NSNH_ALL, it needs to unmap
+>> size = 0x1000000000000 on 48bit system (it may spend much time),  maybe
+>> it is better
+>> to set it as IOMMU_INV_GRANU_DOMAIN, then in host OS, send TLBI_NH_ALL
+>> directly when IOMMU_INV_GRANU_DOMAIN.
+> Yes you're right. If the host does not support RIL then it is an issue.
+> This is going to be fixed in the next version.
+
+Great
+
+>
+> Thank you for the report!
+>
+> Best Regards
+>
+> Eric
+>>
+>>> +	default:
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>> +	/* Global S1 invalidation */
+>>> +	cmd.tlbi.vmid   = smmu_domain->s2_cfg.vmid;
+>>> +	arm_smmu_cmdq_issue_cmd(smmu, &cmd);
+>>> +	arm_smmu_cmdq_issue_sync(smmu);
+>>> +	return 0;
+>>> +}
+>>> +
+>>>   static bool arm_smmu_dev_has_feature(struct device *dev,
+>>>   				     enum iommu_dev_features feat)
+>>>   {
+>>> @@ -3048,6 +3121,7 @@ static struct iommu_ops arm_smmu_ops = {
+>>>   	.put_resv_regions	= generic_iommu_put_resv_regions,
+>>>   	.attach_pasid_table	= arm_smmu_attach_pasid_table,
+>>>   	.detach_pasid_table	= arm_smmu_detach_pasid_table,
+>>> +	.cache_invalidate	= arm_smmu_cache_invalidate,
+>>>   	.dev_has_feat		= arm_smmu_dev_has_feature,
+>>>   	.dev_feat_enabled	= arm_smmu_dev_feature_enabled,
+>>>   	.dev_enable_feat	= arm_smmu_dev_enable_feature,
+> _______________________________________________
+> Linuxarm mailing list -- linuxarm@openeuler.org
+> To unsubscribe send an email to linuxarm-leave@openeuler.org
+
 
