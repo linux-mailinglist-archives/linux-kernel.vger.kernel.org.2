@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1221C343FF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7A7343FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhCVLf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:35:59 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48270 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230115AbhCVLfh (ORCPT
+        id S229992AbhCVL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229987AbhCVL2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:35:37 -0400
-X-UUID: a04da6dc89564c0bba89b631933e27aa-20210322
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=o/ibMgnOkwc8v8Tm24Jgcxmdto8SnS/iodaRr3RJRgc=;
-        b=A0pkuLUdezlwHLtpmBMHC3G73XbUTdSMt7dnRL7+9H1X9UDDhBGOnGpokHJ3XF1FyVrjSsGo2xod+h5KpCHnxONW26DncCYUwYgh3cdrHnVDoeDI/pEOplpeH2LtHW5mMfUkTVOmOChQzU0Ru3wJJXLyDKxkQWQIOJgvcK65ISY=;
-X-UUID: a04da6dc89564c0bba89b631933e27aa-20210322
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1592959733; Mon, 22 Mar 2021 19:35:31 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 22 Mar 2021 19:35:29 +0800
-Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 22 Mar 2021 19:35:29 +0800
-Message-ID: <1616412481.25260.1.camel@mbjsdccf07>
-Subject: Re: [PATCH 1/2] arm64: dts: mediatek: add MT6779 spi master dts node
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hanks.chen@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 22 Mar 2021 19:28:01 +0800
-In-Reply-To: <20210226105918.3057-1-Mason.Zhang@mediatek.com>
-References: <20210226105918.3057-1-Mason.Zhang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 22 Mar 2021 07:28:18 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE46C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:28:17 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 75so20663646lfa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e/8Ps0Ktb6d68R+KN9li/esf+RWOsAy/QWgNl2bsjCg=;
+        b=EXIvWEM18cSmSwMF/NB1QYMgQXYnrAag4u6ZyxRYqOysOZ9V6Zm1RNdryV2IlGQhw2
+         Ek1Kn+1pJVjPc5i2lvcfFI5k3QCu6NcvbQd34nDfqC7MXLB2sx7xJT/iMTjTwAMSPSPG
+         EpytFnGn5r4e+M/rQ7/RbKlvP/LGQ/fTBvKJP2mhAZ+asjdXIY/Y3P4Q2nPbZKNg4/JK
+         OySk2OW6uCpL1EnTT1i1YnAIrmZbaaZaijiuZ9RzQCjh9bzYxOM7XKr/qB1DtK67OHYM
+         fUV/7LwKJAMZhJzkgF+CQiAD33C7f9+AA6GTWj77+IMVPkM+YbXZr3GwLongwJzicHFD
+         3tUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e/8Ps0Ktb6d68R+KN9li/esf+RWOsAy/QWgNl2bsjCg=;
+        b=Z4GIsam0AzqyoCdsPJpCEskutl93CluZBjkNpYzqiX8MP3pFGR9ul9tu/SXz+DCeD9
+         7VOhInBufg+eIA2GzTbdoH+GrjMI0P5K739GJGgtuT9fX51tx6DjGt7pCBCBL9+hGjZL
+         DD4qIQt7sFHMsWTS4bXVmymr1FE6KyM4poua9NrcwdkzuYnX1oM5+U1BetQjcAVVztFt
+         jcDL57tjdT7Qn05nh/YP55GnisZXLbpbjE0f1YmFWBTNs9Fx2QGj/qww0hhYvxOJivl8
+         abETUjsvaSqo5ZsGRyIV0I+GyNHlC2KICg+DlVktWNQHKgEm20BuXZQszbIYAvBhs8+O
+         5/xg==
+X-Gm-Message-State: AOAM533/E7vJosXdRb3Swi+NIK7JYy1jiyeLHEj+Tq+o8Vj0HroY8F8i
+        9gaDranAy3zhQ6Jx1GAFT/MC5Q==
+X-Google-Smtp-Source: ABdhPJyIwFAEyp7IPkXX7n5PmF14citdfeN2uquuXcJSKueq8Q3O6jUD8ynDjrBejl3pfA961ybqGw==
+X-Received: by 2002:a05:6512:3ec:: with SMTP id n12mr9170901lfq.536.1616412496066;
+        Mon, 22 Mar 2021 04:28:16 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id q7sm1582895lfc.260.2021.03.22.04.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 04:28:15 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 02871101DEB; Mon, 22 Mar 2021 14:28:23 +0300 (+03)
+Date:   Mon, 22 Mar 2021 14:28:22 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 08/28] x86/mm: Move pmd_write(), pud_write() up in
+ the file
+Message-ID: <20210322112822.3uvkufcbdj7gtwxn@box>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-9-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316151054.5405-9-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyayBCcm93biBhbmQgUm9iIEhlcnJpbmc6DQoNCglHZW50bGUgcGluZyBvbiB0aGlzIHBh
-dGNoLg0KDQpUaGFua3MNCk1hc29uDQoNCk9uIEZyaSwgMjAyMS0wMi0yNiBhdCAxODo1OSArMDgw
-MCwgTWFzb24gWmhhbmcgd3JvdGU6DQo+IHRoaXMgcGF0Y2ggYWRkIHNwaSBtYXN0ZXIgZHRzIG5v
-ZGUgZm9yIG10Njc3OSBTT0MuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBNYXNvbiBaaGFuZyA8TWFz
-b24uWmhhbmdAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
-aWF0ZWsvbXQ2Nzc5LmR0c2kgfCA5NiArKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEgZmls
-ZSBjaGFuZ2VkLCA5NiBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02
-NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
-aWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gaW5kZXggMzcwZjMwOWQzMmRlLi5jYTcyZWIwOWNmZjkgMTAw
-NjQ0DQo+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kNCj4g
-KysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaQ0KPiBAQCAtMjE5
-LDYgKzIxOSwxMDIgQEANCj4gIAkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+ICAJCX07DQo+ICAN
-Cj4gKwkJc3BpMDogc3BpMEAxMTAwYTAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVr
-LG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJ
-bWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMGEwMDAgMCAw
-eDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0MyBJUlFfVFlQRV9MRVZFTF9M
-T1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4s
-DQo+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBD
-TEtfSU5GUkFfU1BJMD47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1j
-bGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsNCj4gKwkJc3BpMTogc3BpMUAxMTAxMDAwMCB7
-DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAg
-Im1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsN
-Cj4gKwkJCXJlZyA9IDwwIDB4MTEwMTAwMDAgMCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9
-IDxHSUNfU1BJIDE0NyBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRv
-cGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9Q
-X1NQST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJMT47DQo+ICsJCQljbG9j
-ay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+
-ICsNCj4gKwkJc3BpMjogc3BpMkAxMTAxMjAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiAr
-CQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMTIwMDAg
-MCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MiBJUlFfVFlQRV9MRVZF
-TF9MT1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9E
-Mj4sDQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiArCQkJCTwmaW5mcmFjZmdf
-YW8gQ0xLX0lORlJBX1NQSTI+Ow0KPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJz
-ZWwtY2xrIiwgInNwaS1jbGsiOw0KPiArCQl9Ow0KPiArDQo+ICsJCXNwaTM6IHNwaTNAMTEwMTMw
-MDAgew0KPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gKwkJCQkg
-ICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8
-MD47DQo+ICsJCQlyZWcgPSA8MCAweDExMDEzMDAwIDAgMHgxMDAwPjsNCj4gKwkJCWludGVycnVw
-dHMgPSA8R0lDX1NQSSAxNTMgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiArCQkJY2xvY2tzID0g
-PCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENM
-S19UT1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJMz47DQo+ICsJ
-CQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJ
-CX07DQo+ICsNCj4gKwkJc3BpNDogc3BpNEAxMTAxODAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0g
-Im1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGki
-Ow0KPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEw
-MTgwMDAgMCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1NiBJUlFfVFlQ
-RV9MRVZFTF9MT1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBM
-TF9ENV9EMj4sDQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiArCQkJCSA8Jmlu
-ZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk0PjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1j
-bGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGk1OiBzcGk1
-QDExMDE5MDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+
-ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2Vs
-ZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxOTAwMCAwIDB4MTAwMD47DQo+ICsJCQlp
-bnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU3IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gKwkJCWNs
-b2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gKwkJCQk8JnRvcGNr
-Z2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk1PjsN
-Cj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsN
-Cj4gKwkJfTsNCj4gKw0KPiArCQlzcGk2OiBzcGk2QDExMDFkMDAwIHsNCj4gKwkJCWNvbXBhdGli
-bGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1
-LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0gPDAg
-MHgxMTAxZDAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ0IElS
-UV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9N
-QUlOUExMX0Q1X0QyPiwNCj4gKwkJCQkgPCZ0b3Bja2dlbiBDTEtfVE9QX1NQST4sDQo+ICsJCQkJ
-IDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTY+Ow0KPiArCQkJY2xvY2stbmFtZXMgPSAicGFy
-ZW50LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KPiArCQl9Ow0KPiArDQo+ICsJCXNwaTc6
-IHNwaTdAMTEwMWUwMDAgew0KPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3Bp
-IiwNCj4gKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gKwkJCW1lZGlhdGVrLHBh
-ZC1zZWxlY3QgPSA8MD47DQo+ICsJCQlyZWcgPSA8MCAweDExMDFlMDAwIDAgMHgxMDAwPjsNCj4g
-KwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDUgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiAr
-CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiArCQkJCSA8
-JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFf
-U1BJNz47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3Bp
-LWNsayI7DQo+ICsJCX07DQo+ICsNCj4gIAkJYXVkaW86IGNsb2NrLWNvbnRyb2xsZXJAMTEyMTAw
-MDAgew0KPiAgCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktYXVkaW8iLCAic3lzY29u
-IjsNCj4gIAkJCXJlZyA9IDwwIDB4MTEyMTAwMDAgMCAweDEwMDA+Ow0KDQpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KbGludXgtYXJtLWtlcm5lbCBtYWls
-aW5nIGxpc3QNCmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZw0KaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsDQoNCg==
+On Tue, Mar 16, 2021 at 08:10:34AM -0700, Yu-cheng Yu wrote:
+> To prepare the introduction of _PAGE_COW, move pmd_write() and
+> pud_write() up in the file, so that they can be used by other
+> helpers below.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
+-- 
+ Kirill A. Shutemov
