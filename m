@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D560B344FB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA1B344FBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbhCVTQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:16:11 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43944 "EHLO mail.skyhub.de"
+        id S231802AbhCVTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:17:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51124 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhCVTPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:15:41 -0400
-Received: from zn.tnic (p200300ec2f066700d1873920611831f8.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6700:d187:3920:6118:31f8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 565F61EC030E;
-        Mon, 22 Mar 2021 20:15:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616440540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=iJX3GF2CgIaOQc27uz5DRc8byMVlS9HWNPA5d8fZkIo=;
-        b=ltFg2Gv+bV8xd96ltmseD8+Cag/9qRazqx2m9QiOIO39sZM9++/YnT+naK5uyi15xSQDSb
-        5EHFoFX+MyhOXKQTlBd7K7A24f3AcS1M3lMZgdSiP3tfd3uaydumPdKuYqATgwtLK+KPUd
-        6rZyWTa/A7M2jphlW/okYIgwfH27+g4=
-Date:   Mon, 22 Mar 2021 20:15:40 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <20210322191540.GH6481@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
- <20210322181646.GG6481@zn.tnic>
- <YFjoZQwB7e3oQW8l@google.com>
+        id S231809AbhCVTQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 15:16:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 050B6AD80;
+        Mon, 22 Mar 2021 19:16:48 +0000 (UTC)
+Message-ID: <be8d74e1808c622af5c76418c389eb15b2196023.camel@suse.de>
+Subject: Re: [PATCH 1/4] dt-bindings: mmc: iproc-sdhci: Convert to
+ json-schema
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Scott Branden <scott.branden@broadcom.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     f.fainelli@gmail.com, phil@raspberrypi.com,
+        tim.gover@raspberrypi.com, adrian.hunter@intel.com,
+        alcooperx@gmail.com, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 22 Mar 2021 20:16:46 +0100
+In-Reply-To: <0e98588e-65f1-6839-1fcd-584b480a31bd@broadcom.com>
+References: <20210322185816.27582-1-nsaenz@kernel.org>
+         <20210322185816.27582-2-nsaenz@kernel.org>
+         <0e98588e-65f1-6839-1fcd-584b480a31bd@broadcom.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-2khgYsUvNQwKcBap9LFl"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFjoZQwB7e3oQW8l@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:56:37AM -0700, Sean Christopherson wrote:
-> Not necessarily.  This can only trigger in the host, and thus require a host
-> reboot, if the host is also running enclaves.  If the CSP is not running
-> enclaves, or is running its enclaves in a separate VM, then this path cannot be
-> reached.
 
-That's what I meant. Rebooting guests is a lot easier, ofc.
+--=-2khgYsUvNQwKcBap9LFl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Or are you saying, this can trigger *only* when they're running enclaves
-on the *host* too?
+On Mon, 2021-03-22 at 12:11 -0700, Scott Branden wrote:
+> On 2021-03-22 11:58 a.m., Nicolas Saenz Julienne wrote:
+> > Convert the brcm,iproc-sdhci binding to DT schema format using json-sch=
+ema
+> >=20
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+> > ---
+> > =C2=A0.../bindings/mmc/brcm,iproc-sdhci.yaml        | 58 ++++++++++++++=
++++++
+> > =C2=A0.../bindings/mmc/brcm,sdhci-iproc.txt         | 37 ------------
+> > =C2=A02 files changed, 58 insertions(+), 37 deletions(-)
+> > =C2=A0create mode 100644 Documentation/devicetree/bindings/mmc/brcm,ipr=
+oc-sdhci.yaml
+> > =C2=A0delete mode 100644 Documentation/devicetree/bindings/mmc/brcm,sdh=
+ci-iproc.txt
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yam=
+l b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
+> > new file mode 100644
+> > index 000000000000..19d84f3ef9e6
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
+> > @@ -0,0 +1,58 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mmc/brcm,iproc-sdhci.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Broadcom IPROC SDHCI controller
+> > +
+> > +maintainers:
+> > +  - Nicolas Saenz Julienne <nsaenz@kernel.org>
+> This is already covered in the MAINTAINERS section via "N:	iproc".
+> M:	Ray Jui <ray.jui@broadcom.com>
+>=20
+> M:	Scott Branden <scott.branden@broadcom.com>
+>=20
+> M:	bcm-kernel-feedback-list@broadcom.com
 
-> EREMOVE can only fail if there's a kernel or hardware bug (or a VMM bug if
-> running as a guest). 
+Fair enough, I'll drop it.
 
-We get those on a daily basis.
+Regards,
+Nicolas
 
-> IME, nearly every kernel/KVM bug that I introduced that led to EREMOVE
-> failure was also quite fatal to SGX, i.e. this is just the canary in
-> the coal mine.
->
-> It's certainly possible to add more sophisticated error handling, e.g. through
-> the pages onto a list and periodically try to recover them.  But, since the vast
-> majority of bugs that cause EREMOVE failure are fatal to SGX, implementing
-> sophisticated handling is quite low on the list of priorities.
-> 
-> Dave wanted the "page leaked" error message so that it's abundantly clear that
-> the kernel is leaking pages on EREMOVE failure and that the WARN isn't "benign".
 
-So this sounds to me like this should BUG too eventually.
+--=-2khgYsUvNQwKcBap9LFl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Or is this one of those "this should never happen" things so no one
-should worry?
+-----BEGIN PGP SIGNATURE-----
 
-Whatever it is, if an admin sees this message in dmesg and doesn't get a
-lengthy explanation what she/he is supposed to do, I don't think she/he
-will be as relaxed.
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBY7R4ACgkQlfZmHno8
+x/5oNgf+ITHsfr+zjrmSWml+16IzFPn9PMt03XxCum4AkgYKOoc5c8GcteSD+l/J
+BoToSXSety1qu0mJygXEUh5ViGaGt1dkmL/Vr0Lg1jr/plqb5RPgKPAcexVS2xl+
+ZbLWncSDBcgDqPpWvrHZhIKigt421gCSHBCOLODWhnACwOTIsZYccSPoUsLt27Zu
+BDsYbOjwjZm9cSfqAdveRTTYXHXOiL8q9Zn25POGoNc+Pc3bTibNWJQq21XvYpJY
+cQvBh5kTqYpP7vIE9EZWn1qEBmBDV0/aYKXvyL/tD/W8UcZKlroHDpC/9Bqbz2pM
+AK994tJlq5EK0OMauGG16esyX9WoEA==
+=I3xy
+-----END PGP SIGNATURE-----
 
-Hell, people open bugs for correctable ECCs and are asking whether they
-need to replace their hardware.
+--=-2khgYsUvNQwKcBap9LFl--
 
-So let's play this out: put yourself in an admin's shoes and tell me how
-should an admin react when she/he sees that?
-
-Should the kernel probably also say: "Don't worry, you have enough
-memory and what's a 4K, who cares? You'll reboot eventually."
-
-Or should the kernel say "You need to reboot ASAP."
-
-And so on...
-
-So what is the scenario here and what kind of reaction is that message
-supposed to cause, recovery action, blabla, the whole spiel?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
