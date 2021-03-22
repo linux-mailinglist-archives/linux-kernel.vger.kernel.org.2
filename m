@@ -2,88 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C937E343726
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB7134372A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 04:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCVDLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 23:11:47 -0400
-Received: from mout.gmx.net ([212.227.15.19]:42709 "EHLO mout.gmx.net"
+        id S229905AbhCVDOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 23:14:01 -0400
+Received: from mga07.intel.com ([134.134.136.100]:24674 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229613AbhCVDLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 23:11:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616382629;
-        bh=6536XVc/gAsAd4F91AEn9O913I3emGi3sMYtABF4XeA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=aXnCTS4oMV/L/EtQZsXG/6fKyWNfib/1QggeSay+rJIEoINolTlG7+HpM8koKMnNr
-         CdGtxFUitFuBJLnqGa4ChhryouX2Jep9LCkjw84TahF6+vawW+bIvWBBoKG+6/CPPW
-         rqPJVNnP2g5qSFbYpkL9CThVrb81eaH5jPK9MMTg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.146.50.88]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mn2W5-1m8GwM2BR1-00k4Bh; Mon, 22
- Mar 2021 04:10:29 +0100
-Message-ID: <e984000bf56be980f87c39bf644e139e4c39ddbf.camel@gmx.de>
-Subject: Re: [ANNOUNCE] v5.12-rc3-rt3
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Date:   Mon, 22 Mar 2021 04:10:28 +0100
-In-Reply-To: <e2e51e78094d14f6795221734c2fc8d66d6455a7.camel@gmx.de>
-References: <20210319223357.uknv2t5uvxvzb46x@linutronix.de>
-         <1f63f1fcea10fc179881384cd838b1c9e5207b82.camel@gmx.de>
-         <e2e51e78094d14f6795221734c2fc8d66d6455a7.camel@gmx.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S229872AbhCVDN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Mar 2021 23:13:27 -0400
+IronPort-SDR: BLE0mVBP+FeTbiU2ne39wDP5cxuQpc5rDmDJTZFjIcvUHwHsuC0qTaI6dC/oOGjlQNLHy2JK9W
+ Ehoq+NELchrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9930"; a="254191365"
+X-IronPort-AV: E=Sophos;i="5.81,266,1610438400"; 
+   d="scan'208";a="254191365"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 20:13:26 -0700
+IronPort-SDR: 1j5/k/g9sMSsv+ysJsfdJdEbLkPi70nu7bKR0oSj4cs1yuGzOMHsVlEP6ndoNmfnwpah2kgHrs
+ +WLhm1Hd6cag==
+X-IronPort-AV: E=Sophos;i="5.81,266,1610438400"; 
+   d="scan'208";a="414308295"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2021 20:13:21 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
+References: <20210313075747.3781593-1-yuzhao@google.com>
+        <20210313075747.3781593-10-yuzhao@google.com>
+        <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
+        <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFAsjP7NIZM5Ld+m@google.com>
+        <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFBktbCH9JFcT0rL@google.com>
+        <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFHeFslZ85/h3o/q@google.com>
+Date:   Mon, 22 Mar 2021 11:13:19 +0800
+In-Reply-To: <YFHeFslZ85/h3o/q@google.com> (Yu Zhao's message of "Wed, 17 Mar
+        2021 04:46:46 -0600")
+Message-ID: <87czvryj74.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1EPMaBemTID/QUu9iSqWFTAcUiGWdtA00gXZXFw6vHORXYh2VW3
- CxEpNvCXOjyTIWxvB3XYqIUnqBCGy21nGxkrGsh+ziWSxhQZdskUq7CFapTcLWkP8k63rvT
- MWQ1HfSTd564tIV42bN3Cpq6AiUqb8IwD/J5VgcOvfbRJglDKuW/keBjeJ/Ca6tYiGacLWu
- OY4DvhDDyT4IdD3NPb8CA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tiPYwmK+iZU=:9uJ9o/pGnFspcJ7Z0utlMm
- qmmkh0qo/Fdh7h5KC4itJRTQA4fVdrSjCBYDs1srRzAHsQqoEtyk+mKN6GwirlnRhZ7pg/7F6
- kt1BthpI9927JC758dzDvLRZLKLlxq44W3xuWoWYFytrw+Ni50mbxeNtk7MiHtfNhKwl54Mf7
- hyrbbrMKGsxFh4zn59GMhkkDNGX7l038ahcf3NaFKvpuq2Sttu/9hFdqCeQWMRd1l93BK2Dov
- /ku6xhtz1qxK2hKvHtFARX1NzeAlxVEQg8EGAumNu7GxHbcvt5KzpY8uZ0n9/njJhlyvDId2K
- bi71Q7mFLrUwd/iXfz4pv7y4OvAvnZnn4rWt8Fmmbe6ItudTW9waIs5X1Wqi6Lb8DiVIoPtuO
- yak3PjIRdZZla/1eFpJxiO92yBR4Bf8RPKsHQbMQv2y2IDDDNZjPHuUan6xGHhM22qFOKT+5W
- IqsXgAqQslwG5W9mIGprCoEFJH6JV0vx/EZmO6C79LJvmtfxjDxBMJ6NOOATUp9y0BWIcCves
- 2VBBtRnK8r7GRWClK5rtqx7NoiN7ATmIUlEsFXRmSWZ04T2Ai6e4rhbSDAxGwkDOzUv6iymWc
- z609dcwS+OF3+3bPEbB/d84K/HzeCtpfCDXsdXoBvGXuThjxkXSgdY0gGZ0D/qpWaokyAp+4M
- 7TokhIi93RLXQHaQZzxp2Lkw9pIS8du51jmo4nKwGrnyVQzf4izbmfut5d/sq5x7YQDblANgZ
- hD9gVMHdyBS8KJPri3rKroP84OdyFbXconwBVIShn4Ef6C8uPSbH3cnhlVloDW4mD0U+hQ3Fb
- RynH/93s6L0dWyFf/u26wSSjo6OPim1SK2XqH6gOGKKrD82p+UdncfXTjMWXjr2nGJr7GfE7F
- YGpHTRFkqjwkBLYcs+0w==
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-03-21 at 08:46 +0100, Mike Galbraith wrote:
-> On Sat, 2021-03-20 at 09:18 +0100, Mike Galbraith wrote:
-> > On Fri, 2021-03-19 at 23:33 +0100, Sebastian Andrzej Siewior wrote:
-> > > Dear RT folks!
-> > >
-> > > I'm pleased to announce the v5.12-rc3-rt3 patch set.
-> >
-> > My little rpi4b is fairly unhappy with 5.12-rt, whereas 5.11-rt works
-> > fine on it.  The below spew is endless, making boot endless.  I turned
-> > it into a WARN_ON_ONCE to see if the thing would finish boot, and
-> > surprisingly, it seems perfectly fine with that bad idea. Having not
-> > the foggiest clue what I'm doing down in arm arch-land, bug is in no
-> > immediate danger :)
+Yu Zhao <yuzhao@google.com> writes:
+
+> On Wed, Mar 17, 2021 at 11:37:38AM +0800, Huang, Ying wrote:
+>> Yu Zhao <yuzhao@google.com> writes:
+>> 
+>> > On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
+>> > The scanning overhead is only one of the two major problems of the
+>> > current page reclaim. The other problem is the granularity of the
+>> > active/inactive (sizes). We stopped using them in making job
+>> > scheduling decision a long time ago. I know another large internet
+>> > company adopted a similar approach as ours, and I'm wondering how
+>> > everybody else is coping with the discrepancy from those counters.
+>> 
+>> From intuition, the scanning overhead of the full page table scanning
+>> appears higher than that of the rmap scanning for a small portion of
+>> system memory.  But form your words, you think the reality is the
+>> reverse?  If others concern about the overhead too, finally, I think you
+>> need to prove the overhead of the page table scanning isn't too higher,
+>> or even lower with more data and theory.
 >
-> Actually, it looks like a defenseless little buglet, and this gripe
-> simply wants to be disabled for RT.
+> There is a misunderstanding here. I never said anything about full
+> page table scanning. And this is not how it's done in this series
+> either. I guess the misunderstanding has something to do with the cold
+> memory tracking you are thinking about?
 
-Or completely removed instead.
+If my understanding were correct, from the following code path in your
+patch 10/14,
 
-It's entirely possible I'm missing something obvious to arm experts,
-but I don't _think_ the register read needs protection, leaving me
-wondering why arch_faults_on_old_pte() was born with that warning.
+age_active_anon
+  age_lru_gens
+    try_walk_mm_list
+      walk_mm_list
+        walk_mm
 
-	-Mike
+So, in kswapd(), the page tables of many processes may be scanned
+fully.  If the number of processes that are active are high, the
+overhead may be high too.
 
+> This series uses page tables to discover page accesses when a system
+> has run out of inactive pages. Under such a situation, the system is
+> very likely to have a lot of page accesses, and using the rmap is
+> likely to cost a lot more because its poor memory locality compared
+> with page tables.
+
+This is the theory.  Can you verify this with more data?  Including the
+CPU cycles or time spent scanning page tables?
+
+> But, page tables can be sparse too, in terms of hot memory tracking.
+> Dave has asked me to test the worst case scenario, which I'll do.
+> And I'd be happy to share more data. Any specific workload you are
+> interested in?
+
+We can start with some simple workloads that are easier to be reasoned.
+For example,
+
+1. Run the workload with hot and cold pages, when the free memory
+becomes lower than the low watermark, kswapd will be waken up to scan
+and reclaim some cold pages.  How long will it take to do that?  It's
+expected that almost all pages need to be scanned, so that page table
+scanning is expected to have less overhead.  We can measure how well it
+is.
+
+2. Run the workload with hot and cold pages, if the whole working-set
+cannot fit in DRAM, that is, the cold pages will be reclaimed and
+swapped in regularly (for example tens MB/s).  It's expected that less
+pages may be scanned with rmap, but the speed of page table scanning is
+faster.
+
+3. Run the workload with hot and cold pages, the system is
+overcommitted, that is, some cold pages will be placed in swap.  But the
+cold pages are cold enough, so there's almost no thrashing.  Then the
+hot working-set of the workload changes, that is, some hot pages become
+cold, while some cold pages becomes hot, so page reclaiming and swapin
+will be triggered.
+
+For each cases, we can use some different parameters.  And we can
+measure something like the number of pages scanned, the time taken to
+scan them, the number of page reclaimed and swapped in, etc.
+
+Best Regards,
+Huang, Ying
