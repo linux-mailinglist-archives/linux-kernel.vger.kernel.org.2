@@ -2,200 +2,432 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFC7345246
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E56234524E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhCVWJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:09:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31833 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230259AbhCVWJA (ORCPT
+        id S229870AbhCVWMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhCVWMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:09:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616450940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kl3kFp9hTUBjJOfw0aybm+GM5kudzpR7W9bPcAyBKfY=;
-        b=Xo5qtFOj8gyu6+4rLkIWqF4pE0pFc62vK0d2iwpseqq0hifZbsz+aZIbnBRw8b2fVHuzio
-        k5Oo2yJ5dkCTXN6YuveY50ozBHxzjkk6W7UPedCsx+4+7SUvEQcqTz9NOj4NSTE9zt6Mfz
-        ev+cnpGiQK2ZZn0vdPNCuraRktxM5cI=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-qhbTUsDTPGGgzpLaeJTJsQ-1; Mon, 22 Mar 2021 18:08:58 -0400
-X-MC-Unique: qhbTUsDTPGGgzpLaeJTJsQ-1
-Received: by mail-qv1-f70.google.com with SMTP id da16so386101qvb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:08:58 -0700 (PDT)
+        Mon, 22 Mar 2021 18:12:05 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079FAC061574;
+        Mon, 22 Mar 2021 15:12:04 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id s21so9197103pjq.1;
+        Mon, 22 Mar 2021 15:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bxUT8Hyw6zwaKGRxOQzuiuSuvDlzwGQguxgLGJCF1XA=;
+        b=qVrP6QSIWHenhJW7R9a3kffxDombxNNSPr3ikMJthafgrqdqPK7e7XrEUP/WFSHDIN
+         H7VxAZtdudNrOcgRU2cCBV5YMJ2Whc+cOrGLCvjwL50VuyjU7w5QxHbIrKU8VomDo8Pj
+         q54jSwEQoXVjlEXOevP/22/MbF/oLtEoKivgbtaOC7LUNcp9cIZ3ZMNcuEcM+k2YL/ub
+         nNHDPSb0DMluGPD4PacRQ0g7Rju2DNvr/OO2vWlJVM2uxHZaq/wPlqOEc4mRjjrkmszu
+         0AxxSCa0XzUCOCkwmbqbjdT4TgNSqtfFf67I1Ro4D7mfeFsXBoBn8873rIZMZnCMcECw
+         QhBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Kl3kFp9hTUBjJOfw0aybm+GM5kudzpR7W9bPcAyBKfY=;
-        b=ozTFopHtSXvAegjal2Ls0mqoR4RjT0Fr3tX8IEoxoDF/mVFXzetWeozubHvOkip8OC
-         s/49dvhdiStRXUheGkVvLUfvHsFG3u8dgjOinryxkAClTYGx/DvlFJDFr9PT1qMHUkBt
-         Pdso86RXvlHa0/DlvgznxlvH6B25ygYhI+okzbkGgQOReg2tGxPTvoZjt8r5Jl2i0Btt
-         dkmldiLBk8/FaPJ39uWfOWs+hG6UGDZ+hrkcVIpcavdy1625JRziNkdBtskQ3EctNJVS
-         qOLsdDpth7Hsx+enRVEajjP6o4XaLSdXJDcYCyTKsxe3xGr1ldlxGOs6E20/Fxj6hzaV
-         XPsw==
-X-Gm-Message-State: AOAM532ZyC78V7Y2rAm9KAlXX6zBthUW4VHni55fdeL37SsteWJFOSYf
-        J2Q/6vFV1qyjL52az5qld6CICmE35R3I4i8Zkmg/q3Sd2imKCBlFo4SpKVOXor25PgCzHEzBfK8
-        oMzqvekc0DX6UXvTl74JFQbd3
-X-Received: by 2002:a05:620a:218e:: with SMTP id g14mr2318824qka.111.1616450937655;
-        Mon, 22 Mar 2021 15:08:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxXQkjDlpEzfKxL2gVD4fm1+ph4tlOJXa1UzW5utW+yxjYVJwWLncDAwiuahCmShRLGbvdPJw==
-X-Received: by 2002:a05:620a:218e:: with SMTP id g14mr2318803qka.111.1616450937365;
-        Mon, 22 Mar 2021 15:08:57 -0700 (PDT)
-Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id x1sm9627850qtr.97.2021.03.22.15.08.55
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=bxUT8Hyw6zwaKGRxOQzuiuSuvDlzwGQguxgLGJCF1XA=;
+        b=FB3u3I48R3y/4omQSVjqFKmN17dgOo3GVH4vRp9vjCPwLk/6HfB0D7NLQf87BLXHU1
+         z9mBLwTUMePxNE9MvT614Ub1cgRa1WemL2O0KWdQxfIkxne/pvTLjAeOKPFSX1sr/r/s
+         n3SAiP7RxSMsKs51PE5zZPJuDpkevsrQh2b9sJbKgH8I1HvOug1DmLnRJISTO9+3+05C
+         jMWXMjXe1l0GXsW7SSDVDQeZRxpppXEGEW9K1PkcEMH3akD3qAlhqXvGXr4Rxeu0iUNp
+         SnaDPAWXso3K7trGW6E8WLlNI1v0O3psMKZMA2Uz0TYnMD5NtsWY43CbDb1NohOeB8Kz
+         HDGQ==
+X-Gm-Message-State: AOAM533BAHf2SJU5NmZe4+lFFxXXSyY9r3uxAZgsSGjZ0H5w1hX2Z/CT
+        J8tTfQ0iXIBTpciPFEqfZ8k=
+X-Google-Smtp-Source: ABdhPJzTOiJbM3Aple0zV1WdpoWQV/EYEo4OChULDHazYqCwjCTuDx6w37stzGkfojBBeEkygCQIhg==
+X-Received: by 2002:a17:90a:8505:: with SMTP id l5mr1193620pjn.100.1616451124092;
+        Mon, 22 Mar 2021 15:12:04 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:48b8:cb13:3227:ef89])
+        by smtp.gmail.com with ESMTPSA id x2sm13825129pga.60.2021.03.22.15.12.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 15:08:56 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>, peterx@redhat.com,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v4 4/4] ioctl_userfaultfd.2: Add write-protect mode docs
-Date:   Mon, 22 Mar 2021 18:08:48 -0400
-Message-Id: <20210322220848.52162-5-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210322220848.52162-1-peterx@redhat.com>
-References: <20210322220848.52162-1-peterx@redhat.com>
+        Mon, 22 Mar 2021 15:12:03 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 22 Mar 2021 15:12:01 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     gregkh@linuxfoundation.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YFkWMZ0m9nKCT69T@google.com>
+References: <20210306022035.11266-1-mcgrof@kernel.org>
+ <20210306022035.11266-2-mcgrof@kernel.org>
+ <YEbjom8FIclEgRYv@google.com>
+ <20210310212128.GR4332@42.do-not-panic.com>
+ <YErOkGrvtQODXtB0@google.com>
+ <20210312183238.GW4332@42.do-not-panic.com>
+ <YEvA1dzDsFOuKdZ/@google.com>
+ <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322204156.GM4332@42.do-not-panic.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userfaultfd write-protect mode is supported starting from Linux 5.7.
+On Mon, Mar 22, 2021 at 08:41:56PM +0000, Luis Chamberlain wrote:
+> On Mon, Mar 22, 2021 at 09:37:17AM -0700, Minchan Kim wrote:
+> > On Fri, Mar 19, 2021 at 07:09:24PM +0000, Luis Chamberlain wrote:
+> > > Indeed one issue is a consequence of the other but a bit better
+> > > description can be put together for both separately.
+> > > 
+> > > The warning comes up when cpu hotplug detects that the callback
+> > > is being removed, but yet "instances" for multistate are left behind,
+> > > ie, not removed. CPU hotplug multistate allows us to dedicate a callback
+> > > for zram so that it gets called every time a CPU hot plugs or unplugs.
+> > > In the zram driver's case we want to trigger the callback per each
+> > > struct zcomp, one is used per supported and used supported compression
+> > 
+> >      you meant "each one is used per supported compression"?
+> 
+> Yup.
+> 
+> > > algorithm. The zram driver allocates a struct zcomp for an compression
+> > > algorithm on a need basis. The default compressor is CONFIG_ZRAM_DEF_COMP
+> > > which today is CONFIG_ZRAM_DEF_COMP_LZORLE ("lzo-rle"). Although we may
+> > > have different zram devices, zram devices which use the same compression
+> > > algorithm share the same struct zcomp. The "multi" in CPU hotplug multstate
+> > 
+> > It allocates each own zcomp, not sharing even though zram devices
+> > use the same compression algorithm.
+> 
+> Right.
+> 
+> > > refers to these different struct zcomp instances, each of these will
+> > > have the callback routine registered run for it. The kernel's CPU
+> > > hotplug multistate keeps a linked list of these different structures
+> > > so that it will iterate over them on CPU transitions. By default at
+> > > driver initialization we will create just one zram device (num_devices=1)
+> > > and a zcomp structure then set for the lzo-rle comrpession algorithm.
+> > > At driver removal we first remove each zram device, and so we destroy
+> > > the struct zcomp. But since we expose sysfs attributes to create new
+> > > devices or reset / initialize existing ones, we can easily end up
+> > > re-initializing a struct zcomp before the exit routine of the module
+> > > removes the cpu hotplug callback. When this happens the kernel's
+> > > CPU hotplug will detect that at least one instance (struct zcomp for
+> > > us) exists.
+> > 
+> > It's very helpful to understand. Thanks a lot!S
+> > 
+> > So IIUC, it's fundamentally race between destroy_devices(i.e., module
+> > unload) and every sysfs knobs in zram. Isn't it?
+> 
+> I would not call it *every* syfs knob as not all deal with things which
+> are related to CPU hotplug multistate, right? Note that using just
+> try_module_get() alone (that is the second patch only, does not fix the
+> race I am describing above).
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- man2/ioctl_userfaultfd.2 | 84 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 81 insertions(+), 3 deletions(-)
+It wouldn't be CPU hotplug multistate issue but I'd like to call it
+as more "zram instance race" bug.
+What happens in this case?
 
-diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-index d4a8375b8..5419687a6 100644
---- a/man2/ioctl_userfaultfd.2
-+++ b/man2/ioctl_userfaultfd.2
-@@ -234,6 +234,11 @@ operation is supported.
- The
- .B UFFDIO_UNREGISTER
- operation is supported.
-+.TP
-+.B 1 << _UFFDIO_WRITEPROTECT
-+The
-+.B UFFDIO_WRITEPROTECT
-+operation is supported.
- .PP
- This
- .BR ioctl (2)
-@@ -322,9 +327,6 @@ Track page faults on missing pages.
- .B UFFDIO_REGISTER_MODE_WP
- Track page faults on write-protected pages.
- .PP
--Currently, the only supported mode is
--.BR UFFDIO_REGISTER_MODE_MISSING .
--.PP
- If the operation is successful, the kernel modifies the
- .I ioctls
- bit-mask field to indicate which
-@@ -443,6 +445,16 @@ operation:
- .TP
- .B UFFDIO_COPY_MODE_DONTWAKE
- Do not wake up the thread that waits for page-fault resolution
-+.TP
-+.B UFFDIO_COPY_MODE_WP
-+Copy the page with read-only permission.
-+This allows the user to trap the next write to the page,
-+which will block and generate another write-protect userfault message.
-+This is only used when both
-+.B UFFDIO_REGISTER_MODE_MISSING
-+and
-+.B UFFDIO_REGISTER_MODE_WP
-+modes are enabled for the registered range.
- .PP
- The
- .I copy
-@@ -654,6 +666,72 @@ field of the
- structure was not a multiple of the system page size; or
- .I len
- was zero; or the specified range was otherwise invalid.
-+.SS UFFDIO_WRITEPROTECT (Since Linux 5.7)
-+Write-protect or write-unprotect an userfaultfd registered memory range
-+registered with mode
-+.BR UFFDIO_REGISTER_MODE_WP .
-+.PP
-+The
-+.I argp
-+argument is a pointer to a
-+.I uffdio_range
-+structure as shown below:
-+.PP
-+.in +4n
-+.EX
-+struct uffdio_writeprotect {
-+    struct uffdio_range range;  /* Range to change write permission */
-+    __u64 mode;                 /* Mode to change write permission */
-+};
-+.EE
-+.in
-+There're two mode bits that are supported in this structure:
-+.TP
-+.B UFFDIO_WRITEPROTECT_MODE_WP
-+When this mode bit is set, the ioctl will be a write-protect operation upon the
-+memory range specified by
-+.IR range .
-+Otherwise it'll be a write-unprotect operation upon the specified range,
-+which can be used to resolve an userfaultfd write-protect page fault.
-+.TP
-+.B UFFDIO_WRITEPROTECT_MODE_DONTWAKE
-+When this mode bit is set,
-+do not wake up any thread that waits for page-fault resolution after the operation.
-+This could only be specified if
-+.B UFFDIO_WRITEPROTECT_MODE_WP
-+is not specified.
-+.PP
-+This
-+.BR ioctl (2)
-+operation returns 0 on success.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the error.
-+Possible errors include:
-+.TP
-+.B EINVAL
-+The
-+.I start
-+or the
-+.I len
-+field of the
-+.I ufdio_range
-+structure was not a multiple of the system page size; or
-+.I len
-+was zero; or the specified range was otherwise invalid.
-+.TP
-+.B EAGAIN
-+The process was interrupted and need to retry.
-+.TP
-+.B ENOENT
-+The range specified in
-+.I range
-+is not valid.
-+For example, the virtual address does not exist,
-+or not registered with userfaultfd write-protect mode.
-+.TP
-+.B EFAULT
-+Encountered a generic fault during processing.
- .SH RETURN VALUE
- See descriptions of the individual operations, above.
- .SH ERRORS
--- 
-2.26.2
+        CPU 1                            CPU 2
 
+destroy_devices
+..
+                                 compact_store()
+                                 zram = dev_to_zram(dev);
+idr_for_each(zram_remove_cb
+  zram_remove
+  ..
+  kfree(zram)
+                                 down_read(&zram->init_lock);
+
+
+        CPU 1                            CPU 2
+
+hot_remove_store
+                                 compact_store()
+                                 zram = dev_to_zram(dev);
+  zram_remove
+    kfree(zram)
+                                 down_read(&zram->init_lock);
+    				
+So, for me we need to close the zram instance create/removal
+with sysfs rather than focusing on CPU hotplug issue.
+Maybe, we could reuse zram_index_mutex with modifying it with
+rw_semaphore. What do you think?
+
+> 
+> There are two issues.
+> 
+> > Below specific example is one of them and every sysfs code in zram
+> > could access freed object(e.g., zram->something).
+> > And you are claiming there isn't good way to fix it in kernfs(please
+> > add it in the description, too) even though it's general problem.
+> 
+> Correct, the easier route would have been through the block layer as
+> its the one adding our syfs attributes for us but even it canno deal
+> with this race on behalf of drivers given the currently exposed
+> semantics on kernfs.
+> 
+> > (If we had, we may detect the race and make zram_remove_cb fails
+> > so unloading modulies fails, finally)
+> > 
+> > So, shouldn't we introcude a global rw_semaphore?
+> > 
+> > destroy_devices
+> >   class_unregister
+> >   down_write(&zram_unload);
+> >   idr_for_each(zram_remove_cb);
+> >   up_write(&zram_unload);
+> > 
+> > And every sysfs code hold the lock with down_read in the first place
+> > and release the lock right before return. So, introduce a zram sysfs
+> > wrapper to centralize all of locking logic.
+> 
+> Actually that does work but only if we use write lock attempts so to
+> be able to knock two birds with one stone, so to address the deadlock
+> with sysfs attribute removal. We're not asking politely to read some
+> value off of a zram devices with these locks, we're ensuring to not
+> run if our driver is going to be removed, so replacing the
+> try_module_get() with something similar.
+> 
+> > Does it make sense?
+> > 
+> > > 
+> > > And so we can have:
+> > > 
+> > > static void destroy_devices(void)
+> > > {
+> > > 	class_unregister(&zram_control_class);
+> > > 	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
+> > > 	zram_debugfs_destroy();
+> > > 	idr_destroy(&zram_index_idr);
+> > > 	unregister_blkdev(zram_major, "zram");
+> > > 	cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
+> > > }
+> > > 
+> > > While destroy_devices() runs we can have this race:
+> > > 
+> > > 
+> > > CPU 1                            CPU 2
+> > > 
+> > > class_unregister(...);
+> > > idr_for_each(...);
+> > 				  I think sysfs was already remove here.
+> > > zram_debugfs_destroy();
+> > >                                 disksize_store(...)
+> > > idr_destroy(...);
+> > > unregister_blkdev(...);
+> > > cpuhp_remove_multi_state(...);
+> > 
+> > So,
+> > 
+> > 	CPU 1                            CPU 2
+> >  
+> > destroy_devices
+> > ..
+> > 				 disksize_store()
+> > 				   zcomp_create
+> > 				   zcomp_init
+> > idr_for_each(zram_remove_cb
+> >   zram_remove
+> >   zram_reset
+> >   zcomp_destroy
+> >   cpuhp_state_remove_instance
+> > 				   cpuhp_state_add_instance
+> > ..
+> > 
+> > cpuhp_remove_multi_state(...)
+> >   Detect!
+> >     kernel: Error: Removing state 63 which has instances left.
+> 
+> Yup true.
+> 
+> > > The warning comes up on cpuhp_remove_multi_state() when it sees
+> > > that the state for CPUHP_ZCOMP_PREPARE does not have an empty
+> > > instance linked list.
+> > > 
+> > > After the idr_destory() its also easy to run into a crash. The
+> > > above predicament also leads to memory leaks.
+> > > 
+> > > And so we need to have a state machine for when we're up and when
+> > > we're going down generically.
+> > > 
+> > > Let me know if it makes sense now, if so I can amend the commit log
+> > > accordingly.
+> > 
+> > Yub, It's much better. Let's have it in the commit log.
+> 
+> Sure OK, well the following is what I end up with. With this approach
+> only one patch is needed.
+> 
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index a711a2e2a794..3b86ee94309e 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -41,6 +41,15 @@ static DEFINE_IDR(zram_index_idr);
+>  /* idr index must be protected */
+>  static DEFINE_MUTEX(zram_index_mutex);
+>  
+> +/*
+> + * Protects against:
+> + * a) Hotplug cpu multistate races against compression algorithm removals
+> + *    and additions prior to its removal of the zram CPU hotplug callback
+> + * b) Deadlock which is possible when sysfs attributes are used and we
+> + *    share a lock on removal.
+> + */
+> +DECLARE_RWSEM(zram_unload);
+> +
+>  static int zram_major;
+>  static const char *default_compressor = CONFIG_ZRAM_DEF_COMP;
+>  
+> @@ -1723,6 +1732,9 @@ static ssize_t disksize_store(struct device *dev,
+>  	if (!disksize)
+>  		return -EINVAL;
+>  
+> +	if (!down_write_trylock(&zram_unload))
+> +		return -ENODEV;
+> +
+>  	down_write(&zram->init_lock);
+>  	if (init_done(zram)) {
+>  		pr_info("Cannot change disksize for initialized device\n");
+> @@ -1748,6 +1760,7 @@ static ssize_t disksize_store(struct device *dev,
+>  	zram->disksize = disksize;
+>  	set_capacity_and_notify(zram->disk, zram->disksize >> SECTOR_SHIFT);
+>  	up_write(&zram->init_lock);
+> +	up_write(&zram_unload);
+>  
+>  	return len;
+>  
+> @@ -1755,6 +1768,7 @@ static ssize_t disksize_store(struct device *dev,
+>  	zram_meta_free(zram, disksize);
+>  out_unlock:
+>  	up_write(&zram->init_lock);
+> +	up_write(&zram_unload);
+>  	return err;
+>  }
+>  
+> @@ -1773,14 +1787,17 @@ static ssize_t reset_store(struct device *dev,
+>  	if (!do_reset)
+>  		return -EINVAL;
+>  
+> +	if (!down_write_trylock(&zram_unload))
+> +		return -ENODEV;
+> +
+>  	zram = dev_to_zram(dev);
+>  	bdev = zram->disk->part0;
+>  
+>  	mutex_lock(&bdev->bd_mutex);
+>  	/* Do not reset an active device or claimed device */
+>  	if (bdev->bd_openers || zram->claim) {
+> -		mutex_unlock(&bdev->bd_mutex);
+> -		return -EBUSY;
+> +		len = -EBUSY;
+> +		goto out;
+>  	}
+>  
+>  	/* From now on, anyone can't open /dev/zram[0-9] */
+> @@ -1793,7 +1810,10 @@ static ssize_t reset_store(struct device *dev,
+>  
+>  	mutex_lock(&bdev->bd_mutex);
+>  	zram->claim = false;
+> +
+> +out:
+>  	mutex_unlock(&bdev->bd_mutex);
+> +	up_write(&zram_unload);
+>  
+>  	return len;
+>  }
+> @@ -2015,10 +2035,15 @@ static ssize_t hot_add_show(struct class *class,
+>  {
+>  	int ret;
+>  
+> +	if (!down_write_trylock(&zram_unload))
+> +		return -ENODEV;
+> +
+>  	mutex_lock(&zram_index_mutex);
+>  	ret = zram_add();
+>  	mutex_unlock(&zram_index_mutex);
+>  
+> +	up_write(&zram_unload);
+> +
+>  	if (ret < 0)
+>  		return ret;
+>  	return scnprintf(buf, PAGE_SIZE, "%d\n", ret);
+> @@ -2041,6 +2066,9 @@ static ssize_t hot_remove_store(struct class *class,
+>  	if (dev_id < 0)
+>  		return -EINVAL;
+>  
+> +	if (!down_write_trylock(&zram_unload))
+> +		return -ENODEV;
+> +
+>  	mutex_lock(&zram_index_mutex);
+>  
+>  	zram = idr_find(&zram_index_idr, dev_id);
+> @@ -2053,6 +2081,7 @@ static ssize_t hot_remove_store(struct class *class,
+>  	}
+>  
+>  	mutex_unlock(&zram_index_mutex);
+> +	up_write(&zram_unload);
+>  	return ret ? ret : count;
+>  }
+>  static CLASS_ATTR_WO(hot_remove);
+> @@ -2078,12 +2107,14 @@ static int zram_remove_cb(int id, void *ptr, void *data)
+>  
+>  static void destroy_devices(void)
+>  {
+> +	down_write(&zram_unload);
+>  	class_unregister(&zram_control_class);
+>  	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
+>  	zram_debugfs_destroy();
+>  	idr_destroy(&zram_index_idr);
+>  	unregister_blkdev(zram_major, "zram");
+>  	cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
+> +	up_write(&zram_unload);
+>  }
+>  
+>  static int __init zram_init(void)
+> @@ -2095,10 +2126,13 @@ static int __init zram_init(void)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	down_write(&zram_unload);
+> +
+>  	ret = class_register(&zram_control_class);
+>  	if (ret) {
+>  		pr_err("Unable to register zram-control class\n");
+>  		cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
+> +		up_write(&zram_unload);
+>  		return ret;
+>  	}
+>  
+> @@ -2108,6 +2142,7 @@ static int __init zram_init(void)
+>  		pr_err("Unable to get major number\n");
+>  		class_unregister(&zram_control_class);
+>  		cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
+> +		up_write(&zram_unload);
+>  		return -EBUSY;
+>  	}
+>  
+> @@ -2119,10 +2154,12 @@ static int __init zram_init(void)
+>  			goto out_error;
+>  		num_devices--;
+>  	}
+> +	up_write(&zram_unload);
+>  
+>  	return 0;
+>  
+>  out_error:
+> +	up_write(&zram_unload);
+>  	destroy_devices();
+>  	return ret;
+>  }
+
+As I mentioned above, it didn't close the race I gave as examples
+unless I miss something. Let's discuss further.
+
+Thank you!
