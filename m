@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93BF34441D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDD33444B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhCVM5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:57:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
+        id S230430AbhCVNEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:04:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231980AbhCVMq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:46:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F0CE619B3;
-        Mon, 22 Mar 2021 12:43:02 +0000 (UTC)
+        id S230289AbhCVMvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:51:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0EF8619FC;
+        Mon, 22 Mar 2021 12:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416983;
-        bh=6owAfvfN3txCduRFd+jmWhJrWuBMND+Y3whnn5+ayeE=;
+        s=korg; t=1616417159;
+        bh=m5Z0tbnrJ4Q/wyJYhcPEMr8Z8hXOyy4nru1IbUDX2VQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aMCGxqD3XfZe0M6QcLWFcWxtjUEFu9zSn5V15OnaVYbo/72W6f97V7KBH+yYzO0Ze
-         a7uWpOCSrOGYWurmP+C3ockDUs3vnaomsvQNqU4m32yXnuBkFUkCdFaTs5YdiX6TAf
-         +isAL+OG6PVP7iJ9atVNHqGX2kMH3AD+jsTZIHW4=
+        b=Q5VJp+HkJqZtgrv1lWfeI8TER5PDMBOMY6wi2eOH3R0z02fpx1P5PaAEBBlmjNEdW
+         WFoYANmznbOY4BWCiMstAppK+J/eclv5iRTxyQZ0xCoFhqGHXXsIghHBSpDoxd/N4m
+         Tp/OoTJvE7iuIOwQjZjCbjg7xzq42dU/KCxqA+s8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 42/60] iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
+        stable@vger.kernel.org, Timo Rothenpieler <timo@rothenpieler.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 4.19 16/43] svcrdma: disable timeouts on rdma backchannel
 Date:   Mon, 22 Mar 2021 13:28:30 +0100
-Message-Id: <20210322121923.774350204@linuxfoundation.org>
+Message-Id: <20210322121920.457396843@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Timo Rothenpieler <timo@rothenpieler.org>
 
-commit 6dbbbe4cfd398704b72b21c1d4a5d3807e909d60 upstream.
+commit 6820bf77864d5894ff67b5c00d7dba8f92011e3d upstream.
 
-There is one regmap_bulk_read() call in mpu3050_trigger_handler
-that we have caught its return value bug lack further handling.
-Check and terminate the execution flow just like the other three
-regmap_bulk_read() calls in this function.
+This brings it in line with the regular tcp backchannel, which also has
+all those timeouts disabled.
 
-Fixes: 3904b28efb2c7 ("iio: gyro: Add driver for the MPU-3050 gyroscope")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210301080421.13436-1-dinghao.liu@zju.edu.cn
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Prevents the backchannel from timing out, getting some async operations
+like server side copying getting stuck indefinitely on the client side.
+
+Signed-off-by: Timo Rothenpieler <timo@rothenpieler.org>
+Fixes: 5d252f90a800 ("svcrdma: Add class for RDMA backwards direction transport")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/gyro/mpu3050-core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/sunrpc/xprtrdma/svc_rdma_backchannel.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -550,6 +550,8 @@ static irqreturn_t mpu3050_trigger_handl
- 					       MPU3050_FIFO_R,
- 					       &fifo_values[offset],
- 					       toread);
-+			if (ret)
-+				goto out_trigger_unlock;
+--- a/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_backchannel.c
+@@ -308,9 +308,9 @@ xprt_setup_rdma_bc(struct xprt_create *a
+ 	xprt->timeout = &xprt_rdma_bc_timeout;
+ 	xprt_set_bound(xprt);
+ 	xprt_set_connected(xprt);
+-	xprt->bind_timeout = RPCRDMA_BIND_TO;
+-	xprt->reestablish_timeout = RPCRDMA_INIT_REEST_TO;
+-	xprt->idle_timeout = RPCRDMA_IDLE_DISC_TO;
++	xprt->bind_timeout = 0;
++	xprt->reestablish_timeout = 0;
++	xprt->idle_timeout = 0;
  
- 			dev_dbg(mpu3050->dev,
- 				"%04x %04x %04x %04x %04x\n",
+ 	xprt->prot = XPRT_TRANSPORT_BC_RDMA;
+ 	xprt->tsh_size = 0;
 
 
