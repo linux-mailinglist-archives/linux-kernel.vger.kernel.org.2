@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007223445A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E99C3445AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhCVNZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
+        id S230480AbhCVNZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbhCVNYt (ORCPT
+        with ESMTP id S230156AbhCVNZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:24:49 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74E5C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:24:48 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id e18so16763208wrt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TMhYVugyzUF8SPxHtKMVFHW2d9U56xBeasWjyoJCSqQ=;
-        b=GOqOWv3PWULYhWC+ww6Br08BQ3+hu5bgizm80HEdUmXKmH2mFt8bV1ZJy436PQ/9I5
-         uqSoy/QiB+fCzh6uhZhycXJbCky+BIPod2AXCDdjWJJy5jkc3wIbsyv6atzkUVUK1b9V
-         lp6MtiFkGpzvqILZvRtjTDwG3Us4UswvmqAjiXnZVMAmV00NvwQqvp4pHVypdvgVHpsj
-         0Jk3NjrrSI+idQKE/wL2kN/JEJ21gNfeK8dvwbM/g7+Jp1FlMj9p3HUdpF3mn58JjWbS
-         JMQpsSti1bw3o3xWPdyqz0C3D6iY3eJaQZm3NNBYTarCuRoKiTn+maEvlGeWtDXigD40
-         BN1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TMhYVugyzUF8SPxHtKMVFHW2d9U56xBeasWjyoJCSqQ=;
-        b=uE9Pe2L0+RSc3aOP/5t6i8BsntBvvTszwXjF8iT06hMfoueaT4wVblfZ2BmR4E0EH5
-         D8hXcW02cCfxCaShPdLS6bjDVYXBELI0OPBKIf/eanISDy4lSCbuW6+fEnm+6vFuIdI/
-         9RZS0LN9xqK+tj3o0yJy28e2dgaJhkXiuVMWJ+eIwtJgpLigXaMFghW9ompdfEVJBp5D
-         BwPIc77gJrpdQdZrBDz2rUDmzXBik1EyTjf3VtRgc3NAZt0hVdG78PG2/FEDtPAilBZv
-         xg74z4YJjfvTbmLwfn3WE7lxdMpRLewWdNz8qDpHZDLgdKIrBz2KsvBIeQjPSUNp+/iw
-         IjwA==
-X-Gm-Message-State: AOAM533xSx7HDeuhRv4OFP5ZWYoZ/aKCdUqm7k1TMrYI8rrgKDpYY1/C
-        6SnDr1uATNSb7FA3oemDKgqGbQ==
-X-Google-Smtp-Source: ABdhPJwC/rS7OkQu8efIWmWHkHtUUiOkhXCO7peTBGOEGaKEAdeI7EQBg4GOdpdUjIXkhjLjBvQVoQ==
-X-Received: by 2002:a1c:2857:: with SMTP id o84mr16021674wmo.181.1616419487136;
-        Mon, 22 Mar 2021 06:24:47 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:58e2:985b:a5ad:807c])
-        by smtp.gmail.com with ESMTPSA id i8sm19692969wrx.43.2021.03.22.06.24.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 06:24:46 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 14:24:40 +0100
-From:   Marco Elver <elver@google.com>
-To:     peterz@infradead.org, alexander.shishkin@linux.intel.com,
-        acme@kernel.org, mingo@redhat.com, jolsa@redhat.com,
-        mark.rutland@arm.com, namhyung@kernel.org, tglx@linutronix.de
-Cc:     glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        christian@brauner.io, dvyukov@google.com, jannh@google.com,
-        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
-        irogers@google.com, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC v2 8/8] selftests/perf: Add kselftest for
- remove_on_exec
-Message-ID: <YFiamKX+xYH2HJ4E@elver.google.com>
-References: <20210310104139.679618-1-elver@google.com>
- <20210310104139.679618-9-elver@google.com>
+        Mon, 22 Mar 2021 09:25:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E579C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:25:10 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOKYN-0005Br-Co; Mon, 22 Mar 2021 14:25:07 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lOKYM-0002kG-Uw; Mon, 22 Mar 2021 14:25:06 +0100
+Date:   Mon, 22 Mar 2021 14:25:06 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <20210322132506.evsvoem4lk2nx6w7@pengutronix.de>
+References: <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet>
+ <YFhhGpiHDELxIo9V@orome.fritz.box>
+ <CAHp75Ve2FFEMsAv8S18bUDFsH2UkiQ5UvgcRtZ=j30syQtEirw@mail.gmail.com>
+ <20210322112254.5mjkajkq3wnhgnd5@pengutronix.de>
+ <CAHp75VfedZyFF46koLOg13t_TzMbwj5zBYU2zBA52vRRtb202g@mail.gmail.com>
+ <20210322114826.ahwhbqxjxfg3nmrf@pengutronix.de>
+ <CAHp75Vc6YnHJdt0HhV9AZtpLHLapHZb08O5ygg++PX+u04m--A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3ff2acv277zzzeci"
 Content-Disposition: inline
-In-Reply-To: <20210310104139.679618-9-elver@google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <CAHp75Vc6YnHJdt0HhV9AZtpLHLapHZb08O5ygg++PX+u04m--A@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:41AM +0100, Marco Elver wrote:
-> Add kselftest to test that remove_on_exec removes inherited events from
-> child tasks.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
 
-To make compatible with more recent libc, we'll need to fixup the tests
-with the below.
+--3ff2acv277zzzeci
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, I've seen that tools/perf/tests exists, however it seems to be
-primarily about perf-tool related tests. Is this correct?
+Hello,
 
-I'd propose to keep these purely kernel ABI related tests separate, and
-that way we can also make use of the kselftests framework which will
-also integrate into various CI systems such as kernelci.org.
+On Mon, Mar 22, 2021 at 02:15:08PM +0200, Andy Shevchenko wrote:
+> On Mon, Mar 22, 2021 at 1:48 PM Uwe Kleine-K=F6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> > On Mon, Mar 22, 2021 at 01:40:57PM +0200, Andy Shevchenko wrote:
+> > > On Mon, Mar 22, 2021 at 1:22 PM Uwe Kleine-K=F6nig
+> > > <u.kleine-koenig@pengutronix.de> wrote:
+> > > > When the PWM driver is loaded and the PWM configuration is invalid,=
+ it
+> > > > was already invalid for the time between power up (or warm start) a=
+nd
+> > > > PWM driver load time. Then it doesn't really hurt to keep the PWM
+> > > > in this invalid state for a little moment longer until the consumer=
+ of
+> > > > the PWM becomes active.
+> > >
+> > > But this won't work in the cases when we have a chip with a shared
+> > > settings for period and/or duty cycle. You will never have a user come
+> > > due to -EBUSY.
+> >
+> > That's wrong, the first consumer to enable the PWM (in software) is
+> > supposed to be able to change the settings.
+>=20
+> If it's a critical PWM, how can you be allowed to do that?
 
-Thanks,
--- Marco
+You seem to have a tight concept of a critical PWM. I don't, so I have
+problems following you. What is your picture about what is to be
+allowed/denied for a critical PWM?
 
------- >8 ------
+> And if so, what is the difference between resetting the device in this
+> case?
 
-diff --git a/tools/testing/selftests/perf_events/remove_on_exec.c b/tools/testing/selftests/perf_events/remove_on_exec.c
-index e176b3a74d55..f89d0cfdb81e 100644
---- a/tools/testing/selftests/perf_events/remove_on_exec.c
-+++ b/tools/testing/selftests/perf_events/remove_on_exec.c
-@@ -13,6 +13,11 @@
- #define __have_siginfo_t 1
- #define __have_sigval_t 1
- #define __have_sigevent_t 1
-+#define __siginfo_t_defined
-+#define __sigval_t_defined
-+#define __sigevent_t_defined
-+#define _BITS_SIGINFO_CONSTS_H 1
-+#define _BITS_SIGEVENT_CONSTS_H 1
- 
- #include <linux/perf_event.h>
- #include <pthread.h>
-diff --git a/tools/testing/selftests/perf_events/sigtrap_threads.c b/tools/testing/selftests/perf_events/sigtrap_threads.c
-index 7ebb9bb34c2e..b9a7d4b64b3c 100644
---- a/tools/testing/selftests/perf_events/sigtrap_threads.c
-+++ b/tools/testing/selftests/perf_events/sigtrap_threads.c
-@@ -13,6 +13,11 @@
- #define __have_siginfo_t 1
- #define __have_sigval_t 1
- #define __have_sigevent_t 1
-+#define __siginfo_t_defined
-+#define __sigval_t_defined
-+#define __sigevent_t_defined
-+#define _BITS_SIGINFO_CONSTS_H 1
-+#define _BITS_SIGEVENT_CONSTS_H 1
- 
- #include <linux/hw_breakpoint.h>
- #include <linux/perf_event.h>
+The difference is that we have a consumer that knows what to do with the
+PWM then.
+
+> You may consider it as a change to the settings by the first
+> consumer.
+
+=2E. but without knowing if the first consumer is a backlight driver or a
+motor control it's hard to know if disabling the PWM is OK. So I like
+the concept of not doing anything until a process comes along that knows
+better.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--3ff2acv277zzzeci
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBYmq8ACgkQwfwUeK3K
+7AnxVwf9G6ddwK5P11tM3MvmQpjvCxy755jpKSmb8bJT3NMpjH0ZsQ7cJb5whjVb
+kvzpH+cvusvvWrpCYIB5/TJYn7oEbGT5HOndqemVivN2HDmBLxuviOY0YnsoeZkf
+SBgow32iipiiv912uW49WCUAoMrcxC0IIv7509P9fLQ4bH7+KC5a8FLl2dYl9pm6
+YgaeNgnEwwq/vcMOu+UzVAREq0ffVP/4kHiVRWezRRogwTPKy+0gK7C2Z8JTxt64
+JfF7EnamA36aoIakgqbnOmlrbp5a/tGAAt7bd0pNv/0aMOLsx7p1GlqD8fRUvcWk
+jyBA4prnQRdN5ZbasJfyKNxlCZLnYA==
+=fMXA
+-----END PGP SIGNATURE-----
+
+--3ff2acv277zzzeci--
