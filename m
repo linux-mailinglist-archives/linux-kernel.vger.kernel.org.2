@@ -2,114 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBC0344F44
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2CA344F02
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhCVSyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:54:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231724AbhCVSxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:53:44 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B71661990;
-        Mon, 22 Mar 2021 18:53:44 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lOPZV-0038p5-VO; Mon, 22 Mar 2021 18:46:38 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
-Subject: [PATCH v2 15/15] PCI: Refactor HT advertising of NO_MSI flag
-Date:   Mon, 22 Mar 2021 18:46:14 +0000
-Message-Id: <20210322184614.802565-16-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210322184614.802565-1-maz@kernel.org>
-References: <20210322184614.802565-1-maz@kernel.org>
+        id S230502AbhCVSss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231414AbhCVSsQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:48:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37B0C061574;
+        Mon, 22 Mar 2021 11:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=1bXBxLjsd8gmmpt9JoINY3mS7WqLO90NR1EkxxG5W+s=; b=MX/Zo3zPmaBavFnRNBIyCoEE0Z
+        KGC0Qbqopibj/GZOpudJnYv+dRNJxJ6SDXTTokiit9VQyiSI4ULarBt1Gj6vOv72gY/eL8QDnYI3X
+        geON5IyE6D9Ev8rj4zx0fF8U6gtUooaPEub7eOYpz3+SGqHfHjpEeBu98x3dzb9EbqeoTT64xri+d
+        3F0BXeVa5E7AfxSybexCusDSYV5fX1IyXz9hXuoLeGsn4Gb7SRoQLwlEG9BzAb+C0oLqpFN3sUu/2
+        I0Dclb/N3/PbdkJz8gGtiLcWIe/xdsB+ftttUU3ujK+Ayb4giG3h9UEGzQps0035diCg9a4AZjb7F
+        jgVKchyA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOPZa-008w1V-IR; Mon, 22 Mar 2021 18:47:02 +0000
+Subject: Re: [PATCH] devicetree: replace invalid kernel-doc comment headers
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc:     Aditya Srivastava <yashsri421@gmail.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210322072343.19993-1-lukas.bulwahn@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ba94e5f1-8219-716d-2a6b-9cb2dd434ed8@infradead.org>
+Date:   Mon, 22 Mar 2021 11:46:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, bhelgaas@google.com, frank-w@public-files.de, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, mikelley@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michal.simek@xilinx.com, paul.walmsley@sifive.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20210322072343.19993-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The few quirks that deal with NO_MSI tend to be copy-paste heavy.
-Refactor them so that the hierarchy of conditions is slightly
-cleaner.
+On 3/22/21 12:23 AM, Lukas Bulwahn wrote:
+> The opening comment mark '/**' is used for indicating the beginning of
+> kernel-doc comments.
+> 
+> Replace uses of '/**' for invalid cases in dt-binding headers and dts.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/pci/quirks.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 653660e3ba9e..972bb0f9f994 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -2585,10 +2585,8 @@ static int msi_ht_cap_enabled(struct pci_dev *dev)
- /* Check the HyperTransport MSI mapping to know whether MSI is enabled or not */
- static void quirk_msi_ht_cap(struct pci_dev *dev)
- {
--	if (dev->subordinate && !msi_ht_cap_enabled(dev)) {
--		pci_warn(dev, "MSI quirk detected; subordinate MSI disabled\n");
--		dev->subordinate->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
--	}
-+	if (!msi_ht_cap_enabled(dev))
-+		quirk_disable_msi(dev);
- }
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_SERVERWORKS, PCI_DEVICE_ID_SERVERWORKS_HT2000_PCIE,
- 			quirk_msi_ht_cap);
-@@ -2601,9 +2599,6 @@ static void quirk_nvidia_ck804_msi_ht_cap(struct pci_dev *dev)
- {
- 	struct pci_dev *pdev;
- 
--	if (!dev->subordinate)
--		return;
--
- 	/*
- 	 * Check HT MSI cap on this chipset and the root one.  A single one
- 	 * having MSI is enough to be sure that MSI is supported.
-@@ -2611,10 +2606,8 @@ static void quirk_nvidia_ck804_msi_ht_cap(struct pci_dev *dev)
- 	pdev = pci_get_slot(dev->bus, 0);
- 	if (!pdev)
- 		return;
--	if (!msi_ht_cap_enabled(dev) && !msi_ht_cap_enabled(pdev)) {
--		pci_warn(dev, "MSI quirk detected; subordinate MSI disabled\n");
--		dev->subordinate->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
--	}
-+	if (!msi_ht_cap_enabled(pdev))
-+		quirk_msi_ht_cap(dev);
- 	pci_dev_put(pdev);
- }
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_NVIDIA, PCI_DEVICE_ID_NVIDIA_CK804_PCIE,
+Thanks.
+
+> ---
+> Rob, please pick this quick kernel-doc cleanup patch.
+> 
+>  arch/arm64/boot/dts/hisilicon/hip05-d02.dts    | 2 +-
+>  arch/arm64/boot/dts/hisilicon/hip05.dtsi       | 2 +-
+>  arch/arm64/boot/dts/hisilicon/hip06-d03.dts    | 2 +-
+>  arch/arm64/boot/dts/hisilicon/hip06.dtsi       | 4 ++--
+>  arch/arm64/boot/dts/hisilicon/hip07-d05.dts    | 2 +-
+>  arch/arm64/boot/dts/hisilicon/hip07.dtsi       | 2 +-
+>  include/dt-bindings/reset/hisi,hi6220-resets.h | 2 +-
+>  include/dt-bindings/reset/snps,hsdk-reset.h    | 2 +-
+>  8 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/hisilicon/hip05-d02.dts b/arch/arm64/boot/dts/hisilicon/hip05-d02.dts
+> index 369b69b17b91..3d3d52bf41f5 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hip05-d02.dts
+> +++ b/arch/arm64/boot/dts/hisilicon/hip05-d02.dts
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * dts file for Hisilicon D02 Development Board
+>   *
+>   * Copyright (C) 2014,2015 Hisilicon Ltd.
+> diff --git a/arch/arm64/boot/dts/hisilicon/hip05.dtsi b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
+> index 4aed8d440b3a..5161e3476531 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hip05.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * dts file for Hisilicon D02 Development Board
+>   *
+>   * Copyright (C) 2014,2015 Hisilicon Ltd.
+> diff --git a/arch/arm64/boot/dts/hisilicon/hip06-d03.dts b/arch/arm64/boot/dts/hisilicon/hip06-d03.dts
+> index 9f4a930e734d..97aa42a86fd9 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hip06-d03.dts
+> +++ b/arch/arm64/boot/dts/hisilicon/hip06-d03.dts
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * dts file for Hisilicon D03 Development Board
+>   *
+>   * Copyright (C) 2016 Hisilicon Ltd.
+> diff --git a/arch/arm64/boot/dts/hisilicon/hip06.dtsi b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
+> index 7deca5f763d5..d86ee1d25ab8 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hip06.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * dts file for Hisilicon D03 Development Board
+>   *
+>   * Copyright (C) 2016 Hisilicon Ltd.
+> @@ -315,7 +315,7 @@
+>  		};
+>  	};
+>  
+> -	/**
+> +	/*
+>  	 *  HiSilicon erratum 161010801: This describes the limitation
+>  	 *  of HiSilicon platforms hip06/hip07 to support the SMMUv3
+>  	 *  mappings for PCIe MSI transactions.
+> diff --git a/arch/arm64/boot/dts/hisilicon/hip07-d05.dts b/arch/arm64/boot/dts/hisilicon/hip07-d05.dts
+> index 81a2312c8a26..57debca7b1ac 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hip07-d05.dts
+> +++ b/arch/arm64/boot/dts/hisilicon/hip07-d05.dts
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * dts file for Hisilicon D05 Development Board
+>   *
+>   * Copyright (C) 2016 Hisilicon Ltd.
+> diff --git a/arch/arm64/boot/dts/hisilicon/hip07.dtsi b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
+> index 2172d8071181..553f7c5209ad 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hip07.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   * dts file for Hisilicon D05 Development Board
+>   *
+>   * Copyright (C) 2016 Hisilicon Ltd.
+> diff --git a/include/dt-bindings/reset/hisi,hi6220-resets.h b/include/dt-bindings/reset/hisi,hi6220-resets.h
+> index 63aff7d8aa45..c67f479eede7 100644
+> --- a/include/dt-bindings/reset/hisi,hi6220-resets.h
+> +++ b/include/dt-bindings/reset/hisi,hi6220-resets.h
+> @@ -1,5 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> -/**
+> +/*
+>   * This header provides index for the reset controller
+>   * based on hi6220 SoC.
+>   */
+> diff --git a/include/dt-bindings/reset/snps,hsdk-reset.h b/include/dt-bindings/reset/snps,hsdk-reset.h
+> index e1a643e4bc91..6a331c8d834d 100644
+> --- a/include/dt-bindings/reset/snps,hsdk-reset.h
+> +++ b/include/dt-bindings/reset/snps,hsdk-reset.h
+> @@ -1,4 +1,4 @@
+> -/**
+> +/*
+>   * This header provides index for the HSDK reset controller.
+>   */
+>  #ifndef _DT_BINDINGS_RESET_CONTROLLER_SNPS_HSDK
+> 
+
+
 -- 
-2.29.2
+~Randy
 
