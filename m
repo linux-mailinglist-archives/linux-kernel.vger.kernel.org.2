@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEF4343FEA
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6F3343FEB
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhCVLdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:33:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229993AbhCVLd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:33:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC56061984;
-        Mon, 22 Mar 2021 11:33:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616412806;
-        bh=6NU8CoeVuy+xBCKoKihnD9B6AGKpzEVVYiFH3UaLDyk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hcbvPInN/ygnKoUF6quhfsskpgiEr0UaC3QmE06DLMyacDxFWj+MwPETGfaf9kYGu
-         zDo7TsVsbSvfUWsGBeSSHa9NyS/b4HH7jpnn3sLEfg//A5Eu11MfxLgCgLccuEy8l9
-         HHFt9/qD3rDSNTFpTLaVB0DvvTqwAYO0/OH5HnZk97F8bkKwggzVb/95O5141sXFfJ
-         ZsHoZoZBw546UT6xSQXDl3llEHxCXeuKrqtmzQP9SeREnlannavgbOwyGo22j6F608
-         mMAMYez9XflctPuRnTyskBuBxYBCX38k0pvKQVqVymzOsx6ApySA67mKOWOgLMYPBh
-         7lY6nKkCYnOXw==
-Date:   Mon, 22 Mar 2021 11:33:20 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     catalin.marinas@arm.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        android-kvm@google.com, seanjc@google.com, mate.toth-pal@arm.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, tabba@google.com, ardb@kernel.org,
-        mark.rutland@arm.com, dbrazdil@google.com
-Subject: Re: [PATCH v6 33/38] KVM: arm64: Introduce KVM_PGTABLE_S2_IDMAP
- stage 2 flag
-Message-ID: <20210322113320.GD10318@willie-the-truck>
-References: <20210319100146.1149909-1-qperret@google.com>
- <20210319100146.1149909-34-qperret@google.com>
+        id S230160AbhCVLd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhCVLdj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 07:33:39 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF099C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:33:38 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id q29so20581507lfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 04:33:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aC2zWxKh8h9yHiD2xeuwLXX1xV0ZgyBrKCIhHDY5H2o=;
+        b=ZSGptlNY3TV6osXspfB6Yn0ZJO3GuxZfOL/Fu0isJaoYmVcMpPSQbVTSBn9c5mTSEA
+         LTMelrPjHBm5crPLQkr9bPUQQYhynmbUipldWsBGQW2vnGJepKZ/QXFFhvUMRTACUhuw
+         s9S/jbqIKXf2Vey3tdRYq6C15FpKTEc0pIR5uFfDmGz6QRdKhz9JMkd5bKgXenraMCQ8
+         sX2QV60eMpa3rEE/iRF4PdvRdUdcorAtjcYY/ZdFAVPtSa0puiPKeYXNL3i5bwe+lcna
+         occ6hoU7QY/zFYyxuEn9nExU2MqpMwJMmI6TKwxtodNgA0dSGLCyL8cyS3GfjnFdo4RS
+         nMYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aC2zWxKh8h9yHiD2xeuwLXX1xV0ZgyBrKCIhHDY5H2o=;
+        b=e/6dv8Z0nsNCUQJgtEvYz1x4ZNF83HlexvsulCNMbkX7jAHdoagEFm30amRCofd4Gv
+         ohIBiw52wSMHh13Mj7wKfzEbhwU1QxGyWBLgZntahF3kwhtcwwcgipC9C8plT2FzwbLs
+         9t4udYDN/NuGuLrQvr0Wsulx6lUAuyDE85UckVUOCaReAoo4pO1Yh1IPmte8cn9CeOC5
+         pDn1pYL5P8ECBLPvympJvuDCO38Reku2o3N0qtHXpL5leU5Q6CniFnrYJwcLZG7noQ10
+         LBq0mgm3ImrSP+rTVWZihnQUyl1z42Kv1lCQJx74olpxlgVefpn66+zp2J0Rxo4JAUXf
+         6RDg==
+X-Gm-Message-State: AOAM532JrSfceZ3Eqod+9XeNdHtQD3VlEe4p/8uF5xTcUbmGiNXmMlXn
+        73qOe8RRlfOrR9WWJieB6UBO2Q==
+X-Google-Smtp-Source: ABdhPJxMnipHkRpXAneqmErx/D3g0D2rkXq/Hs50ihFqlwye/4wxG9jeysmcs7uX5nhojYOuLACxOw==
+X-Received: by 2002:a19:712:: with SMTP id 18mr8623697lfh.591.1616412817450;
+        Mon, 22 Mar 2021 04:33:37 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id w13sm1918639ljw.2.2021.03.22.04.33.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 04:33:36 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 5440A101DEB; Mon, 22 Mar 2021 14:33:44 +0300 (+03)
+Date:   Mon, 22 Mar 2021 14:33:44 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 13/28] mm: Introduce VM_SHSTK for shadow stack memory
+Message-ID: <20210322113344.vf55cya7frr5hvoo@box>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-14-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319100146.1149909-34-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210316151054.5405-14-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 10:01:41AM +0000, Quentin Perret wrote:
-> Introduce a new stage 2 configuration flag to specify that all mappings
-> in a given page-table will be identity-mapped, as will be the case for
-> the host. This allows to introduce sanity checks in the map path and to
-> avoid programming errors.
-> 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_pgtable.h | 2 ++
->  arch/arm64/kvm/hyp/pgtable.c         | 3 +++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> index 55452f4831d2..c3674c47d48c 100644
-> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> @@ -60,9 +60,11 @@ struct kvm_pgtable_mm_ops {
->   * enum kvm_pgtable_stage2_flags - Stage-2 page-table flags.
->   * @KVM_PGTABLE_S2_NOFWB:	Don't enforce Normal-WB even if the CPUs have
->   *				ARM64_HAS_STAGE2_FWB.
-> + * @KVM_PGTABLE_S2_IDMAP:	Only use identity mappings.
->   */
->  enum kvm_pgtable_stage2_flags {
->  	KVM_PGTABLE_S2_NOFWB			= BIT(0),
-> +	KVM_PGTABLE_S2_IDMAP			= BIT(1),
->  };
->  
->  /**
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index b22b4860630c..c37c1dc4feaf 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -760,6 +760,9 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
->  		.arg		= &map_data,
->  	};
->  
-> +	if (WARN_ON((pgt->flags & KVM_PGTABLE_S2_IDMAP) && (addr != phys)))
-> +		return -EINVAL;
+On Tue, Mar 16, 2021 at 08:10:39AM -0700, Yu-cheng Yu wrote:
+> +#ifdef CONFIG_X86_CET
+> +# define VM_SHSTK	VM_HIGH_ARCH_5
+> +#else
+> +# define VM_SHSTK	VM_NONE
+> +#endif
+> +
 
-Acked-by: Will Deacon <will@kernel.org>
+Why not VM_SHADOW_STACK? Random reader may think SH stands for SHARED or
+something.
 
-Will
+-- 
+ Kirill A. Shutemov
