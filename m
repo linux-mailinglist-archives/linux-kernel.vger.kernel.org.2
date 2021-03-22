@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7B1343EDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26D4343ED0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 12:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhCVLFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 07:05:38 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:30190 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhCVLFH (ORCPT
+        id S230298AbhCVLFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 07:05:04 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:40623 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230156AbhCVLEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 07:05:07 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 22 Mar 2021 04:05:07 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 22 Mar 2021 04:05:05 -0700
-X-QCInternal: smtphost
-Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 22 Mar 2021 16:34:34 +0530
-Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
-        id 47841315A; Mon, 22 Mar 2021 16:34:33 +0530 (IST)
-From:   Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        gregkh@linuxfoundation.org, mka@chromium.org, robh+dt@kernel.org
-Cc:     linux-serial@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: [PATCH V3 2/2] arm64: dts: qcom: sc7180: Remove QUP-CORE ICC path
-Date:   Mon, 22 Mar 2021 16:34:29 +0530
-Message-Id: <20210322110429.14950-3-rojay@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210322110429.14950-1-rojay@codeaurora.org>
-References: <20210322110429.14950-1-rojay@codeaurora.org>
+        Mon, 22 Mar 2021 07:04:40 -0400
+Received: by mail-wr1-f41.google.com with SMTP id v11so16180455wro.7;
+        Mon, 22 Mar 2021 04:04:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PWWnDHWb0f6VWpKB3JAHyffSxPdrHA0WVJJCPyw/usc=;
+        b=QS2i0VBc4msizGZn7kO+qmqW9uznZiSbxTvFXR+hQgYUksI7r8WIOqOXsthwm0mx4m
+         qWEsTdOZWsliU28pBheKpSr5bVyCcWhmWOIcyeel+ac+2LXeyQuaBLFVm1f7Ku1/5VNx
+         fQQZJ09n8pC/D2J1PKgEdtO2R8U1h3GULwa7OWM/S/JIuJ/YhMQguyoU9CDnzCZODW9M
+         pbRkqkIvsmXIDpaI+JkrJ6MjwzOe9xSrZRyWuyP8VKm6gLp4zRIeLG3wlyR+lTCHmN7Z
+         D+YIjRhN8Zg6uMowv9s2Vd4FRt8Q5K631ITelNrf6U8DxUVaWuHMHWOitic0fftuP7tp
+         r7Yg==
+X-Gm-Message-State: AOAM533CO2nDLsleGyalQOzaRuepH/DI56bd1bRROA+16DZvD7G/d1pW
+        KmLlL9WG8vr/U/Heeo86zp0=
+X-Google-Smtp-Source: ABdhPJzKfjNAAKkmny4+JhoyXbchQN4iBJ4d38/Ts+iZPYS2nOZ6TZ1yCyjmRv54v+IbOzZa76na4Q==
+X-Received: by 2002:a5d:6412:: with SMTP id z18mr17733482wru.214.1616411078811;
+        Mon, 22 Mar 2021 04:04:38 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id s83sm16562582wms.16.2021.03.22.04.04.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 04:04:38 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 11:04:37 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Xu Yihang <xuyihang@huawei.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        johnny.chenyi@huawei.com, heying24@huawei.com,
+        Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH -next] x86: Fix unused variable 'msr_val' warning
+Message-ID: <20210322110437.ei3vfove4xqky3h5@liuwe-devbox-debian-v2>
+References: <20210322031713.23853-1-xuyihang@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210322031713.23853-1-xuyihang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We had introduced the QUP-CORE ICC path to put proxy votes from
-QUP wrapper on behalf of earlycon, if other users of QUP-CORE turn
-off this clock before the real console is probed, unclocked access
-to HW was seen from earlycon.
+On Mon, Mar 22, 2021 at 11:17:13AM +0800, Xu Yihang wrote:
+> Fixes the following W=1 kernel build warning(s):
+> arch/x86/hyperv/hv_spinlock.c:28:16: warning: variable ‘msr_val’ set but not used [-Wunused-but-set-variable]
+>   unsigned long msr_val;
+> 
+> As Hypervisor Top-Level Functional Specification states in chapter 7.5 Virtual Processor Idle Sleep State, "A partition which possesses the AccessGuestIdleMsr privilege (refer to section 4.2.2) may trigger entry into the virtual processor idle sleep state through a read to the hypervisor-defined MSR HV_X64_MSR_GUEST_IDLE". That means only a read is necessary, msr_val is not uesed, so __maybe_unused should be added.
+> 
+> Reference:
+> https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
 
-With ICC sync state support proxy votes are no longer need as ICC
-will ensure that the default bootloader votes are not removed until
-all it's consumer are probed.
+I modified the commit message a bit and queued this up for hyperv-next.
+Thanks.
 
-We can safely remove ICC path for QUP-CORE clock from QUP wrapper
-device.
-
-Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-Signed-off-by: Akash Asthana <akashast@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
----
-Changes in V3:
- - No change
-
-Changes in V2:
- - No change
-
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 83fbb481cae5..2709051740d1 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -768,8 +768,6 @@ qupv3_id_0: geniqup@8c0000 {
- 			#size-cells = <2>;
- 			ranges;
- 			iommus = <&apps_smmu 0x43 0x0>;
--			interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>;
--			interconnect-names = "qup-core";
- 			status = "disabled";
- 
- 			i2c0: i2c@880000 {
-@@ -1059,8 +1057,6 @@ qupv3_id_1: geniqup@ac0000 {
- 			#size-cells = <2>;
- 			ranges;
- 			iommus = <&apps_smmu 0x4c3 0x0>;
--			interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>;
--			interconnect-names = "qup-core";
- 			status = "disabled";
- 
- 			i2c6: i2c@a80000 {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Wei.
