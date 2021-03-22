@@ -2,76 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D4E343E14
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFCC343E21
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhCVKg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:36:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhCVKgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:36:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A354E6198F;
-        Mon, 22 Mar 2021 10:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616409356;
-        bh=jrHBX/HLRZtzoQhT2R3gMkK4qqxzt3mtlKLFiEw5HP4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r1GcUI3CodBI120K8W9OfN3fxMdAxZbFiwZ0Av2N5stN3MchlfKWRyZFQE7etM/yC
-         QmXPHRn9HuLn1oXh6WWd4qLqw3zWfVRoype0A+A50Tn9EMZDKnsWVELkKGSJdwUOmF
-         fOsNJUlPNAxE/NYPd/VEFZXRoKDSDmN3cwVCC5mRV72c3J4xHjZ45En7JJ6DlGPiTl
-         Lbu7hzIhthDafzE8qo5lenJFaao4/KK28cytGj8RbbiCc9/Cy1LUhAvTVpa1AQqGct
-         MBHvbi+8h5Ehm95EaHIHIRxmVBBHevCxne/tJ14+9Vc+brJal5FzOPI+WH9nMZBPPN
-         emByPzwLHMGmg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Marc Dietrich <marvin24@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] staging/nvec:: avoid Wempty-body warning
-Date:   Mon, 22 Mar 2021 11:35:40 +0100
-Message-Id: <20210322103545.704121-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210322103545.704121-1-arnd@kernel.org>
-References: <20210322103545.704121-1-arnd@kernel.org>
+        id S230136AbhCVKjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhCVKix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:38:53 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5762C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:38:52 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id n138so20436361lfa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4hC27dQ/u288m0lvIAqx0tpRb+YwDiUGxv3BPznT+sI=;
+        b=aG4CCQmbLb1GnZ6XtEGpwTGDwEDwL2zlf2cTCSr+JZswGfljVFAduiKDUNiHIBi622
+         MrBTtUORsoxUb1IuMEA5gBt7Tsghrdp4iXJZrQxtbROBmzwXXiwuRviIJs/8iMiZW9X1
+         UyXFoJhobLPxFpMrd6dAKytTdo5FoAzwnt2btLeNLaUz2l8B9qzYMewI3XojtnKMMJry
+         iD1BVjkZEKIBVeTPGZxRZ7MlabUdx7vAFGzrWr4YwcpQ+rjCEhWbuCSciM/tCHcC07BF
+         K/OHzUt5f04kquzgVob+i5QS5cUaF94dCWZHah0jwolZFj5tSn1B2VyNmH7kve5Dav56
+         ftzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4hC27dQ/u288m0lvIAqx0tpRb+YwDiUGxv3BPznT+sI=;
+        b=mMU/+qzVBAha9WdpULT7ci0PZdK5JPit4rJuxa0DS7DWuOX/NxKXAVJ6mNeT3n7JDI
+         99M/68TOZq+oef9nCqVO14aAa+6JCKncu2YFB5IoJfQqWCyvxvLITtuT+uRuvPRQRqQo
+         FXmQG3hyr4wmRP3ZoUTRBvTPFvvvOilgG7NLzZ0laa/XEyXCzbC2J5xufGVfP6VURuj/
+         8DNA/8HL61SUy+4G0FzBHAP0shFW9Io8qUnetaz5BQqnQit2bfX41Kj8nnRtnm3txZNA
+         vsbW7V+144ONqHLerRwbHUcw71c+vU7hVkS1ioQl8kcYcQJNg/2C+xWQ/QDUP8eWlCeS
+         bWKg==
+X-Gm-Message-State: AOAM531bFoTwGBSSNK2xpPdO7RrYkkdXo8eNPEqRO8aARLnysjI75Tx/
+        9H6nCdt7FZuVadzxH5QtQZeVDw==
+X-Google-Smtp-Source: ABdhPJwUXaWMh/7Jvw00YeWGfYQNsZQnygvvxQt2sYRhrPBaMYhh0Y5PdawcjG6A2A8jca1Jqv+VBw==
+X-Received: by 2002:a05:6512:324d:: with SMTP id c13mr8815993lfr.165.1616409531363;
+        Mon, 22 Mar 2021 03:38:51 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id x1sm1527966lff.97.2021.03.22.03.38.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 03:38:50 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 48DDE101DEB; Mon, 22 Mar 2021 13:38:58 +0300 (+03)
+Date:   Mon, 22 Mar 2021 13:38:58 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v23 14/28] x86/mm: Shadow Stack page fault error checking
+Message-ID: <20210322103858.evxun5bhw2i5sio6@box>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316151054.5405-15-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316151054.5405-15-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Mar 16, 2021 at 08:10:40AM -0700, Yu-cheng Yu wrote:
+> Shadow stack accesses are those that are performed by the CPU where it
+> expects to encounter a shadow stack mapping.  These accesses are performed
+> implicitly by CALL/RET at the site of the shadow stack pointer.  These
+> accesses are made explicitly by shadow stack management instructions like
+> WRUSSQ.
+> 
+> Shadow stacks accesses to shadow-stack mapping can see faults in normal,
+> valid operation just like regular accesses to regular mappings.  Shadow
+> stacks need some of the same features like delayed allocation, swap and
+> copy-on-write.
+> 
+> Shadow stack accesses can also result in errors, such as when a shadow
+> stack overflows, or if a shadow stack access occurs to a non-shadow-stack
+> mapping.
+> 
+> In handling a shadow stack page fault, verify it occurs within a shadow
+> stack mapping.  It is always an error otherwise.  For valid shadow stack
+> accesses, set FAULT_FLAG_WRITE to effect copy-on-write.  Because clearing
+> _PAGE_DIRTY (vs. _PAGE_RW) is used to trigger the fault, shadow stack read
+> fault and shadow stack write fault are not differentiated and both are
+> handled as a write access.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/x86/include/asm/trap_pf.h |  2 ++
+>  arch/x86/mm/fault.c            | 19 +++++++++++++++++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/trap_pf.h b/arch/x86/include/asm/trap_pf.h
+> index 10b1de500ab1..afa524325e55 100644
+> --- a/arch/x86/include/asm/trap_pf.h
+> +++ b/arch/x86/include/asm/trap_pf.h
+> @@ -11,6 +11,7 @@
+>   *   bit 3 ==				1: use of reserved bit detected
+>   *   bit 4 ==				1: fault was an instruction fetch
+>   *   bit 5 ==				1: protection keys block access
+> + *   bit 6 ==				1: shadow stack access fault
+>   *   bit 15 ==				1: SGX MMU page-fault
+>   */
+>  enum x86_pf_error_code {
+> @@ -20,6 +21,7 @@ enum x86_pf_error_code {
+>  	X86_PF_RSVD	=		1 << 3,
+>  	X86_PF_INSTR	=		1 << 4,
+>  	X86_PF_PK	=		1 << 5,
+> +	X86_PF_SHSTK	=		1 << 6,
+>  	X86_PF_SGX	=		1 << 15,
+>  };
+>  
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index a73347e2cdfc..4316732a18c6 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -1100,6 +1100,17 @@ access_error(unsigned long error_code, struct vm_area_struct *vma)
+>  				       (error_code & X86_PF_INSTR), foreign))
+>  		return 1;
+>  
+> +	/*
+> +	 * Verify a shadow stack access is within a shadow stack VMA.
+> +	 * It is always an error otherwise.  Normal data access to a
+> +	 * shadow stack area is checked in the case followed.
+> +	 */
+> +	if (error_code & X86_PF_SHSTK) {
+> +		if (!(vma->vm_flags & VM_SHSTK))
+> +			return 1;
+> +		return 0;
 
-This driver has a few disabled diagnostics, which can probably
-just get removed, or might still be helpful:
+Any reason to return 0 here? I would rather keep the single return 0 in
+the function, after all checks are done.
 
-drivers/staging/nvec/nvec_ps2.c: In function 'nvec_ps2_notifier':
-drivers/staging/nvec/nvec_ps2.c:94:77: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
-   94 |                         NVEC_PHD("unhandled mouse event: ", msg, msg[1] + 2);
+> +	}
+> +
+>  	if (error_code & X86_PF_WRITE) {
+>  		/* write, present and write, not present: */
+>  		if (unlikely(!(vma->vm_flags & VM_WRITE)))
+> @@ -1293,6 +1304,14 @@ void do_user_addr_fault(struct pt_regs *regs,
+>  
+>  	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+>  
+> +	/*
+> +	 * Clearing _PAGE_DIRTY is used to detect shadow stack access.
+> +	 * This method cannot distinguish shadow stack read vs. write.
+> +	 * For valid shadow stack accesses, set FAULT_FLAG_WRITE to effect
+> +	 * copy-on-write.
+> +	 */
+> +	if (error_code & X86_PF_SHSTK)
+> +		flags |= FAULT_FLAG_WRITE;
+>  	if (error_code & X86_PF_WRITE)
+>  		flags |= FAULT_FLAG_WRITE;
+>  	if (error_code & X86_PF_INSTR)
+> -- 
+> 2.21.0
+> 
 
-Changing the empty macro to the usual 'do {} while (0)' at least
-shuts up the compiler warnings.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/staging/nvec/nvec_ps2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/nvec/nvec_ps2.c b/drivers/staging/nvec/nvec_ps2.c
-index 157009015c3b..06041c7f7d4f 100644
---- a/drivers/staging/nvec/nvec_ps2.c
-+++ b/drivers/staging/nvec/nvec_ps2.c
-@@ -28,7 +28,7 @@
- 	print_hex_dump(KERN_DEBUG, str, DUMP_PREFIX_NONE, \
- 			16, 1, buf, len, false)
- #else
--#define NVEC_PHD(str, buf, len)
-+#define NVEC_PHD(str, buf, len) do { } while (0)
- #endif
- 
- enum ps2_subcmds {
 -- 
-2.29.2
-
+ Kirill A. Shutemov
