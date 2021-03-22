@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC093344570
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3CE344576
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhCVNTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbhCVNOo (ORCPT
+        id S232807AbhCVNTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:19:33 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:35787 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232357AbhCVNQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:14:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B200C061762;
-        Mon, 22 Mar 2021 06:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VyQ3noBGBl7to0Ak709SJOEr1ptQB/CJ1kxoLr54qT0=; b=edSZN6BOpAbq5FBQQED410br1I
-        nNsiy00bAQ3OUcYzccL77Cbmmu7+y++WWG/0mXFTh7DHsjhiXjz632U0FBbKu7Vna+QF2hAvyz30B
-        2udCgvhVRUMTIR4vOG93bJ+t61y4KQ5/Vyh5Ja3RRslUEFlOkScXT04AlrE3/gmBMebZlvmhq3TNf
-        irv8tjdsheQBjYUQZNtaD0EPuCZvtS+VsHQuX4Up1T+0vT/uAdLvpcKAJFkQzrrVnPajt3WABKJNx
-        ux0XzLlWRz1avusjMTJt5y4B1u/WrVF2FXw0PDKGjxWe/5nE/6zi//4NR9uF5szM5qkT3n3VRNHD8
-        f4s3rs/A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOKMO-008YL0-9B; Mon, 22 Mar 2021 13:13:00 +0000
-Date:   Mon, 22 Mar 2021 13:12:44 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        hyc.lee@gmail.com, viro@zeniv.linux.org.uk, hch@lst.de,
-        hch@infradead.org, ronniesahlberg@gmail.com,
-        aurelien.aptel@gmail.com, aaptel@suse.com, sandeen@sandeen.net,
-        dan.carpenter@oracle.com, colin.king@canonical.com,
-        rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 2/5] cifsd: add server-side procedures for SMB3
-Message-ID: <20210322131244.GM1719932@casper.infradead.org>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
- <20210322051344.1706-3-namjae.jeon@samsung.com>
- <20210322083445.GJ1719932@casper.infradead.org>
- <YFhw932H8BZalhmu@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFhw932H8BZalhmu@google.com>
+        Mon, 22 Mar 2021 09:16:56 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7A8065C017C;
+        Mon, 22 Mar 2021 09:16:55 -0400 (EDT)
+Received: from imap8 ([10.202.2.58])
+  by compute1.internal (MEProxy); Mon, 22 Mar 2021 09:16:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm3; bh=+VpS8U9m6GjKkzm+jH5ORlCwtqda
+        NL5i9E7zCyY7KkI=; b=CW8mYXPtQTFbSGKDgDvCldyaOoOoZM5btJaaC3kxxnjv
+        KebB6X72V4Ds7CH5MZaDxCMP8L/aQXH5d82vuUUAv/cJOcWZyqA9W5uzIAqIONIN
+        26A0jFEZAaG5TEkDvf2Hvo9+TQBOCOiTEOF/KSxbCppdsYuZERLtpKR3H7fGd5ua
+        1X3B6Vc7yMvfAXXbVCsJZRQ5T/Qx6sXb6T+5r8u71s8asQSSC6r6r3Shc+MRph1L
+        m8gTmP9tOTxecwldzuj1PLzbV9So64uB0yS8rV848+zAJHLz0uBm5PTb2IbaZc71
+        K8jpmk8/iXTZ0GclASdkv4LumCm1uVAKI2OjzRBDsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+VpS8U
+        9m6GjKkzm+jH5ORlCwtqdaNL5i9E7zCyY7KkI=; b=lsGk6BV+j39c2JEBKrRQvq
+        h7DZ/Z/Ezr/vEAvycODFURBfXGqabCFwV5LAhsr0PUehOdrLEGyh277x0pLCjUIq
+        Z+Oqyi6QNkAF/fempVT8gywY5ek/5kboAa2MAyPNHXhDlRQHzjWTi01sFeYUa4pu
+        XvUpmuRMQ/7pHxXWhJelWgUx7yk87l2u78fUbbNA8cEGzZ/siu7GM6ri7O/U+u3B
+        WaNlToOHA8ltBKbe/YzeObsjBsZhOGDNTB9ghgpfIQ7cQJSmJ7p6JLc4OPrEPM9O
+        gsKhmb2eJeYfoHPO+jWvdkZ91Zd+wiG9R4VH7KUlmcaiumn0JzNpcGS9hbxJo5PA
+        ==
+X-ME-Sender: <xms:x5hYYKM_gy3rISQjHr1acGlRQPzRVZ2H2KmgVnGF8INZWqhnBY6pxw>
+    <xme:x5hYYI-mSJgVRMho4_Tk2mePeZydh4sA0Qq1LvEkZWMQWKW7yj3g6HKj8wb1YDlNd
+    MZJi-4kJzr2wLr0wpY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeggedggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomheptehlihhs
+    thgrihhruceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrg
+    htthgvrhhnpeeuffekveehjeeltdeuveeikeelkeejhfejheduhfdtgfdtgfejjeekvdev
+    jeevueenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
+X-ME-Proxy: <xmx:x5hYYBS9x6ETdobByZ-ul6L2u1d3IYirJwWfds2oBoQOixp1TnvK-g>
+    <xmx:x5hYYKvlPkGWOZK9URkNGj21YW4l7aDfwUArHmJQurIBtsBrs8GxAA>
+    <xmx:x5hYYCcwB4pwa_DsYG2eQk5T-xWdvrD0u8jFCK-nub_oMSKhI2bFiw>
+    <xmx:x5hYYEp8PxRxKCUncfAUjF9pc3PQeyeQLoYzN4tNKDxZWiCb5V_mjA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5D8F33A0721; Mon, 22 Mar 2021 09:16:55 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-271-g88286cf463-fm-20210318.001-g88286cf4
+Mime-Version: 1.0
+Message-Id: <1adfc818-abf6-4fcd-82a9-19f5e7d0b994@www.fastmail.com>
+In-Reply-To: <20210321220043.318239-1-dmitry.torokhov@gmail.com>
+References: <20210321220043.318239-1-dmitry.torokhov@gmail.com>
+Date:   Mon, 22 Mar 2021 09:13:15 -0400
+From:   Alistair <alistair@alistair23.me>
+To:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] Input: wacom_i2c - do not force interrupt trigger
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 07:27:03PM +0900, Sergey Senozhatsky wrote:
-> On (21/03/22 08:34), Matthew Wilcox wrote:
-> > > +++ b/fs/cifsd/mgmt/ksmbd_ida.c
-> > > @@ -0,0 +1,69 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > +/*
-> > > + *   Copyright (C) 2018 Samsung Electronics Co., Ltd.
-> > > + */
-> > > +
-> > > +#include "ksmbd_ida.h"
-> > > +
-> > > +struct ksmbd_ida *ksmbd_ida_alloc(void)
-> > > +{
-> > > +	struct ksmbd_ida *ida;
-> > > +
-> > > +	ida = kmalloc(sizeof(struct ksmbd_ida), GFP_KERNEL);
-> > > +	if (!ida)
-> > > +		return NULL;
-> > > +
-> > > +	ida_init(&ida->map);
-> > > +	return ida;
-> > > +}
-> >
-> > ... why?  Everywhere that you call ksmbd_ida_alloc(), you would
-> > be better off just embedding the struct ida into the struct that
-> > currently has a pointer to it.  Or declaring it statically.  Then
-> > you can even initialise it statically using DEFINE_IDA() and
-> > eliminate the initialiser functions.
+On Sun, Mar 21, 2021, at 6:00 PM, Dmitry Torokhov wrote:
+> Instead of forcing interrupt trigger to "level low" rely on the
+> platform to set it up according to how it is wired on the given
+> board.
 > 
-> IIRC this ida is per SMB session, so it probably cannot be static.
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com <mailto:dmitry.torokhov%40gmail.com>>
 
-Depends which IDA you're talking about.
+Reviewed-by: Alistair Francis <alistair@alistair23.me>
 
-+struct ksmbd_conn *ksmbd_conn_alloc(void)
-+	conn->async_ida = ksmbd_ida_alloc();
-Embed into 'conn'.
+Alistair
 
-+static struct ksmbd_ida *ida;
-+int ksmbd_ipc_init(void)
-+	ida = ksmbd_ida_alloc();
-Should be static.
-
-> And Windows, IIRC, doesn't like "just any IDs". Some versions of Windows
-> would fail the session login if server would return the first id == 0,
-> instead of 1. Or vice versa. I don't remember all the details, the last
-> time I looked into this was in 2019.
-
-Sure, you can keep that logic.
-
-> > ... walk the linked list looking for an ID match.  You'd be much better
-> > off using an allocating XArray:
-> > https://www.kernel.org/doc/html/latest/core-api/xarray.html
+> ---
+> drivers/input/touchscreen/wacom_i2c.c | 3 +--
+> 1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> I think cifsd code predates XArray ;)
-
-Sure, but you could have used an IDR ;-)
-
-> > Then you could lookup tree connections in O(log(n)) time instead of
-> > O(n) time.
+> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> index 1afc6bde2891..609ff84e7693 100644
+> --- a/drivers/input/touchscreen/wacom_i2c.c
+> +++ b/drivers/input/touchscreen/wacom_i2c.c
+> @@ -195,8 +195,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
+> input_set_drvdata(input, wac_i2c);
+>  
+> error = request_threaded_irq(client->irq, NULL, wacom_i2c_irq,
+> -      IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> -      "wacom_i2c", wac_i2c);
+> +      IRQF_ONESHOT, "wacom_i2c", wac_i2c);
+> if (error) {
+> dev_err(&client->dev,
+> "Failed to enable IRQ, error: %d\n", error);
+> -- 
+> 2.31.0.rc2.261.g7f71774620-goog
 > 
-> Agreed. Not sure I remember why the code does list traversal here.
+> 
