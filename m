@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB4D3443DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C3F34441E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbhCVMyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:54:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40092 "EHLO mail.kernel.org"
+        id S233205AbhCVM54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:57:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231714AbhCVMoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:44:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 832E6619B4;
-        Mon, 22 Mar 2021 12:41:34 +0000 (UTC)
+        id S231977AbhCVMq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:46:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85750619AF;
+        Mon, 22 Mar 2021 12:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416895;
-        bh=jruaFeR3E7xd4bQF1YVUoRO0kNT8J+S7lJJ+9qhdwgk=;
+        s=korg; t=1616416981;
+        bh=NIFnzRG2WrxIHiYFsMSMwQvMKz7qDUJavawgJMk5spc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RHsx57TybEBYoZcajI4cjnvuZAHXKMkBnL/Tgkv5A70vvxkPGo6sX0uAqZJseRUuP
-         FI+DzyJXQ2ffT0DKLWL91ZLWjSvLSRn0gkGYOex7JXQL1427AJsGDXxI85I1apV74h
-         kCRa1FZyZ0rRQQ2uyCoNNoVOtZlc/0EbTkEV1zpk=
+        b=t4SaOOB/xAO2JnT+B8PEDYn6EIVTKvyHzvcAnMjqTZUtnLqGrZcLqAPos5PC3XC/f
+         FjSdLpc7/0ysWbnfnqZSYswCqMeMcKj+gmhLgtK8MkX7stjRxBRFeCZ/oEeHe5aBO0
+         n1L8+erILA0j54HMG8bMsap75I+VGgCTHD10zLVM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Subject: [PATCH 5.10 151/157] MAINTAINERS: move some real subsystems off of the staging mailing list
-Date:   Mon, 22 Mar 2021 13:28:28 +0100
-Message-Id: <20210322121938.530549720@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.4 41/60] iio: adis16400: Fix an error code in adis16400_initial_setup()
+Date:   Mon, 22 Mar 2021 13:28:29 +0100
+Message-Id: <20210322121923.742047871@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,54 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit f8d70fd6a5a7a38a95eb8021e00d2e547f88efec upstream.
+commit a71266e454b5df10d019b06f5ebacd579f76be28 upstream.
 
-The VME and Android drivers still have their MAINTAINERS entries
-pointing to the "driverdevel" mailing list, due to them having their
-codebase move out of the drivers/staging/ directory, but no one
-remembered to change the mailing list entries.
+This is to silence a new Smatch warning:
 
-Move them both to linux-kernel for lack of a more specific place at the
-moment.  These are both low-volume areas of the kernel, so this
-shouldn't be an issue.
+    drivers/iio/imu/adis16400.c:492 adis16400_initial_setup()
+    warn: sscanf doesn't return error codes
 
-Cc: Martyn Welch <martyn@welchs.me.uk>
-Cc: Manohar Vanga <manohar.vanga@gmail.com>
-Cc: Arve Hjønnevåg <arve@android.com>
-Cc: Todd Kjos <tkjos@android.com>
-Cc: Martijn Coenen <maco@android.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Christian Brauner <christian@brauner.io>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Reported-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Link: https://lore.kernel.org/r/YEzE6u6U1jkBatmr@kroah.com
+If the condition "if (st->variant->flags & ADIS16400_HAS_SLOW_MODE) {"
+is false then we return 1 instead of returning 0 and probe will fail.
+
+Fixes: 72a868b38bdd ("iio: imu: check sscanf return value")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/YCwgFb3JVG6qrlQ+@mwanda
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- MAINTAINERS |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/imu/adis16400.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1155,7 +1155,7 @@ M:	Joel Fernandes <joel@joelfernandes.or
- M:	Christian Brauner <christian@brauner.io>
- M:	Hridya Valsaraju <hridya@google.com>
- M:	Suren Baghdasaryan <surenb@google.com>
--L:	devel@driverdev.osuosl.org
-+L:	linux-kernel@vger.kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
- F:	drivers/android/
-@@ -18705,7 +18705,7 @@ VME SUBSYSTEM
- M:	Martyn Welch <martyn@welchs.me.uk>
- M:	Manohar Vanga <manohar.vanga@gmail.com>
- M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
--L:	devel@driverdev.osuosl.org
-+L:	linux-kernel@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
- F:	Documentation/driver-api/vme.rst
+--- a/drivers/iio/imu/adis16400.c
++++ b/drivers/iio/imu/adis16400.c
+@@ -464,8 +464,7 @@ static int adis16400_initial_setup(struc
+ 		if (ret)
+ 			goto err_ret;
+ 
+-		ret = sscanf(indio_dev->name, "adis%u\n", &device_id);
+-		if (ret != 1) {
++		if (sscanf(indio_dev->name, "adis%u\n", &device_id) != 1) {
+ 			ret = -EINVAL;
+ 			goto err_ret;
+ 		}
 
 
