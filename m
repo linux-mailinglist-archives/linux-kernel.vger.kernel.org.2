@@ -2,55 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F37344C59
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8743F344C5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhCVQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:53:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38072 "EHLO mail.kernel.org"
+        id S230350AbhCVQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:53:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:35392 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhCVQwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:52:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B640361972;
-        Mon, 22 Mar 2021 16:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616431965;
-        bh=hv13RER2/qk3O2HqxVq4E/GeB8/0gpsY1ckngPzOo5U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rSvk6kD43Cv4W6nYmtyZRTY2K80Q7SbqIa4Cfna/cyTBPtfOZY8HoR62foC+1/Z8j
-         Xy3JeTENbHosJ5Bugr2C5LUNivA2EkwFlbTlvGuS8QKIAOvikQavTP5Wf1o7dMCeRk
-         /22W0j+10QHwTxkdz3YA6MAPjiC8I00zKGTSLv2dAmagI77Nq8G4gTggHkj0I7go7p
-         O3gc88shlYwWZAo8raWIYApolyREfaXOcxFur84t7UbGMsWiFD19HQKX+BbGCc5IJA
-         tcQaiM4UDEd/SDwCB+NQmk7n1mJ70UWR3livycg02PwGvtgfVWi0GsI0FDoOM41//v
-         vYiJy4b9UnmrQ==
-Date:   Mon, 22 Mar 2021 09:52:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 2/2] integrity: double check iint_cache was initialized
-Message-ID: <YFjLWywyF8TYZHxP@gmail.com>
-References: <20210322154207.6802-1-zohar@linux.ibm.com>
- <20210322154207.6802-2-zohar@linux.ibm.com>
+        id S230214AbhCVQxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:53:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A56551063;
+        Mon, 22 Mar 2021 09:53:18 -0700 (PDT)
+Received: from [10.57.55.187] (unknown [10.57.55.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D4EF3F719;
+        Mon, 22 Mar 2021 09:53:17 -0700 (PDT)
+Subject: Re: [PATCH v4 15/19] dts: bindings: Document device tree bindings for
+ ETE
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        anshuman.khandual@arm.com, leo.yan@linaro.org,
+        devicetree@vger.kernel.org
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-16-suzuki.poulose@arm.com>
+ <20210306210627.GA1207387@robh.at.kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <f69ad530-baec-2e73-827a-b5a5a6df3d23@arm.com>
+Date:   Mon, 22 Mar 2021 16:53:15 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322154207.6802-2-zohar@linux.ibm.com>
+In-Reply-To: <20210306210627.GA1207387@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:42:07AM -0400, Mimi Zohar wrote:
+Hi Rob
+
+On 06/03/2021 21:06, Rob Herring wrote:
+> On Thu, Feb 25, 2021 at 07:35:39PM +0000, Suzuki K Poulose wrote:
+>> Document the device tree bindings for Embedded Trace Extensions.
+>> ETE can be connected to legacy coresight components and thus
+>> could optionally contain a connection graph as described by
+>> the CoreSight bindings.
+>>
+>> Cc: devicetree@vger.kernel.org
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>> Changes:
+>>   - Fix out-ports defintion
+>> ---
+>>   .../devicetree/bindings/arm/ete.yaml          | 71 +++++++++++++++++++
+>>   1 file changed, 71 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
+>> new file mode 100644
+>> index 000000000000..35a42d92bf97
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
+>> @@ -0,0 +1,71 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+>> +# Copyright 2021, Arm Ltd
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: ARM Embedded Trace Extensions
+>> +
+>> +maintainers:
+>> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
+>> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+>> +
+>> +description: |
+>> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
+>> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
+>> +  architecture and has extended support for future architecture changes.
+>> +  The trace generated by the ETE could be stored via legacy CoreSight
+>> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
+>> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
+>> +  legacy CoreSight components, a node must be listed per instance, along
+>> +  with any optional connection graph as per the coresight bindings.
+>> +  See bindings/arm/coresight.txt.
+>> +
+>> +properties:
+>> +  $nodename:
+>> +    pattern: "^ete([0-9a-f]+)$"
+>> +  compatible:
+>> +    items:
+>> +      - const: arm,embedded-trace-extension
+>> +
+>> +  cpu:
+>> +    description: |
+>> +      Handle to the cpu this ETE is bound to.
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  out-ports:
+>> +    description: |
+>> +      Output connections from the ETE to legacy CoreSight trace bus.
+>> +    $ref: /schemas/graph.yaml#/properties/port
 > 
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Fixes: 79f7865d844c ("LSM: Introduce "lsm=" for boottime LSM selection")
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> s/port/ports/
 
-Missing Cc stable?
+Ok.
 
-- Eric
+> 
+> And then you need:
+> 
+>         properties:
+>           port:
+>             description: what this port is
+>             $ref: /schemas/graph.yaml#/properties/port
+
+Isn't this already covered by the definition of ports ? There are no 
+fixed connections for ETE. It is optional and could be connected to
+any legacy CoreSight component. i.e, a "ports" object can have port
+objects inside.
+
+Given we have defined out-ports as an object "confirming to the ports"
+do we need to describe the individual port nodes ?
+
+Cheers
+Suzuki
