@@ -2,101 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7628034525E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFDD345264
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhCVWVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:21:37 -0400
-Received: from mail-pf1-f170.google.com ([209.85.210.170]:45880 "EHLO
-        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhCVWVX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:21:23 -0400
-Received: by mail-pf1-f170.google.com with SMTP id h3so12168842pfr.12;
-        Mon, 22 Mar 2021 15:21:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t6icTyai4O67Q+rTLOoampNNY5W8EYDWVT5g1rlVasw=;
-        b=HIE7oKWv0UAzxPnhG2h2ouuoIvtsZ1nwlmZV34ZJGNY6u7MWeOwMRy8AcjjDG2K/aE
-         grL2j8MaoLkmflWiQ1yJ8g3K4QZmwjWjzR7KoMS3ZgwX7H59yRxWP/v+RleIVH8l17y1
-         87lB04IFgMsnjvAEUoi+p0c3p2MT4WRtvqf4qOJJC6ontQB9aOinVZ27PsuiAcYPf1KU
-         0neaxtohBq4ucxoHVASu23Xe2wjM7pQyL3S+ceZzOowHoDDkL7MZ/kDWZv8gc5tksA0K
-         dMEBaVwGzlGdEBw/BcexbMxyl8llRKqc3hgnsA0wHShxTgsv1xCDi/8JEsFJav3zmDoE
-         GUXA==
-X-Gm-Message-State: AOAM530Ec5aX9wha6kBSzrowXzWjbNCw5UtJ1Z6mtxUy5JZEfZl/IK1Y
-        isLEgsjMqR5nghKyRaVGQi8Lu/r5c6k=
-X-Google-Smtp-Source: ABdhPJwH4UmE956iKYThpolfsApuUHW/kGu09EX48llOe7hxGnBtc+em5PjpZ30r7QCVoD2t1sa2CQ==
-X-Received: by 2002:aa7:9532:0:b029:1f8:838e:7773 with SMTP id c18-20020aa795320000b02901f8838e7773mr1899876pfp.15.1616451682329;
-        Mon, 22 Mar 2021 15:21:22 -0700 (PDT)
-Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id b64sm14440369pfa.191.2021.03.22.15.21.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 15:21:21 -0700 (PDT)
-Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
-To:     Christoph Hellwig <hch@lst.de>,
-        syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org
-References: <00000000000053da9405bd7d2644@google.com>
- <000000000000a17fb305be0b3f38@google.com> <20210322071801.GE3440@lst.de>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <94abea02-0c6f-cd0b-5aa4-fef08f9b2ab8@acm.org>
-Date:   Mon, 22 Mar 2021 15:21:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230232AbhCVWXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:23:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229764AbhCVWXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 18:23:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDC5619A3;
+        Mon, 22 Mar 2021 22:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616451783;
+        bh=9TOm/vUdTVgkLrEcvTO6xa6y15f8WUxq5hs+UGMAt0w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=U0iFIjhulmjOHIH4ZCHGXKBTlk4hg5aK/NBUps8Mp8OdMncu+JsfhCVHc7Fy3mjMN
+         v5dLlyafisbAoZ8bJQoxyZnlOYisXMLnrd9/ZIM78JjzH+AN9ftQHRa2Xf233ycVwI
+         BVwvGUEBoJJCDGnMeh4GCYDVHEGKBMraxikxVROOKW27S8ShtH/HbOsUp/rQQIxn28
+         YjnDkmRrGWFYvA08QXRjzGxJRX742mBWY5tmsSxZgcIEVYdyMAH+Qal1CA+pnkv7d+
+         ljAMmRoEzgEP06BBkCm3ndmMb3Qgxj09+pxbrlwhqkM4k0YHn2ujTtAoY2q8MEUAt6
+         T/XvKWUgQgG6A==
+Received: by mail-ej1-f49.google.com with SMTP id e14so5640164ejz.11;
+        Mon, 22 Mar 2021 15:23:02 -0700 (PDT)
+X-Gm-Message-State: AOAM5330Ufdgf6tRqDczHDez93+Fm9OxshlyUk4PN1aqi63/hogG5m9a
+        I4GYE0oMM293hW9CH3X/oPzxe5457yGKLi4RlA==
+X-Google-Smtp-Source: ABdhPJx3z7wXtL8KQ3NRS45wE2EUgPtOjsUMqBUiolC7/JCPmaRaai1z8yHmFPME7Qtf+AsOQ2F81DUULd1XRtw/K00=
+X-Received: by 2002:a17:906:d153:: with SMTP id br19mr1849046ejb.360.1616451781529;
+ Mon, 22 Mar 2021 15:23:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210322071801.GE3440@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210318104036.3175910-1-lee.jones@linaro.org>
+In-Reply-To: <20210318104036.3175910-1-lee.jones@linaro.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 22 Mar 2021 16:22:49 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
+Message-ID: <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/10] Rid W=1 warnings from OF
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colin Cross <ccross@android.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Josh Cartwright <joshc@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        netdev <netdev@vger.kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 12:18 AM, Christoph Hellwig wrote:
-> I've been running the reproducer on a KASAN enable VM for about
-> 15 minutes now, but haven't been able to reproduce it.
-> 
-> Is there a way to inject this proposed fix into the syzbot queue?
-> 
-> diff --git a/block/partitions/core.c b/block/partitions/core.c
-> index 1a7558917c47d6..f5d5872b89d57e 100644
-> --- a/block/partitions/core.c
-> +++ b/block/partitions/core.c
-> @@ -288,15 +288,12 @@ struct device_type part_type = {
->   void delete_partition(struct block_device *part)
->   {
->   	xa_erase(&part->bd_disk->part_tbl, part->bd_partno);
-> -	kobject_put(part->bd_holder_dir);
-> -	device_del(&part->bd_device);
-> -
-> -	/*
-> -	 * Remove the block device from the inode hash, so that it cannot be
-> -	 * looked up any more even when openers still hold references.
-> -	 */
->   	remove_inode_hash(part->bd_inode);
->   
-> +	synchronize_rcu();
-> +
-> +	kobject_put(part->bd_holder_dir);
-> +	device_del(&part->bd_device);
->   	put_device(&part->bd_device);
->   }
+On Thu, Mar 18, 2021 at 4:40 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+>
+> v2:
+>  - Provided some descriptions to exported functions
+>
+> Lee Jones (10):
+>   of: device: Fix function name in header and provide missing
+>     descriptions
+>   of: dynamic: Fix incorrect parameter name and provide missing
+>     descriptions
+>   of: platform: Demote kernel-doc abuse
+>   of: base: Fix some formatting issues and provide missing descriptions
+>   of: property: Provide missing member description and remove excess
+>     param
+>   of: address: Provide descriptions for 'of_address_to_resource's params
+>   of: fdt: Demote kernel-doc abuses and fix function naming
+>   of: of_net: Provide function name and param description
+>   of: overlay: Fix function name disparity
+>   of: of_reserved_mem: Demote kernel-doc abuses
+>
+>  drivers/of/address.c         |  3 +++
+>  drivers/of/base.c            | 16 +++++++++++-----
+>  drivers/of/device.c          |  7 ++++++-
+>  drivers/of/dynamic.c         |  4 +++-
+>  drivers/of/fdt.c             | 23 ++++++++++++-----------
+>  drivers/of/of_net.c          |  3 +++
+>  drivers/of/of_reserved_mem.c |  6 +++---
+>  drivers/of/overlay.c         |  2 +-
+>  drivers/of/platform.c        |  2 +-
+>  drivers/of/property.c        |  2 +-
+>  10 files changed, 44 insertions(+), 24 deletions(-)
 
-Hi Christoph,
+I still see some warnings (note this is with DT files added to doc
+build). Can you send follow-up patches:
 
-disk_part_iter_next() calls bdgrab() before returning a pointer to a 
-certain partition. 'part' is only freed if its reference count drops to 
-zero. The function that frees the partition information, 
-bdev_free_inode(), is invoked via call_rcu(). bdgrab() fails if the 
-refcount of a partition is zero. Does that mean that it is not necessary 
-to call synchronize_rcu() between xa_erase() and put_device()?
+../include/linux/of.h:1193: warning: Function parameter or member
+'output' not described in 'of_property_read_string_index'
+../include/linux/of.h:1193: warning: Excess function parameter
+'out_string' description in 'of_property_read_string_index'
+../include/linux/of.h:1461: warning: cannot understand function
+prototype: 'enum of_overlay_notify_action '
+../drivers/of/base.c:1781: warning: Excess function parameter 'prob'
+description in '__of_add_property'
+../drivers/of/base.c:1804: warning: Excess function parameter 'prob'
+description in 'of_add_property'
+../drivers/of/base.c:1855: warning: Function parameter or member
+'prop' not described in 'of_remove_property'
+../drivers/of/base.c:1855: warning: Excess function parameter 'prob'
+description in 'of_remove_property'
 
-Thanks,
+BTW, there some more which I guess W=1 doesn't find:
 
-Bart.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:906: WARNING: Block quote ends without a blank
+line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1465: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1469: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1473: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1517: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1521: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1526: WARNING: Unexpected indentation.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1528: WARNING: Block quote ends without a blank
+line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1529: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1533: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+../drivers/of/base.c:1705: WARNING: Definition list ends without a
+blank line; unexpected unindent.
+/home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:49:
+../drivers/of/overlay.c:1183: WARNING: Inline emphasis start-string
+without end-string.
 
+Rob
