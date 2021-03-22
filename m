@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2402B344F88
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA06344F83
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhCVTBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232286AbhCVTBR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:01:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BA9C061574;
-        Mon, 22 Mar 2021 12:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=NaJYCCGTYkREd4ErnfOF5a3JMkC3tPK3uYGREJCezYA=; b=oTja58ElOEg0ruPR0V+4H8vDnN
-        jgja2eFUekR7oKgsRalciS4c3w2b2/sRDjPRbp/HVbvINDaRdqBVLYnaRG10oD1J+9g/kVLFuINJc
-        j4oUKTL7ZGr2zmh5ZBVqJglwtx507nNaYIV9X2GDnf1PRMlQWCjspYZBbvjZkxC3j6bUENrdqjifR
-        QbugoWK7Ux16IghqkyjeP48x5XJxnwe1zQ9hGIL+t3wHEcYRf5NlRAT02k1XE1FZpEA2E/wrwmmMF
-        Q7QbvmKoyJfOfHqX65w8FlOH6B+5FwhHPTBH3IiXQXUYHBj///UN4kwbu4l6sIc2yNq1lkm6ouAph
-        NMXuVObw==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOPmt-008wro-C8; Mon, 22 Mar 2021 19:00:43 +0000
-Subject: Re: [PATCH] drm/msm/dpu: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        jonathan@marek.ca, dmitry.baryshkov@linaro.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210322062723.3215931-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5afd0d4b-4e78-416d-f487-885d24f2eaf3@infradead.org>
-Date:   Mon, 22 Mar 2021 12:00:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230177AbhCVTBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232343AbhCVTAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 15:00:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5410061992;
+        Mon, 22 Mar 2021 19:00:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616439637;
+        bh=m5Q2fV13IhNOqiQoivgPYaEpk//90PRFUmdnX366uXA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q2ask9leB4b+WKlZRCe1t9M/ui9JjzRl/l06vwEZzKmPdBGryjdQimhPGN2qvwWaT
+         uAfjHEcVjAffun1z5bY7SfH7/Be7Odw9+pRRMxNFsZkNk+pZUomU71J2dbk2b5zOUe
+         NnfzUQrKQ1X2R0/LE81u6cUKYnZNBthT0FGJwU4L7RPsnpswhIyN7gL1k1qwJPpbK+
+         D9Fn9CyGiklwVZ/oRuaAKNljswwjwDEf1XpMHWJyWRAq5RltvVTDIRFvwcIn+EAkTB
+         8WLjZBynDhF54h2MiBS+d85iGMZXMcMu+Z7oF3jgc4wzqbEGfqvNqw9KT35w+5SMf9
+         NTa+wSxXeqV4w==
+Date:   Mon, 22 Mar 2021 20:00:35 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
+ Tiny RCU grace periods
+Message-ID: <20210322190035.GA874833@lothringen>
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-2-paulmck@kernel.org>
+ <20210321222855.GA863290@lothringen>
+ <20210322154744.GM2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20210322062723.3215931-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322154744.GM2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 11:27 PM, Bhaskar Chowdhury wrote:
+On Mon, Mar 22, 2021 at 08:47:44AM -0700, Paul E. McKenney wrote:
+> On Sun, Mar 21, 2021 at 11:28:55PM +0100, Frederic Weisbecker wrote:
+> > On Wed, Mar 03, 2021 at 04:26:31PM -0800, paulmck@kernel.org wrote:
+> > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > 
+> > > There is a need for a non-blocking polling interface for RCU grace
+> > > periods, so this commit supplies start_poll_synchronize_rcu() and
+> > > poll_state_synchronize_rcu() for this purpose.  Note that the existing
+> > > get_state_synchronize_rcu() may be used if future grace periods are
+> > > inevitable (perhaps due to a later call_rcu() invocation).  The new
+> > > start_poll_synchronize_rcu() is to be used if future grace periods
+> > > might not otherwise happen.  Finally, poll_state_synchronize_rcu()
+> > > provides a lockless check for a grace period having elapsed since
+> > > the corresponding call to either of the get_state_synchronize_rcu()
+> > > or start_poll_synchronize_rcu().
+> > > 
+> > > As with get_state_synchronize_rcu(), the return value from either
+> > > get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+> > > to a later call to either poll_state_synchronize_rcu() or the existing
+> > > (might_sleep) cond_synchronize_rcu().
+> > > 
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >  include/linux/rcutiny.h | 11 ++++++-----
+> > >  kernel/rcu/tiny.c       | 40 ++++++++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 46 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> > > index 2a97334..69108cf4 100644
+> > > --- a/include/linux/rcutiny.h
+> > > +++ b/include/linux/rcutiny.h
+> > > @@ -17,14 +17,15 @@
+> > >  /* Never flag non-existent other CPUs! */
+> > >  static inline bool rcu_eqs_special_set(int cpu) { return false; }
+> > >  
+> > > -static inline unsigned long get_state_synchronize_rcu(void)
+> > > -{
+> > > -	return 0;
+> > > -}
+> > > +unsigned long get_state_synchronize_rcu(void);
+> > > +unsigned long start_poll_synchronize_rcu(void);
+> > > +bool poll_state_synchronize_rcu(unsigned long oldstate);
+> > >  
+> > >  static inline void cond_synchronize_rcu(unsigned long oldstate)
+> > >  {
+> > > -	might_sleep();
+> > > +	if (poll_state_synchronize_rcu(oldstate))
+> > > +		return;
+> > > +	synchronize_rcu();
+> > 
+> > Perhaps cond_synchronize_rcu() could stay as it was. If it might
+> > call synchronize_rcu() then it inherits its constraint to be
+> > called from a quiescent state.
 > 
-> s/struture/structure/
+> As in leave the might_sleep()?  How about something like this?
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> static inline void cond_synchronize_rcu(unsigned long oldstate)
+> {
+> 	if (!poll_state_synchronize_rcu(oldstate))
+> 		synchronize_rcu();
+> 	else
+> 		might_sleep();
+> }
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> index 09a3fb3e89f5..bb9ceadeb0bb 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> @@ -343,7 +343,7 @@ enum dpu_3d_blend_mode {
+> One advantage of this is that the Tiny and Tree implementations
+> become identical and can then be consolidated.
 > 
->  /** struct dpu_format - defines the format configuration which
->   * allows DPU HW to correctly fetch and decode the format
-> - * @base: base msm_format struture containing fourcc code
-> + * @base: base msm_format structure containing fourcc code
->   * @fetch_planes: how the color components are packed in pixel format
->   * @element: element color ordering
->   * @bits: element bit widths
-> --
+> Or did I miss your point?
 
+But poll_state_synchronize_rcu() checks that the gp_num has changed,
+which is not needed for cond_synchronize_rcu() since this it is
+only allowed to be called from a QS.
 
--- 
-~Randy
-
+> 
+> 						Thanx, Paul
