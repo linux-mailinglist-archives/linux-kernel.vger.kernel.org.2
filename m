@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6D8345320
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B66345324
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 00:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCVXjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 19:39:13 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:41772 "EHLO vps0.lunn.ch"
+        id S230381AbhCVXkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 19:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhCVXil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 19:38:41 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lOU7e-00CUJd-OG; Tue, 23 Mar 2021 00:38:10 +0100
-Date:   Tue, 23 Mar 2021 00:38:10 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] net: ethernet: actions: Add Actions Semi Owl
- Ethernet MAC driver
-Message-ID: <YFkqYqgwDhV/bBlc@lunn.ch>
-References: <cover.1616368101.git.cristian.ciocaltea@gmail.com>
- <ab25bd143589d3c1894cdb3189670efa62ed1440.1616368101.git.cristian.ciocaltea@gmail.com>
+        id S230368AbhCVXkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 19:40:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A6F0D619A4;
+        Mon, 22 Mar 2021 23:40:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616456411;
+        bh=dJKj8nPl3zrdIA+jMRqT92my/PHfJDgmMKyf+Wj3A9c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=aF7wjxKOF8aN8oLprA48jPomJwm4v6pEQ/HsSEptPA9zVp+X8Q2XrnD5JoFb3azQv
+         AyECEDwn00lSwRUIAh7z9KqiUp5CzCnvXy1cBZxfvr1V01+ZLuGiOpNXt8OSaLE2W2
+         qQFZkI2yBpBcixHen2w87VzhKn2QSCHfOrpFPj/AUBMkRKBARk25oSJdLAVgJfIg07
+         cmUkdPg0kZ1br6HlI3+5excRkJD5Bfbt0lNB7nNj61ba9cDE7XFEvmSBI61B25XA1Z
+         k83v1WYGpm7jMe+6ygurU0sdKOIjjgK9cQ299MIf+teyDSxASonrt4nDK3eXxIITt3
+         GgZdzz2AHEtsQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 990CD609E8;
+        Mon, 22 Mar 2021 23:40:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ab25bd143589d3c1894cdb3189670efa62ed1440.1616368101.git.cristian.ciocaltea@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 0/3] net: dsa: lantiq: add support for xRX300 and xRX330
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161645641162.10796.16297619759185688700.git-patchwork-notify@kernel.org>
+Date:   Mon, 22 Mar 2021 23:40:11 +0000
+References: <20210322203717.20616-1-olek2@wp.pl>
+In-Reply-To: <20210322203717.20616-1-olek2@wp.pl>
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux@armlinux.org.uk, robh+dt@kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void owl_emac_set_multicast(struct net_device *netdev, int count)
-> +{
-> +	struct owl_emac_priv *priv = netdev_priv(netdev);
-> +	struct netdev_hw_addr *ha;
-> +	int index = 0;
-> +
-> +	if (count <= 0) {
-> +		priv->mcaddr_list.count = 0;
-> +		return;
-> +	}
-> +
-> +	netdev_for_each_mc_addr(ha, netdev) {
-> +		if (!is_multicast_ether_addr(ha->addr))
-> +			continue;
+Hello:
 
-Is this possible?
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-> +
-> +		WARN_ON(index >= OWL_EMAC_MAX_MULTICAST_ADDRS);
-> +		ether_addr_copy(priv->mcaddr_list.addrs[index++], ha->addr);
-> +	}
-> +
-> +	priv->mcaddr_list.count = index;
-> +
-> +	owl_emac_setup_frame_xmit(priv);
-> +}
-> +
-> +static void owl_emac_ndo_set_rx_mode(struct net_device *netdev)
-> +{
-> +	struct owl_emac_priv *priv = netdev_priv(netdev);
-> +	u32 status, val = 0;
-> +	int mcast_count = 0;
-> +
-> +	if (netdev->flags & IFF_PROMISC) {
-> +		val = OWL_EMAC_BIT_MAC_CSR6_PR;
-> +	} else if (netdev->flags & IFF_ALLMULTI) {
-> +		val = OWL_EMAC_BIT_MAC_CSR6_PM;
-> +	} else if (netdev->flags & IFF_MULTICAST) {
-> +		mcast_count = netdev_mc_count(netdev);
-> +
-> +		if (mcast_count > OWL_EMAC_MAX_MULTICAST_ADDRS) {
-> +			val = OWL_EMAC_BIT_MAC_CSR6_PM;
-> +			mcast_count = 0;
-> +		}
-> +	}
-> +
-> +	spin_lock_bh(&priv->lock);
-> +
-> +	/* Temporarily stop DMA TX & RX. */
-> +	status = owl_emac_dma_cmd_stop(priv);
-> +
-> +	/* Update operation modes. */
-> +	owl_emac_reg_update(priv, OWL_EMAC_REG_MAC_CSR6,
-> +			    OWL_EMAC_BIT_MAC_CSR6_PR | OWL_EMAC_BIT_MAC_CSR6_PM,
-> +			    val);
-> +
-> +	/* Restore DMA TX & RX status. */
-> +	owl_emac_dma_cmd_set(priv, status);
-> +
-> +	spin_unlock_bh(&priv->lock);
-> +
-> +	/* Set/reset multicast addr list. */
-> +	owl_emac_set_multicast(netdev, mcast_count);
-> +}
+On Mon, 22 Mar 2021 21:37:14 +0100 you wrote:
+> Changed since v3:
+> 	* fixed last compilation warning
+> 
+> Changed since v2:
+> 	* fixed compilation warnings
+> 	* removed example bindings for xrx330
+> 	* patches has been refactored due to upstream changes
+> 
+> [...]
 
-I think this can be simplified. At least, you had me going around in
-circles a while trying to see if WARN_ON() could be triggered from
-user space.
+Here is the summary with links:
+  - [v4,1/3] net: dsa: lantiq: allow to use all GPHYs on xRX300 and xRX330
+    https://git.kernel.org/netdev/net-next/c/a09d042b0862
+  - [v4,2/3] net: dsa: lantiq: verify compatible strings against hardware
+    https://git.kernel.org/netdev/net-next/c/204c7614738e
+  - [v4,3/3] dt-bindings: net: dsa: lantiq: add xRx300 and xRX330 switch bindings
+    https://git.kernel.org/netdev/net-next/c/ee83d82407e4
 
-If you have more than OWL_EMAC_MAX_MULTICAST_ADDRS MC addresses, you
-go into promisc mode. Can you then skip calling
-owl_emac_set_multicast(), which appears not to do too much useful when
-passed 0?
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-       Andrew
+
