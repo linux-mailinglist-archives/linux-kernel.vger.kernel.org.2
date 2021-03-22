@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF48C3448EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865453448F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhCVPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231596AbhCVPLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:11:45 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF9B561931;
-        Mon, 22 Mar 2021 15:11:43 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 11:11:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v4 12/12] tracing: Show kretprobe unknown indicator
- only for kretprobe_trampoline
-Message-ID: <20210322111142.748e90da@gandalf.local.home>
-In-Reply-To: <161639532235.895304.18329540036405219298.stgit@devnote2>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
-        <161639532235.895304.18329540036405219298.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231555AbhCVPMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:12:45 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56342 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231409AbhCVPMa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:12:30 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12MFC6gY006691
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 11:12:07 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 0B6B415C39CC; Mon, 22 Mar 2021 11:12:06 -0400 (EDT)
+Date:   Mon, 22 Mar 2021 11:12:05 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     yi.zhang@huawei.com, torvalds@linux-foundation.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] ext4 fixes for v5.12
+Message-ID: <YFizxSL2PKrIdyzy@mit.edu>
+References: <YFgIZe4vMRDm+g8u@mit.edu>
+ <20210322121052.GA17398@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210322121052.GA17398@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 15:42:02 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> ftrace shows "[unknown/kretprobe'd]" indicator all addresses in the
-> kretprobe_trampoline, but the modified address by kretprobe should
-> be only kretprobe_trampoline+0.
+On Mon, Mar 22, 2021 at 11:10:52PM +1100, Herbert Xu wrote:
+> Theodore Ts'o <tytso@mit.edu> wrote:
+> > 
+> > From: 曹子德(Theodore Y Ts'o) <tytso@mit.edu>
 > 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> "Yue" doesn't seem to match your second character which is usually
+> romanised as "Tze" in Cantonese, could it be
+> 
+> 	曹予德
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Quite right.  I hadn't noticed that I had the wrong character when I
+cut and pasted.  Thanks for pointing that out!
 
--- Steve
-
+    		 	    	     - Ted
