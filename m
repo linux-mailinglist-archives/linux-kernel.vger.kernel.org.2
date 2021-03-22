@@ -2,155 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA2B343AD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF084343ADA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhCVHlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:41:55 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:33504 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhCVHlW (ORCPT
+        id S229883AbhCVHoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:44:05 -0400
+Received: from mail-vk1-f171.google.com ([209.85.221.171]:46611 "EHLO
+        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhCVHnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:41:22 -0400
-Received: by mail-lf1-f41.google.com with SMTP id o126so10183250lfa.0;
-        Mon, 22 Mar 2021 00:41:20 -0700 (PDT)
+        Mon, 22 Mar 2021 03:43:53 -0400
+Received: by mail-vk1-f171.google.com with SMTP id u144so3569940vkb.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 00:43:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=9OvoXTfYE4NotW19A5lNKAEwdwJKknjVSZLpfYohfiw=;
-        b=VzC4FcgfWmpRvAY1ZjHnkHhhR8pff7riEIOnn1jcmr1/jknLwznzqfD5EvK9rTzPmz
-         r5lRU3/ht0h/yFd/8CklvGrYUFFWmL96EJ06jQEueph3puBRPRI2bKDvIS8l1fDm9ayW
-         FGUDlj+3m8e8Nf4KpR/D363tYrcuJVQJe7DmMJ5hvjB4No4GtqkN/4fQIGnt1nDvT2pd
-         +jtBZy7FEPhbDKiA5J7JpQhJuIgdToSoV5PkUlT9dPzGqwSVfNEtYNFwAWwCGVEBQADa
-         ulCEJXHxauGfA4o8vazsS0J1csuLPfyK68+MVK34LKvGTpOzxfnbQkTl7zM66zhcfhDG
-         g2Iw==
-X-Gm-Message-State: AOAM530jBzBA1RB7NXgnpIxqR2eB6/u71YdWGjDJtjtIHjVEtDyVNFYF
-        eGNrXxJDp2rp1zUIiJ2IOEA=
-X-Google-Smtp-Source: ABdhPJzjl/BCA7ObW6HNjx3diUaqpRbdVbzl+Zwdos1ACNDo5uSXH9iWMVBGSZK7KTlvXmN4GMDRew==
-X-Received: by 2002:ac2:5519:: with SMTP id j25mr8615753lfk.220.1616398879758;
-        Mon, 22 Mar 2021 00:41:19 -0700 (PDT)
-Received: from localhost.localdomain (mobile-access-5673b7-246.dhcp.inet.fi. [86.115.183.246])
-        by smtp.gmail.com with ESMTPSA id y4sm1472866lfj.254.2021.03.22.00.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 00:41:19 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 09:41:13 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: [RFC RESEND PATCH v2 0/8] Add managed version of delayed work init
-Message-ID: <cover.1616395565.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8d1jAgckfxjuuMFamou6Yc9DxlDdKTJfg01fu8kdwVM=;
+        b=C/zaU99K+tpbjEkwA2BhGgbyJSB9dIAlRjrFAcBb5Ia4xLHCbRSxgXo0g2hy3oAC35
+         QZ/SwOe4xH7LA/LYoZ6wsPqNbAEb7GWrKFu1oXU8fNitan74fUuuSmb680NHE0fOWENv
+         RUacKzrJwhb5PQ+2p4tgrc2vz5cx7XjXx1BiSwIPRHoNQIhCQaXCwETRssEzaVijeJCq
+         cQr6v5l6+hJfMUDRgzOvWEq3QGsKY6ty+JU9zvequFIffyHxCxfOFoacCD/5nLxSpLzb
+         L7VUa7iDpIb42lB86CsUoVUgDfoBPk3gHKWcT53I41YfGWvjC7c6c190LTbB24Z6IMDB
+         gApQ==
+X-Gm-Message-State: AOAM531DILPzejtY8fd8y4gPUpVYXrZTh7LfrO/J/j0UCPRG6jaihd1U
+        LchBYPnf3PyLt/qkYRttIH+NpryUcVK+JctZ5RM=
+X-Google-Smtp-Source: ABdhPJzwW47Lke10n/3zmeOGwi15oQx4I9WGpf3VORxfc4Mkpasxcl4E1RNdLrp3G8BH6u4OMvYrr+etK7C2/sLvf7A=
+X-Received: by 2002:ac5:cbee:: with SMTP id i14mr7962732vkn.1.1616399032462;
+ Mon, 22 Mar 2021 00:43:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210320001518.93149-1-julianbraha@gmail.com> <CAMuHMdW1YVmKd4+MJEZvpF0iovP3b8ukh4ExpFdDUR6+UXf6WQ@mail.gmail.com>
+ <2439979.pz5sKB06L4@ubuntu-mate-laptop>
+In-Reply-To: <2439979.pz5sKB06L4@ubuntu-mate-laptop>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Mar 2021 08:43:41 +0100
+Message-ID: <CAMuHMdVyiAQC9G_-jMOU7Wk7CU9EWjCg3k71cwW1wHMi3=oy6A@mail.gmail.com>
+Subject: Re: [PATCH] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's not rare that device drivers need delayed work.
-It's not rare that this work needs driver's data.
+Hi Julian,
 
-Often this means that driver must ensure the work is not queued when
-driver is detached. Often it is done by ensuring new work is not added and
-then calling cancel_delayed_work_sync() at remove(). In many cases this
-may also require cleanup at probe error path - which is easy to forget.
+On Sun, Mar 21, 2021 at 11:40 PM Julian Braha <julianbraha@gmail.com> wrote:
+> On Sunday, March 21, 2021 2:28:43 PM EDT you wrote:
+> > On Sat, Mar 20, 2021 at 1:17 AM Julian Braha <julianbraha@gmail.com> wrote:
+> > > When LATENCYTOP is enabled and ARCH_WANT_FRAME_POINTERS
+> > > is disabled, Kbuild gives the following warning:
+> > >
+> > > WARNING: unmet direct dependencies detected for FRAME_POINTER
+> > >   Depends on [n]: DEBUG_KERNEL [=y] && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS [=n] || MCOUNT [=n]
+> > >   Selected by [y]:
+> > >   - LATENCYTOP [=y] && DEBUG_KERNEL [=y] && STACKTRACE_SUPPORT [=y] && PROC_FS [=y] && !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+> > >
+> > > This is because LATENCYTOP selects FRAME_POINTER,
+> > > without selecting or depending on ARCH_WANT_FRAME_POINTERS,
+> > > despite FRAME_POINTER depending on ARCH_WANT_FRAME_POINTERS.
+> > >
+> > > Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> >
+> > Thanks for your patch!
+> >
+> > > --- a/lib/Kconfig.debug
+> > > +++ b/lib/Kconfig.debug
+> > > @@ -1675,6 +1675,7 @@ config LATENCYTOP
+> > >         depends on DEBUG_KERNEL
+> > >         depends on STACKTRACE_SUPPORT
+> > >         depends on PROC_FS
+> > > +       select ARCH_WANT_FRAME_POINTERS if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+> >
+> > ARCH_WANT_FRAME_POINTERS is a symbol that is only to be selected by
+> > architecture-specific configuration, and must not be overridden:
+> >
+> >     # Select this config option from the architecture Kconfig, if it
+> >     # is preferred to always offer frame pointers as a config
+> >     # option on the architecture (regardless of KERNEL_DEBUG):
+> >
+> > Probably this should be turned into a depends instead?
+> >
+> > >         select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+> > >         select KALLSYMS
+> > >         select KALLSYMS_ALL
 
-Also the "by ensuring new work is not added" has a gotcha.
+> Making this a 'depends' causes a recursive dependency error.
+> Any other ideas?
 
-It is not strange to see devm managed IRQs scheduling (delayed) work.
-Mixing this with manua wq clean-up is hard to do correctly because the
-devm is likely to free the IRQ only after the remove() is ran. So manual
-wq cancellation and devm-based IRQ management do not mix well - there is
-a short(?) time-window after the wq clean-up when IRQs are still not
-freed and may schedule new work.
+What about
 
-When both WQs and IRQs are managed by devm things are likely to just
-work. WQs should be initialized before IRQs (when IRQs need to schedule
-work) and devm unwinds things in "FILO" order.
+    -select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE &&
+!ARM && !ARC && !X86
+    +depends on FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE
+&& !ARM && !ARC && !X86
 
-This series implements delayed wq cancellation on top of devm and replaces
-the obvious cases where only thing remove call-back in a driver does is
-cancelling the work. There might be other cases where we could switch
-more than just work cancellation to use managed version and thus get rid
-of remove or mixed (manual and devm) resource management.
+?
 
-This RFC does also introduce include/linux/devm-helpers.h file which
-hopefully works as a place where this kind of helpers can be inlined.
+Gr{oetje,eeting}s,
 
-Please see previous discussion here:
-RFC v1:
-https://lore.kernel.org/lkml/cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com/
-
-Changelog v2 resend:
-  - rebased on 5.12-rc4
-
-Changelog v2:
-  - used correct terminology ("driver detach" instead of "exit, ...")
-  - inlined the devm_delayed_work_autocancel() in a header
-  - added Hans as a maintainer for the new header + myself as a reviewer
-  - used devm_add_action() instead of using plain devres_add()
-
----
-
-Matti Vaittinen (8):
-  workqueue: Add resource managed version of delayed work init
-  MAINTAINERS: Add entry for devm helpers
-  extconn: Clean-up few drivers by using managed work init
-  hwmon: raspberry-pi: Clean-up few drivers by using managed work init
-  platform/x86: gpd pocket fan: Clean-up by using managed work init
-  power: supply: Clean-up few drivers by using managed work init
-  regulator: qcom_spmi-regulator: Clean-up by using managed work init
-  watchdog: retu_wdt: Clean-up by using managed work init
-
- MAINTAINERS                                  |  6 +++
- drivers/extcon/extcon-gpio.c                 | 15 ++----
- drivers/extcon/extcon-intel-int3496.c        | 16 ++----
- drivers/extcon/extcon-palmas.c               | 17 +++----
- drivers/extcon/extcon-qcom-spmi-misc.c       | 17 +++----
- drivers/hwmon/raspberrypi-hwmon.c            | 17 +++----
- drivers/platform/x86/gpd-pocket-fan.c        | 17 +++----
- drivers/power/supply/axp20x_usb_power.c      | 15 ++----
- drivers/power/supply/bq24735-charger.c       | 18 +++----
- drivers/power/supply/ltc2941-battery-gauge.c | 20 +++-----
- drivers/power/supply/sbs-battery.c           | 16 ++----
- drivers/regulator/qcom_spmi-regulator.c      | 34 +++----------
- drivers/watchdog/retu_wdt.c                  | 22 +++-----
- include/linux/devm-helpers.h                 | 53 ++++++++++++++++++++
- 14 files changed, 128 insertions(+), 155 deletions(-)
- create mode 100644 include/linux/devm-helpers.h
-
-
-base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
--- 
-2.25.4
-
+                        Geert
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
