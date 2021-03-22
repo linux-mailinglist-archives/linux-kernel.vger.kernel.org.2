@@ -2,45 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E8F344F14
+	by mail.lfdr.de (Postfix) with ESMTP id 660DD344F13
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 19:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhCVSuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 14:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
+        id S230381AbhCVSuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 14:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbhCVSuV (ORCPT
+        with ESMTP id S232164AbhCVSuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 14:50:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED01C061574;
-        Mon, 22 Mar 2021 11:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=rgKmg8TVdXghRnkApE4fkAGJ5moLys2JCYUJGG86PPE=; b=S0PWFuWSJl4JWUThotvNH6XHVq
-        r/PnF/gH9jmD13WuxPFZqAB2t9y6LWL5VyRY3e2MxOcJo9GaSIn8mtDmLjRCEODhI8ebDR7bPrmVz
-        lxq7DcxHTm7Z9gi4+SLXIg5/CT9q99Msga+QjoKWgQah03n8Qzcj9NMsPEFvLFwbazwzs8g6CBkOF
-        RipbrS592/JAlVNTSQC5YU8dhOvUAkgKZ595ksOjBLOcfI+lo+f3lnn9a0qKmg2gC81SOyH0h9snS
-        2Ebq0b7d2bVcYxEdqOb8agjanQV+dhlrc75/kwNeNNvJgRkZa0R8qg1VKKoNji/PxtkbwqpBvCebv
-        ++fjIxMQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOPcT-008w9v-VB; Mon, 22 Mar 2021 18:49:59 +0000
-Subject: Re: [PATCH] docs: powerpc: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, corbet@lwn.net,
-        linuxppc-dev@lists.ozlabs.org, linux-doc@vger.kernel.org,
+        Mon, 22 Mar 2021 14:50:16 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEF3C061574;
+        Mon, 22 Mar 2021 11:50:16 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id e33so9247665pgm.13;
+        Mon, 22 Mar 2021 11:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=spKaPRG7iOmLzAUB6je6o6gX4eqaT8kjVDB+IMEVQ0Q=;
+        b=V7u2H7sYkaHcgWoK4gspoi0nCKDEJuPSit/RSI0MY5NXy9w4O6eCCdUvzoTpRRdMxw
+         pF8laUfLP3T1AxinpW+WK7gzHVIrdp5MKdFCw2tfwxdEqZstM9M2S7mLFC0VumMMJRvT
+         dSAc0txqKdoO5U7mGeJmELfJ+jwJNv+brn/L9xWA5m01PXSmZPA67UQbuM+bxwZ+LACk
+         XaszW9kAAeO904KZGRPzpxQVJLZbhSlB4PMt2Nt2Qlvd8OJQDWze0d7OkqfKl+QRRFFY
+         6Qpem/GJh0CLVGd31h3EV78tK7uem+f2DPnA1ZLd3+58V93aklBVmb5S4u5KmyYRECyx
+         vUww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=spKaPRG7iOmLzAUB6je6o6gX4eqaT8kjVDB+IMEVQ0Q=;
+        b=gMOcymr1ZgOuW1V1WnP8ekJujEc8bSIeRaYF8e3sQ8IaDpE0lpYQCmEFEzT5zA8Z94
+         OrLlcaFvDthpYKP9A2fvBP1VhvcxMsCV+Ngzdxg12ScFt7HN8ftRsG26+aYzMmzXVAh4
+         w9rtoE1c1FWYANr3URf799RQZYdo4si+oIWXkeJW+YHuihhKw6jgfCiAa7c6LUVwnqSZ
+         gutUPGZBMv+2onBN86jAgE6GsWhuuxU6GvuQFLUdhSajz8N2jYViTxmTWOmJKeHo4cZp
+         U52Zpw307p2kH7j/91flCDotiumyFAaTRDSjV0m6QzE1og4Fx0/SZX1Bc/3QbIaXoGtl
+         z3sg==
+X-Gm-Message-State: AOAM531elRwT/WJeDhywk2RZO1CoAjrzwuUNh29LOoUihuHA7Tkkj5rg
+        jzY6q5mOhES4A2MUA8pqawyVFP/KO8w=
+X-Google-Smtp-Source: ABdhPJxSXHngCTvHJ5/G7nnKH66ax9qQr13Glij5x+I8H3lvgoQCBEMO+JUGznxFllTBw+7UdfECLw==
+X-Received: by 2002:a17:902:f68c:b029:e5:ca30:8657 with SMTP id l12-20020a170902f68cb02900e5ca308657mr956968plg.78.1616439015001;
+        Mon, 22 Mar 2021 11:50:15 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 192sm14829205pfa.122.2021.03.22.11.50.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 11:50:14 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/156] 5.10.26-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-References: <20210322062237.2971314-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <61e323a3-0934-708a-99cc-a4cd632ca6b0@infradead.org>
-Date:   Mon, 22 Mar 2021 11:49:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210322151845.637893645@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a076a64c-6da8-e25d-98b9-3666ce957862@gmail.com>
+Date:   Mon, 22 Mar 2021 11:50:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210322062237.2971314-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210322151845.637893645@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,36 +71,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 11:22 PM, Bhaskar Chowdhury wrote:
-> 
-> s/struture/structure/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  Documentation/powerpc/firmware-assisted-dump.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/powerpc/firmware-assisted-dump.rst b/Documentation/powerpc/firmware-assisted-dump.rst
-> index 20ea8cdee0aa..6c0ae070ba67 100644
-> --- a/Documentation/powerpc/firmware-assisted-dump.rst
-> +++ b/Documentation/powerpc/firmware-assisted-dump.rst
-> @@ -171,7 +171,7 @@ that were present in CMA region::
->                                             (meta area)    |
->                                                            |
->                                                            |
-> -                      Metadata: This area holds a metadata struture whose
-> +                      Metadata: This area holds a metadata structure whose
->                        address is registered with f/w and retrieved in the
->                        second kernel after crash, on platforms that support
->                        tags (OPAL). Having such structure with info needed
-> --
-> 2.31.0
-> 
 
 
+On 3/22/2021 8:19 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.26 release.
+> There are 156 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 24 Mar 2021 15:18:19 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.26-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-~Randy
-
+Florian
