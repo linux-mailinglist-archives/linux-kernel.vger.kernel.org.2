@@ -2,107 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED21C34454A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C8634454C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbhCVNPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S233181AbhCVNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbhCVNC0 (ORCPT
+        with ESMTP id S232280AbhCVNED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:02:26 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956DAC061756;
-        Mon, 22 Mar 2021 06:02:25 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c3so10359024qkc.5;
-        Mon, 22 Mar 2021 06:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dMH4QAnKMYAm7SV5kDPsGP+GUy0GDEG+vPXEkoZ0Tc8=;
-        b=UiWo5DT0T6s2hIq4vT2rvCAkJOPIUgQVjcBgQe58BOP9zL6pUJF0ZKVaJ0GiW97qeK
-         hqMjKxAti3LtuoC30QcGslmlNw/9tJoC/hcDjIR/2ECJbIqxUg/uS9G222r1CulMkv4s
-         DHo/nJ4n1Y9Ee+RyyzxSahr+v5eV9Cuz/wSO7zizBtqEkPs7TtCXpv7UtRSjLD6Dz3Hv
-         fSRIePlXgSFxGJjzIJMfDS5JJOyiFhLBS5DwDsUO8yEQrTR3iR2icQVJRcNu4hORRvzd
-         45JQDRKjfEigGkKFr/peQNu3GmT7zVCA9qUComZupiOCC8chBYFGwVwQCgr6RG+VqSal
-         MmOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dMH4QAnKMYAm7SV5kDPsGP+GUy0GDEG+vPXEkoZ0Tc8=;
-        b=jWbMLzYnKP941AAzjhAZEOEPyj1XmQ1ZHwBuz40cNAPziKIacgRMkF+vkFbzugyn0R
-         88yOclxkQwJa5lyk/PLWKwi5gRpkb8uauuk8dFI34wxzEBgPrW2oaAAzWob+KDyjHEYi
-         tRKg/IC9hd62MNhpQI2JKqjfInwn3njb8hkcKKzcOVk4ZnZBiKjQgVmYRG38McdWcblR
-         7dLsnnNegZPyXLTqcQi5eRn8LXmbsoNLcKzQ+kNcBdgzIUYvKrX6tQWKrqyLetYOPa54
-         CgB4wJtB0jLEkDLTZIJJiSTnmYMVL51IoXYX2Q47rUalXSIQrfFhL3rYQoM8SMTHlMSX
-         E+tQ==
-X-Gm-Message-State: AOAM533PX2GFpURyqTG/DWz9swqyjqFXjOeJ2VKHLCG4oqAItVzjmXNQ
-        GVT5YDqwZmFTu0yraYoJ4Ck=
-X-Google-Smtp-Source: ABdhPJx+9Viv9Em+PGreRyAyt7xaYv9wDXL//i4JvTFnQZYD+AXa6lRIzDFP80ZnSLA7VZ3tVkmr1w==
-X-Received: by 2002:a37:a9cf:: with SMTP id s198mr10303355qke.143.1616418144881;
-        Mon, 22 Mar 2021 06:02:24 -0700 (PDT)
-Received: from localhost.localdomain ([143.244.44.200])
-        by smtp.gmail.com with ESMTPSA id z89sm8963497qtd.5.2021.03.22.06.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 06:02:22 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     unixbhaskar@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] video: mmp: Few typo fixes
-Date:   Mon, 22 Mar 2021 18:32:10 +0530
-Message-Id: <20210322130210.3641181-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Mon, 22 Mar 2021 09:04:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AFBC061756;
+        Mon, 22 Mar 2021 06:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0JBjeWyjhSFrKTKJO4lwg4PnWP3NbPeMlvDqUV3159w=; b=HeYsUbcmAYNz575uDB1kdZw8+G
+        0OUFPH/q99s3mFwZM/wKTbsbbMGE9K3gE/uue/WEtux2YchdR7ZPjQ/BxkMFe2L5IP7Hogv8P2PXH
+        KwFceNsqE0J/TQNvJLHXcZPE51SWua8qgu+K381d4hGYdIAOILPDGZY2d67vdaqdju8eUwfWc5TNY
+        DfPe+zQMVCF1wkxcaDfTF6H8IHLEUUi+7ikk+3/KBhTlfsxlmdowf5Px3G4Adlnwe+oXshiMmwZRZ
+        XNkYnT/TgPe4jTYxmJbBVcIpPsGAowuHJwUVwkYoeNOBSRlYWDjCf9F5Cc3GQS8N24wbz7BczLliI
+        l0yiWqQQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOKCg-008XPh-Ma; Mon, 22 Mar 2021 13:02:46 +0000
+Date:   Mon, 22 Mar 2021 13:02:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-mm@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH 3/5] cifsd: add file operations
+Message-ID: <20210322130242.GL1719932@casper.infradead.org>
+References: <20210322051344.1706-1-namjae.jeon@samsung.com>
+ <CGME20210322052207epcas1p3f0a5bdfd2c994a849a67b465479d0721@epcas1p3.samsung.com>
+ <20210322051344.1706-4-namjae.jeon@samsung.com>
+ <20210322081512.GI1719932@casper.infradead.org>
+ <YFhdWeedjQQgJdbi@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFhdWeedjQQgJdbi@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 06:03:21PM +0900, Sergey Senozhatsky wrote:
+> On (21/03/22 08:15), Matthew Wilcox wrote:
+> > 
+> > What's the scenario for which your allocator performs better than slub
+> > 
+> 
+> IIRC request and reply buffers can be up to 4M in size. So this stuff
+> just allocates a number of fat buffers and keeps them around so that
+> it doesn't have to vmalloc(4M) for every request and every response.
 
-s/configed/configured/
-s/registed/registered/
-s/defintions/definitions/
+That makes a lot more sense; I was thrown off by the kvmalloc, which
+is usually used for allocations that might be smaller than PAGE_SIZE.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- include/video/mmp_disp.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+So what this patch is really saying is that vmalloc() should include
+some caching, so it can defer freeing until there's memory pressure
+or it's built up a large (percpu) backlog of freed areas.
 
-diff --git a/include/video/mmp_disp.h b/include/video/mmp_disp.h
-index 77252cb46361..ea8b4331b7a1 100644
---- a/include/video/mmp_disp.h
-+++ b/include/video/mmp_disp.h
-@@ -172,7 +172,7 @@ struct mmp_panel {
- 	/* use node to register to list */
- 	struct list_head node;
- 	const char *name;
--	/* path name used to connect to proper path configed */
-+	/* path name used to connect to proper path configured */
- 	const char *plat_path_name;
- 	struct device *dev;
- 	int panel_type;
-@@ -291,7 +291,7 @@ static inline int mmp_overlay_set_addr(struct mmp_overlay *overlay,
-  * it defined a common interface that plat driver need to implement
-  */
- struct mmp_path_info {
--	/* driver data, set when registed*/
-+	/* driver data, set when registered*/
- 	const char *name;
- 	struct device *dev;
- 	int id;
-@@ -309,7 +309,7 @@ extern void mmp_unregister_path(struct mmp_path *path);
- extern void mmp_register_panel(struct mmp_panel *panel);
- extern void mmp_unregister_panel(struct mmp_panel *panel);
-
--/* defintions for platform data */
-+/* definitions for platform data */
- /* interface for buffer driver */
- struct mmp_buffer_driver_mach_info {
- 	const char	*name;
---
-2.31.0
-
+Vlad, have you thought about this?
