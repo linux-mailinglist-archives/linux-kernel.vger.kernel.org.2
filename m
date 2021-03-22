@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EE83451A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D8D3451A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCVVQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:16:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48594 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229526AbhCVVP6 (ORCPT
+        id S231690AbhCVVRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhCVVQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:15:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616447758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cL8IkrAvZ/zpR6rx/dpaMoVEJoSiDr1kPTM/qqGWTFY=;
-        b=ArQ/Rry6JgWFPBZd5Tal9vpDNbyoJrdp+dMa5tgeu+QSIkKpl4JIxSmwDmqelTXHSntBDD
-        UMQ0uxgp8ids1N+Si26Izauf43Vyf6C9z+V7EDc2+v8A8bBJMXjgfOXPLZp8ZigGMPHQSw
-        dyBUUYZQte/l9GIEqJgsWrezgep5g6o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-q78jJv7gOdiMpIIPuREPHQ-1; Mon, 22 Mar 2021 17:15:54 -0400
-X-MC-Unique: q78jJv7gOdiMpIIPuREPHQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95AF210866A6;
-        Mon, 22 Mar 2021 21:15:51 +0000 (UTC)
-Received: from krava (unknown [10.40.195.209])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 71EB060C34;
-        Mon, 22 Mar 2021 21:15:49 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 22:15:48 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 1/2] perf stat: Align CSV output for summary mode
-Message-ID: <YFkJBD2laOM23pbk@krava>
-References: <20210319070156.20394-1-yao.jin@linux.intel.com>
+        Mon, 22 Mar 2021 17:16:37 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A15C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:16:36 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id j26so15483162iog.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=ayECeS81HT5a5qmHE9lDWqj1EoaigC/VfKD/r0GEF18=;
+        b=mTGY90QqYvQA+ppZtYyFoO/HHOQizhHsaVVXuxxYS+CCLb4mhg6WkoTbCRU43OI2iM
+         WbPjfBD9HYGAA8izueL2BJXEGvJHFPHwD1zvgb+12vjgnIR/JW/pSmB60D40tNWlPfqZ
+         o63IH25jn8WJLZGsCLqmdSujLqajDu2+YPovNvFbOac2wWk/4YkE+4ZkaXWBLjATu2/x
+         kmm57TLHLA6tnhiyGKDMElPRVYMEFGQPcIQaaIwtzpjyd5P8ZpmzrQ5T7NotJ+8Nv+S8
+         1dXr+wk1HmAHv1EBxY77XYynq5RuOImzNfeJ4oDxIxBxykP2GtxblF3CSMJPQQ7dSB0g
+         8mmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=ayECeS81HT5a5qmHE9lDWqj1EoaigC/VfKD/r0GEF18=;
+        b=dC3ch1aIgQlnFmUnh1X6+rVQb4AyIR0b5WQJVcuo1aiBDN2VxYn0KGXyI/FfOlg+YV
+         yez4mKDlX8oPT7WALcK/5VxGXuS8uUEGzhVmVC0JP0YOf4xu4GgpVGvJyD7GKHgG0k1p
+         4FmYMJKTqhHHlTl0LLSOG9R2cWCe13bgBRAzo/bbIUKIPzOQRsYXHYilGTFYL1YVQGYl
+         OMYaWmQ5FQ2flXcA0qo1UzmmSls8cE/7zAWfcesoM2Sr6+IKrR9Ag9x4Nh8MHd7sUgvC
+         apqWsCFTkkLaryRfb46CRwfIxq7lILF/4JhLLMbp5wzQO/UKAbMaYVDVWKWRsKK2LJ9g
+         KYmw==
+X-Gm-Message-State: AOAM532FdF8sXx40oIWHpEDpvqh/sRWuNUbsNdQvvp/r8p1CUzc3Be4E
+        /K+0uu3+/S0Nk5yB5QjFm1wxpFIlQcCLn4rOb/Q=
+X-Google-Smtp-Source: ABdhPJw6G59xfgQX9hwTqrA3u+du6z2ErIPJxYBxb7h+GyWPp1omkc+nnY+oitoI+0+CcvYSoEqrNKpghGMEBWsPfWE=
+X-Received: by 2002:a6b:d20e:: with SMTP id q14mr1486822iob.200.1616447795859;
+ Mon, 22 Mar 2021 14:16:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319070156.20394-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <CAHhAz+jC7kJfJRT6AB15xFBTSGpQs6VmufN8J9=gRZuwxZPpjA@mail.gmail.com>
+In-Reply-To: <CAHhAz+jC7kJfJRT6AB15xFBTSGpQs6VmufN8J9=gRZuwxZPpjA@mail.gmail.com>
+Reply-To: noloader@gmail.com
+From:   Jeffrey Walton <noloader@gmail.com>
+Date:   Mon, 22 Mar 2021 17:16:08 -0400
+Message-ID: <CAH8yC8m5C3E9BNK+4UX307GsAoGH7T6ehJ=6acrO9whJXbRc0Q@mail.gmail.com>
+Subject: Re: kernel projects for students
+To:     Muni Sekhar <munisekharrms@gmail.com>
+Cc:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 03:01:55PM +0800, Jin Yao wrote:
+On Mon, Mar 22, 2021 at 11:37 AM Muni Sekhar <munisekharrms@gmail.com> wrote:
+>
+> What are some good Linux projects in kernel space for final year
+> computer.science engineering students?
+> Could someone help and share your ideas on this please.
 
-SNIP
+Hedging deployed cryptography.
 
->   102107,,branch-misses,8012781751,100.00,4.15,of all branches
-> 
-> This option can be enabled in perf config by setting the variable
-> 'stat.no-cvs-summary'.
-> 
->   # perf config stat.no-cvs-summary=true
-> 
->   # perf config -l
->   stat.no-cvs-summary=true
-> 
->   # perf stat -x, -I1000 --interval-count 1 --summary
->        1.001330198,8013.28,msec,cpu-clock,8013279201,100.00,8.013,CPUs utilized
->        1.001330198,205,,context-switches,8013308394,100.00,25.583,/sec
->        1.001330198,10,,cpu-migrations,8013324681,100.00,1.248,/sec
->        1.001330198,0,,page-faults,8013340926,100.00,0.000,/sec
->        1.001330198,8027742,,cycles,8013344503,100.00,0.001,GHz
->        1.001330198,2871717,,instructions,8013356501,100.00,0.36,insn per cycle
->        1.001330198,553564,,branches,8013366204,100.00,69.081,K/sec
->        1.001330198,54021,,branch-misses,8013375952,100.00,9.76,of all branches
->   8013.28,msec,cpu-clock,8013279201,100.00,7.985,CPUs utilized
->   205,,context-switches,8013308394,100.00,25.583,/sec
->   10,,cpu-migrations,8013324681,100.00,1.248,/sec
->   0,,page-faults,8013340926,100.00,0.000,/sec
->   8027742,,cycles,8013344503,100.00,0.001,GHz
->   2871717,,instructions,8013356501,100.00,0.36,insn per cycle
->   553564,,branches,8013366204,100.00,69.081,K/sec
->   54021,,branch-misses,8013375952,100.00,9.76,of all branches
-> 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Hedging can be used to keep the state of a machine unique and the
+rng's in good working order to minimize/eliminate the risk associated
+with low entropy devices and virtual machine resets.
 
-LGTM, for patchset:
+You would hook the network stack and look for the other party's random
+secret, like ClientHello.random in SSL/TLS [RFC 5246]. When the data
+arrives you add it to the machine's entropy pools.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+In addition to SSL/TLS, you also have SSH and IPsec to grab another
+party's entropy. I am sure there are others, but SSH, SSL/TLS and
+IPsec are the ones I would focus on.
 
-thanks,
-jirka
+Also see "When Virtual is Harder than Real: Resource Allocation
+Challenges in Virtual Machine Based IT Environments,"
+http://static.usenix.org/event/hotos05/final_papers/full_papers/garfinkel/garfinkel.pdf
+; and "When Good Randomness Goes Bad: Virtual Machine Reset
+Vulnerabilities and Hedging Deployed Cryptography,"
+http://www.isoc.org/isoc/conferences/ndss/10/pdf/15.pdf .
 
+Jeff
