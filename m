@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F7C345231
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E70345234
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 23:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCVWCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 18:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhCVWCH (ORCPT
+        id S229871AbhCVWGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 18:06:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21919 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229639AbhCVWGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:02:07 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C33C061574;
-        Mon, 22 Mar 2021 15:02:07 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id c6so13580640qtc.1;
-        Mon, 22 Mar 2021 15:02:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=e8lmPL9l7tYar2avzvzIi16QrccP2sceEgsZ0/+5kWM=;
-        b=Rxb76km2s7iu6iziIs0aQYLlSwN9TTCu37Sj8+CSOLsy5u/dIHb3Lox5r59lNhrE/a
-         GdT9tJsyMNifGMWrIAuzIMl8HeImE2RPaMlfHbHFKtaIJhRyF7Vu4otiztHnW9xlSXCV
-         4NUtUf0YQK4PRjvV815Qo17WwynOUbQXrj1S4O9FVgfKEFUUBzlyxvriaiZQ9XmeeT0n
-         4utMiMwaApzwhdGvkTsvd+bnfN6iYI4WRhXY0TTy7P3M2z8HKLqX4pK+SgGcyfVAF0o5
-         COaJ1D4SY6xQQDTCn7FcsIW+upzmkXLNX+TGoTk0Xo+NC2AziB6vENTcDlZ6ki57MK5c
-         sqZg==
+        Mon, 22 Mar 2021 18:06:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616450801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F0xmtxsbrSY/EqwRbgt4RPB4j15Yx4zHQ1t04X/H0aY=;
+        b=Uz0bddkabAQ7wuvGX6aio3ZCqbe4od7WI6yp7+YAixHP2c5lUILFgh+I48DGgt1jixl4P8
+        XZCxJLEcwWgc+UpcWL6ZyiImVRR3r3d7Kp3863rCHjWhORE35pqfY47N7U7sfeLlk0JRkX
+        F0z1xc5i9h+CaY6nlg4ypvosZ5M9wTI=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-hwUMhgAROgqk-_tU0IdSHw-1; Mon, 22 Mar 2021 18:06:39 -0400
+X-MC-Unique: hwUMhgAROgqk-_tU0IdSHw-1
+Received: by mail-qv1-f72.google.com with SMTP id s16so384189qvw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 15:06:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e8lmPL9l7tYar2avzvzIi16QrccP2sceEgsZ0/+5kWM=;
-        b=VNLIikyYOCDdHD0qiXG8RT6SqE2ZpIZaIpOCb77CvhHDsH9/qkEPFeFZZfL6xmCWt+
-         S1hOJThAMHMn303hKR2NdwxZvn9yPza0A8fOgM6BktTRdGJQI2BW+bXoGxK/U2+sk+W9
-         g/uT9ZFzd+YTWbxXfw7nLKw61giNIZ48rH3ALXlvGqFanwVF4B1t1aXBG23XZAC5JLgF
-         BWMw9CZcDkj2ZwEuFydhO1udcucx4SFA3W3RE+LhiTzw1tStOA28ip7Y0sjI2HTAk89+
-         PzCR6JLilM/0UbUDgj6liMYZyljQ/wR0wPB7WV2AH8C98b+OGu3WzokB6z2Kegeb03cG
-         efOw==
-X-Gm-Message-State: AOAM532UNoTDuG9/Z9VFbMMi9HUaLJOXun0xBsIjkn6C5wgLKPwATwY6
-        Jk82q2VKVPIm8VnbQq8BMQ0=
-X-Google-Smtp-Source: ABdhPJx/0ftrYy+tnKvj5Gkgv2O8gsI1TOJnGHNS/5dMdXeJ8dWdN1I72FxMpiiDnDSOn5B+Jbdn3g==
-X-Received: by 2002:a05:622a:14d3:: with SMTP id u19mr1946284qtx.226.1616450526101;
-        Mon, 22 Mar 2021 15:02:06 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id m21sm11968219qka.28.2021.03.22.15.02.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 15:02:05 -0700 (PDT)
-Subject: Re: [PATCH] of: overlay: fix for_each_child.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        kbuild-all@lists.01.org
-References: <alpine.DEB.2.22.394.2103221918450.2918@hadrien>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <2783d37c-cdb7-9d86-a5e0-07bc523854c1@gmail.com>
-Date:   Mon, 22 Mar 2021 17:02:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F0xmtxsbrSY/EqwRbgt4RPB4j15Yx4zHQ1t04X/H0aY=;
+        b=oigGGAf52GTq++GWj5HYMOw8iRv6A8eopPByN31N1iLW0cZ+GW4juDla0goKxCxnOQ
+         p7JJVFRkeqYEJH5ylcwdzPhT8K/y7aAe7+iQaaFuI1MB04IGNt0BfO5xsmpPtUoYxud5
+         NyaaUL7RyebIafGrwHJACpQr0uM4I0zwJogp7GqFpKls4se060gcbcl7cM/v3zm4AvKH
+         jYpe1k0Qz8wxwDJ/Ac/0F3t9dAnTxhZsbPRbsb+TNl435Wip7eTumLjcy9s7txyeloye
+         tLz/lt/vPTmphhJBPFnCiq+1+neO4LL6h1L4bEP5sS+bExctZpAoPEOe+jSTT6xhe1FW
+         yfkQ==
+X-Gm-Message-State: AOAM532MDi7+cCNxSpXz/ZPWsYbfUDFtiljLJA5N0b74GD4BLOdEnsHB
+        oWFbMXBa57OWtcJNar3xS9SvK2nhFjQaHMjKJo3IAxW+tPTnSaPJJKn+S+OmFEf2rbx6vu3CoMM
+        Kd+AUxQwIfGDEsp8XgDtDAJmQ
+X-Received: by 2002:a05:620a:13a6:: with SMTP id m6mr2400185qki.64.1616450798822;
+        Mon, 22 Mar 2021 15:06:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyBNVJY3fOU+3jm44Dl1dmP6P13HIl+FnxCKWahujf02BY3Hnwz4gLC5NeCUL7ioqbJgIVFxw==
+X-Received: by 2002:a05:620a:13a6:: with SMTP id m6mr2400163qki.64.1616450798573;
+        Mon, 22 Mar 2021 15:06:38 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
+        by smtp.gmail.com with ESMTPSA id 85sm12351357qkf.58.2021.03.22.15.06.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 15:06:37 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 18:06:36 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Linux MM Mailing List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3 4/4] ioctl_userfaultfd.2: Add write-protect mode docs
+Message-ID: <20210322220636.GI16645@xz-x1>
+References: <20210310222300.200054-1-peterx@redhat.com>
+ <20210310222300.200054-5-peterx@redhat.com>
+ <5c533ba3-f335-0681-223f-bf2202a9b72a@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2103221918450.2918@hadrien>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <5c533ba3-f335-0681-223f-bf2202a9b72a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 1:21 PM, Julia Lawall wrote:
-> From: kernel test robot <lkp@intel.com>
-> 
-> Function "for_each_child_of_node" should have of_node_put() before goto.
-> 
-> Generated by: scripts/coccinelle/iterators/for_each_child.cocci
-> 
-> Fixes: 82c2d81361ec ("coccinelle: iterators: Add for_each_child.cocci script")
-> CC: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-> ---
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   812da4d39463a060738008a46cfc9f775e4bfcf6
-> commit: 82c2d81361ecd142a54e84a9da1e287113314a4f coccinelle: iterators: Add for_each_child.cocci script
-> :::::: branch date: 13 hours ago
-> :::::: commit date: 5 months ago
-> 
->  overlay.c |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- a/drivers/of/overlay.c
-> +++ b/drivers/of/overlay.c
-> @@ -796,6 +796,7 @@ static int init_overlay_changeset(struct
->  		if (!fragment->target) {
->  			of_node_put(fragment->overlay);
->  			ret = -EINVAL;
-> +			of_node_put(node);
->  			goto err_free_fragments;
->  		}
-> 
+On Fri, Mar 19, 2021 at 11:37:20PM +0100, Alejandro Colomar (man-pages) wrote:
+> Hi Peter,
 
-Reviewed-by: Frank Rowand <frank.rowand@sony.com>
-Tested-by: Frank Rowand <frank.rowand@sony.com>
+Hi, Alex,
 
-While reading through the code touched by the patch I noticed that
-the clean up at label err_free_fragments does not do the required
-of_node_put() calls.  I'll add creating a patch to fix that to my
-todo list.
+> > +generate another write-protect userfault message.
+> > +This is only used in conjunction with write-protect mode when both missing and
+> 
+> "when both missing"
+> 
+> both what?
 
--Frank
+I modified it to:
+
+        This is only used when both
+        .B UFFDIO_REGISTER_MODE_MISSING
+        and
+        .B UFFDIO_REGISTER_MODE_WP
+        modes are enabled for the registered range.
+
+And I fixed all the rest, including all the comments in patch 3.
+
+Thanks for looking, I'll repost shortly.
+
+-- 
+Peter Xu
+
