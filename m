@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3D634497D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B6B34497E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhCVPnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:43:15 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:34481 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhCVPmv (ORCPT
+        id S231197AbhCVPnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:43:17 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52652 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhCVPm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:42:51 -0400
-Received: by mail-ot1-f42.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so16388983otn.1;
-        Mon, 22 Mar 2021 08:42:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8GP3lCJZc4gYGIls7XWVDwUQAFlT0Yz/pnrig4GIvJM=;
-        b=qb7YY5fPcWJAGVLRaov0a8B7b6+hMeek8UG40a3OfJGfrIeiC2cTM38XdnYXcEyN5e
-         c8CvKhqytuh27Tq+2kV9lJPmGcZjYG98deH7Jw0PpciRKlJpUVS/xHsk5Ep6W7xwZb/y
-         gL4Vnh0SVYhB6N3QzHJJs8OnRB6+ZCvw8+C5FDz5EtNz7kENXoSwOodrcIfsFASWKwN4
-         NL+K/DkmBMCirpSbQlTNbcD87/FcBI67pENAXrlWI+GOgglTFfze04pfPCJQaqekh8RA
-         /Ts19dcXpxgI/Abgm5cAhYYkai0JB4YoDsBYVJgP4ZrPnAg+QtJcPy7NHwDLccQFbGVJ
-         qWKw==
-X-Gm-Message-State: AOAM533AeGgQuF6DoMelhx4ttd7coLeFCcYZQe8dXJuzcmKPIchMT2eD
-        ur1QY80BjUk8NG+4CY8mUKvDgD5u15O8ayMuEAs=
-X-Google-Smtp-Source: ABdhPJzV3qz+83jdENbJnKRS5X9R2Xx3meuFt+kw4JkvZXceQED7OUkKom4tKE5IzgVwB0ykTAQZ5+/T6SW+te4d1lk=
-X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr458297otq.260.1616427770673;
- Mon, 22 Mar 2021 08:42:50 -0700 (PDT)
+        Mon, 22 Mar 2021 11:42:59 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12MFgqi6039048;
+        Mon, 22 Mar 2021 10:42:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616427772;
+        bh=6JwNNML3JlGo0jBc2dm+9A/x2VCSuSw7ushYhILov8s=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=WNnEzozqwHWv71GheZldMLn3AMqSh+W8z5pTH59grsugAyYIL61PP7PG+f7iFaXpB
+         60C0fL03ksomCNyNaJlzhHebu7cc9mhLGD0yPzTZdydL4lzczS02i6uqfPB3gaxeWJ
+         KRIrAILhAFUSsA/5Fh2TnAGAk5O8zrgosRPxCnlk=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12MFgq6h052489
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Mar 2021 10:42:52 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 22
+ Mar 2021 10:42:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 22 Mar 2021 10:42:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12MFgq8v005002;
+        Mon, 22 Mar 2021 10:42:52 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/2] AM64: Add support for GPIO
+Date:   Mon, 22 Mar 2021 10:42:51 -0500
+Message-ID: <161642769912.26591.1917604238322825662.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210319051950.17549-1-a-govindraju@ti.com>
+References: <20210319051950.17549-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-References: <20210319192109.40041-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0gcqKiXKzEj6u7vq_1Y9pYBdSGA6yT3q6JPVgW4djSiaQ@mail.gmail.com> <CAHp75VeVhHhkzPVdGRa9inLJtW0QF=dDp3jB-U1xvKWRY_pbyw@mail.gmail.com>
-In-Reply-To: <CAHp75VeVhHhkzPVdGRa9inLJtW0QF=dDp3jB-U1xvKWRY_pbyw@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 22 Mar 2021 16:42:39 +0100
-Message-ID: <CAJZ5v0gxjCiP-XbvLkHZiewjMhpR6KdJFapjV_-F05Uc_G7tqQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] ACPI: scan: Use unique number for instance_no
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 4:02 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Mar 22, 2021 at 4:57 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Fri, Mar 19, 2021 at 8:21 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > The decrementation of acpi_device_bus_id->instance_no
-> > > in acpi_device_del() is incorrect, because it may cause
-> > > a duplicate instance number to be allocated next time
-> > > a device with the same acpi_device_bus_id is added.
-> > >
-> > > Replace above mentioned approach by using IDA framework.
->
-> ...
->
-> > > +       result = ida_simple_get(&acpi_device_bus_id->instance_ida, 0, 255, GFP_KERNEL);
-> >
-> > This is ida_alloc_range(ida, start, (end) - 1, gfp), so I think it
-> > should be 256 above, instead of 255.
->
-> Ah, good catch!
->
->
-> > While at it, though, there can be more than 256 CPU devices easily on
-> > contemporary systems, so I would use a greater number here.  Maybe
-> > 4096 and define a symbol for it?
->
-> I was thinking about it, but there is a problem with the device name,
-> since it will break a lot of code,
+On Fri, 19 Mar 2021 10:49:48 +0530, Aswath Govindraju wrote:
+> The following series of patches adds support for gpio on AM642 evm/sk.
+> 
+> GPIO test logs,
+> AM642-evm: https://pastebin.ubuntu.com/p/PCGmY34spb/
+> AM642-sk:  https://pastebin.ubuntu.com/p/nrxzyQTKkX/
+> 
+> Changes since v2:
+> - Rebased the series on top of ti-k3-dts-next branch
+> - Added gpio test logs.
+> 
+> [...]
 
-What problem is there?
+Hi Aswath Govindraju,
 
-> And taking into account that currently we don't change the behaviour
-> it is good enough per se as a fix.
->
-> That said, we may extend by an additional patch with a logic like this:
->
-> res = ida_get(4096)
-> if (res < 0)
->   return res;
-> if (res >= 256)
->  use %04x
-> else
->  use %02x
->
-> Would it make sense to you?
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-I'm not sure why not to always use %02x ?  It doesn't truncate numbers
-longer than 2 digits AFAICS.
+[1/2] arm64: dts: ti: k3-am64: Add GPIO DT nodes
+      commit: 01a91e01b8fddaeb37b953a5e39eafbdf2d4b061
+[2/2] arm64: dts: ti: k3-am642: reserve gpio in mcu domain for firmware usage
+      commit: d5a4d5413dd833b3ceba395ba77f00470a3ffbe8
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
