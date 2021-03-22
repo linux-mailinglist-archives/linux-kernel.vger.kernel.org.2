@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412AF344828
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA939344830
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbhCVOwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:52:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231415AbhCVOuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:50:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EAD96198B;
-        Mon, 22 Mar 2021 14:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616424620;
-        bh=0SF0KO5Kry00j5ygkfYySAeJ4cijAmCF74RG4JU426E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TFxB1EOHQj4T1GlljZzPBmls8JGY3vf/VfjGwEqXtxHWu9WFP7QveIDnc2DrjyU8a
-         yuJ3xBcqyMAps8f+G721IAX3Ws62Mtqia3UC0vnU7LsT89AZqdp+p2Wum/Ti9BjsS/
-         2N5zQF53nlixNQ3BqcqAdmL3aGN18K0+zQb24Cew5PwKgNRLfyesOpPKOdeT41mwm9
-         4kwp2UzJSzovUXGgobXm+ZrVYVBoafQVXcESlXDMoLPCtGVv6ils4520INQ8Vfd0EL
-         aoQETABMi8in2n02McC4+A4ToRUbTdTY1J22G38xf74gBmkjWqnlYqrVWnO/UZdH3T
-         T3UCgEzF0Op0A==
-Date:   Mon, 22 Mar 2021 15:50:14 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        jbaron@akamai.com, ardb@kernel.org, linux-kernel@vger.kernel.org,
-        sumit.garg@linaro.org, oliver.sang@intel.com, jarkko@kernel.org
-Subject: Re: [PATCH 3/3] static_call: Fix static_call_update() sanity check
-Message-ID: <YFiuphGw0RKehWsQ@gunter>
-References: <20210318113156.407406787@infradead.org>
- <20210318113610.739542434@infradead.org>
- <20210318161308.vu3dhezp2lczch6f@treble>
- <YFOGvmWiJUDOHy7D@hirez.programming.kicks-ass.net>
- <YFSfwimq/VLmo1Lw@hirez.programming.kicks-ass.net>
- <20210319140005.7ececb11@gandalf.local.home>
- <YFT8wDrWvfpQoIWw@hirez.programming.kicks-ass.net>
- <20210319165749.0f3c8281@gandalf.local.home>
+        id S230479AbhCVOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231614AbhCVOvt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 10:51:49 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7FBCBC061574;
+        Mon, 22 Mar 2021 07:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=1m1Ig7L5F1IxqbCmYrqqdwdru3H08AgyOepL
+        5bxsUeo=; b=sIXCoIAyJgQj/8boWbVLB7U4TvRPTURWdimPCWC04Vh8x8mkqQ3h
+        yHxk3CpNiwdOnxzD7qEcH28yfAX+hC4yLIMCYxHRYyvKGY2tAElHr5wKg5uD5+WI
+        2RSznokRrRauiTL0KoTij8Z8NHzKg2ZjwI9Xll0fiyCLq8MnD6hteXg=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Mon, 22 Mar
+ 2021 22:51:35 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Mon, 22 Mar 2021 22:51:35 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] infiniband: Fix a use after free in
+ isert_connect_request
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <YFipRTHpr8Xqho4V@unreal>
+References: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
+ <YFipRTHpr8Xqho4V@unreal>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210319165749.0f3c8281@gandalf.local.home>
-X-OS:   Linux gunter 5.11.2-1-default x86_64
+Message-ID: <1af3e912.b6e4.1785a6b7802.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygAXHqb3rlhghE4OAA--.0W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsIBlQhn5UIHAAAsv
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Steven Rostedt [19/03/21 16:57 -0400]:
->On Fri, 19 Mar 2021 20:34:24 +0100
->Peter Zijlstra <peterz@infradead.org> wrote:
->
->> On Fri, Mar 19, 2021 at 02:00:05PM -0400, Steven Rostedt wrote:
->> > Would making __exit code the same as init code work? That is, load it just
->> > like module init code is loaded, and free it when the init code is freed
->>
->> As stated, yes. But it must then also identify as init through
->> within_module_init().
->
->I think that's doable. Since the usecases for that appear to be mostly
->about "think code may no longer exist after it is used". Thus, having exit
->code act just like init code when UNLOAD is not set, appears appropriate.
->
->Jessica, please correct me if I'm wrong.
-
-It should be doable. If you want the exit sections to be treated the same as
-module init, the following patch should stuff any exit sections into the module
-init "region" (completely untested). Hence it should be freed together with the
-init sections and it would identify as init through within_module_init(). Let
-me know if this works for you.
-
----
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 30479355ab85..1c3396a9dd8b 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2802,7 +2802,11 @@ void * __weak module_alloc(unsigned long size)
-
-  bool __weak module_init_section(const char *name)
-  {
--       return strstarts(name, ".init");
-+#ifndef CONFIG_UNLOAD_MODULE
-+       return strstarts(name, ".init") || module_exit_section(name);
-+#else
-+       return strstarts(name, ".init")
-+#endif
-  }
-
-  bool __weak module_exit_section(const char *name)
-@@ -3116,11 +3120,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
-                  */
-                 shdr->sh_addr = (size_t)info->hdr + shdr->sh_offset;
-
--#ifndef CONFIG_MODULE_UNLOAD
--               /* Don't load .exit sections */
--               if (module_exit_section(info->secstrings+shdr->sh_name))
--                       shdr->sh_flags &= ~(unsigned long)SHF_ALLOC;
--#endif
-         }
-
-         /* Track but don't keep modinfo and version sections. */
-
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkxlb24gUm9tYW5v
+dnNreSIgPGxlb25Aa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTIyIDIyOjI3
+OjE3ICjmmJ/mnJ/kuIApDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5QG1haWwu
+dXN0Yy5lZHUuY24+DQo+IOaKhOmAgTogc2FnaUBncmltYmVyZy5tZSwgZGxlZGZvcmRAcmVkaGF0
+LmNvbSwgamdnQHppZXBlLmNhLCBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZywgdGFyZ2V0LWRl
+dmVsQHZnZXIua2VybmVsLm9yZywgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiDkuLvp
+opg6IFJlOiBbUEFUQ0hdIGluZmluaWJhbmQ6IEZpeCBhIHVzZSBhZnRlciBmcmVlIGluIGlzZXJ0
+X2Nvbm5lY3RfcmVxdWVzdA0KPiANCj4gT24gTW9uLCBNYXIgMjIsIDIwMjEgYXQgMDY6NTM6NTVB
+TSAtMDcwMCwgTHYgWXVubG9uZyB3cm90ZToNCj4gPiBUaGUgZGV2aWNlIGlzIGdvdCBieSBpc2Vy
+dF9kZXZpY2VfZ2V0KCkgd2l0aCByZWZjb3VudCBpcyAxLA0KPiA+IGFuZCBpcyBhc3NpZ25lZCB0
+byBpc2VydF9jb25uIGJ5IGlzZXJ0X2Nvbm4tPmRldmljZSA9IGRldmljZS4NCj4gPiBXaGVuIGlz
+ZXJ0X2NyZWF0ZV9xcCgpIGZhaWxlZCwgZGV2aWNlIHdpbGwgYmUgZnJlZWQgd2l0aA0KPiA+IGlz
+ZXJ0X2RldmljZV9wdXQoKS4NCj4gPiANCj4gPiBMYXRlciwgdGhlIGRldmljZSBpcyB1c2VkIGlu
+IGlzZXJ0X2ZyZWVfbG9naW5fYnVmKGlzZXJ0X2Nvbm4pDQo+ID4gYnkgdGhlIGlzZXJ0X2Nvbm4t
+PmRldmljZS0+aWJfZGV2aWNlIHN0YXRlbWVudC4gTXkgcGF0Y2gNCj4gPiBleGNoYW5nZXMgdGhl
+IGNhbGxlZXMgb3JkZXIgdG8gZnJlZSB0aGUgZGV2aWNlIGxhdGUuDQo+ID4gDQo+ID4gU2lnbmVk
+LW9mZi1ieTogTHYgWXVubG9uZyA8bHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuPg0KPiA+IC0tLQ0K
+PiA+ICBkcml2ZXJzL2luZmluaWJhbmQvdWxwL2lzZXJ0L2liX2lzZXJ0LmMgfCA0ICsrLS0NCj4g
+PiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+
+IFRoZSBmaXggbmVlZHMgdG8gYmUgY2hhbmdlIG9mIGlzZXJ0X2ZyZWVfbG9naW5fYnVmKCkgZnJv
+bQ0KPiBpc2VydF9mcmVlX2xvZ2luX2J1Zihpc2VydF9jb25uKSB0byBiZSBpc2VydF9mcmVlX2xv
+Z2luX2J1Zihpc2VydF9jb25uLCBjbWFfaWQtPmRldmljZSkNCj4gDQo+IFRoYW5rcw0KPiANCj4g
+PiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2Vy
+dC5jIGIvZHJpdmVycy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jDQo+ID4gaW5kZXgg
+NzMwNWVkODk3NmMyLi5kOGE1MzNlMzQ2YjAgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9pbmZp
+bmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jDQo+ID4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5k
+L3VscC9pc2VydC9pYl9pc2VydC5jDQo+ID4gQEAgLTQ3MywxMCArNDczLDEwIEBAIGlzZXJ0X2Nv
+bm5lY3RfcmVxdWVzdChzdHJ1Y3QgcmRtYV9jbV9pZCAqY21hX2lkLCBzdHJ1Y3QgcmRtYV9jbV9l
+dmVudCAqZXZlbnQpDQo+ID4gIA0KPiA+ICBvdXRfZGVzdHJveV9xcDoNCj4gPiAgCWlzZXJ0X2Rl
+c3Ryb3lfcXAoaXNlcnRfY29ubik7DQo+ID4gLW91dF9jb25uX2RldjoNCj4gPiAtCWlzZXJ0X2Rl
+dmljZV9wdXQoZGV2aWNlKTsNCj4gPiAgb3V0X3JzcF9kbWFfbWFwOg0KPiA+ICAJaXNlcnRfZnJl
+ZV9sb2dpbl9idWYoaXNlcnRfY29ubik7DQo+ID4gK291dF9jb25uX2RldjoNCj4gPiArCWlzZXJ0
+X2RldmljZV9wdXQoZGV2aWNlKTsNCj4gPiAgb3V0Og0KPiA+ICAJa2ZyZWUoaXNlcnRfY29ubik7
+DQo+ID4gIAlyZG1hX3JlamVjdChjbWFfaWQsIE5VTEwsIDAsIElCX0NNX1JFSl9DT05TVU1FUl9E
+RUZJTkVEKTsNCj4gPiAtLSANCj4gPiAyLjI1LjENCj4gPiANCj4gPiANCg0KSSBzZWUgdGhhdCBm
+dW5jdGlvbiBpc2VydF9mcmVlX2xvZ2luX2J1ZihzdHJ1Y3QgaXNlcnRfY29ubiAqaXNlcnRfY29u
+bikgaGFzIG9ubHkNCmEgcGFyYW1ldGVyLCAgZG8geW91IG1lYW4gaSBuZWVkIGNoYW5nZSB0aGUg
+aW1wbGVtZW50YXRpb24gb2YgaXNlcnRfZnJlZV9sb2dpbl9idWY/DQoNCkknbSBzb3JyeSB0byBz
+YXkgdGhhdCBpIGFtIHVuZmFtaWxhciB3aXRoIHRoaXMgbW9kdWxlIGFuZCBhZnJhaWQgb2YgbWFr
+aW5nIG1vcmUgbWlzdGFrZXMsDQpiZWNhdXNlIHRoaXMgZnVuY3Rpb24gaXMgYmVpbmcgY2FsbGVk
+IGVsc2V3aGVyZSBhcyB3ZWxsLg0KQ291bGQgeW91IGhlbHAgbWUgdG8gZml4IHRoaXMgaXNzdWU/
+IE9yIGp1c3QgZml4IGl0IGFuZCB0ZWxsIG1lIHlvdXIgY29tbWl0IG51bWJlcj8NCg==
