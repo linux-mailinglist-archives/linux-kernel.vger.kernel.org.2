@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB2E3444AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D5D3444D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhCVNEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:04:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47238 "EHLO mail.kernel.org"
+        id S233088AbhCVNHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:07:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231683AbhCVMvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C22F619D9;
-        Mon, 22 Mar 2021 12:45:40 +0000 (UTC)
+        id S232889AbhCVMw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:52:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 001AE6188B;
+        Mon, 22 Mar 2021 12:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417141;
-        bh=vHmQcHxkMwQVDl+2Pdz78Xo6020Fn8ofBGJYxahBQuM=;
+        s=korg; t=1616417215;
+        bh=uX1D6qk/JYN3J9uFjoQB7x2f0GGo9Ml9DZWCqri93WE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Buw/O8ub3TeNkTtkATxA7GgbIZdgckupXsuU4Kj3M4p7eZ+atwPSzWCfqLGSrha1F
-         ayPxSkHQKrZv7Vn6pYAt8B74m3oFnWdxn8HMDdwew1z9RPkEgfIhmZ8z/vMNTzk9q6
-         NL0DIhek7Uj3T3fTfaFEUK2V99HYz9rfh3XqFXCM=
+        b=w4sGTCKKrxlygmNxrY7Zk88WWlq+izmak7z3NfjiEeK8C3LqXTRrsaxJCYpvvyZDM
+         GkP2mfB6XNf7gE5AyVRuyvAl/ntPleYGYPlvzSU1zONtcDiL3Flwjtu+qM/6nJw+/1
+         XaKDPwzFwd/PHCybEzz3ybpT3aYce9g+YnrkLoPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shijie Luo <luoshijie1@huawei.com>,
-        stable@kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.19 41/43] ext4: fix potential error in ext4_do_update_inode
+        stable@vger.kernel.org, Jacob Keller <jacob.e.keller@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: [PATCH 4.9 05/25] ixgbe: check for Tx timestamp timeouts during watchdog
 Date:   Mon, 22 Mar 2021 13:28:55 +0100
-Message-Id: <20210322121921.240655861@linuxfoundation.org>
+Message-Id: <20210322121920.576526692@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121920.399826335@linuxfoundation.org>
+References: <20210322121920.399826335@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shijie Luo <luoshijie1@huawei.com>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-commit 7d8bd3c76da1d94b85e6c9b7007e20e980bfcfe6 upstream.
+commit 622a2ef538fb3ca8eccf49716aba8267d6e95a47 upstream.
 
-If set_large_file = 1 and errors occur in ext4_handle_dirty_metadata(),
-the error code will be overridden, go to out_brelse to avoid this
-situation.
+The ixgbe driver has logic to handle only one Tx timestamp at a time,
+using a state bit lock to avoid multiple requests at once.
 
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
-Link: https://lore.kernel.org/r/20210312065051.36314-1-luoshijie1@huawei.com
-Cc: stable@kernel.org
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+It may be possible, if incredibly unlikely, that a Tx timestamp event is
+requested but never completes. Since we use an interrupt scheme to
+determine when the Tx timestamp occurred we would never clear the state
+bit in this case.
+
+Add an ixgbe_ptp_tx_hang() function similar to the already existing
+ixgbe_ptp_rx_hang() function. This function runs in the watchdog routine
+and makes sure we eventually recover from this case instead of
+permanently disabling Tx timestamps.
+
+Note: there is no currently known way to cause this without hacking the
+driver code to force it.
+
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/inode.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h      |    1 
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |    1 
+ drivers/net/ethernet/intel/ixgbe/ixgbe_ptp.c  |   27 ++++++++++++++++++++++++++
+ 3 files changed, 29 insertions(+)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5266,7 +5266,7 @@ static int ext4_do_update_inode(handle_t
- 	struct ext4_inode_info *ei = EXT4_I(inode);
- 	struct buffer_head *bh = iloc->bh;
- 	struct super_block *sb = inode->i_sb;
--	int err = 0, rc, block;
-+	int err = 0, block;
- 	int need_datasync = 0, set_large_file = 0;
- 	uid_t i_uid;
- 	gid_t i_gid;
-@@ -5378,9 +5378,9 @@ static int ext4_do_update_inode(handle_t
- 					      bh->b_data);
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
+@@ -991,6 +991,7 @@ void ixgbe_ptp_suspend(struct ixgbe_adap
+ void ixgbe_ptp_stop(struct ixgbe_adapter *adapter);
+ void ixgbe_ptp_overflow_check(struct ixgbe_adapter *adapter);
+ void ixgbe_ptp_rx_hang(struct ixgbe_adapter *adapter);
++void ixgbe_ptp_tx_hang(struct ixgbe_adapter *adapter);
+ void ixgbe_ptp_rx_pktstamp(struct ixgbe_q_vector *, struct sk_buff *);
+ void ixgbe_ptp_rx_rgtstamp(struct ixgbe_q_vector *, struct sk_buff *skb);
+ static inline void ixgbe_ptp_rx_hwtstamp(struct ixgbe_ring *rx_ring,
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -7258,6 +7258,7 @@ static void ixgbe_service_task(struct wo
+ 	if (test_bit(__IXGBE_PTP_RUNNING, &adapter->state)) {
+ 		ixgbe_ptp_overflow_check(adapter);
+ 		ixgbe_ptp_rx_hang(adapter);
++		ixgbe_ptp_tx_hang(adapter);
+ 	}
  
- 	BUFFER_TRACE(bh, "call ext4_handle_dirty_metadata");
--	rc = ext4_handle_dirty_metadata(handle, NULL, bh);
--	if (!err)
--		err = rc;
-+	err = ext4_handle_dirty_metadata(handle, NULL, bh);
-+	if (err)
-+		goto out_brelse;
- 	ext4_clear_inode_state(inode, EXT4_STATE_NEW);
- 	if (set_large_file) {
- 		BUFFER_TRACE(EXT4_SB(sb)->s_sbh, "get write access");
+ 	ixgbe_service_event_complete(adapter);
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ptp.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ptp.c
+@@ -663,6 +663,33 @@ static void ixgbe_ptp_clear_tx_timestamp
+ }
+ 
+ /**
++ * ixgbe_ptp_tx_hang - detect error case where Tx timestamp never finishes
++ * @adapter: private network adapter structure
++ */
++void ixgbe_ptp_tx_hang(struct ixgbe_adapter *adapter)
++{
++	bool timeout = time_is_before_jiffies(adapter->ptp_tx_start +
++					      IXGBE_PTP_TX_TIMEOUT);
++
++	if (!adapter->ptp_tx_skb)
++		return;
++
++	if (!test_bit(__IXGBE_PTP_TX_IN_PROGRESS, &adapter->state))
++		return;
++
++	/* If we haven't received a timestamp within the timeout, it is
++	 * reasonable to assume that it will never occur, so we can unlock the
++	 * timestamp bit when this occurs.
++	 */
++	if (timeout) {
++		cancel_work_sync(&adapter->ptp_tx_work);
++		ixgbe_ptp_clear_tx_timestamp(adapter);
++		adapter->tx_hwtstamp_timeouts++;
++		e_warn(drv, "clearing Tx timestamp hang\n");
++	}
++}
++
++/**
+  * ixgbe_ptp_tx_hwtstamp - utility function which checks for TX time stamp
+  * @adapter: the private adapter struct
+  *
 
 
