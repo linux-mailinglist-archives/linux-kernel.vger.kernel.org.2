@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26A334448C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7443443C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhCVNBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40966 "EHLO mail.kernel.org"
+        id S230267AbhCVMx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:53:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232838AbhCVMsS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:48:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7BBA619E5;
-        Mon, 22 Mar 2021 12:44:29 +0000 (UTC)
+        id S232702AbhCVMnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:43:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DC90619A8;
+        Mon, 22 Mar 2021 12:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417070;
-        bh=7dcP4BRIfNkx/fS5oqxn/eOLOl91QdQ5llE/8G2AYgM=;
+        s=korg; t=1616416877;
+        bh=ft9Lb4MR6Vk8OXPD4zVw5IuZdRbUn+8SmoXMMeTeq2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ujk8d43mh98OKGqsyt72hRyyUqBQYCjXEkuDZqREf19JPrqTv7ON7bJWmFGDHVdOw
-         witn12ODlWVtjeC6xlbnLFXY6opho6zp+oXwU2oUDtfyzMP3MS27THuIcAzMGx9mw+
-         6ZuyDjBm9ivznFEH2nXaBcOEpn5nUPOstPVORWaI=
+        b=YP/oBMA0a7aVRaTmXbCRhWEwY+GbV68ZnL+palEFQm63TdTHnR1EFTDBHJAEFekdx
+         e+Ivl9p6anN/jLP1smONp6WFLUNkdU5ljTO4fM9wqQn282CPaGueS8flwltc7FnhVQ
+         pLZ08WSvehYs2KLHU4XqLbJDAYzVGqCLUNuDZBDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.19 07/43] perf tools: Use %define api.pure full instead of %pure-parser
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 5.10 144/157] efivars: respect EFI_UNSUPPORTED return from firmware
 Date:   Mon, 22 Mar 2021 13:28:21 +0100
-Message-Id: <20210322121920.171521737@linuxfoundation.org>
+Message-Id: <20210322121938.315527706@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
+References: <20210322121933.746237845@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@redhat.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-commit fc8c0a99223367b071c83711259d754b6bb7a379 upstream.
+commit 483028edacab374060d93955382b4865a9e07cba upstream.
 
-bison deprecated the "%pure-parser" directive in favor of "%define
-api.pure full".
+As per UEFI spec 2.8B section 8.2, EFI_UNSUPPORTED may be returned by
+EFI variable runtime services if no variable storage is supported by
+firmware.  In this case, there is no point for kernel to continue
+efivars initialization.  That said, efivar_init() should fail by
+returning an error code, so that efivarfs will not be mounted on
+/sys/firmware/efi/efivars at all.  Otherwise, user space like efibootmgr
+will be confused by the EFIVARFS_MAGIC seen there, while EFI variable
+calls cannot be made successfully.
 
-The api.pure got introduced in bison 2.3 (Oct 2007), so it seems safe to
-use it without any version check.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: http://lore.kernel.org/lkml/20200112192259.GA35080@krava
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/expr.y         |    3 ++-
- tools/perf/util/parse-events.y |    2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/firmware/efi/vars.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/tools/perf/util/expr.y
-+++ b/tools/perf/util/expr.y
-@@ -10,7 +10,8 @@
- #define MAXIDLEN 256
- %}
+--- a/drivers/firmware/efi/vars.c
++++ b/drivers/firmware/efi/vars.c
+@@ -485,6 +485,10 @@ int efivar_init(int (*func)(efi_char16_t
+ 			}
  
--%pure-parser
-+%define api.pure full
-+
- %parse-param { double *final_val }
- %parse-param { struct parse_ctx *ctx }
- %parse-param { const char **pp }
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -1,4 +1,4 @@
--%pure-parser
-+%define api.pure full
- %parse-param {void *_parse_state}
- %parse-param {void *scanner}
- %lex-param {void* scanner}
+ 			break;
++		case EFI_UNSUPPORTED:
++			err = -EOPNOTSUPP;
++			status = EFI_NOT_FOUND;
++			break;
+ 		case EFI_NOT_FOUND:
+ 			break;
+ 		default:
 
 
