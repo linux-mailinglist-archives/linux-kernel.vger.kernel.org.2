@@ -2,62 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560B2343DF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBE0343DFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhCVKcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:32:42 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:33994 "EHLO mail.skyhub.de"
+        id S230138AbhCVKdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:33:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230173AbhCVKbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:31:44 -0400
-Received: from zn.tnic (p200300ec2f06670063ce2fe2d87b4e47.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:6700:63ce:2fe2:d87b:4e47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D6BE41EC04D1;
-        Mon, 22 Mar 2021 11:31:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616409098;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=A7X6xqWwvrumHxCzhE/jGhlXXWmEGnnV8W9n3h7zfrM=;
-        b=fj4dFah2LjRf9lhNjzR/HlbwH48kifin9iJOUdTZmYEdAiilXgsbAeb5WHR8m96PB7Sn0L
-        lHKxRt3adznDjYY6mQ7MGn3t68KdPDS8Ezj8B8o5waytw+6P6DI6iv8YzvEp1MOijTLE6e
-        Hu/AHI4jQw9pBhZf2S2ejjsBZpxCJ+A=
-Date:   Mon, 22 Mar 2021 11:31:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, jethro@fortanix.com,
-        b.thiel@posteo.de, jmattson@google.com, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, corbet@lwn.net
-Subject: Re: [PATCH v3 00/25] KVM SGX virtualization support
-Message-ID: <20210322103137.GB6481@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <YFS6kTe1SuAjiMFN@kernel.org>
- <d876e5abb1a7e4fce160bfcb217bf3ab675f44a8.camel@intel.com>
+        id S230202AbhCVKdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 06:33:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A09BD6198F;
+        Mon, 22 Mar 2021 10:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616409200;
+        bh=vZjZtledyBAVNYPa/uqVGJzLjOm1nITjZZwPfO5QG8Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kBmOtUx/qz6G4Z3dw8K5DJzeIoKlbR3KOr2I3wslkgxmczjIl1UecUakBjd8ji1ES
+         QG/W8iXptL4U0ItCHqpeozcpe7EQaO/jr+FTu5uePZFRD78b/I3RmOM7+sDcOB/FXe
+         pa/YYRcX16y7ttaeVm573bcNUJ5rvuRqIBQ48bwT9xiuMoY2SykumIBTgbZvcwLP5x
+         djH1ROo9SckeSZRcJxdE/hcBbEWQceCkBwaLMUJ6AtvBZq+uu7TdEPX/21Zv5xEeaY
+         rMaATyOqebJR7gy6RNThzCGmze2q9gONaRBY8B8x8CmoE2mgRCOBqCJxpyDVNLFQVu
+         V3bdduYV/LUgA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mvsas: avoid -Wempty-body warning
+Date:   Mon, 22 Mar 2021 11:33:09 +0100
+Message-Id: <20210322103316.620694-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d876e5abb1a7e4fce160bfcb217bf3ab675f44a8.camel@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:03:28PM +1300, Kai Huang wrote:
-> If there's no other comments, should I send another version
+From: Arnd Bergmann <arnd@arndb.de>
 
-No need.
+Building with 'make W=1' shows a few harmless -Wempty-body warning for
+the mvsas driver:
 
-Thx.
+drivers/scsi/mvsas/mv_94xx.c: In function 'mvs_94xx_phy_reset':
+drivers/scsi/mvsas/mv_94xx.c:278:63: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+  278 |                         mv_dprintk("phy hard reset failed.\n");
+      |                                                               ^
+drivers/scsi/mvsas/mv_sas.c: In function 'mvs_task_prep':
+drivers/scsi/mvsas/mv_sas.c:723:57: error: suggest braces around empty body in an 'else' statement [-Werror=empty-body]
+  723 |                                 SAS_ADDR(dev->sas_addr));
+      |                                                         ^
 
+Change the empty dprintk() macros to no_printk(), which avoids this
+warning and adds format string checking.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/scsi/mvsas/mv_sas.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/mvsas/mv_sas.h b/drivers/scsi/mvsas/mv_sas.h
+index 327fdd5ee962..8ff976c9967e 100644
+--- a/drivers/scsi/mvsas/mv_sas.h
++++ b/drivers/scsi/mvsas/mv_sas.h
+@@ -40,7 +40,7 @@
+ #define mv_dprintk(format, arg...)	\
+ 	printk(KERN_DEBUG"%s %d:" format, __FILE__, __LINE__, ## arg)
+ #else
+-#define mv_dprintk(format, arg...)
++#define mv_dprintk(format, arg...) no_printk(format, ## arg)
+ #endif
+ #define MV_MAX_U32			0xffffffff
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.29.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
