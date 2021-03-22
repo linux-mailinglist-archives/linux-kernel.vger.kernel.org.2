@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3350C3444A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAC73444EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbhCVNDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:03:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40964 "EHLO mail.kernel.org"
+        id S231474AbhCVNJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231277AbhCVMto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:49:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 142DB619EC;
-        Mon, 22 Mar 2021 12:45:25 +0000 (UTC)
+        id S231672AbhCVMyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:54:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE64961994;
+        Mon, 22 Mar 2021 12:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417126;
-        bh=V4rRMxuUxcUjFLoMaGQT8OhZ+od1C3/fXAcLNTy0mwE=;
+        s=korg; t=1616417274;
+        bh=7dcP4BRIfNkx/fS5oqxn/eOLOl91QdQ5llE/8G2AYgM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bWYluHQ4Urc3QtMI0rblWhzh/gRqNsRrv1a/oYoBP8cnXXBInvqFZW2i9WhtGSfx/
-         QFKigpgj3sNCDqZw2z0vB6QlFGv0dkZIIZm40BIJ4ieWbtCsbSJYAmX+NOLca8YH9y
-         XpTC1rBLDI8H1Dgg85++yFSUXn4xwbauH1DSYKXw=
+        b=rvSoPWHL8PkNU8Le7GUDXjhaPtgMd5/Avb1/iMQE4UDzV3sMPX1naWtDANgO/tH9j
+         kmGgjdtyssDcb5QUCLtzVyfCv4nUOHKIpSSiCCp5PLGqzosStLOnzUGPGmEiYdaQlW
+         W94qopnh0KcwfpZfttj2YT9P1Ih4NPqSTu3TDfs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.19 36/43] kernel, fs: Introduce and use set_restart_fn() and arch_set_restart_data()
-Date:   Mon, 22 Mar 2021 13:28:50 +0100
-Message-Id: <20210322121921.071581835@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.14 10/43] perf tools: Use %define api.pure full instead of %pure-parser
+Date:   Mon, 22 Mar 2021 13:28:51 +0100
+Message-Id: <20210322121920.384050485@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121920.053255560@linuxfoundation.org>
+References: <20210322121920.053255560@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,147 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Jiri Olsa <jolsa@redhat.com>
 
-commit 5abbe51a526253b9f003e9a0a195638dc882d660 upstream.
+commit fc8c0a99223367b071c83711259d754b6bb7a379 upstream.
 
-Preparation for fixing get_nr_restart_syscall() on X86 for COMPAT.
+bison deprecated the "%pure-parser" directive in favor of "%define
+api.pure full".
 
-Add a new helper which sets restart_block->fn and calls a dummy
-arch_set_restart_data() helper.
+The api.pure got introduced in bison 2.3 (Oct 2007), so it seems safe to
+use it without any version check.
 
-Fixes: 609c19a385c8 ("x86/ptrace: Stop setting TS_COMPAT in ptrace code")
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210201174641.GA17871@redhat.com
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Clark Williams <williams@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Link: http://lore.kernel.org/lkml/20200112192259.GA35080@krava
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/select.c                    |   10 ++++------
- include/linux/thread_info.h    |   13 +++++++++++++
- kernel/futex.c                 |    3 +--
- kernel/time/alarmtimer.c       |    2 +-
- kernel/time/hrtimer.c          |    2 +-
- kernel/time/posix-cpu-timers.c |    2 +-
- 6 files changed, 21 insertions(+), 11 deletions(-)
+ tools/perf/util/expr.y         |    3 ++-
+ tools/perf/util/parse-events.y |    2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -1003,10 +1003,9 @@ static long do_restart_poll(struct resta
+--- a/tools/perf/util/expr.y
++++ b/tools/perf/util/expr.y
+@@ -10,7 +10,8 @@
+ #define MAXIDLEN 256
+ %}
  
- 	ret = do_sys_poll(ufds, nfds, to);
- 
--	if (ret == -EINTR) {
--		restart_block->fn = do_restart_poll;
--		ret = -ERESTART_RESTARTBLOCK;
--	}
-+	if (ret == -EINTR)
-+		ret = set_restart_fn(restart_block, do_restart_poll);
+-%pure-parser
++%define api.pure full
 +
- 	return ret;
- }
- 
-@@ -1028,7 +1027,6 @@ SYSCALL_DEFINE3(poll, struct pollfd __us
- 		struct restart_block *restart_block;
- 
- 		restart_block = &current->restart_block;
--		restart_block->fn = do_restart_poll;
- 		restart_block->poll.ufds = ufds;
- 		restart_block->poll.nfds = nfds;
- 
-@@ -1039,7 +1037,7 @@ SYSCALL_DEFINE3(poll, struct pollfd __us
- 		} else
- 			restart_block->poll.has_timeout = 0;
- 
--		ret = -ERESTART_RESTARTBLOCK;
-+		ret = set_restart_fn(restart_block, do_restart_poll);
- 	}
- 	return ret;
- }
---- a/include/linux/thread_info.h
-+++ b/include/linux/thread_info.h
-@@ -11,6 +11,7 @@
- #include <linux/types.h>
- #include <linux/bug.h>
- #include <linux/restart_block.h>
-+#include <linux/errno.h>
- 
- #ifdef CONFIG_THREAD_INFO_IN_TASK
- /*
-@@ -39,6 +40,18 @@ enum {
- 
- #ifdef __KERNEL__
- 
-+#ifndef arch_set_restart_data
-+#define arch_set_restart_data(restart) do { } while (0)
-+#endif
-+
-+static inline long set_restart_fn(struct restart_block *restart,
-+					long (*fn)(struct restart_block *))
-+{
-+	restart->fn = fn;
-+	arch_set_restart_data(restart);
-+	return -ERESTART_RESTARTBLOCK;
-+}
-+
- #ifndef THREAD_ALIGN
- #define THREAD_ALIGN	THREAD_SIZE
- #endif
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2857,14 +2857,13 @@ retry:
- 		goto out;
- 
- 	restart = &current->restart_block;
--	restart->fn = futex_wait_restart;
- 	restart->futex.uaddr = uaddr;
- 	restart->futex.val = val;
- 	restart->futex.time = *abs_time;
- 	restart->futex.bitset = bitset;
- 	restart->futex.flags = flags | FLAGS_HAS_TIMEOUT;
- 
--	ret = -ERESTART_RESTARTBLOCK;
-+	ret = set_restart_fn(restart, futex_wait_restart);
- 
- out:
- 	if (to) {
---- a/kernel/time/alarmtimer.c
-+++ b/kernel/time/alarmtimer.c
-@@ -822,9 +822,9 @@ static int alarm_timer_nsleep(const cloc
- 	if (flags == TIMER_ABSTIME)
- 		return -ERESTARTNOHAND;
- 
--	restart->fn = alarm_timer_nsleep_restart;
- 	restart->nanosleep.clockid = type;
- 	restart->nanosleep.expires = exp;
-+	set_restart_fn(restart, alarm_timer_nsleep_restart);
- 	return ret;
- }
- 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1771,9 +1771,9 @@ long hrtimer_nanosleep(const struct time
- 	}
- 
- 	restart = &current->restart_block;
--	restart->fn = hrtimer_nanosleep_restart;
- 	restart->nanosleep.clockid = t.timer.base->clockid;
- 	restart->nanosleep.expires = hrtimer_get_expires_tv64(&t.timer);
-+	set_restart_fn(restart, hrtimer_nanosleep_restart);
- out:
- 	destroy_hrtimer_on_stack(&t.timer);
- 	return ret;
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -1371,8 +1371,8 @@ static int posix_cpu_nsleep(const clocki
- 		if (flags & TIMER_ABSTIME)
- 			return -ERESTARTNOHAND;
- 
--		restart_block->fn = posix_cpu_nsleep_restart;
- 		restart_block->nanosleep.clockid = which_clock;
-+		set_restart_fn(restart_block, posix_cpu_nsleep_restart);
- 	}
- 	return error;
- }
+ %parse-param { double *final_val }
+ %parse-param { struct parse_ctx *ctx }
+ %parse-param { const char **pp }
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -1,4 +1,4 @@
+-%pure-parser
++%define api.pure full
+ %parse-param {void *_parse_state}
+ %parse-param {void *scanner}
+ %lex-param {void* scanner}
 
 
