@@ -2,175 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6721344D8E
+	by mail.lfdr.de (Postfix) with ESMTP id 2B664344D8D
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232120AbhCVRjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:39:10 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:34336 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhCVRi3 (ORCPT
+        id S231781AbhCVRjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:39:05 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:36775 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231516AbhCVRiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:38:29 -0400
-Received: by mail-io1-f45.google.com with SMTP id x16so14814662iob.1;
-        Mon, 22 Mar 2021 10:38:29 -0700 (PDT)
+        Mon, 22 Mar 2021 13:38:23 -0400
+Received: by mail-il1-f169.google.com with SMTP id t14so5781931ilu.3;
+        Mon, 22 Mar 2021 10:38:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=plEDx3yODuuc0oDuUUpuI2VfkI3CKfscVxs+yXbJJYw=;
-        b=G0p1hrLm23ypgOeRLAqVVNtZSp7za21DcFXtXb/7pG3XPm6FvVWd5xWTCORtCyMKXw
-         2tg0WCQiaZ01hVeQ1OHHz/x7VyeDdAn+JpJmp4QpBfds23fpekuAN3pk+n/qcTcRjFCf
-         1lKr+dmMJxLcuagoAGr0eMkkSLZMKmVy0ncYl8/vUnXHrU6v3CMSaGxZ7fQ9j6HuDz3O
-         V1MuZLypnBwbhkPlukaWe8bbG7yuBmWlR0V5owsCp14cWZOXrVRcMhD1xQa16Ox77Ygi
-         KiBSNLwcSY5X1yshJQ2CjxTQRsSNUXNn6NqI8964xkUCys/O9rGfsEiCeXs9qZUo3O9G
-         kIpg==
-X-Gm-Message-State: AOAM531i2XQNodXB2KRIBuuV6TVH17AsqWQJDKFcUGJA5Xr0YYFe6C+Q
-        ueim/sBjIodHYi4xUF696A==
-X-Google-Smtp-Source: ABdhPJyewsMNUula+4VN8UXChdp+DNLqtLdxAkqFQimXzm+foycbj2gxhUuukwaAaSLd+7g4S8ZNiQ==
-X-Received: by 2002:a5d:93c2:: with SMTP id j2mr728270ioo.166.1616434709207;
-        Mon, 22 Mar 2021 10:38:29 -0700 (PDT)
+        bh=LgzDGJWoJMOgdng0fXijoHV8KSFecL3FBQ9h1vUK0NI=;
+        b=N4G5HndlaBKtLTr0JzZdLDbBvqvhP9NuLgGylOLhpm+AGVchRD6MUXPGeVTKBxklCi
+         zylC3ptXR2vV+G6RqmZBg5Vxir35J4c/9K1P7kNi62DtcWH8hb1ZqrGPNtZJIyEYx6/d
+         RYmkRCGi6aau9LkHd24kRdi6EoeOOMXi7hhpQk1Bc+b8dsn3ZiHSY/HxnlKKaXP2sEQF
+         ru8WKiXzFuEVnvrT4rw0Ij732UV1zph+kl0P+oybYAQmthK6Fxt2U/f63d8a6Gp5DZus
+         oQU2HjoGbU/MXLyPTFhOBEgRCRYF9E92f7Oxu5sEmcjt6o2lOJHsg0+huc581AFpK2sm
+         EOEA==
+X-Gm-Message-State: AOAM531mNtVqFU5vzsdd0dmaFIH06ANIGHeKVm3uSugHins55RDn1DeD
+        PGdJIyhO+kdOZrRoYU2bH6XbvAjsWA==
+X-Google-Smtp-Source: ABdhPJxJsfYMmDLRVj07ECod4Bv/+uOMDFRG69sXvE06tBcQaetoDa2CL4ahsTS18NH1joGL10Kgnw==
+X-Received: by 2002:a92:dd82:: with SMTP id g2mr957624iln.194.1616434701096;
+        Mon, 22 Mar 2021 10:38:21 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id c19sm8270300ile.17.2021.03.22.10.38.27
+        by smtp.gmail.com with ESMTPSA id e195sm7784494iof.51.2021.03.22.10.38.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 10:38:28 -0700 (PDT)
-Received: (nullmailer pid 2887760 invoked by uid 1000);
+        Mon, 22 Mar 2021 10:38:20 -0700 (PDT)
+Received: (nullmailer pid 2887755 invoked by uid 1000);
         Mon, 22 Mar 2021 17:38:18 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robin van der Gracht <robin@protonic.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20210322144848.1065067-3-geert@linux-m68k.org>
-References: <20210322144848.1065067-1-geert@linux-m68k.org> <20210322144848.1065067-3-geert@linux-m68k.org>
-Subject: Re: [PATCH 02/17] dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
+To:     Hermes Zhang <chenhui.zhang@axis.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, kernel@axis.com,
+        linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Hermes Zhang <chenhuiz@axis.com>, linux-leds@vger.kernel.org
+In-Reply-To: <20210322091819.29119-1-chenhui.zhang@axis.com>
+References: <20210322091819.29119-1-chenhui.zhang@axis.com>
+Subject: Re: [PATCH v2] dt-binding: leds: Document leds-multi-gpio bindings
 Date:   Mon, 22 Mar 2021 11:38:18 -0600
-Message-Id: <1616434698.367681.2887759.nullmailer@robh.at.kernel.org>
+Message-Id: <1616434698.344402.2887754.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 15:48:33 +0100, Geert Uytterhoeven wrote:
-> The Holtek HT16K33 LED controller is not only used for driving
-> dot-matrix displays, but also for driving segment displays.
+On Mon, 22 Mar 2021 17:18:19 +0800, Hermes Zhang wrote:
+> From: Hermes Zhang <chenhuiz@axis.com>
 > 
-> Document compatible values for the Adafruit 7-segment[1] and
-> 14-segment[2] FeatherWing expansion boards with red displays.  According
-> to the schematics, all other Adafruit 7-segment and 14-segment display
-> backpack and FeatherWing expansion boards (including bare boards and
-> boards fitted with displays) are compatible with these two boards.
-> Add a "color" property to support the different color variants.
+> Document the device tree bindings of the multiple GPIOs LED driver
+> Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml.
 > 
-> [1] https://www.adafruit.com/product/3108
-> [2] https://www.adafruit.com/product/3130
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
 > ---
-> Alternatives I considered:
->   1. Document the attached display type in a child node.
->      I.e. specify segment type, number of characters, and wiring.
->      Especially the latter would become really complex, due to the sheer
->      amount of possible wiring combinations.
->      Using this method, you also loose the ability to just connect a
->      display to an i2c bus, and instantiate the device from sysfs,
->      without using DT:
 > 
-> 	echo adafruit,3130 0x70 > /sys/class/i2c/i2c-adapter/.../new_device
+> Notes:
+>     Fix typo and missing item
 > 
->   2. Do not use the "color" property, but document all Adafruit
->      7-segment and 14-segment display backpack and FeatherWing expansion
->      boards.
->      This would lead to a myriad of compatible values:
-> 
->       - items:
-> 	  - enum:
-> 	      - adafruit,878      # 0.56" 4-Digit 7-Segment Display Backpack (Red)
-> 	      - adafruit,879      # 0.56" 4-Digit 7-Segment Display Backpack (Yellow)
-> 	      - adafruit,880      # 0.56" 4-Digit 7-Segment Display Backpack (Green)
-> 	      - adafruit,881      # 0.56" 4-Digit 7-Segment Display Backpack (Blue)
-> 	      - adafruit,1002     # 0.56" 4-Digit 7-Segment Display Backpack (White)
-> 	  - const: adafruit,877   # 0.56" 4-Digit 7-Segment Backpack
-> 	  - const: holtek,ht16k33
-> 
->       - items:
-> 	  - enum:
-> 	      - adafruit,1268     # 1.2" 4-Digit 7-Segment Display Backpack (Green)
-> 	      - adafruit,1269     # 1.2" 4-Digit 7-Segment Display Backpack (Yellow)
-> 	      - adafruit,1270     # 1.2" 4-Digit 7-Segment Display Backpack (Red)
-> 	  - const: adafruit,1271  # 1.2" 4-Digit 7-Segment Backpack
-> 	  - const: holtek,ht16k33
-> 
->       - items:
-> 	  - enum:
-> 	      - adafruit,1911     # 0.54" Quad Alphanumeric Display Backpack (Red)
-> 	      - adafruit,1912     # 0.54" Quad Alphanumeric Display Backpack (Blue)
-> 	      - adafruit,2157     # 0.54" Quad Alphanumeric Display Backpack (White)
-> 	      - adafruit,2158     # 0.54" Quad Alphanumeric Display Backpack (Yellow)
-> 	      - adafruit,2159     # 0.54" Quad Alphanumeric Display Backpack (Yellow-Green)
-> 	      - adafruit,2160     # 0.54" Quad Alphanumeric Display Backpack (Green)
-> 	  - const: adafruit,1910  # 0.54" Quad 14-segment Alphanumeric Backpack
-> 	  - const: holtek,ht16k33
-> 
->       - items:
-> 	  - enum:
-> 	      - adafruit,3106     # 0.56" 4-Digit 7-Segment FeatherWing Display (Blue)
-> 	      - adafruit,3107     # 0.56" 4-Digit 7-Segment FeatherWing Display (Green)
-> 	      - adafruit,3108     # 0.56" 4-Digit 7-Segment FeatherWing Display (Red)
-> 	      - adafruit,3109     # 0.56" 4-Digit 7-Segment FeatherWing Display (White)
-> 	      - adafruit,3110     # 0.56" 4-Digit 7-Segment FeatherWing Display (Yellow)
-> 	  - const: adafruit,3088  # 0.56" 4-Digit 7-Segment FeatherWing
-> 	  - const: holtek,ht16k33
-> 
->       - items:
-> 	  - enum:
-> 	      - adafruit,3127     # 0.54" Quad Alphanumeric FeatherWing Display (White)
-> 	      - adafruit,3128     # 0.54" Quad Alphanumeric FeatherWing Display (Blue)
-> 	      - adafruit,3129     # 0.54" Quad Alphanumeric FeatherWing Display (Green)
-> 	      - adafruit,3130     # 0.54" Quad Alphanumeric FeatherWing Display (Red)
-> 	      - adafruit,3131     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow)
-> 	      - adafruit,3132     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow-Green)
-> 	  - const: adafruit,3089  # 0.54" Quad 14-segment Alphanumeric FeatherWing
-> 	  - const: holtek,ht16k33
-> ---
->  .../bindings/auxdisplay/holtek,ht16k33.yaml   | 22 ++++++++++++++++---
->  1 file changed, 19 insertions(+), 3 deletions(-)
+>  .../bindings/leds/leds-multi-gpio.yaml        | 49 +++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml:54:16: [error] syntax error: mapping values are not allowed here (syntax)
 
 dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: mapping values are not allowed in this context
-  in "<unicode string>", line 54, column 16
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml:  mapping values are not allowed in this context
-  in "<unicode string>", line 54, column 16
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
-make: *** [Makefile:1380: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-multi-gpio.example.dt.yaml: gpios-led: led-states: 'oneOf' conditional failed, one must be fixed:
+	[[0, 1, 2, 3]] is too short
+	[0, 1, 2, 3] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
 
-See https://patchwork.ozlabs.org/patch/1456639
+See https://patchwork.ozlabs.org/patch/1456433
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
