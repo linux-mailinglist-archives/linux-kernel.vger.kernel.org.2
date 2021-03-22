@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2255344859
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DB634486F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhCVO56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
+        id S231460AbhCVO76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbhCVO5e (ORCPT
+        with ESMTP id S231404AbhCVO73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:57:34 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E67C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:57:33 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id a11so12525323qto.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:57:33 -0700 (PDT)
+        Mon, 22 Mar 2021 10:59:29 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A5EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:59:28 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id u9so21794814ejj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UwhIIasVnVdlHzlTomI5pRRaZe96fs8y+pLTlJCplZw=;
-        b=qhe5uqLfC7EvXAnlfkhQt8AAmxROP8AJEiSsrfDC/QM6WxkV4nRlISq/zrZqrOKti8
-         6KmXJCviNwuO1YtESQLIJi2dpeqT6RNhBhJ2Vy3Q6v3YiNisrS75wBr+HgNesT1mPuvq
-         fnqYDaJVf5fTFIhnYNAYkuezwO8v4bY3vQB1I=
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=No5jFTwqb7R4XEIA0KwymYpb1QXCwuzqTxyB4+G0aGY=;
+        b=O3sI829zJ3dW1jsbnduLDFP9c6zb9ejbEXZGmLBvrzqSV+kp5bdKHiD0/gD/cek0fH
+         sIVjjWU/zE/7vGEwYkeDY5QHX7WXAxAWK5su6meTaovNQjMNV/bvpAxjZ2HKFcin1cce
+         m0dnsqMXlBCL9bBcHO6p6sOBdOccxShc11yP5EHzsdLk1/UZ2mWSkp1S99VvFWIYap4W
+         Gkku+DeKNBtX1fiSjUrEV+8UFO08ACst2ZNFnKxjfjBVGBXT4pfn96JcZDJHuLsEzBzf
+         Hwsx4/sNIAKchsxyMuA9RvH5U3DkVF8ae/d/jLXpUX0LMaKw7L25Bxee46E9TsnFD0h4
+         IyMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UwhIIasVnVdlHzlTomI5pRRaZe96fs8y+pLTlJCplZw=;
-        b=QXCiD+zoHXvpyBTKnE0alEQRU6VjY7Jpmnl0QM14LJOSJP57MJ24kp2gS68eNE6+0E
-         CXijovebidG7UYuvkd9XP+dlS5Dom//cq2T6XXU1gTj+/zTMKnTm1qcanguDzV2TGDlI
-         ZQAIoEOOnE06kSLSmwkULAiXYpVNunORE9/qdOgrr8DCK+hlIyzj2V1PA2BjjVl4pkjq
-         dfsZ/5F0THtG6m2WrcFS/FWBdk7HGfFdNOxdnkYCMa94VO1P+nzqmERrlQ86PR9EiDjJ
-         ow+pMGYsUVaXRlUEuieNP/+LmJvhATAc+QGCllI4aziwPae2Y9toAGwBCLxNnIoCPErE
-         UorQ==
-X-Gm-Message-State: AOAM5338mzuCTiNYjHyE90U9P2YtBdvxzLEXhN18m6Oe7/1QzG7PpMy/
-        EIfedEUB1FvEfCO+7c7qVeFLEA==
-X-Google-Smtp-Source: ABdhPJz810wqCe4laVZnPaBYMBdXp648O5fDX//ONP41OyjYpr43HJwxqY27l7f28gDuiMY9ut1dnA==
-X-Received: by 2002:a05:622a:1342:: with SMTP id w2mr242428qtk.163.1616425052945;
-        Mon, 22 Mar 2021 07:57:32 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:ac32:f1d6:ca24:7ab])
-        by smtp.gmail.com with ESMTPSA id c13sm10746617qkc.99.2021.03.22.07.57.32
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=No5jFTwqb7R4XEIA0KwymYpb1QXCwuzqTxyB4+G0aGY=;
+        b=Qh/ScNYo+FvKR8YheTSBjGwEHSi+16WfIEMrPDgZmjI3+lEQ6erfD6KaSNHPR9khxz
+         XTRleZGsxHJFkAORsfQXmQW4vWz7PYsgmijsY2VWVlBww+EfahjJwVEkUwHw/ZGSddHJ
+         yC6a6gaJ/M/ub8qSh3rSDth3W6Q1lsWr2clxcSVWBtN5kznwG+NLIHpXIiyjW0QhaKFE
+         lNQ6bq40fPvFShPjMv20LVSUhlq+7jw42kdJOaTMdeczlSyjeCT4Pijlnu3v0D4bP7V2
+         7jD55IIE46/Gm39nZz1UeS1BaHNEf77K0Gz167Cb8CuPenAy3DfAC03bkDT/u4HDhSxI
+         Chgw==
+X-Gm-Message-State: AOAM532u9sRe2VdIYndqI/YBuawtC2cjB5btm3r68LERJpraE6R6ou5Q
+        M0pT8cO/jBIeTyAywdQmGswZSA==
+X-Google-Smtp-Source: ABdhPJxRcSsJ5gnR/GnQhgbaFvHOK6SjhZGsq4eesH9bgWpGyVLZRcTCcgl2m4tZO0jK/C0OyVc/zA==
+X-Received: by 2002:a17:906:8308:: with SMTP id j8mr121126ejx.339.1616425167159;
+        Mon, 22 Mar 2021 07:59:27 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id rs24sm9797693ejb.75.2021.03.22.07.59.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:57:32 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 10:57:31 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        rostedt@goodmis.org, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH 0/6] Core scheduling remaining patches
-Message-ID: <YFiwWwXctaBnPhjF@google.com>
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210320154020.GY4746@worktop.programming.kicks-ass.net>
+        Mon, 22 Mar 2021 07:59:26 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 14:59:25 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, j.neuschaefer@gmx.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210322145925.GY2916463@dell>
+References: <20210308212952.20774-1-andreas@kemnade.info>
+ <20210310094821.GB701493@dell>
+ <20210311184033.GJ4962@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210320154020.GY4746@worktop.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210311184033.GJ4962@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 04:40:20PM +0100, Peter Zijlstra wrote:
-> On Fri, Mar 19, 2021 at 04:32:47PM -0400, Joel Fernandes (Google) wrote:
-> > Enclosed is interface related core scheduling patches and one for migration.
-> > The main core scheduling patches were already pulled in by Peter with these
-> > bits left.
+On Thu, 11 Mar 2021, Mark Brown wrote:
+
+> On Wed, Mar 10, 2021 at 09:48:21AM +0000, Lee Jones wrote:
 > 
-> Funny thing, they don't appear to apply to my sched/core-sched branch...
-> :/ Either I really shouldn't be working weekends or something went
-> wobbly on your end...
+> > Could you take a look at this for me please:
+> 
+> > > +static int regmap_ignore_write(void *context,
+> > > +			       unsigned int reg, unsigned int val)
+> > > +
+> > > +{
+> > > +	struct regmap *regmap = context;
+> > > +
+> > > +	regmap_write(regmap, reg, val);
+> > > +
+> > > +	return 0;
+> > > +}
+> 
+> If there were more users it'd be better to have this in the core so that
+> problems we can detect like cache stuff if that's used but if it's just
+> one broken device it's probably not worth it, this seems like something
+> you'd have to try to end up with and which is going to cause timeout
+> problems with a lot of I2C controllers which would tank performance
+> enough that people would notice.
 
-Yeah sorry. It is based on a slightly older snapshot of your queue.git
-sched/core-sched branch. We will rebase again and resend ASAP.
+So Yoda, is this to go into the core, or stay where it is?
 
-Thanks!
-
- - Joel
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
