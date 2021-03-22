@@ -2,104 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1D8344AA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A12344A9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbhCVQIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 12:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhCVQHr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:07:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3180C061574;
-        Mon, 22 Mar 2021 09:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WnvXnJzljojS8tgnkv0qyX+4X9mX4IsbTi96GynIueY=; b=ArtuoRXw+MQxkBTgpMWQHo9aLO
-        Bqy+gGcBB7EpHPjwSB+HJ5qYLkF0Tf48XE/eZ+hhB0+9yxlcDDMa+c8iaS/fTcHZGnbyUNhP2uPTz
-        tXgNMwbNbKXU3diYnR/Vs1gdk3gtjXD4y7lCdx3jI7fVyXLBP6HMsa/SoxBj9XLPLZp5zkujykaP2
-        yACZiMrg2uRbPVcwlbmObfZDRLgrLtKNCp6PjH7Sbz1z93aHQCZaGzeuV3pPiscWylmYqA8MOvuCb
-        MjD8e4JWQAVY5b5glxuQ9Cma/iWupffbeA6Ib70uuoaOxOdAy/Bltik7aQuk/kAJmCrE+SSBVn9ih
-        gA9NWfsA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lON4Z-008krr-Bd; Mon, 22 Mar 2021 16:06:48 +0000
-Date:   Mon, 22 Mar 2021 16:06:31 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        id S231349AbhCVQH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 12:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232097AbhCVQG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:06:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69269619B4;
+        Mon, 22 Mar 2021 16:06:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616429216;
+        bh=lv+hnh9RxxDgrwOwcye99nPeGlcWjoMWr4QPccdIbGc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VY2AAfPkU1A5/ez5/A8DVda1Y/cxV5rZsU25AlQvEyOSszLIzKLUldUeOKqDKnf98
+         8Gyd9XtYWR2//1lPn6i9Ny7QW+H0jJFs93EeyBxSmNZ+266ITlFOoXzeeZDMkEhSFJ
+         fi4IYsaqMvN6NeLTe8h0HjWLGtRdtvYtG19rdNrY=
+Date:   Mon, 22 Mar 2021 17:06:35 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     joe@perches.com, apw@canonical.com, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] target: pscsi: avoid Wempty-body warning
-Message-ID: <20210322160631.GQ1719932@casper.infradead.org>
-References: <20210322114441.3479365-1-arnd@kernel.org>
+Subject: Re: [PATCH 11/11] staging: rtl8723bs: remove unnecessary extern in
+ os_dep/sdio_intf.c
+Message-ID: <YFjAi/Swxepg20q3@kroah.com>
+References: <cover.1616422773.git.fabioaiuto83@gmail.com>
+ <be21175bd3ce666110e507a3e577e1a053700a9c.1616422773.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322114441.3479365-1-arnd@kernel.org>
+In-Reply-To: <be21175bd3ce666110e507a3e577e1a053700a9c.1616422773.git.fabioaiuto83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 12:44:34PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Mar 22, 2021 at 03:31:49PM +0100, Fabio Aiuto wrote:
+> remove unnecessary extern.
 > 
-> Building with 'make W=1' shows a harmless warning for pscsi:
+> The function is defined static in os_dep/os_intfs.c and used only once
+> in the same file
 > 
-> drivers/target/target_core_pscsi.c: In function 'pscsi_complete_cmd':
-> drivers/target/target_core_pscsi.c:624:33: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->   624 |                                 ; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
->       |                                 ^
-> 
-> Rework the coding style as suggested by gcc to avoid the warning.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/target/target_core_pscsi.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
-> index 3cbc074992bc..913b092955f6 100644
-> --- a/drivers/target/target_core_pscsi.c
-> +++ b/drivers/target/target_core_pscsi.c
-> @@ -620,8 +620,9 @@ static void pscsi_complete_cmd(struct se_cmd *cmd, u8 scsi_status,
->  			unsigned char *buf;
->  
->  			buf = transport_kmap_data_sg(cmd);
-> -			if (!buf)
-> -				; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
-> +			if (!buf) {
-> +				/* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
-> +			}
+> remove also a blank line
 
-But why not just delete the code?
+That needs to go to a separate patch :(
 
-			buf = transport_kmap_data_sg(cmd);
-			/* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
-
-I mean, this seems like a real warning here.  We're not actually
-handling the failure to allocate 'buf'.  It's not marked as __must_check,
-but watch the code flow:
-
-                        buf = transport_kmap_data_sg(cmd);
-                        if (!buf)
-                                ; /* XXX: TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE */
-
-                        if (cdb[0] == MODE_SENSE_10) {
-                                if (!(buf[3] & 0x80))
-                                        buf[3] |= 0x80;
-                        } else {
-                                if (!(buf[2] & 0x80))
-                                        buf[2] |= 0x80;
-                        }
-
-we're about to do a NULL ptr dereference.  So this should be handled
-somehow.
