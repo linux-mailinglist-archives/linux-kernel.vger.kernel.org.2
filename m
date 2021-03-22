@@ -2,87 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF533343B2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F870343B44
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 09:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhCVIEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 04:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S229822AbhCVIII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 04:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCVIEK (ORCPT
+        with ESMTP id S229692AbhCVIHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 04:04:10 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E24C061574;
-        Mon, 22 Mar 2021 01:04:10 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id v26so12947685iox.11;
-        Mon, 22 Mar 2021 01:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NQCjdvCCiui7NyjVPyRHtMOqJO2l/XC/v3WkLyGdTXs=;
-        b=Uq/OBklgV6KsgFXzbeyaRuJUapPvtKTysUFRcCWJfwnQUlE1UDpce59Owq2xmCVq3n
-         C1wfKuf9Ekgl73sGCJOClyGBuNC1qFu3WC1F6XaQCt1Fq/Fiy2NlGpandRD5TdG6riiu
-         qmh4wOzrQ8iGKgpNq45ywuxV1UsM5mL5qm7zapfXE19/Ba4cOlJks8otYTP/uNpi4U3e
-         070vXWykdlPihP1P5RWGFJd//yLrto7Pu/2e1vtiDGYM3AMBTYAE7wxtMWqgc3TvzffO
-         EM1eV/M9mx8XveD0S5BS1W5Fl+Y1cI3ukzMX4QB4q/uhg9DCOxfAlA5J4ANFApt7utFB
-         +98Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NQCjdvCCiui7NyjVPyRHtMOqJO2l/XC/v3WkLyGdTXs=;
-        b=uTB5mceYOuvEpdk3EATAtf4itg5pzCvY4miNRPZNbXhhDFyDB7a+e9hkTj/Va8d3dE
-         yBhBSBxmwUUgy3oaeY9dmwE23St2cUbBRtLChKXvNA9PTwSiZp2SQH96gkTIMljdPDMn
-         Cvtc7/byJXeDrqlke0X3y0gOP/7FALXav/Q2Z9dS7mVeTTlqIF7fp7lDuqbcyCA3lWcN
-         Ay1n18ArLBLA6wL0MBsM1mW1klolOJEolE46NbVQbddhokCR9h9+y5YWAZb9tlTLjoJ9
-         DJOWGQeA/NlchsNbU3cnlEafU/OUZG+8+TL6FYc5bzoKU05ngRTE/WHQGSkfPo8xhBGR
-         toIg==
-X-Gm-Message-State: AOAM5323LMJUbvHYx9gCxDP4nnuv6SA7MitzdYCTNkT1HJs6SOq7uvYM
-        T9/XoosDJ3hSockyOBIQ94JMi3M1xh26VY/2354gRLCd
-X-Google-Smtp-Source: ABdhPJwdqhT0oEb6tE/dej3q9+JpzvaDLk1Lxf4HQ/V4S8rkNVvaT6uKCMGjCO5kDCBKzvQld8WYIz1HewAlaPK1TRI=
-X-Received: by 2002:a02:a889:: with SMTP id l9mr10105193jam.1.1616400250019;
- Mon, 22 Mar 2021 01:04:10 -0700 (PDT)
+        Mon, 22 Mar 2021 04:07:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF3DC061574;
+        Mon, 22 Mar 2021 01:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TbYveShLYeVqBDd6OuMK3KKplXpJFMY9UQBn/f/mXuk=; b=oUINOzWNzUdAROCRX5M78JAJO+
+        HoCGe1ia4mvzSj9k8yi/ZlT/4E14wgYfKSCd7VnoLGoT3+IeEiDZvgBu7dSfnzQ/+dk8xDLcENX6t
+        T62vKVi6lP7Dxtk5Y7hMV42i54rIMh6BieObBd3sq8YrAUWxADN7eE8bILypdhoQfZt10ko2R5kmP
+        FKRNEfQbbbxfKutmUNBnmE8VRp3WnpG4d2p/U029bk06ERSvFupgAaZH7ekvMTRw0abD/XlT2e6WN
+        VYmPuXFM5fy/UxIc03SwLmBfIoqM0/miKbVR1dK4DsvopqYGUZ4VPQRjREXIsd9EY31n3bI0MpaII
+        aqQPm2Lg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOFaM-008BRm-9O; Mon, 22 Mar 2021 08:06:55 +0000
+Date:   Mon, 22 Mar 2021 08:06:50 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v5 01/27] fs/cachefiles: Remove wait_bit_key layout
+ dependency
+Message-ID: <20210322080650.GB1946905@infradead.org>
+References: <20210320054104.1300774-1-willy@infradead.org>
+ <20210320054104.1300774-2-willy@infradead.org>
 MIME-Version: 1.0
-References: <20210318231829.3892920-1-olteanv@gmail.com> <20210318231829.3892920-15-olteanv@gmail.com>
- <20210319084025.GA2152639@haswell-ubuntu20> <20210319090642.bzmtlzc5im6xtbkh@skbuf>
- <CALW65janF_yztk7hH5n8wZFpWXxbCwQu3m4W=B-n2mcNG+W=Mw@mail.gmail.com> <20210319104924.gcdobjxmqcf6s4wq@skbuf>
-In-Reply-To: <20210319104924.gcdobjxmqcf6s4wq@skbuf>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Mon, 22 Mar 2021 16:04:01 +0800
-Message-ID: <CALW65jYc6DFoUiF55Q3KrhamPf75tFRSAkSA6ONrF3KMf9z+7g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 net-next 14/16] net: dsa: don't set
- skb->offload_fwd_mark when not offloading the bridge
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210320054104.1300774-2-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 6:49 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> Why would you even want to look at the source net device for forwarding?
-> I'd say that if dp->bridge_dev is NULL in the xmit function, you certainly
-> want to bypass address learning if you can. Maybe also for link-local traffic.
+On Sat, Mar 20, 2021 at 05:40:38AM +0000, Matthew Wilcox (Oracle) wrote:
+> Cachefiles was relying on wait_page_key and wait_bit_key being the
+> same layout, which is fragile.  Now that wait_page_key is exposed in
+> the pagemap.h header, we can remove that fragility
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Also for trapped traffic (snooping, tc-flower trap action) if the CPU
-sends them back.
+Looks good,
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
