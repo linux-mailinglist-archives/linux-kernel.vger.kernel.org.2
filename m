@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2BB3439EC
+	by mail.lfdr.de (Postfix) with ESMTP id B50E63439ED
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 07:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhCVGqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 02:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhCVGpd (ORCPT
+        id S230085AbhCVGqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 02:46:02 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3046 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229995AbhCVGpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:45:33 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC3AC061574;
-        Sun, 21 Mar 2021 23:45:33 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id g15so9556029qkl.4;
-        Sun, 21 Mar 2021 23:45:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QtmhrowCTfNHyoCoFD8E6E78GRrQTtUiAR57cdkH3Hc=;
-        b=BZKhcY8qXT9SGbArIyli/3oRwbYk/MNGpjLz4vVXCZkYnXw6SKvlPP3wOxQwrCPpQ4
-         SJXHwqX7UaeTROmy5up/sgw2texw08L4aFkoxHnCcwskIdKiRiS8wR/8wYyBtxCWvjR6
-         auUJWNURkBA1z9YngfqsQ9eWSl1B2bIfB3tW6qxx6CX1LYyGr30UfD7wfzXzKG6BxZiE
-         FaUPXnILQr3F1M8eOJgVt9i82kL/B4dlby4ZBSusiVmbr7Jy5SbEhJ4g6Zu2xRNx/j0T
-         Mb49iHFMWKUBY7niD5hQqI6S3WAbXnZBpQzQdFCXYViaBJnH8uXyrSZQqhuJo+e5mw/Z
-         htLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QtmhrowCTfNHyoCoFD8E6E78GRrQTtUiAR57cdkH3Hc=;
-        b=AlRd/+zJux82ZfVT2mk8RXNkRCPVn+8PzSTW+YGGUmIYNyqaHzhUoFTo01erMSyRko
-         yNG+23IW4WzLuQy+0M6hJNOR3GE0m9BrL0W38sD56gXD2ophLuhOF7dSCTVNa9rG/ES2
-         DCahNdGMILTlxFsPxLoKr7ho4Pox9pLH7vANm2ex5kZ9PJvNXM5E2l9L69TwZXGRtIDO
-         HF9ypKyFWAlr589wFA7RlSKzsMl5PGFg4l5Wtv8SAMHZmOZBV8YfJhekwrZeeUJuFBIA
-         iMgmGv+EUr1fvaMoNEmzAfSzb4NugrYH3tJgwxyj9noWyeqfAi4cUvmG2LRc+/pgRAiY
-         RQOA==
-X-Gm-Message-State: AOAM530uRjnKK/vk1BBlk0vIeaJAzI97p99f+bvECQrc4Q+ceud5yVob
-        E21MMx8N/bi2ENZ4tjw6hYc=
-X-Google-Smtp-Source: ABdhPJyW73D3T20ui7CtAix+D9CY9HxkZXEzYVD392goAKlXyfo6ejC6MCTGREKBjAaE3ZyXUl06vw==
-X-Received: by 2002:a37:ac10:: with SMTP id e16mr9789336qkm.314.1616395532636;
-        Sun, 21 Mar 2021 23:45:32 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.40])
-        by smtp.gmail.com with ESMTPSA id f8sm8405433qth.6.2021.03.21.23.45.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 23:45:32 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] scsi_dh: Fix a typo
-Date:   Mon, 22 Mar 2021 12:15:21 +0530
-Message-Id: <20210322064521.4022142-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Mon, 22 Mar 2021 02:45:39 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F3lKv1Q8SzWPBk;
+        Mon, 22 Mar 2021 14:42:27 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 22 Mar 2021 14:45:35 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Mon, 22 Mar 2021 14:45:34 +0800
+Subject: Re: [RFC PATCH v4 6/9] KVM: selftests: Add a helper to get system
+ default hugetlb page size
+To:     Andrew Jones <drjones@redhat.com>
+CC:     <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Ben Gardon" <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <yuzenghui@huawei.com>
+References: <20210302125751.19080-1-wangyanan55@huawei.com>
+ <20210302125751.19080-7-wangyanan55@huawei.com>
+ <20210312114029.ju66lm5rrqdakgar@kamzik.brq.redhat.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <a8637239-c292-c6c4-e72b-f7a258d5d8a5@huawei.com>
+Date:   Mon, 22 Mar 2021 14:45:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210312114029.ju66lm5rrqdakgar@kamzik.brq.redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/infrastruture/infrastructure/
+On 2021/3/12 19:40, Andrew Jones wrote:
+> On Tue, Mar 02, 2021 at 08:57:48PM +0800, Yanan Wang wrote:
+>> If HUGETLB is configured in the host kernel, then we can know the system
+>> default hugetlb page size through *cat /proc/meminfo*. Otherwise, we will
+>> not see the information of hugetlb pages in file /proc/meminfo if it's not
+>> configured. So add a helper to determine whether HUGETLB is configured and
+>> then get the default page size by reading /proc/meminfo.
+>>
+>> This helper can be useful when a program wants to use the default hugetlb
+>> pages of the system and doesn't know the default page size.
+>>
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> ---
+>>   .../testing/selftests/kvm/include/test_util.h |  1 +
+>>   tools/testing/selftests/kvm/lib/test_util.c   | 27 +++++++++++++++++++
+>>   2 files changed, 28 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
+>> index ef24c76ba89a..e087174eefe5 100644
+>> --- a/tools/testing/selftests/kvm/include/test_util.h
+>> +++ b/tools/testing/selftests/kvm/include/test_util.h
+>> @@ -80,6 +80,7 @@ struct vm_mem_backing_src_alias {
+>>   
+>>   bool thp_configured(void);
+>>   size_t get_trans_hugepagesz(void);
+>> +size_t get_def_hugetlb_pagesz(void);
+>>   void backing_src_help(void);
+>>   enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
+>>   
+>> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+>> index f2d133f76c67..80d68dbd72d2 100644
+>> --- a/tools/testing/selftests/kvm/lib/test_util.c
+>> +++ b/tools/testing/selftests/kvm/lib/test_util.c
+>> @@ -153,6 +153,33 @@ size_t get_trans_hugepagesz(void)
+>>   	return size;
+>>   }
+>>   
+>> +size_t get_def_hugetlb_pagesz(void)
+>> +{
+>> +	char buf[64];
+>> +	const char *tag = "Hugepagesize:";
+>> +	FILE *f;
+>> +
+>> +	f = fopen("/proc/meminfo", "r");
+>> +	TEST_ASSERT(f != NULL, "Error in opening /proc/meminfo: %d", errno);
+>> +
+>> +	while (fgets(buf, sizeof(buf), f) != NULL) {
+>> +		if (strstr(buf, tag) == buf) {
+>> +			fclose(f);
+>> +			return strtoull(buf + strlen(tag), NULL, 10) << 10;
+>> +		}
+>> +	}
+>> +
+>> +	if (feof(f)) {
+>> +		fclose(f);
+>> +		TEST_FAIL("HUGETLB is not configured in host kernel");
+>> +	} else {
+>> +		fclose(f);
+>> +		TEST_FAIL("Error in reading /proc/meminfo: %d", errno);
+>> +	}
+> fclose() can be factored out.
+>
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   void backing_src_help(void)
+>>   {
+>>   	int i;
+>> -- 
+>> 2.23.0
+>>
+> Besides the fclose comment and the same errno comment as the previous
+> patch
+I will fix it and add your R-b in this patch.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- include/scsi/scsi_dh.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/scsi/scsi_dh.h b/include/scsi/scsi_dh.h
-index 2852e470a8ed..a9f782fe732a 100644
---- a/include/scsi/scsi_dh.h
-+++ b/include/scsi/scsi_dh.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
- /*
-- * Header file for SCSI device handler infrastruture.
-+ * Header file for SCSI device handler infrastructure.
-  *
-  * Modified version of patches posted by Mike Christie <michaelc@cs.wisc.edu>
-  *
---
-2.31.0
-
+Thanks,
+Yanan
+> Reviewed-by: Andrew Jones <drjones@redhat.com>
+>
+> .
