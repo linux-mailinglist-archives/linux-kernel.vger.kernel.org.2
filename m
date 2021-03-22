@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F0D34501B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29380345034
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbhCVTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbhCVTlh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:41:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5E7C061574;
-        Mon, 22 Mar 2021 12:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=+64LpoByvW5my2Y2IrRfb8I9wyVK6JAmt3RKeaYu5to=; b=YKD3eVLi8cNanRsSkiIfYA3EHF
-        jIRASZ/qXtv+icpJ8c/SToCVDMKeblpUEN7lzvwSJVM763wiUCENKfJiy9wbGYG2pyOJ/p1HCK4tE
-        WD1P6ynqVlhlQWzHD7iF8tRMKFkgLcIrTta7F77YN/qeyjVfPTCc3uNkqnUCiG9yrfpPrsit7UoDX
-        GnR24dATBDgYTplKsPhnBWM8IxxHVwLJ1tEBfSQwBekBrzLOYVeiuPnLeJkIxGAaDLCgD496wo8Sf
-        AHCqbyLPeOJgxmZjPZwJ7nlaaNS2dBiCYhgaThtDwbm5weOv3jTCkXaHpgr60WAY04dFlwS9IMg+Y
-        KKfEfshg==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOQQg-00CRm9-RQ; Mon, 22 Mar 2021 19:41:35 +0000
-Subject: Re: [PATCH] scsi: scsi_dh: Fix a typo
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210322064724.4108343-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <676f6274-6149-694b-80aa-99ce06089e03@infradead.org>
-Date:   Mon, 22 Mar 2021 12:41:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231178AbhCVTpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230217AbhCVTpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 15:45:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E8016198E;
+        Mon, 22 Mar 2021 19:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616442322;
+        bh=1mW3GjxQpOUUF7rnpu/CAYNiHhbFCIaPtk6jpTGlrRM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rulDXakl0oynUcW5drTvihIxl7AjnGtsHlHZYiBtRLeDotQiD1KqJnWB6gm1x/qt4
+         uxUneaS8DjMdeLz+PoeFnfJMBtye1HRE134Ac/7bZwmuTwVyJBeMN5OOCuJu8PrZLb
+         iMXDXKHdtAE1uGiPMm9m2IRGfgn/gXCY83YovYkUJL0R9lP0yPVnP/XXN0UiFT8q9N
+         uzbfyIqjEcBZVEQgbFUlVzl4GaycSM6u0zNMUORYyvMR/aZwW1OW+C+5N/8WluZvAA
+         Um2VOCcCLOeCEVEbY0Tga12iwyEk65/DeUMq2eZHdG9pUup33vkU+xzDBF0iUvBN7/
+         2AaGd24aZPeqg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4C81535239E8; Mon, 22 Mar 2021 12:45:22 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 12:45:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
+ Tiny RCU grace periods
+Message-ID: <20210322194522.GO2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-2-paulmck@kernel.org>
+ <20210321222855.GA863290@lothringen>
+ <20210322154744.GM2696@paulmck-ThinkPad-P72>
+ <20210322190035.GA874833@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <20210322064724.4108343-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322190035.GA874833@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/21/21 11:47 PM, Bhaskar Chowdhury wrote:
+On Mon, Mar 22, 2021 at 08:00:35PM +0100, Frederic Weisbecker wrote:
+> On Mon, Mar 22, 2021 at 08:47:44AM -0700, Paul E. McKenney wrote:
+> > On Sun, Mar 21, 2021 at 11:28:55PM +0100, Frederic Weisbecker wrote:
+> > > On Wed, Mar 03, 2021 at 04:26:31PM -0800, paulmck@kernel.org wrote:
+> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > 
+> > > > There is a need for a non-blocking polling interface for RCU grace
+> > > > periods, so this commit supplies start_poll_synchronize_rcu() and
+> > > > poll_state_synchronize_rcu() for this purpose.  Note that the existing
+> > > > get_state_synchronize_rcu() may be used if future grace periods are
+> > > > inevitable (perhaps due to a later call_rcu() invocation).  The new
+> > > > start_poll_synchronize_rcu() is to be used if future grace periods
+> > > > might not otherwise happen.  Finally, poll_state_synchronize_rcu()
+> > > > provides a lockless check for a grace period having elapsed since
+> > > > the corresponding call to either of the get_state_synchronize_rcu()
+> > > > or start_poll_synchronize_rcu().
+> > > > 
+> > > > As with get_state_synchronize_rcu(), the return value from either
+> > > > get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+> > > > to a later call to either poll_state_synchronize_rcu() or the existing
+> > > > (might_sleep) cond_synchronize_rcu().
+> > > > 
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > ---
+> > > >  include/linux/rcutiny.h | 11 ++++++-----
+> > > >  kernel/rcu/tiny.c       | 40 ++++++++++++++++++++++++++++++++++++++++
+> > > >  2 files changed, 46 insertions(+), 5 deletions(-)
+> > > > 
+> > > > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> > > > index 2a97334..69108cf4 100644
+> > > > --- a/include/linux/rcutiny.h
+> > > > +++ b/include/linux/rcutiny.h
+> > > > @@ -17,14 +17,15 @@
+> > > >  /* Never flag non-existent other CPUs! */
+> > > >  static inline bool rcu_eqs_special_set(int cpu) { return false; }
+> > > >  
+> > > > -static inline unsigned long get_state_synchronize_rcu(void)
+> > > > -{
+> > > > -	return 0;
+> > > > -}
+> > > > +unsigned long get_state_synchronize_rcu(void);
+> > > > +unsigned long start_poll_synchronize_rcu(void);
+> > > > +bool poll_state_synchronize_rcu(unsigned long oldstate);
+> > > >  
+> > > >  static inline void cond_synchronize_rcu(unsigned long oldstate)
+> > > >  {
+> > > > -	might_sleep();
+> > > > +	if (poll_state_synchronize_rcu(oldstate))
+> > > > +		return;
+> > > > +	synchronize_rcu();
+> > > 
+> > > Perhaps cond_synchronize_rcu() could stay as it was. If it might
+> > > call synchronize_rcu() then it inherits its constraint to be
+> > > called from a quiescent state.
+> > 
+> > As in leave the might_sleep()?  How about something like this?
+> > 
+> > static inline void cond_synchronize_rcu(unsigned long oldstate)
+> > {
+> > 	if (!poll_state_synchronize_rcu(oldstate))
+> > 		synchronize_rcu();
+> > 	else
+> > 		might_sleep();
+> > }
+> > 
+> > One advantage of this is that the Tiny and Tree implementations
+> > become identical and can then be consolidated.
+> > 
+> > Or did I miss your point?
 > 
-> s/infrastruture/infrastructure/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> But poll_state_synchronize_rcu() checks that the gp_num has changed,
+> which is not needed for cond_synchronize_rcu() since this it is
+> only allowed to be called from a QS.
 
-Please combine the 2 scsi_dh patches.
+Good catch, and thank you!  Back to a single might_sleep() it is!
 
-> ---
->  drivers/scsi/scsi_dh.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/scsi_dh.c b/drivers/scsi/scsi_dh.c
-> index 6f41e4b5a2b8..7b56e00c7df6 100644
-> --- a/drivers/scsi/scsi_dh.c
-> +++ b/drivers/scsi/scsi_dh.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
->  /*
-> - * SCSI device handler infrastruture.
-> + * SCSI device handler infrastructure.
->   *
->   * Copyright IBM Corporation, 2007
->   *      Authors:
-> --
-
-
--- 
-~Randy
-
+						Thanx, Paul
