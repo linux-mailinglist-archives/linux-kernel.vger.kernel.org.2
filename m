@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D4334449A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5970534441A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233147AbhCVNCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:02:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45654 "EHLO mail.kernel.org"
+        id S233092AbhCVM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:57:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231209AbhCVMtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:49:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D29556199E;
-        Mon, 22 Mar 2021 12:45:02 +0000 (UTC)
+        id S230053AbhCVMqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:46:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 649F9619AC;
+        Mon, 22 Mar 2021 12:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417103;
-        bh=J4RCWLHUt4lDpt4hTEbQR/UXzgWuUAQBzpzhftaUips=;
+        s=korg; t=1616416970;
+        bh=5CLMZ6hsQslgJCuiwHVZOGTlk0Bs8K3PYaGdmWMkCpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFWod/7Za+KvsbSQTgSaASdreqOxZsAl40/acA6xF5+2tzIMLGqTk3ik8B+1ZS+LQ
-         pXg7tgqlBuKw6Pkpv9yLDwPRpFHwXIbbJJBB41DYzIWEJ7hcKo5f3to6EATnh62gPp
-         T36D5r6QEcsxCqm9p/hGHurVzMg8JS9DwHjT45kk=
+        b=TpXIa7iEvdByyJBjYRJreUZSh351lYdXDs1sgHafM4lMQlorqPGpNUXXs7rJ4z3f6
+         Erx6Ma4+MS1rYEv1uKZFR8y+QKtt0xoJusbxot0gr59yrxzcrnLPS3z6ELJUDrnOcz
+         M2Ay2d8FRC7TAr9kFIO6kB1CXEU8C2PuqCI5X9n4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4.19 10/43] tools build: Check if gettid() is available before providing helper
-Date:   Mon, 22 Mar 2021 13:28:24 +0100
-Message-Id: <20210322121920.266054136@linuxfoundation.org>
+        stable@vger.kernel.org, Jim Lin <jilin@nvidia.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH 5.4 37/60] usb: gadget: configfs: Fix KASAN use-after-free
+Date:   Mon, 22 Mar 2021 13:28:25 +0100
+Message-Id: <20210322121923.614953633@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+References: <20210322121922.372583154@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,155 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: Jim Lin <jilin@nvidia.com>
 
-commit 4541a8bb13a86e504416a13360c8dc64d2fd612a upstream.
+commit 98f153a10da403ddd5e9d98a3c8c2bb54bb5a0b6 upstream.
 
-Laura reported that the perf build failed in fedora when we got a glibc
-that provides gettid(), which I reproduced using fedora rawhide with the
-glibc-devel-2.29.9000-26.fc31.x86_64 package.
+When gadget is disconnected, running sequence is like this.
+. composite_disconnect
+. Call trace:
+  usb_string_copy+0xd0/0x128
+  gadget_config_name_configuration_store+0x4
+  gadget_config_name_attr_store+0x40/0x50
+  configfs_write_file+0x198/0x1f4
+  vfs_write+0x100/0x220
+  SyS_write+0x58/0xa8
+. configfs_composite_unbind
+. configfs_composite_bind
 
-Add a feature check to avoid providing a gettid() helper in such
-systems.
+In configfs_composite_bind, it has
+"cn->strings.s = cn->configuration;"
 
-On a fedora rawhide system with this patch applied we now get:
+When usb_string_copy is invoked. it would
+allocate memory, copy input string, release previous pointed memory space,
+and use new allocated memory.
 
-  [root@7a5f55352234 perf]# grep gettid /tmp/build/perf/FEATURE-DUMP
-  feature-gettid=1
-  [root@7a5f55352234 perf]# cat /tmp/build/perf/feature/test-gettid.make.output
-  [root@7a5f55352234 perf]# ldd /tmp/build/perf/feature/test-gettid.bin
-          linux-vdso.so.1 (0x00007ffc6b1f6000)
-          libc.so.6 => /lib64/libc.so.6 (0x00007f04e0a74000)
-          /lib64/ld-linux-x86-64.so.2 (0x00007f04e0c47000)
-  [root@7a5f55352234 perf]# nm /tmp/build/perf/feature/test-gettid.bin | grep -w gettid
-                   U gettid@@GLIBC_2.30
-  [root@7a5f55352234 perf]#
+When gadget is connected, host sends down request to get information.
+Call trace:
+  usb_gadget_get_string+0xec/0x168
+  lookup_string+0x64/0x98
+  composite_setup+0xa34/0x1ee8
 
-While on a fedora:29 system:
+If gadget is disconnected and connected quickly, in the failed case,
+cn->configuration memory has been released by usb_string_copy kfree but
+configfs_composite_bind hasn't been run in time to assign new allocated
+"cn->configuration" pointer to "cn->strings.s".
 
-  [acme@quaco perf]$ grep gettid /tmp/build/perf/FEATURE-DUMP
-  feature-gettid=0
-  [acme@quaco perf]$ cat /tmp/build/perf/feature/test-gettid.make.output
-  test-gettid.c: In function ‘main’:
-  test-gettid.c:8:9: error: implicit declaration of function ‘gettid’; did you mean ‘getgid’? [-Werror=implicit-function-declaration]
-    return gettid();
-           ^~~~~~
-           getgid
-  cc1: all warnings being treated as errors
-  [acme@quaco perf]$
+When "strlen(s->s) of usb_gadget_get_string is being executed, the dangling
+memory is accessed, "BUG: KASAN: use-after-free" error occurs.
 
-Reported-by: Laura Abbott <labbott@redhat.com>
-Tested-by: Laura Abbott <labbott@redhat.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: https://lkml.kernel.org/n/tip-yfy3ch53agmklwu9o7rlgf9c@git.kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jim Lin <jilin@nvidia.com>
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Link: https://lore.kernel.org/r/1615444961-13376-1-git-send-email-macpaul.lin@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/build/Makefile.feature      |    1 +
- tools/build/feature/Makefile      |    4 ++++
- tools/build/feature/test-all.c    |    5 +++++
- tools/build/feature/test-gettid.c |   11 +++++++++++
- tools/perf/Makefile.config        |    4 ++++
- tools/perf/jvmti/jvmti_agent.c    |    2 ++
- 6 files changed, 27 insertions(+)
- create mode 100644 tools/build/feature/test-gettid.c
+ drivers/usb/gadget/configfs.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -35,6 +35,7 @@ FEATURE_TESTS_BASIC :=
-         fortify-source                  \
-         sync-compare-and-swap           \
-         get_current_dir_name            \
-+        gettid				\
-         glibc                           \
-         gtk2                            \
-         gtk2-infobar                    \
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -54,6 +54,7 @@ FILES=
-          test-get_cpuid.bin                     \
-          test-sdt.bin                           \
-          test-cxx.bin                           \
-+         test-gettid.bin			\
-          test-jvmti.bin				\
-          test-sched_getcpu.bin			\
-          test-setns.bin				\
-@@ -262,6 +263,9 @@ $(OUTPUT)test-sdt.bin:
- $(OUTPUT)test-cxx.bin:
- 	$(BUILDXX) -std=gnu++11
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -109,6 +109,8 @@ struct gadget_config_name {
+ 	struct list_head list;
+ };
  
-+$(OUTPUT)test-gettid.bin:
-+	$(BUILD)
++#define USB_MAX_STRING_WITH_NULL_LEN	(USB_MAX_STRING_LEN+1)
 +
- $(OUTPUT)test-jvmti.bin:
- 	$(BUILD)
- 
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -38,6 +38,10 @@
- # include "test-get_current_dir_name.c"
- #undef main
- 
-+#define main main_test_gettid
-+# include "test-gettid.c"
-+#undef main
-+
- #define main main_test_glibc
- # include "test-glibc.c"
- #undef main
-@@ -183,6 +187,7 @@ int main(int argc, char *argv[])
- 	main_test_libelf();
- 	main_test_libelf_mmap();
- 	main_test_get_current_dir_name();
-+	main_test_gettid();
- 	main_test_glibc();
- 	main_test_dwarf();
- 	main_test_dwarf_getlocations();
---- /dev/null
-+++ b/tools/build/feature/test-gettid.c
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2019, Red Hat Inc, Arnaldo Carvalho de Melo <acme@redhat.com>
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+
-+int main(void)
-+{
-+	return gettid();
-+}
-+
-+#undef _GNU_SOURCE
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -318,6 +318,10 @@ ifeq ($(feature-get_current_dir_name), 1
-   CFLAGS += -DHAVE_GET_CURRENT_DIR_NAME
- endif
- 
-+ifeq ($(feature-gettid), 1)
-+  CFLAGS += -DHAVE_GETTID
-+endif
-+
- ifdef NO_LIBELF
-   NO_DWARF := 1
-   NO_DEMANGLE := 1
---- a/tools/perf/jvmti/jvmti_agent.c
-+++ b/tools/perf/jvmti/jvmti_agent.c
-@@ -45,10 +45,12 @@
- static char jit_path[PATH_MAX];
- static void *marker_addr;
- 
-+#ifndef HAVE_GETTID
- static inline pid_t gettid(void)
+ static int usb_string_copy(const char *s, char **s_copy)
  {
- 	return (pid_t)syscall(__NR_gettid);
+ 	int ret;
+@@ -118,12 +120,16 @@ static int usb_string_copy(const char *s
+ 	if (ret > USB_MAX_STRING_LEN)
+ 		return -EOVERFLOW;
+ 
+-	str = kstrdup(s, GFP_KERNEL);
+-	if (!str)
+-		return -ENOMEM;
++	if (copy) {
++		str = copy;
++	} else {
++		str = kmalloc(USB_MAX_STRING_WITH_NULL_LEN, GFP_KERNEL);
++		if (!str)
++			return -ENOMEM;
++	}
++	strcpy(str, s);
+ 	if (str[ret - 1] == '\n')
+ 		str[ret - 1] = '\0';
+-	kfree(copy);
+ 	*s_copy = str;
+ 	return 0;
  }
-+#endif
- 
- static int get_e_machine(struct jitheader *hdr)
- {
 
 
