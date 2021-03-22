@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB723441AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E293441C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhCVMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:35:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55148 "EHLO mail.kernel.org"
+        id S231789AbhCVMff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230500AbhCVMco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:32:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF4A361990;
-        Mon, 22 Mar 2021 12:32:43 +0000 (UTC)
+        id S231406AbhCVMcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:32:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60DE26199E;
+        Mon, 22 Mar 2021 12:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416364;
-        bh=1Ab42TiqY+7mhON/x0PDzE+X0KpbTXlLhtRYBRHphuA=;
+        s=korg; t=1616416366;
+        bh=m0x2fiiWRpm+GbCOB1gUeQYkZ1jaK5WjwHb/FPiolgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=etNxyrN0axP7+F5RV1ZhKncp9EbiIsunoqTrU0lIm7IA16cxsZphkr78BurTm0e7T
-         Y/nlI8ooBI9cs5reBuP6qsgsxPrJCxObQJl2DUgY8xD8uLK2qY7uZ8h99j7YzrFDtv
-         MZWrRKWPL6jw/fZ6ifCHEUucK/M2NUK9dmYgi8gk=
+        b=wo2jhq1qg3M/JGBWDg69Q+sNylh9/TTmAlLx9NP0IAW7kxmQX3LY2e8PG8Mx07SFr
+         E68IiZ50ujE6ZVlio2NusM8MzY+6xZ5JAv+I51maXBXUi6/50CMDjmwdCdySxAAWQo
+         FGZPO2mPsFE0jUJVhDzxC/9iEyfEbA5P0SYli9ZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH 5.11 079/120] usbip: Fix incorrect double assignment to udc->ud.tcp_rx
-Date:   Mon, 22 Mar 2021 13:27:42 +0100
-Message-Id: <20210322121932.308279334@linuxfoundation.org>
+        stable@vger.kernel.org, Jim Lin <jilin@nvidia.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH 5.11 080/120] usb: gadget: configfs: Fix KASAN use-after-free
+Date:   Mon, 22 Mar 2021 13:27:43 +0100
+Message-Id: <20210322121932.338646904@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
 References: <20210322121929.669628946@linuxfoundation.org>
@@ -39,34 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Jim Lin <jilin@nvidia.com>
 
-commit 9858af27e69247c5d04c3b093190a93ca365f33d upstream.
+commit 98f153a10da403ddd5e9d98a3c8c2bb54bb5a0b6 upstream.
 
-Currently udc->ud.tcp_rx is being assigned twice, the second assignment
-is incorrect, it should be to udc->ud.tcp_tx instead of rx. Fix this.
+When gadget is disconnected, running sequence is like this.
+. composite_disconnect
+. Call trace:
+  usb_string_copy+0xd0/0x128
+  gadget_config_name_configuration_store+0x4
+  gadget_config_name_attr_store+0x40/0x50
+  configfs_write_file+0x198/0x1f4
+  vfs_write+0x100/0x220
+  SyS_write+0x58/0xa8
+. configfs_composite_unbind
+. configfs_composite_bind
 
-Fixes: 46613c9dfa96 ("usbip: fix vudc usbip_sockfd_store races leading to gpf")
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Cc: stable <stable@vger.kernel.org>
-Addresses-Coverity: ("Unused value")
-Link: https://lore.kernel.org/r/20210311104445.7811-1-colin.king@canonical.com
+In configfs_composite_bind, it has
+"cn->strings.s = cn->configuration;"
+
+When usb_string_copy is invoked. it would
+allocate memory, copy input string, release previous pointed memory space,
+and use new allocated memory.
+
+When gadget is connected, host sends down request to get information.
+Call trace:
+  usb_gadget_get_string+0xec/0x168
+  lookup_string+0x64/0x98
+  composite_setup+0xa34/0x1ee8
+
+If gadget is disconnected and connected quickly, in the failed case,
+cn->configuration memory has been released by usb_string_copy kfree but
+configfs_composite_bind hasn't been run in time to assign new allocated
+"cn->configuration" pointer to "cn->strings.s".
+
+When "strlen(s->s) of usb_gadget_get_string is being executed, the dangling
+memory is accessed, "BUG: KASAN: use-after-free" error occurs.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Jim Lin <jilin@nvidia.com>
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Link: https://lore.kernel.org/r/1615444961-13376-1-git-send-email-macpaul.lin@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/vudc_sysfs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/configfs.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -174,7 +174,7 @@ static ssize_t usbip_sockfd_store(struct
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -97,6 +97,8 @@ struct gadget_config_name {
+ 	struct list_head list;
+ };
  
- 		udc->ud.tcp_socket = socket;
- 		udc->ud.tcp_rx = tcp_rx;
--		udc->ud.tcp_rx = tcp_tx;
-+		udc->ud.tcp_tx = tcp_tx;
- 		udc->ud.status = SDEV_ST_USED;
++#define USB_MAX_STRING_WITH_NULL_LEN	(USB_MAX_STRING_LEN+1)
++
+ static int usb_string_copy(const char *s, char **s_copy)
+ {
+ 	int ret;
+@@ -106,12 +108,16 @@ static int usb_string_copy(const char *s
+ 	if (ret > USB_MAX_STRING_LEN)
+ 		return -EOVERFLOW;
  
- 		spin_unlock_irq(&udc->ud.lock);
+-	str = kstrdup(s, GFP_KERNEL);
+-	if (!str)
+-		return -ENOMEM;
++	if (copy) {
++		str = copy;
++	} else {
++		str = kmalloc(USB_MAX_STRING_WITH_NULL_LEN, GFP_KERNEL);
++		if (!str)
++			return -ENOMEM;
++	}
++	strcpy(str, s);
+ 	if (str[ret - 1] == '\n')
+ 		str[ret - 1] = '\0';
+-	kfree(copy);
+ 	*s_copy = str;
+ 	return 0;
+ }
 
 
