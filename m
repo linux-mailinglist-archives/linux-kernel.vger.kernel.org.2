@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B9D344820
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483C1344822
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 15:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhCVOvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 10:51:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42742 "EHLO
+        id S230482AbhCVOvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 10:51:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28702 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231219AbhCVOti (ORCPT
+        by vger.kernel.org with ESMTP id S230220AbhCVOtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:49:38 -0400
+        Mon, 22 Mar 2021 10:49:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616424577;
+        s=mimecast20190719; t=1616424578;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bCOf3n4s8BDA0zcLoGv9fPeTWUpDxjyRHJ+1bBL4q8A=;
-        b=GaEyKRxQVYw99FbofABf232fEPNws14C5ofu/C2od15hQazQjLZ177ml6iSAi/6tVGtlAF
-        nVmras3KDXqCFkVG0XvBxxSOOI3uv0zt8cHM9fpFEo4S/2RFWeGxit4Gwo/DOyci9ZnzYR
-        0FQbm7T67GuLgtuGK7MyQ5kfS8bWdEY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-N7klv2xtOjSzZMVv6B2jUg-1; Mon, 22 Mar 2021 10:49:35 -0400
-X-MC-Unique: N7klv2xtOjSzZMVv6B2jUg-1
-Received: by mail-ed1-f69.google.com with SMTP id y10so15195819edr.20
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:49:35 -0700 (PDT)
+        bh=gR1g+wrmq8CNGMHC9HF+FPFW3/Mbla9HvLt7skHdCM8=;
+        b=DI1amX7CsIOHlo/uCx0aTR2XKK882d9bw7/n6jrPgQcPrAAYb9JEImj3SuA/fzKorA7xql
+        7yXgLsR3paaNLmyHB+GEjf8AagjzpRSchbcNIxTBPYT1nLdlcw3UclMzxgkWthWJIbmBU+
+        SMsf3redvyy2zIRObWcMKdTsB16SG6o=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-7SEi0hipPIO6EtibDOOzEg-1; Mon, 22 Mar 2021 10:49:36 -0400
+X-MC-Unique: 7SEi0hipPIO6EtibDOOzEg-1
+Received: by mail-ej1-f71.google.com with SMTP id si4so20099067ejb.23
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:49:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bCOf3n4s8BDA0zcLoGv9fPeTWUpDxjyRHJ+1bBL4q8A=;
-        b=NTIYgH8ubKY3jiELcyTtK1DbmOwi/uNhh21tVANKafAxudtlv2aIe6KIZuEln/nmTq
-         zrArM2vfwGtvfweRskrpb9ywna/EwMdeeHhV3BXT7BFJEc0xNjXCGY8MhTlAlIRt3vxp
-         7XT1au+l3JPRrJqr/ETE/OzDzbgHe+78mdHW6eSChfUq89o7Z33aC/S/xciRKCH+dOMv
-         jNP3ctg8RPZY2yTZPnnyiNa0s0PBBBVKf6goe53RtcBfWnHa42Sfj8GZ4VejOGp/ddfj
-         71RGZdZ4MuyimUaT0wKAhXFIQC5Yx2Z5krm5YQR2lYA9B4ZRQuLjBpbyJkdNCtBgWPcM
-         zw1Q==
-X-Gm-Message-State: AOAM531ZeoSVOdVifqMr5Wl/VSHx5EK/P8uYd5/r5C8+otFANsRhbuEL
-        nhkyXw3yji7yA3z0pCvQtor6GwMtO1d0r6hV+LmLMN0yBbCItvTZo81S7sytK1hAhjgq37omq8c
-        0eeJ15gQ+gW+pyIZnDdF2WTxp
-X-Received: by 2002:a17:907:2062:: with SMTP id qp2mr75740ejb.397.1616424574532;
-        Mon, 22 Mar 2021 07:49:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyctFHrbZT7eZX0HCMdd/UUt9AC49kif7LyWYv3I9vyyzoibXOKO/5pAV00exX/LAdLY7kVpA==
-X-Received: by 2002:a17:907:2062:: with SMTP id qp2mr75726ejb.397.1616424574396;
-        Mon, 22 Mar 2021 07:49:34 -0700 (PDT)
+        bh=gR1g+wrmq8CNGMHC9HF+FPFW3/Mbla9HvLt7skHdCM8=;
+        b=lQxTGPDVxdSJEjMR/5IUVgmX58hjlNEcW+uWW+E3aCCgFvIPHa9K6Fcu9ATWkpykvc
+         dvP5ZpJ1edwwUVTKzHooo+YyhfyIPGfxI5h9g9oNaHwXM+7Ao0A6j0n3zZVqvqSCuEMf
+         3oSghnprIbPhQ/Q7VEelAYDKSwULw8Iz+Sk+JgWARYEcHRnywbhkA/a8M7Eq98LCrk8b
+         JeoedeZx97gn2rlc4g/4bwx1IIPD6EUjGPoJg/4ay7VmSS7ok44XVpHbJb4VbISxr3/k
+         ASeFOscTTyG6naKmt987hGAVpNr/UilWSQbgaIhRWAGXC447Q9BoxEdlrGxvybFW5gTd
+         /jMA==
+X-Gm-Message-State: AOAM530WF7hzrFF90CSgey8pdyQdof4mIQO0TfAn/7mLKduRRxhgYOXe
+        QeTviDHigFsk3b+xJyEUvGR3MSoCW05qU1fkv9fnlaGNJIBd2wNT8YaM1KcEu97nAibVJN5P4X3
+        GaCkM5/LYpjAhA/oi8mR925GI
+X-Received: by 2002:a17:907:e88:: with SMTP id ho8mr99791ejc.199.1616424575545;
+        Mon, 22 Mar 2021 07:49:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJztIBTmpouYG8EVNmhdgk36jXeOwcmhhqjfU++DaRsUQo8mOQ4U/Zmdf5dp8EDtGvu++grrMg==
+X-Received: by 2002:a17:907:e88:: with SMTP id ho8mr99776ejc.199.1616424575417;
+        Mon, 22 Mar 2021 07:49:35 -0700 (PDT)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id r4sm9793117ejd.125.2021.03.22.07.49.33
+        by smtp.gmail.com with ESMTPSA id r4sm9793117ejd.125.2021.03.22.07.49.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 07:49:33 -0700 (PDT)
+        Mon, 22 Mar 2021 07:49:34 -0700 (PDT)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
         Christoph Hellwig <hch@lst.de>,
-        Dave Kleikamp <shaggy@kernel.org>
-Subject: [PATCH v2 13/18] jfs: convert to miscattr
-Date:   Mon, 22 Mar 2021 15:49:11 +0100
-Message-Id: <20210322144916.137245-14-mszeredi@redhat.com>
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Subject: [PATCH v2 14/18] nilfs2: convert to miscattr
+Date:   Mon, 22 Mar 2021 15:49:12 +0100
+Message-Id: <20210322144916.137245-15-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210322144916.137245-1-mszeredi@redhat.com>
 References: <20210322144916.137245-1-mszeredi@redhat.com>
@@ -72,231 +72,171 @@ Use the miscattr API to let the VFS handle locking, permission checking and
 conversion.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Dave Kleikamp <shaggy@kernel.org>
+Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 ---
- fs/jfs/file.c       |   6 +--
- fs/jfs/ioctl.c      | 105 ++++++++++++++------------------------------
- fs/jfs/jfs_dinode.h |   7 ---
- fs/jfs/jfs_inode.h  |   4 +-
- fs/jfs/namei.c      |   6 +--
- 5 files changed, 43 insertions(+), 85 deletions(-)
+ fs/nilfs2/file.c  |  2 ++
+ fs/nilfs2/ioctl.c | 61 ++++++++++++++---------------------------------
+ fs/nilfs2/namei.c |  2 ++
+ fs/nilfs2/nilfs.h |  3 +++
+ 4 files changed, 25 insertions(+), 43 deletions(-)
 
-diff --git a/fs/jfs/file.c b/fs/jfs/file.c
-index 28b70e7c7dd4..05ecbb1d2193 100644
---- a/fs/jfs/file.c
-+++ b/fs/jfs/file.c
-@@ -130,6 +130,8 @@ int jfs_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
- const struct inode_operations jfs_file_inode_operations = {
- 	.listxattr	= jfs_listxattr,
- 	.setattr	= jfs_setattr,
-+	.miscattr_get	= jfs_miscattr_get,
-+	.miscattr_set	= jfs_miscattr_set,
- #ifdef CONFIG_JFS_POSIX_ACL
- 	.get_acl	= jfs_get_acl,
- 	.set_acl	= jfs_set_acl,
-@@ -147,7 +149,5 @@ const struct file_operations jfs_file_operations = {
- 	.fsync		= jfs_fsync,
- 	.release	= jfs_release,
- 	.unlocked_ioctl = jfs_ioctl,
--#ifdef CONFIG_COMPAT
--	.compat_ioctl	= jfs_compat_ioctl,
--#endif
-+	.compat_ioctl	= compat_ptr_ioctl,
+diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
+index e1bd592ce700..e2716ce4b95e 100644
+--- a/fs/nilfs2/file.c
++++ b/fs/nilfs2/file.c
+@@ -148,6 +148,8 @@ const struct inode_operations nilfs_file_inode_operations = {
+ 	.setattr	= nilfs_setattr,
+ 	.permission     = nilfs_permission,
+ 	.fiemap		= nilfs_fiemap,
++	.miscattr_get	= nilfs_miscattr_get,
++	.miscattr_set	= nilfs_miscattr_set,
  };
-diff --git a/fs/jfs/ioctl.c b/fs/jfs/ioctl.c
-index 2581d4db58ff..55de6203d6d9 100644
---- a/fs/jfs/ioctl.c
-+++ b/fs/jfs/ioctl.c
-@@ -15,6 +15,7 @@
- #include <linux/blkdev.h>
- #include <asm/current.h>
- #include <linux/uaccess.h>
-+#include <linux/miscattr.h>
  
- #include "jfs_filsys.h"
- #include "jfs_debug.h"
-@@ -56,69 +57,50 @@ static long jfs_map_ext2(unsigned long flags, int from)
- 	return mapped;
+ /* end of file */
+diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
+index b053b40315bf..4bb5f09b6efa 100644
+--- a/fs/nilfs2/ioctl.c
++++ b/fs/nilfs2/ioctl.c
+@@ -16,6 +16,7 @@
+ #include <linux/compat.h>	/* compat_ptr() */
+ #include <linux/mount.h>	/* mnt_want_write_file(), mnt_drop_write_file() */
+ #include <linux/buffer_head.h>
++#include <linux/miscattr.h>
+ #include "nilfs.h"
+ #include "segment.h"
+ #include "bmap.h"
+@@ -113,51 +114,39 @@ static int nilfs_ioctl_wrap_copy(struct the_nilfs *nilfs,
  }
  
-+int jfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
-+{
-+	struct jfs_inode_info *jfs_inode = JFS_IP(d_inode(dentry));
-+	unsigned int flags = jfs_inode->mode2 & JFS_FL_USER_VISIBLE;
+ /**
+- * nilfs_ioctl_getflags - ioctl to support lsattr
++ * nilfs_miscattr_get - ioctl to support lsattr
+  */
+-static int nilfs_ioctl_getflags(struct inode *inode, void __user *argp)
++int nilfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
+ {
+-	unsigned int flags = NILFS_I(inode)->i_flags & FS_FL_USER_VISIBLE;
++	struct inode *inode = d_inode(dentry);
  
--long jfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-+	miscattr_fill_flags(ma, jfs_map_ext2(flags, 0));
+-	return put_user(flags, (int __user *)argp);
++	miscattr_fill_flags(ma, NILFS_I(inode)->i_flags & FS_FL_USER_VISIBLE);
 +
 +	return 0;
-+}
-+
-+int jfs_miscattr_set(struct user_namespace *mnt_userns,
-+		     struct dentry *dentry, struct miscattr *ma)
- {
--	struct inode *inode = file_inode(filp);
-+	struct inode *inode = d_inode(dentry);
- 	struct jfs_inode_info *jfs_inode = JFS_IP(inode);
- 	unsigned int flags;
+ }
  
--	switch (cmd) {
--	case JFS_IOC_GETFLAGS:
--		flags = jfs_inode->mode2 & JFS_FL_USER_VISIBLE;
--		flags = jfs_map_ext2(flags, 0);
--		return put_user(flags, (int __user *) arg);
--	case JFS_IOC_SETFLAGS: {
--		unsigned int oldflags;
--		int err;
+ /**
+- * nilfs_ioctl_setflags - ioctl to support chattr
++ * nilfs_miscattr_set - ioctl to support chattr
+  */
+-static int nilfs_ioctl_setflags(struct inode *inode, struct file *filp,
+-				void __user *argp)
++int nilfs_miscattr_set(struct user_namespace *mnt_userns,
++		       struct dentry *dentry, struct miscattr *ma)
+ {
++	struct inode *inode = d_inode(dentry);
+ 	struct nilfs_transaction_info ti;
+ 	unsigned int flags, oldflags;
+ 	int ret;
+ 
+-	if (!inode_owner_or_capable(&init_user_ns, inode))
+-		return -EACCES;
 -
--		err = mnt_want_write_file(filp);
--		if (err)
--			return err;
+-	if (get_user(flags, (int __user *)argp))
+-		return -EFAULT;
 -
--		if (!inode_owner_or_capable(&init_user_ns, inode)) {
--			err = -EACCES;
--			goto setflags_out;
--		}
--		if (get_user(flags, (int __user *) arg)) {
--			err = -EFAULT;
--			goto setflags_out;
--		}
+-	ret = mnt_want_write_file(filp);
+-	if (ret)
+-		return ret;
+-
+-	flags = nilfs_mask_flags(inode->i_mode, flags);
+-
+-	inode_lock(inode);
+-
+-	oldflags = NILFS_I(inode)->i_flags;
 +	if (miscattr_has_xattr(ma))
 +		return -EOPNOTSUPP;
  
--		flags = jfs_map_ext2(flags, 1);
--		if (!S_ISDIR(inode->i_mode))
--			flags &= ~JFS_DIRSYNC_FL;
-+	flags = jfs_map_ext2(ma->flags, 1);
-+	if (!S_ISDIR(inode->i_mode))
-+		flags &= ~JFS_DIRSYNC_FL;
+-	ret = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+-	if (ret)
+-		goto out;
++	flags = nilfs_mask_flags(inode->i_mode, ma->flags);
  
--		/* Is it quota file? Do not allow user to mess with it */
--		if (IS_NOQUOTA(inode)) {
--			err = -EPERM;
--			goto setflags_out;
--		}
-+	/* Is it quota file? Do not allow user to mess with it */
-+	if (IS_NOQUOTA(inode))
-+		return -EPERM;
+ 	ret = nilfs_transaction_begin(inode->i_sb, &ti, 0);
+ 	if (ret)
+-		goto out;
++		return ret;
  
--		/* Lock against other parallel changes of flags */
--		inode_lock(inode);
-+	flags = flags & JFS_FL_USER_MODIFIABLE;
-+	flags |= jfs_inode->mode2 & ~JFS_FL_USER_MODIFIABLE;
-+	jfs_inode->mode2 = flags;
+-	NILFS_I(inode)->i_flags = (oldflags & ~FS_FL_USER_MODIFIABLE) |
+-		(flags & FS_FL_USER_MODIFIABLE);
++	oldflags = NILFS_I(inode)->i_flags & ~FS_FL_USER_MODIFIABLE;
++	NILFS_I(inode)->i_flags = oldflags | (flags & FS_FL_USER_MODIFIABLE);
  
--		oldflags = jfs_map_ext2(jfs_inode->mode2 & JFS_FL_USER_VISIBLE,
--					0);
--		err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
--		if (err) {
--			inode_unlock(inode);
--			goto setflags_out;
--		}
-+	jfs_set_inode_flags(inode);
-+	inode->i_ctime = current_time(inode);
-+	mark_inode_dirty(inode);
+ 	nilfs_set_inode_flags(inode);
+ 	inode->i_ctime = current_time(inode);
+@@ -165,11 +154,7 @@ static int nilfs_ioctl_setflags(struct inode *inode, struct file *filp,
+ 		nilfs_set_transaction_flag(NILFS_TI_SYNC);
  
--		flags = flags & JFS_FL_USER_MODIFIABLE;
--		flags |= jfs_inode->mode2 & ~JFS_FL_USER_MODIFIABLE;
--		jfs_inode->mode2 = flags;
--
--		jfs_set_inode_flags(inode);
--		inode_unlock(inode);
--		inode->i_ctime = current_time(inode);
--		mark_inode_dirty(inode);
--setflags_out:
--		mnt_drop_write_file(filp);
--		return err;
--	}
-+	return 0;
-+}
-+
-+long jfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
-+{
-+	struct inode *inode = file_inode(filp);
- 
-+	switch (cmd) {
- 	case FITRIM:
- 	{
- 		struct super_block *sb = inode->i_sb;
-@@ -156,22 +138,3 @@ long jfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		return -ENOTTY;
- 	}
+ 	nilfs_mark_inode_dirty(inode);
+-	ret = nilfs_transaction_commit(inode->i_sb);
+-out:
+-	inode_unlock(inode);
+-	mnt_drop_write_file(filp);
+-	return ret;
++	return nilfs_transaction_commit(inode->i_sb);
  }
--
--#ifdef CONFIG_COMPAT
--long jfs_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
--{
--	/* While these ioctl numbers defined with 'long' and have different
--	 * numbers than the 64bit ABI,
--	 * the actual implementation only deals with ints and is compatible.
--	 */
--	switch (cmd) {
--	case JFS_IOC_GETFLAGS32:
--		cmd = JFS_IOC_GETFLAGS;
--		break;
--	case JFS_IOC_SETFLAGS32:
--		cmd = JFS_IOC_SETFLAGS;
--		break;
--	}
--	return jfs_ioctl(filp, cmd, arg);
--}
--#endif
-diff --git a/fs/jfs/jfs_dinode.h b/fs/jfs/jfs_dinode.h
-index 5fa9fd594115..d6af79e94263 100644
---- a/fs/jfs/jfs_dinode.h
-+++ b/fs/jfs/jfs_dinode.h
-@@ -160,11 +160,4 @@ struct dinode {
- #define JFS_FL_USER_MODIFIABLE	0x03F80000
- #define JFS_FL_INHERIT		0x03C80000
  
--/* These are identical to EXT[23]_IOC_GETFLAGS/SETFLAGS */
--#define JFS_IOC_GETFLAGS	_IOR('f', 1, long)
--#define JFS_IOC_SETFLAGS	_IOW('f', 2, long)
--
--#define JFS_IOC_GETFLAGS32	_IOR('f', 1, int)
--#define JFS_IOC_SETFLAGS32	_IOW('f', 2, int)
--
- #endif /*_H_JFS_DINODE */
-diff --git a/fs/jfs/jfs_inode.h b/fs/jfs/jfs_inode.h
-index 01daa0cb0ae5..9b0872141a08 100644
---- a/fs/jfs/jfs_inode.h
-+++ b/fs/jfs/jfs_inode.h
-@@ -9,8 +9,10 @@ struct fid;
+ /**
+@@ -1282,10 +1267,6 @@ long nilfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	void __user *argp = (void __user *)arg;
  
- extern struct inode *ialloc(struct inode *, umode_t);
- extern int jfs_fsync(struct file *, loff_t, loff_t, int);
-+extern int jfs_miscattr_get(struct dentry *dentry, struct miscattr *ma);
-+extern int jfs_miscattr_set(struct user_namespace *mnt_userns,
-+			    struct dentry *dentry, struct miscattr *ma);
- extern long jfs_ioctl(struct file *, unsigned int, unsigned long);
--extern long jfs_compat_ioctl(struct file *, unsigned int, unsigned long);
- extern struct inode *jfs_iget(struct super_block *, unsigned long);
- extern int jfs_commit_inode(struct inode *, int);
- extern int jfs_write_inode(struct inode *, struct writeback_control *);
-diff --git a/fs/jfs/namei.c b/fs/jfs/namei.c
-index 9abed0d750e5..7cfb19b5a1cc 100644
---- a/fs/jfs/namei.c
-+++ b/fs/jfs/namei.c
-@@ -1522,6 +1522,8 @@ const struct inode_operations jfs_dir_inode_operations = {
- 	.rename		= jfs_rename,
- 	.listxattr	= jfs_listxattr,
- 	.setattr	= jfs_setattr,
-+	.miscattr_get	= jfs_miscattr_get,
-+	.miscattr_set	= jfs_miscattr_set,
- #ifdef CONFIG_JFS_POSIX_ACL
- 	.get_acl	= jfs_get_acl,
- 	.set_acl	= jfs_set_acl,
-@@ -1533,9 +1535,7 @@ const struct file_operations jfs_dir_operations = {
- 	.iterate	= jfs_readdir,
- 	.fsync		= jfs_fsync,
- 	.unlocked_ioctl = jfs_ioctl,
--#ifdef CONFIG_COMPAT
--	.compat_ioctl	= jfs_compat_ioctl,
--#endif
-+	.compat_ioctl	= compat_ptr_ioctl,
- 	.llseek		= generic_file_llseek,
+ 	switch (cmd) {
+-	case FS_IOC_GETFLAGS:
+-		return nilfs_ioctl_getflags(inode, argp);
+-	case FS_IOC_SETFLAGS:
+-		return nilfs_ioctl_setflags(inode, filp, argp);
+ 	case FS_IOC_GETVERSION:
+ 		return nilfs_ioctl_getversion(inode, argp);
+ 	case NILFS_IOCTL_CHANGE_CPMODE:
+@@ -1331,12 +1312,6 @@ long nilfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ long nilfs_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ {
+ 	switch (cmd) {
+-	case FS_IOC32_GETFLAGS:
+-		cmd = FS_IOC_GETFLAGS;
+-		break;
+-	case FS_IOC32_SETFLAGS:
+-		cmd = FS_IOC_SETFLAGS;
+-		break;
+ 	case FS_IOC32_GETVERSION:
+ 		cmd = FS_IOC_GETVERSION;
+ 		break;
+diff --git a/fs/nilfs2/namei.c b/fs/nilfs2/namei.c
+index ecace5f96a95..5ed4b824a8fa 100644
+--- a/fs/nilfs2/namei.c
++++ b/fs/nilfs2/namei.c
+@@ -552,6 +552,8 @@ const struct inode_operations nilfs_dir_inode_operations = {
+ 	.setattr	= nilfs_setattr,
+ 	.permission	= nilfs_permission,
+ 	.fiemap		= nilfs_fiemap,
++	.miscattr_get	= nilfs_miscattr_get,
++	.miscattr_set	= nilfs_miscattr_set,
  };
  
+ const struct inode_operations nilfs_special_inode_operations = {
+diff --git a/fs/nilfs2/nilfs.h b/fs/nilfs2/nilfs.h
+index c4a45a081ade..03184ea11287 100644
+--- a/fs/nilfs2/nilfs.h
++++ b/fs/nilfs2/nilfs.h
+@@ -243,6 +243,9 @@ extern void nilfs_set_link(struct inode *, struct nilfs_dir_entry *,
+ extern int nilfs_sync_file(struct file *, loff_t, loff_t, int);
+ 
+ /* ioctl.c */
++int nilfs_miscattr_get(struct dentry *dentry, struct miscattr *m);
++int nilfs_miscattr_set(struct user_namespace *mnt_userns,
++		       struct dentry *dentry, struct miscattr *ma);
+ long nilfs_ioctl(struct file *, unsigned int, unsigned long);
+ long nilfs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+ int nilfs_ioctl_prepare_clean_segments(struct the_nilfs *, struct nilfs_argv *,
 -- 
 2.30.2
 
