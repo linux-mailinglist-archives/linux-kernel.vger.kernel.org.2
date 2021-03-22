@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED06F34449E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25883440FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhCVNCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:02:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230221AbhCVMtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:49:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E869619D3;
-        Mon, 22 Mar 2021 12:45:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616417108;
-        bh=tPetY16AiQmg8h1ZYslYI+vPL7h0XaE/AWhM9p3MhSU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kNW0W6uRkVkWf43UweEueQk2WOJa87mtHRsMLb/CnJ6rK0GmLm6TXEFMOhpDaNQfp
-         zo/VqhOM8+8wdxQa7rpE+28c8ItHeHu7/gaC/JrL0mkTDxo/lUnSfk3XgHxS74vOpe
-         vFQbyZ1uvBQyWFNl7R6WBt5Vvo1r74fsR7Lrhw8M=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 29/43] iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
-Date:   Mon, 22 Mar 2021 13:28:43 +0100
-Message-Id: <20210322121920.860832881@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
-References: <20210322121919.936671417@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S230254AbhCVM36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:29:58 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:50204 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhCVM3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:29:24 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id B629498078B;
+        Mon, 22 Mar 2021 20:29:19 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>, Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] drivers: scsi: Remove duplicate include of blkdev.h
+Date:   Mon, 22 Mar 2021 20:28:43 +0800
+Message-Id: <20210322122847.128375-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZH01IHk9IQ05NH0sdVkpNSk1PSk1KTUtLSkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MRg6Axw4Pz8TLUIiGTocSDEq
+        MUswCjVVSlVKTUpNT0pNSk1LSE1PVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJS0lMNwY+
+X-HM-Tid: 0a7859e938bdd992kuwsb629498078b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+linux/blkdev.h has been included at line 18, so remove
+the duplicate include at line 27.
 
-commit 6dbbbe4cfd398704b72b21c1d4a5d3807e909d60 upstream.
-
-There is one regmap_bulk_read() call in mpu3050_trigger_handler
-that we have caught its return value bug lack further handling.
-Check and terminate the execution flow just like the other three
-regmap_bulk_read() calls in this function.
-
-Fixes: 3904b28efb2c7 ("iio: gyro: Add driver for the MPU-3050 gyroscope")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210301080421.13436-1-dinghao.liu@zju.edu.cn
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- drivers/iio/gyro/mpu3050-core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/ufs/ufshcd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -549,6 +549,8 @@ static irqreturn_t mpu3050_trigger_handl
- 					       MPU3050_FIFO_R,
- 					       &fifo_values[offset],
- 					       toread);
-+			if (ret)
-+				goto out_trigger_unlock;
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index c86760788c72..e8aa7de17d0a 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -24,7 +24,6 @@
+ #include "ufs_bsg.h"
+ #include "ufshcd-crypto.h"
+ #include <asm/unaligned.h>
+-#include <linux/blkdev.h>
  
- 			dev_dbg(mpu3050->dev,
- 				"%04x %04x %04x %04x %04x\n",
-
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/ufs.h>
+-- 
+2.25.1
 
