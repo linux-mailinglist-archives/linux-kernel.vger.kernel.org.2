@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579D83442E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CD3344534
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhCVMqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:46:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57520 "EHLO mail.kernel.org"
+        id S230315AbhCVNO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:14:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231716AbhCVMia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:38:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 676F760C3D;
-        Mon, 22 Mar 2021 12:37:43 +0000 (UTC)
+        id S233401AbhCVM6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:58:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E472C601FF;
+        Mon, 22 Mar 2021 12:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416663;
-        bh=OYhk2sLLhLgEUA2BHzblj5FlAW2+8yRrOnUvQyWhkH0=;
+        s=korg; t=1616417914;
+        bh=CmBxmStxjHkSH2Y3V92jrGrXCqzw5r1mA3OiaCfZJPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QYgMNSAOKyIVxsGS8j+SKw3UU5FKW/EipabLge1Q5pbc8eRo/isRns3BKLSDu3lbO
-         NAzXmVCBcChS0syJrm5vtAXHIPW9L55yMHoA3C/2zLXhagrX1Tzw9NblEumko2W7/7
-         GjBx/XL8eVf1lfJA6dHAomFEMo/oNLbwJ9zpzKyM=
+        b=I3gQkr+RRp9N4/qGXNjMUznzS90Uq4bu6wNvQ1QOjL8R4BeWpCq0dpmhbe08N52hJ
+         lROsSeYNAS+6dHjbdaKM5BifH9/1NkeZ6j5ezm97nVBouZnimI8XNzzrAZ/1D8XrSG
+         8YEeTTF2lnhTeBdI8DKTyjlb7ogilJ4r51wys6Dc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        stable@vger.kernel.org,
+        "Belanger, Martin" <Martin.Belanger@dell.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
         Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.10 038/157] nvme-tcp: fix possible hang when failing to set io queues
-Date:   Mon, 22 Mar 2021 13:26:35 +0100
-Message-Id: <20210322121934.966684093@linuxfoundation.org>
+Subject: [PATCH 5.10 039/157] nvme-tcp: fix a NULL deref when receiving a 0-length r2t PDU
+Date:   Mon, 22 Mar 2021 13:26:36 +0100
+Message-Id: <20210322121934.996670535@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
 References: <20210322121933.746237845@linuxfoundation.org>
@@ -41,37 +43,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sagi Grimberg <sagi@grimberg.me>
 
-commit 72f572428b83d0bc7028e7c4326d1a5f45205e44 upstream.
+commit fd0823f405090f9f410fc3e3ff7efb52e7b486fa upstream.
 
-We only setup io queues for nvme controllers, and it makes absolutely no
-sense to allow a controller (re)connect without any I/O queues.  If we
-happen to fail setting the queue count for any reason, we should not
-allow this to be a successful reconnect as I/O has no chance in going
-through. Instead just fail and schedule another reconnect.
+When the controller sends us a 0-length r2t PDU we should not attempt to
+try to set up a h2cdata PDU but rather conclude that this is a buggy
+controller (forward progress is not possible) and simply fail it
+immediately.
 
 Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
+Reported-by: Belanger, Martin <Martin.Belanger@dell.com>
 Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/tcp.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/nvme/host/tcp.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
 --- a/drivers/nvme/host/tcp.c
 +++ b/drivers/nvme/host/tcp.c
-@@ -1748,8 +1748,11 @@ static int nvme_tcp_alloc_io_queues(stru
- 		return ret;
+@@ -568,6 +568,13 @@ static int nvme_tcp_setup_h2c_data_pdu(s
+ 	req->pdu_len = le32_to_cpu(pdu->r2t_length);
+ 	req->pdu_sent = 0;
  
- 	ctrl->queue_count = nr_io_queues + 1;
--	if (ctrl->queue_count < 2)
--		return 0;
-+	if (ctrl->queue_count < 2) {
-+		dev_err(ctrl->device,
-+			"unable to set any I/O queues\n");
-+		return -ENOMEM;
++	if (unlikely(!req->pdu_len)) {
++		dev_err(queue->ctrl->ctrl.device,
++			"req %d r2t len is %u, probably a bug...\n",
++			rq->tag, req->pdu_len);
++		return -EPROTO;
 +	}
- 
- 	dev_info(ctrl->device,
- 		"creating %d I/O queues.\n", nr_io_queues);
++
+ 	if (unlikely(req->data_sent + req->pdu_len > req->data_len)) {
+ 		dev_err(queue->ctrl->ctrl.device,
+ 			"req %d r2t len %u exceeded data len %u (%zu sent)\n",
 
 
