@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32B3345212
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46EF345215
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhCVVwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:52:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230203AbhCVVwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:52:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8077B6191D;
-        Mon, 22 Mar 2021 21:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616449926;
-        bh=cynxWr4EIlyILN7JP7FRcyb1BaVwBjk2hMRHLfYM1x4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=knQg1MTNIgrJ8FsQd53FmeWH1omD0zye6GeyRCGMavRNlOUYuAdhq3s7v5aNhcFYa
-         LvdmT4vQ0Y4nRUgGlSbX3kT0744onMLv0ciZU9IUhPUAVVLaF2ZCnUXNXp976PNmWO
-         /gvnbBAFvR9aQ0qGQKg03Cucq3YIAgOAJERJ1QAjedMGZGTbY7Anoy7syocsubSdwB
-         mdMw+0vrLV1xLv8FrB41IFfHnqEliVwvyVt5oxP6gR0iDPmu2dBXheyRnhX1BNju/o
-         5fqM/U0RAuMeaYt28HrP9yFoy1rXuInmzhVkHzVq7cshq+ZfxkoSylOYabrZsNPVe8
-         1Lijx8ljY7BLA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Mikko Ylinen <mikko.ylinen@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: avoid old-style declaration warnings
-Date:   Mon, 22 Mar 2021 22:51:51 +0100
-Message-Id: <20210322215201.1097281-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S229467AbhCVVwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230236AbhCVVwd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 17:52:33 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4405FC061574;
+        Mon, 22 Mar 2021 14:52:33 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so17215650otb.7;
+        Mon, 22 Mar 2021 14:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aYM93wjBNY7yOqzl/sergQpihPzgcgHPw5qRcBOG1lQ=;
+        b=nRQ/iiyQbFr2w2S3ARLQiAwsPaSS48bURsCIC4tdumvBBHb5Y8pSS+XVjObTYjLI9k
+         mro6FjktnMVNiZRPU1oH6hIqMlpJbld1mIm3csQpb/5eX6X+iHSShIkc7YyW9pVbOJE5
+         XRWS7vlbfJCnwudKa8iMKfXfkHeOn1MlQsf7Pu8lafFGylCfyCDjRY77IWnjYLUaBFNp
+         6S7iBas471nvw3h338CjxCVTekjtM+/hTE1cnnTaku29HQCJAh7HQS3vI6qF8HW5lj/x
+         kKCQfQbSvRDUB5Vo0O3sdOYQj89iJuMDCCgzdcRJdsKdXZfi4m7vMlF9DlWWw0yZYkvH
+         +uEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aYM93wjBNY7yOqzl/sergQpihPzgcgHPw5qRcBOG1lQ=;
+        b=fsUwfE8jgcd/Yss/I5zT+GQOZEHJNBX1BOBw2T5XprLA0jNk6R/VqnxcrAoMF76rbv
+         haPB1iGJvQBI/1A/bw0WY1v93QGSjoUsKb7iHh612OeqjsGGKprFy69TuWp00QBM4Bhy
+         gUpuFGifeZDUtFwpRzJ4ptootyhD3eHlC7Git61QNdi9W+eJA6GxmRuESiTPha5BKkPb
+         D0SmHBusMhtVqmsNa/o4kxOUCootbTHKA/M3zAOnP+gs76J/9JBqJja6/pOLdWJWvp2z
+         Ul0DGhEg0YbzCsPUhdAKdcrhLlnZ3R8EDAI2F4oGml5qoVo7nIiJH8itssWkp0UjZ6An
+         zRhQ==
+X-Gm-Message-State: AOAM5337n+rFjQQCaFU/XDf9Rw8biHOh7FsOMZmHcJcu46sCBsM35rJp
+        LWRj4xkJj3NpXqIDs6KelWU=
+X-Google-Smtp-Source: ABdhPJxP3C2JztuUOrXJjs4sNBQH7+rOsgkPCNCi2UpiP7pbCZIu/bxkA27jzAroUOwdXl+Qrbq54g==
+X-Received: by 2002:a05:6830:908:: with SMTP id v8mr1594662ott.217.1616449952750;
+        Mon, 22 Mar 2021 14:52:32 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 64sm3758356otu.80.2021.03.22.14.52.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Mar 2021 14:52:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 22 Mar 2021 14:52:31 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/156] 5.10.26-rc2 review
+Message-ID: <20210322215231.GB51597@roeck-us.net>
+References: <20210322151845.637893645@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322151845.637893645@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Mar 22, 2021 at 04:19:10PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.26 release.
+> There are 156 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 24 Mar 2021 15:18:19 +0000.
+> Anything received after that time might be too late.
+> 
 
-gcc -Wextra wants type modifiers in the normal order:
+Build results:
+	total: 156 pass: 156 fail: 0
+Qemu test results:
+	total: 432 pass: 428 fail: 4
+Failed tests:
+	arm:realview-pb-a8:realview_defconfig:realview_pb:mem512:arm-realview-pba8:initrd
+	arm:realview-pbx-a9:realview_defconfig:realview_pb:arm-realview-pbx-a9:initrd
+	arm:realview-eb:realview_defconfig:realview_eb:mem512:arm-realview-eb:initrd
+	arm:realview-eb-mpcore:realview_defconfig:realview_eb:mem512:arm-realview-eb-11mp-ctrevb:initrd
 
-kernel/bpf/bpf_lsm.c:70:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
-   70 | const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
-      | ^~~~~
-kernel/bpf/bpf_lsm.c:91:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
-   91 | const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
-      | ^~~~~
+Build failure:
 
-Fixes: 3f6719c7b62f ("bpf: Add bpf_bprm_opts_set helper")
-Fixes: 27672f0d280a ("bpf: Add a BPF helper for getting the IMA hash of an inode")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- kernel/bpf/bpf_lsm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+kernel/rcu/tree.c:683:2: error: implicit declaration of function 'IRQ_WORK_INIT'
 
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 1622a44d1617..75b1c678d558 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -67,7 +67,7 @@ BPF_CALL_2(bpf_bprm_opts_set, struct linux_binprm *, bprm, u64, flags)
- 
- BTF_ID_LIST_SINGLE(bpf_bprm_opts_set_btf_ids, struct, linux_binprm)
- 
--const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
-+static const struct bpf_func_proto bpf_bprm_opts_set_proto = {
- 	.func		= bpf_bprm_opts_set,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
-@@ -88,7 +88,7 @@ static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
- 
- BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
- 
--const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
-+static const struct bpf_func_proto bpf_ima_inode_hash_proto = {
- 	.func		= bpf_ima_inode_hash,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
--- 
-2.29.2
+The patch introducing IRQ_WORK_INIT is not in v5.10.y.
 
+Guenter
