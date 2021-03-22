@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49918344326
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24DA34421B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhCVMsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:48:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35346 "EHLO mail.kernel.org"
+        id S231420AbhCVMiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231214AbhCVMk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:40:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62707619B5;
-        Mon, 22 Mar 2021 12:39:01 +0000 (UTC)
+        id S230456AbhCVMeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:34:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6969619A4;
+        Mon, 22 Mar 2021 12:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416741;
-        bh=ooNAaCIzc/y87wVxj2ySWUESTteO8GdRRD6fcFWGHd8=;
+        s=korg; t=1616416453;
+        bh=VZIqVvkCVuJLiNv0BfZI5hYRYtAVEGfHzcGbouT0SSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eDRx/W9xePyVlGaJiVT0MPwo5RvnVJChncIq0jNGvERpy9jZoMeA5DHp4UTbj/VQY
-         GngiH4/7fNgczBKkYiDejbxNRjkAaaL+M/1q4TDZZ7XiPc8+W9w7JKYU0TZ9xpKoYE
-         bN3yfsB5PmAk85t6h0lseaVMyOBy5q8sCmYG3rEg=
+        b=Pn5ZjBKSMaX6Y3oHZlO6QKl+5MuA9mEr8SPtxn5RF54qVePqdKvFFXJ7fThzioLgv
+         31QzOXv3WK9xRn3ZBzmnnfBoadNsgxNdY3nUEVbOhTVFiXqmaqlyeRbZSlHCLV0mh/
+         zBGHjRHSAicC7KQme2KQ+63as5gJeAneXX8wV5HA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 102/157] drm/amd/pm: fulfill the Polaris implementation for get_clock_by_type_with_latency()
-Date:   Mon, 22 Mar 2021 13:27:39 +0100
-Message-Id: <20210322121937.010230816@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.11 077/120] powerpc: Force inlining of cpu_has_feature() to avoid build failure
+Date:   Mon, 22 Mar 2021 13:27:40 +0100
+Message-Id: <20210322121932.247267327@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,107 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 690cdc2635849db8b782dbbcabfb1c7519c84fa1 ]
+commit eed5fae00593ab9d261a0c1ffc1bdb786a87a55a upstream.
 
-Fulfill Polaris get_clock_by_type_with_latency().
+The code relies on constant folding of cpu_has_feature() based
+on possible and always true values as defined per
+CPU_FTRS_ALWAYS and CPU_FTRS_POSSIBLE.
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Build failure is encountered with for instance
+book3e_all_defconfig on kisskb in the AMDGPU driver which uses
+cpu_has_feature(CPU_FTR_VSX_COMP) to decide whether calling
+kernel_enable_vsx() or not.
+
+The failure is due to cpu_has_feature() not being inlined with
+that configuration with gcc 4.9.
+
+In the same way as commit acdad8fb4a15 ("powerpc: Force inlining of
+mmu_has_feature to fix build failure"), for inlining of
+cpu_has_feature().
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/b231dfa040ce4cc37f702f5c3a595fdeabfe0462.1615378209.git.christophe.leroy@csgroup.eu
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c   | 67 +++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ arch/powerpc/include/asm/cpu_has_feature.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-index 35629140fc7a..c5223a9e0d89 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-@@ -4771,6 +4771,72 @@ static int smu7_get_clock_by_type(struct pp_hwmgr *hwmgr, enum amd_pp_clock_type
- 	return 0;
- }
+--- a/arch/powerpc/include/asm/cpu_has_feature.h
++++ b/arch/powerpc/include/asm/cpu_has_feature.h
+@@ -7,7 +7,7 @@
+ #include <linux/bug.h>
+ #include <asm/cputable.h>
  
-+static int smu7_get_sclks_with_latency(struct pp_hwmgr *hwmgr,
-+				       struct pp_clock_levels_with_latency *clocks)
-+{
-+	struct phm_ppt_v1_information *table_info =
-+			(struct phm_ppt_v1_information *)hwmgr->pptable;
-+	struct phm_ppt_v1_clock_voltage_dependency_table *dep_sclk_table =
-+			table_info->vdd_dep_on_sclk;
-+	int i;
-+
-+	clocks->num_levels = 0;
-+	for (i = 0; i < dep_sclk_table->count; i++) {
-+		if (dep_sclk_table->entries[i].clk) {
-+			clocks->data[clocks->num_levels].clocks_in_khz =
-+				dep_sclk_table->entries[i].clk * 10;
-+			clocks->num_levels++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int smu7_get_mclks_with_latency(struct pp_hwmgr *hwmgr,
-+				       struct pp_clock_levels_with_latency *clocks)
-+{
-+	struct phm_ppt_v1_information *table_info =
-+			(struct phm_ppt_v1_information *)hwmgr->pptable;
-+	struct phm_ppt_v1_clock_voltage_dependency_table *dep_mclk_table =
-+			table_info->vdd_dep_on_mclk;
-+	int i;
-+
-+	clocks->num_levels = 0;
-+	for (i = 0; i < dep_mclk_table->count; i++) {
-+		if (dep_mclk_table->entries[i].clk) {
-+			clocks->data[clocks->num_levels].clocks_in_khz =
-+					dep_mclk_table->entries[i].clk * 10;
-+			clocks->data[clocks->num_levels].latency_in_us =
-+					smu7_get_mem_latency(hwmgr, dep_mclk_table->entries[i].clk);
-+			clocks->num_levels++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int smu7_get_clock_by_type_with_latency(struct pp_hwmgr *hwmgr,
-+					       enum amd_pp_clock_type type,
-+					       struct pp_clock_levels_with_latency *clocks)
-+{
-+	if (!(hwmgr->chip_id >= CHIP_POLARIS10 &&
-+	      hwmgr->chip_id <= CHIP_VEGAM))
-+		return -EINVAL;
-+
-+	switch (type) {
-+	case amd_pp_sys_clock:
-+		smu7_get_sclks_with_latency(hwmgr, clocks);
-+		break;
-+	case amd_pp_mem_clock:
-+		smu7_get_mclks_with_latency(hwmgr, clocks);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int smu7_notify_cac_buffer_info(struct pp_hwmgr *hwmgr,
- 					uint32_t virtual_addr_low,
- 					uint32_t virtual_addr_hi,
-@@ -5188,6 +5254,7 @@ static const struct pp_hwmgr_func smu7_hwmgr_funcs = {
- 	.get_mclk_od = smu7_get_mclk_od,
- 	.set_mclk_od = smu7_set_mclk_od,
- 	.get_clock_by_type = smu7_get_clock_by_type,
-+	.get_clock_by_type_with_latency = smu7_get_clock_by_type_with_latency,
- 	.read_sensor = smu7_read_sensor,
- 	.dynamic_state_management_disable = smu7_disable_dpm_tasks,
- 	.avfs_control = smu7_avfs_control,
--- 
-2.30.1
-
+-static inline bool early_cpu_has_feature(unsigned long feature)
++static __always_inline bool early_cpu_has_feature(unsigned long feature)
+ {
+ 	return !!((CPU_FTRS_ALWAYS & feature) ||
+ 		  (CPU_FTRS_POSSIBLE & cur_cpu_spec->cpu_features & feature));
+@@ -46,7 +46,7 @@ static __always_inline bool cpu_has_feat
+ 	return static_branch_likely(&cpu_feature_keys[i]);
+ }
+ #else
+-static inline bool cpu_has_feature(unsigned long feature)
++static __always_inline bool cpu_has_feature(unsigned long feature)
+ {
+ 	return early_cpu_has_feature(feature);
+ }
 
 
