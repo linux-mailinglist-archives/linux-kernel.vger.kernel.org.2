@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F509343E79
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52584343E81
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhCVKxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:53:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53356 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhCVKxc (ORCPT
+        id S230367AbhCVKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhCVKyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:53:32 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616410411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yp0gL2alME5v9/kBSavy8Q29B216Wshqc+j+rBkpYLg=;
-        b=LbDKUc/4ms9UvTlydmD7l/u9oKFpVeqK8gVIQFUMwg0/Djg+qTLxNTUQHmM1T3b339CXCa
-        acQYJ/0bpFpYjfN7tFk5JLSQD8LqD90BGdOMKTFLPRmhbgzZii/G8LVrSi1d4l9FoQQ4wT
-        v1FyNjtZzkai99qmdWXgLy0LUs7dlklLDqJ5TZE/pMpdP1fa3j+ZtKZreYlcxIhfoz8Eyz
-        qT2EfyqRwZTDNnOO8kFgnesJWqgNmZ3ihv9eIpXJ4f+EwoOks7aUeaRuhJKj7FdrDcFuqo
-        E1GxzXe1wpS3EYsZQQIkRC/iJt9oDKJtrUCvdPPsuFb4VjO2wBw0PrEaSQeptg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616410411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yp0gL2alME5v9/kBSavy8Q29B216Wshqc+j+rBkpYLg=;
-        b=nJgg5NA5QJIa7S1YfHg1f38PCKGCRA00aDzk9QTGgykY0l4TsG3D8qvax3HYs0xjMhfzrP
-        V3cVZD18I1HWU9DA==
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v1 1/3] printk: track/limit recursion
-In-Reply-To: <YFba1Fje6+TeIiGW@google.com>
-References: <20210316233326.10778-1-john.ogness@linutronix.de> <20210316233326.10778-2-john.ogness@linutronix.de> <YFba1Fje6+TeIiGW@google.com>
-Date:   Mon, 22 Mar 2021 11:53:30 +0100
-Message-ID: <87mtuvmpcl.fsf@jogness.linutronix.de>
+        Mon, 22 Mar 2021 06:54:35 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CAEC061574;
+        Mon, 22 Mar 2021 03:54:35 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id i81so11080139oif.6;
+        Mon, 22 Mar 2021 03:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4btGnEyoNuVChZYQdjnSeuZUMKkjapFAE1UjjfFOhXg=;
+        b=AXSN3tkM/O+AP8mifoDYebSrDhypdDFA9bIsFvE5KVjYYFhKewHRdSrP2xlEH338Ye
+         B5IsGT7pdRwi5OhPQV7ac884568cL/y2GFCGxYTn2VF8nKhN4kPr4P90UQktyRQSiSdC
+         lGFPjEETdE3WM9X+q7HbQp1xem8xk+qNsA+H4K7l6F/mdPAY54I8k7Airj4adsZq6hd2
+         X1etzfzBj459ebL2L46klon9a2hc9n7ldemCwGtKKuJgc6M50qANR21zXDWY8PklcKDk
+         MVzSZGANIzKVZmTLcqGUnbypNtZDlT4vNa1Wl5TIAZIE9f3CBn/FGZrv/XkfrRc9gLY1
+         0MDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4btGnEyoNuVChZYQdjnSeuZUMKkjapFAE1UjjfFOhXg=;
+        b=QqIZYEb/uca2TKuvShb6Ehxg6iYKmvUUQ8c+R4zg5CgqzExfDi7XR2dT1BDB7o93ZH
+         kDTc5dXhdm3uJDefLJsEBsH/d8Tym+rn+IpCLEuN/RCbvcLT9Q1pOOmBtJNu1OycdoEf
+         aAheLcDd7WeFRuYbIYLgJEr/GVHu+EuQDtL9B7NogLGloTj6V4dzh9+IWeKz+vyDQgr3
+         LexTRoWQBGkQOcFR1e8jVKvag7f8cre0Zvq1LbUd25Q65rGpglRRSZDCQs39qP3LDU7S
+         ZVDoP9uHT5AA+Khu5w+WgsIwP0rqo+0jow9OeuffKygqfaY6Ko8MiCOfKXetjuU2e0NA
+         P9lg==
+X-Gm-Message-State: AOAM533pC/QkWESfghyxAzXhVFUs/3b6QkNI/Pb1dllUDJ0cpordvcX5
+        ZDZlOmLg+Jc0h1h7INA4VBW7m9L0I4Fl2MGfvpo=
+X-Google-Smtp-Source: ABdhPJxiyHeNB8axrMRnudukjDpmAsBj09fDs/WjMXObgtI2684KhRJG7sNOZQx2D4NZTsnAJZgIPi138fY+Ik+P+O4=
+X-Received: by 2002:a05:6808:14c8:: with SMTP id f8mr9860256oiw.55.1616410474915;
+ Mon, 22 Mar 2021 03:54:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1608547554-6602-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1608547554-6602-4-git-send-email-gene.chen.richtek@gmail.com>
+ <20210219104724.GC19207@duo.ucw.cz> <CAE+NS36NvH-s_UOR8RUZA_gd+FUZ5oLqb=n0s41dSMYWDn9DnA@mail.gmail.com>
+In-Reply-To: <CAE+NS36NvH-s_UOR8RUZA_gd+FUZ5oLqb=n0s41dSMYWDn9DnA@mail.gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Mon, 22 Mar 2021 18:54:23 +0800
+Message-ID: <CAE+NS37XOgRotVTBLeFtbLYEksRydOLBHdCfMH9fTFNZ5J+2Dw@mail.gmail.com>
+Subject: Re: [PATCH v13 3/5] dt-bindings: leds: Add LED_FUNCTION_MOONLIGHT definitions
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-21, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
->> @@ -2055,6 +2122,9 @@ int vprintk_store(int facility, int level,
->>  	 */
->>  	ts_nsec = local_clock();
->>  
->> +	if (!printk_enter_irqsave(&irqflags))
->> +		return 0;
+Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=882=
+=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=882:08=E5=AF=AB=E9=81=93=EF=BC=
+=9A
 >
-> I guess it can be interesting to somehow signal us that we had
-> printk() recursion overflow, and how many messages we lost.
+> Pavel Machek <pavel@ucw.cz> =E6=96=BC 2021=E5=B9=B42=E6=9C=8819=E6=97=A5 =
+=E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=886:47=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > Hi!
+> >
+> > > From: Gene Chen <gene_chen@richtek.com>
+> > >
+> > > Add LED_FUNCTION_MOONLIGHT definitions
+> > >
+> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> > > Acked-by: Rob Herring <robh@kernel.org>
+> >
+> > No, sorry, I don't believe we need another define for flash/torch.
+> >
+>
+> As previous discuss,
+> > We use term "Moonlight" as reference says
+> > "When you are trying to imitate moonlight you need to use low voltage,
+> > softer lighting. You don=E2=80=99t want something that=E2=80=99s too br=
+ight"
+> > which is focus on brightness instead of color.
+>
+> If any concern about this change, maybe we use LED_FUNCTION_INDICATOR ins=
+tead?
+> (refs: https://lkml.org/lkml/2020/11/24/1267)
 
-Honestly, if we hit 3 levels of recursion, we are probably dealing with
-an infinite recursion issue. I do not see the value of counting the
-overflows in that case. The logged messages at that recursion level
-would ben enough to point us to the problem.
+Is there any update?
 
-> 3 levels of recursion seem like reasonable limit, but I maybe wouldn't
-> mind one extra level.
-
-With 3 levels, we will see all the messages of:
-
-    printk -> WARN_ON -> WARN_ON -> WARN_ON
-
-Keep in mind that each additional level causes the reading of the logs
-to be significantly more complex. Each level increases the output
-exponentially:
-
-   for every line1 in 1st_WARN_ON {
-      for every line2 in 2nd_WARN_ON {
-         for every line3 in 3rd_WARN_ON {
-            print $line3
-         }
-         print $line2
-      }
-      print $line1
-   }
-   print $line0
-
-IMHO 2 levels is enough because we should _never_ hit 2 levels of
-recursion. If we do, the log output at that second level should be
-enough to point to the bug. IMHO printing a third level just makes
-things unnecessarily difficult to read. (My series uses 3 levels as a
-compromise on my part. I would prefer reducing it to 2.)
-
-> And maybe we could add some sort of message prefix for high levels of
-> recursion nesting (levels 3+), so that things should not be normal
-> will be on the radars and, possibly, will be reported.
-
-I considered this, but am very hesitant to change the output
-format. Also, the CUT_HERE usage (combined with PRINTK_CALLER) seem to
-be enough.
-
-John Ogness
+> > Best regards,
+> >                                                                 Pavel
+> > --
+> > http://www.livejournal.com/~pavelmachek
