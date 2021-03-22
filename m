@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE323445CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F67A3445D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbhCVNcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 09:32:50 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:41728 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhCVNcm (ORCPT
+        id S230018AbhCVNe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhCVNeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 09:32:42 -0400
-Received: by mail-oi1-f176.google.com with SMTP id z15so13035602oic.8;
-        Mon, 22 Mar 2021 06:32:41 -0700 (PDT)
+        Mon, 22 Mar 2021 09:34:11 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67761C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:33:59 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u20so21016114lja.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 06:33:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0WPnh+9BruSzYQXPNbQjjx8XWnL6ZcqnHNniGVHI2ic=;
+        b=zVfozITby6X5m9cVgVI4NHg5AGR4Yo8qfxBadC5vuclSxXdMiAnlP8/q6gcc671q6M
+         yoDHGQPlbQQbAPghxNLjwU32gH0oFgO4TE9mFrkbcUhq17oA4SI8FJhejv7q+DDBNBmL
+         vObdz/8gDuN+3y8LqnOWSgZjxLgNPg8e4yn1e/3StGUsLWcd3Qq6ylFIoxFEhIyHeGhf
+         FYm2Gl2MqwbCf41PqRcGMWZkLam4KKDt86jlJBewNZGxf0qd2KHTH7X3g9UxMJl8aaYL
+         FZmOd+e675px7yqiZ6HcGMOElUtSA+J4U4KZ0BXSl6Gqz5n6jZFHThyr9/dD4FeO/Y+p
+         kG1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wr1SI0TL4EHWYS5BZNgIxSW5Ww590y/QRaEpzzFSZ2s=;
-        b=rfdxamLeBHSwrUonHQ0ojaDV7eJ6oaH9DXXEDmTy2Ln8TnTD+GAd9Iy5WjpscHtOWI
-         hiHs6UeIAIDMts2h6MHwbHbBpbdy7q/Ne3TyYQFop0Kpzi8rvj7JXLJ0v7yM6sJaFBcC
-         ds9FY5nQ8cuRZXxoCeAVuMG+4Gse4MEhRcpGdJUOWrHN/xdIq9NIl0lNwg/4PjilVQz7
-         wuSkSuLY5RvcHOmz8SDeX3U7pzXZ5uu82iA6hIG+ODId1gJF+1LoeRCruJ0xbdZoiDg7
-         DYAIEO9Wg6bF03sH3ilHT+u1B7hJ4vu2hCezMdaFIdn9IFMXWzSHgBi53bDLOlWWX77H
-         yIcQ==
-X-Gm-Message-State: AOAM532VU1I3h9vjqR9L1FwB5m7ZdujdG2+TcqFUevJm1+G7DMhKfduS
-        /mCAjwfzgcRCNaqAjp7Q04zNF47jxuyzhVcNW8Q=
-X-Google-Smtp-Source: ABdhPJwmYah6xhBmpTTkzua8+uROxwaMkuwp5QTUXoR4ZzqUuujkXaSLHlcUQFRTn0BjZDxXFvvHGGaz0Wrt6L97+Qo=
-X-Received: by 2002:a05:6808:24b:: with SMTP id m11mr10022819oie.157.1616419961613;
- Mon, 22 Mar 2021 06:32:41 -0700 (PDT)
+        bh=0WPnh+9BruSzYQXPNbQjjx8XWnL6ZcqnHNniGVHI2ic=;
+        b=dcjMjpTpshxMABP47j1EC8Uc7Hmt2SXG9nLOje3MVKpanTYt5sv1MqWSxVtHJEs3ia
+         H+m/nq6FeB4Jk+RC/aR/308+YPRyH8ly1eWJjUe/faFypk/NTEolFWNkjBY/LtFBDnxe
+         uO25yOa2o2MPtFPFlKwm8AXgYg0eSvBP7mYYM9Nw4RcmgqqK0Irj6jD8EYOL1xmbR7bu
+         00xVLrRua/rCRTeHk8iircnjHWfro/lmSNNM6FaF1E9yq6p2r9q9M8NS67OtugY3Q9/O
+         Vd72Yj0UHCTRWtPODjkRmrvfE2QZf6ZNjJL2zRl8l6bnN/Xt4NKt3X8SnSsFRkAL9v6m
+         65ng==
+X-Gm-Message-State: AOAM532dhumctKK/7sxQcHO7Zlhgrnn0eAUQh5EsUIpzayJ9QYQ/1dZh
+        T9zf6wa5BE7+8nHqNfJlcYEVa002L2CG1t9pRia0SQ==
+X-Google-Smtp-Source: ABdhPJz0oc64Kx9cMP677X5vUFdOcCeCOUsWcX+1Bc1alVrv+fsS4ITQzDOa0UVfYhR9B41iluJDnEVhOWCLRUDi0tE=
+X-Received: by 2002:a2e:864a:: with SMTP id i10mr9253577ljj.467.1616420037816;
+ Mon, 22 Mar 2021 06:33:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210321201818.15271-1-fazilyildiran@gmail.com>
-In-Reply-To: <20210321201818.15271-1-fazilyildiran@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 22 Mar 2021 14:32:26 +0100
-Message-ID: <CAJZ5v0gYxpzNUzSbkH1mJZuFB464JHMSQ-KeP-raJAPb=3mo=A@mail.gmail.com>
-Subject: Re: [PATCH] PM: Kconfig: fix unmet dependency for PM_SLEEP_SMP
-To:     Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
+References: <202103191536.9cD1TuQQ-lkp@intel.com> <CAHp75Vchoe2Z00ODh_AWos3Chfa1AoQMjZw7aD=5cGsTFtK7hQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vchoe2Z00ODh_AWos3Chfa1AoQMjZw7aD=5cGsTFtK7hQ@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 22 Mar 2021 14:33:46 +0100
+Message-ID: <CACRpkda5ofCs=nkpZXVyekw2LoeYZUNrFTu1iGPt47ZSMa-6eg@mail.gmail.com>
+Subject: Re: include/linux/unaligned/be_byteshift.h:46:19: error: redefinition
+ of 'get_unaligned_be32'
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>, Takashi Iwai <tiwai@suse.com>,
+        Mark Brown <broonie@kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        kbuild-all@lists.01.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        paul@pgazz.com, jeho@cs.utexas.edu, julianbraha@gmail.com
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 9:20 PM Necip Fazil Yildiran
-<fazilyildiran@gmail.com> wrote:
+On Fri, Mar 19, 2021 at 10:57 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, Mar 19, 2021 at 9:05 AM kernel test robot <lkp@intel.com> wrote:
+> >
+> > Hi Linus,
+> >
+> > FYI, the error/warning still remains.
+(...)
+> >    In file included from include/linux/build_bug.h:5,
+> >                     from include/linux/bitfield.h:10,
+> >                     from drivers/iio/magnetometer/yamaha-yas530.c:22:
 >
-> When PM_SLEEP_SMP is enabled and HOTPLUG_CPU is disabled, it results in the
-> following Kbuild warning:
->
-> WARNING: unmet direct dependencies detected for HOTPLUG_CPU
->   Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
->   Selected by [y]:
->   - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=n] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
->
-> The reason is that PM_SLEEP_SMP selects HOTPLUG_CPU without depending on or
-> selecting HOTPLUG_CPU's dependencies.
+> Isn't it fixed already somewhere?
 
-This needs to be fixed.
+It is, I think Jonathan already applied the fix, it is just waiting to
+percolate up
+to Greg and then to Torvals:
+https://lore.kernel.org/linux-iio/20210221154511.75b3d8a6@archlinux/
 
-HOTPLUG_CPU needs to be selected automatically by PM_SLEEP_SMP as it is now.
+>> Kconfig warnings: (for reference only)
+>>    WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+>>    Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
+>>    Selected by
+>>    - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
+>>    - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
+>
+> This one though is interesting.
 
-> Let PM_SLEEP_SMP depend on HOTPLUG_CPU instead to avoid Kbuild issues.
->
-> Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-> ---
->  kernel/power/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> index 6bfe3ead10ad..8b53c9b61347 100644
-> --- a/kernel/power/Kconfig
-> +++ b/kernel/power/Kconfig
-> @@ -125,7 +125,7 @@ config PM_SLEEP_SMP
->         depends on SMP
->         depends on ARCH_SUSPEND_POSSIBLE || ARCH_HIBERNATION_POSSIBLE
->         depends on PM_SLEEP
-> -       select HOTPLUG_CPU
-> +       depends on HOTPLUG_CPU
->
->  config PM_SLEEP_SMP_NONZERO_CPU
->         def_bool y
-> --
-> 2.25.1
->
+This looks like nothing to me :/
+As confused as ever about Kconfig.
+
+Yours,
+Linus Walleij
