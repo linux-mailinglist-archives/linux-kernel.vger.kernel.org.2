@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A46B3449EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 16:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E867F344BEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 17:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhCVPz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 11:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhCVPzf (ORCPT
+        id S231196AbhCVP5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 11:57:03 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:53818 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230134AbhCVP4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:55:35 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A904C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:55:34 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo9260918wmq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 08:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N70P1Fv2IBxK4ZquldWYilx1VEi3AUb2VlVmZR63sTo=;
-        b=zLNjUSngfbuLk40AkFOm0Q21v63/nm8pheW4TD9Z4ThOhAtKi1I10n56YpWu3koPfJ
-         3f4sCT1VO4SK8UYsjLD6avAulBxAWe0EVQbVqb3h1+O3NHsMLA3D4MTvCgO0iCURsjwl
-         t12czLy5mgKaMfaCA+bLTryBti8a1m0m/ucoWgQYIw7M0JotHZulalCabJFB23rbhS+Z
-         K2LvhSvjYcDYMENaczrp6zVBkksqJtJvLyTxFLwYVVna0jCZ2Qak5600Iz4Xy2pMBj/L
-         1LegYlQonll16R6hzGNPa/7QI6eKMFOgSuogxvq64n1PRBZTWVVAQ7qyLujYGREvum2B
-         dySg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=N70P1Fv2IBxK4ZquldWYilx1VEi3AUb2VlVmZR63sTo=;
-        b=fXiZB5iWQHlJV2WJc/GCuzXzFm3nISEqWQpvGWukLlJ0xgRPbwaQGFU3wosI7tHWlS
-         dkqGEOOZ0b/eNmXEvHxRbaFhVyjhkaIqcgetJjtXMzm9wApFy/12yjtXsXNLLRjFizSb
-         79DcZhtgOZtLlvOUauxLrxe5R1b9+H74iyC08HooecRUFubgWKcKojjkYPe6w9hat5LG
-         o7BNdwE/ziLKLUPFMnEJbOFLPgmpD6PcM5+LcvK0AG4R2gbGrNyMrFPk2nta/lqGlcfC
-         apuJJqMv1KBRd+sW7TMjjvnLwjuJocude2I8NpcOv6deAtnGQpkQbmVxTgpI04VqsA8j
-         ICbQ==
-X-Gm-Message-State: AOAM533zg+1Kj06itPaWP070JAb+blR1mZkIBZmNt0zkfKXLcQkk4iX8
-        5OKeVkQB70bHEtH91ldyfCR3ow==
-X-Google-Smtp-Source: ABdhPJwhrBA1PH1wFRcOMG8NB/r5aJoIfErXREF/rZUXctaKeXrTXYz71Ltn3UvLIg5V1x6wZ0rJUw==
-X-Received: by 2002:a1c:bd55:: with SMTP id n82mr459851wmf.3.1616428532777;
-        Mon, 22 Mar 2021 08:55:32 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:2091:71d6:3ab2:37f2? ([2a01:e34:ed2f:f020:2091:71d6:3ab2:37f2])
-        by smtp.googlemail.com with ESMTPSA id l9sm15936903wmq.2.2021.03.22.08.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 08:55:32 -0700 (PDT)
-Subject: Re: [PATCH 1/2] clocksource/drivers/timer-ti-dm: Prepare to handle
- dra7 timer wrap issue
-To:     Tony Lindgren <tony@atomide.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Keerthy <j-keerthy@ti.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Tero Kristo <kristo@kernel.org>
-References: <20210304073737.15810-1-tony@atomide.com>
- <20210304073737.15810-2-tony@atomide.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <556d55af-0b30-8751-6aef-2e1bb9db1a76@linaro.org>
-Date:   Mon, 22 Mar 2021 16:55:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 22 Mar 2021 11:56:44 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MFpPun014020;
+        Mon, 22 Mar 2021 08:56:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pfpt0220;
+ bh=YEgiwQSusQxj3lZOUq2K6+1KjkgfNBb/7IIwqWNUUKo=;
+ b=SgQCTM99QjdGkCRD8txfKnK7ac68JfJoPU/N/1jDZvSy70miHsv9+Xaz8ASyp7ZY6VrR
+ ha+HAx2pZ9NBoyj5Ujcup04HgqZlsGFD4Nd8s5r5j945gEwEsmFmQEtTCkOxt25mlzyK
+ 3bB5X9ztMAsJr79yg0vJJ5tFzfnbhnkq7TZgeagMd/gPrB9fbuA4aUqB3bOVVZhwpY+e
+ BhHBeMNWX+H8TRRO4U07IpJVubSVl6dbZ+zTo5OF6N4jHhgknuo6mleeshgYlgVoCEyA
+ Ycfh7k05FhDON2i4LTwhyUQBO3XZo0cyyKzEaU/Dt9essmMNTJiIzQuKccJcaYFlP8rZ GA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 37dgjnwhn5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 08:56:23 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
+ 2021 08:56:20 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 22 Mar 2021 08:56:20 -0700
+Received: from [10.193.38.106] (unknown [10.193.38.106])
+        by maili.marvell.com (Postfix) with ESMTP id C90EE3F704D;
+        Mon, 22 Mar 2021 08:56:16 -0700 (PDT)
+Message-ID: <4c953b24-974c-9425-b9be-cb386b15c9fb@marvell.com>
+Date:   Mon, 22 Mar 2021 16:56:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <20210304073737.15810-2-tony@atomide.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101
+ Thunderbird/87.0
+Subject: Re: [EXT] [PATCH] linux/qed: Mundane spelling fixes throughout the
+ file
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <rdunlap@infradead.org>
+References: <20210322025516.968396-1-unixbhaskar@gmail.com>
+From:   Igor Russkikh <irusskikh@marvell.com>
+In-Reply-To: <20210322025516.968396-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_08:2021-03-22,2021-03-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/03/2021 08:37, Tony Lindgren wrote:
-> There is a timer wrap issue on dra7 for the ARM architected timer.
-> In a typical clock configuration the timer fails to wrap after 388 days.
+
+> s/unrequired/"not required"/
+> s/consme/consume/ .....two different places
+> s/accros/across/
 > 
-> To work around the issue, we need to use timer-ti-dm timers instead.
-> 
-> Let's prepare for adding support for percpu timers by adding a common
-> dmtimer_clkevt_init_common() and call it from dmtimer_clockevent_init().
-> This patch makes no intentional functional changes.
-> 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-[ ... ]
+Acked-by: Igor Russkikh <irusskikh@marvell.com>
 
-> @@ -575,33 +574,60 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
->  	 */
->  	writel_relaxed(OMAP_TIMER_CTRL_POSTED, t->base + t->ifctrl);
->  
-> +	if (dev->cpumask == cpu_possible_mask)
-> +		irqflags = IRQF_TIMER;
-> +	else
-> +		irqflags = IRQF_TIMER | IRQF_NOBALANCING;
-
-Can you explain the reasoning behind the test above ?
-
-[ ... ]
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks
+  Igor
