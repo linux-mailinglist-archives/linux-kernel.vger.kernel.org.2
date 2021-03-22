@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8312934427E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4990C344138
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhCVMmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:42:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58810 "EHLO mail.kernel.org"
+        id S231248AbhCVMbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 08:31:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230325AbhCVMgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:36:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDD3661931;
-        Mon, 22 Mar 2021 12:36:11 +0000 (UTC)
+        id S230482AbhCVMam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:30:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E34D061990;
+        Mon, 22 Mar 2021 12:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416572;
-        bh=yTayAIBKuIJn+gV5lv0TS3Hk7EPo/GlQvUqJXS22suA=;
+        s=korg; t=1616416242;
+        bh=xZu6JDWX9k+gSFeNcr4FNlfdCMrATCvuMPzSeaHEff4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uZedSgFFW30N8C3Y/7txioztRtX+JNCDE8BdmRL4pou2azOC48Hn8WRkZWxzuI0Zn
-         Gk06TYvrDPewIP80jUXhkLIQZlPc3YNyJOMTqnHEpFfZ3mS53JqBoefmpV+vwBJR3T
-         9Ttp0amNswfbg023wPVFjVqJ6rg12Y5YRD+06u/o=
+        b=azVqPSp3q+dzsqlfxmQ+WTMWNR+VVF32omyM4X0qA6F56uOQGkIBbUNwsKesFkEm8
+         EvC5/8SbuV6wtNbFOArPLf9g4bNHhnqi96jSSVabRlqF9TEUKH2EtawPdPWyYwBmf5
+         LtVAxw7amCRL73sc0CqUWMgk/amkZHyW/LtGcP3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 030/157] ASoC: codecs: wcd934x: add a sanity check in set channel map
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 004/120] ALSA: dice: fix null pointer dereference when node is disconnected
 Date:   Mon, 22 Mar 2021 13:26:27 +0100
-Message-Id: <20210322121934.718868730@linuxfoundation.org>
+Message-Id: <20210322121929.811317755@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121929.669628946@linuxfoundation.org>
+References: <20210322121929.669628946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit 3bb4852d598f0275ed5996a059df55be7318ac2f upstream.
+commit dd7b836d6bc935df95c826f69ff4d051f5561604 upstream.
 
-set channel map can be passed with a channel maps, however if
-the number of channels that are passed are more than the actual
-supported channels then we would be accessing array out of bounds.
+When node is removed from IEEE 1394 bus, any transaction fails to the node.
+In the case, ALSA dice driver doesn't stop isochronous contexts even if
+they are running. As a result, null pointer dereference occurs in callback
+from the running context.
 
-So add a sanity check to validate these numbers!
+This commit fixes the bug to release isochronous contexts always.
 
-Fixes: a61f3b4f476e ("ASoC: wcd934x: add support to wcd9340/wcd9341 codec")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210309142129.14182-4-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org> # v5.4 or later
+Fixes: e9f21129b8d8 ("ALSA: dice: support AMDTP domain")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210312093407.23437-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/wcd934x.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/firewire/dice/dice-stream.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -1873,6 +1873,12 @@ static int wcd934x_set_channel_map(struc
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -493,11 +493,10 @@ void snd_dice_stream_stop_duplex(struct
+ 	struct reg_params tx_params, rx_params;
  
- 	wcd = snd_soc_component_get_drvdata(dai->component);
+ 	if (dice->substreams_counter == 0) {
+-		if (get_register_params(dice, &tx_params, &rx_params) >= 0) {
+-			amdtp_domain_stop(&dice->domain);
++		if (get_register_params(dice, &tx_params, &rx_params) >= 0)
+ 			finish_session(dice, &tx_params, &rx_params);
+-		}
  
-+	if (tx_num > WCD934X_TX_MAX || rx_num > WCD934X_RX_MAX) {
-+		dev_err(wcd->dev, "Invalid tx %d or rx %d channel count\n",
-+			tx_num, rx_num);
-+		return -EINVAL;
-+	}
-+
- 	if (!tx_slot || !rx_slot) {
- 		dev_err(wcd->dev, "Invalid tx_slot=%p, rx_slot=%p\n",
- 			tx_slot, rx_slot);
++		amdtp_domain_stop(&dice->domain);
+ 		release_resources(dice);
+ 	}
+ }
 
 
