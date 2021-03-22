@@ -2,137 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E57344DCA
+	by mail.lfdr.de (Postfix) with ESMTP id D0BE8344DCC
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 18:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhCVRxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 13:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbhCVRw6 (ORCPT
+        id S230365AbhCVRxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 13:53:34 -0400
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:41683 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230214AbhCVRxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 13:52:58 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4E6C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:52:58 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id e8so14867436iok.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 10:52:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=yr3uVFpZsGP6y6mCVcoKrKpf10uPPAPG825Fgeh8r3M=;
-        b=sgKE9GEIJZZ8J8QaRVTodmXYIWRVuQ7c5PYk03WbVi3HpRV1tyjW4HSY3p8sNtwf2v
-         rHboBLPCle9Yhf2h6BQSjMtFcjUW531sF4rjNYd/fRkdpVbhKXH8tFFPqJCHkIYipK3C
-         qLRjWCCvtaZvPZreR/B9C14oRDnUsi3zibwsctPJadUnzNjbr31e/z9i6hergb6CTtCr
-         BwY8XWGiy/RUofXKqHFycNt51aiAjLbtIRpM0mtkfZ2bulM/HU/NHxVxL25vcDVPwJOj
-         eqzywJn2p28t/pabUStCi6Tf50EidR4paPCDChPDohCBQFBDHjPdxs4MYWP/7cQxRL9k
-         5yLw==
+        Mon, 22 Mar 2021 13:53:12 -0400
+Received: by mail-vk1-f173.google.com with SMTP id o85so3997492vko.8;
+        Mon, 22 Mar 2021 10:53:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yr3uVFpZsGP6y6mCVcoKrKpf10uPPAPG825Fgeh8r3M=;
-        b=Qc1zOBCBcflz663/cHyTGpP1KAENuXEJuARMWw+YZaWeclmKAiexsqf7Q3vJruNoCi
-         tm/qaJwSvj3RAoAScuss4dHmAhP+IG3KrPsgJVQTwZArns72IdR+jMB0d9Jp9kPm4zjM
-         /eZJ5ey/JeaDF96TeUtLCNZWs/IW86gpsRCzT0apgGeYk3LjwvVGB5V+eEmYKAHgz/1e
-         spVfLIbtZY4Fj1X6dnzKZUQvjAxlTuQQqjpYNDrSfh+pqzCW0Ea2/xZ7ULAt0WJPCql7
-         1ZYiNZXyYtj7NgMDPcqsZPjncLCXXJLJENiv2LoDrLEJTbhGqnNRhXUOLf1emYCL3Ryx
-         b53Q==
-X-Gm-Message-State: AOAM533zixXOv2wtKm2x0a5js2taOmGfnyrjM2FJClv5fci22P1+8cW/
-        We1FEBNFV//5zTp91YBfT/KPrA==
-X-Google-Smtp-Source: ABdhPJwsTkV+g0gwgComJirE6WV2njA/M8hf5Mp0aimHbzi26uO6yPYNVuMbdGZVLs7aprDGRXwLOQ==
-X-Received: by 2002:a05:6638:1648:: with SMTP id a8mr503992jat.25.1616435577699;
-        Mon, 22 Mar 2021 10:52:57 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id b19sm7908173ioj.50.2021.03.22.10.52.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Mar 2021 10:52:57 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in io_wq_destroy
-To:     syzbot <syzbot+831debb250650baf4827@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000077ef5d05be23841a@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <3f06cc8a-0538-c950-9db0-6cf177ebd87d@kernel.dk>
-Date:   Mon, 22 Mar 2021 11:52:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=51zGCqBXl43ZX311IoQVz5nD7uSEuSK9azOqp9/NNbM=;
+        b=p+uTj9SB+SWIOU4RI9xGoSOSVyDFLxRwwLxzxlzFOV6/FlvsyhDj11e3dV65r3Fn4X
+         7I6IntLTgOqaJH3RxykloS+jyz3k9gRoVlFiFJVNfu6ZGDlPPam6LHC3TcivMOBaXg1S
+         YyV8lJwlQ2TogEAQHtTOGeCwtbAHjqH/hSH/Llp6wepTAjA7RtxrN7ua5Epj4OwAqhYd
+         o9b7NjBmnQ34kIaLAtjdYaERw0awpSQsyvoMxfLlIkLEBzhh6BG7scZrjD22wJ/NGOa0
+         IxR/6YzhZT+i7tZDi/EwbePkRW9yoxAjOUlsdaaSJqrVX46MgmXiS3W6w+d4lOnGemSx
+         wKKg==
+X-Gm-Message-State: AOAM530UgN9k6YJWeZMTx0xcsriPWW8E2tFmpPqxO1NP0D1vUVRwRtrg
+        A2q+rHNGp/bWtdlhpGPmaT/zcaS4hTrUMVMyt0k=
+X-Google-Smtp-Source: ABdhPJwV75rRcQ1W+AfL+sk8wmoLPCnpP/A7gDAMFs4WtMd7EVrylU6+gzXqmOlYAkXlJrsD2M3/fRhvURo7Acq/Drs=
+X-Received: by 2002:a1f:2502:: with SMTP id l2mr875345vkl.5.1616435591316;
+ Mon, 22 Mar 2021 10:53:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <00000000000077ef5d05be23841a@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-5-geert@linux-m68k.org> <CANiq72ng1J210QwAGO_qFQrJ_1REizLGkejieuxbpOJ0Bmm_Cg@mail.gmail.com>
+In-Reply-To: <CANiq72ng1J210QwAGO_qFQrJ_1REizLGkejieuxbpOJ0Bmm_Cg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Mar 2021 18:53:00 +0100
+Message-ID: <CAMuHMdWhabjJ9MLJ4OZA45Paa5FQ8LJ3id0HVqBoDdGtyVDQEA@mail.gmail.com>
+Subject: Re: [PATCH 04/17] auxdisplay: img-ascii-lcd: Add helper variable dev
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 11:37 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    0d02ec6b Linux 5.12-rc4
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1739e4aad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=831debb250650baf4827
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+831debb250650baf4827@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 15234 at fs/io-wq.c:1068 io_wq_destroy+0x1dd/0x240 fs/io-wq.c:1068
-> Modules linked in:
-> CPU: 1 PID: 15234 Comm: syz-executor.5 Not tainted 5.12.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:io_wq_destroy+0x1dd/0x240 fs/io-wq.c:1068
-> Code: 48 c1 ea 03 80 3c 02 00 75 6e 49 8b 3c 24 e8 2a b3 d8 ff 4c 89 e7 5b 5d 41 5c 41 5d 41 5e 41 5f e9 18 b3 d8 ff e8 73 b1 95 ff <0f> 0b e9 02 ff ff ff e8 67 b1 95 ff 48 89 ef e8 ff b2 d8 ff eb ae
-> RSP: 0018:ffffc90016cb7950 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: ffff88801362d4c0 RSI: ffffffff81de3cbd RDI: ffff888022177840
-> RBP: ffff888022177800 R08: 000000000000003f R09: ffff8880254cb80f
-> R10: ffffffff81de3b50 R11: 0000000000000000 R12: ffff8880254cb800
-> R13: dffffc0000000000 R14: ffffed1004a99700 R15: 0000000000000040
-> FS:  00007f51c4a75700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000001b32424000 CR3: 000000002a3f7000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  io_wq_put fs/io-wq.c:1079 [inline]
->  io_wq_put_and_exit+0x8d/0xc0 fs/io-wq.c:1086
->  io_uring_clean_tctx+0xed/0x160 fs/io_uring.c:8890
->  __io_uring_files_cancel+0x503/0x5f0 fs/io_uring.c:8955
->  io_uring_files_cancel include/linux/io_uring.h:22 [inline]
->  do_exit+0x299/0x2a60 kernel/exit.c:780
->  do_group_exit+0x125/0x310 kernel/exit.c:922
->  get_signal+0x42c/0x2100 kernel/signal.c:2777
->  arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
->  handle_signal_work kernel/entry/common.c:147 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
->  exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x466459
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f51c4a75188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-> RAX: 0000000000000100 RBX: 000000000056bf60 RCX: 0000000000466459
-> RDX: 0000000000000000 RSI: 0000000000002039 RDI: 0000000000000003
-> RBP: 00000000004bf9fb R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-> R13: 0000000000a9fb1f R14: 00007f51c4a75300 R15: 0000000000022000
+Hi Miguel,
 
-Still looking into this one, so far no luck in reproducing. But this
-report is a dupe/identical of the previous one, so let's not track
-both:
+On Mon, Mar 22, 2021 at 5:59 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+> On Mon, Mar 22, 2021 at 3:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > +       struct device *dev = &pdev->dev;
+>
+> Do we want helpers like this to be `*const` (assuming they can)? (same
+> for patch 12).
 
-#syz dup: [syzbot] WARNING in io_wq_put
+No, e.g. the devm_*() functions need to make changes to the device's
+structure.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Jens Axboe
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
