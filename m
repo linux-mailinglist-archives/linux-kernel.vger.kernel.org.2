@@ -2,131 +2,802 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B0B343DC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967BF343DCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 11:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhCVK12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 06:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
+        id S230223AbhCVK15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 06:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCVK1M (ORCPT
+        with ESMTP id S230243AbhCVK1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 06:27:12 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D71C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:27:11 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id l1so6309011plg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:27:11 -0700 (PDT)
+        Mon, 22 Mar 2021 06:27:22 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C45C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:27:19 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id v11so16049278wro.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 03:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+wvdQhVLwLoFosU2KHxQqJGVby7PQnpq6urwRwMBx7A=;
-        b=b6WqhwKq/OQDbEMnA7e5IsW2C1eZP0RdD5OqEOz/f7YJnGBe4g45Xf3AZi9FXXlEV9
-         NfEi9uJBe65YYGnEf+liwwuh6hcBUKPdE5ByThKU31Gbiva6Ok5UnR1lvo5ZwDqZIHgT
-         7FHfBbvCknigoBvrP5OTvm3knCnl3doTyIPas=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=g9iFBkquz99eLCoepZRGNrwSd+ZcsZ+/GLZN8Jn7qGw=;
+        b=AbJ6ubnOlhJNoCLRwPI4jmh+Tfw9poS2B8zQdu1j3iQhNHeG1gdkoU4QwU79EnKFHU
+         YnCxO/ydRjO98gcpMDykqEezO71D44zFqB5ujQkV5aWE3ebmTR8BRr9JzQDVaF2bsGXO
+         377hsd7TmfcUY3MQ8QqTpAvA10S0JmV/lAUzRtqeTJAywrRFSrIsxg0KRZEq86Iq/rET
+         jUJRcg3UNTjQCZ/Av6tpBsPW0BJpWgiW/34Qgkm1sPJrZBkb+4/Bx8nhy6nGN331FoeM
+         Bs9cYBzMQPbSAbQHH2kbhwC6faPP7oFg8ySQ9TGRIIV2gtQ1VkETB9eSL9ixSMofw6F/
+         jqIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+wvdQhVLwLoFosU2KHxQqJGVby7PQnpq6urwRwMBx7A=;
-        b=oEUlLPmjvjf6DxVc1jrHe1YsPDdrgM+pApa///kdU+2D//tKR2DYpSEb/MRSG8flkV
-         3pWDmee3phjjepU0nktfylfTD9OHOGCg3VZINZwztUfneEG6XdAbTMPDnaDUqwV9gJem
-         j/ZQuJK21KtJVQP5JjiAfG3HbAWSJ0VvM1BfxHRXtFKveyDYOVdUDh+Szq4uPDBDnuvP
-         QmLbxMmhYdLxTwV6aMW3uiisOwpjafvXFLh18XU+no5tF/zr/RB+pIOloxfjg3ZBaB8H
-         JWd0XG2Vypwsrrjmej7degc1WF90dyeI7eHqTAh1p2tVnKuV860nDXimGXjhCwpaqj6o
-         lnzA==
-X-Gm-Message-State: AOAM531giQH3BxNL6QGOnMrYcF9fBHghqoIEt84mhvjiiQDOY3KH4jFt
-        8IkvxKSNojJU9D9ozZFyuMjRjw==
-X-Google-Smtp-Source: ABdhPJwLw70xF0T1APO8o5oOg758meoNWyGdI6qKxSFYvxLU3qMkHixXKq8q1LSC6BT/IFVCFO9Ocg==
-X-Received: by 2002:a17:902:ce86:b029:e6:b1f6:3c5c with SMTP id f6-20020a170902ce86b02900e6b1f63c5cmr939950plg.13.1616408831429;
-        Mon, 22 Mar 2021 03:27:11 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:b1b5:270:5df6:6d6e])
-        by smtp.gmail.com with ESMTPSA id j3sm14304223pjf.36.2021.03.22.03.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 03:27:10 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 19:27:03 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        senozhatsky@chromium.org, hyc.lee@gmail.com,
-        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
-        colin.king@canonical.com, rdunlap@infradead.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: Re: [PATCH 2/5] cifsd: add server-side procedures for SMB3
-Message-ID: <YFhw932H8BZalhmu@google.com>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
- <20210322051344.1706-3-namjae.jeon@samsung.com>
- <20210322083445.GJ1719932@casper.infradead.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g9iFBkquz99eLCoepZRGNrwSd+ZcsZ+/GLZN8Jn7qGw=;
+        b=K+ICwxM6p85AiPra8e9omj05aYHerh3h6krTEqzul9hXwWK0TnfSzvTrWpalsO/nvP
+         zPiyhuv8p6uSR1ZKbGBq1BlXXZ7ZzLBBr02W5XL97zzxCnAnvYaUbcLaLT1jLvO8ZmYJ
+         t7vVIXfqeZzQdyS1SiUb+01Z3SUZuTv/bvMpSXt6IBeGPU8jYtHBcjRng39rYT3vC61R
+         4V4yyJBO6s4KXsnI/1eTHLoUH3TJtzFdtaFOnIwMqJv4KQk+xpc3YtRq/ECXZUausTlf
+         V82fdBcJVA0FlzsWTu4y2UhbHX8uDmKbVA4rb5+zzF6J/gOoSj9EXAuKQ4bRQZaDM0vC
+         9Lig==
+X-Gm-Message-State: AOAM531kegTBYfTunsKfie88BGPS4JGp8Lk6zP7lGTqtaenhSQK1UCTu
+        LQOeeEWejAKtbKcR0RDfHEXVvA==
+X-Google-Smtp-Source: ABdhPJzkvdr3wzQJbXCpC+91cSKScguFbsdPBw+BUilhqlDT2aHc9n9PpgXH4WEH34k2UBijXITlaQ==
+X-Received: by 2002:a5d:4743:: with SMTP id o3mr17622820wrs.108.1616408838302;
+        Mon, 22 Mar 2021 03:27:18 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id j123sm16116262wmb.1.2021.03.22.03.27.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Mar 2021 03:27:17 -0700 (PDT)
+Subject: Re: [PATCH v3 3/7] ASoC: codecs: wcd938x: add basic driver
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        broonie@kernel.org
+Cc:     robh@kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+References: <20210319092919.21218-1-srinivas.kandagatla@linaro.org>
+ <20210319092919.21218-4-srinivas.kandagatla@linaro.org>
+ <00c2f3cf-ef72-0fdc-3c7a-9ccb6d075191@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <96b2cccc-6b71-e70f-ba2c-38554c65e2c5@linaro.org>
+Date:   Mon, 22 Mar 2021 10:27:17 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322083445.GJ1719932@casper.infradead.org>
+In-Reply-To: <00c2f3cf-ef72-0fdc-3c7a-9ccb6d075191@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/22 08:34), Matthew Wilcox wrote:
-> > +++ b/fs/cifsd/mgmt/ksmbd_ida.c
-> > @@ -0,0 +1,69 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + *   Copyright (C) 2018 Samsung Electronics Co., Ltd.
-> > + */
-> > +
-> > +#include "ksmbd_ida.h"
-> > +
-> > +struct ksmbd_ida *ksmbd_ida_alloc(void)
-> > +{
-> > +	struct ksmbd_ida *ida;
-> > +
-> > +	ida = kmalloc(sizeof(struct ksmbd_ida), GFP_KERNEL);
-> > +	if (!ida)
-> > +		return NULL;
-> > +
-> > +	ida_init(&ida->map);
-> > +	return ida;
-> > +}
->
-> ... why?  Everywhere that you call ksmbd_ida_alloc(), you would
-> be better off just embedding the struct ida into the struct that
-> currently has a pointer to it.  Or declaring it statically.  Then
-> you can even initialise it statically using DEFINE_IDA() and
-> eliminate the initialiser functions.
 
-IIRC this ida is per SMB session, so it probably cannot be static.
-And Windows, IIRC, doesn't like "just any IDs". Some versions of Windows
-would fail the session login if server would return the first id == 0,
-instead of 1. Or vice versa. I don't remember all the details, the last
-time I looked into this was in 2019.
 
-[..]
-> > +struct ksmbd_tree_connect *ksmbd_tree_conn_lookup(struct ksmbd_session *sess,
-> > +						  unsigned int id)
-> > +{
-> > +	struct ksmbd_tree_connect *tree_conn;
-> > +	struct list_head *tmp;
-> > +
-> > +	list_for_each(tmp, &sess->tree_conn_list) {
-> > +		tree_conn = list_entry(tmp, struct ksmbd_tree_connect, list);
-> > +		if (tree_conn->id == id)
-> > +			return tree_conn;
-> > +	}
->
-> ... walk the linked list looking for an ID match.  You'd be much better
-> off using an allocating XArray:
-> https://www.kernel.org/doc/html/latest/core-api/xarray.html
+On 19/03/2021 15:59, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 3/19/21 4:29 AM, Srinivas Kandagatla wrote:
+>> This patch adds basic SoundWire codec driver to support for
+>> WCD938X TX and RX devices.
+> 
+> It took me a while to figure out that you are adding support for a codec 
+> that has 2 Slave interfaces internally, one for TX and one for RX dais.
+> 
+> Each of the interfaces will appear as a separate Linux device, even 
+> though they are physically in the same hardware component.
+> 
+> That perfectly legit from a SoundWire standpoint, but I wonder how you 
+> are going to handle pm_runtime and regmap access if the two parts are 
+> joined at the hip for imp-def register access (described in the cover 
+> letter as "Even though this device has two SoundWire devices, only tx 
+> device has access to main codec Control/Status Registers!").
+> 
+> I was clearly unable to figure out how regmap/gpios/regulator were 
+> handled between the two TX and TX parts.
+> 
 
-I think cifsd code predates XArray ;)
+tx regmap is shared between both the devices.
+Regulators are also handled in common code for tx and rx device.
 
-> Then you could lookup tree connections in O(log(n)) time instead of
-> O(n) time.
+I added more detailed reply in cover letter reply.
 
-Agreed. Not sure I remember why the code does list traversal here.
+
+
+> See more below.
+> 
+>> diff --git a/sound/soc/codecs/wcd938x-sdw.c 
+>> b/sound/soc/codecs/wcd938x-sdw.c
+>> new file mode 100644
+>> index 000000000000..ca29793b0972
+>> --- /dev/null
+>> +++ b/sound/soc/codecs/wcd938x-sdw.c
+>> @@ -0,0 +1,291 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+> 
+> GPL-2.0-only for consistency with the other additions below?
+> 
+> 
+Sure will fix that!
+
+>> +static int wcd9380_probe(struct sdw_slave *pdev,
+>> +             const struct sdw_device_id *id)
+>> +{
+>> +    struct device *dev = &pdev->dev;
+>> +    struct wcd938x_sdw_priv *wcd;
+>> +    const char *dir = "rx";
+>> +    int ret;
+>> +
+>> +    wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
+>> +    if (!wcd)
+>> +        return -ENOMEM;
+>> +
+>> +    of_property_read_string(dev->of_node, "direction", &dir);
+>> +    if (!strcmp(dir, "tx"))
+>> +        wcd->is_tx = true;
+>> +    else
+>> +        wcd->is_tx = false;
+>> +
+>> +
+> 
+> extra line
+> 
+>> +    ret = of_property_read_variable_u32_array(dev->of_node, 
+>> "qcom,port-mapping",
+>> +                          wcd->port_map,
+>> +                          WCD938X_MAX_TX_SWR_PORTS,
+>> +                          WCD938X_MAX_SWR_PORTS);
+>> +    if (ret)
+>> +        dev_info(dev, "Static Port mapping not specified\n");
+>> +
+>> +    wcd->sdev = pdev;
+>> +    dev_set_drvdata(dev, wcd);
+>> +    ret = wcd938x_init(wcd);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    pdev->prop.scp_int1_mask = SDW_SCP_INT1_IMPL_DEF |
+>> +                    SDW_SCP_INT1_BUS_CLASH |
+>> +                    SDW_SCP_INT1_PARITY;
+>> +    pdev->prop.lane_control_support = true;
+>> +    if (wcd->is_tx) {
+>> +        pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
+>> +        pdev->prop.src_dpn_prop = wcd938x_dpn_prop;
+>> +        wcd->ch_info = &wcd938x_sdw_tx_ch_info[0];
+>> +        pdev->prop.wake_capable = true;
+>> +    } else {
+>> +        pdev->prop.sink_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
+>> +        pdev->prop.sink_dpn_prop = wcd938x_dpn_prop;
+>> +        wcd->ch_info = &wcd938x_sdw_rx_ch_info[0];
+>> +    }
+>> +
+>> +    if (wcd->is_tx)
+>> +        return wcd938x_register_component(wcd, dev, &wcd938x_tx_dai);
+>> +    else
+>> +        return wcd938x_register_component(wcd, dev, &wcd938x_rx_dai);
+>> +
+>> +}
+>> +
+>> +static const struct sdw_device_id wcd9380_slave_id[] = {
+>> +    SDW_SLAVE_ENTRY(0x0217, 0x10d, 0),
+> 
+> does this mean you cannot determine the functionality of the device by 
+> looking at the devId registers?
+> 
+No, we can not, they have same device id.
+
+> I would have expected each interface to have a different part ID to show 
+> that they are different...such tricks would not work in the ACPI world 
+> at the moment, the expectation was really that different part numbers 
+> are unique enough to know what to expect.
+> 
+> 
+>> +    {},
+>> +};
+>> +MODULE_DEVICE_TABLE(sdw, wcd9380_slave_id);
+>> +
+>> +static struct sdw_driver wcd9380_codec_driver = {
+>> +    .probe    = wcd9380_probe,
+>> +    .ops = &wcd9380_slave_ops,
+>> +    .id_table = wcd9380_slave_id,
+>> +    .driver = {
+>> +        .name    = "wcd9380-codec",
+>> +    }
+>> +};
+>> +module_sdw_driver(wcd9380_codec_driver);
+> 
+> [...]
+> 
+>> +static bool wcd938x_readable_register(struct device *dev, unsigned 
+>> int reg)
+>> +{
+>> +    bool ret;
+>> +
+>> +    ret = wcd938x_readonly_register(dev, reg);
+>> +    if (!ret)
+>> +        return wcd938x_rdwr_register(dev, reg);
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +static bool wcd938x_writeable_register(struct device *dev, unsigned 
+>> int reg)
+>> +{
+>> +    return wcd938x_rdwr_register(dev, reg);
+>> +}
+>> +
+>> +static bool wcd938x_volatile_register(struct device *dev, unsigned 
+>> int reg)
+>> +{
+>> +    if (reg <= WCD938X_BASE_ADDRESS)
+>> +        return 0;
+>> +
+>> +    if (reg == WCD938X_DIGITAL_SWR_TX_CLK_RATE)
+>> +        return true;
+>> +
+>> +    if (wcd938x_readonly_register(dev, reg))
+>> +        return true;
+>> +
+>> +    return false;
+>> +}
+> 
+> this part is quite confusing, you mentioned that only the TX interface 
+> has access to registers, but here you seem to expose regmap registers 
+> for both TX and RX?
+
+No, this regmap is only for tx.
+
+Am happy to prefix them with tx if it helps.
+
+>> +
+>> +static struct regmap_config wcd938x_regmap_config = {
+>> +    .name = "wcd938x_csr",
+>> +    .reg_bits = 32,
+>> +    .val_bits = 8,
+>> +    .cache_type = REGCACHE_RBTREE,
+>> +    .reg_defaults = wcd938x_defaults,
+>> +    .num_reg_defaults = ARRAY_SIZE(wcd938x_defaults),
+>> +    .max_register = WCD938X_MAX_REGISTER,
+>> +    .readable_reg = wcd938x_readable_register,
+>> +    .writeable_reg = wcd938x_writeable_register,
+>> +    .volatile_reg = wcd938x_volatile_register,
+>> +    .can_multi_write = true,
+>> +};
+>> +
+>> +static const struct regmap_irq wcd938x_irqs[WCD938X_NUM_IRQS] = {
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_BUTTON_PRESS_DET, 0, 0x01),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_BUTTON_RELEASE_DET, 0, 0x02),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_ELECT_INS_REM_DET, 0, 0x04),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_ELECT_INS_REM_LEG_DET, 0, 0x08),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_SW_DET, 0, 0x10),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHR_OCP_INT, 0, 0x20),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHR_CNP_INT, 0, 0x40),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHL_OCP_INT, 0, 0x80),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHL_CNP_INT, 1, 0x01),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_EAR_CNP_INT, 1, 0x02),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_EAR_SCD_INT, 1, 0x04),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_AUX_CNP_INT, 1, 0x08),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_AUX_SCD_INT, 1, 0x10),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHL_PDM_WD_INT, 1, 0x20),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHR_PDM_WD_INT, 1, 0x40),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_AUX_PDM_WD_INT, 1, 0x80),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_LDORT_SCD_INT, 2, 0x01),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_MBHC_MOISTURE_INT, 2, 0x02),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHL_SURGE_DET_INT, 2, 0x04),
+>> +    REGMAP_IRQ_REG(WCD938X_IRQ_HPHR_SURGE_DET_INT, 2, 0x08),
+>> +};
+>> +
+>> +static struct regmap_irq_chip wcd938x_regmap_irq_chip = {
+>> +    .name = "wcd938x",
+>> +    .irqs = wcd938x_irqs,
+>> +    .num_irqs = ARRAY_SIZE(wcd938x_irqs),
+>> +    .num_regs = 3,
+>> +    .status_base = WCD938X_DIGITAL_INTR_STATUS_0,
+>> +    .mask_base = WCD938X_DIGITAL_INTR_MASK_0,
+>> +    .type_base = WCD938X_DIGITAL_INTR_LEVEL_0,
+>> +    .ack_base = WCD938X_DIGITAL_INTR_CLEAR_0,
+>> +    .use_ack = 1,
+>> +    .runtime_pm = true,
+>> +    .irq_drv_data = NULL,
+>> +};
+>> +
+>> +int wcd938x_io_init(struct wcd938x_sdw_priv *wcd)
+>> +{
+>> +    struct regmap *rm = wcd->wcd938x->regmap;
+>> +
+>> +    if (!wcd->is_tx)
+>> +        return 0;
+> 
+> and here you only initialize the registers for the tx case, so what 
+> happens you you dump the rx registers or try to set them with 
+> /sys/kernel/debug/regmap?
+
+wcd->wcd938x->regmap is regmap for tx device.
+There should be no regmap for rx device at all!
+
+There will be only one entry for wcd938x in /sys/kernel/debug/regmap 
+which is
+
+/sys/kernel/debug/regmap/sdw:0:217:10d:0:3-wcd938x_csr
+
+
+> 
+>> +
+>> +    regmap_update_bits(rm, WCD938X_SLEEP_CTL, 0x0E, 0x0E);
+>> +    regmap_update_bits(rm, WCD938X_SLEEP_CTL, 0x80, 0x80);
+>> +    /* 1 msec delay as per HW requirement */
+>> +    usleep_range(1000, 1010);
+>> +    regmap_update_bits(rm, WCD938X_SLEEP_CTL, 0x40, 0x40);
+>> +    /* 1 msec delay as per HW requirement */
+>> +    usleep_range(1000, 1010);
+>> +    regmap_update_bits(rm, WCD938X_LDORXTX_CONFIG, 0x10, 0x00);
+>> +    regmap_update_bits(rm, WCD938X_BIAS_VBG_FINE_ADJ,
+>> +                                0xF0, 0x80);
+>> +    regmap_update_bits(rm, WCD938X_ANA_BIAS, 0x80, 0x80);
+>> +    regmap_update_bits(rm, WCD938X_ANA_BIAS, 0x40, 0x40);
+>> +    /* 10 msec delay as per HW requirement */
+>> +    usleep_range(10000, 10010);
+>> +
+>> +    regmap_update_bits(rm, WCD938X_ANA_BIAS, 0x40, 0x00);
+>> +    regmap_update_bits(rm, WCD938X_HPH_NEW_INT_RDAC_GAIN_CTL,
+>> +                      0xF0, 0x00);
+>> +    regmap_update_bits(rm, WCD938X_HPH_NEW_INT_RDAC_HD2_CTL_L_NEW,
+>> +                      0x1F, 0x15);
+>> +    regmap_update_bits(rm, WCD938X_HPH_NEW_INT_RDAC_HD2_CTL_R_NEW,
+>> +                      0x1F, 0x15);
+>> +    regmap_update_bits(rm, WCD938X_HPH_REFBUFF_UHQA_CTL,
+>> +                      0xC0, 0x80);
+>> +    regmap_update_bits(rm, WCD938X_DIGITAL_CDC_DMIC_CTL,
+>> +                      0x02, 0x02);
+>> +
+>> +    regmap_update_bits(rm, 
+>> WCD938X_TX_COM_NEW_INT_TXFE_ICTRL_STG2CASC_ULP,
+>> +               0xFF, 0x14);
+>> +    regmap_update_bits(rm, 
+>> WCD938X_TX_COM_NEW_INT_TXFE_ICTRL_STG2MAIN_ULP,
+>> +               0x1F, 0x08);
+>> +
+>> +    regmap_update_bits(rm, WCD938X_DIGITAL_TX_REQ_FB_CTL_0, 0xFF, 0x55);
+>> +    regmap_update_bits(rm, WCD938X_DIGITAL_TX_REQ_FB_CTL_1, 0xFF, 0x44);
+>> +    regmap_update_bits(rm, WCD938X_DIGITAL_TX_REQ_FB_CTL_2, 0xFF, 0x11);
+>> +    regmap_update_bits(rm, WCD938X_DIGITAL_TX_REQ_FB_CTL_3, 0xFF, 0x00);
+>> +    regmap_update_bits(rm, WCD938X_DIGITAL_TX_REQ_FB_CTL_4, 0xFF, 0x00);
+>> +
+>> +    /* Set Noise Filter Resistor value */
+>> +    regmap_update_bits(rm, WCD938X_MICB1_TEST_CTL_1, 0xE0, 0xE0);
+>> +    regmap_update_bits(rm, WCD938X_MICB2_TEST_CTL_1, 0xE0, 0xE0);
+>> +    regmap_update_bits(rm, WCD938X_MICB3_TEST_CTL_1, 0xE0, 0xE0);
+>> +    regmap_update_bits(rm, WCD938X_MICB4_TEST_CTL_1, 0xE0, 0xE0);
+>> +
+>> +    regmap_update_bits(rm, WCD938X_TX_3_4_TEST_BLK_EN2, 0x01, 0x00);
+>> +    regmap_update_bits(rm, WCD938X_HPH_SURGE_HPHLR_SURGE_EN, 0xC0, 
+>> 0xC0);
+>> +
+>> +    return 0;
+>> +
+>> +}
+>> +
+>> +static int wcd938x_get_micb_vout_ctl_val(u32 micb_mv)
+>> +{
+>> +    /* min micbias voltage is 1V and maximum is 2.85V */
+>> +    if (micb_mv < 1000 || micb_mv > 2850)
+>> +        return -EINVAL;
+>> +
+>> +    return (micb_mv - 1000) / 50;
+>> +}
+>> +
+>> +static int wcd938x_set_micbias_data(struct wcd938x_priv *wcd938x)
+>> +{
+>> +    int vout_ctl_1, vout_ctl_2, vout_ctl_3, vout_ctl_4;
+>> +
+>> +    /* set micbias voltage */
+>> +    vout_ctl_1 = wcd938x_get_micb_vout_ctl_val(wcd938x->micb1_mv);
+>> +    vout_ctl_2 = wcd938x_get_micb_vout_ctl_val(wcd938x->micb2_mv);
+>> +    vout_ctl_3 = wcd938x_get_micb_vout_ctl_val(wcd938x->micb3_mv);
+>> +    vout_ctl_4 = wcd938x_get_micb_vout_ctl_val(wcd938x->micb4_mv);
+>> +    if (vout_ctl_1 < 0 || vout_ctl_2 < 0 || vout_ctl_3 < 0 || 
+>> vout_ctl_4 < 0)
+>> +        return -EINVAL;
+>> +
+>> +    regmap_update_bits(wcd938x->regmap, WCD938X_ANA_MICB1,
+>> +               WCD938X_MICB_VOUT_MASK, vout_ctl_1);
+>> +    regmap_update_bits(wcd938x->regmap, WCD938X_ANA_MICB2,
+>> +               WCD938X_MICB_VOUT_MASK, vout_ctl_2);
+>> +    regmap_update_bits(wcd938x->regmap, WCD938X_ANA_MICB3,
+>> +               WCD938X_MICB_VOUT_MASK, vout_ctl_3);
+>> +    regmap_update_bits(wcd938x->regmap, WCD938X_ANA_MICB4,
+>> +               WCD938X_MICB_VOUT_MASK, vout_ctl_4);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int wcd938x_soc_codec_rx_probe(struct snd_soc_component 
+>> *component)
+>> +{
+>> +    struct wcd938x_sdw_priv *wcd = 
+>> snd_soc_component_get_drvdata(component);
+>> +    struct wcd938x_priv *wcd938x = wcd->wcd938x;
+>> +
+>> +    snd_soc_component_init_regmap(component, wcd938x->regmap);
+>> +
+>> +    wcd938x->clsh_info = wcd_clsh_ctrl_alloc(component, WCD938X);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static irqreturn_t wcd938x_wd_handle_irq(int irq, void *data)
+>> +{
+>> +    return IRQ_HANDLED;
+>> +}
+>> +
+>> +static struct irq_chip wcd_irq_chip = {
+>> +    .name = "WCD938x",
+>> +};
+>> +
+>> +static int wcd_irq_chip_map(struct irq_domain *irqd, unsigned int virq,
+>> +            irq_hw_number_t hw)
+>> +{
+>> +    irq_set_chip_and_handler(virq, &wcd_irq_chip, handle_simple_irq);
+>> +    irq_set_nested_thread(virq, 1);
+>> +    irq_set_noprobe(virq);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static const struct irq_domain_ops wcd_domain_ops = {
+>> +    .map = wcd_irq_chip_map,
+>> +};
+>> +
+>> +static int wcd938x_irq_init(struct wcd938x_sdw_priv *data, struct 
+>> device *dev)
+>> +{
+>> +    struct wcd938x_priv *wcd = data->wcd938x;
+>> +
+>> +    wcd->virq = irq_domain_add_linear(NULL, 1, &wcd_domain_ops, NULL);
+>> +    if (!(wcd->virq)) {
+>> +        dev_err(dev, "%s: Failed to add IRQ domain\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    return devm_regmap_add_irq_chip(dev, wcd->regmap,
+>> +                    irq_create_mapping(wcd->virq, 0),
+>> +                    IRQF_ONESHOT, 0, &wcd938x_regmap_irq_chip,
+>> +                    &wcd->irq_chip);
+>> +}
+>> +
+>> +static int wcd938x_soc_codec_probe(struct snd_soc_component *component)
+> 
+> is this supposed to be soc_tx_codec_probe()?
+> 
+
+Yes, I will rename such fuctions explictly in next version to avoid 
+confusion.
+
+
+>> +{
+>> +    struct wcd938x_sdw_priv *wcd = 
+>> snd_soc_component_get_drvdata(component);
+>> +    struct wcd938x_priv *wcd938x = wcd->wcd938x;
+>> +    struct device *dev = component->dev;
+>> +    int ret, i;
+>> +
+>> +    wait_for_completion_timeout(&wcd->sdev->initialization_complete,
+>> +                    msecs_to_jiffies(3000));
+>> +
+>> +    snd_soc_component_init_regmap(component, wcd938x->regmap);
+>> +
+>> +    wcd938x->variant = snd_soc_component_read_field(component,
+>> +                         WCD938X_DIGITAL_EFUSE_REG_0,
+>> +                         WCD938X_ID_MASK);
+>> +
+>> +    /* Set all interrupts as edge triggered */
+>> +    for (i = 0; i < wcd938x_regmap_irq_chip.num_regs; i++) {
+>> +        regmap_write(wcd938x->regmap,
+>> +                 (WCD938X_DIGITAL_INTR_LEVEL_0 + i), 0);
+>> +    }
+>> +
+>> +    ret = wcd938x_irq_init(wcd, component->dev);
+>> +    if (ret) {
+>> +        dev_err(component->dev, "%s: IRQ init failed: %d\n",
+>> +            __func__, ret);
+>> +        return ret;
+>> +    }
+>> +
+>> +    wcd938x->hphr_pdm_wd_int = regmap_irq_get_virq(wcd938x->irq_chip,
+>> +                               WCD938X_IRQ_HPHR_PDM_WD_INT);
+>> +    wcd938x->hphl_pdm_wd_int = regmap_irq_get_virq(wcd938x->irq_chip,
+>> +                               WCD938X_IRQ_HPHL_PDM_WD_INT);
+>> +    wcd938x->aux_pdm_wd_int = regmap_irq_get_virq(wcd938x->irq_chip,
+>> +                               WCD938X_IRQ_AUX_PDM_WD_INT);
+>> +
+>> +    /* Request for watchdog interrupt */
+>> +    ret = request_threaded_irq(wcd938x->hphr_pdm_wd_int, NULL, 
+>> wcd938x_wd_handle_irq,
+>> +                   IRQF_ONESHOT | IRQF_TRIGGER_RISING,
+>> +                   "HPHR PDM WD INT", wcd938x);
+>> +    if (ret)
+>> +        dev_err(dev, "Failed to request HPHR WD interrupt (%d)\n", ret);
+>> +
+>> +    ret = request_threaded_irq(wcd938x->hphl_pdm_wd_int, NULL, 
+>> wcd938x_wd_handle_irq,
+>> +                   IRQF_ONESHOT | IRQF_TRIGGER_RISING,
+>> +                   "HPHL PDM WD INT", wcd938x);
+>> +    if (ret)
+>> +        dev_err(dev, "Failed to request HPHL WD interrupt (%d)\n", ret);
+>> +
+>> +    ret = request_threaded_irq(wcd938x->aux_pdm_wd_int, NULL, 
+>> wcd938x_wd_handle_irq,
+>> +                   IRQF_ONESHOT | IRQF_TRIGGER_RISING,
+>> +                   "AUX PDM WD INT", wcd938x);
+>> +    if (ret)
+>> +        dev_err(dev, "Failed to request Aux WD interrupt (%d)\n", ret);
+>> +
+>> +    /* Disable watchdog interrupt for HPH and AUX */
+>> +    disable_irq_nosync(wcd938x->hphr_pdm_wd_int);
+>> +    disable_irq_nosync(wcd938x->hphl_pdm_wd_int);
+>> +    disable_irq_nosync(wcd938x->aux_pdm_wd_int);
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +static const struct snd_soc_component_driver 
+>> soc_codec_dev_wcd938x_sdw_rx = {
+>> +    .name = "wcd938x_codec_rx",
+>> +    .probe = wcd938x_soc_codec_rx_probe,
+>> +};
+>> +
+>> +static const struct snd_soc_component_driver 
+>> soc_codec_dev_wcd938x_sdw_tx = {
+>> +    .name = "wcd938x_codec_tx",
+>> +    .probe = wcd938x_soc_codec_probe,
+>> +};
+>> +
+>> +static void wcd938x_dt_parse_micbias_info(struct device *dev, struct 
+>> wcd938x_priv *wcd)
+>> +{
+>> +    struct device_node *np = dev->of_node;
+>> +    u32 prop_val = 0;
+>> +    int rc = 0;
+>> +
+>> +    rc = of_property_read_u32(np, "qcom,micbias1-microvolt",  
+>> &prop_val);
+>> +    if (!rc)
+>> +        wcd->micb1_mv = prop_val/1000;
+>> +    else
+>> +        dev_info(dev, "%s: Micbias1 DT property not found\n", __func__);
+>> +
+>> +    rc = of_property_read_u32(np, "qcom,micbias2-microvolt",  
+>> &prop_val);
+>> +    if (!rc)
+>> +        wcd->micb2_mv = prop_val/1000;
+>> +    else
+>> +        dev_info(dev, "%s: Micbias2 DT property not found\n", __func__);
+>> +
+>> +    rc = of_property_read_u32(np, "qcom,micbias3-microvolt", &prop_val);
+>> +    if (!rc)
+>> +        wcd->micb3_mv = prop_val/1000;
+>> +    else
+>> +        dev_info(dev, "%s: Micbias3 DT property not found\n", __func__);
+>> +
+>> +    rc = of_property_read_u32(np, "qcom,micbias4-microvolt",  
+>> &prop_val);
+>> +    if (!rc)
+>> +        wcd->micb4_mv = prop_val/1000;
+>> +    else
+>> +        dev_info(dev, "%s: Micbias4 DT property not found\n", __func__);
+>> +}
+>> +
+>> +static int wcd938x_populate_dt_data(struct wcd938x_sdw_priv *wcd, 
+>> struct device *dev)
+>> +{
+>> +    struct wcd938x_priv *wcd938x = wcd->wcd938x;
+>> +    int ret;
+>> +
+>> +
+> 
+> extra lines
+> 
+>> +    wcd938x->reset_gpio = of_get_named_gpio(dev->of_node, 
+>> "reset-gpios", 0);
+>> +    if (wcd938x->reset_gpio < 0) {
+>> +        dev_err(dev, "Failed to get reset gpio: err = %d\n",
+>> +            wcd938x->reset_gpio);
+>> +        return wcd938x->reset_gpio;
+>> +    }
+>> +
+>> +    wcd938x->supplies[0].supply = "vdd-rxtx";
+>> +    wcd938x->supplies[1].supply = "vdd-io";
+>> +    wcd938x->supplies[2].supply = "vdd-buck";
+>> +    wcd938x->supplies[3].supply = "vdd-mic-bias";
+>> +
+>> +    ret = regulator_bulk_get(dev, WCD938X_MAX_SUPPLY, 
+>> wcd938x->supplies);
+>> +    if (ret) {
+>> +        dev_err(dev, "Failed to get supplies: err = %d\n", ret);
+>> +        return ret;
+>> +    }
+>> +
+>> +    ret = regulator_bulk_enable(WCD938X_MAX_SUPPLY, wcd938x->supplies);
+>> +    if (ret) {
+>> +        dev_err(dev, "Failed to enable supplies: err = %d\n", ret);
+>> +        return ret;
+>> +    }
+>> +
+>> +    wcd938x_dt_parse_micbias_info(dev, wcd938x);
+>> +    return 0;
+>> +}
+>> +
+>> +static int wcd938x_reset(struct wcd938x_sdw_priv *wcd, struct device 
+>> *dev)
+>> +{
+>> +    struct wcd938x_priv *wcd938x = wcd->wcd938x;
+>> +
+>> +    gpio_direction_output(wcd938x->reset_gpio, 0);
+>> +    /* 20us sleep required after pulling the reset gpio to LOW */
+>> +    usleep_range(20, 30);
+>> +    gpio_set_value(wcd938x->reset_gpio, 1);
+>> +    /* 20us sleep required after pulling the reset gpio to HIGH */
+>> +    usleep_range(20, 30);
+> 
+> so each Slave device has its own GPIOs and regulators?
+> 
+
+unfortunately No, reset gpio and regulators are common for the whole codec.
+
+
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int __wcd938x_init(struct wcd938x_sdw_priv *wcd, struct device 
+>> *dev)
+>> +{
+>> +    int ret;
+>> +    struct wcd938x_priv *wcd938x = wcd->wcd938x;
+>> +
+>> +    wcd938x_reset(wcd, dev);
+>> +
+>> +    wcd938x->regmap = devm_regmap_init_sdw(wcd->sdev, 
+>> &wcd938x_regmap_config);
+>> +    if (IS_ERR(wcd938x->regmap)) {
+>> +        dev_err(dev, "%s: Regmap init failed\n", __func__);
+>> +        return PTR_ERR(wcd938x->regmap);
+>> +    }
+>> +
+>> +    ret = wcd938x_set_micbias_data(wcd938x);
+>> +    if (ret < 0) {
+>> +        dev_err(dev, "%s: bad micbias data\n", __func__);
+>> +        return ret;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +int wcd938x_register_component(struct wcd938x_sdw_priv *wcd, struct 
+>> device *dev,
+>> +                   struct snd_soc_dai_driver *dai_driver)
+>> +{
+>> +    if (wcd->is_tx)
+>> +        return snd_soc_register_component(dev,
+>> +                          &soc_codec_dev_wcd938x_sdw_tx,
+>> +                          dai_driver, 1);
+>> +    else
+>> +        return snd_soc_register_component(dev,
+>> +                          &soc_codec_dev_wcd938x_sdw_rx,
+>> +                          dai_driver, 1);
+>> +}
+>> +
+>> +int wcd938x_handle_sdw_irq(struct wcd938x_sdw_priv *wcd)
+>> +{
+>> +    struct wcd938x_priv *wcd938x = wcd->wcd938x;
+>> +    struct irq_domain *slave_irq = wcd938x->virq;
+>> +    u32 sts1, sts2, sts3;
+>> +
+>> +    do {
+>> +        handle_nested_irq(irq_find_mapping(slave_irq, 0));
+>> +        regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_0, 
+>> &sts1);
+>> +        regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_1, 
+>> &sts2);
+>> +        regmap_read(wcd938x->regmap, WCD938X_DIGITAL_INTR_STATUS_2, 
+>> &sts3);
+>> +
+>> +    } while (sts1 || sts2 || sts3);
+> i
+> no timeout in case the hardware is stuck?
+> 
+Even if you timeout here that means the interrupt source is not cleared 
+yet, so we can potentially re-enter to this function subsequently.
+But I agree with you on the timeout for hardware stuck case, I will try 
+to add that in next version.
+
+
+>> +
+>> +    return IRQ_HANDLED;
+>> +}
+>> +
+>> +int wcd938x_init(struct wcd938x_sdw_priv *data)
+>> +{
+>> +    struct wcd938x_priv *wcd938x = NULL;
+> 
+> initialization doesn't seem needed
+> 
+Ack!
+
+>> +    struct device *dev = &data->sdev->dev;
+>> +    bool is_tx = data->is_tx;
+>> +    int ret;
+>> +
+>> +    if (!is_tx) {
+>> +        if (g_wcd938x) {
+>> +            data->wcd938x = g_wcd938x;
+>> +            return 0;
+>> +        } else {
+>> +            return -EPROBE_DEFER;
+>> +        }
+>> +    }
+>> +
+>> +    wcd938x = devm_kzalloc(dev, sizeof(struct wcd938x_priv),
+>> +                GFP_KERNEL);
+>> +    if (!wcd938x)
+>> +        return -ENOMEM;
+>> +
+>> +    data->wcd938x = wcd938x;
+>> +    g_wcd938x = wcd938x;
+>> +    wcd938x->dev = dev;
+>> +    ret = wcd938x_populate_dt_data(data, dev);
+>> +    if (ret) {
+>> +        dev_err(dev, "%s: Fail to obtain platform data\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    ret = __wcd938x_init(data, dev);
+>> +    if (ret) {
+>> +        dev_err(dev, "%s: Fail to init\n", __func__);
+>> +        return ret;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +int wcd938x_deinit(struct wcd938x_sdw_priv *wcd)
+>> +{
+>> +    struct wcd938x_priv *wcd938x = wcd->wcd938x;
+>> +
+>> +    if (!wcd->is_tx)
+>> +        wcd_clsh_ctrl_free(wcd938x->clsh_info);
+>> +
+>> +    g_wcd938x = NULL;
+>> +
+>> +    return 0;
+>> +}
+>> diff --git a/sound/soc/codecs/wcd938x.h b/sound/soc/codecs/wcd938x.h
+>> new file mode 100644
+>> index 000000000000..c373850f209e
+>> --- /dev/null
+>> +++ b/sound/soc/codecs/wcd938x.h
+>> @@ -0,0 +1,676 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+> 
+> GPL-2.0-only
+> 
+>> +#define WCD938X_MAX_SWR_CH_IDS    15
+> 
+> what is this value? SoundWire supports up to 8 channels.
+
+This is the virtual channel IDs given to group of channels on a port for 
+a particular function. ex:
+
+Channel ID WCD938X_HPH_L is for Channel 0 on port WCD938X_HPH_PORT
+Channel ID WCD938X_HPH_R is for Channel 1 on port WCD938X_HPH_PORT
+
+These IDs are internally used by the codec for mixer settings.
+
+they do not exactly reflect number of channels, they are just enums for 
+internal use.
+
+--srini
+
+
+
+
