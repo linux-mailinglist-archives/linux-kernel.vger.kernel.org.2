@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B570C344393
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 13:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B89C344483
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 14:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhCVMwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 08:52:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35334 "EHLO mail.kernel.org"
+        id S232855AbhCVNA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 09:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232601AbhCVMmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 08:42:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0340619C0;
-        Mon, 22 Mar 2021 12:40:36 +0000 (UTC)
+        id S232785AbhCVMsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 08:48:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DA1A619DA;
+        Mon, 22 Mar 2021 12:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616416837;
-        bh=FHa1J9t5tCz+3s8EjiMhNZ/0dmuK02gBH+MsIAjB0L4=;
+        s=korg; t=1616417060;
+        bh=OHwb5zHb+zB/R7UZ9w/02OGzuhi0sy3WgWSlnGKhrrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vIZEX7UVMFlTgXn49aa3qWXIupfNHbEh9BiVlYcNuw8dDZ5HMbvJOC+RQbmzs4hz4
-         aJLq6GFLUSPrul6kAlef0wV/iyREJ2ma4mTS7+xfWnqTy972Z+v07edjHFCZhi7KFB
-         MCFCj+dsTXjXRLZ/DtVGHyDH3+lHHv7MPLAKwuLs=
+        b=Cs1rFe2xNszVQfymeLBOTn1Dl0RPUTOeXJrQC4ubGwE+Mee9izks7I73WZC6+R4hN
+         J2BMfUL4JUSDXjbXyJ39biZG4OEYsmEFxbUmX+z0tgT2USgHRJepJooJfAjyrSfBOr
+         yLN11Bmi+hNKYx5E4yolFvUResfjHo0O/3d5r7QE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.10 140/157] x86/ioapic: Ignore IRQ2 again
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 03/43] ALSA: hda: generic: Fix the micmute led init state
 Date:   Mon, 22 Mar 2021 13:28:17 +0100
-Message-Id: <20210322121938.190165202@linuxfoundation.org>
+Message-Id: <20210322121920.042194369@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210322121933.746237845@linuxfoundation.org>
-References: <20210322121933.746237845@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+References: <20210322121919.936671417@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit a501b048a95b79e1e34f03cac3c87ff1e9f229ad upstream.
+commit 2bf44e0ee95f39cc54ea1b942f0a027e0181ca4e upstream.
 
-Vitaly ran into an issue with hotplugging CPU0 on an Amazon instance where
-the matrix allocator claimed to be out of vectors. He analyzed it down to
-the point that IRQ2, the PIC cascade interrupt, which is supposed to be not
-ever routed to the IO/APIC ended up having an interrupt vector assigned
-which got moved during unplug of CPU0.
+Recently we found the micmute led init state is not correct after
+freshly installing the ubuntu linux on a Lenovo AIO machine. The
+internal mic is not muted, but the micmute led is on and led mode is
+'follow mute'. If we mute internal mic, the led is keeping on, then
+unmute the internal mic, the led is off. And from then on, the
+micmute led will work correctly.
 
-The underlying issue is that IRQ2 for various reasons (see commit
-af174783b925 ("x86: I/O APIC: Never configure IRQ2" for details) is treated
-as a reserved system vector by the vector core code and is not accounted as
-a regular vector. The Amazon BIOS has an routing entry of pin2 to IRQ2
-which causes the IO/APIC setup to claim that interrupt which is granted by
-the vector domain because there is no sanity check. As a consequence the
-allocation counter of CPU0 underflows which causes a subsequent unplug to
-fail with:
+So the micmute led init state is not correct. The led is controlled
+by codec gpio (ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY), in the
+patch_realtek, the gpio data is set to 0x4 initially and the led is
+on with this data. In the hda_generic, the led_value is set to
+0 initially, suppose users set the 'capture switch' to on from
+user space and the micmute led should change to be off with this
+operation, but the check "if (val == spec->micmute_led.led_value)" in
+the call_micmute_led_update() will skip the led setting.
 
-  [ ... ] CPU 0 has 4294967295 vectors, 589 available. Cannot disable CPU
+To guarantee the led state will be set by the 1st time of changing
+"Capture Switch", set -1 to the init led_value.
 
-There is another sanity check missing in the matrix allocator, but the
-underlying root cause is that the IO/APIC code lost the IRQ2 ignore logic
-during the conversion to irqdomains.
-
-For almost 6 years nobody complained about this wreckage, which might
-indicate that this requirement could be lifted, but for any system which
-actually has a PIC IRQ2 is unusable by design so any routing entry has no
-effect and the interrupt cannot be connected to a device anyway.
-
-Due to that and due to history biased paranoia reasons restore the IRQ2
-ignore logic and treat it as non existent despite a routing entry claiming
-otherwise.
-
-Fixes: d32932d02e18 ("x86/irq: Convert IOAPIC to use hierarchical irqdomain interfaces")
-Reported-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210318192819.636943062@linutronix.de
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20210312041408.3776-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/apic/io_apic.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/pci/hda/hda_generic.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1033,6 +1033,16 @@ static int mp_map_pin_to_irq(u32 gsi, in
- 	if (idx >= 0 && test_bit(mp_irqs[idx].srcbus, mp_bus_not_pci)) {
- 		irq = mp_irqs[idx].srcbusirq;
- 		legacy = mp_is_legacy_irq(irq);
-+		/*
-+		 * IRQ2 is unusable for historical reasons on systems which
-+		 * have a legacy PIC. See the comment vs. IRQ2 further down.
-+		 *
-+		 * If this gets removed at some point then the related code
-+		 * in lapic_assign_system_vectors() needs to be adjusted as
-+		 * well.
-+		 */
-+		if (legacy && irq == PIC_CASCADE_IR)
-+			return -EINVAL;
- 	}
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -4029,7 +4029,7 @@ int snd_hda_gen_add_micmute_led(struct h
  
- 	mutex_lock(&ioapic_mutex);
+ 	spec->micmute_led.led_mode = MICMUTE_LED_FOLLOW_MUTE;
+ 	spec->micmute_led.capture = 0;
+-	spec->micmute_led.led_value = 0;
++	spec->micmute_led.led_value = -1;
+ 	spec->micmute_led.old_hook = spec->cap_sync_hook;
+ 	spec->micmute_led.update = hook;
+ 	spec->cap_sync_hook = update_micmute_led;
 
 
