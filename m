@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310D2344FD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91952344FDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 20:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhCVTZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 15:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhCVTZV (ORCPT
+        id S232191AbhCVT0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 15:26:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29004 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231676AbhCVT0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:25:21 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B1DC061574;
-        Mon, 22 Mar 2021 12:25:19 -0700 (PDT)
-Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lOQAv-00060F-Hz; Mon, 22 Mar 2021 20:25:17 +0100
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        workflows@vger.kernel.org,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
- <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: RFC: create mailing list "linux-issues" focussed on issues/bugs
- and regressions
-Message-ID: <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
-Date:   Mon, 22 Mar 2021 20:25:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Mar 2021 15:26:33 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MJ3bjF061866;
+        Mon, 22 Mar 2021 15:26:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=ZXzOB4AtbWH6ok2w4tbefXFbVHdFar+z3GCtgxuZ1R4=;
+ b=tGgzK/ibORyg3Hbr6sj6NsfK3REKIDPR/W6JmfJOj4H/FCMO7W8HqMVdBGxZClQX/spz
+ 5YcZd3NQm34+AnB3GheG/fe/oJ7RjMKarabESwym/v5bKh1wWRUT875+a2ttRxa1TiU6
+ Rl8bmve3qCgoLguXagsIAHMmhJNYcRLiGsb6UNeWNXUBRHHzUjEvjKEEIk/oC8GqVmOh
+ Dh/NO6ztWW++3HGsFIUpKKhsehs/4tsbOohjEGqYDu2ydnX3msyfCk8UNwpcVt+u4ExM
+ w7uUw1xhgxaUCTmgWGoT+Lj7ZQD1TwbIS4khPYaclR0ss+5eAM+f6jkrY2R44qwM2yeS mg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37dxc9t8nv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 15:26:18 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12MJ3vSd062996;
+        Mon, 22 Mar 2021 15:26:17 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37dxc9t8nb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 15:26:17 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12MJNRlo019308;
+        Mon, 22 Mar 2021 19:26:16 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 37df68a85p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Mar 2021 19:26:15 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12MJQDw049021402
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Mar 2021 19:26:13 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 076FB42041;
+        Mon, 22 Mar 2021 19:26:13 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 90F4942042;
+        Mon, 22 Mar 2021 19:26:12 +0000 (GMT)
+Received: from osiris (unknown [9.171.41.112])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 22 Mar 2021 19:26:12 +0000 (GMT)
+Date:   Mon, 22 Mar 2021 20:26:11 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] s390/crc32-vx: Couple of typo fixes
+Message-ID: <YFjvU0ocfwa9WLA7@osiris>
+References: <20210322130533.3805976-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616441120;4b7f5377;
-X-HE-SMSGID: 1lOQAv-00060F-Hz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322130533.3805976-1-unixbhaskar@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-22_11:2021-03-22,2021-03-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=816
+ lowpriorityscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 mlxscore=0 bulkscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103220138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22.03.21 19:32, Linus Torvalds wrote:
-> On Mon, Mar 22, 2021 at 8:18 AM Thorsten Leemhuis <linux@leemhuis.info> wrote:
->>
->>     I even requested a
->> "linux-regressions@vger.kernel.org" a while later, but didn't hear
->> anything back; and, sadly, about the same time I started having trouble
->> finding spare time for working on regression tracking. :-/
->
-> Honestly, I'd much prefer the name 'linux-regressions' as being much
-> more targeted than 'linux-issues'.
-
-That only solves one of the two problem I'm trying to solve (albeit the
-one that is more important to me). That way users still have no easy way
-to query for reports about issues that are no regressions – say
-something is broken and they have no idea if it once worked or never
-worked at all.
-
-> Make it clear that the list is only
-> for regressions that people can describe some way, rather than some
-> general "I have issues with xyz".
+On Mon, Mar 22, 2021 at 06:35:33PM +0530, Bhaskar Chowdhury wrote:
 > 
-> The more clear-cut the list is, the better, I think.
+> s/defintions/definitions/
+> s/intermedate/intermediate/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  arch/s390/crypto/crc32be-vx.S | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-I agree to the last point and yeah, maybe regressions are the more
-important problem we should work on – at least from the perspective of
-kernel development.  But from the users perspective (and
-reporting-issues.rst is written for that perspective) it feel a bit
-unsatisfying to not have a solution to query for existing report,
-regressions or not. Hmmmm...
-
-Ciao, Thorsten
+Applied, thanks.
