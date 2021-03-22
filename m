@@ -2,168 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08697343A78
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F204343A7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 08:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhCVHVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 03:21:41 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:23323 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhCVHVU (ORCPT
+        id S229956AbhCVHXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 03:23:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5105 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhCVHWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 03:21:20 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210322072118epoutp03dd549d7b906e51c247127706af862d29~umR-h-zVa1005810058epoutp03r
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 07:21:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210322072118epoutp03dd549d7b906e51c247127706af862d29~umR-h-zVa1005810058epoutp03r
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616397678;
-        bh=FHOZ4FboxVNbnwYVL48PTst9b6QCpMvI/+868hz5+nU=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=QnLC6U4tWY1gSOTqzWxyUj/kcHBeOuH8Z24QCiCgxr4HTmPhfwGWUspMOC0WWfduq
-         d5WU9ZWF1i+6z2up8EVqUWhX5z0ucyjLqkw1bvPY5x1isjO0yfaS+sGvwT29AqRI66
-         Z//jbGFXKuJcDVaUSqh4ziTKwe/PRzJxoq2W1j2g=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210322072117epcas2p328ce071ebc6fc65d5c0b5aa75ce5f2c7~umR_dxEeW3082530825epcas2p3J;
-        Mon, 22 Mar 2021 07:21:17 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.188]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4F3mBg6w6Yz4x9QJ; Mon, 22 Mar
-        2021 07:21:15 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        72.49.52511.B6548506; Mon, 22 Mar 2021 16:21:15 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210322072114epcas2p26ffb644ee3df243b337c6ae955599cfa~umR8P5E6B0581205812epcas2p28;
-        Mon, 22 Mar 2021 07:21:14 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210322072114epsmtrp28b77ddb76cfe33d2d8404e6a1186622b~umR8Ow5KE0445904459epsmtrp2R;
-        Mon, 22 Mar 2021 07:21:14 +0000 (GMT)
-X-AuditID: b6c32a48-a9948a800000cd1f-d3-6058456b8d0c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A0.A4.13470.A6548506; Mon, 22 Mar 2021 16:21:14 +0900 (KST)
-Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210322072114epsmtip17736b55ac5e130220955d2d3b90c9929~umR7vC2TP1823618236epsmtip13;
-        Mon, 22 Mar 2021 07:21:14 +0000 (GMT)
-From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
-To:     "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        <linux-mmc@vger.kernel.org>,
-        "'Rafael J . Wysocki'" <rjw@rjwysocki.net>
-Cc:     "'Adrian Hunter'" <adrian.hunter@intel.com>,
-        "'Linus Walleij'" <linus.walleij@linaro.org>,
-        "'Wolfram Sang'" <wsa+renesas@sang-engineering.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        "'Android Kernel Team'" <kernel-team@android.com>,
-        <stable@vger.kernel.org>,
-        =?ks_c_5601-1987?B?wMy788f2?= <sh425.lee@samsung.com>,
-        =?ks_c_5601-1987?B?vK29wsO2?= <sc.suh@samsung.com>,
-        =?ks_c_5601-1987?B?vK3Io7+1?= <hy50.seo@samsung.com>,
-        =?ks_c_5601-1987?B?sei6tMjG?= <bhoon95.kim@samsung.com>
-In-Reply-To: <20210310152900.149380-1-ulf.hansson@linaro.org>
-Subject: RE: [PATCH] mmc: core: Fix hanging on I/O during system suspend for
- removable cards
-Date:   Mon, 22 Mar 2021 16:21:13 +0900
-Message-ID: <006b01d71eeb$f16c6680$d4453380$@samsung.com>
+        Mon, 22 Mar 2021 03:22:50 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F3mBL68vzzY8f2;
+        Mon, 22 Mar 2021 15:20:58 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 22 Mar 2021 15:22:46 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Mon, 22 Mar 2021 15:22:45 +0800
+Subject: Re: [RFC PATCH v4 7/9] KVM: selftests: List all hugetlb src types
+ specified with page sizes
+To:     Andrew Jones <drjones@redhat.com>
+CC:     <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Ben Gardon" <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <yuzenghui@huawei.com>
+References: <20210302125751.19080-1-wangyanan55@huawei.com>
+ <20210302125751.19080-8-wangyanan55@huawei.com>
+ <20210312114938.zfwnux3kwz44fd2i@kamzik.brq.redhat.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <80acf061-bf2b-30b8-f2b0-03849304a83e@huawei.com>
+Date:   Mon, 22 Mar 2021 15:22:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ks_c_5601-1987"
+In-Reply-To: <20210312114938.zfwnux3kwz44fd2i@kamzik.brq.redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHdOhUB196LQ3U1VfE+AnKrSxL4AwI5OEDFqnGZihA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCJsWRmVeSWpSXmKPExsWy7bCmmW62a0SCwZf9qhYnn6xhs/i69Bmr
-        xerFD1gsdmwXsZjyZzmTxeVdc9gsjvzvZ7T43HuE0eLM6UusFl13bzBaLP33lsViwcZHjBbH
-        14Zb9J1zd+Dz2LZ7G6vH4j0vmTzuXNvD5rHlajuLR9+WVYwezxauZ/H4vEkugD0qxyYjNTEl
-        tUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6GAlhbLEnFKgUEBi
-        cbGSvp1NUX5pSapCRn5xia1SakFKToGhYYFecWJucWleul5yfq6VoYGBkSlQZUJOxoy5l9gK
-        jglUbOy8wt7AuIW3i5GTQ0LAROLqjY0sXYxcHEICOxglfvfOYYNwPjFKXHvwjR3C+cYosXz6
-        LaAyDrCWJYelIOJ7GSUmTf4I1fGCUeLvlC9sIHPZBLQlpj3czQpiiwiUS3yafBtsB7NAK4vE
-        wx0LWEASnAK2Egt2bmMGsYUF4iTWbNgDFmcRUJU4enoLWDOvgKXEwb5WFghbUOLkzCdgNrOA
-        kcSS1fOZIGx5ie1v5zBDPKQg8fPpMqjFVhIbL79mg6gRkZjd2cYMcoSEwBUOiQ2np7JBvOMi
-        sf2dKUSvsMSr41vYIWwpic/v9rJB2PUS+6Y2sEL09jBKPN33jxEiYSwx61k7I8QcZYkjt6Bu
-        45PoOPyXHSLMK9HRJgRRrSzxa9JkqE5JiZk377BPYFSaheSzWUg+m4Xks1lIPljAyLKKUSy1
-        oDg3PbXYqMAEObo3MYKTs5bHDsbZbz/oHWJk4mA8xCjBwawkwnsiOSRBiDclsbIqtSg/vqg0
-        J7X4EKMpMLAnMkuJJucD80NeSbyhqZGZmYGlqYWpmZGFkjhvkcGDeCGB9MSS1OzU1ILUIpg+
-        Jg5OqQYmRvOX+U0GRssmBYt9bTllmDVr+rFWYcZzldwz2K8vbTX66zTrwAEfk9i/zHt7/5a+
-        sv76Kb8xZVN2a/p7BnvLTWIPlh2acGPmk0eOOo++f5qu+6U34qRp/JuAJbqPp1w/vkrQ/IbA
-        iTVnp+ZqXZDaeX+B/pI7srafMoTztqfmNbxK4//+1zM3SXljRI+wxZm3XYeeVYne/Pz67v5X
-        1YxvT07YKx09jaFtIvv0i3eiytMWPj+dmCvUuM18k7FC6dy23rVsrqVBP5oL78ivSC53M568
-        QVMiNeU30wn2faXc91890A5mfSyzuPf0/zenws7VG6Wr2Ir2r7xiu2WTyIvGuHNvdonH3XzI
-        kKR0dXVSmRJLcUaioRZzUXEiAHBUiCJXBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLIsWRmVeSWpSXmKPExsWy7bCSnG6Wa0SCwdu1BhYnn6xhs/i69Bmr
-        xerFD1gsdmwXsZjyZzmTxeVdc9gsjvzvZ7T43HuE0eLM6UusFl13bzBaLP33lsViwcZHjBbH
-        14Zb9J1zd+Dz2LZ7G6vH4j0vmTzuXNvD5rHlajuLR9+WVYwezxauZ/H4vEkugD2KyyYlNSez
-        LLVI3y6BK2PG3EtsBccEKjZ2XmFvYNzC28XIwSEhYCKx5LBUFyMXh5DAbkaJXZ9OsHUxcgLF
-        JSVO7HzOCGELS9xvOcIKUfSMUeLswj9gCTYBbYlpD3ezgtgiApUSf9f3s4EUMQt0skjs73kH
-        NklIoI9R4uJXBxCbU8BWYsHObcwgtrBAjMSrs9/ABrEIqEocPb0FbBCvgKXEwb5WFghbUOLk
-        zCdgNjPQpY2Hu6FseYntb+cwQ1ynIPHz6TKoI6wkNl5+zQZRIyIxu7ONeQKj8Cwko2YhGTUL
-        yahZSFoWMLKsYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQIjlEtzR2M21d90DvEyMTB
-        eIhRgoNZSYT3RHJIghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtSi2Cy
-        TBycUg1MNeHKWZ72D/NSfnXu+3dkYdTuPb8P32x8cuMphwOvXZnsIckqnW37bb9PurfyDuOJ
-        iuJbDfJCz7Ick7ZHqFr1iPO+Kdty7u/1Q2LWX1IFpX+0aH3YJFu+avsbJx2dA7orNQNdDi5h
-        EP/2a/Elq1y/n8xNc2YsUpu1/43M4Ru7Clf8+OW38K/QPZussu/+UkoxNzWOm6f1JnGW8AXs
-        qznvcejb+eKSiJ8uETtmdOpNt6tQvstnovtQW9JGae6Ka1p2Wicst30O4vP6FvyrS99+hjpz
-        /Q+fQL+oenPH62yTzznaKO/Ls+HXNzEKL5q6uJHt3ymjvfM/7rnhm5KnzRVTt0vqQjuDXNrm
-        6AcVDeJKLMUZiYZazEXFiQB80Jo4QAMAAA==
-X-CMS-MailID: 20210322072114epcas2p26ffb644ee3df243b337c6ae955599cfa
-X-Msg-Generator: CA
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210310152931epcas2p1be7719eeaca8d14bf7a8244ff389bd39
-References: <CGME20210310152931epcas2p1be7719eeaca8d14bf7a8244ff389bd39@epcas2p1.samsung.com>
-        <20210310152900.149380-1-ulf.hansson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The mmc core uses a PM notifier to temporarily during system suspend, turn
-> off the card detection mechanism for removal/insertion of (e)MMC/SD/SDIO
-> cards. Additionally, the notifier may be used to remove an SDIO card
-> entirely, if a corresponding SDIO functional driver don't have the system
-> suspend/resume callbacks assigned. This behaviour has been around for a
-> very long time.
-> 
-> However, a recent bug report tells us there are problems with this
-> approach. More precisely, when receiving the PM_SUSPEND_PREPARE
-> notification, we may end up hanging on I/O to be completed, thus also
-> preventing the system from getting suspended.
-> 
-> In the end what happens, is that the cancel_delayed_work_sync() in
-> mmc_pm_notify() ends up waiting for mmc_rescan() to complete - and since
-> mmc_rescan() wants to claim the host, it needs to wait for the I/O to be
-> completed first.
-> 
-> Typically, this problem is triggered in Android, if there is ongoing I/O
-> while the user decides to suspend, resume and then suspend the system
-> again. This due to that after the resume, an mmc_rescan() work gets punted
-> to the workqueue, which job is to verify that the card remains inserted
-> after the system has resumed.
-> 
-> To fix this problem, userspace needs to become frozen to suspend the I/O,
-> prior to turning off the card detection mechanism. Therefore, let's drop
-> the PM notifiers for mmc subsystem altogether and rely on the card
-> detection to be turned off/on as a part of the system_freezable_wq, that
-> we are already using.
-> 
-> Moreover, to allow and SDIO card to be removed during system suspend,
-> let's manage this from a ->prepare() callback, assigned at the
-> mmc_host_class level. In this way, we can use the parent device (the
-> mmc_host_class device), to remove the card device that is the child, in
-> the
-> device_prepare() phase.
-> 
-> Reported-by: Kiwoong Kim <kwmad.kim@samsung.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-
-Reviewed-by: Kiwoong Kim <kwmad.kim@samsung.com>
-
-Thanks.
-Kiwoong Kim
-
+On 2021/3/12 19:49, Andrew Jones wrote:
+> On Tue, Mar 02, 2021 at 08:57:49PM +0800, Yanan Wang wrote:
+>> With VM_MEM_SRC_ANONYMOUS_HUGETLB, we currently can only use system
+>> default hugetlb pages to back the testing guest memory. In order to
+>> add flexibility, now list all the known hugetlb backing src types with
+>> different page sizes, so that we can specify use of hugetlb pages of the
+>> exact granularity that we want. And as all the known hugetlb page sizes
+>> are listed, it's appropriate for all architectures.
+>>
+>> Besides, the helper get_backing_src_pagesz() is added to get the
+>> granularity of different backing src types(anonumous, thp, hugetlb).
+>>
+>> Suggested-by: Ben Gardon <bgardon@google.com>
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> ---
+>>   .../testing/selftests/kvm/include/test_util.h | 18 +++++-
+>>   tools/testing/selftests/kvm/lib/kvm_util.c    |  2 +-
+>>   tools/testing/selftests/kvm/lib/test_util.c   | 59 +++++++++++++++----
+>>   3 files changed, 66 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
+>> index e087174eefe5..fade3130eb01 100644
+>> --- a/tools/testing/selftests/kvm/include/test_util.h
+>> +++ b/tools/testing/selftests/kvm/include/test_util.h
+>> @@ -71,16 +71,32 @@ enum vm_mem_backing_src_type {
+>>   	VM_MEM_SRC_ANONYMOUS,
+>>   	VM_MEM_SRC_ANONYMOUS_THP,
+>>   	VM_MEM_SRC_ANONYMOUS_HUGETLB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_16KB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_64KB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_512KB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_1MB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_8MB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_16MB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_32MB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_256MB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_512MB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_2GB,
+>> +	VM_MEM_SRC_ANONYMOUS_HUGETLB_16GB,
+>> +	NUM_SRC_TYPES,
+>>   };
+>>   
+>>   struct vm_mem_backing_src_alias {
+>>   	const char *name;
+>> -	enum vm_mem_backing_src_type type;
+>> +	uint32_t flag;
+>>   };
+>>   
+>>   bool thp_configured(void);
+>>   size_t get_trans_hugepagesz(void);
+>>   size_t get_def_hugetlb_pagesz(void);
+>> +const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
+>> +size_t get_backing_src_pagesz(uint32_t i);
+>>   void backing_src_help(void);
+>>   enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
+>>   
+>> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+>> index cc22c4ab7d67..b91c8e3a7ee1 100644
+>> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+>> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+>> @@ -757,7 +757,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>>   	region->mmap_start = mmap(NULL, region->mmap_size,
+>>   				  PROT_READ | PROT_WRITE,
+>>   				  MAP_PRIVATE | MAP_ANONYMOUS
+>> -				  | (src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB ? MAP_HUGETLB : 0),
+>> +				  | vm_mem_backing_src_alias(src_type)->flag,
+>>   				  -1, 0);
+>>   	TEST_ASSERT(region->mmap_start != MAP_FAILED,
+>>   		    "test_malloc failed, mmap_start: %p errno: %i",
+>> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+>> index 80d68dbd72d2..df8a42eff1f8 100644
+>> --- a/tools/testing/selftests/kvm/lib/test_util.c
+>> +++ b/tools/testing/selftests/kvm/lib/test_util.c
+>> @@ -11,6 +11,7 @@
+>>   #include <stdlib.h>
+>>   #include <time.h>
+>>   #include <sys/stat.h>
+>> +#include <linux/mman.h>
+>>   #include "linux/kernel.h"
+>>   
+>>   #include "test_util.h"
+>> @@ -112,12 +113,6 @@ void print_skip(const char *fmt, ...)
+>>   	puts(", skipping test");
+>>   }
+>>   
+>> -const struct vm_mem_backing_src_alias backing_src_aliases[] = {
+>> -	{"anonymous", VM_MEM_SRC_ANONYMOUS,},
+>> -	{"anonymous_thp", VM_MEM_SRC_ANONYMOUS_THP,},
+>> -	{"anonymous_hugetlb", VM_MEM_SRC_ANONYMOUS_HUGETLB,},
+>> -};
+>> -
+>>   bool thp_configured(void)
+>>   {
+>>   	int ret;
+>> @@ -180,22 +175,64 @@ size_t get_def_hugetlb_pagesz(void)
+>>   	return 0;
+>>   }
+>>   
+>> +const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i)
+>> +{
+>> +	static const struct vm_mem_backing_src_alias aliases[] = {
+>> +		{ "anonymous",               0                            },
+>> +		{ "anonymous_thp",           0                            },
+>> +		{ "anonymous_hugetlb",       MAP_HUGETLB                  },
+>> +		{ "anonymous_hugetlb_16kb",  MAP_HUGETLB | MAP_HUGE_16KB  },
+>> +		{ "anonymous_hugetlb_64kb",  MAP_HUGETLB | MAP_HUGE_64KB  },
+>> +		{ "anonymous_hugetlb_512kb", MAP_HUGETLB | MAP_HUGE_512KB },
+>> +		{ "anonymous_hugetlb_1mb",   MAP_HUGETLB | MAP_HUGE_1MB   },
+>> +		{ "anonymous_hugetlb_2mb",   MAP_HUGETLB | MAP_HUGE_2MB   },
+>> +		{ "anonymous_hugetlb_8mb",   MAP_HUGETLB | MAP_HUGE_8MB   },
+>> +		{ "anonymous_hugetlb_16mb",  MAP_HUGETLB | MAP_HUGE_16MB  },
+>> +		{ "anonymous_hugetlb_32mb",  MAP_HUGETLB | MAP_HUGE_32MB  },
+>> +		{ "anonymous_hugetlb_256mb", MAP_HUGETLB | MAP_HUGE_256MB },
+>> +		{ "anonymous_hugetlb_512mb", MAP_HUGETLB | MAP_HUGE_512MB },
+>> +		{ "anonymous_hugetlb_1gb",   MAP_HUGETLB | MAP_HUGE_1GB   },
+>> +		{ "anonymous_hugetlb_2gb",   MAP_HUGETLB | MAP_HUGE_2GB   },
+>> +		{ "anonymous_hugetlb_16gb",  MAP_HUGETLB | MAP_HUGE_16GB  },
+>> +	};
+>> +	_Static_assert(ARRAY_SIZE(aliases) == NUM_SRC_TYPES,
+>> +		       "Missing new backing src types?");
+>> +
+>> +	TEST_ASSERT(i < NUM_SRC_TYPES, "Backing src type ID %d too big", i);
+>> +
+>> +	return &aliases[i];
+>> +}
+>> +
+>> +size_t get_backing_src_pagesz(uint32_t i)
+>> +{
+>> +	uint32_t flag = vm_mem_backing_src_alias(i)->flag;
+>> +
+>> +	if (i == VM_MEM_SRC_ANONYMOUS)
+>> +		return getpagesize();
+>> +	if (i == VM_MEM_SRC_ANONYMOUS_THP)
+>> +		return get_trans_hugepagesz();
+>> +	if (i == VM_MEM_SRC_ANONYMOUS_HUGETLB)
+>> +		return get_def_hugetlb_pagesz();
+> nit: a switch would look nicer (IMHO)
+Ok, will change.
+>> +
+>> +	return MAP_HUGE_PAGE_SIZE(flag);
+>> +}
+>> +
+>>   void backing_src_help(void)
+>>   {
+>>   	int i;
+>>   
+>>   	printf("Available backing src types:\n");
+>> -	for (i = 0; i < ARRAY_SIZE(backing_src_aliases); i++)
+>> -		printf("\t%s\n", backing_src_aliases[i].name);
+>> +		for (i = 0; i < NUM_SRC_TYPES; i++)
+>> +			printf("\t%s\n", vm_mem_backing_src_alias(i)->name);
+> What happened with the indentation here?
+Thanks for pointing out this.
+It was a stupid mistake, I will fix it.
+>>   }
+>>   
+>>   enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name)
+>>   {
+>>   	int i;
+>>   
+>> -	for (i = 0; i < ARRAY_SIZE(backing_src_aliases); i++)
+>> -		if (!strcmp(type_name, backing_src_aliases[i].name))
+>> -			return backing_src_aliases[i].type;
+>> +	for (i = 0; i < NUM_SRC_TYPES; i++)
+>> +		if (!strcmp(type_name, vm_mem_backing_src_alias(i)->name))
+>> +			return i;
+>>   
+>>   	backing_src_help();
+>>   	TEST_FAIL("Unknown backing src type: %s", type_name);
+>> -- 
+>> 2.23.0
+>>
+> Otherwise
+>
+> Reviewed-by: Andrew Jones <drjones@redhat.com>
+Thanks,
+Yanan
+>
+> .
