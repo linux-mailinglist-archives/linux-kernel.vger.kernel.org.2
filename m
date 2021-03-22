@@ -2,189 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC913435F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 01:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950393435FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 01:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhCVA2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Mar 2021 20:28:00 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3312 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhCVA1z (ORCPT
+        id S229901AbhCVAaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Mar 2021 20:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhCVA3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Mar 2021 20:27:55 -0400
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F3Zy501kYz14714;
-        Mon, 22 Mar 2021 08:24:45 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 22 Mar 2021 08:27:52 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Mar 2021 08:27:52 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2106.013;
- Mon, 22 Mar 2021 08:27:52 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        chenjiashang <chenjiashang@huawei.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "will@kernel.org" <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: =?utf-8?B?UkU6IEEgcHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSDvvJ8=?=
-Thread-Topic: =?utf-8?B?QSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhhcmR3YXJlIO+8nw==?=
-Thread-Index: AQHXGtwEduPlUZeCNUCbiy3s/+KwAaqHJckAgADDZTCAAA0+AIABZ4Ng//+HOQCAAIduIP//gKoAgACMgPD///biAAC1Z3dwAAIzCpA=
-Date:   Mon, 22 Mar 2021 00:27:52 +0000
-Message-ID: <3440f8216ece4af78cfb9809408c771e@huawei.com>
-References: <670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com>
- <FB4E11A5-84D4-4DAF-889E-FAA1BCD2E66F@gmail.com>
- <6a218e7fe42d41489d02f0b4e3ad2756@huawei.com>
- <98DB71EF-FF98-4509-85EC-26FF50825A58@gmail.com>
- <4d1c3bc0418e48b1b9d44799d65ea375@huawei.com>
- <MWHPR11MB18860801196A9319EBD96AF68C699@MWHPR11MB1886.namprd11.prod.outlook.com>
- <d7bb4ab26b8542c698926b7a0a3fc12c@huawei.com>
- <MWHPR11MB18861A144C085677931922018C699@MWHPR11MB1886.namprd11.prod.outlook.com>
- <e5b262c1ee14481ab68074be2a76b9d9@huawei.com>
- <55E334BA-C6D2-4892-9207-32654FBF4360@gmail.com> 
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.151.207]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sun, 21 Mar 2021 20:29:36 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C91DC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 17:29:36 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so10234326pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Mar 2021 17:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=mN9M2gHDmHAMZP+50/Nsn8lRknSmspKGtmjuk7ePwS4=;
+        b=LIWwyHHNktv8GP6XKK9oeK5MSL/7YlonGPEGcdfj73hiYJ3jW/UjEflWYG7ADC9ung
+         +gQJhzdmo+TJ+pv7YoE+5JEPfYaCTZVrRo9hUj8H39b6bjycfjCDcvuoImxhv/1B9AxF
+         F6hetDo8fEmbCZnSEQU3nAaVWQwEN1xZ6u7FE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=mN9M2gHDmHAMZP+50/Nsn8lRknSmspKGtmjuk7ePwS4=;
+        b=NLCxWOkcXobQQCzNWmXOuxbgy0oMrgrZ1ocr76XPlxBEzMHS4hhk9b83iYJHLxwFcD
+         Ongi721f0IKH/nY5+MuyvEcmiOaljDlZ2mHJXqm9+evTMgXpnLx3gY7A+9WIQgodvwzA
+         ZhtbNi1/ePONjmS/kZzI19z7N6WsgebYkM6lwxD3gESEwT9dOonTawfPqSCBvYOP6BPT
+         SXRJ8JdLGdmWUP5Ojex02hhh486iyyLcIg7i7mobj5Q7yuwOgrOjgnCX2sV/xPZ0LsZC
+         wK5ecrXLYwVeZSxUxnHQwTkA3jZRuDYUsj2PTXDmcB7aguhq1YJbk3gYKge2k8+3lc3M
+         XiSQ==
+X-Gm-Message-State: AOAM532N+tOTVHDliId+G1BFEkGhy5NTjrLXQtPzFM85pM4BtbM8Chzj
+        GiA39ODiaU7CSTMTfq7aBcxvgu/DHUgMyw==
+X-Google-Smtp-Source: ABdhPJyZ/jN5TaWP814l7V73C6xJ4pkB8X56MyPwnqT5f4D8rK22D0Wcv1lAfC6UQf3ARiG2+GsELQ==
+X-Received: by 2002:a17:903:228c:b029:e6:4c7e:1cbc with SMTP id b12-20020a170903228cb02900e64c7e1cbcmr24592365plh.38.1616372976026;
+        Sun, 21 Mar 2021 17:29:36 -0700 (PDT)
+Received: from localhost (2001-44b8-1113-6700-b0f2-84a1-ce9a-a0fd.static.ipv6.internode.on.net. [2001:44b8:1113:6700:b0f2:84a1:ce9a:a0fd])
+        by smtp.gmail.com with ESMTPSA id i10sm12299634pgo.75.2021.03.21.17.29.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 17:29:35 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, kasan-dev@googlegroups.com,
+        christophe.leroy@csgroup.eu, aneesh.kumar@linux.ibm.com
+Subject: Re: [PATCH v11 1/6] kasan: allow an architecture to disable inline instrumentation
+In-Reply-To: <20210320014606.GB77072@balbir-desktop>
+References: <20210319144058.772525-1-dja@axtens.net> <20210319144058.772525-2-dja@axtens.net> <20210320014606.GB77072@balbir-desktop>
+Date:   Mon, 22 Mar 2021 11:29:32 +1100
+Message-ID: <87r1k8av4j.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTG9uZ3BlbmcgKE1pa2Us
-IENsb3VkIEluZnJhc3RydWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gU2VudDogTW9u
-ZGF5LCBNYXJjaCAyMiwgMjAyMSA3OjUxIEFNDQo+IFRvOiAnTmFkYXYgQW1pdCcgPG5hZGF2LmFt
-aXRAZ21haWwuY29tPg0KPiBDYzogVGlhbiwgS2V2aW4gPGtldmluLnRpYW5AaW50ZWwuY29tPjsg
-Y2hlbmppYXNoYW5nDQo+IDxjaGVuamlhc2hhbmdAaHVhd2VpLmNvbT47IERhdmlkIFdvb2Rob3Vz
-ZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz47DQo+IGlvbW11QGxpc3RzLmxpbnV4LWZvdW5kYXRpb24u
-b3JnOyBMS01MIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsNCj4gYWxleC53aWxsaWFt
-c29uQHJlZGhhdC5jb207IEdvbmdsZWkgKEFyZWkpIDxhcmVpLmdvbmdsZWlAaHVhd2VpLmNvbT47
-DQo+IHdpbGxAa2VybmVsLm9yZzsgJ0x1IEJhb2x1JyA8YmFvbHUubHVAbGludXguaW50ZWwuY29t
-PjsgJ0pvZXJnIFJvZWRlbCcNCj4gPGpvcm9AOGJ5dGVzLm9yZz4NCj4gU3ViamVjdDogUkU6IEEg
-cHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSDvvJ8NCj4gDQo+IEhpIE5hZGF2LA0KPiAN
-Cj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IE5hZGF2IEFtaXQgW21h
-aWx0bzpuYWRhdi5hbWl0QGdtYWlsLmNvbV0NCj4gPiBTZW50OiBGcmlkYXksIE1hcmNoIDE5LCAy
-MDIxIDEyOjQ2IEFNDQo+ID4gVG86IExvbmdwZW5nIChNaWtlLCBDbG91ZCBJbmZyYXN0cnVjdHVy
-ZSBTZXJ2aWNlIFByb2R1Y3QgRGVwdC4pDQo+ID4gPGxvbmdwZW5nMkBodWF3ZWkuY29tPg0KPiA+
-IENjOiBUaWFuLCBLZXZpbiA8a2V2aW4udGlhbkBpbnRlbC5jb20+OyBjaGVuamlhc2hhbmcNCj4g
-PiA8Y2hlbmppYXNoYW5nQGh1YXdlaS5jb20+OyBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJh
-ZGVhZC5vcmc+Ow0KPiA+IGlvbW11QGxpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnOyBMS01MIDxs
-aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsNCj4gPiBhbGV4LndpbGxpYW1zb25AcmVkaGF0
-LmNvbTsgR29uZ2xlaSAoQXJlaSkgPGFyZWkuZ29uZ2xlaUBodWF3ZWkuY29tPjsNCj4gPiB3aWxs
-QGtlcm5lbC5vcmcNCj4gPiBTdWJqZWN0OiBSZTogQSBwcm9ibGVtIG9mIEludGVsIElPTU1VIGhh
-cmR3YXJlIO+8nw0KPiA+DQo+ID4NCj4gPg0KPiA+ID4gT24gTWFyIDE4LCAyMDIxLCBhdCAyOjI1
-IEFNLCBMb25ncGVuZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUNCj4gPiA+IFNlcnZpY2UN
-Cj4gPiBQcm9kdWN0IERlcHQuKSA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+IHdyb3RlOg0KPiA+ID4N
-Cj4gPiA+DQo+ID4gPg0KPiA+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPj4g
-RnJvbTogVGlhbiwgS2V2aW4gW21haWx0bzprZXZpbi50aWFuQGludGVsLmNvbV0NCj4gPiA+PiBT
-ZW50OiBUaHVyc2RheSwgTWFyY2ggMTgsIDIwMjEgNDo1NiBQTQ0KPiA+ID4+IFRvOiBMb25ncGVu
-ZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUgU2VydmljZSBQcm9kdWN0IERlcHQuKQ0KPiA+
-ID4+IDxsb25ncGVuZzJAaHVhd2VpLmNvbT47IE5hZGF2IEFtaXQgPG5hZGF2LmFtaXRAZ21haWwu
-Y29tPg0KPiA+ID4+IENjOiBjaGVuamlhc2hhbmcgPGNoZW5qaWFzaGFuZ0BodWF3ZWkuY29tPjsg
-RGF2aWQgV29vZGhvdXNlDQo+ID4gPj4gPGR3bXcyQGluZnJhZGVhZC5vcmc+OyBpb21tdUBsaXN0
-cy5saW51eC1mb3VuZGF0aW9uLm9yZzsgTEtNTA0KPiA+ID4+IDxsaW51eC1rZXJuZWxAdmdlci5r
-ZXJuZWwub3JnPjsgYWxleC53aWxsaWFtc29uQHJlZGhhdC5jb207IEdvbmdsZWkNCj4gPiA+PiAo
-QXJlaSkgPGFyZWkuZ29uZ2xlaUBodWF3ZWkuY29tPjsgd2lsbEBrZXJuZWwub3JnDQo+ID4gPj4g
-U3ViamVjdDogUkU6IEEgcHJvYmxlbSBvZiBJbnRlbCBJT01NVSBoYXJkd2FyZSDvvJ8NCj4gPiA+
-Pg0KPiA+ID4+PiBGcm9tOiBMb25ncGVuZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUgU2Vy
-dmljZSBQcm9kdWN0IERlcHQuKQ0KPiA+ID4+PiA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+ID4g
-Pj4+DQo+ID4gPj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4+Pj4gRnJvbTog
-VGlhbiwgS2V2aW4gW21haWx0bzprZXZpbi50aWFuQGludGVsLmNvbV0NCj4gPiA+Pj4+IFNlbnQ6
-IFRodXJzZGF5LCBNYXJjaCAxOCwgMjAyMSA0OjI3IFBNDQo+ID4gPj4+PiBUbzogTG9uZ3Blbmcg
-KE1pa2UsIENsb3VkIEluZnJhc3RydWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPiA+
-Pj4+IDxsb25ncGVuZzJAaHVhd2VpLmNvbT47IE5hZGF2IEFtaXQgPG5hZGF2LmFtaXRAZ21haWwu
-Y29tPg0KPiA+ID4+Pj4gQ2M6IGNoZW5qaWFzaGFuZyA8Y2hlbmppYXNoYW5nQGh1YXdlaS5jb20+
-OyBEYXZpZCBXb29kaG91c2UNCj4gPiA+Pj4+IDxkd213MkBpbmZyYWRlYWQub3JnPjsgaW9tbXVA
-bGlzdHMubGludXgtZm91bmRhdGlvbi5vcmc7IExLTUwNCj4gPiA+Pj4+IDxsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnPjsgYWxleC53aWxsaWFtc29uQHJlZGhhdC5jb207DQo+ID4gPj4+PiBH
-b25nbGVpDQo+ID4gPj4+IChBcmVpKQ0KPiA+ID4+Pj4gPGFyZWkuZ29uZ2xlaUBodWF3ZWkuY29t
-Pjsgd2lsbEBrZXJuZWwub3JnDQo+ID4gPj4+PiBTdWJqZWN0OiBSRTogQSBwcm9ibGVtIG9mIElu
-dGVsIElPTU1VIGhhcmR3YXJlIO+8nw0KPiA+ID4+Pj4NCj4gPiA+Pj4+PiBGcm9tOiBpb21tdSA8
-aW9tbXUtYm91bmNlc0BsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZz4gT24gQmVoYWxmDQo+ID4g
-Pj4+Pj4gT2YgTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3RydWN0dXJlIFNlcnZpY2UgUHJv
-ZHVjdCBEZXB0LikNCj4gPiA+Pj4+Pg0KPiA+ID4+Pj4+PiAyLiBDb25zaWRlciBlbnN1cmluZyB0
-aGF0IHRoZSBwcm9ibGVtIGlzIG5vdCBzb21laG93IHJlbGF0ZWQgdG8NCj4gPiA+Pj4+Pj4gcXVl
-dWVkIGludmFsaWRhdGlvbnMuIFRyeSB0byB1c2UgX19pb21tdV9mbHVzaF9pb3RsYigpIGluc3Rl
-YWQNCj4gPiA+Pj4+Pj4gb2YNCj4gPiA+Pj4+IHFpX2ZsdXNoX2lvdGxiKCkuDQo+ID4gPj4+Pj4+
-DQo+ID4gPj4+Pj4NCj4gPiA+Pj4+PiBJIHRyaWVkIHRvIGZvcmNlIHRvIHVzZSBfX2lvbW11X2Zs
-dXNoX2lvdGxiKCksIGJ1dCBtYXliZQ0KPiA+ID4+Pj4+IHNvbWV0aGluZyB3cm9uZywgdGhlIHN5
-c3RlbSBjcmFzaGVkLCBzbyBJIHByZWZlciB0byBsb3dlciB0aGUNCj4gPiA+Pj4+PiBwcmlvcml0
-eSBvZiB0aGlzDQo+ID4gPj4+IG9wZXJhdGlvbi4NCj4gPiA+Pj4+Pg0KPiA+ID4+Pj4NCj4gPiA+
-Pj4+IFRoZSBWVC1kIHNwZWMgY2xlYXJseSBzYXlzIHRoYXQgcmVnaXN0ZXItYmFzZWQgaW52YWxp
-ZGF0aW9uIGNhbg0KPiA+ID4+Pj4gYmUgdXNlZCBvbmx5DQo+ID4gPj4+IHdoZW4NCj4gPiA+Pj4+
-IHF1ZXVlZC1pbnZhbGlkYXRpb25zIGFyZSBub3QgZW5hYmxlZC4gSW50ZWwtSU9NTVUgZHJpdmVy
-IGRvZXNuJ3QNCj4gPiA+Pj4+IHByb3ZpZGUNCj4gPiA+Pj4gYW4NCj4gPiA+Pj4+IG9wdGlvbiB0
-byBkaXNhYmxlIHF1ZXVlZC1pbnZhbGlkYXRpb24gdGhvdWdoLCB3aGVuIHRoZSBoYXJkd2FyZQ0K
-PiA+ID4+Pj4gaXMNCj4gPiA+Pj4gY2FwYWJsZS4gSWYgeW91DQo+ID4gPj4+PiByZWFsbHkgd2Fu
-dCB0byB0cnksIHR3ZWFrIHRoZSBjb2RlIGluIGludGVsX2lvbW11X2luaXRfcWkuDQo+ID4gPj4+
-Pg0KPiA+ID4+Pg0KPiA+ID4+PiBIaSBLZXZpbiwNCj4gPiA+Pj4NCj4gPiA+Pj4gVGhhbmtzIHRv
-IHBvaW50IG91dCB0aGlzLiBEbyB5b3UgaGF2ZSBhbnkgaWRlYXMgYWJvdXQgdGhpcyBwcm9ibGVt
-ID8NCj4gPiA+Pj4gSSB0cmllZCB0byBkZXNjcmlwdCB0aGUgcHJvYmxlbSBtdWNoIGNsZWFyIGlu
-IG15IHJlcGx5IHRvIEFsZXgsDQo+ID4gPj4+IGhvcGUgeW91IGNvdWxkIGhhdmUgYSBsb29rIGlm
-IHlvdSdyZSBpbnRlcmVzdGVkLg0KPiA+ID4+Pg0KPiA+ID4+DQo+ID4gPj4gYnR3IEkgc2F3IHlv
-dSB1c2VkIDQuMTgga2VybmVsIGluIHRoaXMgdGVzdC4gV2hhdCBhYm91dCBsYXRlc3Qga2VybmVs
-Pw0KPiA+ID4+DQo+ID4gPg0KPiA+ID4gTm90IHRlc3QgeWV0LiBJdCdzIGhhcmQgdG8gdXBncmFk
-ZSBrZXJuZWwgaW4gb3VyIGVudmlyb25tZW50Lg0KPiA+ID4NCj4gPiA+PiBBbHNvIG9uZSB3YXkg
-dG8gc2VwYXJhdGUgc3cvaHcgYnVnIGlzIHRvIHRyYWNlIHRoZSBsb3cgbGV2ZWwNCj4gPiA+PiBp
-bnRlcmZhY2UgKGUuZy4sDQo+ID4gPj4gcWlfZmx1c2hfaW90bGIpIHdoaWNoIGFjdHVhbGx5IHNl
-bmRzIGludmFsaWRhdGlvbiBkZXNjcmlwdG9ycyB0bw0KPiA+ID4+IHRoZSBJT01NVSBoYXJkd2Fy
-ZS4gQ2hlY2sgdGhlIHdpbmRvdyBiZXR3ZWVuIGIpIGFuZCBjKSBhbmQgc2VlDQo+ID4gPj4gd2hl
-dGhlciB0aGUgc29mdHdhcmUgZG9lcyB0aGUgcmlnaHQgdGhpbmcgYXMgZXhwZWN0ZWQgdGhlcmUu
-DQo+ID4gPj4NCj4gPiA+DQo+ID4gPiBXZSBhZGQgc29tZSBsb2cgaW4gaW9tbXUgZHJpdmVyIHRo
-ZXNlIGRheXMsIHRoZSBzb2Z0d2FyZSBzZWVtcyBmaW5lLg0KPiA+ID4gQnV0IHdlIGRpZG4ndCBs
-b29rIGluc2lkZSB0aGUgcWlfc3VibWl0X3N5bmMgeWV0LCBJJ2xsIHRyeSBpdCB0b25pZ2h0Lg0K
-PiA+DQo+ID4gU28gaGVyZSBpcyBteSBndWVzczoNCj4gPg0KPiA+IEludGVsIHByb2JhYmx5IHVz
-ZWQgYXMgYSBiYXNpcyBmb3IgdGhlIElPVExCIGFuIGltcGxlbWVudGF0aW9uIG9mIHNvbWUNCj4g
-PiBvdGhlcg0KPiA+IChyZWd1bGFyKSBUTEIgZGVzaWduLg0KPiA+DQo+ID4gSW50ZWwgU0RNIHNh
-eXMgcmVnYXJkaW5nIFRMQnMgKDQuMTAuNC4yIOKAnFJlY29tbWVuZGVkIEludmFsaWRhdGlvbuKA
-nSk6DQo+ID4NCj4gPiAiU29mdHdhcmUgd2lzaGluZyB0byBwcmV2ZW50IHRoaXMgdW5jZXJ0YWlu
-dHkgc2hvdWxkIG5vdCB3cml0ZSB0byBhDQo+ID4gcGFnaW5nLXN0cnVjdHVyZSBlbnRyeSBpbiBh
-IHdheSB0aGF0IHdvdWxkIGNoYW5nZSwgZm9yIGFueSBsaW5lYXINCj4gPiBhZGRyZXNzLCBib3Ro
-IHRoZSBwYWdlIHNpemUgYW5kIGVpdGhlciB0aGUgcGFnZSBmcmFtZSwgYWNjZXNzIHJpZ2h0cywg
-b3Igb3RoZXINCj4gYXR0cmlidXRlcy7igJ0NCj4gPg0KPiA+DQo+ID4gTm93IHRoZSBhZm9yZW1l
-bnRpb25lZCB1bmNlcnRhaW50eSBpcyBhIGJpdCBkaWZmZXJlbnQgKG11bHRpcGxlDQo+ID4gKnZh
-bGlkKiB0cmFuc2xhdGlvbnMgb2YgYSBzaW5nbGUgYWRkcmVzcykuIFlldCwgcGVyaGFwcyB0aGlz
-IGlzIHlldA0KPiA+IGFub3RoZXIgdGhpbmcgdGhhdCBtaWdodCBoYXBwZW4uDQo+ID4NCj4gPiBG
-cm9tIGEgYnJpZWYgbG9vayBvbiB0aGUgaGFuZGxpbmcgb2YgTU1VIChub3QgSU9NTVUpIGh1Z2Vw
-YWdlcyBpbg0KPiA+IExpbnV4LCBpbmRlZWQgdGhlIFBNRCBpcyBmaXJzdCBjbGVhcmVkIGFuZCBm
-bHVzaGVkIGJlZm9yZSBhIG5ldyB2YWxpZA0KPiA+IFBNRCBpcyBzZXQuIFRoaXMgaXMgcG9zc2li
-bGUgZm9yIE1NVXMgc2luY2UgdGhleSBhbGxvdyB0aGUgc29mdHdhcmUgdG8gaGFuZGxlDQo+IHNw
-dXJpb3VzIHBhZ2UtZmF1bHRzIGdyYWNlZnVsbHkuDQo+ID4gVGhpcyBpcyBub3QgdGhlIGNhc2Ug
-Zm9yIHRoZSBJT01NVSB0aG91Z2ggKHdpdGhvdXQgUFJJKS4NCj4gPg0KPiANCj4gQnV0IGluIG15
-IGNhc2UsIHRoZSBmbHVzaF9pb3RsYiBpcyBjYWxsZWQgYWZ0ZXIgdGhlIHJhbmdlIG9mICgweDAs
-IDB4YTAwMDApIGlzDQo+IHVubWFwcGVkLCBJJ3ZlIG5vIGlkZWEgd2h5IHRoaXMgaW52YWxpZGF0
-aW9uIGlzbid0IGVmZmVjdGl2ZSBleGNlcHQgSSd2ZSBub3QgbG9vaw0KPiBpbnNpZGUgdGhlIHFp
-IHlldCwgYnV0IHRoZXJlIGlzIG5vIGNvbXBsYWludHMgZnJvbSB0aGUgZHJpdmVyLg0KPiANCj4g
-Q291bGQgeW91IHBsZWFzZSBwb2ludCBvdXQgdGhlIGNvZGUgb2YgTU1VIHlvdSBtZW50aW9uZWQg
-YWJvdmU/IEluIE1NVSBjb2RlLA0KPiBpcyBpdCBwb3NzaWJsZSB0aGF0IGFsbCB0aGUgZW50cmll
-cyBvZiB0aGUgUFRFIGFyZSBhbGwgbm90LXByZXNlbnQgYnV0IHRoZSBQTUQgZW50cnkgaXMNCj4g
-c3RpbGwgcHJlc2VudD8NCj4gDQoNCk9oLCBJIHNlZSB0aGUgZm9sbG93aW5nIE1NVSBjb2RlOg0K
-dW5tYXBfcG1kX3JhbmdlDQogIF9fdW5tYXBfcG1kX3JhbmdlDQogICAgdW5tYXBfcHRlX3Jhbmdl
-DQogICAgICB0cnlfdG9fZnJlZV9wbWRfcGFnZSAoaWYgYWxsIG9mIHRoZSBQVEVzIGFyZSBwbWRf
-bm9uZSkNCg0KU28gdGhlIE1NVSBjb2RlIHdvbid0IGtlZXAgdGhlIFBNRCBlbnRyeSBhcyBwcmVz
-ZW50IGlmIGFsbCBvZiBpdHMgUFRFIGVudHJpZXMNCmFyZSBub3QtcHJlc2VudC4NCg0KDQo+ICpQ
-YWdlIHRhYmxlIGFmdGVyICgweDAsIDB4YTAwMDApIGlzIHVubWFwcGVkOg0KPiBQTUw0OiAweCAg
-ICAgIDFhMzRmYmIwMDMNCj4gICBQRFBFOiAweCAgICAgIDFhMzRmYmIwMDMNCj4gICAgUERFOiAw
-eCAgICAgIDFhMzRmYmYwMDMNCj4gICAgIFBURTogMHggICAgICAgICAgICAgICAwDQo+IA0KPiAq
-UGFnZSB0YWJsZSBhZnRlciAoMHgwLCAweGMwMDAwMDAwKSBpcyBtYXBwZWQ6DQo+IFBNTDQ6IDB4
-ICAgICAgMWEzNGZiYjAwMw0KPiAgIFBEUEU6IDB4ICAgICAgMWEzNGZiYjAwMw0KPiAgICBQREU6
-IDB4ICAgICAgIDE1ZWMwMDg4Mw0KPiANCj4gPiBOb3Qgc3VyZSB0aGlzIGV4cGxhaW5zIGV2ZXJ5
-dGhpbmcgdGhvdWdoLiBJZiB0aGF0IGlzIHRoZSBwcm9ibGVtLCB0aGVuDQo+ID4gZHVyaW5nIGEg
-bWFwcGluZyB0aGF0IGNoYW5nZXMgcGFnZS1zaXplcywgYSBUTEIgZmx1c2ggaXMgbmVlZGVkLA0K
-PiA+IHNpbWlsYXJseSB0byB0aGUgb25lIExvbmdwZW5nIGRpZCBtYW51YWxseS4NCj4gPg0KPiAN
-Cg0K
+Balbir Singh <bsingharora@gmail.com> writes:
+
+> On Sat, Mar 20, 2021 at 01:40:53AM +1100, Daniel Axtens wrote:
+>> For annoying architectural reasons, it's very difficult to support inline
+>> instrumentation on powerpc64.
+>
+> I think we can expand here and talk about how in hash mode, the vmalloc
+> address space is in a region of memory different than where kernel virtual
+> addresses are mapped. Did I recollect the reason correctly?
+
+I think that's _a_ reason, but for radix mode (which is all I support at
+the moment), the reason is a bit simpler. We call into generic code like
+the DT parser and printk when we have translations off. The shadow
+region lives at c00e.... which is not part of the linear mapping, so if
+you try to access the shadow while in real mode you will access unmapped
+memory and (at least on PowerNV) take a machine check.
+
+>> 
+>> Add a Kconfig flag to allow an arch to disable inline. (It's a bit
+>> annoying to be 'backwards', but I'm not aware of any way to have
+>> an arch force a symbol to be 'n', rather than 'y'.)
+>> 
+>> We also disable stack instrumentation in this case as it does things that
+>> are functionally equivalent to inline instrumentation, namely adding
+>> code that touches the shadow directly without going through a C helper.
+>> 
+>> Signed-off-by: Daniel Axtens <dja@axtens.net>
+>> ---
+>>  lib/Kconfig.kasan | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>> 
+>> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+>> index cffc2ebbf185..7e237dbb6df3 100644
+>> --- a/lib/Kconfig.kasan
+>> +++ b/lib/Kconfig.kasan
+>> @@ -12,6 +12,9 @@ config HAVE_ARCH_KASAN_HW_TAGS
+>>  config HAVE_ARCH_KASAN_VMALLOC
+>>  	bool
+>>  
+>> +config ARCH_DISABLE_KASAN_INLINE
+>> +	def_bool n
+>> +
+>
+> Some comments on what arch's want to disable kasan inline would
+> be helpful and why.
+
+Sure, added.
+
+Kind regards,
+Daniel
+
