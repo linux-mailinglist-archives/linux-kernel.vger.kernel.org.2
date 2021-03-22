@@ -2,179 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCEF3451C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678033451C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Mar 2021 22:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhCVV1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 17:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
+        id S230174AbhCVV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 17:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbhCVV1j (ORCPT
+        with ESMTP id S230016AbhCVV2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:27:39 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF80C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:27:38 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id x16so15521569iob.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:27:38 -0700 (PDT)
+        Mon, 22 Mar 2021 17:28:09 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A8AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:28:09 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id l1so9604699pgb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 14:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mWk+o8yYno4oVPKt5FUKRgmtDcCg2vWgufyVv5FBitg=;
-        b=XRbP1uRQOWdGrB5dAQAeGEmFIhRaUHlPu/4JKaV0VZ3eA6OVJucYU5r1WM3Nf+fvRV
-         /dzPCimcl4Sbp/85GuQvk3ZCbmp2wK2iaUjPFUnFccrdrCZWlj5mjNiLYc7CS/x/0TNx
-         cbhjETbsmG5aZZBaClMRf/8ME5otTZWD1IG3ad+lGkI3385I3Uy7x2zEwxrlpXnnIaer
-         M6WlK2Ec2A3mkK2BVEP1I/UpLr+ddrt8pWutT372pFO95hIhCPHp01FdFS1g+nXnhJp6
-         Qb00L92nkOKl2+YefGWJq3kIYDFHGIjgX8WLsB4EJYvivtE9aYjZS6SA0lgRXMa7ZeZ3
-         07Mw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AWGwJpJAvysvc0U3nO1D3j0X+nOWBvnOH2yA1Diiz/Y=;
+        b=T+stc1IT5e2/e9SMHVhr3gF1TWBjy0QTV6HqA92L7bi2o+4uF0vHHHiQyiK5VHE/aL
+         ggov40KtouWOuoB+818dqAiNzGmFdqO8kzytJG22LbMYbRPCJI8eKMqYtXmIQRZxJTm2
+         X9OSvkZhYzlnEac+MpS238kJ+Bk4e7r74zfh31sZwaR3at8tqs0UPUQC4q7bkiUs2Xlo
+         m78vB+9J3b/kwgCUnxgE2+Io/fs3OMaZOu7bJaUnBA9lhed3aZeJaBx5pUKG+WQPjoDP
+         o26idzAva9ewmBY6OQ+6ETj245ONE1dow0g+ewjo+HGE50/u/lvAyCdsqpTP9hMv/bV7
+         G2SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mWk+o8yYno4oVPKt5FUKRgmtDcCg2vWgufyVv5FBitg=;
-        b=mhI38IHeCnNvFCM8kbgPRd6db18LBly+Mk2Q4TsWVtzb+wmEUyd34G+lPjMrkS0+h4
-         YftejS9t/itU3xPmU+kz67SfWfJDieEg4Dzaa9s/cXgdnDEIpTRma+kEabgu/JX/SCWR
-         Vmxsff61Kmrs4GaqrwL6yweSpc5UZqF4KbW4fMqd427j8kptH7D3/Mo/GHziSlFHI3Nh
-         /EL4JAuHvje78Vs4glPFDNgCPHDVwYEisgIYiHgvV6w5TZ6GOF9tTFgNixX5m9oKoD9v
-         a7nkluC2260DCRT2YzCcmmvMqxi132WZH0xvyULJjgYoDZpAV/dskEv46wTBJBV39Sa2
-         IoLQ==
-X-Gm-Message-State: AOAM531Lg1RTUx/K4FTBxQyvzMXAwN+DNBZ6zTf3ZOPkNnFRq7NTge/G
-        I5OoG4oafzKLNlvbDgKXmz+pUm/9mKFnYM92zlVH+Q==
-X-Google-Smtp-Source: ABdhPJww3mD1TXBJYl00cIfS9T6MiDk6YqDbxQKLNa1BoI+zjPaBX4htazdomOuP9Nr+FxwSsOX5aLF2PfuPnWFhLGI=
-X-Received: by 2002:a02:cbb2:: with SMTP id v18mr1345431jap.4.1616448458015;
- Mon, 22 Mar 2021 14:27:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AWGwJpJAvysvc0U3nO1D3j0X+nOWBvnOH2yA1Diiz/Y=;
+        b=biU+dhTvTTrf09uWAEFVQb/gq9Ew8rYsUUTOFpyghW6734g6NeymemNGyA6/zjGYNp
+         dh5Gg6jpilsWb5kXNSNRI/LToEJ8PN5zcSDDXkDMeKTpxHnX6968ntSXLZSANTDqn9Vn
+         rJBRNDR10nvM2Y0VYLv2MWqs474xbZMJp9ApSbvoq3Mk4up1PREQ2glNLKSPM9mTdErt
+         BjJTARN/YC8amPGcoJzpSCtfMAJAd2qBn/tmdGA6OvdrPnOVnYYjqlduVuZOl565WDea
+         Nn240R+xX8NP6E4eqwX3vxrnj6Zsu10obqfllpaR/yxlPDepPoJes82INaAFFtslsA36
+         8YYQ==
+X-Gm-Message-State: AOAM531wy3xfdm6xc9J28EGNzOLshRe1fs3Q8PnEXsPkrCHotMuljhSb
+        l9rkVy3quyfTbhSlOVOZXEHwZA==
+X-Google-Smtp-Source: ABdhPJyeeUHWPaYQvwZj33UiTDB3/S72LhK4P6TF/pt2pdg3xmn+8xpg0Y/liU6ZdZjqLhJqXL+zBw==
+X-Received: by 2002:a65:5cc2:: with SMTP id b2mr1281091pgt.280.1616448488549;
+        Mon, 22 Mar 2021 14:28:08 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id p10sm2718013pfn.55.2021.03.22.14.28.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 14:28:07 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 15:28:05 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org
+Subject: Re: [PATCH v4 09/19] coresight: etm4x: Move ETM to prohibited region
+ for disable
+Message-ID: <20210322212805.GC1684006@xps15>
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-10-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-References: <20210319232006.3468382-1-seanjc@google.com> <20210319232006.3468382-2-seanjc@google.com>
-In-Reply-To: <20210319232006.3468382-2-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 22 Mar 2021 14:27:27 -0700
-Message-ID: <CANgfPd9Rzk3GwggqGkw2yAH355AnvLAwSihoW2JZ8r3qjSzUWA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Ensure TLBs are flushed when yielding
- during GFN range zap
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225193543.2920532-10-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 4:20 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> When flushing a range of GFNs across multiple roots, ensure any pending
-> flush from a previous root is honored before yielding while walking the
-> tables of the current root.
->
-> Note, kvm_tdp_mmu_zap_gfn_range() now intentionally overwrites it local
-> "flush" with the result to avoid redundant flushes.  zap_gfn_range()
-> preserves and return the incoming "flush", unless of course the flush was
-> performed prior to yielding and no new flush was triggered.
->
-> Fixes: 1af4a96025b3 ("KVM: x86/mmu: Yield in TDU MMU iter even if no SPTES changed")
-> Cc: stable@vger.kernel.org
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-Reviewed-By: Ben Gardon <bgardon@google.com>
-
+On Thu, Feb 25, 2021 at 07:35:33PM +0000, Suzuki K Poulose wrote:
+> If the CPU implements Arm v8.4 Trace filter controls (FEAT_TRF),
+> move the ETM to trace prohibited region using TRFCR, while disabling.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
+> New patch
+> ---
+>  .../coresight/coresight-etm4x-core.c          | 21 +++++++++++++++++--
+>  drivers/hwtracing/coresight/coresight-etm4x.h |  2 ++
+>  2 files changed, 21 insertions(+), 2 deletions(-)
 >
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index f0c99fa04ef2..6cf08c3c537f 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -86,7 +86,7 @@ static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->         list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
->
->  static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> -                         gfn_t start, gfn_t end, bool can_yield);
-> +                         gfn_t start, gfn_t end, bool can_yield, bool flush);
 
-This function is going to acquire so many arguments. Don't need to do
-anything about it here, but this is going to need some kind of cleanup
-at some point.
-I'll have to add another "shared" type arg for running this function
-under the read lock in a series I'm prepping.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
+I am done reviewing this set.
 
->
->  void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
+Thanks,
+Mathieu
+ 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 15016f757828..00297906669c 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/pm_runtime.h>
+>  #include <linux/property.h>
+>  
+> +#include <asm/barrier.h>
+>  #include <asm/sections.h>
+>  #include <asm/sysreg.h>
+>  #include <asm/local.h>
+> @@ -654,6 +655,7 @@ static int etm4_enable(struct coresight_device *csdev,
+>  static void etm4_disable_hw(void *info)
 >  {
-> @@ -99,7 +99,7 @@ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
->
->         list_del(&root->link);
->
-> -       zap_gfn_range(kvm, root, 0, max_gfn, false);
-> +       zap_gfn_range(kvm, root, 0, max_gfn, false, false);
->
->         free_page((unsigned long)root->spt);
->         kmem_cache_free(mmu_page_header_cache, root);
-> @@ -664,20 +664,21 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
->   * scheduler needs the CPU or there is contention on the MMU lock. If this
->   * function cannot yield, it will not release the MMU lock or reschedule and
->   * the caller must ensure it does not supply too large a GFN range, or the
-> - * operation can cause a soft lockup.
-> + * operation can cause a soft lockup.  Note, in some use cases a flush may be
-> + * required by prior actions.  Ensure the pending flush is performed prior to
-> + * yielding.
->   */
->  static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> -                         gfn_t start, gfn_t end, bool can_yield)
-> +                         gfn_t start, gfn_t end, bool can_yield, bool flush)
+>  	u32 control;
+> +	u64 trfcr;
+>  	struct etmv4_drvdata *drvdata = info;
+>  	struct etmv4_config *config = &drvdata->config;
+>  	struct coresight_device *csdev = drvdata->csdev;
+> @@ -676,6 +678,16 @@ static void etm4_disable_hw(void *info)
+>  	/* EN, bit[0] Trace unit enable bit */
+>  	control &= ~0x1;
+>  
+> +	/*
+> +	 * If the CPU supports v8.4 Trace filter Control,
+> +	 * set the ETM to trace prohibited region.
+> +	 */
+> +	if (drvdata->trfc) {
+> +		trfcr = read_sysreg_s(SYS_TRFCR_EL1);
+> +		write_sysreg_s(trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE),
+> +			       SYS_TRFCR_EL1);
+> +		isb();
+> +	}
+>  	/*
+>  	 * Make sure everything completes before disabling, as recommended
+>  	 * by section 7.3.77 ("TRCVICTLR, ViewInst Main Control Register,
+> @@ -683,12 +695,16 @@ static void etm4_disable_hw(void *info)
+>  	 */
+>  	dsb(sy);
+>  	isb();
+> +	/* Trace synchronization barrier, is a nop if not supported */
+> +	tsb_csync();
+>  	etm4x_relaxed_write32(csa, control, TRCPRGCTLR);
+>  
+>  	/* wait for TRCSTATR.PMSTABLE to go to '1' */
+>  	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_PMSTABLE_BIT, 1))
+>  		dev_err(etm_dev,
+>  			"timeout while waiting for PM stable Trace Status\n");
+> +	if (drvdata->trfc)
+> +		write_sysreg_s(trfcr, SYS_TRFCR_EL1);
+>  
+>  	/* read the status of the single shot comparators */
+>  	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+> @@ -873,7 +889,7 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+>  	return false;
+>  }
+>  
+> -static void cpu_enable_tracing(void)
+> +static void cpu_enable_tracing(struct etmv4_drvdata *drvdata)
 >  {
->         struct tdp_iter iter;
-> -       bool flush_needed = false;
->
->         rcu_read_lock();
->
->         tdp_root_for_each_pte(iter, root, start, end) {
->                 if (can_yield &&
-> -                   tdp_mmu_iter_cond_resched(kvm, &iter, flush_needed)) {
-> -                       flush_needed = false;
-> +                   tdp_mmu_iter_cond_resched(kvm, &iter, flush)) {
-> +                       flush = false;
->                         continue;
->                 }
->
-> @@ -695,11 +696,11 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->                         continue;
->
->                 tdp_mmu_set_spte(kvm, &iter, 0);
-> -               flush_needed = true;
-> +               flush = true;
->         }
->
->         rcu_read_unlock();
-> -       return flush_needed;
-> +       return flush;
+>  	u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
+>  	u64 trfcr;
+> @@ -881,6 +897,7 @@ static void cpu_enable_tracing(void)
+>  	if (!cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_TRACE_FILT_SHIFT))
+>  		return;
+>  
+> +	drvdata->trfc = true;
+>  	/*
+>  	 * If the CPU supports v8.4 SelfHosted Tracing, enable
+>  	 * tracing at the kernel EL and EL0, forcing to use the
+> @@ -1082,7 +1099,7 @@ static void etm4_init_arch_data(void *info)
+>  	/* NUMCNTR, bits[30:28] number of counters available for tracing */
+>  	drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
+>  	etm4_cs_lock(drvdata, csa);
+> -	cpu_enable_tracing();
+> +	cpu_enable_tracing(drvdata);
 >  }
->
->  /*
-> @@ -714,7 +715,7 @@ bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
->         bool flush = false;
->
->         for_each_tdp_mmu_root_yield_safe(kvm, root)
-> -               flush |= zap_gfn_range(kvm, root, start, end, true);
-> +               flush = zap_gfn_range(kvm, root, start, end, true, flush);
->
->         return flush;
->  }
-> @@ -931,7 +932,7 @@ static int zap_gfn_range_hva_wrapper(struct kvm *kvm,
->                                      struct kvm_mmu_page *root, gfn_t start,
->                                      gfn_t end, unsigned long unused)
->  {
-> -       return zap_gfn_range(kvm, root, start, end, false);
-> +       return zap_gfn_range(kvm, root, start, end, false, false);
->  }
->
->  int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
-> --
-> 2.31.0.rc2.261.g7f71774620-goog
->
+>  
+>  static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> index 0af60571aa23..f6478ef642bf 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> @@ -862,6 +862,7 @@ struct etmv4_save_state {
+>   * @nooverflow:	Indicate if overflow prevention is supported.
+>   * @atbtrig:	If the implementation can support ATB triggers
+>   * @lpoverride:	If the implementation can support low-power state over.
+> + * @trfc:	If the implementation supports Arm v8.4 trace filter controls.
+>   * @config:	structure holding configuration parameters.
+>   * @save_state:	State to be preserved across power loss
+>   * @state_needs_restore: True when there is context to restore after PM exit
+> @@ -912,6 +913,7 @@ struct etmv4_drvdata {
+>  	bool				nooverflow;
+>  	bool				atbtrig;
+>  	bool				lpoverride;
+> +	bool				trfc;
+>  	struct etmv4_config		config;
+>  	struct etmv4_save_state		*save_state;
+>  	bool				state_needs_restore;
+> -- 
+> 2.24.1
+> 
