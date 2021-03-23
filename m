@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4D73459FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA7C3459FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbhCWInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
+        id S229760AbhCWIoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhCWImz (ORCPT
+        with ESMTP id S229854AbhCWIoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:42:55 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839AAC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:42:54 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id b4so1506739lfi.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:42:54 -0700 (PDT)
+        Tue, 23 Mar 2021 04:44:07 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33B8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:44:06 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id w3so25715003ejc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/KvXtpgBV+o0JWe0JLX80jWIOlIgv/hChx1EfXJmTnY=;
-        b=KfdDw9VWZ0tKw+l8GaukOPXg6ZbEHyoOODvQSgCeIcYYqavYmAOqSenci3vKUFLVNb
-         C3bld4+W2qSuYA62ZUiSF5krZWl5kxo/h/ooTc5X7fTiHEaxfDiRRDBIPQ+zb6T2oYWV
-         x9IYNJfVUkAT185M0owa10SxtDmL/DS0xSgPHJ/MBkNrb8qgq6xgV/S11vnP2xNvgBwo
-         ltbyvOgejpeB/CEOAoF9zBwnsEW4pyw9xm5zWQxz8ebv2tP9Q2knj4Aob3vnaZZIHVEO
-         OYYvU9eymYg6E3H+ZBI/DZGtaGkz5tEMMqtwvREKgzY2AVLKLvDwTsgoURDkvBndwN5Q
-         3/SA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=CA2HZYCAYEZ2FQmqritjssLiySaAB6hp+s1n0HMOzrM=;
+        b=mXsIAOkGezeWC53T0nh3D1JBDoJ4z5/OTcthjLlPayIzf4BV/jnKTl26vlpiXk0kwA
+         +2FeUBtGby6BLKHHX+ERL/w2K78vRPvhGW9ymAhwzJdlqIGq7fmHx4f8KH9P9WkAftQ+
+         +2O7oaWJUczuKjvUYsJTh6rD2TfjgP/zuB+mLTtpvgIH54OCAYO+cOeH635SzrmRtM2m
+         h0Q22/SzDXh5kyycPLfZRulpXkL9P+/bk7w6wGB+GRtrRQdp3YkY0iqVf2q5cr8e/7mG
+         heOe7dDwSq0YFujk4oThOjuymsWCnxVhWQiRK6ULZBCJfX0JnPNHgMiXnrE/n2c+6zco
+         O/Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/KvXtpgBV+o0JWe0JLX80jWIOlIgv/hChx1EfXJmTnY=;
-        b=Gs9m4Fv+XL3Mfw+MEJUoRy0Fl4t/iX7q+Zi/+ENCS+OSR6/J0SaFiMO4QAxJzfpANa
-         UJ7RpRLzBnpaQc12CU3BXxhke+4v7utQBWjGUtfc7UHdvNVCkkuWQpl4ewdTEwzYAZkK
-         /T/4ysQWHN8RSSAfUed68vAOgpcaGYgwU9BpIT7fSnjEn6tBo3r6bToKi/d6GGrPwQ00
-         +qTUYKuq3SBKVUy+vOpU4i65CdZ9EaBeNVxa3q2VksUszmsCPccPLQVQenHRVIRwXzmx
-         WNgEetSrgvm2NUqKfT25o+oRK3JDfOfgpDgFe4tjRoEEozfA2WdY/1bU20lLRFcpoy3T
-         k4bg==
-X-Gm-Message-State: AOAM531gRrkV2tiksVydcqu1CCaUJq0D1q13e+xu9Y/dl03YNWQ+ByaU
-        XFqBatFA39D0tpOPRyOV4CB6T49JHrzv1B5UEvCXXA==
-X-Google-Smtp-Source: ABdhPJwcUoeiaX6sIYtYHpkMy8oKnz7DMhqc0vUTMdQp5OfWbSKn+ehdHmCBQSKWTEAZRZdbthEehBXYfvAtA65UElI=
-X-Received: by 2002:a19:cd2:: with SMTP id 201mr1943875lfm.451.1616488972619;
- Tue, 23 Mar 2021 01:42:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=CA2HZYCAYEZ2FQmqritjssLiySaAB6hp+s1n0HMOzrM=;
+        b=QjD8+qkqQWnkEFfKtxqShgdnKhMRMGddcDDByaOvHdQTB9Z0zkBq2G8zSokaCG8bZD
+         J2MC2qn6qayBLXfhrLBU/nKtj7rjn+h5pqVXfkibhLKUaPDFXkepQ253lxTBcBd6vbzj
+         x/TDYo7SAr4wbseqd5Gk0TeHRsUXDcBkQOxaSZ5Z81GOesnuhqFGZQNP9cbIR5XXNI0d
+         aGnQd/2ck73w8CNp6pHMInDzd20e5oSeMemM1C/pIqjTzRZb3uxmyOPQeoNHjooFXsyv
+         SBi/cSwZcANZXYD/cPsjchPIBtCnWXk81jn0O29n/ktjMWryr7OtgabU8ierWejfl0se
+         Xk4A==
+X-Gm-Message-State: AOAM532ptyP+b/qurXqBIdrcIlsgJsRZV99iZsjPTVoPJd3N4HalbFmd
+        igaT0T8Lu3q+FUeyoYUb63wWyQ==
+X-Google-Smtp-Source: ABdhPJx9f42ahaRhGy9fzg+cOl9fMRYRkTUnFmGO+1xdqw33EBaNEa/TmFK5DHuUkPMIJUjZhzIdiQ==
+X-Received: by 2002:a17:906:1b54:: with SMTP id p20mr3758551ejg.307.1616489045510;
+        Tue, 23 Mar 2021 01:44:05 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id qo25sm10738421ejb.93.2021.03.23.01.44.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 01:44:05 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 08:44:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "grant.likely@linaro.org" <grant.likely@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH mfd v1] mfd: Add Renesas Synchronization Management Unit
+ (SMU) support
+Message-ID: <20210323084403.GG2916463@dell>
+References: <1616254985-28920-1-git-send-email-min.li.xe@renesas.com>
+ <20210322150319.GZ2916463@dell>
+ <OSBPR01MB4773618A38B6797EDDE2E5B9BA659@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210322140046.1.I6c4306f6e8ba3ccc9106067d4eb70092f8cb2a49@changeid>
- <559FCF7C-A929-4291-956C-EF776EFAA47D@holtmann.org>
-In-Reply-To: <559FCF7C-A929-4291-956C-EF776EFAA47D@holtmann.org>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Tue, 23 Mar 2021 16:42:41 +0800
-Message-ID: <CAJQfnxEh=xPgXkRu+E3amBKbV=B2+8QevyDDE=gNE8Y-oSmTNw@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: check for zapped sk before connecting
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com,
-        Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <OSBPR01MB4773618A38B6797EDDE2E5B9BA659@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+On Mon, 22 Mar 2021, Min Li wrote:
 
-Thanks for your suggestion. I implemented it in v2, please take another look.
+> > 
+> > I'm pretty confused.  This has been sent ~6 times already.  What is the v1 of?
+> > Is this a different driver?  If so, why does it have the same $SUBJECT line?
+> > 
+> > If this is not actually v1.  Please provide a change-log.
+> > 
+> 
+> 
+> Hi Lee
+> 
+> Sorry for confusion. This is no version before v1. The reason you saw it multiple times is because 
+> I was basing the change in the wrong tree and I now I switched it to
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/
+> 
+> I am wondering if this is the correct tree to submit the patch for MFD?
+> 
+> So to sum it up, the latest patch is my first version to this tree.
 
+Either MFD or -next is fine for MFD-only patches.
 
-On Mon, 22 Mar 2021 at 23:53, Marcel Holtmann <marcel@holtmann.org> wrote:
->
-> Hi Archie,
->
-> > There is a possibility of receiving a zapped sock on
-> > l2cap_sock_connect(). This could lead to interesting crashes, one
-> > such case is tearing down an already tore l2cap_sock as is happened
-> > with this call trace:
-> >
-> > __dump_stack lib/dump_stack.c:15 [inline]
-> > dump_stack+0xc4/0x118 lib/dump_stack.c:56
-> > register_lock_class kernel/locking/lockdep.c:792 [inline]
-> > register_lock_class+0x239/0x6f6 kernel/locking/lockdep.c:742
-> > __lock_acquire+0x209/0x1e27 kernel/locking/lockdep.c:3105
-> > lock_acquire+0x29c/0x2fb kernel/locking/lockdep.c:3599
-> > __raw_spin_lock_bh include/linux/spinlock_api_smp.h:137 [inline]
-> > _raw_spin_lock_bh+0x38/0x47 kernel/locking/spinlock.c:175
-> > spin_lock_bh include/linux/spinlock.h:307 [inline]
-> > lock_sock_nested+0x44/0xfa net/core/sock.c:2518
-> > l2cap_sock_teardown_cb+0x88/0x2fb net/bluetooth/l2cap_sock.c:1345
-> > l2cap_chan_del+0xa3/0x383 net/bluetooth/l2cap_core.c:598
-> > l2cap_chan_close+0x537/0x5dd net/bluetooth/l2cap_core.c:756
-> > l2cap_chan_timeout+0x104/0x17e net/bluetooth/l2cap_core.c:429
-> > process_one_work+0x7e3/0xcb0 kernel/workqueue.c:2064
-> > worker_thread+0x5a5/0x773 kernel/workqueue.c:2196
-> > kthread+0x291/0x2a6 kernel/kthread.c:211
-> > ret_from_fork+0x4e/0x80 arch/x86/entry/entry_64.S:604
-> >
-> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > Reported-by: syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com
-> > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > Reviewed-by: Guenter Roeck <groeck@chromium.org>
-> > ---
-> >
-> > net/bluetooth/l2cap_sock.c | 7 +++++++
-> > 1 file changed, 7 insertions(+)
-> >
-> > diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-> > index f1b1edd0b697..b86fd8cc4dc1 100644
-> > --- a/net/bluetooth/l2cap_sock.c
-> > +++ b/net/bluetooth/l2cap_sock.c
-> > @@ -182,6 +182,13 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr,
-> >
-> >       BT_DBG("sk %p", sk);
-> >
-> > +     lock_sock(sk);
-> > +     if (sock_flag(sk, SOCK_ZAPPED)) {
-> > +             release_sock(sk);
-> > +             return -EINVAL;
-> > +     }
-> > +     release_sock(sk);
-> > +
->
-> hmmm. I wonder if this would look better and easy to see that the locking is done correctly.
->
->         lock_sock(sk);
->         zapped = sock_flag(sk, SOCK_ZAPPED);
->         release_sock(sk);
->
->         if (zapped)
->                 return -EINVAL;
->
-> Regards
->
-> Marcel
->
+Has the code changed at all in any of the patches?
+
+If so, please provide a change-log, so we can keep up.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
