@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D4B346110
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6F4346111
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhCWOJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:09:24 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58010 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbhCWOIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:08:53 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NE5XAJ168349;
-        Tue, 23 Mar 2021 14:08:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=t/xaaVqoQ/f/LgZxiyUJNJ/HPdDx97I+V6UPT7T73Zw=;
- b=KDTLGk9W5O1Wz0M8EshdZwTkQr3W6wwWgZUf4ygIuJ6QnZKpoPDIyPbH08BFEb9K74CB
- 45UhNaoHWAe7us81QLdpKmJzU6J9Ln02ZuxMXupDhjhhhz49lhUUmmDvrMySqVUj3sfj
- 7aAsviyDcz7uinCpOFURfqslfsyoMb+GbS/5JEBFcE5ADMhsTemxsMjCdCrFOrx269Ee
- o/DcfVYQalcUCcV3pzQIdamjK6bByUJKd4gSoJHVMhuqEHmd3HHmbItwM9WmhDzfeFqY
- 6ocuqZo51WZ9c+wpA0QTF8auBrZ+W5YGvqzOcf641LqhlcxRBbZlxj5C4ahTd8p5wHLu Ug== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 37d90mf4y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 14:08:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NE69h1048265;
-        Tue, 23 Mar 2021 14:08:37 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 37dttryu6v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 14:08:37 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12NE8abE026048;
-        Tue, 23 Mar 2021 14:08:36 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 23 Mar 2021 07:08:35 -0700
-Date:   Tue, 23 Mar 2021 17:08:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Atul Gopinathan <atulgopinathan@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] staging: rtl8192e: Change state information from
- u16 to u8
-Message-ID: <20210323140828.GJ1717@kadam>
-References: <20210323113413.29179-1-atulgopinathan@gmail.com>
- <20210323113413.29179-2-atulgopinathan@gmail.com>
+        id S232220AbhCWOJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:09:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232209AbhCWOJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:09:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D210C619BB;
+        Tue, 23 Mar 2021 14:09:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616508542;
+        bh=Ne+mdEaEHnyMgYQAD1Dg1Obh9Ysk1nIYZq+vNqyKW/0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tAdPk9ut/M6YBETYg/qSfI4WSP3BAFS5xe7DfPdO28rr/BbVM0cs8iIpjmc9u6d0A
+         VtARQ4956Q7ATJc11QH4hYv42yTrrjRwB1Nvg72RLjEKJluPRDFyY7FRYg9hnBcnUX
+         E/VnrYYqTm3ic0MP8prKrONHJrwFRO9SMMynU3Oo=
+Date:   Tue, 23 Mar 2021 15:08:59 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joseph Jang <josephjang@google.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "David S . Miller " <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com
+Subject: Re: [PATCH v6] power: suspend: Move dpm_watchdog to suspend.c and
+ enhance it
+Message-ID: <YFn2e85YkMqTw2zA@kroah.com>
+References: <20210128093927.2206179-1-josephjang@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323113413.29179-2-atulgopinathan@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103230105
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103230105
+In-Reply-To: <20210128093927.2206179-1-josephjang@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Thu, Jan 28, 2021 at 05:39:27PM +0800, Joseph Jang wrote:
+> Since dpm_watchdog just cover two functions __device_suspend() and
+> device_resume(), we proposed to move it to core power suspend.c to extend
+> its coverage and monitor more devices suspend hand issues.
+> 
+> We propose to use new name suspend watchdog and new timeout handler to
+> cover more sleep hang issues. The new timeout handler will dump disk
+> sleep task call trace at first round timeout and trigger kernel panic
+> at second round timeout.
+> The default timer for each round is defined in
+> CONFIG_PM_SUSPEND_WATCHDOG_TIMEOUT.
+> 
+> Signed-off-by: Joseph Jang <josephjang@google.com>
 
-regards,
-dan carpenter
+Seems sane, but I'm not the maintainer of this stuff:
 
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
