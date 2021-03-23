@@ -2,78 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D7E346602
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8236346605
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCWRJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:09:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:49400 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhCWRJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:09:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 228B51042;
-        Tue, 23 Mar 2021 10:09:30 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 103A53F718;
-        Tue, 23 Mar 2021 10:09:27 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 17:09:25 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
- stack trace unreliable
-Message-ID: <20210323170925.GG98545@C02TD0UTHF1T.local>
-References: <20210315165800.5948-6-madvenka@linux.microsoft.com>
- <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
- <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
- <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
- <20210323145734.GD98545@C02TD0UTHF1T.local>
- <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
- <20210323164801.GE98545@C02TD0UTHF1T.local>
- <bfc4dbbd-f69b-1a41-c16a-0c5cd0080f90@linux.microsoft.com>
+        id S230050AbhCWRKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:10:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38358 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229961AbhCWRKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:10:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616519418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ma9ajmhwh1SCxUznhp2byKu31F3pHY/+bCvUhMUuvis=;
+        b=UmIevhuF7uZY2P9SVAT1XL6ei2ajYwtZUkdkTWjNdqjiVCFvwG9u/OLWqFQoAUmirqxRhL
+        8x+is+yD76BSSg4RIA3/p8l0pemKhGeyWG33+OLpmRGcKT6gsgR09i0aMv00XsRF1YfpBj
+        kGs4Ya0P04tSTZWQfqd/J9RACOM5Umo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-F_ZRsSf7MHy393ojVjJn3Q-1; Tue, 23 Mar 2021 13:10:14 -0400
+X-MC-Unique: F_ZRsSf7MHy393ojVjJn3Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 279EF180FCA9;
+        Tue, 23 Mar 2021 17:10:12 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-103.rdu2.redhat.com [10.10.116.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DFCD5C1C5;
+        Tue, 23 Mar 2021 17:10:04 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 9A3B1220BCF; Tue, 23 Mar 2021 13:10:03 -0400 (EDT)
+Date:   Tue, 23 Mar 2021 13:10:03 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     stefanha@redhat.com, miklos@szeredi.hu,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fuse: Fix a potential double free in virtio_fs_get_tree
+Message-ID: <20210323171003.GC483930@redhat.com>
+References: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bfc4dbbd-f69b-1a41-c16a-0c5cd0080f90@linux.microsoft.com>
+In-Reply-To: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 11:53:04AM -0500, Madhavan T. Venkataraman wrote:
-> On 3/23/21 11:48 AM, Mark Rutland wrote:
-> > On Tue, Mar 23, 2021 at 10:26:50AM -0500, Madhavan T. Venkataraman wrote:
-> >> So, my next question is - can we define a practical limit for the
-> >> nesting so that any nesting beyond that is fatal? The reason I ask is
-> >> - if there is a max, then we can allocate an array of stack frames out
-> >> of band for the special frames so they are not part of the stack and
-> >> will not likely get corrupted.
+On Mon, Mar 22, 2021 at 10:18:31PM -0700, Lv Yunlong wrote:
+> In virtio_fs_get_tree, fm is allocated by kzalloc() and
+> assigned to fsc->s_fs_info by fsc->s_fs_info=fm statement.
+> If the kzalloc() failed, it will goto err directly, so that
+> fsc->s_fs_info must be non-NULL and fm will be freed.
 
-> >> Also, we don't have to do any special detection. If the number of out
-> >> of band frames used is one or more then we have exceptions and the
-> >> stack trace is unreliable.
-> > 
-> > What is expected to protect against?
+sget_fc() will either consume fsc->s_fs_info in case a new super
+block is allocated and set fsc->s_fs_info. In that case we don't
+free fc or fm.
+
+Or, sget_fc() will return with fsc->s_fs_info set in case we already
+found a super block. In that case we need to free fc and fm.
+
+In case of error from sget_fc(), fc/fm need to be freed first and
+then error needs to be returned to caller.
+
+        if (IS_ERR(sb))
+                return PTR_ERR(sb);
+
+
+If we allocated a new super block in sget_fc(), then next step is
+to initialize it.
+
+        if (!sb->s_root) {
+                err = virtio_fs_fill_super(sb, fsc);
+	}
+
+If we run into errors here, then fc/fm need to be freed.
+
+So current code looks fine to me.
+
+Vivek
+
 > 
-> It is not a protection thing. I just wanted a reliable way to tell that there
-> is an exception without having to unwind the stack up to the exception frame.
-> That is all.
+> But later fm is freed again when virtio_fs_fill_super() fialed.
+> I think the statement if (fsc->s_fs_info) {kfree(fm);} is
+> misplaced.
+> 
+> My patch puts this statement in the correct palce to avoid
+> double free.
+> 
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  fs/fuse/virtio_fs.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 8868ac31a3c0..727cf436828f 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -1437,10 +1437,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+>  
+>  	fsc->s_fs_info = fm;
+>  	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
+> -	if (fsc->s_fs_info) {
+> -		fuse_conn_put(fc);
+> -		kfree(fm);
+> -	}
+> +
+>  	if (IS_ERR(sb))
+>  		return PTR_ERR(sb);
+>  
+> @@ -1457,6 +1454,11 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+>  		sb->s_flags |= SB_ACTIVE;
+>  	}
+>  
+> +	if (fsc->s_fs_info) {
+> +		fuse_conn_put(fc);
+> +		kfree(fm);
+> +	}
+> +
+>  	WARN_ON(fsc->root);
+>  	fsc->root = dget(sb->s_root);
+>  	return 0;
+> -- 
+> 2.25.1
+> 
+> 
 
-I see.
-
-Given that's an optimization, we can consider doing something like that
-that after we have the functional bits in place, where we'll be in a
-position to see whether this is even a measureable concern in practice.
-
-I suspect that longer-term we'll end up trying to use metadata to unwind
-across exception boundaries, since it's possible to get blocked within
-those for long periods (e.g. for a uaccess fault), and the larger scale
-optimization for patching is to not block the patch.
-
-Thanks,
-Mark.
