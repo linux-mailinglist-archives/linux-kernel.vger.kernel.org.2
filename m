@@ -2,309 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3AF345FB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB5A345FB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhCWNbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbhCWNbF (ORCPT
+        id S231476AbhCWNcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:32:12 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:58040 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231435AbhCWNbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:31:05 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988FBC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:30:53 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id b7so27125124ejv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MDPG8p5N4UdjXCdq+avfFbXU3o20BK4EHu8tEMTA+n8=;
-        b=fRJiLdxnFUFHfKYtfDXCQ1Jqc8UN0FtE6hUB8TbJAE10MatNb+f4MbY22cHILEpw6u
-         Z6O1tUyHVrHtax+Vn1hpyJD99+gAvCvSm4/+NcvzztES/ga/5h3W6QEltBRh6BT0gkuv
-         r4vpRXf4MapBEjVnfIv4dLhOSufZCNPK5X61u6b5oUfg0DP0BtWhBg66tE98A/r6I+24
-         4Mu9o5Us+VezF/foRIj6raFh0wWoqa3wjnDpbj2s5RgEcZNAS0B2KNbQNmGN7b8nYUHa
-         NRPotLOOzn99gxTCcJWatTXTWwJNnXiI426SYlZt5bFGSfeNYEvTH4LpHsHHUsOYBval
-         gpvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MDPG8p5N4UdjXCdq+avfFbXU3o20BK4EHu8tEMTA+n8=;
-        b=TNb7UgCTPX/C+kSAd7+TpUIDPsNl6sNYy1Uuadvn7pdKopzZdr3sxh8hybpcDwLXBN
-         N4PdXXeRiwEWvi479o2DqkNbdA3uCx6MVg5AxXL+MYbRdllvQUvo5jvm7zaFs+HLp/LA
-         hFBuJgmomonuJSc1g5C6zowCBK3x/1qTP9FLxfgJfy6/vNa2i53kTRcZSupY/kuMwwkL
-         bP1BdXMzsdN8O6craP9SJw9V5/K/QIvhTth0dhwDL3ccsB2N9y8tCB/RIiNkBefIGSYp
-         AgaVzYsCJvXNp74T2lijBsPlrpdF8HslgTnvFuJkkEbc9yCb+nrSD/Xtedzu5RL1CYo3
-         0bsw==
-X-Gm-Message-State: AOAM532hJdTlbW9JMY0e9Xhb2sPjanXYgb13YexgvGQ7b+aAMEqu04J4
-        upW8N9m8lvTS2mP7AlXRtc1ulihwTp7D38TVeWDE0A==
-X-Google-Smtp-Source: ABdhPJxdYLsLDACHsLswRTuiUt4NDuSSm6YMvQdUUXZhASd7w6Z97Wt9RjPYSse39yqsFZUS9sulekOO83b7HRXhLJo=
-X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr4853619ejb.503.1616506252192;
- Tue, 23 Mar 2021 06:30:52 -0700 (PDT)
+        Tue, 23 Mar 2021 09:31:52 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 904DB20B5680;
+        Tue, 23 Mar 2021 06:31:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 904DB20B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616506312;
+        bh=zTgAWOmTDytEWgg0S9UVRUvjjshGWZHqXHkFUdI/tlc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=fJzyyAtxq0/rAGu5iEb09kI1bPZFJsrn28F23WUPI6jLZjxPACknquImACEHVmn36
+         fNbslhEl4N8SaUdnttXIQ90bXftKW8G3dlWXhKRYVD72IiK2QZfZVV/NIlUbT42lYC
+         hyCbpaAsVOx+v/YWtJiMQiT+hUdk19mObgYVMXt4=
+Subject: Re: [RFC PATCH v2 4/8] arm64: Detect an EL1 exception frame and mark
+ a stack trace unreliable
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-5-madvenka@linux.microsoft.com>
+ <20210323104251.GD95840@C02TD0UTHF1T.local>
+ <c4a36a6f-c84f-1ad9-cd03-974f6a39c37b@linux.microsoft.com>
+ <20210323130425.GA98545@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <f5dd48d3-c0ea-a719-c10d-83e62db3e7c0@linux.microsoft.com>
+Date:   Tue, 23 Mar 2021 08:31:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210322121919.202392464@linuxfoundation.org>
-In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Mar 2021 19:00:39 +0530
-Message-ID: <CA+G9fYuuOHGm0EijoGeQ0npRMBDZeG56x0GMpzKmZditiRPqsA@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/14] 4.4.263-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210323130425.GA98545@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 at 18:24, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.263 release.
-> There are 14 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.263-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.263-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 769f344ebed2d7d9adc324015195b8c3fda886da
-git describe: v4.4.262-15-g769f344ebed2
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.262-15-g769f344ebed2
-
-No regressions (compared to build v4.4.262)
-
-No fixes (compared to build v4.4.262)
 
 
-Ran 36066 total tests in the following environments and test suites.
+On 3/23/21 8:04 AM, Mark Rutland wrote:
+> On Tue, Mar 23, 2021 at 07:46:10AM -0500, Madhavan T. Venkataraman wrote:
+>> On 3/23/21 5:42 AM, Mark Rutland wrote:
+>>> On Mon, Mar 15, 2021 at 11:57:56AM -0500, madvenka@linux.microsoft.com wrote:
+>>>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>>>
+>>>> EL1 exceptions can happen on any instruction including instructions in
+>>>> the frame pointer prolog or epilog. Depending on where exactly they happen,
+>>>> they could render the stack trace unreliable.
+>>>>
+>>>> If an EL1 exception frame is found on the stack, mark the stack trace as
+>>>> unreliable.
+>>>>
+>>>> Now, the EL1 exception frame is not at any well-known offset on the stack.
+>>>> It can be anywhere on the stack. In order to properly detect an EL1
+>>>> exception frame the following checks must be done:
+>>>>
+>>>> 	- The frame type must be EL1_FRAME.
+>>>>
+>>>> 	- When the register state is saved in the EL1 pt_regs, the frame
+>>>> 	  pointer x29 is saved in pt_regs->regs[29] and the return PC
+>>>> 	  is saved in pt_regs->pc. These must match with the current
+>>>> 	  frame.
+>>>
+>>> Before you can do this, you need to reliably identify that you have a
+>>> pt_regs on the stack, but this patch uses a heuristic, which is not
+>>> reliable.
+>>>
+>>> However, instead you can identify whether you're trying to unwind
+>>> through one of the EL1 entry functions, which tells you the same thing
+>>> without even having to look at the pt_regs.
+>>>
+>>> We can do that based on the entry functions all being in .entry.text,
+>>> which we could further sub-divide to split the EL0 and EL1 entry
+>>> functions.
+>>
+>> Yes. I will check the entry functions. But I still think that we should
+>> not rely on just one check. The additional checks will make it robust.
+>> So, I suggest that the return address be checked first. If that passes,
+>> then we can be reasonably sure that there are pt_regs. Then, check
+>> the other things in pt_regs.
+> 
+> What do you think this will catch?
+> 
 
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
+I am not sure that I have an exact example to mention here. But I will attempt
+one. Let us say that a task has called arch_stack_walk() in the recent past.
+The unwinder may have copied a stack frame onto some location in the stack
+with one of the return addresses we check. Let us assume that there is some
+stack corruption that makes a frame pointer point to that exact record. Now,
+we will get a match on the return address on the next unwind.
 
-Test Suites
------------
-* build
-* linux-log-parser
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-cap_bounds-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* kvm-unit-tests
-* ltp-open-posix-tests
-* perf
-* v4l2-compliance
-* install-android-platform-tools-r2600
-* kselftest-kvm
-* kselftest-vm
-* fwts
+Pardon me if the example is somewhat crude. My point is that it is highly unlikely
+but not impossible for the return address to be on the stack and for the unwinder to
+get an unfortunate match.
 
-Summary
-------------------------------------------------------------------------
+> The only way to correctly identify whether or not we have a pt_regs is
+> to check whether we're in specific portions of the EL1 entry assembly
+> where the regs exist. However, as any EL1<->EL1 transition cannot be
+> safely unwound, we'd mark any trace going through the EL1 entry assembly
+> as unreliable.
+> 
+> Given that, I don't think it's useful to check the regs, and I'd prefer
+> to avoid the subtlteties involved in attempting to do so.
+> 
 
-kernel: 4.4.263-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.263-rc1-hikey-20210322-970
-git commit: cdbe5973893696eb29efb23b75953efd2f7edf4d
-git describe: 4.4.263-rc1-hikey-20210322-970
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.263-rc1-hikey-20210322-970
+I agree that the return address check is a good check. I would like to add
+extra checks to be absolutely sure.
 
-No regressions (compared to 4.4.263-rc1-hikey-20210319-968)
+> [...]
+> 
+>>>> +static void check_if_reliable(unsigned long fp, struct stackframe *frame,
+>>>> +			      struct stack_info *info)
+>>>> +{
+>>>> +	struct pt_regs *regs;
+>>>> +	unsigned long regs_start, regs_end;
+>>>> +
+>>>> +	/*
+>>>> +	 * If the stack trace has already been marked unreliable, just
+>>>> +	 * return.
+>>>> +	 */
+>>>> +	if (!frame->reliable)
+>>>> +		return;
+>>>> +
+>>>> +	/*
+>>>> +	 * Assume that this is an intermediate marker frame inside a pt_regs
+>>>> +	 * structure created on the stack and get the pt_regs pointer. Other
+>>>> +	 * checks will be done below to make sure that this is a marker
+>>>> +	 * frame.
+>>>> +	 */
+>>>
+>>> Sorry, but NAK to this approach specifically. This isn't reliable (since
+>>> it can be influenced by arbitrary data on the stack), and it's far more
+>>> complicated than identifying the entry functions specifically.
+>>
+>> As I mentioned above, I agree that we should check the return address. But
+>> just as a precaution, I think we should double check the pt_regs.
+>>
+>> Is that OK with you? It does not take away anything or increase the risk in
+>> anyway. I think it makes it more robust.
+> 
+> As above, I think that the work necessary to correctly access the regs
+> means that it's not helpful to check the regs themselves. If you have
+> something in mind where checking the regs is helpful I'm happy to
+> consider that, but my general preference would be to stay away from the
+> regs for now.
+> 
 
-No fixes (compared to 4.4.263-rc1-hikey-20210319-968)
+I have mentioned a possibility above. Please take a look and let me know.
 
-Ran 1863 total tests in the following environments and test suites.
+Thanks.
 
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Madhavan
