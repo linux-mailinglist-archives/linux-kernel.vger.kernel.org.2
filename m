@@ -2,58 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD4F3455EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4ACC3455F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhCWDG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 23:06:29 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:49940 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhCWDGK (ORCPT
+        id S229760AbhCWDIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:08:42 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:40940 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229545AbhCWDIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 23:06:10 -0400
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 790CA4002C9;
-        Tue, 23 Mar 2021 11:06:06 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH] mm/page_alloc: Duplicate include linux/vmalloc.h
-Date:   Mon, 22 Mar 2021 20:05:51 -0700
-Message-Id: <1616468751-80656-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGkxOSU9MHRoeQx1NVkpNSk1PTUNMTU1NT01VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pxw6ESo4PD8JQzo4FgwYMA8O
-        Nj0wCi1VSlVKTUpNT01DTE1MTkxNVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUpJTU43Bg++
-X-HM-Tid: 0a785d0bef6bd991kuws790ca4002c9
+        Mon, 22 Mar 2021 23:08:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UT12C85_1616468905;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT12C85_1616468905)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Mar 2021 11:08:26 +0800
+Subject: Re: [PATCH v6] selftests/x86: Use getauxval() to simplify the code in
+ sgx
+To:     Shuah Khan <shuah@kernel.org>, Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210314111621.68428-1-tianjia.zhang@linux.alibaba.com>
+ <YE9ayBnFIpwGiVVr@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <53c94119-bdc3-a24c-91be-6d0444c46d64@linux.alibaba.com>
+Date:   Tue, 23 Mar 2021 11:08:25 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <YE9ayBnFIpwGiVVr@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux/vmalloc.h is repeatedly in the file page_alloc.c
+Hi,
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
----
- mm/page_alloc.c | 2 --
- 1 file changed, 2 deletions(-)
+On 3/15/21 9:02 PM, Jarkko Sakkinen wrote:
+> On Sun, Mar 14, 2021 at 07:16:21PM +0800, Tianjia Zhang wrote:
+>> Simplify the sgx code implemntation by using library function
+>> getauxval() instead of a custom function to get the base address
+>> of vDSO.
+>>
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+>> Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+> Shuah, Boris, which tree this should be picked?
+> 
+> /Jarkko
+> 
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index c53fe4f..5adf9c1 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -72,8 +72,6 @@
- #include <linux/padata.h>
- #include <linux/khugepaged.h>
- #include <linux/buffer_head.h>
--#include <linux/vmalloc.h>
--
- #include <asm/sections.h>
- #include <asm/tlbflush.h>
- #include <asm/div64.h>
--- 
-2.7.4
+Take time to look at this.
 
+Best regards,
+Tianjia
