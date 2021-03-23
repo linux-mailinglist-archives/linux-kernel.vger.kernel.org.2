@@ -2,305 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335993453E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86D73453EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhCWAcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhCWAcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:32:15 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295CFC061574;
-        Mon, 22 Mar 2021 17:32:15 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so11434269pjc.2;
-        Mon, 22 Mar 2021 17:32:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=H5DdMa3UXyM7kX0j8ZfJJTJDDB2PmBqap47iK72hy/c=;
-        b=e1CZfMAV962djNCWE6IWUjCUKjGAezG100VtoPdVLGRw027i032wSemGI8nO7E+zU+
-         yFup+q5EfZGl7L7rs/CfgH68dyt/EzoXVJ8x54aZlP0vX0bZoupGSCaLLZROYnuow88d
-         LbHzZrinIdI+hcTHiHovxYizzKUoWn4BJecdhWFOkTPXJ1WBjjQSfXoQHPeqhCV6fYPk
-         zzsAsx2J7BkZSjiFRThQXooACGFZM8yu+iY4imo878GvHU+LKGtbvzNAoNqv/nLZPNPW
-         s2cRMMyI8RVdpFi/WJEC5wIzeQSKf20FPVFDllq+8IbsGEMI1lOyg/EUAfqcoN8M2k3B
-         O0+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H5DdMa3UXyM7kX0j8ZfJJTJDDB2PmBqap47iK72hy/c=;
-        b=NmKa6WeCwaBlB/JQXkm2QaotDmqUJIWLSQt1GpAerL9ZUXm3ofaKw6M+qBZ47d8+ZY
-         GNgGppsrCsynH5OTfgsr+D/c9G9Mn3dop/PVx/Z2S7momnzOyXTvQv6bDQsQa1kYIDC5
-         rSdhIpzz1dT7FOOiUbngIygZEhk/flDfwSNRVRc+TcKhUeAZ0hue4gwTaJuWjEqLl5lU
-         tuOrXOA9Ln99ZJTb+0enCC0jmm6S6lByrmBCYsjDrpSLkHBSmxui20TPefPBmj2lyglZ
-         2DCylUC05KE7a6fYTw4Ny4b2eeTYR5lZ9eEdE/PAGpQgR4NXCgCaAR/BJW5H1LBV7Wmz
-         jOsw==
-X-Gm-Message-State: AOAM5300zGktOTdsubywzTPBDnHqbULlewE5V/t0RRUBPMqAMXTbxpAm
-        HS3cWiFbr5gNZwg0eSox5JiX2w8eecA=
-X-Google-Smtp-Source: ABdhPJwrbum3dk1747vLmTB6NamTB166akPYS92rcFtgusklmDOS52h5EHCe8U6IeV4p78B96WLIJQ==
-X-Received: by 2002:a17:90a:d58a:: with SMTP id v10mr1732686pju.36.1616459534598;
-        Mon, 22 Mar 2021 17:32:14 -0700 (PDT)
-Received: from sol (106-69-186-212.dyn.iinet.net.au. [106.69.186.212])
-        by smtp.gmail.com with ESMTPSA id t7sm14420858pfg.69.2021.03.22.17.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 17:32:14 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 08:32:08 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        id S230511AbhCWAfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:35:00 -0400
+Received: from mail-eopbgr80109.outbound.protection.outlook.com ([40.107.8.109]:25291
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229537AbhCWAec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:34:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YyYwYT6AW4iXwD2pEht+ejxrx45JwrNjrs27bxyAeW/nv6yaKuNt8k2MytdU6yBMAiGp9THN+PyFtK06plyDyUxfhEUKiQ9zVE6GXp8ZdlTJEJG5FhntjZCTuDiFXPJCRMmQgrJkoxBmC3joXouqe/fPCs3K0E5Mu8ELahmhrjCt/UEHgrr9+5wPGgozNjeqej5+ZwRlxcCnThSrerYM9YwKqfCYMRztTyioM1wnTzCopShrQieYJeTGbn7GkIrQK4V9WjyV0Zmlpx140LGrUC5jaZk1v+U0II+76NDycQkoXMJJmYPdquPL/O502go6PJMkArWSkk5skPddZmzPgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ONfivx7RC+QAuH6UOO0PIDhyafnTOtkY0R8cRBCP7Yc=;
+ b=lZrNOsw1xqJ2lgnjTVcZVQO+8afR3HevE4uNpf7spKZ1rqZMbmFCH2m3xVNy9ByITQWQ/kMn4WJ0Cc9RZyuR3Yh7+6rY0mNNzLnaWRoBdqOAAVfRt1XA8YUV7+I1OhK4oVPvLrxhsYa4vCh+19M9NvHuApdBDli3DIlnQTzxoq3j2TuKmO/k2EoNsLxaJ/b9pn9FDWKtyAlxdvqx1+jG0vGQxO2My5592xqiGlQhjySCMbvgfSQ1YKQlE1guvqU68Rg/H+UeH77P1Pe3LquCtn9yGJhZsUsWiecMSeNuN6QHSE55P0dMOviTJ9h3r8X3wo75Vt/nc9znR+WaKPsyZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ONfivx7RC+QAuH6UOO0PIDhyafnTOtkY0R8cRBCP7Yc=;
+ b=KFRpzDalUJuhy+tKluRvqnjZUj/wy9NOkcdljxSuqRsBrTD09r1i8bUox26EsKGfAH03awIHCU+cRB2mz0bAL3xBcSfJz5xiMdUQvTkzmfAZXhjwSAW0pGRzg5+VZwNa2GUCDzsrv6sxjeSmtNOHHpBOhZYsxPGjK7oqKrp1bNk=
+Received: from DB7PR05MB5431.eurprd05.prod.outlook.com (2603:10a6:10:55::32)
+ by DB6PR05MB4661.eurprd05.prod.outlook.com (2603:10a6:6:4d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
+ 2021 00:34:28 +0000
+Received: from DB7PR05MB5431.eurprd05.prod.outlook.com
+ ([fe80::65bd:95f4:78b0:bcd1]) by DB7PR05MB5431.eurprd05.prod.outlook.com
+ ([fe80::65bd:95f4:78b0:bcd1%5]) with mapi id 15.20.3955.024; Tue, 23 Mar 2021
+ 00:34:28 +0000
+From:   Marcel Ziswiler <marcel.ziswiler@toradex.com>
+To:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "victor.liu@nxp.com" <victor.liu@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: GTE - The hardware timestamping engine
-Message-ID: <20210323003208.GA6105@sol>
-References: <4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com>
- <CACRpkdbmqww6UQ8CFYo=+bCtVYBJwjMxVixc4vS6D3B+dUHScw@mail.gmail.com>
- <20210322060047.GA226745@sol>
- <d48fa7b5-8c17-c3d7-10a9-a9811c410a39@nvidia.com>
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+CC:     "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        "robert.foss@linaro.org" <robert.foss@linaro.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v6 03/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
+ pixel combiner binding
+Thread-Topic: [PATCH v6 03/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
+ pixel combiner binding
+Thread-Index: AQHXH3xINnprqdE6QUa8b2nC962YYg==
+Date:   Tue, 23 Mar 2021 00:34:28 +0000
+Message-ID: <ab437e190dc3f7e1f63b927f16dea2d5f806d59c.camel@toradex.com>
+References: <1615952569-4711-1-git-send-email-victor.liu@nxp.com>
+         <1615952569-4711-4-git-send-email-victor.liu@nxp.com>
+In-Reply-To: <1615952569-4711-4-git-send-email-victor.liu@nxp.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=toradex.com;
+x-originating-ip: [2a01:2ac:51dd:d885:51ae:2f9c:9f1e:70f4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f23ccde6-bef9-4ae0-45b4-08d8ed936b1f
+x-ms-traffictypediagnostic: DB6PR05MB4661:
+x-microsoft-antispam-prvs: <DB6PR05MB4661AA091E76405E0B3B3B8EFB649@DB6PR05MB4661.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mS+TQ15dg7ZC3ltoHVtDLSEsliAk2Z0hHzZVvs66EEatBycXVTqn2JPeMI/I3V01vWhJQ1IqPAG5dr+9dTOmxdlu+H+k2H6ii1RHGNGUqFS0qAHPXzmzfoqurX8LYbQJLhhyqZrCOYl8eQzjfQEyx+wojBxRv5ZSDZqEvVIKeVEF7G93DOQoKsgaX6e1ob6bwBL+olixYlgu1Vp6//g9N42zwhexrzXrBtOle7+TOoZ7vaRwa8PtalGDwxbOTAEbj1D0tx2QKgibXTSLxBkwYbGgvuZbjL6DJ3ksJ16Z5gQ8W3/Z8aZZdhpv7e4T3NVMWKbTkA32MSVekns3yB7XWUHYN41C6nz1E0yfoCcTtUFHSS/pChwAIfFgU8HYqWIignYYxJ63oS8pZ8FHCyE8sHdt916Onp0sfzGHCJ9/5HTtLRnF2pMgsW5ER6IjL1ZJMnw2ySpKOqrDT4RMUYMLrS1Ek/gNrkltwqCzPdJOwXsuxEWFLN4dvpgk0IBjpHhB0uhDuLk1mLHLoz935zIng/y/Qr+U9i2E17w/RY8MfGn8ESMoLrOq6jtoNaCAZtR0Wi9SGUzawepqLEJuxXM/C65vIq0S09bAUlfTXTZjCMK60M8UtOeqe4yj0UVWg+05b85wE0QMJy5Z6wTnT5cE+0cAmnRboTR0bGb9A83+5uzlmgHdo6Q3mNH5I3NKXikE0fc5E7UXVXQNPhvOLIYU336htyA2rZbMAyfr5sQ/AMA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR05MB5431.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(376002)(39840400004)(136003)(8936002)(76116006)(110136005)(86362001)(44832011)(91956017)(54906003)(7416002)(4326008)(64756008)(5660300002)(6506007)(6512007)(316002)(83380400001)(8676002)(186003)(66556008)(66946007)(66446008)(2906002)(36756003)(2616005)(38100700001)(71200400001)(6486002)(966005)(478600001)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?VDkrQTFENzFYd0N0MFVGdDlGbUczc2hDOXpGWGRjQ3pYWnlKNUhncmdPd3Y5?=
+ =?utf-8?B?cTFFTTRZMFg1Ung1OXZLUnpCWHl2Rm5XbTFLV3krMlE5OENhT1VkMFBlcm5I?=
+ =?utf-8?B?Vi9SRWJBSW5EQ2NLTlk3WXh0OUlEMjZPWnFTS08wQnNERUFBNjRkWUxCdjdY?=
+ =?utf-8?B?QzF5My8ySEkxNkxSTU5jWnQ4Q0E3cVZzMmpURWQzdG5zNVgwZFpJNHE5VHZE?=
+ =?utf-8?B?VmRKZnhnM2dFU25USVRvK254Q0FlQWNmLzdUdHZXN3ZzM0pLTEF4V2g2NllK?=
+ =?utf-8?B?L1d3SWdsbVhmUnhIWXlMc01iNmNnaHJubFJWbW11cm0zZU1aamFieUJyVDNN?=
+ =?utf-8?B?dG81NVpvVE5YeW9nbnNDdkF4ZS9RSGlGK0JqL1dRcFluaWMzbGN6Y0Z0VnV4?=
+ =?utf-8?B?YU9CeTZSZmxtYkxldGNzV1NyNFpVa1pKUG5tUUwwREZOQithVTkya3JyVHJ6?=
+ =?utf-8?B?alFOMFBJWVNJNkVjS0krKzA5a1NaUG9lME5lc0h4UDIwL2VibkJQM2RGYzBR?=
+ =?utf-8?B?SHU0dUFOcjhEYy9jQUVwMG9aMTVVdkdleEJiLzQ3Y3hUSUhWQjFuL0pKV0lp?=
+ =?utf-8?B?bitHdWlTS2UySGxnbVBZOU5GZzN3NWw3NXdvbzVRakE2d0UrRDl0Um1BTTB6?=
+ =?utf-8?B?MnV6aU1MNnlTcFJwaGcrbkM0bVhkWXhpR1BUd0FHMTRiUXNCelVnbm5UQzZJ?=
+ =?utf-8?B?dEFmcmdkMGFxV204cTNoT1dJQ3pzYUpNTTVPRUI1REkwc25KT0VrcEFManRo?=
+ =?utf-8?B?TFRzbTJpd0lVUlB5bFZINDFpWVJJamNpZDFjVWNiSVk3eGtZRWdsU1VTanZN?=
+ =?utf-8?B?NGR1NDhEVmNLN1l4ZnN3R3FkTHVLTkZYa0RwVSs0ZXYva3Z1VmdtY2RXUzJK?=
+ =?utf-8?B?RlNJNjNHeW41SmtqUVA4MXZUTExuQ1R1aDFMUjFqN2R1ZUhUT0xvMnZXQTNT?=
+ =?utf-8?B?RGdTcWRwVUVDdmNwR0p2cElGSHkzTDNEM3NCQjVqdnNYSXZueCtzTEp6RXRq?=
+ =?utf-8?B?d3ZiVURqRitUOEVKWkt0dS9zVHJtTUdoRlpJVGpiR2VONmhaL3ZLdG5Zd3p3?=
+ =?utf-8?B?SHd0TDV1NjEzRTltSVpSdW05UlFVdEtESCtMYnlQVXN4Q0c5bE9CeU5zdXVq?=
+ =?utf-8?B?TEo2clh3MFFpODRMR1dVaWIxTFlqRnN0VW44ZWh6a1N2Z1FtZUdDTU4vNXdQ?=
+ =?utf-8?B?TEtINTZybXNqWk5UK3Z6Nms5MnYzVFFRWVVZa0wvUHFDR0JQOVJ3V3Arb1pq?=
+ =?utf-8?B?WGdHeFJHc2cva3lJcGcrY2YvYk9yTUdSbGVuT2MrY1RBRUNzbStTby9MSm1W?=
+ =?utf-8?B?a2pldEordUpNQXQrR2o5NWd2QXRZYlhnYnVaRzdXUnBFdFJQanprbEZGM013?=
+ =?utf-8?B?N0l3dFFQYm91RkhJeTYwTCtNTGlIcUliVm8xb201eTl1RHI3YUNtYWhjb2Mv?=
+ =?utf-8?B?bmlJTlJINDBwUHFGWUhHODMwd1pXMzlkZERxWWdmVzZiZERyTXl6MEVJeldp?=
+ =?utf-8?B?M3Q0UFJPaU82YWR3eTBBOTNpeVZCejJRMTl5VWcwSHpUNG90NEdvYzB6NTZT?=
+ =?utf-8?B?ZmZNTUx0dEdtbEhRd2FPdWlnMjNNYjhNWlZZUEZOTDFqL1dzV1hHRkJJdW5M?=
+ =?utf-8?B?aTJPVjQ0WjRjb293UlhXQmlacVY3ei9DMnlTTEtNNTI5Vld3QlR3Mmk5VFlX?=
+ =?utf-8?B?c0NLOHdSOFczcUcyM3prdUJyc1N3YW9YRXZLNVVXS004Q2MwQ1FmYlJOVzQz?=
+ =?utf-8?B?a1ZCU2Ywdjl0QUZKcmJpUVJPZEsyYmkrSnlOMUdaUVYyY3h0eW84MUI0Q0Ur?=
+ =?utf-8?B?OURaSkNOaG43K0QrSkJ4WmlEU05BSGtneXhXcndtaDVYWGlQSnZ4emdNMlQ0?=
+ =?utf-8?B?eStrZFlERWJRdzVmVVY1ZkVkUnVkWjljd01QbEVzdFRrL1E9PQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E43177B28B37084BB0924906FA224AEC@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d48fa7b5-8c17-c3d7-10a9-a9811c410a39@nvidia.com>
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR05MB5431.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f23ccde6-bef9-4ae0-45b4-08d8ed936b1f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 00:34:28.5302
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QpIDcb/rGioRjPDFjSe8BD6RuubQLcRUAloi1PmpRpJ2K0fbB/lVaYXw7u64fMesUgruYY6CbvpWmchMPN5IvRtM/no2L94KnE5BZxD9OpA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR05MB4661
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 01:21:46PM -0700, Dipen Patel wrote:
-> Hi Linus and Kent,
-> 
-> Thanks you so much for your valuable inputs and time, Please see below, my follow ups.
-> 
-> On 3/21/21 11:00 PM, Kent Gibson wrote:
-> > On Sat, Mar 20, 2021 at 12:56:36PM +0100, Linus Walleij wrote:
-> >> Hi Dipen,
-> >>
-> >> thanks for your mail!
-> >>
-> >> I involved some other kernel people to get some discussion.
-> >> I think Kent Gibson can be of great help because he is using
-> >> GPIOs with high precision.
-> >>
-> > 
-> > Actually I just extended the cdev uAPI to provide the REALTIME option,
-> > which was the event clock until we changed to MONOTONIC in Linux 5.7,
-> > as there were some users that were requiring the REALTIME clock.
-> > 
-> >> We actually discussed this a bit when adding support for
-> >> realtime timestamps.
-> >>
-> >> On Wed, Mar 17, 2021 at 11:29 PM Dipen Patel <dipenp@nvidia.com> wrote:
-> >>
-> >>> Nvidia Tegra SoCs have generic timestamping engine (GTE) hardware module which
-> >>> can monitor SoC signals like IRQ lines and GPIO lines for state change, upon
-> >>> detecting the change, it can timestamp and store in its internal hardware FIFO.
-> >>> The advantage of the GTE module can be realized in applications like robotics
-> >>> or autonomous vehicle where it can help record events with precise timestamp.
-> >>
-> >> That sounds very useful.
-> >>
-> > 
-> > Indeed - it could remove the latency and jitter that results from
-> > timestamping events in the IRQ handler.
-> > 
-> >> Certainly the kernel shall be able to handle this.
-> >>
-> >>> ============
-> >>> For GPIO:
-> >>> ============
-> >>> 1.  GPIO has to be configured as input and IRQ must be enabled.
-> >>> 2.  Ask GPIO controller driver to set corresponding timestamp bit in the
-> >>>     specified GPIO config register.
-> >>> 3.  Translate GPIO specified by the client to its internal bitmap.
-> >>> 3.a For example, If client specifies GPIO line 31, it could be bit 13 of GTE
-> >>>     register.
-> >>> 4.  Set internal bits to enable monitoring in GTE module
-> >>> 5.  Additionally GTE driver can open up lanes for the user space application
-> >>>     as a client and can send timestamping events directly to the application.
-> >>
-> >> I have some concerns:
-> >>
-> >> 1. GPIO should for all professional applications be used with the character
-> >> device /dev/gpiochipN, under no circumstances shall the old sysfs
-> >> ABI be used for this. In this case it is necessary because the
-> >> character device provides events in a FIFO to userspace, which is
-> >> what we need.
-> >>
-> > 
-> > The cdev uAPI would certainly be the most sensible place to expose
-> > this to userspace - its line events being a direct analog to what the GTE
-> > provides.
-> > 
-> >> The timestamp provided to userspace is an opaque 64bit
-> >> unsigned value. I suppose we assume it is monotonic but
-> >> you can actually augment the semantics for your specific
-> >> stamp, as long as 64 bits is gonna work.
-> >>
-> >> 2. The timestamp for the chardev is currently obtained in
-> >> drivers/gpio/gpiolib-cdev.c like this:
-> >>
-> >> static u64 line_event_timestamp(struct line *line)
-> >> {
-> >>         if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
-> >>                 return ktime_get_real_ns();
-> >>
-> >>         return ktime_get_ns();
-> >> }
-> >>
-> >> What you want to do is to add a new flag for hardware timestamps
-> >> and use that if available. FLAG_EVENT_CLOCK_HARDWARE?
-> >> FLAG_EVENT_CLOCK_NATIVE?
-> >>
-> > 
-> > HARDWARE looks better to me, as NATIVE is more vague.
-> > 
-> >> Then you need to figure out a mechanism so we can obtain
-> >> the right timestamp from the hardware event right here,
-> >> you can hook into the GPIO driver if need be, we can
-> >> figure out the gpio_chip for a certain line for sure.
-> >>
-> > 
-> > Firstly, line_event_timestamp() is called from the IRQ handler context.
-> > That is obviously more constraining than if it were only called from the
-> > IRQ thread. If the GTE is providing the timestamp then that could be
-> > put off until the IRQ thread.
-> > So you probably want to refactor line_event_timestamp() into two flavours
-> > - one for IRQ handler that returns 0 if HARDWARE is set, and the other for
-> > IRQ thread, where there is already a fallback call to
-> > line_event_timestamp() for the nested threaded interrupt case, that gets
-> > the timestamp from the GTE.
-> > 
-> 
-> My follow-up concerns on both Linus's and Kent's feedback:
-> 
-> 1.  Please correct me if I am wrong, lineevent in the gpiolib* is only
->     serves the userspace clients.
-> 1.a What about kernel drivers wanting to use this feature for monitoring its
->     GPIO lines, see gyroscope example somewhere below. In that regards,
->     lineevent implementation is not sufficient.
-> 1.b Are you also implying to extend lineevent implementation to kernel
->     drivers?
-> 2.  For both above cases 1.a and 1.b, gpiolib* then would become holder
->     of all the GTE related datastructures per userspace or kernel clients,
->     is this acceptable? In another words, gpilib-cdev framework will become
->     client to GTE framework on behalf of those drivers. I believe we
->     can embed gte related data to per lineevent structures.
-> 3.  I believe Kent touched on this, but double confirming, there will be a
->     use-case or scenario where in-kernel clients will want to block until
->     the next timestaming event. We need to cover that scenario as well.   
-> 4.  What about kernel drivers wanting monitor certain IRQ lines? For example,
->     gycroscope drivers wants to monitor i2c IRQ line for transaction complete.
-> 4.a Or you are suggesting all the GPIOs related requests will go through
->     gpiolib-cdev --> gte framework ---> gte driver and for the rests, it
->     it will be "some kernel driver" ---> gte framework --> gte driver.
-> 
-> I am assuming there will be gte framework/infrastructure for all above cases.
-> 
-> > But my primary concern here would be keeping the two event FIFOs (GTE and
-> > cdev) in sync.  Masking and unmasking in hardware and the kernel needs to
-> > be coordinated to prevent races that would result in sync loss.
-> > So this probably needs to be configured in the GTE driver via the irq
-> > path, rather than pinctrl?
-> > 
-> > Is every event detected by the GTE guaranteed to trigger an interrupt in
-> > the kernel?
-> 
-> GTE interrupt will be triggered when its internal FIFO meets configurable
-> thresholds, which could be set to 1 for example, in that case will trigger
-> interrupt for every event detected.
-> 
-> Can you elaborate more on pinctrl part?
-> 
-> > 
-> > How to handle GTE FIFO overflows?  Can they be detected or prevented?
-> > 
-> Currently, there is no hardware support to detect the overflow, it can be
-> done certainly through software.
-> 
-
-In response to all your comments above...
-
-Firstly, I'm not suggesting that other kernel modules would use the
-cdev lineevents, only that they would use the same mechanism that
-gpiolib-cdev would use to timestamp the lineevents for userspace.
-
-As to that mechanism, my current thinking is that the approach of
-associating GTE event FIFO entries with particular physical IRQ events is
-problematic, as keeping the two in sync would be difficult, if not
-impossible.
-
-A more robust approach is to ignore the physical IRQs and instead service
-the GTE event FIFO, generating IRQs from those events in software -
-essentially a pre-timestamped IRQ.  The IRQ framework could provide the
-timestamping functionality, equivalent to line_event_timestamp(), for
-the IRQ handler/thread and in this case provide the timestamp from the GTE
-event.
-
-So this would be an IRQ feature of which the gpiolib would just be another
-client.  But I don't know enough about the IRQ framework to do more
-than just float the idea - I'm already way out over my skis here.
-
-Btw, the pinctrl API is what the gpiolib uses to control the GPIO aspects
-of physical hardware such as direction, value, bias and the like.
-Almost certainly not relevant to this feature, so forget I mentioned it.
-
-Cheers,
-Kent.
-
-> >> So you first need to augment the userspace
-> >> ABI and the character device code to add this. See
-> >> commit 26d060e47e25f2c715a1b2c48fea391f67907a30
-> >> "gpiolib: cdev: allow edge event timestamps to be configured as REALTIME"
-> >> by Kent Gibson to see what needs to be done.
-> >>
-> > 
-> > You should also extend gpio_v2_line_flags_validate() to disallow setting
-> > of multiple event clock flags, similar to the bias flag checks.
-> > Currently there is only the one event clock flag, so no need to check.
-> > 
-> >> 3. Also patch tools/gpio/gpio-event-mon.c to support this flag and use that
-> >> for prototyping and proof of concept.
-> >>
-> > 
-> > The corresponding commit for the REALTIME option is
-> > commit e0822cf9b892ed051830daaf57896aca48c8567b
-> > "tools: gpio: add option to report wall-clock time to gpio-event-mon"
-> > 
-> > Cheers,
-> > Kent.
-> > 
-> >>> ============
-> >>> For IRQ:
-> >>> ============
-> >>
-> >> Marc Zyngier and/or Thomas Gleixner know this stuff.
-> >>
-> >> It does make sense to add some infrastructure so that GPIO events
-> >> and IRQs can use the same timestamping hardware.
-> >>
-> >> And certainly you will also want to use this timestamp for
-> >> IIO devices? If it is just GPIOs and IRQs today, it will be
-> >> gyroscopes and accelerometers tomorrow, am I right?
-> >>
-> 
-> Gyroscope, accelerometers or any IIO are built on top of i2c/spi and/or GPIOs.
-> So they are covered as long as they serve as client to GTE framework, For
-> example, if gyroscope uses GPIO as an interrupt to indicate frame
-> ready, GTE could timestamp that GPIO as well any IRQs like i2c transaction
-> complete IRQ. To this to happen, gycroscope then register itself with
-> GTE framework and enable required signals that it interfaces/interested with.
-> 
-> >> Yours,
-> >> Linus Walleij
-> 
-> Best Regards,
-> Dipen Patel
+T24gV2VkLCAyMDIxLTAzLTE3IGF0IDExOjQyICswODAwLCBMaXUgWWluZyB3cm90ZToNCj4gVGhp
+cyBwYXRjaCBhZGRzIGJpbmRpbmdzIGZvciBpLk1YOHFtL3F4cCBwaXhlbCBjb21iaW5lci4NCj4g
+DQo+IFJldmlld2VkLWJ5OiBSb2IgSGVycmluZyA8cm9iaEBrZXJuZWwub3JnPg0KPiBTaWduZWQt
+b2ZmLWJ5OiBMaXUgWWluZyA8dmljdG9yLmxpdUBueHAuY29tPg0KPiAtLS0NCj4gdjUtPnY2Og0K
+PiAqIE5vIGNoYW5nZS4NCj4gDQo+IHY0LT52NToNCj4gKiBObyBjaGFuZ2UuDQo+IA0KPiB2My0+
+djQ6DQo+ICogTm8gY2hhbmdlLg0KPiANCj4gdjItPnYzOg0KPiAqIEFkZCBSb2IncyBSLWIgdGFn
+Lg0KPiANCj4gdjEtPnYyOg0KPiAqIFVzZSBncmFwaCBzY2hlbWEuIChMYXVyZW50KQ0KPiAqIFVz
+ZSBlbnVtIGluc3RlYWQgb2Ygb25lT2YgKyBjb25zdCBmb3IgdGhlIHJlZyBwcm9wZXJ0eSBvZiBw
+aXhlbCBjb21iaW5lcg0KPiDCoCBjaGFubmVscy4gKFJvYikNCj4gDQo+IMKgLi4uL2Rpc3BsYXkv
+YnJpZGdlL2ZzbCxpbXg4cXhwLXBpeGVsLWNvbWJpbmVyLnlhbWwgfCAxNDQgKysrKysrKysrKysr
+KysrKysrKysrDQo+IMKgMSBmaWxlIGNoYW5nZWQsIDE0NCBpbnNlcnRpb25zKCspDQo+IMKgY3Jl
+YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5
+L2JyaWRnZS9mc2wsaW14OHF4cC1waXhlbC1jb21iaW5lci55YW1sDQo+IA0KPiBkaWZmIC0tZ2l0
+IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL2ZzbCxp
+bXg4cXhwLXBpeGVsLWNvbWJpbmVyLnlhbWwNCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvZGlzcGxheS9icmlkZ2UvZnNsLGlteDhxeHAtcGl4ZWwtY29tYmluZXIueWFtbA0K
+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAwMDAwMDAwMC4uNTBiYWUyMQ0KPiAtLS0g
+L2Rldi9udWxsDQo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNw
+bGF5L2JyaWRnZS9mc2wsaW14OHF4cC1waXhlbC1jb21iaW5lci55YW1sDQo+IEBAIC0wLDAgKzEs
+MTQ0IEBADQo+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJT
+RC0yLUNsYXVzZSkNCj4gKyVZQU1MIDEuMg0KPiArLS0tDQo+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0
+cmVlLm9yZy9zY2hlbWFzL2Rpc3BsYXkvYnJpZGdlL2ZzbCxpbXg4cXhwLXBpeGVsLWNvbWJpbmVy
+LnlhbWwjDQo+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2Nv
+cmUueWFtbCMNCj4gKw0KPiArdGl0bGU6IEZyZWVzY2FsZSBpLk1YOHFtL3F4cCBQaXhlbCBDb21i
+aW5lcg0KPiArDQo+ICttYWludGFpbmVyczoNCj4gK8KgIC0gTGl1IFlpbmcgPHZpY3Rvci5saXVA
+bnhwLmNvbT4NCj4gKw0KPiArZGVzY3JpcHRpb246IHwNCj4gK8KgIFRoZSBGcmVlc2NhbGUgaS5N
+WDhxbS9xeHAgUGl4ZWwgQ29tYmluZXIgdGFrZXMgdHdvIG91dHB1dCBzdHJlYW1zIGZyb20gYQ0K
+PiArwqAgc2luZ2xlIGRpc3BsYXkgY29udHJvbGxlciBhbmQgbWFuaXB1bGF0ZXMgdGhlIHR3byBz
+dHJlYW1zIHRvIHN1cHBvcnQgYSBudW1iZXINCj4gK8KgIG9mIG1vZGVzKGJ5cGFzcywgcGl4ZWwg
+Y29tYmluZSwgWVVWNDQ0IHRvIFlVVjQyMiwgc3BsaXRfUkdCKSBjb25maWd1cmVkIGFzDQo+ICvC
+oCBlaXRoZXIgb25lIHNjcmVlbiwgdHdvIHNjcmVlbnMsIG9yIHZpcnR1YWwgc2NyZWVucy7CoCBU
+aGUgcGl4ZWwgY29tYmluZXIgaXMNCj4gK8KgIGFsc28gcmVzcG9uc2libGUgZm9yIGdlbmVyYXRp
+bmcgc29tZSBvZiB0aGUgY29udHJvbCBzaWduYWxzIGZvciB0aGUgcGl4ZWwgbGluaw0KPiArwqAg
+b3V0cHV0IGNoYW5uZWwuDQo+ICsNCj4gK3Byb3BlcnRpZXM6DQo+ICvCoCBjb21wYXRpYmxlOg0K
+PiArwqDCoMKgIGVudW06DQo+ICvCoMKgwqDCoMKgIC0gZnNsLGlteDhxbS1waXhlbC1jb21iaW5l
+cg0KPiArwqDCoMKgwqDCoCAtIGZzbCxpbXg4cXhwLXBpeGVsLWNvbWJpbmVyDQo+ICsNCj4gK8Kg
+ICIjYWRkcmVzcy1jZWxscyI6DQo+ICvCoMKgwqAgY29uc3Q6IDENCj4gKw0KPiArwqAgIiNzaXpl
+LWNlbGxzIjoNCj4gK8KgwqDCoCBjb25zdDogMA0KPiArDQo+ICvCoCByZWc6DQo+ICvCoMKgwqAg
+bWF4SXRlbXM6IDENCj4gKw0KPiArwqAgY2xvY2tzOg0KPiArwqDCoMKgIG1heEl0ZW1zOiAxDQo+
+ICsNCj4gK8KgIGNsb2NrLW5hbWVzOg0KPiArwqDCoMKgIGNvbnN0OiBhcGINCj4gKw0KPiArwqAg
+cG93ZXItZG9tYWluczoNCj4gK8KgwqDCoCBtYXhJdGVtczogMQ0KPiArDQo+ICtwYXR0ZXJuUHJv
+cGVydGllczoNCj4gK8KgICJeY2hhbm5lbEBbMC0xXSQiOg0KPiArwqDCoMKgIHR5cGU6IG9iamVj
+dA0KPiArwqDCoMKgIGRlc2NyaXB0aW9uOiBSZXByZXNlbnRzIGEgZGlzcGxheSBzdHJlYW0gb2Yg
+cGl4ZWwgY29tYmluZXIuDQo+ICsNCj4gK8KgwqDCoCBwcm9wZXJ0aWVzOg0KPiArwqDCoMKgwqDC
+oCAiI2FkZHJlc3MtY2VsbHMiOg0KPiArwqDCoMKgwqDCoMKgwqAgY29uc3Q6IDENCj4gKw0KPiAr
+wqDCoMKgwqDCoCAiI3NpemUtY2VsbHMiOg0KPiArwqDCoMKgwqDCoMKgwqAgY29uc3Q6IDANCj4g
+Kw0KPiArwqDCoMKgwqDCoCByZWc6DQo+ICvCoMKgwqDCoMKgwqDCoCBkZXNjcmlwdGlvbjogVGhl
+IGRpc3BsYXkgc3RyZWFtIGluZGV4Lg0KPiArwqDCoMKgwqDCoMKgwqAgZW51bTogWyAwLCAxIF0N
+Cj4gKw0KPiArwqDCoMKgwqDCoCBwb3J0QDA6DQo+ICvCoMKgwqDCoMKgwqDCoCAkcmVmOiAvc2No
+ZW1hcy9ncmFwaC55YW1sIy9wcm9wZXJ0aWVzL3BvcnQNCj4gK8KgwqDCoMKgwqDCoMKgIGRlc2Ny
+aXB0aW9uOiBJbnB1dCBlbmRwb2ludCBvZiB0aGUgZGlzcGxheSBzdHJlYW0uDQo+ICsNCj4gK8Kg
+wqDCoMKgwqAgcG9ydEAxOg0KPiArwqDCoMKgwqDCoMKgwqAgJHJlZjogL3NjaGVtYXMvZ3JhcGgu
+eWFtbCMvcHJvcGVydGllcy9wb3J0DQo+ICvCoMKgwqDCoMKgwqDCoCBkZXNjcmlwdGlvbjogT3V0
+cHV0IGVuZHBvaW50IG9mIHRoZSBkaXNwbGF5IHN0cmVhbS4NCj4gKw0KPiArwqDCoMKgIHJlcXVp
+cmVkOg0KPiArwqDCoMKgwqDCoCAtICIjYWRkcmVzcy1jZWxscyINCj4gK8KgwqDCoMKgwqAgLSAi
+I3NpemUtY2VsbHMiDQo+ICvCoMKgwqDCoMKgIC0gcmVnDQo+ICvCoMKgwqDCoMKgIC0gcG9ydEAw
+DQo+ICvCoMKgwqDCoMKgIC0gcG9ydEAxDQo+ICsNCj4gK8KgwqDCoCBhZGRpdGlvbmFsUHJvcGVy
+dGllczogZmFsc2UNCj4gKw0KPiArcmVxdWlyZWQ6DQo+ICvCoCAtIGNvbXBhdGlibGUNCj4gK8Kg
+IC0gIiNhZGRyZXNzLWNlbGxzIg0KPiArwqAgLSAiI3NpemUtY2VsbHMiDQo+ICvCoCAtIHJlZw0K
+PiArwqAgLSBjbG9ja3MNCj4gK8KgIC0gY2xvY2stbmFtZXMNCj4gK8KgIC0gcG93ZXItZG9tYWlu
+cw0KPiArDQo+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4gKw0KPiArZXhhbXBsZXM6
+DQo+ICvCoCAtIHwNCj4gK8KgwqDCoCAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvY2xvY2svaW14OC1s
+cGNnLmg+DQo+ICvCoMKgwqAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Zpcm13YXJlL2lteC9yc3Jj
+Lmg+DQo+ICvCoMKgwqAgcGl4ZWwtY29tYmluZXJANTYwMjAwMDAgew0KPiArwqDCoMKgwqDCoMKg
+wqAgY29tcGF0aWJsZSA9ICJmc2wsaW14OHF4cC1waXhlbC1jb21iaW5lciI7DQo+ICvCoMKgwqDC
+oMKgwqDCoCAjYWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gK8KgwqDCoMKgwqDCoMKgICNzaXplLWNl
+bGxzID0gPDA+Ow0KPiArwqDCoMKgwqDCoMKgwqAgcmVnID0gPDB4NTYwMjAwMDAgMHgxMDAwMD47
+DQo+ICvCoMKgwqDCoMKgwqDCoCBjbG9ja3MgPSA8JmRjMF9waXhlbF9jb21iaW5lcl9scGNnIElN
+WF9MUENHX0NMS180PjsNCj4gK8KgwqDCoMKgwqDCoMKgIGNsb2NrLW5hbWVzID0gImFwYiI7DQo+
+ICvCoMKgwqDCoMKgwqDCoCBwb3dlci1kb21haW5zID0gPCZwZCBJTVhfU0NfUl9EQ18wPjsNCj4g
+Kw0KPiArwqDCoMKgwqDCoMKgwqAgY2hhbm5lbEAwIHsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICNzaXpl
+LWNlbGxzID0gPDA+Ow0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MD47DQo+ICsN
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcG9ydEAwIHsNCj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCByZWcgPSA8MD47DQo+ICsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBkYzBfcGl4ZWxfY29tYmluZXJfY2gwX2RjMF9kcHVfZGlzcDA6IGVuZHBvaW50IHsN
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlbW90ZS1lbmRwb2lu
+dCA9IDwmZGMwX2RwdV9kaXNwMF9kYzBfcGl4ZWxfY29tYmluZXJfY2gwPjsNCg0KV2hpbGUgSSBh
+Y2tub3dsZWRnZSB0aGlzIGp1c3QgYmVpbmcgYW4gZXhhbXBsZSB5b3Ugc2VlbSB0byBjYWxsIHRo
+ZXNlIGFzIGZvbGxvd3MgZWxzZXdoZXJlOg0KDQpEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvZGlzcGxheS9icmlkZ2UvZnNsLGlteDhxeHAtcGl4ZWwtY29tYmluZXIueWFtbA0KDQpk
+YzBfZHB1X2Rpc3AwX2RjMF9waXhlbF9jb21iaW5lcl9jaDANCnBpeGVsX2NvbWJpbmVyMF9jaDBf
+ZHB1MF9kaXNwMA0KDQpPciBhbSBJIGp1c3QgbWlzc2luZyBzb21ldGhpbmc/DQoNCj4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Ow0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9
+Ow0KPiArDQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHBvcnRAMSB7DQo+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVnID0gPDE+Ow0KPiArDQo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgZGMwX3BpeGVsX2NvbWJpbmVyX2NoMF9kYzBfcGl4ZWxfbGluazA6IGVu
+ZHBvaW50IHsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlbW90
+ZS1lbmRwb2ludCA9IDwmZGMwX3BpeGVsX2xpbmswX2RjMF9waXhlbF9jb21iaW5lcl9jaDA+Ow0K
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH07DQo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIH07DQo+ICvCoMKgwqDCoMKgwqDCoCB9Ow0KPiArDQo+ICvCoMKgwqDCoMKgwqDCoCBj
+aGFubmVsQDEgew0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjYWRkcmVzcy1jZWxscyA9IDwx
+PjsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgI3NpemUtY2VsbHMgPSA8MD47DQo+ICvCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHJlZyA9IDwxPjsNCj4gKw0KPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBwb3J0QDAgew0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlZyA9IDww
+PjsNCj4gKw0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRjMF9waXhlbF9jb21i
+aW5lcl9jaDFfZGMwX2RwdV9kaXNwMTogZW5kcG9pbnQgew0KPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVtb3RlLWVuZHBvaW50ID0gPCZkYzBfZHB1X2Rpc3AxX2Rj
+MF9waXhlbF9jb21iaW5lcl9jaDE+Ow0KDQpkaXR0bw0KDQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgfTsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfTsNCj4gKw0KPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBwb3J0QDEgew0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIHJlZyA9IDwxPjsNCj4gKw0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGRjMF9waXhlbF9jb21iaW5lcl9jaDFfZGMwX3BpeGVsX2xpbmsxOiBlbmRwb2ludCB7DQo+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZW1vdGUtZW5kcG9pbnQgPSA8
+JmRjMF9waXhlbF9saW5rMV9kYzBfcGl4ZWxfY29tYmluZXJfY2gxPjsNCg0KZG8uDQoNCj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Ow0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCB9Ow0KPiArwqDCoMKgwqDCoMKgwqAgfTsNCj4gK8KgwqDCoCB9Ow0K
