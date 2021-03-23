@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B30346876
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CECE234687D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhCWTFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:05:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:50768 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233000AbhCWTE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:04:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15EC81042;
-        Tue, 23 Mar 2021 12:04:57 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 370123F718;
-        Tue, 23 Mar 2021 12:04:51 -0700 (PDT)
-Subject: Re: [PATCH v2 12/15] PCI/MSI: Let PCI host bridges declare their
- reliance on MSI domains
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
-References: <20210322184614.802565-1-maz@kernel.org>
- <20210322184614.802565-13-maz@kernel.org>
- <6a2eaa5d-1d83-159f-69e5-c9e0a00a7b50@arm.com> <87im5hkahr.wl-maz@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <be2d9ea0-6657-b7aa-01b5-1b4a704cb478@arm.com>
-Date:   Tue, 23 Mar 2021 19:04:44 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+        id S233000AbhCWTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233013AbhCWTFJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:05:09 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F90FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:05:08 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id g25so11704063wmh.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zfTKyuyptfdK7Fjb1pdXihHAu9GKw1GPuZw+980nY/8=;
+        b=iPKbGcVHzbVWxIhpBUXt727J3UEhP5SCCdIPcpdGuFZ5kOyS46/S4FJ6ZNlnaFFIUr
+         gBlL5AybNZ7l6iIaIrvyeEU0tzH+xZa6I8CpjnoqtQS0rdpRTMONW9kBCEXXOwux0HMd
+         HiZREmba6uMPpmhqKrbCJtafuPjADlX0nwFQDKRPtHd3/s0f6T+trHg6NgciXlLpj6Kb
+         52f/Tt+8nj5XTysA3UJeJw2qkixBkuV6Ap5jbMsQF3nV0GWALtj0CgTj7waHCtQmOF8+
+         A7AOVudgATxxVA9/AsyK0SWPiVLvINW2DtDFEFEomGqlff9VqzoDZBSPjMEWvXJdDBGy
+         uiIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zfTKyuyptfdK7Fjb1pdXihHAu9GKw1GPuZw+980nY/8=;
+        b=FRQvryx7fLBerq4Le3TgCb0/3D5GrqBU8nekdEHghX66At7JmiV09M3gB8XKaHfUzV
+         jr0LCvSOs1y6+4bIp67nL7SfHHDRID530aZkwq9E7axMscPPbPcCUpOl3dtMoELC/xM+
+         rblIN+JymTiM5l6Td3BBj8jLtiZNT0VtOqIcPtfAEcbo0JVEBI5dVi+dNpslSGjlvLs8
+         iYk0TQdrxLKjpNOPg0+sRLL2hgl4Rdm9symrEjteVss8utFs+DnAL/wAufqOKc6oEH3N
+         W7J6Eg9DZjFvl3QRSnuCiQIFIBLirtfhZd6crLPkBrUE1UivUzKQpvz+KAb2bP9NJgUk
+         C/Pw==
+X-Gm-Message-State: AOAM5337T4232Pt6rE5WDZF2PaAY0C+41Nlx1JlCSEVIYjl8V+wej1W+
+        RNvYpZOj6+VUW3/kB8V7+YU=
+X-Google-Smtp-Source: ABdhPJwYRrRK6MbY08/6eajJTLh8jyOSH2/AUx6MVUzlpVGF//KLP6MAt+fCt1bU2Ravfvi/OrVTZA==
+X-Received: by 2002:a1c:43c6:: with SMTP id q189mr4732349wma.80.1616526307452;
+        Tue, 23 Mar 2021 12:05:07 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id w6sm23880473wrl.49.2021.03.23.12.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 12:05:07 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] Revert "mremap: don't allow MREMAP_DONTUNMAP on
+ special_mappings and aio"
+To:     Brian Geffon <bgeffon@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>
+References: <20210303175235.3308220-1-bgeffon@google.com>
+ <20210323182520.2712101-1-bgeffon@google.com>
+ <20210323182520.2712101-2-bgeffon@google.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Message-ID: <558d3b1d-b783-5368-8600-40568c434dcf@gmail.com>
+Date:   Tue, 23 Mar 2021 19:05:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <87im5hkahr.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210323182520.2712101-2-bgeffon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-23 18:09, Marc Zyngier wrote:
-> Hi Robin,
+On 3/23/21 6:25 PM, Brian Geffon wrote:
+> This reverts commit cd544fd1dc9293c6702fab6effa63dac1cc67e99.
 > 
-> On Tue, 23 Mar 2021 11:45:02 +0000,
-> Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-03-22 18:46, Marc Zyngier wrote:
->>> The new 'no_msi' attribute solves the problem of advertising the lack
->>> of MSI capability for host bridges that know for sure that there will
->>> be no MSI for their end-points.
->>>
->>> However, there is a whole class of host bridges that cannot know
->>> whether MSIs will be provided or not, as they rely on other blocks
->>> to provide the MSI functionnality, using MSI domains.  This is
->>> the case for example on systems that use the ARM GIC architecture.
->>>
->>> Introduce a new attribute ('msi_domain') indicating that implicit
->>> dependency, and use this property to set the NO_MSI flag when
->>> no MSI domain is found at probe time.
->>>
->>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
->>> Signed-off-by: Marc Zyngier <maz@kernel.org>
->>> ---
->>>    drivers/pci/probe.c | 2 +-
->>>    include/linux/pci.h | 1 +
->>>    2 files changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
->>> index 146bd85c037e..bac9f69a06a8 100644
->>> --- a/drivers/pci/probe.c
->>> +++ b/drivers/pci/probe.c
->>> @@ -925,7 +925,7 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->>>    	device_enable_async_suspend(bus->bridge);
->>>    	pci_set_bus_of_node(bus);
->>>    	pci_set_bus_msi_domain(bus);
->>> -	if (bridge->no_msi)
->>> +	if (bridge->no_msi || (bridge->msi_domain && !bus->dev.msi_domain))
->>>    		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
->>>      	if (!parent)
->>> diff --git a/include/linux/pci.h b/include/linux/pci.h
->>> index 48605cca82ae..d322d00db432 100644
->>> --- a/include/linux/pci.h
->>> +++ b/include/linux/pci.h
->>> @@ -551,6 +551,7 @@ struct pci_host_bridge {
->>>    	unsigned int	preserve_config:1;	/* Preserve FW resource setup */
->>>    	unsigned int	size_windows:1;		/* Enable root bus sizing */
->>>    	unsigned int	no_msi:1;		/* Bridge has no MSI support */
->>> +	unsigned int	msi_domain:1;		/* Bridge wants MSI domain */
->>
->> Aren't these really the same thing? Either way we're saying the bridge
->> itself doesn't handle MSIs, it's just in one case we're effectively
->> encoding a platform-specific assumption that an external domain won't
->> be provided. I can't help wondering whether that distinction is really
->> necessary...
+> As discussed in [1] this commit was a no-op because the mapping type was
+> checked in vma_to_resize before move_vma is ever called. This meant that
+> vm_ops->mremap() would never be called on such mappings. Furthermore,
+> we've since expanded support of MREMAP_DONTUNMAP to non-anonymous
+> mappings, and these special mappings are still protected by the existing
+> check of !VM_DONTEXPAND and !VM_PFNMAP which will result in a -EINVAL.
 > 
-> There is a subtle difference: no_msi indicates that there is no way
-> *any* MSI can be dealt with whatsoever (maybe because the RC doesn't
-> forward the corresponding TLPs?). msi_domain says "no MSI unless...".
+> 1. https://lkml.org/lkml/2020/12/28/2340
+> 
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
 
-PCI says that MSIs are simply memory writes at the transaction level, so 
-AFAIK unless the host bridge can't support DMA at all, it shouldn't be 
-in a position to make any assumptions about what transactions mean what.
+Reviewed-by: Dmitry Safonov <0x7f454c46@gmail.com>
 
-I suppose there could in theory be an issue in the other direction, 
-where config space somehow didn't allow access to the MSI capability in 
-the first place, but then we'd presumably just never detect any device 
-as being MSI-capable in the first place, and it wouldn't matter either way.
-
-> We could implement the former with the latter, but I have the feeling
-> that's not totally bullet proof. Happy to revisit this if you think it
-> really matters.
-
-I would expect it to be a fairly safe assumption that a host bridge 
-which "doesn't support MSIs" wouldn't have an msi-parent set, but I 
-don't have a strong opinion either way - I just figured we could 
-probably save a little bit of complexity here.
-
-Cheers,
-Robin.
+Thanks,
+Dmitry
