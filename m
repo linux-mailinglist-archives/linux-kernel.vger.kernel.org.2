@@ -2,93 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B443458E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E386E3458E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCWHjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S229666AbhCWHjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCWHjr (ORCPT
+        with ESMTP id S229665AbhCWHjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:39:47 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B552AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RGMLJxoDesJqef8f3sGKy1sYg0YpdWsc2D6459IXq6E=; b=T6MxdMiciqJ1kYvMbnb1JL0oej
-        hDNX9C84sRTiG5RNOJIKtbnd5VXkep14eFa20+4bTt/dqfxKwhgJWBJpOarOjysxfBA0kVyFnz+J7
-        2h4XQ0jQh/nwKlkuLpPyUktnYPxzyulxznaIhkTCXNs/V5c3puNg7ynAJf0lpuT6VnDEaMGmBbGHA
-        wmee0lr5mjyYi9rAJwQcEaR1TMJmQs8rJyBS3hCurhCucHBkj+kviBNmIQfL/VfS7Tr/3R32kClsi
-        ODNU6q+IgWvcv57oPGTZOxsDUliRlsDGJGcaFqHh7rdYpcC5roF9JxytI9F31Rxli1B1cneJF8ioY
-        zP4Qc+Uw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lObd7-00EB56-Qq; Tue, 23 Mar 2021 07:39:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3446B30477A;
-        Tue, 23 Mar 2021 08:39:08 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2652123601885; Tue, 23 Mar 2021 08:39:08 +0100 (CET)
-Date:   Tue, 23 Mar 2021 08:39:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ftrace: shut up -Wcast-function-type warning for
- ftrace_ops_no_ops
-Message-ID: <YFmbHI4hnKg5UH2M@hirez.programming.kicks-ass.net>
-References: <20210322215006.1028517-1-arnd@kernel.org>
+        Tue, 23 Mar 2021 03:39:40 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE43C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:39:40 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id f10so3754099pgl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PvF1HrRBEs+yUQZzjOuXkf0eJP1lcdc9T4URK25JLiE=;
+        b=IOgARvtDCkd4788B8IVLLNeGvkRiH8zapo76SvNMeVay8WkXWauSzwj6e0dBENjmcK
+         svY9lsPOKeQ+1xfPCB+k1EROasuAfuFETH6u+Uqg64de5xEBcmf1qyuIuiooVVgRvpjc
+         HBza6moWYqIUGNg/6cb9RV9zBFZrn3IBY2e3ZlLFCmsggYn3EG6gyMrbS1GtS7F6v/4z
+         PbU0PFYNWZh5FMfniriUqJrHOC4ZyiAk1HumjI0Z1Yxf0F2rrWWa9sG3O3JqWBwijEPr
+         PMGYM1y8Zp/nONQwprb1zliScimQZ4gHxaqqkBc58xIQKVYkPPOh9kIl7L1aFa7+1kWt
+         ynyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PvF1HrRBEs+yUQZzjOuXkf0eJP1lcdc9T4URK25JLiE=;
+        b=fx0lmzTVrAVz9W3oXMVaZ7aEzV3xwoHd0dxp8OeYil4gl8frC1v4dsNt0UDvebZXF6
+         +WnzsCADDFQ8ZdAVnkqJZoTsR+xnKmcvPBUu0LrkM5AsFlK5ykhno1AxSmWZmDcbXvPA
+         q8vOuW3edRrhcLu1KGs1uQfWtsTtsqj83HQB+rL7zavRganj47DWsP1n7Bqn5yyStLll
+         dG/GVrkxFY5dqr9AXrmMIjldqueHf2F1L9rgBvAVR1nzBR+WXUhHaOZdbjk6jiDZWb5A
+         pC4zClSw67jU6ILNN6uII16FzS0W3hrTri0Tt/lruwm7lxwSGHcvuYI2FjJ9IF+7fWsU
+         R1MQ==
+X-Gm-Message-State: AOAM531K7xJ9+gnYk2h58EGFz12Rg/3RODo7Aj1hq45fSoDnbsBZSR+p
+        G8dfpjHHz5XCfTpNkSRnxN/Z
+X-Google-Smtp-Source: ABdhPJwKcCmBgi+2BFyvGBP7U0ZM5gtxyveh/rSEI9A3yXA7Pto+p2nuS8rNdoos58t2dRw3w8NfFA==
+X-Received: by 2002:a05:6a00:1ad4:b029:216:aa9d:dcea with SMTP id f20-20020a056a001ad4b0290216aa9ddceamr3596742pfv.47.1616485179957;
+        Tue, 23 Mar 2021 00:39:39 -0700 (PDT)
+Received: from localhost.localdomain ([103.77.37.149])
+        by smtp.gmail.com with ESMTPSA id fs9sm1587465pjb.40.2021.03.23.00.39.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 00:39:39 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v8 0/3] Add support for secure regions in NAND
+Date:   Tue, 23 Mar 2021 13:09:27 +0530
+Message-Id: <20210323073930.89754-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322215006.1028517-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:49:58PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> With 'make W=1', gcc warns about casts between incompatible function
-> types:
-> 
-> kernel/trace/ftrace.c:128:31: error: cast between incompatible function types from 'void (*)(long unsigned int,  long unsigned int)' to 'void (*)(long unsigned int,  long unsigned int,  struct ftrace_ops *, struct ftrace_regs *)' [-Werror=cast-function-type]
->   128 | #define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
->       |                               ^
-> 
-> As the commet here explains, this one was intentional, so shut up the
-> warning harder by using a double cast.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/trace/ftrace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 4d8e35575549..d8fc87a17421 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -125,7 +125,7 @@ static void ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
->  #else
->  /* See comment below, where ftrace_ops_list_func is defined */
->  static void ftrace_ops_no_ops(unsigned long ip, unsigned long parent_ip);
-> -#define ftrace_ops_list_func ((ftrace_func_t)ftrace_ops_no_ops)
-> +#define ftrace_ops_list_func ((ftrace_func_t)(void *)ftrace_ops_no_ops)
+On a typical end product, a vendor may choose to secure some regions in
+the NAND memory which are supposed to stay intact between FW upgrades.
+The access to those regions will be blocked by a secure element like
+Trustzone. So the normal world software like Linux kernel should not
+touch these regions (including reading).
 
-So now we're making perfectly fine code worse, because GCC is stupid?
+So this series adds a property for declaring such secure regions in DT
+so that the driver can skip touching them. While at it, the Qcom NANDc
+DT binding is also converted to YAML format.
 
-Please just kill the warning, like we do with so many other warnings.
-It's broken!
+Thanks,
+Mani
+
+Changes in v8:
+
+* Reworked the secure region check logic based on input from Boris
+* Removed the check where unnecessary in rawnand core.
+
+Changes in v7:
+
+* Made "size" u64 and fixed a warning reported by Kernel test bot
+
+Changes in v6:
+
+* Made use of "size" of the regions for comparision
+* Used "secure" instead of "sec"
+* Fixed the sizeof parameter in of_get_nand_secure_regions()
+
+Changes in v5:
+
+* Switched to "uint64-matrix" as suggested by Rob
+* Moved the whole logic from qcom driver to nand core as suggested by Boris
+
+Changes in v4:
+
+* Used "uint32-matrix" instead of "uint32-array" as per Rob's review.
+* Collected Rob's review tag for binding conversion patch
+
+Changes in v3:
+
+* Removed the nand prefix from DT property and moved the property parsing
+  logic before nand_scan() in driver.
+
+Changes in v2:
+
+* Moved the secure-regions property to generic NAND binding as a NAND
+  chip property and renamed it as "nand-secure-regions".
+
+Manivannan Sadhasivam (3):
+  dt-bindings: mtd: Convert Qcom NANDc binding to YAML
+  dt-bindings: mtd: Add a property to declare secure regions in NAND
+    chips
+  mtd: rawnand: Add support for secure regions in NAND memory
+
+ .../bindings/mtd/nand-controller.yaml         |   7 +
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 196 ++++++++++++++++++
+ .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 -------------
+ drivers/mtd/nand/raw/nand_base.c              | 105 ++++++++++
+ include/linux/mtd/rawnand.h                   |  14 ++
+ 5 files changed, 322 insertions(+), 142 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+
+-- 
+2.25.1
+
