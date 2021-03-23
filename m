@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97807345424
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269B4345427
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhCWAts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:49:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35395 "EHLO
+        id S231461AbhCWAt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:49:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50021 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230295AbhCWAtV (ORCPT
+        by vger.kernel.org with ESMTP id S230500AbhCWAtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Mar 2021 20:49:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616460559;
+        s=mimecast20190719; t=1616460561;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+P1dWJGjbRulk7s1nJfmaHQsVvt1Wj4iX3MZXYNalzI=;
-        b=hV6lLrpDVSGJT3fxb/NentO0ojUzPJiqXccWapBQ2SKgUjo2vEkTE3btZw1GNyRKlR45SO
-        NTsvN36wT14fAK3m3hfmIDbaSB51NNAcf/vAPCyoTRIr27U9JAY9gqTex4mTxy8IeqEvEv
-        vf7lIOH1g6XsegmNB62Ta2el69r5RVo=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-Y64JoGlPNn-S-6qrj79U8Q-1; Mon, 22 Mar 2021 20:49:18 -0400
-X-MC-Unique: Y64JoGlPNn-S-6qrj79U8Q-1
-Received: by mail-qt1-f197.google.com with SMTP id m35so397195qtd.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:49:18 -0700 (PDT)
+        bh=qzE2FQvBgwjcQuvAyEoA4yo8mQxpoaRUw1a4rmG7XTE=;
+        b=Q50dQBv9zUTR7i9G8B/Q2lfrczzgWDsVmLVHvxdMwy9fIxoYz21kd0k3vX0fqxTTT+V+cs
+        QSqZeiTcEPAGNTYCcIlAhkZ9rupGYTJLP0fThtDOtDr8GSeRl8Dh/e4PTIiL6Qkzr1GvS9
+        8I1yWdwrLykmLhArRxlt+2BjT3m4C6g=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-uGjum31sMsK2UHrmZRRVIQ-1; Mon, 22 Mar 2021 20:49:19 -0400
+X-MC-Unique: uGjum31sMsK2UHrmZRRVIQ-1
+Received: by mail-qt1-f200.google.com with SMTP id a11so410664qtd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:49:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+P1dWJGjbRulk7s1nJfmaHQsVvt1Wj4iX3MZXYNalzI=;
-        b=Zd3PRnNNWAjs1VXJsz4c1PEX0ESVjR1eEOpn9lly8igvjrkGtjqkTNgRPM9bchEnsz
-         LvphZKOALBCIqe4nlSfgAPFjtgffJmpovVDLWKQefJ9PaBW8qCEX0vZ97MtpG7YDXeIO
-         psBtX2fid0aFUH6qi3jWJp3Rd/LXiFRYf1fZAyhZg3fk+3MEqwtTCgazxSBQwjDD6Uyl
-         VhFgamY0o/72yl5xetbuWL5JIgxwtLU44vlfx8N5BdfA1WvvYukIc9JHX8LjJtz+1U+y
-         TrmvQ62gS4w187EC+WSJDtkcjSLVsLUPj41VVgB0XkoO5ZBXxib7l/SvSWOlDSwE/Goa
-         Gc5w==
-X-Gm-Message-State: AOAM533v8Vj9Q8X1QCh8EOQLWOIEqbuk3ZDdvk2kOLnEiYxWiiFhnhsi
-        mwuHlF/pVEQcG6bFySd+p1rmvyaHnQYB/47bdrhy7qeobRz76DU5Rrn4bs4jGStl02NDqSUIi/w
-        Y73zymQ+u3cMhTIK8fH889R88EqeJ/nrB0nCu7bt/oiGduDPKBdzR5sroqyiKBfYh4uOTwa6hWA
+        bh=qzE2FQvBgwjcQuvAyEoA4yo8mQxpoaRUw1a4rmG7XTE=;
+        b=WS5R7bk4O9CUUaNNTXOXYKpSpuL8EM7ylc98SUeIBZYhhwPlZad7SGkRPXviS9XPhf
+         lorB0Oga2TUCZujg71jEPBWpop2z7Zazw52jf9kwfub+2xpZbp8lC1bDQvKckzIoMzT8
+         4Eb8MeTUoywAxENY1vrx7eNUOByMCnG8+D4uZR0VhlyMHuflAt32n9dreGQS4ytAfaVs
+         XF5Dm2xhGzCeDTRIphrWsBeWAPlhfv3oydgZAmSRw1q2ACOURVl+qjHNNZcK3Y1q8eD3
+         D4QP4Awr4ni4O/fcbj+ehcIv9V8Z9tLn8Lk5fFzQ2oy5Jergd7qETBn/I2xJwibK/mpO
+         8JVg==
+X-Gm-Message-State: AOAM530QJgoMYdAuC2QP/pLRPbzYI3MW6+VVKrau1EhYvcAKdGAYsnzH
+        hKvGyZZ6jdo7mxjjfWjcWLi48olVoQJ0yuOSdyuq3IraRpbUWH6PiIDm/YF+z5DFdIw9Dr2jOjS
+        wpgbWVmTXgagG1O0v8aHRu/RSj8sMHS+td35TXFSE0Xn7I1y5yzDUNSQkNUoBkTmks9vxog9hIQ
         ==
-X-Received: by 2002:a05:622a:1192:: with SMTP id m18mr2273155qtk.27.1616460557143;
-        Mon, 22 Mar 2021 17:49:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqjFEqUS8mI2bN3hk02sEVq6e4Mt4cud7LDIj6h6LCxZV+FMUuvXeBvvd82VpC1CtDlxHBfA==
-X-Received: by 2002:a05:622a:1192:: with SMTP id m18mr2273126qtk.27.1616460556811;
-        Mon, 22 Mar 2021 17:49:16 -0700 (PDT)
+X-Received: by 2002:ac8:4314:: with SMTP id z20mr2399461qtm.127.1616460558880;
+        Mon, 22 Mar 2021 17:49:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGnxyaubPdosmeB8+KjtwtJv00yj3i3xw1XrG7tvd1zJbFrOCn0HMVDuIqra3FYF+x1R7Apg==
+X-Received: by 2002:ac8:4314:: with SMTP id z20mr2399429qtm.127.1616460558565;
+        Mon, 22 Mar 2021 17:49:18 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id n6sm5031793qtx.22.2021.03.22.17.49.15
+        by smtp.gmail.com with ESMTPSA id n6sm5031793qtx.22.2021.03.22.17.49.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 17:49:16 -0700 (PDT)
+        Mon, 22 Mar 2021 17:49:18 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
@@ -64,9 +64,9 @@ Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
         Nadav Amit <nadav.amit@gmail.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 01/23] shmem/userfaultfd: Take care of UFFDIO_COPY_MODE_WP
-Date:   Mon, 22 Mar 2021 20:48:50 -0400
-Message-Id: <20210323004912.35132-2-peterx@redhat.com>
+Subject: [PATCH 02/23] mm: Clear vmf->pte after pte_unmap_same() returns
+Date:   Mon, 22 Mar 2021 20:48:51 -0400
+Message-Id: <20210323004912.35132-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210323004912.35132-1-peterx@redhat.com>
 References: <20210323004912.35132-1-peterx@redhat.com>
@@ -76,95 +76,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly, pass wp_copy into shmem_mfill_atomic_pte() through the stack.
-Then apply the UFFD_WP bit properly when the UFFDIO_COPY on shmem is with
-UFFDIO_COPY_MODE_WP.
+pte_unmap_same() will always unmap the pte pointer.  After the unmap, vmf->pte
+will not be valid any more.  We should clear it.
 
-One thing to mention is that shmem_mfill_atomic_pte() needs to set the dirty
-bit in pte even if UFFDIO_COPY_MODE_WP is set.  The reason is similar to
-dcf7fe9d8976 ("userfaultfd: shmem: UFFDIO_COPY: set the page dirty if VM_WRITE
-is not set") where we need to set page as dirty even if VM_WRITE is no there.
-It's just that shmem can drop the pte any time later, and if it's not dirty the
-data will be dropped.  For uffd-wp, that could lead to data loss if without the
-dirty bit set.
+It was safe only because no one is accessing vmf->pte after pte_unmap_same()
+returns, since the only caller of pte_unmap_same() (so far) is do_swap_page(),
+where vmf->pte will in most cases be overwritten very soon.
 
-Note that shmem_mfill_zeropage_pte() will always call shmem_mfill_atomic_pte()
-with wp_copy==false because UFFDIO_ZEROCOPY does not support UFFDIO_COPY_MODE_WP.
+pte_unmap_same() will be used in other places in follow up patches, so that
+vmf->pte will not always be re-written.  This patch enables us to call
+functions like finish_fault() because that'll conditionally unmap the pte by
+checking vmf->pte first.  Or, alloc_set_pte() will make sure to allocate a new
+pte even after calling pte_unmap_same().
+
+Since we'll need to modify vmf->pte, directly pass in vmf into pte_unmap_same()
+and then we can also avoid the long parameter list.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/shmem_fs.h |  5 +++--
- mm/shmem.c               | 18 ++++++++++++++----
- mm/userfaultfd.c         |  2 +-
- 3 files changed, 18 insertions(+), 7 deletions(-)
+ mm/memory.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-index f0919c3722e7..dfd0369657d8 100644
---- a/include/linux/shmem_fs.h
-+++ b/include/linux/shmem_fs.h
-@@ -128,10 +128,11 @@ extern void shmem_uncharge(struct inode *inode, long pages);
- int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
- 			   struct vm_area_struct *dst_vma,
- 			   unsigned long dst_addr, unsigned long src_addr,
--			   enum mcopy_atomic_mode mode, struct page **pagep);
-+			   enum mcopy_atomic_mode mode, struct page **pagep,
-+			   bool wp_copy);
- #else /* !CONFIG_SHMEM */
- #define shmem_mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr, \
--			       src_addr, mode, pagep)        ({ BUG(); 0; })
-+			       src_addr, mode, pagep, wp_copy) ({ BUG(); 0; })
- #endif /* CONFIG_SHMEM */
- #endif /* CONFIG_USERFAULTFD */
- 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 5cfd2fb6e52b..e88aaabaeb27 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2364,7 +2364,8 @@ static struct inode *shmem_get_inode(struct super_block *sb, const struct inode
- int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
- 			   struct vm_area_struct *dst_vma,
- 			   unsigned long dst_addr, unsigned long src_addr,
--			   enum mcopy_atomic_mode mode, struct page **pagep)
-+			   enum mcopy_atomic_mode mode, struct page **pagep,
-+			   bool wp_copy)
+diff --git a/mm/memory.c b/mm/memory.c
+index a458a595331f..d534eba85756 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2607,19 +2607,20 @@ EXPORT_SYMBOL_GPL(apply_to_existing_page_range);
+  * proceeding (but do_wp_page is only called after already making such a check;
+  * and do_anonymous_page can safely check later on).
+  */
+-static inline int pte_unmap_same(struct mm_struct *mm, pmd_t *pmd,
+-				pte_t *page_table, pte_t orig_pte)
++static inline int pte_unmap_same(struct vm_fault *vmf)
  {
- 	bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
- 	struct inode *inode = file_inode(dst_vma->vm_file);
-@@ -2438,9 +2439,18 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	int same = 1;
+ #if defined(CONFIG_SMP) || defined(CONFIG_PREEMPTION)
+ 	if (sizeof(pte_t) > sizeof(unsigned long)) {
+-		spinlock_t *ptl = pte_lockptr(mm, pmd);
++		spinlock_t *ptl = pte_lockptr(vmf->vma->vm_mm, vmf->pmd);
+ 		spin_lock(ptl);
+-		same = pte_same(*page_table, orig_pte);
++		same = pte_same(*vmf->pte, vmf->orig_pte);
+ 		spin_unlock(ptl);
  	}
+ #endif
+-	pte_unmap(page_table);
++	pte_unmap(vmf->pte);
++	/* After unmap of pte, the pointer is invalid now - clear it. */
++	vmf->pte = NULL;
+ 	return same;
+ }
  
- 	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
--	if (dst_vma->vm_flags & VM_WRITE)
--		_dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
--	else {
-+	if (dst_vma->vm_flags & VM_WRITE) {
-+		if (wp_copy)
-+			_dst_pte = pte_mkuffd_wp(pte_wrprotect(_dst_pte));
-+		else
-+			_dst_pte = pte_mkwrite(_dst_pte);
-+		/*
-+		 * Similar reason to set_page_dirty(), that we need to mark the
-+		 * pte dirty even if wp_copy==true here, otherwise the pte and
-+		 * its page could be dropped at anytime when e.g. swapped out.
-+		 */
-+		_dst_pte = pte_mkdirty(_dst_pte);
-+	} else {
- 		/*
- 		 * We don't set the pte dirty if the vma has no
- 		 * VM_WRITE permission, so mark the page dirty or it
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index cbb7c8d79a4d..0963e0d9ed20 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -448,7 +448,7 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
- 	} else {
- 		VM_WARN_ON_ONCE(wp_copy);
- 		err = shmem_mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
--					     src_addr, mode, page);
-+					     src_addr, mode, page, wp_copy);
- 	}
+@@ -3308,7 +3309,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	vm_fault_t ret = 0;
+ 	void *shadow = NULL;
  
- 	return err;
+-	if (!pte_unmap_same(vma->vm_mm, vmf->pmd, vmf->pte, vmf->orig_pte))
++	if (!pte_unmap_same(vmf))
+ 		goto out;
+ 
+ 	entry = pte_to_swp_entry(vmf->orig_pte);
 -- 
 2.26.2
 
