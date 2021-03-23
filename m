@@ -2,94 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A883456BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 322EA3456C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhCWE0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 00:26:46 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:28036 "EHLO m43-7.mailgun.net"
+        id S229632AbhCWE2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 00:28:23 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:9581 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhCWE0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 00:26:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616473604; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=5AsBctBdaWVT+v92mk/yhzK9ngv5dDQ8x25+1Ap7qhc=;
- b=LeCl0LiwDubOHST79xpeZ0Zmw+aXRJPAnmn+xjri28+EUG+I4uuLXY5u6GTk730j11gUr/2x
- Pje+yBpQ30AfeWlc8p+ipSVzoQDhnO7voD3jO3qjVYnhgDn/7yLeVoRpSqaqynfRvC34YDTQ
- SPrdqvFaPXDG7AGtKDGq4wcbUNA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60596df81de5dd7b99a7cfa7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Mar 2021 04:26:32
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 03E62C433ED; Tue, 23 Mar 2021 04:26:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47DA8C433CA;
-        Tue, 23 Mar 2021 04:26:31 +0000 (UTC)
+        id S229560AbhCWE2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 00:28:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1616473685;
+  x=1648009685;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=DoZBedXlsVXxp9TK78nJgsu4jYFzEXmWx4rX2mAkAxk=;
+  b=KLBhp4eC+TjuzGVwmoiWKklgg9HxuAJybNoqCjGnXcuwCZw4IKkIMxj4
+   VHrciekr66YmersEFHbQXakQqGP0XQ+Boqy36jc6zyhAQQ4uJFLQtPgQ4
+   b02Zqd5nQ7QHtyM+yXuqOSwOVGpLWpNW6fbbeU357CgJk1d6QXMBtssK2
+   1ajDWsAyLb8wRm9voR29Iygb3Qe6BQ+5x8AxNRj8JBOY4mh9hPlVVyTVo
+   0cuodEQU8x/iJkTj1RKp9QOIZgAjHkmQLhdX2QjfvkOM5L9o/zCD/SqDp
+   86VIV1XiXT9A2zUD9F6b+PEBhBkYkIJH8m+d1+xykvY8XS+ZL0b7gL3GQ
+   w==;
+From:   Hermes Zhang <Hermes.Zhang@axis.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        kernel <kernel@axis.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
+Subject: RE: [PATCH v2] dt-binding: leds: Document leds-multi-gpio bindings
+Thread-Topic: [PATCH v2] dt-binding: leds: Document leds-multi-gpio bindings
+Thread-Index: AQHXHvxgm+r+aZrBek+AmH3Nb8cHlKqQNY0AgAC2GSA=
+Date:   Tue, 23 Mar 2021 04:27:57 +0000
+Message-ID: <424d3de97a154c6a9580f27347882413@XBOX01.axis.com>
+References: <20210322091819.29119-1-chenhui.zhang@axis.com>
+ <1616434698.344402.2887754.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1616434698.344402.2887754.nullmailer@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.0.5.60]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 23 Mar 2021 12:26:31 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kael_w@yeah.net
-Subject: Re: [PATCH] drivers: scsi: Remove duplicate include of blkdev.h
-In-Reply-To: <20210322122847.128375-1-wanjiabing@vivo.com>
-References: <20210322122847.128375-1-wanjiabing@vivo.com>
-Message-ID: <4357768675f6adac86059b98e29a78a5@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22 20:28, Wan Jiabing wrote:
-> linux/blkdev.h has been included at line 18, so remove
-> the duplicate include at line 27.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index c86760788c72..e8aa7de17d0a 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -24,7 +24,6 @@
->  #include "ufs_bsg.h"
->  #include "ufshcd-crypto.h"
->  #include <asm/unaligned.h>
-> -#include <linux/blkdev.h>
-> 
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/ufs.h>
-
-Someone has addressed it before you - check 
-https://git.kernel.org/mkp/scsi/c/b4388e3db56a
-
-Can Guo.
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBSb2IgSGVycmluZyA8cm9iaEBr
+ZXJuZWwub3JnPg0KPiBTZW50OiAyMDIxxOoz1MIyM8jVIDE6MzgNCj4gTXkgYm90IGZvdW5kIGVy
+cm9ycyBydW5uaW5nICdtYWtlIGR0X2JpbmRpbmdfY2hlY2snIG9uIHlvdXIgcGF0Y2g6DQo+IA0K
+PiB5YW1sbGludCB3YXJuaW5ncy9lcnJvcnM6DQo+IA0KPiBkdHNjaGVtYS9kdGMgd2FybmluZ3Mv
+ZXJyb3JzOg0KPiAvYnVpbGRzL3JvYmhlcnJpbmcvbGludXgtZHQtDQo+IHJldmlldy9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbGVkcy9sZWRzLW11bHRpLQ0KPiBncGlvLmV4YW1w
+bGUuZHQueWFtbDogZ3Bpb3MtbGVkOiBsZWQtc3RhdGVzOiAnb25lT2YnIGNvbmRpdGlvbmFsIGZh
+aWxlZCwgb25lDQo+IG11c3QgYmUgZml4ZWQ6DQo+IAlbWzAsIDEsIDIsIDNdXSBpcyB0b28gc2hv
+cnQNCj4gCVswLCAxLCAyLCAzXSBpcyB0b28gbG9uZw0KPiAJRnJvbSBzY2hlbWE6IC9idWlsZHMv
+cm9iaGVycmluZy9saW51eC1kdC0NCj4gcmV2aWV3L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9sZWRzL2xlZHMtbXVsdGktZ3Bpby55YW1sDQo+IA0KDQpIaSBSb2IsDQoNClRoYW5r
+cy4gWWVzLCBub3cgSSBjYW4gc2VlIHRoZSB3YXJuaW5nLCBidXQgSSBjb3VsZCBub3QgdW5kZXJz
+dGFuZCB3aGF0IHdhcyB3cm9uZz8gQ291bGQgeW91IGdpdmUgc29tZSBoaW50PyANCg0KQmVzdCBS
+ZWdhcmRzLA0KSGVybWVzDQo=
