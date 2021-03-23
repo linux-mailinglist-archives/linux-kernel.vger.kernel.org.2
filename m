@@ -2,169 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E231346116
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37A1346121
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbhCWOLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:11:30 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11161 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhCWOLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:11:05 -0400
-IronPort-SDR: yeNHj5o/HpvjqEQzkoNVvuUl8RKeU4Tinl5+V0ao7XvN1ATyEaojc+9ZP/bmrNQzAe7CADGT5I
- VY/VQ4VlLScg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="210561518"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="210561518"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 07:10:04 -0700
-IronPort-SDR: JD1MSXuVMvNAQkB0K+bVyHEGlrTXDovueZZhp4arNLAbSYRHVkjV7lJ73BCEmIlNT6cd25ps6G
- 1W41iD2pBKPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="452153707"
-Received: from mylly.fi.intel.com (HELO [10.237.72.57]) ([10.237.72.57])
-  by orsmga001.jf.intel.com with ESMTP; 23 Mar 2021 07:10:01 -0700
-Subject: Re: [PATCH v2] i2c: designware: Add driver support for AMD NAVI GPU
-To:     Sanket Goswami <Sanket.Goswami@amd.com>,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-References: <20210322165947.1921770-1-Sanket.Goswami@amd.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <629d5f1a-b5a6-c457-4108-f4c546d702db@linux.intel.com>
-Date:   Tue, 23 Mar 2021 16:10:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232184AbhCWONG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232176AbhCWOMg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:12:36 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8199C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:12:35 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id b14so13584907lfv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l19bR+nFxXiu4GIfVq6f/m3LcDLqMDiNOa9Zpl4Ovvc=;
+        b=K2WN6O0RNtylg2y5kj+7tUO3G3Ow+0lo/9Kbfq2doL0HIfUyReVmwWRdhF0uGNJ2OX
+         Sf9sQUS2cU+99jYx7m3iFdK6k47YBGTOsnDBoiJD97coMPMO/lhH3U2sptWPOEIKO4H7
+         YKr76EcmmC4dtIC8svew3hPv2dkrnaPY/Lq4EyGjEcvwN9FoVLvmOC/7dMwxApzKoebv
+         SNkM+3naV4PXRdlZ/+86gfwzP06/2XLnnBDnSB/PWjL2e1cGIZAgoKHGTGQy8UxmfpbI
+         qszWcnijbnse7HrTyooN+GkyEGYI6hkC3TXrEPzfmKXfvlr8EjllH/lgx+m5Xjj/4kQ9
+         swaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l19bR+nFxXiu4GIfVq6f/m3LcDLqMDiNOa9Zpl4Ovvc=;
+        b=hOipbWUTxptmraQuboih6OYdNd13MfUhqXTeNNBURt3/xI3BRE5Vd3PpwAwKpWG1jm
+         Mco/XKzMokhXUHFd8jce5bVH7oHp1J7Y4TQNYgvjzHRr6Pja5+p+KN8yRXQ+nAcgwOWC
+         xL75sVLQXrkU5/IbDXqzozCx+weOxPKvOlAlZ8uFTcG6Qvl5o84unLEoA/aSn0tUR61M
+         viZzhPXSRbwll1dOUyZwaEewAr8vFScMWfEbuiXh4bpvGQLNFSlKWlWZ2SxMK29eGkUN
+         FvZcNDA2Ahf/a59lwZRKCX4nOiUaoDjRp6v2ydGK1b6yoJNu6egvk1S2oTiUpRsiahem
+         GT7Q==
+X-Gm-Message-State: AOAM531+uNengi7q5bua1smmpBllyRXinDkN3jeDtjn2uZb9EallZEpj
+        lA89F3Yn9VSrDVQpQkTq/ydexC7j1m1Bi2WXNZoexg==
+X-Google-Smtp-Source: ABdhPJzly95nqr4yJOsMgNbyvkzewf61fS24O2skNJrtHSN97B0AO6qNDxBBBfq6gMyuY4h8Z8m/nW9MARYn+j3bS1I=
+X-Received: by 2002:a19:501b:: with SMTP id e27mr2822930lfb.584.1616508753810;
+ Tue, 23 Mar 2021 07:12:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210322165947.1921770-1-Sanket.Goswami@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210315132501.441681-1-Jerome.Pouiller@silabs.com>
+ <20210315132501.441681-9-Jerome.Pouiller@silabs.com> <CAPDyKFqJf=vUqpQg3suDCadKrFTkQWFTY_qp=+yDK=_Lu9gJGg@mail.gmail.com>
+ <4503971.bAhddQ8uqO@pc-42>
+In-Reply-To: <4503971.bAhddQ8uqO@pc-42>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 23 Mar 2021 15:11:56 +0100
+Message-ID: <CAPDyKFoXgV3m-rMKfjqRj91PNjOGaWg6odWG-EGdFKkL+dGWoA@mail.gmail.com>
+Subject: Re: [PATCH v5 08/24] wfx: add bus_sdio.c
+To:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Mon, 22 Mar 2021 at 18:14, J=C3=A9r=C3=B4me Pouiller
+<jerome.pouiller@silabs.com> wrote:
+>
+> Hello Ulf,
+>
+> On Monday 22 March 2021 13:20:35 CET Ulf Hansson wrote:
+> > On Mon, 15 Mar 2021 at 14:25, Jerome Pouiller
+> > <Jerome.Pouiller@silabs.com> wrote:
+> > >
+> > > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+> > >
+> > > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+> > > ---
+> > >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 259 +++++++++++++++++++=
+++
+> > >  1 file changed, 259 insertions(+)
+> > >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
+> >
+> > [...]
+> >
+> > > +static const struct sdio_device_id wfx_sdio_ids[] =3D {
+> > > +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF=
+200) },
+> > > +       { },
+> > > +};
+> > > +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
+> > > +
+> > > +struct sdio_driver wfx_sdio_driver =3D {
+> > > +       .name =3D "wfx-sdio",
+> > > +       .id_table =3D wfx_sdio_ids,
+> > > +       .probe =3D wfx_sdio_probe,
+> > > +       .remove =3D wfx_sdio_remove,
+> > > +       .drv =3D {
+> > > +               .owner =3D THIS_MODULE,
+> > > +               .of_match_table =3D wfx_sdio_of_match,
+> >
+> > It's not mandatory to support power management, like system
+> > suspend/resume. However, as this looks like this is a driver for an
+> > embedded SDIO device, you probably want this.
+> >
+> > If that is the case, please assign the dev_pm_ops here and implement
+> > the ->suspend|resume() callbacks.
+>
+> I have no platform to test suspend/resume, so I have only a
+> theoretical understanding of this subject.
 
-On 3/22/21 6:59 PM, Sanket Goswami wrote:
-> The Latest AMD NAVI GPU card has an integrated Type-C controller and
-> Designware I2C with PCI Interface. The Type-C controller can be
-> accessed over I2C. The client driver is part of the USB Type-C UCSI
-> driver.
-> 
-> Also, there exists a couple of notable IP limitations that are dealt as
-> workarounds:
-> - I2C transaction work on a polling mode as IP does not generate
-> interrupt.
-> - I2C read command sent twice to address the IP issues.
-> 
-> Reviewed-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-> Co-developed-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
-> ---
-> Changes in v2:
-> - Utilized existing functionality of i2c_dw_xfer_init to configure I2C
->    bus.
-> - Removed i2c_dw_populate_client and rewrrient navi_amd_register_client
->    to deduplicate from existing drivers.
-> - Addressed review comments from Andy.
->   
-> drivers/i2c/busses/i2c-designware-common.c |   3 +
->   drivers/i2c/busses/i2c-designware-core.h   |   3 +
->   drivers/i2c/busses/i2c-designware-master.c | 136 +++++++++++++++++++++
->   drivers/i2c/busses/i2c-designware-pcidrv.c |  57 +++++++++
->   4 files changed, 199 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-> index 3c19aada4b30..50883a70b482 100644
-> --- a/drivers/i2c/busses/i2c-designware-common.c
-> +++ b/drivers/i2c/busses/i2c-designware-common.c
-> @@ -150,6 +150,9 @@ int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
->   	reg = readl(dev->base + DW_IC_COMP_TYPE);
->   	i2c_dw_release_lock(dev);
->   
-> +	if (dev->flags & AMD_NON_INTR_MODE)
-> +		map_cfg.max_register = AMD_UCSI_INTR_REG;
-> +
->   	if (reg == swab32(DW_IC_COMP_TYPE_VALUE)) {
->   		map_cfg.reg_read = dw_reg_read_swab;
->   		map_cfg.reg_write = dw_reg_write_swab;
-> diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-> index 5392b82f68a4..f29923c452ac 100644
-> --- a/drivers/i2c/busses/i2c-designware-core.h
-> +++ b/drivers/i2c/busses/i2c-designware-core.h
-> @@ -293,9 +293,12 @@ struct dw_i2c_dev {
->   #define ACCESS_INTR_MASK	BIT(0)
->   #define ACCESS_NO_IRQ_SUSPEND	BIT(1)
->   
-> +#define AMD_NON_INTR_MODE	BIT(2)
->   #define MODEL_MSCC_OCELOT	BIT(8)
->   #define MODEL_BAIKAL_BT1	BIT(9)
->   #define MODEL_MASK		GENMASK(11, 8)
-> +#define AMD_UCSI_INTR_EN	0xd
-> +#define AMD_UCSI_INTR_REG	0x474
->   
->   int i2c_dw_init_regmap(struct dw_i2c_dev *dev);
->   u32 i2c_dw_scl_hcnt(u32 ic_clk, u32 tSYMBOL, u32 tf, int cond, int offset);
-> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-> index dd27b9dbe931..a76e1f992850 100644
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -23,6 +23,10 @@
->   
->   #include "i2c-designware-core.h"
->   
-> +#define AMD_TIMEOUT_MIN_MSEC	10000
-> +#define AMD_TIMEOUT_MAX_MSEC	11000
-> +#define AMD_MASTERCFG_MASK	GENMASK(15, 0)
-> +
->   static void i2c_dw_configure_fifo_master(struct dw_i2c_dev *dev)
->   {
->   	/* Configure Tx/Rx FIFO threshold levels */
-> @@ -208,6 +212,13 @@ static int i2c_dw_init_master(struct dw_i2c_dev *dev)
->   	if (dev->sda_hold_time)
->   		regmap_write(dev->map, DW_IC_SDA_HOLD, dev->sda_hold_time);
->   
-> +	/*
-> +	 * In order to enable the interrupt for UCSI i.e. AMD NAVI GPU card,
-> +	 * it is mandatory to set the right value in specific register
-> +	 * (offset:0x474) as per the hardware IP specification.
-> +	 */
-> +	if (dev->flags & AMD_NON_INTR_MODE)
-> +		regmap_write(dev->map, AMD_UCSI_INTR_REG, AMD_UCSI_INTR_EN);
+I see.
 
-This confuses me - this patch is about adding support for DesignWare IP 
-that does not generate interrupts but here code is enabling an 
-interrupt. I guess it's for UCSI but should above code then go to a 
-driver handling that IP?
+>
+> I understanding is that with the current implementation, the
+> device will be powered off on suspend and then totally reset
+> (including reloading of the firmware) on resume. I am wrong?
 
-> +static int i2c_dw_check_stopbit(struct dw_i2c_dev *i2cd)
-...
-> +static int i2c_dw_status(struct dw_i2c_dev *i2cd)
-...
-> +static int amd_i2c_dw_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num_msgs)
-...
-> +{
-> +	struct dw_i2c_dev *i2cd = i2c_get_adapdata(adap);
+You are correct, for a *removable* SDIO card. In this case, the
+mmc/sdio core will remove the corresponding SDIO card/device and its
+corresponding SDIO func devices at system suspend. It will then be
+redetected at system resume (and the SDIO func driver re-probed).
 
-For uniformity I'd use struct dw_i2c_dev *dev name instead of *i2cd 
-since that what driver uses currently in other places.
+Although, as this is an embedded SDIO device, per definition it's not
+a removable card (MMC_CAP_NONREMOVABLE should be set for the
+corresponding mmc host), the SDIO card will stick around and instead
+the ->suspend|resume() callback needs to be implemented for the SDIO
+func driver.
 
-> @@ -461,6 +587,13 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
->   	dev_dbg(dev->dev, "%s: msgs: %d\n", __func__, num);
->   
->   	pm_runtime_get_sync(dev->dev);
-> +	/*
-> +	 * Initiate I2C message transfer when AMD NAVI GPU card is enabled,
-> +	 * As it is polling based transfer mechanism, which does not support
-> +	 * interrupt based functionalities of existing DesignWare driver.
-> +	 */
-> +	if (dev->flags & AMD_NON_INTR_MODE)
-> +		return amd_i2c_dw_master_xfer(adap, msgs, num);
->   
-Does runtime PM go out of sync here?
+>
+> This behavior sounds correct to me. You would expect something
+> more?
 
-Jarkko
+Yes, see above.
+
+Kind regards
+Uffe
