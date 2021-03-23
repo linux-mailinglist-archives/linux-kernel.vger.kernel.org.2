@@ -2,367 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAF93457A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D6B3457A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhCWGHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:07:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:52789 "EHLO mga02.intel.com"
+        id S229493AbhCWGHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:07:13 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:26986 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhCWGHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:07:12 -0400
-IronPort-SDR: ZWr9QwuoRq7JqPvkwbkN/m1LeSCg7EUlcZ/0GvtDUwZKVXgWoPOUpQje2Gi+dMThOLCsLfTS1M
- EyBcBBiVEQaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="177541918"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="177541918"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 23:07:11 -0700
-IronPort-SDR: gyEh8gsVpYZo/0t4eMvUoUFxtkHhBL6VDnLY9Kp7KIRam4yFxzOSNlTcIYKWJFeZuvqARXHqJx
- oq4E4TV7asMA==
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="408158450"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 23:07:09 -0700
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
- <CAMZ6RqK0-7DaoscTgKD+APDxtPw1q0Dz0Kef_doa0PZOnBav=w@mail.gmail.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <52e57719-7b55-b21a-5e30-4be2fb4e776c@intel.com>
-Date:   Tue, 23 Mar 2021 14:06:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S229451AbhCWGHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:07:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616479629; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=rXI6ox2+IZMGJEKwTCSVJrsayqWDTIvB/El8Dnh3JbM=;
+ b=dKk62noGm8qHzXXJPRqf9GBOVgRwpnl6eCHLqoAEwDBykPLRPRv7XM2pL63S7BAnQEltCw/2
+ Yaenbu79gltdOfyOQyTPqZn9n3jHsAvILDAKsk18dMt/5vPi0pyomdleByNBOfNMHW42d7CQ
+ NUbNc6PoESLMsZQGKrs6clfbyVw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60598585c32ceb3a917a8e5e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Mar 2021 06:07:01
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B318CC433ED; Tue, 23 Mar 2021 06:07:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BEC2AC433CA;
+        Tue, 23 Mar 2021 06:07:00 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CAMZ6RqK0-7DaoscTgKD+APDxtPw1q0Dz0Kef_doa0PZOnBav=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 23 Mar 2021 14:07:00 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Bean Huo <huobean@gmail.com>, Greg KH <gregkh@linuxfoundation.org>,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
+In-Reply-To: <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
+References: <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
+ <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+ <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
+ <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
+ <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
+ <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p7>
+ <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
+Message-ID: <1df7bb51dc481c3141cdcf85105d3a5b@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+On 2021-03-23 13:37, Daejun Park wrote:
+>> On 2021-03-23 12:22, Can Guo wrote:
+>>> On 2021-03-22 17:11, Bean Huo wrote:
+>>>> On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
+>>>>> +       switch (rsp_field->hpb_op) {
+>>>>> 
+>>>>> +       case HPB_RSP_REQ_REGION_UPDATE:
+>>>>> 
+>>>>> +               if (data_seg_len != DEV_DATA_SEG_LEN)
+>>>>> 
+>>>>> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>>>> 
+>>>>> +                                "%s: data seg length is not
+>>>>> same.\n",
+>>>>> 
+>>>>> +                                __func__);
+>>>>> 
+>>>>> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
+>>>>> 
+>>>>> +               break;
+>>>>> 
+>>>>> +       case HPB_RSP_DEV_RESET:
+>>>>> 
+>>>>> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>>>> 
+>>>>> +                        "UFS device lost HPB information during
+>>>>> PM.\n");
+>>>>> 
+>>>>> +               break;
+>>>> 
+>>>> Hi Deajun,
+>>>> This series looks good to me. Just here I have one question. You
+>>>> didn't
+>>>> handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS, how
+>>>> to
+>>>> handle HPB_RSP_DEV_RESET from the host side? Do you think we shoud
+>>>> reset host side HPB entry as well or what else?
+>>>> 
+>>>> 
+>>>> Bean
+>>> 
+>>> Same question here - I am still collecting feedbacks from flash 
+>>> vendors
+>>> about
+>>> what is recommanded host behavior on reception of HPB Op code 0x2,
+>>> since it
+>>> is not cleared defined in HPB2.0 specs.
+>>> 
+>>> Can Guo.
+>> 
+>> I think the question should be asked in the HPB2.0 patch, since in
+>> HPB1.0 device
+>> control mode, a HPB reset in device side does not impact anything in
+>> host side -
+>> host is not writing back any HPB entries to device anyways and HPB 
+>> Read
+>> cmd with
+>> invalid HPB entries shall be treated as normal Read(10) cmd without 
+>> any
+>> problems.
+> 
+> Yes, UFS device will process read command even the HPB entries are 
+> valid or
+> not. So it is warning about read performance drop by dev reset.
 
-On 3/23/21 1:46 PM, Vincent MAILHOL wrote:
-> Hi Oliver and Rong,
->
-> This is an interesting and quite surprising issue!
->
-> On Tue. 23 mars 2021 at 11:54, Rong Chen <rong.a.chen@intel.com> wrote:
->> On 3/23/21 12:24 AM, Oliver Hartkopp wrote:
->>> Hi Rong,
->>>
->>> On 22.03.21 09:52, Rong Chen wrote:
->>>
->>>> On 3/21/21 10:19 PM, Oliver Hartkopp wrote:
->>>>> Two reminders in two days? ;-)
->>>>>
->>>>> Did you check my answer here?
->>>>> https://lore.kernel.org/lkml/afffeb73-ba4c-ca2c-75d0-9e7899e5cbe1@hartkopp.net/
->>>>>
->>>>>
->>>>> And did you try the partly revert?
->>>> Hi Oliver,
->>>>
->>>> Sorry for the delay, we tried the revert patch and the problem still
->>>> exists,
->>>> we also found that commit c7b74967 changed the error message which
->>>> triggered
->>>> the report.
->>>>
->>>> The problem is that offsetof(struct can_frame, data) !=
->>>> offsetof(struct canfd_frame, data)
->>>> the following struct layout shows that the offset has been changed by
->>>> union:
->>>>
->>>> struct can_frame {
->>>>           canid_t                    can_id;               /* 0     4 */
->>>>           union {
->>>>                   __u8               len;                  /* 4     1 */
->>>>                   __u8               can_dlc;              /* 4     1 */
->>>>           };                                               /* 4     4 */
->>> Ugh! Why did the compiler extend the space for the union to 4 bytes?!?
-> Just a random idea but maybe the added padding is due to some
-> kind of odd intrication with the __attribute__((__aligned__(8)))
-> just below? Does this reproduce if we remove the
-> __attribute__((__aligned__(8)))?
+Yeah, but still I am 100% sure about what should host do in case of 
+HPB2.0
+when it receives HPB Op code 0x2, I am waiting for feedbacks.
 
-Here is the layout without __attribute__((__aligned__(8))),
-the union is still extended to 4 bytes:
+Thanks,
+Can Guo.
 
-struct can_frame {
-         canid_t                    can_id;               /* 0     4 */
-         union {
-                 __u8               len;                  /* 4     1 */
-                 __u8               can_dlc;              /* 4     1 */
-         };                                               /* 4     4 */
-         __u8                       __pad;                /* 8     1 */
-         __u8                       __res0;               /* 9     1 */
-         __u8                       len8_dlc;             /* 10     1 */
-         __u8                       data[8];              /* 11     8 */
-
-         /* size: 20, cachelines: 1, members: 6 */
-         /* padding: 1 */
-         /* last cacheline: 20 bytes */
-};
-
-Best Regards,
-Rong Chen
-
->
-> (I am not saying that we should permanently remove it, this is
-> only a suggestion for troubleshooting).
->
->>>>           __u8 __pad;                /* 8     1 */
->>>>           __u8                       __res0;               /* 9     1 */
->>>>           __u8                       len8_dlc;             /* 10     1 */
->>>>
->>>>           /* XXX 5 bytes hole, try to pack */
->>>>
->>>>           __u8                       data[8]
->>>> __attribute__((__aligned__(8))); /*    16     8 */
->>>>
->>>>           /* size: 24, cachelines: 1, members: 6 */
->>>>           /* sum members: 19, holes: 1, sum holes: 5 */
->>>>           /* forced alignments: 1, forced holes: 1, sum forced holes:
->>>> 5 */
->>>>           /* last cacheline: 24 bytes */
->>>> } __attribute__((__aligned__(8)));
->>>>
->>>> struct canfd_frame {
->>>>           canid_t                    can_id;               /* 0     4 */
->>>>           __u8                       len;                  /* 4     1 */
->>>>           __u8                       flags;                /* 5     1 */
->>>>           __u8                       __res0;               /* 6     1 */
->>>>           __u8                       __res1;               /* 7     1 */
->>>>           __u8                       data[64]
->>>> __attribute__((__aligned__(8))); /*     8    64 */
->>>>
->>>>           /* size: 72, cachelines: 2, members: 6 */
->>>>           /* forced alignments: 1 */
->>>>           /* last cacheline: 8 bytes */
->>>> } __attribute__((__aligned__(8)))
->>>>
->>>>
->>>> and I tried to add "__attribute__((packed))" to the union, the issue
->>>> is gone:
->>>>
->>>> diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
->>>> index f75238ac6dce..9842bb55ffd9 100644
->>>> --- a/include/uapi/linux/can.h
->>>> +++ b/include/uapi/linux/can.h
->>>> @@ -113,7 +113,7 @@ struct can_frame {
->>>>                    */
->>>>                   __u8 len;
->>>>                   __u8 can_dlc; /* deprecated */
->>>> -       };
->>>> +       } __attribute__((packed));
->>>>           __u8 __pad; /* padding */
->>>>           __u8 __res0; /* reserved / padding */
->>>>           __u8 len8_dlc; /* optional DLC for 8 byte payload length (9
->>>> .. 15) */
->>> This is pretty strange!
->>>
->>> pahole on my x86_64 machine shows the correct data structure layout:
->>>
->>> struct can_frame {
->>>          canid_t                    can_id;               /* 0     4 */
->>>          union {
->>>                  __u8               len;                  /* 4     1 */
->>>                  __u8               can_dlc;              /* 4     1 */
->>>          };                                               /* 4     1 */
->>>          __u8                       __pad;                /* 5     1 */
->>>          __u8                       __res0;               /* 6     1 */
->>>          __u8                       len8_dlc;             /* 7     1 */
->>>          __u8                       data[8]
->>> __attribute__((__aligned__(8))); /*     8     8 */
->>>
->>>          /* size: 16, cachelines: 1, members: 6 */
->>>          /* forced alignments: 1 */
->>>          /* last cacheline: 16 bytes */
->>> } __attribute__((__aligned__(8)));
->>>
->>> Target: x86_64-linux-gnu
->>> gcc version 10.2.1 20210110 (Debian 10.2.1-6)
->>> Linux 5.12.0-rc3-00070-g8b12a62a4e3e x86_64 GNU/Linux
->>>
->>> So it looks like your compiler does not behave correctly - and I
->>> wonder if it would be the correct approach to add the __packed()
->>> attribute or better fix/change the (ARM) compiler.
-> I had a look at the ISO/IEC 9899-1999 (aka C99 standard). In
-> section 6.7.2.1 "Structure and union specifiers", there are no
-> clauses to forbid this behavior...
-> Here are the relevant clauses of that section:
->    * 12 Each non-bit-field member of a structure or union object
->      is aligned in an implementation-defined appropriate to its
->      type.
->    * 13 [...] There may be unnamed padding within a structure
->      object, but not at its beginning.
->    * 14 The size of a union is sufficient to contain the largest
->      of its members. [...]
->    * 15 There may be unnamed padding at the end of a structure or
->      union.
->
-> So while I am really curious to understand why the compiler
-> behaves like that, technically speaking, it does not violate the
-> standard. As such, I think that Mark's patch (which negates
-> clause 15) makes sense.
->
->> Hi Oliver,
->>
->> I tried arm-linux-gnueabi (gcc version 10.2.0) and the problem still exists,
->> btw we prefer to not use the latest gcc compiler to avoid false positives.
->>
->> Best Regards,
->> Rong Chen
->>
->>> At least I'm very happy that the BUILD_BUG_ON() triggered correctly -
->>> so it was worth to have it ;-)
->>>
->>> Best regards,
->>> Oliver
->>>
->>>
->>>>> Maybe there's a mismatch in include files - or BUILD_BUG_ON()
->>>>> generally does not work with unions on ARM as assumed here:
->>>>>
->>>>> https://lore.kernel.org/lkml/6e57d5d2-9b88-aee6-fb7a-82e24144d179@hartkopp.net/
->>>>>
->>>>>
->>>>> In both cases I can not really fix the issue.
->>>>> When the partly revert (suggested above) works, this would be a hack
->>>>> too.
->>>>>
->>>>> Best,
->>>>> Oliver
->>>>>
->>>>> On 20.03.21 21:43, kernel test robot wrote:
->>>>>> Hi Oliver,
->>>>>>
->>>>>> FYI, the error/warning still remains.
->>>>>>
->>>>>> tree:
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>>> master
->>>>>> head:   812da4d39463a060738008a46cfc9f775e4bfcf6
->>>>>> commit: c7b74967799b1af52b3045d69d4c26836b2d41de can: replace
->>>>>> can_dlc as variable/element for payload length
->>>>>> date:   4 months ago
->>>>>> config: arm-randconfig-r016-20210321 (attached as .config)
->>>>>> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
->>>>>> reproduce (this is a W=1 build):
->>>>>>           wget
->>>>>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
->>>>>> -O ~/bin/make.cross
->>>>>>           chmod +x ~/bin/make.cross
->>>>>>           #
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c7b74967799b1af52b3045d69d4c26836b2d41de
->>>>>>
->>>>>>           git remote add linus
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>>>           git fetch --no-tags linus master
->>>>>>           git checkout c7b74967799b1af52b3045d69d4c26836b2d41de
->>>>>>           # save the attached .config to linux build tree
->>>>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0
->>>>>> make.cross ARCH=arm
->>>>>>
->>>>>> If you fix the issue, kindly add following tag as appropriate
->>>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>>>
->>>>>> All errors (new ones prefixed by >>):
->>>>>>
->>>>>>      In file included from <command-line>:
->>>>>>      net/can/af_can.c: In function 'can_init':
->>>>>>>> include/linux/compiler_types.h:315:38: error: call to
->>>>>>>> '__compiletime_assert_536' declared with attribute error:
->>>>>>>> BUILD_BUG_ON failed: offsetof(struct can_frame, len) !=
->>>>>>>> offsetof(struct canfd_frame, len) || offsetof(struct can_frame,
->>>>>>>> data) != offsetof(struct canfd_frame, data)
->>>>>>        315 |  _compiletime_assert(condition, msg,
->>>>>> __compiletime_assert_, __COUNTER__)
->>>>>>            |                                      ^
->>>>>>      include/linux/compiler_types.h:296:4: note: in definition of
->>>>>> macro '__compiletime_assert'
->>>>>>        296 |    prefix ## suffix();    \
->>>>>>            |    ^~~~~~
->>>>>>      include/linux/compiler_types.h:315:2: note: in expansion of
->>>>>> macro '_compiletime_assert'
->>>>>>        315 |  _compiletime_assert(condition, msg,
->>>>>> __compiletime_assert_, __COUNTER__)
->>>>>>            |  ^~~~~~~~~~~~~~~~~~~
->>>>>>      include/linux/build_bug.h:39:37: note: in expansion of macro
->>>>>> 'compiletime_assert'
->>>>>>         39 | #define BUILD_BUG_ON_MSG(cond, msg)
->>>>>> compiletime_assert(!(cond), msg)
->>>>>>            | ^~~~~~~~~~~~~~~~~~
->>>>>>      include/linux/build_bug.h:50:2: note: in expansion of macro
->>>>>> 'BUILD_BUG_ON_MSG'
->>>>>>         50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: "
->>>>>> #condition)
->>>>>>            |  ^~~~~~~~~~~~~~~~
->>>>>>      net/can/af_can.c:891:2: note: in expansion of macro 'BUILD_BUG_ON'
->>>>>>        891 |  BUILD_BUG_ON(offsetof(struct can_frame, len) !=
->>>>>>            |  ^~~~~~~~~~~~
->>>>>>
->>>>>>
->>>>>> vim +/__compiletime_assert_536 +315 include/linux/compiler_types.h
->>>>>>
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  301
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  302  #define
->>>>>> _compiletime_assert(condition, msg, prefix, suffix) \
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  303
->>>>>> __compiletime_assert(condition, msg, prefix, suffix)
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  304
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  /**
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  306   * compiletime_assert -
->>>>>> break build and emit msg if condition is false
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  307   * @condition: a
->>>>>> compile-time constant condition to check
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  308   * @msg:       a
->>>>>> message to emit if condition is false
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  309   *
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * In tradition of
->>>>>> POSIX assert, this macro will break the build if the
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * supplied condition
->>>>>> is *false*, emitting the supplied error message if the
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * compiler has support
->>>>>> to do so.
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   */
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  #define
->>>>>> compiletime_assert(condition, msg) \
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @315
->>>>>> _compiletime_assert(condition, msg, __compiletime_assert_,
->>>>>> __COUNTER__)
->>>>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316
->>>>>>
->>>>>> :::::: The code at line 315 was first introduced by commit
->>>>>> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move
->>>>>> compiletime_assert() macros into compiler_types.h
->>>>>>
->>>>>> :::::: TO: Will Deacon <will@kernel.org>
->>>>>> :::::: CC: Will Deacon <will@kernel.org>
->>>>>>
->>>>>> ---
->>>>>> 0-DAY CI Kernel Test Service, Intel Corporation
->>>>>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>>>>>
->>>>> _______________________________________________
->>>>> kbuild-all mailing list -- kbuild-all@lists.01.org
->>>>> To unsubscribe send an email to kbuild-all-leave@lists.01.org
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
-
+> 
+> Thanks,
+> Daejun
+> 
+>> Please correct me if I am wrong.
+> 
+> 
+> 
+>> Thanks,
+>> Can Guo.
+>> 
+>> 
+>> 
