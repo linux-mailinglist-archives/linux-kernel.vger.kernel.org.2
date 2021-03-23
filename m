@@ -2,166 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2633460DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0993460E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhCWOCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:02:15 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62306 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232047AbhCWOBf (ORCPT
+        id S231837AbhCWOCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:02:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47165 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232160AbhCWOCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:01:35 -0400
-Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12NE1XC5092848;
-        Tue, 23 Mar 2021 23:01:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
- Tue, 23 Mar 2021 23:01:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12NE1XaB092844
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 23 Mar 2021 23:01:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC PATCH 2/2] integrity: double check iint_cache was
- initialized
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     linux-integrity@vger.kernel.org, James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-References: <20210319200358.22816-1-zohar@linux.ibm.com>
- <20210319200358.22816-2-zohar@linux.ibm.com>
- <8450c80a-104a-3f36-0963-0ae8fa69e0f2@i-love.sakura.ne.jp>
- <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
- <1a2245c6-3cab-7085-83d3-55b083619303@i-love.sakura.ne.jp>
- <8039976be3df9bd07374fe4f1931b8ce28b89dab.camel@linux.ibm.com>
- <cde00350-2a18-1759-d53b-2e7489b6cc0e@i-love.sakura.ne.jp>
-Message-ID: <8a8763a7-eeeb-3578-d50c-c15919fbe1f9@i-love.sakura.ne.jp>
-Date:   Tue, 23 Mar 2021 23:01:31 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 23 Mar 2021 10:02:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616508127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h9t+B72idifaoxcXCo+oMvX5GZKbGC3CJn59xHhYgqM=;
+        b=NnoVYC7MOt3eqEMeyxcY7vTOgBnXZRG6HMHZlTK30iqoU7AdN5znwaqMEHlWWuh/RvZL6e
+        FiPnaCMJpLw5BaVD8rFrlkbGhCTPjpSNnG95ey2OdLL3SB3TXgtJ7S73fp+gXB8LVDVWsS
+        aFSvRaUo6DR/zZiwi9MoC2fttbcc7R4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-X9DtPB35MW-WWwGDc-XuyQ-1; Tue, 23 Mar 2021 10:02:05 -0400
+X-MC-Unique: X9DtPB35MW-WWwGDc-XuyQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a22so1095325ejx.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:02:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h9t+B72idifaoxcXCo+oMvX5GZKbGC3CJn59xHhYgqM=;
+        b=j1Iy24qUvPsA2ozqR2pn+1GVr0HcbHZSAN6OpYcjvZtZcPevufNepAL3i2jaU2gMjU
+         vyQmUBL/DAlI6oIfe3XuY6wiIbNhRfKuOHdg99/bFeW/pdeaPlkABUyJhuQlGaYt+aSU
+         Ag2neOTLqInt/sjQm5FLhy73mcys+eIJ5JzYmiz6txBVeUR7O6RDGXvYoAiTRVxhZ/LV
+         SzRkiZicr1BTelCR3jKolbeW38Ms5k7KbXe8FQ30sziClGC1uacwilvofiwboHW5aJxr
+         BQi6XmiZOTxRdktFh+EHA6IBcPeiCnk3eyMvcDASmUu+d1FVmpbxXdzg4Wv51/nuRTu8
+         d/Tg==
+X-Gm-Message-State: AOAM533/eI+su5I/QBm6TsF5gjGO28rM2IWuwtEDwKg6FAfdli75eMBw
+        VauIB8apxRUjRLdgDExboQo89+i7jOb8N9ku/fBbQK5Z6gs8T4W4CbaStXgISveegkyzP+Privo
+        Awh9zA1JUl+NPkGNT4pPXq5V6abPwQ/q7SVWxKhbTqU+TcE6GKLcSfqRrxGGVE5H6PvteZEsLUV
+        Aa
+X-Received: by 2002:aa7:d347:: with SMTP id m7mr4645720edr.260.1616508123527;
+        Tue, 23 Mar 2021 07:02:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/jft58be+yd3ok4y/L/nD5g6FSNmyDUPbETZNr8e9+wQE9nCWmFOaK5jHOD25g4xPWGD9ig==
+X-Received: by 2002:aa7:d347:: with SMTP id m7mr4645687edr.260.1616508123288;
+        Tue, 23 Mar 2021 07:02:03 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id y24sm13081882eds.23.2021.03.23.07.02.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 07:02:02 -0700 (PDT)
+Subject: Re: [PATCH] Input: i8042 - fix Pegatron C15B ID entry
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Kevin Locke <kevin@kevinlocke.name>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        David Pedersen <limero1337@gmail.com>,
+        Rajat Jain <rajatja@google.com>,
+        Chris Chiu <chiu@endlessos.org>, Jiri Kosina <jkosina@suse.cz>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210323130623.2302402-1-arnd@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <2187f843-f475-6d95-819a-ebb875b25d44@redhat.com>
+Date:   Tue, 23 Mar 2021 15:02:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <cde00350-2a18-1759-d53b-2e7489b6cc0e@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <20210323130623.2302402-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/23 22:37, Tetsuo Handa wrote:
-> On 2021/03/23 21:09, Mimi Zohar wrote:
->> Please take a look at the newer version of this patch.   Do you want to
->> add any tags?
-> 
-> Oh, I didn't know that you already posted the newer version.
-> 
->> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
->> index 1d20003243c3..0ba01847e836 100644
->> --- a/security/integrity/iint.c
->> +++ b/security/integrity/iint.c
->> @@ -98,6 +98,14 @@ struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
->>  	struct rb_node *node, *parent = NULL;
->>  	struct integrity_iint_cache *iint, *test_iint;
->>  
->> +	/*
->> +	 * The integrity's "iint_cache" is initialized at security_init(),
->> +	 * unless it is not included in the ordered list of LSMs enabled
->> +	 * on the boot command line.
->> +	 */
->> +	if (!iint_cache)
->> +		panic("%s: lsm=integrity required.\n", __func__);
->> +
-> 
-> This looks strange. If "lsm=" parameter must include "integrity",
-> it implies that nobody is allowed to disable "integrity" at boot.
-> Then, why not unconditionally call integrity_iintcache_init() by
-> not counting on DEFINE_LSM(integrity) declaration?
+Hi,
 
-Or, I think below one is also possible.
+On 3/23/21 2:06 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The Zenbook Flip entry that was added overwrites a previous one
+> because of a typo:
+> 
+> In file included from drivers/input/serio/i8042.h:23,
+>                  from drivers/input/serio/i8042.c:131:
+> drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
+>   591 |                 .matches = {
+>       |                            ^
+> drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
+> 
+> Add the missing separator between the two.
+> 
+> Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-index 1d20003243c3..37afc5168891 100644
---- a/security/integrity/iint.c
-+++ b/security/integrity/iint.c
-@@ -19,6 +19,7 @@
- #include <linux/uaccess.h>
- #include <linux/security.h>
- #include <linux/lsm_hooks.h>
-+#include <linux/sched/mm.h>
- #include "integrity.h"
- 
- static struct rb_root integrity_iint_tree = RB_ROOT;
-@@ -85,6 +86,20 @@ static void iint_free(struct integrity_iint_cache *iint)
- 	kmem_cache_free(iint_cache, iint);
- }
- 
-+static void init_once(void *foo)
-+{
-+	struct integrity_iint_cache *iint = foo;
-+
-+	memset(iint, 0, sizeof(*iint));
-+	iint->ima_file_status = INTEGRITY_UNKNOWN;
-+	iint->ima_mmap_status = INTEGRITY_UNKNOWN;
-+	iint->ima_bprm_status = INTEGRITY_UNKNOWN;
-+	iint->ima_read_status = INTEGRITY_UNKNOWN;
-+	iint->ima_creds_status = INTEGRITY_UNKNOWN;
-+	iint->evm_status = INTEGRITY_UNKNOWN;
-+	mutex_init(&iint->mutex);
-+}
-+
- /**
-  * integrity_inode_get - find or allocate an iint associated with an inode
-  * @inode: pointer to the inode
-@@ -102,6 +117,18 @@ struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
- 	if (iint)
- 		return iint;
- 
-+	if (!iint_cache) {
-+		static DEFINE_MUTEX(lock);
-+		unsigned int flags = memalloc_nofs_save();
-+
-+		mutex_lock(&lock);
-+		if (!iint_cache)
-+			iint_cache = kmem_cache_create("iint_cache",
-+						       sizeof(struct integrity_iint_cache),
-+						       0, SLAB_PANIC, init_once);
-+		mutex_unlock(&lock);
-+		memalloc_nofs_restore(flags);
-+	}
- 	iint = kmem_cache_alloc(iint_cache, GFP_NOFS);
- 	if (!iint)
- 		return NULL;
-@@ -150,25 +177,8 @@ void integrity_inode_free(struct inode *inode)
- 	iint_free(iint);
- }
- 
--static void init_once(void *foo)
--{
--	struct integrity_iint_cache *iint = foo;
--
--	memset(iint, 0, sizeof(*iint));
--	iint->ima_file_status = INTEGRITY_UNKNOWN;
--	iint->ima_mmap_status = INTEGRITY_UNKNOWN;
--	iint->ima_bprm_status = INTEGRITY_UNKNOWN;
--	iint->ima_read_status = INTEGRITY_UNKNOWN;
--	iint->ima_creds_status = INTEGRITY_UNKNOWN;
--	iint->evm_status = INTEGRITY_UNKNOWN;
--	mutex_init(&iint->mutex);
--}
--
- static int __init integrity_iintcache_init(void)
- {
--	iint_cache =
--	    kmem_cache_create("iint_cache", sizeof(struct integrity_iint_cache),
--			      0, SLAB_PANIC, init_once);
- 	return 0;
- }
- DEFINE_LSM(integrity) = {
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+> ---
+>  drivers/input/serio/i8042-x86ia64io.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+> index 9119e12a5778..a5a003553646 100644
+> --- a/drivers/input/serio/i8042-x86ia64io.h
+> +++ b/drivers/input/serio/i8042-x86ia64io.h
+> @@ -588,6 +588,7 @@ static const struct dmi_system_id i8042_dmi_noselftest_table[] = {
+>  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+>  			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
+>  		},
+> +	}, {
+>  		.matches = {
+>  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+>  			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
+> 
+
