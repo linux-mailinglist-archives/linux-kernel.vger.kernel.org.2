@@ -2,166 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05818346B1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14377346B22
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhCWVcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
+        id S233612AbhCWVdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbhCWVcE (ORCPT
+        with ESMTP id S233560AbhCWVd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:32:04 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515B7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:32:04 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616535121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BJrUa06w/c8dTdM2MLKJTDsGbSbOPx0icN/AfO8mLAw=;
-        b=2i3ag7FDUWKZ/KRIm0gJzSV6XTbqc3bDAE9eHeDXlnqsb0XuLn/0Dt6qy9yVXWumJvE9HA
-        i1HzUInPVX3M2NA20+NpGv4i3DCbHLGwjnH0x2gPtLtJgMOvmI7SWY6To4VBxyzjjDaqY8
-        4xrzjTfHMeL/d3rfrtRDzFko05A0wqccEdfbiOVTghux74MK0yPqQZiFFAEjzbe653wS2K
-        bhQoXv1CQR1MpKUg+ABdlxQMJZlqDDi8qLCgWWWAwSCCVjn129AYMXpuw4bu9v8EapUUXw
-        sDEbipPMFlVDqNEV3bEiycqShqQUtkTVTWFj2gUT1OTXDAULCG3mQn6g0tde0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616535121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BJrUa06w/c8dTdM2MLKJTDsGbSbOPx0icN/AfO8mLAw=;
-        b=+5b/oKDfAWBlGMOn2ANolqucGuSLwWt3xvVDakrBMCjgq56cphMjU2n/uCbsBaNH7gndC5
-        md6FiEvOePNew8Bw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v1 1/3] printk: track/limit recursion
-In-Reply-To: <YFiuf/Kn9iLOwgNx@alley>
-References: <20210316233326.10778-1-john.ogness@linutronix.de> <20210316233326.10778-2-john.ogness@linutronix.de> <YFiuf/Kn9iLOwgNx@alley>
-Date:   Tue, 23 Mar 2021 22:32:00 +0100
-Message-ID: <87czvp7e0f.fsf@jogness.linutronix.de>
+        Tue, 23 Mar 2021 17:33:28 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E038AC061574;
+        Tue, 23 Mar 2021 14:33:27 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id j3so25167390edp.11;
+        Tue, 23 Mar 2021 14:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vNqTp+4J55pn8UtxCWhZI9WKQ5OJTgrthkxSNaaR9fk=;
+        b=Z1X62JgaNMMBhLZQ4QlhpGE30R7oq8YUDzrEMEzTRD0vNkPaAU0FqGpgvMQr3SNw4N
+         TQ2lURRF9XEcvjjsQtWoYsO7GtMMtlQB/pagSghOAntjFN+62FySADdKePG/SaNFdkTw
+         jjRiQNIFaAgrove9trejAd+bh2AI53ZwBbeUGI+rGNQUgiUDhrqm/52yIa8mSOHbRADc
+         /Hl8zXqJYmy5UllL/i5DfDsUENesGkIKUATnioFFGXBBjUtDvmeZiEaQGPAi+S8F39FF
+         81WLl9okrNOK9J9KAS05Up2FL0aVT//x6QW9B21AIw6AHfDL9xjBkEvHP9LtW5QOQSL8
+         tjEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vNqTp+4J55pn8UtxCWhZI9WKQ5OJTgrthkxSNaaR9fk=;
+        b=Idhul5mgPNGugbuXEskcPzt4awMsqs1sWibu2ZM9egxvHw+ugPwHFHyBp4XznH4hQl
+         gue+Sj5yjFsa6/XgHN6ifi4KCiiREol+zss4C8tG8k9Veu8rSIoytvL/nHi6WUgCN6SN
+         TgJP5Glvd++SIogMw15lQDLn6Kh27k8V0r1qm9NI4J8Ax3TrCyGGCahCHxkZGRSNph5g
+         xtbDqTQVoW8BRfea0AQbF/Y+djKzxbM3IwZuITM0CXpTrDkhJFoO13745S+H7f0Jafqv
+         /0RCMBPdn9Cl5DsBJoYGMPaOmUelRvt1bcuePKSmM/AqRKv5ve5s5oeEY5s1wN7DQ6Mx
+         /lUA==
+X-Gm-Message-State: AOAM532X12oxo46TZUDZeEVvR1jrYZLPIvwvfn5eaaYwZBFPHbnnRPCK
+        DrPGcASCoToHNsgVdrMnJ4tyrMRGBENx3leD4L64HacQJdQ=
+X-Google-Smtp-Source: ABdhPJxogLUC0j2kqIXnvE9ADeLdHe/dekVrvsjIiVez5mN8mdmstjeRi/0IbcBN4Amm2vqsw9nN/TGoA02CccJ8wno=
+X-Received: by 2002:aa7:c957:: with SMTP id h23mr6431368edt.301.1616535206608;
+ Tue, 23 Mar 2021 14:33:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210315083459.359773-1-narmstrong@baylibre.com> <20210315083459.359773-2-narmstrong@baylibre.com>
+In-Reply-To: <20210315083459.359773-2-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 23 Mar 2021 22:33:15 +0100
+Message-ID: <CAFBinCA1WhtWLEfJ-QyBbZpsY75r=su6uzyWamY6nHOQ+HYvAw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: serial: amlogic, meson-uart: add
+ amlogic, uart-fifosize property
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22, Petr Mladek <pmladek@suse.com> wrote:
-> On Wed 2021-03-17 00:33:24, John Ogness wrote:
->> Track printk() recursion and limit it to 3 levels per-CPU and per-context.
->
-> Please, explain why it is added. I mean that it will
-> allow remove printk_safe that provides recursion protection at the
-> moment.
+ Hi Neil,
 
-OK.
+On Mon, Mar 15, 2021 at 9:37 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> On most of the Amlogic SoCs, the first UART controller in the "Everything-Else"
+> power domain has 128bytes of RX & TX FIFO, so add an optional property to describe
+do we still need wrapping of long lines in commit messages?
+if so I think the line above is too long
 
->> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
->> index 2f829fbf0a13..c666e3e43f0c 100644
->> --- a/kernel/printk/printk.c
->> +++ b/kernel/printk/printk.c
->> @@ -1940,6 +1940,71 @@ static void call_console_drivers(const char *ext_text, size_t ext_len,
->>  	}
->>  }
->>  
->> +/*
->> + * Recursion is tracked separately on each CPU. If NMIs are supported, an
->> + * additional NMI context per CPU is also separately tracked. Until per-CPU
->> + * is available, a separate "early tracking" is performed.
->> + */
->> +#ifdef CONFIG_PRINTK_NMI
+> a different FIFO size from the other ports (64bytes).
 >
-> CONFIG_PRINTK_NMI is a shortcut for CONFIG_PRINTK && CONFIG_HAVE_NMI.
-> It should be possible to use CONFIG_HAVE_NMI here because this should
-> be in section where CONFIG_PRINTK is defined.
->
-> This would make sense if it allows to remove CONFIG_PRINTK_NMI
-> entirely. IMHO, it would be nice to remove one layer in the
-> config options of possible.
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-OK. I will remove CONFIG_PRINTK_NMI for v2.
+one additional note below
 
->> +#define PRINTK_CTX_NUM 2
->> +#else
->> +#define PRINTK_CTX_NUM 1
->> +#endif
->> +static DEFINE_PER_CPU(char [PRINTK_CTX_NUM], printk_count);
->> +static char printk_count_early[PRINTK_CTX_NUM];
->> +
->> +/*
->> + * Recursion is limited to keep the output sane. printk() should not require
->> + * more than 1 level of recursion (allowing, for example, printk() to trigger
->> + * a WARN), but a higher value is used in case some printk-internal errors
->> + * exist, such as the ringbuffer validation checks failing.
->> + */
->> +#define PRINTK_MAX_RECURSION 3
->> +
->> +/* Return a pointer to the dedicated counter for the CPU+context of the caller. */
->> +static char *printk_recursion_counter(void)
->> +{
->> +	int ctx = 0;
->> +
->> +#ifdef CONFIG_PRINTK_NMI
->> +	if (in_nmi())
->> +		ctx = 1;
->> +#endif
->> +	if (!printk_percpu_data_ready())
->> +		return &printk_count_early[ctx];
->> +	return &((*this_cpu_ptr(&printk_count))[ctx]);
->> +}
+> ---
+>  .../devicetree/bindings/serial/amlogic,meson-uart.yaml      | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
-> It is not a big deal. But using an array for two contexts looks strange
-> especially when only one is used on some architectures.
-> Also &((*this_cpu_ptr(&printk_count))[ctx]) is quite tricky ;-)
+> diff --git a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
+> index 75ebc9952a99..e0a742112783 100644
+> --- a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
+> @@ -55,6 +55,12 @@ properties:
+>        - const: pclk
+>        - const: baud
 >
-> What do you think about the following, please?
->
-> static DEFINE_PER_CPU(u8 printk_count);
-> static u8 printk_count_early;
->
-> #ifdef CONFIG_HAVE_NMI
-> static DEFINE_PER_CPU(u8 printk_count_nmi);
-> static u8 printk_count_nmi_early;
-> #endif
->
-> static u8 *printk_recursion_counter(void)
-> {
-> 	if (IS_ENABLED(CONFIG_HAVE_NMI) && in_nmi()) {
-> 		if (printk_cpu_data_ready())
-> 			return this_cpu_ptr(&printk_count_nmi);
-> 		return printk_count_nmi_early;
-> 	}
->
-> 	if (printk_cpu_data_ready())
-> 		return this_cpu_ptr(&printk_count);
-> 	return printk_count_early;
-> }
+> +
+> +  amlogic,uart-fifosize:
+> +    description: The fifo size supported by the UART channel.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [64, 128]
+I personally think this is generic enough to be described as fifo-size
+(as it's done in Documentation/devicetree/bindings/serial/8250.yaml)
+let's wait and hear what Rob thinks
 
-I can split it into explicit variables. But is the use of the IS_ENABLED
-macro preferred over ifdef? I would prefer:
 
-static u8 *printk_recursion_counter(void)
-{
-#ifdef CONFIG_HAVE_NMI
-	if (in_nmi()) {
-		if (printk_cpu_data_ready())
-			return this_cpu_ptr(&printk_count_nmi);
-		return printk_count_nmi_early;
-	}
-#endif
-	if (printk_cpu_data_ready())
-		return this_cpu_ptr(&printk_count);
-	return printk_count_early;
-}
-
-Since @printk_count_nmi and @printk_count_nmi_early would not exist, I
-would prefer the pre-processor removes that code block rather than
-relying on compiler optimization.
-
-John Ogness
+Best regards,
+Martin
