@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B47346802
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C901634680A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232529AbhCWSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:44:13 -0400
-Received: from p3plsmtpa09-04.prod.phx3.secureserver.net ([173.201.193.233]:52213
-        "EHLO p3plsmtpa09-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231979AbhCWSn5 (ORCPT
+        id S232117AbhCWSqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231178AbhCWSqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:43:57 -0400
-Received: from chrisHP110 ([76.103.216.188])
-        by :SMTPAUTH: with ESMTPA
-        id Om0SlPpknntfUOm0SleHTF; Tue, 23 Mar 2021 11:43:56 -0700
-X-CMAE-Analysis: v=2.4 cv=QsybYX+d c=1 sm=1 tr=0 ts=605a36ec
- a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
- a=kj9zAlcOel0A:10 a=tbtrcCN1n_p49eprWO4A:9 a=CjuIK1q_8ugA:10
-X-SECURESERVER-ACCT: don@thebollingers.org
-From:   "Don Bollinger" <don@thebollingers.org>
-To:     "'Greg KH'" <gregkh@linuxfoundation.org>
-Cc:     <arndb@arndb.de>, <linux-kernel@vger.kernel.org>,
-        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
-        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
-        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
-        <don@thebollingers.org>
-References: <20210215193821.3345-1-don@thebollingers.org> <YFn3ahkF4w/IClaw@kroah.com>
-In-Reply-To: <YFn3ahkF4w/IClaw@kroah.com>
-Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
-Date:   Tue, 23 Mar 2021 11:43:55 -0700
-Message-ID: <008d01d72014$7b113900$7133ab00$@thebollingers.org>
+        Tue, 23 Mar 2021 14:46:19 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87653C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:46:19 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id s11-20020a056830124bb029021bb3524ebeso3720049otp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OkwzRy/s7yrT0we4Q3mwPVr1d0wQaKkj1i7ZWYj/Lq0=;
+        b=zewx2vIc1zrcuV1VhEyquVDWr8bixtyLHdMZmDR5fuy7TWNG2BwJOyj4vJx74O7Ehe
+         MeDLWcyWYiVXODP5hHsuUzIsA+Onmcd92agvdC2xPFAMYLl7QjeaWZz3Gh8j/+lx093m
+         8MAUKWYDjsnnwXpS+f2noxZrdpHhyktUH9jH/rVQeIfqwKSMYKi2C0RTDfP0414Y3EZ5
+         OaQDFJgAZIMXq9ms+deNu606Mz/YmKAGsjc7ulI+pOJi2ReRKCxWpqefjnrj0C8iM3m2
+         sYeD7ep0bAZmJbSRKZQJG3CpZoMzSzLSjZScG28s6NRVFMGD0+16js/E2A4wxJlrzoo+
+         QJsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OkwzRy/s7yrT0we4Q3mwPVr1d0wQaKkj1i7ZWYj/Lq0=;
+        b=sWouNE7KllnFlhsP5r29jvLaDKkmuEzbr28D6MBzHn4n7cYoXJlCXP/ZtsdRMt4x3x
+         /Ts5Q3xmrWIhzybsxJnByfSptPzE5zbUvIDh2m1pqgduG2q4aUEF/HSl26mW6Qlwys0S
+         pKXWvPT9tDHDzv/eK0dV0045Va/ztoQEkMFA20o6gUBrkPnc5jdiOh5dzbtcILZeTZzb
+         Fltim0rlbO1PgeKfWK3boK4ZMUkxBixsj9nyAJ+8/zA1ZZsLnDUtpvn5gNucJQc5ejUG
+         /rU4nbMihAL0wq8kZfQiFVYVQWjJ2BnsshbSLRdpFhWKroZA9+KDyWg7ocUt79cq+sdp
+         eadg==
+X-Gm-Message-State: AOAM531bj2/0HiQKse6kYsFrG/MBr8dteWBcai6QI5dvfGzOoFYKGp2a
+        9R363j8vAE+njY6TSlmpkDviXw==
+X-Google-Smtp-Source: ABdhPJwpa4JIy3UtHCbb3hgmxzTsFXaQbgfa8Zqz7b4OxFCkbd1T2747pmnZHzl5gboxKE/1sYGQyQ==
+X-Received: by 2002:a05:6830:802:: with SMTP id r2mr5389337ots.110.1616525178788;
+        Tue, 23 Mar 2021 11:46:18 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 24sm3956423oiq.11.2021.03.23.11.46.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 11:46:18 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 13:46:15 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Elliot Berman <eberman@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH 6/6] firmware: qcom_scm: Only compile legacy calls on ARM
+Message-ID: <20210323184615.GI5254@yoga>
+References: <20210223214539.1336155-1-swboyd@chromium.org>
+ <20210223214539.1336155-7-swboyd@chromium.org>
+ <b9174acc-9826-eb82-b399-ed95f7e83085@codeaurora.org>
+ <161483844056.1478170.8701629037531614722@swboyd.mtv.corp.google.com>
+ <5ac262bf-a70a-4ca3-01a8-d1432732d26f@codeaurora.org>
+ <161501150705.1478170.3739297122787060750@swboyd.mtv.corp.google.com>
+ <YEUQlY4X1e2PO8tl@builder.lan>
+ <161647057967.3012082.16471020030801311825@swboyd.mtv.corp.google.com>
+ <c0dbcf6c-9f6f-2103-68bd-3d06420f309a@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQKX2ThEytgxSBCv+zte4L/P7xUGAgJXyZnIqP2o+uA=
-Content-Language: en-us
-X-CMAE-Envelope: MS4xfODNq/eIJb5ZFkPlzI7gU72TThtfkC4roNiMZGUehG/yKONjOHF5A2HRKE+o10WOIj1laIJBRLxBZZ+/pODqsohkulnPSRVOSSanUwTD8bjkyA9swQiV
- 8W3yxxPha0E+BPxY3RU7KospCKHgl/wweMQHDksITPrAmzrlNaQFVEKpjiFOJKvRtgcXSjMgMJAEx7+fa+npEEPq7bMZekLu2Ex8ExDhsw+6y5hn5CMOIdMN
- Zdsz80RgDKCNDlIELjMG2i0RdfQmGoBEPd5Etn+C6Av0Ww8JCtWFdexGWgeANa/1pNTDS61Bv1FPOR0Ncw9S8XB+3xz0rBKJV8GbPDhoghhdB2o4uxm9mrwL
- uQgNWDI+7r9OuUyrgLq01WQAUHzwJK3/V4RpswveNJBbNyeAdTb2vv9JT2eMZr+9/VqWSxgn8Gygu+/E7ZKNHyPGbUu3mXNtPSRDsnueBimWC9f6OankhnMX
- 50WIq/PrJOBdz+AvbdrGOUF3wDti27cBQejjLg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0dbcf6c-9f6f-2103-68bd-3d06420f309a@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 7:12AM-0700, Greg KH wrote: 
-> On Mon, Feb 15, 2021 at 11:38:21AM -0800, Don Bollinger wrote:
-> > optoe is an i2c based driver that supports read/write access to all
-> > the pages (tables) of MSA standard SFP and similar devices (conforming
-> > to the SFF-8472 spec), MSA standard QSFP and similar devices
-> > (conforming to the SFF-8636 spec) and CMIS and similar devices
-> > (conforming to the Common Management Interface Specfication).
+On Tue 23 Mar 13:27 CDT 2021, Elliot Berman wrote:
+
+> On 3/22/2021 8:36 PM, Stephen Boyd wrote:
+> > Quoting Bjorn Andersson (2021-03-07 09:42:45)
+> > > On Sat 06 Mar 00:18 CST 2021, Stephen Boyd wrote:
+> > > 
+> > > > Quoting Elliot Berman (2021-03-05 10:18:09)
+> > > > > On 3/3/2021 10:14 PM, Stephen Boyd wrote:
+> > > > > > Quoting Elliot Berman (2021-03-03 19:35:08)
+> > > > > 
+> > > > >   > +    desc.args[0] = flags;
+> > > > >   > +    desc.args[1] = virt_to_phys(entry);
+> > > > >   > +
+> > > > >   > +    return scm_legacy_call_atomic(NULL, &desc, NULL);
+> > > > >   > +}
+> > > > >   > +EXPORT_SYMBOL(qcom_scm_set_cold_boot_addr);
+> > > > > 
+> > > > > This should still be qcom_scm_call.
+> > > > 
+> > > > You mean s/scm_legacy_call_atomic/qcom_scm_call/ right?
+> > > > 
+> > > > I don't really want to resend the rest of the patches if this last one
+> > > > is the only one that needs an update. This was a semi-RFC anyway so
+> > > > maybe it's fine if the first 5 patches get merged and then I can resend
+> > > > this one? Otherwise I will resend this again next week or so with less
+> > > > diff for this patch.
+> > > 
+> > > I'm fine with merging the first 5, but was hoping that Elliot could
+> > > provide either a "Reviewed-by" or at least an "Acked-by" on these.
+> > > 
+> > 
+> > I'll take the silence as I should resend the whole series?
+> > 
 > 
-
-I promise not to engage in a drawn out email exchange over this, but I would
-like to appeal your decision, just once...
-
-> Given this thread, I think that using the SFP interface/api in the kernel
-> already seems like the best idea forward.
+> I thought Bjorn was accepting the first 5 already, my apologies.
 > 
-> That being said, your api here is whack, and I couldn't accept it anyway.
+> Patches 1-5:
+> Acked-by: Elliot Berman <eberman@codeaurora.org>
 
-I don't understand.  I don't mean you are wrong, I literally don't
-understand what is whack about it.  The interface is provided by nvmem.  I
-modeled the calls on at24.  The layout of the data provided by the driver is
-exactly the same layout that ethtool provides (device, offset, length).
-Mapping i2c address, page and offset is exactly what ethtool provides.  So,
-which part of this is whack?
+Thanks Elliot. I'll pick up the first 5, so please skip these in your
+repost, Stephen.
 
-> 
-> Not for the least being it's not even documented in Documentation/ABI/
-like
-> all sysfs files have to be :)
-
-This could obviously be fixed.  I wasn't aware of this directory.  Now that
-you've pointed it out, I see that nvmem is actually documented there, which
-is the API I am using.  I document that optoe uses the nvmem interface, and
-the mapping of paged memory to linear memory in my patch in
-Documentation/misc-devices/optoe.rst.  If you think it would be useful, I
-could provide similar information in Documentation/ABI/stable.
-
-> 
-> And it feels like you are abusing sysfs for things it was not ment for,
-you
-> might want to look into configfs?
-
-I'm using nvmem, which in turn uses sysfs, just like at24.  Why should optoe
-be different?  I would think it is actually better to use the same API (and
-code) as at24, and NOT to put it in a different place.
-
-> 
-> But really, these are networking devices, so they should be controllable
-using
-> the standard networking apis, not one-off sysfs files.  Moving to the
-Linux-
-> standard tools is a good thing, and will work out better in the end
-instead of
-> having to encode lots of device-specific state in userspace like this
-"raw" api
-> seems to require.
-
-This is the real issue.  It turns out, on these switches, there are two
-kinds of networking.  Linux kernel networking handles one port, of 1Gb (or
-less), which functions as a management port.  This is typically used for
-console access.  It is configured and managed as an ordinary network port,
-with a kernel network driver and the usual networking utilities.  'ip addr'
-will show this port as well as loopback ports.  The linux kernel has no
-visibility to the switch networking ports.  'ip addr' will not show any of
-the switch networking ports.
-
-The switch functions, switching at 25Tb/s, are completely invisible to the
-linux kernel.  The switch ASIC is managed by a device driver provided by the
-ASIC vendor.  That driver is driven by management code from the ASIC vendor
-and a host of network applications.  Multiple vendors compete to provide the
-best, most innovative, most secure, easiest...  network capabilities on top
-of this architecture.  NONE of them use a kernel network driver, or the
-layers of control or management that the linux kernel offers.  On these
-systems, if you ask ethtool to provide EEPROM data, you get 'function not
-implemented'.
-
-On these systems, SFP/QSFP/CMIS devices are actually not 'networking
-devices' from a Linux kernel perspective.  They are GPIO targets and EEPROM
-memory.  Switch networking just needs the kernel to toggle the GPIO lines
-and read/write the EEPROM.  optoe is just trying to read/write the EEPROM.
-
-One last note...  The networking folks need a better SFP/QSFP/CMIS EEPROM
-driver to access more pages, and to support the new CMIS standard.  optoe
-could provide that, and I would love to collaborate on integrating optoe
-into that stack.  It wouldn't be hard, and it would be useful.  I am not
-opposed to netdev/netlink/phylink.  I have been commenting on Moshe's KAPI
-proposal, with several of my suggestions adopted there.  I am not insisting
-on my approach INSTEAD of theirs.  I am insisting on my approach IN ADDITION
-TO theirs.  Without the nvmem interface, optoe is useless to my community.
-
-> 
-> thanks,
-> 
-> greg k-h
-
-Thanks
-
-Don
-
+Regards,
+Bjorn
