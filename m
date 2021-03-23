@@ -2,142 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14954346469
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26BDD346471
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbhCWQGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:06:34 -0400
-Received: from mail-bn8nam12on2052.outbound.protection.outlook.com ([40.107.237.52]:30912
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233053AbhCWQGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:06:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pk3oxfMJeXK3Ecms0g93k8itVrIfI6nt7wUdSt09spTzI+q1UsT8AgXSbRx+qCTviT7tc0Z0MvBofDHJC0JtPFOlCci2HhkVue/4Y/nvwnqd6DazS3WAa7Pb6CR4evKgfi16ZdYNCpyAvIL3XTekdmJ+h9Th3r+qeyXkbDbGBMaThU6E2MwjnIPxTUTU5IVE8y4qCYrW/0mcIqs0o18LuOIveimCKzITT+JqDTQdJArOxV25MHfQpcykvzTABCYYcnEkk7XTUrD7laV9j4uWfHMjzKIhqP2aVJFe42Pqf4TJm/noqG0vJXItOoBflr/wTczscEx9DCtcsEj3HfqjvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6DDjsVvsUgpru7W/bGS4fLINUAKStH/Qd2dArkyWlWI=;
- b=Y6uSQIEYVHzFdQeWvkqOr2EJfoGLmUYQb+2/+gBBuEKpl20NjARYKNuG2hniq2PJx2tj+BIfKUxzaSgMuf+lP9qMeseWOLb46SA76jVsjLrKRfayQe21pCkCNlGsKU51lZIy1R82MPpsbot9C1cH7yiaRiBY5KvpWBy2DLimVlZoFx8UYtSu2ZyleB9J8AowBAyHbFRbdJwTbMBItaRaCJGU+mjzaGIrC4Lt2toYGqsAIKo86h8zLtPN9uaiU7Z6VJccVuEq097IMkM9ekxQd4jmxLwwJhpaQsEjQxVcVJy4AjQ7l9ROFhSrE9s6JVafhpqaq4QBzo9kqyOhwuGBaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6DDjsVvsUgpru7W/bGS4fLINUAKStH/Qd2dArkyWlWI=;
- b=NBDkBv0LoGQMLpVdreDHutuBvs1N1IP/V3E68VAblmZqDBphi+snj6NO+BJ3BOw2IKkKvSs+J2pJZPnwAYq0XdwVQWakxXW9us52Ma6edum4jjsMkr5Ua4wwKJ0yw8J6sYrBtsWkaborDQYm6RSu/05CKEkd+2IK0MzeHMisDhNN+iourZDWL1YcrmH4Woanq0wC6oilFkQm2zomSzeSmoBAwfeKWr9XrU+hCtXoh8LGz5Hz5GyWHxsaBXiV3uNuDDdsa8QEY+aBBwH536tIemF3XtbBhTX3Y11IlMLFAwdcEssO/fxhZkZnWgfQE54JaR0jethL1OaKzZoDbK64Dw==
-Authentication-Results: shipmail.org; dkim=none (message not signed)
- header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3210.namprd12.prod.outlook.com (2603:10b6:5:185::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Tue, 23 Mar
- 2021 16:06:16 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
- 16:06:16 +0000
-Date:   Tue, 23 Mar 2021 13:06:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] mm,drm/ttm: Use VM_PFNMAP for TTM vmas
-Message-ID: <20210323160614.GI2356281@nvidia.com>
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-3-thomas_os@shipmail.org>
- <20210323140030.GE2356281@nvidia.com>
- <dff54e6f-91bf-8cb9-4d15-259a45154ceb@shipmail.org>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dff54e6f-91bf-8cb9-4d15-259a45154ceb@shipmail.org>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: MN2PR20CA0021.namprd20.prod.outlook.com
- (2603:10b6:208:e8::34) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233113AbhCWQG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:06:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43114 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233101AbhCWQGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:06:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616515593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DCppzRt5yVFQRFuyWqBhrRYjU8pyziGBcX03eT5KikY=;
+        b=OlbYgirNuRaZf99pIoCOb+3z8l6NbYl4xihOaMN7k322SmLL5i5nNOsSDCsmVoZd/HiX31
+        E17+s8dSFSxybYRkQZfSj4+O9tXM2WfuIG7pBPqI2XorDSguuA/yI28AnVnl2xsWmOhB9F
+        ZzIz0nRuTkSm1UqF1rILqH2KHoXhB9Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-7QUfYVdmOHSddyrvPAl3Lg-1; Tue, 23 Mar 2021 12:06:28 -0400
+X-MC-Unique: 7QUfYVdmOHSddyrvPAl3Lg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D827F801817;
+        Tue, 23 Mar 2021 16:06:26 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 650255D9C0;
+        Tue, 23 Mar 2021 16:06:26 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 10:06:25 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     bhelgaas@google.com, pali@kernel.org, raphael.norwitz@nutanix.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210323100625.0021a943@omen.home.shazbot.org>
+In-Reply-To: <20210323153221.n2pwjixqen6hx26h@archlinux>
+References: <20210317190206.zrtzwgskxdogl7dz@pali>
+        <20210317131536.38f398b0@omen.home.shazbot.org>
+        <20210317192424.kpfybcrsen3ivr4f@pali>
+        <20210317133245.7d95909c@omen.home.shazbot.org>
+        <20210317194024.nkzrbbvi6utoznze@pali>
+        <20210317140020.4375ba76@omen.home.shazbot.org>
+        <20210317201346.v6t4rde6nzmt7fwr@pali>
+        <20210318143155.4vuf3izuzihiujaa@archlinux>
+        <20210323143419.syqf4dg7wcxorcmk@pali>
+        <20210323084438.37bfcc8e@omen.home.shazbot.org>
+        <20210323153221.n2pwjixqen6hx26h@archlinux>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by MN2PR20CA0021.namprd20.prod.outlook.com (2603:10b6:208:e8::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Tue, 23 Mar 2021 16:06:16 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lOjXq-001Zij-Jg; Tue, 23 Mar 2021 13:06:14 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 111c5d47-29ee-470a-5d1b-08d8ee1596d3
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3210:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3210D31EB19D4F8C9B4D39F0C2649@DM6PR12MB3210.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GAGoOy+uOZOSooCMC7CdILFJs9/+X/LThF3Eos7BE3S7Mce90Tuwbh4cpsHLsR0m1XxONjphimKlinkyX4p9M31Y7ndt9iKSl6kcoMs4/oq9RyrxANYnzqEDrSM5BBTQYGPz+c5T3fPLwEptmV90mIOcSzkRev1OxPF3sWLjBf4jAKuBIjnO//j65wvavCIn4lFAcyoiL+ypl6L45O2bWlToBHZBm+T8TEBNushBiiIzWMsrCYzgjTuQ/MVsgGRqpy2PAkjQKQyZ8Ur847Q9Xrgr6HKvnm14AUuzWftxi2OTiAI6+d72s2KVOnOAjkeSjpjP1cUzjfWZbw+tSF2ST0huRbNkzgg9GulgT03OBsf9HKts4xRtbstCbvmXuTwhx6OPfpd7kHNY1BnqwR09kERSvhr16Hb7zsPxtd6YDtqmsZw7m5KHJWoywKbmiRx4ET2kfnxWbALCjIxwWeEH101w1NphhTwAMtt7CK7y40SXLDiwb49VAOg1eFeDJ2FFnQ1Kadjk+Tx9wqX00W9B4BLx09kwuGVxG0Vrt4LQ1YIEfEHvvgruLFGT0wsbYaewVdo0ZeMWPW7v1TrVqWP5PcmsBiBL7j5rkr1aP2bLjFwsoWyJAOzUiewW9ebnzyaXWepmmG0adf4D7rE/CpnuW3uqP5ZXPAz6ZAQLpopuWIE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(366004)(396003)(376002)(9786002)(4744005)(9746002)(5660300002)(8936002)(36756003)(38100700001)(2906002)(66946007)(1076003)(66556008)(66476007)(8676002)(33656002)(2616005)(316002)(26005)(66574015)(83380400001)(54906003)(6916009)(478600001)(186003)(426003)(4326008)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UytTNWdzcDJWSjl2S2t1eTI0NXFtOW9NQzVDdTMwU2VNRW42Y1V1N3B0SjNF?=
- =?utf-8?B?d0lWVHM3OUNmdkNZWmZoM1laYWtIQXI0Q3VZMXY1U3cvdW1JMHBiWlA0d1Yr?=
- =?utf-8?B?SXA3TDNzaGluT0RsdlloVkZpcXpHUDc2NDkwUnJGQS9UZHFYMUZOazNES1Z4?=
- =?utf-8?B?TWdVSm5KYmdsa2lUUVZyUmpJU2JhNHYyOEFaaE5najk3ckZ0c1VWNFU3YlVt?=
- =?utf-8?B?MG0rcll1eWdVaDBQWUxUbjIwQmpONFRvM1dvK3JNNFVnbEZUYk1WOTJ1NGFh?=
- =?utf-8?B?Sld0NlZYcW5pcG9LbUYvd1BwUjhiSkdVU1ptVjFFa0pFUEt6TkYvb05jaU1F?=
- =?utf-8?B?NnArclgySkpTMFdoaUNmVm01cW54U0FlY1UxQlE2WmgrcE5tb2UrZmltaER2?=
- =?utf-8?B?U3ZNVDlPeUFKQ0lXTG1sRzRMekVLejZrTjFNMTRKTmNiK2RsVnZEcHFRc2JV?=
- =?utf-8?B?NHg3TFZXeXRITCtGeEFUMWdZMHJCdzZXemliZUVyUlNEUnNxUTRsREdNQ3pK?=
- =?utf-8?B?bG9CQkZROU5FZjVoNGxFU2YwcGFTK3oyT0ZXRlc5OFdaQ1VHQUttNFY0SGtP?=
- =?utf-8?B?SnFKTHRoaXZPN0NwSlhoRDFKM2lZUnBseEV0endoczhyZzl0V2JlOTVBODBv?=
- =?utf-8?B?NGFLWW5VT2JPMHlOcVlyMXNCRGgzVjR5NjRud3VqWWZETDZNZXNzbHphUjV0?=
- =?utf-8?B?NHE0WGNYd3dWalEySW1Vbm9sbFJiV0V2WUYzdkd5a0JUNk9NNTQxaVdMNU9D?=
- =?utf-8?B?ZWR5NC9jcEJoTHZYaEh5OGNON1A0Tk5kQWhYQXMwMlNUbUNyUHNGVUxxWmxZ?=
- =?utf-8?B?TGRwdk4xL0c3bTNJL3lwcTk1L3oyQ3FsVVM4UUE2OVc0ZExpYyt0eEYwRDIr?=
- =?utf-8?B?cFl0d1VuT0dDS2hTZFVxMUgvL1BRYXVBQ0FDMFAwR0RwUGpkZzJRKzJ0d3lK?=
- =?utf-8?B?dW4yTFp1c2JUMjl4QzhwNEEzQ3RVQ0s2eVNnWnBqeDdvemkvVEFPSis4eEkw?=
- =?utf-8?B?dnh3Y2diRW1QaHVPT1JwUU9GNGVMd01YUmVUSm9MbU81Q3pKL0xleENWRkZz?=
- =?utf-8?B?VDkraFp4dWhjckxGVlVIaitSYlREejFiQ2VRMXQ0M3BGUDZKVUhubE0yTHVF?=
- =?utf-8?B?TlBvdW53a2JpUk9yNG1JUnVoQmtMWXlJWXFJNGl3cFN2WEtQV2tid2ZFQy9Y?=
- =?utf-8?B?a0Z5ZlB6RkpQUWM4OWNyYUZVM0FiQ1l0MmgvRTNESXRqN25vczdGeDQ1SkR0?=
- =?utf-8?B?bWZSUFZyZXJYOUxGanBaTWtYdTVrQndaNWZrMHVBbzRESjEzbVVZcFdLbEV2?=
- =?utf-8?B?Q0x4MW4yMDgrSmNidzQ1a0FUWjNxRnVpekdYYWVRMnBVSTJPbWhaMUFWODRC?=
- =?utf-8?B?eFVzOHZOcUVvdUcxMWhkeWVZcjIwZ0NkbDZ2Z1I1K0xjWnI4eTc5TjFaUGs0?=
- =?utf-8?B?bVJpVVBQWmhPSTBsVkJLbDNqZlYwWXUzYVRUV1B0Q1pna1lSbThiUk1KNDZ3?=
- =?utf-8?B?OVk3OTZyMUVOZnphNjl5NzVPSEJyOU5WOHNFZUZGRjBWUGxtdnF4NUFGNGZx?=
- =?utf-8?B?SUpuLzJnWjJzMEtxc2NmcGJlejlQc3g4SWpnVm5VUm8wZG1PaGg1NHNxMHN6?=
- =?utf-8?B?WUZoMnlQMk9wUWpoTDE4WG9Jejl2cFk2SFV1TzZYbTd2NGZ1bHI1cXJlYm00?=
- =?utf-8?B?WlhMdnJ6Q1d0aGkvSnJlSXZzQkYxRmlTdThGUTVJQ2I4LzVhOXZQUndHajIy?=
- =?utf-8?Q?A2I8GIidJ2/xytHR6wjDtVi7kydT7Ijj20TpcPN?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 111c5d47-29ee-470a-5d1b-08d8ee1596d3
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 16:06:16.6142
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pNcuaDPFgYRJUk1lQqMXN+MgsxY0TyFOL26D1oJ35ihD/DLs1xonBOd7du7x4WMA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3210
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:46:00PM +0100, Thomas Hellström (Intel) wrote:
-> > > +static inline bool is_cow_mapping(vm_flags_t flags)
-> > > +{
-> > > +	return (flags & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE;
-> > > +}
-> > Most driver places are just banning VM_SHARED.
-> > 
-> > I see you copied this from remap_pfn_range(), but that logic is so
-> > special I'm not sure..
-> 
-> It's actually used all over the place. Both in drivers and also redefined
-> with
-> CONFIG_MEM_SOFT_DIRTY which makes me think Daniels idea of
-> vma_is_cow_mapping() is better since it won't clash and cause compilation
-> failures...
+On Tue, 23 Mar 2021 21:02:21 +0530
+Amey Narkhede <ameynarkhede03@gmail.com> wrote:
 
-Well, lets update more mmap fops to use this new helper then?
-Searching for VM_SHARED gives a good list, there are several in
-drivers/infiniband
+> On 21/03/23 08:44AM, Alex Williamson wrote:
+> > On Tue, 23 Mar 2021 15:34:19 +0100
+> > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > =20
+> > > On Thursday 18 March 2021 20:01:55 Amey Narkhede wrote: =20
+> > > > On 21/03/17 09:13PM, Pali Roh=C3=A1r wrote: =20
+> > > > > On Wednesday 17 March 2021 14:00:20 Alex Williamson wrote: =20
+> > > > > > On Wed, 17 Mar 2021 20:40:24 +0100
+> > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > =20
+> > > > > > > On Wednesday 17 March 2021 13:32:45 Alex Williamson wrote: =20
+> > > > > > > > On Wed, 17 Mar 2021 20:24:24 +0100
+> > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > > > =20
+> > > > > > > > > On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote=
+: =20
+> > > > > > > > > > On Wed, 17 Mar 2021 20:02:06 +0100
+> > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > > > > > =20
+> > > > > > > > > > > On Monday 15 March 2021 09:03:39 Alex Williamson wrot=
+e: =20
+> > > > > > > > > > > > On Mon, 15 Mar 2021 15:52:38 +0100
+> > > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > > > > > > > =20
+> > > > > > > > > > > > > On Monday 15 March 2021 08:34:09 Alex Williamson =
+wrote: =20
+> > > > > > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > > > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > > > > > > > > > =20
+> > > > > > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhed=
+e wrote: =20
+> > > > > > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) an=
+d secondary bus
+> > > > > > > > > > > > > > > > reset(pci_parent_bus_reset) which I think a=
+re hot reset and
+> > > > > > > > > > > > > > > > warm reset respectively. =20
+> > > > > > > > > > > > > > >
+> > > > > > > > > > > > > > > No. PCI secondary bus reset =3D PCIe Hot Rese=
+t. Slot reset is just another
+> > > > > > > > > > > > > > > type of reset, which is currently implemented=
+ only for PCIe hot plug
+> > > > > > > > > > > > > > > bridges and for PowerPC PowerNV platform and =
+it just call PCI secondary
+> > > > > > > > > > > > > > > bus reset with some other hook. PCIe Warm Res=
+et does not have API in
+> > > > > > > > > > > > > > > kernel and therefore drivers do not export th=
+is type of reset via any
+> > > > > > > > > > > > > > > kernel function (yet). =20
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > Warm reset is beyond the scope of this series, =
+but could be implemented
+> > > > > > > > > > > > > > in a compatible way to fit within the pci_reset=
+_fn_methods[] array
+> > > > > > > > > > > > > > defined here. =20
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Ok!
+> > > > > > > > > > > > > =20
+> > > > > > > > > > > > > > Note that with this series the resets available=
+ through
+> > > > > > > > > > > > > > pci_reset_function() and the per device reset a=
+ttribute is sysfs remain
+> > > > > > > > > > > > > > exactly the same as they are currently.  The bu=
+s and slot reset
+> > > > > > > > > > > > > > methods used here are limited to devices where =
+only a single function is
+> > > > > > > > > > > > > > affected by the reset, therefore it is not like=
+ the patch you proposed
+> > > > > > > > > > > > > > which performed a reset irrespective of the dow=
+nstream devices.  This
+> > > > > > > > > > > > > > series only enables selection of the existing m=
+ethods.  Thanks,
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > Alex
+> > > > > > > > > > > > > > =20
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > But with this patch series, there is still an iss=
+ue with PCI secondary
+> > > > > > > > > > > > > bus reset mechanism as exported sysfs attribute d=
+oes not do that
+> > > > > > > > > > > > > remove-reset-rescan procedure. As discussed in ot=
+her thread, this reset
+> > > > > > > > > > > > > let device in unconfigured / broken state. =20
+> > > > > > > > > > > >
+> > > > > > > > > > > > No, there's not:
+> > > > > > > > > > > >
+> > > > > > > > > > > > int pci_reset_function(struct pci_dev *dev)
+> > > > > > > > > > > > {
+> > > > > > > > > > > >         int rc;
+> > > > > > > > > > > >
+> > > > > > > > > > > >         if (!dev->reset_fn)
+> > > > > > > > > > > >                 return -ENOTTY;
+> > > > > > > > > > > >
+> > > > > > > > > > > >         pci_dev_lock(dev); =20
+> > > > > > > > > > > > >>>     pci_dev_save_and_disable(dev); =20
+> > > > > > > > > > > >
+> > > > > > > > > > > >         rc =3D __pci_reset_function_locked(dev);
+> > > > > > > > > > > > =20
+> > > > > > > > > > > > >>>     pci_dev_restore(dev); =20
+> > > > > > > > > > > >         pci_dev_unlock(dev);
+> > > > > > > > > > > >
+> > > > > > > > > > > >         return rc;
+> > > > > > > > > > > > }
+> > > > > > > > > > > >
+> > > > > > > > > > > > The remove/re-scan was discussed primarily because =
+your patch performed
+> > > > > > > > > > > > a bus reset regardless of what devices were affecte=
+d by that reset and
+> > > > > > > > > > > > it's difficult to manage the scope where multiple d=
+evices are affected.
+> > > > > > > > > > > > Here, the bus and slot reset functions will fail un=
+less the scope is
+> > > > > > > > > > > > limited to the single device triggering this reset.=
+  Thanks,
+> > > > > > > > > > > >
+> > > > > > > > > > > > Alex
+> > > > > > > > > > > > =20
+> > > > > > > > > > >
+> > > > > > > > > > > I was thinking a bit more about it and I'm really sur=
+e how it would
+> > > > > > > > > > > behave with hotplugging PCIe bridge.
+> > > > > > > > > > >
+> > > > > > > > > > > On aardvark PCIe controller I have already tested tha=
+t secondary bus
+> > > > > > > > > > > reset bit is triggering Hot Reset event and then also=
+ Link Down event.
+> > > > > > > > > > > These events are not handled by aardvark driver yet (=
+needs to
+> > > > > > > > > > > implemented into kernel's emulated root bridge code).
+> > > > > > > > > > >
+> > > > > > > > > > > But I'm not sure how it would behave on real HW PCIe =
+hotplugging bridge.
+> > > > > > > > > > > Kernel has already code which removes PCIe device if =
+it changes presence
+> > > > > > > > > > > bit (and inform via interrupt). And Link Down event t=
+riggers this
+> > > > > > > > > > > change. =20
+> > > > > > > > > >
+> > > > > > > > > > This is the difference between slot and bus resets, the=
+ slot reset is
+> > > > > > > > > > implemented by the hotplug controller and disables pres=
+ence detection
+> > > > > > > > > > around the bus reset.  Thanks, =20
+> > > > > > > > >
+> > > > > > > > > Yes, but I'm talking about bus reset, not about slot rese=
+t.
+> > > > > > > > >
+> > > > > > > > > I mean: to use bus reset via sysfs on hardware which supp=
+orts slots and
+> > > > > > > > > hotplugging.
+> > > > > > > > >
+> > > > > > > > > And if I'm reading code correctly, this combination is al=
+lowed, right?
+> > > > > > > > > Via these new patches it is possible to disable slot rese=
+t and enable
+> > > > > > > > > bus reset. =20
+> > > > > > > >
+> > > > > > > > That's true, a slot reset is simply a bus reset wrapped aro=
+und code
+> > > > > > > > that prevents the device from getting ejected. =20
+> > > > > > >
+> > > > > > > Yes, this makes slot reset "safe". But bus reset is "unsafe".
+> > > > > > > =20
+> > > > > > > > Maybe it would make
+> > > > > > > > sense to combine the two as far as this interface is concer=
+ned, ie. a
+> > > > > > > > single "bus" reset method that will always use slot reset w=
+hen
+> > > > > > > > available.  Thanks, =20
+> > > > > > >
+> > > > > > > That should work when slot reset is available.
+> > > > > > >
+> > > > > > > Other option is that mentioned remove-reset-rescan procedure.=
+ =20
+> > > > > >
+> > > > > > That's not something we can introduce to the pci_reset_function=
+() path
+> > > > > > without a fair bit of collateral in using it through vfio-pci.
+> > > > > > =20
+> > > > > > > But quick search in drivers/pci/hotplug/ results that not all=
+ hotplug
+> > > > > > > drivers implement reset_slot method.
+> > > > > > >
+> > > > > > > So there is a possible issue with hotplug driver which may ej=
+ect device
+> > > > > > > during bus reset (because e.g. slot reset is not implemented)=
+? =20
+> > > > > >
+> > > > > > People aren't reporting it, so maybe those controllers aren't b=
+eing
+> > > > > > used for this use case.  Or maybe introducing this patch will m=
+ake
+> > > > > > these reset methods more readily accessible for testing.  We ca=
+n fix or
+> > > > > > blacklist those controllers for bus reset when reports come in.=
+  Thanks, =20
+> > > > >
+> > > > > Ok! I do not know neither if those controllers are used, but look=
+s like
+> > > > > that there are still changes in hotplug code.
+> > > > >
+> > > > > So I guess with these patches people can test it and report issue=
+s when
+> > > > > such thing happen. =20
+> > > > So after a bit research as I understood we need to group slot
+> > > > and bus reset together in a single category of reset methods and
+> > > > then implicitly use slot reset if it is available when bus reset is
+> > > > enabled by the user.
+> > > > Is that right? =20
+> > >
+> > > Yes, I understand it in same way. Just I do not know which name to
+> > > choose for this reset category. In PCI spec it is called Secondary Bus
+> > > Reset (as it resets whole bus with all devices; but we allow this res=
+et
+> > > in this patch series only if on the bus is connected exactly one devi=
+ce).
+> > > In PCIe spec it is called Hot Reset. And if kernel detects Slot suppo=
+rt
+> > > then kernel currently calls it Slot reset. But it is still same thing.
+> > > Any opinion? I think that we could call it Hot Reset as this patch
+> > > series exports it only for single device (so calling it _bus_ is not =
+the
+> > > best match). =20
+> >
+> > A similar abstraction where our scope is not limited to a single
+> > function calls this a bus reset:
+> >
+> > int pci_reset_bus(struct pci_dev *pdev)
+> > {
+> >         return (!pci_probe_reset_slot(pdev->slot)) ?
+> >             __pci_reset_slot(pdev->slot) : __pci_reset_bus(pdev->bus);
+> > }
+> >
+> > Thanks,
+> > Alex
+> > =20
+> I was going to use similar function
+>=20
+> int pci_bus_reset(struct pci_dev *dev, int probe)
+> {
+>        return pci_dev_reset_slot_function(dev, probe) ?
+>                pci_parent_bus_reset(dev, probe) : 0;
+>=20
+> }
 
-Jason
+I think via the sysfs attribute we can simply call this "bus" reset,
+but internally having both pci_reset_bus() and pci_bus_reset() would be
+really confusing.  We're doing the same thing as pci_bus_reset() but
+with a different scope, so I'd probably suggest
+pci_bus_reset_function().
+
+Also, the above ternary form isn't true to the original, only -ENOTTY
+allows fall-through, so something more like:
+
+int pci_reset_bus_function(struct pci_dev *dev, int probe)
+{
+	int rc =3D pci_dev_reset_slot_function(dev, probe);
+
+	return (rc =3D=3D -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
+}
+
+Thanks,
+Alex
+
