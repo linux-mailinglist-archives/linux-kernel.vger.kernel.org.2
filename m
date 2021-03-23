@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E82D346686
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F6C346689
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhCWRhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:37:37 -0400
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:62116 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhCWRh1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:37:27 -0400
-Date:   Tue, 23 Mar 2021 17:37:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1616521045; bh=B76jZ93shqjUOUQEXOsghNFmKmbiN4UEo8ixi177UoA=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=XygTCk2L+LU5D4FsgMrA/7EH7eqjNqqfnnAceMgTGvAvic+o8zNuuiUHbrrl05uEZ
-         VgG/kaqtVhJkyScYcgjmkuXv0QX4x8LUHro1MoZMUMV0X7Eaav8TzU/6e6bLGi5gAR
-         eNxGVUDiSJsAneAjka7gPkqztAdxGAXTmdFKEwbmsno8dsmsLaYO4OotH0/SvP4yis
-         H8ftHLGMQH40O8P88PNF0wVbD7vlYFTZMwMrvv1/Gm8mc6v4GuSYKIHoRsKfd33P3x
-         +LGxwD11CWjLiLCJvZ+4e1S/cjqlvzHRIL8f/6WlqU4SriImQnwPEDSC3HYj7cLxFm
-         rDFO73qqbWPCw==
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-mtd@lists.infradead.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v2 mtd/fixes] mtd: spinand: core: add missing MODULE_DEVICE_TABLE()
-Message-ID: <20210323173714.317884-1-alobakin@pm.me>
+        id S230035AbhCWRiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:38:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230186AbhCWRiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:38:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D029F600EF;
+        Tue, 23 Mar 2021 17:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616521082;
+        bh=F8W4NhZSrISx6ND4EZ52T2q3feCQu7g+dSt4VWdnFkU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s/MhSNCq6nEFI3xMlKc6ZhM5SMX3gycIH9MsrTdNYKOZaMsOqzMGTJtWHDd4NaqRm
+         sJeq8HkIinumdgBwWi+U4ku3DJAuJi/IHMWieUYW7Yb7FUsJ9FRgNx5Xjlp2Rj1cJv
+         SCWJDKPBjRWCWpsKLzp+QX7mLZjPatrRqI4FJhmMBS+65iJ+35805rfiHsfmdEwJMc
+         EY33fvIAa6yQfD11WXIwkzbnX15/9X/sahR+f6ig78AR8f7XO2GWrh7J52LVDiDPgF
+         ePQ9bvkJx5Kwkuv277lKSw0OBtbybM2VQ8bxTqPTPYPRPXhpXCdp9fZX+pl01vbYTG
+         6/QMW10xrfQPw==
+Date:   Tue, 23 Mar 2021 17:37:55 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 7/8] regulator: qcom_spmi-regulator: Clean-up by using
+ managed work init
+Message-ID: <20210323173755.GC5490@sirena.org.uk>
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <3bd35bb43257f4bf5b99f75d207ed5e1e08d1d38.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vEao7xgI/oilGqZ+"
+Content-Disposition: inline
+In-Reply-To: <3bd35bb43257f4bf5b99f75d207ed5e1e08d1d38.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+X-Cookie: Formatted to fit your screen.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The module misses MODULE_DEVICE_TABLE() for both SPI and OF ID tables
-and thus never autoloads on ID matches.
-Add the missing declarations.
-Present since day-0 of spinand framework introduction.
 
-Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NAN=
-Ds")
-Cc: stable@vger.kernel.org # 4.19+
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- drivers/mtd/nand/spi/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+--vEao7xgI/oilGqZ+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 61d932c1b718..17f63f95f4a2 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1263,12 +1263,14 @@ static const struct spi_device_id spinand_ids[] =3D=
- {
- =09{ .name =3D "spi-nand" },
- =09{ /* sentinel */ },
- };
-+MODULE_DEVICE_TABLE(spi, spinand_ids);
+On Tue, Mar 23, 2021 at 03:58:11PM +0200, Matti Vaittinen wrote:
+> Few drivers implement remove call-back only for ensuring a delayed
+> work gets cancelled prior driver removal. Clean-up these by switching
+> to use devm_delayed_work_autocancel() instead.
 
- #ifdef CONFIG_OF
- static const struct of_device_id spinand_of_ids[] =3D {
- =09{ .compatible =3D "spi-nand" },
- =09{ /* sentinel */ },
- };
-+MODULE_DEVICE_TABLE(of, spinand_of_ids);
- #endif
+Acked-by: Mark Brown <broonie@kernel.org>
 
- static struct spi_mem_driver spinand_drv =3D {
---
-2.31.0
+--vEao7xgI/oilGqZ+
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBaJ3IACgkQJNaLcl1U
+h9AsRQf+MwBWHCDMYU8mOBhM4L4uPfYY11l3mKT/pDWxZRI6lbivQivpbwflLTPr
+oj/gA4mh5shj9T5M+fIx6dj3EvTG55a+KMEFXzkLnF0FIu1uLxDeTbICztP3CSLy
+SJ72Ho2MjUBS9c2lHllkMrXqpciu7ORQ7g/rAdCC34yLOy+zXx6kEtd3OM/B6DeV
+TvJhTRmvoeq9KvGS99dMMwsiDp5WO6OA+n6NGfHthiP9D186MJxrXC04VAEZEdJ0
+4Lqgsjtx6frKSo/ZmQydf/Is5L0LjxZ/IjdZBQ1pVKsuGkBX6k+w6rxUuEGuXeWJ
+rFz90+X6SEH7Nz6X/cwPjvqPcpj1yA==
+=0pAj
+-----END PGP SIGNATURE-----
+
+--vEao7xgI/oilGqZ+--
