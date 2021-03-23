@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138BE345720
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42631345725
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhCWFTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43064 "EHLO
+        id S229665AbhCWFVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhCWFSq (ORCPT
+        with ESMTP id S229574AbhCWFVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:18:46 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 15A60C061574;
-        Mon, 22 Mar 2021 22:18:43 -0700 (PDT)
+        Tue, 23 Mar 2021 01:21:47 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C244C061574;
+        Mon, 22 Mar 2021 22:21:47 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id d10so10264476ils.5;
+        Mon, 22 Mar 2021 22:21:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=TiZe8UTTgE
-        Nquwib5uwcT0dF8caXTeaaWpOpfzenyxQ=; b=KsD29ddwEse7OSbf2UQkcjoSee
-        tKEVMEI5ImD0gAk1YrOHdjVS2vkaWMf29Q1Sns/daJqRRmwcB+cD/uA/Mb7Q9Jr4
-        pM3LSLle04E42SXglbeRefEHOMewww/5M3cHYxUwHWoeVyS8AohVUlKIt+oGtNNr
-        XXXmck+lfNXhCCiWM=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3vkoqellg6XEbAA--.456S4;
-        Tue, 23 Mar 2021 13:18:34 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     vgoyal@redhat.com, stefanha@redhat.com, miklos@szeredi.hu
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] fuse: Fix a potential double free in virtio_fs_get_tree
-Date:   Mon, 22 Mar 2021 22:18:31 -0700
-Message-Id: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bUPGwHyfCFhrEpg/kWavchzpPaEqNThbAknTwO+GXwE=;
+        b=Q30cijKjBPZcUumK9c6JEf6v1L6cssfeK21CQTE2vmnkQad4uFeUit/Wy4kl22qC9A
+         4BXesXSR9Xl6aadVzaEVUWD1qzhAQd969S5eNvRMC4awroXzbQsQLMmZHKfZAl2my2Cv
+         mqd9ilS5f0+/lcoUhWwZ+/O6KuSRPmqF8FJO0gRvpB3x4V/sHzLRj17qB2k/aNETXCmX
+         u5w0i4UYYTYLQHGIpcSB3zXF9xGSzSWnKqeJ5laMuuLAXWp3UOZHYpLaBQ/Z/wdMdBro
+         ZEW2Poyw3fcNJxCMi9iG3XawWDJR+Jk/a2i1Mhrkzi/Aox3hSTgcI6sw2mMC99NvBruS
+         iNdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bUPGwHyfCFhrEpg/kWavchzpPaEqNThbAknTwO+GXwE=;
+        b=PrbGfJ5G2fH+T5C9bR6YuAHvL0BtzXORliBdUC3f7PKcR4DQzQKeVYgV5z13UxykPK
+         hala9w/GxeY4rBLF/yYNnN4acmc1F1WZiU+4o1dJYaZc6sy8vzLTje9q45uN4JT9mq59
+         CtIDXB67m3mkS8yNgOfIVU5uumnp0kscCboa1D37gchPYN2sR+2ukG68mK1SIGt0NQRN
+         Op3Z0ZiR2nwmbCKG3iYs9j+62AS2Wb9+TQuQkq9i9pc0Jd5N9G+TT+lpLCUyH6TZkujz
+         eIWGtxic3hcP9q2I+vTGjwhIQeI7Ci13PlOdF5481j7uFXj9h7KR9ClJSVhPCRTfUWjW
+         DPbQ==
+X-Gm-Message-State: AOAM530XcZPACA/xjpZLFvDrtF/jBRVuXkfgSJvMPU+Q7Qs1XyWbTV8/
+        GRITbwuJRrpFlUf11koEjVbJ81zrD8GFwYq+g9E=
+X-Google-Smtp-Source: ABdhPJzHA0qDITha2g0lDdOXurKnM8m7i01zKX3wBlGzeIpmXZ9KCi7mK+ftSET1YYSGgmn3737v0qJ6tCNmfYa8kV8=
+X-Received: by 2002:a92:2c08:: with SMTP id t8mr3284834ile.72.1616476906587;
+ Mon, 22 Mar 2021 22:21:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygC3vkoqellg6XEbAA--.456S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1rGF48Ar1kCF1DArW8WFg_yoW8JFyrpr
-        ykCr13Gr47Xry7Jas3CFnYg345K392kr1UGr92v343Cw4rJry0yrZ5Cry5Krs5ZrWxJFyr
-        tF4rJr4agFWDCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_GrWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JU94SOUUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+References: <20210322144916.137245-1-mszeredi@redhat.com> <20210322144916.137245-2-mszeredi@redhat.com>
+ <20210322223338.GD22094@magnolia>
+In-Reply-To: <20210322223338.GD22094@magnolia>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 23 Mar 2021 07:21:35 +0200
+Message-ID: <CAOQ4uxjuKWGYbsg8KdF4dncOmcSrL_Mhj5_E2B5JSP58aMsQ-g@mail.gmail.com>
+Subject: Re: [PATCH v2 01/18] vfs: add miscattr ops
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In virtio_fs_get_tree, fm is allocated by kzalloc() and
-assigned to fsc->s_fs_info by fsc->s_fs_info=fm statement.
-If the kzalloc() failed, it will goto err directly, so that
-fsc->s_fs_info must be non-NULL and fm will be freed.
+> > +``miscattr_get``
+>
+> I wish this wasn't named "misc" because miscellaneous is vague.
+>
+> fileattr_get, perhaps?
+>
+> (FWIW I'm not /that/ passionate about starting a naming bikeshed, feel
+> free to ignore.)
+>
 
-But later fm is freed again when virtio_fs_fill_super() fialed.
-I think the statement if (fsc->s_fs_info) {kfree(fm);} is
-misplaced.
+Eventual bikeshedding is hard to avoid in this case...
 
-My patch puts this statement in the correct palce to avoid
-double free.
+I don't feel strongly against "misc", but I do think the flags and
+ioctl are already
+known as "fsx" so it would be more friendly to go with that.
 
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- fs/fuse/virtio_fs.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+If you don't like "fsxflags" because it's not only flags and you think
+"fsxattr" is too
+close to "xattr" (FWIW I don't think it is going to be a source of
+confusion), we
+can simply go with get_fsx(), similar to get_acl(). It doesn't matter
+what name we
+use as long as everyone is clear on what it is.
 
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index 8868ac31a3c0..727cf436828f 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -1437,10 +1437,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
- 
- 	fsc->s_fs_info = fm;
- 	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
--	if (fsc->s_fs_info) {
--		fuse_conn_put(fc);
--		kfree(fm);
--	}
-+
- 	if (IS_ERR(sb))
- 		return PTR_ERR(sb);
- 
-@@ -1457,6 +1454,11 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
- 		sb->s_flags |= SB_ACTIVE;
- 	}
- 
-+	if (fsc->s_fs_info) {
-+		fuse_conn_put(fc);
-+		kfree(fm);
-+	}
-+
- 	WARN_ON(fsc->root);
- 	fsc->root = dget(sb->s_root);
- 	return 0;
--- 
-2.25.1
+"struct fsx" is not any more or any less clear than "struct statx" and
+while "fsx"
+it is a pretty arbitrary name, it is not much less arbitrary than "miscattr".
 
-
+Thanks,
+Amir.
