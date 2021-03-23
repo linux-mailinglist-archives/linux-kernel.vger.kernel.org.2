@@ -2,240 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7B7345FFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B19345FFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhCWNn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:43:27 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:35250 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbhCWNms (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:42:48 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NDeK3R162349;
-        Tue, 23 Mar 2021 13:42:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=hrMMZ76xmzIQF9ErDtghwgH4VXWLAZYPlUYcvYT89dI=;
- b=Jbyu+Oy7RlP4Gghr82Xd3ssHLnHdcptu3awaDtG3Juf+eUqoJ2+Ri7BH4+fMJ94XWqmb
- XA8QCuEK+Hy4bF57HB1Y/AHB8RfqYxusBAhhNiUmkzs3mVuE2n1YcoduNH9pUeuDevNF
- oYJaEViuCwSe+7/PNQ9U2VAr6XInRJabT78TZYwGFSlihOiu1s93e7xqvfg94F+DjZWk
- YJl44XeV7p9iEkn3nUYYxM70wJHNJPluq2qfdEcUq4nzPcz60mrA4ZLBZJcO4QcExH6S
- Phj5aM/vvBHndGPmpEQ0taP+EpRKxm0e2vjoyja3lrG9cyoy+9oX2N+JbBN7F5QaE3Le cA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 37d6jbf4uj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 13:42:44 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NDePsu171439;
-        Tue, 23 Mar 2021 13:42:44 GMT
-Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2057.outbound.protection.outlook.com [104.47.46.57])
-        by aserp3020.oracle.com with ESMTP id 37dtxy8qy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 13:42:43 +0000
+        id S231626AbhCWNnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:43:22 -0400
+Received: from mail-bn8nam08on2074.outbound.protection.outlook.com ([40.107.100.74]:21985
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231464AbhCWNmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:42:51 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=npJFCDMaTab6UBR0C3t9c1M/palxRJBRbNOj2WvHkx2DbJCtfa5d+A6OzDC7UqtU8omx8RrPnjO/KX1Gtmz6l8hKHLspMmEs7SGfg5XrRi+CM5iF/XbwD9lCdaHR3tPru5wuxRt3Ln1asGNKrRfdifs87PFWEyCSY6qGOg1YFZSkiOCdXWFHJ2iOUZ8GcRcP/UA9LQ8qGmkb5PdAy4FFPkULKMjfK7jv+ehPWUyFzwxxZVYX5TQSTNzDMRQuyF7q10OYJU5fVTbr1sERlNWs748aqNivoT72JspaRamo8Nf2ndIvBWAeqrEM5Np/2Qh+/l7o1xBwEeAeQKy9GEDu/A==
+ b=I/pAN5d0dJyA+WeTKZS2CXwquSjjiTAZeFw5CqUJcJJkJtpY0HQ2gEUQcHNhtErb48aOw3Hbt9xuxKK+HCjFmv3E2zQ69x00e6mszByzAswqSFZ7bIoZ12hlCu+T1jvuywHKUH0TA4La03K/PFL+++mHM/FgXjqevo6xG7uTWIF8wWBjd6lJTaCLFQ/M4T31QGHwaTSor6gpaHfAtCSQ7XpkkW+9bJUHrVHMjPgOhzdZDiKIdQAPYMTenUd+4OAOt5n7F+AY2b0Hvhg9IOfLGox2tH5j7j2sCBU6tFu1lL6LNnff92ZTbCrlbMmy4v7Zwhbawxb7U76joDC8TWXS1A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hrMMZ76xmzIQF9ErDtghwgH4VXWLAZYPlUYcvYT89dI=;
- b=TscIqoocAE2qCxu65G81xbCeN5MVDbNT/BbkrH81eKpOEIgnmo0I9Vl1J+4LhECPuvXhUn1bA30+QNgCgaWDaSB+OBWTDwWelLEbPjQ0AjI62tL6AHIIScMLgVo68u4KlnpyiYuVF2GczNeXmnxxoFntZIcjDvay95gGI1ivhcujgtr1r3MY30JZODrsLJHPSJOsqZ5KiEgHqIrwZ5WmbRSe/HdWseBnX6tJWcKkq0eMze7pkRc+m2DqL6IdTdFlNUzX391HBL95WG1M1ZslLHo1wubC1nUKCw0M+RmBxo1g0BqpimMEA/CrQpEMaa3HiaWSPVktIc6kKqNG121ZEg==
+ bh=jhxwkP7c19LOlWhzQ3VZM9VrkerVDpKfAVdvwTEOBd4=;
+ b=ah5z5HLVrMa2ZjDm0YTBkcEny9tYAaB2IWI0RO8sDasQ1kYWpTI+RFy3QMN4L/9/+AowigYohQ9Hm2U3iLI9EvfQZOds9FhLtfpATRK+q7J3Hpf8Do+r0JgMWbGwM3kqLAFVlHmmc9U4tTROge6fpg0U8AnHNBJuXs2mmPWjFqzQ7ej4dM0E4yC/KOm4zjDBGW184e+OE6ENy8cCH1sGDCehGqltBk+GJHm3zmek6+pACN57PmAtbv0nDzVjHKFVIxKZ+kVyraCeSIr9/yPSzwp1unLJeWWGxoZMCpgJ8L/44A6PUz5VnY+3ASKnAmugZg0+PhYqt6a944ohREV/zw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hrMMZ76xmzIQF9ErDtghwgH4VXWLAZYPlUYcvYT89dI=;
- b=OGMLjGalfNJRQhZMuhYWql8olfAl6fNZZ2frfjIFzWBA1fp4przZ3GLtPvO6HoaCU3XDbaSAMfjfEEHA6Tz7XLZFZi+LHHPTpIyUNSzwt9QKMKYHUooKLKpHEMNl1gR0N6J0miFB90hxnitCjc3bwVc64/aLY0GlOwgz3xHC84A=
-Received: from CY4PR10MB1448.namprd10.prod.outlook.com (2603:10b6:903:27::12)
- by CY4PR10MB1239.namprd10.prod.outlook.com (2603:10b6:910:4::11) with
+ bh=jhxwkP7c19LOlWhzQ3VZM9VrkerVDpKfAVdvwTEOBd4=;
+ b=P1stG7fs7XsWH1Mm7oztirRpgxZHNQrY1/Pfg5bRDnROo5b7UJc+Wb3KQtGyNqWbiGTMJSHBbrBPuUZZlmauQt25mYD9CGjOypUbnNutbuRZgIRTjIL82J+7JHtaEk7oARMFO3khSr1OesaFEP678mn4kMq5tsz2zeef5fVGrS5EOiTuLavAmZGxh6jD24jWWhfWrYxTK4z+q2gC0wBtZFmmL4gHavkZgnqgKRPwQnOLgiibtQ45TKO/tHZC/Hmrl3tEx5z8u/M7HvOM2Pzigq1bh3Q2QX4Flw+udPpaIo22owuLTU4N2efgH8e3Sv5U89qqq8CWbzD+eUqClR2RgA==
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4620.namprd12.prod.outlook.com (2603:10b6:5:76::32) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24; Tue, 23 Mar
- 2021 13:42:42 +0000
-Received: from CY4PR10MB1448.namprd10.prod.outlook.com
- ([fe80::14d0:f061:b858:4c1]) by CY4PR10MB1448.namprd10.prod.outlook.com
- ([fe80::14d0:f061:b858:4c1%7]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
- 13:42:41 +0000
-From:   Praveen Kannoju <praveen.kannoju@oracle.com>
-To:     Praveen Kannoju <praveen.kannoju@oracle.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Rajesh Sivaramasubramaniom 
-        <rajesh.sivaramasubramaniom@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
-        Jeffery Yoder <jeffery.yoder@oracle.com>
-Subject: RE: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt
- update
-Thread-Topic: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt
- update
-Thread-Index: AQHXGmWJp8i+xPdCxUaGXGoNHWnqKKqRnxOA
-Date:   Tue, 23 Mar 2021 13:42:41 +0000
-Message-ID: <CY4PR10MB14483428B986BAF6CC6B89118C649@CY4PR10MB1448.namprd10.prod.outlook.com>
-References: <1615900141-14012-1-git-send-email-praveen.kannoju@oracle.com>
-In-Reply-To: <1615900141-14012-1-git-send-email-praveen.kannoju@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [103.203.175.226]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f6029229-2d3a-408d-2dd4-08d8ee018827
-x-ms-traffictypediagnostic: CY4PR10MB1239:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR10MB12396A4983836399D3F30EE48C649@CY4PR10MB1239.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: joKc6kWQeKQueN5Yfs5R86mw1F30n56vIKM7dUqS8K/HFYlskki77bdOrRaU3kxEvaU6V+fCrI6RQyDcxbcff0jrIFlj5sUyF2wbEMmbBofklQlexL7NbAh27axLkWNZ4+MpRuUE1DmwG33EUsJNU2L/qXlRtQG9RjlGgsk1ZFgY05RpuX0uq+RYafLqbJFoZpDHk52lYT4NYfLW2q78o1DkV/Jtuavmc+Aih6o5h+MNJy6RkG83a/3ZaV0JPaYUk2wWmomhsl2c15bv1IWs6dI1bUQfTDSz/EwwUg3bzlYAhU6pubXEahECBYYZLZARHeX/B0VP3SF2r2I/FYgTztKTWAhIsz7JydbtPNoSMQ+dM6CmCK16Yj2etVOgcgZ6CjE5hdIAg0fxolO0ag+XBs+3wTTuDKwmymHUqkYmOyqEQy8oRezl0XSksMJ8YjbKFgULAobyFd5bE3bkphLewhWSfmExcToRJWhpTcmgda+KKS0LCy4nsNOOfEZO+LZjtwfgl6ACQuBC0WdwHaTmOdOiye7t1FWoSZfwoSTZsOqQR8gKGDFK9GJiQCelbyfGFPkPpAMxLLrv7YnIv1FeKmy0GlYQUKdrkmBmz7I58/8MD1an3CH84bbv6JF6S/nsqdEIkPyV3VaqHdycONGo57T1I7EWHR2GJ+QO0fC/x40=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1448.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(366004)(136003)(396003)(376002)(86362001)(8936002)(478600001)(15650500001)(53546011)(186003)(54906003)(7696005)(26005)(33656002)(110136005)(8676002)(6506007)(316002)(2906002)(107886003)(66556008)(83380400001)(71200400001)(44832011)(4326008)(52536014)(38100700001)(66476007)(5660300002)(66446008)(9686003)(76116006)(55016002)(66946007)(64756008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?2osLUIWK2SXFQM6SOgSsgwN8Jrmr/Nl7Cwv3lYqi6p2VBUTsP3F3sxBvlPmc?=
- =?us-ascii?Q?gYySKin3TtQla7EMpH7MPgRFxZmreHAe00Cb8agI4DiQBSL9jUv6hyroKl5u?=
- =?us-ascii?Q?anJb/ECw9+6AgqrvZ6inUP6f9UAdFTWJn0yagB5Jx1sVKNVsTX46RjOEl39R?=
- =?us-ascii?Q?+RKIHg12U+LQ1bu6FsRshtv0LAKf6Xh9KHO2BwXJSHeTCpW/t20K8M9bfqzd?=
- =?us-ascii?Q?0aLrOurJLI6qXmgBmDZd52MsdNffrbVOIZKTsxBIXH8CD3GxThUbg7refymB?=
- =?us-ascii?Q?PlvrImVXG3VIawKluOK+Bz8lHmALl2lUZqTMx0c9o0gfsiN4i3uYMiVGBgfM?=
- =?us-ascii?Q?t15cyAFQBErWabO1XBSJqzs8J3PInMXTNxySNDAN/6z+0oQcBaZ9dg8FC8U6?=
- =?us-ascii?Q?KVZIgshegwJWEUP+PQawci6Oe3xAnFMbCCiXuNGWAkdvkyfYIddlInNgTUDv?=
- =?us-ascii?Q?7EW8zkMU9QRb1KQtGl9/f6c3DAsMEuu3LPOAiuGw/HUzTsHBKzC4cNHuxIIW?=
- =?us-ascii?Q?oUIEZmsiT2+BV3hGlILo8J8YPj817JIZVGLoOu9bvlLar+zgjFblgL9THYGV?=
- =?us-ascii?Q?ZYjXij4NNvrBeO/GrzEi1ubTmdRj3LkfkyyqYWyUPKMZ1dP0qx8pEjBl9U/X?=
- =?us-ascii?Q?QaXDCdgekE2kmSywvbeYz9UH7G42GPsuMsnO2NGPklQVVJBkxDPhdeDObAvY?=
- =?us-ascii?Q?rW+e5SQ8+1gMEMiBcrOzox2rT5wD5V2CtXPq4EOKdQbTg58LXg750p+A3/Sl?=
- =?us-ascii?Q?TsWC6vf+MQsONV2FZ2CN1bYB4qxHXJm5bo6dKa9i14IIRexhbLFFZKL8PYbz?=
- =?us-ascii?Q?SyEBjwgcz2+x8ILkBTgM0zCGiIJbRj6tYYvCEKOwVs2scRu9Kp80VeFE972S?=
- =?us-ascii?Q?54DCLSjyNvK19/wcOrXsw9c6H9dsdidhpFvlIPmggvnhdaDZuB+3Bdk17yg5?=
- =?us-ascii?Q?seyJH+rc2f4hKlnGESRaBVs706GnV9/ni7WvUxVEH/MrGxcG0/mXbjNh62lm?=
- =?us-ascii?Q?XqRw2KarMitvaL+6jBHs9k+KFAG5GsB1ywXYicatAM3yqSvuWoYRZon7/WV7?=
- =?us-ascii?Q?SzTD+Jp405RqlDibqFfPe9Au4hRLzW9/2GVRho+3ZjnT09fh0/ieG/24+5PF?=
- =?us-ascii?Q?JYXFwUzbtWBxSfD1agaKUGaVrszWMzAUb3208F31n9kSVz1FnJLrxLvAl4UC?=
- =?us-ascii?Q?GhmTG+oa24YN7iT+n8w0JU+ZGT0mkHbXmbtdXKLAGo/QwOMR3sdx71RRj1VB?=
- =?us-ascii?Q?l2tawI0pu4MEN4rTGtqjmQPH/qaDn+rAHtRMpdJ7a4SZf4knN1DC/3y13PsO?=
- =?us-ascii?Q?KAnSfROeegHHajqqAnH6RVxF?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 2021 13:42:49 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
+ 13:42:49 +0000
+Date:   Tue, 23 Mar 2021 10:42:47 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
+        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
+        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        mjrosato@linux.ibm.com
+Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
+ vfio_pci drivers
+Message-ID: <20210323134247.GC2356281@nvidia.com>
+References: <20210319092341.14bb179a@omen.home.shazbot.org>
+ <20210319161722.GY2356281@nvidia.com>
+ <20210319162033.GA18218@lst.de>
+ <20210319162848.GZ2356281@nvidia.com>
+ <20210319163449.GA19186@lst.de>
+ <20210319113642.4a9b0be1@omen.home.shazbot.org>
+ <20210319200749.GB2356281@nvidia.com>
+ <20210322151125.GA1051@lst.de>
+ <20210322164411.GV2356281@nvidia.com>
+ <20210323131709.GA1982@lst.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323131709.GA1982@lst.de>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YTXPR0101CA0014.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YTXPR0101CA0014.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Tue, 23 Mar 2021 13:42:48 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lOhJ1-001WHz-0b; Tue, 23 Mar 2021 10:42:47 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 92b0ab43-6ebd-4616-b25f-08d8ee018bf6
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4620:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4620ED7EE0B2282575B3F77FC2649@DM6PR12MB4620.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 92xCLbgxgANwQKr5yqBlKITrj3F9uir+FxZCttj2lTavLI7iRj7sdrjxqo1w2tb7qLNJeXUyPYVxBUBB7NGB1VRXFMiPWac3/kh7f2CDI1akFj0TnhKLqCQKz5audkkWGZcqxDZ5RfAuDZ8Cl9slYO0U87TySovAfmkljzj2UeBhcebx3xIPmU4/dKfQwFoN5jz4HKFm12c0+qq+QQvBZnSTE0t/5faCJZkFirp7fmw5LMQGdz8z/ImWPr+Q8LaG4tKvR5W2B2p+PKTOv8S6KW7jDtIvpwXu/tum25LQVL2/CV/aXffble2abDVUW2C02a3We6MVW8crw9nQTc01lJWpbAohs06Cpw6JMkZsReKL6impn3lce9qr6MpuT4cZey4jcZDe8iWicJpviPWPAjgGZ1XgkKivJqbms6rS3MfC318RhwSZDjEPpuVff0ntF3fpS6gfCI0ECasVdZYLW7Hi+q3+AR/V5T7P3T7xxum2vYHdECcnSCr9+MwBurEFmJUKQ7J1dsbntn2uKGuRw9W4HjUYkomQbwZ/3HLQUCLpvOgVFpeK2pdvFbFDOIFS3r301bGLKAU5tMMhdOqNClhtmNls1IgQ9aE+a3ZlJuSaGAjB9CF5n+9ka8dV0aaT+16Y1M3fUPNeCjiXW7mz772XdYbhnmSQdE7J2RbCuBw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(366004)(376002)(346002)(1076003)(316002)(86362001)(38100700001)(8676002)(2906002)(426003)(36756003)(4326008)(33656002)(5660300002)(83380400001)(8936002)(66946007)(9746002)(478600001)(9786002)(186003)(26005)(54906003)(6916009)(66556008)(2616005)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?kxIp76Gr3WbnMxPuCPLlWmZVrV5hz5NHqxa7x1Q2plmoHJ+7eA+cgm9eWQJn?=
+ =?us-ascii?Q?zZ+eV1Tu0n6nzz15Wzca2TwnU4v07XsVcBlaX4DZBdI7VlGWoCCAmSWBtMw+?=
+ =?us-ascii?Q?5+wuje2InoQkgCrchFKfPK7HyMP0x1DAHnYjpHFSyC2wturtNGto4E39aLlx?=
+ =?us-ascii?Q?T19YGsWM8qs+xNBtA65yxN6aP6ou6E9fenNiz4RVDEUaU+2hoZuytwrF+voM?=
+ =?us-ascii?Q?FhK11fI6SLTCROWQhqT1Y4O7ssBqyD0VyRLvTBQvt4NVbDxqY+P0VS1eh3tI?=
+ =?us-ascii?Q?436zUqF6nYHC/3G1dOUcxdf9NK72cw7qcBT/uVj6O7pG77nZNL79ZZZxMdOf?=
+ =?us-ascii?Q?TWylOhOMy9J4WfE+UrjahWrLk4swbmfDQgHoVBa6AqPrcRJd/X28kzWZn7Nu?=
+ =?us-ascii?Q?WRsVQNKKDij/irWscsFvT3vSSXhIZoDAiylfLeZmIXBQX9BVmRt89J7STuWs?=
+ =?us-ascii?Q?BPCKxtLqmpVlDjSoJuVWQR2r6OEBfZOe4mmAmt8/+Wfvuz7NeSM6Iwv3PTsz?=
+ =?us-ascii?Q?gEUI6OwN8410Znxto5hJXXldZbw0Gl1rUe1szAewjmg6FcGyHwdRenhYJXTj?=
+ =?us-ascii?Q?Zf6anEcIuHVs1U01v/27FIxfzk7j0+0Sr6PvMd7KytX3v7TB4/xVquHvp7n3?=
+ =?us-ascii?Q?Th4xkq7ZY1gpn25aq2aQg9LAAStxF97mZEI4j2t6vyJEfIdeiWzax3MMEw3k?=
+ =?us-ascii?Q?hpyWj/6ZmLhtmkbQdK87fOZ1dl/Kd0NgVkRyun6UQQBUx+FstwXaZyHbyaue?=
+ =?us-ascii?Q?eceff+4ijIq9704db/Bh5egeLG38Ci0ltJwiD2ac9WqhIA3GBAzTzfr4a7DZ?=
+ =?us-ascii?Q?uLrj7J4cdwpQ3yCySxkU4r0QgToWnv1ht2w5pXfxIyGplN08L5PhxPsn5AdP?=
+ =?us-ascii?Q?TpZzgXfjEQnDG4FH2khvK4/LBttQNt33KUgYU0fUR4ixy3a5qyX5LLji4O9Z?=
+ =?us-ascii?Q?yCYdgWuTwXtiybRtb/ZkZCRQs/6K6QafZsmNWPL4Xf8XJZQOyMs9co1rC8+s?=
+ =?us-ascii?Q?wAOd06OCACq/4WiH7G/U3v1Erze2YqNefRjlIfm3aDZMLzWHwnzXCoUKIpJl?=
+ =?us-ascii?Q?ER1QPYr5dbSNfScCblvOz7G/qW+7apUX9ZqyhvyUakgRobNWEkdevIzhXQcx?=
+ =?us-ascii?Q?Ky1vDJs/IgTVRWR6PPBkFN4PuTsKiCJor0wdoo48scLWFRWNbdmmSstBJ3ca?=
+ =?us-ascii?Q?yaZ6wHnLW9PY6tz/R6U30/YS8H+1MXIDc6tN3J/0F0ObP8TIY4bryQlXGKop?=
+ =?us-ascii?Q?AmI7PFu5si+cM/K6aH9xR1AMd+z41/Woq36XV96R9jQFAPxSePa2jBNlx2Uk?=
+ =?us-ascii?Q?nTLz01QlLergEci6rRyrODQl?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92b0ab43-6ebd-4616-b25f-08d8ee018bf6
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1448.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6029229-2d3a-408d-2dd4-08d8ee018827
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 13:42:41.7653
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 13:42:48.9090
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QrY0naWUdtzOzM2AUBET4oemnDGskWJfhwtVsuVWHdb+YPFYdHzYWhjdek7X8rUTcUBb36JigHj/knHfr6T1RvzKOs0P0X8cTyUVdGbw46M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1239
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230101
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9931 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1011 priorityscore=1501
- spamscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230101
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1lpDv6ygBL/qrHhYwmSXBFfg4NBE5yYqe1sbtP6AdDREszNzvbCwCphTmrSuBS9t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4620
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping.
-Request the reviewers to go through the patch and let us know if you have a=
-ny queries with respect to it.
+On Tue, Mar 23, 2021 at 02:17:09PM +0100, Christoph Hellwig wrote:
+> On Mon, Mar 22, 2021 at 01:44:11PM -0300, Jason Gunthorpe wrote:
+> > This isn't quite the scenario that needs solving. Lets go back to
+> > Max's V1 posting:
+> > 
+> > The mlx5_vfio_pci.c pci_driver matches this:
+> > 
+> > +	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_REDHAT_QUMRANET, 0x1042,
+> > +			 PCI_VENDOR_ID_MELLANOX, PCI_ANY_ID) }, /* Virtio SNAP controllers */
+> > 
+> > This overlaps with the match table in
+> > drivers/virtio/virtio_pci_common.c:
+> > 
+> >         { PCI_DEVICE(PCI_VENDOR_ID_REDHAT_QUMRANET, PCI_ANY_ID) },
+> > 
+> > So, if we do as you propose we have to add something mellanox specific
+> > to virtio_pci_common which seems to me to just repeating this whole
+> > problem except in more drivers.
+> 
+> Oh, yikes.  
 
--
-Praveen Kumar Kannoju.=20
+This is why I keep saying it is a VFIO driver - it has no relation to
+the normal kernel drivers on the hypervisor. Even loading a normal
+kernel driver and switching to a VFIO mode would be unacceptably
+slow/disruptive.
 
+The goal is to go directly to a VFIO mode driver with PCI driver auto
+probing disabled to avoid attaching a regular driver. Big servers will
+have 1000's of these things.
 
------Original Message-----
-From: Praveen Kannoju [mailto:praveen.kannoju@oracle.com]=20
-Sent: 16 March 2021 06:39 PM
-To: leon@kernel.org; dledford@redhat.com; jgg@ziepe.ca; linux-rdma@vger.ker=
-nel.org; linux-kernel@vger.kernel.org
-Cc: Rajesh Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>; Ram=
-a Nichanamatlu <rama.nichanamatlu@oracle.com>; Aruna Ramakrishna <aruna.ram=
-akrishna@oracle.com>; Jeffery Yoder <jeffery.yoder@oracle.com>; Praveen Kan=
-noju <praveen.kannoju@oracle.com>
-Subject: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt u=
-pdate
+> > The general thing that that is happening is people are adding VM
+> > migration capability to existing standard PCI interfaces like VFIO,
+> > NVMe, etc
+> 
+> Well, if a migration capability is added to virtio (or NVMe) it should
+> be standardized and not vendor specific.
 
-To update xlt (during mlx5_ib_reg_user_mr()), the driver can request up to
-1 MB (order-8) memory, depending on the size of the MR. This costly allocat=
-ion can sometimes take very long to return (a few seconds), especially if t=
-he system is fragmented and does not have any free chunks for orders >=3D 3=
-. This causes the calling application to hang for a long time. To avoid the=
-se long latency spikes, limit max order of allocation to order 3, and reuse=
- that buffer to populate_xlt() for that MR. This will increase the latency =
-slightly (in the order of microseconds) for each
-mlx5_ib_update_xlt() call, especially for larger MRs (since were making mul=
-tiple calls to populate_xlt()), but its a small price to pay to avoid the l=
-arge latency spikes with higher order allocations. The flag __GFP_NORETRY i=
-s used while fetching the free pages to ensure that there are no long compa=
-ction stalls when the system's memory is in fragmented condition.
+It would be nice, but it would be a challenging standard to write.
 
-Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
----
- drivers/infiniband/hw/mlx5/mr.c | 22 +++-------------------
- 1 file changed, 3 insertions(+), 19 deletions(-)
+I think the industry is still in the pre-standards mode of trying to
+even figure out how this stuff should work.
 
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/m=
-r.c index db05b0e..dac19f0 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1004,9 +1004,7 @@ static struct mlx5_ib_mr *alloc_cacheable_mr(struct i=
-b_pd *pd,
- 	return mr;
- }
-=20
--#define MLX5_MAX_UMR_CHUNK ((1 << (MLX5_MAX_UMR_SHIFT + 4)) - \
--			    MLX5_UMR_MTT_ALIGNMENT)
--#define MLX5_SPARE_UMR_CHUNK 0x10000
-+#define MLX5_SPARE_UMR_CHUNK 0x8000
-=20
- /*
-  * Allocate a temporary buffer to hold the per-page information to transfe=
-r to @@ -1028,30 +1026,16 @@ static void *mlx5_ib_alloc_xlt(size_t *nents, =
-size_t ent_size, gfp_t gfp_mask)
- 	 */
- 	might_sleep();
-=20
--	gfp_mask |=3D __GFP_ZERO;
-+	gfp_mask |=3D __GFP_ZERO | __GFP_NORETRY;
-=20
--	/*
--	 * If the system already has a suitable high order page then just use
--	 * that, but don't try hard to create one. This max is about 1M, so a
--	 * free x86 huge page will satisfy it.
--	 */
- 	size =3D min_t(size_t, ent_size * ALIGN(*nents, xlt_chunk_align),
--		     MLX5_MAX_UMR_CHUNK);
-+		     MLX5_SPARE_UMR_CHUNK);
- 	*nents =3D size / ent_size;
- 	res =3D (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
- 				       get_order(size));
- 	if (res)
- 		return res;
-=20
--	if (size > MLX5_SPARE_UMR_CHUNK) {
--		size =3D MLX5_SPARE_UMR_CHUNK;
--		*nents =3D get_order(size) / ent_size;
--		res =3D (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
--					       get_order(size));
--		if (res)
--			return res;
--	}
--
- 	*nents =3D PAGE_SIZE / ent_size;
- 	res =3D (void *)__get_free_page(gfp_mask);
- 	if (res)
---
-1.8.3.1
+IMHO PCI sig needs to tackle a big part of this as we can't embed any
+migration controls in the VF itself, it has to be secure for only
+hypervisor use.
 
+What we've got now is a Linux standard in VFIO where the uAPI to
+manage migration is multi-vendor and we want to plug drivers into
+that.
+
+If in a few years the industry also develops HW standards then I
+imagine using the same mechanism to plug in these standards based
+implementation.
+
+Jason
