@@ -2,183 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348A73465BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFF13465C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhCWQzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:55:48 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:14862 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233150AbhCWQzj (ORCPT
+        id S233267AbhCWQ54 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Mar 2021 12:57:56 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:38733 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231842AbhCWQ5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:55:39 -0400
-Date:   Tue, 23 Mar 2021 16:55:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1616518537; bh=40YUHvnaoKlsOCx6BeoTLExdKdZj3udCVf35HyR4k7Y=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=bpA98RHgt3ozThgVr/Wb9S632VILvu7pvygpXX7MABqSr7m5cQrKZAa2NrjLI2GFW
-         2L56FZuSBWuWZZt6d1nqIQZcrvl3isWy50qQ+xWPVLjjL7sU76jLIHNgbX6dL2bI9h
-         2xorZs5QN87+itaEitK8YmOaIMhoimw1aR4JW371fc7s9pRMtKo0ZmEhd320PucdPv
-         74wL9/ZGgD+/Xo8ddN1P5LxSrIfOQLc2eQLl6FQPe6y/Z3bkhTQObKTOJSparcTLNj
-         36hEftlWtqYm+NjpmZswPiqiESdKoQm8LwB7Q9uMVpQAtjBpZ6LJC0S9kPCuOpqKXw
-         KfHviNMEVJAug==
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
-Message-ID: <20210323165523.187134-1-alobakin@pm.me>
-In-Reply-To: <CAFnufp1K+t76n9shfOZB_scV7myUWCTXbB+yf5sr-8ORYQxCEQ@mail.gmail.com>
-References: <20210322170301.26017-1-mcroce@linux.microsoft.com> <20210323154112.131110-1-alobakin@pm.me> <YFoNoohTULmcpeCr@enceladus> <20210323170447.78d65d05@carbon> <YFoTBm0mJ4GyuHb6@enceladus> <CAFnufp1K+t76n9shfOZB_scV7myUWCTXbB+yf5sr-8ORYQxCEQ@mail.gmail.com>
+        Tue, 23 Mar 2021 12:57:23 -0400
+X-Originating-IP: 90.89.138.59
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 804FBE0006;
+        Tue, 23 Mar 2021 16:57:16 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 17:57:15 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v8 3/3] mtd: rawnand: Add support for secure regions in
+ NAND memory
+Message-ID: <20210323175715.38b4740a@xps13>
+In-Reply-To: <20210323073930.89754-4-manivannan.sadhasivam@linaro.org>
+References: <20210323073930.89754-1-manivannan.sadhasivam@linaro.org>
+        <20210323073930.89754-4-manivannan.sadhasivam@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@linux.microsoft.com>
-Date: Tue, 23 Mar 2021 17:28:32 +0100
+Hi Manivannan,
 
-> On Tue, Mar 23, 2021 at 5:10 PM Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> >
-> > On Tue, Mar 23, 2021 at 05:04:47PM +0100, Jesper Dangaard Brouer wrote:
-> > > On Tue, 23 Mar 2021 17:47:46 +0200
-> > > Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
-> > >
-> > > > On Tue, Mar 23, 2021 at 03:41:23PM +0000, Alexander Lobakin wrote:
-> > > > > From: Matteo Croce <mcroce@linux.microsoft.com>
-> > > > > Date: Mon, 22 Mar 2021 18:02:55 +0100
-> > > > >
-> > > > > > From: Matteo Croce <mcroce@microsoft.com>
-> > > > > >
-> > > > > > This series enables recycling of the buffers allocated with the=
- page_pool API.
-> > > > > > The first two patches are just prerequisite to save space in a =
-struct and
-> > > > > > avoid recycling pages allocated with other API.
-> > > > > > Patch 2 was based on a previous idea from Jonathan Lemon.
-> > > > > >
-> > > > > > The third one is the real recycling, 4 fixes the compilation of=
- __skb_frag_unref
-> > > > > > users, and 5,6 enable the recycling on two drivers.
-> > > > > >
-> > > > > > In the last two patches I reported the improvement I have with =
-the series.
-> > > > > >
-> > > > > > The recycling as is can't be used with drivers like mlx5 which =
-do page split,
-> > > > > > but this is documented in a comment.
-> > > > > > In the future, a refcount can be used so to support mlx5 with n=
-o changes.
-> > > > > >
-> > > > > > Ilias Apalodimas (2):
-> > > > > >   page_pool: DMA handling and allow to recycles frames via SKB
-> > > > > >   net: change users of __skb_frag_unref() and add an extra argu=
-ment
-> > > > > >
-> > > > > > Jesper Dangaard Brouer (1):
-> > > > > >   xdp: reduce size of struct xdp_mem_info
-> > > > > >
-> > > > > > Matteo Croce (3):
-> > > > > >   mm: add a signature in struct page
-> > > > > >   mvpp2: recycle buffers
-> > > > > >   mvneta: recycle buffers
-> > > > > >
-> > > > > >  .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
-> > > > > >  drivers/net/ethernet/marvell/mvneta.c         |  4 +-
-> > > > > >  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
-> > > > > >  drivers/net/ethernet/marvell/sky2.c           |  2 +-
-> > > > > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
-> > > > > >  include/linux/mm_types.h                      |  1 +
-> > > > > >  include/linux/skbuff.h                        | 33 +++++++++++=
---
-> > > > > >  include/net/page_pool.h                       | 15 ++++++
-> > > > > >  include/net/xdp.h                             |  5 +-
-> > > > > >  net/core/page_pool.c                          | 47 +++++++++++=
-++++++++
-> > > > > >  net/core/skbuff.c                             | 20 +++++++-
-> > > > > >  net/core/xdp.c                                | 14 ++++--
-> > > > > >  net/tls/tls_device.c                          |  2 +-
-> > > > > >  13 files changed, 138 insertions(+), 26 deletions(-)
-> > > > >
-> > > > > Just for the reference, I've performed some tests on 1G SoC NIC w=
-ith
-> > > > > this patchset on, here's direct link: [0]
-> > > > >
-> > > >
-> > > > Thanks for the testing!
-> > > > Any chance you can get a perf measurement on this?
-> > >
-> > > I guess you mean perf-report (--stdio) output, right?
-> > >
-> >
-> > Yea,
-> > As hinted below, I am just trying to figure out if on Alexander's platf=
-orm the
-> > cost of syncing, is bigger that free-allocate. I remember one armv7 wer=
-e that
-> > was the case.
-> >
-> > > > Is DMA syncing taking a substantial amount of your cpu usage?
-> > >
-> > > (+1 this is an important question)
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Tue,
+23 Mar 2021 13:09:30 +0530:
 
-Sure, I'll drop perf tools to my test env and share the results,
-maybe tomorrow or in a few days.
-From what I know for sure about MIPS and my platform,
-post-Rx synching (dma_sync_single_for_cpu()) is a no-op, and
-pre-Rx (dma_sync_single_for_device() etc.) is a bit expensive.
-I always have sane page_pool->pp.max_len value (smth about 1668
-for MTU of 1500) to minimize the overhead.
+> On a typical end product, a vendor may choose to secure some regions in
+> the NAND memory which are supposed to stay intact between FW upgrades.
+> The access to those regions will be blocked by a secure element like
+> Trustzone. So the normal world software like Linux kernel should not
+> touch these regions (including reading).
+> 
+> The regions are declared using a NAND chip DT property,
+> "secure-regions". So let's make use of this property in the raw NAND
+> core and skip access to the secure regions present in a system.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/mtd/nand/raw/nand_base.c | 105 +++++++++++++++++++++++++++++++
+>  include/linux/mtd/rawnand.h      |  14 +++++
+>  2 files changed, 119 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index c33fa1b1847f..2a990219f498 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -278,11 +278,46 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * nand_check_secure_region() - Check if the region is secured
+> + * @chip: NAND chip object
+> + * @offset: Offset of the region to check
+> + * @size: Size of the region to check
+> + *
+> + * Checks if the region is secured by comparing the offset and size with the
+> + * list of secure regions obtained from DT. Returns -EIO if the region is
+> + * secured else 0.
+> + */
+> +static int nand_check_secure_region(struct nand_chip *chip, loff_t offset, u64 size)
 
-By the word, IIRC, all machines shipped with mvpp2 have hardware
-cache coherency units and don't suffer from sync routines at all.
-That may be the reason why mvpp2 wins the most from this series.
+I think I would prefer a boolean return value here, with a rename:
 
-> > > > >
-> > > > > [0] https://lore.kernel.org/netdev/20210323153550.130385-1-alobak=
-in@pm.me
-> > > > >
-> > >
->
-> That would be the same as for mvneta:
->
-> Overhead  Shared Object     Symbol
->   24.10%  [kernel]          [k] __pi___inval_dcache_area
->   23.02%  [mvneta]          [k] mvneta_rx_swbm
->    7.19%  [kernel]          [k] kmem_cache_alloc
->
-> Anyway, I tried to use the recycling *and* napi_build_skb on mvpp2,
-> and I get lower packet rate than recycling alone.
-> I don't know why, we should investigate it.
+static bool nand_region_is_secured() or
+nand_region_is_accessible/reachable/whatever()
 
-mvpp2 driver doesn't use napi_consume_skb() on its Tx completion path.
-As a result, NAPI percpu caches get refilled only through
-kmem_cache_alloc_bulk(), and most of skbuff_head recycling
-doesn't work.
+then something lik:
 
-> Regards,
-> --
-> per aspera ad upstream
+	if (nand_region_is_secured())
+		return -EIO;
 
-Oh, I love that one!
+> +{
+> +	int i;
+> +
+> +	/* Skip touching the secure regions if present */
+> +	for (i = 0; i < chip->nr_secure_regions; i++) {
+> +		const struct nand_secure_region *region = &chip->secure_regions[i];
+> +
+> +		if (offset + size < region->offset ||
+> +		    offset >= region->offset + region->size)
 
-Al
+I think as-is the condition does not work.
 
+Let's assume we want to check the region { .offset = 1, size = 1 } and
+the region { .offset = 2, size = 1 } is reserved. This is:
+
+		if ((1 + 1 < 2) /* false */ ||
+		    (1 >= 2 + 1) /* false */)
+			continue;
+		return -EIO; /* EIO is returned while the area is valid
+		*/
+
+> +			continue;
+> +
+
+Perhaps a dev_dbg() entry here would make sense.
+
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+
+[...]
+
+> +static int of_get_nand_secure_regions(struct nand_chip *chip)
+> +{
+> +	struct device_node *dn = nand_get_flash_node(chip);
+> +	struct property *prop;
+> +	int length, nr_elem, i, j;
+> +
+> +	prop = of_find_property(dn, "secure-regions", &length);
+> +	if (prop) {
+
+I generally prefer the below logic:
+
+	if (!prop)
+		return 0;
+
+Then you earn an indentation level.
+
+> +		nr_elem = length / sizeof(u64);
+
+of_property_count_elems_of_size() ?
+
+> +		chip->nr_secure_regions = nr_elem / 2;
+> +
+> +		chip->secure_regions = kcalloc(nr_elem, sizeof(*chip->secure_regions), GFP_KERNEL);
+
+IIRC ->secure_regions is a structure with lengths and offset, so you
+don't want to allocate nr_elem but nr_secure_regions number of
+items here.
+
+> +		if (!chip->secure_regions)
+> +			return -ENOMEM;
+> +
+> +		for (i = 0, j = 0; i < chip->nr_secure_regions; i++, j += 2) {
+> +			of_property_read_u64_index(dn, "secure-regions", j,
+> +						   &chip->secure_regions[i].offset);
+> +			of_property_read_u64_index(dn, "secure-regions", j + 1,
+> +						   &chip->secure_regions[i].size);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int rawnand_dt_init(struct nand_chip *chip)
+>  {
+>  	struct nand_device *nand = mtd_to_nanddev(nand_to_mtd(chip));
+>  	struct device_node *dn = nand_get_flash_node(chip);
+> +	int ret;
+>  
+>  	if (!dn)
+>  		return 0;
+> @@ -5015,6 +5107,16 @@ static int rawnand_dt_init(struct nand_chip *chip)
+>  	of_get_nand_ecc_user_config(nand);
+>  	of_get_nand_ecc_legacy_user_config(chip);
+>  
+> +	/*
+> +	 * Look for secure regions in the NAND chip. These regions are supposed
+> +	 * to be protected by a secure element like Trustzone. So the read/write
+> +	 * accesses to these regions will be blocked in the runtime by this
+> +	 * driver.
+> +	 */
+> +	ret = of_get_nand_secure_regions(chip);
+> +	if (!ret)
+> +		return ret;
+
+I think we can do this initialization pretty much when we want in the
+init process as long as it is done before the BBT parsing logic.
+
+Here, besides the fact the memory will not be freed from
+rawnand_dt_init()'s caller if something goes wrong, we are at a point
+where nand_cleanup will not be called. nand_cleanup() will only be
+called if the controller driver encounters an error *after* a
+successful nand_scan().
+
+We could perhaps move this call to nand_scan() which would simply solve
+the situation. We don't need it in rawnand_dt_init() as this won't be
+rawnand specific anyway...
+
+> +
+>  	/*
+>  	 * If neither the user nor the NAND controller have
+> requested a specific
+>  	 * ECC engine type, we will default to
+> NAND_ECC_ENGINE_TYPE_ON_HOST. @@ -6068,6 +6170,9 @@ void
+> nand_cleanup(struct nand_chip *chip) /* Free manufacturer priv data.
+> */ nand_manufacturer_cleanup(chip);
+>  
+> +	/* Free secure regions data */
+> +	kfree(chip->secure_regions);
+> +
+>  	/* Free controller specific allocations after chip
+> identification */ nand_detach(chip);
+>  
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 6b3240e44310..17ddc900a1dc 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1036,6 +1036,16 @@ struct nand_manufacturer {
+>  	void *priv;
+>  };
+>  
+> +/**
+> + * struct nand_secure_region - NAND secure region structure
+> + * @offset: Offset of the start of the secure region
+> + * @size: Size of the secure region
+> + */
+> +struct nand_secure_region {
+> +	u64 offset;
+> +	u64 size;
+> +};
+> +
+>  /**
+>   * struct nand_chip - NAND Private Flash Chip Data
+>   * @base: Inherit from the generic NAND device
+> @@ -1086,6 +1096,8 @@ struct nand_manufacturer {
+>   *          NAND Controller drivers should not modify this value,
+> but they're
+>   *          allowed to read it.
+>   * @read_retries: The number of read retry modes supported
+> + * @secure_regions: Structure containing the secure regions info
+> + * @nr_secure_regions: Number of secure regions
+>   * @controller: The hardware controller	structure which is
+> shared among multiple
+>   *              independent devices
+>   * @ecc: The ECC controller structure
+> @@ -1135,6 +1147,8 @@ struct nand_chip {
+>  	unsigned int suspended : 1;
+>  	int cur_cs;
+>  	int read_retries;
+> +	struct nand_secure_region *secure_regions;
+> +	u8 nr_secure_regions;
+>  
+>  	/* Externals */
+>  	struct nand_controller *controller;
+
+Thanks,
+Miquèl
