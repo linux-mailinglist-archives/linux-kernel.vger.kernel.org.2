@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11091345D53
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA800345D67
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhCWLtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:49:45 -0400
-Received: from mx4.veeam.com ([104.41.138.86]:34984 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhCWLtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:49:08 -0400
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S229962AbhCWLyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:54:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21831 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229675AbhCWLxh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:53:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616500416;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aA2iKoiePqQtpqGhhTijWBU3ANydJrmSdc9O2oPlqu4=;
+        b=NuO4lyHzj8TMV5zCP/PHEEtJzhUQwBvxtVLjS3SNAniGZ08fyrrYeVpWPkOt/VK5jZQlrl
+        FPjo6o9Y5iFsYYtE/qQlcAHPKKDd91M3qKLF1Rkrg0sBCD3IhsprZ5zeZ3NBnCZzhGWWyf
+        muGnspShbAmtZhBHv6fBqUxr81wD7Sc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-4XzQj2goMvGi9a12EKrHHw-1; Tue, 23 Mar 2021 07:53:32 -0400
+X-MC-Unique: 4XzQj2goMvGi9a12EKrHHw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 5A68C114A89;
-        Tue, 23 Mar 2021 14:49:05 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1616500145; bh=Npv76KkPJw9jO4Ft8/M9YyDbnr+j3tl96yB10yNzbfM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=QtXYXdUD6Z4oZ0WlqJ18CJYfFgKn2ciVKdlg4PXNK0sl8g2oxVzIkogP3jzgi8oaj
-         +7k2r6mL77S+/UWWJhKDgs6MQYN3NlmC3flQAx8uVoQV05clLlnwaYhYflTH5Ra2D9
-         rn9N31tk2nUwH7BzezovCCPCfT/+A4TYBBySKhFA=
-Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
- prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Tue, 23 Mar 2021 12:49:03 +0100
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtepa@veeam.com>, <pavel.tide@veeam.com>
-Subject: [PATCH 1/1] block: fix potential infinite loop in the negative branch in __submit_bio_noacct_mq()
-Date:   Tue, 23 Mar 2021 14:48:36 +0300
-Message-ID: <1616500116-3411-2-git-send-email-sergei.shtepa@veeam.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1616500116-3411-1-git-send-email-sergei.shtepa@veeam.com>
-References: <1616500116-3411-1-git-send-email-sergei.shtepa@veeam.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04F1D101371D;
+        Tue, 23 Mar 2021 11:53:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D3D582C168;
+        Tue, 23 Mar 2021 11:53:23 +0000 (UTC)
+Subject: [PATCH 0/3] cachefiles, afs: mm wait fixes
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, dhowells@redhat.com,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 23 Mar 2021 11:53:22 +0000
+Message-ID: <161650040278.2445805.7652115256944270457.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29D2A50B586D7D62
-X-Veeam-MMEX: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the blk_crypto_bio_prep() function returns false, the processing
-of the bio request must end. Repeated access to blk_crypto_bio_prep()
-for this same bio may lead to access to already released data, since in
-this case the bio_endio() function was already called for bio.
 
-The changes allow to leave the processing of the failed bio and
-go to the next one from the bio_list.
+Here are some patches to fix page waiting-related issues in cachefiles and
+afs[1]:
 
-The error can only occur when using inline encryption on
-request-based blk-mq devices and something went wrong in the
-__blk_crypto_bio_prep().
+ (1) In cachefiles, remove the use of the wait_bit_key struct to access
+     something that's actually in wait_page_key format.  The proper struct
+     is now available in the header, so that should be used instead.
 
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+ (2) Add a proper wait function for waiting killably on the page writeback
+     flag.  This includes a recent bugfix here (presumably commit
+     c2407cf7d22d0c0d94cf20342b3b8f06f1d904e7).
+
+ (3) In afs, use the function added in (2) rather than using
+     wait_on_page_bit_killable() which doesn't have the aforementioned
+     bugfix.
+
+     Note that I modified this to work with the upstream code where the
+     page pointer isn't cached in a local variable.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+David
+
+Link: https://lore.kernel.org/r/20210320054104.1300774-1-willy@infradead.org[1]
+
 ---
- block/blk-core.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Matthew Wilcox (Oracle) (3):
+      fs/cachefiles: Remove wait_bit_key layout dependency
+      mm/writeback: Add wait_on_page_writeback_killable
+      afs: Use wait_on_page_writeback_killable
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index fc60ff208497..825df223b01d 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1005,13 +1005,12 @@ static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
- 		if (unlikely(bio_queue_enter(bio) != 0))
- 			continue;
- 
--		if (!blk_crypto_bio_prep(&bio)) {
-+		if (blk_crypto_bio_prep(&bio))
-+			ret = blk_mq_submit_bio(bio);
-+		else {
- 			blk_queue_exit(disk->queue);
- 			ret = BLK_QC_T_NONE;
--			continue;
- 		}
--
--		ret = blk_mq_submit_bio(bio);
- 	} while ((bio = bio_list_pop(&bio_list[0])));
- 
- 	current->bio_list = NULL;
--- 
-2.20.1
+
+ fs/afs/write.c          |  3 +--
+ include/linux/pagemap.h |  1 +
+ mm/page-writeback.c     | 16 ++++++++++++++++
+ 3 files changed, 18 insertions(+), 2 deletions(-)
+
 
