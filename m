@@ -2,320 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B39E345BB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B5F345BCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhCWKMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:12:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49960 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230233AbhCWKMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:12:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616494319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8gXuENufR+JBl3IE8CK3A7Osln66HFMUbYGbR/d7vjA=;
-        b=WI8KDWI2PJFmLz+Ma55PSZVJoIg8eeer6kCjC1xjpwsdo7mrupt2LF4Z90As1/T4+S/e6I
-        MSiqilqSRuCXN6h1XBcb/gFfnDWYfB9CmHyT/fTF6bMZl6+id7I8auJ+ljWF+KwXyJ02Ku
-        6AJjBUmyfm5BUX9sqmAn7D4t6/HOb6Y=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D861FAF13;
-        Tue, 23 Mar 2021 10:11:58 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 11:11:58 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
-References: <20210319092635.6214-1-osalvador@suse.de>
- <20210319092635.6214-2-osalvador@suse.de>
+        id S230179AbhCWKUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhCWKUY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:20:24 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BAAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:20:23 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id b16so22811881eds.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:20:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YAOD2k3cNTJSwk9m0CYU6SDfn4jX1ojbJ8sUQ1I/0cM=;
+        b=lO4rUzwPJfavXkB2+0Z6ZiwqC0isn1q9zSbfIBhP8pVv+Dp/MusSFbKWXAMpLDWeWK
+         0x4D7hEWEII39oFRCFmIU1kOQQYcqi2eb9HWEvw48vxxdtOesUvrIAm02kd6PtteR99t
+         9CxbDHLgfEs4el9Ho2c3PF6gATiwr/2NMJWt9tsDMwr/5apbbt1YpkmB8aC8KG1TQtjU
+         46xngpvvhSfUqK7tUQg8oTT9qOK2Q43gKhe2phXodBROsYRAm0Rt82sDizBnfOES/YKf
+         SbsYZyaDdpux7aRjC6kF0DSEGJx2y1AKpNnHmq1QPAoQv/rfweQDwSyFyqsdsJHnlbyj
+         jf4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YAOD2k3cNTJSwk9m0CYU6SDfn4jX1ojbJ8sUQ1I/0cM=;
+        b=MpNltmsTW1xSpmO/O5EB3WXYM76CW56GKUWjeAfieyTBFGavGNGkID6ekbWXbDHFlq
+         KCasn90C+SBh+wVasImqRpL23LMMFYCuLPYeh2/OoaoFx1iMh36+zwrucOAC8YTZRgNS
+         8v61B3jMgXZ/kRe0EbIN4TIXTURL6+ECOi8VDRk6AZ4b5V2yying3ntl6yfBb5CyMKGs
+         ckMuz33cUFgi4XLM90kwWa+vhHGVzwrAUcWKdmBwBiCG/k7FcF81VsapkQ6aDLiyjASF
+         uS+sU/Zu1SUySqsaAURluPB8RthFrxRTt+VVvnyldAA0+HbQgIex2hNZnQ/WSh7QSj/Q
+         paPg==
+X-Gm-Message-State: AOAM533rqQpIMsqjo7ooP9u9qzVSsPKjv0Lxv8WMvQhGCF35gxPuXE30
+        uSv6FCLwJoR1sgZtT9XsI5cxLiF52+ZU9JCD3KGzPw==
+X-Google-Smtp-Source: ABdhPJxqEvWFJdvgaGdb3OuaR1JOuw5MP7iT+mq0shdzqzxXH3S87eGe43lRy2VG8RnXWCDjakJdIyzls7YdYpVVok4=
+X-Received: by 2002:aa7:dc04:: with SMTP id b4mr3806679edu.221.1616494822201;
+ Tue, 23 Mar 2021 03:20:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319092635.6214-2-osalvador@suse.de>
+References: <20210322121922.372583154@linuxfoundation.org>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 23 Mar 2021 15:50:10 +0530
+Message-ID: <CA+G9fYtUFWMWy-pTxtLzYbHWA8mUU+d=kPEOpChTmxo08b2ReA@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/60] 5.4.108-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Sorry for a long overdue review. I didn't have time to follow previous
-versions so I am sorry if some of my concerns have been discussed
-already]
+On Mon, 22 Mar 2021 at 18:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.108 release.
+> There are 60 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.108-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-On Fri 19-03-21 10:26:31, Oscar Salvador wrote:
-> Physical memory hotadd has to allocate a memmap (struct page array) for
-> the newly added memory section. Currently, alloc_pages_node() is used
-> for those allocations.
-> 
-> This has some disadvantages:
->  a) an existing memory is consumed for that purpose
->     (eg: ~2MB per 128MB memory section on x86_64)
->  b) if the whole node is movable then we have off-node struct pages
->     which has performance drawbacks.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I was playing with movable_node and performance implications back in
-2017 (unfortunately I do not have specific numbers anymore) and the
-setup was a bit extreme - a single node (0) with normal zones and all
-other nodes with movable memory only. So not only struct pages but any
-other kernel metadata were on a remote node. I remember I could see
-clear performance drop scaling with the distance from node 0 somewhere
-betweem 5-10% on kbuild bound on a movable node.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
->  c) It might be there are no PMD_ALIGNED chunks so memmap array gets
->     populated with base pages.
-> 
-> This can be improved when CONFIG_SPARSEMEM_VMEMMAP is enabled.
-> 
-> Vmemap page tables can map arbitrary memory.
-> That means that we can simply use the beginning of each memory section and
-> map struct pages there.
+Summary
+------------------------------------------------------------------------
 
-In fact beginning of the memory block should be sufficient as sections
-cannot be hotremoved without the rest of the memory block.
+kernel: 5.4.108-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 5094cb203da71ac5da8f1715dec97fe69fbfb326
+git describe: v5.4.107-61-g5094cb203da7
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.107-61-g5094cb203da7
 
-> struct pages which back the allocated space then just need to be treated
-> carefully.
-> 
-> Implementation wise we will reuse vmem_altmap infrastructure to override
-> the default allocator used by __populate_section_memmap.
-> Part of the implementation also relies on memory_block structure gaining
-> a new field which specifies the number of vmemmap_pages at the beginning.
+No regressions (compared to build v5.4.107)
 
-Here you are talking about memory block rather than section.
+No fixes (compared to build v5.4.107)
 
-> This comes in handy as in {online,offline}_pages, all the isolation and
-> migration is being done on (buddy_start_pfn, end_pfn] range,
-> being buddy_start_pfn = start_pfn + nr_vmemmap_pages.
-> 
-> In this way, we have:
-> 
-> [start_pfn, buddy_start_pfn - 1] = Initialized and PageReserved
-> [buddy_start_pfn, end_pfn - 1]       = Initialized and sent to buddy
-> 
-> Hot-remove:
-> 
->  We need to be careful when removing memory, as adding and
->  removing memory needs to be done with the same granularity.
->  To check that this assumption is not violated, we check the
->  memory range we want to remove and if a) any memory block has
->  vmemmap pages and b) the range spans more than a single memory
->  block, we scream out loud and refuse to proceed.
 
-Is this a real problem? If each memory block has its own vmemmap then we
-should be just fine, no?
- 
->  If all is good and the range was using memmap on memory (aka vmemmap pages),
->  we construct an altmap structure so free_hugepage_table does the right
->  thing and calls vmem_altmap_free instead of free_pagetable.
+Ran 60075 total tests in the following environments and test suites.
 
-I would appreciate some more description of the patch itself. The above
-outlines a highlevel problems and design. The patch is quite large and
-it acts on several layers - physical hotplug, {on,off}lining and sysfs
-layer.
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm-debug
+- qemu-arm64-clang
+- qemu-arm64-debug
+- qemu-arm64-kasan
+- qemu-i386-debug
+- qemu-x86_64-clang
+- qemu-x86_64-debug
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
 
-Let me capture my thinking:
-- from the top level 
-- sysfs interfaces - memory block is extended to contain the number of
-  vmemmap pages reserved from the beginning of the block for all
-  memory sections belonging to the block.
-- add_memory_resource is the entry point to reserve the vmemmap space
-  for the block. This is an opt-in feature (MHP_MEMMAP_ON_MEMORY) and
-  there is no current user at this stage.
-- vmem_altmap is instructed to use the reserved vmemmap space as the
-  backing storage for the vmemmap struct pages. Via arch_add_memory->
-  __populate_section_memmap.
-- online_pages for some reason needs to know about the reserved vmemmap
-  space. Why? It already knows the intial pfn to online. Why cannot
-  caller simply alter both start pfn and nr_pages to online everything
-  after the vmemmap space? This is somehow conflating the mem block
-  concept deeper into onlining.
-- the same applies to offlining.
-- finally hotremove - which is the most tricky part. try_remove_memory
-  learns about vmemmap reserved space and provides it to __remove_pages
-  and eventually all the way down to remove_pagetable via altmap
-  Now a question and something I have stumbled over few years back when
-  looking into this. Let's say you have multi section memblock so the
-  first section of the block backs vmemmaps for all other sections.
-  What happens when you drop the first worth of section before tearing
-  down all other vmemmaps?
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* perf/Zstd-perf.data-compression
+* v4l2-compliance
+* fwts
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-rseq
+* kselftest-tc-testing
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-vm
+* kselftest-x86
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-math-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* igt-gpu-tools
+* ssuite
 
-Now to the specific implementation.
-
-[...]
-> @@ -185,10 +185,11 @@ memory_block_action(unsigned long start_section_nr, unsigned long action,
->  
->  	switch (action) {
->  	case MEM_ONLINE:
-> -		ret = online_pages(start_pfn, nr_pages, online_type, nid);
-> +		ret = online_pages(start_pfn, nr_pages, nr_vmemmap_pages,
-> +				   online_type, nid);
->  		break;
-
-I would just offset start_pfn and nr_pages.
-
-[...]
-
-> @@ -603,7 +606,7 @@ static int add_memory_block(unsigned long base_section_nr)
->  	if (section_count == 0)
->  		return 0;
->  	return init_memory_block(memory_block_id(base_section_nr),
-> -				 MEM_ONLINE);
-> +				 MEM_ONLINE, 0);
-
-This would deserve a comment.
-	/* Early init code to create memory blocks for all the memory.
-	 * Backed by bootmem struct pages so no vmemmap reserved space.
-	 */
-
-[...]
-> -static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
-> +static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages,
-> +			       unsigned long buddy_start_pfn)
-
-More on that later
->  {
->  	const unsigned long end_pfn = start_pfn + nr_pages;
-> -	unsigned long pfn;
-> +	unsigned long pfn = buddy_start_pfn;
-> +
-> +	/*
-> +	 * When using memmap_on_memory, the range might be unaligned as the
-> +	 * first pfns are used for vmemmap pages. Align it in case we need to.
-> +	 */
-> +	VM_BUG_ON(!IS_ALIGNED(pfn, pageblock_nr_pages));
-
-No this is not something VM_BUG_ON should be used for. This is perfectly
-recoverable situation. Besides that this is a wrong layer to care. All
-the fixup should happen up in the call chain.
-
->  int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
-> -		       int online_type, int nid)
-> +		       unsigned long nr_vmemmap_pages, int online_type, int nid)
->  {
-> -	unsigned long flags;
-> +	unsigned long flags, buddy_start_pfn, buddy_nr_pages;
->  	struct zone *zone;
->  	int need_zonelists_rebuild = 0;
->  	int ret;
-
-As already mentioned I believe this would be much easier to follow if
-the given pfn really denotes a first pfn to online rather than learn the
-code about vmemmap space which is not really interesting from the
-onlining POV. Struct pages are already create. All we need is to online
-them for using.
-Just have a look at pfn vs. buddy_start_pfn usage. Why should
-zone_for_pfn_range, node_states_check_changes_online, memory_notify ase
-the former rather than later? As mentioned above online_pages_range is
-just more complex by doing that.
-
-Sure there are some consistency checks which are more convenient with
-the actual pfn start but I believe those shouldn't be a reason for
-obfuscating the code and mixing layers.
-
-[...]
-> +bool mhp_supports_memmap_on_memory(unsigned long size)
-> +{
-> +	unsigned long nr_vmemmap_pages = size / PAGE_SIZE;
-> +	unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
-> +	unsigned long remaining_size = size - vmemmap_size;
-> +
-> +	/*
-> +	 * Besides having arch support and the feature enabled at runtime, we
-> +	 * need a few more assumptions to hold true:
-> +	 *
-> +	 * a) We span a single memory block: memory onlining/offlinin;g happens
-> +	 *    in memory block granularity. We don't want the vmemmap of online
-> +	 *    memory blocks to reside on offline memory blocks. In the future,
-> +	 *    we might want to support variable-sized memory blocks to make the
-> +	 *    feature more versatile.
-> +	 *
-> +	 * b) The vmemmap pages span complete PMDs: We don't want vmemmap code
-> +	 *    to populate memory from the altmap for unrelated parts (i.e.,
-> +	 *    other memory blocks)
-> +	 *
-> +	 * c) The vmemmap pages (and thereby the pages that will be exposed to
-> +	 *    the buddy) have to cover full pageblocks: memory onlining/offlining
-> +	 *    code requires applicable ranges to be page-aligned, for example, to
-> +	 *    set the migratetypes properly.
-> +	 *
-> +	 * TODO: Although we have a check here to make sure that vmemmap pages
-> +	 *	 fully populate a PMD, it is not the right place to check for
-> +	 *	 this. A much better solution involves improving vmemmap code
-> +	 *	 to fallback to base pages when trying to populate vmemmap using
-> +	 *	 altmap as an alternative source of memory, and we do not exactly
-> +	 *	 populate a single PMD.
-> +	 */
-> +	return memmap_on_memory &&
-
-What is memmap_on_memory? I do not see anybody setting it anywhere.
-Probably a later patch...
-
-> +	       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-> +	       size == memory_block_size_bytes() &&
-> +	       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
-> +	       IS_ALIGNED(remaining_size, (pageblock_nr_pages << PAGE_SHIFT));
-
-This is likely more complex than necessary. Is it ever possible that
-remaining_size won't be aligned properly when vmemmap_size is PMD_SIZE
-aligned?
-
-> @@ -1563,10 +1639,11 @@ static int count_system_ram_pages_cb(unsigned long start_pfn,
->  	return 0;
->  }
->  
-> -int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
-> +int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
-> +			unsigned long nr_vmemmap_pages)
-
-same concern as online pages. Nobody should really care about vmemmap
-reserved space. Maybe the accounting (count_system_ram_pages_cb) will
-need some compensation but I have to say I got lost in this accounting
-wrt to memory hotplugged memory. Where do we account hotadded memory to
-system_ram_pages?
-
-[...]
-> @@ -1836,6 +1927,31 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
->  	if (rc)
->  		return rc;
->  
-> +	/*
-> +	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
-> +	 * the same granularity it was added - a single memory block.
-> +	 */
-> +	if (memmap_on_memory) {
-> +		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
-> +						      get_nr_vmemmap_pages_cb);
-> +		if (nr_vmemmap_pages) {
-> +			if (size != memory_block_size_bytes()) {
-> +				pr_warn("Refuse to remove %#llx - %#llx,"
-> +					"wrong granularity\n",
-> +					 start, start + size);
-> +				return -EINVAL;
-> +			}
-> +
-> +			/*
-> +			 * Let remove_pmd_table->free_hugepage_table
-> +			 * do the right thing if we used vmem_altmap
-> +			 * when hot-adding the range.
-> +			 */
-> +			mhp_altmap.alloc = nr_vmemmap_pages;
-> +			altmap = &mhp_altmap;
-> +		}
-> +	}
-> +
-
-This made me scratch my head. I do not think this works for size
-spanning multiple memory blocks. Maybe we do not allow something like
-that happening. The logic seems inside out to me. I believe you want to
-either pull arch_remove_memory into the walk_memory_blocks callback and
-handle each memory block this way.
--- 
-Michal Hocko
-SUSE Labs
+--=20
+Linaro LKFT
+https://lkft.linaro.org
