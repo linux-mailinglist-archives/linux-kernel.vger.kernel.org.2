@@ -2,218 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282903460D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EED13460DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhCWOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
+        id S232151AbhCWOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbhCWOA7 (ORCPT
+        with ESMTP id S232076AbhCWOBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:00:59 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425DBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:00:58 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id kt15so17783570ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:00:58 -0700 (PDT)
+        Tue, 23 Mar 2021 10:01:34 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59A9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:01:33 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id g5so6708060uan.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:01:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UtuzCS9CmRNxqMTT2ThaLucivqheLmn3gug9qTTha34=;
-        b=DmKe3X3VOGMyfKmshTEP9QGJ9m/sVjP51LviM546gS2zP7nN5ojhQhD8024mG+qhQf
-         r+YA/in+dNwg4XvZdP4Wh3rxtddHvNCD8elddk9HfQdpQaPjCjBwY5DwX3sAXEQMA8dH
-         L1wWqBBqxRkTFIcIDYUftL3DC4e/9vzzNwRBo=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EFM8vj54tYKb1Jf8bEnuuvv/LY9C1ofZG/2jctBPMnI=;
+        b=zqmUyKoJFPC8TdMrKTiIDMwIaUgF9x15Z+0hCvB4ZRJFRt86l737p/WyEUPJYTATkP
+         g8NN5+n4vYOXnyjS50D/et/YnT7b5vq4Netv/bp1hgbau1DWDUnlXsIdXClA6mdRwPEb
+         JAgSB9/am/t5ifJw0YMb/8jIM+WHoY6/KTi9hwfhW+J+mO7e7OY0Nr2vb42L7uRPoOz+
+         3A9K0jkts+XWogYM8oWCO2U4h3kXwsvZwkF2fnTV6uJAQfIo7zIoGMuanyJpcq+Bhh9w
+         BJ0b7YiOqQl8Zn0AJy2wCie7GTrMIJERWIQodppGLzdwNcsO1faV0tEtC/5+IPQuDgF+
+         y2cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UtuzCS9CmRNxqMTT2ThaLucivqheLmn3gug9qTTha34=;
-        b=Npb1Rwc+B3kt3QDAcNEzzNgkQBu+HXTNdSLSvbOLfn0wbiZ57lGAd/v03Ox1U0vrJr
-         ELsLVVMELaii5a68GYOrbj+r65yR7WAQ42qnUZtZj79wzS1aa4H8mMbmJH3W5PW9OIIA
-         wgFUsm/AlkhXeN6bcaM1KvgHzFuSIhSVZUMCV6YyTy9594JFu3MWs08jOElKJq6Fz6lm
-         pVVozlfoiRYOsgqXzEk/y3KQ1Jlfubtvw+2u06fK3uQMVd7Yx1pJFsigVJy+sFY1n2NZ
-         ztEFVlx/1KwMPYlH60u95hBzdCJ9zokXF7WvZNsJZ5g1/vGx++k4Kp12zUmXIFkl35ZW
-         hX8Q==
-X-Gm-Message-State: AOAM5330Dbgn29MFaICknUPs+Edzu6V8xV9EJ/xnXcXDiNr+5x4m4Qm5
-        x0/eL6ppbczS8TCZFBIOqDX4YA==
-X-Google-Smtp-Source: ABdhPJzGs8VzcrQ1/ucW76f9tJ8dnfmrY2Q2jw8E5l3nMV66wK0mHObWkwOCBp15eKPl/x71EXC0aA==
-X-Received: by 2002:a17:907:7699:: with SMTP id jv25mr4882200ejc.363.1616508056929;
-        Tue, 23 Mar 2021 07:00:56 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id y9sm11168283ejd.110.2021.03.23.07.00.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 07:00:56 -0700 (PDT)
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Patrick Menschel <menschel.p@posteo.de>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
- <20210323073437.yo63wreqnubbeqby@pengutronix.de>
- <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
- <a5599800-53f4-c53f-abcc-e166ea9028b9@rasmusvillemoes.dk>
- <080d9e5c-fe1f-4a64-2938-8ca6d8a98d78@hartkopp.net>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <0a8e8e95-c1a2-ede6-9f87-1ab7a0a155e3@rasmusvillemoes.dk>
-Date:   Tue, 23 Mar 2021 15:00:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EFM8vj54tYKb1Jf8bEnuuvv/LY9C1ofZG/2jctBPMnI=;
+        b=RVYy6hRDqq42pkRGjeTYyF0qUV0vWOLdnnaanXVuCTIBgHqCuZd1zUZibrpuIr8VMp
+         sOczu3GN6ZqIrwJBrjAqsJoNKS/Of9xwQQ59Rq8NZmsvn5VquwRJ13pjnNu8cdQLrNrx
+         5cE5mzCCazew5CQEw6Us7rfnweUyYtKLGakvPIOqCv49zy8+a4rREObdhT2juHDRR5ij
+         DKODPwiQ+A9SXL+zxjNLlZp7zh1GZUWptqTo+tB6OsKd9Gr980HzzM5XiKT2zRsU4Dbe
+         X2l32cLWtGesOEAX5YIKGEFnG2ezUR2BnnPCcVMW3Sp0usbxIuBg0mzvzZmUcH6kxlZz
+         N7+A==
+X-Gm-Message-State: AOAM531HLMEJH+PgAbhHG9VPSwdTHEMr/YNjYhb/7nwyP6Li9wSK+Z5R
+        7Dl7Ne0QvEGeF0SIj1bAsFATl73aDVtRxt7nmFZO3w==
+X-Google-Smtp-Source: ABdhPJxJAHbpX2/GRwhTQQeCW9lCgzMQUr9j/i2dfLh16Z4eXb8X6W27BLfYs5/5U0eQBdvrp+jI+sIJSFo5rHkdYrI=
+X-Received: by 2002:ab0:7a68:: with SMTP id c8mr3397238uat.104.1616508093043;
+ Tue, 23 Mar 2021 07:01:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <080d9e5c-fe1f-4a64-2938-8ca6d8a98d78@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210320045720.11872-1-chgokhl@gmail.com> <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
+ <CAMjpFAW0D12vxNSYLcwSWxf-zB+toT5cmiQ8mtUUE+nzWMJZ3g@mail.gmail.com>
+In-Reply-To: <CAMjpFAW0D12vxNSYLcwSWxf-zB+toT5cmiQ8mtUUE+nzWMJZ3g@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 23 Mar 2021 15:00:56 +0100
+Message-ID: <CAPDyKFqqRY3rj9zzzDvPTCO68abfQ+G-siAJVgdPuESUwko28A@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
+To:     chgokhl@163.com
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kehuanlin@fishsemi.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/2021 13.49, Oliver Hartkopp wrote:
-> 
-> 
-> On 23.03.21 12:36, Rasmus Villemoes wrote:
->>
->> and more directly from the horse's mouth:
->>
->> https://developer.arm.com/documentation/dui0067/d/arm-compiler-reference/c-and-c---implementation-details/structures--unions--enumerations--and-bitfields
->>
->>
->> Field alignment
->>
->>      Structures are arranged with the first-named component at the lowest
->> address. Fields are aligned as follows:
->>
->>          A field with a char type is aligned to the next available byte.
->>
->>          A field with a short type is aligned to the next even-addressed
->> byte.
->>
->>          Bitfield alignment depends on how the bitfield is declared. See
->> Bitfields in packed structures for more information.
->>
->>          All other types are aligned on word boundaries.
->>
->> That anonymous union falls into the "All other types" bullet.
->>
->> __packed is the documented and standard way to overrule the
->> compiler's/ABI's layout decisions.
-> 
-> So why is there a difference between
-> 
-> gcc version 10.2.0
-> 
-> and
-> 
-> gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+On Tue, 23 Mar 2021 at 11:49, hieagle <chgokhl@gmail.com> wrote:
+>
+> We encounter a resume issue in our device sometimes. The mmc device's
+> parent list is
+> mmc0:0001->mmc_host mmc0->fa630000.mmc->soc in our soc. We found in the b=
+low
+> case with mmc0->power.disable_depth=3D0 the mmc_runtime_resume will be sk=
+ipped,
+> which cause subsequent mmc command fail.
+>
+> mmc_get_card(mmc0:0001)->pm_runtime_get_sync->rpm_resume(mmc0:0001)->rpm_=
+resume(mmc0)
+> The rpm_resume(mmc0) return -ENOSYS due to no callback and
+> mmc0->power.runtime_status
+> keep RPM_SUSPENDED. This lead to rpm_resume(mmc0:0001) return -EBUSY and =
+skip
+> rpm_callback which call mmc_runtime_resume, the mmc is still in
+> suspended and the
+> subsequent mmc command fail.
+>
+> [  198.856157] Call trace:
+> [  198.858917] [<ffffff800808bd9c>] dump_backtrace+0x0/0x1cc
+> [  198.864966] [<ffffff800808bf7c>] show_stack+0x14/0x1c
+> [  198.870627] [<ffffff8008400e88>] dump_stack+0xa8/0xe0
+> [  198.876288] [<ffffff800854d38c>] rpm_resume+0x850/0x938
+> [  198.882141] [<ffffff800854cd8c>] rpm_resume+0x250/0x938
+> [  198.887994] [<ffffff800854d4c4>] __pm_runtime_resume+0x50/0x74
+> [  198.894530] [<ffffff80087b9e64>] mmc_get_card+0x3c/0xb8
+> [  198.900388] [<ffffff80087cd2e0>] mmc_blk_issue_rq+0x2b0/0x4d8
+> [  198.906824] [<ffffff80087cd5e4>] mmc_queue_thread+0xdc/0x198
+> [  198.913165] [<ffffff80080d4b2c>] kthread+0xec/0x100
+> [  198.918632] [<ffffff8008083890>] ret_from_fork+0x10/0x40
+> [  198.924582] mmc0  callback           (null)
+> [  198.935837] mmcblk mmc0:0001: __pm_runtime_resume ret -16
+>
+> Mark mmc_host device with pm_runtime_no_callbacks will solve the issue.
+> Thanks.
+> Huanlin Ke
 
-I'm guessing there's no difference between those (in this respect), but
-they are invoked differently.
+Thanks for sharing more details! I have to admit, that this sounds
+quite weird to me. I wonder if this is a problem that deserves to be
+fixed in the runtime PM core....
 
-> Would this mean that either STRUCTURE_SIZE_BOUNDARY or the command line
-> option -mstructure_size_boundary=<n>
-> 
-> are set differently?
+Let me have a closer look a get back to you again. Please be patient
+though, I have a busy week in front of me.
 
-Yes, though very likely -mstructure_size_boundary is not set explicitly
-but via some other option.
+Kind regards
+Uffe
 
-gcc has a rather helpful but almost unknown feature that one can
-actually query for lots of different parameters and their
-default/current values. So on my Ubuntu system (20.04, gcc 9.3), for
-example, if I do
-
-$ arm-linux-gnueabihf-gcc -O2 -Q --help=target | grep struct
-  -mstructure-size-boundary=            8
-
-So that would seem to say that the union should work as expected.
-However, when I actually try to compile with the .config that kbuild
-reports failing, I do see that BUILD_BUG_ON triggering.
-
-So let us inspect the actual command line used to build some other
-random .o file in net/can; look at net/can/.bcm.o.cmd
-
-cmd_net/can/bcm.o := arm-linux-gnueabihf-gcc -Wp,-MMD,net/can/.bcm.o.d
--nostdinc -isystem /usr/lib/gcc-cross/arm-linux-gnueabihf/9/include
--I./arch/arm/include -I./arch/arm/include/generated  -I./include
--I./arch/arm/include/uapi -I./arch/arm/include/generated/uapi
--I./include/uapi -I./include/generated/uapi -include
-./include/linux/compiler-version.h -include ./include/linux/kconfig.h
--include ./include/linux/compiler_types.h -D__KERNEL__ -mlittle-endian
--I./arch/arm/mach-footbridge/include -fmacro-prefix-map=./= -Wall
--Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing
--fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration
--Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu89
--fno-dwarf2-cfi-asm -mno-unaligned-access -fno-omit-frame-pointer -mapcs
--mno-sched-prolog -fno-ipa-sra -mabi=apcs-gnu -mno-thumb-interwork -marm
--Wa,-mno-warn-deprecated -D__LINUX_ARM_ARCH__=4 -march=armv4
--mtune=strongarm110 -msoft-float -Uarm -fno-delete-null-pointer-checks
--Wno-frame-address -Wno-format-truncation -Wno-format-overflow
--Wno-address-of-packed-member -O2 --param=allow-store-data-races=0
--Wframe-larger-than=1024 -fno-stack-protector
--Wno-unused-but-set-variable -Wimplicit-fallthrough
--Wno-unused-const-variable -fno-omit-frame-pointer
--fno-optimize-sibling-calls -fno-inline-functions-called-once
--Wdeclaration-after-statement -Wvla -Wno-pointer-sign
--Wno-stringop-truncation -Wno-array-bounds -Wno-stringop-overflow
--Wno-restrict -Wno-maybe-uninitialized -fno-strict-overflow
--fno-stack-check -fconserve-stack -Werror=date-time
--Werror=incompatible-pointer-types -Werror=designated-init
--Wno-packed-not-aligned    -fsanitize-coverage=trace-pc
--DKBUILD_MODFILE='"net/can/can-bcm"' -DKBUILD_BASENAME='"bcm"'
--DKBUILD_MODNAME='"can_bcm"' -D__KBUILD_MODNAME=kmod_can_bcm -c -o
-net/can/bcm.o net/can/bcm.c
-
-Lots of gunk. But just to see if one of those options have affected the
--mstructure-size-boundary= value, just take that whole command line and
-throw in -Q --help=target at the end, and we get
-
-  -mstructure-size-boundary=            32
-
-So let us guess that it's the ABI choice -mabi=apcs-gnu
-
-$ arm-linux-gnueabihf-gcc -O2 -msoft-float -mabi=apcs-gnu -Q
---help=target | grep struct
-  -mstructure-size-boundary=            32
-
-Bingo. (-msoft-float is also included just as in the real command line
-because gcc barfs otherwise).
-
-Now what CONFIG_* knobs are responsible for putting -mabi=apcs-gnu in
-CFLAGS is left as an exercise for the reader. Regardless, it is not a
-bug in the compiler. The error is the assumption that this language
-
-"Aggregates and Unions
-
-Structures and unions assume the alignment of their most strictly
-aligned component.
-Each member is assigned to the lowest available offset with the appropriate
-alignment. The size of any object is always a multiple of the object‘s
-alignment."
-
-from the x86-64 ABI applies on all other architectures/ABIs.
-
-> I'm not a compiler expert but this does not seem to be consistent.
-> 
-> Especially as we only have byte sizes (inside and outside of the union)
-> and "A field with a char type is aligned to the next available byte."
-
-Yes, and that's exactly what you got before the anon union was introduced.
-
-> The union is indeed aligned to the word boundary - but the following
-> byte is not aligned to the next available byte.
-
-Yes it is, because the union occupies 4 bytes. The first byte is shared
-by the two char members, the remaining three bytes are padding.
-
-Rasmus
+>
+> Ulf Hansson <ulf.hansson@linaro.org> =E4=BA=8E2021=E5=B9=B43=E6=9C=8822=
+=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=886:26=E5=86=99=E9=81=93=EF=BC=
+=9A
+> >
+> > On Sat, 20 Mar 2021 at 05:57, kehuanlin <chgokhl@gmail.com> wrote:
+> > >
+> > > The rpm_resume() will call parent's resume callback recursively.
+> > > Since mmc_host has no its own pm_runtime callbacks, the mmc devices
+> > > may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
+> > > device with pm_runtime_no_callbacks can fix the issue.
+> >
+> > Can you please elaborate more on this? What do you mean by "sometimes"?
+> >
+> > More precisely, how do you trigger the rpm_callback() for mmc class
+> > device to return -ENOSYS?
+> >
+> > Don't get me wrong, the patch is fine, but I want to understand if it
+> > actually solves a problem for you - or that it's better considered as
+> > an optimization?
+> >
+> > Kind regards
+> > Uffe
+> >
+> > >
+> > > Signed-off-by: kehuanlin <chgokhl@gmail.com>
+> > > ---
+> > >  drivers/mmc/core/host.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> > > index 9b89a91b6b47..177bebd9a6c4 100644
+> > > --- a/drivers/mmc/core/host.c
+> > > +++ b/drivers/mmc/core/host.c
+> > > @@ -15,6 +15,7 @@
+> > >  #include <linux/of.h>
+> > >  #include <linux/of_gpio.h>
+> > >  #include <linux/pagemap.h>
+> > > +#include <linux/pm_runtime.h>
+> > >  #include <linux/pm_wakeup.h>
+> > >  #include <linux/export.h>
+> > >  #include <linux/leds.h>
+> > > @@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct=
+ device *dev)
+> > >         host->class_dev.class =3D &mmc_host_class;
+> > >         device_initialize(&host->class_dev);
+> > >         device_enable_async_suspend(&host->class_dev);
+> > > +       pm_runtime_no_callbacks(&host->class_dev);
+> > >
+> > >         if (mmc_gpio_alloc(host)) {
+> > >                 put_device(&host->class_dev);
+> > > --
+> > > 2.30.0
+> > >
