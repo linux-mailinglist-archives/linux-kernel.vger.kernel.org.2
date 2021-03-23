@@ -2,187 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701F434697C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B3B34697E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbhCWUAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:00:52 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:56918 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbhCWUAQ (ORCPT
+        id S233328AbhCWUBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:01:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48998 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233109AbhCWUAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:00:16 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 7e6c98e9;
-        Tue, 23 Mar 2021 21:00:12 +0100 (CET)
-Date:   Tue, 23 Mar 2021 21:00:12 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     "Sven Peter" <sven@svenpeter.dev>
-Cc:     iommu@lists.linux-foundation.org, joro@8bytes.org, will@kernel.org,
-        robin.murphy@arm.com, robh+dt@kernel.org, arnd@kernel.org,
-        marcan@marcan.st, maz@kernel.org, mohamed.mediouni@caramail.com,
-        stan@corellium.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <d280843b-77e3-4fa8-9452-5a2f8a45052e@www.fastmail.com>
-        (sven@svenpeter.dev)
-Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
-References: <20210320151903.60759-1-sven@svenpeter.dev>
- <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
- <8360b3b3-296c-450d-abc3-bb47159bf4e1@www.fastmail.com>
- <c1bcc0be8ae6e500@bloch.sibelius.xs4all.nl> <d280843b-77e3-4fa8-9452-5a2f8a45052e@www.fastmail.com>
-Message-ID: <c1bcca33753f71d3@bloch.sibelius.xs4all.nl>
+        Tue, 23 Mar 2021 16:00:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616529647;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bNZnjO42gjVhs5dIrJp7IOz6pVwoWDKxlsrX2l5lccI=;
+        b=GkP4e5zYn0sx1lEtQLtJ+pUjdVfc6qYijPmjs6Cs9PkP03xBOutam4eJdjaWf7Zby5z9VI
+        34b5r44hJulKUNbJ5ZPcO7GnaLcYjw3tRZazzyEBPL9HF6fljKpaabHPvuYAhhOwPTZ9R1
+        zGzems3okq3w/qOov9EiSvC6VkCZSDg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-118-R1piomdUMUyqAdnDYRScSw-1; Tue, 23 Mar 2021 16:00:45 -0400
+X-MC-Unique: R1piomdUMUyqAdnDYRScSw-1
+Received: by mail-ej1-f72.google.com with SMTP id en21so1557755ejc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:00:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bNZnjO42gjVhs5dIrJp7IOz6pVwoWDKxlsrX2l5lccI=;
+        b=c+2/2ja5N280vjgCvpXctYrCvJrJu8KSQ05cvS3hq3Xrz4xDGS1AVFMkaNzKH6bLE/
+         pQ1YmXWzlNQHtr6NY3n1TGJuj9mdrYxZ3Di+fvi8kCasfqetaT0+3V37zg6PV/phq+WX
+         WSli6kjF2r9SESB9vjHnHYHyPIznEonyp/Pb9DrxrDhCCzeuRorBHIhttCIMfl4cby5B
+         KWmYeZ+GRcOzWqH8tg9K/FGv5YeDKZ0cOB3gqcwbnA7q8fMNe8befK4PTVKzZvC+2xGd
+         K8wLFyemgFzcx3jp4rxmac29zPVftjUuDp9xbXESGMcPpdwCi/gX7SUmGm8V6a/d2jTN
+         jM8w==
+X-Gm-Message-State: AOAM530VtuSDJGh/ty3obWHr9LAEUuzE61Ipi4lwCSXWVIbZYyF1T6J6
+        PpUbIJUICFD84AA7LQD99wGSvPHjh9zS3vSOIb/ZuqXMyAHey5nIMEmvvh4bZg7Vrf5MrHnaB3A
+        A0nYO2Gwr2hmZgdFAdZp9mEwu
+X-Received: by 2002:a05:6402:4407:: with SMTP id y7mr6211375eda.247.1616529644232;
+        Tue, 23 Mar 2021 13:00:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwh2ay7mE48Qtx5mN3z/Kd46hbrymSoqNAOGINWQybomqJrcMyzc0xZMTC0DqTMcMpgPmXOOA==
+X-Received: by 2002:a05:6402:4407:: with SMTP id y7mr6211358eda.247.1616529644103;
+        Tue, 23 Mar 2021 13:00:44 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id f21sm11620875ejw.124.2021.03.23.13.00.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 13:00:43 -0700 (PDT)
+Subject: Re: [PATCH] asus-laptop: fix kobj_to_dev.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        acpi4asus-user@lists.sourceforge.net
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, Denis Efremov <efremov@linux.com>
+References: <alpine.DEB.2.22.394.2103171258010.2981@hadrien>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <6e2b729c-11c7-cdf9-18cc-8d3aa988e134@redhat.com>
+Date:   Tue, 23 Mar 2021 21:00:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.22.394.2103171258010.2981@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Mon, 22 Mar 2021 23:17:31 +0100
-> From: "Sven Peter" <sven@svenpeter.dev>
-> 
-> Hi Mark,
-> 
-> On Sun, Mar 21, 2021, at 19:35, Mark Kettenis wrote:
-> >
-> > Guess we do need to understand a little bit better how the USB DART
-> > actually works.  My hypothesis (based on our discussion on #asahi) is
-> > that the XHCI host controller and the peripheral controller of the
-> > DWC3 block use different DMA "streams" that are handled by the
-> > different sub-DARTs.
-> 
-> I've done some more experiments and the situation is unfortunately more
-> complicated: Most DMA transfers are translated with the first DART.
-> But sometimes (and I have not been able to figure out the exact conditions)
-> transfers instead have to go through the second DART. 
-> This happens e.g. with one of my USB keyboards after a stop EP command
-> is issued: Suddenly the xhci_ep_ctx struct must be translated through the
-> second DART.
-> 
-> What this likely means is that we'll need to point both DARTs
-> to the same pagetables and just issue the TLB maintenance operations
-> as a group.
-> 
-> > 
-> > The Corellium folks use a DART + sub-DART model in their driver and a
-> > single node in the device tree that represents both.  That might sense
-> > since the error registers and interrupts are shared.  Maybe it would
-> > make sense to select the appropriate sub-DART based on the DMA stream
-> > ID?
-> 
-> dwc3 specifically seems to require stream id #1 from the DART
-> at <0x5 0x02f00000> and stream id #0 from the DART at <0x5 0x02f80000>.
-> Both of these only share a IRQ line but are otherwise completely independent.
-> Each has their own error registers, etc. and we need some way to
-> specify these two DARTs + the appropriate stream ID.
-> 
-> Essentially we have three options to represent this now:
-> 
-> 1) Add both DARTs as separate regs, use #iommu-cells = <2> and have the
->    first cell select the DART and the second one the stream ID.
->    We could allow #iommu-cells = <1> in case only one reg is specified
->    for the PCIe DART:
-> 
->    usb_dart1@502f00000 {
->      compatible = "apple,t8103-dart";
->      reg = <0x5 0x02f00000 0x0 0x4000>, <0x5 0x02f80000 0x0 0x4000>;
->      #iommu-cells = <2>;
->      ...
->    };
-> 
->    usb1 {
->      iommus = <&usb_dart1 0 1>, <&usb_dart1 1 0>;
->      ...
->    };
-> 
->    I prefer this option because we fully describe the DART in a single
->    device node here. It also feels natural to group them like this because
->    they need to share some properties (like dma-window and the interrupt)
->    anyway. 
-> 
-> 2) Create two DART nodes which share the same IRQ line and attach them
->    both to the master node:
-> 
->    usb_dart1a@502f00000 {
->      compatible = "apple,t8103-dart";
->      reg = <0x5 0x02f00000 0x0 0x4000>;
->      #iommu-cells = <1>;
->      ...
->    };
->    usb_dart1b@502f80000 {
->      compatible = "apple,t8103-dart";
->      reg = <0x5 0x02f80000 0x0 0x4000>;
->      #iommu-cells = <1>;
->      ...
->    };
-> 
->    usb1 {
->      iommus = <&usb_dart1a 1>, <&usb_dart1b 0>;
->      ...
->    };
-> 
->    I dislike this one because attaching those two DARTs to a single device
->    seems rather unusual. We'd also have to duplicate the dma-window setting,
->    make sure it's the same for both DARTs and there are probably even more
->    complications I can't think of right now. It seems like this would also
->    make the device tree very verbose and the implementation itself more
->    complicated.
-> 
-> 3) Introduce another property and let the DART driver take care of
->    mirroring the pagetables. I believe this would be similar to
->    the sid-remap property:
-> 
->    usb_dart1@502f00000 {
->      compatible = "apple,t8103-dart";
->      reg = <0x5 0x02f00000 0x0 0x4000>, <0x5 0x02f80000 0x0 0x4000>;
->      #iommu-cells = <1>;
->      sid-remap = <0 1>;
->    };
->    usb1 {
->      iommus = <&usb_dart1 0>;
->    };
-> 
->    I slightly dislike this one because we now specify which stream id 
->    to use in two places: Once in the device node and another time in the
->    new property in the DART node. I also don't think the binding is much
->    simpler than the first one.
+Hi,
 
-Hi Sven,
+On 3/17/21 1:00 PM, Julia Lawall wrote:
+> From: kernel test robot <lkp@intel.com>
+> 
+> Use kobj_to_dev() instead of container_of()
+> 
+> Generated by: scripts/coccinelle/api/kobj_to_dev.cocci
+> 
+> CC: Denis Efremov <efremov@linux.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
-The problem with both #1 and #2 is that you end up with two references
-to (effectively) different iommu's in the dwc3 device node.  I don't
-see how that is compatible with the idea of using a single translation
-table for both sub-DARTs.
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-If you no longer think that is desirable, you'll still have the
-problem that you'll need to modify the dwc3 driver code such that it
-uses the right IOMMU to do its DMA address translation.  Given what
-you write above that sounds really ugly and confusing.  I would
-certainly want to avoid doing that in OpenBSD.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-So I think #3 is the only realistic option here.  In my opinion it is
-perfectly fine for the devicetree to present a workable model of the
-hardware instead of a 100% accurate model.
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-> > > where #dma-address-cells and #dma-size-cells default to
-> > > #address-cells and #size-cells respectively if I understand
-> > > the code correctly. That way we could also just always use
-> > > a 64bit address and size in the DT, e.g.
-> > > 
-> > >   pcie_dart {
-> > >       [ ... ]
-> > >       dma-window = <0 0x100000 0 0x3fe00000>;
-> > >       [ ... ]
-> > >   };
-> > 
-> > That sounds like a serious contender to me!  Hopefully one of the
-> > Linux kernel developers can give this some sort of blessing.
-> > 
-> > I think it would make sense for us to just rely on the #address-cells
-> > and #size-cells defaults for the M1 device tree.
-> >
+Regards,
+
+Hans
+
+
+> ---
 > 
-> Agreed.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   1df27313f50a57497c1faeb6a6ae4ca939c85a7d
+> commit: a2fc3718bc22e85378085568ecc5765fb28cabce coccinelle: api: add kobj_to_dev.cocci script
+> :::::: branch date: 5 hours ago
+> :::::: commit date: 7 months ago
 > 
+>  asus-laptop.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Best,
+> --- a/drivers/platform/x86/asus-laptop.c
+> +++ b/drivers/platform/x86/asus-laptop.c
+> @@ -1569,7 +1569,7 @@ static umode_t asus_sysfs_is_visible(str
+>  				    struct attribute *attr,
+>  				    int idx)
+>  {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  	acpi_handle handle = asus->handle;
+>  	bool supported;
 > 
-> Sven
-> 
+
