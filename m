@@ -2,159 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB1D346BF2
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCF5346BF3
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbhCWWPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233659AbhCWWOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:14:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00619601FC;
-        Tue, 23 Mar 2021 22:14:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616537662;
-        bh=euLud26DLs6jpGe+Y94fxhCgdNwfvxm3zvQ/VXv5ZOc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Okjtu5KPyaRWk3iFbNOzKPKjKekuvwvfvzB8HP8gNF/43MS/dCAopmtk/C/aAa5z2
-         Fwz97NDoeTvvCIz9TqIG+/b0JskLNtbfyRCp9f5m3cOiFbkBlxp69wJ23m7ERlUkDG
-         A3s2c3sPzJVXPD1ngDIsjVfxNNsbh/fdAPkgPyQVBDTIOPyUEeXJQtYz4gcZDeyUtl
-         rlhjKFdwvsEAKZrDGmK2Vbkd9Jx56hJVLj9LsBd94IQbHKS926z3ZqIQrCtqFKfnnX
-         ang0K0PeM81iNfL7QyPLdUH7TKpui3lNQCNRv37E9yfi0NWquUg6oihDBuWiFDe7AI
-         w9Q2Pw0ZyXP4Q==
-Received: by mail-ot1-f45.google.com with SMTP id f73-20020a9d03cf0000b02901b4d889bce0so21035357otf.12;
-        Tue, 23 Mar 2021 15:14:21 -0700 (PDT)
-X-Gm-Message-State: AOAM532lvk+3hIaxT3F5XORwou4Vaq4vxe2So8E1BdwU4YFnUgxPQHaQ
-        Or+cBEuHtSgO2m3XfkoqbyyAaJq/g6dr8GUrVJU=
-X-Google-Smtp-Source: ABdhPJzRrDcK+Z1w4yNXAoPMG4HuCGZnCsRiH1f1t1OAoW5YC9blqGf3Xz/P4ibyIPF7aFTBli233c73W2uEJspUMHo=
-X-Received: by 2002:a9d:12cb:: with SMTP id g69mr413585otg.77.1616537661122;
- Tue, 23 Mar 2021 15:14:21 -0700 (PDT)
+        id S233882AbhCWWPg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Mar 2021 18:15:36 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:38145 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233793AbhCWWOw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 18:14:52 -0400
+Received: from localhost.localdomain ([82.142.25.162]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MJEMt-1l4g6s3aWJ-00KkmU; Tue, 23 Mar 2021 23:14:34 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH 0/2] m68k: Add Virtual M68k Machine
+Date:   Tue, 23 Mar 2021 23:14:28 +0100
+Message-Id: <20210323221430.3735147-1-laurent@vivier.eu>
+X-Mailer: git-send-email 2.30.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 23 Mar 2021 23:14:09 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXE5x82SZUvo9=hjjE=Z9QrzggzfvBHbjaaGExRfQ8PDxw@mail.gmail.com>
-Message-ID: <CAMj1kXE5x82SZUvo9=hjjE=Z9QrzggzfvBHbjaaGExRfQ8PDxw@mail.gmail.com>
-Subject: Re: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:j8CPgu/CLqP6+6iZqF5GKlyEcInJxjDbuDcQ1KDqVzrJjRIJ0Qs
+ OZBKydzC53HxbPRvKcCMNJQczqrpXbd9VOUPCjmlc83I2qXQpkiYXTc5Ukb+kUb9JmFZvxs
+ J0GvNZQo8mQzpc1glFv1Ri2bJl3vb/Yiz1hL+rnP7u106v78WmjL5sg+h6ygyuEKQcvuEph
+ n76E2q5f/j8ARjM4bT4Vw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UYqdyMaw7L0=:YjOZR8DQq4wWyPa53zBtew
+ nzc9yEl8ZBIY9jc1xT3sZQfBiRXNEuThEs3k1rj266bvIExHma5c+0A4FtwZiiHsG3DaMEtPa
+ hJBld2vj0XAyVoh+F9U0wwCXmhE1S2598COjaI23aISMEQ76C5mm5WN8q4l+4jKnQEqTvhtqu
+ 79IIpsf7ESDs4nywQaHbJCKR4EmVPODrJSAfM0yKoukihbfc53nm4ENaiJOV5jJfIyZp0AGWo
+ ptaVFL+yvvCiTqz/bKC1tUscnqP5Ge7a30qgNeYJN7oJ43XFdJkJnhGprDol0PZ1LIrDyP+vY
+ /HpGl65L7iy18on2ABcyeZi/6ZpMGtKy1Vd/URMBYMpDeP8Vwd5lrJjI3yvI0DXB9IiVFr8Ob
+ NA/cU09mmSwtUc8ccGHC5lckld0xxJqquqdUm7XCKgBVYfPpGX8Fp5Exn79LkwWTLsrooZr7I
+ 7+Szfeg1sg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 at 09:36, Tianjia Zhang
-<tianjia.zhang@linux.alibaba.com> wrote:
->
-> The kernel module signature supports the option to use the SM3
-> secure hash (OSCCA GM/T 0004-2012 SM3).
->
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+The most powerful m68k machine emulated by QEMU is a Quadra 800,
+but this machine is very limited: only 1 GiB of memory and only some
+specific interfaces, with no DMA.
 
-A secure hash is not the same as a signature. Looking at the patch,
-the asymmetric algorithm that is used to sign the SM3 digest is SM2,
-is that correct? How does one create such signed modules?
+The Virtual M68k Machine is based on Goldfish interfaces defined by Google
+for Android simulator. It uses Goldfish-rtc (timer and RTC),
+Goldfish-pic (PIC) and Goldfish-tty (for early tty).
 
-In any case, please provide more context in the commit log on how this
-is intended to be used.
+The machine is created with 128 virtio-mmio buses, and they can
+be used to add serial console, GPU, disk, NIC, HID, hwrng, 9PFS...
 
+The virtual m68k machine has been merged in QEMU and will be available
+with the release 6.0.
 
-> ---
->  Documentation/admin-guide/module-signing.rst | 5 +++--
->  crypto/asymmetric_keys/pkcs7_parser.c        | 7 +++++++
->  init/Kconfig                                 | 5 +++++
->  3 files changed, 15 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-> index 7d7c7c8a545c..8d8980808b5b 100644
-> --- a/Documentation/admin-guide/module-signing.rst
-> +++ b/Documentation/admin-guide/module-signing.rst
-> @@ -30,8 +30,8 @@ This facility uses X.509 ITU-T standard certificates to encode the public keys
->  involved.  The signatures are not themselves encoded in any industrial standard
->  type.  The facility currently only supports the RSA public key encryption
->  standard (though it is pluggable and permits others to be used).  The possible
-> -hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, and
-> -SHA-512 (the algorithm is selected by data in the signature).
-> +hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, SHA-512,
-> +and SM3 (the algorithm is selected by data in the signature).
->
->
->  ==========================
-> @@ -86,6 +86,7 @@ This has a number of options available:
->         ``CONFIG_MODULE_SIG_SHA256``    :menuselection:`Sign modules with SHA-256`
->         ``CONFIG_MODULE_SIG_SHA384``    :menuselection:`Sign modules with SHA-384`
->         ``CONFIG_MODULE_SIG_SHA512``    :menuselection:`Sign modules with SHA-512`
-> +       ``CONFIG_MODULE_SIG_SM3``       :menuselection:`Sign modules with SM3`
->          =============================== ==========================================
->
->       The algorithm selected here will also be built into the kernel (rather
-> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-> index 967329e0a07b..6cf6c4552c11 100644
-> --- a/crypto/asymmetric_keys/pkcs7_parser.c
-> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
-> @@ -248,6 +248,9 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
->         case OID_sha224:
->                 ctx->sinfo->sig->hash_algo = "sha224";
->                 break;
-> +       case OID_sm3:
-> +               ctx->sinfo->sig->hash_algo = "sm3";
-> +               break;
->         default:
->                 printk("Unsupported digest algo: %u\n", ctx->last_oid);
->                 return -ENOPKG;
-> @@ -269,6 +272,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
->                 ctx->sinfo->sig->pkey_algo = "rsa";
->                 ctx->sinfo->sig->encoding = "pkcs1";
->                 break;
-> +       case OID_SM2_with_SM3:
-> +               ctx->sinfo->sig->pkey_algo = "sm2";
-> +               ctx->sinfo->sig->encoding = "raw";
-> +               break;
->         default:
->                 printk("Unsupported pkey algo: %u\n", ctx->last_oid);
->                 return -ENOPKG;
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 5f5c776ef192..fed9236078e4 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -2202,6 +2202,10 @@ config MODULE_SIG_SHA512
->         bool "Sign modules with SHA-512"
->         select CRYPTO_SHA512
->
-> +config MODULE_SIG_SM3
-> +       bool "Sign modules with SM3"
-> +       select CRYPTO_SM3
-> +
->  endchoice
->
->  config MODULE_SIG_HASH
-> @@ -2212,6 +2216,7 @@ config MODULE_SIG_HASH
->         default "sha256" if MODULE_SIG_SHA256
->         default "sha384" if MODULE_SIG_SHA384
->         default "sha512" if MODULE_SIG_SHA512
-> +       default "sm3" if MODULE_SIG_SM3
->
->  config MODULE_COMPRESS
->         bool "Compress modules on installation"
-> --
-> 2.19.1.3.ge56e4f7
->
+This series introduces the support of this new machine in the linux kernel.
+
+If you want to try:
+
+- Configure and build latest QEMU with (or download qemu 6.0 binary):
+
+  .../configure --target-list=3Dm68k-softmmu --enable-virglrenderer
+  make
+
+- Configure and build linux with:
+
+  make virt_defconfig
+  make vmlinux
+
+A pre-installed qcow2 disk image is available at:
+
+http://vivier.eu/debian-10.0.qcow2
+
+You can run the machine with something like:
+
+qemu-system-m68k -M virt \
+  -m 3G \
+  -chardev stdio,signal=3Doff,mux=3Don,id=3Dchar0 \
+  -mon chardev=3Dchar0,mode=3Dreadline \
+  -kernel vmlinux \
+  -append "console=3Dhvc0 root=3D/dev/vda2" \
+  -blockdev node-name=3Dsystem,driver=3Dfile,filename=3Ddebian-10.0.qcow2 \
+  -blockdev node-name=3Ddrive0,driver=3Dqcow2,file=3Dsystem \
+  -device virtio-blk-device,drive=3Ddrive0 \
+  -serial chardev:char0 \
+  -device virtio-net-device,netdev=3Dhostnet0 \
+  -netdev bridge,id=3Dhostnet0,br=3Dvirbr0,helper=3D/usr/libexec/qemu-bridge-=
+helper \
+  -device virtio-serial-device \
+  -device virtio-gpu-device \
+  -device virtconsole,chardev=3Dchar0 \
+  -device virtio-keyboard-device \
+  -device virtio-mouse-device
+
+You can watch a presentation about the machine on the Planet m68k channel:
+
+    https://youtu.be/s_ve0bCC9q4
+    [Demo at 38:00]
+
+Thanks,
+Laurent
+
+Laurent Vivier (2):
+  rtc: goldfish: remove dependency to OF
+  m68k: introduce a virtual m68k machine
+
+ arch/m68k/Kbuild                           |   1 +
+ arch/m68k/Kconfig.machine                  |  17 +++
+ arch/m68k/configs/virt_defconfig           |  93 ++++++++++++++++
+ arch/m68k/include/asm/irq.h                |   3 +-
+ arch/m68k/include/asm/pgtable_mm.h         |   7 ++
+ arch/m68k/include/asm/setup.h              |  44 ++++++--
+ arch/m68k/include/asm/virt.h               |  26 +++++
+ arch/m68k/include/uapi/asm/bootinfo-virt.h |  18 ++++
+ arch/m68k/include/uapi/asm/bootinfo.h      |   1 +
+ arch/m68k/kernel/Makefile                  |   1 +
+ arch/m68k/kernel/head.S                    |  30 ++++++
+ arch/m68k/kernel/setup_mm.c                |   9 ++
+ arch/m68k/mm/kmap.c                        |  20 ++--
+ arch/m68k/virt/Makefile                    |   6 ++
+ arch/m68k/virt/config.c                    | 118 +++++++++++++++++++++
+ arch/m68k/virt/ints.c                      | 110 +++++++++++++++++++
+ arch/m68k/virt/platform.c                  |  80 ++++++++++++++
+ arch/m68k/virt/timer.c                     |  91 ++++++++++++++++
+ drivers/rtc/Kconfig                        |   2 +-
+ 19 files changed, 659 insertions(+), 18 deletions(-)
+ create mode 100644 arch/m68k/configs/virt_defconfig
+ create mode 100644 arch/m68k/include/asm/virt.h
+ create mode 100644 arch/m68k/include/uapi/asm/bootinfo-virt.h
+ create mode 100644 arch/m68k/virt/Makefile
+ create mode 100644 arch/m68k/virt/config.c
+ create mode 100644 arch/m68k/virt/ints.c
+ create mode 100644 arch/m68k/virt/platform.c
+ create mode 100644 arch/m68k/virt/timer.c
+
+--=20
+2.30.2
+
