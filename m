@@ -2,85 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACE63469D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A183469D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233336AbhCWU3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbhCWU3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:29:05 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531FCC061574;
-        Tue, 23 Mar 2021 13:29:05 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id c13so7117820uao.10;
-        Tue, 23 Mar 2021 13:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+Mz6aI8C8OxAPti7lYO//zMAdk8ShP29DZiThND01bo=;
-        b=OblwTUD4kfwNMkmwRT7oymB0AOHXuV9YOx79V6pLQm7qA9D7F2XbG8zApLcEPMNnV7
-         eI2zzHeTA61X1W6i6IRJNbQciLGU0BJ2BELAbUoBiLVp/1RduEfAWMVXur3XKjErMR3A
-         VEMVIqEEC4f1iIsBg+sNSESXZf/mh8R/FOygW60vJJWE97K+RYvgKpftEgRqWMOQz02H
-         jG6i9tBNSIN2VJt1Jd5fuPNz5GFbffxQsrHZ2uzyB0WJCDlSmUKTLdb7zIPJQ9O7NZpJ
-         c1MMDbxnN2SSqno+x95AhR/PeWiBkiHjhQ48BN2todrpnE0yPnibZMGTydlP86e0h+ZF
-         eHXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+Mz6aI8C8OxAPti7lYO//zMAdk8ShP29DZiThND01bo=;
-        b=CAMb69wePhszgfIYx8jdUMDjGN29yKPav8/3NKUezEyPGDPQQQJtY1FZlmeQbUH9zv
-         IxUWKUcbEg6C64Q5XFpf6XkUbwnSnQdQHZpfqCTuxaPflJfAnVPZApyczTZQVTvs+DvI
-         D0wfYGLFJlj39m5rUyz6BLI9nOp1xLxrNkr2XC4wBP4pYWlRhIPtZInAXDM91BmaUMZP
-         Q/OyAsRyJLR/wGHFcAQzw0qI/xNLZhlukGCPIhafPwzAy0n9vouUF2OCa42SwYB4Hf+J
-         9dXfi/5Xpwn/kmOmZZozEnhO9UThrpYW3eqDjh1Sj/7JqdZlFTm8xC4KII0uDHoiSGNA
-         vdLg==
-X-Gm-Message-State: AOAM533ImgL4UwmMJFVnuL6EmFV7s5JM0EHAVtS/81PfTxmi0oGWwmP4
-        jz7I2YLbf1vgqpgMhY4dq+TGGetZIKV2RTjqMxQ=
-X-Google-Smtp-Source: ABdhPJzatNSOJmQ3VXEB9oByXn2fJ56aO3+f9kHsMZ5Xxpvi7azPu+vkugrOOD6X/I3+52PkHwgDYlNwkjK6Ks795hE=
-X-Received: by 2002:ab0:6397:: with SMTP id y23mr4782867uao.115.1616531344468;
- Tue, 23 Mar 2021 13:29:04 -0700 (PDT)
+        id S233354AbhCWUaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:30:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233231AbhCWU36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 16:29:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A199B61574;
+        Tue, 23 Mar 2021 20:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616531398;
+        bh=5uEEXNBNpUkAWi19Nx2a+xcECI3KdCLMy29coAMWD/0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KbCWSY0yi67k73aDL9qCcK2XjjEbxP47nt/LlQgN0JM8kGdCLl1FaXCqXbujVnfvD
+         Ugkvyywka2erOm5B5pPJWoU7mye3vJUMVi9c/RTIWQLAyUlTPcPIVODIz3akc10BwM
+         QS6PGZwb2na6/m1afaShMwXbA1joNOFqt0IO+mI1lMI5hxhhlmexn+ObQVzbOxoFpX
+         9CFQHU37NxJQj4M9oZr7vrwCECq7aTckgEmBZfNFlcUH9ENZhXnxmgCjeJZ12/5U44
+         oDZvswilEd6CNQ/YF0NwropEzSVLlfFvpUcxhuBUKF6v5LCFPYfwskpkGROrRPwIJS
+         OYYbIhXqOklYw==
+Date:   Tue, 23 Mar 2021 13:29:56 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Shreeya Patel <shreeya.patel@collabora.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v3 5/5] fs: unicode: Add utf8 module and a unicode layer
+Message-ID: <YFpPxCQiMLqctIuS@gmail.com>
+References: <20210323183201.812944-1-shreeya.patel@collabora.com>
+ <20210323183201.812944-6-shreeya.patel@collabora.com>
+ <87eeg5d4xb.fsf@collabora.com>
 MIME-Version: 1.0
-References: <20210323201450.12060-1-oliver.staebler@bytesatwork.ch>
-In-Reply-To: <20210323201450.12060-1-oliver.staebler@bytesatwork.ch>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 23 Mar 2021 17:28:53 -0300
-Message-ID: <CAOMZO5B_uHS_Z2LuMwHDmn9erORrsrNBMHMjkW-hW+pnfHZThQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mm: Fix pad control of SD1_DATA0
-To:     =?UTF-8?Q?Oliver_St=C3=A4bler?= <oliver.staebler@bytesatwork.ch>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eeg5d4xb.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+On Tue, Mar 23, 2021 at 03:51:44PM -0400, Gabriel Krisman Bertazi wrote:
+> > -int unicode_validate(const struct unicode_map *um, const struct qstr *str)
+> > -{
+> > -	const struct utf8data *data = utf8nfdi(um->version);
+> > -
+> > -	if (utf8nlen(data, str->name, str->len) < 0)
+> > -		return -1;
+> > -	return 0;
+> > -}
+> > +struct unicode_ops *utf8_ops;
+> > +EXPORT_SYMBOL(utf8_ops);
+> > +
+> > +int _utf8_validate(const struct unicode_map *um, const struct qstr *str)
+> > +{
+> > +	return 0;
+> > +}
+> > -EXPORT_SYMBOL(unicode_validate);
+> 
+> I think that any calls to the default static calls should return errors
+> instead of succeeding without doing anything.
+> 
+> In fact, are the default calls really necessary?  If someone gets here,
+> there is a bug elsewhere, so WARN_ON and maybe -EIO.  
+> 
+> int unicode_validate_default_static_call(...)
+> {
+>    WARN_ON(1);
+>    return -EIO;
+> }
+> 
+> Or just have a NULL default, as I mentioned below, if that is possible.
+> 
+[...]
+> > +DEFINE_STATIC_CALL(utf8_validate, _utf8_validate);
+> > +DEFINE_STATIC_CALL(utf8_strncmp, _utf8_strncmp);
+> > +DEFINE_STATIC_CALL(utf8_strncasecmp, _utf8_strncasecmp);
+> > +DEFINE_STATIC_CALL(utf8_strncasecmp_folded, _utf8_strncasecmp_folded);
+> > +DEFINE_STATIC_CALL(utf8_normalize, _utf8_normalize);
+> > +DEFINE_STATIC_CALL(utf8_casefold, _utf8_casefold);
+> > +DEFINE_STATIC_CALL(utf8_casefold_hash, _utf8_casefold_hash);
+> > +DEFINE_STATIC_CALL(utf8_load, _utf8_load);
+> > +DEFINE_STATIC_CALL_NULL(utf8_unload, _utf8_unload);
+> > +EXPORT_STATIC_CALL(utf8_strncmp);
+> > +EXPORT_STATIC_CALL(utf8_strncasecmp);
+> > +EXPORT_STATIC_CALL(utf8_strncasecmp_folded);
+> 
+> I'm having a hard time understanding why some use
+> DEFINE_STATIC_CALL_NULL, while other use DEFINE_STATIC_CALL.  This new
+> static call API is new to me :).  None of this can be called if the
+> module is not loaded anyway, so perhaps the default function can just be
+> NULL, per the documentation of include/linux/static_call.h?
+> 
+> Anyway, Aren't utf8_{validate,casefold,normalize} missing the
+> equivalent EXPORT_STATIC_CALL?
+> 
 
-On Tue, Mar 23, 2021 at 5:15 PM Oliver St=C3=A4bler
-<oliver.staebler@bytesatwork.ch> wrote:
->
-> Fix address of the pad control register
-> (IOMUXC_SW_PAD_CTL_PAD_SD1_DATA0) for SD1_DATA0_GPIO2_IO2.  This seems
-> to be a typo but it leads to an exception when pinctrl is applied due to
-> wrong memory address access.
->
-> Signed-off-by: Oliver St=C3=A4bler <oliver.staebler@bytesatwork.ch>
+The static_call API is fairly new to me too.  But the intent of this patch seems
+to be that none of the utf8 functions are called without the utf8 module loaded.
+If they are called, it's a kernel bug.  So there are two options for what to do
+if it happens anyway:
 
-I checked in the RM and your patch is correct, thanks:
+  1. call a "null" static call, which does nothing
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+*or*
 
-I will send a patch fixing imx8mq-pinfunc.h as it has the same error.
+  2. call a default function which does WARN_ON_ONCE() and returns an error if
+     possible.
+
+(or 3. don't use static calls and instead dereference a NULL utf8_ops like
+previous versions of this patch did.)
+
+It shouldn't really matter which of these approaches you take, but please be
+consistent and use the same one everywhere.
+
+> + void unicode_unregister(void)
+> + {
+> +         spin_lock(&utf8ops_lock);
+> +         utf8_ops = NULL;
+> +         spin_unlock(&utf8ops_lock);
+> + }
+> + EXPORT_SYMBOL(unicode_unregister);
+
+This should restore the static calls to their default values (either NULL or the
+default functions, depending on what you decide).
+
+Also, it's weird to still have the utf8_ops structure when using static calls.
+It seems it should be one way or the other: static calls *or* utf8_ops.
+
+The static calls could be exported, and the module could be responsible for
+updating them.  That would eliminate the need for utf8_ops.
+
+- Eric
