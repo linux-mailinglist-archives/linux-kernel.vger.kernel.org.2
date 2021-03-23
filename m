@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E6234621F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE76D346221
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbhCWO6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S232535AbhCWO6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbhCWO6D (ORCPT
+        with ESMTP id S232496AbhCWO6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:58:03 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96353C061574;
-        Tue, 23 Mar 2021 07:58:03 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so19690209ota.9;
-        Tue, 23 Mar 2021 07:58:03 -0700 (PDT)
+        Tue, 23 Mar 2021 10:58:14 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A98AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:58:14 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id h3-20020a4ae8c30000b02901b68b39e2d3so4999200ooe.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pBTbJ1gqi6qZwGjIPLuEyNrn1jPsCIcXzL71BITfVqc=;
-        b=WXQNB9fjlah/beKPue2wrQpvMFcQ8DSm5+6P1bqhDdQTBRYp0pJHUr763Vs7ZlvwLa
-         L8fGcDyauTE7mItfKvlUxAMyEvBzpvW473HrmtiCirb6LmbVYJoU6i2kF3em2We4uB3a
-         m9/0m9Wh5hGviZI7LBCN0adW/0bwNRjUo5oE2ryqR6ZQsXnEXMKEWlrCRbEHw5CvydKk
-         K5KEpN3w9QV11FLFbM3oD6Jm7Wq7oFa0I9HNOKfTw+YYAB1qBpalBze4IBwWPRpbB4UX
-         FC3dInEH35bCapJCUDLCgjMWVUYz4yTJD6546Fa3mKlpL2B/jJakvmZQ9pdHFO5s7M2Q
-         jWSw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OStDH/D377UMcgi9v6LDjP8DqC/uToi16zyd57lRDnc=;
+        b=Nyx1fjXcz9tDHbOF5AKsnvYU1EMZAY+o/6UBsTK99ynu4SqsQakCtDZ1wxaJFV+p85
+         M5HyWjTxRdXGA2qaRiLitOsKfuZ3YUdXeaEEzQeV8JhNjEaQXty93cWsnEEhQgHiLyiq
+         f8tuCOJktuxFag+vZjhLCReBjXmTJk8/OX58gXPK0JSZHp4MSXG22DMtyAw/he2rUyIs
+         dC8HhALyfJO/JSzPdsTpJDGsbvllk4D7JBTVgs/qMO/tQA6BuRGtW2RmwoieCeYiD5lm
+         7Rf0RtR0D7Q07MAR6IsDaEXhdMcploJ+xh8sz3ta4cX9xF+qiochtH+KoKxrB1M+tyP7
+         7v6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pBTbJ1gqi6qZwGjIPLuEyNrn1jPsCIcXzL71BITfVqc=;
-        b=A7VKznta7RrO4K/e6eKS/vf11xyMwVVsbtB/dTP7RryfQCOtHF2kpkM0p/tDmAxv9k
-         w7cxFBNKt0AIJWxaFhYX9BT9dxdfh1KHtCOaGj+uRLQelnBem4tuZnt+ExPEUMOU7FbB
-         JFdRNqEn3XU0QboDNumqKJ1sBuHwGBFUkMYbiEyPuFJxQJFrItX1CJXPVZ5uzNmr+F1x
-         8r/IOeOQzbkFMUuljmDp0ouRg/UGiUAlY9jJohFTOjgwwgo8Sw5ICru9lpjcFm2NeP4Y
-         IcYSb1pSO68plJ4asiul/pcgHCEHwtJBMX3sEDGxuJQPM2ayh27KOI58dBSI3i/64vzL
-         9w6w==
-X-Gm-Message-State: AOAM532re/7PBEvhfu7sd41DYFd+sg/oL9nYClHET48/XyvT6sdspqMa
-        wrDPBWLiWGfGb6MGomh3vnM=
-X-Google-Smtp-Source: ABdhPJzSxbq/FoTwpbbJi7IS9UcsaS8Jb5VWG+fVs0bKzHES3xpvO8J2Z9z54n7eKIDeo1pmYyti5g==
-X-Received: by 2002:a05:6830:17d0:: with SMTP id p16mr4623060ota.127.1616511483045;
-        Tue, 23 Mar 2021 07:58:03 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.56])
-        by smtp.googlemail.com with ESMTPSA id e12sm3760527oou.33.2021.03.23.07.58.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 07:58:02 -0700 (PDT)
-Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
-To:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f5ef2e4f-fcba-2e06-86ec-17522744b6a8@gmail.com>
-Date:   Tue, 23 Mar 2021 08:57:57 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OStDH/D377UMcgi9v6LDjP8DqC/uToi16zyd57lRDnc=;
+        b=IM+0Yj8EYtArvt07YSVYVOkqmm+I2h9EjOEeWytJ0jtnsQW799NfLqIplwGRY1V7Ea
+         KqpyIDp3TsLsidjcPD7VxJq30qCBGpKxpfzLVnqNOMyhSqXaAwJnIj+dg0rqZc9Ln353
+         guvl71eaQY0xXXRzLCXrCNwqGJy60me01CPCVzA+WhyJuANcIP+1ONDfJtNoGk2yPn9z
+         LTCc1r1wusz6ep3HGxUaga1g0p/bYARkABHNcgfw/+zcK2bNM4WqXqnA27jGGGR1mh1I
+         HamYWyddbhuN7XQEon9HG72HuHYlsb9rRPuQoJAHiajFNbW8oOPXbwj8w/N3fttKI2th
+         OG0g==
+X-Gm-Message-State: AOAM530c2HQWypc8HCW4CFt2ELNYx5lSf+Mjyt2fjZe4LTOqvgEIWqly
+        WiZqz71/Z/QSaG1Iv6ovzbDtk4lbsgWq30ko9YM=
+X-Google-Smtp-Source: ABdhPJxjbnFrI6rECBfC1TqAKH6QGuLkdSIAT4vPaebNaRg199psAdzkQWQ+6TeVzG4PLlydH4USY68uvP0zSMEAd0E=
+X-Received: by 2002:a4a:4005:: with SMTP id n5mr4143613ooa.61.1616511493663;
+ Tue, 23 Mar 2021 07:58:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210322170301.26017-1-mcroce@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210322120227.60953-1-wanjiabing@vivo.com> <de34c5b1-1827-cc91-f719-a36a33717cb9@amd.com>
+In-Reply-To: <de34c5b1-1827-cc91-f719-a36a33717cb9@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 23 Mar 2021 10:58:02 -0400
+Message-ID: <CADnq5_MVVvvuz+WfTVZFn31nb0YgK=BmE+ZuwvFvN+La9QO32A@mail.gmail.com>
+Subject: Re: [PATCH] drivers: gpu: Remove duplicate include of amdgpu_hdp.h
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Wan Jiabing <wanjiabing@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Dennis Li <Dennis.Li@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Jonathan Kim <jonathan.kim@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kael_w@yeah.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 11:02 AM, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> This series enables recycling of the buffers allocated with the page_pool API.
-> The first two patches are just prerequisite to save space in a struct and
-> avoid recycling pages allocated with other API.
-> Patch 2 was based on a previous idea from Jonathan Lemon.
-> 
-> The third one is the real recycling, 4 fixes the compilation of __skb_frag_unref
-> users, and 5,6 enable the recycling on two drivers.
+Applied.  Thanks!
 
-patch 4 should be folded into 3; each patch should build without errors.
+Alex
 
-> 
-> In the last two patches I reported the improvement I have with the series.
-> 
-> The recycling as is can't be used with drivers like mlx5 which do page split,
-> but this is documented in a comment.
-> In the future, a refcount can be used so to support mlx5 with no changes.
-
-Is the end goal of the page_pool changes to remove driver private caches?
-
-
+On Mon, Mar 22, 2021 at 8:10 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+>
+>
+> Am 22.03.21 um 13:02 schrieb Wan Jiabing:
+> > amdgpu_hdp.h has been included at line 91, so remove
+> > the duplicate include.
+> >
+> > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+>
+> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu.h | 1 -
+> >   1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/=
+amdgpu/amdgpu.h
+> > index 49267eb64302..68836c22ef25 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> > @@ -107,7 +107,6 @@
+> >   #include "amdgpu_gfxhub.h"
+> >   #include "amdgpu_df.h"
+> >   #include "amdgpu_smuio.h"
+> > -#include "amdgpu_hdp.h"
+> >
+> >   #define MAX_GPU_INSTANCE            16
+> >
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
