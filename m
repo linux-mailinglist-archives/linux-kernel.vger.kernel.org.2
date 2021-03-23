@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C9634659F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745EC346590
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbhCWQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:46:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46154 "EHLO mail.kernel.org"
+        id S233389AbhCWQm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:42:58 -0400
+Received: from mga12.intel.com ([192.55.52.136]:4837 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233317AbhCWQpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:45:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3A8E61992;
-        Tue, 23 Mar 2021 16:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616517948;
-        bh=PsikL/oh28lMsUHE2XYeQLegL588LmV4SQccoHleLD0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UegLFAeh26fLIPQxGxkz5c1ZjqQaYXNCIB6G2GN77qSsb4o9GeiP8Qi2kD9v4tAQm
-         DlnTqXF3e9IYJ0B+9tabF1aAiHibzKxiEuryZ+ik7XBe9SuGnPqwT6G/pREQrKxTFo
-         MOhkOxQalBybbXecCXmjiFIu8sj9dAMF2D4w+aYGLX3ATUxvFs/BIeHsPkG4PxQb2E
-         I14fFD4b56Fu7bNd/+aEVn2j3BXe8cvdohs/Am38I4jeyxUmL5Wh0i5McNttNszGQt
-         DfU9cHAfyfdeMpdeIWtJSYMygUzfNY2CMbrSDz8XoJ+bZzOsJjRB6hBqzfalxBadbj
-         3dvIxwpxdMLDQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 922F9352261C; Tue, 23 Mar 2021 09:45:48 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:45:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
- Tiny RCU grace periods
-Message-ID: <20210323164548.GZ2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
- <20210304002632.23870-2-paulmck@kernel.org>
- <20210321222855.GA863290@lothringen>
- <20210322154744.GM2696@paulmck-ThinkPad-P72>
- <20210322190035.GA874833@lothringen>
- <20210322194522.GO2696@paulmck-ThinkPad-P72>
- <20210323140207.GA890343@lothringen>
+        id S233062AbhCWQma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:42:30 -0400
+IronPort-SDR: 6OIzuYq0mtzTUCYhD0ijkZoKapCKySfn/cY2n0eg8/+uYr5p6MtcCi2dbEsvGNNorTv/fVDodn
+ p/a7+FMd0tUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="169849057"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="169849057"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 09:42:29 -0700
+IronPort-SDR: SIqztD57fqzEqbYXR3xABWOT5+LJEqclamlJMDjNI4nl8Eul+Ezx0U7j+XtEPQRS4Oh1uLtn4o
+ 7W+uyeizxabg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="441779995"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Mar 2021 09:42:29 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
+        by linux.intel.com (Postfix) with ESMTP id EABEE58069F;
+        Tue, 23 Mar 2021 09:42:26 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net-next 0/2] Add support for Clause-45 PHY Loopback
+Date:   Wed, 24 Mar 2021 00:46:39 +0800
+Message-Id: <20210323164641.26059-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323140207.GA890343@lothringen>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 03:02:07PM +0100, Frederic Weisbecker wrote:
-> On Mon, Mar 22, 2021 at 12:45:22PM -0700, Paul E. McKenney wrote:
-> > On Mon, Mar 22, 2021 at 08:00:35PM +0100, Frederic Weisbecker wrote:
-> > > But poll_state_synchronize_rcu() checks that the gp_num has changed,
-> > > which is not needed for cond_synchronize_rcu() since this it is
-> > > only allowed to be called from a QS.
-> > 
-> > Good catch, and thank you!  Back to a single might_sleep() it is!
-> 
-> And then: Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+This patch series add support for Clause-45 PHY loopback.
 
-Thank you!  I will apply this on my next rebase.
+It involves adding a generic API in the PHY framework, which can be
+accessed by all C45 PHY drivers using the .set_loopback callback.
 
-							Thanx, Paul
+Also, enable PHY loopback for the Marvell 88x3310/88x2110 driver.
+
+Wong Vee Khee (2):
+  net: phy: add genphy_c45_loopback
+  net: phy: marvell10g: Add PHY loopback support
+
+ drivers/net/phy/marvell10g.c | 2 ++
+ drivers/net/phy/phy-c45.c    | 8 ++++++++
+ include/linux/phy.h          | 1 +
+ 3 files changed, 11 insertions(+)
+
+-- 
+2.25.1
+
