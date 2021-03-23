@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52745346330
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB921346337
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbhCWPlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:41:51 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:17216 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbhCWPl3 (ORCPT
+        id S233034AbhCWPn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:43:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35112 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232803AbhCWPn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:41:29 -0400
-Date:   Tue, 23 Mar 2021 15:41:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1616514087; bh=KaWZVmNX+s6QYfI2KYune+mRKLP3TY75MHKPJja3S2M=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=dp5Sd5AQuwA0b9Qs8DJ2n3JzCPArI+MsOouma4x+ZCxNtwfvJFSCKA2ucG9bRTydJ
-         2N647yAo7GlJvzMxUY4t9L98/M75M2kXAP//dvYDWjg7LD2sfPM5PnC7OTjg7SHnVC
-         /q1ZGblusLM4B4Cx4sNLhm7l5+xSnEzfeGr9S9NOWeo3T8idoZWijY/tladMQwqbpf
-         cAk/AUZ0Bu8WHuDTN8mHzWYZvRtobcljBdmyd9ph8eZ7/fcS5I+VMLjkWxSADXo4MA
-         ABDiBdnydWeO14VJX1JhSCbDxEmaQ0EriuxPuoDtxGER9tBSaZsigjU7fqSoO0KfAb
-         OcZY5VsfmfjSQ==
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
-Message-ID: <20210323154112.131110-1-alobakin@pm.me>
-In-Reply-To: <20210322170301.26017-1-mcroce@linux.microsoft.com>
-References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
+        Tue, 23 Mar 2021 11:43:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616514208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fQwwd9nOnJe1+uHPoxzHuoEj26bQew0s4XHSj0Ikdsw=;
+        b=HuzKUsbf6KN5VkDGpNwoZsEE4E7xHnqn7c1qdryOfkuir47gmDC/rr5uIN60Z/1Xgt/wJg
+        iS/mahoAjyaKxavDU+M1PPgsL9+Lq0QR+p07STRyu41dgwOG8PXylGXoA1WVMNTPfEbIj3
+        YDUZllYRywlPCo/hHJ6rduBN+a1XesM=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-TbzI2IHLOcSp-XE-LQbUqA-1; Tue, 23 Mar 2021 11:43:24 -0400
+X-MC-Unique: TbzI2IHLOcSp-XE-LQbUqA-1
+Received: by mail-qv1-f72.google.com with SMTP id u15so1855603qvo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:43:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fQwwd9nOnJe1+uHPoxzHuoEj26bQew0s4XHSj0Ikdsw=;
+        b=d9cIaz78EPHOC6gEwZQ1v0Ok4vBVvB01ZYu1JRleZ8RR/MAVmoVGaYOnWrkg6lFvuC
+         j1xHlnx3BQ1lqLsnVuKmNW7D5Dk9FQ94Swz4yJufpeLRaRZ025ROPzix9JEjIImIzJVg
+         10jB13/14gV46ArN27X2lebwiGkQf83k5G1CVFSmZaJnCsRQLicJeDP23n4Iy1Ub+sDW
+         wbe6trQnHgUiyRRFP9GCNRLLBvCLcNTJvKbpLJSTFeC6rDkGzq8+3/IWyc9LwwtCl+/x
+         sT74+sQt6nPm0syXHNkkY1xZPuzF01wZhbyBC3gkiQiF61ba7kSBZMFAibNfSfM8JBQ0
+         Y7RQ==
+X-Gm-Message-State: AOAM531qh+PhH5V/2GdGDjRHWAUqT09GqcbDM5SiArSy0uGV0T7vhLvg
+        I7ySeoxZmVaS7mwREJcQBL/0gjWXNzNptql5DUKhj685WWZ3bogOk89DGg0Ak5eEasg2Rjm6T4W
+        yGMV/kWiiOUaxQ6egjHEbnF6k
+X-Received: by 2002:a05:620a:981:: with SMTP id x1mr5807036qkx.501.1616514203216;
+        Tue, 23 Mar 2021 08:43:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJym/kQ1w5u7o1QHL31laqkymPkn/C2lVnlgp1kv4esRLoT59gBX0FFLLopujlqx2vELTjFLBA==
+X-Received: by 2002:a05:620a:981:: with SMTP id x1mr5807023qkx.501.1616514203017;
+        Tue, 23 Mar 2021 08:43:23 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
+        by smtp.gmail.com with ESMTPSA id z14sm10958800qti.87.2021.03.23.08.43.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 08:43:22 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 11:43:21 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH 07/23] mm: Introduce zap_details.zap_flags
+Message-ID: <20210323154321.GG6486@xz-x1>
+References: <20210323004912.35132-1-peterx@redhat.com>
+ <20210323004912.35132-8-peterx@redhat.com>
+ <20210323021129.GZ1719932@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+In-Reply-To: <20210323021129.GZ1719932@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@linux.microsoft.com>
-Date: Mon, 22 Mar 2021 18:02:55 +0100
+On Tue, Mar 23, 2021 at 02:11:29AM +0000, Matthew Wilcox wrote:
+> On Mon, Mar 22, 2021 at 08:48:56PM -0400, Peter Xu wrote:
+> > +/* Whether to check page->mapping when zapping */
+> > +#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
+> > +
+> >  /*
+> >   * Parameter block passed down to zap_pte_range in exceptional cases.
+> >   */
+> >  struct zap_details {
+> > -	struct address_space *check_mapping;	/* Check page->mapping if set */
+> > +	struct address_space *zap_mapping;	/* Check page->mapping if set */
+> 
+> Now the comment is wrong.  It used to mean "If this is NULL, zap pages
+> with any mapping", but now it's always set, and the decision about whether
+> to check the mapping is in the flag.
+> 
+> Honestly, I'd remove the comments from both these members.  They don't add
+> anything to understandability now.
 
-> From: Matteo Croce <mcroce@microsoft.com>
->
-> This series enables recycling of the buffers allocated with the page_pool=
- API.
-> The first two patches are just prerequisite to save space in a struct and
-> avoid recycling pages allocated with other API.
-> Patch 2 was based on a previous idea from Jonathan Lemon.
->
-> The third one is the real recycling, 4 fixes the compilation of __skb_fra=
-g_unref
-> users, and 5,6 enable the recycling on two drivers.
->
-> In the last two patches I reported the improvement I have with the series=
-.
->
-> The recycling as is can't be used with drivers like mlx5 which do page sp=
-lit,
-> but this is documented in a comment.
-> In the future, a refcount can be used so to support mlx5 with no changes.
->
-> Ilias Apalodimas (2):
->   page_pool: DMA handling and allow to recycles frames via SKB
->   net: change users of __skb_frag_unref() and add an extra argument
->
-> Jesper Dangaard Brouer (1):
->   xdp: reduce size of struct xdp_mem_info
->
-> Matteo Croce (3):
->   mm: add a signature in struct page
->   mvpp2: recycle buffers
->   mvneta: recycle buffers
->
->  .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
->  drivers/net/ethernet/marvell/mvneta.c         |  4 +-
->  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
->  drivers/net/ethernet/marvell/sky2.c           |  2 +-
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
->  include/linux/mm_types.h                      |  1 +
->  include/linux/skbuff.h                        | 33 +++++++++++--
->  include/net/page_pool.h                       | 15 ++++++
->  include/net/xdp.h                             |  5 +-
->  net/core/page_pool.c                          | 47 +++++++++++++++++++
->  net/core/skbuff.c                             | 20 +++++++-
->  net/core/xdp.c                                | 14 ++++--
->  net/tls/tls_device.c                          |  2 +-
->  13 files changed, 138 insertions(+), 26 deletions(-)
+Agreed, I'm removing them.  Thanks,
 
-Just for the reference, I've performed some tests on 1G SoC NIC with
-this patchset on, here's direct link: [0]
-
-> --
-> 2.30.2
-
-[0] https://lore.kernel.org/netdev/20210323153550.130385-1-alobakin@pm.me
-
-Thanks,
-Al
+-- 
+Peter Xu
 
