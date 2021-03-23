@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E587C345432
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C89B3345436
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbhCWAuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:50:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49668 "EHLO
+        id S231569AbhCWAuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:50:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54787 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231331AbhCWAtl (ORCPT
+        by vger.kernel.org with ESMTP id S231370AbhCWAtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:49:41 -0400
+        Mon, 22 Mar 2021 20:49:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616460581;
+        s=mimecast20190719; t=1616460582;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cKuTAK/coeu/o9lPtGRIHWod3LERVBmK315ziMrYcLI=;
-        b=caZfgVI/XElK5v424AIPqLtOl3HEqagLk5owxkqoYgwof+bkhqX8rJsHiIiqCWcVmumaIt
-        GEGnwoNdcbCaJsf8kqJUWrsId0QMcB5Xhy82l6g7W7jjPRlYd4BMpwdiZpl1sRToTHuB6t
-        2cOTgmGWLIYQwAnk6/yhNwxtaoosFx8=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-oG5k3HzpPGOihQ5Qc6HVEg-1; Mon, 22 Mar 2021 20:49:39 -0400
-X-MC-Unique: oG5k3HzpPGOihQ5Qc6HVEg-1
-Received: by mail-qt1-f199.google.com with SMTP id r32so388416qtd.16
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:49:39 -0700 (PDT)
+        bh=LwDOET0+t9FVkgq293BQMlQJW4s7rxaX3ykZpO1NCQ8=;
+        b=Q6TokDISAZV4g+j4bdnhqnPrX/O+SzXieW6S4Kkios7eKMFqSwrigCngVxqTSrwFXLeYUN
+        j3HpdSDjdrmyNBmigdqeCHCYrmpt5igSmeqa2RCpsh0iMIre8TjKTf/gLj3Own65w8yE+g
+        m9BOsYcPjnfZVc+uaPx+40fFlmvDyJk=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-118-RbVlHmeCPiuTgz1d8KfdJw-1; Mon, 22 Mar 2021 20:49:41 -0400
+X-MC-Unique: RbVlHmeCPiuTgz1d8KfdJw-1
+Received: by mail-qk1-f197.google.com with SMTP id h134so835499qke.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:49:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cKuTAK/coeu/o9lPtGRIHWod3LERVBmK315ziMrYcLI=;
-        b=tW7HBs6EcQObibiX0tWOcHGm2FSZ5A3PIsZ+8HWJnwOmcd+MuUXqs+m++oeA0iPchJ
-         xt0i38SCSi8mcVZoD6sXY0iD293ptbEtml7zHkI9RkrwW2enj+XvLJd1PFnGB1h5jF+b
-         dPn6qxYOH2GIpAh9nbz+F8oaxrxLlQFBR40C/Ovcv00p2qUteQISOW+mOGITth0/m6wd
-         3w/hiokuyTOMtZYhbE7K4Y0JcYsJQC4uBhEQTysKd60HfXKx6PRfZWiEQIZCbbJX6GJd
-         kqfhW0EbvXQmaldiAoqAjsfQURauJ+rWaEm42zXlo89IAesieh0N9T1yRRI3CBxMts8a
-         ByEg==
-X-Gm-Message-State: AOAM5330Z0vBvBXn0k3mlbF2g4UYcrBJ3d7Jq0fWEzgvYmMmyC/ZNsX6
-        qX7sHSNeLm4X4NisK2XyMp4uQJiQBEtLEI0OFYTARZDZ/1j/1+Zy6CWwfAsRckH6Ilj5gVwsb7M
-        CwA1o6m2hUt3QBEfbYWOSkiSnRBRl8g7DR/LmnUfEgVmSX7iriXmaIn9vgJ1q2Lb8BYxBs+qlaQ
+        bh=LwDOET0+t9FVkgq293BQMlQJW4s7rxaX3ykZpO1NCQ8=;
+        b=Pa9+IEBzeJ6Eo7yNWk8Sbm0B3veOX9xDsfXlhQ7hVn8Mv/MHW1DVzYqz01J7Kxp+EA
+         NhOHduYgXddlJCyPTHlqrC0jPu009rAJm3id/k9I3OgSIBnP+T4Bs7NuBP1VRzMQBvyi
+         8U/Jl+KMqWPArBFcfJc2g3q6sLrLfi1DCAu0Dp9A39N3e8LqgqFJGFwETrD2lhJ2CHye
+         Du9kqVkd1x8PnKCYevQ8/hAp+RiLc+4vRxxO/C5NTnS3GdCRwMTg9SL9oAujgQc4pen6
+         COmveso07AZO3UJeotHDTtSpjjipTbselmwNeaYoQGhaXT2EzDGku/5RsHBTI/Tw/Es6
+         V8RA==
+X-Gm-Message-State: AOAM531bEMsBW/eV/cmmjrz44VbhzUws7LH91+Ts0KpgWzC6Ye4X6yuK
+        omzRgt4jA6aSYSFWe/rczsWwjs7ALOnnShDQCvUpQ1dLsS9cuSIK8KD0pCB6tkbZI8C66R9s88/
+        KKqbZYe+LqFnRi/0WKaeJFYTs1mrzxknoLtqr57PSLGAlacMcM+Afi/Noh8jD9NW+jQcQVBls2Q
         ==
-X-Received: by 2002:a05:620a:1388:: with SMTP id k8mr2975005qki.224.1616460578872;
-        Mon, 22 Mar 2021 17:49:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+wBwPeNPOsPise+7lL7dkN21Mn6lkzdRj7CMeozDPNGfvtHmM2/ikJDtiTyBJ8cbrfkFN1A==
-X-Received: by 2002:a05:620a:1388:: with SMTP id k8mr2974981qki.224.1616460578591;
-        Mon, 22 Mar 2021 17:49:38 -0700 (PDT)
+X-Received: by 2002:a37:e315:: with SMTP id y21mr2972113qki.418.1616460580545;
+        Mon, 22 Mar 2021 17:49:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGhlvWbuuhEk+ZKMiW+MQgkfAcTKCZx9vxyblCGaELts7EA6fuF6kIJ/7TdB+zCUR+L3XDeA==
+X-Received: by 2002:a37:e315:: with SMTP id y21mr2972089qki.418.1616460580286;
+        Mon, 22 Mar 2021 17:49:40 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id n6sm5031793qtx.22.2021.03.22.17.49.37
+        by smtp.gmail.com with ESMTPSA id n6sm5031793qtx.22.2021.03.22.17.49.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 17:49:38 -0700 (PDT)
+        Mon, 22 Mar 2021 17:49:39 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
@@ -64,9 +64,9 @@ Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
         Nadav Amit <nadav.amit@gmail.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 14/23] shmem/userfaultfd: Pass over uffd-wp special swap pte when fork()
-Date:   Mon, 22 Mar 2021 20:49:03 -0400
-Message-Id: <20210323004912.35132-15-peterx@redhat.com>
+Subject: [PATCH 15/23] hugetlb/userfaultfd: Hook page faults for uffd write protection
+Date:   Mon, 22 Mar 2021 20:49:04 -0400
+Message-Id: <20210323004912.35132-16-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210323004912.35132-1-peterx@redhat.com>
 References: <20210323004912.35132-1-peterx@redhat.com>
@@ -76,41 +76,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should be handled similarly like other uffd-wp wr-protected ptes: we should
-pass it over when the dst_vma has VM_UFFD_WP armed, otherwise drop it.
+Hook up hugetlbfs_fault() with the capability to handle userfaultfd-wp faults.
+
+We do this slightly earlier than hugetlb_cow() so that we can avoid taking some
+extra locks that we definitely don't need.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/memory.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ mm/hugetlb.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 8be28bcaa044..766946d3eab0 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -715,8 +715,21 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	unsigned long vm_flags = dst_vma->vm_flags;
- 	pte_t pte = *src_pte;
- 	struct page *page;
--	swp_entry_t entry = pte_to_swp_entry(pte);
-+	swp_entry_t entry;
-+
-+	if (unlikely(is_swap_special_pte(pte))) {
-+		/*
-+		 * uffd-wp special swap pte is the only possibility for now.
-+		 * If dst vma is registered with uffd-wp, copy it over.
-+		 * Otherwise, ignore this pte as if it's a none pte would work.
-+		 */
-+		WARN_ON_ONCE(!pte_swp_uffd_wp_special(pte));
-+		if (userfaultfd_wp(dst_vma))
-+			set_pte_at(dst_mm, addr, dst_pte, pte);
-+		return 0;
-+	}
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 56b78a206913..def2c7ddf3ae 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4643,6 +4643,25 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	if (unlikely(!pte_same(entry, huge_ptep_get(ptep))))
+ 		goto out_ptl;
  
-+	entry = pte_to_swp_entry(pte);
- 	if (likely(!non_swap_entry(entry))) {
- 		if (swap_duplicate(entry) < 0)
- 			return entry.val;
++	/* Handle userfault-wp first, before trying to lock more pages */
++	if (userfaultfd_pte_wp(vma, huge_ptep_get(ptep)) &&
++	    (flags & FAULT_FLAG_WRITE) && !huge_pte_write(entry)) {
++		struct vm_fault vmf = {
++			.vma = vma,
++			.address = haddr,
++			.flags = flags,
++		};
++
++		spin_unlock(ptl);
++		if (pagecache_page) {
++			unlock_page(pagecache_page);
++			put_page(pagecache_page);
++		}
++		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
++		i_mmap_unlock_read(mapping);
++		return handle_userfault(&vmf, VM_UFFD_WP);
++	}
++
+ 	/*
+ 	 * hugetlb_cow() requires page locks of pte_page(entry) and
+ 	 * pagecache_page, so here we need take the former one
 -- 
 2.26.2
 
