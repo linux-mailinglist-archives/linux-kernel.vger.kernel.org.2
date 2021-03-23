@@ -2,144 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0083455D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FE03455E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCWC76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 22:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhCWC7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:59:40 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101D4C061574;
-        Mon, 22 Mar 2021 19:59:40 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so442091pjb.1;
-        Mon, 22 Mar 2021 19:59:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uMQUr5dXJZ2PUI/1EFUOUFrq7m+67408QTDKqlQG9mw=;
-        b=pPd+g6Vg1ez+K7jsDPE0l7OQqgdMuxIIWcD5GsDzO+HzJ+QDCx6TXJTpy5CaqT6lD/
-         +cTXaybbb0U+Fw4TY/ezI/hZRh8PW5g0jsU4OPbKniAwPNd0h54I5fJ5xRWm50T6yqaW
-         ak3bZU+LQhbg3UxSgWFVU5LbKqEyggZz8ZgYJhHB0SCjyNq/adyomTtA1ZRtbpGgQw/6
-         11eWloI9zjcMvSt72g8p6Pba7JLlGCBDvLqes6xkq1c93iJM/YJJhSWQzpnLuKZ/5r21
-         uiUrHfADm5SuYx7yZwkXjHfw1J3hS7bMYV9NGm7+3MfKvGpZw435FBPgNM8ZcQX5KjXe
-         WJPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uMQUr5dXJZ2PUI/1EFUOUFrq7m+67408QTDKqlQG9mw=;
-        b=gYy0lMvZ+zgdi2yO2tTo/OgF3u9gJ5EU3q03xZt4yDdXvQnziGKsesRBWulhXz98mI
-         NIla7NOfPduD27EjQtWkTRf6XqooiFv/lV2k2WCx/lf8698I2l/72bbE70GuIHnWM60n
-         s20fOAN+q9uRjWKQRplfpip5Ni9hSrzWPWovDf2j128EGDBi8mOs+N9D0jAuVA4L9pwa
-         nFOt+rQFpe7W8AMmq1SMeT242rjjJ7j3rJtvsHfO4a58ZjRDXcLlGBO6lq6AQkZP248i
-         bJJFt8w+wnSH548BeTsVwnQ1qk+nMMFNXJLQHola9FZIpucgqAHJBB5l76R/yYCiDVez
-         XLEg==
-X-Gm-Message-State: AOAM531T6tytHvbDFYXGZhVeBIYmV8vUTfKwKFittXd+L5UGb9Nad2kT
-        77BpatZLs1pKYocDA4ZNu0s=
-X-Google-Smtp-Source: ABdhPJx0KOTyp5fL1tDSydcezeQsJySAdi05NXolUiLAIIpBt048llAcVtuoDM1MWC/QLlP8cLESyQ==
-X-Received: by 2002:a17:90a:f005:: with SMTP id bt5mr2194369pjb.127.1616468379579;
-        Mon, 22 Mar 2021 19:59:39 -0700 (PDT)
-Received: from sol (106-69-186-212.dyn.iinet.net.au. [106.69.186.212])
-        by smtp.gmail.com with ESMTPSA id w17sm13766385pfu.29.2021.03.22.19.59.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 19:59:38 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 10:59:33 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        id S230064AbhCWDDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:03:15 -0400
+Received: from mail-db8eur05on2066.outbound.protection.outlook.com ([40.107.20.66]:18401
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230107AbhCWDCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 23:02:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lLRlzsE7dUwlxJ2QuidfvoEBmYywFnUIV1bZBwaWzX6E4+nFiW6fk0kh078PQxjO09gh/sTsxpbLojweicMW8dA/24I3y36k+EZ/GOm/NivEepEbu2x2VJ5wOsR8fyfqOw9M6RKOlVT8TG0c1e6/pptJaD+ZoOCjwUe5ox00e8mwBOk5hPOIEmpYODRKq1VOd3Q92bIgqU+HOXkn4g0haLyuURlCtX1EFhxXn9gaPG0du2a2J277Je/QDqTHAnhb0M8mxhLwb83RsZKWitfwzmmDxpZy8vTR5uiyQqsDjrL14E5EyO9yyo5PEnz5VG0QaAJMU0GDfOFWzvvyUmilpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z9XlmLfUBh87tqel0re3ZB52OZdV7LyuXZay4cpBTrc=;
+ b=VCsQDPL4diVVABTwiHAnGtW6beVGMGI0Mu1T9Zs0jcEd4KMeM1/hn9a8OKeM0TYDe9Wrd5pZ1redMuI0xVYdlQyKFmPn9NCtZy8TnL1oITTNdqO3V82gOWAy7kVQK2EXJolxj86/N1MvrrQCdy4Hl8jKTKB5t/TxGDCtkq5bkyQCWzU7n/fZsgM1v6CpKYyKp4gS4u9YFmOrvb1suu3IZveSTtLEaNRWbe9VkZIVouVRKXLToRtsVUFOSEtO6srfR5JKGPSbwc/Kw3x4ccFUnACc6NT6bU0Dn6Tt7jehY37lcS4GDQN0z5/pwuVdi6ywwu/QEYf82w5WcUgjXU0eUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z9XlmLfUBh87tqel0re3ZB52OZdV7LyuXZay4cpBTrc=;
+ b=SodqM990vgSzlmFZyprkjxiSmveIzZYKAs4b2jCI3ixkLjNzqu9Bd7k12vc5shSx8T4jUDZFEx8LW1BGOODsyZylZ7K8PwAqwLBg1raECzd05Eax/Am27YgLMbt24Y95prWozGhfh56BllviZqX+lRRb9zbxePd1a7ySIKfoKfU=
+Authentication-Results: toradex.com; dkim=none (message not signed)
+ header.d=none;toradex.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VE1PR04MB6560.eurprd04.prod.outlook.com (2603:10a6:803:122::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
+ 2021 03:02:34 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::3ce1:4759:5c33:514c]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::3ce1:4759:5c33:514c%5]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
+ 03:02:34 +0000
+Message-ID: <5fea4551daac3698df791c12e48d88338efaa2b3.camel@nxp.com>
+Subject: Re: [PATCH v6 01/14] media: uapi: Add some RGB bus formats for
+ i.MX8qm/qxp pixel combiner
+From:   Liu Ying <victor.liu@nxp.com>
+To:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: GTE - The hardware timestamping engine
-Message-ID: <20210323025933.GA10669@sol>
-References: <4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com>
- <CACRpkdbmqww6UQ8CFYo=+bCtVYBJwjMxVixc4vS6D3B+dUHScw@mail.gmail.com>
- <20210322060047.GA226745@sol>
- <d48fa7b5-8c17-c3d7-10a9-a9811c410a39@nvidia.com>
- <20210323003208.GA6105@sol>
- <7961d9df-4120-e37c-d042-528655bd0270@nvidia.com>
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Cc:     "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        "robert.foss@linaro.org" <robert.foss@linaro.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
+Date:   Tue, 23 Mar 2021 11:00:56 +0800
+In-Reply-To: <62306ab21ec234317ca4b8c2f06fc9cd4be0ead4.camel@toradex.com>
+References: <1615952569-4711-1-git-send-email-victor.liu@nxp.com>
+         <1615952569-4711-2-git-send-email-victor.liu@nxp.com>
+         <62306ab21ec234317ca4b8c2f06fc9cd4be0ead4.camel@toradex.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: HK2PR02CA0213.apcprd02.prod.outlook.com
+ (2603:1096:201:20::25) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7961d9df-4120-e37c-d042-528655bd0270@nvidia.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from blueberry (119.31.174.66) by HK2PR02CA0213.apcprd02.prod.outlook.com (2603:1096:201:20::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 03:02:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5ceee79b-f502-4742-b440-08d8eda81af6
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6560:
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6560A2EA82F056A70F210DE798649@VE1PR04MB6560.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aL0RgfhtJQuWr6CVqWstxtzKM2s8IrXf6QCtERiLR/QKQo7LCodpfkyCYTZWsEJiSErPP1nZ95wrwWwXU39MCVrVCFIZmWBASamfNO+o/+SgUUmpyusH3O3MNRKz9KzBFl8N19pwm8OwPAAFUKrHXryrirb63ZiLfhLimptH7X51UW/NAznxkLR9BcC86Ttbbnbac+jPYpC1PrW/NNRi0AtFrnHNezSkRbk19C2P1JcUY5z2yzJ+lA+MYXhzQCy3xXstOzEcixRT2jMKiW0gYqWQUd3g5f5VYxdYACTW/Fw7ZX+F/nblqCMKX5g9P3rtcdWgpQLOwo9yiNJlMN6kfrGJjc1cfL4PAYRNl9j0nwo/nKfCn6ogA7BRh0SeZnE5W0UVjCDK03HZ0C63YqtK7ThsCIyaWB3Fy5Oyjk+1exC+ZmbbO63pMpYojHnYZA4WoBUrqP2O/hU+DRwyDRvDVcom4mHenl9SUwOPB/LMbN7LjXWplSL/H57/5mWiFFbDC0bdEm1jY0vW591pKiuqhu14vjBxKaBwQV3lukx7kWjWCKGYmG5KeRWGLB/u56AcN7hIcp9XCbX1kIrIhcuOgZWT8INwrOzV/EL9swPx+6D+9abCbHizop/lysHmTzYkcPmPSMUNRM8T19n+f/zV/Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(346002)(376002)(39860400002)(2906002)(6666004)(52116002)(478600001)(2616005)(6496006)(110136005)(36756003)(54906003)(316002)(956004)(38100700001)(5660300002)(6486002)(66556008)(83380400001)(8936002)(4326008)(66476007)(86362001)(66946007)(8676002)(7416002)(26005)(186003)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?N3UrOU5QTW9CZFZxZ1oxaUxuS3g1SklIV2U3VEp2UUZlOVpIT1pWMlpIUlI5?=
+ =?utf-8?B?dWVheWlOOW8vSlZqZjBmZ0RWeHE2MXRJdmYxczVQdnBmblhBNmxlTTBvMVp1?=
+ =?utf-8?B?SUdCKzVVTDF0Tlp1UWo1Mzg0OEJRSEFnblNmYzB4NVVNYWdLSXlpOFhWdnFM?=
+ =?utf-8?B?MU5GKzM3c3N3SDgwZkNZdElnOWdTclYvRVhXRFIwWG50TTFxT1RZT3VHTWZE?=
+ =?utf-8?B?Q2djUWgrd2xrZHJ5L0g0Q2xrUHBMYktrOEcyQ0M4bEZBNWxMK0dKcUlXTW90?=
+ =?utf-8?B?YkxnTkVjd1hQbGtLVEQ1eW8vL002azZQTE5OZ1htSVZNbTlQampkdFJuVWxX?=
+ =?utf-8?B?bVVlZG56VUtQYWM2ZzlRSWxTWG9rM21SUUFPbyswRU5VYUZtK09oUktZZHYz?=
+ =?utf-8?B?UEN6cEdsa3JhVExVK0hzQ0NBV000NG1weERPaFlOYVBianhDaGhFU3VXYXd1?=
+ =?utf-8?B?V29jRklyVEozWWpBdXJyM3VoOUExQkMzVE1USG5lMDJJbzYrQlphdXhIMjFu?=
+ =?utf-8?B?cUFEQnB4WmF1T3dQcTd5dXhTclpoZWF6ZmhpbHZWYWIvRG5tOHR5ZVRZZDND?=
+ =?utf-8?B?TElYVjUwR1Z2OWJIdnBrM3NHN3BtQUorVVdzT3JILzBJNzF6bDRJUC9kU0hR?=
+ =?utf-8?B?OEdiYkVZTFdLYXVlNkZPazdvWTVkRXpWOEJDMk9XRGlCbkNSb0xaQU1CZkxy?=
+ =?utf-8?B?aU1EQ2RmVVEwTTZudk9TQ2l6SUsvRnUzTDJmRXdndUFNc3JHYlNSRnB5WDJ4?=
+ =?utf-8?B?Q0tWY0lyMTFNZjZZc2V0QmZlT3RKV05Pcnp0ejU3ZWpERWcvMjFlQUFBVk4y?=
+ =?utf-8?B?SmlkK1liOEdOd2IrdHl3aXNrcDZCYU4zanJhc2JhcE4zOEt3VWQrS3ZFTjdG?=
+ =?utf-8?B?bVNlZ3htQzM5aE9zc0lIRW5Fc3pLZ1BXcVhoOHhsZkNaVzhiUkxMNEhtYWYx?=
+ =?utf-8?B?cjJ0M0VpTVBGZE5hdGZwQWZXdlNoam8rbllXaC9IVjdaRHFPNEZZQllGU3dK?=
+ =?utf-8?B?aEZBRC9zQkFyclI3SHdvRkxmTDBRSDA2QWdNTVl2OVZNQWpmWXIyemFtR0F6?=
+ =?utf-8?B?S3BvZlVmZ1V4WGM3eHlIenhiWkFqM2NHNzhIZ0RpZmtLTzI0S3Y3YllLcHZs?=
+ =?utf-8?B?RG5CRFVmMTdnblBWeTZUNDh5OVJrV2VTV0V0b3dLREtrMHcwVWhrL21kUzVu?=
+ =?utf-8?B?ck1mQ2JoMk1TU1YzOEVueEZKalJEdG1ISUFaTjdDcXJQbWhOS1FHOWMyei9v?=
+ =?utf-8?B?VVk1Y2FNMUhjRFlnV2pPOHhWVUNCNUcyRkplS09LS3pyZVltd1B6TlU0YUVD?=
+ =?utf-8?B?TTlBczBHVmlyeWNRSTNIYjQ4a0gzaC9iZiszMjZhdmpXYVJrL2ZNY0U4WVd2?=
+ =?utf-8?B?czZRTHlUc2txT1M0cmNpRkFrQ1ZMYjlMNmdaZjNRcGQrbVl4d1JWVi9nRzhQ?=
+ =?utf-8?B?YUhtQnpVcjU0Wno2QlFoaW55cXpIMkU1RmpkeUt4YUplbTNvMGxFS05vVjlD?=
+ =?utf-8?B?R2FrZUxlNzQ1MWl5d1c0MjJ5QVBqRG9YeHVDeXlIb0pFN1dsMjBQZU8xS1d4?=
+ =?utf-8?B?OC9CcDFUNlZ1L2xrQzhEbTdzMkpNcGtvZjF5UTJvcjVqT2NNYks4azNTQllO?=
+ =?utf-8?B?RWRSOFFlV1VmRm8weUcvcnVGclhvQkZOWWVNVzN5MTYrRDkwalBjWjBaaVBJ?=
+ =?utf-8?B?TEs0S3pQQm9IcUEvc2tyWW9OOTZ6YlZJeWRCem1mMXJ6aVcwTUdXdkttbGEy?=
+ =?utf-8?Q?6cSwDGupycId/DMu9aFBb79M3tFgFcQRIQmN+2F?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ceee79b-f502-4742-b440-08d8eda81af6
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 03:02:34.1915
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bsQ6lRIq8rizn0icWPz6fp58jfjqajUdYXfvAegdZvw0vYOE1jaIFSarLIR6JyEamrjpIHqjZ5cnCb/g9hXzmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6560
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:53:10PM -0700, Dipen Patel wrote:
-> 
-> 
-> On 3/22/21 5:32 PM, Kent Gibson wrote:
-> > On Mon, Mar 22, 2021 at 01:21:46PM -0700, Dipen Patel wrote:
-> >> Hi Linus and Kent,
-> >>
+Hi Marcel,
 
-[snip]
-
-> > In response to all your comments above...
+On Tue, 2021-03-23 at 00:23 +0000, Marcel Ziswiler wrote:
+> On Wed, 2021-03-17 at 11:42 +0800, Liu Ying wrote:
+> > This patch adds RGB666_1X30_CPADLO, RGB888_1X30_CPADLO, RGB666_1X36_CPADLO
+> > and RGB888_1X36_CPADLO bus formats used by i.MX8qm/qxp pixel combiner.
+> > The RGB pixels with padding low per component are transmitted on a 30-bit
+> > input bus(10-bit per component) from a display controller or a 36-bit
+> > output bus(12-bit per component) to a pixel link.
 > > 
-> > Firstly, I'm not suggesting that other kernel modules would use the
-> > cdev lineevents, only that they would use the same mechanism that
-> > gpiolib-cdev would use to timestamp the lineevents for userspace.
+> > Reviewed-by: Robert Foss <robert.foss-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart-ryLnwIuWjnjg/C1BVhZhaw@public.gmane.org>
+> > Signed-off-by: Liu Ying <victor.liu-3arQi8VN3Tc@public.gmane.org>
+> > ---
+> > v5->v6:
+> > * Add Laurent's R-b tag.
 > > 
-> Sure, I just wanted to mention the different scenarios and wanted to know
-> how can we fit all those together. Having said that, shouldn't this serve
-> an opportunity to extend the linevent framework to accommodate kernel
-> drivers as a clients?
-> 
-> If we can't, then there is a risk of duplicating lineevent mechanism in all
-> of those kernel drivers or at least in GTE framework/infrastructure as far
-> as GPIO related GTE part is concerned.
->  
-
-In-kernel the lineevents are just IRQs so anything needing a "lineevent"
-can request the IRQ directly.  Or am I missing something?
-
-> > As to that mechanism, my current thinking is that the approach of
-> > associating GTE event FIFO entries with particular physical IRQ events is
-> > problematic, as keeping the two in sync would be difficult, if not
-> > impossible.
-> >
-> > A more robust approach is to ignore the physical IRQs and instead service
-> > the GTE event FIFO, generating IRQs from those events in software -
-> > essentially a pre-timestamped IRQ.  The IRQ framework could provide the
-> > timestamping functionality, equivalent to line_event_timestamp(), for
-> > the IRQ handler/thread and in this case provide the timestamp from the GTE
-> > event.
+> > v4->v5:
+> > * Add Robert's R-b tag.
 > > 
+> > v3->v4:
+> > * No change.
+> > 
+> > v2->v3:
+> > * No change.
+> > 
+> > v1->v2:
+> > * No change.
+> > 
+> >  include/uapi/linux/media-bus-format.h | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/uapi/linux/media-bus-format.h b/include/uapi/linux/media-bus-format.h
+> > index 0dfc11e..ec3323d 100644
+> > --- a/include/uapi/linux/media-bus-format.h
+> > +++ b/include/uapi/linux/media-bus-format.h
+> > @@ -34,7 +34,7 @@
+> >  
+> >  #define MEDIA_BUS_FMT_FIXED                    0x0001
+> >  
+> > -/* RGB - next is       0x101e */
+> > +/* RGB - next is       0x1022 */
+> >  #define MEDIA_BUS_FMT_RGB444_1X12              0x1016
+> >  #define MEDIA_BUS_FMT_RGB444_2X8_PADHI_BE      0x1001
+> >  #define MEDIA_BUS_FMT_RGB444_2X8_PADHI_LE      0x1002
+> > @@ -59,9 +59,13 @@
+> >  #define MEDIA_BUS_FMT_RGB888_3X8_DELTA         0x101d
+> >  #define MEDIA_BUS_FMT_RGB888_1X7X4_SPWG                0x1011
+> >  #define MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA       0x1012
+> > +#define MEDIA_BUS_FMT_RGB666_1X30_CPADLO       0x101e
+> > +#define MEDIA_BUS_FMT_RGB888_1X30_CPADLO       0x101f
+> >  #define MEDIA_BUS_FMT_ARGB8888_1X32            0x100d
+> >  #define MEDIA_BUS_FMT_RGB888_1X32_PADHI                0x100f
+> >  #define MEDIA_BUS_FMT_RGB101010_1X30           0x1018
+> > +#define MEDIA_BUS_FMT_RGB666_1X36_CPADLO       0x1020
+> > +#define MEDIA_BUS_FMT_RGB888_1X36_CPADLO       0x1021
+> >  #define MEDIA_BUS_FMT_RGB121212_1X36           0x1019
+> >  #define MEDIA_BUS_FMT_RGB161616_1X48           0x101a
 > 
-> I have not fully understood above two paragraphs (except about
-> lineevent_event_timestamp related part).
-> 
-> I have no idea what it means to "ignore the physical IRQs and service the
-> GTE event FIFO". Just like GPIO clients, there could be IRQ clients which
-> want to monitor certain IRQ line, like ethernet driver wanted to retrieve
-> timestamp for its IRQ line and so on.
-> 
+> I haven't figured out what exactly the idea of this strange ordering of things is about? Could you enlighten
+> me?
 
-I mean that in the IRQ framework, rather than enabling the physical IRQ
-line it would leave that masked and would instead enable the FIFO line to
-service the FIFO, configure the GTE to generate the events for that
-line, and then generate IRQs in response to the FIFO events.
-That way the client requesting the IRQ is guaranteed to only receive an
-IRQ that corresponds to a GTE FIFO event and the timestamp stored in the
-IRQ framework would match.
+The existing comment in this header file mentions 'The bus formats are
+grouped by type, bus_width, bits per component, samples per pixel and
+order of subsamples. Numerical values are sorted using
+generic numerical sort order (8 thus comes before 10).'
 
-And that is what I mean by this being an IRQ feature.
-We need feedback from the IRQ guys as to whether that makes sense to
-them.
+So, the way I read the ordering is that fomarts are first grouped as
+'type', like 'RGB', 'YUV'  and 'Bayer', then sorted by 'bus_width',
+like '2x8', '1x30' and '1x36', then sorted by 'bits per component',
+like 'RGB666', 'RGB888' and 'RGB121212'.
 
-Cheers,
-Kent.
+It looks like 'samples per pixel' and 'order of subsamples' are 'YUV'
+type relevant.
+
+HTH,
+Liu Ying 
+
 
