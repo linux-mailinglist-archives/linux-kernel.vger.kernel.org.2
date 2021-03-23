@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AD8345AE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E6F345AEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhCWJcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:32:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53197 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhCWJci (ORCPT
+        id S229963AbhCWJe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhCWJeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:32:38 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lOdOs-0000ly-LP; Tue, 23 Mar 2021 09:32:34 +0000
-Date:   Tue, 23 Mar 2021 10:32:33 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Christian Brauner <christian.brauner@canonical.com>,
-        Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtio-fs@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
-        lhenriques@suse.de, dgilbert@redhat.com,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Jan Kara <jack@suse.cz>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 1/3] posic_acl: Add a helper determine if SGID should be
- cleared
-Message-ID: <20210323093233.iyl4k6x432ytb72c@wittgenstein>
-References: <20210319195547.427371-1-vgoyal@redhat.com>
- <20210319195547.427371-2-vgoyal@redhat.com>
- <CAHpGcMKhFxotKDxPryfKdhNMMDWO4Ws33s6fEm2NP0u_4vffnQ@mail.gmail.com>
- <20210320100322.ox5gzgauo7iqf2fv@gmail.com>
- <20210322170111.GE446288@redhat.com>
+        Tue, 23 Mar 2021 05:34:05 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8895C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:34:05 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id h7so14410510qtx.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6F6NXGeRgosTfbHvdsjCF0kdLc4P28DODH78gYIvxqw=;
+        b=fV2KtRlBe3pRC9JBnAglQgxeGSx0SOHh5MWpO6JuKtiJZLRckX7LnmLb53KNDNv9RM
+         HPDkxwKKP2o1egsy8SLrXaRPGJDIpsuIDLHW3bOIXLOnVzF5oDhavnE+q1UQj3aR7Q2B
+         8VJACUxTUlp86gI985gqvFExbpI/Rr/qVJILE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6F6NXGeRgosTfbHvdsjCF0kdLc4P28DODH78gYIvxqw=;
+        b=sOJks0m5Y8jqDGX+PSkLMDCt7Hk5CsO44jIJo9EnaNqLYiHGCNjzIWWHe9DvCaBLw/
+         8JYqX6JkC9BbsV9+Imyw45CHlXbUO2AThgdMffDnzrxTc6mqUs97414gcj7gBZRmq2Nb
+         8HitPc3Tn/xzeX/7Tm+qWFh1ZA1zldsmkjCjJQGtNnSdU/1p+S9gwcbjG7CbJJtPnmGK
+         EhB2SvRrDsrkUUkrWWJ2+jIXdGxrN9tJPNC3V191CyjynZZfI4pxJTjNHbMy5j6aOZP2
+         YgKxqk8GvAB+okDXbisxSyNWFPodDhoBR7e2TBeFF8Ayhx6rSi+4zN7ZBLqFLyGuXZMH
+         vREg==
+X-Gm-Message-State: AOAM531cBIfQywbuyRoi0ACztyVM/y2Stm6QKt1F83chqdIdm8B7qaZ+
+        WL/Q3RpLRAL43p5zZRFzTqC9JXkNw1uJ6JTCP+xYKCMPs3w=
+X-Google-Smtp-Source: ABdhPJyaQ6eVd9B6SzxtJ9qIpIV127NwgBWnq05rA8QfHUnr0gUAolRXXUQKXqsEl2qp/wlkQGgU8wZxJnm63FRO2t0=
+X-Received: by 2002:ac8:5313:: with SMTP id t19mr3518326qtn.148.1616492044872;
+ Tue, 23 Mar 2021 02:34:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322170111.GE446288@redhat.com>
+References: <20210213095724.3411058-1-daniel@0x0f.com> <20210215112409.1a755bf0@xps13>
+ <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
+ <20210215121653.4edd86c4@xps13> <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
+ <20210322193213.18520b9a@xps13>
+In-Reply-To: <20210322193213.18520b9a@xps13>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Tue, 23 Mar 2021 18:33:54 +0900
+Message-ID: <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 01:01:11PM -0400, Vivek Goyal wrote:
-> On Sat, Mar 20, 2021 at 11:03:22AM +0100, Christian Brauner wrote:
-> > On Fri, Mar 19, 2021 at 11:42:48PM +0100, Andreas Grünbacher wrote:
-> > > Hi,
-> > > 
-> > > Am Fr., 19. März 2021 um 20:58 Uhr schrieb Vivek Goyal <vgoyal@redhat.com>:
-> > > > posix_acl_update_mode() determines what's the equivalent mode and if SGID
-> > > > needs to be cleared or not. I need to make use of this code in fuse
-> > > > as well. Fuse will send this information to virtiofs file server and
-> > > > file server will take care of clearing SGID if it needs to be done.
-> > > >
-> > > > Hence move this code in a separate helper so that more than one place
-> > > > can call into it.
-> > > >
-> > > > Cc: Jan Kara <jack@suse.cz>
-> > > > Cc: Andreas Gruenbacher <agruenba@redhat.com>
-> > > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > > > ---
-> > > >  fs/posix_acl.c            |  3 +--
-> > > >  include/linux/posix_acl.h | 11 +++++++++++
-> > > >  2 files changed, 12 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-> > > > index f3309a7edb49..2d62494c4a5b 100644
-> > > > --- a/fs/posix_acl.c
-> > > > +++ b/fs/posix_acl.c
-> > > > @@ -684,8 +684,7 @@ int posix_acl_update_mode(struct user_namespace *mnt_userns,
-> > > >                 return error;
-> > > >         if (error == 0)
-> > > >                 *acl = NULL;
-> > > > -       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> > > > -           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
-> > > > +       if (posix_acl_mode_clear_sgid(mnt_userns, inode))
-> > > >                 mode &= ~S_ISGID;
-> > > >         *mode_p = mode;
-> > > >         return 0;
-> > > > diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
-> > > > index 307094ebb88c..073c5e546de3 100644
-> > > > --- a/include/linux/posix_acl.h
-> > > > +++ b/include/linux/posix_acl.h
-> > > > @@ -59,6 +59,17 @@ posix_acl_release(struct posix_acl *acl)
-> > > >  }
-> > > >
-> > > >
-> > > > +static inline bool
-> > > > +posix_acl_mode_clear_sgid(struct user_namespace *mnt_userns,
-> > > > +                         struct inode *inode)
-> > > > +{
-> > > > +       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> > > > +           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
-> > > > +               return true;
-> > > > +
-> > > > +       return false;
-> > > 
-> > > That's just
-> > > 
-> > > return !in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
-> > >     !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID);
-> > > 
-> > > The same pattern we have in posix_acl_update_mode also exists in
-> > > setattr_copy and inode_init_owner, and almost the same pattern exists
-> > > in setattr_prepare, so can this be cleaned up as well? The function
-> > > also isn't POSIX ACL specific, so the function name is misleading.
-> > 
-> > Good idea but that should probably be spun into a separate patchset that
-> > only touches the vfs parts.
-> 
-> IIUC, suggestion is that I should write a VFS helper (and not posix
-> acl helper) and use that helper at other places too in the code. 
+Hi Miquel,
 
-If there are other callers outside of acls (which should be iirc) then
-yes.
+On Tue, 23 Mar 2021 at 03:32, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > I think this shows that the datasheet is right in that the complete 64
+> > bytes of "spare area" is usable.
+> > I have no idea where it puts the ECC though. :)
+>
+> Argh, I don't like when hardware tries to be smart.
 
-> 
-> I will do that and post in a separate patch series.
+I'm sort of worried that there just isn't any ECC :D
 
-Yeah, I think that makes more sense to have this be a separate change
-instead of putting it together with the fuse change if it touches more
-than one place.
+> Ok then let's declare no ECC bytes in the OOB layout, I guess it's the
+> best thing to do...
 
-Thanks!
-Christian
+Ok. I think I might add a comment in the code that this is a best guess.
+
+> I don't recall the state of the patch which triggered this discussion,
+> so I guess it's a good time to respin.
+
+I'll resend it. I've added support for the 2Gb version in the meantime
+so I need to resend it either way.
+
+Thanks,
+
+Daniel
