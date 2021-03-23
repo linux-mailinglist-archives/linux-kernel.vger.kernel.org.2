@@ -2,140 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660C2346CBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1951346CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhCWWY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:24:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56120 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234047AbhCWWVq (ORCPT
+        id S233988AbhCWWYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:24:23 -0400
+Received: from mail-io1-f53.google.com ([209.85.166.53]:43817 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhCWWVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:21:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616538105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=14QFx/FhyE4y8I4n6Pzhb3Snk1RXVd111br2b+FjT1s=;
-        b=eSyKhmtpLk39qNA0hboZqvGdw9JzV8DTGkftToGFnEqZOuAsZPtJKGHk8/D1xqTLepaUoh
-        S8OsMpoHrUGxnN9Axldl0nsTc5MqiNykCIv+nJnT8fpPtcLY6Wgy4qJ2RhLU3lagqMGoSq
-        xhOT9NpD/3TUuRE+r8S6UT9vYlS13Nw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-mvL2ea7qMyu8H_up3g0McQ-1; Tue, 23 Mar 2021 18:21:42 -0400
-X-MC-Unique: mvL2ea7qMyu8H_up3g0McQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BAB187A826;
-        Tue, 23 Mar 2021 22:21:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B37FC10023B5;
-        Tue, 23 Mar 2021 22:21:30 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v5 20/28] afs: Log remote unmarshalling errors
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 22:21:29 +0000
-Message-ID: <161653808989.2770958.11530765353025697860.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-References: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 23 Mar 2021 18:21:43 -0400
+Received: by mail-io1-f53.google.com with SMTP id z136so19437419iof.10;
+        Tue, 23 Mar 2021 15:21:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Fg0JbHxWwc5hs6YUiBAKgad03eD2j4gV/dnUv7t4aS8=;
+        b=JbwnKuIEYhBq4uXppyClKxHhw/+bnu1niNWa0R145EmVVlNQMozayL/MDDtghJH30A
+         SHMYJuIwAAg6mEdlnQWqLRdZq3CmUuqNKc/CWF6Ytzo7IFbO0NDL//mVF49ezoBC79Be
+         OSKkTlNEwgGH6aRaWoeZnAJy6VHbUuzE5meNWU/pskYg4FmTywXK1b+JRTo7PcAbQ4sp
+         /R0Ki72yBpR7SrxLzDDNKGQwY+8lGSSGfptd0uqTJ3EayXmFlb0tYAOKkkMKZybFDuq4
+         kVGpyyZcDSh+htsgl3h1OGoGvuEvyY8lrNrLP4Xi6VwANKTDfK0Q/GGX8qmCgSdXfCyw
+         seGQ==
+X-Gm-Message-State: AOAM531BWRE2CIdNLrWbSpbkznuvFhvm5kSjH6lwKOUcVMXVHQN7h2mr
+        6wQauiaEireGko3yHVIt6w==
+X-Google-Smtp-Source: ABdhPJwOGnFXOew/OUUy0TgllGRyOgIpGWGfFfMIPAjRH2ecZP4DkyHvB+cAnhPyQYBZzB6BQQyb1w==
+X-Received: by 2002:a5d:9d56:: with SMTP id k22mr221902iok.145.1616538103036;
+        Tue, 23 Mar 2021 15:21:43 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id e12sm87137ilm.85.2021.03.23.15.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 15:21:42 -0700 (PDT)
+Received: (nullmailer pid 1448259 invoked by uid 1000);
+        Tue, 23 Mar 2021 22:21:40 -0000
+Date:   Tue, 23 Mar 2021 16:21:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Michael Walle <michael@walle.cc>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>
+Subject: Re: [PATCH v8 14/22] dt-bindings: add BCM6368 pincontroller binding
+ documentation
+Message-ID: <20210323222140.GA1448229@robh.at.kernel.org>
+References: <20210317143803.26127-1-noltari@gmail.com>
+ <20210317143803.26127-15-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317143803.26127-15-noltari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Log unmarshalling errors reported by the peer (ie. it can't parse what we
-sent it).  Limit the maximum number of messages to 3.
+On Wed, 17 Mar 2021 15:37:55 +0100, Álvaro Fernández Rojas wrote:
+> Add binding documentation for the pincontrol core found in BCM6368 SoCs.
+> 
+> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> ---
+>  v8: add changes suggested by Rob Herring
+>  v7: add changes suggested by Rob Herring
+>  v6: add changes suggested by Rob Herring
+>  v5: change Documentation to dt-bindings in commit title
+>  v4: no changes
+>  v3: add new gpio node
+>  v2: remove interrupts
+> 
+>  .../pinctrl/brcm,bcm6368-pinctrl.yaml         | 219 ++++++++++++++++++
+>  1 file changed, 219 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6368-pinctrl.yaml
+> 
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/159465826250.1377938.16372395422217583913.stgit@warthog.procyon.org.uk/
-Link: https://lore.kernel.org/r/160588532584.3465195.15618385466614028590.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161118149739.1232039.208060911149801695.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161046033.2537118.7779717661044373273.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340409118.1303470.17812607349396199116.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539552964.286939.16503232687974398308.stgit@warthog.procyon.org.uk/ # v4
----
-
- fs/afs/rxrpc.c |   34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
-index 0ec38b758f29..ae68576f822f 100644
---- a/fs/afs/rxrpc.c
-+++ b/fs/afs/rxrpc.c
-@@ -500,6 +500,39 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 	_leave(" = %d", ret);
- }
- 
-+/*
-+ * Log remote abort codes that indicate that we have a protocol disagreement
-+ * with the server.
-+ */
-+static void afs_log_error(struct afs_call *call, s32 remote_abort)
-+{
-+	static int max = 0;
-+	const char *msg;
-+	int m;
-+
-+	switch (remote_abort) {
-+	case RX_EOF:		 msg = "unexpected EOF";	break;
-+	case RXGEN_CC_MARSHAL:	 msg = "client marshalling";	break;
-+	case RXGEN_CC_UNMARSHAL: msg = "client unmarshalling";	break;
-+	case RXGEN_SS_MARSHAL:	 msg = "server marshalling";	break;
-+	case RXGEN_SS_UNMARSHAL: msg = "server unmarshalling";	break;
-+	case RXGEN_DECODE:	 msg = "opcode decode";		break;
-+	case RXGEN_SS_XDRFREE:	 msg = "server XDR cleanup";	break;
-+	case RXGEN_CC_XDRFREE:	 msg = "client XDR cleanup";	break;
-+	case -32:		 msg = "insufficient data";	break;
-+	default:
-+		return;
-+	}
-+
-+	m = max;
-+	if (m < 3) {
-+		max = m + 1;
-+		pr_notice("kAFS: Peer reported %s failure on %s [%pISp]\n",
-+			  msg, call->type->name,
-+			  &call->alist->addrs[call->addr_ix].transport);
-+	}
-+}
-+
- /*
-  * deliver messages to a call
-  */
-@@ -563,6 +596,7 @@ static void afs_deliver_to_call(struct afs_call *call)
- 			goto out;
- 		case -ECONNABORTED:
- 			ASSERTCMP(state, ==, AFS_CALL_COMPLETE);
-+			afs_log_error(call, call->abort_code);
- 			goto done;
- 		case -ENOTSUPP:
- 			abort_code = RXGEN_OPCODE;
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
