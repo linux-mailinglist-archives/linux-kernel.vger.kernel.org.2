@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8581834616A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632A534616B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhCWOYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:24:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34545 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232037AbhCWOY0 (ORCPT
+        id S232256AbhCWOYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhCWOYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:24:26 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lOhxF-0000jQ-Pj; Tue, 23 Mar 2021 14:24:21 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Mirela Rabulea <mirela.rabulea@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: imx-jpeg: Pass the v4l2_jpeg_header header argument by reference
-Date:   Tue, 23 Mar 2021 14:24:21 +0000
-Message-Id: <20210323142421.348695-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 23 Mar 2021 10:24:37 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240ADC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:24:37 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id z136so17856032iof.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f3ffjUDEfdpupg8pOxs1DbNdOM7s/25GYVkBS3ZIJKU=;
+        b=QQLotKf2dEUsBufVdFz/Gwl322r+MKxtGAJ4yMe4ovpBB+GAEUYmXcMk1rcijaSgCA
+         ZufTsf7XG9FlO57lBCmtHvPhREGIEYl6VhEC6TUEMwLX8/v6oJkS50uuUKlR+sxNJvFj
+         RSnu71Cuo8NtjPEKaBP2yY/qiSjGA5uqSSCqmmDSSBkmwV4MQi2q56PZttTu2GwTsEpU
+         lFEpDWQqBfYDYyMA7PF4eMiMYU5LXGXeDugJOht6oPhb36sBVXVsWBgoU9Ru4z5i+OiP
+         FO+HF0XKyMa7R6kY8q/5fNspiQXGW2Zkl6ICBTfBkQxuj94a8dAJxtYiFG8Kuz2Gs7LK
+         vuJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f3ffjUDEfdpupg8pOxs1DbNdOM7s/25GYVkBS3ZIJKU=;
+        b=QyWhCFFSNlKIjDaKeexK96e6Om+TaE6ElVaYfYUynTuXih70/QVG10byxhfNdkpABo
+         PotB1M86JSEYicWH1YHIyzPN5iWApv2x/CXm8BgZwlYxfnl4xZ8L/OyydLWaWOcZH4vE
+         ao0w6xfeNV6zWi5b+JsayXZUxb1P3gm4tTZHqcDbQ593EjPMLuFsuCdq/Dt/YvPwA1LX
+         FtZSYjZvjTd0TEPvJTD6EVTWS/MV9UdD9jNEbZcFkdqj96wml0wCqgH7LmI+6zGWuiwz
+         o/tg98ewn0spjMrZ7PtsoYWHjp38vOVhJS0epyYQXuwdkZtrc6Jz+rAOl5j+Bk//iZut
+         n9VQ==
+X-Gm-Message-State: AOAM530w/a8LoCjGnH5JRpc+6eFLgLeSteTO8tju10zmomfQtrcl3w6x
+        WQUfow0sy5wx5CRGXpuKVumcS8kukS8sxxBJHIMhnQ==
+X-Google-Smtp-Source: ABdhPJzZSN+E9lqMeu6pwYPPzrV612O72rKDlSb2lCnDk6sNkgU1WgQRlF/q8JGKLmFjKwqzZNH+xI4C7iIS7SU8lWQ=
+X-Received: by 2002:a6b:ea04:: with SMTP id m4mr4499897ioc.160.1616509476421;
+ Tue, 23 Mar 2021 07:24:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210308133146.3168995-1-raychi@google.com> <20210309185807.ka4iljasq5cmpmil@earth.universe>
+ <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com> <YFnxY7AW9QGQApKQ@kroah.com>
+In-Reply-To: <YFnxY7AW9QGQApKQ@kroah.com>
+From:   Ray Chi <raychi@google.com>
+Date:   Tue, 23 Mar 2021 22:24:25 +0800
+Message-ID: <CAPBYUsCo4p+4qy551+3=3PXmnKR96K6qN+CP=Y7sjKGwpemXSw@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: fix build error when POWER_SUPPLY is not enabled
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Kyle Tso <kyletso@google.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Greg,
 
-Currently the header argument is being passed by value, so a copy of 256
-byte structure on the stack is potentially occurring. Fix this by passing
-by reference to avoid any large stack copies.
+I will upload fixes for power supply usage in dwc3 and dt-binding
+documentation for the new device tree this week.
 
-Addresses-Coverity: ("Big parameter passed by value")
-Fixes: 2db16c6ed72c ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/platform/imx-jpeg/mxc-jpeg.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Thanks,
+Ray
 
-diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-index adb1715c75d7..f13a8efc35ad 100644
---- a/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-+++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
-@@ -1114,21 +1114,21 @@ static int mxc_jpeg_valid_comp_id(struct device *dev,
- }
- 
- static u32 mxc_jpeg_get_image_format(struct device *dev,
--				     const struct v4l2_jpeg_header header)
-+				     const struct v4l2_jpeg_header *header)
- {
- 	int i;
- 	u32 fourcc = 0;
- 
- 	for (i = 0; i < MXC_JPEG_NUM_FORMATS; i++)
--		if (mxc_formats[i].subsampling == header.frame.subsampling &&
--		    mxc_formats[i].nc == header.frame.num_components) {
-+		if (mxc_formats[i].subsampling == header->frame.subsampling &&
-+		    mxc_formats[i].nc == header->frame.num_components) {
- 			fourcc = mxc_formats[i].fourcc;
- 			break;
- 		}
- 	if (fourcc == 0) {
- 		dev_err(dev, "Could not identify image format nc=%d, subsampling=%d\n",
--			header.frame.num_components,
--			header.frame.subsampling);
-+			header->frame.num_components,
-+			header->frame.subsampling);
- 		return fourcc;
- 	}
- 	/*
-@@ -1137,7 +1137,7 @@ static u32 mxc_jpeg_get_image_format(struct device *dev,
- 	 * ITU-T T.872 chapter 6.5.3 APP14 marker segment for colour encoding
- 	 */
- 	if (fourcc == V4L2_PIX_FMT_YUV24 || fourcc == V4L2_PIX_FMT_RGB24) {
--		if (header.app14_tf == V4L2_JPEG_APP14_TF_CMYK_RGB)
-+		if (header->app14_tf == V4L2_JPEG_APP14_TF_CMYK_RGB)
- 			fourcc = V4L2_PIX_FMT_RGB24;
- 		else
- 			fourcc = V4L2_PIX_FMT_YUV24;
-@@ -1258,7 +1258,7 @@ static int mxc_jpeg_parse(struct mxc_jpeg_ctx *ctx,
- 	if (!mxc_jpeg_valid_comp_id(dev, psof, psos))
- 		dev_warn(dev, "JPEG component ids should be 0-3 or 1-4");
- 
--	fourcc = mxc_jpeg_get_image_format(dev, header);
-+	fourcc = mxc_jpeg_get_image_format(dev, &header);
- 	if (fourcc == 0)
- 		return -EINVAL;
- 
--- 
-2.30.2
-
+On Tue, Mar 23, 2021 at 9:47 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Mar 12, 2021 at 09:57:56PM +0800, Ray Chi wrote:
+> > Hi Sebastian,
+> >
+> > Sorry for the late reply.
+> >
+> > On Wed, Mar 10, 2021 at 2:58 AM Sebastian Reichel <sre@kernel.org> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Mon, Mar 08, 2021 at 09:31:46PM +0800, Ray Chi wrote:
+> > > > Fix build error when CONFIG_POWER_SUPPLY is not enabled.
+> > > >
+> > > > The build error occurs in mips (cavium_octeon_defconfig).
+> > > >
+> > > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_remove':
+> > > > drivers/usb/dwc3/core.c:1657: undefined reference to `power_supply_put'
+> > > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_get_properties':
+> > > > drivers/usb/dwc3/core.c:1270: undefined reference to `power_supply_get_by_name'
+> > > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_probe':
+> > > > drivers/usb/dwc3/core.c:1632: undefined reference to `power_supply_put'
+> > > >
+> > > > Fixes: 59fa3def35de ("usb: dwc3: add a power supply for current control")
+> > > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > > > Signed-off-by: Ray Chi <raychi@google.com>
+> > > > ---
+> > >
+> > > While I'm fine with merging this after fixing up the subject, the
+> > > original patch for dwc3 [0] looks completly incorrect to me.
+> > >
+> > > First of all it uses wrong scale (power-supply uses uA, not mA),
+> > > so you are charging 1000x slower than expected. Then the patchset
+> > > introduces a new DT property to get the power-supply device, but
+> > > does not update the DT binding documentation and does not Cc the
+> > > DT binding maintainer.
+> >
+> > Yes, it should use uA and send this information, and I will update a
+> > patch to fix it and add the DT binding documentation.
+>
+> So should I revert what we currently have in my usb-next tree, or do
+> you have a fix for this?
+>
+> thanks,
+>
+> greg k-h
