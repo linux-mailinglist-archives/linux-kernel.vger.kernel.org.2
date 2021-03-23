@@ -2,178 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E401B345CA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58FA345CA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhCWLR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:17:28 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:19224 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhCWLRV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:17:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1616498241; x=1648034241;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=xkEtnj795OGz0YOCi1K5ZAUBjS8scZ1aflNvlUmjf0Q=;
-  b=s7L/W9XO/FyaCx65CjCOqH+1iHlANCXMJL+jWxdTf6trkWdwcBK6KKpz
-   GGBcFX45WShEmyCjaOWfJm1TvVsWj7r6bhomtvL+nYPwydvlr7maY/IQx
-   6P6DtcKkIYX05ZPOd2UVEDG1S6FLKQW6Nff4TNvntnhis1eEWspZlaarV
-   PI3vM29Kd292XGlS2GDasW6zJGax3xN9+5D9u8EvakM1fBV4vs3klXJNf
-   hhGu8cmRAGUnid42OG+/Xs+V7TMyBI564aEHuDi7HNj4tlVGSPGsMD4FT
-   uBXlAcwo3ODmSQ0cYAp+FYj/U1nMoFwpapi3nmJ+/fcu+Ra7K8HTuUkmp
-   A==;
-IronPort-SDR: dkIXIA6MiHaqQFqxXM+aBgCxFDlrG/dDsWufP43wMkKAC9OPqYPlBdKobBVSToJXsx6s2K1Aut
- sz0MegjHkRV9Sh6EAy5IadY5Ar+XYyl9Nk2ad0a3iHLSXGNsd0pTp2QALl3du/bS+iisCvV2nK
- q4dOs/DjHmCu1VpAt5vzqobV3EN8S6QDvtS1HwcLPL+ncCVnWUQLbgoNx/Y4cMh9Nz/F3HbAKa
- ksLey87/bqx2zosANHwA81EtVmG+J8yy2ahMFr7cOD/ElaD0EBjoiRmo4E+TQg8H5OVC/thrIt
- Ac8=
-X-IronPort-AV: E=Sophos;i="5.81,271,1610434800"; 
-   d="scan'208";a="48534067"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Mar 2021 04:17:14 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 23 Mar 2021 04:17:14 -0700
-Received: from [10.12.80.255] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Tue, 23 Mar 2021 04:17:11 -0700
-Subject: Re: [PATCH] ARM: dts: at91-sama5d27_som1: fix phy address to 7
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Alexander Dahl <ada@thorsis.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <stable@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        Oleksij Rempel <ore@pengutronix.de>
-References: <20210217113808.21804-1-nicolas.ferre@microchip.com>
- <1732882030.11903.1616496356027@seven.thorsis.com>
- <ddedd53b-6087-f7a5-3c41-2b91fec35980@pengutronix.de>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <580984ef-41fe-62d0-ad30-f707a6669a13@microchip.com>
-Date:   Tue, 23 Mar 2021 12:17:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <ddedd53b-6087-f7a5-3c41-2b91fec35980@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S230357AbhCWLR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:17:59 -0400
+Received: from mail-mw2nam10on2040.outbound.protection.outlook.com ([40.107.94.40]:36094
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229452AbhCWLRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:17:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MMVP/vecj5MjrXgLveHft1aKzCFrzR6l3MkpbcMzhd8kBEUtsV1OI3i4vbLsb45OnwshEZo1yeJ965VArnAfrxBDKjcGB4+xIMs2gdDk+mCUWzhZ58+6DOpnSSSh4wERHQes/aEp56P/Iy7SpGquAdeWV1ZO+W7QffRdXAvkGEaQU2oBvJG75CiufxzGNXKTSosMsl2wfK+nVMwAIWcrByznfDhIYsMthXqEVxrCDHgMiUvMmtu1iL8rZ1JHZkC9/DTZZiE/QucGLSlC6k8MkwFE6MTUo7OYXyO7F5uJMYzaQ+pRC7VHhGGT1qb6aKogIpOJRpjsLyOLd1IKDjyl3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wMJTYF8Xu/n7b9pN/SOOH39pkkFIdekPl3g9T+/myOk=;
+ b=U2wZ1h3b+LbpqdlVIbnuQzpgdVH+CwgLfWDIDGTgrFidsA0gXaotNdmITHVOmfl9joHEjrzPBz5NO1OzTEzdPpeipdawoYI7YMBscslDSQU2vKoQZjZzHV+QrSfHsBKmcNTNtOoasugPrwYZBAsolFJ1xcVkdUQd3uwESOKg7QHU2S/nWYMG5Q60Z8BJ1BMiqDKIaeRvUSfwQPgm57d77I/qJlcoG3DXJl6cNt979+Rn/kUvDO/zndpqtQ5nuYqfpRq9emCy4lJRlulbQvvLWjnvEs20lQc3kKmg6owhijD+NlTH8+B1GrP8Tt4v+oeEgfj1H6zMhwaBSV0poOyvNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wMJTYF8Xu/n7b9pN/SOOH39pkkFIdekPl3g9T+/myOk=;
+ b=a0wW16E3P+IsdNOCOcwqWT9il/5EYEtmOYBr7D4K4gGQ7x9gi1AIuVU/03C1aoBAI+MVIRtJ0dMHG9o9aNIQVhNJtrtccv1FamI6aWXJIwVd7ij+cQrsJDk1Gzfb47ATcFoJ7O8zJopLSdNKWnRzK8cuKOBbWLgVr0Z64YYiz4s=
+Received: from BYAPR02MB5559.namprd02.prod.outlook.com (2603:10b6:a03:a1::18)
+ by BY5PR02MB6961.namprd02.prod.outlook.com (2603:10b6:a03:23b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.25; Tue, 23 Mar
+ 2021 11:17:48 +0000
+Received: from BYAPR02MB5559.namprd02.prod.outlook.com
+ ([fe80::2418:b7d2:cbb:27f]) by BYAPR02MB5559.namprd02.prod.outlook.com
+ ([fe80::2418:b7d2:cbb:27f%5]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
+ 11:17:48 +0000
+From:   Bharat Kumar Gogada <bharatku@xilinx.com>
+To:     Bharat Kumar Gogada <bharatku@xilinx.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
+Subject: RE: [PATCH v3 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA traffic
+ using CCI
+Thread-Topic: [PATCH v3 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA traffic
+ using CCI
+Thread-Index: AQHXCPdf8/XRKTi3FEaC06+ar6fH8aqEsnBAgAzn4TA=
+Date:   Tue, 23 Mar 2021 11:17:48 +0000
+Message-ID: <BYAPR02MB55599675DC55C6F7568B6FA6A5649@BYAPR02MB5559.namprd02.prod.outlook.com>
+References: <20210222084732.21521-1-bharat.kumar.gogada@xilinx.com>
+ <BYAPR02MB55590903AD09A045B8A345BFA56C9@BYAPR02MB5559.namprd02.prod.outlook.com>
+In-Reply-To: <BYAPR02MB55590903AD09A045B8A345BFA56C9@BYAPR02MB5559.namprd02.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9b3154ec-6477-4e21-bd4d-08d8eded4a75
+x-ms-traffictypediagnostic: BY5PR02MB6961:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR02MB69615F3E6DCA0EB5068F09CBA5649@BY5PR02MB6961.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /4IhO2sbYe12ujZCp2IM19KbCiKl3L+emOPq0VXnqIk7DgqXB5h4a1XIznDOoGRk9HD42VjZjqpX4kctEquSm/u5+FL5P8ZzGju6tnN2IJZY7ZCUGXmqph1SRAOKGs3DaZLdLehWHdJIa/HKk2i5aSK9adkK3mRqfmTj81W2UDDpoSfiUlLNZqaeJ9jIOu65sA6BXmhoqQfSa7dpMWB67Q3sIeU7jW64xr/Zw3StwB01NtJ/o7mh/F88NohlqO60nAuVQLv9NhFYqRHTYtolKWsnYV8hwC2b18j+mlLENEa4dh6UVygc/r1S8o1bQ4gLQiU+eXfQ1+uHnkSnVO+HqpaxKfXhOa88t7/p7D71OrbK9qDwpG0bJPie7L2t+pHdwSh6s1+ts8TG6JesXNTzijD5GrG0mzpMs18E6WVLBzjdnB7LAo5ruQQ1LrzPTb1rGQJDz4unwtW4larDAlx3pVN50hecGHEOLgsolX4ZTIbxhynYwgR/OQ5YHCRjsng8gdC3CN23BPHhPux/xCjlD2nPvDDuu9dKQs/o8F87xQacoCYY4kx6kKfW2n9Gd1mifZnzCr98r2s4LfUHD5eYlSwEE/l4HXRwg3PTC2/pvN+kvvik6VE/Ijss801jdckodZ3+gOR43pI4eyP2duVKG2DcPfsuvbLVLkR7/30zgPBbBltLZzYRMrlaUDO5yMPtLG7XFY30vih0TfQG7N3UevB7bWDsMqLtEb0gUMY8NUOt7FU8tsBa0hgws9zgW8UO
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5559.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(366004)(376002)(346002)(136003)(83380400001)(6506007)(7696005)(86362001)(33656002)(53546011)(66556008)(54906003)(71200400001)(316002)(4326008)(66446008)(478600001)(64756008)(66946007)(66476007)(966005)(110136005)(76116006)(8936002)(38100700001)(186003)(8676002)(2906002)(52536014)(55016002)(26005)(5660300002)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cMyeALvsr7pREoTVTo7XqwFgAx+ywZtiL0+kq3mY+6HQVTyRvQTbAGTTSPBr?=
+ =?us-ascii?Q?6cM03thEYObnM2gokG4FHARo/tVFWJhe8sjoIRRKmfFDicTOZlm/dK09x4sD?=
+ =?us-ascii?Q?G+VSwsPPmCXIh/+Q2hzDRZq+ERYLyxPV/ZNqRkzpWy3otj4PA/gZqOos+9wF?=
+ =?us-ascii?Q?RcEgr7xA8n1rsredWSHOEoJMGzHrn4RGd9Jsg4SmEy+6CmshEIjntuYPpATf?=
+ =?us-ascii?Q?AHCuwH8aa9S7YiLPchZDxbZQ3m3cSzE+3vHr7+iuqpPseLtZ1g+hcDuf09FA?=
+ =?us-ascii?Q?hpuNgprx9EmAtrQZ/yfwkgp3xJTNxBOJehHo8V5P5uZ9dGx2ue7VowB3Rj1Q?=
+ =?us-ascii?Q?1JdiwmLxXLd6lCKT2ip4yMO0yes6NnRvHAhQiYogOgLhTl23t4LthlUJQGBX?=
+ =?us-ascii?Q?aQ0dWEOks5DnJsGruFSVD4WWW5u+gPbHOwR4kkr96iaPoki6hwNLRX3GD3pd?=
+ =?us-ascii?Q?Gq2UKuHr3hhYvi+Aw59VY1HZn0lSfPxrVjEUXeTSosSBiVWK0CDfeoc71tme?=
+ =?us-ascii?Q?nqC1kTHmOQY6NEQlH22t9rVrC0R6z3Ii5O3jYhKc6NmOFZv7q8FvdBtUKagF?=
+ =?us-ascii?Q?pX124KtogsUwLvyDsHvZVkvl6oxgLAeiNSyucFl7Eam7CuUKpclW6boRyIPI?=
+ =?us-ascii?Q?hfMdk2Xc82Ev3Hcl6x0KV8GbjerXQ9YdwcDi7mWnX2K4p0so2RTLLdvx0oXI?=
+ =?us-ascii?Q?u8cTuS27sfteHxK+yiBFDK+1VQlAqVWfwsyaBNHi0kbd/s4Iv9bmZdkhUI62?=
+ =?us-ascii?Q?eNyMtOgVAa6Jyq6Z6Seh6n5UUQAOWc5SkRvZYA36GVxor267X4sybhXsdXJi?=
+ =?us-ascii?Q?ZJ8W/wmojlz0RqP3a2YbXGI89GlZQVK3bZtQlnkgHY2UKsoH1IJo6JC/I7kx?=
+ =?us-ascii?Q?advmqtPmC9MfrYS9eIgOPMhFe3iwVJGd2mupmdelfZuMnrsF0Am6P5q1QMZF?=
+ =?us-ascii?Q?3pGV1fVFrkLXkHb8bw86+SYZDn66qdZQa0E8RRrH5DoOatZ5RwXguBQL/1Bq?=
+ =?us-ascii?Q?1P7549P4LDvJQlEE4gaDEjYIfmY0uSJvCCbcHuONA01f3UI+alUyvBxKtOw9?=
+ =?us-ascii?Q?a+SKXB3ymgSHb5vcKP/xV4Z67g73PTU0Lzaycx9R1JVYCHkOHccccK9CzEW/?=
+ =?us-ascii?Q?OvK+L4YnfuPnFnFj8LJW6kjOhCcKHc96pYNvV1V+FST5Q6T+6gkN4B8UiOWU?=
+ =?us-ascii?Q?47rkU1Hcnok2PXGyNLl4xHwtynj6v+8HKmuoBbqcQQRGaAiT7G5jxVh2jwNE?=
+ =?us-ascii?Q?r1uU91gZaaMttBNlrRhIRA7Bf5t0hjr+UyGyha0HbfTcmnGv29Et1ARRxajF?=
+ =?us-ascii?Q?0YjsOhfK0jEugkVUxvC6iw7N?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5559.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b3154ec-6477-4e21-bd4d-08d8eded4a75
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 11:17:48.3158
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KCWKl3X6fVt1iYWRBnzprBxDALmBFLPVhCZ1D3s4Sdr9LbdIDkrtlr729ULSrBYjCJgrHixlf4HAIjtunnYByQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6961
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexander, Ahmad,
+Ping.
 
-On 23/03/2021 at 11:55, Ahmad Fatoum wrote:
-> Hello Alexander,
-> 
-> On 23.03.21 11:45, Alexander Dahl wrote:
->> Hei hei,
->>
->> I could not get ethernet to work on SAMA5D27-SOM1-EK1 with kernels v5.10 and v5.11 built by a recent ptxdist based DistroKit BSP, while it used to work with an older v4.19 kernel. Just applying this patch to the tree made ethernet working again, thus:
->>
->> Tested-by: Alexander Dahl <ada@thorsis.com>
->>
->> Not sure why it worked with that older kernel, though.
-> 
-> Thanks for investigating! Seems that somehow PHY broadcast worked on this
-> board with older kernels (and current barebox), but no longer does with
-> newer kernels.
-> 
-> A bisection could shed some light onto what broke this.
-> 
-> As the KSZ8081 driver disables broadcast in the phy config init, this change
-> looks appropriate regardless. The fixes tag doesn't refer to an upstream
-> commit though. This should probably read:
-> Fixes: af690fa37e39 ("ARM: dts: at91: at91-sama5d27_som1: add sama5d27 SoM1 support")
+> -----Original Message-----
+> From: Bharat Kumar Gogada
+> Sent: Monday, March 15, 2021 11:43 AM
+> To: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>; linux-
+> pci@vger.kernel.org; linux-kernel@vger.kernel.org
+> Cc: bhelgaas@google.com
+> Subject: RE: [PATCH v3 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA tra=
+ffic
+> using CCI
+>=20
+> Ping.
+>=20
+> > -----Original Message-----
+> > From: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+> > Sent: Monday, February 22, 2021 2:18 PM
+> > To: linux-pci@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Cc: bhelgaas@google.com; Bharat Kumar Gogada <bharatku@xilinx.com>
+> > Subject: [PATCH v3 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA
+> > traffic using CCI
+> >
+> > Add support for routing PCIe DMA traffic coherently when Cache
+> > Coherent Interconnect (CCI) is enabled in the system.
+> > The "dma-coherent" property is used to determine if CCI is enabled or n=
+ot.
+> > Refer to https://developer.arm.com/documentation/ddi0470/k/preface
+> > for the CCI specification.
+> >
+> > Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+> > ---
+> >  drivers/pci/controller/pcie-xilinx-nwl.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c
+> > b/drivers/pci/controller/pcie-xilinx-nwl.c
+> > index 07e36661bbc2..8689311c5ef6 100644
+> > --- a/drivers/pci/controller/pcie-xilinx-nwl.c
+> > +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+> > @@ -26,6 +26,7 @@
+> >
+> >  /* Bridge core config registers */
+> >  #define BRCFG_PCIE_RX0			0x00000000
+> > +#define BRCFG_PCIE_RX1			0x00000004
+> >  #define BRCFG_INTERRUPT			0x00000010
+> >  #define BRCFG_PCIE_RX_MSG_FILTER	0x00000020
+> >
+> > @@ -128,6 +129,7 @@
+> >  #define NWL_ECAM_VALUE_DEFAULT		12
+> >
+> >  #define CFG_DMA_REG_BAR			GENMASK(2, 0)
+> > +#define CFG_PCIE_CACHE			GENMASK(7, 0)
+> >
+> >  #define INT_PCI_MSI_NR			(2 * 32)
+> >
+> > @@ -675,6 +677,11 @@ static int nwl_pcie_bridge_init(struct nwl_pcie
+> > *pcie)
+> >  	nwl_bridge_writel(pcie, CFG_ENABLE_MSG_FILTER_MASK,
+> >  			  BRCFG_PCIE_RX_MSG_FILTER);
+> >
+> > +	/* This routes the PCIe DMA traffic to go through CCI path */
+> > +	if (of_dma_is_coherent(dev->of_node))
+> > +		nwl_bridge_writel(pcie, nwl_bridge_readl(pcie,
+> > BRCFG_PCIE_RX1) |
+> > +				  CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
+> > +
+> >  	err =3D nwl_wait_for_link(pcie);
+> >  	if (err)
+> >  		return err;
+> > --
+> > 2.17.1
 
-I didn't noticed that on my side.
-
-> With this addressed:
-> 
-> Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-Thanks a lot for your feedback.
-
-> You could send a proper patch and stick your S-o-b under it.
-
-Actually this patch is already in arm-soc tree here:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/commit/?h=arm/fixes&id=221c3a09ddf70a0a51715e6c2878d8305e95c558
-
-So I cannot add tags anymore to it, sorry.
-
-Best regards,
-   Nicolas
-
->> I added Ahmad to Cc, he added board support to DistroKit for that board, and might want to know. And I added the devicetree list to Cc, I wondered why the patch was not there and get_maintainers.pl proposed it.
->>
->> Thanks for fixing this and greetings
->> Alex
->>
->>> nicolas.ferre@microchip.com hat am 17.02.2021 12:38 geschrieben:
->>>
->>>
->>> From: Claudiu Beznea <claudiu.beznea@microchip.com>
->>>
->>> Fix the phy address to 7 for Ethernet PHY on SAMA5D27 SOM1. No
->>> connection established if phy address 0 is used.
->>>
->>> The board uses the 24 pins version of the KSZ8081RNA part, KSZ8081RNA
->>> pin 16 REFCLK as PHYAD bit [2] has weak internal pull-down.  But at
->>> reset, connected to PD09 of the MPU it's connected with an internal
->>> pull-up forming PHYAD[2:0] = 7.
->>>
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
->>> Fixes: 2f61929eb10a ("ARM: dts: at91: at91-sama5d27_som1: fix PHY ID")
->>> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
->>> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->>> Cc: <stable@vger.kernel.org> # 4.14+
->>> ---
->>>   arch/arm/boot/dts/at91-sama5d27_som1.dtsi | 4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
->>> index 1b1163858b1d..e3251f3e3eaa 100644
->>> --- a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
->>> +++ b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
->>> @@ -84,8 +84,8 @@ macb0: ethernet@f8008000 {
->>>                               pinctrl-0 = <&pinctrl_macb0_default>;
->>>                               phy-mode = "rmii";
->>>
->>> -                            ethernet-phy@0 {
->>> -                                    reg = <0x0>;
->>> +                            ethernet-phy@7 {
->>> +                                    reg = <0x7>;
->>>                                       interrupt-parent = <&pioA>;
->>>                                       interrupts = <PIN_PD31 IRQ_TYPE_LEVEL_LOW>;
->>>                                       pinctrl-names = "default";
->>> --
->>> 2.30.0
->>>
->>>
->>> _______________________________________________
->>> linux-arm-kernel mailing list
->>> linux-arm-kernel@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>
-> 
-> --
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-> 
-
-
--- 
-Nicolas Ferre
