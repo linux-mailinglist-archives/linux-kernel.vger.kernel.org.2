@@ -2,164 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2E3345592
+	by mail.lfdr.de (Postfix) with ESMTP id A992D345593
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbhCWCjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 22:39:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48988 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229614AbhCWCjH (ORCPT
+        id S229915AbhCWCjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 22:39:25 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36652 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229764AbhCWCjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:39:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616467146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VioJuhqdUyJCQVP29PR+eSQQoRfuRxX0mBNikg8J2Ak=;
-        b=R/YBnKwIFX1qV1/kvs+Ooh57ou5H2FM++igm9peE/XVQZL5GAUC8JFJUQfwWfyH1lrwID6
-        WxL4ikc0DpNKC9JgaSEXFxhxvGW23WLRbimC86fKusVGkC61Qa1hq4gV+rcrBjnlbs4ZkA
-        RpYJZV4TUCa4GmCmN23aJ2R0v2YevzE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-6Vei-IDwNMa_H6gVgguhBA-1; Mon, 22 Mar 2021 22:39:02 -0400
-X-MC-Unique: 6Vei-IDwNMa_H6gVgguhBA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49B171009456;
-        Tue, 23 Mar 2021 02:39:01 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-238.pek2.redhat.com [10.72.12.238])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5907760C5F;
-        Tue, 23 Mar 2021 02:38:43 +0000 (UTC)
-Subject: Re: [PATCH 1/3] virtio_ring: always warn when descriptor chain
- exceeds queue size
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Connor Kuehl <ckuehl@redhat.com>, virtio-fs@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        vgoyal@redhat.com, miklos@szeredi.hu
-References: <20210318135223.1342795-1-ckuehl@redhat.com>
- <20210318135223.1342795-2-ckuehl@redhat.com>
- <fa4988fa-a671-0abf-f922-6b362faf10d5@redhat.com>
- <20210322041414-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <a6eb72e0-50be-1231-f7b5-3ebb822ee1b5@redhat.com>
-Date:   Tue, 23 Mar 2021 10:38:41 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        Mon, 22 Mar 2021 22:39:14 -0400
+X-UUID: f7529942c90840d4b07a93ef76a036e4-20210323
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ec0Xu7ws9yc4yFZEfVrLx9sGsUsQO2Y5F69pZNql94w=;
+        b=pXJbd067FziMQaTKbvYVerI+m05jIPvtm/33i4t9PnmrbZOdHWenwUvFnNr7fOtDUhZYDfyDhQ0otgPIePnHhaT73wQSxb3I+noyYVcOa4DdUBxypDTFAPVYL9OS+yFfeCaLS4jWF4fBM0Yhttjxe+oZ4NJrsS6XvqK57sS2OOQ=;
+X-UUID: f7529942c90840d4b07a93ef76a036e4-20210323
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1158060922; Tue, 23 Mar 2021 10:39:10 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs06n2.mediatek.inc
+ (172.21.101.130) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 23 Mar
+ 2021 10:39:08 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 23 Mar 2021 10:39:07 +0800
+Message-ID: <1616467147.11286.1.camel@mhfsdcap03>
+Subject: Re: [PATCH 06/13] usb: xhci-mtk: support ip-sleep wakeup for MT8183
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Date:   Tue, 23 Mar 2021 10:39:07 +0800
+In-Reply-To: <0e660a28-d66f-a23e-3fad-8fa37b6df1b1@gmail.com>
+References: <1616382832-28450-1-git-send-email-chunfeng.yun@mediatek.com>
+         <1616382832-28450-6-git-send-email-chunfeng.yun@mediatek.com>
+         <0e660a28-d66f-a23e-3fad-8fa37b6df1b1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210322041414-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-TM-SNTS-SMTP: 1521B1B4E95B0792845FBE36193B2F66E31839D23892065DCC5F210519F582DC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/3/22 下午4:17, Michael S. Tsirkin 写道:
-> On Mon, Mar 22, 2021 at 11:22:15AM +0800, Jason Wang wrote:
->> 在 2021/3/18 下午9:52, Connor Kuehl 写道:
->>>   From section 2.6.5.3.1 (Driver Requirements: Indirect Descriptors)
->>> of the virtio spec:
->>>
->>>     "A driver MUST NOT create a descriptor chain longer than the Queue
->>>     Size of the device."
->>>
->>> This text suggests that the warning should trigger even if
->>> indirect descriptors are in use.
->>
->> So I think at least the commit log needs some tweak.
->>
->> For split virtqueue. We had:
->>
->> 2.6.5.2 Driver Requirements: The Virtqueue Descriptor Table
->>
->> Drivers MUST NOT add a descriptor chain longer than 2^32 bytes in total;
->> this implies that loops in the descriptor chain are forbidden!
->>
->> 2.6.5.3.1 Driver Requirements: Indirect Descriptors
->>
->> A driver MUST NOT create a descriptor chain longer than the Queue Size of
->> the device.
->>
->> If I understand the spec correctly, the check is only needed for a single
->> indirect descriptor table?
->>
->> For packed virtqueue. We had:
->>
->> 2.7.17 Driver Requirements: Scatter-Gather Support
->>
->> A driver MUST NOT create a descriptor list longer than allowed by the
->> device.
->>
->> A driver MUST NOT create a descriptor list longer than the Queue Size.
->>
->> 2.7.19 Driver Requirements: Indirect Descriptors
->>
->> A driver MUST NOT create a descriptor chain longer than allowed by the
->> device.
->>
->> So it looks to me the packed part is fine.
->>
->> Note that if I understand the spec correctly 2.7.17 implies 2.7.19.
->>
->> Thanks
-> It would be quite strange for packed and split to differ here:
-> so for packed would you say there's no limit on # of descriptors at all?
->
-> I am guessing I just forgot to move this part from
-> the format specific to the common part of the spec.
->
-> This needs discussion in the TC mailing list - want to start a thread
-> there?
-
-
-Will do.
-
-Thanks
-
-
->
->
->
->>> Reported-by: Stefan Hajnoczi <stefanha@redhat.com>
->>> Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
->>> ---
->>>    drivers/virtio/virtio_ring.c | 7 ++++---
->>>    1 file changed, 4 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
->>> index 71e16b53e9c1..1bc290f9ba13 100644
->>> --- a/drivers/virtio/virtio_ring.c
->>> +++ b/drivers/virtio/virtio_ring.c
->>> @@ -444,11 +444,12 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
->>>    	head = vq->free_head;
->>> +	WARN_ON_ONCE(total_sg > vq->split.vring.num);
->>> +
->>>    	if (virtqueue_use_indirect(_vq, total_sg))
->>>    		desc = alloc_indirect_split(_vq, total_sg, gfp);
->>>    	else {
->>>    		desc = NULL;
->>> -		WARN_ON_ONCE(total_sg > vq->split.vring.num && !vq->indirect);
->>>    	}
->>>    	if (desc) {
->>> @@ -1118,6 +1119,8 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
->>>    	BUG_ON(total_sg == 0);
->>> +	WARN_ON_ONCE(total_sg > vq->packed.vring.num);
->>> +
->>>    	if (virtqueue_use_indirect(_vq, total_sg))
->>>    		return virtqueue_add_indirect_packed(vq, sgs, total_sg,
->>>    				out_sgs, in_sgs, data, gfp);
->>> @@ -1125,8 +1128,6 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
->>>    	head = vq->packed.next_avail_idx;
->>>    	avail_used_flags = vq->packed.avail_used_flags;
->>> -	WARN_ON_ONCE(total_sg > vq->packed.vring.num && !vq->indirect);
->>> -
->>>    	desc = vq->packed.vring.desc;
->>>    	i = head;
->>>    	descs_used = total_sg;
+T24gTW9uLCAyMDIxLTAzLTIyIGF0IDExOjU0ICswMzAwLCBTZXJnZWkgU2h0eWx5b3Ygd3JvdGU6
+DQo+IEhlbGxvIQ0KPiANCj4gT24gMjIuMDMuMjAyMSA2OjEzLCBDaHVuZmVuZyBZdW4gd3JvdGU6
+DQo+IA0KPiA+IEFkZCBzdXBwb3J0IGlwLXNsZWVwIHdha2V1cCBmb3IgTVQ4MTgzLCBpdCdzIHNp
+bWlsYXIgdG8gTVQ4MTczLA0KPiAgICAgICAgICAgICAgIF4gZm9yDQo+IA0KPiA+IGFuZCBpdCdz
+IGFsc28gYSBzcGVjaWZpYyBvbmUsIGJ1dCBub3QgZm9sbG93IElQTSBydWxlLg0KPiANCj4gICAg
+IEZvbGxvd2luZz8NCkFjaw0KPiANCj4gPiBEdWUgdG8gdGhlIGluZGV4IDIgYWxyZWFkeSB1c2Vk
+IGJ5IG1hbnkgRFRTLCBpdCdzIGJldHRlciB0byBrZWVwDQo+ID4gaXQgdW5jaGFuZ2VkIGZvciBi
+YWNrd2FyZCBjb21wYXRpYmxlLCB0cmVhdCBzcGVjaWZpYyBvbmVzIHdpdGhvdXQNCj4gDQo+ICAg
+ICBDb21wYXRpYmlsaXR5Lg0KQWNrDQo+IA0KPiA+IGZvbGxvd2luZyBJUE0gcnVsZSBhcyByZXZp
+c2lvbiAxLngsIG1lYW53aGlsZSByZXNlcnZlIDN+MTAgZm9yDQo+ID4gbGF0ZXIgcmV2aXNpb24g
+dGhhdCBmb2xsb3dzIHRoZSBJUE0gcnVsZS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVu
+ZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gICBkcml2
+ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMgfCAxMyArKysrKysrKysrKysrDQo+ID4gICAxIGZpbGUg
+Y2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L3VzYi9ob3N0L3hoY2ktbXRrLmMgYi9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMNCj4gPiBp
+bmRleCAwOWYyZGRiZmU4YjkuLjhiYTFmOTE0Y2I3NSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJz
+L3VzYi9ob3N0L3hoY2ktbXRrLmMNCj4gPiArKysgYi9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRr
+LmMNCj4gPiBAQCAtNTcsMTIgKzU3LDE5IEBADQo+ID4gICAjZGVmaW5lIENUUkxfVTJfRk9SQ0Vf
+UExMX1NUQglCSVQoMjgpDQo+ID4gICANCj4gPiAgIC8qIHVzYiByZW1vdGUgd2FrZXVwIHJlZ2lz
+dGVycyBpbiBzeXNjb24gKi8NCj4gPiArDQo+ID4gICAvKiBtdDgxNzMgZXRjICovDQo+ID4gICAj
+ZGVmaW5lIFBFUklfV0tfQ1RSTDEJMHg0DQo+ID4gICAjZGVmaW5lIFdDMV9JU19DKHgpCSgoKHgp
+ICYgMHhmKSA8PCAyNikgIC8qIGN5Y2xlIGRlYm91bmNlICovDQo+ID4gICAjZGVmaW5lIFdDMV9J
+U19FTglCSVQoMjUpDQo+ID4gICAjZGVmaW5lIFdDMV9JU19QCUJJVCg2KSAgLyogcG9sYXJpdHkg
+Zm9yIGlwIHNsZWVwICovDQo+ID4gICANCj4gPiArLyogbXQ4MTgzICovDQo+ID4gKyNkZWZpbmUg
+UEVSSV9XS19DVFJMMAkweDANCj4gPiArI2RlZmluZSBXQzBfSVNfQyh4KQkoKCh4KSAmIDB4Zikg
+PDwgMjgpICAvKiBjeWNsZSBkZWJvdW5jZSAqLw0KPiA+ICsjZGVmaW5lIFdDMF9JU19QCUJJVCgx
+MikJLyogcG9sYXJpdHkgKi8NCj4gPiArI2RlZmluZSBXQzBfSVNfRU4JQklUKDYpDQo+ID4gKw0K
+PiA+ICAgLyogbXQyNzEyIGV0YyAqLw0KPiA+ICAgI2RlZmluZSBQRVJJX1NTVVNCX1NQTV9DVFJM
+CTB4MA0KPiA+ICAgI2RlZmluZSBTU0NfSVBfU0xFRVBfRU4JQklUKDQpDQo+ID4gQEAgLTcxLDYg
+Kzc4LDcgQEANCj4gPiAgIGVudW0gc3N1c2JfdXdrX3ZlcnMgew0KPiA+ICAgCVNTVVNCX1VXS19W
+MSA9IDEsDQo+ID4gICAJU1NVU0JfVVdLX1YyLA0KPiA+ICsJU1NVU0JfVVdLX1YxMSA9IDExLAkv
+KiBzcGVjaWZpYyByZXZpc2lvbiAxLjEgKi8NCj4gDQo+ICAgICBTU1VTQl9VV0tfVjFfMSwgbWF5
+YmU/DQpHb29kIHBvaW50LCB3aWxsIG1vZGlmeSBpdC4NCg0KVGhhbmtzIGEgbG90DQoNCj4gDQo+
+IFsuLi5dDQo+IA0KPiBNQlIsIFNlcmdlaQ0KDQo=
 
