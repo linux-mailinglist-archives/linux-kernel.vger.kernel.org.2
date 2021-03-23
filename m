@@ -2,127 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F535346A8F
+	by mail.lfdr.de (Postfix) with ESMTP id EB887346A90
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbhCWU7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:59:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41556 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233442AbhCWU64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:58:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616533135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fQBO+u481DlzoGNQ69nNMTbn2tlelS5FZZUNirAyOj4=;
-        b=DOgTD8OC5gCkdviLZVQi0pWB6lBJFt/Oz5RTxjLjzGwIdFSmlxJsiU9aO+dwTIYeRCbaLK
-        RkK+oFs+9zfSg/ES3lA5Tqdj4C73w4QC1nb4CuGSXTcWu0u3fQILQ8TAcefdmdDyk1rmqS
-        O6Y/qfLlWkkYOemHA0oeyOZPBszojnU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-Xti6Fwf6NWONVNX8RlEBOA-1; Tue, 23 Mar 2021 16:58:53 -0400
-X-MC-Unique: Xti6Fwf6NWONVNX8RlEBOA-1
-Received: by mail-ed1-f71.google.com with SMTP id f9so1562063edd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:58:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fQBO+u481DlzoGNQ69nNMTbn2tlelS5FZZUNirAyOj4=;
-        b=LUYB7pl4I4kczsT4IQ8eWbfA+ACFu61S43jZSpheeIEa9upx7Lnwotyqpoos1TWWuL
-         znqUBOlTr47lutbUWltiUfp6HHmB1bp1X+7RKOu4iIIgj3iiQm2urQiYlCga3VTS4CaX
-         JgsdlkEVilIGs/dlrkILz0v7bEQA5mSA0BHuPxKEdSqgMiJSIlqHza+Hf8za4HRKoQer
-         uzMtCSNtpI51SP8ozHwzGi/qbeR3noU1JKeaT/p2WFaJAS47vHk+iI9pg7F6R49JIpP7
-         ED1AFnkC9h5d9DPNZaaYXI6mNdSLSFwL4bYtqT+S++qo11kh/TnOG4bmv/GhfGn4nAUc
-         2uOw==
-X-Gm-Message-State: AOAM531yhf1acqJuqtS4xLF1VqAoUMkibccqPE9bjegeXCaxwhql5spH
-        EwATC3fiuxuRs9qngBCjLkZw6nFR+30slMyqEeC0JDx3alDNqBRlIecJloaZmFNqB50q/OtUxWC
-        DOXx1tC9nbRtd+Ab1XCB0XFT2bXBHiwr+I8+02Pj7ji9ZujLnqxQiA52EoFrURrlolcVi6+Bb5Q
-        rf
-X-Received: by 2002:a05:6402:375:: with SMTP id s21mr6390702edw.287.1616533131684;
-        Tue, 23 Mar 2021 13:58:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKsqe20kZE+DFpcsbQKUpdRPl2U5AN4NySfbhaqdMoaLK+U8RZaTHXlZLNRxug8MwfPPGMwg==
-X-Received: by 2002:a05:6402:375:: with SMTP id s21mr6390693edw.287.1616533131537;
-        Tue, 23 Mar 2021 13:58:51 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id v25sm73057edr.18.2021.03.23.13.58.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 13:58:51 -0700 (PDT)
-Subject: Re: [PATCH v2] platform/x86: asus-wmi: Add param to turn fn-lock mode
- on by default
-To:     Luca Stefani <luca.stefani.ge1@gmail.com>
-Cc:     Corentin Chary <corentin.chary@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <097b8aff-70f4-bd0f-e561-60a773b3231c@redhat.com>
-Date:   Tue, 23 Mar 2021 21:58:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233464AbhCWU7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:59:23 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45563 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233444AbhCWU65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 16:58:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4kHd6R4Zz9sTD;
+        Wed, 24 Mar 2021 07:58:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616533134;
+        bh=bVyFiTvUSdKsFHvI8SczURssxLVt9YFCmvLDxVBeI2A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=stQYMbisBU14c4s4nHzPJao2DVVqHuLW6kkYUVTa0Wgq553WxLyaQ5/mbQ85jmKxN
+         oPgGOBfPO5FWOQd3wRo/Lsbt6pZyuRfImj4EPHHgA0NNIVxt69sRatLPVUeyVls7hA
+         Vcf76JtocDZiMkqoBJJW50P6UOuuQB4eXPKzFquTNQqbcd3MH6oppLCx0bqEkaEHxB
+         FFsf3jvJFdlOOBhT7W8/h0ssrfcIEwN/rred1FOvdMvd1tJzTM1FRh591XQM1PNqID
+         DZjQsjxRb4E+uFDrmKk4PzJQG85yhlwmgI3YoicjSJjTrVEUngBGO8dIlpj6iVvdvu
+         n2EcK2S4p7osg==
+Date:   Wed, 24 Mar 2021 07:58:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20210324075852.4ed75c39@canb.auug.org.au>
+In-Reply-To: <20210318205607.63aebcc6@canb.auug.org.au>
+References: <20210318205607.63aebcc6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/iC04kSRvKVuu7EF9MubqHwc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/iC04kSRvKVuu7EF9MubqHwc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 3/23/21 9:25 PM, Luca Stefani wrote:
-> * On recent ZenBooks the fn-lock is disabled
->   by default on boot while running Windows.
-> 
-> * Add a module param ( fnlock_default ) that allows
->   changing the default at probe time
-> 
-> Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
+Hi all,
+
+On Thu, 18 Mar 2021 20:56:07 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> After merging the akpm-current tree, today's linux-next build (sparc
+> defconfig) failed like this:
+>=20
+> In file included from arch/sparc/include/asm/pgtable_32.h:25:0,
+>                  from arch/sparc/include/asm/pgtable.h:7,
+>                  from include/linux/pgtable.h:6,
+>                  from include/linux/mm.h:33,
+>                  from mm/vmalloc.c:12:
+> mm/vmalloc.c: In function 'vmalloc_to_page':
+> include/asm-generic/pgtable-nopud.h:51:27: error: implicit declaration of=
+ function 'pud_page'; did you mean 'put_page'? [-Werror=3Dimplicit-function=
+-declaration]
+>  #define p4d_page(p4d)    (pud_page((pud_t){ p4d }))
+>                            ^
+> mm/vmalloc.c:643:10: note: in expansion of macro 'p4d_page'
+>    return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
+>           ^~~~~~~~
+> mm/vmalloc.c:643:25: warning: return makes pointer from integer without a=
+ cast [-Wint-conversion]
+>    return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
+> mm/vmalloc.c:651:25: warning: return makes pointer from integer without a=
+ cast [-Wint-conversion]
+>    return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
+>           ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   70d18d470920 ("mm/vmalloc: fix HUGE_VMAP regression by enabling huge pa=
+ges in vmalloc_to_page")
+>=20
+> I have applied the following hack path for today (hopefully someone can
+> come up with something better):
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Thu, 18 Mar 2021 18:32:58 +1100
+> Subject: [PATCH] hack to make SPARC32 build
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 > ---
->  drivers/platform/x86/asus-wmi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 9ca15f724343..f3ed72f01462 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -47,6 +47,9 @@ MODULE_AUTHOR("Corentin Chary <corentin.chary@gmail.com>, "
->  MODULE_DESCRIPTION("Asus Generic WMI Driver");
->  MODULE_LICENSE("GPL");
->  
-> +static bool fnlock_default = false;
+>  mm/vmalloc.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 57b7f62d25a7..96444d64129a 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -640,7 +640,11 @@ struct page *vmalloc_to_page(const void *vmalloc_add=
+r)
+>  	if (p4d_none(*p4d))
+>  		return NULL;
+>  	if (p4d_leaf(*p4d))
+> +#ifdef CONFIG_SPARC32
+> +		return NULL;
+> +#else
+>  		return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
+> +#endif
+>  	if (WARN_ON_ONCE(p4d_bad(*p4d)))
+>  		return NULL;
+> =20
+> @@ -648,7 +652,11 @@ struct page *vmalloc_to_page(const void *vmalloc_add=
+r)
+>  	if (pud_none(*pud))
+>  		return NULL;
+>  	if (pud_leaf(*pud))
+> +#ifdef CONFIG_SPARC32
+> +		return NULL;
+> +#else
+>  		return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
+> +#endif
+>  	if (WARN_ON_ONCE(pud_bad(*pud)))
+>  		return NULL;
+> =20
+> --=20
+> 2.30.0
 
-The initial value of this needs to be true, so that there is no behavioral
-change when people upgrade from a kernel without this to one with it.
+I am still applying this hack.
+--=20
+Cheers,
+Stephen Rothwell
 
-And then people who want a different behavior can get that by setting
-the module option.
+--Sig_/iC04kSRvKVuu7EF9MubqHwc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Regards,
+-----BEGIN PGP SIGNATURE-----
 
-Hans
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBaVowACgkQAVBC80lX
+0GxNLwf/SqZb1sEecOp4jSmuXPC03vpJKSEQVB6g5YOX+Beg4kznJcSKtYG/fsoC
+odgzhuYX2HjPgSqehS3+xoWCJs9AFTI0QMQ8wkecr4LmW+AFyTxNwPOViLiGpPrH
+jI1c/BGQxCzjs51/uZQOjE3VKUvu2AFYRRQ9gpEX0OxHO4GqnFLOblWhytVRRRFP
+NRCA6aQSSC2Nf+rB9dDejfWVyPk8+dcsvuNx9m1UuRDceFZ7FbGDwW/XF84uXBgL
+JgW17JmtVkEDXhJtIaKWNymWeLbLJ4XZyNkPZ762pDmAxInEWnly35KgkMD4oLur
+IK/U4XrabYP9gvdy1kkzNW+k4YLzwA==
+=BiOi
+-----END PGP SIGNATURE-----
 
-
-> +module_param(fnlock_default, bool, 0444);
-> +
->  #define to_asus_wmi_driver(pdrv)					\
->  	(container_of((pdrv), struct asus_wmi_driver, platform_driver))
->  
-> @@ -2673,7 +2676,7 @@ static int asus_wmi_add(struct platform_device *pdev)
->  		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT, 2, NULL);
->  
->  	if (asus_wmi_has_fnlock_key(asus)) {
-> -		asus->fnlock_locked = true;
-> +		asus->fnlock_locked = fnlock_default;
->  		asus_wmi_fnlock_update(asus);
->  	}
->  
-> 
-
+--Sig_/iC04kSRvKVuu7EF9MubqHwc--
