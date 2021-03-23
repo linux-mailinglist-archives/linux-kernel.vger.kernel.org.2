@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86403461DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE6A3461E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbhCWOvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232283AbhCWOv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:51:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A837661983;
-        Tue, 23 Mar 2021 14:51:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616511087;
-        bh=hgxdo4ZUUEitXDWs4Mlm83kBINAI4vjmbUS8R5zTyqM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dpkg1HfJVEeaaDXnvy5P0QTofpqOzmmn+SKtNcOu2q3IhyXJwQeuYGE67ash+xPIQ
-         F2y6BUnNTPHMx2lKgxOhZp4jHt4kjeTOLU0+3Fg1R7nhf0tdwAOIW6IXpArC90p+yY
-         IJjQ6k3C7boc8ebEQnNqMLvgV4L9YQEUALU2By0e3GSty8Po/2cDJu7Nmh16qV+HQZ
-         TyU8ox0nbEJovwHDkfE1+LIvayUVp8IJi4DUUA98ZL+m4v7SqMtSQ4Hali2r4EhHds
-         ungF7YHvoHMVHuuErZziga+H2O4R31eqQGDSd8XLaQ7DGOgfUlqcmqWii42A4KNG4s
-         kG2GTIRddU7uA==
-Received: by pali.im (Postfix)
-        id 2283192C; Tue, 23 Mar 2021 15:51:25 +0100 (CET)
-Date:   Tue, 23 Mar 2021 15:51:24 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com, drinkcat@chromium.org,
-        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
-Subject: Re: [v8,3/7] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
-Message-ID: <20210323145124.6myowqcjga5ro2pn@pali>
-References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
- <20210224061132.26526-4-jianjun.wang@mediatek.com>
- <20210311123844.qzl264ungtk7b6xz@pali>
- <1615621394.25662.70.camel@mhfsdcap03>
- <20210318000211.ykjsfavfc7suu2sb@pali>
- <1616046487.31760.16.camel@mhfsdcap03>
- <20210319185341.nyxmo7nwii5fzsxc@pali>
- <1616463094.25961.8.camel@mhfsdcap03>
+        id S232327AbhCWOwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232361AbhCWOvj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:51:39 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D538C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:51:39 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id v26so17962794iox.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:51:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cb9buX9rVxx3ke8opkbwPW3pzZmX0QW+zUHbN7SWfEs=;
+        b=u/KA+2in1+Gw7yMSCi+cPIqS1rLeXpjMr2eRniAGVeMkktaYTF5aCZ20ohFhR2uqmZ
+         KVEMVZSSV8zPWbzmcYmElIZ7VRPc2vR5FapKyBVG5pBxDvp2+LuLjhzvchrBsEz996wO
+         MHUBdkwbZZi6+YQNIfESTDX+cjdcdr0tok1/2JGY+d/4j0YgV64Nye1m7SvMSe9Oaazv
+         Y/fZ1mfDoJbSRNlHJleowGI0IxDcIigCP++sElflm30DILobWKQNMlljQC/7d5MwkuEv
+         aN1C91sQMv0xNF7fjaumTGTzBeuf/oLsZyx2mUeU6Kv9XWZUSsCvX4r7cn0VD9kL99NT
+         67Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cb9buX9rVxx3ke8opkbwPW3pzZmX0QW+zUHbN7SWfEs=;
+        b=CQ6v2HfzauoQ3IvQ6hd7osAUxcOaY80KinvcS8/soug0kOZ/S+hB9mfUp+jtGjaDxK
+         QDtqt6QMCqzxvzqbKsni3SBl8+sM8pppvZBPUkLD4bz/Jw5m1el1Fz1TwalUG8aBfNct
+         QY2xI3KoZJKSN4HqtI+QvePQZzXUIm7UUBGuLDUjN1QjfhsdTeCu0FEfTv7rHu25Kokb
+         5KpBR0PwskSTI+CA0bpcVKEXBTosH/d+ILY7xeFl7gW92f1BZ3Z38azdKXRlAFVGiYYc
+         5ikTG1TcusrMEA6x4g8bqOQHQIKdETI8VVuyononK/AWWMk7JI0rErXrOiwEMRw2N5+J
+         6iUA==
+X-Gm-Message-State: AOAM5306Vh9+VXq72mAcr7AQgX4pYnPyKvTGsYBIq7iRPr9BVKtNOcBa
+        jX2AzhA/53h+awYDxDuxKf+lJw==
+X-Google-Smtp-Source: ABdhPJwvYBU/GUSjVChANxP+L3GLJCcd2Q3GRUSXivKqN5rqQ81SrXdkHMwdPiQdcmHxJZxJS5akeA==
+X-Received: by 2002:a02:9048:: with SMTP id y8mr4825615jaf.66.1616511098363;
+        Tue, 23 Mar 2021 07:51:38 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id o13sm8961147iob.17.2021.03.23.07.51.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 07:51:37 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: ipa: versions and registers
+Date:   Tue, 23 Mar 2021 09:51:26 -0500
+Message-Id: <20210323145132.2291316-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616463094.25961.8.camel@mhfsdcap03>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 23 March 2021 09:31:34 Jianjun Wang wrote:
-> One more question, is there any chance that we can put this linkup flow
-> to a more "standard" way, such as drivers provides the ops of the PERST#
-> pin and let the framework to decide how to start a link training, or we
-> just use macro to replace this timeout value in the future?
+This series is sort of a mix of things, generally related to
+updating IPA versions and register definitions.
 
-This is something about which I was thinking that could be useful for
-pci-aardvark.c driver. But I was not sure if some other driver can
-benefit from such "framework". But now I see that your driver is another
-candidate which can benefit from it.
+The first patch fixes some version-related tests throughout the code
+so the conditions are valid for IPA versions other than the two that
+are currently supported.  Support for additional versions is
+forthcoming, and this is a preparatory step.
 
-Currently there is no such "framework" in kernel and the hardest part
-would be to design it.
+The second patch adds to the set of defined IPA versions, to include
+all versions between 3.0 and 4.11.
 
-Having this API would allow kernel to implement and export PCIe Warm
-Reset (which is done via PERST# signal) and easily extend Amey's reset
-patches to export also Warm Reset via sysfs.
+The next defines an endpoint initialization register that was
+previously not being configured.  We now initialize that register
+(so that NAT is explicitly disabled) on all AP endpoints.
 
-But to implement this framework and using it for reset we first need to
-answer questions which I have sent in email:
-https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+The fourth adds support for an extra bit in a field in a register,
+which is present starting at IPA v4.5.
 
-Bjorn, Alex: any opinion about PERST#?
+The last two are sort of standalone.  One just moves a function
+definition and makes it private.  The other increases the number of
+GSI channels and events supported by the driver, sufficient for IPA
+v4.5.
 
-Also see Enrico's email, where confirmed that there are platforms which
-shares one PERST# signal for more endpoint cards:
-https://lore.kernel.org/linux-pci/1da0fa2c-8056-9ae8-6ce4-ab645317772d@metux.net/
+					-Alex
+
+Alex Elder (6):
+  net: ipa: reduce IPA version assumptions
+  net: ipa: update version definitions
+  net: ipa: define the ENDP_INIT_NAT register
+  net: ipa: limit local processing context address
+  net: ipa: move ipa_aggr_granularity_val()
+  net: ipa: increase channels and events
+
+ drivers/net/ipa/gsi.c          |  8 +++----
+ drivers/net/ipa/gsi.h          |  4 ++--
+ drivers/net/ipa/ipa_cmd.c      | 26 ++++++++++++---------
+ drivers/net/ipa/ipa_endpoint.c | 42 ++++++++++++++++++++++++----------
+ drivers/net/ipa/ipa_main.c     | 21 ++++++++++++++---
+ drivers/net/ipa/ipa_mem.c      |  6 +++--
+ drivers/net/ipa/ipa_qmi.c      |  2 +-
+ drivers/net/ipa/ipa_reg.h      | 40 ++++++++++++++++++++------------
+ drivers/net/ipa/ipa_version.h  | 10 ++++++--
+ 9 files changed, 107 insertions(+), 52 deletions(-)
+
+-- 
+2.27.0
+
