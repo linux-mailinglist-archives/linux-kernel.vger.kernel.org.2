@@ -2,215 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB523453BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96823453C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhCWAO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        id S230473AbhCWAP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhCWAOF (ORCPT
+        with ESMTP id S230435AbhCWAPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:14:05 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CA9C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:14:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id b14so10772859lfv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:14:05 -0700 (PDT)
+        Mon, 22 Mar 2021 20:15:36 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01197C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:15:36 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso11365060pji.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:15:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TIGZs9jCzlV0x2/zD28u6hnF9ziSX82ipPw1eAlhUAk=;
-        b=NQ71vlDt19b2qIy3K62/rODvW/ipNZXPs54iaqoCcYgvr0ZoSYMPbU3vdVRzRslzc0
-         paD44AWGk2fGxml9DqHSXpWchMulVtSjoazoJQCHqMqDiZQv3PQGaTav7G+EZ+/Yz0Ph
-         +I/b57JKRKullcMz8vVJcYd0UwSmrTSWA4CeJdZBKpdTGzNd97/MAdsFkXxVZPhb3k+4
-         9ZqfVflxIPxDAKr+2r/8JCbzty+q0w/uN+ytri4BJTYKvpQ7fCZjmce6o20eSEVn/bUJ
-         Ik0/GtqeP0J9ZbJyd50mOg9CAXERLBgP8bORDoUzBiazlAWWJUCNW/Nya+XY3VMgqVqW
-         H7xg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RS6wPVYyUBLVpylUrm+tt5pYjrHAQIAVImbkij7jmxA=;
+        b=UB5HrDlqMb57TL/dG+wUYp3t10QglOWevw6bRuyHyB7j/XFQwT4DPXTJkWjdrWSPMP
+         WY7oRe+j5OC+Ig5e1tJBt5ng9nwC4JIhFn1rOECvFTvDc/4Bfldk889gE0IJ5GBQQbZP
+         RmGiuqikAML8sq6vTC3JuCu62ae4rWcY7I9tSJVdW0F834VTsVIpc3LHUiykMriiVRP9
+         /h+jrTt8t3qkw8bRMHsA1FGFBVaYDZMWj+DTShvxDn+yOTUt0t5pWg9tdjYXuNEcSnQO
+         VpYSh3zTolGEkrBI0c2bj6zHglK1dmF9e/5S0RKMsHBYYfzRpQmv9IY0n2rN6RHedHO8
+         J2eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TIGZs9jCzlV0x2/zD28u6hnF9ziSX82ipPw1eAlhUAk=;
-        b=aNXQykeT+HUNfH9TuMhEZ7nVr1i+qkCPMabt5f41PvKpxAKfVnvNH8iJY4GYWL0wKt
-         BxQSuClUSH11femZ2dHZM5RpeZziZrnfa2uGWrzBMnRKxocbEiTSoileq1m241x2oMwp
-         UDRa0G/XVnm3sJ5al/WrIMXBtOO2N6XoOlDfBwCUyKNwKakSLo/d8zxT7k5eZKdn7AWJ
-         nXRTnl6z8867URZ9L99CMCwUT/pB5xjqCtlbRvpswDwzwispkKNgXYoKBz0/Z+scUCsw
-         Mh0xs+0M1YlOZZIy1KL7300Fw7Wyc1tSNlLHCH4f4D5b9UVZANFhd5QwTnfh7wxDIvOT
-         WKSQ==
-X-Gm-Message-State: AOAM533W/3boX0CqV79hRxI0jgwdf8mPSuKbYEBDDGnj1qG6CQvIRDoE
-        XPPahHGIEv1qyOZXazEgKdoU1Me82w7X69Dz/6Q8kw==
-X-Google-Smtp-Source: ABdhPJzjC3gk50Yb4Wr00pH4fD/9xfeZqVtXPShrjfrPIGPPmvrDVMK0gxGlsIriq6MtCniISI8bDCiz3gzLLpYfAU8=
-X-Received: by 2002:a19:946:: with SMTP id 67mr1116146lfj.74.1616458443362;
- Mon, 22 Mar 2021 17:14:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RS6wPVYyUBLVpylUrm+tt5pYjrHAQIAVImbkij7jmxA=;
+        b=gmL6+bGvgCVAN8AL6ZPhXrJg+bdWjom3yPPeFJLm846e3sw3Pr11otEivkmukS0XgO
+         NBX359dmqa54Eq5FMj/TmZ1Eo83b5G4uXMdR1Vjz1++DVLSTkoBOewzFMsgXr7OO0tDD
+         494nqEurhe72XLG5qjgWkSaxqor0Mv39KbnaQ6/oLwXmaxU+WNhvZKoHvyE/qtPKTSL5
+         jbXpfGOPf5dmIAgX/rxDHIPnnM3nw6QYO68RlRWQDr74TEneT5sxQDE5pIu0iJ0V5KT7
+         IHa6mRdohpXojS0ztQpnAwW5WE648SGlrQ0n8cF1Bv3rdCpAFb9JFyX/VQppermsrAFp
+         RCJw==
+X-Gm-Message-State: AOAM531wGnajw/9ifCfeV7OdXfbzHZYtKY4OvpxxuNnx/X3/ZjNxsSoc
+        U6X7gigJssl9FSjU++kwznx5BA==
+X-Google-Smtp-Source: ABdhPJzXA0SDIYTNNHtvoEjRYkmSgAP8Xpm9zHAa+s1cmO9DQfg1PI6iwt9jFeArQ2DPvhu1tVIQ4Q==
+X-Received: by 2002:a17:90a:7344:: with SMTP id j4mr1482427pjs.223.1616458535347;
+        Mon, 22 Mar 2021 17:15:35 -0700 (PDT)
+Received: from google.com ([2620:15c:f:10:f8cd:ad3d:e69f:e006])
+        by smtp.gmail.com with ESMTPSA id v11sm4272852pgg.68.2021.03.22.17.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 17:15:34 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 17:15:28 -0700
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] KVM: x86/mmu: Ensure TLBs are flushed when yielding
+ during NX zapping
+Message-ID: <YFkzIAVOeWS32fdX@google.com>
+References: <20210319232006.3468382-1-seanjc@google.com>
+ <20210319232006.3468382-3-seanjc@google.com>
+ <CANgfPd_6d+SvJ-rQxP6k5nRmCsRFyUAJ93B0dE3NtpmdPR78wg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210316204252.427806-1-mic@digikod.net> <20210316204252.427806-8-mic@digikod.net>
-In-Reply-To: <20210316204252.427806-8-mic@digikod.net>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 23 Mar 2021 01:13:36 +0100
-Message-ID: <CAG48ez1arKO3uYzwng8fst-UHkcH6J7YzyHFN+vfXUT2=1HT+w@mail.gmail.com>
-Subject: Re: [PATCH v30 07/12] landlock: Support filesystem access-control
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd_6d+SvJ-rQxP6k5nRmCsRFyUAJ93B0dE3NtpmdPR78wg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- On Tue, Mar 16, 2021 at 9:43 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>=
- wrote:
-> Using Landlock objects and ruleset, it is possible to tag inodes
-> according to a process's domain.
-[...]
-> +static void release_inode(struct landlock_object *const object)
-> +       __releases(object->lock)
-> +{
-> +       struct inode *const inode =3D object->underobj;
-> +       struct super_block *sb;
-> +
-> +       if (!inode) {
-> +               spin_unlock(&object->lock);
-> +               return;
-> +       }
-> +
-> +       /*
-> +        * Protects against concurrent use by hook_sb_delete() of the ref=
-erence
-> +        * to the underlying inode.
-> +        */
-> +       object->underobj =3D NULL;
-> +       /*
-> +        * Makes sure that if the filesystem is concurrently unmounted,
-> +        * hook_sb_delete() will wait for us to finish iput().
-> +        */
-> +       sb =3D inode->i_sb;
-> +       atomic_long_inc(&landlock_superblock(sb)->inode_refs);
-> +       spin_unlock(&object->lock);
-> +       /*
-> +        * Because object->underobj was not NULL, hook_sb_delete() and
-> +        * get_inode_object() guarantee that it is safe to reset
-> +        * landlock_inode(inode)->object while it is not NULL.  It is the=
-refore
-> +        * not necessary to lock inode->i_lock.
-> +        */
-> +       rcu_assign_pointer(landlock_inode(inode)->object, NULL);
-> +       /*
-> +        * Now, new rules can safely be tied to @inode with get_inode_obj=
-ect().
-> +        */
-> +
-> +       iput(inode);
-> +       if (atomic_long_dec_and_test(&landlock_superblock(sb)->inode_refs=
-))
-> +               wake_up_var(&landlock_superblock(sb)->inode_refs);
-> +}
-[...]
-> +static struct landlock_object *get_inode_object(struct inode *const inod=
-e)
-> +{
-> +       struct landlock_object *object, *new_object;
-> +       struct landlock_inode_security *inode_sec =3D landlock_inode(inod=
-e);
-> +
-> +       rcu_read_lock();
-> +retry:
-> +       object =3D rcu_dereference(inode_sec->object);
-> +       if (object) {
-> +               if (likely(refcount_inc_not_zero(&object->usage))) {
-> +                       rcu_read_unlock();
-> +                       return object;
-> +               }
-> +               /*
-> +                * We are racing with release_inode(), the object is goin=
-g
-> +                * away.  Wait for release_inode(), then retry.
-> +                */
-> +               spin_lock(&object->lock);
-> +               spin_unlock(&object->lock);
-> +               goto retry;
-> +       }
-> +       rcu_read_unlock();
-> +
-> +       /*
-> +        * If there is no object tied to @inode, then create a new one (w=
-ithout
-> +        * holding any locks).
-> +        */
-> +       new_object =3D landlock_create_object(&landlock_fs_underops, inod=
-e);
-> +       if (IS_ERR(new_object))
-> +               return new_object;
-> +
-> +       /* Protects against concurrent get_inode_object() calls. */
-> +       spin_lock(&inode->i_lock);
-> +       object =3D rcu_dereference_protected(inode_sec->object,
-> +                       lockdep_is_held(&inode->i_lock));
+On Mon, Mar 22, 2021, Ben Gardon wrote:
+> On Fri, Mar 19, 2021 at 4:20 PM Sean Christopherson <seanjc@google.com> wrote:
+> > @@ -5960,19 +5963,21 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
+> >                                       lpage_disallowed_link);
+> >                 WARN_ON_ONCE(!sp->lpage_disallowed);
+> >                 if (is_tdp_mmu_page(sp)) {
+> > -                       kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn,
+> > -                               sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level));
+> > +                       gfn_end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
+> > +                       flush = kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, gfn_end,
+> > +                                                         flush || !list_empty(&invalid_list));
+> >                 } else {
+> >                         kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
+> >                         WARN_ON_ONCE(sp->lpage_disallowed);
+> >                 }
+> >
+> >                 if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
+> > -                       kvm_mmu_commit_zap_page(kvm, &invalid_list);
+> > +                       kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
+> 
+> This pattern of waiting until a yield is needed or lock contention is
+> detected has always been a little suspect to me because
+> kvm_mmu_commit_zap_page does work proportional to the work done before
+> the yield was needed. That seems like more work than we should like to
+> be doing at that point.
+> 
+> The yield in kvm_tdp_mmu_zap_gfn_range makes that phenomenon even
+> worse. Because we can satisfy the need to yield without clearing out
+> the invalid list, we can potentially queue many more pages which will
+> then all need to have their zaps committed at once. This is an
+> admittedly contrived case which could only be hit in a high load
+> nested scenario.
+> 
+> It could be fixed by forbidding kvm_tdp_mmu_zap_gfn_range from
+> yielding. Since we should only need to zap one SPTE, the yield should
+> not be needed within the kvm_tdp_mmu_zap_gfn_range call. To ensure
+> that only one SPTE is zapped we would have to specify the root though.
+> Otherwise we could end up zapping all the entries for the same GFN
+> range under an unrelated root.
 
-rcu_dereference_protected() requires that inode_sec->object is not
-concurrently changed, but I think another thread could call
-get_inode_object() while we're in landlock_create_object(), and then
-we could race with the NULL write in release_inode() here? (It
-wouldn't actually be a UAF though because we're not actually accessing
-`object` here.) Or am I missing a lock that prevents this?
+Hmm, I originally did exactly that, but changed my mind because this zaps far
+more than 1 SPTE.  This is zapping a SP that could be huge, but is not, which
+means it's guaranteed to have a non-zero number of child SPTEs.  The worst case
+scenario is that SP is a PUD (potential 1gb page) and the leafs are 4k SPTEs.
 
-In v28 this wasn't an issue because release_inode() was holding
-inode->i_lock (and object->lock) during the NULL store; but in v29 and
-this version the NULL store in release_inode() moved out of the locked
-region. I think you could just move the NULL store in release_inode()
-back up (and maybe add a comment explaining the locking rules for
-landlock_inode(...)->object)?
-
-(Or alternatively you could use rcu_dereference_raw() with a comment
-explaining that the read pointer is only used to check for NULL-ness,
-and that it is guaranteed that the pointer can't change if it is NULL
-and we're holding the lock. But that'd be needlessly complicated, I
-think.)
-
-
-> +       if (unlikely(object)) {
-> +               /* Someone else just created the object, bail out and ret=
-ry. */
-> +               spin_unlock(&inode->i_lock);
-> +               kfree(new_object);
-> +
-> +               rcu_read_lock();
-> +               goto retry;
-> +       }
-> +
-> +       rcu_assign_pointer(inode_sec->object, new_object);
-> +       /*
-> +        * @inode will be released by hook_sb_delete() on its superblock
-> +        * shutdown.
-> +        */
-> +       ihold(inode);
-> +       spin_unlock(&inode->i_lock);
-> +       return new_object;
-> +}
+But, I didn't consider the interplay between invalid_list and the TDP MMU
+yielding.  Hrm.
