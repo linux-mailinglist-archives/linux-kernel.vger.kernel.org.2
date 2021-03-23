@@ -2,129 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DF83462E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA743462E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbhCWPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:30:06 -0400
-Received: from mail-1.ca.inter.net ([208.85.220.69]:57012 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbhCWP3i (ORCPT
+        id S232308AbhCWPbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:31:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40291 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232855AbhCWPan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:29:38 -0400
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 342E82EA319;
-        Tue, 23 Mar 2021 11:29:35 -0400 (EDT)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id DuPAF25aiZY6; Tue, 23 Mar 2021 11:11:45 -0400 (EDT)
-Received: from [192.168.48.23] (host-45-58-219-4.dyn.295.ca [45.58.219.4])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 339422EA3B3;
-        Tue, 23 Mar 2021 11:29:34 -0400 (EDT)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [scsi_debug] 20b58d1e6b: blktests.block.001.fail
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, mcgrof@kernel.org, hare@suse.de
-References: <20210323132620.GA23032@xsang-OptiPlex-9020>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <d771d5a1-d411-fb34-1c72-81d16e0588d4@interlog.com>
-Date:   Tue, 23 Mar 2021 11:29:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 23 Mar 2021 11:30:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616513442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mI4j93acBJMaU92luMwJ8A/vW8tMhXdBZehGGarChYg=;
+        b=VaRr5gD4cM57Emptgbc7BQhaENMZDK+kzZ3om2KB5RBz98I0WfJk+qaPqaE/B9Axq7MJHo
+        7Kuki4DxHrr6MhdsLLl5JWXurmfynOgtpxIkOQJxl7Dgoyx8ZZIjh6kPKJ5upmvHD9ZTsx
+        aFCXxpeiEHNUGFSaNcIVVMHoZZ8MiUs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-VQWS8EGcMbG76AJOyJf0rw-1; Tue, 23 Mar 2021 11:30:40 -0400
+X-MC-Unique: VQWS8EGcMbG76AJOyJf0rw-1
+Received: by mail-ej1-f69.google.com with SMTP id en21so1232060ejc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:30:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mI4j93acBJMaU92luMwJ8A/vW8tMhXdBZehGGarChYg=;
+        b=i+gvLoWtoJoXCDlP46egpeU+ZeKtiYOrPiKOl4Q1sL4Kl9+SbFnU2r5U3HYpsNMDeJ
+         DeJfIdVElhHm4zpORBg/AZO5fTydb9/4oLD15YJVeJdP7jyZIcWS42Pw49GNWsBzf5IB
+         SGcv1DUmrGk0VIa9VmKOVNlBwQhxGUJu2eADtDe58RIMG70SBS5duJwrwkezNwXc4tTy
+         mfDO985MuaNaEfZ0gneczYS2BkfGBrvBnBNhgSXU1eOKYZ44y2qFsgCy1ghl3fLXxrNu
+         aXTQSF316Oych2/DACO+GXOwxn/bDoE/vYzDcPAvRTsuuK7ypPJWbT5mlqG1b8TZoWF9
+         p1JA==
+X-Gm-Message-State: AOAM531V8JrOssH2NCpl8YBRvGuWUtRZUl7EFiO7JmBGjstrU8TTkqee
+        ZbPXCUSO9b1Qs09EvWLU4ZZZJ8OnHWzhgUIJSU/gEm7IuOoWmpo8GpLPylwGyt67TLPNAEPnYR8
+        UBoKLZthG2iQ3GSIAnSpXKcKx
+X-Received: by 2002:a17:906:6817:: with SMTP id k23mr5384335ejr.6.1616513439579;
+        Tue, 23 Mar 2021 08:30:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLTd3xGEvqnp8NukP1Ys+6tcbX8ilsbm1CDNkpaQntGtKzFSRPpY87fLUqnUTbo8U/LYL87g==
+X-Received: by 2002:a17:906:6817:: with SMTP id k23mr5384324ejr.6.1616513439441;
+        Tue, 23 Mar 2021 08:30:39 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id q20sm11251156ejs.41.2021.03.23.08.30.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 08:30:38 -0700 (PDT)
+Subject: Re: [PATCH v3 5/8] platform/x86: gpd pocket fan: Clean-up by using
+ managed work init
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Gross <mgross@linux.intel.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <aa25a6781ba016772b045cd6e630da8c559a665d.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <3109f58a-91e4-09bd-d953-f43a4242c194@redhat.com>
+Date:   Tue, 23 Mar 2021 16:30:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210323132620.GA23032@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-CA
+In-Reply-To: <aa25a6781ba016772b045cd6e630da8c559a665d.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-23 9:26 a.m., kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 20b58d1e6b9cda142cd142a0a2f94c0d04b0a5a0 ("[RFC] scsi_debug: add hosts initialization --> worker")
-> url: https://github.com/0day-ci/linux/commits/Douglas-Gilbert/scsi_debug-add-hosts-initialization-worker/20210319-230817
-> base: https://git.kernel.org/cgit/linux/kernel/git/jejb/scsi.git for-next
-> 
-> in testcase: blktests
-> version: blktests-x86_64-a210761-1_20210124
-> with following parameters:
-> 
-> 	disk: 1SSD
-> 	test: block-group-00
-> 	ucode: 0xe2
-> 
-> 
-> 
-> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+HI,
 
-This RFC was proposed for Luis Chamberlain to consider for this report:
-    https://bugzilla.kernel.org/show_bug.cgi?id=212337
+On 3/23/21 2:57 PM, Matti Vaittinen wrote:
+> Few drivers implement remove call-back only for ensuring a delayed
+> work gets cancelled prior driver removal. Clean-up these by switching
+> to use devm_delayed_work_autocancel() instead.
+> 
+> This change is compile-tested only. All testing is appreciated.
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
-Luis predicted that this change would trip up some blktests which is exactly 
-what has happened here. The question here is whether it is reasonable (i.e.
-a correct simulation of what real hardware does) to assume that as soon as
-the loading of the scsi_debug is complete, that _all_ LUNs (devices) specified
-in its parameters are ready for media access?
+Thanks, patch looks good to me:
 
-If yes then this RFC can be dropped or relegated to only occur when a driver
-parameter is set to a non-default value.
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-If no then those blktest scripts need to be fixed to reflect that after a
-HBA is loaded, all the targets and LUNs connected to it do _not_ immediately
-become available.
+Regards,
 
-Doug Gilbert
+Hans
 
 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 2021-03-21 02:40:23 sed "s:^:block/:" /lkp/benchmarks/blktests/tests/block-group-00
-> 2021-03-21 02:40:23 ./check block/001
-> block/001 (stress device hotplugging)
-> block/001 (stress device hotplugging)                        [failed]
->      runtime  ...  30.370s
->      --- tests/block/001.out	2021-01-24 06:04:08.000000000 +0000
->      +++ /lkp/benchmarks/blktests/results/nodev/block/001.out.bad	2021-03-21 02:40:53.652003261 +0000
->      @@ -1,4 +1,7 @@
->       Running block/001
->       Stressing sd
->      +ls: cannot access '/sys/class/scsi_device/4:0:0:0/device/block': No such file or directory
->      +ls: cannot access '/sys/class/scsi_device/5:0:0:0/device/block': No such file or directory
->       Stressing sr
->      +ls: cannot access '/sys/class/scsi_device/4:0:0:0/device/block': No such file or directory
->       Test complete
-> 
-> 
-> 
-> To reproduce:
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp install                job.yaml  # job file is attached in this email
->          bin/lkp split-job --compatible job.yaml
->          bin/lkp run                    compatible-job.yaml
-> 
-> 
-> 
 > ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
+> Changelog from RFCv2:
+>  - RFC dropped. No functional changes.
 > 
-> Thanks,
-> Oliver Sang
+>  drivers/platform/x86/gpd-pocket-fan.c | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/gpd-pocket-fan.c b/drivers/platform/x86/gpd-pocket-fan.c
+> index 5b516e4c2bfb..7a20f68ae206 100644
+> --- a/drivers/platform/x86/gpd-pocket-fan.c
+> +++ b/drivers/platform/x86/gpd-pocket-fan.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/acpi.h>
+> +#include <linux/devm-helpers.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/module.h>
+>  #include <linux/moduleparam.h>
+> @@ -124,7 +125,7 @@ static void gpd_pocket_fan_force_update(struct gpd_pocket_fan_data *fan)
+>  static int gpd_pocket_fan_probe(struct platform_device *pdev)
+>  {
+>  	struct gpd_pocket_fan_data *fan;
+> -	int i;
+> +	int i, ret;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(temp_limits); i++) {
+>  		if (temp_limits[i] < 20000 || temp_limits[i] > 90000) {
+> @@ -152,7 +153,10 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	fan->dev = &pdev->dev;
+> -	INIT_DELAYED_WORK(&fan->work, gpd_pocket_fan_worker);
+> +	ret = devm_delayed_work_autocancel(&pdev->dev, &fan->work,
+> +					   gpd_pocket_fan_worker);
+> +	if (ret)
+> +		return ret;
+>  
+>  	/* Note this returns a "weak" reference which we don't need to free */
+>  	fan->dts0 = thermal_zone_get_zone_by_name("soc_dts0");
+> @@ -177,14 +181,6 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static int gpd_pocket_fan_remove(struct platform_device *pdev)
+> -{
+> -	struct gpd_pocket_fan_data *fan = platform_get_drvdata(pdev);
+> -
+> -	cancel_delayed_work_sync(&fan->work);
+> -	return 0;
+> -}
+> -
+>  #ifdef CONFIG_PM_SLEEP
+>  static int gpd_pocket_fan_suspend(struct device *dev)
+>  {
+> @@ -215,7 +211,6 @@ MODULE_DEVICE_TABLE(acpi, gpd_pocket_fan_acpi_match);
+>  
+>  static struct platform_driver gpd_pocket_fan_driver = {
+>  	.probe	= gpd_pocket_fan_probe,
+> -	.remove	= gpd_pocket_fan_remove,
+>  	.driver	= {
+>  		.name			= "gpd_pocket_fan",
+>  		.acpi_match_table	= gpd_pocket_fan_acpi_match,
 > 
 
