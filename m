@@ -2,74 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D68D3465A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEC63465AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhCWQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:48:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:49154 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233216AbhCWQsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:48:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1B27D6E;
-        Tue, 23 Mar 2021 09:48:06 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B7063F718;
-        Tue, 23 Mar 2021 09:48:04 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 16:48:01 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
- stack trace unreliable
-Message-ID: <20210323164801.GE98545@C02TD0UTHF1T.local>
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-6-madvenka@linux.microsoft.com>
- <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
- <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
- <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
- <20210323145734.GD98545@C02TD0UTHF1T.local>
- <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
+        id S233322AbhCWQtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233216AbhCWQtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:49:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8B8C061574;
+        Tue, 23 Mar 2021 09:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=zsWUChpUzdyyXAnKfXL0ouDcOEMmm/9rEethWKfPjz8=; b=vEL4bbC/Jxk/aJHjrDr4zv0gw/
+        7xKgFDlEoY6YM6CJEd/JF6DBP7Z/KWMZcmDQlNviBJ+TB+shHR9lRjzu5rW1jkhzifEOz7aI/GjVt
+        90ekrEfBIfR2OpFrb1GCm8ND+hRkNd/C1SXsChV5TY1J8/dPWGkDQtu7Ra/iNOtPrgByCiQm5zWlN
+        trEVbueUvBtDlxH+kaF5/w0N0hKN5Qf5OXndL6FBtbThWCoJibHIEbM0duicOJIO0FQJd8LJTiT+Q
+        EOjxIB/P/DBrnmNWfMZPgjeoakePbbCMLRNhcUsUoGRtbjY/uhA5U3mWLySyrHAsut6mzWjDrzNN3
+        v1YfDERQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOkCl-00AIu2-8i; Tue, 23 Mar 2021 16:48:36 +0000
+Subject: Re: [PATCH v2] fs/exec: fix typos and sentence disorder
+To:     Xiaofeng Cao <cxfcosmos@gmail.com>, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>
+References: <20210323074212.15444-1-caoxiaofeng@yulong.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1a4f3de7-54a6-6ef9-ce41-4abbf05fe0d3@infradead.org>
+Date:   Tue, 23 Mar 2021 09:48:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
+In-Reply-To: <20210323074212.15444-1-caoxiaofeng@yulong.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:26:50AM -0500, Madhavan T. Venkataraman wrote:
-> On 3/23/21 9:57 AM, Mark Rutland wrote:
-> Thanks for explaining the nesting. It is now clear to me.
+On 3/23/21 12:42 AM, Xiaofeng Cao wrote:
+> change 'backwords' to 'backwards'
+> change 'and argument' to 'an argument'
+> change 'visibile' to 'visible'
+> change 'wont't' to 'won't'
+> reorganize sentence
+> 
+> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
 
-No problem!
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-> So, my next question is - can we define a practical limit for the
-> nesting so that any nesting beyond that is fatal? The reason I ask is
-> - if there is a max, then we can allocate an array of stack frames out
-> of band for the special frames so they are not part of the stack and
-> will not likely get corrupted.
+Thanks.
 
-I suspect we can't define such a fatal limit without introducing a local
-DoS vector on some otherwise legitimate workload, and I fear this will
-further complicate the entry/exit logic, so I'd prefer to avoid
-introducing a new limit.
+> ---
+> v2: resume the right boundary
+>  fs/exec.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 18594f11c31f..5e23101f9259 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -536,7 +536,7 @@ static int copy_strings(int argc, struct user_arg_ptr argv,
+>  		if (!valid_arg_len(bprm, len))
+>  			goto out;
+>  
+> -		/* We're going to work our way backwords. */
+> +		/* We're going to work our way backwards. */
+>  		pos = bprm->p;
+>  		str += len;
+>  		bprm->p -= len;
+> @@ -603,7 +603,7 @@ static int copy_strings(int argc, struct user_arg_ptr argv,
+>  }
+>  
+>  /*
+> - * Copy and argument/environment string from the kernel to the processes stack.
+> + * Copy an argument/environment string from the kernel to the processes stack.
+>   */
+>  int copy_string_kernel(const char *arg, struct linux_binprm *bprm)
+>  {
+> @@ -718,9 +718,9 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
+>  	} else {
+>  		/*
+>  		 * otherwise, clean from old_start; this is done to not touch
+> -		 * the address space in [new_end, old_start) some architectures
+> +		 * the address space in [new_end, old_start). Some architectures
+>  		 * have constraints on va-space that make this illegal (IA64) -
+> -		 * for the others its just a little faster.
+> +		 * for the others it's just a little faster.
+>  		 */
+>  		free_pgd_range(&tlb, old_start, old_end, new_end,
+>  			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
+> @@ -1120,7 +1120,7 @@ static int de_thread(struct task_struct *tsk)
+>  		 */
+>  
+>  		/* Become a process group leader with the old leader's pid.
+> -		 * The old leader becomes a thread of the this thread group.
+> +		 * The old leader becomes a thread of this thread group.
+>  		 */
+>  		exchange_tids(tsk, leader);
+>  		transfer_pid(leader, tsk, PIDTYPE_TGID);
+> @@ -1142,7 +1142,7 @@ static int de_thread(struct task_struct *tsk)
+>  		/*
+>  		 * We are going to release_task()->ptrace_unlink() silently,
+>  		 * the tracer can sleep in do_wait(). EXIT_DEAD guarantees
+> -		 * the tracer wont't block again waiting for this thread.
+> +		 * the tracer won't block again waiting for this thread.
+>  		 */
+>  		if (unlikely(leader->ptrace))
+>  			__wake_up_parent(leader, leader->parent);
+> @@ -1270,7 +1270,7 @@ int begin_new_exec(struct linux_binprm * bprm)
+>  
+>  	/*
+>  	 * Must be called _before_ exec_mmap() as bprm->mm is
+> -	 * not visibile until then. This also enables the update
+> +	 * not visible until then. This also enables the update
+>  	 * to be lockless.
+>  	 */
+>  	set_mm_exe_file(bprm->mm, bprm->file);
+> 
 
-What exactly do you mean by a "special frame", and why do those need
-additional protection over regular frame records?
 
-> Also, we don't have to do any special detection. If the number of out
-> of band frames used is one or more then we have exceptions and the
-> stack trace is unreliable.
+-- 
+~Randy
 
-What is expected to protect against?
-
-Thanks,
-Mark.
