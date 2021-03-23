@@ -2,246 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0599345C7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C1A345C7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhCWLJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:09:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58628 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230434AbhCWLJG (ORCPT
+        id S230459AbhCWLJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhCWLJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:09:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616497745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jH64CwItD7+IDNu5T9rDTh1QqhWJhGHEtaUsuBHfOjI=;
-        b=AoOChTAvynLD9JXQT2I6KsAUa8GfEE+vcqFeII8mPjdT+wvHNsqJ0LHY/WRibcqs2U4NmG
-        CJr7h8n8hIKSq9SODXro1Rti86rzKh75nPEBzRZ4PnUMSkpURvMVUqE0PX6iakzAc4fKDp
-        dBivVdkswlITxivF1wF4r0SfL9cCVcM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-XYjXjMkUNaOx1Y9hR_U8xA-1; Tue, 23 Mar 2021 07:09:01 -0400
-X-MC-Unique: XYjXjMkUNaOx1Y9hR_U8xA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D7881009466;
-        Tue, 23 Mar 2021 11:08:59 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 38A1F5D9F0;
-        Tue, 23 Mar 2021 11:08:52 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 12:08:51 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Chuck Lever III <chuck.lever@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        brouer@redhat.com
-Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Message-ID: <20210323120851.18d430cf@carbon>
-In-Reply-To: <20210322205827.GJ3697@techsingularity.net>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
-        <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
-        <20210322194948.GI3697@techsingularity.net>
-        <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
-        <20210322205827.GJ3697@techsingularity.net>
+        Tue, 23 Mar 2021 07:09:10 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A25C061574;
+        Tue, 23 Mar 2021 04:09:10 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u9so26389164ejj.7;
+        Tue, 23 Mar 2021 04:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AthyaDoKKyndv1i/NrrVvhda/enAojvpcI/TJWbKNcA=;
+        b=etmj2WE+fgF26Q9xj7+WcJJ4AUtOO+QeRW4yJa6Ql/93WqgpmEPIbFGVYFFGTsmWdm
+         lYTMlfMW07XG0VLQ1bXGjLDPOjzJ9vRG0OAPjkUa4TyEicf6SFi3vnwcOXuJyCpDGLIG
+         o9coLj5JTM9969JZFuB/RgnVF+8bj5mRs3KT+pkHzekDypJMzXS3qnJpEJlApU5NZQVt
+         qAzcWoaI/DDnNWp6syRUNbcURE6x34Ypa/nhpU6NRTFtVwDkKWcSyrTDEge1iQVmaCz3
+         qc1Vi8XmEacN814I39MoB7hqUcsueuBrf3xI187jDvWIxiB4rH+aEBHcWRFgjCu330zh
+         BMkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AthyaDoKKyndv1i/NrrVvhda/enAojvpcI/TJWbKNcA=;
+        b=dlUKtR8q5MAj+b/MKr+3euklV8D660t2PoaGZyRpetInEZIuAQkyojtQq49LMxNkDD
+         Hvzx5aOUjPRLA29d0JHodp6kUYSomYLoJGM3snvw5yUJ+fKXHj07xvZ9DrN8uRikRo9C
+         OYmhJT0XdVQatJbh5mjRr3npAE5UaW6sy3wjLDOk3BkhD4oocJM0Qd4J0A39tbHqtqi/
+         8loYzv8B/oKuNmqCJl9iK6pkzuTMVPpiFOJvLPbmX2eGZO8z2FNoFU/A2EYTn/R3RLA0
+         Y3PsODeWyBUtDxFTg3BCTO2FH5NVt8RRYWgvdd5HBqxwpekfL0Af8aYHwbp4LBH5rFNJ
+         1TWw==
+X-Gm-Message-State: AOAM5334GYGz2geAga/Xb1gjowMnQGsOVBcjKUB3SLip79Z6fsZadXlR
+        baxEnsct9vRdmDedzy0C8WEUWHYg4PyaoSBQbGo=
+X-Google-Smtp-Source: ABdhPJxwDdq5iXqaWZVGQZFfxnXDVq736giW9rFR/kJcpR1leX3ubItOP8NW/oOY9lhJQBIFuejzXYH9oM6obw9FMyA=
+X-Received: by 2002:a17:906:3ac3:: with SMTP id z3mr4498479ejd.106.1616497749061;
+ Tue, 23 Mar 2021 04:09:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210308120555.252524-1-adrien.grassein@gmail.com>
+ <20210308120555.252524-3-adrien.grassein@gmail.com> <CAG3jFytoE9hWvq2e2Caqn4qP_RuEOnm4r9VQ85ffbAcguSLf+w@mail.gmail.com>
+ <CABkfQAGvPy3DzXQnDJqm1q_rOLWR7BQTXb8z05iML3s3Mc8LJw@mail.gmail.com> <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
+In-Reply-To: <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Tue, 23 Mar 2021 12:08:58 +0100
+Message-ID: <CABkfQAGcSsQ74FtvAK4_awHRXswgBrThKww_xhpmTzordZ5X8w@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 20:58:27 +0000
-Mel Gorman <mgorman@techsingularity.net> wrote:
+Le mar. 23 mars 2021 =C3=A0 11:42, Robert Foss <robert.foss@linaro.org> a =
+=C3=A9crit :
+>
+> On Tue, 23 Mar 2021 at 11:01, Adrien Grassein <adrien.grassein@gmail.com>=
+ wrote:
+> >
+> > Hey Robert,
+> >
+> > Thanks for the update.
+> >
+> > Le mar. 23 mars 2021 =C3=A0 10:10, Robert Foss <robert.foss@linaro.org>=
+ a =C3=A9crit :
+> > >
+> > > Hey Adrien,
+> > >
+> > > Sorry about the slow reply, but I just received the documentation fro=
+m
+> > > the vendor. So let's dig in to the HPD issue.
+> >
+> > No problem :)
+> > >
+> > > > +static enum drm_connector_status lt8912_check_cable_status(struct =
+lt8912 *lt)
+> > > > +{
+> > > > +       int ret;
+> > > > +       unsigned int reg_val;
+> > > > +
+> > > > +       ret =3D regmap_read(lt->regmap[I2C_MAIN], 0xC1, &reg_val);
+> > > > +       if (ret)
+> > > > +               return connector_status_unknown;
+> > > > +
+> > > > +       if (reg_val & BIT(7))
+> > > > +               return connector_status_connected;
+> > >
+> > > Register 0xc0 & BIT(7) - HPD signal after debounce
+> > > Register 0xc0 & BIT(6) - HPD signal for TX HPD pad
+> >
+> > So, if I understand well, I need to write 0xc0 & BIT(6) with 1 to
+> > enable the HPD pin.
+>
+> Ah, sorry about being a bit terse.
+>
+> Both bit 6 & 7 are read only, and are probably best read after an IRQ.
 
-> On Mon, Mar 22, 2021 at 08:32:54PM +0000, Chuck Lever III wrote:
-> > >> It is returning some confusing (to me) results. I'd like
-> > >> to get these resolved before posting any benchmark
-> > >> results.
-> > >> 
-> > >> 1. When it has visited every array element, it returns the
-> > >> same value as was passed in @nr_pages. That's the N + 1th
-> > >> array element, which shouldn't be touched. Should the
-> > >> allocator return nr_pages - 1 in the fully successful case?
-> > >> Or should the documentation describe the return value as
-> > >> "the number of elements visited" ?
-> > >>   
-> > > 
-> > > I phrased it as "the known number of populated elements in the
-> > > page_array".  
-> > 
-> > The comment you added states:
-> > 
-> > + * For lists, nr_pages is the number of pages that should be allocated.
-> > + *
-> > + * For arrays, only NULL elements are populated with pages and nr_pages
-> > + * is the maximum number of pages that will be stored in the array.
-> > + *
-> > + * Returns the number of pages added to the page_list or the index of the
-> > + * last known populated element of page_array.
-> > 
-> >   
-> > > I did not want to write it as "the number of valid elements
-> > > in the array" because that is not necessarily the case if an array is
-> > > passed in with holes in the middle. I'm open to any suggestions on how
-> > > the __alloc_pages_bulk description can be improved.  
-> > 
-> > The comments states that, for the array case, a /count/ of
-> > pages is passed in, and an /index/ is returned. If you want
-> > to return the same type for lists and arrays, it should be
-> > documented as a count in both cases, to match @nr_pages.
-> > Consumers will want to compare @nr_pages with the return
-> > value to see if they need to call again.
-> >   
-> 
-> Then I'll just say it's the known count of pages in the array. That
-> might still be less than the number of requested pages if holes are
-> encountered.
-> 
-> > > The definition of the return value as-is makes sense for either a list
-> > > or an array. Returning "nr_pages - 1" suits an array because it's the
-> > > last valid index but it makes less sense when returning a list.
-> > >   
-> > >> 2. Frequently the allocator returns a number smaller than
-> > >> the total number of elements. As you may recall, sunrpc
-> > >> will delay a bit (via a call to schedule_timeout) then call
-> > >> again. This is supposed to be a rare event, and the delay
-> > >> is substantial. But with the array-based API, a not-fully-
-> > >> successful allocator call seems to happen more than half
-> > >> the time. Is that expected? I'm calling with GFP_KERNEL,
-> > >> seems like the allocator should be trying harder.
-> > >>   
-> > > 
-> > > It's not expected that the array implementation would be worse *unless*
-> > > you are passing in arrays with holes in the middle. Otherwise, the success
-> > > rate should be similar.  
-> > 
-> > Essentially, sunrpc will always pass an array with a hole.
-> > Each RPC consumes the first N elements in the rq_pages array.
-> > Sometimes N == ARRAY_SIZE(rq_pages). AFAIK sunrpc will not
-> > pass in an array with more than one hole. Typically:
-> > 
-> > .....PPPP
-> > 
-> > My results show that, because svc_alloc_arg() ends up calling
-> > __alloc_pages_bulk() twice in this case, it ends up being
-> > twice as expensive as the list case, on average, for the same
-> > workload.
-> >   
-> 
-> Ok, so in this case the caller knows that holes are always at the
-> start. If the API returns an index that is a valid index and populated,
-> it can check the next index and if it is valid then the whole array
-> must be populated.
-> 
-> Right now, the implementation checks for populated elements at the *start*
-> because it is required for calling prep_new_page starting at the correct
-> index and the API cannot make assumptions about the location of the hole.
-> 
-> The patch below would check the rest of the array but note that it's
-> slower for the API to do this check because it has to check every element
-> while the sunrpc user could check one element. Let me know if a) this
-> hunk helps and b) is desired behaviour.
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index c83d38dfe936..4bf20650e5f5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5107,6 +5107,9 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	} else {
->  		while (prep_index < nr_populated)
->  			prep_new_page(page_array[prep_index++], 0, gfp, 0);
-> +
-> +		while (nr_populated < nr_pages && page_array[nr_populated])
-> +			nr_populated++;
->  	}
->  
->  	return nr_populated;
+In my case, IRQ is not triggered at all.
+When reading the value of the HPD pin, I always get 1 (and no
+transition occurs when plugging / unplugging a cable).
+The HPD IRQ is done on the HDMI connector driver [5].
+I think a register configuration should be done to enable the IRQ pin
+or maybe there is a nug in electronics.
+The HPD pin is linked to a 2.2k pullup resistor (maybe it's wrong)
 
-I do know that I suggested moving prep_new_page() out of the
-IRQ-disabled loop, but maybe was a bad idea, for several reasons.
+>
+> > >
+> > > > +
+> > > > +static int lt8912_probe(struct i2c_client *client,
+> > > > +        const struct i2c_device_id *id)
+> > > > +{
+> > > > +       static struct lt8912 *lt;
+> > > > +       int ret =3D 0;
+> > > > +       struct device *dev =3D &client->dev;
+> > > > +
+> > > > +       lt =3D devm_kzalloc(dev, sizeof(struct lt8912), GFP_KERNEL)=
+;
+> > > > +       if (!lt)
+> > > > +               return -ENOMEM;
+> > > > +
+> > > > +       lt->dev =3D dev;
+> > > > +       lt->i2c_client[0] =3D client;
+> > > > +       lt->cable_status =3D connector_status_unknown;
+> > > > +       lt->workq =3D create_workqueue("lt8912_workq");
+> > >
+> > > Looking at [1] and maybe even better [2], I think this polling
+> > > approach is the wrong way to go. And with access to documentation, I
+> > > think we should be able to sort this out.
+> >
+> > I neither like the polling approach too. I did it to go on this issue.
+> > I will totally remove it once the HPD issue will be resolved.
+> > >
+> > > Using the irq driver approach requires the interrupt pin to be
+> > > configured. Pin 63 of the lt8912b is the IRQ output pin.
+> > >
+> > > In order to trigger interrupts based on it, the dt-binding would need
+> > > to be updated[3][4] as well as whichever DTS you're using.
+> > >
+> >
+> > The IRQ part is working well in my DTB. It test it by adding some
+> > electronics to emulate the HPD pin on the GPIO expander where the HPD
+> > pin is linked.
+>
+> Looking at the dt-binding patch, it does not seem to list any
+> interrupts. So that should be added. I think the irq support from [3]
+> & [4] can be pretty much copied.
+>
+> Then we can come back and replace the polling code with the IRQ driven
+> code from [2].
 
-All prep_new_page does is to write into struct page, unless some
-debugging stuff (like kasan) is enabled. This cache-line is hot as
-LRU-list update just wrote into this cache-line.  As the bulk size goes
-up, as Matthew pointed out, this cache-line might be pushed into
-L2-cache, and then need to be accessed again when prep_new_page() is
-called.
-
-Another observation is that moving prep_new_page() into loop reduced
-function size with 253 bytes (which affect I-cache).
-
-   ./scripts/bloat-o-meter mm/page_alloc.o-prep_new_page-outside mm/page_alloc.o-prep_new_page-inside
-    add/remove: 18/18 grow/shrink: 0/1 up/down: 144/-397 (-253)
-    Function                                     old     new   delta
-    __alloc_pages_bulk                          1965    1712    -253
-    Total: Before=60799, After=60546, chg -0.42%
-
-Maybe it is better to keep prep_new_page() inside the loop.  This also
-allows list vs array variant to share the call.  And it should simplify
-the array variant code.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-[PATCH] mm: move prep_new_page inside IRQ disabled loop
-
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-
-./scripts/bloat-o-meter mm/page_alloc.o-prep_new_page-outside mm/page_alloc.o-prep_new_page-inside
-add/remove: 18/18 grow/shrink: 0/1 up/down: 144/-397 (-253)
-Function                                     old     new   delta
-__alloc_pages_bulk                          1965    1712    -253
-Total: Before=60799, After=60546, chg -0.42%
+My board uses a "max7323" GPIO expander and the HPD pin is linked to it.
+I test this GPIO expander by soldering a pull up resistor and an
+interrupt on it and an interrupt was correctly triggered in both
+max7323 driver and hdmi-connector;
+So I guess that my DTB configuration is correct.
+I made my DBT configuration available:
+  - hdmi-connector node: [6]
+  - lt8912b node: |7]
+  - max7323 node: [8].
 
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- mm/page_alloc.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> >
+> > >
+> > > [1] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bri=
+dge/analogix/anx7625.c#L1751
+> > >
+> > > [2] https://github.com/torvalds/linux/blob/v5.11/drivers/gpu/drm/brid=
+ge/lontium-lt9611.c#L1160
+> > >
+> > > [3] https://github.com/torvalds/linux/blob/v5.11/Documentation/device=
+tree/bindings/display/bridge/lontium,lt9611.yaml#L27
+> > >
+> > > [4] https://github.com/torvalds/linux/blob/v5.11/Documentation/device=
+tree/bindings/display/bridge/lontium,lt9611.yaml#L144
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 88a5c1ce5b87..b4ff09b320bc 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5096,11 +5096,13 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		else
- 			page_array[nr_populated] = page;
- 		nr_populated++;
-+		prep_new_page(page, 0, gfp, 0);
- 	}
- 
- 	local_irq_restore(flags);
- 
- 	/* Prep pages with IRQs enabled. */
-+/*
- 	if (page_list) {
- 		list_for_each_entry(page, page_list, lru)
- 			prep_new_page(page, 0, gfp, 0);
-@@ -5108,7 +5110,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		while (prep_index < nr_populated)
- 			prep_new_page(page_array[prep_index++], 0, gfp, 0);
- 	}
--
-+*/
- 	return nr_populated;
- 
- failed_irq:
+[5] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bridge/di=
+splay-connector.c#L199
+[6] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/dts/=
+freescale/imx8mq-nitrogen.dts#L37
+[7] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/dts/=
+freescale/imx8mq-nitrogen.dts#L249
+[8] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/dts/=
+freescale/imx8mq-nitrogen.dts#L291
 
 
+Thanks,
