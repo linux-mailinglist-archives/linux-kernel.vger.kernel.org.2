@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B566D34586F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C04345871
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbhCWHRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:17:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhCWHQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:16:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29844619AB;
-        Tue, 23 Mar 2021 07:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616483818;
-        bh=Oic7tXm20WEsRdiZO4uFQdTa8PHRKYmlCZBotfy/kM8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WNLMIXyfpsn6i5n4uheEFpoQTbJdwKHYngGdRmpUtlTs2m+l14nGGmshxKfUdUKyF
-         cyyNcABTHgsmyYl1faQ96y9kwZey9iAp13CgRJyaOGXCrYwFB21RI0uTpr86KxE4CW
-         PTNaVdkJU7Pav/ORYP/3GivYQPHspRfaCePXJQZs=
-Date:   Tue, 23 Mar 2021 08:16:55 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: Add data checks in usbtmc_disconnect
-Message-ID: <YFmV51MPhKu/Kq6p@kroah.com>
-References: <20210323034717.12818-1-lyl2019@mail.ustc.edu.cn>
+        id S229920AbhCWHSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:18:21 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14066 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhCWHSF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:18:05 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4N1b5QDZzNqXk;
+        Tue, 23 Mar 2021 15:15:31 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 15:17:57 +0800
+Subject: Re: [PATCH 4.19 00/43] 4.19.183-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210322121919.936671417@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <c0961f3e-7872-44bb-fbeb-d0c03ecdf0cd@huawei.com>
+Date:   Tue, 23 Mar 2021 15:17:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323034717.12818-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 08:47:17PM -0700, Lv Yunlong wrote:
-> In usbtmc_disconnect, data is got from intf with the
-> initial reference. There is no refcount inc operation
-> before usbmc_free_int(data). In usbmc_free_int(data),
-> the data may be freed.
+
+
+On 2021/3/22 20:28, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.183 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> But later in usbtmc_disconnect, there is another put
-> function of data. I think it is better to add necessary
-> checks to avoid the data being put twice. It could cause
-> errors in race.
+> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/usb/class/usbtmc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.183-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
 > 
-> diff --git a/drivers/usb/class/usbtmc.c b/drivers/usb/class/usbtmc.c
-> index 74d5a9c5238a..e0438cb46386 100644
-> --- a/drivers/usb/class/usbtmc.c
-> +++ b/drivers/usb/class/usbtmc.c
-> @@ -2494,7 +2494,9 @@ static void usbtmc_disconnect(struct usb_interface *intf)
->  	}
->  	mutex_unlock(&data->io_mutex);
->  	usbtmc_free_int(data);
-> -	kref_put(&data->kref, usbtmc_delete);
-> +
-> +	if (data->iin_ep_present && data->iin_urb)
-> +		kref_put(&data->kref, usbtmc_delete);
+> thanks,
+> 
+> greg k-h
+> 
 
-What protects the data from changing right after the check and right
-before the kref_put() call?
+Tested on arm64 and x86 for 4.19.183-rc1,
 
-krefs need a lock somewhere to protect from races like this, please fix
-that logic instead.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.183-rc1
+Commit: 155590e98805144ae9800805ca98d3edcd2228de
+Compiler: gcc version 7.3.0 (GCC)
 
-thanks,
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4688
+passed: 4688
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-greg k-h
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4688
+passed: 4688
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
