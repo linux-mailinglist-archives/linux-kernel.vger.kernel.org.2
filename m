@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F0D345E9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B19D345E99
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhCWMzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbhCWMzJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:55:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675B6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LTQEMCkZdiBXrLcpX0fP9V/zBXP3nEkqVdlVQQ2MTjE=; b=FZGahySoelD/j9c7Bm8wddQJGw
-        966+pphwKL3Tb3ETkw+oHfZDIyvpPNhRmwp90/cdsi0oDR/kRWB01pDYErZrv3FfPlGvJz1vMsiRH
-        KopKbMyhZz9dGtIyGKu1aYtLKlC43KXE071VFy9imHYz6N/ZFw6bj7DPPEoYRRoMGDr3H+fGLRc1P
-        bnAGh652qFU2WTRx5OYrkT+CW61CcLgYTQIswre6cmXut4XMDhLi4nd9nnl8vQU7BE2tigkjiACQg
-        tGvvXQWOaU8g5Wpr1GkxGgtPIuNHmUSON6w12ink243xND2t6arvNm5s9GzvYrHq65FJWQPcGd+eI
-        oOVwuIRQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOgXo-00A4AJ-Lf; Tue, 23 Mar 2021 12:54:10 +0000
-Date:   Tue, 23 Mar 2021 12:54:00 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH -next] mm, page_alloc: avoid page_to_pfn() in
- move_freepages()
-Message-ID: <20210323125400.GE1719932@casper.infradead.org>
-References: <20210323131215.934472-1-liushixin2@huawei.com>
+        id S231389AbhCWMzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231316AbhCWMzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:55:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95AC560C3E;
+        Tue, 23 Mar 2021 12:55:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616504103;
+        bh=WG33UXJUD46Ak8uP8CZDERKXsKaUxMYfktLC4hORv1o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RBQclqZJMPL8FXz/4SC0Z4rygIpszv9wjxWHrkM0/f5sgH1RCASoiOixSCNAcbI1Y
+         f72ggVnhdkiAY1HW1l4XGnVaO1nfM5OIeSM/aSQKGSP8CBfSrLSfC708JN6pkXij8q
+         ZM5jdHPLKddBLAppjRizPzdMEfzBz9mN0sC4fXGaUW1sxCShI8A5j5Gy6d9WuYfQrT
+         uKd/TxoKfCHkOCOGxE9/48XP6N8L1n/jF/uaTTUWgl74TeE/z05jeuhlwTjrI9ZT+w
+         v4l7rA1TZzPG1Lg0xitxsJmlpcOjDB19uDv68Dijqyxfn+bP4hqRu6Jx2Amtc8ZwN1
+         YoTD/lZdy664w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Viswas G <Viswas.G@microchip.com>,
+        Ruksar Devadi <Ruksar.devadi@microchip.com>,
+        Joe Perches <joe@perches.com>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Lee Jones <lee.jones@linaro.org>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: pm8001: avoid -Wrestrict warning
+Date:   Tue, 23 Mar 2021 13:54:23 +0100
+Message-Id: <20210323125458.1825564-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323131215.934472-1-liushixin2@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 09:12:15PM +0800, Liu Shixin wrote:
-> From: Kefeng Wang <wangkefeng.wang@huawei.com>
-> 
-> The start_pfn and end_pfn are already available in move_freepages_block(),
-> there is no need to go back and forth between page and pfn in move_freepages
-> and move_freepages_block, and pfn_valid_within() should validate pfn first
-> before touching the page.
+From: Arnd Bergmann <arnd@arndb.de>
 
-This looks good to me:
+On some configurations, gcc warns about overlapping source and
+destination arguments to snprintf:
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+drivers/scsi/pm8001/pm8001_init.c: In function 'pm8001_request_msix':
+drivers/scsi/pm8001/pm8001_init.c:977:3: error: 'snprintf' argument 4 may overlap destination object 'pm8001_ha' [-Werror=restrict]
+  977 |   snprintf(drvname, len, "%s-%d", pm8001_ha->name, i);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/pm8001/pm8001_init.c:962:56: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+  962 | static u32 pm8001_request_msix(struct pm8001_hba_info *pm8001_ha)
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
 
->  static int move_freepages(struct zone *zone,
-> -			  struct page *start_page, struct page *end_page,
-> +			  unsigned long start_pfn, unsigned long end_pfn,
->  			  int migratetype, int *num_movable)
->  {
->  	struct page *page;
-> +	unsigned long pfn;
->  	unsigned int order;
->  	int pages_moved = 0;
->  
-> -	for (page = start_page; page <= end_page;) {
-> -		if (!pfn_valid_within(page_to_pfn(page))) {
-> -			page++;
-> +	for (pfn = start_pfn; pfn <= end_pfn;) {
-> +		if (!pfn_valid_within(pfn)) {
-> +			pfn++;
->  			continue;
->  		}
->  
-> +		page = pfn_to_page(pfn);
+I first assumed this was a gcc bug, as that should not happen, but
+a reduced test case makes it clear that this happens when the loop
+counter is not bounded by the array size.
 
-I wonder if this wouldn't be even better if we did:
+Help the compiler out by adding an explicit limit here to make the
+code slightly more robust and avoid the warning.
 
-	struct page *start_page = pfn_to_page(start_pfn);
+Link: https://godbolt.org/z/6T1qPM
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/scsi/pm8001/pm8001_init.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-	for (pfn = start_pfn; pfn <= end_pfn; pfn++) {
-		struct page *page = start_page + pfn - start_pfn;
+diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
+index bd626ef876da..a268c647b987 100644
+--- a/drivers/scsi/pm8001/pm8001_init.c
++++ b/drivers/scsi/pm8001/pm8001_init.c
+@@ -963,6 +963,7 @@ static u32 pm8001_request_msix(struct pm8001_hba_info *pm8001_ha)
+ {
+ 	u32 i = 0, j = 0;
+ 	int flag = 0, rc = 0;
++	int nr_irqs = pm8001_ha->number_of_intr;
+ 
+ 	if (pm8001_ha->chip_id != chip_8001)
+ 		flag &= ~IRQF_SHARED;
+@@ -971,7 +972,10 @@ static u32 pm8001_request_msix(struct pm8001_hba_info *pm8001_ha)
+ 		   "pci_enable_msix request number of intr %d\n",
+ 		   pm8001_ha->number_of_intr);
+ 
+-	for (i = 0; i < pm8001_ha->number_of_intr; i++) {
++	if (nr_irqs > ARRAY_SIZE(pm8001_ha->intr_drvname))
++		nr_irqs = ARRAY_SIZE(pm8001_ha->intr_drvname);
++
++	for (i = 0; i < nr_irqs; i++) {
+ 		snprintf(pm8001_ha->intr_drvname[i],
+ 			sizeof(pm8001_ha->intr_drvname[0]),
+ 			"%s-%d", pm8001_ha->name, i);
+-- 
+2.29.2
 
-		if (!pfn_valid_within(pfn))
-			continue;
-
-> -
-> -			page++;
-> +			pfn++;
->  			continue;
-
-... then we can drop the increment of pfn here
-
->  		}
->  
-> @@ -2458,7 +2459,7 @@ static int move_freepages(struct zone *zone,
->  
->  		order = buddy_order(page);
->  		move_to_free_list(page, zone, order, migratetype);
-> -		page += 1 << order;
-> +		pfn += 1 << order;
-
-... and change this to pfn += (1 << order) - 1;
-
-Do you have any numbers to quantify the benefit of this change?
