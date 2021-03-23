@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82CF345955
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676AB345964
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbhCWIMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:12:22 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:49111 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhCWILs (ORCPT
+        id S229897AbhCWIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:14:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14845 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhCWIOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:11:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UT2qUJD_1616487100;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UT2qUJD_1616487100)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 23 Mar 2021 16:11:46 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     bskeggs@redhat.com
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] drm/nouveau/mc: make tu102_mc_intr_mask and tu102_mc_intr_rearm static
-Date:   Tue, 23 Mar 2021 16:11:24 +0800
-Message-Id: <1616487084-104391-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 23 Mar 2021 04:14:01 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4PGl690Mz92LL;
+        Tue, 23 Mar 2021 16:11:59 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 16:13:57 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>
+CC:     <coresight@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linuxarm@openeuler.org>
+Subject: [PATCH v2] coresight: core: Fix typo in coresight-core.c
+Date:   Tue, 23 Mar 2021 16:11:26 +0800
+Message-ID: <1616487086-50418-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Fix the following checkpatch warning:
+WARNING: 'compoment' may be misspelled - perhaps 'component'?
 
-drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c:74:1: warning: symbol
-'tu102_mc_intr_mask' was not declared. Should it be static?
-
-drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c:62:1: warning: symbol
-'tu102_mc_intr_rearm' was not declared. Should it be static?
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Fixes: 8e264c52e1da  ("coresight: core: Allow the coresight core driver to be built as a module")
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
 ---
-Changes in v2:
-  -Modified the commit message.
+ drivers/hwtracing/coresight/coresight-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
-index 58db83e..7cf659cc 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
-@@ -58,7 +58,7 @@ struct tu102_mc {
- 	spin_unlock_irqrestore(&mc->lock, flags);
- }
+diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+index 0062c89..b57bea1 100644
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -86,7 +86,7 @@ static int coresight_id_match(struct device *dev, void *data)
+ 	    i_csdev->type != CORESIGHT_DEV_TYPE_SOURCE)
+ 		return 0;
  
--void
-+static void
- tu102_mc_intr_rearm(struct nvkm_mc *base)
- {
- 	struct tu102_mc *mc = tu102_mc(base);
-@@ -70,7 +70,7 @@ struct tu102_mc {
- 	spin_unlock_irqrestore(&mc->lock, flags);
- }
+-	/* Get the source ID for both compoment */
++	/* Get the source ID for both components */
+ 	trace_id = source_ops(csdev)->trace_id(csdev);
+ 	i_trace_id = source_ops(i_csdev)->trace_id(i_csdev);
  
--void
-+static void
- tu102_mc_intr_mask(struct nvkm_mc *base, u32 mask, u32 intr)
- {
- 	struct tu102_mc *mc = tu102_mc(base);
 -- 
-1.8.3.1
+2.8.1
 
