@@ -2,92 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCC33461BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6443461B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhCWOpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:45:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57010 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232177AbhCWOpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:45:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 744B5AD6D;
-        Tue, 23 Mar 2021 14:45:33 +0000 (UTC)
-Message-ID: <0241750f5e12fd2805c98ba376e38f1355c31e35.camel@suse.de>
-Subject: Re: [PATCH] Input: i8042 - fix Pegatron C15B ID entry
-From:   Marcos Paulo de Souza <mpdesouza@suse.de>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        Kevin Locke <kevin@kevinlocke.name>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        David Pedersen <limero1337@gmail.com>,
-        Rajat Jain <rajatja@google.com>,
-        Chris Chiu <chiu@endlessos.org>, Jiri Kosina <jkosina@suse.cz>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 11:42:23 -0300
-In-Reply-To: <20210323130623.2302402-1-arnd@kernel.org>
-References: <20210323130623.2302402-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S232331AbhCWOoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232177AbhCWOng (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:43:36 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A49AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:43:35 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id r12so27528866ejr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wpRm6VhCt5Tmem+5xXP3SgI+L5GUwRkeSiWqVuYcDM8=;
+        b=soPEcL5PD3pGzy+UVBJ50290iledeWVyf8/AulhF5hpJEIrvPSuQh+pOgymb0qAXuC
+         3CeY/6PRkRboaDh8Xu3USVPeoTxltWgZv7IwV59A+syjGjRC3YTsycBdJP0ORN036mKv
+         RPkwnbT39lNHZlSFKpXR7/9lN6nyv93+Sf9kQ+h57699GKuIUNmtp9/Oj1bNvsqCVlpe
+         ReY7O2rFN7owsnQHimdhvuo1PwOoCPDQS2yBJ8zffcMmCpOCbZYE1Z7yWGPKGfpEx0kZ
+         dP5aQSCKqftskfUlb4NswkyFAOJ4bl+Yuc9lnkLMfim/2JgqtgYndTkwa+Bx/4jWS0Jt
+         kriA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wpRm6VhCt5Tmem+5xXP3SgI+L5GUwRkeSiWqVuYcDM8=;
+        b=SxcNp+xkMKLt9heeOAplEXIlkEs5KmBCdvDtN4PJ4yUQR/+HZkQUOmyy5ENlcY8dlz
+         UIlMtOebLRK2bgSjkyZlfLSti4JWNOg5khCN2MhOSNkaD41ys1gKJcWjyJH6a5h16CHJ
+         khazfYnKRWaCZzpO9gYyAPqO4Z+Ed1BhBYCpEp3CbGQeCNRb0elmYGncDK28vM4ZoHHl
+         GrxRli2FuX+6yF+PVMXvF6JyLn5pTmfOvnHs3qsdW827NPNb8REI+geKekjf45RGlUS2
+         TI7R2bqoa0hMblvwhN6/UOsUa1ztQhY/l0KOrxk/tLOc7uw1foEVbTZ4/9FT60ISXEsO
+         tsMw==
+X-Gm-Message-State: AOAM533RpZCvW7iRlgBwuJfXv7qmk/EYiEegTcrIiMR4FGEU54xw9+/M
+        YDDVTUZgHQTAckhrAt6w0ZNNj6M4+bE=
+X-Google-Smtp-Source: ABdhPJyV6FAJiDeOJk9Ezpr1aoVjZAU7h6juguzOxd8XB4M0EtkYadW3Ofx2hKkOng9HEA0AsDIMZQ==
+X-Received: by 2002:a17:906:1985:: with SMTP id g5mr5178696ejd.285.1616510613206;
+        Tue, 23 Mar 2021 07:43:33 -0700 (PDT)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id o6sm12989864edw.24.2021.03.23.07.43.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 07:43:30 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id x13so21026460wrs.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:43:29 -0700 (PDT)
+X-Received: by 2002:a05:6000:1803:: with SMTP id m3mr4445527wrh.50.1616510608882;
+ Tue, 23 Mar 2021 07:43:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210323125233.1743957-1-arnd@kernel.org>
+In-Reply-To: <20210323125233.1743957-1-arnd@kernel.org>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 23 Mar 2021 10:42:51 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSdZSmBe0UfdmAiE3HxK2wFhEbEktP=xDT8qY9WL+++Cig@mail.gmail.com>
+Message-ID: <CA+FuTSdZSmBe0UfdmAiE3HxK2wFhEbEktP=xDT8qY9WL+++Cig@mail.gmail.com>
+Subject: Re: [RFC net] net: skbuff: fix stack variable out of bounds access
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-23 at 14:06 +0100, Arnd Bergmann wrote:
+On Tue, Mar 23, 2021 at 8:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
 > From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The Zenbook Flip entry that was added overwrites a previous one
-> because of a typo:
-> 
-> In file included from drivers/input/serio/i8042.h:23,
->                  from drivers/input/serio/i8042.c:131:
-> drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized
-> field overwritten [-Werror=override-init]
->   591 |                 .matches = {
->       |                            ^
-> drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near
-> initialization for 'i8042_dmi_noselftest_table[0].matches')
-> 
-> Add the missing separator between the two.
-
-Oops, my bad...
-
-Thanks for fixing it Arnd.
-
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-> 
-> Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to
-> noselftest list")
+>
+> gcc-11 warns that the TS_SKB_CB(&state)) cast in skb_find_text()
+> leads to an out-of-bounds access in skb_prepare_seq_read() after
+> the addition of a new struct member made skb_seq_state longer
+> than ts_state:
+>
+> net/core/skbuff.c: In function =E2=80=98skb_find_text=E2=80=99:
+> net/core/skbuff.c:3498:26: error: array subscript =E2=80=98struct skb_seq=
+_state[0]=E2=80=99 is partly outside array bounds of =E2=80=98struct ts_sta=
+te[1]=E2=80=99 [-Werror=3Darray-bounds]
+>  3498 |         st->lower_offset =3D from;
+>       |         ~~~~~~~~~~~~~~~~~^~~~~~
+> net/core/skbuff.c:3659:25: note: while referencing =E2=80=98state=E2=80=
+=99
+>  3659 |         struct ts_state state;
+>       |                         ^~~~~
+>
+> The warning is currently disabled globally, but I found this
+> instance during experimental build testing, and it seems
+> legitimate.
+>
+> Make the textsearch buffer longer and add a compile-time check to
+> ensure the two remain the same length.
+>
+> Fixes: 97550f6fa592 ("net: compound page support in skb_seq_read")
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/input/serio/i8042-x86ia64io.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/input/serio/i8042-x86ia64io.h
-> b/drivers/input/serio/i8042-x86ia64io.h
-> index 9119e12a5778..a5a003553646 100644
-> --- a/drivers/input/serio/i8042-x86ia64io.h
-> +++ b/drivers/input/serio/i8042-x86ia64io.h
-> @@ -588,6 +588,7 @@ static const struct dmi_system_id
-> i8042_dmi_noselftest_table[] = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER
-> INC."),
->  			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook
-> */
->  		},
-> +	}, {
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER
-> INC."),
->  			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /*
-> Convertible Notebook */
+>  include/linux/textsearch.h | 2 +-
+>  net/core/skbuff.c          | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/textsearch.h b/include/linux/textsearch.h
+> index 13770cfe33ad..6673e4d4ac2e 100644
+> --- a/include/linux/textsearch.h
+> +++ b/include/linux/textsearch.h
+> @@ -23,7 +23,7 @@ struct ts_config;
+>  struct ts_state
+>  {
+>         unsigned int            offset;
+> -       char                    cb[40];
+> +       char                    cb[48];
+>  };
+>
+>  /**
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 545a472273a5..dd10d4c5f4bf 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -3633,6 +3633,7 @@ static unsigned int skb_ts_get_next_block(unsigned =
+int offset, const u8 **text,
+>                                           struct ts_config *conf,
+>                                           struct ts_state *state)
+>  {
+> +       BUILD_BUG_ON(sizeof(struct skb_seq_state) > sizeof(state->cb));
+>         return skb_seq_read(offset, text, TS_SKB_CB(state));
+>  }
+>
+> --
+> 2.29.2
+>
 
+Thanks for addressing this.
+
+A similar fix already landed in 5.12-rc3: commit b228c9b05876 ("net:
+expand textsearch ts_state to fit skb_seq_state"). That fix landed in
+5.12-rc3.
