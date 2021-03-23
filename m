@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6673458BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BD73458CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhCWHcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        id S230012AbhCWHeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCWHbx (ORCPT
+        with ESMTP id S229451AbhCWHd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:31:53 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D875C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:31:53 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lObVz-0005mg-FY; Tue, 23 Mar 2021 08:31:47 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:c81e:25b5:b851:4b31])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 23 Mar 2021 03:33:56 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6934FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RV79MNudtBE8lOMnZ4MTlcx7T/dwd5UQK0UyE/kmjoA=; b=o2R2IGy4YEqLXdupCdiPDA1S2z
+        loRQEyvdqrl6/JHIRzKM0PuYJq2Ae80RZ19nnOPF1ZqH+LIj8oqmbI7szuTy66l2ZZPOxSkTdUCzy
+        0brnOO9sAVgA+4/bOaJeVkHahUA14l3jdErwm3IZFdMPLu5rrbtTkRu/o+hWrucVVy1vvKM5TV5la
+        ap7fVXNMnoh+JPZR1EH4Seh3fr8x7WFw2HnLYKSJgiLA7A8k+S05BGeV+rjThxG9/B5vEkJnyjDNg
+        ltxtkHXXmXszdi1B+Fk2QuwVq8/6hk9YhVB2E6P1vf1QVMEzg6Xa1Q3NrjCMZ3mnk3bd2XnauWP0C
+        /6jK9+nw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lObXm-00E9UD-P8; Tue, 23 Mar 2021 07:33:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id E8F295FDBF1;
-        Tue, 23 Mar 2021 07:30:49 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:30:49 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kael_w@yeah.net
-Subject: Re: [PATCH] net: can: Remove duplicate include of regmap.h
-Message-ID: <20210323073049.xtsa4qfquezickon@pengutronix.de>
-References: <20210323021026.140460-1-wanjiabing@vivo.com>
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C1ED3010C8;
+        Tue, 23 Mar 2021 08:33:37 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3F7F32BD11CB8; Tue, 23 Mar 2021 08:33:37 +0100 (CET)
+Date:   Tue, 23 Mar 2021 08:33:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] static_call: fix function type mismatch
+Message-ID: <YFmZ0a1I+PvyPvne@hirez.programming.kicks-ass.net>
+References: <20210322214309.730556-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2x7tt3dycidjeo77"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323021026.140460-1-wanjiabing@vivo.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210322214309.730556-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 10:42:24PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The __static_call_return0() function is declared to return a 'long',
+> while it aliases a couple of functions that all return 'int'. When
+> building with 'make W=1', gcc warns about this:
+> 
+> kernel/sched/core.c:5420:37: error: cast between incompatible function types from 'long int (*)(void)' to 'int (*)(void)' [-Werror=cast-function-type]
+>  5420 |   static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
+> 
+> Change all these function to return 'long' as well, but remove the cast to
+> ensure we get a warning if any of the types ever change.
 
---2x7tt3dycidjeo77
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I still think it's utter batshit.
 
-On 23.03.2021 10:10:25, Wan Jiabing wrote:
-> linux/regmap.h has been included at line 13, so remove the=20
-> duplicate one at line 14.
-
-applied to linux-can-next/testing.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---2x7tt3dycidjeo77
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBZmSYACgkQqclaivrt
-76k9hgf9E1gyqjyXoEpiqFqSf7ZDUNLduopZyW4BCvi6dF4SoZnaFmgPLbRuZTup
-n4/0ylnbQ7Y4T/5Yyzv7nXaZlr9SLP86uAS+pqUzlQiKl0+Woz3c9SSvjaJDdrvu
-BZEbBx2Bhc0olUgFvuJsHMbgC7VSpQHqLOTpszYJGu14fd2u4CNawknJtNAUP8Bs
-emBNEA0Yq6nic70t16UhrPzjlUgZfhDDj0BBFyu1CBrBb5Vq3GG/3A74sVneVhvW
-BsSfZTpl1i1+IyFi+FXDi2tJ4SML7d4tAKV2G8COP8sEnrlBp5mubw3NUH7JRz3l
-mU9iAbLp5LCCKhdJubnUCP7e+FNQpQ==
-=05VG
------END PGP SIGNATURE-----
-
---2x7tt3dycidjeo77--
+Please explain which architecture ABI is affected and why the warning is
+sane.
