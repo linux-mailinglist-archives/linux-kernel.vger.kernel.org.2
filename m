@@ -2,160 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C74346DF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 00:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3AF346D96
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234331AbhCWXtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 19:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231202AbhCWXtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 19:49:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F7DF619C2;
-        Tue, 23 Mar 2021 23:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616543343;
-        bh=73IUD1ex775GRIOLkVkhFhRaIXgVYqgtUbryJLv3RBw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GnFKBWJxIKnz95O+xW2aV0ZoO+k4AppcoqQoxYdGISN46/avmkjUr1OJ+PvHv0j+2
-         uWgNXseJrkWz5+3fcH3U20pHkOk1r2rvKM0otZMCqoJb55HRO0QPHywCp4DurK9KLO
-         E8z1w8rszrCzPrmmi9/9bxVbqtb34N+ygZmKqLRNFYTcbnl7vZOGPJBnxHEs6cnWN/
-         FAaFR/NPi5BEYFPt/0lj8UfVHj5BqqUV795/9cfo//R7e3vXLV/+wnPqIo+mpHuEUy
-         dOoYrYuq+CVhVLtM1sQG9Va+lD2sL+s80irx22HvpKfoemVnosCu51bWGRDIxVrFt2
-         vFVXdAo0v8e0w==
-Date:   Tue, 23 Mar 2021 17:48:58 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
- flexible-array member
-Message-ID: <20210323224858.GA293698@embeddedor>
+        id S233888AbhCWWvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:51:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233878AbhCWWuz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 18:50:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616539854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Cr93mb6JnRs4arNME88BnQuOUnzIS6N9+cha3N56us=;
+        b=RLhYNVnyZSVpRmpSJJE5r+m1tF2jsbEJklfF7jjZgPxlOt/JGFHg/GEyU1vlfYOFrhaWGw
+        n7M4/hY+vrZ005/l2X4zJfgzQ6p9o4EX3UKG5wlXrEZhFHubqv3qhSN1CtyaGLR/dld2J4
+        JR1Wktgns5Psh75UPMJ54G72oqCiUn4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-XovzKeluNreOh25xzxZyQw-1; Tue, 23 Mar 2021 18:50:53 -0400
+X-MC-Unique: XovzKeluNreOh25xzxZyQw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB7065B361;
+        Tue, 23 Mar 2021 22:50:51 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-103.rdu2.redhat.com [10.10.116.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AA26B5C1C5;
+        Tue, 23 Mar 2021 22:50:46 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 10A4F220BCF; Tue, 23 Mar 2021 18:50:46 -0400 (EDT)
+Date:   Tue, 23 Mar 2021 18:50:46 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Christian Brauner <christian.brauner@canonical.com>,
+        Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtio-fs@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
+        lhenriques@suse.de, dgilbert@redhat.com,
+        Seth Forshee <seth.forshee@canonical.com>,
+        Jan Kara <jack@suse.cz>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 1/3] posic_acl: Add a helper determine if SGID should be
+ cleared
+Message-ID: <20210323225046.GH483930@redhat.com>
+References: <20210319195547.427371-1-vgoyal@redhat.com>
+ <20210319195547.427371-2-vgoyal@redhat.com>
+ <CAHpGcMKhFxotKDxPryfKdhNMMDWO4Ws33s6fEm2NP0u_4vffnQ@mail.gmail.com>
+ <20210320100322.ox5gzgauo7iqf2fv@gmail.com>
+ <20210322170111.GE446288@redhat.com>
+ <20210323093233.iyl4k6x432ytb72c@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323093233.iyl4k6x432ytb72c@wittgenstein>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Tue, Mar 23, 2021 at 10:32:33AM +0100, Christian Brauner wrote:
+> On Mon, Mar 22, 2021 at 01:01:11PM -0400, Vivek Goyal wrote:
+> > On Sat, Mar 20, 2021 at 11:03:22AM +0100, Christian Brauner wrote:
+> > > On Fri, Mar 19, 2021 at 11:42:48PM +0100, Andreas Gr�nbacher wrote:
+> > > > Hi,
+> > > > 
+> > > > Am Fr., 19. M�rz 2021 um 20:58 Uhr schrieb Vivek Goyal <vgoyal@redhat.com>:
+> > > > > posix_acl_update_mode() determines what's the equivalent mode and if SGID
+> > > > > needs to be cleared or not. I need to make use of this code in fuse
+> > > > > as well. Fuse will send this information to virtiofs file server and
+> > > > > file server will take care of clearing SGID if it needs to be done.
+> > > > >
+> > > > > Hence move this code in a separate helper so that more than one place
+> > > > > can call into it.
+> > > > >
+> > > > > Cc: Jan Kara <jack@suse.cz>
+> > > > > Cc: Andreas Gruenbacher <agruenba@redhat.com>
+> > > > > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > > > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > > > > ---
+> > > > >  fs/posix_acl.c            |  3 +--
+> > > > >  include/linux/posix_acl.h | 11 +++++++++++
+> > > > >  2 files changed, 12 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> > > > > index f3309a7edb49..2d62494c4a5b 100644
+> > > > > --- a/fs/posix_acl.c
+> > > > > +++ b/fs/posix_acl.c
+> > > > > @@ -684,8 +684,7 @@ int posix_acl_update_mode(struct user_namespace *mnt_userns,
+> > > > >                 return error;
+> > > > >         if (error == 0)
+> > > > >                 *acl = NULL;
+> > > > > -       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
+> > > > > -           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
+> > > > > +       if (posix_acl_mode_clear_sgid(mnt_userns, inode))
+> > > > >                 mode &= ~S_ISGID;
+> > > > >         *mode_p = mode;
+> > > > >         return 0;
+> > > > > diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+> > > > > index 307094ebb88c..073c5e546de3 100644
+> > > > > --- a/include/linux/posix_acl.h
+> > > > > +++ b/include/linux/posix_acl.h
+> > > > > @@ -59,6 +59,17 @@ posix_acl_release(struct posix_acl *acl)
+> > > > >  }
+> > > > >
+> > > > >
+> > > > > +static inline bool
+> > > > > +posix_acl_mode_clear_sgid(struct user_namespace *mnt_userns,
+> > > > > +                         struct inode *inode)
+> > > > > +{
+> > > > > +       if (!in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
+> > > > > +           !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID))
+> > > > > +               return true;
+> > > > > +
+> > > > > +       return false;
+> > > > 
+> > > > That's just
+> > > > 
+> > > > return !in_group_p(i_gid_into_mnt(mnt_userns, inode)) &&
+> > > >     !capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID);
+> > > > 
+> > > > The same pattern we have in posix_acl_update_mode also exists in
+> > > > setattr_copy and inode_init_owner, and almost the same pattern exists
+> > > > in setattr_prepare, so can this be cleaned up as well? The function
+> > > > also isn't POSIX ACL specific, so the function name is misleading.
+> > > 
+> > > Good idea but that should probably be spun into a separate patchset that
+> > > only touches the vfs parts.
+> > 
+> > IIUC, suggestion is that I should write a VFS helper (and not posix
+> > acl helper) and use that helper at other places too in the code. 
+> 
+> If there are other callers outside of acls (which should be iirc) then
+> yes.
+> 
+> > 
+> > I will do that and post in a separate patch series.
+> 
+> Yeah, I think that makes more sense to have this be a separate change
+> instead of putting it together with the fuse change if it touches more
+> than one place.
 
-Use an anonymous union with a couple of anonymous structs in order to
-keep userspace unchanged:
+I do see that there are few places where this pattern is used and atleast
+some of them should be straight forward conversion.
 
-$ pahole -C nfs_fhbase_new fs/nfsd/nfsfh.o
-struct nfs_fhbase_new {
-        union {
-                struct {
-                        __u8       fb_version_aux;       /*     0     1 */
-                        __u8       fb_auth_type_aux;     /*     1     1 */
-                        __u8       fb_fsid_type_aux;     /*     2     1 */
-                        __u8       fb_fileid_type_aux;   /*     3     1 */
-                        __u32      fb_auth[1];           /*     4     4 */
-                };                                       /*     0     8 */
-                struct {
-                        __u8       fb_version;           /*     0     1 */
-                        __u8       fb_auth_type;         /*     1     1 */
-                        __u8       fb_fsid_type;         /*     2     1 */
-                        __u8       fb_fileid_type;       /*     3     1 */
-                        __u32      fb_auth_flex[0];      /*     4     0 */
-                };                                       /*     0     4 */
-        };                                               /*     0     8 */
+I will follow this up in separate patch series. I suspect that this
+might take little bit of back and forth, so will follow with fuse
+changes in parallel and open code there. Once this series gets merged
+will send another patch for fuse.
 
-        /* size: 8, cachelines: 1, members: 1 */
-        /* last cacheline: 8 bytes */
-};
-
-Also, this helps with the ongoing efforts to enable -Warray-bounds by
-fixing the following warnings:
-
-fs/nfsd/nfsfh.c: In function ‘nfsd_set_fh_dentry’:
-fs/nfsd/nfsfh.c:191:41: warning: array subscript 1 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
-  191 |        ntohl((__force __be32)fh->fh_fsid[1])));
-      |                              ~~~~~~~~~~~^~~
-./include/linux/kdev_t.h:12:46: note: in definition of macro ‘MKDEV’
-   12 | #define MKDEV(ma,mi) (((ma) << MINORBITS) | (mi))
-      |                                              ^~
-./include/uapi/linux/byteorder/little_endian.h:40:26: note: in expansion of macro ‘__swab32’
-   40 | #define __be32_to_cpu(x) __swab32((__force __u32)(__be32)(x))
-      |                          ^~~~~~~~
-./include/linux/byteorder/generic.h:136:21: note: in expansion of macro ‘__be32_to_cpu’
-  136 | #define ___ntohl(x) __be32_to_cpu(x)
-      |                     ^~~~~~~~~~~~~
-./include/linux/byteorder/generic.h:140:18: note: in expansion of macro ‘___ntohl’
-  140 | #define ntohl(x) ___ntohl(x)
-      |                  ^~~~~~~~
-fs/nfsd/nfsfh.c:191:8: note: in expansion of macro ‘ntohl’
-  191 |        ntohl((__force __be32)fh->fh_fsid[1])));
-      |        ^~~~~
-fs/nfsd/nfsfh.c:192:32: warning: array subscript 2 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
-  192 |    fh->fh_fsid[1] = fh->fh_fsid[2];
-      |                     ~~~~~~~~~~~^~~
-fs/nfsd/nfsfh.c:192:15: warning: array subscript 1 is above array bounds of ‘__u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
-  192 |    fh->fh_fsid[1] = fh->fh_fsid[2];
-      |    ~~~~~~~~~~~^~~
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- include/uapi/linux/nfsd/nfsfh.h | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/include/uapi/linux/nfsd/nfsfh.h b/include/uapi/linux/nfsd/nfsfh.h
-index ff0ca88b1c8f..427294dd56a1 100644
---- a/include/uapi/linux/nfsd/nfsfh.h
-+++ b/include/uapi/linux/nfsd/nfsfh.h
-@@ -64,13 +64,24 @@ struct nfs_fhbase_old {
-  *   in include/linux/exportfs.h for currently registered values.
-  */
- struct nfs_fhbase_new {
--	__u8		fb_version;	/* == 1, even => nfs_fhbase_old */
--	__u8		fb_auth_type;
--	__u8		fb_fsid_type;
--	__u8		fb_fileid_type;
--	__u32		fb_auth[1];
--/*	__u32		fb_fsid[0]; floating */
--/*	__u32		fb_fileid[0]; floating */
-+	union {
-+		struct {
-+			__u8		fb_version_aux;	/* == 1, even => nfs_fhbase_old */
-+			__u8		fb_auth_type_aux;
-+			__u8		fb_fsid_type_aux;
-+			__u8		fb_fileid_type_aux;
-+			__u32		fb_auth[1];
-+			/*	__u32		fb_fsid[0]; floating */
-+			/*	__u32		fb_fileid[0]; floating */
-+		};
-+		struct {
-+			__u8		fb_version;	/* == 1, even => nfs_fhbase_old */
-+			__u8		fb_auth_type;
-+			__u8		fb_fsid_type;
-+			__u8		fb_fileid_type;
-+			__u32		fb_auth_flex[]; /* flexible-array member */
-+		};
-+	};
- };
- 
- struct knfsd_fh {
-@@ -97,7 +108,7 @@ struct knfsd_fh {
- #define	fh_fsid_type		fh_base.fh_new.fb_fsid_type
- #define	fh_auth_type		fh_base.fh_new.fb_auth_type
- #define	fh_fileid_type		fh_base.fh_new.fb_fileid_type
--#define	fh_fsid			fh_base.fh_new.fb_auth
-+#define	fh_fsid			fh_base.fh_new.fb_auth_flex
- 
- /* Do not use, provided for userspace compatiblity. */
- #define	fh_auth			fh_base.fh_new.fb_auth
--- 
-2.27.0
+Thanks
+Vivek
 
