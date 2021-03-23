@@ -2,136 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD43345437
+	by mail.lfdr.de (Postfix) with ESMTP id 9E381345438
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhCWAvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:51:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60101 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231426AbhCWAtv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:49:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616460591;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KeJZGTpGOrohXVCCKtDdkXfVwkpCkyHGurO1opmnjl4=;
-        b=IPa9IM+DyU+yXcsxrAzaZvJptb6t7WVitBhNy8tTyv/J8xUEsGvzg73lgKHaxjE01RoY2S
-        jfGBM6zu0w4+wd1JHI7kbZ1OZmoeHWFXES2VqYk95TT7OUfYFS30/ZvfmDWH75hc8f61c4
-        402HoGHCHRGieu2JxX9H3Km7T/Je774=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-IQsj7RS7MG65dpM7jPw-6g-1; Mon, 22 Mar 2021 20:49:50 -0400
-X-MC-Unique: IQsj7RS7MG65dpM7jPw-6g-1
-Received: by mail-qv1-f69.google.com with SMTP id z5so546830qvo.16
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:49:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KeJZGTpGOrohXVCCKtDdkXfVwkpCkyHGurO1opmnjl4=;
-        b=FWJWKqDPAew4gcD/ppTqIrhwc2qfCQ3+tGJHZKuNEktxhVUnR+osDf2EEnV+InaEXk
-         a2lX/+fMOha0Q5aRr2CE1jDMQJapDGaXhAmCC0rdteLODAJdbiFI07Gryk0n//W6QNiL
-         ECpBOwFovHtpg50i68O1JkXWrEkyYHoNLF8cvcrUX4cZ32eYkA9D22SPhWSHWkoO2nYu
-         KrDFBBpQN3cQ5S3s/L8phGdRSFBxHf6hRLrurrqjK/z3Bht4DacfZI0q7EAFHRUNVq2r
-         jNCOFvE5Zz4QwfG5f1SRAPlo9iicq0syjlafzSiCEvU5sAHBN0S/UHYey8qmH/xM3acQ
-         d6wA==
-X-Gm-Message-State: AOAM532ENujRT3gxZz/Jdg+np2JKdYUX5aA6BP2PB1IjujtIWGaLVgXx
-        oBWaqyQ14rIWGIsPvEi7Qf81Ku6RpXWABW6hgepoakNOJDvb6WOGDsC9B5C6wuzWaVI/esai2Cz
-        ID0DJ9SP6Pigs7+XT+WTiA1YlTA6NIRaOO4xpbI1DNQpAk2ld0PG8C/Z0ItxhSaGa03rwM0P9Lw
-        ==
-X-Received: by 2002:a37:e16:: with SMTP id 22mr2917219qko.145.1616460586674;
-        Mon, 22 Mar 2021 17:49:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxy6w3/RokxBsgJvQlCDPweOOic+hnNCwhRCQU36ubzi7Ex7In6XJ0GzrQwMBBQ4/ZcsoaITQ==
-X-Received: by 2002:a37:e16:: with SMTP id 22mr2917181qko.145.1616460586282;
-        Mon, 22 Mar 2021 17:49:46 -0700 (PDT)
-Received: from localhost.localdomain (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id n6sm5031793qtx.22.2021.03.22.17.49.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 17:49:45 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Hugh Dickins <hughd@google.com>, peterx@redhat.com,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 18/23] mm/hugetlb: Introduce huge version of special swap pte helpers
-Date:   Mon, 22 Mar 2021 20:49:07 -0400
-Message-Id: <20210323004912.35132-19-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210323004912.35132-1-peterx@redhat.com>
-References: <20210323004912.35132-1-peterx@redhat.com>
+        id S231732AbhCWAvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:51:10 -0400
+Received: from mga14.intel.com ([192.55.52.115]:55384 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231441AbhCWAt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:49:57 -0400
+IronPort-SDR: TdUT//Vnm3IDVX0MWRJfzVmJ6py1eLaceDB0wai+3EcsqhhmSNMkPTGqosoAZ5ZCc4jFSJ2P7P
+ 34xpxF3HU4BA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189777774"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="189777774"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 17:49:55 -0700
+IronPort-SDR: 60jXO64lxDn7VIBF/qfylhXz8WH/K7mlbbTxVFyGN7lyi1Yqkaf9F1WHbpF7vuW1uRfCEQ5ypc
+ CQqAMsfhxg4g==
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
+   d="scan'208";a="414725099"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 17:49:54 -0700
+Date:   Mon, 22 Mar 2021 17:49:48 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: ext2_set_link()->ext2_put_page() question
+Message-ID: <20210323004948.GR3014244@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Description: iff --git a/fs/ext2/dir.c b/fs/ext2/dir.ciff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+Content-Disposition: inline
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is to let hugetlbfs be prepared to also recognize swap special ptes just
-like uffd-wp special swap ptes.
+Jan,
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/hugetlb.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+Why does ext2_set_link() need to call ext2_put_page()?
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index fd3e87517e10..64e424b03774 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -93,6 +93,25 @@ static inline bool subpool_is_free(struct hugepage_subpool *spool)
- 	return true;
+I don't see any reason that we could not match up the ext2_put_page() calls
+with the ext2_find_entry().
+
+Similarly am I missing something by moving the ext2_put_page() out of
+ext2_delete_entry()?
+
+See below patch.
+
+I'm in the process of changing the kmap() calls in ext2_[get|put]_page() into
+kmap_local_page() and I noticed this imbalance.  It does not really save me
+anything because I need to pass the kaddr into these calls but IMO it makes the
+code a bit easier to follow.
+
+If you agree I will get a patch together to submit with the kmap_local_page()
+patch.
+
+Thanks,
+Ira
+
+
+17:29:44 > git di
+diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+index 14aa45316ad2..bd572cead638 100644
+--- a/fs/ext2/dir.c
++++ b/fs/ext2/dir.c
+@@ -449,7 +449,6 @@ void ext2_set_link(struct inode *dir, struct ext2_dir_entry_2 *de,
+        de->inode = cpu_to_le32(inode->i_ino);
+        ext2_set_de_type(de, inode);
+        err = ext2_commit_chunk(page, pos, len);
+-       ext2_put_page(page);
+        if (update_times)
+                dir->i_mtime = dir->i_ctime = current_time(dir);
+        EXT2_I(dir)->i_flags &= ~EXT2_BTREE_FL;
+@@ -594,7 +593,6 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+        EXT2_I(inode)->i_flags &= ~EXT2_BTREE_FL;
+        mark_inode_dirty(inode);
+ out:
+-       ext2_put_page(page);
+        return err;
  }
  
-+/*
-+ * These are sister versions of is_swap_pte() and pte_has_swap_entry().  We
-+ * need standalone ones because huge_pte_none() is handled differently from
-+ * pte_none().  For more information, please refer to comments above
-+ * is_swap_pte() and pte_has_swap_entry().
-+ *
-+ * Here we directly reuse the pte level of swap special ptes, for example, the
-+ * pte_swp_uffd_wp_special().  It just stands for a huge page rather than a
-+ * small page for hugetlbfs pages.
-+ */
-+static inline bool is_huge_swap_pte(pte_t pte)
-+{
-+	return !huge_pte_none(pte) && !pte_present(pte);
-+}
-+static inline bool huge_pte_has_swap_entry(pte_t pte)
-+{
-+	return is_huge_swap_pte(pte) && !is_swap_special_pte(pte);
-+}
+diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+index 3367384d344d..a841b00c6828 100644
+--- a/fs/ext2/namei.c
++++ b/fs/ext2/namei.c
+@@ -371,6 +371,7 @@ static int ext2_rename (struct user_namespace * mnt_userns,
+                        goto out_dir;
+                }
+                ext2_set_link(new_dir, new_de, new_page, old_inode, 1);
++               ext2_put_page(new_page);
+                new_inode->i_ctime = current_time(new_inode);
+                if (dir_de)
+                        drop_nlink(new_inode);
+@@ -391,12 +392,13 @@ static int ext2_rename (struct user_namespace * mnt_userns,
+        mark_inode_dirty(old_inode);
+ 
+        ext2_delete_entry (old_de, old_page);
++       ext2_put_page(old_page);
+ 
+        if (dir_de) {
+                if (old_dir != new_dir)
+                        ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
+-               else
+-                       ext2_put_page(dir_page);
 +
- static inline void unlock_or_release_subpool(struct hugepage_subpool *spool)
- {
- 	spin_unlock(&spool->lock);
-@@ -3726,7 +3745,7 @@ bool is_hugetlb_entry_migration(pte_t pte)
- {
- 	swp_entry_t swp;
++               ext2_put_page(dir_page);
+                inode_dec_link_count(old_dir);
+        }
+        return 0;
+
+17:35:41 > git di
+diff --git a/fs/ext2/dir.c b/fs/ext2/dir.c
+index 14aa45316ad2..bd572cead638 100644
+--- a/fs/ext2/dir.c
++++ b/fs/ext2/dir.c
+@@ -449,7 +449,6 @@ void ext2_set_link(struct inode *dir, struct ext2_dir_entry_2 *de,
+        de->inode = cpu_to_le32(inode->i_ino);
+        ext2_set_de_type(de, inode);
+        err = ext2_commit_chunk(page, pos, len);
+-       ext2_put_page(page);
+        if (update_times)
+                dir->i_mtime = dir->i_ctime = current_time(dir);
+        EXT2_I(dir)->i_flags &= ~EXT2_BTREE_FL;
+@@ -594,7 +593,6 @@ int ext2_delete_entry (struct ext2_dir_entry_2 * dir, struct page * page )
+        EXT2_I(inode)->i_flags &= ~EXT2_BTREE_FL;
+        mark_inode_dirty(inode);
+ out:
+-       ext2_put_page(page);
+        return err;
+ }
  
--	if (huge_pte_none(pte) || pte_present(pte))
-+	if (!huge_pte_has_swap_entry(pte))
- 		return false;
- 	swp = pte_to_swp_entry(pte);
- 	if (is_migration_entry(swp))
-@@ -3739,7 +3758,7 @@ static bool is_hugetlb_entry_hwpoisoned(pte_t pte)
- {
- 	swp_entry_t swp;
+diff --git a/fs/ext2/namei.c b/fs/ext2/namei.c
+index 3367384d344d..7af9ab3f975e 100644
+--- a/fs/ext2/namei.c
++++ b/fs/ext2/namei.c
+@@ -294,6 +294,7 @@ static int ext2_unlink(struct inode * dir, struct dentry *dentry)
+        }
  
--	if (huge_pte_none(pte) || pte_present(pte))
-+	if (!huge_pte_has_swap_entry(pte))
- 		return false;
- 	swp = pte_to_swp_entry(pte);
- 	if (is_hwpoison_entry(swp))
--- 
-2.26.2
+        err = ext2_delete_entry (de, page);
++       ext2_put_page(page);
+        if (err)
+                goto out;
+ 
+@@ -371,6 +372,7 @@ static int ext2_rename (struct user_namespace * mnt_userns,
+                        goto out_dir;
+                }
+                ext2_set_link(new_dir, new_de, new_page, old_inode, 1);
++               ext2_put_page(new_page);
+                new_inode->i_ctime = current_time(new_inode);
+                if (dir_de)
+                        drop_nlink(new_inode);
+@@ -391,12 +393,13 @@ static int ext2_rename (struct user_namespace * mnt_userns,
+        mark_inode_dirty(old_inode);
+ 
+        ext2_delete_entry (old_de, old_page);
++       ext2_put_page(old_page);
+ 
+        if (dir_de) {
+                if (old_dir != new_dir)
+                        ext2_set_link(old_inode, dir_de, dir_page, new_dir, 0);
+-               else
+-                       ext2_put_page(dir_page);
++
++               ext2_put_page(dir_page);
+                inode_dec_link_count(old_dir);
+        }
+        return 0;
 
