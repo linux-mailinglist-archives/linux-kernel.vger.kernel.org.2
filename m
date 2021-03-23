@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCD9346B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F16346B29
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:35:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhCWVez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
+        id S233634AbhCWVe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233637AbhCWVed (ORCPT
+        with ESMTP id S233614AbhCWVeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:34:33 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98706C061574;
-        Tue, 23 Mar 2021 14:34:32 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id w3so29501043ejc.4;
-        Tue, 23 Mar 2021 14:34:32 -0700 (PDT)
+        Tue, 23 Mar 2021 17:34:36 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD9CC061574;
+        Tue, 23 Mar 2021 14:34:36 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id s21so10687418pjq.1;
+        Tue, 23 Mar 2021 14:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vI1hw8A60Svwko1G2zPHBamlOLbkGHLt0wNrUy16zmE=;
-        b=G8uGWYQzUpbBGIctDNPg81KNVrRjA2Nzc80EGw2su91df70CACfNGZe4ROznncT8qX
-         D34aIBLw++cD7dNbh9QkTXwb/TaZFZECpv2/tbMVex+GYjYHKB3+NC3i71uAWZ+Lwg9m
-         lF4aYtT2acX3POgzCG5ZY2U4kclCadkO3Df1+ljvXeqv7u46hfSsZGiF7SHd9mZcheLJ
-         6jjom4ctWnecWfVLS8p0HZ7bggk74g/rUCpUR1XI2OVZ6rPPNS83WjxzU5RIsEirSONH
-         kEfp8x4yiTmyFzmFUjvAvo97P1ymVQ/Yl65DiOx3vHR4THMgpebIsE+CxdKB2XbSDhhl
-         bP4g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XzV5iTFFRxwiIThTNNC9D1IR/At6zFkZ2wYh9lkF1SU=;
+        b=Jy7FC4M+wnWAOhFPxob1iQf1L5XGBjCj2qlrDLgjeDXvk/+kWeFghSYsmlkG7Hxoc1
+         0i+aCswR0sETqik3aTEuE2u8aVoeo8vNhT++VHXoHdy2tmBNvWh9jCRzGGo3WRS3yzPl
+         4fr3+OiPEjWDDZPc64/yV0yw6RSOLtsWBWgBnhVJMTPRihCcR021Eu1oGqHmxuRheq5/
+         1afh6TzMB4XOb27SZiZ38lL9Tk9hEVz+O1lkhNIauMRAn3u9XsPjNGQpLvJBop2FhbtW
+         Zhec0LJ1YgzXqOn2XNb/NXXnVPhjy6x9dvnDSSl24RBQZ8b26qK71rPHyjzISo9Uiv2a
+         G7eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vI1hw8A60Svwko1G2zPHBamlOLbkGHLt0wNrUy16zmE=;
-        b=BI+TBVNVp+B6rY98CQxBOgzOMUWz1hzf6aDIKdZ3dmhXv9Y82JkA07YBTCdiefhHcl
-         nkygyqth4i9n/rP8CHcZxrrugDLdEL5/Tqn+F4BBQ3VNdEXPnM8ppqbVq6kLnS625ulk
-         opjXugSRnRYghWe+wfQNGO+e8823Fym79qBat6Jbkr3oAPqV+lvs3jmFUrPx3ckXGQh5
-         NW93Lq5C+IJy9VthcNXeEiiwNuYKfVWXj2L4rIwxTmpGfdv0rFnV84jJsnriBgTmrrYs
-         vABaYjBdOdrmExinMB00XPBED7BKg6TEN6ldn2RZOgCWVgozn9IQm0SlQBifjK5Mzsna
-         r7mA==
-X-Gm-Message-State: AOAM532RFhh4P5ONP3O5zRAIEpWv4uq4A1c39JhwjYr9BpQErH4vw8vs
-        10a+lEKpkD/tSUfNtulY/M47uePoEslfhzLPGZDRTewCFlk=
-X-Google-Smtp-Source: ABdhPJxuc35t8ZMihNgaL/Yf6oo4kgpFO9wPGbnR4Zwpswvv/uagH5C6iyR1p7LTIIfbtCKjhtKvUJRw6k52m9hS3aw=
-X-Received: by 2002:a17:906:52d0:: with SMTP id w16mr246003ejn.172.1616535271362;
- Tue, 23 Mar 2021 14:34:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XzV5iTFFRxwiIThTNNC9D1IR/At6zFkZ2wYh9lkF1SU=;
+        b=Zwmi3aqKpYzEUg4XvqsyznCaVkRYu3BJw9E5BbqkVtKSy5Cvt8opTVW77izKneZgI+
+         IWvujZarmfU6lf4s/7aq+eL3+eF0EABNi4MD3HPApMoLkAYXrMSJgAMSEQ7P8qgLnoIy
+         m+8w5mUePSNCq4hio/3sFMMEoZZWGOUvu0+Uyf+CDd5xpgdFkELvufTHyA68lS9alPPi
+         m5pJpMBxudqQMOsHhkcql4wYTpJCuMKb/4ND1WBvbNcS+vdMid5g69WpBq58Z8lbIeTW
+         YZIiKuMDIdFDqEXtYr0F4YC8NxAtcFHmMM8Un09n1iaBtqTnN8tEuwX1NHCiE8iQrj5y
+         skuw==
+X-Gm-Message-State: AOAM530TYnFmfbS7wOw0jYd+dPC60eRt8QtwDg0JLnggiaA95Lw+QA3+
+        B5369HV64RedWX7VmK5Fmps=
+X-Google-Smtp-Source: ABdhPJxnJuEj+5k+aUzVsbSogIKDPj/wR4O+N2VxzAw3EG9nN5IHRwdA8kcnRDebzLc4ENgYQxZJ3g==
+X-Received: by 2002:a17:90a:a503:: with SMTP id a3mr104638pjq.235.1616535276278;
+        Tue, 23 Mar 2021 14:34:36 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
+        by smtp.gmail.com with ESMTPSA id a22sm146699pgw.52.2021.03.23.14.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 14:34:35 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 14:34:32 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     od@zcrc.me, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] input: gpio-keys: Use hrtimer for software
+ debounce, if possible
+Message-ID: <YFpe6EhydawiMjHB@google.com>
+References: <20210307222240.380583-1-paul@crapouillou.net>
+ <20210307222240.380583-3-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20210315083459.359773-1-narmstrong@baylibre.com> <20210315083459.359773-3-narmstrong@baylibre.com>
-In-Reply-To: <20210315083459.359773-3-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 23 Mar 2021 22:34:20 +0100
-Message-ID: <CAFBinCC5t_xhqa7J3K-SYyV+b0hnqZq0nG1fkG=qQxe5Hj_v+g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] tty: serial: meson: retrieve port FIFO size from DT
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307222240.380583-3-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 9:37 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> Now the DT bindings has a property to get the FIFO size for a particular port,
-> retrieve it and use to setup the FIFO interrupts threshold.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On Sun, Mar 07, 2021 at 10:22:40PM +0000, Paul Cercueil wrote:
+> We want to be able to report the input event as soon as the debounce
+> delay elapsed. However, the current code does not really ensure that,
+> as it uses the jiffies-based schedule_delayed_work() API. With a small
+> enough HZ value (HZ <= 100), this results in some input events being
+> lost, when a key is quickly pressed then released (on a human's time
+> scale).
+> 
+> Switching to hrtimers fixes this issue, and will work even on extremely
+> low HZ values (tested at HZ=24). This is however only possible if
+> reading the GPIO is possible without sleeping. If this condition is not
+> met, the previous approach of using a jiffies-based timer is taken.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+
+Applied with minor edits to make more use of debounce_use_hrtimer flag.
+
+Thanks.
+
+-- 
+Dmitry
