@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DB8345440
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546D6345442
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhCWAwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:52:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231716AbhCWAvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:51:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04DC6619A0;
-        Tue, 23 Mar 2021 00:51:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616460668;
-        bh=0GU+mvpQ6KFpPVwE2ur3Erg8FSP3jRjW/eXtmRXCw7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SRAQIK6VlIa1BVXD5FgNvXzx34HBQ3nVMbX7leQvXvYXSMTtjgk6mWm4fxRtHdXrG
-         Sl+9cOPfdzkSxJI2g2QhbnigL6cSZfMkC0RXNulceHz9OmyPFHKGTbqAKxWTn8/twn
-         EMzv+hHcg9G2Xmp3tGlnPk4bdmyS+lwe3Zw5YlpwukFKZT4m6kIj5geuBLx+pQG1y4
-         1zJRcn7b5muK8qMSLrlEyTwhClWY39umEzKY43sl4UdqV3ngeHney4bbSaXcYlXV4m
-         SIGJroPcyjPLzcfqW6L4ifaGkbd5OjitKvwFa06caWIHybxlw6K6H+NmicgKjVof6X
-         xrNN0Gkawe9Ig==
-Date:   Mon, 22 Mar 2021 17:51:06 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>
-Subject: Re: [PATCH] crypto: poly1305: fix poly1305_core_setkey() declaration
-Message-ID: <YFk7erL3xBHoGNmj@gmail.com>
-References: <20210322170542.1791154-1-arnd@kernel.org>
- <CAMj1kXGj+autwGM-Me7qNoORsux9Xz_1-P=7w4m-9vGMXwDq4Q@mail.gmail.com>
+        id S231289AbhCWAwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:52:24 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14001 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231553AbhCWAvg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:51:36 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4CSG6yvszrZYX;
+        Tue, 23 Mar 2021 08:49:34 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 08:51:29 +0800
+Subject: Re: [PATCH 5.4 00/60] 5.4.108-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210322121922.372583154@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <0287d7a1-69d6-fd5c-88d4-f3a9a0ea44a4@huawei.com>
+Date:   Tue, 23 Mar 2021 08:51:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMj1kXGj+autwGM-Me7qNoORsux9Xz_1-P=7w4m-9vGMXwDq4Q@mail.gmail.com>
+In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 07:51:47PM +0100, Ard Biesheuvel wrote:
-> On Mon, 22 Mar 2021 at 18:05, Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > gcc-11 points out a mismatch between the declaration and the definition
-> > of poly1305_core_setkey():
-> >
-> > lib/crypto/poly1305-donna32.c:13:67: error: argument 2 of type ‘const u8[16]’ {aka ‘const unsigned char[16]’} with mismatched bound [-Werror=array-parameter=]
-> >    13 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 raw_key[16])
-> >       |                                                          ~~~~~~~~~^~~~~~~~~~~
-> > In file included from lib/crypto/poly1305-donna32.c:11:
-> > include/crypto/internal/poly1305.h:21:68: note: previously declared as ‘const u8 *’ {aka ‘const unsigned char *’}
-> >    21 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 *raw_key);
-> >
-> > This is harmless in principle, as the calling conventions are the same,
-> > but the more specific prototype allows better type checking in the
-> > caller.
-> >
-> > Change the declaration to match the actual function definition.
-> > The poly1305_simd_init() is a bit suspicious here, as it previously
-> > had a 32-byte argument type, but looks like it needs to take the
-> > 16-byte POLY1305_BLOCK_SIZE array instead.
-> >
+
+
+On 2021/3/22 20:27, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.108 release.
+> There are 60 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This looks ok to me. For historical reasons, the Poly1305 integration
-> is based on an unkeyed shash, and both the Poly1305 key and nonce are
-> passed as ordinary input, prepended to the actual data.
-> poly1305_simd_init() takes only the key but not the nonce, so it
-> should only be passed 16 bytes.
+> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.108-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Well to be more precise, there are two conventions for using Poly1305.  One
-where it is invoked many times with the same 16-byte key and different 16-byte
-nonces.  And one where every invocation uses a unique key *and* nonce,
-interpreted as a 32-byte "one-time key".
+Tested on arm64 and x86 for 5.4.107-rc1,
 
-So that's why there's a mix of 16 and 32 byte "keys".
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.107-rc1
+Commit: 5094cb203da71ac5da8f1715dec97fe69fbfb326
+Compiler: gcc version 7.3.0 (GCC)
 
-The naming "POLY1305_KEY_SIZE" assumes the second convention, which is a bit
-confusing; it really should be called something like POLY1305_ONETIME_KEY_SIZE.
-I guess the idea was that the one-time key convention is the more common one.
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4729
+passed: 4729
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-Anyway, the patch seems to be fine, as it uses the correct length in each
-location.  You can add:
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4729
+passed: 4729
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
 
-- Eric
