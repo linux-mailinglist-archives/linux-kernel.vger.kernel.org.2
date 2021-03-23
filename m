@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9443458D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044763458D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCWHfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        id S229574AbhCWHhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhCWHez (ORCPT
+        with ESMTP id S229493AbhCWHhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:34:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F66C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:34:55 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lObYx-0006Iu-LX; Tue, 23 Mar 2021 08:34:51 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lObYw-0002Sx-NO; Tue, 23 Mar 2021 08:34:50 +0100
-Date:   Tue, 23 Mar 2021 08:34:47 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Nobs <samuel.nobs@taitradio.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel@pengutronix.de
-Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
-Message-ID: <20210323073447.r3utxintt5c3blb4@pengutronix.de>
-References: <20210322111036.31966-1-johan@kernel.org>
- <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
- <20210322113918.ze52gq54cpsspgej@linutronix.de>
- <20210322115536.knkea7i6vrfpotol@pengutronix.de>
- <YFiZuXWYmxPIaQH9@hovoldconsulting.com>
- <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
- <20210322204836.i4ksobvp6hxl5owh@linutronix.de>
+        Tue, 23 Mar 2021 03:37:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F524C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hNa8GWEFXrTRVC0OdCCWR8WzHJzwy0rEwo3851VyTJ4=; b=qRTsMPhA4kdwJZJ0Xfr0eIoFMr
+        JoDH1zZOh3Crt74HguOFjgttoHgzwTc+f5BrfSQXrGZi8mN9C66dFHH9ObkdfN8kmPXB7CD61UZg5
+        ZJkPMYnIL5iAg3ZSH0xuyGBGe3g0Hb14Jdn4aPXQC0Y0sSobEZNSjouYfopFsJ3LEzBQiVqf6IShp
+        yEism55VznO61u92T4VpjkpAfbnePlhukLrDoVP5FtjT+43OuGBkrqoBvopD/fnrts9pLLAOeg+x6
+        03EjdWgzzrIgxMO+iCiAFJAw9N6N8Rp5aACkHdBdYEdQk8eBaUXUF9HuSRM0OMgCalRCO5ht/D/PQ
+        iaZGACFg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOba6-009jAr-QN; Tue, 23 Mar 2021 07:36:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE8D73010C8;
+        Tue, 23 Mar 2021 08:35:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D348D2BE708BA; Tue, 23 Mar 2021 08:35:59 +0100 (CET)
+Date:   Tue, 23 Mar 2021 08:35:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] static_call: fix function type mismatch
+Message-ID: <YFmaXxwcAb9bPchv@hirez.programming.kicks-ass.net>
+References: <20210322170711.1855115-1-arnd@kernel.org>
+ <20210322153214.25d869b1@gandalf.local.home>
+ <YFkCZuOwe37d2bV+@hirez.programming.kicks-ass.net>
+ <CAK8P3a2sz4emewH_HA+nsf0e5tP6qtAxhBOFucmzW4OPDJASdQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rq5nwb5cqbbuxlll"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322204836.i4ksobvp6hxl5owh@linutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAK8P3a2sz4emewH_HA+nsf0e5tP6qtAxhBOFucmzW4OPDJASdQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 10:18:17PM +0100, Arnd Bergmann wrote:
 
---rq5nwb5cqbbuxlll
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > Steve is correct. Also, why is that warning correct? On x86 we return in
+> > RAX, and using int will simply not inspect the upper 32 bits there.
+> 
+> I think the code works correctly on all architectures we support because
+> both 'int' and 'long' are returned in a register with any unused bits cleared.
+> It is however undefined behavior in C because 'int' and 'long' are not
+> compatible types, and the calling conventions don't have to allow this.
 
-Hello Sebastian,
+Then please kill the warning, it's bullshit.
 
-On Mon, Mar 22, 2021 at 09:48:36PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-03-22 14:40:32 [+0100], Uwe Kleine-K=C3=B6nig wrote:
-> > From a strictly logically point of view you indeed cannot. But if you go
-> > to the street and say to people there that they can park their car in
-> > this street free of charge between Monday and Friday, I expect that most
-> > of them will assume that they have to pay for parking on weekends.
->=20
-> If I hear that parking is free on weekdays and on paid on weekends, I
-> expect it to be a scam.
+> > And I'm fairly sure I had a pointer user somewhere recently.
+> 
+> I've only tested my series with 5.12-rc so far, but don't get any other
+> such warnings. Maybe it's in linux-next?
 
-I don't feel taken seriously with this reply.
+No, it's in Linus' tree, see commit:
 
-> Uwe, the patch reverts a change which was needed for !RT + threadirqs.
-
-This would be a useful information for the commit log.
-
-> The commit message claims that since the referenced commit "=E2=80=A6 int=
-errupt
-> handlers always run with interrupts disabled on non-RT=E2=80=A6 ". This h=
-as
-> nothing to do with _this_ change. It argues why the workaround is not
-> needed.
-
-It argues why the work around is not needed on non-RT. It might be
-obvious for someone who is firm in the RT concepts, but IMHO commit logs
-should be understandable by and make sense for a wider audience than the
-deep experts. From what I know about RT "Force-threaded interrupt
-handlers used to run with interrupts enabled" still applies there.
-
-> If the referenced commit breaks RT then this is another story.
-
-I'm surprised to hear that from you. With the goal to get RT into
-mainline I would expect you to be happy if people consider the effects
-on RT in their reviews.
-
-> > So when you said that on on-RT the reason why it used to need a
-> > workaround is gone made me wonder what that implies for RT.
->=20
-> There was never reason (or a lockdep splat) for it on RT. If so you
-> should have seen it, right?
-
-No, I don't consider myself to be an RT expert who is aware of all the
-problems. So I admit that for me the effect on RT of the patch under
-discussion isn't obvious. I just wonder that the change is justified
-with being OK on non-RT. So it's either bad that it breaks RT *or*
-improving the commit log would be great.
-
-And even if I had reason to believe that there is no problem with the
-commit on RT, I'd still wish that the commit log wouldn't suggest to the
-casual reader that there might be a problem.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---rq5nwb5cqbbuxlll
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBZmhQACgkQwfwUeK3K
-7Amm+wf/au1Z6kNU1D+zrVdm5KAv72xZKa5+FRGc5E8eVVhmHY03AGtMtw4xLpzD
-8DBcJaCEY/K4U9UAENORJXU2u1C3jq6t9uim09oFI+CAU1BGpgX3l34pMGEeqQc4
-8QFSQu4MYSwLPGE1ecSrpmAURl0xeknT+vudFbwrOMMynFbGwlC8M3nQSq9A3HfK
-jwivSjorqA15QW8gBx6jOQvMctKG2kXvXcjmTDq+61p7hwkEgGDty4NgPEGye4g5
-b4fE35/A2THaChliX7HgbCDtynvdHKHA7GQ3awpRMZ7Kx2tFsecoefkDHRKJHse9
-AarPIaHLfeko5L1l9uDCAkA0X6wCbg==
-=OhvM
------END PGP SIGNATURE-----
-
---rq5nwb5cqbbuxlll--
+  c8e2fe13d1d1 ("x86/perf: Use RET0 as default for guest_get_msrs to handle "no PMU" case")
