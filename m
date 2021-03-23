@@ -2,433 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09EF3469DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1EE3469E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhCWUap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:30:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233231AbhCWUae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:30:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18978619CB;
-        Tue, 23 Mar 2021 20:30:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616531434;
-        bh=ZaS6VFwh87PLMknpalXBQDwui76bVYwoOuAzDTBNSHQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PxU3xZ36q8FJKgFAlWmtptKtRMWypAik+tf90NL4DyboPZ/cURLFzLJ/y4pCaSLgr
-         fvXzo4vY+3zDUEWhHMZQeFc67i8OkL9Qi9sdpMsuq+WKrbuUzzERJhh/fxsLiLJOeD
-         VNI4yfmyat8u7LRF9sNFLbML8101A3q8Y0atzboo/P0Yq/4OCxCqnPYqO9sxQfHUW1
-         ceGXmvf2gTWFVmo9lZi6m69bwLFaZOrAYLl5WCwAMAszHu55ymlRsgKrghKUQ4EPQz
-         Ws4WQsvsLddmLofiil/v36ZH4Kt38Wz6w/+mwhpIh553UlPOI5Bo+doXR5aTkmhqBf
-         7RlVgicakzonw==
-Date:   Tue, 23 Mar 2021 15:30:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, Hongtao Wu <wuht06@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: Re: [RESEND PATCH V6 2/2] PCI: sprd: Add support for Unisoc SoCs'
- PCIe controller
-Message-ID: <20210323203032.GA599704@bjorn-Precision-5520>
+        id S233378AbhCWUd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:33:26 -0400
+Received: from p3plsmtpa07-03.prod.phx3.secureserver.net ([173.201.192.232]:41554
+        "EHLO p3plsmtpa07-03.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233352AbhCWUdB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 16:33:01 -0400
+Received: from chrisHP110 ([76.103.216.188])
+        by :SMTPAUTH: with ESMTPA
+        id OnhzlTcHTKQk4OnhzlH5cY; Tue, 23 Mar 2021 13:33:00 -0700
+X-CMAE-Analysis: v=2.4 cv=W6D96Tak c=1 sm=1 tr=0 ts=605a507c
+ a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
+ a=kj9zAlcOel0A:10 a=cR5ugqiJw0_SYd6LBy0A:9 a=CjuIK1q_8ugA:10
+ a=fCgQI5UlmZDRPDxm0A3o:22
+X-SECURESERVER-ACCT: don@thebollingers.org
+From:   "Don Bollinger" <don@thebollingers.org>
+To:     "'Andrew Lunn'" <andrew@lunn.ch>
+Cc:     "'Jakub Kicinski'" <kuba@kernel.org>, <arndb@arndb.de>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
+        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
+        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
+        "'netdev'" <netdev@vger.kernel.org>,
+        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
+References: <YD1ScQ+w8+1H//Y+@lunn.ch> <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org> <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <005e01d71230$ad203be0$0760b3a0$@thebollingers.org> <YEL3ksdKIW7cVRh5@lunn.ch> <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org> <YEvILa9FK8qQs5QK@lunn.ch> <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org> <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <001201d719c6$6ac826c0$40587440$@thebollingers.org> <YFJHN+raumcJ5/7M@lunn.ch>
+In-Reply-To: <YFJHN+raumcJ5/7M@lunn.ch>
+Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
+Date:   Tue, 23 Mar 2021 13:32:59 -0700
+Message-ID: <009601d72023$b73dbde0$25b939a0$@thebollingers.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322091831.662279-3-zhang.lyra@gmail.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQD1wSRROFm+pfi0LxH9mVlD+9L7SgHJzBD7AopQEOUDOo8ypAGU1SetAlPUPSACJ/UZ9QI33dQVAf1peR4CCKQDaAINVcRpq6Vr/PA=
+Content-Language: en-us
+X-CMAE-Envelope: MS4xfJIBAaH3F7AJSZAd+ZLEFUXgT+ZEGtO5iikfJf7m00SE+/yRB+kjCgbKImese4nXhErx8z6PS8EYRMM9OyDwnjukgoygonEYPwehDc5Kf73/3TemuZiQ
+ i3tcfxDyohE6IpeYcHzKHX94jQEO57I/TgSAISPjAOOwy4XSAG17M4ZT5yp7F1vmeGAO2yFfb5FBal9zp3g/lk+mrXELe5APX0/OOs2f6sY9YY8hRIujAgxV
+ plETaQDBbgBpgClvARdPm0/HzNzXJLJ7pROO8q3nop6Qhx2VUtD2KceyVIj5YoFz4XsfPSnifbzkNb9TPNHze2ujKM3TEYtsN9Bb3DLMEsnc9+SW2IRPhf6x
+ 6W25ymm9eor60uh53OBHT5yFTVr7tMAcnqHm+FfGLEY7yYl7/IZRCTPyu2uJbr3JQ+MDx10irxoDhuMYivwXywX/zw7L5tsAXQhN+sWdXXMLIkwzFNcXjpl2
+ YXtxiQJoeOt8KP49FKGPiuYwzS49mkj92AtVsPmWz0UmPzQsQtrM0NqOSfEofHkq+QTbNZOTzXQ4/ZeqDL3ihtM8FNPc/+KoKanpqfmEZBP1Sg6eYebE1lkg
+ mAAedEj333AQZEe1OZaRQ9yj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 05:18:31PM +0800, Chunyan Zhang wrote:
-> From: Hongtao Wu <billows.wu@unisoc.com>
+> > I have offered, in every response, to collaborate with the simple
+> > integration to use optoe as the default upstream driver to access the
+> > module EEPROMs.  optoe would be superior to the existing default
+> > routines in sfp.c
 > 
-> This series adds PCIe controller driver for Unisoc SoCs.
-> This controller is based on DesignWare PCIe IP.
+> Actually, i'm not sure they would be. Since the KAPI issues are pretty
+much a
+> NACK on their own, i didn't bother raising other issues. Both Russell King
+and
+> I has issues with quirks and hotplug.
 > 
-> Signed-off-by: Hongtao Wu <billows.wu@unisoc.com>
-> Signed-off-by: Chunyan Zhang <zhang.lyra@gmail.com>
-> ---
->  drivers/pci/controller/dwc/Kconfig     |  12 +
->  drivers/pci/controller/dwc/Makefile    |   1 +
->  drivers/pci/controller/dwc/pcie-sprd.c | 292 +++++++++++++++++++++++++
->  3 files changed, 305 insertions(+)
->  create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
+> Our experience is that a number of SFPs are broken, they don't follow the
+> standard. Some you cannot perform more than 16 bytes reads without them
+> locking up. Others will perform a 16 byte read, but only give you one
+useful
+> byte of data. So you have to read enough of the EEPROM a byte at a time to
+> get the vendor and product strings in order to determine what quirks need
+> to be applied. optoe has nothing like this. Either you don't care and only
+> support well behaved SFPs, or you have the quirk handling in user space,
+in
+> the various vendor code blobs, repeated again and again. To make optoe
+> generically usable, you are going to have to push the quirk handling into
+> optoe. The brokenness should be hidden from userspace.
+
+Interesting.  I would throw away such devices.  That's why switch vendors
+publish supported parts lists.
+
+Can you point me to the code that is handling those quirks?  Since I haven't
+seen those problems, I don't know what they are and how to address them.
+
+Note there are a VAST number of data items in those EEPROMs, including
+proprietary capabilities.  Many of the items are configuration dependent,
+and mean different things depending on the value of other data items.  Most
+of these items are not of any interest to kernel networking.  I try to
+minimize the size of the kernel footprint and move those decoding and
+management functions to user space.
+
 > 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index 22c5529e9a65..61f0b79f963d 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -318,4 +318,16 @@ config PCIE_AL
->  	  required only for DT-based platforms. ACPI platforms with the
->  	  Annapurna Labs PCIe controller don't need to enable this.
->  
-> +config PCIE_SPRD
+> And then you repeat all the quirk handling sfp.c has. That does not scale,
+we
+> don't want the same quirks in two different places. However, because SFPs
+> are hot pluggable, you need to re-evaluate the quirks whenever there is a
+> hot-plug event. optoe has no idea if there has been a hotplug event, since
+it
+> does not have access to the GPIOs. Your user space vendor code might
+> know, it has access to the GPIOs. So maybe you could add an IOCTL call or
+> something, to let optoe know the module has changed and it needs to
+> update its quirks. Or for every user space read, you actually re-read the
+> vendor IDs and refresh the quirks before performing the read the user
+> actually wants. That all seems ugly and is missing from the current patch.
 
-Maybe you want PCIE_SPRD_HOST for this one so there's room for a
-PCIE_SPRD_EP someday?
+Actually I do need to know whether the device supports paging, that's the
+only device state I need.  Since I don't detect hotplug events, I read the
+'paging supported' bit on every read that changes the page register.  
 
-> +	tristate "Unisoc PCIe controller - Host Mode"
-> +	depends on ARCH_SPRD || COMPILE_TEST
-> +	depends on PCI_MSI_IRQ_DOMAIN
-> +	select PCIE_DW_HOST
-> +	help
-> +	  Unisoc PCIe controller uses the DesignWare core. It can be configured
-> +	  as an Endpoint (EP) or a Root complex (RC). In order to enable host
-> +	  mode (the controller works as RC), PCIE_SPRD must be selected.
-> +	  Say Y or M here if you want to PCIe RC controller support on Unisoc
-> +	  SoCs.
-> +
->  endmenu
-> diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-> index a751553fa0db..eb546e97c14a 100644
-> --- a/drivers/pci/controller/dwc/Makefile
-> +++ b/drivers/pci/controller/dwc/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_PCI_MESON) += pci-meson.o
->  obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegra194.o
->  obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
->  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
-> +obj-$(CONFIG_PCIE_SPRD) += pcie-sprd.o
->  
->  # The following drivers are for devices that use the generic ACPI
->  # pci_root.c driver but don't support standard ECAM config access.
-> diff --git a/drivers/pci/controller/dwc/pcie-sprd.c b/drivers/pci/controller/dwc/pcie-sprd.c
-> new file mode 100644
-> index 000000000000..2ccb99eda24f
-> --- /dev/null
-> +++ b/drivers/pci/controller/dwc/pcie-sprd.c
-> @@ -0,0 +1,292 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * PCIe host controller driver for Unisoc SoCs
-> + *
-> + * Copyright (C) 2020-2021 Unisoc, Inc.
-> + *
-> + * Author: Hongtao Wu <Billows.Wu@unisoc.com>
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +#include <linux/regmap.h>
-> +
-> +#include "pcie-designware.h"
-> +
-> +/* aon apb syscon */
-> +#define IPA_ACCESS_CFG		0xcd8
-> +#define  AON_ACCESS_PCIE_EN	BIT(1)
-> +
-> +/* pmu apb syscon */
-> +#define SNPS_PCIE3_SLP_CTRL	0xac
-> +#define  PERST_N_ASSERT		BIT(1)
-> +#define  PERST_N_AUTO_EN	BIT(0)
-> +#define PD_PCIE_CFG_0		0x3e8
-> +#define  PCIE_FORCE_SHUTDOWN	BIT(25)
-> +
-> +#define PCIE_SS_REG_BASE		0xE00
+There is a GPIO line to detect 'presence', which presumably could be
+accessed via device tree configuration with the GPIO driver.  I haven't
+figured out how to connect those pieces so I just read the page register on
+every access.  Adding that would be a useful feature.
 
-Pick uppercase or lowercase for your hex constants and use it
-consistently.
-
-> +#define APB_CLKFREQ_TIMEOUT		0x4
-> +#define  BUSERR_EN			BIT(12)
-> +#define  APB_TIMER_DIS			BIT(10)
-> +#define  APB_TIMER_LIMIT		GENMASK(31, 16)
-> +
-> +#define PE0_GEN_CTRL_3			0x58
-> +#define  LTSSM_EN			BIT(0)
-> +
-> +struct sprd_pcie_soc_data {
-> +	u32 syscon_offset;
-> +};
-> +
-> +static const struct sprd_pcie_soc_data ums9520_syscon_data = {
-> +	.syscon_offset = 0x1000,	/* The offset of set/clear register */
-> +};
-> +
-> +struct sprd_pcie {
-> +	u32 syscon_offset;
-> +	struct device	*dev;
-> +	struct dw_pcie	*pci;
-> +	struct regmap	*aon_map;
-> +	struct regmap	*pmu_map;
-> +	const struct sprd_pcie_soc_data *socdata;
-> +};
-> +
-> +enum sprd_pcie_syscon_type {
-> +	normal_syscon,		/* it's not a set/clear register */
-> +	set_syscon,		/* set a set/clear register */
-> +	clr_syscon,		/* clear a set/clear register */
-> +};
-> +
-> +static void sprd_pcie_buserr_enable(struct dw_pcie *pci)
-> +{
-> +	u32 val;
-> +
-> +	val = dw_pcie_readl_dbi(pci, PCIE_SS_REG_BASE + APB_CLKFREQ_TIMEOUT);
-> +	val &= ~APB_TIMER_DIS;
-> +	val |= BUSERR_EN;
-> +	val |= APB_TIMER_LIMIT & (0x1f4 << 16);
-> +	dw_pcie_writel_dbi(pci, PCIE_SS_REG_BASE + APB_CLKFREQ_TIMEOUT, val);
-> +}
-> +
-> +static void sprd_pcie_ltssm_enable(struct dw_pcie *pci, bool enable)
-> +{
-> +	u32 val;
-> +
-> +	val = dw_pcie_readl_dbi(pci, PCIE_SS_REG_BASE + PE0_GEN_CTRL_3);
-> +	if (enable)
-> +		dw_pcie_writel_dbi(pci, PCIE_SS_REG_BASE + PE0_GEN_CTRL_3,
-> +				   val | LTSSM_EN);
-> +	else
-> +		dw_pcie_writel_dbi(pci, PCIE_SS_REG_BASE + PE0_GEN_CTRL_3,
-> +				   val & ~LTSSM_EN);
-> +}
-> +
-> +static int sprd_pcie_syscon_set(struct sprd_pcie *ctrl, struct regmap *map,
-> +				u32 reg, u32 mask, u32 val,
-> +				enum sprd_pcie_syscon_type type)
-> +{
-> +	int ret = 0;
-> +	u32 read_val;
-> +	u32 offset = ctrl->syscon_offset;
-> +	struct device *dev = ctrl->pci->dev;
-> +
-> +	/*
-> +	 * Each set/clear register has three registers:
-> +	 * reg:			base register
-> +	 * reg + offset:	set register
-> +	 * reg + offset * 2:	clear register
-> +	 */
-> +	switch (type) {
-> +	case normal_syscon:
-> +		ret = regmap_read(map, reg, &read_val);
-> +		if (ret) {
-> +			dev_err(dev, "failed to read register 0x%x\n", reg);
-> +			return ret;
-> +		}
-> +		read_val &= ~mask;
-> +		read_val |= (val & mask);
-> +		ret = regmap_write(map, reg, read_val);
-> +		break;
-> +	case set_syscon:
-> +		reg = reg + offset;
-> +		ret = regmap_write(map, reg, val);
-> +		break;
-> +	case clr_syscon:
-> +		reg = reg + offset * 2;
-> +		ret = regmap_write(map, reg, val);
-> +		break;
-> +	default:
-> +		break;
-
-Unnecessary default case.
-
-> +	}
-> +
-> +	if (ret)
-> +		dev_err(dev, "failed to write register 0x%x\n", reg);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sprd_pcie_perst_assert(struct sprd_pcie *ctrl)
-> +{
-> +	return sprd_pcie_syscon_set(ctrl, ctrl->pmu_map, SNPS_PCIE3_SLP_CTRL,
-> +				    PERST_N_ASSERT, PERST_N_ASSERT, set_syscon);
-> +}
-> +
-> +static int sprd_pcie_perst_deassert(struct sprd_pcie *ctrl)
-> +{
-> +	int ret;
-> +
-> +	ret = sprd_pcie_syscon_set(ctrl, ctrl->pmu_map, SNPS_PCIE3_SLP_CTRL,
-> +				   PERST_N_ASSERT, 0, clr_syscon);
-> +	usleep_range(2000, 3000);
-
-It'd be nice to have a spec reference for this delay.
-
-> +	return ret;
-> +}
-> +
-> +static int sprd_pcie_power_on(struct platform_device *pdev)
-
-You could pass in the "struct sprd_pcie *" here since the caller has
-that already.
-
-> +{
-> +	int ret;
-> +	struct sprd_pcie *ctrl = platform_get_drvdata(pdev);
-> +	struct dw_pcie *pci = ctrl->pci;
-> +
-> +	ret = sprd_pcie_syscon_set(ctrl, ctrl->aon_map, PD_PCIE_CFG_0,
-> +				   PCIE_FORCE_SHUTDOWN, 0, clr_syscon);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = sprd_pcie_syscon_set(ctrl, ctrl->aon_map, IPA_ACCESS_CFG,
-> +				   AON_ACCESS_PCIE_EN, AON_ACCESS_PCIE_EN,
-> +				   set_syscon);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = sprd_pcie_perst_deassert(ctrl);
-> +	if (ret)
-> +		return ret;
-> +
-> +	sprd_pcie_buserr_enable(pci);
-> +	sprd_pcie_ltssm_enable(pci, true);
-> +
-> +	return ret;
-> +}
-> +
-> +static int sprd_pcie_power_off(struct platform_device *pdev)
-
-And here.  Caller would have to look up platform_get_drvdata(), as is
-done in other drivers.
-
-> +{
-> +	struct sprd_pcie *ctrl = platform_get_drvdata(pdev);
-> +	struct dw_pcie *pci = ctrl->pci;
-> +
-> +	sprd_pcie_ltssm_enable(pci, false);
-> +
-> +	sprd_pcie_perst_assert(ctrl);
-> +	sprd_pcie_syscon_set(ctrl, ctrl->aon_map, PD_PCIE_CFG_0,
-> +			     PCIE_FORCE_SHUTDOWN, PCIE_FORCE_SHUTDOWN,
-> +			     set_syscon);
-> +	sprd_pcie_syscon_set(ctrl, ctrl->aon_map, IPA_ACCESS_CFG,
-> +			     AON_ACCESS_PCIE_EN, 0, clr_syscon);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sprd_add_pcie_port(struct platform_device *pdev)
-
-And here.  Look at the other drivers in drivers/pci/controller/dwc/
-and make yours as much like them as possible.  This is not the place
-for innovation.
-
-> +{
-> +	struct sprd_pcie *ctrl = platform_get_drvdata(pdev);
-> +	struct dw_pcie *pci = ctrl->pci;
-> +	struct pcie_port *pp = &pci->pp;
-> +
-> +	return dw_pcie_host_init(pp);
-> +}
-> +
-> +static int sprd_pcie_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct sprd_pcie *ctrl;
-> +	struct dw_pcie *pci;
-> +	int ret;
-> +
-> +	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-> +	if (!ctrl)
-> +		return -ENOMEM;
-> +
-> +	ctrl->socdata =
-> +		(struct sprd_pcie_soc_data *)of_device_get_match_data(dev);
-
-Unnecessary cast.
-
-It doesn't look like you even need to save this pointer in the struct
-sprd_pcie.  You use it below to get syscon_offset, but never reference
-it after this function.
-
-> +	if (!ctrl->socdata) {
-> +		dev_warn(dev,
-> +			 "using the default set/clear register offset address");
-> +		ctrl->syscon_offset = 0x1000;
-> +	}
-> +	ctrl->syscon_offset = ctrl->socdata->syscon_offset;
-> +
-> +	ctrl->aon_map = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +							"sprd, regmap-aon");
-> +	if (IS_ERR(ctrl->aon_map)) {
-> +		dev_err(dev, "failed to get syscon regmap aon\n");
-
-I think it's worth mentioning the exact string ("sprd, regmap-aon")
-you were looking for.  Also below.
-
-> +		ret = PTR_ERR(ctrl->aon_map);
-> +		goto err;
-> +	}
-> +
-> +	ctrl->pmu_map = syscon_regmap_lookup_by_phandle(dev->of_node,
-> +							"sprd, regmap-pmu");
-> +	if (IS_ERR(ctrl->pmu_map)) {
-> +		dev_err(dev, "failed to get syscon regmap pmu\n");
-> +		ret = PTR_ERR(ctrl->pmu_map);
-> +		goto err;
-> +	}
-> +
-> +	pci = ctrl->pci;
-> +	pci->dev = dev;
-> +
-> +	platform_set_drvdata(pdev, ctrl);
-> +
-> +	ret = sprd_pcie_power_on(pdev);
-> +	if (ret < 0) {
-> +		dev_err(dev, "failed to power on, return %d\n",
-> +			ret);
-> +		goto err_power_off;
-> +	}
-> +
-> +	ret = sprd_add_pcie_port(pdev);
-> +	if (ret) {
-> +		dev_warn(dev, "failed to initialize RC controller\n");
-> +		return ret;
-
-You power off for the previous error but not this one?
-
-> +	}
-> +
-> +	return 0;
-> +
-> +err_power_off:
-> +	sprd_pcie_power_off(pdev);
-> +err:
-> +	return ret;
-> +}
-> +
-> +static int sprd_pcie_remove(struct platform_device *pdev)
-> +{
-> +	sprd_pcie_power_off(pdev);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id sprd_pcie_of_match[] = {
-> +	{
-> +		.compatible = "sprd,ums9520-pcie",
-> +		.data  = &ums9520_syscon_data,
-> +	},
-> +	{},
-> +};
-> +
-> +static struct platform_driver sprd_pcie_driver = {
-> +	.probe = sprd_pcie_probe,
-> +	.remove = sprd_pcie_remove,
-> +	.driver = {
-> +		.name = "sprd-pcie",
-> +		.of_match_table = sprd_pcie_of_match,
-> +	},
-> +};
-> +module_platform_driver(sprd_pcie_driver);
-> +
-> +MODULE_DESCRIPTION("Unisoc PCIe host controller driver");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.25.1
 > 
+> I fully agree with Jakub NACK.
+> 
+>   Andrew
+
+Don
+
