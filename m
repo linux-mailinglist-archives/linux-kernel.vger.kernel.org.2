@@ -2,217 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65613346528
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC13346522
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbhCWQ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:29:37 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50604 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbhCWQ3D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:29:03 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NGOKux165187;
-        Tue, 23 Mar 2021 16:28:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=1ScIhvLv6Nes4C4m0+RtwcGa3nJPqdKwu0NBXEnpmZw=;
- b=l/u8XudfeM39hQbOXyPViMwviv5lB6VzlmNEZnNEG2JxnzOJnqfwI2xYbXMtkaTcK2Bs
- qcuv8vhIFsiGCyoVPK+rW5s4gEq+QBA7teBzSwVRqTwnVI10PRGrpZP86EUJIR1uO/o9
- XI27/RecCcUk2dTr6wuZwZiwmcW/ua7WM3a+nv/Q0tT/KorlLkdCosbp5L54LWq1HqHW
- H7Qbgr+l3UTnyLOWPuhUSl34UExJL8+S9vq9NrfiAokwjLdOCyiQ+Z36H9URoAeScagM
- KzwPjVKWunhpB9mHNT+QMsRjioY7b7PuPHPCcOvqkKxracYMUBxzM8OIdr5TLEy2YHss 6w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 37d9pmyps4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 16:28:41 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NGKPA4136233;
-        Tue, 23 Mar 2021 16:28:40 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
-        by aserp3020.oracle.com with ESMTP id 37dtxyfe58-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 16:28:40 +0000
+        id S233305AbhCWQ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:29:02 -0400
+Received: from mail-eopbgr760053.outbound.protection.outlook.com ([40.107.76.53]:14496
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233316AbhCWQ2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:28:52 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q5JMq3e7Vvsqg1dAOEye5dxvRjYXdOu9O4a02qleYtFjH/uORXS3itCxZG4YCctEDri7J0gwHz02QDU5drdAidFjiq+GkI//Np0BELhQ8PGuxeSF3D73CQT1RjX8K0q8TOgA9WlIA0IoX9mHNxGRu/Pb/SwFIkSQBqJvPjiLUdlcJC76BmtLUV1DEbVCQgvyd6ehC6QWQZInQN6a+na9nMiPLBPajUi8nlHRZn18gcNtxh872V7U3uS9i2N1fNQap/gxASort4r/lPiZnDtvqGgfo0HxT6q7bwQ/QOLWFM70l7eyw1s/yUdSY/W4EF5BGmw42voNPwBc4i0NpaPufg==
+ b=D4h58ml4kThb89neCjlOY5Ic95bk7SILq7JcY816ivYAiPt5hQNbzT51P0+bdeOSXoC/4q6R5fumo46Qwu8AYSF/mgAgqE5a1xnLGJf4MVVLGgHE3WOHoMxLNgiv+hK15ee8VTKsM/JDpWDxpFObPOIbpOHmTbMZNdPn/Nz9KCKnpWvBQHASoYjoFUC9KNhFYJZXwd2b+ZEUfV//Y+GQfmtyWfxhSRiHJOtVbrwnqnuEY/wo5rNrUlq/hWcOIYoXVypqy8X3y+VgVO3X7WhTPlE3XQWpSkupzLtnI75/v5PhaPVhg6M6+pjpnTA8cZXorRecLGqpICgdHQ4SClGCzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1ScIhvLv6Nes4C4m0+RtwcGa3nJPqdKwu0NBXEnpmZw=;
- b=SS6yeTUtEix8c7r6DNM3Tdusdxk4MaC/4XMBzZRyJ/aE8LF2ugcgaCLL/s/3nPuwX9ZeVKX1oYsl3+zujeIbN63mhY06ht2+VgDATOV2nfQdsvShPjtZQHwlhw+F9mWY4E+35BRftYcIbE0tHgvhxmN2WmPlUY3o5kmJmYTlXUMhVQhAorpDFx/7IEKyJEewym3vrEKTEG9lYi+wNOKVY/hSm8Xkc+3HPnk3l+TYVRvQeYoMRbK7QyvqI122XQXS4NYcCFg+9tW/YHw2lAqRQcjMN7ifgtkPt+yglhvY7KgT87Ld+8je7mxMAGRWPiQozBeYVdeHr81sXNkpppryAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+ bh=dhsk6AL94YBbLzmn/zCho12U/YJ2GFpVoXVWB5GXAN8=;
+ b=jMvoQ9Dw9KApFQfey/4iMeXgeScqiWspKFL5VgR566E2zHh2RgHtpPizJe7bkPqRvbshelRjR950vGJFZuSvqd1Hl1CNHIz3M1pv4XWPIGoTGyE9AUAwe4abD/xDfwhgvGWm3SLjX88Yx/NPXZcJFXoDwYHea+JrRczUzqPe5etN80/I2+rzYrb+BxdpX4FZ/DwAcN6SW5ulZiDr5gVKmlDOE4WAhmzvLdd3L2GBE2UVbKdZEieso5/YZY9Wy9YlzFgARSBztjqS9a2ALYS4GTIzZe/osLBEkUrFHKGorivvSPP8CvU0oOLFmYs9ZI8z50qeGUJMuQRCNYjvGSXyIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.ozlabs.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1ScIhvLv6Nes4C4m0+RtwcGa3nJPqdKwu0NBXEnpmZw=;
- b=lkeM9eAy9FPy8kTMQA3eET2z5yO/NOyJvvQOFalDUqH4P7VXJoK9yALThaQ0/W5MBaryyd5UbZm78oLHhGQ/LHo28blxVtfClJV7DP7fLrUmgAmozmLJhp0goqEu47kfurfM+3MtUmwfRaWfoqdRTBgZdF0nfPlGZ47IELRuf88=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
- by BY5PR10MB4226.namprd10.prod.outlook.com (2603:10b6:a03:210::20) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=dhsk6AL94YBbLzmn/zCho12U/YJ2GFpVoXVWB5GXAN8=;
+ b=K1XVlOJnGr3OjElBtBy98bqnUMbWJkNBSC1Hx2ZmwsybQ4CnM4HaqB6XWP0xOUxZiAVCWlPXnXwuExv8DTAW2rgvfyoIKxhSDiyzF+gxi/bfQdInoKtsQ8N/v6lipYkG3aUSJCfE6CWl0fgPv6Rp2o+pPJoGCGQKpuearBT93DY=
+Received: from SN4PR0201CA0070.namprd02.prod.outlook.com
+ (2603:10b6:803:20::32) by CH2PR02MB6903.namprd02.prod.outlook.com
+ (2603:10b6:610:81::22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
- 2021 16:28:38 +0000
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::50bb:7b66:35ee:4a4]) by BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::50bb:7b66:35ee:4a4%7]) with mapi id 15.20.3955.025; Tue, 23 Mar 2021
- 16:28:38 +0000
-Subject: Re: [PATCH] target: Fix a double put in transport_free_session
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210323025851.11782-1-lyl2019@mail.ustc.edu.cn>
-From:   michael.christie@oracle.com
-Message-ID: <9d02b016-c924-79e3-9593-c073da0c769d@oracle.com>
-Date:   Tue, 23 Mar 2021 11:28:35 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
-In-Reply-To: <20210323025851.11782-1-lyl2019@mail.ustc.edu.cn>
-Content-Type: text/plain; charset=utf-8
+ 2021 16:28:50 +0000
+Received: from SN1NAM02FT005.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:20:cafe::bc) by SN4PR0201CA0070.outlook.office365.com
+ (2603:10b6:803:20::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Tue, 23 Mar 2021 16:28:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.ozlabs.org; dkim=none (message not signed)
+ header.d=none;lists.ozlabs.org; dmarc=pass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT005.mail.protection.outlook.com (10.152.72.117) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3955.24 via Frontend Transport; Tue, 23 Mar 2021 16:28:48 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 23 Mar 2021 09:28:47 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2106.2 via Frontend Transport; Tue, 23 Mar 2021 09:28:47 -0700
+Envelope-to: git@xilinx.com,
+ linuxppc-dev@lists.ozlabs.org,
+ linux-block@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ yuehaibing@huawei.com,
+ robh+dt@kernel.org,
+ paulus@samba.org,
+ mpe@ellerman.id.au,
+ chris.packham@alliedtelesis.co.nz,
+ benh@kernel.crashing.org,
+ monstr@monstr.eu,
+ linux-kernel@vger.kernel.org,
+ dave@stgolabs.net,
+ axboe@kernel.dk
+Received: from [172.30.17.109] (port=50090)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lOjte-0003T2-GO; Tue, 23 Mar 2021 09:28:46 -0700
+Subject: Re: [PATCH] xsysace: Remove SYSACE driver
+To:     Jens Axboe <axboe@kernel.dk>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <git@xilinx.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>, <devicetree@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
+References: <ee1fe969905f641f5f97d812ee0cac44c12fe0f6.1604919578.git.michal.simek@xilinx.com>
+ <20210323000436.qm5rkiplwt5x5ttk@offworld>
+ <6948510c-dc7e-d74a-62e3-e42be14cff16@kernel.dk>
+ <9c4911e6-92dc-0a0f-2f81-7d23e268144f@xilinx.com>
+ <66a774e3-f068-984e-e69f-b55667a494cf@kernel.dk>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <f3ecc92d-9f53-6a25-9e40-74efba199da6@xilinx.com>
+Date:   Tue, 23 Mar 2021 17:28:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <66a774e3-f068-984e-e69f-b55667a494cf@kernel.dk>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [73.88.28.6]
-X-ClientProxiedBy: DM5PR18CA0064.namprd18.prod.outlook.com
- (2603:10b6:3:22::26) To BYAPR10MB3573.namprd10.prod.outlook.com
- (2603:10b6:a03:11e::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [20.15.0.5] (73.88.28.6) by DM5PR18CA0064.namprd18.prod.outlook.com (2603:10b6:3:22::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 16:28:37 +0000
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a5ce6aa2-e7fa-4d83-fc05-08d8ee18b626
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4226:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR10MB4226C84C6068D80B60D56317F1649@BY5PR10MB4226.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Office365-Filtering-Correlation-Id: 560c4081-5f3d-4f0a-c6f1-08d8ee18bcee
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6903:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <CH2PR02MB6903CD76CAE27CF1CD49C520C6649@CH2PR02MB6903.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VoBW5mp93IghqmQ2Lbac2Xf9lZ37kWhRmHlfyCpIK7NOloKcJy0MyjJkhCQ7qaTD7la/0ZZR5dU44YuM8OdshyIvA6UgBWigkDCjih8nz4OJI5Yi56JCNj8A854ZtgLA18pEekT4ahyHaY3tt20egLjDi7uqOJNSbIIGTboLzNuumu9Un0yBMip3L+WuiIqxmm6XZ2jj8/rGtCvHm1VWURU5x1zdgLrWlcuVxA0uKW5DwPy6/A/UwCj3h30YSjZS40RyQ33m6NcWiiMq0gxdewl/I3c2mJFVZehQhulwFHf+LqgDqyRm5+eklLZQxUxmwoIZSs1hKN/ZQ5koDuvp0T4EIPeSCub6gmSys7IcvRTV5Yu25GrhD2U2ybwvkpUqWdN+xYlojOObyzupERjmqRER4X/fCIpd9vewMuBXvP0CYOllcKJeogrJXr/LALjMIvvPLR1QdqlyzviU8zbMlHxTe8oOf61cLEuTW3nsxxtOobZMpccv6vd1cYR+ibiPpb7e5yJOGnM1XgijNDapEog1k2/AptFmJYEJcBD024MmY/tLitHQyC7eaUuKZMXxwNBoJzz3EFinBBY0Nv0mbtBUG5YUKbw+sVDs05C1YyzdTpraPrBZykraq77IYvfDhn17W0j5FNLCYCvCeR0NzuB2HlEmm9JtG2OjdPEVwxA+dQfjYyD+7i4sbn45Use/pSWWwzcJqacHMrkqtw0fHQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(346002)(136003)(396003)(9686003)(26005)(2906002)(478600001)(66946007)(16576012)(316002)(5660300002)(86362001)(8676002)(66476007)(4326008)(31686004)(66556008)(6486002)(186003)(16526019)(8936002)(53546011)(38100700001)(2616005)(83380400001)(31696002)(6706004)(36756003)(956004)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NHhlbExQdDBJOXJkNHFZNXliNVJrYmlUWFhYSlhScFZrOTYwU2ZLZXA5VWVv?=
- =?utf-8?B?aFUxZGdma3VtcW95OU5oTm5ROXpMUm1DRHBOQXlCRXpuVncxcmhGU2JwbHg3?=
- =?utf-8?B?THJwTTR6cTVWUlY5b3QxMkxHZmJxeVBXUDdqRUhTQXhUZVJUdzIvVFNENWJz?=
- =?utf-8?B?MythUHlQRnZkakk1c1A0a21YWU9aN050MS9VTGlaNUcySDhwbDJhVUZMRWRK?=
- =?utf-8?B?aENPQlZxUVo5MXRDSkJ4eXdGb2JEa0NKQWhEc0FwdCtUUmdBRkpzang1THdB?=
- =?utf-8?B?eVowL1d4L3lES0NDZHJlLys2K25mTGgrT3RIL1lxcWJ0MTZneDluN0ozNDZ6?=
- =?utf-8?B?bkpLYUlzYVJIYk5CMWw1WjhJTFNSazNObVNRQWtkWWk0cW1UcWJFY3QraTMv?=
- =?utf-8?B?cE9VQmxZUU1pT2ZoRVhMSUZKU2p1cmdCV1pQVDVjRU8wN1VFOENwMG1Xckx1?=
- =?utf-8?B?V0hobkp6M1FDV21wMS9wcU1qWXYrczZFSUc3WVZMTWNtRjRuODg0OWh3ZDh1?=
- =?utf-8?B?d3NGTGhhZ1F4dFR6L2c5WGlzcnZPOGpibDQ2Rm5kQlRnUW1odFlQb3Z2K1Bs?=
- =?utf-8?B?eTQrWnFXQ2dRN01lVmZMajlXRnZvdHE4RFFJcEFHVE1XL1IrK2k1ZEU5NjEz?=
- =?utf-8?B?QklWbTE3VVN4R2wvRnF5TWtTS0ZyNitIcThFSFA3RDRoOHlxdktCTFZlZ1pr?=
- =?utf-8?B?WkZoL3pUR0l5MEVLSWVjMDVDQjlxanNWM2NZYU9yRkJMNjhrYlBiRDVjRFUw?=
- =?utf-8?B?NS93R0tGNVFEbVVCeWZzZFc1T2pScTRwNEVNRDFNT29oczBrL1ljYmRDMWJy?=
- =?utf-8?B?ay9LVWN3YzZNWUJBUHBXaXlncW9oSGF2VHoxUWFXc0ExK2QwdHFxYzZ0RTlR?=
- =?utf-8?B?bHlzRTUwODlpcFd6NDNhZ01JMXRwektOQUZkYnhqc0xTL0RvbForNEFCMU5l?=
- =?utf-8?B?end1SDRRQnNvQklBckVhM2ZKT0hTQlZoZHVGOUZjb3Q3UGJ0aE5ldlQvWUIy?=
- =?utf-8?B?WnUwRURBMGFiMEhlT253TEU0bVVZNW1SbE5vWE1FUTlkYWdzcDVCdVRIU0ZJ?=
- =?utf-8?B?WERidVJEMlkzMWNNZGdVUHg4OCtBK1Y1S0RiY01HM0QydjZlZlhCdm5HMUJa?=
- =?utf-8?B?U3QyOU54QW1ucXlIWmtTSGZpdWtoOHZ0bkZTQXQ2RGY5dS9SK1hGSkIrVGtL?=
- =?utf-8?B?bk0wbkV5SXphYmcvYVc3MzRPTE9tbHdQYjhmajdiTE9YSnkwTVp1KzA0TCtl?=
- =?utf-8?B?K1NGTkpKbUR3dmM2WVVETXZnY3U1QTVaVFFHaVM1KzkydHVWUEVJWFgvNHZ3?=
- =?utf-8?B?U3dSTFU1b0pCcEZxc1JzMWFQTnROZ0crRk0vSjA1KzJpN3IyZzU0aVhyZnQ5?=
- =?utf-8?B?LytzZW1ScGVySU5sNWJZQ0NNNUoyN1AwL0ZwN1kwQXVJMWlLOFQ0WTB3ZGt6?=
- =?utf-8?B?NWd5ejJFQVVPNlpEMmR4MUcwOTdPZmp0RGtJeGRoMnIwWTdlYVRPWjgzK29V?=
- =?utf-8?B?SGQvNDlZZG4zckl2YkVzVEV5K01sYk5LL2VPODdyTm9zbDRDd0wxMFpOZVl4?=
- =?utf-8?B?VWY1ZDhVVXc0cWF3SW5sUXdPUVYxYkR2RjNQcjNDYzRXdTNJSnZwb01SRzkx?=
- =?utf-8?B?VGowdTJjWjY2ZUZLa1BYUDNTL0krRHhvaFNNVC9oYXhrMnRFTk4yUEZNUElK?=
- =?utf-8?B?STlldmcvemhtdjVaVElaQzMxUXdtZ29oNm54UkREaHVEUGVnUjVuL29Rdzhj?=
- =?utf-8?Q?OFMSXPsOwjhci1/jEEuHauTOxrts/YDVNQtVtmL?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5ce6aa2-e7fa-4d83-fc05-08d8ee18b626
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 16:28:37.9686
+X-Microsoft-Antispam-Message-Info: JqaIdtuRCwqGi1EnUFdDbHeHIkwF3KfQI5/RY3qA5P3xHf4BWCJXdjXM6wQtRjZD5x6xtlziKaHu3lXE81V927bUJ+WTnxnvnIXriT5CcDqTZ5c3XKeah1JuHBFzL1bTHQv0f/xz8h1/IP34eEMbOhcD+6nJCBuRH1LE+SRkDLPOXoqrpMjN3Z5d62/1S9CUo9X4UelXtXSwp0ReZfFYzNSjRxCSHZ6PR2WZtBtbramUYp3PMwVJVkUmhMyNi3VeyJV4ktzgsMc5SbGGL4xy2Qwkfd8DK7TH20MhG4NgwBm1r821F7BFKImSQXp7I6i7VoPvntqwanPKc/iO6Efg/5hRR3E1Tywpxw6ELZyk9quK/sinOEu1pxAhIpe/Xmtms0FZfukUtlXcZoTpqh24T203XtLUGJI6JeWyITtZUd05TJpGrvrmQtD7Qs3lADiBhm2HyV6gZAlKICOmbODJt3EEiaLlYrkNEmwaEuhHHC+Ik5NECXEhwhtZCQyTlRPYz3cgN41/ue6PvzyrfAta4v0auljZ7vwyPS7wDfkxR5yjTyNrvO+nJPFXckeebwoAzacQBEknszBtHxxAvpjM/IbOr4D45tGHwoZukqvrLoLl9bNjm92hcZnpF1UIsZV7mctqkUjeddIpiwyvGjVENAY4Ubng32AoYj7RE6fs2aXcQFMLGyBRnLbiQh4oULR9VPD3LN3bxRqyo43Hru13dw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39850400004)(36840700001)(46966006)(31696002)(5660300002)(7636003)(478600001)(36860700001)(82310400003)(36756003)(356005)(4326008)(82740400003)(53546011)(2906002)(36906005)(47076005)(316002)(70586007)(110136005)(26005)(4744005)(31686004)(8936002)(8676002)(44832011)(7416002)(70206006)(54906003)(6666004)(336012)(2616005)(426003)(9786002)(186003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 16:28:48.8516
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N1QGXEBv1i1byYehc+hKAjwO01Zg2UAKyYrDbJBHNqFXn1u2w1sVhpOy+ORXC+Ml7x+AL+M+06GNcm4G1CiEvgt1ZTB5pSk2NBZ+E4MV5ms=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4226
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230119
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
- adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103230119
+X-MS-Exchange-CrossTenant-Network-Message-Id: 560c4081-5f3d-4f0a-c6f1-08d8ee18bcee
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT005.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6903
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 9:58 PM, Lv Yunlong wrote:
-> In transport_free_session, se_nacl is got from se_sess
-> with the initial reference. If se_nacl->acl_sess_list is
-> empty, se_nacl->dynamic_stop is set to true. Then the first
-> target_put_nacl(se_nacl) will drop the initial reference
-> and free se_nacl. Later there is a second target_put_nacl()
-> to put se_nacl. It may cause error in race.
->> My patch sets se_nacl->dynamic_stop to false to avoid the
-> double put.
+
+
+On 3/23/21 5:28 PM, Jens Axboe wrote:
+> On 3/23/21 10:25 AM, Michal Simek wrote:
+>>
+>>
+>> On 3/23/21 5:23 PM, Jens Axboe wrote:
+>>> On 3/22/21 6:04 PM, Davidlohr Bueso wrote:
+>>>> Hi,
+>>>>
+>>>> On Mon, 09 Nov 2020, Michal Simek wrote:
+>>>>
+>>>>> Sysace IP is no longer used on Xilinx PowerPC 405/440 and Microblaze
+>>>>> systems. The driver is not regularly tested and very likely not working for
+>>>>> quite a long time that's why remove it.
+>>>>
+>>>> Is there a reason this patch was never merged? can the driver be
+>>>> removed? I ran into this as a potential tasklet user that can be
+>>>> replaced/removed.
+>>>
+>>> I'd be happy to merge it for 5.13.
+>>>
+>>
+>> Can you just take this version? Or do you want me to send it again?
 > 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/target/target_core_transport.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-> index 5ecb9f18a53d..c266defe694f 100644
-> --- a/drivers/target/target_core_transport.c
-> +++ b/drivers/target/target_core_transport.c
-> @@ -584,8 +584,10 @@ void transport_free_session(struct se_session *se_sess)
->  		}
->  		mutex_unlock(&se_tpg->acl_node_mutex);
->  
-> -		if (se_nacl->dynamic_stop)
-> +		if (se_nacl->dynamic_stop) {
->  			target_put_nacl(se_nacl);
-> +			se_nacl->dynamic_stop = false;
-> +		}
->  
->  		target_put_nacl(se_nacl);
-Could you describe the race a little more?
+> Minor edits needed for fuzz, but I've applied this version.
 
-Is the race:
-
-1. thread1 called core_tpg_check_initiator_node_acl and found the acl.
-sess->se_node_acl is set to the found acl.
-2. thread2 is running transport_free_session. It now grabs the acl_node_mutex
-and sees se_nacl->acl_sess_list is empty.
-3. thread2 does the dynamic_stop=true operations in transport_free_session.
-4. thread1 now calls transport_register_session now adds the sess to acl's
-acl_sess_list.
-
-Later when the session that thread 1 created is deleted dynamic_stop is still
-set, so we do an extra target_put_nacl?
-
-I'm not sure your patch will handle this race. When we delete the session thread1
-created dynamic_node_acl is still set, so this:
-
-                mutex_lock(&se_tpg->acl_node_mutex);
-                if (se_nacl->dynamic_node_acl &&
-                    !se_tfo->tpg_check_demo_mode_cache(se_tpg)) {
-                        spin_lock_irqsave(&se_nacl->nacl_sess_lock, flags);
-                        if (list_empty(&se_nacl->acl_sess_list))
-                                se_nacl->dynamic_stop = true;
-
-can set dynamic_stop to true again and we can end up doing the extra put still.
-
-On top of the extra put we also do
-
-list_del(&se_nacl->acl_list);
-
-twice so we have to handle that as well.
-
-Is there also another bug in this code. If someone adds an acl while there is a
-dynamic acl in place core_tpg_add_initiator_node_acl will clear dynamic_node_acl
-but we leave the extra reference, so later when transport_free_session is called
-we will not do the extra put.
+Thanks,
+Michal
 
