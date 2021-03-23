@@ -2,161 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F32B346942
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B09346947
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhCWTmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:42:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231319AbhCWTla (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:41:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616528489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GkZdetnJ/RGn+Z4pPWWz4Ny+F5nvWflbHDocWOrBQ3Y=;
-        b=a05VLcJVX3Hbf7laemX1mTcR8IzqE5JNnVbjhco8h6k8sd9pA+jY+FaqfBUdu8Y4fSvRN0
-        8VWmv7hXUbWRu+uLU8rEhF5ZvXHylGtXGu67ZWXkR5X8Dl29dxCfSiF6oQOaMtgNoQ7Hg/
-        J6hyMeCSw/dR1F1r3MMJhRZrK6jyXt4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-FOOEddgPPD6lvPahttzEEQ-1; Tue, 23 Mar 2021 15:41:27 -0400
-X-MC-Unique: FOOEddgPPD6lvPahttzEEQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9746B84BA40;
-        Tue, 23 Mar 2021 19:41:25 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2C5FD60BE5;
-        Tue, 23 Mar 2021 19:41:17 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 15:41:15 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Jones Desougi <jones.desougi+netfilter@gmail.com>,
-        Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
-        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH v2] audit: log nftables configuration change events once
- per table
-Message-ID: <20210323194115.GA3112383@madcap2.tricolour.ca>
-References: <2a6d8eb6058a6961cfb6439b31dcfadcce9596a8.1616445965.git.rgb@redhat.com>
- <20210322225747.GA24562@salvia>
+        id S230247AbhCWTp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230048AbhCWTpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:45:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48EA66188B;
+        Tue, 23 Mar 2021 19:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616528699;
+        bh=4fXIxe9zfop6mXnfzzcQom9W2hjlywJZkIUs6q3SfnA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Etq4KelkoyUcpl8voEtVDT7Rg0CXBNiPvjNoLHSptKJjkGYX8s6G7GHTdE85tBmMs
+         fn0zKiIex+2Gvykn0ffnY4ooOHqDYK0ad+Hpt3GhIkEzPfZpE3AjGgwv7MQuwM6cb0
+         pt9FAL9bkEt8py24W9t1dqj1GJp5gI6At1iWd9K0dFVSbksHbhSnPQV34CCRA9UHgZ
+         wCg0Q9Orstqg/ltugF9RM+BP16riKdwYDG9p76rFcLaS5vL0JDDutTPNn+ycgo8zpm
+         ZwlPbgG/0nxPO6xCe0JDCjx1cbAIYxkKbScqzPetSvgDZBMbOM/CQmX64Oa8hDIjmH
+         vh6fGud6zH6Ig==
+Date:   Tue, 23 Mar 2021 19:44:52 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, j.neuschaefer@gmx.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210323194452.GF5490@sirena.org.uk>
+References: <20210308212952.20774-1-andreas@kemnade.info>
+ <20210310094821.GB701493@dell>
+ <20210311184033.GJ4962@sirena.org.uk>
+ <20210322145925.GY2916463@dell>
+ <20210323171143.GA5490@sirena.org.uk>
+ <20210323172002.GY2916463@dell>
+ <20210323174841.GD5490@sirena.org.uk>
+ <20210323185254.GZ2916463@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Bqc0IY4JZZt50bUr"
 Content-Disposition: inline
-In-Reply-To: <20210322225747.GA24562@salvia>
+In-Reply-To: <20210323185254.GZ2916463@dell>
+X-Cookie: Formatted to fit your screen.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22 23:57, Pablo Neira Ayuso wrote:
-> On Mon, Mar 22, 2021 at 04:49:04PM -0400, Richard Guy Briggs wrote:
-> > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> > index c1eb5cdb3033..42ba44890523 100644
-> > --- a/net/netfilter/nf_tables_api.c
-> > +++ b/net/netfilter/nf_tables_api.c
-> [...]
-> > @@ -8006,12 +7938,47 @@ static void nft_commit_notify(struct net *net, u32 portid)
-> >  	WARN_ON_ONCE(!list_empty(&net->nft.notify_list));
-> >  }
-> >  
-> > +void nf_tables_commit_audit_collect(struct list_head *adl,
-> > +				    struct nft_trans *trans) {
-> 
-> nitpick: curly brace starts in the line.
 
-Duh, whoops!  Brain fart.  Too much muckin' in other codebases...
+--Bqc0IY4JZZt50bUr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > +	struct nft_audit_data *adp;
-> > +
-> > +	list_for_each_entry(adp, adl, list) {
-> > +		if (adp->table == trans->ctx.table)
-> > +			goto found;
-> > +	}
-> > +	adp = kzalloc(sizeof(*adp), GFP_KERNEL);
-> 
->         if (!adp)
->                 ...
+On Tue, Mar 23, 2021 at 06:52:54PM +0000, Lee Jones wrote:
+> On Tue, 23 Mar 2021, Mark Brown wrote:
+> > On Tue, Mar 23, 2021 at 05:20:02PM +0000, Lee Jones wrote:
 
-This will need a bit more work since by the time this is called,
-nf_tables_commit() is not prepared to accept any errors, so I'll need to
-either ignore the error and continue, or allocate the table entries
-before step 3.
+> > > My question is; should these functions really live in the SS?
 
-> > +	adp->table = trans->ctx.table;
-> > +	INIT_LIST_HEAD(&adp->list);
-> > +	list_add(&adp->list, adl);
-> > +found:
-> > +	adp->entries++;
-> > +	if (!adp->op || adp->op > trans->msg_type)
-> > +		adp->op = trans->msg_type;
-> > +}
-> > +
-> > +#define AUNFTABLENAMELEN (NFT_TABLE_MAXNAMELEN + 22)
-> > +
-> > +void nf_tables_commit_audit_log(struct list_head *adl, u32 generation) {
->                                                                           ^
-> same thing here
-> 
-> > +	struct nft_audit_data *adp, *adn;
-> > +	char aubuf[AUNFTABLENAMELEN];
-> > +
-> > +	list_for_each_entry_safe(adp, adn, adl, list) {
-> > +		snprintf(aubuf, AUNFTABLENAMELEN, "%s:%u", adp->table->name,
-> > +			 generation);
-> > +		audit_log_nfcfg(aubuf, adp->table->family, adp->entries,
-> > +				nft2audit_op[adp->op], GFP_KERNEL);
-> > +		list_del(&adp->list);
-> > +		kfree(adp);
-> > +	}
-> > +}
-> > +
-> >  static int nf_tables_commit(struct net *net, struct sk_buff *skb)
-> >  {
-> >  	struct nft_trans *trans, *next;
-> >  	struct nft_trans_elem *te;
-> >  	struct nft_chain *chain;
-> >  	struct nft_table *table;
-> > +	LIST_HEAD(adl);
-> >  	int err;
-> >  
-> >  	if (list_empty(&net->nft.commit_list)) {
-> > @@ -8206,12 +8173,15 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
-> >  			}
-> >  			break;
-> >  		}
-> > +		nf_tables_commit_audit_collect(&adl, trans);
-> >  	}
-> >  
-> >  	nft_commit_notify(net, NETLINK_CB(skb).portid);
-> >  	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
-> >  	nf_tables_commit_release(net);
-> >  
-> > +	nf_tables_commit_audit_log(&adl, net->nft.base_seq);
-> > +
-> 
-> This looks more self-contained and nicer, thanks.
-> 
-> --
-> Linux-audit mailing list
-> Linux-audit@redhat.com
-> https://listman.redhat.com/mailman/listinfo/linux-audit
+> > Perhaps we could avoid using that particular abbreviation.
 
-- RGB
+> Too soon?
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+Sadly there's still people who keep it relevant around.
 
+> > Like I say it depends on how common this is - are we seeing other
+> > devices with the same problem?
+
+> I'm not witness to any.  If this is your first encounter too then
+> maybe just leave it where it is.  At least for the moment.
+
+Sounds reasonable, if more turn up the code can always be pulled into
+the core.
+
+--Bqc0IY4JZZt50bUr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBaRTQACgkQJNaLcl1U
+h9C6RAgAggpQ08T7gTohbyX8qDtjndCCRDFeLdTltugN8DD1Zkw6CMCYdwCR42Zu
+YoW+1VPOfas6BddiKrOfBP3OKC1Tinu5W/NeGJg2uaxdAo2Cj4ihifjMKqqqf+qm
+G1UKsZcD50Be+t+fBXK5bczaOu2J/WhWdlZLq9W4+I6XQMcfHWYztSIPMOiCpXd5
+ktMtxRCvRq1/3zqNzBQxSduTN78tTN3hFug/AvdHiA4avvN/fI3kElb8stQBN1gj
+iF5HEZWYMCHNhtV9rb60wSjNE6kbnRKcpnj0rLed7pnH3aFPecDj2Uhv4PQcV6zu
+TOe0zgjAguK225kcv4xRkHNLrO5O7Q==
+=bBpd
+-----END PGP SIGNATURE-----
+
+--Bqc0IY4JZZt50bUr--
