@@ -2,144 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37A1346121
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC62D34611C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhCWONG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhCWOMg (ORCPT
+        id S231866AbhCWOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:12:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58436 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231668AbhCWOM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:12:36 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8199C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:12:35 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b14so13584907lfv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=l19bR+nFxXiu4GIfVq6f/m3LcDLqMDiNOa9Zpl4Ovvc=;
-        b=K2WN6O0RNtylg2y5kj+7tUO3G3Ow+0lo/9Kbfq2doL0HIfUyReVmwWRdhF0uGNJ2OX
-         Sf9sQUS2cU+99jYx7m3iFdK6k47YBGTOsnDBoiJD97coMPMO/lhH3U2sptWPOEIKO4H7
-         YKr76EcmmC4dtIC8svew3hPv2dkrnaPY/Lq4EyGjEcvwN9FoVLvmOC/7dMwxApzKoebv
-         SNkM+3naV4PXRdlZ/+86gfwzP06/2XLnnBDnSB/PWjL2e1cGIZAgoKHGTGQy8UxmfpbI
-         qszWcnijbnse7HrTyooN+GkyEGYI6hkC3TXrEPzfmKXfvlr8EjllH/lgx+m5Xjj/4kQ9
-         swaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=l19bR+nFxXiu4GIfVq6f/m3LcDLqMDiNOa9Zpl4Ovvc=;
-        b=hOipbWUTxptmraQuboih6OYdNd13MfUhqXTeNNBURt3/xI3BRE5Vd3PpwAwKpWG1jm
-         Mco/XKzMokhXUHFd8jce5bVH7oHp1J7Y4TQNYgvjzHRr6Pja5+p+KN8yRXQ+nAcgwOWC
-         xL75sVLQXrkU5/IbDXqzozCx+weOxPKvOlAlZ8uFTcG6Qvl5o84unLEoA/aSn0tUR61M
-         viZzhPXSRbwll1dOUyZwaEewAr8vFScMWfEbuiXh4bpvGQLNFSlKWlWZ2SxMK29eGkUN
-         FvZcNDA2Ahf/a59lwZRKCX4nOiUaoDjRp6v2ydGK1b6yoJNu6egvk1S2oTiUpRsiahem
-         GT7Q==
-X-Gm-Message-State: AOAM531+uNengi7q5bua1smmpBllyRXinDkN3jeDtjn2uZb9EallZEpj
-        lA89F3Yn9VSrDVQpQkTq/ydexC7j1m1Bi2WXNZoexg==
-X-Google-Smtp-Source: ABdhPJzly95nqr4yJOsMgNbyvkzewf61fS24O2skNJrtHSN97B0AO6qNDxBBBfq6gMyuY4h8Z8m/nW9MARYn+j3bS1I=
-X-Received: by 2002:a19:501b:: with SMTP id e27mr2822930lfb.584.1616508753810;
- Tue, 23 Mar 2021 07:12:33 -0700 (PDT)
+        Tue, 23 Mar 2021 10:12:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616508747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d/9sarbVkCs8Zh6rYFgdnW5tjm74WgRKnUWy7R0BGsw=;
+        b=O7QhfHQLtaF8LRqB14L1pckKFXAJJqkJULZCmCVFjhBbzXdalnnGVWaXusVQq2zqw2sMx7
+        xB3uqlpk/y5Ekv4q+EQMWEN5Pi2u/t/ce5utwGAaFMFYfq+/ZjF3KW/IuDLNy1yykJTt57
+        i061/4gplHYp/zUvIXNsa69CrdCBlMY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-fKx9bUDpMI6CjKxP0ohcNQ-1; Tue, 23 Mar 2021 10:12:23 -0400
+X-MC-Unique: fKx9bUDpMI6CjKxP0ohcNQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83CF787A82A;
+        Tue, 23 Mar 2021 14:12:21 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.194.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6DE075C1C5;
+        Tue, 23 Mar 2021 14:12:11 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 15:12:08 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v5 08/10] KVM: selftests: List all hugetlb src types
+ specified with page sizes
+Message-ID: <20210323141208.3mmnznn4glzd3inz@kamzik.brq.redhat.com>
+References: <20210323135231.24948-1-wangyanan55@huawei.com>
+ <20210323135231.24948-9-wangyanan55@huawei.com>
 MIME-Version: 1.0
-References: <20210315132501.441681-1-Jerome.Pouiller@silabs.com>
- <20210315132501.441681-9-Jerome.Pouiller@silabs.com> <CAPDyKFqJf=vUqpQg3suDCadKrFTkQWFTY_qp=+yDK=_Lu9gJGg@mail.gmail.com>
- <4503971.bAhddQ8uqO@pc-42>
-In-Reply-To: <4503971.bAhddQ8uqO@pc-42>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 23 Mar 2021 15:11:56 +0100
-Message-ID: <CAPDyKFoXgV3m-rMKfjqRj91PNjOGaWg6odWG-EGdFKkL+dGWoA@mail.gmail.com>
-Subject: Re: [PATCH v5 08/24] wfx: add bus_sdio.c
-To:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323135231.24948-9-wangyanan55@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 at 18:14, J=C3=A9r=C3=B4me Pouiller
-<jerome.pouiller@silabs.com> wrote:
+On Tue, Mar 23, 2021 at 09:52:29PM +0800, Yanan Wang wrote:
+> With VM_MEM_SRC_ANONYMOUS_HUGETLB, we currently can only use system
+> default hugetlb pages to back the testing guest memory. In order to
+> add flexibility, now list all the known hugetlb backing src types with
+> different page sizes, so that we can specify use of hugetlb pages of the
+> exact granularity that we want. And as all the known hugetlb page sizes
+> are listed, it's appropriate for all architectures.
+> 
+> Besides, the helper get_backing_src_pagesz() is added to get the
+> granularity of different backing src types(anonumous, thp, hugetlb).
+> 
+> Suggested-by: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  .../testing/selftests/kvm/include/test_util.h |  18 ++-
+>  tools/testing/selftests/kvm/lib/kvm_util.c    |   2 +-
+>  tools/testing/selftests/kvm/lib/test_util.c   | 109 ++++++++++++++++--
+>  3 files changed, 116 insertions(+), 13 deletions(-)
 >
-> Hello Ulf,
->
-> On Monday 22 March 2021 13:20:35 CET Ulf Hansson wrote:
-> > On Mon, 15 Mar 2021 at 14:25, Jerome Pouiller
-> > <Jerome.Pouiller@silabs.com> wrote:
-> > >
-> > > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> > >
-> > > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> > > ---
-> > >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 259 +++++++++++++++++++=
-++
-> > >  1 file changed, 259 insertions(+)
-> > >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
-> >
-> > [...]
-> >
-> > > +static const struct sdio_device_id wfx_sdio_ids[] =3D {
-> > > +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF=
-200) },
-> > > +       { },
-> > > +};
-> > > +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
-> > > +
-> > > +struct sdio_driver wfx_sdio_driver =3D {
-> > > +       .name =3D "wfx-sdio",
-> > > +       .id_table =3D wfx_sdio_ids,
-> > > +       .probe =3D wfx_sdio_probe,
-> > > +       .remove =3D wfx_sdio_remove,
-> > > +       .drv =3D {
-> > > +               .owner =3D THIS_MODULE,
-> > > +               .of_match_table =3D wfx_sdio_of_match,
-> >
-> > It's not mandatory to support power management, like system
-> > suspend/resume. However, as this looks like this is a driver for an
-> > embedded SDIO device, you probably want this.
-> >
-> > If that is the case, please assign the dev_pm_ops here and implement
-> > the ->suspend|resume() callbacks.
->
-> I have no platform to test suspend/resume, so I have only a
-> theoretical understanding of this subject.
 
-I see.
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
->
-> I understanding is that with the current implementation, the
-> device will be powered off on suspend and then totally reset
-> (including reloading of the firmware) on resume. I am wrong?
-
-You are correct, for a *removable* SDIO card. In this case, the
-mmc/sdio core will remove the corresponding SDIO card/device and its
-corresponding SDIO func devices at system suspend. It will then be
-redetected at system resume (and the SDIO func driver re-probed).
-
-Although, as this is an embedded SDIO device, per definition it's not
-a removable card (MMC_CAP_NONREMOVABLE should be set for the
-corresponding mmc host), the SDIO card will stick around and instead
-the ->suspend|resume() callback needs to be implemented for the SDIO
-func driver.
-
->
-> This behavior sounds correct to me. You would expect something
-> more?
-
-Yes, see above.
-
-Kind regards
-Uffe
