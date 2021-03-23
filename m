@@ -2,91 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185FA346030
+	by mail.lfdr.de (Postfix) with ESMTP id 63FB0346031
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhCWNwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhCWNwI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:52:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B58C061574;
-        Tue, 23 Mar 2021 06:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BH51iSUzyg9KZ7syxnXQS3KRs906Uf9wJkKS6a1BsxQ=; b=angZPyAg1GkZnw395mQ1H2hSyZ
-        8FOuwPttbyu8A1w79GjNbJ2Ieum4ZYQv23Oe3ZuJALNa7bX50chua3/7bvzuk2g4H8GOUuRC6/PQM
-        Hq5J51thoR+VeXDXKg67FA4Pp9G5lzX1rTN9EnLPIxEtzEC9ankHhUyPM0E8SxgpjkNXcMH1Yz4Tt
-        DDw3C28/GiSWV2VPdA5FotyoAThZeYb6ZrknqHo9PTiqk61ys+mhrvVoFqtF28H8htXQUl2cco69T
-        loCYl4Ngxp2H7mit+LkiOZ0FHezZ4vUaS/YRmBAzfLodBDRcJm+pu8DFMhBrYUhI5bzW/qIwD/IRL
-        XBhU3HsQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOhRE-00A7tp-Gh; Tue, 23 Mar 2021 13:51:19 +0000
-Date:   Tue, 23 Mar 2021 13:51:16 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
+        id S231349AbhCWNwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:52:37 -0400
+Received: from mail-mw2nam12on2069.outbound.protection.outlook.com ([40.107.244.69]:26401
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231370AbhCWNwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:52:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l6SzZ8JIQBFEJXWoH+V2Lr/fTbpwO74ja29HoqGOz0nTHRJvqiNiv2b03qqbRuLwgfCduwCrthTdeUKlHST07a1JiJH9E2dTY58cLZF43GcPpB6tUHCT7meT8CB9x5muQWrWcld2qM5MMNchsN6YJ1XKTLUPziNkSPi2eHilpoJaSNFZB7FGxUyKfpYkh7GXAFln8isadXJmZRqWoLbc/QLMwBO8J1yugiOTPXKq3y5svfsLVqb1BIA33l/cdsgXKDVrq1xVGlELnXVw242OmerN9LPJfhbpFjOpS5elTf8G3FqrPxcUt57+tPipi0Vx3zc512e1DRRcCLwdq8s9zQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a9loTaYlyrgzItrSRIpPBcbDiywraou2sdXLQZntOWI=;
+ b=TiU+LwQE2iK+p8jxfYJtykfL7ZdPdswLG8/9AShBJVprVVPviPrc1SsBBxlnCPiT9ycdG1HYkD1fMP9CMYHlYr8NyES0Jt3PqvfepvIwOAQpcfuWd0dJBRvhyKSoSuobWIDOx0/G4fVZ1wUPDEGeRh6H6Q7jyJqf0oz0WDOlRL01h5pq43rQQh0q/Qr5fmmE1iRUuOQffKIYD/pi6b/MKho7Ibc9CoHf4TE5H/YyaTlfzyQN25pn+hXj44YkeoHFJ6o1Unh1BtRw2JBjVsSJooj7g5BbmGLzmI6TSHPvC8HruqLBGywgV8MHc+NYXw4hdBuXxNJKQEcQRK17qRB9cQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a9loTaYlyrgzItrSRIpPBcbDiywraou2sdXLQZntOWI=;
+ b=fWB+euSc4sgxoGsnpsxxsZBlR72qzuKYXHTVH97UJJiQWtTZWUzl5RvpN5WAVsh1a1Vk2OH1kAsOtdXDa5zD3WEU+pBtaiYF+EcPRbBk2IXUBc6pIoeeW4NZ8OKYZfY5asrOt4+BT2bXivdrzFyUFMZENA4NvLAg/OUija1JEYiOya+nJGUQqqyljJu2Y8+hbBWp6hRE8pnC0DuzvGp+huE7fT5oHqT2nna1+zuWb7gnt2iJkQQTAnna0X/k06miYJ4Y7/AFfPJn8ThvpCzFhOWsHsaxN4MZBZ8QblNJc/blwfBeicv8EwxSJqSUt/ZKAW9jWetXLji/znVM830ovA==
+Authentication-Results: shipmail.org; dkim=none (message not signed)
+ header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4011.namprd12.prod.outlook.com (2603:10b6:5:1c5::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
+ 2021 13:52:19 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
+ 13:52:19 +0000
+Date:   Tue, 23 Mar 2021 10:52:17 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for
- PG_private_2/PG_fscache
-Message-ID: <20210323135116.GF1719932@casper.infradead.org>
-References: <1885296.1616410586@warthog.procyon.org.uk>
- <20210321105309.GG3420@casper.infradead.org>
- <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
- <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
- <2499407.1616505440@warthog.procyon.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <20210323135217.GD2356281@nvidia.com>
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2499407.1616505440@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210321184529.59006-2-thomas_os@shipmail.org>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0074.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::13) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0074.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Tue, 23 Mar 2021 13:52:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lOhSD-001Wa0-On; Tue, 23 Mar 2021 10:52:17 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ed7bdc52-6ba2-4c12-d777-08d8ee02e034
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4011:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4011A288E6A6F826F44CDCECC2649@DM6PR12MB4011.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wHCJef3Z/fTWxkYhYlK1F2mQCeehtyDlUbcYP2Sbq1yokywnczhaz+yGSgbf3tYL3xHZvGR5Bdm60F0Z7zErdH2DyUzvZYns4ckw72lFpSdo3CYyleUprB1Qxb7Yy2aOQqq6OxEeEKJbFbThScvUmEH0mbWCjHAq5zeiqLdrJrdWZ9c440gKMTs+GBPR/B0gWTGg6B0+3uWDmdm80x8FXd/5BbjY+TdsbVaJ4oiUYnuAQi64ItObLfouqbz5z+otSKyvdKRx3ZvlZ29+aaVtmUMu92+bYYJVfrkQ8WKK0cZUwXNWmqqe+v91fRO2M2KmGFykIxTovsgxBwdV3uTDgYHmQiaBWgOKFCen6HQCx7a7w6uWmqJBxLsSDH60+br02TBbhvlreRsvFdGjb4SY/kML7y7DBjwVd8Y1Yw+7GD1nmUA6ktxAKcfE0TDSeFm58XA5mdTjZBMPq3RqTSbeJikJm+GdaBmrtgFon0t7IE9LRE8bo4t/Dxr1rNO16K2k+8rnb6RHKOVNCNi1dHv3Gh3R1xGAgz4y7SUE2IvVYBRj8MzxP8/m0vmaVok/ha98szBMGeFKCJLB1uXhMo1sLKGY0xOp+gydCnvkvG9h/+j3rns5qWrvo42N39/4sf2olHZWGP4ouWnpLiuwSFW4ER4MMNQZBFH1gw4hA/UiAIckNAzbWKLIzrCDTlew2NmY9ury3ThompEJqmBTocg/5Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(36756003)(6916009)(26005)(2616005)(54906003)(83380400001)(5660300002)(316002)(66946007)(33656002)(2906002)(8936002)(426003)(66556008)(4326008)(66476007)(478600001)(86362001)(9746002)(4744005)(186003)(8676002)(1076003)(38100700001)(9786002)(21314003)(14583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZTR3RE96MmFocTBjcVR5c2pLN3VtVXhwZ2VTQ3lOQ2xwVUFuTDRCakdtNEFq?=
+ =?utf-8?B?SlFTQjYwRDVhYmhKcEFxdlZvOXUvd1VtVEY0NlJsRG5OYXZSTG8rQURub1p0?=
+ =?utf-8?B?NGJkcUgyL1o0eXVzV0JzTlBwWEdSdVFEV1NkVHA3eHpZUnltOFgvL2RzWksz?=
+ =?utf-8?B?MUI3dkVzaHpLL1ZPUXg2b0c2L1Q4ejdYb2kyZWQ2Z0hpKytBN2xWNkN6U21V?=
+ =?utf-8?B?ZUJaYUNNYm9BejdhakpwZ0J2TGI0eVMwblRZd0sxRmoyZlpOMFByY3VNbjhk?=
+ =?utf-8?B?Y0RJeTZXc0tQQWdQcGhNQTN6NFNHSmlZeU9kRU5EVkNudzhQVEhOd0l3aUd5?=
+ =?utf-8?B?a0EvYlIvWlpkSjRMSlBkV3VJNXVwZ3hremkyWE9HTFpOQldDenN6dmNnRCtJ?=
+ =?utf-8?B?bi9XN2dua1Z2bGJaWTF0ZC9naVk2cmV1NXpSeHpSZEhSOWJDd2tDdXZ1bjRv?=
+ =?utf-8?B?TVZOa1V4N1hlYkxmTXlLWE80NXZrMGlnajJ2WjNVZXdtbzJzZldqQ1FRdDFL?=
+ =?utf-8?B?MmN1UGZkaExuYUZZTDhSL2xBa004blNGMzZNcktuV2wvUXNvc0NvMXVtQ1dU?=
+ =?utf-8?B?dDY1Z1laMktaSm8yWEZpOTVHZTV3MW1jQXN3Z2dCeDNtOFRmelM5bDdLaVg3?=
+ =?utf-8?B?Q2ZJSmhRZUoyeWhKeHFwUmR0c213Qm1NaTdMYm5CZjlCREwzMHc1TTVCUnE2?=
+ =?utf-8?B?dGltczZBNzRtSzJPeW5meVVQSFM1VkwySWlYZlM0ZHM5azlxVDFzSU4zK3Zh?=
+ =?utf-8?B?YnlIWnRnZ2lMT3Y1S0RXRHR1U0Z2RWpXRjBBdXQyWDJOaUMySm0yaTRxMFpB?=
+ =?utf-8?B?bTVXcUJQSDV4NnJucTNwdkFMQmNMeDhqVWx6M3RnWWhyTmptVFIyTTZybUVm?=
+ =?utf-8?B?NlM5aWtxdU44NFNHQ3ZwZndWWmxuUzI4UUNWTFA2VGpVd2hOL0xwMU5QeHpm?=
+ =?utf-8?B?UU5OZjFCV25nbUpUcVNKMkVuQ0VUSVN5NXVMa2IvY3lxcFpwNG1NSW1Dc2pK?=
+ =?utf-8?B?ZDRQMWJ2clJWcFgyQS9BTVl0YWY2Y0hPdFZWbXByaFBWUUpwVjlxbHhiV3RZ?=
+ =?utf-8?B?YVFzRmpuRTJBLzZXT3pidmd1UVd4aTlidUZNTDMvWWxHVnVGNVYwZGxrZjVQ?=
+ =?utf-8?B?VTR6QXRJdFVQSkgzcHdHWUd6cEp0ZzY4dTY5dmRUa1VqOTROSXJpbVdDRmF0?=
+ =?utf-8?B?Y0tCZzg3UzNpVDZPTXk2MVdBU2dtUUxaU0trQnRCMk04bE5GcUxHTFFWb1RN?=
+ =?utf-8?B?d1N5U3dmS2FhV3VXNHVXSW4rU01hWnpIOHBkMUhPVlYrSVNRVXRMcGdweTA1?=
+ =?utf-8?B?aHpBd2Q4eElBWUIxRUVVUFl4dFAxSnY4Qlc0MGFLT3RITFd3clM3RjZXMWxx?=
+ =?utf-8?B?WE13SVNDcFRTWVFqUE5TOWViajQ5UGxGUXBzV2tFSkE0RnlNWWpSL2NOSTFi?=
+ =?utf-8?B?UDl3RUFWbWYwQUNUb29IdXJYTFBEbkZDaGJBdnE0Zk9qdlE3aEZ6Q3Y0UnU2?=
+ =?utf-8?B?N3krWlRZbEtISXltaDlNN0VGNDZRQmZGZHdGMkpuNnJvcUx2REQwWXM4U29w?=
+ =?utf-8?B?WWJMMzA2VkV3aFNmekdxai9LQVZueVZ3dFdGZ2tWOXFVMENhRGh2L3NwOE9q?=
+ =?utf-8?B?YW1kYlhRS1l3UG9nUzBWeENFbXNvWktFbE9FczlmZlZjb1lSTU5VcVJPMlBw?=
+ =?utf-8?B?ckhXY09ENWMvQUVrYVN0elZkKzhhbzZxY0Y2dGI3Uy84bThtZW9MWkt1YzVw?=
+ =?utf-8?Q?M/MpkxTLgw9YlydE40DeXoUwtNFvg+GJAn+0NeQ?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed7bdc52-6ba2-4c12-d777-08d8ee02e034
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 13:52:19.4658
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TnsXDHh+Z/58XHtuAwqzYQkOwXLaB8tCx/8SbPkxFRoAIYhsaxgEZLxMu7+ZR66T
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:17:20PM +0000, David Howells wrote:
-> +++ b/fs/afs/write.c
-> @@ -846,7 +846,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
->  	 */
->  #ifdef CONFIG_AFS_FSCACHE
->  	if (PageFsCache(page) &&
-> -	    wait_on_page_bit_killable(page, PG_fscache) < 0)
-> +	    wait_on_page_fscache_killable(page) < 0)
->  		return VM_FAULT_RETRY;
->  #endif
+On Sun, Mar 21, 2021 at 07:45:28PM +0100, Thomas Hellström (Intel) wrote:
+> diff --git a/mm/gup.c b/mm/gup.c
+> index e40579624f10..1b6a127f0bdd 100644
+> +++ b/mm/gup.c
+> @@ -1993,6 +1993,17 @@ static void __maybe_unused undo_dev_pagemap(int *nr, int nr_start,
+>  }
 >  
-> @@ -861,7 +861,8 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
->  	 * details the portion of the page we need to write back and we might
->  	 * need to redirty the page if there's a problem.
->  	 */
-> -	wait_on_page_writeback(page);
-> +	if (wait_on_page_writeback_killable(page) < 0)
-> +		return VM_FAULT_RETRY | VM_FAULT_LOCKED;
+>  #ifdef CONFIG_ARCH_HAS_PTE_SPECIAL
+> +/*
+> + * If we can't determine whether or not a pte is special, then fail immediately
+> + * for ptes. Note, we can still pin HugeTLB as it is guaranteed not to be
+> + * special. For THP, special huge entries are indicated by xxx_devmap()
+> + * returning true, but a corresponding call to get_dev_pagemap() will
+> + * return NULL.
+> + *
+> + * For a futex to be placed on a THP tail page, get_futex_key requires a
+> + * get_user_pages_fast_only implementation that can pin pages. Thus it's still
+> + * useful to have gup_huge_pmd even if we can't operate on ptes.
+> + */
 
-You forgot to unlock the page.  Also, if you're waiting killably here,
-do you need to wait before you get the page lock?  Ditto for waiting on
-fscache -- do you want to do that before or after you get the page lock?
+Why move this comment? I think it was correct where it was
 
-Also, I never quite understood why you needed to wait for fscache
-writes to finish before allowing the page to be dirtied.  Is this a
-wait_for_stable_page() kind of situation, where the cache might be
-calculating a checksum on it?  Because as far as I can tell, once the
-page is dirty in RAM, the contents of the on-disk cache are irrelevant ...
-unless they're part of a RAID 5 checksum kind of situation.
-
-I didn't spot any other problems ...
+Jason
