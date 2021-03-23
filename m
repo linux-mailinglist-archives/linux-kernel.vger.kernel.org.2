@@ -2,142 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FB0346031
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1046234603E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhCWNwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:52:37 -0400
-Received: from mail-mw2nam12on2069.outbound.protection.outlook.com ([40.107.244.69]:26401
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231370AbhCWNwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:52:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l6SzZ8JIQBFEJXWoH+V2Lr/fTbpwO74ja29HoqGOz0nTHRJvqiNiv2b03qqbRuLwgfCduwCrthTdeUKlHST07a1JiJH9E2dTY58cLZF43GcPpB6tUHCT7meT8CB9x5muQWrWcld2qM5MMNchsN6YJ1XKTLUPziNkSPi2eHilpoJaSNFZB7FGxUyKfpYkh7GXAFln8isadXJmZRqWoLbc/QLMwBO8J1yugiOTPXKq3y5svfsLVqb1BIA33l/cdsgXKDVrq1xVGlELnXVw242OmerN9LPJfhbpFjOpS5elTf8G3FqrPxcUt57+tPipi0Vx3zc512e1DRRcCLwdq8s9zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a9loTaYlyrgzItrSRIpPBcbDiywraou2sdXLQZntOWI=;
- b=TiU+LwQE2iK+p8jxfYJtykfL7ZdPdswLG8/9AShBJVprVVPviPrc1SsBBxlnCPiT9ycdG1HYkD1fMP9CMYHlYr8NyES0Jt3PqvfepvIwOAQpcfuWd0dJBRvhyKSoSuobWIDOx0/G4fVZ1wUPDEGeRh6H6Q7jyJqf0oz0WDOlRL01h5pq43rQQh0q/Qr5fmmE1iRUuOQffKIYD/pi6b/MKho7Ibc9CoHf4TE5H/YyaTlfzyQN25pn+hXj44YkeoHFJ6o1Unh1BtRw2JBjVsSJooj7g5BbmGLzmI6TSHPvC8HruqLBGywgV8MHc+NYXw4hdBuXxNJKQEcQRK17qRB9cQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a9loTaYlyrgzItrSRIpPBcbDiywraou2sdXLQZntOWI=;
- b=fWB+euSc4sgxoGsnpsxxsZBlR72qzuKYXHTVH97UJJiQWtTZWUzl5RvpN5WAVsh1a1Vk2OH1kAsOtdXDa5zD3WEU+pBtaiYF+EcPRbBk2IXUBc6pIoeeW4NZ8OKYZfY5asrOt4+BT2bXivdrzFyUFMZENA4NvLAg/OUija1JEYiOya+nJGUQqqyljJu2Y8+hbBWp6hRE8pnC0DuzvGp+huE7fT5oHqT2nna1+zuWb7gnt2iJkQQTAnna0X/k06miYJ4Y7/AFfPJn8ThvpCzFhOWsHsaxN4MZBZ8QblNJc/blwfBeicv8EwxSJqSUt/ZKAW9jWetXLji/znVM830ovA==
-Authentication-Results: shipmail.org; dkim=none (message not signed)
- header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4011.namprd12.prod.outlook.com (2603:10b6:5:1c5::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
- 2021 13:52:19 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
- 13:52:19 +0000
-Date:   Tue, 23 Mar 2021 10:52:17 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-Message-ID: <20210323135217.GD2356281@nvidia.com>
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-2-thomas_os@shipmail.org>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210321184529.59006-2-thomas_os@shipmail.org>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: YT1PR01CA0074.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2d::13) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231663AbhCWNxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:53:05 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14854 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhCWNwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:52:47 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4Xnd6vvQz92yY;
+        Tue, 23 Mar 2021 21:50:45 +0800 (CST)
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 21:52:34 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Jones <drjones@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, "Ingo Molnar" <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        Yanan Wang <wangyanan55@huawei.com>
+Subject: [RFC PATCH v5 00/10] KVM: selftests: some improvement and a new test for kvm page table
+Date:   Tue, 23 Mar 2021 21:52:21 +0800
+Message-ID: <20210323135231.24948-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0074.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Tue, 23 Mar 2021 13:52:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lOhSD-001Wa0-On; Tue, 23 Mar 2021 10:52:17 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed7bdc52-6ba2-4c12-d777-08d8ee02e034
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4011:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4011A288E6A6F826F44CDCECC2649@DM6PR12MB4011.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wHCJef3Z/fTWxkYhYlK1F2mQCeehtyDlUbcYP2Sbq1yokywnczhaz+yGSgbf3tYL3xHZvGR5Bdm60F0Z7zErdH2DyUzvZYns4ckw72lFpSdo3CYyleUprB1Qxb7Yy2aOQqq6OxEeEKJbFbThScvUmEH0mbWCjHAq5zeiqLdrJrdWZ9c440gKMTs+GBPR/B0gWTGg6B0+3uWDmdm80x8FXd/5BbjY+TdsbVaJ4oiUYnuAQi64ItObLfouqbz5z+otSKyvdKRx3ZvlZ29+aaVtmUMu92+bYYJVfrkQ8WKK0cZUwXNWmqqe+v91fRO2M2KmGFykIxTovsgxBwdV3uTDgYHmQiaBWgOKFCen6HQCx7a7w6uWmqJBxLsSDH60+br02TBbhvlreRsvFdGjb4SY/kML7y7DBjwVd8Y1Yw+7GD1nmUA6ktxAKcfE0TDSeFm58XA5mdTjZBMPq3RqTSbeJikJm+GdaBmrtgFon0t7IE9LRE8bo4t/Dxr1rNO16K2k+8rnb6RHKOVNCNi1dHv3Gh3R1xGAgz4y7SUE2IvVYBRj8MzxP8/m0vmaVok/ha98szBMGeFKCJLB1uXhMo1sLKGY0xOp+gydCnvkvG9h/+j3rns5qWrvo42N39/4sf2olHZWGP4ouWnpLiuwSFW4ER4MMNQZBFH1gw4hA/UiAIckNAzbWKLIzrCDTlew2NmY9ury3ThompEJqmBTocg/5Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(36756003)(6916009)(26005)(2616005)(54906003)(83380400001)(5660300002)(316002)(66946007)(33656002)(2906002)(8936002)(426003)(66556008)(4326008)(66476007)(478600001)(86362001)(9746002)(4744005)(186003)(8676002)(1076003)(38100700001)(9786002)(21314003)(14583001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZTR3RE96MmFocTBjcVR5c2pLN3VtVXhwZ2VTQ3lOQ2xwVUFuTDRCakdtNEFq?=
- =?utf-8?B?SlFTQjYwRDVhYmhKcEFxdlZvOXUvd1VtVEY0NlJsRG5OYXZSTG8rQURub1p0?=
- =?utf-8?B?NGJkcUgyL1o0eXVzV0JzTlBwWEdSdVFEV1NkVHA3eHpZUnltOFgvL2RzWksz?=
- =?utf-8?B?MUI3dkVzaHpLL1ZPUXg2b0c2L1Q4ejdYb2kyZWQ2Z0hpKytBN2xWNkN6U21V?=
- =?utf-8?B?ZUJaYUNNYm9BejdhakpwZ0J2TGI0eVMwblRZd0sxRmoyZlpOMFByY3VNbjhk?=
- =?utf-8?B?Y0RJeTZXc0tQQWdQcGhNQTN6NFNHSmlZeU9kRU5EVkNudzhQVEhOd0l3aUd5?=
- =?utf-8?B?a0EvYlIvWlpkSjRMSlBkV3VJNXVwZ3hremkyWE9HTFpOQldDenN6dmNnRCtJ?=
- =?utf-8?B?bi9XN2dua1Z2bGJaWTF0ZC9naVk2cmV1NXpSeHpSZEhSOWJDd2tDdXZ1bjRv?=
- =?utf-8?B?TVZOa1V4N1hlYkxmTXlLWE80NXZrMGlnajJ2WjNVZXdtbzJzZldqQ1FRdDFL?=
- =?utf-8?B?MmN1UGZkaExuYUZZTDhSL2xBa004blNGMzZNcktuV2wvUXNvc0NvMXVtQ1dU?=
- =?utf-8?B?dDY1Z1laMktaSm8yWEZpOTVHZTV3MW1jQXN3Z2dCeDNtOFRmelM5bDdLaVg3?=
- =?utf-8?B?Q2ZJSmhRZUoyeWhKeHFwUmR0c213Qm1NaTdMYm5CZjlCREwzMHc1TTVCUnE2?=
- =?utf-8?B?dGltczZBNzRtSzJPeW5meVVQSFM1VkwySWlYZlM0ZHM5azlxVDFzSU4zK3Zh?=
- =?utf-8?B?YnlIWnRnZ2lMT3Y1S0RXRHR1U0Z2RWpXRjBBdXQyWDJOaUMySm0yaTRxMFpB?=
- =?utf-8?B?bTVXcUJQSDV4NnJucTNwdkFMQmNMeDhqVWx6M3RnWWhyTmptVFIyTTZybUVm?=
- =?utf-8?B?NlM5aWtxdU44NFNHQ3ZwZndWWmxuUzI4UUNWTFA2VGpVd2hOL0xwMU5QeHpm?=
- =?utf-8?B?UU5OZjFCV25nbUpUcVNKMkVuQ0VUSVN5NXVMa2IvY3lxcFpwNG1NSW1Dc2pK?=
- =?utf-8?B?ZDRQMWJ2clJWcFgyQS9BTVl0YWY2Y0hPdFZWbXByaFBWUUpwVjlxbHhiV3RZ?=
- =?utf-8?B?YVFzRmpuRTJBLzZXT3pidmd1UVd4aTlidUZNTDMvWWxHVnVGNVYwZGxrZjVQ?=
- =?utf-8?B?VTR6QXRJdFVQSkgzcHdHWUd6cEp0ZzY4dTY5dmRUa1VqOTROSXJpbVdDRmF0?=
- =?utf-8?B?Y0tCZzg3UzNpVDZPTXk2MVdBU2dtUUxaU0trQnRCMk04bE5GcUxHTFFWb1RN?=
- =?utf-8?B?d1N5U3dmS2FhV3VXNHVXSW4rU01hWnpIOHBkMUhPVlYrSVNRVXRMcGdweTA1?=
- =?utf-8?B?aHpBd2Q4eElBWUIxRUVVUFl4dFAxSnY4Qlc0MGFLT3RITFd3clM3RjZXMWxx?=
- =?utf-8?B?WE13SVNDcFRTWVFqUE5TOWViajQ5UGxGUXBzV2tFSkE0RnlNWWpSL2NOSTFi?=
- =?utf-8?B?UDl3RUFWbWYwQUNUb29IdXJYTFBEbkZDaGJBdnE0Zk9qdlE3aEZ6Q3Y0UnU2?=
- =?utf-8?B?N3krWlRZbEtISXltaDlNN0VGNDZRQmZGZHdGMkpuNnJvcUx2REQwWXM4U29w?=
- =?utf-8?B?WWJMMzA2VkV3aFNmekdxai9LQVZueVZ3dFdGZ2tWOXFVMENhRGh2L3NwOE9q?=
- =?utf-8?B?YW1kYlhRS1l3UG9nUzBWeENFbXNvWktFbE9FczlmZlZjb1lSTU5VcVJPMlBw?=
- =?utf-8?B?ckhXY09ENWMvQUVrYVN0elZkKzhhbzZxY0Y2dGI3Uy84bThtZW9MWkt1YzVw?=
- =?utf-8?Q?M/MpkxTLgw9YlydE40DeXoUwtNFvg+GJAn+0NeQ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed7bdc52-6ba2-4c12-d777-08d8ee02e034
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 13:52:19.4658
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TnsXDHh+Z/58XHtuAwqzYQkOwXLaB8tCx/8SbPkxFRoAIYhsaxgEZLxMu7+ZR66T
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4011
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 07:45:28PM +0100, Thomas Hellström (Intel) wrote:
-> diff --git a/mm/gup.c b/mm/gup.c
-> index e40579624f10..1b6a127f0bdd 100644
-> +++ b/mm/gup.c
-> @@ -1993,6 +1993,17 @@ static void __maybe_unused undo_dev_pagemap(int *nr, int nr_start,
->  }
->  
->  #ifdef CONFIG_ARCH_HAS_PTE_SPECIAL
-> +/*
-> + * If we can't determine whether or not a pte is special, then fail immediately
-> + * for ptes. Note, we can still pin HugeTLB as it is guaranteed not to be
-> + * special. For THP, special huge entries are indicated by xxx_devmap()
-> + * returning true, but a corresponding call to get_dev_pagemap() will
-> + * return NULL.
-> + *
-> + * For a futex to be placed on a THP tail page, get_futex_key requires a
-> + * get_user_pages_fast_only implementation that can pin pages. Thus it's still
-> + * useful to have gup_huge_pmd even if we can't operate on ptes.
-> + */
+Hi,
+This v5 series can mainly include two parts.
+Based on kvm queue branch: https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=queue
 
-Why move this comment? I think it was correct where it was
+In the first part, all the known hugetlb backing src types specified
+with different hugepage sizes are listed, so that we can specify use
+of hugetlb source of the exact granularity that we want, instead of
+the system default ones. And as all the known hugetlb page sizes are
+listed, it's appropriate for all architectures. Besides, a helper that
+can get granularity of different backing src types(anonumous/thp/hugetlb)
+is added, so that we can use the accurate backing src granularity for
+kinds of alignment or guest memory accessing of vcpus.
 
-Jason
+In the second part, a new test is added:
+This test is added to serve as a performance tester and a bug reproducer
+for kvm page table code (GPA->HPA mappings), it gives guidance for the
+people trying to make some improvement for kvm. And the following explains
+what we can exactly do through this test.
+
+The function guest_code() can cover the conditions where a single vcpu or
+multiple vcpus access guest pages within the same memory region, in three
+VM stages(before dirty logging, during dirty logging, after dirty logging).
+Besides, the backing src memory type(ANONYMOUS/THP/HUGETLB) of the tested
+memory region can be specified by users, which means normal page mappings
+or block mappings can be chosen by users to be created in the test.
+
+If ANONYMOUS memory is specified, kvm will create normal page mappings
+for the tested memory region before dirty logging, and update attributes
+of the page mappings from RO to RW during dirty logging. If THP/HUGETLB
+memory is specified, kvm will create block mappings for the tested memory
+region before dirty logging, and split the blcok mappings into normal page
+mappings during dirty logging, and coalesce the page mappings back into
+block mappings after dirty logging is stopped.
+
+So in summary, as a performance tester, this test can present the
+performance of kvm creating/updating normal page mappings, or the
+performance of kvm creating/splitting/recovering block mappings,
+through execution time.
+
+When we need to coalesce the page mappings back to block mappings after
+dirty logging is stopped, we have to firstly invalidate *all* the TLB
+entries for the page mappings right before installation of the block entry,
+because a TLB conflict abort error could occur if we can't invalidate the
+TLB entries fully. We have hit this TLB conflict twice on aarch64 software
+implementation and fixed it. As this test can imulate process from dirty
+logging enabled to dirty logging stopped of a VM with block mappings,
+so it can also reproduce this TLB conflict abort due to inadequate TLB
+invalidation when coalescing tables.
+
+Links about the TLB conflict abort:
+https://lore.kernel.org/lkml/20201201201034.116760-3-wangyanan55@huawei.com/
+
+---
+
+Change logs:
+
+v4->v5:
+- Use synchronization(sem_wait) for time measurement
+- Add a new patch about TEST_ASSERT(patch 4)
+- Address Andrew Jones's comments for v4 series
+- Add Andrew Jones's R-b tags in some patches
+- v4: https://lore.kernel.org/lkml/20210302125751.19080-1-wangyanan55@huawei.com/
+
+v3->v4:
+- Add a helper to get system default hugetlb page size
+- Add tags of Reviewed-by of Ben in the patches
+- v3: https://lore.kernel.org/lkml/20210301065916.11484-1-wangyanan55@huawei.com/
+
+v2->v3:
+- Add tags of Suggested-by, Reviewed-by in the patches
+- Add a generic micro to get hugetlb page sizes
+- Some changes for suggestions about v2 series
+- v2: https://lore.kernel.org/lkml/20210225055940.18748-1-wangyanan55@huawei.com/
+
+v1->v2:
+- Add a patch to sync header files
+- Add helpers to get granularity of different backing src types
+- Some changes for suggestions about v1 series
+- v1: https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/
+
+---
+
+Yanan Wang (10):
+  tools headers: sync headers of asm-generic/hugetlb_encode.h
+  tools headers: Add a macro to get HUGETLB page sizes for mmap
+  KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for timing
+  KVM: selftests: Print the errno besides error-string in TEST_ASSERT
+  KVM: selftests: Make a generic helper to get vm guest mode strings
+  KVM: selftests: Add a helper to get system configured THP page size
+  KVM: selftests: Add a helper to get system default hugetlb page size
+  KVM: selftests: List all hugetlb src types specified with page sizes
+  KVM: selftests: Adapt vm_userspace_mem_region_add to new helpers
+  KVM: selftests: Add a test for kvm page table code
+
+ include/uapi/linux/mman.h                     |   2 +
+ tools/include/asm-generic/hugetlb_encode.h    |   3 +
+ tools/include/uapi/linux/mman.h               |   2 +
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   3 +
+ .../selftests/kvm/demand_paging_test.c        |   8 +-
+ .../selftests/kvm/dirty_log_perf_test.c       |  14 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |   4 +-
+ .../testing/selftests/kvm/include/test_util.h |  21 +-
+ .../selftests/kvm/kvm_page_table_test.c       | 512 ++++++++++++++++++
+ tools/testing/selftests/kvm/lib/assert.c      |   4 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  59 +-
+ tools/testing/selftests/kvm/lib/test_util.c   | 163 +++++-
+ tools/testing/selftests/kvm/steal_time.c      |   4 +-
+ 14 files changed, 739 insertions(+), 61 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/kvm_page_table_test.c
+
+-- 
+2.23.0
+
