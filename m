@@ -2,114 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BBF345932
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FD4345933
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhCWICH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhCWIBp (ORCPT
+        id S229631AbhCWICF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:02:05 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:42681 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229448AbhCWIBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:01:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F024C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lx3J6Y5Q3le0nZDa4hURyeJThg9+xLXsxyVyB1tvv0U=; b=h+sXw7FNjiA7THYFgpctWo8GVv
-        a0g9V03KoAnatTs0p68hMqbimfiJY5KD2IJxzSedlDb/cRXM5V7NzIIKZ37XXHDZFT4Z2OnhQNDNf
-        V2Jiq8jRYE4llLIrHlQEWHZOIPNCgvqFli6upWuhw+mZlm7vcZ/hhVvNXgtuHJoZgHVJj0VlLcg/C
-        e1laS1PPsC5sVIYLRgukn1ysJOb/1yPX1ThzPImbhxGn43E0U8DlP/64dG/2kbR8wQngDhefR3yNm
-        cMz6RbI8wwOCQJX/PY18/tRE9CZKzix5OYMW+eE7hN14hWbsZo5X5TwHkuHZYzVyirRFPSrpP04po
-        d1sPhz4A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lObyN-00EFl3-54; Tue, 23 Mar 2021 08:01:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C63C3010C8;
-        Tue, 23 Mar 2021 09:01:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F343A2053DA99; Tue, 23 Mar 2021 09:01:02 +0100 (CET)
-Date:   Tue, 23 Mar 2021 09:01:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/8] hugetlb: recompute min_count when dropping
- hugetlb_lock
-Message-ID: <YFmgPkTzZY6Ocj6X@hirez.programming.kicks-ass.net>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-3-mike.kravetz@oracle.com>
- <YFikrdN6DHQSEm6a@dhcp22.suse.cz>
- <a7d90d58-fa6a-7fa1-77c9-a08515746018@oracle.com>
- <YFmd3d5B2VT4GkiG@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFmd3d5B2VT4GkiG@dhcp22.suse.cz>
+        Tue, 23 Mar 2021 04:01:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UT2X8eb_1616486482;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UT2X8eb_1616486482)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Mar 2021 16:01:28 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     bskeggs@redhat.com
+Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/nouveau/mc: make tu102_mc_intr_unarm static
+Date:   Tue, 23 Mar 2021 16:01:21 +0800
+Message-Id: <1616486481-94130-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 08:50:53AM +0100, Michal Hocko wrote:
+Fix the following sparse warning:
 
-> > >> +static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
-> > >> +{
-> > >> +	unsigned long min_count;
-> > >> +
-> > >> +	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
-> > >> +	return max(count, min_count);
-> > > 
-> > > Just out of curiousity, is compiler allowed to inline this piece of code
-> > > and then cache the value? In other words do we need to make these
-> > > READ_ONCE or otherwise enforce the no-caching behavior?
-> > 
-> > I honestly do not know if the compiler is allowed to do that.  The
-> > assembly code generated by my compiler does not cache the value, but
-> > that does not guarantee anything.  I can add READ_ONCE to make the
-> > function look something like:
-> > 
-> > static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
-> > {
-> > 	unsigned long min_count;
-> > 
-> > 	min_count = READ_ONCE(h->resv_huge_pages) + READ_ONCE(h->nr_huge_pages)
-> > 					- READ_ONCE(h->free_huge_pages);
-> > 	return max(count, min_count);
-> > }
-> 
-> Maybe just forcing to never inline the function should be sufficient.
-> This is not a hot path to micro optimize for no function call. But there
-> are much more qualified people on the CC list on this matter who could
-> clarify. Peter?
+drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c:74:1: warning: symbol
+'tu102_mc_intr_mask' was not declared. Should it be static?
 
-I'm not sure I understand the code right. But inline or not doesn't
-matter, LTO completely ruins that game. Just like if it was a static
-function, then the compiler is free to inline it, even if the function
-lacks an inline attribute.
+drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c:62:1: warning: symbol
+'tu102_mc_intr_rearm' was not declared. Should it be static?
 
-Basically, without READ_ONCE() the compiler is allowed to entirely elide
-the load (and use a previous load), or to duplicate the load and do it
-again later (reaching a different result).
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Similarly, the compiler is allowed to byte-wise load the variable in any
-random order and re-assemble.
-
-If any of that is a problem, you have to use READ_ONCE().
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
+index 58db83e..7cf659cc 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
+@@ -58,7 +58,7 @@ struct tu102_mc {
+ 	spin_unlock_irqrestore(&mc->lock, flags);
+ }
+ 
+-void
++static void
+ tu102_mc_intr_rearm(struct nvkm_mc *base)
+ {
+ 	struct tu102_mc *mc = tu102_mc(base);
+@@ -70,7 +70,7 @@ struct tu102_mc {
+ 	spin_unlock_irqrestore(&mc->lock, flags);
+ }
+ 
+-void
++static void
+ tu102_mc_intr_mask(struct nvkm_mc *base, u32 mask, u32 intr)
+ {
+ 	struct tu102_mc *mc = tu102_mc(base);
+-- 
+1.8.3.1
 
