@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B256034599A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393A83459A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhCWIYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhCWIYP (ORCPT
+        id S229930AbhCWI0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:26:54 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:57276 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhCWI0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:24:15 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CB3C061574;
-        Tue, 23 Mar 2021 01:24:14 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id e7so22347169edu.10;
-        Tue, 23 Mar 2021 01:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ExPvoR1f5uk9en0rkDtqJD0vTJCWwj6XJRPX25LF4GI=;
-        b=EWOlil8z8SmEC4vMkC1X6yg4dGf2oO8XZ+FHKiXnn8NePq7leLDczKzbQV1lmATFO4
-         bs8NmLZkkoOayGewo3yioiWXy2mnb5vaAc5bnUhQpoCKvT957lq4ZX7HSJ7IQtajDxQM
-         u3V60BNpSG9Zgat1bguSE1GFGwL42L8LwSJS/x2xQmhVcqlSwPLbgkK0bZPisiA8z6uB
-         S6etvEui/U/+Uk8d3ixZ5jPf2yPSFFEliptkXpvHGzMzt3nn/Y/ibZW3aq2zXc3UT5+L
-         32gG7wABs0gjjj25w+KQu/TymBqixl9lI6n0luNfkJtD12n1UnNd7pu03jM3Y3eoZMpw
-         rRjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ExPvoR1f5uk9en0rkDtqJD0vTJCWwj6XJRPX25LF4GI=;
-        b=bfbNR8H6aVUdhTXtzlZpnvavHQ/pM0+aJYM2YBit1T4ZSevS/poSPCkNM76tqGVRww
-         kIGOCLudaPLX0H6RZDJA89yEJpM6vJ8jbDLGnhr3kS2h23aAAmFpU9LcKb2xnHazxWcG
-         u6BuhmKfPOthZ5loVgrK0NnMoqtpHfyxnlPtEWbKGp3bprl2Iumu1VxdQM314Idr9xv9
-         QLopiduy1pbTksn7GdArCvSfL+qAff8GE7Cth4XMxZ68O1+qbB75sj16d29WxKk0TS9F
-         s67V9W4qdy1on3PUUNV62Y3iaYjs5tS4WSfOSdz58JURuFkXCgJecZ31HkYJxOYiwqIg
-         vkkQ==
-X-Gm-Message-State: AOAM5339C2+vdxlGp/FqSF0VU2x7XxV8QoIW1C5p6EXfRs+HQ1Xh0RL1
-        bcG903EyfZVHR08S7PTWAZw=
-X-Google-Smtp-Source: ABdhPJwjOHKc07ohHiCyiRhf4qYoQ5nvvwkcrvwqJJ8e4Emc8JgofuGmQDmheSUlAh26OMPl1kTgIg==
-X-Received: by 2002:aa7:d841:: with SMTP id f1mr3405065eds.286.1616487853407;
-        Tue, 23 Mar 2021 01:24:13 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id cf4sm12479246edb.19.2021.03.23.01.24.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 01:24:11 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:24:31 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        linux-clk@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: tegra: fix old-style declaration
-Message-ID: <YFmlv8IcQUMHMiVY@orome.fritz.box>
-References: <20210322215047.1062540-1-arnd@kernel.org>
+        Tue, 23 Mar 2021 04:26:32 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210323082629epoutp010004d890e923d660e033edd698021487~u60Mhp6yA0525905259epoutp016
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:26:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210323082629epoutp010004d890e923d660e033edd698021487~u60Mhp6yA0525905259epoutp016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616487989;
+        bh=Xo+jhCC10ChDIi0mr5wVxZzV9wpTjQjBsX6MB+xpKNU=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=HLpIjDblADnOSXWP5KtamFr35Hah45y8PtmBCmd6QPRiB0y0U/7Wsq5uS7ev3mUYA
+         nkyLgiMpSN3pecUJ3yHOEtnmYKg0Rm9YtFhPH4HOHPzZAQGkzf0piPjwlsBZISpQJU
+         Ecxxe7CiOUwTtrhaXY4SF9wV8sw8YvFdNIPNsCJs=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210323082629epcas1p1d3ea0b1172c6f8257e9ee9a7d4c5ecb8~u60MDlQh72945029450epcas1p1n;
+        Tue, 23 Mar 2021 08:26:29 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.163]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4F4PbR3147z4x9Q9; Tue, 23 Mar
+        2021 08:26:27 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        88.DD.63458.336A9506; Tue, 23 Mar 2021 17:26:27 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210323082626epcas1p2209ccbad05c79eea78ef3b0fc54c3690~u60J17y3n3014630146epcas1p2y;
+        Tue, 23 Mar 2021 08:26:26 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210323082626epsmtrp2ff6e25ab5642fad36ba3f68cd5880af2~u60J1LsCh2453724537epsmtrp2g;
+        Tue, 23 Mar 2021 08:26:26 +0000 (GMT)
+X-AuditID: b6c32a36-6dfff7000000f7e2-8e-6059a6332204
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        32.CD.08745.236A9506; Tue, 23 Mar 2021 17:26:26 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210323082626epsmtip2263af203b844a0ffb24901375eec488b~u60Joltr12321823218epsmtip2N;
+        Tue, 23 Mar 2021 08:26:26 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Sungjong Seo'" <sj1557.seo@samsung.com>,
+        "'Hyeongseok Kim'" <hyeongseok@gmail.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+In-Reply-To: <016101d71edf$8542b240$8fc816c0$@samsung.com>
+Subject: RE: [PATCH v3] exfat: speed up iterate/lookup by fixing start point
+ of traversing cluster chain
+Date:   Tue, 23 Mar 2021 17:26:26 +0900
+Message-ID: <010601d71fbe$37b62450$a7226cf0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LolfSL2RAikY4/X5"
-Content-Disposition: inline
-In-Reply-To: <20210322215047.1062540-1-arnd@kernel.org>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFCCaC8jPi/61EWNQoXs0UvpNzAUAIaXSUoAZfvdIOrndYpwA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDKsWRmVeSWpSXmKPExsWy7bCmnq7xssgEg5M3xCz+TvzEZLFn70kW
+        i8u75rBZbPl3hNWBxWPnrLvsHn1bVjF6fN4kF8AclWOTkZqYklqkkJqXnJ+SmZduq+QdHO8c
+        b2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA7RNSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKr
+        lFqQklNgaFCgV5yYW1yal66XnJ9rZWhgYGQKVJmQk3Fqo2zBJPaKvqP9LA2MZ1i7GDk5JARM
+        JNavP8zcxcjFISSwg1Giu2UiI4TziVGibfFnsCohgc+MEh82hMJ0HGv5CFW0i1Hi4uUr7BDO
+        S0aJWzffg3WwCehK/Puznw3EFhGIkti77B0TiM0s4CzRefE0WA2ngJXE7+Pb2EFsYYEsifU7
+        O8DiLAKqElMeTwXr5RWwlHh17yk7hC0ocXLmExaIOfIS29/OYYa4SEHi59NlQL0cQLucJFZd
+        1YEoEZGY3dkG9pqEwFt2iX/3HjFC1LtIvH8zA+p/YYlXx7ewQ9hSEp/f7WUDmSMhUC3xcT/U
+        +A5GiRffbSFsY4mb6zeArWIW0JRYv0sfIqwosfP3XEaItXwS7772sEJM4ZXoaBOCKFGV6Lt0
+        mAnClpboav/APoFRaRaSv2Yh+WsWkgdmISxbwMiyilEstaA4Nz212LDACDmmNzGCk6GW2Q7G
+        SW8/6B1iZOJgPMQowcGsJMLbEh6RIMSbklhZlVqUH19UmpNafIjRFBjSE5mlRJPzgek4ryTe
+        0NTI2NjYwsTM3MzUWEmcN9HgQbyQQHpiSWp2ampBahFMHxMHp1QDU2OJ+5ZTdmlHK39MtN3X
+        06Nk/vnTceV5JeInFKXudCtvjotLUk7b3u/AyP/hjn4qZ0kha3nasdTIt5rsNR9Ol935Vrvm
+        jxHre3FJNeXJK5Z8P878a8ay52oTHZZMr7700PS+dkDW/0fNKbftwu/NCQ19o+5RF9AqwFR4
+        PElZo6H2iKFW5/1bhkKJKqvmX3kg95zz9KQ7vodOnhdPKHdexlO6in3Hk7eHFJov6C9zO620
+        3F9bJMpzSr3cjFsPV/3JcpSrEd7hy5TUbc1556uoeulusa8fJ7xtzs1bLpLDkfdEIXrH++0v
+        ahTmThJ0ys64cyi8fCrD1U9nzz20YLgmteXPZ+aCwj7GQPmGtDm7lFiKMxINtZiLihMBYV3e
+        Ag8EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsWy7bCSvK7RssgEg7MtRhZ/J35istiz9ySL
+        xeVdc9gstvw7wurA4rFz1l12j74tqxg9Pm+SC2CO4rJJSc3JLEst0rdL4Mo4tVG2YBJ7Rd/R
+        fpYGxjOsXYycHBICJhLHWj4ydjFycQgJ7GCUWHHhGAtEQlri2IkzzF2MHEC2sMThw8UQNc8Z
+        JS7/u8AMUsMmoCvx789+NhBbRCBK4tzxM2A2s4CrRNuLI6wQDTsZJRq2QiQ4Bawkfh/fxg5i
+        CwtkSNzZ/hbsChYBVYkpj6eC1fAKWEq8uveUHcIWlDg58wkLxFBtid6HrYwQtrzE9rdzmCEO
+        VZD4+XQZK8ihIgJOEquu6kCUiEjM7mxjnsAoPAvJpFlIJs1CMmkWkpYFjCyrGCVTC4pz03OL
+        DQuM8lLL9YoTc4tL89L1kvNzNzGCI0NLawfjnlUf9A4xMnEwHmKU4GBWEuFtCY9IEOJNSays
+        Si3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNTqoFprbx44Hsnu8NPP53v
+        TCqaJ5Ow+Bb/Y+azBqqZOlU9zTVTezb5LWhcy5y4qiSquNldVnh+MM96nybNroSeeQ8Xzbfc
+        0CLfcPkTLwtvolBuxuPFqpOCijniVhlsZgj4wiC/zl1CfW5+YHz6vtaySrUPncKB3yTFHrHJ
+        stwqM7u2qidE4KGITdyuhzfaDxaeD/PVTJ31ozMq7vYRV27TMJ/7J20WBV8RXFiRPplTb8NZ
+        xo5b/1/uc5SfX6gTL6Zc+6C7zcgwsLV+8o/7Das2H9X9Jyv3Z56GZIKRlKOdhtUB55cLo6Qz
+        e5sZuFglTHMOmQleLG1mdmBkrZqXl/L8+BvZkPPam+MC86NKZuUosRRnJBpqMRcVJwIArwgT
+        bfsCAAA=
+X-CMS-MailID: 20210323082626epcas1p2209ccbad05c79eea78ef3b0fc54c3690
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210322035356epcas1p35cf4d476030f5ebaf6357c5761355605
+References: <CGME20210322035356epcas1p35cf4d476030f5ebaf6357c5761355605@epcas1p3.samsung.com>
+        <20210322035336.81050-1-hyeongseok@gmail.com>
+        <016101d71edf$8542b240$8fc816c0$@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> > When directory iterate and lookup is called, there's a buggy rewinding
+> > of start point for traversing cluster chain to the parent directory
+> > entry's first cluster. This caused repeated cluster chain traversing
+> > from the first entry of the parent directory that would show worse
+> > performance if huge amounts of files exist under the parent directory.
+> > Fix not to rewind, make continue from currently referenced cluster and
+> > dir entry.
+> >
+> > Tested with 50,000 files under single directory / 256GB sdcard, with
+> > command "time ls -l > /dev/null",
+> > Before :     0m08.69s real     0m00.27s user     0m05.91s system
+> > After  :     0m07.01s real     0m00.25s user     0m04.34s system
+> >
+> > Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+> 
+> Looks good.
+> Thanks for your contribution.
+> 
+> Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
+Applied. Thanks!
 
---LolfSL2RAikY4/X5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 22, 2021 at 10:50:41PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> With extra warnings enabled, gcc complains about a slightly odd
-> prototype:
->=20
-> drivers/clk/tegra/clk-dfll.c:1380:1: error: 'inline' is not at beginning =
-of declaration [-Werror=3Dold-style-declaration]
->  1380 | static void inline dfll_debug_init(struct tegra_dfll *td) { }
->=20
-> Move the 'inline' keyword to the start of the line.
->=20
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/clk/tegra/clk-dfll.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---LolfSL2RAikY4/X5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBZpb0ACgkQ3SOs138+
-s6GKSw//TBDe4fGAkcOmAj+cCIi6pzB3yM4jxBiim/v/INh8n0Q7xPtrpJsb5nbE
-pNmvfdE6eFGr9hiY51NtfrpYtnBG0xt9GLXS7z5InPQ0EG2crT5uFEt7Ei5n2v6F
-0iepKoFvrXFi/RNld3EyfrHqIs7I+6fmXIbiRSXY6L0qRUuc2YFJQGCfYUKwLoUn
-jFtwj8Oj0SjwlD1Sfx0bUNKomRtnwF+WX3nDlb8v33SIccHxMy4LwN9RjOUBXWSh
-E+dwmpde2pIKoPu6k1NVuGDWHVM+4n3uh1l6p0RBuwzaou8Opw4fPeCdpe2sCf75
-jgj1WUe1dEzoWNVTfgxixG3e4G7aFzELCwoP8KYOiMSsvQ8y4GNyx2Yim2yhAFJB
-uPWPBHK+iIbvVY3pe5Nqt/Z5l5Kkhnqcfh4eTwNOkCK7x2r1nYoro/MBZ3GR1PRT
-JUk7Rvk+/lJa0kJbrJPfslYUB1n4UtGL0nYDaNQ9xZGgYxe3ldAcoTZhCLHLFQY+
-CnyjgJ2meRV2+h4E2TuouYm4MSfp21RPx1kDBrPRdj9CSSfT2a34VKANRSYuKIUM
-+4CZAX5v1a7ZWVf9Zl+/1ZXK0aho4nsAjVoeyhfSwY0VXZnmuNu/tcXtdcOn8oda
-QLxrnbyskLtbxtZyjd9xhERJy6lpCbNGlAWy5LgwE+qJlPp/5e8=
-=78Hv
------END PGP SIGNATURE-----
-
---LolfSL2RAikY4/X5--
