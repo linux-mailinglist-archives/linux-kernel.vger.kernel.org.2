@@ -2,179 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE81345C2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD740345C2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhCWKrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:47:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39698 "EHLO mx2.suse.de"
+        id S230223AbhCWKsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:48:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40202 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230305AbhCWKrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:47:11 -0400
+        id S230295AbhCWKr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:47:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616496429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1616496475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=NaRa85INpsZEqfLCsgSNBVcWiWiVhHqblotAh21dc+g=;
-        b=oHzwm0gbjvu2H5TBXXIAZpZ2mBJqANURQ9iX6ikT28yQVji58JxGeeppjss0XrZM1ZZWea
-        caTlRvhtIaZKPvfm2oLB1aYphDNG6LDGwjb1hEScbeSQxt3V1REGNc9Ip/XFnnXpxWMwqN
-        Rq4yFjFTmENEiqJ9XtTZAmurd9j+EgY=
+        bh=fW6mA/RAOH8nnf9IdxfeqQ3TVeY0wxpBUV2ZnKWK5vA=;
+        b=p/lob3TaiH5PhM3uEOboUu4BtpDVGmQfKG0ycNzqCWuhupDL1aihy1Px5JvWczdwMK3VXx
+        5MPZDco1EoMJ6kBN4zxp9DSjul7n7ZJ8mlCTqYrxF46iE2rZnqApqHGXt7i8tDH2PSE/pj
+        olVmJhobaDWbSPzQEL7eJEXtbBtnxPY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A7A0AD6D;
-        Tue, 23 Mar 2021 10:47:09 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 11:47:06 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Rafael Aquini <aquini@redhat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
-Subject: Re: [PATCH next v1 2/3] printk: remove safe buffers
-Message-ID: <YFnHKlCvIA2nI41c@alley>
-References: <20210316233326.10778-1-john.ogness@linutronix.de>
- <20210316233326.10778-3-john.ogness@linutronix.de>
+        by mx2.suse.de (Postfix) with ESMTP id 0099FAC3E;
+        Tue, 23 Mar 2021 10:47:54 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 11:47:53 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/5] mm,memory_hotplug: Add kernel boot option to
+ enable memmap_on_memory
+Message-ID: <YFnHWQ30O5efsdQ1@dhcp22.suse.cz>
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-4-osalvador@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316233326.10778-3-john.ogness@linutronix.de>
+In-Reply-To: <20210319092635.6214-4-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-03-17 00:33:25, John Ogness wrote:
-> With @logbuf_lock removed, the high level printk functions for
-> storing messages are lockless. Messages can be stored from any
-> context, so there is no need for the NMI and safe buffers anymore.
-> Remove the NMI and safe buffers.
+On Fri 19-03-21 10:26:33, Oscar Salvador wrote:
+> Self stored memmap leads to a sparse memory situation which is unsuitable
+> for workloads that requires large contiguous memory chunks, so make this
+> an opt-in which needs to be explicitly enabled.
 > 
-> Although the safe buffers are removed, the NMI and safe context
-> tracking is still in place. In these contexts, store the message
-> immediately but still use irq_work to defer the console printing.
+> To control this, let memory_hotplug have its own memory space, as suggested
+> by David, so we can add memory_hotplug.memmap_on_memory parameter.
 > 
-> Since printk recursion tracking is in place, safe context tracking
-> for most of printk is not needed. Remove it. Only safe context
-> tracking relating to the console lock is left in place. This is
-> because the console lock is needed for the actual printing.
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I have two more questions after actually checking the entire patch.
-See below.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1084,7 +1069,6 @@ void __init setup_log_buf(int early)
->  	struct printk_record r;
->  	size_t new_descs_size;
->  	size_t new_infos_size;
-> -	unsigned long flags;
->  	char *new_log_buf;
->  	unsigned int free;
->  	u64 seq;
-> @@ -1142,8 +1126,6 @@ void __init setup_log_buf(int early)
->  		 new_descs, ilog2(new_descs_count),
->  		 new_infos);
+I would just rephrased the help text to be less low level
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 16 ++++++++++++++++
+>  mm/Makefile                                     |  5 ++++-
+>  mm/memory_hotplug.c                             | 10 +++++++++-
+>  3 files changed, 29 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..d29b96e50c5c 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2794,6 +2794,22 @@
+>  			seconds.  Use this parameter to check at some
+>  			other rate.  0 disables periodic checking.
 >  
-> -	printk_safe_enter_irqsave(flags);
-> -
->  	log_buf_len = new_log_buf_len;
->  	log_buf = new_log_buf;
->  	new_log_buf_len = 0;
-> @@ -1159,8 +1141,6 @@ void __init setup_log_buf(int early)
->  	 */
->  	prb = &printk_rb_dynamic;
+> +	memory_hotplug.memmap_on_memory
+> +			[KNL,X86,ARM] Boolean flag to enable this feature.
+> +			Format: {on | off (default)}
+> +			When enabled, memory to build the pages tables for the
+> +			memmap array describing the hot-added range will be taken
+> +			from the range itself, so the memmap page tables will be
+> +			self-hosted.
+> +			Since only single memory device ranges are supported at
+> +			the moment, this option is disabled by default because
+> +			it might have an impact on workloads that needs large
+> +			contiguous memory chunks.
+> +			The state of the flag can be read in
+> +			/sys/module/memory_hotplug/parameters/memmap_on_memory.
+> +			Note that even when enabled, there are a few cases where
+> +			the feature is not effective.
+> +
+
+			When enabled, runtime hotplugged memory will
+			allocate its internal metadata (struct pages)
+			from the hotadded memory which will allow to
+			hotadd a lot of memory without requiring
+			additional memory to do so.
+			This feature is disabled by default because it
+			has some implication on large (e.g. GB)
+			allocations in some configurations (e.g. small
+			memory blocks).
+
+>  	memtest=	[KNL,X86,ARM,PPC] Enable memtest
+>  			Format: <integer>
+>  			default : 0 <disable>
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 72227b24a616..82ae9482f5e3 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -58,9 +58,13 @@ obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
+>  page-alloc-y := page_alloc.o
+>  page-alloc-$(CONFIG_SHUFFLE_PAGE_ALLOCATOR) += shuffle.o
 >  
-> -	printk_safe_exit_irqrestore(flags);
-
-This will allow to add new messages from the IRQ context when we
-are copying them to the new buffer. They might get lost in
-the small race window.
-
-Also the messages from NMI might get lost because they are not
-longer stored in the per-CPU buffer.
-
-A possible solution might be to do something like this:
-
-	prb_for_each_record(0, &printk_rb_static, seq, &r)
-		free -= add_to_rb(&printk_rb_dynamic, &r);
-
-	prb = &printk_rb_dynamic;
-
-	/*
-	 * Copy the remaining messages that might have appeared
-	 * from IRQ or NMI context after we ended copying and
-	 * before we switched the buffers. They must be finalized
-	 * because only one CPU is up at this stage.
-	 */
-	prb_for_each_record(seq, &printk_rb_static, seq, &r)
-		free -= add_to_rb(&printk_rb_dynamic, &r);
-
-
-> -
->  	if (seq != prb_next_seq(&printk_rb_static)) {
->  		pr_err("dropped %llu messages\n",
->  		       prb_next_seq(&printk_rb_static) - seq);
-> @@ -2666,7 +2631,6 @@ void console_unlock(void)
->  		size_t ext_len = 0;
->  		size_t len;
+> +# Give 'memory_hotplug' its own module-parameter namespace
+> +memory-hotplug-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
+> +
+>  obj-y += page-alloc.o
+>  obj-y += init-mm.o
+>  obj-y += memblock.o
+> +obj-y += $(memory-hotplug-y)
 >  
-> -		printk_safe_enter_irqsave(flags);
->  skip:
->  		if (!prb_read_valid(prb, console_seq, &r))
->  			break;
-> @@ -2711,6 +2675,8 @@ void console_unlock(void)
->  				printk_time);
->  		console_seq++;
+>  ifdef CONFIG_MMU
+>  	obj-$(CONFIG_ADVISE_SYSCALLS)	+= madvise.o
+> @@ -83,7 +87,6 @@ obj-$(CONFIG_SLUB) += slub.o
+>  obj-$(CONFIG_KASAN)	+= kasan/
+>  obj-$(CONFIG_KFENCE) += kfence/
+>  obj-$(CONFIG_FAILSLAB) += failslab.o
+> -obj-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
+>  obj-$(CONFIG_MEMTEST)		+= memtest.o
+>  obj-$(CONFIG_MIGRATION) += migrate.o
+>  obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 350cde69a97d..c525e5dab859 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -42,7 +42,15 @@
+>  #include "internal.h"
+>  #include "shuffle.h"
 >  
-> +		printk_safe_enter_irqsave(flags);
+> -static bool memmap_on_memory;
 
-What is the purpose of the printk_safe context here, please?
-
-I guess that you wanted to prevent calling console drivers
-recursively. But it is already serialized by console_lock().
-
-IMHO, the only risk is when manipulating console_sem->lock
-or console_owner_lock. But they are already guarded by
-printk_safe context, for example, in console_lock() or
-console_lock_spinning_enable().
-
-Do I miss something, please?
-
+The memmap_on_memory can be dropped from the 1st patch IIUC and only
+introduce it now.
 
 > +
->  		/*
->  		 * While actively printing out messages, if another printk()
->  		 * were to occur on another CPU, it may wait for this one to
-> @@ -2745,8 +2711,6 @@ void console_unlock(void)
->  	 * flush, no worries.
->  	 */
->  	retry = prb_read_valid(prb, console_seq, NULL);
-> -	printk_safe_exit_irqrestore(flags);
-> -
->  	if (retry && console_trylock())
->  		goto again;
->  }
+> +/*
+> + * memory_hotplug.memmap_on_memory parameter
+> + */
+> +static bool memmap_on_memory __ro_after_init;
+> +#ifdef CONFIG_MHP_MEMMAP_ON_MEMORY
+> +module_param(memmap_on_memory, bool, 0444);
+> +MODULE_PARM_DESC(memmap_on_memory, "Enable memmap on memory for memory hotplug");
+> +#endif
 
-Heh, all these patches feels like stripping printk of an armour. I hope
-that we trained it enough to be flexible and avoid any damage.
+I am not very much familiar with the machinery. Does this expose the
+state to the userspace?
 
-Best Regards,
-Petr
+-- 
+Michal Hocko
+SUSE Labs
