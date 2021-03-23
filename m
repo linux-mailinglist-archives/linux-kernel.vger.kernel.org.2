@@ -2,109 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40063346283
+	by mail.lfdr.de (Postfix) with ESMTP id B235B346284
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhCWPN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232730AbhCWPMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:12:53 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F10C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:12:52 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso19772594otq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SAZiBIhngviqShlUYcMIqLkoRDGcp5pdl7KlOZufEbs=;
-        b=ZbDu2rn8fNsxu8F9SovGehcfuhr82N1+Txnspq/N5gPtuNK3xwZC22HeaoZUyZzmPN
-         D+3lS3ri3Vi4fGQjAwiBzuG54soNmiWJFhyo0GgBVtuc+kkS063aqcJhos0bER1scwGu
-         Sgrf6InpqubuhnCLtEzkJrmtPfBSMYooY3TMeOnCRL2OC2Y9lUavvvAi45D1eHkm44/C
-         g/QRGtTHJO1WlNvPiGwzKoWjzfBs4tYNBddReyL9GUIsE/8UJicSS/mB8eSp5Idiy69O
-         3OLJCd1czzBB+DHsn7nKVedDc3qtrZ/PqGRB7jLY7BKVdH6Gcf3lWsJuc/tyKbeqerny
-         i6rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SAZiBIhngviqShlUYcMIqLkoRDGcp5pdl7KlOZufEbs=;
-        b=Y6HjKQvdE8U8N0ztbWyPeG+ZU8JK46SksuxSjcKAxBgQk39qYuo2S7bRzSzvGVsOaT
-         7GkD9xRSJ3zir0sRNzPZn6vs+6oIzIs8y3qi0kGa9wYJTTOCITErblyVnBGvj/MybL+X
-         cWXbn6xc88NFXZ3WJ26ajitZEw5JQXMUPBAiYEZ+RG6I41yjtcOEJEH7HroaPS7DtNBf
-         o0J2XYvlwFMtxwhYQPduw6cSqo9DW/2V3e0rbIZnQBYglRuBg7+bav6wYC7A5nmuGWWT
-         5B9MCNidh/aUgCZjRPctxHJ1MX5cYGwgUwpWL/7Y+lKtFdNvhbsYttpj59UdR8EDIOgx
-         jmfw==
-X-Gm-Message-State: AOAM532rz9LtoYBzOLclpaYRVwygDHLms8y5za/QD9CatAKGHYpSCwDb
-        RDqqOnZd3E5s1dZst7JtLp3Kkmir1nbPSF5XS6M=
-X-Google-Smtp-Source: ABdhPJzZAaNbYPvJqTOFk1n5Xa1ABvpgzcKFUXSzPKV/+WIOQNhS0MW3AGO2JaQaQ9xVy7k5/xNPps9LC+WDytVXetM=
-X-Received: by 2002:a9d:d89:: with SMTP id 9mr4838484ots.23.1616512372013;
- Tue, 23 Mar 2021 08:12:52 -0700 (PDT)
+        id S232734AbhCWPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:13:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232727AbhCWPMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 11:12:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4C0D619C1;
+        Tue, 23 Mar 2021 15:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616512372;
+        bh=MA5YBPu4rtGbm7rfCEilpagOMIGhJYvOgD2AucgSTSo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MCNlVU8Yu70hYWf7k0X11tlXsyrhmM/QJftKF8IrKxCWPO2DCbylZhY3uwVBLFnml
+         121MQ9zbkdXeXo4oiMVY+PDG5cmRjxZ/TVK3nz0+iUHm5pVcZ5knOKJv11jvusCYdi
+         2kNbJd2auV/YCtIK37nmXaZCHckoCFI0f7CKExpcodOm/MZ0QRuO0A0hRRqixlQLZM
+         rW68zoR44+iFK2EgAPUWOuVOQlAwkVWvebBa6G2feN0/3qLeu7ffkfeLshzKT3efEY
+         PMQY8IZH/zicmuvdNSI+DUypl1PCvGpgBYjaHF+MgiZNwPq/asi4xEXz9RHG2rerM0
+         cdPoQzn9JLwYw==
+Date:   Tue, 23 Mar 2021 10:12:50 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH RESEND] PCI: dwc: Fix MSI not work after resume
+Message-ID: <20210323151250.GA576016@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210323010955.132219-1-wanjiabing@vivo.com>
-In-Reply-To: <20210323010955.132219-1-wanjiabing@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 23 Mar 2021 11:12:41 -0400
-Message-ID: <CADnq5_MNBuBRGYc3r-PzLaiXO82eWwop+F+G+KDtixj-XiFuAA@mail.gmail.com>
-Subject: Re: [PATCH] gpu: drm: amd: Remove duplicate include of dce110_resource.h
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Sung Lee <sung.lee@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Tony Cheng <Tony.Cheng@amd.com>,
-        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
-        Isabel Zhang <isabel.zhang@amd.com>,
-        Aric Cyr <aric.cyr@amd.com>, Anthony Koo <Anthony.Koo@amd.com>,
-        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
-        Wyatt Wood <wyatt.wood@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kael_w@yeah.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323110115.3740f6b1@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same patch was already applied recently.  Thanks!
+[-cc Dilip (mail to him bounced)]
 
-Alex
+On Tue, Mar 23, 2021 at 11:01:15AM +0800, Jisheng Zhang wrote:
+> On Mon, 22 Mar 2021 20:24:41 -0500 Bjorn Helgaas wrote:
+> > 
+> > [+cc Kishon, Richard, Lucas, Dilip]
+> > 
+> > On Mon, Mar 01, 2021 at 11:10:31AM +0800, Jisheng Zhang wrote:
+> > > After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
+> > > MSI stops working after resume. Because dw_pcie_host_init() is only
+> > > called once during probe. To fix this issue, we move dw_pcie_msi_init()
+> > > to dw_pcie_setup_rc().  
+> > 
+> > This patch looks fine, but I don't think the commit log tells the
+> > whole story.
+> > 
+> > Prior to 59fbab1ae40e, it looks like the only dwc-based drivers with
+> > resume functions were dra7xx, imx6, intel-gw, and tegra [1].
+> > 
+> > Only tegra called dw_pcie_msi_init() in the resume path, and I do
+> > think 59fbab1ae40e broke MSI after resume because it removed the
+> > dw_pcie_msi_init() call from tegra_pcie_enable_msi_interrupts().
+> > 
+> > I'm not convinced this patch fixes it reliably, though.  The call
+> > chain looks like this:
+> > 
+> >   tegra_pcie_dw_resume_noirq
+> >     tegra_pcie_dw_start_link
+> >       if (dw_pcie_wait_for_link(pci))
+> >         dw_pcie_setup_rc
+> > 
+> > dw_pcie_wait_for_link() returns 0 if the link is up, so we only call
+> > dw_pcie_setup_rc() in the case where the link *didn't* come up.  If
+> > the link comes up nicely without retry, we won't call
+> > dw_pcie_setup_rc() and hence won't call dw_pcie_msi_init().
+> 
+> The v1 version patch was sent before commit 275e88b06a (PCI: tegra: Fix host
+> link initialization"). At that time, the resume path looks like this:
+> 
+> tegra_pcie_dw_resume_noirq
+>   tegra_pcie_dw_host_init
+>     tegra_pcie_prepare_host
+>       dw_pcie_setup_rc
+> 
+> so after patch, dw_pcie_msi_init() will be called. But now it seems that
+> the tegra version needs one more fix for the resume.
+> 
+> So could I sent a new patch to update the commit-msg a bit?
 
-On Mon, Mar 22, 2021 at 9:10 PM Wan Jiabing <wanjiabing@vivo.com> wrote:
->
-> dce110/dce110_resource.h has been included at line 58, so remove
-> the duplicate include at line 64.
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> index 4a3df13c9e49..c4fe21b3b23f 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> @@ -61,7 +61,6 @@
->  #include "dcn21/dcn21_dccg.h"
->  #include "dcn21_hubbub.h"
->  #include "dcn10/dcn10_resource.h"
-> -#include "dce110/dce110_resource.h"
->  #include "dce/dce_panel_cntl.h"
->
->  #include "dcn20/dcn20_dwb.h"
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+This patch only touches the dwc core, and the commit log says
+generically that it fixes MSI after resume, so one could assume that
+it applies to all dwc-based drivers.  But I don't think it's that
+simple, so I'd like to know *which* drivers are fixed and which
+commits are related.  I don't see how 59fbab1ae40e breaks anything
+except tegra.
+
+> > Since then, exynos added a resume function.  My guess is MSI never
+> > worked after resume for dra7xx, exynos, imx6, and intel-gw because
+> > they don't call dw_pcie_msi_init() in their resume functions.
+> > 
+> > This patch looks like it should fix MSI after resume for exynos, imx6,
+> > and intel-gw because they *do* call dw_pcie_setup_rc() from their
+> > resume functions [2], and after this patch, dw_pcie_msi_init() will be
+> > called from there.
+> > 
+> > I suspect MSI after resume still doesn't work on dra7xx.
+> 
+> I checked the dra7xx history, I'm afraid that the resume never works
+> from the beginning if the host lost power during suspend, I guess the
+> platform never power off the host but only the phy?
+
+Sounds like that would make sense.
+
+> > [1] git grep -A20 -e "static.*resume_noirq" 59fbab1ae40e^:drivers/pci/controller/dwc
+> > [2] git grep -A20 -e "static.*resume_noirq" drivers/pci/controller/dwc
+> > 
+> > > Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > > ---
+> > > Since v1:
+> > >  - collect Reviewed-by tag
+> > >
+> > >  drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > index 7e55b2b66182..e6c274f4485c 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > @@ -400,7 +400,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
+> > >       }
+> > >
+> > >       dw_pcie_setup_rc(pp);
+> > > -     dw_pcie_msi_init(pp);
+> > >
+> > >       if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
+> > >               ret = pci->ops->start_link(pci);
+> > > @@ -551,6 +550,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+> > >               }
+> > >       }
+> > >
+> > > +     dw_pcie_msi_init(pp);
+> > > +
+> > >       /* Setup RC BARs */
+> > >       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
+> > >       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
+> > > --
+> > > 2.30.1
+> > >  
+> 
