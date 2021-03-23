@@ -2,168 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA353468F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794FC3468FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbhCWT0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:26:23 -0400
-Received: from mail-eopbgr1320042.outbound.protection.outlook.com ([40.107.132.42]:20192
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233018AbhCWT0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:26:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c4gV9Pb1pJX8uHtliV4poFGqtkz62RcwJhU599e9k2mKuPtQGiD+Srj88i7H3P/UI/YUYToUPoZO3pkfQpr5gsPGli2RVZrIokARmYmI+InJhOIBV9cgQ70y07m5OuMtTrhxuL6jyFCZr/cxtucmgWtw44ynRX6rqBxULuIuNp6MuFYgYu4MDBf6X9MgSL+n+bWUiRdY+ccV9nrwThXy6dmajBOs6fdePdjz3/EtxhS7v8/oa3iXyOpROIODoEep3QT0dUeyiVV/frr02fSH9GQyWDBDgyQB0/ADYLMqmanjr3X/vVfQFGfWCbHK48zl6VYEN5N6I7EZUgBEM4O+0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iGvvmYF0XkcKzR32aEIbOdz2QTUOC8Vrpg6UvFAtYuw=;
- b=PoTn6nCjQM7gTB+Lj0SQYWXHLABNxNaIExFBprHyK0b1PCNnjGueYMI6vxVyC1rhz2CvEPRTkuWbjUneAaSmP8c27VJ6EM1Q00TwCBQcNkWVDd4znPSW86T3ZYs4XP9IhHazKirz0cyNrmf6GWp/KX/IeVFE90Bmg+jRRiNpS2oYRjy6vaRcqLfirff9p7rQKRs7scWtOF8IuEC7ttk+qj2RTI8iYnJxCoXfFpUxW6RoOdPNt+EQ3NOLXSHNSU2VUkGX12KQ/OYGlQTDvTCW7AG2/E4TrE4QMbf+HfJH3AL3hsi4NPoHeuSc9P2ue9pnoVMJdoCGVOc+oONp+S07Rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cortina-access.com; dmarc=pass action=none
- header.from=cortina-access.com; dkim=pass header.d=cortina-access.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=CortinaAccess.onmicrosoft.com; s=selector2-CortinaAccess-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iGvvmYF0XkcKzR32aEIbOdz2QTUOC8Vrpg6UvFAtYuw=;
- b=fhmmUxl7z12g3/CgA6tapsbMwylwrmd97AEs2WzUCBIlh4pU2DyDmtcdxTgLQIbsqJMsOK/CHb68GDPiobpBj0CF2WIXb9+j5EN5be8q/vWr2A2b6Kw9y1vybav7mHEk+Uou35pITk9PNDPDqfgfzQVV4mLIGMHLonU99MtcgpI=
-Received: from PS2PR01MB2504.apcprd01.prod.exchangelabs.com
- (2603:1096:300:3e::11) by PSAPR01MB4007.apcprd01.prod.exchangelabs.com
- (2603:1096:301:21::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
- 2021 19:25:58 +0000
-Received: from PS2PR01MB2504.apcprd01.prod.exchangelabs.com
- ([fe80::7937:3bdb:b574:e31e]) by PS2PR01MB2504.apcprd01.prod.exchangelabs.com
- ([fe80::7937:3bdb:b574:e31e%6]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
- 19:25:58 +0000
-From:   Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        Jason Li <jason.li@cortina-access.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH 1/3] tty: serial: Add UART driver for Cortina-Access
- platform
-Thread-Topic: [PATCH 1/3] tty: serial: Add UART driver for Cortina-Access
- platform
-Thread-Index: AQHXH8ZG8JGd0lZ2t0+mKnLpM4QhKKqR9SaA
-Date:   Tue, 23 Mar 2021 19:25:58 +0000
-Message-ID: <E0630C1D-AC64-4DB5-9467-EA2F4590EB26@cortina-access.com>
-References: <1613702532-5096-1-git-send-email-alex.nemirovsky@cortina-access.com>
- <YFmzuEfpN7zzKel3@kroah.com>
-In-Reply-To: <YFmzuEfpN7zzKel3@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=cortina-access.com;
-x-originating-ip: [70.58.207.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 79ad1983-4964-4a14-bea3-08d8ee317cc8
-x-ms-traffictypediagnostic: PSAPR01MB4007:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PSAPR01MB4007ABAB84445D80AA0E0BA2CB649@PSAPR01MB4007.apcprd01.prod.exchangelabs.com>
-x-ld-processed: 0694623c-6669-497c-89c3-3a32a9934313,ExtAddr
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iLYXwdzlNTgh2imKUnYbVyi5Eqp2NMtikLq1FT5zGbMOB98ywTWEMr0v7N5upC5hOjZ97JjLJ2tdz0n26Wy0YXy36O+Etiec0HvmAG3YZs1VPrkNfPq25o1a5gdeE39aP100kFW68K0ws57MWmQnPdEER0bIZpFbKbtNyywifVdqEJ3wTZ/zudaV00ySJBLerurxovPDHVGwoBGX3mVUnP/XC0ZlvzhIU3OVXG7opTjtYdkh2cH2Lf/z0GC9VR+OctuopK7IB1zOn4bLdvXu5E5N8gL6tOZp9Akcsu2zMGwSUvUA4yPh01iuGIGD8G/iRdPGdrO1ywXTYTzd7/acYbkxcz3aFF3l3YvflmG3xKOCNMfpk8mYr3JsBhjlKB0bKw7Z8WS+vRZEFsPepwquLGFRR8RgqijYpAxK5XF+gy3O+FXv3w4swuEU3ZrBSQCEihTXr47Dtnu01c+re8V6gcDSUWCNsisZcsphkhv0vv5N6lBbPBCxDLGkMDobaNU1uT9Dsx7h2xzLXsx6XEwG1OEAj6HzMIXTTm4zSSUoY1kb8E/x5oGnwE/9RALxNuDIps7clOlC62DM2quSMKHKtIt5xhPvrtY8gTb1tc5YIqKKaPpvY6gnlYTGZhcs0bI7+FKDUGAdr8xIGaL+tkqo6Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2PR01MB2504.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39840400004)(376002)(366004)(396003)(2906002)(6486002)(53546011)(83380400001)(86362001)(6512007)(36756003)(6506007)(64756008)(66446008)(66556008)(76116006)(91956017)(66476007)(66946007)(8676002)(186003)(316002)(71200400001)(26005)(478600001)(54906003)(4326008)(8936002)(38100700001)(33656002)(2616005)(5660300002)(6916009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?kRLx0hyZl/p8xM+3BaMR9kKvsoLIAKZL9TCQ1ipOz2GeTolYtH8HTfapbP0j?=
- =?us-ascii?Q?nnw35+kDhevaRXNCo8cWH3RGIDtA5Pc+YohaAvdNjLsB3i0MNbD9jKmDRsHC?=
- =?us-ascii?Q?aFphJwoiL92LL90TBfDp2UfD5fLIizkDTGnB/PFRzj5MhjJUMsmtJ1q67RAa?=
- =?us-ascii?Q?b24uAkIkeBbhxHvWQTQuoUlbONHcZ4/VQIq6CwLpxrps39LEw7jh8E4E7iZC?=
- =?us-ascii?Q?VSeRudOQjm4x+m2UZ9hsFLrYvHQpahx22zDXpCT3UnJTdwbMMslEAIv8bb7f?=
- =?us-ascii?Q?9ONHRxEL2fAEZBZuo6Eqo5EZB27BPj09lpkJIKwStUPutkTGUpEryL2Cdoeo?=
- =?us-ascii?Q?crUb/leLkSlVvMkQORJmWookxADl4Cs1txqC4pxWZpdWmTb+WF/inufuurnH?=
- =?us-ascii?Q?Y7eXi1ud8nZS/SuKoUFSASYl0WN/RUHsr3MGd1XXNSYCJaElf4CALdqGI35V?=
- =?us-ascii?Q?m74X90dv9xWRz3yVltRZ/osC3SWIWgRvFdaIxOXJaiAYeBiYHHYw2lTXn/Ce?=
- =?us-ascii?Q?X5HxW3rVunt8Hh7WrssJfMj+Zu5F5gbTknv8vrK9wf29+CiXOih4XBTXykDP?=
- =?us-ascii?Q?cm1b1+eEUgXUMWIYrWeaOw46Y5WCH4V6BideNDlfUPmJvT/u5zXCDMv36N/V?=
- =?us-ascii?Q?/NA9NN/vj/xix+rrZ3VJ23pOkonURGhAlx2EqB92mBs7YlHxVcM7eed0+nhs?=
- =?us-ascii?Q?XGcwPuB0sHm37Stl/vahpELDtSDhLm4pEXZr031vLsIE/KirtbQcHKQm9DeM?=
- =?us-ascii?Q?bkvqp3XqcQ6qN3baJX7u2ZDHzYWBohbHadSHEKoNtRAGl0ugRv25TLx/fR9p?=
- =?us-ascii?Q?epYxpMOVzx9K5gbM5uo0FOfo99nvIpYJmxBhZ6At/tF1vY2JjxKwmuMl9shB?=
- =?us-ascii?Q?rRd97b3f/lqvtE4SMjdwcWiPaZFoB87kGaBoPYSd3b04FJkEVa2L+kUc2IMg?=
- =?us-ascii?Q?tgkUbNaXAhWNxH0Ckq2qH2+UsXNqQo3WhWvYHRlBn0aJyUFMzSA4t4a8g9lS?=
- =?us-ascii?Q?BVyXhMr8Sjf0DL+kKQ580/Mn0HCr9/o78srvgFjRfbYZJvojtksjNSTJYk7w?=
- =?us-ascii?Q?q1tfsUroFN1JxtIuz2mN2d7Niv4wfEH81baPU5KdaofUM43CP/zNCEGk+53c?=
- =?us-ascii?Q?+8wWR+nvnKKSoY/aIvVYWg7E3R7yG+BV6Nq8B3UnCe9EQmVY9M32TFFvwxvB?=
- =?us-ascii?Q?3FStv7HjGGrEppOEQ3VY/SpdCKuOMYT44V+NbqAzsOMmKWB+ANyeFCuUHoe6?=
- =?us-ascii?Q?UsERG12cksofwgUcU630I5Us9MEWjj1kvBeWJqQ+hwwh+dEGiOzW9lEkU2EC?=
- =?us-ascii?Q?vpW211eXvm+FQYBsE8bUqiVE?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8FE99533F4580D4E97D727BEF26C709E@apcprd01.prod.exchangelabs.com>
-Content-Transfer-Encoding: quoted-printable
+        id S232929AbhCWT1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:27:22 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:64596 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233231AbhCWT04 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:26:56 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id f9bb4481e60bb70f; Tue, 23 Mar 2021 20:26:54 +0100
+Received: from kreacher.localnet (89-64-82-61.dynamic.chello.pl [89.64.82.61])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id C569B668FEF;
+        Tue, 23 Mar 2021 20:26:52 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        x86 Maintainers <x86@kernel.org>
+Subject: [PATCH] ACPI: tables: x86: Reserve memory occupied by ACPI tables
+Date:   Tue, 23 Mar 2021 20:26:52 +0100
+Message-ID: <4650320.31r3eYUQgx@kreacher>
+In-Reply-To: <YFWxbzN92XcXNl95@linux.ibm.com>
+References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com> <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com> <3236337.DtqTXxM43S@kreacher> <YFMAdIVn2hpTHfBq@linux.ibm.com> <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com> <CAJZ5v0iump7nVKfyu7S23-n=gQFx5d2MKejrnT6yFak7L9V11g@mail.gmail.com> <YFWxbzN92XcXNl95@linux.ibm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: CORTINA-ACCESS.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PS2PR01MB2504.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79ad1983-4964-4a14-bea3-08d8ee317cc8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 19:25:58.5153
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0694623c-6669-497c-89c3-3a32a9934313
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BFG9RHbvPEKaRIJN2FVsGF0lSlD4wygx9b0c2auXrTF7VcUCaRChtuE3TFE2USJXH4UDw0TI1jroZ1VJUshNu34Rf0Gw2lOhoxxbbgIAG9ygvGks3EhC54o20vMXOR2S
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR01MB4007
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.82.61
+X-CLIENT-HOSTNAME: 89-64-82-61.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudegiedguddvhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepteeggfelteegudehueegieekveduleeuledvueefjeefffegfeejudfgteefhefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeelrdeigedrkedvrdeiudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddriedupdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhpphhtsehlihhnuhigrdhisghmrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehrjhifsehrjhifhihsohgtkhhirdhnvghtpdhrtghpthhtohepvghrihhkrdhkrghnvggurgesihhnthgvlhdr
+ tghomhdprhgtphhtthhopegurghvihgusehrvgguhhgrthdrtghomhdprhgtphhtthhopehgvghorhhgvgdrkhgvnhhnvgguhiesohhrrggtlhgvrdgtohhmpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlrdhjrdifhihsohgtkhhisehinhhtvghlrdgtohhmpdhrtghpthhtoheplhgvnhgssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkohhnrhgrugdrfihilhhksehorhgrtghlvgdrtghomhdprhgtphhtthhopegurghnrdgtrghrphgvnhhtvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhopeguhhgrvhgrlhdrghhirghnihesohhrrggtlhgvrdgtohhmpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehvsggrsghkrgesshhushgvrdgtiidprhgtphhtthhopehoshgrlhhvrgguohhrsehsuhhsvgdruggvpdhrtghpthhtoheprhhitghhrghrugdrfigvihihrghngheslhhinhhugidrrghlihgsrggsrgdrtghomhdprhgtphhtthhopehprghnkhgrjhdrghhuphhtrgdrlhhinhhugiesghhmrghilhdrtghomhdprhgtphhtthhopehmhhhotghkohesshhushgvrdgtohhmpdhrtghpthhtohepgiekieeskhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=21 Fuz1=21 Fuz2=21
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> On Mar 23, 2021, at 2:24 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.o=
-rg> wrote:
->=20
-> On Thu, Feb 18, 2021 at 06:42:09PM -0800, Alex Nemirovsky wrote:
->> +static struct cortina_uart_port *cortina_uart_ports;
->=20
-> Why is this not a per-device pointer?
->=20
->> +static void __exit cortina_uart_exit(void)
->> +{
->> +	platform_driver_unregister(&serial_cortina_driver);
->> +	uart_unregister_driver(&cortina_uart_driver);
->> +	kfree(cortina_uart_ports);
->=20
-> Should not need to free this here, it should be tied to the device, not
-> the driver.
+The following problem has been reported by George Kennedy:
 
-Would it be possible to provide a reference to an example=20
-of a good way to do it.
->=20
->=20
->> +}
->> +
->> +module_init(cortina_uart_init);
->> +module_exit(cortina_uart_exit);
->> +
->> +MODULE_AUTHOR("Cortina-Access Inc.");
->> +MODULE_DESCRIPTION(" Cortina-Access UART driver");
->> +MODULE_LICENSE("GPL");
->> diff --git a/include/uapi/linux/serial_core.h b/include/uapi/linux/seria=
-l_core.h
->> index 62c2204..1931892 100644
->> --- a/include/uapi/linux/serial_core.h
->> +++ b/include/uapi/linux/serial_core.h
->> @@ -277,4 +277,7 @@
->> /* Freescale LINFlexD UART */
->> #define PORT_LINFLEXUART	122
->>=20
->> +/* Cortina-Access UART */
->> +#define PORT_CORTINA_ACCESS	123
->=20
-> Also, no need for this, right?  I would prefer to not add new ids if at
-> all possible.
+ Since commit 7fef431be9c9 ("mm/page_alloc: place pages to tail
+ in __free_pages_core()") the following use after free occurs
+ intermittently when ACPI tables are accessed.
 
-Could you explain why these are no longer required and what has=20
-been done in the tty design to make this obsolete?
->=20
-> thanks,
->=20
-> greg k-h
+ BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
+ Read of size 4 at addr ffff8880be453004 by task swapper/0/1
+ CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-7a7fd0d #1
+ Call Trace:
+  dump_stack+0xf6/0x158
+  print_address_description.constprop.9+0x41/0x60
+  kasan_report.cold.14+0x7b/0xd4
+  __asan_report_load_n_noabort+0xf/0x20
+  ibft_init+0x134/0xc49
+  do_one_initcall+0xc4/0x3e0
+  kernel_init_freeable+0x5af/0x66b
+  kernel_init+0x16/0x1d0
+  ret_from_fork+0x22/0x30
+
+ ACPI tables mapped via kmap() do not have their mapped pages
+ reserved and the pages can be "stolen" by the buddy allocator.
+
+Apparently, on the affected system, the ACPI table in question is
+not located in "reserved" memory, like ACPI NVS or ACPI Data, that
+will not be used by the buddy allocator, so the memory occupied by
+that table has to be explicitly reserved to prevent the buddy
+allocator from using it.
+
+In order to address this problem, rearrange the initialization of the
+ACPI tables on x86 to locate the initial tables earlier and reserve
+the memory occupied by them.
+
+The other architectures using ACPI should not be affected by this
+change.
+
+Link: https://lore.kernel.org/linux-acpi/1614802160-29362-1-git-send-email-george.kennedy@oracle.com/
+Reported-by: George Kennedy <george.kennedy@oracle.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ arch/x86/kernel/acpi/boot.c |   25 ++++++++++++-------------
+ arch/x86/kernel/setup.c     |    8 +++-----
+ drivers/acpi/tables.c       |   42 +++++++++++++++++++++++++++++++++++++++---
+ include/linux/acpi.h        |    9 ++++++++-
+ 4 files changed, 62 insertions(+), 22 deletions(-)
+
+Index: linux-pm/arch/x86/kernel/acpi/boot.c
+===================================================================
+--- linux-pm.orig/arch/x86/kernel/acpi/boot.c
++++ linux-pm/arch/x86/kernel/acpi/boot.c
+@@ -1554,10 +1554,18 @@ void __init acpi_boot_table_init(void)
+ 	/*
+ 	 * Initialize the ACPI boot-time table parser.
+ 	 */
+-	if (acpi_table_init()) {
++	if (acpi_locate_initial_tables())
+ 		disable_acpi();
+-		return;
+-	}
++	else
++		acpi_reserve_initial_tables();
++}
++
++int __init early_acpi_boot_init(void)
++{
++	if (acpi_disabled)
++		return 1;
++
++	acpi_table_init_complete();
+ 
+ 	acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
+ 
+@@ -1570,18 +1578,9 @@ void __init acpi_boot_table_init(void)
+ 		} else {
+ 			printk(KERN_WARNING PREFIX "Disabling ACPI support\n");
+ 			disable_acpi();
+-			return;
++			return 1;
+ 		}
+ 	}
+-}
+-
+-int __init early_acpi_boot_init(void)
+-{
+-	/*
+-	 * If acpi_disabled, bail out
+-	 */
+-	if (acpi_disabled)
+-		return 1;
+ 
+ 	/*
+ 	 * Process the Multiple APIC Description Table (MADT), if present
+Index: linux-pm/arch/x86/kernel/setup.c
+===================================================================
+--- linux-pm.orig/arch/x86/kernel/setup.c
++++ linux-pm/arch/x86/kernel/setup.c
+@@ -1045,6 +1045,9 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	cleanup_highmap();
+ 
++	/* Look for ACPI tables and reserve memory occupied by them. */
++	acpi_boot_table_init();
++
+ 	memblock_set_current_limit(ISA_END_ADDRESS);
+ 	e820__memblock_setup();
+ 
+@@ -1136,11 +1139,6 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	early_platform_quirks();
+ 
+-	/*
+-	 * Parse the ACPI tables for possible boot-time SMP configuration.
+-	 */
+-	acpi_boot_table_init();
+-
+ 	early_acpi_boot_init();
+ 
+ 	initmem_init();
+Index: linux-pm/include/linux/acpi.h
+===================================================================
+--- linux-pm.orig/include/linux/acpi.h
++++ linux-pm/include/linux/acpi.h
+@@ -222,10 +222,14 @@ void __iomem *__acpi_map_table(unsigned
+ void __acpi_unmap_table(void __iomem *map, unsigned long size);
+ int early_acpi_boot_init(void);
+ int acpi_boot_init (void);
++void acpi_boot_table_prepare (void);
+ void acpi_boot_table_init (void);
+ int acpi_mps_check (void);
+ int acpi_numa_init (void);
+ 
++int acpi_locate_initial_tables (void);
++void acpi_reserve_initial_tables (void);
++void acpi_table_init_complete (void);
+ int acpi_table_init (void);
+ int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
+ int __init acpi_table_parse_entries(char *id, unsigned long table_size,
+@@ -814,9 +818,12 @@ static inline int acpi_boot_init(void)
+ 	return 0;
+ }
+ 
++static inline void acpi_boot_table_prepare(void)
++{
++}
++
+ static inline void acpi_boot_table_init(void)
+ {
+-	return;
+ }
+ 
+ static inline int acpi_mps_check(void)
+Index: linux-pm/drivers/acpi/tables.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/tables.c
++++ linux-pm/drivers/acpi/tables.c
+@@ -780,7 +780,7 @@ acpi_status acpi_os_table_override(struc
+ }
+ 
+ /*
+- * acpi_table_init()
++ * acpi_locate_initial_tables()
+  *
+  * find RSDP, find and checksum SDT/XSDT.
+  * checksum all tables, print SDT/XSDT
+@@ -788,7 +788,7 @@ acpi_status acpi_os_table_override(struc
+  * result: sdt_entry[] is initialized
+  */
+ 
+-int __init acpi_table_init(void)
++int __init acpi_locate_initial_tables(void)
+ {
+ 	acpi_status status;
+ 
+@@ -803,9 +803,45 @@ int __init acpi_table_init(void)
+ 	status = acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
+ 	if (ACPI_FAILURE(status))
+ 		return -EINVAL;
+-	acpi_table_initrd_scan();
+ 
++	return 0;
++}
++
++void __init acpi_reserve_initial_tables(void)
++{
++	int i;
++
++	for (i = 0; i < ACPI_MAX_TABLES; i++) {
++		struct acpi_table_desc *table_desc = &initial_tables[i];
++		u64 start = table_desc->address;
++		u64 size = table_desc->length;
++
++		if (!start || !size)
++			break;
++
++		pr_info("Reserving %4s table memory at [mem 0x%llx-0x%llx]\n",
++			table_desc->signature.ascii, start, start + size - 1);
++
++		memblock_reserve(start, size);
++	}
++}
++
++void __init acpi_table_init_complete(void)
++{
++	acpi_table_initrd_scan();
+ 	check_multiple_madt();
++}
++
++int __init acpi_table_init(void)
++{
++	int ret;
++
++	ret = acpi_locate_initial_tables();
++	if (ret)
++		return ret;
++
++	acpi_table_init_complete();
++
+ 	return 0;
+ }
+ 
+
+
 
