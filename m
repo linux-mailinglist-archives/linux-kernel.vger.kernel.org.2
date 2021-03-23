@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8C3346453
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E2F34645C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhCWQDq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Mar 2021 12:03:46 -0400
-Received: from aposti.net ([89.234.176.197]:41698 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232492AbhCWQDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:03:15 -0400
-Date:   Tue, 23 Mar 2021 16:03:00 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 0/4] Fixes to bridge/panel and ingenic-drm
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Message-Id: <09JFQQ.5A8HP2TTVT5Z1@crapouillou.net>
-In-Reply-To: <DUC1PQ.KO33KJE3BP5L@crapouillou.net>
-References: <20210124085552.29146-1-paul@crapouillou.net>
-        <DUC1PQ.KO33KJE3BP5L@crapouillou.net>
+        id S232917AbhCWQFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:05:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46093 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232848AbhCWQFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:05:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616515499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7G9TRyqCPEjqwjL/9hHbjywdhJ+Pi9pcaNINuGxnQ94=;
+        b=W1Cq6APW6jm45OnPLIBR7YgUfw0jLZKbSe05PYzVhg5LtC/YU6Tzl1FKe9iJOUrmd6aa2c
+        nC6RK/p6F8fCExJdkeWgTGVvO4kYb/cYx23keMU/rR3qiOYPYXd48khGyZn5xn2PTkOGKI
+        xHD1zxSo3VX2kXweyK2yNehdc96I2io=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-sR3hhaPOP3us2CkMFO8jpQ-1; Tue, 23 Mar 2021 12:04:56 -0400
+X-MC-Unique: sR3hhaPOP3us2CkMFO8jpQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7FC01B18BC2;
+        Tue, 23 Mar 2021 16:04:54 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 616B660877;
+        Tue, 23 Mar 2021 16:04:51 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 17:04:47 +0100
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
+Message-ID: <20210323170447.78d65d05@carbon>
+In-Reply-To: <YFoNoohTULmcpeCr@enceladus>
+References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
+        <20210323154112.131110-1-alobakin@pm.me>
+        <YFoNoohTULmcpeCr@enceladus>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 23 Mar 2021 17:47:46 +0200
+Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
 
-
-Le mer. 24 févr. 2021 à 13:44, Paul Cercueil <paul@crapouillou.net> a 
-écrit :
-> Hi,
+> On Tue, Mar 23, 2021 at 03:41:23PM +0000, Alexander Lobakin wrote:
+> > From: Matteo Croce <mcroce@linux.microsoft.com>
+> > Date: Mon, 22 Mar 2021 18:02:55 +0100
+> >   
+> > > From: Matteo Croce <mcroce@microsoft.com>
+> > >
+> > > This series enables recycling of the buffers allocated with the page_pool API.
+> > > The first two patches are just prerequisite to save space in a struct and
+> > > avoid recycling pages allocated with other API.
+> > > Patch 2 was based on a previous idea from Jonathan Lemon.
+> > >
+> > > The third one is the real recycling, 4 fixes the compilation of __skb_frag_unref
+> > > users, and 5,6 enable the recycling on two drivers.
+> > >
+> > > In the last two patches I reported the improvement I have with the series.
+> > >
+> > > The recycling as is can't be used with drivers like mlx5 which do page split,
+> > > but this is documented in a comment.
+> > > In the future, a refcount can be used so to support mlx5 with no changes.
+> > >
+> > > Ilias Apalodimas (2):
+> > >   page_pool: DMA handling and allow to recycles frames via SKB
+> > >   net: change users of __skb_frag_unref() and add an extra argument
+> > >
+> > > Jesper Dangaard Brouer (1):
+> > >   xdp: reduce size of struct xdp_mem_info
+> > >
+> > > Matteo Croce (3):
+> > >   mm: add a signature in struct page
+> > >   mvpp2: recycle buffers
+> > >   mvneta: recycle buffers
+> > >
+> > >  .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
+> > >  drivers/net/ethernet/marvell/mvneta.c         |  4 +-
+> > >  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
+> > >  drivers/net/ethernet/marvell/sky2.c           |  2 +-
+> > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+> > >  include/linux/mm_types.h                      |  1 +
+> > >  include/linux/skbuff.h                        | 33 +++++++++++--
+> > >  include/net/page_pool.h                       | 15 ++++++
+> > >  include/net/xdp.h                             |  5 +-
+> > >  net/core/page_pool.c                          | 47 +++++++++++++++++++
+> > >  net/core/skbuff.c                             | 20 +++++++-
+> > >  net/core/xdp.c                                | 14 ++++--
+> > >  net/tls/tls_device.c                          |  2 +-
+> > >  13 files changed, 138 insertions(+), 26 deletions(-)  
+> > 
+> > Just for the reference, I've performed some tests on 1G SoC NIC with
+> > this patchset on, here's direct link: [0]
+> >   
 > 
-> Some feedback for patches 1-3? Laurent?
+> Thanks for the testing!
+> Any chance you can get a perf measurement on this?
 
-1-month anniversary ping :)
+I guess you mean perf-report (--stdio) output, right?
 
-Cheers,
--Paul
+> Is DMA syncing taking a substantial amount of your cpu usage?
 
-> Cheers,
-> -Paul
-> 
-> 
-> Le dim. 24 janv. 2021 à 8:55, Paul Cercueil <paul@crapouillou.net> a 
-> écrit :
->> Hi,
->> 
->> Here are three independent fixes. The first one addresses a
->> use-after-free in bridge/panel.c; the second one addresses a
->> use-after-free in the ingenic-drm driver; finally, the third one 
->> makes
->> the ingenic-drm driver work again on older Ingenic SoCs.
->> 
->> Changes from v2:
->> - patch [1/4] added a FIXME.
->> - patch [2/4] is new. It introduces a 
->> drmm_plain_simple_encoder_alloc()
->>   macro that will be used in patch [3/4].
->> - patch [3/4] uses the macro introduced in patch [2/4].
->> - patch [4/4] is unmodified.
->> 
->> Note to linux-stable guys: patch [v2 2/3] will only apply on the 
->> current
->> drm-misc-next branch, to fix it for v5.11 and older kernels, use the 
->> V1
->> of that patch.
->> 
->> Cheers,
->> -Paul
->> 
->> Paul Cercueil (4):
->>   drm: bridge/panel: Cleanup connector on bridge detach
->>   drm/simple_kms_helper: Add macro drmm_plain_simple_encoder_alloc()
->>   drm/ingenic: Register devm action to cleanup encoders
->>   drm/ingenic: Fix non-OSD mode
->> 
->>  drivers/gpu/drm/bridge/panel.c            | 12 +++++++++++
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 26 
->> +++++++++++------------
->>  include/drm/drm_simple_kms_helper.h       | 17 +++++++++++++++
->>  3 files changed, 42 insertions(+), 13 deletions(-)
->> 
->> --
->> 2.29.2
->> 
-> 
+(+1 this is an important question)
+ 
+> > 
+> > [0] https://lore.kernel.org/netdev/20210323153550.130385-1-alobakin@pm.me
+> > 
 
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
