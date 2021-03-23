@@ -2,266 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B4B346A9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A285C346AAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhCWVAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:00:44 -0400
-Received: from raptor.unsafe.ru ([5.9.43.93]:50206 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233476AbhCWVAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:00:14 -0400
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 6E71240C97;
-        Tue, 23 Mar 2021 21:00:12 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH v9 8/8] kselftests: Add test to check for rlimit changes in different user namespaces
-Date:   Tue, 23 Mar 2021 21:59:17 +0100
-Message-Id: <f0228881258588c943856d26d3eeb9381a747f5c.1616533074.git.gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.29.3
-In-Reply-To: <cover.1616533074.git.gladkov.alexey@gmail.com>
-References: <cover.1616533074.git.gladkov.alexey@gmail.com>
+        id S233554AbhCWVCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233434AbhCWVBa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:01:30 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6994EC061574;
+        Tue, 23 Mar 2021 14:01:29 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso106220wmi.0;
+        Tue, 23 Mar 2021 14:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dl26BKNx8DNxpiYwsjFKzS/TV8T1jYq2tKrn4c6d7Vc=;
+        b=vHc0a+1N0Wb045wyuX2p9V5HaKFx7awbvWb6be/RKSpvJWUvNcab+dTN/cx4ZB6K5I
+         TVwKzHHDk1CT5EV2R+F+Kr7e/WY57f6emxb5R1ZTsmA/nfxMSxWP8+kZOjBYPjPpLJos
+         QYmgYQKvD8p20uWodiIGbnNRxrE7C2bsVDAVtUbJt6GrPfRbZlNOVOdZgHVb6gEPwYn5
+         B/miDENkPhedGpOJ2T7xn2iEviejrvISqsgbFmrQPNiUTNyRD2Nizj+yPUsZ+xlJKJst
+         XCMgQCBBYNRIK4gfkP5Csp0cqlZot7DtS5DsDP2lgnDQjXomBowJMGLcfDt/LNH9+VWB
+         k/ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dl26BKNx8DNxpiYwsjFKzS/TV8T1jYq2tKrn4c6d7Vc=;
+        b=haYBdCfVDK4nylvzd39iOFh3t4F2hioApBI2iAxqG5/UESlOfTliqHyr/h7qgYbGs0
+         oW+fpUAPcL9rTlSmQJ4hQJpxdPEuh9QrEjgax+fa7KLtQsfb552wnb/RS4OJ/O5SuRIG
+         eBzxtoyz5y6i/ntLRpoJYm/ccz0Y6FbFl6ksSp+vxW6YmjCjvs5JbOUMYAKLZ7/lRD/U
+         tCEJydtU7B1UwyMutO+yFgBjfWut9gZyqwddn+uHDta1bTEQdXTxDec1J19XFaHajlf9
+         +lpe1c1EZCWVuCAXtRva94sqqGDOPOVj+xlha6MtlqEmLi87l5o9A6gv9vxzRwc/7eJ5
+         994g==
+X-Gm-Message-State: AOAM53343u0WNz9bnH9uJOBej3ZTu1L+q8weFxKIQvP35CCI1Ixe9Xph
+        Cg369Wz3+oth+JxDrLDxqF0=
+X-Google-Smtp-Source: ABdhPJwMjaAPC9k+4+ITAn2yGmPbQI7Dx448+GLZE0st2l4iOesfyxceh+Mg4muGv4viQH1qoh5FOA==
+X-Received: by 2002:a7b:cc84:: with SMTP id p4mr5069251wma.10.1616533288113;
+        Tue, 23 Mar 2021 14:01:28 -0700 (PDT)
+Received: from luca020400-laptop-arch.lan ([2001:b07:5d33:19f:ea1f:2342:ea78:219a])
+        by smtp.googlemail.com with ESMTPSA id p18sm176637wro.18.2021.03.23.14.01.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 14:01:27 -0700 (PDT)
+From:   Luca Stefani <luca.stefani.ge1@gmail.com>
+Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] platform/x86: asus-wmi: Add param to turn fn-lock mode on by default
+Date:   Tue, 23 Mar 2021 22:01:26 +0100
+Message-Id: <20210323210126.145286-1-luca.stefani.ge1@gmail.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
+References: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.4 (raptor.unsafe.ru [5.9.43.93]); Tue, 23 Mar 2021 21:00:12 +0000 (UTC)
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The testcase runs few instances of the program with RLIMIT_NPROC=1 from
-user uid=60000, in different user namespaces.
+* On recent ZenBooks the fn-lock is disabled
+  by default on boot while running Windows.
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+* Add a module param ( fnlock_default ) that allows
+  changing the default at probe time
+
+Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
 ---
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/rlimits/.gitignore    |   2 +
- tools/testing/selftests/rlimits/Makefile      |   6 +
- tools/testing/selftests/rlimits/config        |   1 +
- .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
- 5 files changed, 171 insertions(+)
- create mode 100644 tools/testing/selftests/rlimits/.gitignore
- create mode 100644 tools/testing/selftests/rlimits/Makefile
- create mode 100644 tools/testing/selftests/rlimits/config
- create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+ drivers/platform/x86/asus-wmi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 6c575cf34a71..a4ea1481bd9a 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -48,6 +48,7 @@ TARGETS += proc
- TARGETS += pstore
- TARGETS += ptrace
- TARGETS += openat2
-+TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
- TARGETS += seccomp
-diff --git a/tools/testing/selftests/rlimits/.gitignore b/tools/testing/selftests/rlimits/.gitignore
-new file mode 100644
-index 000000000000..091021f255b3
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+rlimits-per-userns
-diff --git a/tools/testing/selftests/rlimits/Makefile b/tools/testing/selftests/rlimits/Makefile
-new file mode 100644
-index 000000000000..03aadb406212
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 9ca15f724343..ebaeb7bb80f5 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -47,6 +47,9 @@ MODULE_AUTHOR("Corentin Chary <corentin.chary@gmail.com>, "
+ MODULE_DESCRIPTION("Asus Generic WMI Driver");
+ MODULE_LICENSE("GPL");
+ 
++static bool fnlock_default = true;
++module_param(fnlock_default, bool, 0444);
 +
-+CFLAGS += -Wall -O2 -g
-+TEST_GEN_PROGS := rlimits-per-userns
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/rlimits/config b/tools/testing/selftests/rlimits/config
-new file mode 100644
-index 000000000000..416bd53ce982
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/config
-@@ -0,0 +1 @@
-+CONFIG_USER_NS=y
-diff --git a/tools/testing/selftests/rlimits/rlimits-per-userns.c b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-new file mode 100644
-index 000000000000..26dc949e93ea
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Author: Alexey Gladkov <gladkov.alexey@gmail.com>
-+ */
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <sys/prctl.h>
-+#include <sys/stat.h>
-+
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <limits.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <err.h>
-+
-+#define NR_CHILDS 2
-+
-+static char *service_prog;
-+static uid_t user   = 60000;
-+static uid_t group  = 60000;
-+
-+static void setrlimit_nproc(rlim_t n)
-+{
-+	pid_t pid = getpid();
-+	struct rlimit limit = {
-+		.rlim_cur = n,
-+		.rlim_max = n
-+	};
-+
-+	warnx("(pid=%d): Setting RLIMIT_NPROC=%ld", pid, n);
-+
-+	if (setrlimit(RLIMIT_NPROC, &limit) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setrlimit(RLIMIT_NPROC)", pid);
-+}
-+
-+static pid_t fork_child(void)
-+{
-+	pid_t pid = fork();
-+
-+	if (pid < 0)
-+		err(EXIT_FAILURE, "fork");
-+
-+	if (pid > 0)
-+		return pid;
-+
-+	pid = getpid();
-+
-+	warnx("(pid=%d): New process starting ...", pid);
-+
-+	if (prctl(PR_SET_PDEATHSIG, SIGKILL) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): prctl(PR_SET_PDEATHSIG)", pid);
-+
-+	signal(SIGUSR1, SIG_DFL);
-+
-+	warnx("(pid=%d): Changing to uid=%d, gid=%d", pid, user, group);
-+
-+	if (setgid(group) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setgid(%d)", pid, group);
-+	if (setuid(user) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setuid(%d)", pid, user);
-+
-+	warnx("(pid=%d): Service running ...", pid);
-+
-+	warnx("(pid=%d): Unshare user namespace", pid);
-+	if (unshare(CLONE_NEWUSER) < 0)
-+		err(EXIT_FAILURE, "unshare(CLONE_NEWUSER)");
-+
-+	char *const argv[] = { "service", NULL };
-+	char *const envp[] = { "I_AM_SERVICE=1", NULL };
-+
-+	warnx("(pid=%d): Executing real service ...", pid);
-+
-+	execve(service_prog, argv, envp);
-+	err(EXIT_FAILURE, "(pid=%d): execve", pid);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	size_t i;
-+	pid_t child[NR_CHILDS];
-+	int wstatus[NR_CHILDS];
-+	int childs = NR_CHILDS;
-+	pid_t pid;
-+
-+	if (getenv("I_AM_SERVICE")) {
-+		pause();
-+		exit(EXIT_SUCCESS);
-+	}
-+
-+	service_prog = argv[0];
-+	pid = getpid();
-+
-+	warnx("(pid=%d) Starting testcase", pid);
-+
-+	/*
-+	 * This rlimit is not a problem for root because it can be exceeded.
-+	 */
-+	setrlimit_nproc(1);
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		child[i] = fork_child();
-+		wstatus[i] = 0;
-+		usleep(250000);
-+	}
-+
-+	while (1) {
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+
-+			errno = 0;
-+			pid_t ret = waitpid(child[i], &wstatus[i], WNOHANG);
-+
-+			if (!ret || (!WIFEXITED(wstatus[i]) && !WIFSIGNALED(wstatus[i])))
-+				continue;
-+
-+			if (ret < 0 && errno != ECHILD)
-+				warn("(pid=%d): waitpid(%d)", pid, child[i]);
-+
-+			child[i] *= -1;
-+			childs -= 1;
-+		}
-+
-+		if (!childs)
-+			break;
-+
-+		usleep(250000);
-+
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+			kill(child[i], SIGUSR1);
-+		}
-+	}
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		if (WIFEXITED(wstatus[i]))
-+			warnx("(pid=%d): pid %d exited, status=%d",
-+				pid, -child[i], WEXITSTATUS(wstatus[i]));
-+		else if (WIFSIGNALED(wstatus[i]))
-+			warnx("(pid=%d): pid %d killed by signal %d",
-+				pid, -child[i], WTERMSIG(wstatus[i]));
-+
-+		if (WIFSIGNALED(wstatus[i]) && WTERMSIG(wstatus[i]) == SIGUSR1)
-+			continue;
-+
-+		warnx("(pid=%d): Test failed", pid);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	warnx("(pid=%d): Test passed", pid);
-+	exit(EXIT_SUCCESS);
-+}
+ #define to_asus_wmi_driver(pdrv)					\
+ 	(container_of((pdrv), struct asus_wmi_driver, platform_driver))
+ 
+@@ -2673,7 +2676,7 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT, 2, NULL);
+ 
+ 	if (asus_wmi_has_fnlock_key(asus)) {
+-		asus->fnlock_locked = true;
++		asus->fnlock_locked = fnlock_default;
+ 		asus_wmi_fnlock_update(asus);
+ 	}
+ 
 -- 
-2.29.3
+2.31.0
 
