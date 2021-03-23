@@ -2,155 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C177D346649
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6D234664F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhCWR1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:27:50 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60124 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbhCWR1i (ORCPT
+        id S230298AbhCWR2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230241AbhCWR1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:27:38 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 13A1020B5680;
-        Tue, 23 Mar 2021 10:27:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 13A1020B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616520457;
-        bh=p1pmPljb8ZS9xoSxAxg/MECHfcb5ywuGv+WYp/09E78=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=HuwZjruLEWv0TT34ZZaPXAug9Yq/DKVVeUtQBlYLfF/NvKNPQ5mz+LQkx4iKi0VPE
-         EID4btZg8bDcRtZplySFtYi1Zz2mRVKl4H6SYXEu0EV7MvaUtl2p0owNxQoB6o307s
-         AUh1ZS65DNEowBBOR06bNR/NvPjTXVZ006VB/Gcs=
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
- trace unreliable
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-6-madvenka@linux.microsoft.com>
- <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
- <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
- <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
- <20210323145734.GD98545@C02TD0UTHF1T.local>
- <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
- <a38e4966-9b0d-3e51-80bd-acc36d8bee9b@linux.microsoft.com>
- <20210323170236.GF98545@C02TD0UTHF1T.local>
- <bc450f09-1881-9a9c-bfbc-5bb31c01d8ce@linux.microsoft.com>
-Message-ID: <2a390ffb-4931-9b7d-e203-5d0189052744@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 12:27:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 23 Mar 2021 13:27:54 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D28EC061574;
+        Tue, 23 Mar 2021 10:27:54 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id l123so15030532pfl.8;
+        Tue, 23 Mar 2021 10:27:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V9wYyZwU50XvLyvxnBpFc3jy0YTpGXOQ3au2zDGL08k=;
+        b=LIhhfD6+lJjGU5iYCqEsrgfgxPCMea8rx1VRgT2jpfdIXV+8dQt4xDgr4W6TmSa44/
+         02AB9EglmpqwR/wekqHyvmSVNccs066o5sYqM64uyUzwrC0STIR5d8rYknQrZzpk++vO
+         4Fsm0skJPqUsg5v1CWA8itVE79BwYldHiJ1siCenVMDUWBGWTTlHKFblXZkK2yul7mVk
+         XzVEKLmNXXVwjqHbwjJeppurAkf2rJ9oLFeaMsoMbKVqfv1CCaFIzkTdfY9i9vFpULjB
+         nQT2D7a4JJyDpP9Samkej22NN/xD0MoR0MAv/t+rWUAyBcRSjnsb1jpT06gfDgDeK/Ra
+         Upzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V9wYyZwU50XvLyvxnBpFc3jy0YTpGXOQ3au2zDGL08k=;
+        b=L5KQ9YX5wmWviwyjybUPSMatIbVZi7cHsTNzPnL02RKLFPDumezpr+La4hHYAA1XjL
+         nFV6fj0TRQJK9Gorgo98V/7B0gY5INzRpGfPVMF+9li5eLoROUEFawFPam7D6dpARI1k
+         wqYtaEFCp+HIInd0AOjMebfijn87Gz4n4/YRXa0KFzzubETb6a1q1z7bZ+ki+1Kkp8mH
+         Yo4RRct9XyG+Wu1+LiBOR9aZX7d1WIuA0jYEvg+zsfK8lkj/MG2f1yF7x7ru4vscm+vk
+         maZ88pZOEFAaXpcMVeXMv3Z5JQEraMX9RmMPae3MJcUV6r4KLZ4b4p2E6oBFJQQh4mDU
+         ldmA==
+X-Gm-Message-State: AOAM531wI9ag5kjFTu329IV4eyHLj5ZRchgQbjWqc9llXH4zkQIMvaa9
+        NYbx7/wH0WAXq1DKzo2/33tfc0BBoH0wUTt+CZ5FoaWXME6MiSm4
+X-Google-Smtp-Source: ABdhPJz9tGrO1StXavnxOTQyCi5QMwWCOL4fTMEg9HcZMKbK4MGKZX/TZ60qc4rgaKnd1oi+7TTYMIyXc9PLf2/Qwdc=
+X-Received: by 2002:a17:902:c808:b029:e6:4204:f62f with SMTP id
+ u8-20020a170902c808b02900e64204f62fmr7095169plx.0.1616520473558; Tue, 23 Mar
+ 2021 10:27:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bc450f09-1881-9a9c-bfbc-5bb31c01d8ce@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1615507142-23097-1-git-send-email-wcheng@codeaurora.org>
+ <CAHp75VfUVCB4gzgOWf=bUpCjfyerQLPN_p-vOnVfxUKHi1WJkg@mail.gmail.com>
+ <716dca12-2bfc-789f-ca74-5555852e4c8b@codeaurora.org> <CAHp75VeynZArUkrogdJdR9oh+6Ocuqz3ySeDoRBFWusm8F6NRQ@mail.gmail.com>
+ <39fdd3c8-9682-6109-f47d-7f7bffc4b85e@codeaurora.org> <CAHp75Vexow3KLjAueNoPrEhXmWk_4AjUpWXOyWcFLZdfB-o2iA@mail.gmail.com>
+ <5252d085-bbd6-0409-a8ca-2b73fe269259@codeaurora.org>
+In-Reply-To: <5252d085-bbd6-0409-a8ca-2b73fe269259@codeaurora.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 23 Mar 2021 19:27:37 +0200
+Message-ID: <CAHp75VdR99vMOz-JPKKCfVvnsBd9SjGxhDtLsa_Zz2SKpWaZOQ@mail.gmail.com>
+Subject: Re: [PATCH v3] usb: dwc3: gadget: Prevent EP queuing while stopping transfers
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 1:19 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
+>
+> Hi Andy,
+>
+> On 3/22/2021 2:14 PM, Andy Shevchenko wrote:
+> > On Mon, Mar 22, 2021 at 10:06 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
+> >>
+> >> Hi Andy,
+> >>
+> >> On 3/22/2021 12:34 PM, Andy Shevchenko wrote:
+> >>> On Mon, Mar 22, 2021 at 8:49 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
+> >>>>
+> >>>> Hi Andy,
+> >>>>
+> >>>> On 3/22/2021 5:48 AM, Andy Shevchenko wrote:
+> >>>>> On Fri, Mar 12, 2021 at 2:01 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
+> >>>>>>
+> >>>>>> In the situations where the DWC3 gadget stops active transfers, once
+> >>>>>> calling the dwc3_gadget_giveback(), there is a chance where a function
+> >>>>>> driver can queue a new USB request in between the time where the dwc3
+> >>>>>> lock has been released and re-aquired.  This occurs after we've already
+> >>>>>> issued an ENDXFER command.  When the stop active transfers continues
+> >>>>>> to remove USB requests from all dep lists, the newly added request will
+> >>>>>> also be removed, while controller still has an active TRB for it.
+> >>>>>> This can lead to the controller accessing an unmapped memory address.
+> >>>>>>
+> >>>>>> Fix this by ensuring parameters to prevent EP queuing are set before
+> >>>>>> calling the stop active transfers API.
+> >>>>>
+> >>>>>
+> >>>>> commit f09ddcfcb8c569675066337adac2ac205113471f
+> >>>>> Author: Wesley Cheng <wcheng@codeaurora.org>
+> >>>>> Date:   Thu Mar 11 15:59:02 2021 -0800
+> >>>>>
+> >>>>>    usb: dwc3: gadget: Prevent EP queuing while stopping transfers
+> >>>>>
+> >>>>> effectively broke my gadget setup.
+> >>>>>
+> >>>>> The output of the kernel (followed by non responsive state of USB controller):
+> >>>>>
+> >>>>> [  195.228586] using random self ethernet address
+> >>>>> [  195.233104] using random host ethernet address
+> >>>>> [  195.245306] usb0: HOST MAC aa:bb:cc:dd:ee:f2
+> >>>>> [  195.249732] usb0: MAC aa:bb:cc:dd:ee:f1
+> >>>>> # [  195.773594] IPv6: ADDRCONF(NETDEV_CHANGE): usb0: link becomes ready
+> >>>>> [  195.780585] ------------[ cut here ]------------
+> >>>>> [  195.785217] dwc3 dwc3.0.auto: No resource for ep2in
+> >>>>> [  195.790162] WARNING: CPU: 0 PID: 217 at
+> >>>>> drivers/usb/dwc3/gadget.c:360 dwc3_send_gadget_ep_cmd+0x4b9/0x670
+> >>>>> [  195.799760] Modules linked in: usb_f_eem u_ether libcomposite
+> >>>>> brcmfmac brcmutil mmc_block pwm_lpss_pci pwm_lps
+> >>>>> s snd_sof_pci_intel_tng snd_sof_pci snd_sof_acpi_intel_byt
+> >>>>> snd_sof_intel_ipc snd_sof_acpi snd_sof snd_sof_nocodec
+> >>>>> spi_pxa2xx_platform snd_sof_xtensa_dsp spi_pxa2xx_pci
+> >>>>> extcon_intel_mrfld intel_mrfld_adc sdhci_pci cqhci sdhci m
+> >>>>> mc_core intel_mrfld_pwrbtn intel_soc_pmic_mrfld hci_uart btbcm btintel
+> >>>>> [  195.835604] CPU: 0 PID: 217 Comm: irq/16-dwc3 Not tainted 5.12.0-rc4+ #60
+> >>>>> [  195.842403] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
+> >>>>> BIOS 542 2015.01.21:18.19.48
+> >>>>> [  195.851191] RIP: 0010:dwc3_send_gadget_ep_cmd+0x4b9/0x670
+> >>>>> [  195.856608] Code: cd 00 00 00 44 89 44 24 20 48 89 4c 24 18 e8 ee
+> >>>>> f7 e4 ff 48 8b 4c 24 18 4c 89 f2 48 c7 c7 b9
+> >>>>> ed 4f a0 48 89 c6 e8 ef 24 43 00 <0f> 0b 41 be ea ff ff ff 44 8b 44 24
+> >>>>> 20 e9 80 fc ff ff 41 83 fe 92
+> >>>>> [  195.875381] RSP: 0000:ffffa53c00373ba8 EFLAGS: 00010086
+> >>>>> [  195.880617] RAX: 0000000000000000 RBX: 0000000000001387 RCX: 00000000ffffdfff
+> >>>>> [  195.887755] RDX: 00000000ffffdfff RSI: 00000000ffffffea RDI: 0000000000000000
+> >>>>> [  195.894893] RBP: ffff9ce8c8f2b028 R08: ffffffffa0732288 R09: 0000000000009ffb
+> >>>>> [  195.902034] R10: 00000000ffffe000 R11: 3fffffffffffffff R12: 0000000000041006
+> >>>>> [  195.909170] R13: ffffa53c00373c24 R14: ffff9ce8c11dadb0 R15: ffff9ce8c2861700
+> >>>>> [  195.916310] FS:  0000000000000000(0000) GS:ffff9ce8fe200000(0000)
+> >>>>> knlGS:0000000000000000
+> >>>>> [  195.924409] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>>>> [  195.930161] CR2: 00000000f7f694a0 CR3: 0000000038e0c000 CR4: 00000000001006f0
+> >>>>> [  195.937300] Call Trace:
+> >>>>> [  195.939755]  __dwc3_gadget_ep_enable+0x2d4/0x4e0
+> >>>>> [  195.944393]  ? dwc3_remove_requests.constprop.0+0x86/0x170
+> >>>>
+> >>>> Odd that this change would affect the USB enablment path, as they were
+> >>>> focused on the pullup disable path.  Would you happen to have any
+> >>>> downstream changes on top of v5.12-rc4 we could review to see if they
+> >>>> are still required? (ie where is the dwc3_remove_requests() coming from
+> >>>> during ep enable)
+> >>>
+> >>> You may check my branch [1] on GH. Basically you may be interested in
+> >>> the commit:
+> >>> 0f86df1294ee7523060cc16eafaf4898c693eab0 REVERTME: usb: dwc3: gadget:
+> >>> skip endpoints ep[18]{in,out}
+> >>> Otherwise it's a clean v5.12-rc4 with a revert and another USB PHY
+> >>> suspend fix (which also shouldn't affect this).
+> >>
+> >> Can you link your GH reference?
+> >
+> > Oops, sorry.
+> > Here we are:
+> >
+> > [1]: https://github.com/andy-shev/linux/tree/eds-acpi
+> >
+> Thanks, I took a look and even tried it on my device running 5.12-rc4,
+> but wasn't able to see the same problem.  Could you help collect the
+> ftrace after enabling the tracing KCONFIG and running the below sequence?
+>
+> 1.  Mount debugfs
+> 2.  Set up tracing instance
+>
+> mkdir /sys/kernel/debug/tracing/instances/usb
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_complete_trb/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ctrl_req/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ep_dequeue/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ep_queue/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_cmd/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_disable/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_enable/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_giveback/enable
+> echo 1 >
+> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_prepare_trb/enable
+> echo 1 > /sys/kernel/debug/tracing/instances/usb/tracing_on
+>
+> 3.  Run your test, which should include:
+>         - echo "" > /sys/kernel/config/usb_gadget/g1/UDC
+>         - echo <UDC name> > /sys/kernel/config/usb_gadget/g1/UDC
+>
+> 4.  Collect the trace output:
+> cat /sys/kernel/debug/tracing/instances/usb/trace
 
+Here we are (I cherry-picked again reverted patch, other stays the same) [2].
+On top I put a warning, so you may see timestamps.
 
-On 3/23/21 12:23 PM, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 3/23/21 12:02 PM, Mark Rutland wrote:
->> On Tue, Mar 23, 2021 at 11:20:44AM -0500, Madhavan T. Venkataraman wrote:
->>> On 3/23/21 10:26 AM, Madhavan T. Venkataraman wrote:
->>>> On 3/23/21 9:57 AM, Mark Rutland wrote:
->>>>> On Tue, Mar 23, 2021 at 09:15:36AM -0500, Madhavan T. Venkataraman wrote:
->>>> So, my next question is - can we define a practical limit for the
->>>> nesting so that any nesting beyond that is fatal? The reason I ask
->>>> is - if there is a max, then we can allocate an array of stack
->>>> frames out of band for the special frames so they are not part of
->>>> the stack and will not likely get corrupted.
->>>>
->>>> Also, we don't have to do any special detection. If the number of
->>>> out of band frames used is one or more then we have exceptions and
->>>> the stack trace is unreliable.
->>>
->>> Alternatively, if we can just increment a counter in the task
->>> structure when an exception is entered and decrement it when an
->>> exception returns, that counter will tell us that the stack trace is
->>> unreliable.
->>
->> As I noted earlier, we must treat *any* EL1 exception boundary needs to
->> be treated as unreliable for unwinding, and per my other comments w.r.t.
->> corrupting the call chain I don't think we need additional protection on
->> exception boundaries specifically.
->>
->>> Is this feasible?
->>>
->>> I think I have enough for v3 at this point. If you think that the
->>> counter idea is OK, I can implement it in v3. Once you confirm, I will
->>> start working on v3.
->>
->> Currently, I don't see a compelling reason to need this, and would
->> prefer to avoid it.
->>
-> 
-> I think that I did a bad job of explaining what I wanted to do. It is not
-> for any additional protection at all.
-> 
-> So, let us say we create a field in the task structure:
-> 
-> 	u64		unreliable_stack;
-> 
-> Whenever an EL1 exception is entered or FTRACE is entered and pt_regs get
-> set up and pt_regs->stackframe gets chained, increment unreliable_stack.
-> On exiting the above, decrement unreliable_stack.
-> 
-> In arch_stack_walk_reliable(), simply do this check upfront:
-> 
-> 	if (task->unreliable_stack)
-> 		return -EINVAL;
-> 
-> This way, the function does not even bother unwinding the stack to find
-> exception frames or checking for different return addresses or anything.
-> We also don't have to worry about code being reorganized, functions
-> being renamed, etc. It also may help in debugging to know if a task is
-> experiencing an exception and the level of nesting, etc.
-> 
->> More generally, could we please break this work into smaller steps? I
->> reckon we can break this down into the following chunks:
->>
->> 1. Add the explicit final frame and associated handling. I suspect that
->>    this is complicated enough on its own to be an independent series,
->>    and it's something that we can merge without all the bits and pieces
->>    necessary for truly reliable stacktracing.
->>
-> 
-> OK. I can do that.
-> 
->> 2. Figure out how we must handle kprobes and ftrace. That probably means
->>    rejecting unwinds from specific places, but we might also want to
->>    adjust the trampolines if that makes this easier.
->>
-> 
-> I think I am already doing all the checks except the one you mentioned
-> earlier. Yes, I can do this separately.
-> 
->> 3. Figure out exception boundary handling. I'm currently working to
->>    simplify the entry assembly down to a uniform set of stubs, and I'd
->>    prefer to get that sorted before we teach the unwinder about
->>    exception boundaries, as it'll be significantly simpler to reason
->>    about and won't end up clashing with the rework.
->>
-> 
-> So, here is where I still have a question. Is it necessary for the unwinder
-> to know the exception boundaries? Is it not enough if it knows if there are
-> exceptions present? For instance, using something like num_special_frames
+Dunno how long it will stay there, please confirm that you got it.
 
-Typo - num_special_frames should be unreliable_stack. That is the name of
-the counter I used above.
+[2]: https://paste.ubuntu.com/p/jNF565ypPp/
 
-Sorry about that.
-
-Madhavan
+-- 
+With Best Regards,
+Andy Shevchenko
