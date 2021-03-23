@@ -2,82 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A7D346751
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A5D346754
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhCWSMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:12:23 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56154 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231214AbhCWSMC (ORCPT
+        id S231362AbhCWSN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:13:58 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:21070 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231206AbhCWSNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:12:02 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 12NIBs7r012557
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 14:11:55 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6FBA415C39CC; Tue, 23 Mar 2021 14:11:54 -0400 (EDT)
-Date:   Tue, 23 Mar 2021 14:11:54 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        workflows@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>
-Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
- focussed on issues/bugs and regressions
-Message-ID: <YFovanxCgq1lF4Ah@mit.edu>
-References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
- <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
- <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
- <YFkSqIN90S4a3HiF@mit.edu>
- <54aeb1f7-ffc7-74e1-a731-8970d44ff852@leemhuis.info>
+        Tue, 23 Mar 2021 14:13:37 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NI9SPh028783;
+        Tue, 23 Mar 2021 11:13:33 -0700
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172])
+        by mx0a-0016f401.pphosted.com with ESMTP id 37dedrj5qj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 11:13:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OwKskHasoe4F3tp9ffPZTyB/vYqVpdYAZ14folf0Bw/DUyUs5aV09bw4ElZN7TVwlfWIMNgL3ZtJgz+9Nt1FxY7XtJQv9ziwOW81ugh5g8rterMDVx9Kgx3i7Fd6PXMDWOaJM5mZV3HdeVclvQz2WqZt81Z2f+w92BHmyVhsNAplmPQtk0oCpx7vRxp58oUvFCfAdgKxcVtqK7swJW2tybKH9Jg+ZcOR8Cip59CK12buqPdKeIUDhy/GFPD9AOfgQf/HMFwlWXehG+gFbfAbXCvUVWhm2m/uzM12GjIzoLjA9kUzibTcph3ynQJrPzOqKTcr9YpL3RJa6XVhbDnb2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s9reRt58oAj1o7aVoLmO7ss4gNfDEjzTAwssthu7kLw=;
+ b=eH2buKMHSSZhdE5Obt2/grTXlZXAvI4nwqbGNFHjXWnybwesGEtZqW3booK32/MoXhe+FXv/om4MpuQMhBcK1JbyPFyUBWlTFizVaYRFOuiYZ2V3D1YZJ/x2IplVHqhYP7kiJabLtEQcvbXOCtoU6diVLlICSq+GCyBodCEWvtuIv3h+6/direb3F58uJOF0TLPhdmE9Uye5UADH+8a2EQxil+R+Q9ZqiuGQ+3gn+lMGWEgQeDhacy4FdN+DQkoFLEAT9065JyMxB1ZMXNz6wXvxQrGj8gLLN7iELC4qKGFntnL2zylP2yTBYuIn9pay5ejfIfy0IZi2XK63IdKgLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s9reRt58oAj1o7aVoLmO7ss4gNfDEjzTAwssthu7kLw=;
+ b=YfBG27SzqPkoow0VTVWiCy+uM3mrSWP0lPiz1QNqchtJm8THNkks7rAqsXrrk00U6vLEe4o7N3hDF8oAKJ61iOSGBH9zqC2cMuWa+4N77DpkKWWq+60f6LIVwIttfVnPSN2TtutPiRGRi9JitoDpQ787IWNPXymWawx2RO4EKUU=
+Received: from MWHPR18MB1421.namprd18.prod.outlook.com (2603:10b6:320:2a::23)
+ by MWHPR18MB1343.namprd18.prod.outlook.com (2603:10b6:300:ca::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Tue, 23 Mar
+ 2021 18:13:29 +0000
+Received: from MWHPR18MB1421.namprd18.prod.outlook.com
+ ([fe80::c00:81ae:5662:e601]) by MWHPR18MB1421.namprd18.prod.outlook.com
+ ([fe80::c00:81ae:5662:e601%8]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
+ 18:13:28 +0000
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+Subject: Re: [net-next PATCH 0/8] configuration support for switch headers &
+ phy
+Thread-Topic: [net-next PATCH 0/8] configuration support for switch headers &
+ phy
+Thread-Index: AdcgBS5mePTUKLvvS4qB/A4kXkvtIQ==
+Date:   Tue, 23 Mar 2021 18:13:28 +0000
+Message-ID: <MWHPR18MB14217B983EFC521DAA2EEAD2DE649@MWHPR18MB1421.namprd18.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [106.217.192.77]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dc5ec07f-6838-4181-e121-08d8ee275c23
+x-ms-traffictypediagnostic: MWHPR18MB1343:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR18MB1343117991B28C430F1662D2DE649@MWHPR18MB1343.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Y/7AwXFCptD9nZJ8gjCSVdSuwQk11WgqX3NXIEtnavA9zoCD/2K/HLyR+/YODazhXfZ22Mg1tpTJY7gTFiWZ4JqKNyR/hawEdao4atiSAFaTzXGWo4QZMWX0ggOzzSu42BeuGjBBFIjyb2nMfAAWU2uw4f/MRRCNJsYemOHnFTdMVwbK4TkIm5zwJjiXvM0yKlCbGOTk7FkkO2zV6pVTiytRU+dkHWU1i2v2FNQnhThLfRhQmOmBvbYIrrFCXQvAJDe27Gb+Z2HD7IaMHwzh26V6ew3x0vH8WpA5grdy4ovmc58+yGjDHYBgubRl7uEbNbgLZKBfGSGufFDjXPdPl5JyNiXnzH47HQwGdLTsD52cA8dsIv2+g0/I8LCgUIHeHxUOu3rr9Zd9r7DQnImbBgOqdf4lYQL3N597+cPQ4/59SKEMTSyUUMQNooXvP4TcuGi8qKiCVluORQf8l5YLsCqJzpw2L+FstN56Bazswo5lMwTCNgNBkvrGMIhFxauwpilfdJehwi9DF3CI6ZUEAwWGw72oQJ4qYTcgF06iAbvzpcF2T3KHAHUcwqTYGwv0qGfE3nI7uvHev7X+fs1Nr0mi94NwxafelL0ptEaPBQWlexZ6IWlkkYKEFZWLoQp4H0NxlQQNOotWXui2s/HqE5uol5lv4xTNYvgvTgNdPJM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR18MB1421.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39850400004)(376002)(366004)(346002)(9686003)(66446008)(64756008)(66556008)(2906002)(55016002)(66946007)(76116006)(54906003)(33656002)(66476007)(83380400001)(86362001)(8936002)(316002)(38100700001)(8676002)(53546011)(6506007)(7696005)(26005)(186003)(6916009)(478600001)(4326008)(71200400001)(107886003)(5660300002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Fs3bJHWguoz9pn+ykGoTgbi1p2s1e2QnC2tUs0jprt/7iBoj1myy9v+MyoN+?=
+ =?us-ascii?Q?xAl95pd1BQHDx8CBrPRotlBn0MqoUsvlNaXkYZunpCNu0NliNL0dtdOi6BlL?=
+ =?us-ascii?Q?FshGfgZc8JpSbogJQDjy92gmm9wXKmQPlnWQVhL6h49rnD3Uo44DAlJdqAZC?=
+ =?us-ascii?Q?s/fCziljzIgoYZI2Lb29qrCI4zfy+1h63a8Fl36JU8aj+3AVOXGCslC73n3Q?=
+ =?us-ascii?Q?hitLaGxTKlSAF7VyVZ0wDj1+Ypk/BcuEHbMud6LnPD6y1IjJZQ7/V6GVEMBJ?=
+ =?us-ascii?Q?c3AYnPaWZuH78KaFacuAaojtYjKzU5/ggqGNaZAoh+NsypIe8W7YgbgzWa/y?=
+ =?us-ascii?Q?Jw3oYuyiydqy4SQaNc8/UOgPxs7/ivBk+x9UNQ3+D/b0CjtJRUT4GBjxQ7TZ?=
+ =?us-ascii?Q?smDAcw/35LOmdOtV7H4gPwnoaKZbdr7+1EkdFOm6Nw5HXu76ILoXP8gGkqa0?=
+ =?us-ascii?Q?iw0pBb/MnqaiFDE918fybrYFBxWoBCc/E4bPOYAM59aP4xoOPUNdJnSzEvPx?=
+ =?us-ascii?Q?TkrOmbGM6oDLu8t5JJuIuXj/UyNizkSIZjmVsCbM7AuCyIkbr/HFyeamfgp/?=
+ =?us-ascii?Q?HPd/DQzXfuuj8d6iBAu3Q6dhrEUvXVcC4IPLPBJCGCGsUQgBDOSoaY9myLTm?=
+ =?us-ascii?Q?50PsSKklkKD2mpmn3jfV5kekCSAqktt0LnOxO9Ui+fH1mrP2AGl6rNYyqyD3?=
+ =?us-ascii?Q?qp2wHFaghYhQDbc6nUuSBmnJPl18GO85DMzNiqlBWIvhaH+laSNVZSdAO33H?=
+ =?us-ascii?Q?vnb1F1oj4J+eJ+KkTh1FaIdFFx17zvsL3n1yPqc2VYzAho4zcZdPgKEn90Ry?=
+ =?us-ascii?Q?rVreJ0w3zMDsUhuxYXEHwrl2XHK150VaxeN8gnwtcgpuazZPM6aW71AtOGcg?=
+ =?us-ascii?Q?8x9cVxVUxeEv5WMwdjGlfF4Aq3TABlQyDhAjJLKIqd7yD1B1jcgRXLIIVpEq?=
+ =?us-ascii?Q?UPacrNWSvwHdjghYXmG4s0sir378Tj3006oqXuG4imyeV6mM8J8Gu/c9b7PF?=
+ =?us-ascii?Q?Wxp7Bu1Wg6S7dMJ99A0GUJyUQ4WTnZQfgrbcOF/J/ArdhVkQ8Rp0b41kHoVG?=
+ =?us-ascii?Q?rXUD5ckYt+I3WNCPsSp2zYPWaTduZv7T0q9D/GrB/DcNetWiZIZY3dMgB5PC?=
+ =?us-ascii?Q?fYjr1wlon++H3NcOGMiiTpSTiPqmx5su89J9nGsgFldk/PUIeC/VjNRHT5Li?=
+ =?us-ascii?Q?Qq8I91iCdsmQfdddjNwlCwkLUjJXgflbkqnuTtQi1uXKun0WhQqEQuVM9rU4?=
+ =?us-ascii?Q?dAZh1/iYuI6S4BdXz+nSHBgPJ7pOOukF2nl0ODFB/kBA//2vzoR4ZgJZ7nRd?=
+ =?us-ascii?Q?XYz5d0NAKTsK6NASpOfjsOGP?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <54aeb1f7-ffc7-74e1-a731-8970d44ff852@leemhuis.info>
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR18MB1421.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc5ec07f-6838-4181-e121-08d8ee275c23
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 18:13:28.8526
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RGPaBynbkrSwSkdEEgKQf58PjKVBEaIqnfcEQGiEvGbW0h4LgD6uapJ8NoKpNTnhFAIB13fqluM8lTYg1k4ahQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR18MB1343
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_09:2021-03-22,2021-03-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 09:57:57AM +0100, Thorsten Leemhuis wrote:
-> On 22.03.21 22:56, Theodore Ts'o wrote:
-> > On Mon, Mar 22, 2021 at 08:25:15PM +0100, Thorsten Leemhuis wrote:
-> >> I agree to the last point and yeah, maybe regressions are the more
-> >> important problem we should work on – at least from the perspective of
-> >> kernel development.  But from the users perspective (and
-> >> reporting-issues.rst is written for that perspective) it feel a bit
-> >> unsatisfying to not have a solution to query for existing report,
-> >> regressions or not. Hmmmm...
-> > First of all, thanks for working on reporting-issues.rst.
-> 
-> Thx, very glad to hear that. I didn't get much feedback on it, which
-> made me wonder if anybody besides docs folks actually looked at it...
 
-I'll admit that I had missed your initial submission, but having
-looked at it, while I could imagine some nits where it could be
-improved, in my opinion, it's strictly better than the older
-reporting-bugs doc.
+Hi Andrew ,
 
-> Hmmm, yeah, I like that idea. I'll keep it in mind for later: I would
-> prefer to get reporting-issues.rst officially blessed and
-> reporting-bugs.rst gone before working on further enhancements.
+Please see inline,
 
-Is there anyone following this thread who believes that there is
-anything we should change *before* oficially blessing
-reporting-issues.rst?  Given that Konstantin has already linked to
-reporting-issues from the front page of kernel.bugzilla.org, I think
-we we should just go ahead and officially bless it and be done with
-it.   :-)
 
-Once it is blessed, I'd also suggest putting a link to
-https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
-as an "other resources" at https://www.kernel.org.
+> -----Original Message-----
+> From: Andrew Lunn <andrew@lunn.ch>
+> Sent: Sunday, March 21, 2021 7:45 PM
+> To: Hariprasad Kelam <hkelam@marvell.com>
+> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kuba@kernel.org=
+;
+> davem@davemloft.net; Sunil Kovvuri Goutham <sgoutham@marvell.com>;
+> Linu Cherian <lcherian@marvell.com>; Geethasowjanya Akula
+> <gakula@marvell.com>; Jerin Jacob Kollanukkaran <jerinj@marvell.com>;
+> Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+> Subject: [EXT] Re: [net-next PATCH 0/8] configuration support for switch
+> headers & phy
+>=20
+> On Sun, Mar 21, 2021 at 05:39:50PM +0530, Hariprasad Kelam wrote:
+> > This series of patches add support for parsing switch headers and
+> > configuration support for phy modulation type(NRZ or PAM4).
+> >
+> > PHYs that support changing modulation type ,user can configure it
+> > through private flags pam4.
+> >
+> > Marvell switches support DSA(distributed switch architecture) with
+> > different switch headers like FDSA and EDSA. This patch series adds
+> > private flags to enable user to configure interface in fdsa/edsa mode
+> > such that flow steering (forwading packets to pf/vf depending on
+> > switch header fields) and packet parsing can be acheived.
+>=20
+> Hi Hariprasad
+>=20
+> Private flags sound very wrong here. I would expect to see some integrati=
+on
+> between the switchdev/DSA driver and the MAC driver.
+> Please show how this works in combination with drivers/net/dsa/mv88e6xxx
+> or drivers/net/ethernet/marvell/prestera.
+>=20
+	Octeontx2 silicon supports NPC (network parser and cam) unit , through whi=
+ch packet parsing and packet classification is achieved.
+              Packet parsing extracting different fields from each layer.
+				  DMAC + SMAC  --> LA
+		                               VLAN ID --> LB
+		                               SIP + DIP --> LC
+                                                            TCP SPORT + DPO=
+RT --> LD
+    And packet classification is achieved through  flow identification in k=
+ey extraction and mcam search key . User can install mcam rules
+    With action as =20
+		forward packet to PF and to receive  queue 0
+		forward packet to VF and  with as RSS ( Receive side scaling)
+		drop the packet=20
+		etc..
 
-					- Ted
+   Now with switch header ( EDSA /FDSA) and HIGIG2 appended to regular pack=
+et , NPC can not parse these
+   Ingress packets as these headers does not have fixed headers. To achieve=
+ this Special PKIND( port kind) is allocated in hardware
+   which will help NPC to parse the packets.
+
+ For example incase of EDSA 8 byte header which is placed right after SMAC =
+, special PKIND reserved for EDSA helps NPC to=20
+ Identify the  input packet is EDSA . Such that NPC can extract fields in t=
+his header and forward to=20
+ Parse rest of the headers.
+
+ Same is the case with higig2 header where 16 bytes header is placed at sta=
+rt of the packet.
+
+In this case private flags helps user to configure interface in EDSA/FDSA o=
+r HIGIG2. Such that special
+PKIND reserved for that header are assigned to the interface.  The scope of=
+ the patch series is how
+User can configure interface mode as switch header(HIGIG2/EDSA etc) .In our=
+ case no DSA logical
+Ports are created as these headers can be stripped by NPC.
+
+Thanks,
+Hariprasad k
+=20
+
+
+> 	  Andrew
