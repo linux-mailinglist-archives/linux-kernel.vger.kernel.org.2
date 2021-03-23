@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9043345A52
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6BB345A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhCWJE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:04:59 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14433 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCWJEj (ORCPT
+        id S229761AbhCWJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhCWJFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:04:39 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F4QPd0v2WzkddY;
-        Tue, 23 Mar 2021 17:03:01 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 23 Mar
- 2021 17:04:32 +0800
-Subject: Re: [LTP] [f2fs] 02eb84b96b: ltp.swapon03.fail
-To:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        Weichao Guo <guoweichao@oppo.com>, <rpalethorpe@suse.de>,
-        kernel test robot <oliver.sang@intel.com>, <lkp@intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>,
-        <ltp@lists.linux.it>
-References: <20210308072510.GA902@xsang-OptiPlex-9020>
- <87h7llhnfe.fsf@suse.de> <c75229cc-e325-1c8b-0afa-fd236db8319c@oppo.com>
- <20210309040144.GH3479805@casper.infradead.org>
- <c84bf5c9-501e-6c25-1728-a7c6281093fd@oppo.com> <YEkw0J9VEg66AgIt@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <e2009f2d-253d-264c-53ca-fa644897a952@huawei.com>
-Date:   Tue, 23 Mar 2021 17:04:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 23 Mar 2021 05:05:17 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9118C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:05:16 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id r12so25814242ejr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=NaxMk1X4JgQvNguaXzrkddVGWdXTSwTVvMkeeopGQCc=;
+        b=EkcarqZKUy0ymiF4kWv0Lkwrc9OXZEDWInUH5Be+lbkNWzuZ0bH1/rBhCpRwLiqTdt
+         rBd/jZXsSc+/gr0W5vVDjKeAbBiJNnqL4d8FVLGBZgt06UhuthKl3hoG91vBLikuJLNs
+         4XHZBPrXItBGRVsuFFU+Aay2UuLxvNpfwAp+UJOTSQ35dL31Q2B9wQ2HZT8KRflMEb7C
+         pXRPGCU0Nclm8CvMHG0ni3P5qwx4l1n1LIqBhgxjANlEzftOTvwqxahdOlKmHDfAvEyg
+         qLjBEZ5ypgC1Nmdp+HiBhrAcllw0tq/I+5iHIj2uYWO+CKOFFc2s9MXEMg7ZkLbOmQms
+         BM5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NaxMk1X4JgQvNguaXzrkddVGWdXTSwTVvMkeeopGQCc=;
+        b=BkFDsWp899ZSD0iCz7lMmHWu0z4DEm/SYkynehLo2sXRJJuLi/Ix4gANcmyVW4Suyw
+         WjHLnJN701Xbc+37GYHTTlwJy9EJI3OmvyZk4UIwY6tBMau2PYUISPIsXMu8EKxUTB7g
+         5pF2UcuAJB7x74VaPC+Xc4YtgWY8EI89OzoTifNsnBQOj8FE/7x7NIw6tt2lrLd6aoxw
+         C0Ii/aPflsRFErfM4hlmbOnwarXkLNPvDth6KB8z2eO7uzOI0hgpGQXJJyULgIhMphye
+         PFpuDnRubDctTNmyyBMSKiqqtH93I8ZIAaRVjHT4YMJEsHgCo3oTbv0iGO92/KoWXLSq
+         PyEw==
+X-Gm-Message-State: AOAM532xNneZNParLOjtT2fqvOBIVO8OXu6698BS+Nb4PnA/+bLrmkAC
+        08dAxu+kPkrXMqgQEHbGQp8BOQ==
+X-Google-Smtp-Source: ABdhPJzVzXe2FBZymosCx+Rjdu4KKVi7Zq3N3gYPqVzkCfVULSYBS8mOmRdLM8ry58+y1DxBB4xE/w==
+X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr3843386ejc.375.1616490315603;
+        Tue, 23 Mar 2021 02:05:15 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id be27sm12873864edb.47.2021.03.23.02.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 02:05:15 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:05:13 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     matthias.bgg@kernel.org
+Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, lgirdwood@gmail.com,
+        broonie@kernel.org, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <mbrugger@suse.com>
+Subject: Re: [PATCH 3/7] mfd: mt6397: Drop of_compatible for regulator
+Message-ID: <20210323090513.GJ2916463@dell>
+References: <20210312145545.26050-1-matthias.bgg@kernel.org>
+ <20210312145545.26050-3-matthias.bgg@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YEkw0J9VEg66AgIt@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210312145545.26050-3-matthias.bgg@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/11 4:49, Jaegeuk Kim wrote:
-> On 03/10, Huang Jianan wrote:
->> Hi Richard,
->>
->> On 2021/3/9 12:01, Matthew Wilcox wrote:
->>> On Tue, Mar 09, 2021 at 10:23:35AM +0800, Weichao Guo wrote:
->>>> Hi Richard,
->>>>
->>>> On 2021/3/8 19:53, Richard Palethorpe wrote:
->>>>> Hello,
->>>>>
->>>>>> kern  :err   : [  187.461914] F2FS-fs (sda1): Swapfile does not align to section
->>>>>> commit 02eb84b96bc1b382dd138bf60724edbefe77b025
->>>>>> Author: huangjianan@oppo.com <huangjianan@oppo.com>
->>>>>> Date:   Mon Mar 1 12:58:44 2021 +0800
->>>>>>        f2fs: check if swapfile is section-alligned
->>>>>>        If the swapfile isn't created by pin and fallocate, it can't be
->>>>>>        guaranteed section-aligned, so it may be selected by f2fs gc. When
->>>>>>        gc_pin_file_threshold is reached, the address of swapfile may change,
->>>>>>        but won't be synchronized to swap_extent, so swap will write to wrong
->>>>>>        address, which will cause data corruption.
->>>>>>        Signed-off-by: Huang Jianan <huangjianan@oppo.com>
->>>>>>        Signed-off-by: Guo Weichao <guoweichao@oppo.com>
->>>>>>        Reviewed-by: Chao Yu <yuchao0@huawei.com>
->>>>>>        Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->>>>> The test uses fallocate to preallocate the swap file and writes zeros to
->>>>> it. I'm not sure what pin refers to?
->>>> 'pin' refers to pinned file feature in F2FS, the LBA(Logical Block Address)
->>>> of a file is fixed after pinned. Without this operation before fallocate,
->>>> the LBA may not align with section(F2FS GC unit), some LBA of the file may
->>>> be changed by F2FS GC in some extreme cases.
->>>>
->>>> For this test case, how about pin the swap file before fallocate for F2FS as
->>>> following:
->>>>
->>>> ioctl(fd, F2FS_IOC_SET_PIN_FILE, true);
->>> No special ioctl should be needed.  f2fs_swap_activate() should pin the
->>> file, just like it converts inline inodes and disables compression.
->>
->> Now f2fs_swap_activate() will pin the file. The problem is that when
->> f2fs_swap_activate()
->>
->> is executed, the file has been created and may not be section-aligned.
->>
->> So I think it would be better to consider aligning the swapfile during
->> f2fs_swap_activate()?
-> 
-> Does it make sense to reallocate blocks like
-> in f2fs_swap_activate(),
-> 	set_inode_flag(inode, FI_PIN_FILE);
-> 	truncate_pagecache(inode, 0);
-> 	f2fs_truncate_blocks(inode, 0, true);
+On Fri, 12 Mar 2021, matthias.bgg@kernel.org wrote:
 
-It will corrupt swap header info while relocating whole swapfile...
-
-> 	expand_inode_data();
-> .
+> From: Matthias Brugger <mbrugger@suse.com>
 > 
+> For regulators a compatible string is superfluous. Drop the string.
+> 
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> ---
+>  drivers/mfd/mt6397-core.c | 3 ---
+>  1 file changed, 3 deletions(-)
+
+Acked-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
