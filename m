@@ -2,84 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A61B346D3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2122346D3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233901AbhCWWeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbhCWWdN (ORCPT
+        id S234021AbhCWWem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:34:42 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:62319 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234252AbhCWWd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:33:13 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA8BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:33:10 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so20828590otb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wQiKUKE5LLzicC3GKIFkGS/5vOBpAIjzN60rfAG7hx0=;
-        b=ln3YC/bUhKNlzIEJ3ZE3sM/keoGMMudHYuDAIpapuO8438z/OfvvIZkgC0TDqW9pnq
-         PjFzBWUt8ykTbsS2cOr83vEk1kz6DeSiipcqF/ezxIhR7BsySrztPBHj54vjDtXWhIeG
-         xAIJ6jCh7n8I4wdNQntaGbs8XmjEX1r8cW8NestjjS6HPFW+6vncPwG11Zu27BM7Z/Ov
-         UnAVVbFszxg71nlW+BjR0qXttWuJceZpMQihlnC8ZsOsZlCn88GS5HHrtKGaeGSH6Mo/
-         1rFYg72VD8fp7rr+MnLUo4hrsBDuN4992y7Y079PvDVHElFERMtQ6KMHHbYPbU+Yk2QC
-         4Sww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wQiKUKE5LLzicC3GKIFkGS/5vOBpAIjzN60rfAG7hx0=;
-        b=qil2iWFDFStlYhPToDCj3Eje5t6j1kPnxQ1l9Qpw8FlvwIJJw6FudYccQ1JaES/BOf
-         LjwZ+/vhjkVEwhst4mLpqYeA3J8GnAvp9bBBLAG7hnSmtv1HrTI3tn0h9uSFDCYxHn1p
-         uX6STa5fkRdR8K70F8I0pZxXEVvtc6Yngm5N6V4xmbL08YUvLg5+h2f5WR8zFNbU89R5
-         KhowEIFzBKJbQYeP/njNV/tTPM1/9+mWGCaD369QxD5RxRKYKIVIJmuQgr7ZtbkXFT1J
-         iVY+ilNHgYOP9NmfJndQo/Hcniudmbsm8j7d+QhuGAYl/SyG6ofPVI9Rf/oxtl7No14V
-         Bg9A==
-X-Gm-Message-State: AOAM533dTBh637FmD2PmOFH28xDySrK5qViBafdBo2Br6uvRTdSPgcRn
-        sDzvICQlmLj4gfK/5AvOyyQTBMKzmv0P6/mcCn4XCabt2XkhMg==
-X-Google-Smtp-Source: ABdhPJxu0OoySGVMTd7sJM5YkmJY8LNkwzSW5lFYxqruzkVag08kTs/00Xr70UMVHrAWidfKL+RvIAj0KGHRCR59ZZQ=
-X-Received: by 2002:a9d:5508:: with SMTP id l8mr475105oth.233.1616538789586;
- Tue, 23 Mar 2021 15:33:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323062303.19541-1-tl445047925@gmail.com> <CACT4Y+atQZKKQqdUrk-JvQNXaZCBHz0S_tSkFuOA+nkTS4eoHg@mail.gmail.com>
-In-Reply-To: <CACT4Y+atQZKKQqdUrk-JvQNXaZCBHz0S_tSkFuOA+nkTS4eoHg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 23 Mar 2021 23:32:57 +0100
-Message-ID: <CANpmjNMFfQs6bV4wrigfcWMwCvA_oMwBxy9gkaD4g+A1sZJ6-Q@mail.gmail.com>
-Subject: Re: [PATCH] kernel: kcov: fix a typo in comment
-To:     tl455047 <tl445047925@gmail.com>
-Cc:     kasan-dev <kasan-dev@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 23 Mar 2021 18:33:29 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 2dca3855;
+        Tue, 23 Mar 2021 23:33:25 +0100 (CET)
+Date:   Tue, 23 Mar 2021 23:33:25 +0100 (CET)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Rob Herring <robh@kernel.org>
+Cc:     sven@svenpeter.dev, iommu@lists.linux-foundation.org,
+        joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
+        arnd@kernel.org, marcan@marcan.st, maz@kernel.org,
+        mohamed.mediouni@caramail.com, stan@corellium.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20210323205346.GA1283560@robh.at.kernel.org> (message from Rob
+        Herring on Tue, 23 Mar 2021 14:53:46 -0600)
+Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
+References: <20210320151903.60759-1-sven@svenpeter.dev>
+ <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl> <20210323205346.GA1283560@robh.at.kernel.org>
+Message-ID: <c1bccac6b36d4662@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 at 07:45, 'Dmitry Vyukov' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
-> On Tue, Mar 23, 2021 at 7:24 AM tl455047 <tl445047925@gmail.com> wrote:
-> >
-> > Fixed a typo in comment.
-> >
-> > Signed-off-by: tl455047 <tl445047925@gmail.com>
->
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
->
-> +Andrew, linux-mm as KCOV patches are generally merged into mm.
->
-> Thanks for the fix
+> Date: Tue, 23 Mar 2021 14:53:46 -0600
+> From: Rob Herring <robh@kernel.org>
+> 
+> On Sun, Mar 21, 2021 at 05:00:50PM +0100, Mark Kettenis wrote:
+> > > Date: Sat, 20 Mar 2021 15:19:33 +0000
+> > > From: Sven Peter <sven@svenpeter.dev>
+> > > 
+> > > Hi,
+> > > 
+> > > After Hector's initial work [1] to bring up Linux on Apple's M1 it's time to
+> > > bring up more devices. Most peripherals connected to the SoC are behind a iommu
+> > > which Apple calls "Device Address Resolution Table", or DART for short [2].
+> > > Unfortunately, it only shares the name with PowerPC's DART.
+> > > Configuring this iommu is mandatory if these peripherals require DMA access.
+> > > 
+> > > This patchset implements initial support for this iommu. The hardware itself
+> > > uses a pagetable format that's very similar to the one already implement in
+> > > io-pgtable.c. There are some minor modifications, namely some details of the
+> > > PTE format and that there are always three pagetable levels, which I've
+> > > implement as a new format variant.
+> > > 
+> > > I have mainly tested this with the USB controller in device mode which is
+> > > compatible with Linux's dwc3 driver. Some custom PHY initialization (which is
+> > > not yet ready or fully understood) is required though to bring up the ports,
+> > > see e.g. my patches to our m1n1 bootloader [3,4]. If you want to test the same
+> > > setup you will probably need that branch for now and add the nodes from
+> > > the DT binding specification example to your device tree.
+> > > 
+> > > Even though each DART instances could support up to 16 devices usually only
+> > > a single device is actually connected. Different devices generally just use
+> > > an entirely separate DART instance with a seperate MMIO range, IRQ, etc.
+> > > 
+> > > I have just noticed today though that at least the USB DWC3 controller in host
+> > > mode uses *two* darts at the same time. I'm not sure yet which parts seem to
+> > > require which DART instance.
+> > > 
+> > > This means that we might need to support devices attached to two iommus
+> > > simultaneously and just create the same iova mappings. Currently this only
+> > > seems to be required for USB according to Apple's Device Tree.
+> > > 
+> > > I see two options for this and would like to get feedback before
+> > > I implement either one:
+> > > 
+> > >     1) Change #iommu-cells = <1>; to #iommu-cells = <2>; and use the first cell
+> > >        to identify the DART and the second one to identify the master.
+> > >        The DART DT node would then also take two register ranges that would
+> > >        correspond to the two DARTs. Both instances use the same IRQ and the
+> > >        same clocks according to Apple's device tree and my experiments.
+> > >        This would keep a single device node and the DART driver would then
+> > >        simply map iovas in both DARTs if required.
+> > > 
+> > >     2) Keep #iommu-cells as-is but support
+> > >             iommus = <&usb_dart1a 1>, <&usb_dart1b 0>;
+> > >        instead.
+> > >        This would then require two devices nodes for the two DART instances and
+> > >        some housekeeping in the DART driver to support mapping iovas in both
+> > >        DARTs.
+> > >        I believe omap-iommu.c supports this setup but I will have to read
+> > >        more code to understand the details there and figure out how to implement
+> > >        this in a sane way.
+> > > 
+> > > I currently prefer the first option but I don't understand enough details of
+> > > the iommu system to actually make an informed decision.
+> 
+> Please don't mix what does the h/w look like and what's easy to 
+> implement in Linux's IOMMU subsytem. It's pretty clear (at least 
+> from the description here) that option 2 reflects the h/w.
 
-FYI, I believe this code may not be accepted due to this:
+Apple does represent these as a single node in their device tree.  The
+two instances share an interrupt and share power/clock gating.  So
+they seem to be part of a single hardware block.
 
-"[...] It is imperative that all code contributed to the kernel be legitimately
-free software.  For that reason, code from anonymous (or pseudonymous)
-contributors will not be accepted."
-
-See Documentation/process/1.Intro.rst
+> > > I'm obviously also open to more options :-)
+> > 
+> > Hi Sven,
+> > 
+> > I don't think the first option is going to work for PCIe.  PCIe
+> > devices will have to use "iommu-map" properties to map PCI devices to
+> > the right iommu, and the currently implementation seems to assume that
+> > #iommu-cells = <1>.  The devictree binding[1] doesn't explicitly state
+> > that it relies on #iommu-cells = <1>, but it isn't clear how the
+> > rid-base to iommu-base mapping mechanism would work when that isn't
+> > the case.
+> > 
+> > Now the PCIe DARTs are simpler and seem to have only one "instance"
+> > per DART.  So if we keep #iommu-cells = <1> for those, you'd still be
+> > fine using the first approach.
+> > 
+> > As I mentioned before, not all DARTs support the full 32-bit aperture.
+> > In particular the PCIe DARTs support a smaller address-space.  It is
+> > not clear whether this is a restriction of the PCIe host controller or
+> > the DART, but the Apple Device Tree has "vm-base" and "vm-size"
+> > properties that encode the base address and size of the aperture.
+> > These single-cell properties which is probably why for the USB DARTs
+> > only "vm-base" is given; since "vm-base" is 0, a 32-bit number
+> > wouldn't be able to encode the full aperture size.  We could make them
+> > 64-bit numbers in the Linux device tree though and always be explicit
+> > about the size.  Older Sun SPARC machines used a single "virtual-dma"
+> > property to encode the aperture.  We could do someting similar.  You
+> > would use this property to initialize domain->geometry.aperture_start
+> > and domain->geometry.aperture_end in diff 3/3 of this series.
+> 
+> 'dma-ranges' is what should be used here.
+> 
+> Rob
+> 
