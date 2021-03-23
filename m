@@ -2,166 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665D934621E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9EE34621D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbhCWO6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:58:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38940 "EHLO mail.kernel.org"
+        id S232483AbhCWO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:58:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:47710 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232372AbhCWO5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:57:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1646E619BA;
-        Tue, 23 Mar 2021 14:57:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616511459;
-        bh=rncsdl4i5TrEFMu6+Ym0vGycz7ZFKYV1YcXXIU8sWhk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uCqO7iaPbbwi6UadGRPL97vvD/O8257MtlKt25IRP4o4l1tRl4ZCH2Vwt8grwc6wa
-         /2VEiACNqZdI6bLfzLjtD3USVIzSEnklfO1YimXVS0ivyNXArlGbqe46QcoP8uHcAm
-         Ow8wMNzFcBwWzQTjgVmOPO8TDmdrmu4T9CPwblF/fdAld3SslIs+3rC9fc9Pl56aqj
-         SrekgMGYx9UHqx3dW1toIj3DdsP8ZQaf3cMwnN5iNnaM4mLtOXNAnsJRjEcG31VEln
-         vjGuH+ycXre1E4415u3IflinACL0xe0mV2NafQpn1ccMJCzrQIV5IT1VsWqOxNEw+5
-         /8HuhaRPFurtA==
-Received: by mail-qv1-f44.google.com with SMTP id j17so10541699qvo.13;
-        Tue, 23 Mar 2021 07:57:39 -0700 (PDT)
-X-Gm-Message-State: AOAM5306tMb4bU5HePMs+3m8j/C8zSh/5YgoJuD89p8HKn5bz3yUC55A
-        WZBhtmJ9VHf3QMLGUp3xqRbidO8TM8dGHNYi2M4=
-X-Google-Smtp-Source: ABdhPJy0Bf1GseHqyXVnbs94f5tPVaGsMsTG1p0um1fqkgNlm8U4SZfOvAeuLw2PRao3cfn+zNk3kze7QKfjivEMxdk=
-X-Received: by 2002:a0c:f805:: with SMTP id r5mr5498083qvn.45.1616511458169;
- Tue, 23 Mar 2021 07:57:38 -0700 (PDT)
+        id S232402AbhCWO5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:57:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CC77D6E;
+        Tue, 23 Mar 2021 07:57:38 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADC963F718;
+        Tue, 23 Mar 2021 07:57:36 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 14:57:34 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
+ stack trace unreliable
+Message-ID: <20210323145734.GD98545@C02TD0UTHF1T.local>
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+ <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+ <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
 MIME-Version: 1.0
-References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
- <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com> <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
-In-Reply-To: <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
-From:   Luis Chamberlain <mcgrof@kernel.org>
-Date:   Tue, 23 Mar 2021 08:57:25 -0600
-X-Gmail-Original-Message-ID: <CAB=NE6XpDuJdJs2aStPT3+2Z1JgBof3zokboSbqq=+4BKGs+Bw@mail.gmail.com>
-Message-ID: <CAB=NE6XpDuJdJs2aStPT3+2Z1JgBof3zokboSbqq=+4BKGs+Bw@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
- focussed on issues/bugs and regressions
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        workflows@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 1:25 PM Thorsten Leemhuis <linux@leemhuis.info> wro=
-te:
->
->
->
-> On 22.03.21 19:32, Linus Torvalds wrote:
-> > On Mon, Mar 22, 2021 at 8:18 AM Thorsten Leemhuis <linux@leemhuis.info>=
- wrote:
-> >>
-> >>     I even requested a
-> >> "linux-regressions@vger.kernel.org" a while later, but didn't hear
-> >> anything back; and, sadly, about the same time I started having troubl=
-e
-> >> finding spare time for working on regression tracking. :-/
-> >
-> > Honestly, I'd much prefer the name 'linux-regressions' as being much
-> > more targeted than 'linux-issues'.
->
-> That only solves one of the two problem I'm trying to solve (albeit the
-> one that is more important to me). That way users still have no easy way
-> to query for reports about issues that are no regressions =E2=80=93 say
-> something is broken and they have no idea if it once worked or never
-> worked at all.
+On Tue, Mar 23, 2021 at 09:15:36AM -0500, Madhavan T. Venkataraman wrote:
+> Hi Mark,
+> 
+> I have a general question. When exceptions are nested, how does it work? Let us consider 2 cases:
+> 
+> 1. Exception in a page fault handler itself. In this case, I guess one more pt_regs will get
+>    established in the task stack for the second exception.
 
-Without a known baseline of what works OK an issue cannot easily be
-categorized as a regression. This "problem" I think deserves its own
-considerations.
+Generally (ignoring SDEI and stack overflow exceptions) the regs will be
+placed on the stack that was in use when the exception occurred, e.g.
 
-There are some kernel-ci solutions out there which report "issues"
-which help develop such baselines, however what we need is a community
-visible list of the sum, a list of *known issues upstream* represents
-a baseline. The easiest way to develop such baselines are with
-respective tests. We however obviously need to also accept new user
-reported issues as possible issues which can be candidate baseline
-issues, for which perhaps there are no known tests yet available to
-reproduce.
+  task -> task
+  irq -> irq
+  overflow -> overflow
 
-Then there are the considerations also that some distribution issues,
-which can be part of a distribution baseline, might fit into the
-circle of upstream known issues, or baseline as well. But not all
-issues part of a distribution baseline are part of the upstream
-baseline, an example is a botched backport. Most distribution
-baselines however tend to be private, however I'd like to see that
-changed using OpenSUSE/SLE as an example in order to help with the
-upstream baseline effort. I'd like to encourage other distributions to
-follow suit.
+For SDEI and stack overflow, we'll place the regs on the relevant SDEI
+or overflow stack, e.g.
 
-Test frameworks help develop a baseline and so working on them helps
-reduce the scope of this problem. We have many test frameworks. What I
-have not seen is a public generic baseline "list" for each of these. I
-have spent a bit of time on this problem and have come up with a
-generic format for issues on test frameworks as part of kdevops [0] in
-the hopes that it could be used to easily grep for known issues
-against upstream kernels / distribution releases. The format is
-simple:
+  task -> overflow
+  irq -> overflow
 
-mcgrof@bicho ~/kdevops (git::master)$ cat
-workflows/blktests/expunges/5.12.0-rc1-next-20210304/failures.txt
-block/009 # korg#212305 failure rate 1/669
-block/011
-block/012
+  task -> sdei
+  irq -> sdei
 
-The korg#212305 refers to bugzilla.kernel.org bug ID #212305 [0].
+I tried to explain the nesting rules in:
 
-Distribution issues:
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/stacktrace.c?h=v5.11#n59
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/arm64/kernel/stacktrace.c?h=v5.11&id=592700f094be229b5c9cc1192d5cea46eb4c7afc
 
-mcgrof@bicho ~/kdevops (git::master)$ cat
-workflows/blktests/expunges/debian/testing/failures.txt
-block/011
-block/012
-meta/005
-meta/006
-meta/009
-nbd/002
-nbd/003 # causes a hang after running a few times
-scsi/004
+> 2. Exception in an interrupt handler. Here the interrupt handler is running on the IRQ stack.
+>    Will the pt_regs get created on the IRQ stack?
 
-I have support for blktests and fstests, will add selftests soon. I
-tend to work on debian baseline as a public demo for work. The
-OpenSUSE Leap 15.3 baseline will be reflective of the real SLE15.3
-baseline.
+For an interrupt the regs will be placed on the stack that was in use
+when the interrupt was taken. The kernel switches to the IRQ stack
+*after* stacking the registers. e.g.
 
-The nice thing about having a public baseline is we can then really be
-confident into labelling a new issue that comes up as a possible
-regression. However, confidence is subjective, and so one must also
-define confidence clearly. You associate confidence to a baseline by
-the number of full tests you have run against a baseline for a
-respective test framework. Borrowing IO stabilizing terms, I'm using a
-test "steady state goal" for this, it means how many times have you
-run all possible tests against a known baseline without failure. So a
-steady state of 100 for blktests means your confidence in the baseline
-you have developed is of 100 full tests. A higher steady state goal
-however means more time is required to test, and so sometimes you
-might be confined to only use a low steady state goal, but then use
-side workers to run random tests with a higher test count. So for
-instance, the failure rate of the issue reported on korg#212305 is
-defined by the average number of times one must run a test in order
-for it to fail. If your baseline steady state goal was just 100,
-chances are low you may have run into that issue.
+  task -> task // subsequently switches to IRQ stack
+  irq -> irq
 
-Are there other known collections of public baselines easily grep'able
-for different test frameworks? Where can we contribute and collaborate
-to such a thing?
+> Also, is there a maximum nesting for exceptions?
 
-PS. My current goal for steady state goal for upstream is 1000 for
-blktests, 100 for fstests per filesystem.
+In practice, yes, but the specific number isn't a constant, so in the
+unwind code we have to act as if there is no limit other than stack
+sizing.
 
-[0] https://github.com/mcgrof/kdevops
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D212305
+We try to prevent cerain exceptions from nesting (e.g. debug exceptions
+cannot nest), but there are still several level sof nesting, and some
+exceptions which can be nested safely (like faults). For example, it's
+possible to have a chain:
 
-  Luis
+ syscall -> fault -> interrupt -> fault -> pNMI -> fault -> SError -> fault -> watchpoint -> fault -> overflow -> fault -> BRK
+
+... and potentially longer than that.
+
+The practical limit is the size of all the stacks, and the unwinder's 
+stack monotonicity checks ensure that an unwind will terminate.
+
+Thanks,
+Mark.
