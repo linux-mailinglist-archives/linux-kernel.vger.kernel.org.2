@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EBD345DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE22C345DE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhCWMRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:17:17 -0400
-Received: from m12-12.163.com ([220.181.12.12]:41476 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230165AbhCWMQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:16:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=6QZd+
-        Qu0fIzv6FrkmEmhT2O1Vr/D3wWNz5LeNfDEykY=; b=aBnCPsqePEj/C83PjqBP4
-        lLp7tKrL+h25sOzKlI9vawdHaaSe5xHJRvycFVYKIde7OsqNm1dH0p6QzgWOQ9tb
-        x5xNou15pbRQudkkzQ9JYml388xmgTdMhre7C83AlErKXljpt3fzXlIHPqmrir8t
-        03TDL2Or/iet0EPSPDUCN4=
-Received: from caizhichao.ccdomain.com (unknown [218.94.48.178])
-        by smtp8 (Coremail) with SMTP id DMCowAAXHrLH21lgfoN2WA--.9610S2;
-        Tue, 23 Mar 2021 20:15:26 +0800 (CST)
-From:   caizhichao <tomstomsczc@163.com>
-To:     perex@perex.cz, tiwai@suse.com
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Zhichao Cai <caizhichao@yulong.com>
-Subject: [PATCH] sound/i2c: Simplify the return expression of snd_i2c_bit_sendbyte()
-Date:   Tue, 23 Mar 2021 20:14:43 +0800
-Message-Id: <20210323121443.1276-1-tomstomsczc@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
+        id S230411AbhCWMQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:16:03 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14435 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230299AbhCWMPr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:15:47 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F4Vf466rNzkcKd;
+        Tue, 23 Mar 2021 20:14:04 +0800 (CST)
+Received: from [10.174.178.163] (10.174.178.163) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 20:15:39 +0800
+Subject: Re: [PATCH 3/5] mm/migrate.c: fix potential indeterminate pte entry
+ in migrate_vma_insert_page()
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     Alistair Popple <apopple@nvidia.com>
+CC:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>,
+        <jglisse@redhat.com>, <shy828301@gmail.com>, <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210320093701.12829-1-linmiaohe@huawei.com>
+ <20210320093701.12829-4-linmiaohe@huawei.com>
+ <0bee2243-5771-4969-7b92-aaca67abc90c@redhat.com>
+ <5999334.9xz1uWCbsP@nvdebian>
+ <eca49322-a5d2-d3b0-d2eb-ee7a5db3a942@huawei.com>
+Message-ID: <ca3abe99-2562-cd16-fad0-82601d8a04a8@huawei.com>
+Date:   Tue, 23 Mar 2021 20:15:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAAXHrLH21lgfoN2WA--.9610S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JF1xWryxAw1kXF1rKr17Jrb_yoWxZwc_Gr
-        ykWw48WrW5XayYv3yfZrW5Zw47GF1DCrn2kF18Kw43Gay5Ww42qr18Gr929rykXr4F9Fy3
-        Wr95Wr9xC39FvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnUl1DUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pwrp23prpvu6rf6rljoofrz/xtbBzR5eil0CPryz5AAAsN
+In-Reply-To: <eca49322-a5d2-d3b0-d2eb-ee7a5db3a942@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.163]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhichao Cai <caizhichao@yulong.com>
+On 2021/3/23 19:28, Miaohe Lin wrote:
+> On 2021/3/23 19:07, Alistair Popple wrote:
+>> On Tuesday, 23 March 2021 9:26:43 PM AEDT David Hildenbrand wrote:
+>>> On 20.03.21 10:36, Miaohe Lin wrote:
+>>>> If the zone device page does not belong to un-addressable device memory,
+>>>> the variable entry will be uninitialized and lead to indeterminate pte
+>>>> entry ultimately. Fix this unexpectant case and warn about it.
+>>>
+>>> s/unexpectant/unexpected/
+>>>
+>>>>
+>>>> Fixes: df6ad69838fc ("mm/device-public-memory: device memory cache 
+>> coherent with CPU")
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>   mm/migrate.c | 7 +++++++
+>>>>   1 file changed, 7 insertions(+)
+>>>>
+>>>> diff --git a/mm/migrate.c b/mm/migrate.c
+>>>> index 20a3bf75270a..271081b014cb 100644
+>>>> --- a/mm/migrate.c
+>>>> +++ b/mm/migrate.c
+>>>> @@ -2972,6 +2972,13 @@ static void migrate_vma_insert_page(struct 
+>> migrate_vma *migrate,
+>>>>   
+>>>>   			swp_entry = make_device_private_entry(page, vma->vm_flags & 
+>> VM_WRITE);
+>>>>   			entry = swp_entry_to_pte(swp_entry);
+>>>> +		} else {
+>>>> +			/*
+>>>> +			 * For now we only support migrating to un-addressable
+>>>> +			 * device memory.
+>>>> +			 */
+>>>> +			WARN_ON(1);
+>>>> +			goto abort;
+>>>
+>>> Fix it by crashing the kernel with panic_on_warn? :)
+>>>
+>>> If this case can actual happen, than no WARN_ON() - rather a 
+>>> pr_warn_once(). If this case cannot happen, why do we even care (it's 
+>>> not a fix then)?
+>>
+>> There is also already a check for this case in migrate_vma_pages(). The 
+>> problem is it happens after the call to migrate_vma_insert_page(). I wonder if 
+>> instead it would be better just to move the existing check to before that 
+>> call?
+>>
+> 
 
-Simplify the return expression.
+While look at this more closely, move the existing check to before migrate_vma_insert_page() could
+potentially change the current mmu_notifier semantics against anonymous zero page. :(
+So check zone device page inside migrate_vma_insert_page() would be more acceptable.
+Many thanks.
 
-Signed-off-by: Zhichao Cai <caizhichao@yulong.com>
----
- sound/i2c/i2c.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/sound/i2c/i2c.c b/sound/i2c/i2c.c
-index 847e3b6..dfcc87e 100644
---- a/sound/i2c/i2c.c
-+++ b/sound/i2c/i2c.c
-@@ -235,9 +235,7 @@ static int snd_i2c_bit_sendbyte(struct snd_i2c_bus *bus, unsigned char data)
- 	for (i = 7; i >= 0; i--)
- 		snd_i2c_bit_send(bus, !!(data & (1 << i)));
- 	err = snd_i2c_bit_ack(bus);
--	if (err < 0)
--		return err;
--	return 0;
-+	return err < 0 ? err : 0;
- }
- 
- static int snd_i2c_bit_readbyte(struct snd_i2c_bus *bus, int last)
--- 
-1.9.1
-
+> Yes, sounds good! Many thanks for your advice! :)
+> 
+>>>
+>> .
+>>
+> 
 
