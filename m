@@ -2,156 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EF6346491
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03129346492
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhCWQLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233067AbhCWQKv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:10:51 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A3FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:10:50 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id j3so24054422edp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OtJczClZvyyzUz2W99ySZlZwsk7iPU0WG7wWmkyfXgQ=;
-        b=uOQcAENri96Ujd0j2x9QyFmGHd81FS40zuZgNTVQ83ux6jRqlUcR/hbhuTMU2RGnkJ
-         wuj5mMAlMWKZ3Miww2PYmeQuIolvMTxzicIvnrHKqFhNEJiDVBwk/JjoUzaowecIEu03
-         6Ucu0AUjymXbCYqkRgFH/iC/irP+Wu+OXemJKKZS7xEXLdkHbXKIF5Y1fpWwKjhXfJWH
-         Qtf/uUH2guRKmyQ3PljjT1z2RbbWX/rbz+LYwtGOXkWt2IiMSbHBRhrrx9czPjxpboca
-         HusYM6pwdyh/qt2fclT95Gf0KQNtgc3jV9hpvdc3MLwd1YIDG3lE9JXMjlzNmV2YKK6C
-         /YWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OtJczClZvyyzUz2W99ySZlZwsk7iPU0WG7wWmkyfXgQ=;
-        b=MofLFlRBrq1NtWlDMp4CcGJFc9F0z1GSUy8eZoq15f4zzciExeVF+k+KMPMlK4Z0op
-         QlZ8SmWslkzWJE8L1Rx+AtfBXoNMTi3gY6Hh8EceUAbzuSGOMGD2jxJDQ82WdMoisWYt
-         Awc61ZEmjzMH+hVCtboEqs8ujV/ewfkwX+a29VKhmz9qCotd07DcgdGDilPoQwkS2jXd
-         n/J7r7K51JFRY6pSHILRfLZJLcSilxGbWNLri8ADVoFPEOy4f0pGfYoHWiMOH4So4lzG
-         wutUlAkPEV+jqejlV0eVFScyz7mqpQBzYUiAzRpipEnzx1HtGWsofDbAdid02kkoSC9o
-         OuGw==
-X-Gm-Message-State: AOAM532kgXHl216KyhIFA4k8FrZlDE8FQfzBcjtO8JVe5Jl8ZBOPJoYR
-        VliJk0zHko2/dtt569SM1Pacvg==
-X-Google-Smtp-Source: ABdhPJzLRBsXt4/fR4e8wtncvkQEYxZNtsCOJ4qkU5rpaiRJTYKy8HdDP04Fo+UcjfeOgrf4nsJ44A==
-X-Received: by 2002:a05:6402:160e:: with SMTP id f14mr5360148edv.45.1616515849553;
-        Tue, 23 Mar 2021 09:10:49 -0700 (PDT)
-Received: from enceladus (ppp-94-64-113-158.home.otenet.gr. [94.64.113.158])
-        by smtp.gmail.com with ESMTPSA id k9sm13271942edn.68.2021.03.23.09.10.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 09:10:49 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 18:10:46 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
-Message-ID: <YFoTBm0mJ4GyuHb6@enceladus>
-References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
- <20210323154112.131110-1-alobakin@pm.me>
- <YFoNoohTULmcpeCr@enceladus>
- <20210323170447.78d65d05@carbon>
+        id S233176AbhCWQLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:11:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32896 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233017AbhCWQLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:11:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616515863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EBzFai2/9UHXdLCg+ptfPYt+b4h1PCkVbj2YlqjJF+8=;
+        b=dhX7AXuqSadfv+l2TtEdZwG20UOhZKzHOfIDUXc1uC1dklJdwR0cpzCZr/v0yU+rMjWEMl
+        Dc1hidPn1rhLPYxPxOz6SvEdgc/+oFMDFU0JWRGMbbYT3can7CstaOIrmNxn180qb7FmdY
+        wfkzEvjh2zJT7GB+PIlb2KRMcbq1XLE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1111AADAA;
+        Tue, 23 Mar 2021 16:11:03 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 17:11:00 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com
+Subject: Re: [PATCH] mm: memcontrol: fix memsw uncharge for root_mem_cgroup
+Message-ID: <YFoTFJ349TqzYx40@dhcp22.suse.cz>
+References: <20210323145653.25684-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323170447.78d65d05@carbon>
+In-Reply-To: <20210323145653.25684-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 05:04:47PM +0100, Jesper Dangaard Brouer wrote:
-> On Tue, 23 Mar 2021 17:47:46 +0200
-> Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
-> 
-> > On Tue, Mar 23, 2021 at 03:41:23PM +0000, Alexander Lobakin wrote:
-> > > From: Matteo Croce <mcroce@linux.microsoft.com>
-> > > Date: Mon, 22 Mar 2021 18:02:55 +0100
-> > >   
-> > > > From: Matteo Croce <mcroce@microsoft.com>
-> > > >
-> > > > This series enables recycling of the buffers allocated with the page_pool API.
-> > > > The first two patches are just prerequisite to save space in a struct and
-> > > > avoid recycling pages allocated with other API.
-> > > > Patch 2 was based on a previous idea from Jonathan Lemon.
-> > > >
-> > > > The third one is the real recycling, 4 fixes the compilation of __skb_frag_unref
-> > > > users, and 5,6 enable the recycling on two drivers.
-> > > >
-> > > > In the last two patches I reported the improvement I have with the series.
-> > > >
-> > > > The recycling as is can't be used with drivers like mlx5 which do page split,
-> > > > but this is documented in a comment.
-> > > > In the future, a refcount can be used so to support mlx5 with no changes.
-> > > >
-> > > > Ilias Apalodimas (2):
-> > > >   page_pool: DMA handling and allow to recycles frames via SKB
-> > > >   net: change users of __skb_frag_unref() and add an extra argument
-> > > >
-> > > > Jesper Dangaard Brouer (1):
-> > > >   xdp: reduce size of struct xdp_mem_info
-> > > >
-> > > > Matteo Croce (3):
-> > > >   mm: add a signature in struct page
-> > > >   mvpp2: recycle buffers
-> > > >   mvneta: recycle buffers
-> > > >
-> > > >  .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
-> > > >  drivers/net/ethernet/marvell/mvneta.c         |  4 +-
-> > > >  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
-> > > >  drivers/net/ethernet/marvell/sky2.c           |  2 +-
-> > > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
-> > > >  include/linux/mm_types.h                      |  1 +
-> > > >  include/linux/skbuff.h                        | 33 +++++++++++--
-> > > >  include/net/page_pool.h                       | 15 ++++++
-> > > >  include/net/xdp.h                             |  5 +-
-> > > >  net/core/page_pool.c                          | 47 +++++++++++++++++++
-> > > >  net/core/skbuff.c                             | 20 +++++++-
-> > > >  net/core/xdp.c                                | 14 ++++--
-> > > >  net/tls/tls_device.c                          |  2 +-
-> > > >  13 files changed, 138 insertions(+), 26 deletions(-)  
-> > > 
-> > > Just for the reference, I've performed some tests on 1G SoC NIC with
-> > > this patchset on, here's direct link: [0]
-> > >   
-> > 
-> > Thanks for the testing!
-> > Any chance you can get a perf measurement on this?
-> 
-> I guess you mean perf-report (--stdio) output, right?
-> 
+On Tue 23-03-21 22:56:53, Muchun Song wrote:
+> The pages aren't accounted at the root level, so we cannot uncharge the
+> page to the memsw counter for the root memcg. Fix this.
 
-Yea, 
-As hinted below, I am just trying to figure out if on Alexander's platform the
-cost of syncing, is bigger that free-allocate. I remember one armv7 were that
-was the case. 
+The patch is correct but I do wonder whether this matters much in the
+end. We shouldn't really rely on a correct page counter for the root
+memcg AFAICS in the kernel. We do not display the value
+(mem_cgroup_usage) so there shouldn't be any actual problem. Unless I am
+missing something make sure to spell that out in the changelog.
 
-> > Is DMA syncing taking a substantial amount of your cpu usage?
+> Fixes: 1f47b61fb407 ("mm: memcontrol: fix swap counter leak on swapout from offline cgroup")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+>  mm/memcontrol.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> (+1 this is an important question)
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 533b4b31b464..7d765a106684 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7155,7 +7155,8 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+>  	if (!cgroup_memory_noswap && memcg != swap_memcg) {
+>  		if (!mem_cgroup_is_root(swap_memcg))
+>  			page_counter_charge(&swap_memcg->memsw, nr_entries);
+> -		page_counter_uncharge(&memcg->memsw, nr_entries);
+> +		if (!mem_cgroup_is_root(memcg))
+> +			page_counter_uncharge(&memcg->memsw, nr_entries);
+>  	}
 >  
-> > > 
-> > > [0] https://lore.kernel.org/netdev/20210323153550.130385-1-alobakin@pm.me
-> > > 
-> 
+>  	/*
 > -- 
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
-> 
+> 2.11.0
+
+-- 
+Michal Hocko
+SUSE Labs
