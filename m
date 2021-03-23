@@ -2,103 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9EE34621D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E6234621F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbhCWO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:58:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:47710 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232402AbhCWO5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:57:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CC77D6E;
-        Tue, 23 Mar 2021 07:57:38 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADC963F718;
-        Tue, 23 Mar 2021 07:57:36 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 14:57:34 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
- stack trace unreliable
-Message-ID: <20210323145734.GD98545@C02TD0UTHF1T.local>
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-6-madvenka@linux.microsoft.com>
- <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
- <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
- <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+        id S232509AbhCWO6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232328AbhCWO6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:58:03 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96353C061574;
+        Tue, 23 Mar 2021 07:58:03 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so19690209ota.9;
+        Tue, 23 Mar 2021 07:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pBTbJ1gqi6qZwGjIPLuEyNrn1jPsCIcXzL71BITfVqc=;
+        b=WXQNB9fjlah/beKPue2wrQpvMFcQ8DSm5+6P1bqhDdQTBRYp0pJHUr763Vs7ZlvwLa
+         L8fGcDyauTE7mItfKvlUxAMyEvBzpvW473HrmtiCirb6LmbVYJoU6i2kF3em2We4uB3a
+         m9/0m9Wh5hGviZI7LBCN0adW/0bwNRjUo5oE2ryqR6ZQsXnEXMKEWlrCRbEHw5CvydKk
+         K5KEpN3w9QV11FLFbM3oD6Jm7Wq7oFa0I9HNOKfTw+YYAB1qBpalBze4IBwWPRpbB4UX
+         FC3dInEH35bCapJCUDLCgjMWVUYz4yTJD6546Fa3mKlpL2B/jJakvmZQ9pdHFO5s7M2Q
+         jWSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pBTbJ1gqi6qZwGjIPLuEyNrn1jPsCIcXzL71BITfVqc=;
+        b=A7VKznta7RrO4K/e6eKS/vf11xyMwVVsbtB/dTP7RryfQCOtHF2kpkM0p/tDmAxv9k
+         w7cxFBNKt0AIJWxaFhYX9BT9dxdfh1KHtCOaGj+uRLQelnBem4tuZnt+ExPEUMOU7FbB
+         JFdRNqEn3XU0QboDNumqKJ1sBuHwGBFUkMYbiEyPuFJxQJFrItX1CJXPVZ5uzNmr+F1x
+         8r/IOeOQzbkFMUuljmDp0ouRg/UGiUAlY9jJohFTOjgwwgo8Sw5ICru9lpjcFm2NeP4Y
+         IcYSb1pSO68plJ4asiul/pcgHCEHwtJBMX3sEDGxuJQPM2ayh27KOI58dBSI3i/64vzL
+         9w6w==
+X-Gm-Message-State: AOAM532re/7PBEvhfu7sd41DYFd+sg/oL9nYClHET48/XyvT6sdspqMa
+        wrDPBWLiWGfGb6MGomh3vnM=
+X-Google-Smtp-Source: ABdhPJzSxbq/FoTwpbbJi7IS9UcsaS8Jb5VWG+fVs0bKzHES3xpvO8J2Z9z54n7eKIDeo1pmYyti5g==
+X-Received: by 2002:a05:6830:17d0:: with SMTP id p16mr4623060ota.127.1616511483045;
+        Tue, 23 Mar 2021 07:58:03 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.56])
+        by smtp.googlemail.com with ESMTPSA id e12sm3760527oou.33.2021.03.23.07.58.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 07:58:02 -0700 (PDT)
+Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
+To:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f5ef2e4f-fcba-2e06-86ec-17522744b6a8@gmail.com>
+Date:   Tue, 23 Mar 2021 08:57:57 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+In-Reply-To: <20210322170301.26017-1-mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 09:15:36AM -0500, Madhavan T. Venkataraman wrote:
-> Hi Mark,
+On 3/22/21 11:02 AM, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> I have a general question. When exceptions are nested, how does it work? Let us consider 2 cases:
+> This series enables recycling of the buffers allocated with the page_pool API.
+> The first two patches are just prerequisite to save space in a struct and
+> avoid recycling pages allocated with other API.
+> Patch 2 was based on a previous idea from Jonathan Lemon.
 > 
-> 1. Exception in a page fault handler itself. In this case, I guess one more pt_regs will get
->    established in the task stack for the second exception.
+> The third one is the real recycling, 4 fixes the compilation of __skb_frag_unref
+> users, and 5,6 enable the recycling on two drivers.
 
-Generally (ignoring SDEI and stack overflow exceptions) the regs will be
-placed on the stack that was in use when the exception occurred, e.g.
+patch 4 should be folded into 3; each patch should build without errors.
 
-  task -> task
-  irq -> irq
-  overflow -> overflow
+> 
+> In the last two patches I reported the improvement I have with the series.
+> 
+> The recycling as is can't be used with drivers like mlx5 which do page split,
+> but this is documented in a comment.
+> In the future, a refcount can be used so to support mlx5 with no changes.
 
-For SDEI and stack overflow, we'll place the regs on the relevant SDEI
-or overflow stack, e.g.
+Is the end goal of the page_pool changes to remove driver private caches?
 
-  task -> overflow
-  irq -> overflow
 
-  task -> sdei
-  irq -> sdei
-
-I tried to explain the nesting rules in:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/stacktrace.c?h=v5.11#n59
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/arm64/kernel/stacktrace.c?h=v5.11&id=592700f094be229b5c9cc1192d5cea46eb4c7afc
-
-> 2. Exception in an interrupt handler. Here the interrupt handler is running on the IRQ stack.
->    Will the pt_regs get created on the IRQ stack?
-
-For an interrupt the regs will be placed on the stack that was in use
-when the interrupt was taken. The kernel switches to the IRQ stack
-*after* stacking the registers. e.g.
-
-  task -> task // subsequently switches to IRQ stack
-  irq -> irq
-
-> Also, is there a maximum nesting for exceptions?
-
-In practice, yes, but the specific number isn't a constant, so in the
-unwind code we have to act as if there is no limit other than stack
-sizing.
-
-We try to prevent cerain exceptions from nesting (e.g. debug exceptions
-cannot nest), but there are still several level sof nesting, and some
-exceptions which can be nested safely (like faults). For example, it's
-possible to have a chain:
-
- syscall -> fault -> interrupt -> fault -> pNMI -> fault -> SError -> fault -> watchpoint -> fault -> overflow -> fault -> BRK
-
-... and potentially longer than that.
-
-The practical limit is the size of all the stacks, and the unwinder's 
-stack monotonicity checks ensure that an unwind will terminate.
-
-Thanks,
-Mark.
