@@ -2,201 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DF5345BFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AD2345C03
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhCWKfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:35:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:43622 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230105AbhCWKe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:34:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FB981042;
-        Tue, 23 Mar 2021 03:34:59 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4F203F719;
-        Tue, 23 Mar 2021 03:34:56 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 10:34:53 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     madvenka@linux.microsoft.com
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/8] arm64: Implement frame types
-Message-ID: <20210323103453.GB95840@C02TD0UTHF1T.local>
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-3-madvenka@linux.microsoft.com>
+        id S230325AbhCWKft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhCWKfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:35:22 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66852C061574;
+        Tue, 23 Mar 2021 03:35:22 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id r17so11250095pgi.0;
+        Tue, 23 Mar 2021 03:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EWAvqft9JedT2B96X6yHK5pb6yvAkoVdHbtPbK/yIfw=;
+        b=ifyW8P+mSBCOQbXmxOGwhvFPTFvCwpMJxsbmwKDiWFf5CHyBK+grJ6e1WOobrFHvLA
+         eBzy/+4IVausTeE02KYech/kFIRG1Je5eGdI1CMFHhCNiQP6BtcL76P3SjYS9M4l3sxS
+         ScfDHn7+OIZifE8BGr6UZKO39/i9Hh27+6h3febVo88l+Fx7A4cFqq1y1wAFBvm0c1+/
+         Boiy7vPzLU2JINrZ+Ld1yx2s82p601Ue/ylGZGTh9EV0YTyc99GYn/lmfS3LmIdoMDNe
+         sGPHKqN0oEfXPQl6jC034Z+INZ8S2/U3tmGTspZ75PmeWZxBEKqdcdvtXtlckpiD6e/A
+         0ozA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EWAvqft9JedT2B96X6yHK5pb6yvAkoVdHbtPbK/yIfw=;
+        b=rlhn/bm3uzQIFLC2jSM5ia8h5TwlvcOQhikJ0raQJOHlzm5dqMGG2OA06NaETkUz7J
+         T1n46VL/Y2hjRLuxD5tzUm9kdoxLRVQmYWxF6DOoDnICrLNL4B+rZSustfuNQU91s7/p
+         yH6J09U++6XLSCAHYYZaWWbQknOYZcT5XCGgkzRnnW6/cj52l3GMXFiMtzhU2p/elSOn
+         bPBT6hCnz+McYIFQ7VKGcQfFSnpbCeplhmHzG/OfytMANJM1bWoyMQQM083pvsayfoye
+         qrfewceS1NFaqn4XF0er/JfDoVLR3x8cQuMyH6dufLL3CyxwsE91d9zuAEDmL5RB750t
+         4DkA==
+X-Gm-Message-State: AOAM533VWAAw23IgLZPZ1PROmcOJDrcnmhCORKHLyniBd9YGVf8f/JUX
+        3bSoRFwozIPI6HcaYoaj4d04qqo8xy8OSfShvic=
+X-Google-Smtp-Source: ABdhPJw+Hv9JzKIF6rFK/LLIZRQvbJiUkx7pz5USjk4dQ/hKMfBStWpzJPkTk/2x4B1Ecg/LB/9K8FgdvMVENuFI25k=
+X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
+ p6-20020a170902a406b02900e678c471c8mr4875381plq.17.1616495721814; Tue, 23 Mar
+ 2021 03:35:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315165800.5948-3-madvenka@linux.microsoft.com>
+References: <20210322211149.6658-1-andriy.shevchenko@linux.intel.com>
+ <20210322211149.6658-4-andriy.shevchenko@linux.intel.com> <dc377e4c-d601-790c-f20b-7e89c5d4e587@gmail.com>
+In-Reply-To: <dc377e4c-d601-790c-f20b-7e89c5d4e587@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 23 Mar 2021 12:35:05 +0200
+Message-ID: <CAHp75VfyTOqEwypc-HcXqy+bgCt_Ch7c3c9rVJJeHMcz6MgJvA@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] usb: gadget: pch_udc: Move pch_udc_init() to
+ satisfy kernel doc
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:57:54AM -0500, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> 
-> Apart from the task pt_regs, pt_regs is also created on the stack for other
-> other cases:
-> 
-> 	- EL1 exception. A pt_regs is created on the stack to save register
-> 	  state. In addition, pt_regs->stackframe is set up for the
-> 	  interrupted kernel function so that the function shows up in the
-> 	  EL1 exception stack trace.
-> 
-> 	- When a traced function calls the ftrace infrastructure at the
-> 	  beginning of the function, ftrace creates a pt_regs on the stack
-> 	  at that point to save register state. In addition, it sets up
-> 	  pt_regs->stackframe for the traced function so that the traced
-> 	  function shows up in the stack trace taken from anywhere in the
-> 	  ftrace code after that point. When the ftrace code returns to the
-> 	  traced function, the pt_regs is removed from the stack.
-> 
-> To summarize, pt_regs->stackframe is used (or will be used) as a marker
-> frame in stack traces. To enable the unwinder to detect these frames, tag
-> each pt_regs->stackframe with a type. To record the type, use the unused2
-> field in struct pt_regs and rename it to frame_type. The types are:
-> 
-> TASK_FRAME
-> 	Terminating frame for a normal stack trace.
-> EL0_FRAME
-> 	Terminating frame for an EL0 exception.
-> EL1_FRAME
-> 	EL1 exception frame.
-> FTRACE_FRAME
-> 	FTRACE frame.
-> 
-> These frame types will be used by the unwinder later to validate frames.
+On Tue, Mar 23, 2021 at 11:46 AM Sergei Shtylyov
+<sergei.shtylyov@gmail.com> wrote:
+> On 23.03.2021 0:11, Andy Shevchenko wrote:
+>
+> > Kernel doc and the content described by it shouldn't be teared apart.
+>
+>     s/teared/torn/?
 
-I don't think that we need a marker in the pt_regs:
+Thanks!
+I will change if the maintainer asks to resend or if it will be
+another version for some other reason.
 
-* For kernel tasks and user tasks we just need the terminal frame record
-  to be at a known location. We don't need the pt_regs to determine
-  this.
 
-* For EL1<->EL1 exception boundaries, we already chain the frame records
-  together, and we can identify the entry functions to see that there's
-  an exception boundary. We don't need the pt_regs to determine this.
-
-* For ftrace using patchable-function-entry, we can identify the
-  trampoline function. I'm also hoping to move away from pt_regs to an
-  ftrace_regs here, and I'd like to avoid more strongly coupling this to
-  pt_regs.
-
-  Maybe I'm missing something you need for this last case?
-
-> 
-> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-> ---
->  arch/arm64/include/asm/ptrace.h | 15 +++++++++++++--
->  arch/arm64/kernel/asm-offsets.c |  1 +
->  arch/arm64/kernel/entry.S       |  4 ++++
->  arch/arm64/kernel/head.S        |  2 ++
->  arch/arm64/kernel/process.c     |  1 +
->  5 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-> index e58bca832dff..a75211ce009a 100644
-> --- a/arch/arm64/include/asm/ptrace.h
-> +++ b/arch/arm64/include/asm/ptrace.h
-> @@ -117,6 +117,17 @@
->   */
->  #define NO_SYSCALL (-1)
->  
-> +/*
-> + * pt_regs->stackframe is a marker frame that is used in different
-> + * situations. These are the different types of frames. Use patterns
-> + * for the frame types instead of (0, 1, 2, 3, ..) so that it is less
-> + * likely to find them on the stack.
-> + */
-> +#define TASK_FRAME	0xDEADBEE0	/* Task stack termination frame */
-> +#define EL0_FRAME	0xDEADBEE1	/* EL0 exception frame */
-> +#define EL1_FRAME	0xDEADBEE2	/* EL1 exception frame */
-> +#define FTRACE_FRAME	0xDEADBEE3	/* FTrace frame */
-
-This sounds like we're using this as a heuristic, which I don't think we
-should do. I'd strongly prefr to avoid magic valuess here, and if we
-cannot be 100% certain of the stack contents, this is not reliable
-anyway.
-
-Thanks,
-Mark.
-
->  #ifndef __ASSEMBLY__
->  #include <linux/bug.h>
->  #include <linux/types.h>
-> @@ -187,11 +198,11 @@ struct pt_regs {
->  	};
->  	u64 orig_x0;
->  #ifdef __AARCH64EB__
-> -	u32 unused2;
-> +	u32 frame_type;
->  	s32 syscallno;
->  #else
->  	s32 syscallno;
-> -	u32 unused2;
-> +	u32 frame_type;
->  #endif
->  	u64 sdei_ttbr1;
->  	/* Only valid when ARM64_HAS_IRQ_PRIO_MASKING is enabled. */
-> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-> index a36e2fc330d4..43f97dbc7dfc 100644
-> --- a/arch/arm64/kernel/asm-offsets.c
-> +++ b/arch/arm64/kernel/asm-offsets.c
-> @@ -75,6 +75,7 @@ int main(void)
->    DEFINE(S_SDEI_TTBR1,		offsetof(struct pt_regs, sdei_ttbr1));
->    DEFINE(S_PMR_SAVE,		offsetof(struct pt_regs, pmr_save));
->    DEFINE(S_STACKFRAME,		offsetof(struct pt_regs, stackframe));
-> +  DEFINE(S_FRAME_TYPE,		offsetof(struct pt_regs, frame_type));
->    DEFINE(PT_REGS_SIZE,		sizeof(struct pt_regs));
->    BLANK();
->  #ifdef CONFIG_COMPAT
-> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-> index e2dc2e998934..ecc3507d9cdd 100644
-> --- a/arch/arm64/kernel/entry.S
-> +++ b/arch/arm64/kernel/entry.S
-> @@ -269,8 +269,12 @@ alternative_else_nop_endif
->  	 */
->  	.if \el == 0
->  	stp	xzr, xzr, [sp, #S_STACKFRAME]
-> +	ldr	w17, =EL0_FRAME
-> +	str	w17, [sp, #S_FRAME_TYPE]
->  	.else
->  	stp	x29, x22, [sp, #S_STACKFRAME]
-> +	ldr	w17, =EL1_FRAME
-> +	str	w17, [sp, #S_FRAME_TYPE]
->  	.endif
->  	add	x29, sp, #S_STACKFRAME
->  
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index 2769b20934d4..d2ee78f8f97f 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -410,6 +410,8 @@ SYM_FUNC_END(__create_page_tables)
->  	 */
->  	.macro setup_last_frame
->  	sub	sp, sp, #PT_REGS_SIZE
-> +	ldr	w17, =TASK_FRAME
-> +	str	w17, [sp, #S_FRAME_TYPE]
->  	stp	xzr, xzr, [sp, #S_STACKFRAME]
->  	add	x29, sp, #S_STACKFRAME
->  	ldr	x30, =ret_from_fork
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 7ffa689e8b60..5c152fd60503 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -442,6 +442,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
->  	 * as the last frame for the new task.
->  	 */
->  	p->thread.cpu_context.fp = (unsigned long)childregs->stackframe;
-> +	childregs->frame_type = TASK_FRAME;
->  
->  	ptrace_hw_copy_thread(p);
->  
-> -- 
-> 2.25.1
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
