@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0258234640F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B698A34642D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbhCWP6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:58:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:48432 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232912AbhCWP5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:57:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8A04D6E;
-        Tue, 23 Mar 2021 08:57:54 -0700 (PDT)
-Received: from [10.57.6.111] (unknown [10.57.6.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36A4F3F718;
-        Tue, 23 Mar 2021 08:57:52 -0700 (PDT)
-Subject: Re: [PATCH] PM / EM: postpone creating the debugfs dir till
- fs_initcall
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rjw@rjwysocki.net, rafael@kernel.org, ionela.voinescu@arm.com,
-        Dietmar.Eggemann@arm.com
-References: <20210323145608.29832-1-lukasz.luba@arm.com>
- <YFoIjt3E+MIK3yQQ@kroah.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <39cee1e7-c085-88d2-9b3b-e4ffbbee04eb@arm.com>
-Date:   Tue, 23 Mar 2021 15:57:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233010AbhCWP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233002AbhCWP6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 11:58:35 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70173C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:34 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id s21so10289783pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SfxnQOiV9YtUhVcKaF5V6wU86bSU5bXDZAmmBqiZiO8=;
+        b=D2p4/PesPSG1mrdD2nErlUzlOKRxAMLs38va47MURkQJ3SOMFZbuEkzyFsjKDX2iM7
+         yde2KQI8/GySy+QNOtg7Iz1d6WHS7tI2OioCyUjGWqSQSwVt/Ma6lrDSYf6l1Oa6yRzU
+         /slcrq3CdMoGOQ4CLBvJetxj1Y74nYhrujy55EkCjhJb4yZvd89I0146G9rnusoWWoIH
+         hnN7EHoTxyldjH13iWmmpgFRNfWDvdrCZAiEDhIMLHWlP389Yuy1tPUTFLTHkoAFbeB8
+         wdJ/FafA/R7UE8H7dhUhdXNbRooxP66soJoScEQkMX5vvdmnqIPFjONVRH0rGuKwOsAq
+         JxUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SfxnQOiV9YtUhVcKaF5V6wU86bSU5bXDZAmmBqiZiO8=;
+        b=p1WoiWZNmMNf0VGFFJPV0g1iFo65ZZ5IFZuXgs3xJMbXfE09d3s08dM0fr07rDEP/l
+         Wz0tdIWZSTcu7PRBeMSWiux0sEtV44U5bji4StVMjusTWgnONvhgL5ROjpStZsl0XkcC
+         s9pVifxP2khvLuTIL22teawOh1+pteSSKfJsMzjjW7rVbHsYiM30vAHM3wy8I6bxlD5L
+         +ROwL9t+fYm/9NkYrV1kt9++fGXEYMJ6fim03EGkLGQEVhBH85UEEv7NmH47Uu4NBhbg
+         PGoVvw6/ahXmVdUxmI/By2appbwm3A5NCzolhu8HE8BdJGgYd1kgR4VTAcPtdUQY3wyG
+         Wdtw==
+X-Gm-Message-State: AOAM533cV9qvrE1unOA4pdfYS3wM1NQhacsAZniAt8f+/cQbLWcOoQcD
+        UMfMwnrtEBqfRyZgSOFey9T9Rw==
+X-Google-Smtp-Source: ABdhPJx9v0kCbb15YUoBdgkPPfFrpgXF7gY9i57WrbCLPcQvRfVEROeZggyWBWyXluSfOwN0ZG+dwg==
+X-Received: by 2002:a17:90a:1502:: with SMTP id l2mr5004874pja.149.1616515113748;
+        Tue, 23 Mar 2021 08:58:33 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id s28sm17894559pfd.155.2021.03.23.08.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 08:58:33 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:58:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v5 00/10] KVM: selftests: some improvement and a new
+ test for kvm page table
+Message-ID: <YFoQJQ5OYEx3BD3Y@google.com>
+References: <20210323135231.24948-1-wangyanan55@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YFoIjt3E+MIK3yQQ@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323135231.24948-1-wangyanan55@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021, Yanan Wang wrote:
+> Hi,
+> This v5 series can mainly include two parts.
+> Based on kvm queue branch: https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=queue
 
-
-On 3/23/21 3:26 PM, Greg KH wrote:
-> On Tue, Mar 23, 2021 at 02:56:08PM +0000, Lukasz Luba wrote:
->> The debugfs directory '/sys/kernel/debug/energy_model' is needed before
->> the Energy Model registration can happen. With the recent change in
->> debugfs subsystem it's not allowed to create this directory at early stage
->> (core_initcall). Thus creating this directory would fail.
->> Postpone the creation of the EM debug dir to later stage: fs_initcall.
->> It should be safe since all clients: CPUFreq drivers, Devfreq drivers will
->> be initialized in later stages.
->> The custom debug log below prints the time of creation the EM debug dir at
->> fs_initcall and successful registration of EMs at later stages.
->>
->> [    1.505717] energy_model: creating rootdir
->> [    3.698307] cpu cpu0: EM: created perf domain
->> [    3.709022] cpu cpu1: EM: created perf domain
->>
->> fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
->> Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->> Hi Rafael,
->>
->> Please take this patch into your PM v5.12 fixes. The change described in
->> the patch above landed in v5.12-rc1. Some of our EAS/EM tests are failing.
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-
-Thank you Greg!
-
-Regards,
-Lukasz
+Given the number of Reviewed-by tags, I'm pretty sure you can drop the "RFC" :-)
