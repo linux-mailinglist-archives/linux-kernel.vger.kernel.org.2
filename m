@@ -2,199 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF847346462
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF086346466
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbhCWQF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        id S233069AbhCWQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhCWQF2 (ORCPT
+        with ESMTP id S232733AbhCWQF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:05:28 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B200C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:28 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id u10so18584315ilb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b6VOuxdr8+wbIMXO16OHPMoQ9DHNhjuVRpBItfVqOck=;
-        b=Y6VEZ8TqdQQSZUqF4HaKfYmHVgqGNwe9DQKsVq6JXNLfA2b4WHXHZ3Bm3DESgRM/oj
-         mg+l+KgKtuZEctX17wkd5awRTQkruAG+wVeNi7E9Ykv5b1HFp++DMvSNUqOuVwR8Hves
-         HxBI1DlkktITIjEwmuq84xMAAedQHTeuxVBEQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b6VOuxdr8+wbIMXO16OHPMoQ9DHNhjuVRpBItfVqOck=;
-        b=GoxLoszOfgTj9tdqKgCR8yroG/1wftby1VU21wEcQxyoi5sLzVojYFvuLulwMUxz5O
-         QM3kTiXN2RjhwUTBoz5EPtGm3E2aY4s7P+DwrnSxAX2dulNedBsehQ+xihm2zEPiQb5f
-         aENOtJnAkceUqrCacbvardT/oS5GpiJM8w0HWA49xxkH1Ke8pJmSil8Apk/G4g1+RCt0
-         881+Fy1owZosjM9VpGzUEQfkNaZ5hvVu0vdQ9+wQC3RNHM1VSHbNp+8Vtqfz8FGmDLdj
-         PSJD6ysxa0aaRYJ9GPQ4GorbAOJjDjBlgXKPol3T+5gTDMYTCCEMIu80YQi7UpHfHJhM
-         R0RQ==
-X-Gm-Message-State: AOAM531HrDokQquYP06zLNurHXqR+Ggp36B3b55CN2gLL5ZSSm1wOG2h
-        g629+XMDuLh7GzMgfkW5niOmVGVozZ7DYw==
-X-Google-Smtp-Source: ABdhPJy3QC4/uPt6Rd5ewcFDrMPmHWgOyBy4EmJ8ZLSP0wePsyLVQ4RcpmshSRTJfrze5SOGgrwLfA==
-X-Received: by 2002:a92:dc83:: with SMTP id c3mr5543540iln.167.1616515527470;
-        Tue, 23 Mar 2021 09:05:27 -0700 (PDT)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
-        by smtp.gmail.com with ESMTPSA id o15sm9776863ils.87.2021.03.23.09.05.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 09:05:27 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id t6so18631631ilp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:27 -0700 (PDT)
-X-Received: by 2002:a05:6e02:dc5:: with SMTP id l5mr5360532ilj.218.1616515526531;
- Tue, 23 Mar 2021 09:05:26 -0700 (PDT)
+        Tue, 23 Mar 2021 12:05:56 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6985FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lKpytMVS6/ftOFf2bnc4fc09YEOmBW8jbciH2TkLvS8=; b=PPw+hHlVgAnxt5La/yIIDDs1Lj
+        FolUqBA0A2s2VR+8dKC/f20eRqtXaDMF2h3BY4EaIjnlxONkgMd2ftOZyyMfeDFFMHVRFbSmj62hf
+        hpLHC0If0WTpRBJsaRWqbSjI3VTPZRXy9VsTFAeHMX1KOznmSSich82au2AmmGpoPO4UFRJ9kiPza
+        fv4M4pKuSaUAfCr8jw49Gjr2f1oT8mis0sjwtPzAqG9Ak4w4D3NmUx1aP8NtJNaG1MBZ79flEtbbD
+        /f1X7ytcHUs81pU72yfiJlh+afLAzS2olUcQbn3rIBoqchMt/oiUBegy28vxJq7ABkTjZLnnHJW60
+        cDCdKoBA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOjX0-00FHsw-LO; Tue, 23 Mar 2021 16:05:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3EE493003E1;
+        Tue, 23 Mar 2021 17:05:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 239712D98F229; Tue, 23 Mar 2021 17:05:21 +0100 (CET)
+Date:   Tue, 23 Mar 2021 17:05:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ftrace: shut up -Wcast-function-type warning for
+ ftrace_ops_no_ops
+Message-ID: <YFoRwYBeHAN0Vn5q@hirez.programming.kicks-ass.net>
+References: <20210322215006.1028517-1-arnd@kernel.org>
+ <YFmbHI4hnKg5UH2M@hirez.programming.kicks-ass.net>
+ <20210323085742.18477aad@gandalf.local.home>
+ <YFoIU0xC3lXBwc9Y@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210319055342.127308-1-senozhatsky@chromium.org> <20210319055342.127308-3-senozhatsky@chromium.org>
-In-Reply-To: <20210319055342.127308-3-senozhatsky@chromium.org>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Tue, 23 Mar 2021 17:05:15 +0100
-X-Gmail-Original-Message-ID: <CANiDSCua-9=SoVxNOo3rmXR7ihj=Rro-=wqAmJpAU4JwyTvQXg@mail.gmail.com>
-Message-ID: <CANiDSCua-9=SoVxNOo3rmXR7ihj=Rro-=wqAmJpAU4JwyTvQXg@mail.gmail.com>
-Subject: Re: [PATCHv3 2/6] media: v4l UAPI: document ROI selection targets
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFoIU0xC3lXBwc9Y@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey
+On Tue, Mar 23, 2021 at 04:25:07PM +0100, Peter Zijlstra wrote:
+> On Tue, Mar 23, 2021 at 08:57:42AM -0400, Steven Rostedt wrote:
+> 
+> > Well, from what I understand is that typecasting functions to other types
+> > of functions is one of the mistakes that cause security bugs to happen. And
+> > there's been a few of them in the kernel. Which is why the compilers have
+> > now been flagging them.
+> 
+> Doing the cast in the first pace is an indication something weird is
+> happening anyway. C will already warn you if you assign non-matching
+> pointer types.
+> 
+> So if there's bugs, audit all (function) pointer casts. Don't wreck
+> casts.
+> 
+> This warning will only make people add more (void *) intermediate casts
+> and then we have uglier code and an equal amount of hidden bugs. IE. we
+> really didn't win anything at all.
+> 
+> > This particular instance of the typecasting is unique and there's a bit of
+> > magic involved. Adding this little work around here is fine. Probably needs
+> > a better comment though.
+> 
+> Nah, it's not unique, static_call() has a whole bunch of them, including
+> the exact same you have. Yes, we're doing something C thinks is UB, but
+> we do that all day every day.
 
-On Fri, Mar 19, 2021 at 6:53 AM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> Document V4L2 selection targets that will be used to ROI
-> implementation.
->
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  .../media/v4l/selection-api-configuration.rst | 22 +++++++++++++++
->  .../media/v4l/selection-api-examples.rst      | 28 +++++++++++++++++++
->  .../media/v4l/v4l2-selection-targets.rst      | 24 ++++++++++++++++
->  3 files changed, 74 insertions(+)
->
-> diff --git a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
-> index fee49bf1a1c0..b5fdd765e2db 100644
-> --- a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
-> +++ b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
-> @@ -135,3 +135,25 @@ and the height of rectangles obtained using ``V4L2_SEL_TGT_CROP`` and
->  ``V4L2_SEL_TGT_COMPOSE`` targets. If these are not equal then the
->  scaling is applied. The application can compute the scaling ratios using
->  these values.
-> +
-> +Configuration of Region of Interest (ROI)
-> +=========================================
-> +
-> +The range of auto-controls values and of coordinates of the top left
-> +corner, width and height of areas that can be ROI is given by the
-> +``V4L2_SEL_TGT_ROI_BOUNDS_MIN`` and ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``
-> +targets. It is recommended for the driver developers to put the top/left
-> +corner at position ``(0,0)``.
-> +
-> +The top left corner, width and height of the Region of Interest area
-> +and auto-controls currently being employed by the device are given by
-> +the ``V4L2_SEL_TGT_ROI`` target. It uses the same coordinate system
-> +as ``V4L2_SEL_TGT_ROI_BOUNDS_MIN`` and ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``.
-> +
-> +In order to change active ROI top left, width and height coordinates
-> +and ROI auto-controls use ``V4L2_SEL_TGT_ROI`` target.
-> +
-> +Each capture device has a default ROI rectangle and auto-controls
-> +value given by the ``V4L2_SEL_TGT_ROI_DEFAULT`` target. Drivers shall
+Here's weakening static_call_update() to get around this new
+fail^Wfeature:
 
-nit:  Drivers may, instead of shall?
-
-
-
-> +set the ROI rectangle to the default when the driver is first loaded,
-> +but not later.
-> diff --git a/Documentation/userspace-api/media/v4l/selection-api-examples.rst b/Documentation/userspace-api/media/v4l/selection-api-examples.rst
-> index 5f8e8a1f59d7..ad2664888700 100644
-> --- a/Documentation/userspace-api/media/v4l/selection-api-examples.rst
-> +++ b/Documentation/userspace-api/media/v4l/selection-api-examples.rst
-> @@ -82,3 +82,31 @@ Example: Querying for scaling factors
->         /* computing scaling factors */
->         hscale = (double)compose.r.width / crop.r.width;
->         vscale = (double)compose.r.height / crop.r.height;
-> +
-> +Setting Region Of Interest area to half of the default value
-> +
-> +Example: Simple ROI
-> +===========================
-> +
-> +.. code-block:: c
-> +
-> +       struct v4l2_selection roi = {
-> +           .type = V4L2_BUF_TYPE_VIDEO_CAPTURE,
-> +           .target = V4L2_SEL_TGT_ROI_DEFAULT,
-> +       };
-> +       struct v4l2_rect r;
-> +
-> +       ret = ioctl(fd, VIDIOC_G_SELECTION, &roi);
-> +       if (ret)
-> +           exit(-1);
-> +       /* setting smaller ROI rectangle */
-> +       r.width = roi.r.width / 2;
-> +       r.height = roi.r.height / 2;
-> +       r.left = roi.r.width / 4;
-> +       r.top = roi.r.height / 4;
-> +       roi.r = r;
-> +       roi.target = V4L2_SEL_TGT_ROI;
-> +       roi.flags = V4L2_SEL_FLAG_ROI_AUTO_EXPOSURE;
-> +       ret = ioctl(fd, VIDIOC_S_SELECTION, &roi);
-> +       if (ret)
-> +           exit(-1);
-> diff --git a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
-> index b46bae984f35..d1dc9c50eb05 100644
-> --- a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
-> +++ b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
-> @@ -75,6 +75,30 @@ of the two interfaces they are used.
->         modified by hardware.
->        - Yes
->        - No
-> +    * - ``V4L2_SEL_TGT_ROI``
-> +      - 0x0200
-> +      - Current Region of Interest rectangle and auto-controls value.
-> +      - Yes
-> +      - No
-> +    * - ``V4L2_SEL_TGT_ROI_DEFAULT``
-> +      - 0x0201
-> +      - Suggested Region of Interest rectangle and auto-controls value.
-> +      - Yes
-> +      - No
-> +    * - ``V4L2_SEL_TGT_ROI_BOUNDS_MIN``
-> +      - 0x0202
-> +      - Minimum bounds of the Region of Interest rectangle and minimum
-> +       auto-controls value. All valid ROI rectangles and auto-controls
-> +       should be within minimum-maximum range.
-> +      - Yes
-> +      - No
-> +    * - ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``
-> +      - 0x0203
-> +      - Maximum bounds of the Region of Interest rectangle and maximum
-> +       auto-controls value. All valid ROI rectangles and auto-controls
-> +       should be within minimum-maximum range.
-> +      - Yes
-> +      - No
->
->  .. raw:: latex
->
-> --
-> 2.31.0.rc2.261.g7f71774620-goog
->
-
-
---
-Ricardo Ribalda
+https://lkml.kernel.org/r/YFoN7nCl8OfGtpeh@hirez.programming.kicks-ass.net
