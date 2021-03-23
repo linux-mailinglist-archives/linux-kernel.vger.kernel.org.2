@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CC7346790
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFD034678F
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhCWS0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
+        id S231817AbhCWS0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbhCWSZi (ORCPT
+        with ESMTP id S230378AbhCWSZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 14:25:38 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FADC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:25:38 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id b21so2692685pfo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:25:38 -0700 (PDT)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66B4C061574;
+        Tue, 23 Mar 2021 11:25:37 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id o19so24572271edc.3;
+        Tue, 23 Mar 2021 11:25:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=XqDxfe4GGK69zvJtB/kYAUp+QZJt4kx+lv6J7Sr9tRs=;
-        b=pmX4m2+lbq8wnS3lDGZpOiVbrBKH9GZtNYepLlpUhILycXMuqeBz3snMC85G7kSa3Z
-         0trYrBGz1Ox/zg4rWqDN8q2a6uuaE/o3qj9T8eNhGxbFlk2H4OH740cB4ZX/7ul7r8+R
-         vN+S0vS8w3q0modfq8gt5cRopIK7WH6SHLg3HufwOlaBEIQ5U499dUYeOTkKTO7UIH9p
-         plGtyf9P+aH9ogIuDl9ic2r4iouA+ocbS+zhhg6rfLoBEJU62JoB+AY/jKGf5FXXQgpc
-         dl+QM4f/C6UPjj7xhpJ8HKMaghCv3XC4+B4xUwLR83CUJZvmciW8GDUZjZ9SI50a7rgp
-         SEYA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RL/yMvfsbK2kLwVMu3qOXkXrjIz29yMvsOfbsVlvXuk=;
+        b=casirC+q54L+/GDTIVWTQ9+s7i7XGQut4WdeZOSWnaZ/V+F00SrARas3jdyvojt8pR
+         i5DnYJxgvAuTnK9NNC4LpznZSuFwUndPX6qv2FrrETWyHTpYr3N+LEgsMbYJyuo6KrfP
+         v5dHagLwpJ6m1/QruTy4G5cMc0APTvpI6wVElE+nNo5897Pb9s9w78dVEyC1GH91FPD0
+         It9k94nIfdcIcqwYMaH2t9m6kloxlCMN50V7X9yOYQ9Vjf6wQYZ4Jm8kp3JSp7m/zwFk
+         cjmZh7Nq2LgbqrM0OnWVDjyjBXvqPcf2cX1I0k9rby4bLDMr+NtBtXvMvJfRD0N4irMR
+         t8Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=XqDxfe4GGK69zvJtB/kYAUp+QZJt4kx+lv6J7Sr9tRs=;
-        b=QDfg71AXdDG/uAZ+epncqXdW+RigiTNIyhgpRAsNFEEABcV9oWUCot0aYsuBVE/3Ut
-         iNtvC3m0l9ymaZ3Szn69rTuy/PQq6YHznDSRREg2zDRQCzbwN9RjX76cqhPJ4HX4yJbh
-         qvwUGzyvV2rMFYZJYyKZM8s3L6CsCkQp7JcaDbC40wCSCuS9R4A/n7avQwxl0RxRD7sl
-         6KbtnAbTP/xotpFQ8cb0moT0gTKYKpYH8VDzrraTwdugxf+4H0HRlf1LnpYjpgQkylnM
-         KSZDGgi0j+GAB2d9l1r8hn4f9QUDb6I2lCTkJZHd/Tu2jQ/8vXQIvKNjUF6NhmJSkvk3
-         kPJw==
-X-Gm-Message-State: AOAM531VEE/Xu1f08HFeF58UyFkl11SGMOieMH2nIOG+X3SeJD2eLQIx
-        gUUFJVUARKT4LaQZGzPUb0IJrNKzD0ZW
-X-Google-Smtp-Source: ABdhPJw89EMS2/MQ8wDqH2rLOe3CHbpDkSo8Pn93HIvJ3T4TR1ONMKvTuAoGolSWr3Iia5mN69ivSciAdNzW
-X-Received: from bg.sfo.corp.google.com ([2620:15c:8:10:b047:e98d:2134:b4dd])
- (user=bgeffon job=sendgmr) by 2002:aa7:9493:0:b029:1f8:a493:b747 with SMTP id
- z19-20020aa794930000b02901f8a493b747mr5851808pfk.41.1616523938296; Tue, 23
- Mar 2021 11:25:38 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 11:25:20 -0700
-In-Reply-To: <20210323182520.2712101-1-bgeffon@google.com>
-Message-Id: <20210323182520.2712101-4-bgeffon@google.com>
-Mime-Version: 1.0
-References: <20210303175235.3308220-1-bgeffon@google.com> <20210323182520.2712101-1-bgeffon@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH] mremap.2: MREMAP_DONTUNMAP to reflect to supported mappings
-From:   Brian Geffon <bgeffon@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Brian Geffon <bgeffon@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Dmitry Safonov <dima@arista.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RL/yMvfsbK2kLwVMu3qOXkXrjIz29yMvsOfbsVlvXuk=;
+        b=W6I1bBrLUnjyToo8ZUAV2iDJBla545ecUtnEXxmE/Gqo4le+nS4AGFqnlws52OoWDg
+         SBSNJCXuzCLxMF6nFjoW5ogfPYXPSEkQFcjco+6xXGBAOXkLfHZFvxLLEQPJaXRagT3g
+         sSE9gqD8Chf4iDmiCqZ37H0RcM2sanQQO06y6o+Bt7ftTWxnlc3wurvCrA7X4qh0UqDO
+         v0im9FYF1z6/5UHSOOu4dAIgJ1QCGVx+O+XaWXIBUcs1Hs+mcdhnQ4aV9kojQ1YAXAof
+         vkSr3SicsfRG07VDnEhL8GkkOwoHodD/FX0al3tsaIkAOE1K2Ozkd1neNiLCAjYobgLE
+         FkMw==
+X-Gm-Message-State: AOAM530C4tyILyL1fRtbFoZwvZxeBXoHkjyKKs9BzS7qKW1rbjSx2ZSd
+        ucHapH6XGTYWA0RKlBdOLkw=
+X-Google-Smtp-Source: ABdhPJydKbSF4UEFWOTRuav/CiK1rgiPR9YcVluCGcIPzynZGxrHESDRplRTFIlyyMnn51IVzU623w==
+X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr6062668edd.78.1616523936651;
+        Tue, 23 Mar 2021 11:25:36 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id si7sm11667903ejb.84.2021.03.23.11.25.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 11:25:30 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 19:25:51 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        jonathanh@nvidia.com, p.zabel@pengutronix.de,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] thermal: Fix a typo in the file soctherm.c
+Message-ID: <YFoyrxkZWrHmu8Ll@orome.fritz.box>
+References: <20210305015320.7614-1-unixbhaskar@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="t3F6Uw8G/Uh7que2"
+Content-Disposition: inline
+In-Reply-To: <20210305015320.7614-1-unixbhaskar@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mremap(2) now supports MREMAP_DONTUNMAP with mapping types other
-than private anonymous.
 
-Signed-off-by: Brian Geffon <bgeffon@google.com>
----
- man2/mremap.2 | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+--t3F6Uw8G/Uh7que2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/man2/mremap.2 b/man2/mremap.2
-index 3ed0c0c0a..72acbc111 100644
---- a/man2/mremap.2
-+++ b/man2/mremap.2
-@@ -118,16 +118,6 @@ This flag, which must be used in conjunction with
- remaps a mapping to a new address but does not unmap the mapping at
- .IR old_address .
- .IP
--The
--.B MREMAP_DONTUNMAP
--flag can be used only with private anonymous mappings
--(see the description of
--.BR MAP_PRIVATE
--and
--.BR MAP_ANONYMOUS
--in
--.BR mmap (2)).
--.IP
- After completion,
- any access to the range specified by
- .IR old_address
-@@ -227,7 +217,8 @@ was specified, but one or more pages in the range specified by
- .IR old_address
- and
- .IR old_size
--were not private anonymous;
-+were part of a special mapping or the mapping is one that
-+does not support merging or expanding;
- .IP *
- .B MREMAP_DONTUNMAP
- was specified and
--- 
-2.31.0.rc2.261.g7f71774620-goog
+On Fri, Mar 05, 2021 at 07:23:20AM +0530, Bhaskar Chowdhury wrote:
+>=20
+> s/calibaration/calibration/
+>=20
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  drivers/thermal/tegra/soctherm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--t3F6Uw8G/Uh7que2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBaMq8ACgkQ3SOs138+
+s6HgrRAAmGguCBaPzSxRoiAWGnB8WW8dtR9aHF6aoz6npvlyb+vXvF2ZdWgM0pAN
+L2jwQSbqkWSDRGurJ2LZzIifOXrKPYc+bcb9geSN56vBFtLfJyY6q6OD1w7y/2VI
+WyCJ/LTWeFigDynt81GEFkZUNcgIxESuddCHHiWKVLN5VKCniNWqDASDdOUXg/pn
+eyNfK9NXygF1VxjFsyyLKbrN1NEdtc/XM85lUVnBao+8WMSOjsk84R2ea/jGCSs/
+q2ZhV0jwYHpp1Vfuh9nWMZzje1HhX4r1QIwTbsqLznagAX6bqBCu4cBEh2DoDG5Z
+/Yxf07kcnXdmqZBPRXnRiHg/d0djQl+KzR/ftGWPfNOP8qlmuPB/WmIbLZuul86z
+rtEm2NQHc6rx6CGMTPjnE8rvGeZACz2ITaxezR1AabbOsj+9Wb+tOSbnKjPEiICo
+KWwY0Yy3WpQn7C2W2Zg1FHhrRV2mAu9sgldIxbg3NnJaHwEoWGkKMF3biOEwZMp8
+JCtRKC8WPoKLkEFzzULoCkPAoikpCH0bcL7XVpdiatSMh5hmrOLXSqVLlyB8MrPC
+MNQUR2xIX5REqIOo37q+eYeLsLgtm79dWkTYzMd0YpSCe64bHkPkSga9FK3GUA4y
+x2+6tz19Gs28io3FkwgveGZBlmTGj/O9lltdeyA61q5epQ3hfTE=
+=s+sR
+-----END PGP SIGNATURE-----
+
+--t3F6Uw8G/Uh7que2--
