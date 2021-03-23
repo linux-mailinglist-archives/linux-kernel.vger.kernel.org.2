@@ -2,156 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAADC345786
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E5D345789
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhCWFvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229728AbhCWFwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:52:25 -0400
+Received: from ozlabs.org ([203.11.71.1]:47197 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhCWFvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 01:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbhCWFvu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:51:50 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3536C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 22:51:49 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id c204so13156344pfc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 22:51:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FtIC9ocJ4+NOnMRBa7jQB43OlZx1SC3ik3qdbBBdMIA=;
-        b=X/5/uuwrxFYcF8Awxi1cwtq18Vl4EymKBcOaK9VmY+oiNsIsueGIxRe1utA/39s1qG
-         7FbBz+ekJlBjND28eTk8IF0Ah/P72WMDBm6F0UtBW+rUSBRpCuQmI6L9F4AWAjn/S2Le
-         9960srFiKAxVa69Tps1YeIwAqpv/24hSuXRKo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FtIC9ocJ4+NOnMRBa7jQB43OlZx1SC3ik3qdbBBdMIA=;
-        b=cdIdiDkqql0TyXpFmnUOxatr47fyCgAn4N1BGVRTsHzPHmLXNgHYz6bkwSbi4zBwGs
-         NMslCfTl0E2eOjSkW2gCkzghD8mVCUi4w7RCOmUZFseErOl1k0iz18YF4PYlt5gJOs64
-         Icx9zfkqbuOwYxAwjGjzZcBySJ+ZjHzMrDaKDdZ7vF6jMYDXAv1HeyAzwHvDQglikmYv
-         hFUcNrJFXQ8QEkfIg5a+ynf3/4mOcRDuoMaD17485RU5lghMww6dulp3xSm/UxDGLGUb
-         DLeQ1PZh9tl/VWk66Ab+wMtjev1JobVVE5zr6L6/TwCqObCA3eMt6bRW0rpJu/s8z77E
-         pnIg==
-X-Gm-Message-State: AOAM5306iitGO5RC7F03TcX6PU7vyD1leMAAylvIVlzNt3lpYy8yKN/y
-        kcAkgWyUBuKJQ2zrtnO1Mff3xc801BJr6NlS
-X-Google-Smtp-Source: ABdhPJwmGyPV1d4xdJ5P70Yke6owQpM9u/Z2Pscxia8QZ1e+ryjZ+XQiEohTES5v5I74LSSlE1mXbQ==
-X-Received: by 2002:a17:902:834a:b029:e6:b6bc:f58c with SMTP id z10-20020a170902834ab02900e6b6bcf58cmr3622329pln.85.1616478708902;
-        Mon, 22 Mar 2021 22:51:48 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:c8d1:279a:cb3a:39cd])
-        by smtp.gmail.com with ESMTPSA id k11sm7621837pgc.38.2021.03.22.22.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 22:51:48 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org,
-        weiyi.lu@mediatek.com, ck.hu@mediatek.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, enric.balletbo@collabora.com
-Subject: [PATCH] soc: mediatek: mmsys: Add mt8183 mmsys routing table
-Date:   Tue, 23 Mar 2021 13:51:43 +0800
-Message-Id: <20210323055143.607529-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4L8y4tvpz9sSC;
+        Tue, 23 Mar 2021 16:51:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616478706;
+        bh=6x9O3U5LYou/LxyIlUpvO9WmX3PQsUq3RFxPZbQkWu0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=io+UbUd4si4BXm5MuXaFztuP6fziMDHx0WJRbnbpsRfa36NWly0wt5MSLdYOkSh8r
+         2dano1DDEaO9Tc5mxqi9IdwUJ5d/Kwd6HAb3qNfH+mkbgEskVrGThXXkkmBduigh4I
+         dCMBgj5JCQkDZgr1i8LOhbz2wOqa+odTK4QjklQp6gWjFUVHrCk1cSMuvPye1ai2ED
+         c32DGo3qTY9PInxowTyj5jKCNyADyEG7Q8NM4A5Z6t3UBJx94ivgHG7nnxjWJTHuoe
+         jonJHyms5kTEYlX3qcY5S9UBjB2OJGFTDj2VeqHHT27u68MiSDPl5rpIOc4hXzOXLY
+         33VoLkA3sBbtg==
+Date:   Tue, 23 Mar 2021 16:51:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning in Linus' tree
+Message-ID: <20210323165145.2ae9a0d2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/y4dpXuUMZPUkj_+R9ypi+/T";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mt8183 has different routing registers than mt8173.
+--Sig_/y4dpXuUMZPUkj_+R9ypi+/T
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-This patch is based on series ("soc: mediatek: Prepare MMSYS for DDP routing using tables")[1]
-and tested with mt8183 krand and mt8183 juniper device.
-The register value is referenced from [2].
+Hi all,
 
-[1] https://patchwork.kernel.org/project/linux-mediatek/cover/20210317181711.795245-1-enric.balletbo@collabora.com/
-[2] https://patchwork.kernel.org/project/linux-mediatek/patch/1609815993-22744-6-git-send-email-yongqiang.niu@mediatek.com/
----
- drivers/soc/mediatek/mtk-mmsys.c |  2 ++
- drivers/soc/mediatek/mtk-mmsys.h | 47 ++++++++++++++++++++++++++++++++
- 2 files changed, 49 insertions(+)
+Building Linus' tree, today's linux-next build (x86_64 allnoconfig)
+produced this warning:
 
-diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-index c46d8ab8b0c2..16bb55b0463a 100644
---- a/drivers/soc/mediatek/mtk-mmsys.c
-+++ b/drivers/soc/mediatek/mtk-mmsys.c
-@@ -40,6 +40,8 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
- 
- static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
- 	.clk_driver = "clk-mt8183-mm",
-+	.routes = mmsys_mt8183_routing_table,
-+	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
- };
- 
- struct mtk_mmsys {
-diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-mmsys.h
-index a760a34e6eca..c55baf5932b8 100644
---- a/drivers/soc/mediatek/mtk-mmsys.h
-+++ b/drivers/soc/mediatek/mtk-mmsys.h
-@@ -66,6 +66,28 @@
- #define DPI_SEL_IN_BLS				0x0
- #define DSI_SEL_IN_RDMA				0x1
- 
-+#define MT8183_DISP_OVL0_MOUT_EN		0xf00
-+#define MT8183_DISP_OVL0_2L_MOUT_EN		0xf04
-+#define MT8183_DISP_OVL1_2L_MOUT_EN		0xf08
-+#define MT8183_DISP_DITHER0_MOUT_EN		0xf0c
-+#define MT8183_DISP_PATH0_SEL_IN		0xf24
-+#define MT8183_DISP_DSI0_SEL_IN			0xf2c
-+#define MT8183_DISP_DPI0_SEL_IN			0xf30
-+#define MT8183_DISP_RDMA0_SOUT_SEL_IN		0xf50
-+#define MT8183_DISP_RDMA1_SOUT_SEL_IN		0xf54
-+
-+#define MT8183_OVL0_MOUT_EN_OVL0_2L		BIT(4)
-+#define MT8183_OVL0_2L_MOUT_EN_DISP_PATH0	BIT(0)
-+#define MT8183_OVL1_2L_MOUT_EN_RDMA1		BIT(4)
-+#define MT8183_DITHER0_MOUT_IN_DSI0		BIT(0)
-+#define MT8183_DISP_PATH0_SEL_IN_OVL0_2L	0x1
-+#define MT8183_DSI0_SEL_IN_RDMA0		0x1
-+#define MT8183_DSI0_SEL_IN_RDMA1		0x3
-+#define MT8183_DPI0_SEL_IN_RDMA0		0x1
-+#define MT8183_DPI0_SEL_IN_RDMA1		0x2
-+#define MT8183_RDMA0_SOUT_COLOR0		0x1
-+#define MT8183_RDMA1_SOUT_DSI0			0x1
-+
- struct mtk_mmsys_routes {
- 	u32 from_comp;
- 	u32 to_comp;
-@@ -212,4 +234,29 @@ static const struct mtk_mmsys_routes mmsys_default_routing_table[] = {
- 	}
- };
- 
-+static const struct mtk_mmsys_routes mmsys_mt8183_routing_table[] = {
-+	{
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
-+		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
-+	}, {
-+		DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
-+		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1
-+	}, {
-+		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-+		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L
-+	}, {
-+		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
-+		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-+		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0
-+	}
-+};
-+
- #endif /* __SOC_MEDIATEK_MTK_MMSYS_H */
--- 
-2.31.0.rc2.261.g7f71774620-goog
+kernel/static_call.c: In function '__static_call_update':
+kernel/static_call.c:153:18: warning: unused variable 'mod' [-Wunused-varia=
+ble]
+  153 |   struct module *mod =3D site_mod->mod;
+      |                  ^~~
 
+Introduced by commit
+
+  698bacefe993 ("static_call: Align static_call_is_init() patching conditio=
+n")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/y4dpXuUMZPUkj_+R9ypi+/T
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBZgfEACgkQAVBC80lX
+0GyVwQf/TbIpqbcV1LUNGSaeb0VULKk+6qIKrTnHfT6yaxu8Yy9Tfc+bke8AjY96
+wWyULNsfcRehygaT6xvadwxBUqnKI0d5jUiKSfkv6ewH1k/E4tuKKdiVy1igWA1t
+0XRjqg/y8f6O+tLygS6UVKbWjCh0JRugrYQtyiyh2T4PyH4wqs+61H1PYFhs5d8P
+IkMRETnLAQ0s/hLOvHZbAwtGJ2wBln95BNdyxvgGnqohbi4zX7QHZSxurU9WjoeM
+fF2FyaJMkAPAqeVmxR2Dd3QB2eKPfH+1tl4DKGharnKzA7nKMs3u59cFVAyHguVh
+t/ieVxraHlBedUaWeGLyaXxosj8joA==
+=fGO0
+-----END PGP SIGNATURE-----
+
+--Sig_/y4dpXuUMZPUkj_+R9ypi+/T--
