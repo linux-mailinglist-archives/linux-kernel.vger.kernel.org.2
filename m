@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9913455D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0158A345609
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhCWC7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 22:59:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13661 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhCWC7Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:59:16 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4GH11vSYznVX2;
-        Tue, 23 Mar 2021 10:56:45 +0800 (CST)
-Received: from vm-Yoda-Ubuntu1804.huawei.com (10.67.174.59) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Mar 2021 10:59:07 +0800
-From:   Xu Yihang <xuyihang@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <tony.luck@intel.com>,
-        <fenghua.yu@intel.com>, <rppt@kernel.org>, <xiaoyao.li@intel.com>,
-        <seanjc@google.com>, <linux-kernel@vger.kernel.org>
-CC:     <xuyihang@huawei.com>, <johnny.chenyi@huawei.com>
-Subject: [PATCH -next] =?UTF-8?q?x86:=20Fix=20intel=20cpu=20unsed=20variab?= =?UTF-8?q?le=20=E2=80=98l2=E2=80=99=20warning?=
-Date:   Tue, 23 Mar 2021 10:59:01 +0800
-Message-ID: <20210323025901.205381-1-xuyihang@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.59]
-X-CFilter-Loop: Reflected
+        id S230047AbhCWDNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:13:22 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:55178 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhCWDNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 23:13:05 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 63978201AFB;
+        Tue, 23 Mar 2021 04:13:00 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A6C9D200D74;
+        Tue, 23 Mar 2021 04:12:55 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 38EFD402AC;
+        Tue, 23 Mar 2021 04:12:49 +0100 (CET)
+From:   Dong Aisheng <aisheng.dong@nxp.com>
+To:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, abel.vesa@nxp.com,
+        Dong Aisheng <aisheng.dong@nxp.com>
+Subject: [PATCH V2 0/6] PM / devfreq: a few small fixes and improvements
+Date:   Tue, 23 Mar 2021 10:59:13 +0800
+Message-Id: <1616468359-14513-1-git-send-email-aisheng.dong@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
-../arch/x86/kernel/cpu/intel.c: In function ‘init_intel’:
-../arch/x86/kernel/cpu/intel.c:644:20: warning: variable ‘l2’ set but not used [-Wunused-but-set-variable]
-   unsigned int l1, l2;
-                    ^~
+A few small fixes and improvements
 
-Compilation command(s):
-make allmodconfig ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
-make W=1 arch/x86/kernel/cpu/intel.o ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+ChangeLog:
+v1->v2:
+ * squash a few patches
+ * rebase to devfreq-testing
+ * drop two patches which are already in devfreq-next
 
-According to Intel Software Developer's Manual Table 2-2 through Table 2-24 about MSRs:
-X86_FEATURE_BTS which represents Branch Trace Storage Unavailable and X86_FEATURE_PEBS
-represens Processor Event Based Sampling (PEBS) Unavailable, but on some platform these fields
-maybe reserved or not available. For the function init_intel it self, only bit 11 and bit 12
-are used for checking BTS and PEBS, and higher 32 bits are not used. So cast to void to
-avoid warning.
+Dong Aisheng (6):
+  PM / devfreq: fix build error when DEVFREQ_GOV_PASSIVE enabled
+  PM / devfreq: Use more accurate returned new_freq as resume_freq
+  PM / devfreq: Remove the invalid description for get_target_freq
+  PM / devfreq: bail out early if no freq changes in devfreq_set_target
+  PM / devfreq: governor: optimize simpleondemand get_target_freq
+  PM / devfreq: imx8m-ddrc: remove imx8m_ddrc_get_dev_status
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xu Yihang <xuyihang@huawei.com>
----
- arch/x86/kernel/cpu/intel.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/ABI/testing/sysfs-class-devfreq |  5 +--
+ drivers/devfreq/devfreq.c                     | 37 +++++++------------
+ drivers/devfreq/governor.h                    |  2 -
+ drivers/devfreq/governor_simpleondemand.c     | 31 ++++++++++------
+ drivers/devfreq/imx8m-ddrc.c                  | 14 -------
+ 5 files changed, 35 insertions(+), 54 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 63e381a46153..547ba6668eb3 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -644,6 +644,7 @@ static void init_intel(struct cpuinfo_x86 *c)
- 		unsigned int l1, l2;
- 
- 		rdmsr(MSR_IA32_MISC_ENABLE, l1, l2);
-+		(void) l2;
- 		if (!(l1 & (1<<11)))
- 			set_cpu_cap(c, X86_FEATURE_BTS);
- 		if (!(l1 & (1<<12)))
 -- 
-2.17.1
+2.25.1
 
