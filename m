@@ -2,184 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE19F345A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC15345A50
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhCWJDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:03:55 -0400
-Received: from mga14.intel.com ([192.55.52.115]:23297 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhCWJDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:03:35 -0400
-IronPort-SDR: 0M54wWcqFrAheq+eM5OeB8Au576jGBI8WEdk7wp5UHZY+vT4v92zqwtrwR+R8l6y3F0eptDqSF
- L6JVmweNL1yA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189837982"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="189837982"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 02:03:35 -0700
-IronPort-SDR: 6tBPqHksju39LrET1W7Z/11lYPv31RzMB/hV1k0EtZoRYc5DN1tlQIQX7/vxK6iJzB0HQ+aDT4
- CBF9ZWJKcGog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="435480573"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Mar 2021 02:03:34 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lOcwo-0000T3-08; Tue, 23 Mar 2021 09:03:34 +0000
-Date:   Tue, 23 Mar 2021 17:03:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- f4d010298f01aac657191629d6e9e11d978cc64d
-Message-ID: <6059aedd.oFNBAEfxv1Nb8pnc%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229951AbhCWJEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhCWJEQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 05:04:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC2BC061574;
+        Tue, 23 Mar 2021 02:04:15 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 10:04:13 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616490254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GxnyY0C/BL+SWjI1WAMA2hS6FNIin/OZV9pi9TETKDA=;
+        b=jKR8nH7Swa4DWx21vuj0HUcMHmuduY2uEBzGACtLxBeZjP4zBpKIatE/K0HTyMnvj+mHb1
+        sIC6nIodDPCS5IG+jcjYHJlBSqmILOgPaDCgDWJz8+ru+PKFzMsWwq0UxUMsPedVtHReFK
+        8lF2S/kv80gOutNHKDZhfi5fcWk8ZmcDw4/PL59oGx/gGIEBrcrvP49QEHgYZHMafz+t8M
+        PtgzfVfSAg8Fl8/lR3CBpkb+xJ8ay9MeFtruL28vjuKb2myiRCuW4TS5xUpT+b1aeB57JX
+        fAg8mdDgmZO8RlOcYOce6QVtnJ0pH1bGQ0gJInh8kOEs1b6WU07qxAAKhkJ2zw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616490254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GxnyY0C/BL+SWjI1WAMA2hS6FNIin/OZV9pi9TETKDA=;
+        b=q51R+RGcn4T8i7CWIilD8rjF69yvS499TTfLxi4DQ47DkWsSK3/LcE3o/EIDUtTjYOHeLB
+        x39zsZNgCkG7TfDA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Nobs <samuel.nobs@taitradio.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel@pengutronix.de
+Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
+Message-ID: <20210323090413.ogeweygw3iejtbsv@linutronix.de>
+References: <20210322111036.31966-1-johan@kernel.org>
+ <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
+ <20210322113918.ze52gq54cpsspgej@linutronix.de>
+ <20210322115536.knkea7i6vrfpotol@pengutronix.de>
+ <YFiZuXWYmxPIaQH9@hovoldconsulting.com>
+ <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
+ <20210322204836.i4ksobvp6hxl5owh@linutronix.de>
+ <20210323073447.r3utxintt5c3blb4@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210323073447.r3utxintt5c3blb4@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: f4d010298f01aac657191629d6e9e11d978cc64d  doc: Fix statement of RCU's memory-ordering requirements
+On 2021-03-23 08:34:47 [+0100], Uwe Kleine-K=C3=B6nig wrote:
+> Hello Sebastian,
+Hi Uwe,
 
-elapsed time: 726m
+> On Mon, Mar 22, 2021 at 09:48:36PM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2021-03-22 14:40:32 [+0100], Uwe Kleine-K=C3=B6nig wrote:
+> > > From a strictly logically point of view you indeed cannot. But if you=
+ go
+> > > to the street and say to people there that they can park their car in
+> > > this street free of charge between Monday and Friday, I expect that m=
+ost
+> > > of them will assume that they have to pay for parking on weekends.
+> >=20
+> > If I hear that parking is free on weekdays and on paid on weekends, I
+> > expect it to be a scam.
+>=20
+> I don't feel taken seriously with this reply.
 
-configs tested: 122
-configs skipped: 3
+I'm sorry.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> > Uwe, the patch reverts a change which was needed for !RT + threadirqs.
+>=20
+> This would be a useful information for the commit log.
+>=20
+> > The commit message claims that since the referenced commit "=E2=80=A6 i=
+nterrupt
+> > handlers always run with interrupts disabled on non-RT=E2=80=A6 ". This=
+ has
+> > nothing to do with _this_ change. It argues why the workaround is not
+> > needed.
+>=20
+> It argues why the work around is not needed on non-RT. It might be
+> obvious for someone who is firm in the RT concepts, but IMHO commit logs
+> should be understandable by and make sense for a wider audience than the
+> deep experts. From what I know about RT "Force-threaded interrupt
+> handlers used to run with interrupts enabled" still applies there.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-m68k                       m5208evb_defconfig
-arc                         haps_hs_defconfig
-powerpc                      katmai_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                           ip27_defconfig
-riscv                    nommu_virt_defconfig
-arc                              alldefconfig
-arc                          axs103_defconfig
-powerpc                     powernv_defconfig
-sh                           se7712_defconfig
-arm                         lubbock_defconfig
-sparc64                          alldefconfig
-powerpc                      ppc44x_defconfig
-mips                      maltaaprp_defconfig
-mips                     cu1830-neo_defconfig
-sh                         ap325rxa_defconfig
-mips                        jmr3927_defconfig
-mips                           ip28_defconfig
-arm                             mxs_defconfig
-riscv                            alldefconfig
-sh                        edosk7705_defconfig
-sh                                  defconfig
-mips                  decstation_64_defconfig
-openrisc                 simple_smp_defconfig
-riscv                    nommu_k210_defconfig
-powerpc                   bluestone_defconfig
-m68k                       m5275evb_defconfig
-nios2                            alldefconfig
-powerpc                 linkstation_defconfig
-powerpc                    gamecube_defconfig
-arm                           tegra_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                 mpc836x_rdk_defconfig
-openrisc                         alldefconfig
-m68k                       m5249evb_defconfig
-mips                        maltaup_defconfig
-arm                           omap1_defconfig
-i386                                defconfig
-arm                       imx_v4_v5_defconfig
-arm                         at91_dt_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                         wii_defconfig
-riscv                               defconfig
-powerpc                    sam440ep_defconfig
-m68k                          hp300_defconfig
-sh                           se7724_defconfig
-arm                             ezx_defconfig
-arm                            qcom_defconfig
-m68k                        m5307c3_defconfig
-ia64                                defconfig
-mips                      pic32mzda_defconfig
-sh                        sh7785lcr_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20210322
-i386                 randconfig-a003-20210322
-i386                 randconfig-a001-20210322
-i386                 randconfig-a002-20210322
-i386                 randconfig-a006-20210322
-i386                 randconfig-a005-20210322
-x86_64               randconfig-a012-20210322
-x86_64               randconfig-a015-20210322
-x86_64               randconfig-a013-20210322
-x86_64               randconfig-a014-20210322
-x86_64               randconfig-a016-20210322
-x86_64               randconfig-a011-20210322
-i386                 randconfig-a014-20210322
-i386                 randconfig-a011-20210322
-i386                 randconfig-a015-20210322
-i386                 randconfig-a016-20210322
-i386                 randconfig-a012-20210322
-i386                 randconfig-a013-20210322
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Yes. The commit Johan referenced explains it in more detail.
 
-clang tested configs:
-x86_64               randconfig-a002-20210322
-x86_64               randconfig-a003-20210322
-x86_64               randconfig-a001-20210322
-x86_64               randconfig-a006-20210322
-x86_64               randconfig-a004-20210322
-x86_64               randconfig-a005-20210322
+> > If the referenced commit breaks RT then this is another story.
+>=20
+> I'm surprised to hear that from you. With the goal to get RT into
+> mainline I would expect you to be happy if people consider the effects
+> on RT in their reviews.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Correct, I do and I am glad if people consider other aspects of the
+kernel in their review including RT.
+
+> > > So when you said that on on-RT the reason why it used to need a
+> > > workaround is gone made me wonder what that implies for RT.
+> >=20
+> > There was never reason (or a lockdep splat) for it on RT. If so you
+> > should have seen it, right?
+>=20
+> No, I don't consider myself to be an RT expert who is aware of all the
+> problems. So I admit that for me the effect on RT of the patch under
+> discussion isn't obvious. I just wonder that the change is justified
+> with being OK on non-RT. So it's either bad that it breaks RT *or*
+> improving the commit log would be great.
+>=20
+> And even if I had reason to believe that there is no problem with the
+> commit on RT, I'd still wish that the commit log wouldn't suggest to the
+> casual reader that there might be a problem.
+
+Okay. I added a sentence. What about this rewording:
+
+  Force-threaded interrupt handlers used to run with interrupts enabled,
+  something which could lead to deadlocks in case a threaded handler
+  shared a lock with code running in hard interrupt context (e.g. timer
+  callbacks) and did not explicitly disable interrupts. =20
+ =20
+  This was specifically the case for serial drivers that take the port
+  lock in their console write path as printk can be called from hard
+  interrupt context also with forced threading ("threadirqs").
+ =20
+  Since commit 81e2073c175b ("genirq: Disable interrupts for force
+  threaded handlers") interrupt handlers always run with interrupts
+  disabled on non-RT so that drivers no longer need to do handle this.
+  RT is not affected by the referenced commit and the workaround, that is
+  reverted, was not required because spinlock_t must not be acquired on
+  RT in hardirq context.
+ =20
+  Drop the now obsolete workaround added by commit 33f16855dcb9 ("tty:
+  serial: imx: fix potential deadlock").
+
+> Best regards
+> Uwe
+>=20
+
+Sebastian
