@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34366346AD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED979346ADB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbhCWVLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:11:12 -0400
-Received: from mail-io1-f49.google.com ([209.85.166.49]:38790 "EHLO
-        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233422AbhCWVKi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:10:38 -0400
-Received: by mail-io1-f49.google.com with SMTP id e8so19267466iok.5;
-        Tue, 23 Mar 2021 14:10:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d5v+QZ+m+eAEAjjKWBWtWNR+M9eFWkJnF+zMMFTSdC4=;
-        b=Gen3eNakaN5R7nicASVX5ZTCNUFqxCbvZz3WouhBC8Y37lIfdSvxwIdUYYJldBVeUH
-         WeCstPQYPDHYQV8fEE3HxxWjwC4XiAGFSMupT8wOLIAlL46MZt/UQEmsW0hnzS/icjH+
-         FmpZ03tLr06c5rSNpFiaQGt7heJdXQ1t4OFZTB6F3d3s1vlm+SYAaRC8qMVcpwDvpIGa
-         B/isSRwTn7jNzkqzo21bNy178AMcCIDLyh9u9sUJqz+pRbhtIGuBhO3S91e0Zo4mcL8I
-         Wk4I6A6++gZZ3Y0BrMIHiJtsdaF0re2B4heAVG16J9HDRCrlkrU/FBX75SC7Ory4Flq7
-         bq5A==
-X-Gm-Message-State: AOAM531+VAoV/TtCX6cyJkRdEhTlJeXWzUTqCvBxsxqXaHmaY0JLhNaM
-        5v99PKlGjmKzNvlrmZqUiCXu9J4inA==
-X-Google-Smtp-Source: ABdhPJxT4j+C0gXVMrO6N6qd7p57V0ywq7ZBe3/M0oSPHIExCam+fvC++i2KrfSmw791jxXpQB8ujw==
-X-Received: by 2002:a02:7119:: with SMTP id n25mr17271jac.48.1616533837693;
-        Tue, 23 Mar 2021 14:10:37 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id q20sm23950ilj.56.2021.03.23.14.10.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 14:10:37 -0700 (PDT)
-Received: (nullmailer pid 1329565 invoked by uid 1000);
-        Tue, 23 Mar 2021 21:10:35 -0000
-Date:   Tue, 23 Mar 2021 15:10:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/6] dt-bindings: i2c: convert i2c-mpc to json-schema
-Message-ID: <20210323211035.GA1326908@robh.at.kernel.org>
-References: <20210323043331.21878-1-chris.packham@alliedtelesis.co.nz>
- <20210323043331.21878-3-chris.packham@alliedtelesis.co.nz>
- <1616530607.398955.1244764.nullmailer@robh.at.kernel.org>
- <f5e86696-07f1-f1d2-9596-af7fa6ae1cdd@alliedtelesis.co.nz>
+        id S233467AbhCWVPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:15:03 -0400
+Received: from ozlabs.org ([203.11.71.1]:56529 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233409AbhCWVOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:14:48 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4kdy6Ngmz9sTD;
+        Wed, 24 Mar 2021 08:14:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616534087;
+        bh=S9dZRCybNg6tFe4gAm2KIcQTMrqWZCFRwEcHTWF54IU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cLEMnAfZ7yhjYtiXLYtKrR2xM50lQubJzc102fep6BhdNbBwwEdWyyw2go07V7kVL
+         4tbu5Gqzw25CO/Q009ilcySVv1RzIgIv9K3VZyOi+W38BrcnCKr3nbhtggC/5TPM0C
+         iXCpF4EDosCKkzY3fA+QbjRzQms8KH57G4m/RKPgGDhVUiobq1nkbwOxzdmUnOqLgr
+         wyvF2dbsjiUM5/2eUrKdDQ+ub4lGgnkCWzIfQnURZ8csdDq9FE5Nl3bodW+E0bnavW
+         Cod01AEZ4dOhgiIypT3sFs5J0jWRh9QFPCKiq+DQIwgp5zAwv9IzHLWZ+TzpTrWoZr
+         BMw0E+H51ScYQ==
+Date:   Wed, 24 Mar 2021 08:14:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the arm64 tree
+Message-ID: <20210324081445.7db17c31@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5e86696-07f1-f1d2-9596-af7fa6ae1cdd@alliedtelesis.co.nz>
+Content-Type: multipart/signed; boundary="Sig_/CPUmG_n=8eYRHP6y1Faota2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 08:22:00PM +0000, Chris Packham wrote:
-> Hi Rob,
-> 
-> On 24/03/21 9:16 am, Rob Herring wrote:
-> > On Tue, 23 Mar 2021 17:33:27 +1300, Chris Packham wrote:
-> >> Convert i2c-mpc to YAML.
-> >>
-> >> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> >> ---
-> >>   .../devicetree/bindings/i2c/i2c-mpc.txt       | 62 ------------
-> >>   .../devicetree/bindings/i2c/i2c-mpc.yaml      | 99 +++++++++++++++++++
-> >>   2 files changed, 99 insertions(+), 62 deletions(-)
-> >>   delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.txt
-> >>   create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> >>
-> > My bot found errors running 'make dt_binding_check' on your patch:
-> >
-> > yamllint warnings/errors:
-> > ./Documentation/devicetree/bindings/i2c/i2c-mpc.yaml:19:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> > ./Documentation/devicetree/bindings/i2c/i2c-mpc.yaml:20:11: [warning] wrong indentation: expected 12 but found 10 (indentation)
-> Hmm I did run 'make dt_binding_check' is yamllint run separately (or not 
-> run if it's not installed?).
+--Sig_/CPUmG_n=8eYRHP6y1Faota2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-No and yes...
+Hi all,
 
-> > dtschema/dtc warnings/errors:
-> >
-> > See https://patchwork.ozlabs.org/patch/1457053
-> >
-> > This check can fail if there are any dependencies. The base for a patch
-> > series is generally the most recent rc1.
-> >
-> > If you already ran 'make dt_binding_check' and didn't see the above
-> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> > date:
+Commits
 
-^^^^^
+  b17f265bb4cc ("kselftest/arm64: mte: Fix MTE feature detection")
+  4dfc9d30a8ab ("kselftest/arm64: mte: common: Fix write() warnings")
 
-> >
-> > pip3 install dtschema --upgrade
-> >
-> > Please check and re-submit.
-> Should be easy to fix the binding but I'll spend a bit of time trying to 
-> get my tooling sorted.
+are missing a Signed-off-by from their author.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/CPUmG_n=8eYRHP6y1Faota2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBaWkUACgkQAVBC80lX
+0GwkoAf/TE8VQxQ7xfbx/SEifsPcR3aK/WhS0znSqSv5XdJmdX3j2z65LjuI2vX7
+tmWHBSmbE+1+s4faCGPoT2GfIczWRQjAWCqFpyioStyssPAp1Yvy0pEdcf9syS5u
+cHQdKI3gh+7cQILVP3Dk0F5XjNEZJkKkxbXgI25Mm/aqpSmWSbNPkMk4yhPHUSR8
+gCiuduuxEfT57oh0tZxZ3bd8u2kLn7bD55tUoL1uWWcpvrdycZX39n/pdCnMKmlS
+4sTsbn6+n1X/Eh8b6KOZmB3kKIPq6tlwXYFLrN807+KmWnW0PR9pVOlIGEtzWrjZ
+KgKDnbXwi0YAysFVFXiVvmGLxklDnA==
+=hYWi
+-----END PGP SIGNATURE-----
+
+--Sig_/CPUmG_n=8eYRHP6y1Faota2--
