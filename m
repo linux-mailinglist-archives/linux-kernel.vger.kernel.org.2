@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E94346740
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DF4346749
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:10:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhCWSJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:09:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
+        id S231359AbhCWSKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhCWSIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:08:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F37676192B;
-        Tue, 23 Mar 2021 18:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616522928;
-        bh=dg/v7I9osNgCOwDkoypjMc9FZHS9w25d2q6433j6+kI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gIpvHBF3RaO/d533nR7vktfT6Z5dJlqeqaihaU//0GuM9AiyaPuDqLpgPeJUjZq3j
-         TRfAQAjndJ6OiSJfSsBe99nd2ZXVFNbdt/OILxBI+ypUC2dOavE7lBIMggaAQ+ofJl
-         5hILbGAtwz60tnY/U9bL1ZTwFoea0fTFC+qk2PnhsSHFGRgApK1vjMaOK4Y3qxGej2
-         IOQpE79NROFOn0ouMJEpVSYQgN3A3EBcD+dji45jFv24N0uY/l6jif7VdjMApZCj6S
-         P+STiRXe0DlRZROXyJFoLZpOKqylillnLF7ShNNFuuwmR2h1TeJU4bIHV+E+H0zj46
-         bfei4ohK42x5Q==
-Date:   Tue, 23 Mar 2021 11:08:42 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jeevan Shriram <jshriram@codeaurora.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] pinctrl: qcom: fix unintentional string concatenation
-Message-ID: <20210323180842.ecpb5yza6bgjdl5n@archlinux-ax161>
-References: <20210323131728.2702789-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323131728.2702789-1-arnd@kernel.org>
+        id S231243AbhCWSJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 14:09:40 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F0F36192B;
+        Tue, 23 Mar 2021 18:09:39 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lOlTF-003MZw-KT; Tue, 23 Mar 2021 18:09:37 +0000
+Date:   Tue, 23 Mar 2021 18:09:36 +0000
+Message-ID: <87im5hkahr.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 12/15] PCI/MSI: Let PCI host bridges declare their reliance on MSI domains
+In-Reply-To: <6a2eaa5d-1d83-159f-69e5-c9e0a00a7b50@arm.com>
+References: <20210322184614.802565-1-maz@kernel.org>
+        <20210322184614.802565-13-maz@kernel.org>
+        <6a2eaa5d-1d83-159f-69e5-c9e0a00a7b50@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com, frank-w@public-files.de, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, mikelley@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michal.simek@xilinx.com, paul.walmsley@sifive.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:17:13PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang is clearly correct to point out a typo in a silly
-> array of strings:
-> 
-> drivers/pinctrl/qcom/pinctrl-sdx55.c:426:61: error: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-concatenation]
->         "gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
->                                                                    ^
-> Add the missing comma that must have accidentally been removed.
-> 
-> Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Robin,
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+On Tue, 23 Mar 2021 11:45:02 +0000,
+Robin Murphy <robin.murphy@arm.com> wrote:
+> 
+> On 2021-03-22 18:46, Marc Zyngier wrote:
+> > The new 'no_msi' attribute solves the problem of advertising the lack
+> > of MSI capability for host bridges that know for sure that there will
+> > be no MSI for their end-points.
+> > 
+> > However, there is a whole class of host bridges that cannot know
+> > whether MSIs will be provided or not, as they rely on other blocks
+> > to provide the MSI functionnality, using MSI domains.  This is
+> > the case for example on systems that use the ARM GIC architecture.
+> > 
+> > Introduce a new attribute ('msi_domain') indicating that implicit
+> > dependency, and use this property to set the NO_MSI flag when
+> > no MSI domain is found at probe time.
+> > 
+> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >   drivers/pci/probe.c | 2 +-
+> >   include/linux/pci.h | 1 +
+> >   2 files changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> > index 146bd85c037e..bac9f69a06a8 100644
+> > --- a/drivers/pci/probe.c
+> > +++ b/drivers/pci/probe.c
+> > @@ -925,7 +925,7 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+> >   	device_enable_async_suspend(bus->bridge);
+> >   	pci_set_bus_of_node(bus);
+> >   	pci_set_bus_msi_domain(bus);
+> > -	if (bridge->no_msi)
+> > +	if (bridge->no_msi || (bridge->msi_domain && !bus->dev.msi_domain))
+> >   		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+> >     	if (!parent)
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index 48605cca82ae..d322d00db432 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -551,6 +551,7 @@ struct pci_host_bridge {
+> >   	unsigned int	preserve_config:1;	/* Preserve FW resource setup */
+> >   	unsigned int	size_windows:1;		/* Enable root bus sizing */
+> >   	unsigned int	no_msi:1;		/* Bridge has no MSI support */
+> > +	unsigned int	msi_domain:1;		/* Bridge wants MSI domain */
+> 
+> Aren't these really the same thing? Either way we're saying the bridge
+> itself doesn't handle MSIs, it's just in one case we're effectively
+> encoding a platform-specific assumption that an external domain won't
+> be provided. I can't help wondering whether that distinction is really
+> necessary...
 
-> ---
->  drivers/pinctrl/qcom/pinctrl-sdx55.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sdx55.c b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> index 2b5b0e2b03ad..5aaf57b40407 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> @@ -423,7 +423,7 @@ static const char * const gpio_groups[] = {
->  
->  static const char * const qdss_stm_groups[] = {
->  	"gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gpio6", "gpio7", "gpio12", "gpio13",
-> -	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
-> +	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21", "gpio22",
->  	"gpio23", "gpio44", "gpio45", "gpio52", "gpio53", "gpio56", "gpio57", "gpio61", "gpio62",
->  	"gpio63", "gpio64", "gpio65", "gpio66",
->  };
-> -- 
-> 2.29.2
-> 
+There is a subtle difference: no_msi indicates that there is no way
+*any* MSI can be dealt with whatsoever (maybe because the RC doesn't
+forward the corresponding TLPs?). msi_domain says "no MSI unless...".
+
+We could implement the former with the latter, but I have the feeling
+that's not totally bullet proof. Happy to revisit this if you think it
+really matters.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
