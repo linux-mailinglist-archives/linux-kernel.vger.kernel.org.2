@@ -2,254 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D6F345694
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D0D345690
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbhCWEIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 00:08:49 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42720 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbhCWEIP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 00:08:15 -0400
-Received: by mail-io1-f71.google.com with SMTP id q7so991222ioh.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 21:08:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0U88+G95cAsWJhc41ZWcXhG8yBOjOuy+fVe4cZKA5vY=;
-        b=oubSZ/1Ufmw5Nt4/YVqSMl4c7nKnDS2cFtNr0LpB6wKhsRWcBpjfHfQlTwqjVgXblb
-         hWCFffc9L5DZ8tytga1xTAKHD80aAZ/eSTb6XqCfxFikvpemwuxZr+7B5iTQa8/CdbMm
-         2h7MAChMZRaC/B3vU2idkQFoKShs9sVnLsZlLs9o6SA4mkt3EaJmyi+MI0gUTPOnCYrN
-         Y1baksF2boAC3u3dLPecTBDLbVvVpmEXmwF79uOy9ZlD4iY3kVCONPAOrDog3dSQLM75
-         srdaADTBmAOc3RRPyL02xTIwPFB5Xxd8IeriPHbzFQ790qfsewqeIQk5MEB7FDx0tLMC
-         t25A==
-X-Gm-Message-State: AOAM532yb54gFAcZdvYTXfxWSSh4B+risAcVoX2Q6S8GXtaNuGOSgBj8
-        8yABPAGjMmW+AnbdlAU/5b03D0nqunhD7/vE5KNlVw9DU3VM
-X-Google-Smtp-Source: ABdhPJx/yxzT7bELVO9/s5+VXfU7vy6tC3+QOG+xXxSCUI0KtZqmb1L4IGuKUXIO7Rvso9BQPo9Nwuz0brgVvZLraxwMmTViB65i
+        id S229500AbhCWEFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 00:05:30 -0400
+Received: from mail-mw2nam10on2084.outbound.protection.outlook.com ([40.107.94.84]:44224
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229437AbhCWEFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 00:05:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nri7GVrhmNLE+nk9f8SEfEknLEdhYS+t3EPFg6QC5mP3hZqk3qZIQ6Na0pCoo2gE061Mlbr3SecFypB+nLvljdnMaUqNSo6li3uf9n15xJamOs9Il6v4+AZPYiy250RUf3v0m+sLchdLhGBLIG5Bwd0bSCHFXjv43Z5UOaOUdcjvOuCGmKDdivduNTSgNM/A6Ok6zepz3xmooWhh6bruP63vKn7AeMJ4nc+pyjbP1dqp4aJbtdm5GTZnLtQnBoT+3rVY6qTpBDlXOtkJkqoihxuaJGY+Hg8fdIO5TufhIOBS1vvZAn55WB2paEHvFk17eJiEgy6OpNBSesPWl6p5FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GLFl47n2VcJTWiT8DJoE49hyvlc8M/LVceE76ez0rmo=;
+ b=EfS4KBnPhjO7c5lIt1DH7wfcGFb7h6gs+OFG0IoLX5qRrmQJyQMEdvPReJXHK21oSAuphST9jH5bJ2SvFdMTVs5bje+pyANnMpGT8Kh7JyjO7UliwnNpRI8//4SfMLJEgRsbhy2ExVSBHdKYdYy47HjQ8eyoZTLCe0T8WLhScTJtUjDeWgO/vl6Jw82OI62suXH5dW7J5G1J0JicF0+Gf6YHnjtwP3mq15g7eMJNRjqkkYPSWI/ku8vfwrWq3J7S3c7JFUfF3NU7EbjfyhW9veOFlJz9C5VyhPMGjvIbkE/Wn9HLqG7yqTXvaSovuMWnEPeXAu0n+1vQhE76OBcjYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GLFl47n2VcJTWiT8DJoE49hyvlc8M/LVceE76ez0rmo=;
+ b=V71aiBJPyX1o+iyvDg5G0M8efbrDJ4ji5KAqV7h+KQqx0uivapAFE1U6EWd1tA51RYpZzzA6wfUKs1xp/36+AaabgQWb66XPhAn00YFgIlS9gtIQuMADLZj/sOo/CCFO7tvCXO6YXffZfZ4DAZn85yhSPgzUMnxzTIe1ET4Q4ULpAwl4MPkqy9Ty7aGcrH2jG7jVeQONXWxGEphS7wWPjuIhU5/GZp/irGphbXEkARs3S2vMoMsgsmqSC6znQqU0cdVsTib/S90Rx6vo9lThRdBm4JrGxTdNjV4ixoixE7DQ0EJ3sHOI9hrovLJ9kTNbQPBox1LCCGjkbg3oH6cqhg==
+Received: from DM6PR02CA0138.namprd02.prod.outlook.com (2603:10b6:5:1b4::40)
+ by BN7PR12MB2723.namprd12.prod.outlook.com (2603:10b6:408:2d::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
+ 2021 04:05:23 +0000
+Received: from DM6NAM11FT042.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1b4:cafe::56) by DM6PR02CA0138.outlook.office365.com
+ (2603:10b6:5:1b4::40) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Tue, 23 Mar 2021 04:05:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT042.mail.protection.outlook.com (10.13.173.165) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 04:05:23 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
+ 2021 21:05:22 -0700
+Received: from [172.17.173.69] (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2 via Frontend
+ Transport; Tue, 23 Mar 2021 04:05:21 +0000
+Subject: Re: GTE - The hardware timestamping engine
+To:     Kent Gibson <warthog618@gmail.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Richard Cochran" <richardcochran@gmail.com>
+References: <4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com>
+ <CACRpkdbmqww6UQ8CFYo=+bCtVYBJwjMxVixc4vS6D3B+dUHScw@mail.gmail.com>
+ <20210322060047.GA226745@sol>
+ <d48fa7b5-8c17-c3d7-10a9-a9811c410a39@nvidia.com> <20210323003208.GA6105@sol>
+ <7961d9df-4120-e37c-d042-528655bd0270@nvidia.com>
+ <20210323025933.GA10669@sol>
+X-Nvconfidentiality: public
+From:   Dipen Patel <dipenp@nvidia.com>
+Message-ID: <16ff9b8a-15d9-f2fd-24f4-817a7078c40e@nvidia.com>
+Date:   Mon, 22 Mar 2021 21:09:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2711:: with SMTP id m17mr2628467jav.115.1616472494883;
- Mon, 22 Mar 2021 21:08:14 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 21:08:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d8c65105be2c5407@google.com>
-Subject: [syzbot] possible deadlock in __loop_clr_fd
-From:   syzbot <syzbot+707d51092ab7b87b23df@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210323025933.GA10669@sol>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ad624d5f-f25d-441a-abce-08d8edb0e218
+X-MS-TrafficTypeDiagnostic: BN7PR12MB2723:
+X-Microsoft-Antispam-PRVS: <BN7PR12MB27230F4047399FA7B00621E6AE649@BN7PR12MB2723.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YuQFX+gGYAG6C57kkWJk1ARqFM5Q5FyXmNqLF91b08qQEdRbP4MvAQBBZ9x5EDhG2QJfJEMkMX5Uara7wmCjgvEIjV7my2Tj4ug/vK7AMy5atW85TePXYkQWEvVQ0StC6Q22qn5DeTuzlHNKIryhQiMNXvggP+6by/FxZFpHNKW3P0QkRC6j3Gl3oTk+GRxoeJFL3sc56ogMc8bUQZXRX1+9MX8KqGkPfSkbrtN+6z0uOzMEGpayjcYgVtdkTQQfsY9hCiiNYx/HAvQr8cOYkP6M2qDVQPdj06zpCTyRzP0FBZhD6Cj5d5Y7W9CH70N2mk1v1mzP33UDjAUuT6WT2i4hJ5yK2QeTqEe6vLruncar2drgKC7HluC4/A46slXZAkdryQz9+6Xzd9a8PFd1II2rim4VVirpbS91is2c5jkEx1jisbhWKDt9EDAbXKHc9xGM4fwOlJtZ5kk7GgLdBZDMF5Snz3JmMF3UnEjFAoUHbdkKt1eG3N/OJ7Vgg6nG8IqDNM818uT6MWjf+xyBiUZBgLpUPyqqXBYBoiwhe7+IVb9d6U61USDMXgG7urVklOLq8+zSro4mStXaU/k1+bcOb000jxN0nXhcJcxhyjM08Nc/zvUJozj7J9g0u7WaE9XsqwxD+bd50bjyU1UncnlkET6jCDPbCuCedy4W7NA67lVGnBmi3sBzHBRyggy6
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(36840700001)(46966006)(7636003)(36860700001)(31686004)(83380400001)(8676002)(31696002)(47076005)(36756003)(4326008)(53546011)(8936002)(86362001)(356005)(82740400003)(6666004)(54906003)(82310400003)(70206006)(6916009)(2906002)(5660300002)(186003)(336012)(26005)(316002)(478600001)(7416002)(70586007)(426003)(2616005)(16576012)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 04:05:23.5220
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad624d5f-f25d-441a-abce-08d8edb0e218
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT042.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2723
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    ba5b053a Add linux-next specific files for 20210318
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10cfb406d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cd6e556bdf0188e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=707d51092ab7b87b23df
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+707d51092ab7b87b23df@syzkaller.appspotmail.com
-
-UDF-fs: warning (device loop4): udf_load_vrs: No VRS found
-UDF-fs: Scanning with blocksize 4096 failed
-======================================================
-WARNING: possible circular locking dependency detected
-5.12.0-rc3-next-20210318-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.4/13936 is trying to acquire lock:
-ffff88805cb9b138 ((wq_completion)loop292057088){+.+.}-{0:0}, at: flush_workqueue+0xe1/0x13e0 kernel/workqueue.c:2783
-
-but task is already holding lock:
-ffff88801a730468 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x95/0x14a0 drivers/block/loop.c:1278
-
-which lock already depends on the new lock.
 
 
-the existing dependency chain (in reverse order) is:
+On 3/22/21 7:59 PM, Kent Gibson wrote:
+> On Mon, Mar 22, 2021 at 06:53:10PM -0700, Dipen Patel wrote:
+>>
+>>
+>> On 3/22/21 5:32 PM, Kent Gibson wrote:
+>>> On Mon, Mar 22, 2021 at 01:21:46PM -0700, Dipen Patel wrote:
+>>>> Hi Linus and Kent,
+>>>>
+> 
+> [snip]
+> 
+>>> In response to all your comments above...
+>>>
+>>> Firstly, I'm not suggesting that other kernel modules would use the
+>>> cdev lineevents, only that they would use the same mechanism that
+>>> gpiolib-cdev would use to timestamp the lineevents for userspace.
+>>>
+>> Sure, I just wanted to mention the different scenarios and wanted to know
+>> how can we fit all those together. Having said that, shouldn't this serve
+>> an opportunity to extend the linevent framework to accommodate kernel
+>> drivers as a clients?
+>>
+>> If we can't, then there is a risk of duplicating lineevent mechanism in all
+>> of those kernel drivers or at least in GTE framework/infrastructure as far
+>> as GPIO related GTE part is concerned.
+>>  
+> 
+> In-kernel the lineevents are just IRQs so anything needing a "lineevent"
+> can request the IRQ directly.  Or am I missing something?
+> 
 
--> #6 (&lo->lo_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:952 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1099
-       lo_open drivers/block/loop.c:1983 [inline]
-       lo_open+0xa1/0x130 drivers/block/loop.c:1965
-       __blkdev_get+0x135/0xa30 fs/block_dev.c:1302
-       blkdev_get_by_dev fs/block_dev.c:1454 [inline]
-       blkdev_get_by_dev+0x26c/0x600 fs/block_dev.c:1422
-       blkdev_open+0x154/0x2b0 fs/block_dev.c:1551
-       do_dentry_open+0x4b9/0x11b0 fs/open.c:826
-       do_open fs/namei.c:3365 [inline]
-       path_openat+0x1c0e/0x27e0 fs/namei.c:3498
-       do_filp_open+0x17e/0x3c0 fs/namei.c:3525
-       do_sys_openat2+0x16d/0x420 fs/open.c:1187
-       do_sys_open fs/open.c:1203 [inline]
-       __do_sys_open fs/open.c:1211 [inline]
-       __se_sys_open fs/open.c:1207 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1207
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+In the GPIO context, I meant we can extend line_event_timestamp to kernel
+drivers as well in that way, both userspace and kernel drivers requesting
+particular GPIO for the hardware timestamp would be managed by same
+lineevent_* infrastructure from the gpiolib. Something like lineevent_create
+version of the kernel drivers, so if they need hardware timestamp on the
+GPIO line, they can request with some flags. In that way, GTE can leverage
+linevent* codes from gpiolib to cover its both the GPIO related use cases i.e.
+userspace app and kernel drivers.
 
--> #5 (loop_ctl_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:952 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1099
-       loop_probe+0xc7/0x150 drivers/block/loop.c:2407
-       blk_request_module+0x111/0x1d0 block/genhd.c:769
-       blkdev_get_no_open+0x225/0x2b0 fs/block_dev.c:1368
-       blkdev_get_by_dev fs/block_dev.c:1440 [inline]
-       blkdev_get_by_dev+0x1f9/0x600 fs/block_dev.c:1422
-       blkdev_open+0x154/0x2b0 fs/block_dev.c:1551
-       do_dentry_open+0x4b9/0x11b0 fs/open.c:826
-       do_open fs/namei.c:3365 [inline]
-       path_openat+0x1c0e/0x27e0 fs/namei.c:3498
-       do_filp_open+0x17e/0x3c0 fs/namei.c:3525
-       do_sys_openat2+0x16d/0x420 fs/open.c:1187
-       do_sys_open fs/open.c:1203 [inline]
-       __do_sys_openat fs/open.c:1219 [inline]
-       __se_sys_openat fs/open.c:1214 [inline]
-       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1214
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>> As to that mechanism, my current thinking is that the approach of
+>>> associating GTE event FIFO entries with particular physical IRQ events is
+>>> problematic, as keeping the two in sync would be difficult, if not
+>>> impossible.
+>>>
+>>> A more robust approach is to ignore the physical IRQs and instead service
+>>> the GTE event FIFO, generating IRQs from those events in software -
+>>> essentially a pre-timestamped IRQ.  The IRQ framework could provide the
+>>> timestamping functionality, equivalent to line_event_timestamp(), for
+>>> the IRQ handler/thread and in this case provide the timestamp from the GTE
+>>> event.
+>>>
+>>
+>> I have not fully understood above two paragraphs (except about
+>> lineevent_event_timestamp related part).
+>>
+>> I have no idea what it means to "ignore the physical IRQs and service the
+>> GTE event FIFO". Just like GPIO clients, there could be IRQ clients which
+>> want to monitor certain IRQ line, like ethernet driver wanted to retrieve
+>> timestamp for its IRQ line and so on.
+>>
+> 
+> I mean that in the IRQ framework, rather than enabling the physical IRQ
+> line it would leave that masked and would instead enable the FIFO line to
+> service the FIFO, configure the GTE to generate the events for that
+> line, and then generate IRQs in response to the FIFO events.
+> That way the client requesting the IRQ is guaranteed to only receive an
+> IRQ that corresponds to a GTE FIFO event and the timestamp stored in the
+> IRQ framework would match.
+> 
 
--> #4 (major_names_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:952 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1099
-       blkdev_show+0x27/0x160 block/genhd.c:263
-       devinfo_show+0xc1/0xf0 fs/proc/devices.c:22
-       seq_read_iter+0xb66/0x1220 fs/seq_file.c:269
-       proc_reg_read_iter+0x1fb/0x2d0 fs/proc/inode.c:310
-       call_read_iter include/linux/fs.h:1969 [inline]
-       new_sync_read+0x41e/0x6e0 fs/read_write.c:415
-       vfs_read+0x35c/0x570 fs/read_write.c:496
-       ksys_read+0x12d/0x250 fs/read_write.c:634
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+I do not think we need to do such things, for example, below is
+the rough sequence how GTE can notify its clients be it GPIO or IRQ
+lines. I believe this will also help understand better ongoing GPIO
+discussions.
 
--> #3 (&p->lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:952 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1099
-       seq_read_iter+0xdf/0x1220 fs/seq_file.c:179
-       call_read_iter include/linux/fs.h:1969 [inline]
-       generic_file_splice_read+0x450/0x6c0 fs/splice.c:311
-       do_splice_to+0x1bf/0x250 fs/splice.c:796
-       splice_direct_to_actor+0x2c2/0x8c0 fs/splice.c:870
-       do_splice_direct+0x1b3/0x280 fs/splice.c:979
-       do_sendfile+0x9f0/0x1110 fs/read_write.c:1260
-       __do_sys_sendfile64 fs/read_write.c:1325 [inline]
-       __se_sys_sendfile64 fs/read_write.c:1311 [inline]
-       __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1311
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+1. Configure GTE FIFO watermark or threshold, lets assume 1, i.e
+   generate GTE interrupt when FIFO depth is 1.
+2. In the GTE ISR or ISR thread, drain internal FIFO entries
+3. Through GTE driver's internal mapping, identify which IRQ or
+   GPIO number this entry belongs to. (This is possible as GTE
+   has predefined bits for each supported signals, for example GTE
+   supports 40 GPIOs and 352 IRQ lines, and it has multliple GTE instances
+   which can take care all of them)
+4. GTE driver pushes the event data (in this case it will be timestamp and
+   direction of the event ie.rising or falling) to the GTE generic framework
+5. GTE framework will store per event data to its per client/event sw FIFO
+6. wake up any sleeping client thread
+7. Points 3 to 6 are happening in GTE ISR context. 
+8. gte_retrieve_event (which can block if no event) at later convenient
+   time do whatever it wants with it. We can extend it to non blocking
+   version where some sort of client callbacks can be implemented.
 
--> #2 (sb_writers#3){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1638 [inline]
-       sb_start_write include/linux/fs.h:1708 [inline]
-       file_start_write include/linux/fs.h:2891 [inline]
-       lo_write_bvec+0x3ed/0x6c0 drivers/block/loop.c:286
-       lo_write_simple drivers/block/loop.c:309 [inline]
-       do_req_filebacked drivers/block/loop.c:627 [inline]
-       loop_handle_cmd drivers/block/loop.c:2143 [inline]
-       loop_process_work+0xc60/0x25a0 drivers/block/loop.c:2183
-       process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
-       worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
-       kthread+0x3b1/0x4a0 kernel/kthread.c:292
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
--> #1 ((work_completion)(&worker->work)){+.+.}-{0:0}:
-       process_one_work+0x8fc/0x1600 kernel/workqueue.c:2251
-       worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
-       kthread+0x3b1/0x4a0 kernel/kthread.c:292
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
--> #0 ((wq_completion)loop292057088){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:2937 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3060 [inline]
-       validate_chain kernel/locking/lockdep.c:3675 [inline]
-       __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4901
-       lock_acquire kernel/locking/lockdep.c:5511 [inline]
-       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5476
-       flush_workqueue+0x110/0x13e0 kernel/workqueue.c:2786
-       drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2951
-       destroy_workqueue+0x71/0x760 kernel/workqueue.c:4382
-       __loop_clr_fd+0x1f8/0x14a0 drivers/block/loop.c:1296
-       loop_clr_fd drivers/block/loop.c:1422 [inline]
-       lo_ioctl+0x3b9/0x1620 drivers/block/loop.c:1780
-       blkdev_ioctl+0x2a1/0x6d0 block/ioctl.c:583
-       block_ioctl+0xf9/0x140 fs/block_dev.c:1667
-       vfs_ioctl fs/ioctl.c:48 [inline]
-       __do_sys_ioctl fs/ioctl.c:753 [inline]
-       __se_sys_ioctl fs/ioctl.c:739 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
-Chain exists of:
-  (wq_completion)loop292057088 --> loop_ctl_mutex --> &lo->lo_mutex
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&lo->lo_mutex);
-                               lock(loop_ctl_mutex);
-                               lock(&lo->lo_mutex);
-  lock((wq_completion)loop292057088);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.4/13936:
- #0: ffff88801a730468 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x95/0x14a0 drivers/block/loop.c:1278
-
-stack backtrace:
-CPU: 0 PID: 13936 Comm: syz-executor.4 Not tainted 5.12.0-rc3-next-20210318-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2128
- check_prev_add kernel/locking/lockdep.c:2937 [inline]
- check_prevs_add kernel/locking/lockdep.c:3060 [inline]
- validate_chain kernel/locking/lockdep.c:3675 [inline]
- __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4901
- lock_acquire kernel/locking/lockdep.c:5511 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5476
- flush_workqueue+0x110/0x13e0 kernel/workqueue.c:2786
- drain_workqueue+0x1a5/0x3c0 kernel/workqueue.c:2951
- destroy_workqueue+0x71/0x760 kernel/workqueue.c:4382
- __loop_clr_fd+0x1f8/0x14a0 drivers/block/loop.c:1296
- loop_clr_fd drivers/block/loop.c:1422 [inline]
- lo_ioctl+0x3b9/0x1620 drivers/block/loop.c:1780
- blkdev_ioctl+0x2a1/0x6d0 block/ioctl.c:583
- block_ioctl+0xf9/0x140 fs/block_dev.c:1667
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x466217
-Code: 3c 1c 48 f7 d8 49 39 c4 72 b8 e8 a4 48 02 00 85 c0 78 bd 48 83 c4 08 4c 89 e0 5b 41 5c c3 0f 1f 44 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4df82a3fa8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000020001600 RCX: 0000000000466217
-RDX: 0000000000000000 RSI: 0000000000004c01 RDI: 0000000000000005
-RBP: 00007f4df82a46bc R08: 00007f4df82a4040 R09: 0000000020001440
-R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-R13: 0000000000000016 R14: 00007f4df82a4000 R15: 0000000020001640
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> And that is what I mean by this being an IRQ feature.
+> We need feedback from the IRQ guys as to whether that makes sense to
+> them.
+> 
+> Cheers,
+> Kent.
+> 
+Best Regards,
+Dipen Patel
