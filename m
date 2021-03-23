@@ -2,95 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF145345D20
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBA1345CEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhCWLj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhCWLja (ORCPT
+        id S230358AbhCWLcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:32:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13667 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhCWLb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:39:30 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4C2C061574;
-        Tue, 23 Mar 2021 04:39:29 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id c13so6568590uao.10;
-        Tue, 23 Mar 2021 04:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jWd4Ah9+UKZUMTNKlTR6tTi9e4IEQ3A7/7UYNOEhWgk=;
-        b=Zy0LI4WgEinuGCSgciAuIi220oIK1wYFSJTIlGZ8zZ0qH//GmPNYXWNzhWx6qFuptr
-         LkywILx6bDxhBWiVlPWg0v4UtYz9r/nh2h5q5zOqBM0MipuV4swdT2bkpn4/x3KAVZMd
-         hJ3zBKhlNaC7VVWwtRvrY/QfmUf1Y7b0qL3ToDm7K/+nqPCmFl8tTscsFroStqV5q4s+
-         jO5MM4TD04/08tRO331LuMZ1H3ty1zvzysxOnH/UR5wXFP9GNTyDkZG+ELM9cUibE+bO
-         tyDga7Eua0Ddxh3I0Cb/MZtaf0y0lApnq4sPpW7KjXiZJnW9vWc7nC5b7lQJWCZhYjSa
-         Xi4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jWd4Ah9+UKZUMTNKlTR6tTi9e4IEQ3A7/7UYNOEhWgk=;
-        b=bCRNDXHsN6APpjlkITh8+JteoE0iTH2/WyEG2Sf+MhWaP6NJaJO47/9Pg20OqSAAM1
-         0wW7Wokkt0Up+iih0PhIyTjpbx2HW+TAG37qL/KviRoWjtR/lkYyU7tsljss6smcCKED
-         6SgpqHoOJDYzjinFDSy/GYxY8q3NU61xSMqSma1BuJU8FV2Q3xuZEBM2LsRq39saUUQq
-         pgvZtfW1hHtlkCuZMS5Cnw4Nqhtc/vGnBVTjL4WBmfWhuk3RpzO9kltgBdojngyF/oJG
-         unPvnL7rKqJ8pJmYMmfsbz98f8AGxX1G4xaADn5Pnx6iba3PhfyxeS+Q+FeOPQM6L8B8
-         rr4A==
-X-Gm-Message-State: AOAM533SF/VZhz7dGan4vO1DzJ5xEpCd0lkfStLQ4yiFhD06q8ik3k5Q
-        eQpYQf3IWIi5AvWU6xcsltw6L/2cKmL28hIk7Ko=
-X-Google-Smtp-Source: ABdhPJzKaAFGxeyxpFpXgX6baOVQd4rV8AdYt/v5U5rOjJZkuMeUlGuvkjXtOlp6aD/2LJ0tH21yM/B9ocGridIkhnM=
-X-Received: by 2002:a9f:2d90:: with SMTP id v16mr2777321uaj.138.1616499569175;
- Tue, 23 Mar 2021 04:39:29 -0700 (PDT)
+        Tue, 23 Mar 2021 07:31:56 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4TfX4JfGznV8x;
+        Tue, 23 Mar 2021 19:29:24 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 23 Mar 2021
+ 19:31:52 +0800
+From:   qiulaibin <qiulaibin@huawei.com>
+To:     <jaegeuk@kernel.org>, <chao@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] f2fs: fix wrong comment of nat_tree_lock
+Date:   Tue, 23 Mar 2021 19:41:30 +0800
+Message-ID: <20210323114130.2288596-1-qiulaibin@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1616467572-112804-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1616467572-112804-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-Date:   Tue, 23 Mar 2021 12:39:19 +0100
-Message-ID: <CAH9NwWffN0zAYSTg-zuB=cfSbNeB-J1ddpoM_7knD+inEbTFGw@mail.gmail.com>
-Subject: Re: [PATCH] drm/etnaviv: Remove redundant NULL check
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linaro MM SIG Mailman List <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Di., 23. M=C3=A4rz 2021 um 03:46 Uhr schrieb Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com>:
->
-> Fix the following coccicheck warnings:
->
-> ./drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:622:2-8: WARNING: NULL
-> check before some freeing functions is not needed.
->
-> ./drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:618:2-8: WARNING: NULL
-> check before some freeing functions is not needed.
->
-> ./drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:616:2-8: WARNING: NULL
-> check before some freeing functions is not needed.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Do trivial comment fix of nat_tree_lock.
 
-Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Signed-off-by: qiulaibin <qiulaibin@huawei.com>
+---
+ fs/f2fs/f2fs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-greets
---
-Christian Gmeiner, MSc
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 165bfe2a5a0e..eb154d9cb063 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -865,7 +865,7 @@ struct f2fs_nm_info {
+ 	/* NAT cache management */
+ 	struct radix_tree_root nat_root;/* root of the nat entry cache */
+ 	struct radix_tree_root nat_set_root;/* root of the nat set cache */
+-	struct rw_semaphore nat_tree_lock;	/* protect nat_tree_lock */
++	struct rw_semaphore nat_tree_lock;	/* protect nat entry tree */
+ 	struct list_head nat_entries;	/* cached nat entry list (clean) */
+ 	spinlock_t nat_list_lock;	/* protect clean nat entry list */
+ 	unsigned int nat_cnt[MAX_NAT_STATE]; /* the # of cached nat entries */
+-- 
+2.25.1
 
-https://christian-gmeiner.info/privacypolicy
