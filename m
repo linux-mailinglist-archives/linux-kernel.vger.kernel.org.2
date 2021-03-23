@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C92346AD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34366346AD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233453AbhCWVKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:10:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233422AbhCWVKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:10:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E453A61879;
-        Tue, 23 Mar 2021 21:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616533825;
-        bh=5wLyszeDlfv5Q/EYQhea3G/TbWg2xXnHCAzAJckahp4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aGhiM384dXnlO0fgh+n5l21MuSHW7KSMBvyy9NbD/rZuwbXyIgdi+DZGf1XlU5w1m
-         PnMBT8Qmz5V5TB0xsiS9YQYW7lCBe0XVoAK3OHZeLq5k+n0QBbPhXPI2IgDZ+SYIsl
-         mons35+/A9oqior0TnWKdf8IBU7I2o6EePDAmIgElA/84H5OTTuKPSiHGPgtUp9aE2
-         MA54Zp9G/wIkpKNXXBL6kU7IZnerYaCSiOBruPHhlnaEEEeHVtDoUzNJrfe75K5I63
-         oEqUFRnF3N6UZi/1Ikcw4M43MK8UjMxGtwGMx3S1tCBapB/Jvwf8Noqs/kh5yUbFjZ
-         zSiQBxTrooG7A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EB50240647; Tue, 23 Mar 2021 18:10:22 -0300 (-03)
-Date:   Tue, 23 Mar 2021 18:10:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v2 0/3] perf-stat: share hardware PMCs with BPF
-Message-ID: <YFpZPijlMSyfIVbl@kernel.org>
-References: <CAM9d7ci=hfFjq3+XuBcCZ0TUJxv6AmdFk0dkHFQD3wx27aJMjA@mail.gmail.com>
- <YFH//FRPvrPswhld@kernel.org>
- <7D48A756-C253-48DE-B536-826314778404@fb.com>
- <YFPCul51MjrlY65P@krava>
- <388AF530-5176-4DB9-93C4-6C302432CE12@gmail.com>
- <3E65B60E-B120-4E1A-BAF2-2FAEF136A4CD@fb.com>
- <CAM9d7ch_axD_4E0W7MEx8ueeq9QsvhxNWaJ0J3AtVgeKqKQmbA@mail.gmail.com>
- <YFTEsOhbx4Il1nji@kernel.org>
- <CAM9d7cgoP28V_ONk2AJeu=Y7RQ8vzovzW=pGVYtERe97+ZH0Aw@mail.gmail.com>
- <EC00E37D-8587-4662-8E30-7AD5F874FA84@fb.com>
+        id S233451AbhCWVLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:11:12 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:38790 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233422AbhCWVKi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:10:38 -0400
+Received: by mail-io1-f49.google.com with SMTP id e8so19267466iok.5;
+        Tue, 23 Mar 2021 14:10:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d5v+QZ+m+eAEAjjKWBWtWNR+M9eFWkJnF+zMMFTSdC4=;
+        b=Gen3eNakaN5R7nicASVX5ZTCNUFqxCbvZz3WouhBC8Y37lIfdSvxwIdUYYJldBVeUH
+         WeCstPQYPDHYQV8fEE3HxxWjwC4XiAGFSMupT8wOLIAlL46MZt/UQEmsW0hnzS/icjH+
+         FmpZ03tLr06c5rSNpFiaQGt7heJdXQ1t4OFZTB6F3d3s1vlm+SYAaRC8qMVcpwDvpIGa
+         B/isSRwTn7jNzkqzo21bNy178AMcCIDLyh9u9sUJqz+pRbhtIGuBhO3S91e0Zo4mcL8I
+         Wk4I6A6++gZZ3Y0BrMIHiJtsdaF0re2B4heAVG16J9HDRCrlkrU/FBX75SC7Ory4Flq7
+         bq5A==
+X-Gm-Message-State: AOAM531+VAoV/TtCX6cyJkRdEhTlJeXWzUTqCvBxsxqXaHmaY0JLhNaM
+        5v99PKlGjmKzNvlrmZqUiCXu9J4inA==
+X-Google-Smtp-Source: ABdhPJxT4j+C0gXVMrO6N6qd7p57V0ywq7ZBe3/M0oSPHIExCam+fvC++i2KrfSmw791jxXpQB8ujw==
+X-Received: by 2002:a02:7119:: with SMTP id n25mr17271jac.48.1616533837693;
+        Tue, 23 Mar 2021 14:10:37 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q20sm23950ilj.56.2021.03.23.14.10.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 14:10:37 -0700 (PDT)
+Received: (nullmailer pid 1329565 invoked by uid 1000);
+        Tue, 23 Mar 2021 21:10:35 -0000
+Date:   Tue, 23 Mar 2021 15:10:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 2/6] dt-bindings: i2c: convert i2c-mpc to json-schema
+Message-ID: <20210323211035.GA1326908@robh.at.kernel.org>
+References: <20210323043331.21878-1-chris.packham@alliedtelesis.co.nz>
+ <20210323043331.21878-3-chris.packham@alliedtelesis.co.nz>
+ <1616530607.398955.1244764.nullmailer@robh.at.kernel.org>
+ <f5e86696-07f1-f1d2-9596-af7fa6ae1cdd@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <EC00E37D-8587-4662-8E30-7AD5F874FA84@fb.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <f5e86696-07f1-f1d2-9596-af7fa6ae1cdd@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Mar 19, 2021 at 04:14:42PM +0000, Song Liu escreveu:
-> > On Mar 19, 2021, at 8:58 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> > On Sat, Mar 20, 2021 at 12:35 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >> Em Fri, Mar 19, 2021 at 09:54:59AM +0900, Namhyung Kim escreveu:
-> >>> On Fri, Mar 19, 2021 at 9:22 AM Song Liu <songliubraving@fb.com> wrote:
-> >>>>> On Mar 18, 2021, at 5:09 PM, Arnaldo <arnaldo.melo@gmail.com> wrote:
-> >>>>> On March 18, 2021 6:14:34 PM GMT-03:00, Jiri Olsa <jolsa@redhat.com> wrote:
-> >>>>>> On Thu, Mar 18, 2021 at 03:52:51AM +0000, Song Liu wrote:
-> >>>>>>> perf stat -C 1,3,5                  107.063 [sec]
-> >>>>>>> perf stat -C 1,3,5 --bpf-counters   106.406 [sec]
-
-> >>>>>> I can't see why it's actualy faster than normal perf ;-)
-> >>>>>> would be worth to find out
-
-> >>>>> Isn't this all about contended cases?
-
-> >>>> Yeah, the normal perf is doing time multiplexing; while --bpf-counters
-> >>>> doesn't need it.
-
-> >>> Yep, so for uncontended cases, normal perf should be the same as the
-> >>> baseline (faster than the bperf).  But for contended cases, the bperf
-> >>> works faster.
-
-> >> The difference should be small enough that for people that use this in a
-> >> machine where contention happens most of the time, setting a
-> >> ~/.perfconfig to use it by default should be advantageous, i.e. no need
-> >> to use --bpf-counters on the command line all the time.
-
-> >> So, Namhyung, can I take that as an Acked-by or a Reviewed-by? I'll take
-> >> a look again now but I want to have this merged on perf/core so that I
-> >> can work on a new BPF SKEL to use this:
-
-> > I have a concern for the per cpu target, but it can be done later, so
-
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.bpf/bpf_perf_enable
-
-> > Interesting!  Actually I was thinking about the similar too. :)
+On Tue, Mar 23, 2021 at 08:22:00PM +0000, Chris Packham wrote:
+> Hi Rob,
 > 
-> Hi Namhyung, Jiri, and Arnaldo,
-> 
-> Thanks a lot for your kind review. 
-> 
-> Here is updated 3/3, where we use perf-bench instead of stressapptest.
+> On 24/03/21 9:16 am, Rob Herring wrote:
+> > On Tue, 23 Mar 2021 17:33:27 +1300, Chris Packham wrote:
+> >> Convert i2c-mpc to YAML.
+> >>
+> >> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> >> ---
+> >>   .../devicetree/bindings/i2c/i2c-mpc.txt       | 62 ------------
+> >>   .../devicetree/bindings/i2c/i2c-mpc.yaml      | 99 +++++++++++++++++++
+> >>   2 files changed, 99 insertions(+), 62 deletions(-)
+> >>   delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.txt
+> >>   create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
+> >>
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> >
+> > yamllint warnings/errors:
+> > ./Documentation/devicetree/bindings/i2c/i2c-mpc.yaml:19:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> > ./Documentation/devicetree/bindings/i2c/i2c-mpc.yaml:20:11: [warning] wrong indentation: expected 12 but found 10 (indentation)
+> Hmm I did run 'make dt_binding_check' is yamllint run separately (or not 
+> run if it's not installed?).
 
-I had to apply this updated 3/3 manually, as there was some munging, its
-all now at:
+No and yes...
 
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf/core
+> > dtschema/dtc warnings/errors:
+> >
+> > See https://patchwork.ozlabs.org/patch/1457053
+> >
+> > This check can fail if there are any dependencies. The base for a patch
+> > series is generally the most recent rc1.
+> >
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
 
-Please take a look at the "Committer testing" section I added to the
-main patch, introducing bperf:
+^^^^^
 
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=tmp.perf/core&id=7fac83aaf2eecc9e7e7b72da694c49bb4ce7fdfc
-
-And check if I made any mistake or if something else could be added.
-
-It'll move to perf/core after my set of automated tests finishes.
-
-- Arnaldo
+> >
+> > pip3 install dtschema --upgrade
+> >
+> > Please check and re-submit.
+> Should be easy to fix the binding but I'll spend a bit of time trying to 
+> get my tooling sorted.
