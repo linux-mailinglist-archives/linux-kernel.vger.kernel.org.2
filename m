@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB30C345510
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E572345517
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhCWBn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 21:43:56 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:50950 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbhCWBne (ORCPT
+        id S231476AbhCWBrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 21:47:17 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:54483 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231437AbhCWBq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 21:43:34 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id AD1989802CA;
-        Tue, 23 Mar 2021 09:43:31 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drivers: watchdog: Remove duplicate include of kernel.h
-Date:   Tue, 23 Mar 2021 09:43:20 +0800
-Message-Id: <20210323014320.136473-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Mar 2021 21:46:57 -0400
+Received: from fsav104.sakura.ne.jp (fsav104.sakura.ne.jp [27.133.134.231])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12N1kuPx046795;
+        Tue, 23 Mar 2021 10:46:56 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav104.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp);
+ Tue, 23 Mar 2021 10:46:56 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12N1kt3L046787
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 23 Mar 2021 10:46:55 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC PATCH 2/2] integrity: double check iint_cache was
+ initialized
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+References: <20210319200358.22816-1-zohar@linux.ibm.com>
+ <20210319200358.22816-2-zohar@linux.ibm.com>
+ <8450c80a-104a-3f36-0963-0ae8fa69e0f2@i-love.sakura.ne.jp>
+ <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <1a2245c6-3cab-7085-83d3-55b083619303@i-love.sakura.ne.jp>
+Date:   Tue, 23 Mar 2021 10:46:52 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGk4eSh1NTB5PSUNKVkpNSk1PTUhDSkpCTElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0JITlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NjY6KQw*UT8TODoePxcLEgww
-        Ig0wC05VSlVKTUpNT01IQ0pJSUhMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTkpNNwY+
-X-HM-Tid: 0a785cc05518d992kuwsad1989802ca
+In-Reply-To: <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux/kernel.h has been included at line 17, so remove the 
-duplicate one at line 22.
+On 2021/03/20 5:03, Mimi Zohar wrote:
+> The integrity's "iint_cache" is initialized at security_init().  Only
+> after an IMA policy is loaded, which is initialized at late_initcall,
+> is a file's integrity status stored in the "iint_cache".
+> 
+> All integrity_inode_get() callers first verify that the IMA policy has
+> been loaded, before calling it.  Yet for some reason, it is still being
+> called, causing a NULL pointer dereference.
+> 
+> qemu-system-x86_64 (...snipped...) lsm=smack (...snipped...)
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/watchdog/dw_wdt.c | 1 -
- 1 file changed, 1 deletion(-)
+Hmm, why are you using lsm=smack instead of security=smack ?
+Since use of lsm= overrides CONFIG_LSM="lockdown,yama,safesetid,integrity,tomoyo,smack,bpf" settings,
+only smack is activated, which means that integrity_iintcache_init() will not be called by
 
-diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
-index 32d0e1781e63..b1642e2d9175 100644
---- a/drivers/watchdog/dw_wdt.c
-+++ b/drivers/watchdog/dw_wdt.c
-@@ -19,7 +19,6 @@
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/interrupt.h>
--- 
-2.25.1
+  DEFINE_LSM(integrity) = {
+  	.name = "integrity",
+  	.init = integrity_iintcache_init,
+  };
+
+declaration. That's the reason iint_cache == NULL when integrity_inode_get() is called.
 
