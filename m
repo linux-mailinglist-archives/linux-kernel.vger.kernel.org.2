@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384E7345A33
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3A2345A34
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhCWI56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
+        id S229836AbhCWI6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhCWI5w (ORCPT
+        with ESMTP id S229500AbhCWI6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:57:52 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64788C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:57:51 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id b7so25792867ejv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=8rXlIPqOV8iGGjO9YOh8D4hUbu29vilYO3G17kh48+U=;
-        b=BJhHpCIbJoKTOiYPS0Be87+vcsNMw75fzAoI70nBSxscSLZEyi/VJWzsfA8s1YXvwS
-         mtzkU797W6opyoI8eRW8nmJb7uQSy6WHshVPdH6nxSQPqtZv3tZ3vJCpXA4l0KHD8V6P
-         9fui+DS4q78RFGtVzGQL6kGrf3rz0m4E5QEZwe9NV6WYqIjUzTwNcpsVskmgl3xrdiai
-         sLKW0hwT5arVpG6P19KC/3Fq6PaTd8pK/qGVpGT/DsAljbN+fGf5zo6CfWzVpxWZ8Lho
-         UBlLBqzdSqImGr7SAc/QSnlcp26xFt8I9j92Loi9Z6NKbr3s2r2t2ReR3mF81dp7ajlj
-         ZUmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8rXlIPqOV8iGGjO9YOh8D4hUbu29vilYO3G17kh48+U=;
-        b=GJqzDfCz18itAfsL8TeFqYH7SgW6kUoeFC7sSYnPxt3r440t0qpQ1s3pTk3dPpbIfj
-         V/eO/QRJSjkzv/8uNm99kU+rACooo87Ph0zm+bn6WptICTaJghi6jGyq/I6+0fnhiAPJ
-         iAxySPmJnSG9etw5p4/x9NewGNdmCrVEuj31Lvb+pBVURa6O/hSBeslJzSZ0/KoAoKZW
-         J5WoK7vgagCcy4gUZCLX+84W/Mt9tfwDEsfXMtue1FFhgB8oCE6AHQl2AsFRsTr5jo0z
-         UouPc0bEAdEltAoAV3A6iKrzrwUBq3nzCsD/C08TOY/NbSPagzsbtTwaeymY3cqq7ZtV
-         h43Q==
-X-Gm-Message-State: AOAM5306XZRyuz1u8vlrxGo6lEf6yifQ+NrHrPTk68kQGIuNT4MZr7zD
-        muzIenyUwonCKiHLNijymg1mRe/YbfXbZw==
-X-Google-Smtp-Source: ABdhPJzBdJLj5bnx3tAMeaXP3B4Cs74sq7EyKebE4Xj6mJIbg9e+lE9D73YGH0OvDAY676MATpcTvg==
-X-Received: by 2002:a17:906:cf90:: with SMTP id um16mr3919292ejb.389.1616489870087;
-        Tue, 23 Mar 2021 01:57:50 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id kj3sm10959398ejc.117.2021.03.23.01.57.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 01:57:49 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 08:57:48 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Immutable branch between MFD and Power due for the v5.13
- merge window
-Message-ID: <20210323085748.GH2916463@dell>
-References: <20210312083604.3708890-1-linus.walleij@linaro.org>
+        Tue, 23 Mar 2021 04:58:03 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7411C061574;
+        Tue, 23 Mar 2021 01:58:02 -0700 (PDT)
+Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lOcrO-0004PS-Hi; Tue, 23 Mar 2021 09:57:58 +0100
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        workflows@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>
+References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
+ <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
+ <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
+ <YFkSqIN90S4a3HiF@mit.edu>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
+ focussed on issues/bugs and regressions
+Message-ID: <54aeb1f7-ffc7-74e1-a731-8970d44ff852@leemhuis.info>
+Date:   Tue, 23 Mar 2021 09:57:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <YFkSqIN90S4a3HiF@mit.edu>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-BS
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210312083604.3708890-1-linus.walleij@linaro.org>
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616489882;d35cf563;
+X-HE-SMSGID: 1lOcrO-0004PS-Hi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enjoy!
+On 22.03.21 22:56, Theodore Ts'o wrote:
+> On Mon, Mar 22, 2021 at 08:25:15PM +0100, Thorsten Leemhuis wrote:
+>> I agree to the last point and yeah, maybe regressions are the more
+>> important problem we should work on – at least from the perspective of
+>> kernel development.  But from the users perspective (and
+>> reporting-issues.rst is written for that perspective) it feel a bit
+>> unsatisfying to not have a solution to query for existing report,
+>> regressions or not. Hmmmm...
+> First of all, thanks for working on reporting-issues.rst.
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Thx, very glad to hear that. I didn't get much feedback on it, which
+made me wonder if anybody besides docs folks actually looked at it...
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+>  If we can
+> actually get users to *read* it, I think it's going to save kernel
+> developers a huge amount of time and frustration.
 
-are available in the Git repository at:
+And users hopefully as well. But yes, making them read it is the
+problem. :-/
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-power-v5.13
+> I wonder if it might be useful to have a form which users could be
+> encouraged to fill out so that (a) the information is available in a
+> structured format so it's easier for developers to find the relevant
+> information, (b) so it is easier for programs to parse, for easier
+> reporting or indexing, and (c) as a nudge so that users remember to
+> report critical bits of information such as the hardware
+> configuration, the exact kernel version, which distribution userspace
+> was in use, etc.
+> 
+> There could also be something in the text form which would make it
+> easier for lore.kernel.org searches to identify bug reports.  (e.g.,
+> "LINUX KERNEL BUG REPORTER TEMPLATE")
 
-for you to fetch changes up to ee0975c3089e1c3357ccc3ada7a94a95b61e708c:
+Hmmm, yeah, I like that idea. I'll keep it in mind for later: I would
+prefer to get reporting-issues.rst officially blessed and
+reporting-bugs.rst gone before working on further enhancements.
 
-  mfd/power: ab8500: Push data to power supply code (2021-03-22 14:56:02 +0000)
+Maybe the best idea would be to have a script and/or webpage that helps
+people creating the proper text form (which they then could simply
+copy-and-paste into their mailer). I had such a script/webpage in mind
+already to help with one of the IMHO biggest pain points when it comes
+to reporting issues: finding where the report needs to go, as decoding
+MAINTAINERS requires that you have a at least a vague idea which
+component might be causing the issue – which afaics is hard even for
+people that known a thing or two about the kernel. :-/
 
-----------------------------------------------------------------
-Immutable branch between MFD and Power due for the v5.13 merge window
-
-----------------------------------------------------------------
-Linus Walleij (4):
-      power: ab8500: Require device tree
-      mfd/power: ab8500: Push data to power supply code
-      mfd/power: ab8500: Push algorithm to power supply code
-      mfd/power: ab8500: Push data to power supply code
-
- drivers/mfd/ab8500-core.c                          |  17 +-
- drivers/power/supply/Kconfig                       |   2 +-
- .../abx500 => drivers/power/supply}/ab8500-bm.h    | 297 +++++++++++++++++++--
- .../power/supply/ab8500-chargalg.h                 |   6 +-
- drivers/power/supply/ab8500_bmdata.c               |   3 +-
- drivers/power/supply/ab8500_btemp.c                |  45 +---
- drivers/power/supply/ab8500_charger.c              |  27 +-
- drivers/power/supply/ab8500_fg.c                   |  20 +-
- drivers/power/supply/abx500_chargalg.c             |  22 +-
- drivers/power/supply/pm2301_charger.c              |   4 +-
- include/linux/mfd/abx500.h                         | 276 -------------------
- 11 files changed, 326 insertions(+), 393 deletions(-)
- rename {include/linux/mfd/abx500 => drivers/power/supply}/ab8500-bm.h (58%)
- rename include/linux/mfd/abx500/ux500_chargalg.h => drivers/power/supply/ab8500-chargalg.h (93%)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Ciao, Thorsten
