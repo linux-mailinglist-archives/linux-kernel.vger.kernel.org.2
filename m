@@ -2,419 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C53934698F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3532134699D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhCWUFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:05:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33471 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233272AbhCWUFZ (ORCPT
+        id S231680AbhCWULA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231281AbhCWUKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:05:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616529924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RDUHhSls8PhOZQFGsQcGjV+nNMxL2uwFZEqE6L8LWWk=;
-        b=gh+5YGid/6bKJJN6TTVRj4P9C8B1OCfNmEK5AkbfsGVKsU92C5PfMs3VWO2wVK//D8GEDD
-        x3eV/HGC/Eu4qyjrzahCw6UYkBQKfJ/mi8tRswscY56cf/IXuSDMNxVqzwUhi5nNUa3mZ1
-        W68slceNPzkl4cNGCugbbmpnah1Xhcs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-79x2L4CrN66ZUs9uhP1mug-1; Tue, 23 Mar 2021 16:05:20 -0400
-X-MC-Unique: 79x2L4CrN66ZUs9uhP1mug-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C32A107ACCA;
-        Tue, 23 Mar 2021 20:05:18 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E100B2B3C7;
-        Tue, 23 Mar 2021 20:04:57 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
-        Jones Desougi <jones.desougi+netfilter@gmail.com>
-Subject: [PATCH v3] audit: log nftables configuration change events once per table
-Date:   Tue, 23 Mar 2021 16:04:28 -0400
-Message-Id: <3d15fa1f0c54335f9258d90ea0d11050e780ba70.1616529248.git.rgb@redhat.com>
+        Tue, 23 Mar 2021 16:10:31 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98392C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:10:30 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so20727863otk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=LyHHHSMLFWUeygbV2lU1XgcbhGu+fq/FJm7L8suyFsw=;
+        b=pvagIcQfYI9eLKjZ4QGl1Q2Bs9IeTWQSzIY6slDMNYWnvJgF2c8mi2N4adhgHTzfqI
+         /SNzU3qxYr1u9PIVkoQXXT7forjchfGfPxahqRaF3+ZItU2zsI6f3QdO1n4dctmeCKTG
+         j7UGWys7lo5BpZ6hIiCWZZVycs7TH/l7dQDjs7C2SpHo7lVOrTjJYNGs/umOCg8DgsiQ
+         h2RY+s+2k3XdtBv7oi+A3xGCnDCSeyVZ/jRJUxwEGLA8P+7toCLU8fYVOG+mn5vcAb9g
+         DhJcA5BFdHDotGdShY6zhZyAGHIJdEwNsR+jln4otYC6raSVzSXjkuAyCPKcfVOOTV/2
+         DpqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=LyHHHSMLFWUeygbV2lU1XgcbhGu+fq/FJm7L8suyFsw=;
+        b=gEZCDJuslfvVujTfbyNGydalF9xyFwbw2saaLrq4h9O8gjgRPPIuygLM2pfD/yanuX
+         OwZBBg/yqjZshwjDXQzaLyZUppdPcpNjuGWmjJp2DVp3Ar+kbIRtgAon5+jUiFhmJa+B
+         gqhL0FK/f3rHpg8DEDcFoBZZdyiC/pJwuug5M+VX73Z2YsRB2calW8mtGGQN1NJXrWPO
+         1/x1Hn1NEdNULAbso2jscmwWP7NMd3i0DGGSSgvkQEGB4PbiSJ4Ep2qzJi0WQ53en8ti
+         apIWkSIFfjg5hV1FC6/LPOnXie57r8222qFipVqgxyMCFRcocQUEwRcs6UN78fxsMmuA
+         Xd9A==
+X-Gm-Message-State: AOAM532+W8BPukcppQ4oB5uoU4cW+ljSkr+LiFDmzSd3KrQY4BU7zIHu
+        1N85lsrCggo2k9s5TOWCUgvI7A==
+X-Google-Smtp-Source: ABdhPJwUjtFEPasM6uIHKGE4xAQtgGqVOh2Nei1zxtzNvvJvSYPbSeOchBvzMA4cuSE2mPDREcw9jQ==
+X-Received: by 2002:a9d:12cb:: with SMTP id g69mr30718otg.77.1616530229418;
+        Tue, 23 Mar 2021 13:10:29 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id z25sm1368942otj.68.2021.03.23.13.10.27
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 23 Mar 2021 13:10:28 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 13:10:13 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Johannes Weiner <hannes@cmpxchg.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+In-Reply-To: <YFo7SOni0s0TbXUm@cmpxchg.org>
+Message-ID: <alpine.LSU.2.11.2103231310020.5513@eggly.anvils>
+References: <20210319071547.60973-1-hannes@cmpxchg.org> <alpine.LSU.2.11.2103191814040.1043@eggly.anvils> <YFo7SOni0s0TbXUm@cmpxchg.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce logging of nftables events to a level similar to iptables.
-Restore the table field to list the table, adding the generation.
+On Tue, 23 Mar 2021, Johannes Weiner wrote:
+> From f6f062a3ec46f4fb083dcf6792fde9723f18cfc5 Mon Sep 17 00:00:00 2001
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> Date: Fri, 19 Mar 2021 02:17:00 -0400
+> Subject: [PATCH] mm: page_alloc: fix allocation imbalances from speculative
+>  cache lookup
+> 
+> When the freeing of a higher-order page block (non-compound) races
+> with a speculative page cache lookup, __free_pages() needs to leave
+> the first order-0 page in the chunk to the lookup but free the buddy
+> pages that the lookup doesn't know about separately.
+> 
+> There are currently two problems with it:
+> 
+> 1. It checks PageHead() to see whether we're dealing with a compound
+>    page after put_page_testzero(). But the speculative lookup could
+>    have freed the page after our put and cleared PageHead, in which
+>    case we would double free the tail pages.
+> 
+>    To fix this, test PageHead before the put and cache the result for
+>    afterwards.
+> 
+> 2. If such a higher-order page is charged to a memcg (e.g. !vmap
+>    kernel stack)), only the first page of the block has page->memcg
+>    set. That means we'll uncharge only one order-0 page from the
+>    entire block, and leak the remainder.
+> 
+>    To fix this, add a split_page_memcg() before it starts freeing tail
+>    pages, to ensure they all have page->memcg set up.
+> 
+> While at it, also update the comments a bit to clarify what exactly is
+> happening to the page during that race.
+> 
+> Fixes: e320d3012d25 mm/page_alloc.c: fix freeing non-compound pages
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Reported-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: <stable@vger.kernel.org> # 5.10+
 
-Indicate the op as the most significant operation in the event.
+This is great, thanks Hannes.
+Acked-by: Hugh Dickins <hughd@google.com>
 
-A couple of sample events:
+I know that 5.10-stable rejected the two split_page_memcg() patches:
+we shall need those in, I'll send GregKH the fixups, but not today.
 
-type=PROCTITLE msg=audit(2021-03-18 09:30:49.801:143) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
-type=SYSCALL msg=audit(2021-03-18 09:30:49.801:143) : arch=x86_64 syscall=sendmsg success=yes exit=172 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=roo
-t sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
-type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv6 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv4 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=inet entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-
-type=PROCTITLE msg=audit(2021-03-18 09:30:49.839:144) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
-type=SYSCALL msg=audit(2021-03-18 09:30:49.839:144) : arch=x86_64 syscall=sendmsg success=yes exit=22792 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=r
-oot sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
-type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv6 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv4 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=inet entries=165 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
-
-The issue was originally documented in
-https://github.com/linux-audit/audit-kernel/issues/124
-
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
-Changelog:
-v3:
-- fix function braces, reduce parameter scope
-- pre-allocate nft_audit_data per table in step 1, bail on ENOMEM
-
-v2:
-- convert NFT ops to array indicies in nft2audit_op[]
-- use linux lists
-- use functions for each of collection and logging of audit data
----
- include/linux/audit.h         |  28 ++++++
- net/netfilter/nf_tables_api.c | 160 ++++++++++++++++------------------
- 2 files changed, 105 insertions(+), 83 deletions(-)
-
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index 82b7c1116a85..5fafcf4c13de 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -118,6 +118,34 @@ enum audit_nfcfgop {
- 	AUDIT_NFT_OP_INVALID,
- };
- 
-+static const u8 nft2audit_op[NFT_MSG_MAX] = { // enum nf_tables_msg_types
-+	[NFT_MSG_NEWTABLE]	= AUDIT_NFT_OP_TABLE_REGISTER,
-+	[NFT_MSG_GETTABLE]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_DELTABLE]	= AUDIT_NFT_OP_TABLE_UNREGISTER,
-+	[NFT_MSG_NEWCHAIN]	= AUDIT_NFT_OP_CHAIN_REGISTER,
-+	[NFT_MSG_GETCHAIN]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_DELCHAIN]	= AUDIT_NFT_OP_CHAIN_UNREGISTER,
-+	[NFT_MSG_NEWRULE]	= AUDIT_NFT_OP_RULE_REGISTER,
-+	[NFT_MSG_GETRULE]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_DELRULE]	= AUDIT_NFT_OP_RULE_UNREGISTER,
-+	[NFT_MSG_NEWSET]	= AUDIT_NFT_OP_SET_REGISTER,
-+	[NFT_MSG_GETSET]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_DELSET]	= AUDIT_NFT_OP_SET_UNREGISTER,
-+	[NFT_MSG_NEWSETELEM]	= AUDIT_NFT_OP_SETELEM_REGISTER,
-+	[NFT_MSG_GETSETELEM]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_DELSETELEM]	= AUDIT_NFT_OP_SETELEM_UNREGISTER,
-+	[NFT_MSG_NEWGEN]	= AUDIT_NFT_OP_GEN_REGISTER,
-+	[NFT_MSG_GETGEN]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_TRACE]		= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_NEWOBJ]	= AUDIT_NFT_OP_OBJ_REGISTER,
-+	[NFT_MSG_GETOBJ]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_DELOBJ]	= AUDIT_NFT_OP_OBJ_UNREGISTER,
-+	[NFT_MSG_GETOBJ_RESET]	= AUDIT_NFT_OP_OBJ_RESET,
-+	[NFT_MSG_NEWFLOWTABLE]	= AUDIT_NFT_OP_FLOWTABLE_REGISTER,
-+	[NFT_MSG_GETFLOWTABLE]	= AUDIT_NFT_OP_INVALID,
-+	[NFT_MSG_DELFLOWTABLE]	= AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
-+};
-+
- extern int is_audit_feature_set(int which);
- 
- extern int __init audit_register_class(int class, unsigned *list);
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index c1eb5cdb3033..e48554a5c14e 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -66,6 +66,13 @@ static const struct rhashtable_params nft_objname_ht_params = {
- 	.automatic_shrinking	= true,
- };
- 
-+struct nft_audit_data {
-+	struct nft_table *table;
-+	int entries;
-+	int op;
-+	struct list_head list;
-+};
-+
- static void nft_validate_state_update(struct net *net, u8 new_validate_state)
- {
- 	switch (net->nft.validate_state) {
-@@ -717,17 +724,6 @@ static void nf_tables_table_notify(const struct nft_ctx *ctx, int event)
- {
- 	struct sk_buff *skb;
- 	int err;
--	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
--			      ctx->table->name, ctx->table->handle);
--
--	audit_log_nfcfg(buf,
--			ctx->family,
--			ctx->table->use,
--			event == NFT_MSG_NEWTABLE ?
--				AUDIT_NFT_OP_TABLE_REGISTER :
--				AUDIT_NFT_OP_TABLE_UNREGISTER,
--			GFP_KERNEL);
--	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -1491,18 +1487,6 @@ static void nf_tables_chain_notify(const struct nft_ctx *ctx, int event)
- {
- 	struct sk_buff *skb;
- 	int err;
--	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
--			      ctx->table->name, ctx->table->handle,
--			      ctx->chain->name, ctx->chain->handle);
--
--	audit_log_nfcfg(buf,
--			ctx->family,
--			ctx->chain->use,
--			event == NFT_MSG_NEWCHAIN ?
--				AUDIT_NFT_OP_CHAIN_REGISTER :
--				AUDIT_NFT_OP_CHAIN_UNREGISTER,
--			GFP_KERNEL);
--	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -2855,18 +2839,6 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
- {
- 	struct sk_buff *skb;
- 	int err;
--	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
--			      ctx->table->name, ctx->table->handle,
--			      ctx->chain->name, ctx->chain->handle);
--
--	audit_log_nfcfg(buf,
--			ctx->family,
--			rule->handle,
--			event == NFT_MSG_NEWRULE ?
--				AUDIT_NFT_OP_RULE_REGISTER :
--				AUDIT_NFT_OP_RULE_UNREGISTER,
--			GFP_KERNEL);
--	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -3901,18 +3873,6 @@ static void nf_tables_set_notify(const struct nft_ctx *ctx,
- 	struct sk_buff *skb;
- 	u32 portid = ctx->portid;
- 	int err;
--	char *buf = kasprintf(gfp_flags, "%s:%llu;%s:%llu",
--			      ctx->table->name, ctx->table->handle,
--			      set->name, set->handle);
--
--	audit_log_nfcfg(buf,
--			ctx->family,
--			set->field_count,
--			event == NFT_MSG_NEWSET ?
--				AUDIT_NFT_OP_SET_REGISTER :
--				AUDIT_NFT_OP_SET_UNREGISTER,
--			gfp_flags);
--	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -5097,18 +5057,6 @@ static void nf_tables_setelem_notify(const struct nft_ctx *ctx,
- 	u32 portid = ctx->portid;
- 	struct sk_buff *skb;
- 	int err;
--	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
--			      ctx->table->name, ctx->table->handle,
--			      set->name, set->handle);
--
--	audit_log_nfcfg(buf,
--			ctx->family,
--			set->handle,
--			event == NFT_MSG_NEWSETELEM ?
--				AUDIT_NFT_OP_SETELEM_REGISTER :
--				AUDIT_NFT_OP_SETELEM_UNREGISTER,
--			GFP_KERNEL);
--	kfree(buf);
- 
- 	if (!ctx->report && !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
- 		return;
-@@ -6310,12 +6258,11 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
- 			    filter->type != NFT_OBJECT_UNSPEC &&
- 			    obj->ops->type->type != filter->type)
- 				goto cont;
--
- 			if (reset) {
- 				char *buf = kasprintf(GFP_ATOMIC,
--						      "%s:%llu;?:0",
-+						      "%s:%u",
- 						      table->name,
--						      table->handle);
-+						      net->nft.base_seq);
- 
- 				audit_log_nfcfg(buf,
- 						family,
-@@ -6436,8 +6383,8 @@ static int nf_tables_getobj(struct net *net, struct sock *nlsk,
- 		reset = true;
- 
- 	if (reset) {
--		char *buf = kasprintf(GFP_ATOMIC, "%s:%llu;?:0",
--				      table->name, table->handle);
-+		char *buf = kasprintf(GFP_ATOMIC, "%s:%u",
-+				      table->name, net->nft.base_seq);
- 
- 		audit_log_nfcfg(buf,
- 				family,
-@@ -6525,15 +6472,15 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
- {
- 	struct sk_buff *skb;
- 	int err;
--	char *buf = kasprintf(gfp, "%s:%llu;?:0",
--			      table->name, table->handle);
-+	char *buf = kasprintf(gfp, "%s:%u",
-+			      table->name, net->nft.base_seq);
- 
- 	audit_log_nfcfg(buf,
- 			family,
- 			obj->handle,
- 			event == NFT_MSG_NEWOBJ ?
--				AUDIT_NFT_OP_OBJ_REGISTER :
--				AUDIT_NFT_OP_OBJ_UNREGISTER,
-+				 AUDIT_NFT_OP_OBJ_REGISTER :
-+				 AUDIT_NFT_OP_OBJ_UNREGISTER,
- 			gfp);
- 	kfree(buf);
- 
-@@ -7333,18 +7280,6 @@ static void nf_tables_flowtable_notify(struct nft_ctx *ctx,
- {
- 	struct sk_buff *skb;
- 	int err;
--	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
--			      flowtable->table->name, flowtable->table->handle,
--			      flowtable->name, flowtable->handle);
--
--	audit_log_nfcfg(buf,
--			ctx->family,
--			flowtable->hooknum,
--			event == NFT_MSG_NEWFLOWTABLE ?
--				AUDIT_NFT_OP_FLOWTABLE_REGISTER :
--				AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
--			GFP_KERNEL);
--	kfree(buf);
- 
- 	if (!ctx->report &&
- 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
-@@ -7465,9 +7400,6 @@ static void nf_tables_gen_notify(struct net *net, struct sk_buff *skb,
- 	struct sk_buff *skb2;
- 	int err;
- 
--	audit_log_nfcfg("?:0;?:0", 0, net->nft.base_seq,
--			AUDIT_NFT_OP_GEN_REGISTER, GFP_KERNEL);
--
- 	if (!nlmsg_report(nlh) &&
- 	    !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
- 		return;
-@@ -8006,12 +7938,65 @@ static void nft_commit_notify(struct net *net, u32 portid)
- 	WARN_ON_ONCE(!list_empty(&net->nft.notify_list));
- }
- 
-+int nf_tables_commit_audit_alloc(struct list_head *adl,
-+				 struct nft_table *table)
-+{
-+	struct nft_audit_data *adp;
-+
-+	list_for_each_entry(adp, adl, list) {
-+		if (adp->table == table)
-+			return 0;
-+	}
-+	adp = kzalloc(sizeof(*adp), GFP_KERNEL);
-+	if (!adp)
-+		return -ENOMEM;
-+	adp->table = table;
-+	INIT_LIST_HEAD(&adp->list);
-+	list_add(&adp->list, adl);
-+	return 0;
-+}
-+
-+void nf_tables_commit_audit_collect(struct list_head *adl,
-+				    struct nft_table *table, u32 op)
-+{
-+	struct nft_audit_data *adp;
-+
-+	list_for_each_entry(adp, adl, list) {
-+		if (adp->table == table)
-+			goto found;
-+	}
-+	WARN_ONCE("table=%s not expected in commit list", table->name);
-+	return;
-+found:
-+	adp->entries++;
-+	if (!adp->op || adp->op > op)
-+		adp->op = op;
-+}
-+
-+#define AUNFTABLENAMELEN (NFT_TABLE_MAXNAMELEN + 22)
-+
-+void nf_tables_commit_audit_log(struct list_head *adl, u32 generation)
-+{
-+	struct nft_audit_data *adp, *adn;
-+	char aubuf[AUNFTABLENAMELEN];
-+
-+	list_for_each_entry_safe(adp, adn, adl, list) {
-+		snprintf(aubuf, AUNFTABLENAMELEN, "%s:%u", adp->table->name,
-+			 generation);
-+		audit_log_nfcfg(aubuf, adp->table->family, adp->entries,
-+				nft2audit_op[adp->op], GFP_KERNEL);
-+		list_del(&adp->list);
-+		kfree(adp);
-+	}
-+}
-+
- static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- {
- 	struct nft_trans *trans, *next;
- 	struct nft_trans_elem *te;
- 	struct nft_chain *chain;
- 	struct nft_table *table;
-+	LIST_HEAD(adl);
- 	int err;
- 
- 	if (list_empty(&net->nft.commit_list)) {
-@@ -8031,6 +8016,11 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 	list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
- 		int ret;
- 
-+		ret = nf_tables_commit_audit_alloc(&adl, trans->ctx.table);
-+		if (ret) {
-+			nf_tables_commit_chain_prepare_cancel(net);
-+			return ret;
-+		}
- 		if (trans->msg_type == NFT_MSG_NEWRULE ||
- 		    trans->msg_type == NFT_MSG_DELRULE) {
- 			chain = trans->ctx.chain;
-@@ -8206,12 +8196,16 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
- 			}
- 			break;
- 		}
-+		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
-+					       trans->msg_type);
- 	}
- 
- 	nft_commit_notify(net, NETLINK_CB(skb).portid);
- 	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
- 	nf_tables_commit_release(net);
- 
-+	nf_tables_commit_audit_log(&adl, net->nft.base_seq);
-+
- 	return 0;
- }
- 
--- 
-2.27.0
-
+> ---
+>  mm/page_alloc.c | 41 +++++++++++++++++++++++++++++++++++------
+>  1 file changed, 35 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index c53fe4fa10bf..8aab1e87fa3c 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
+>   * the allocation, so it is easy to leak memory.  Freeing more memory
+>   * than was allocated will probably emit a warning.
+>   *
+> - * If the last reference to this page is speculative, it will be released
+> - * by put_page() which only frees the first page of a non-compound
+> - * allocation.  To prevent the remaining pages from being leaked, we free
+> - * the subsequent pages here.  If you want to use the page's reference
+> + * This function isn't a put_page(). Don't let the put_page_testzero()
+> + * fool you, it's only to deal with speculative cache references. It
+> + * WILL free pages directly. If you want to use the page's reference
+>   * count to decide when to free the allocation, you should allocate a
+>   * compound page, and use put_page() instead of __free_pages().
+>   *
+> @@ -5124,11 +5123,41 @@ static inline void free_the_page(struct page *page, unsigned int order)
+>   */
+>  void __free_pages(struct page *page, unsigned int order)
+>  {
+> -	if (put_page_testzero(page))
+> +	bool compound = PageHead(page);
+> +
+> +	/*
+> +	 * Drop the base reference from __alloc_pages and free. In
+> +	 * case there is an outstanding speculative reference, from
+> +	 * e.g. the page cache, it will put and free the page later.
+> +	 */
+> +	if (likely(put_page_testzero(page))) {
+>  		free_the_page(page, order);
+> -	else if (!PageHead(page))
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * Ok, the speculative reference will put and free the page.
+> +	 *
+> +	 * - If this was an order-0 page, we're done.
+> +	 *
+> +	 * - If the page was compound, the other side will free the
+> +	 *   entire page and we're done here as well. Just note that
+> +	 *   freeing clears PG_head, so it can only be read reliably
+> +	 *   before the put_page_testzero().
+> +	 *
+> +	 * - If the page was of higher order but NOT marked compound,
+> +	 *   the other side will know nothing about our buddy pages
+> +	 *   and only free the order-0 page at the start of our block.
+> +	 *   We must split off and free the buddy pages here.
+> +	 *
+> +	 *   The buddy pages aren't individually refcounted, so they
+> +	 *   can't have any pending speculative references themselves.
+> +	 */
+> +	if (order > 0 && !compound) {
+> +		split_page_memcg(page, 1 << order);
+>  		while (order-- > 0)
+>  			free_the_page(page + (1 << order), order);
+> +	}
+>  }
+>  EXPORT_SYMBOL(__free_pages);
+>  
+> -- 
+> 2.31.0
