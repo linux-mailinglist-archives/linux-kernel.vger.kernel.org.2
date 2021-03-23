@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5292345EE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48450345EE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhCWNES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42868 "EHLO mail.kernel.org"
+        id S231340AbhCWNEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:04:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhCWNDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:03:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FB2C6192D;
-        Tue, 23 Mar 2021 13:03:41 +0000 (UTC)
+        id S231322AbhCWNEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:04:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D79BB619B6;
+        Tue, 23 Mar 2021 13:04:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616504623;
-        bh=zJzf06RB17EMVuvWgntxsZAzxqtJqr53ucVYYUuK8EU=;
+        s=k20201202; t=1616504674;
+        bh=q6NHsIW3BnA5mhThORhjcdH3DG7oZJ3fYXk3ohPq4IE=;
         h=From:To:Cc:Subject:Date:From;
-        b=cdzpNOFiRFj1xqywlgrtaCm1x2O3E9/6J1vYZ+i3Xn9uIZpSjvmY7wU0ZniYgINSS
-         IOQIsmi4ezhBN9t+2EB4bJoz6PXZriiQ7/XE15WVoBqQSZks0Kn43n1aYZ81QJNeO0
-         OdUyMQwDyeNTlBzOBydQdboMkFsZzLi1K7tvXC1EwevheelgHtTFgO2WlbpE4t7Qpw
-         inVYe1+v8izZC7jVhJB0wUwi79Fv6KOkmEz7lliOyeRHGk0FcwIz4W06dczEaksbAJ
-         ID8dY92zjNGV9h7Xl36klqqwRFcTDucMBIBmKMnKrQ6a4lTdqEyKHGBm4o3Y2zWJeW
-         jZGEl5QOMsEyQ==
+        b=NSVZHMS2Sa44doHHUf+7S7yQgC3c7fmn8mqentdeLVYtyu9W1ptJa2pLE79Fdw4T1
+         x25sJWLjI8q72sGiXXjws1uxQ+Stxy21a1AGhFnFNQ71UmNVqiq17cLSooefF8iLZh
+         DpQ8dPBai9dvRSoVgcW/hM+fEuLE6l21P9PUtsIJ+zZb08BftvHsYvXj1DXNCLCGxD
+         DdFhaiPPrSeskOliAZMdENIJIVbTLGsDMajQLPthjqfTbvw0LACdqTKMhCKer76HYR
+         Mjcz7piID8kj8USw42m8caU00xxjmYn/DiRMbafuxX6EVK/6pitlIivY+HIxUUY0qm
+         mLIpyBIPjsJ3Q==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rhashtable: avoid -Wrestrict warning on overlapping sprintf output
-Date:   Tue, 23 Mar 2021 14:03:32 +0100
-Message-Id: <20210323130338.2213241-1-arnd@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Huang Rui <ray.huang@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] amdgpu: fix gcc -Wrestrict warning
+Date:   Tue, 23 Mar 2021 14:04:20 +0100
+Message-Id: <20210323130430.2250052-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,68 +43,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-sprintf() is declared with a restrict keyword to not allow input and
-output to point to the same buffer:
+gcc warns about an sprintf() that uses the same buffer as source
+and destination, which is undefined behavior in C99:
 
-lib/test_rhashtable.c: In function 'print_ht':
-lib/test_rhashtable.c:504:4: error: 'sprintf' argument 3 overlaps destination object 'buff' [-Werror=restrict]
-  504 |    sprintf(buff, "%s\nbucket[%d] -> ", buff, i);
-      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lib/test_rhashtable.c:489:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
-  489 |  char buff[512] = "";
-      |       ^~~~
+drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c: In function 'amdgpu_securedisplay_debugfs_write':
+drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:141:6: error: 'sprintf' argument 3 overlaps destination object 'i2c_output' [-Werror=restrict]
+  141 |      sprintf(i2c_output, "%s 0x%X", i2c_output,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  142 |       securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:97:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+   97 |  char i2c_output[256];
+      |       ^~~~~~~~~~
 
-Rework this function to remember the last offset instead to
-avoid the warning.
+Rewrite it to remember the current offset into the buffer instead.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- lib/test_rhashtable.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/test_rhashtable.c b/lib/test_rhashtable.c
-index 76c607ee6db5..5a1dd4736b56 100644
---- a/lib/test_rhashtable.c
-+++ b/lib/test_rhashtable.c
-@@ -487,6 +487,7 @@ static unsigned int __init print_ht(struct rhltable *rhlt)
- 	struct rhashtable *ht;
- 	const struct bucket_table *tbl;
- 	char buff[512] = "";
-+	int offset = 0;
- 	unsigned int i, cnt = 0;
- 
- 	ht = &rhlt->ht;
-@@ -501,18 +502,18 @@ static unsigned int __init print_ht(struct rhltable *rhlt)
- 		next = !rht_is_a_nulls(pos) ? rht_dereference(pos->next, ht) : NULL;
- 
- 		if (!rht_is_a_nulls(pos)) {
--			sprintf(buff, "%s\nbucket[%d] -> ", buff, i);
-+			offset += sprintf(buff + offset, "\nbucket[%d] -> ", i);
- 		}
- 
- 		while (!rht_is_a_nulls(pos)) {
- 			struct rhlist_head *list = container_of(pos, struct rhlist_head, rhead);
--			sprintf(buff, "%s[[", buff);
-+			offset += sprintf(buff + offset, "[[");
- 			do {
- 				pos = &list->rhead;
- 				list = rht_dereference(list->next, ht);
- 				p = rht_obj(ht, pos);
- 
--				sprintf(buff, "%s val %d (tid=%d)%s", buff, p->value.id, p->value.tid,
-+				offset += sprintf(buff + offset, " val %d (tid=%d)%s", p->value.id, p->value.tid,
- 					list? ", " : " ");
- 				cnt++;
- 			} while (list);
-@@ -521,7 +522,7 @@ static unsigned int __init print_ht(struct rhltable *rhlt)
- 			next = !rht_is_a_nulls(pos) ?
- 				rht_dereference(pos->next, ht) : NULL;
- 
--			sprintf(buff, "%s]]%s", buff, !rht_is_a_nulls(pos) ? " -> " : "");
-+			offset += sprintf(buff + offset, "]]%s", !rht_is_a_nulls(pos) ? " -> " : "");
- 		}
- 	}
- 	printk(KERN_ERR "\n---- ht: ----%s\n-------------\n", buff);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+index 834440ab9ff7..69d7f6bff5d4 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+@@ -136,9 +136,10 @@ static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __u
+ 		ret = psp_securedisplay_invoke(psp, TA_SECUREDISPLAY_COMMAND__SEND_ROI_CRC);
+ 		if (!ret) {
+ 			if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS) {
++				int pos = 0;
+ 				memset(i2c_output,  0, sizeof(i2c_output));
+ 				for (i = 0; i < TA_SECUREDISPLAY_I2C_BUFFER_SIZE; i++)
+-					sprintf(i2c_output, "%s 0x%X", i2c_output,
++					pos += sprintf(i2c_output + pos, " 0x%X",
+ 						securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+ 				dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is :%s\n", i2c_output);
+ 			} else {
 -- 
 2.29.2
 
