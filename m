@@ -2,56 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72719345BE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DF8345BE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhCWKbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:31:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:43560 "EHLO foss.arm.com"
+        id S230292AbhCWKbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:31:33 -0400
+Received: from mga09.intel.com ([134.134.136.24]:62535 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230274AbhCWKab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:30:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A505E1042;
-        Tue, 23 Mar 2021 03:30:30 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.56.36])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 615AD3F719;
-        Tue, 23 Mar 2021 03:30:28 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Minghuan Lian <Minghuan.Lian@nxp.com>
-Subject: Re: [PATCH] PCI: mobiveil: Improve PCIE_LAYERSCAPE_GEN4 dependencies
-Date:   Tue, 23 Mar 2021 10:30:22 +0000
-Message-Id: <161649540110.20748.7096266995911563432.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210208142301.413582-1-geert+renesas@glider.be>
-References: <20210208142301.413582-1-geert+renesas@glider.be>
+        id S230274AbhCWKbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:31:18 -0400
+IronPort-SDR: nXJK1wsl239CczalZFdab4oHvIv9Jd7Yz0R2ZRraOffzfudAkY7IFQXZVASmmqwIPzqbeQYZH5
+ xKlVCL5pFtYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190544139"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="190544139"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 03:31:17 -0700
+IronPort-SDR: BqsQ0ZVCsf9IoI8Sc27lfq+vew4nrqY0C26IM78ERSY1t//Zqw1EAn1pmHr8NLXFNY6r0ZlTLx
+ ZRd1xBNHdwMQ==
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="408258545"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 03:31:16 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lOeJd-00EzHj-Sr; Tue, 23 Mar 2021 12:31:13 +0200
+Date:   Tue, 23 Mar 2021 12:31:13 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] mfd: intel_quark_i2c_gpio: Reuse BAR definitions
+ for MFD cell indexing
+Message-ID: <YFnDccpWGjXAI3Rk@smile.fi.intel.com>
+References: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
+ <20210302135620.89958-5-andriy.shevchenko@linux.intel.com>
+ <20210323092057.GM2916463@dell>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323092057.GM2916463@dell>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 15:23:01 +0100, Geert Uytterhoeven wrote:
->   - Drop the dependency on PCI, as this is implied by the dependency on
->     PCI_MSI_IRQ_DOMAIN,
->   - Drop the dependencies on OF and ARM64, as the driver compiles fine
->     without OF and/or on other architectures,
->   - The Freescale Layerscape PCIe Gen4 controller is present only on
->     Freescale Layerscape SoCs.  Hence depend on ARCH_LAYERSCAPE, to
->     prevent asking the user about this driver when configuring a kernel
->     without Freescale Layerscape support, unless compile-testing.
+On Tue, Mar 23, 2021 at 09:20:57AM +0000, Lee Jones wrote:
+> On Tue, 02 Mar 2021, Andy Shevchenko wrote:
+> 
+> > It's convenient and less error prone to use definitions to address
+> > different cells in an array. For this purpose we may reuse existing
+> > BAR definitions.
 
-Applied to pci/misc, thanks!
+...
 
-[1/1] PCI: mobiveil: Improve PCIE_LAYERSCAPE_GEN4 dependencies
-      https://git.kernel.org/lpieralisi/pci/c/021a90fe60
+> > +	{
+> > +		.id = MFD_GPIO_BAR,
+> > +		.name = "gpio-dwapb",
+> > +		.acpi_match = &intel_quark_acpi_match_gpio,
+> > +		.num_resources = ARRAY_SIZE(intel_quark_gpio_res),
+> > +		.resources = intel_quark_gpio_res,
+> > +		.ignore_resource_conflicts = true,
+> > +	},
+> >  };
+> 
+> I would make this more explicit.
+> 
+> [MFD_I2C_BAR] = { }
+> 
+> If someone comes along and re-reorders these, it will break.
 
-Thanks,
-Lorenzo
+Agree.
+Will do for v2.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
