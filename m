@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A706634594D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BBF345932
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhCWIJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:09:00 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:60038 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhCWIIi (ORCPT
+        id S229716AbhCWICH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhCWIBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:08:38 -0400
-X-Greylist: delayed 516 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Mar 2021 04:08:37 EDT
-Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
-        by sparta.prtnl (Postfix) with ESMTP id D1B4D44A022C;
-        Tue, 23 Mar 2021 08:59:59 +0100 (CET)
+        Tue, 23 Mar 2021 04:01:45 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F024C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lx3J6Y5Q3le0nZDa4hURyeJThg9+xLXsxyVyB1tvv0U=; b=h+sXw7FNjiA7THYFgpctWo8GVv
+        a0g9V03KoAnatTs0p68hMqbimfiJY5KD2IJxzSedlDb/cRXM5V7NzIIKZ37XXHDZFT4Z2OnhQNDNf
+        V2Jiq8jRYE4llLIrHlQEWHZOIPNCgvqFli6upWuhw+mZlm7vcZ/hhVvNXgtuHJoZgHVJj0VlLcg/C
+        e1laS1PPsC5sVIYLRgukn1ysJOb/1yPX1ThzPImbhxGn43E0U8DlP/64dG/2kbR8wQngDhefR3yNm
+        cMz6RbI8wwOCQJX/PY18/tRE9CZKzix5OYMW+eE7hN14hWbsZo5X5TwHkuHZYzVyirRFPSrpP04po
+        d1sPhz4A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lObyN-00EFl3-54; Tue, 23 Mar 2021 08:01:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C63C3010C8;
+        Tue, 23 Mar 2021 09:01:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F343A2053DA99; Tue, 23 Mar 2021 09:01:02 +0100 (CET)
+Date:   Tue, 23 Mar 2021 09:01:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 2/8] hugetlb: recompute min_count when dropping
+ hugetlb_lock
+Message-ID: <YFmgPkTzZY6Ocj6X@hirez.programming.kicks-ass.net>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-3-mike.kravetz@oracle.com>
+ <YFikrdN6DHQSEm6a@dhcp22.suse.cz>
+ <a7d90d58-fa6a-7fa1-77c9-a08515746018@oracle.com>
+ <YFmd3d5B2VT4GkiG@dhcp22.suse.cz>
 MIME-Version: 1.0
-Date:   Tue, 23 Mar 2021 08:59:59 +0100
-From:   robin <robin@protonic.nl>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/17] auxdisplay: ht16k33: Use HT16K33_FB_SIZE in
- ht16k33_initialize()
-Reply-To: robin@protonic.nl
-In-Reply-To: <20210322144848.1065067-10-geert@linux-m68k.org>
-References: <20210322144848.1065067-1-geert@linux-m68k.org>
- <20210322144848.1065067-10-geert@linux-m68k.org>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <7e5eb8c54d7dd196ea071b7f9c31c2ce@protonic.nl>
-X-Sender: robin@protonic.nl
-Organization: Protonic Holland
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFmd3d5B2VT4GkiG@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22 15:48, Geert Uytterhoeven wrote:
-> Use the existing HT16K33_FB_SIZE definition instead of open-coding the
-> same calculation using an hardcoded value.
-> While at it, restore reverse Christmas tree variable declaration order.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  drivers/auxdisplay/ht16k33.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/auxdisplay/ht16k33.c 
-> b/drivers/auxdisplay/ht16k33.c
-> index 1e69cc6d21a0dca2..6d39f12054618fa5 100644
-> --- a/drivers/auxdisplay/ht16k33.c
-> +++ b/drivers/auxdisplay/ht16k33.c
-> @@ -168,9 +168,9 @@ static void ht16k33_fb_update(struct work_struct 
-> *work)
-> 
->  static int ht16k33_initialize(struct ht16k33_priv *priv)
->  {
-> +	uint8_t data[HT16K33_FB_SIZE];
->  	uint8_t byte;
->  	int err;
-> -	uint8_t data[HT16K33_MATRIX_LED_MAX_COLS * 2];
-> 
->  	/* Clear RAM (8 * 16 bits) */
->  	memset(data, 0, sizeof(data));
+On Tue, Mar 23, 2021 at 08:50:53AM +0100, Michal Hocko wrote:
 
-Acked-by: Robin van der Gracht <robin@protonic.nl>
+> > >> +static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
+> > >> +{
+> > >> +	unsigned long min_count;
+> > >> +
+> > >> +	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
+> > >> +	return max(count, min_count);
+> > > 
+> > > Just out of curiousity, is compiler allowed to inline this piece of code
+> > > and then cache the value? In other words do we need to make these
+> > > READ_ONCE or otherwise enforce the no-caching behavior?
+> > 
+> > I honestly do not know if the compiler is allowed to do that.  The
+> > assembly code generated by my compiler does not cache the value, but
+> > that does not guarantee anything.  I can add READ_ONCE to make the
+> > function look something like:
+> > 
+> > static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
+> > {
+> > 	unsigned long min_count;
+> > 
+> > 	min_count = READ_ONCE(h->resv_huge_pages) + READ_ONCE(h->nr_huge_pages)
+> > 					- READ_ONCE(h->free_huge_pages);
+> > 	return max(count, min_count);
+> > }
+> 
+> Maybe just forcing to never inline the function should be sufficient.
+> This is not a hot path to micro optimize for no function call. But there
+> are much more qualified people on the CC list on this matter who could
+> clarify. Peter?
+
+I'm not sure I understand the code right. But inline or not doesn't
+matter, LTO completely ruins that game. Just like if it was a static
+function, then the compiler is free to inline it, even if the function
+lacks an inline attribute.
+
+Basically, without READ_ONCE() the compiler is allowed to entirely elide
+the load (and use a previous load), or to duplicate the load and do it
+again later (reaching a different result).
+
+Similarly, the compiler is allowed to byte-wise load the variable in any
+random order and re-assemble.
+
+If any of that is a problem, you have to use READ_ONCE().
+
