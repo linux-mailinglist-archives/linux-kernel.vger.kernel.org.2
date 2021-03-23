@@ -2,62 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E355534550B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8C834550C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbhCWBi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 21:38:29 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:54422 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhCWBhy (ORCPT
+        id S231504AbhCWBjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 21:39:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58991 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231516AbhCWBj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 21:37:54 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 21B629801E7;
-        Tue, 23 Mar 2021 09:37:48 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-riscv@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Mon, 22 Mar 2021 21:39:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616463566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nu+yoWMzzgGr1gCDRbvEmZk3Z9T6e6oSH4qrWWkWJtw=;
+        b=OGnN1hQ5/YsrwhcunNW6Re/I1gdPX4izceCJAVMTtjg+tBzkNwNeI/+S36XpJEoExurf2d
+        H4PN3vO1ZnkK6WuOXzKi+U8pWsNe6Qhe6TqrCuyA11JH8JecDEjyn8ALGBOuTLe4Jbnvsn
+        00txOpUCqkPjutBA+gavkDm3prblY10=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-SQ1GQ4yAM0izyxevZ022VQ-1; Mon, 22 Mar 2021 21:39:24 -0400
+X-MC-Unique: SQ1GQ4yAM0izyxevZ022VQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00C011084C83;
+        Tue, 23 Mar 2021 01:39:23 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-114-80.rdu2.redhat.com [10.10.114.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B70B5946D;
+        Tue, 23 Mar 2021 01:39:21 +0000 (UTC)
+Subject: Re: [PATCH] locking/mutex: Remove repeated declaration
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
         linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drivers: pinctrl: Remove duplicate include of io.h
-Date:   Tue, 23 Mar 2021 09:37:27 +0800
-Message-Id: <20210323013727.135571-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <1616461774-18644-1-git-send-email-zhangshaokun@hisilicon.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <d73b1039-c05d-c153-644e-ed260a57e4f1@redhat.com>
+Date:   Mon, 22 Mar 2021 21:39:21 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTklDTE9DSUgdQ0lLVkpNSk1PTUhPTUNPT0hVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MSI6Djo*Oj8SAjoaARYOGCwD
-        IxgwC0lVSlVKTUpNT01IT01CSE9IVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTkJPNwY+
-X-HM-Tid: 0a785cbb1739d992kuws21b629801e7
+In-Reply-To: <1616461774-18644-1-git-send-email-zhangshaokun@hisilicon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux/io.h has been included at line 6, so remove the 
-duplicate include at line 18.
+On 3/22/21 9:09 PM, Shaokun Zhang wrote:
+> Commit 0cd39f4600ed ("locking/seqlock, headers: Untangle the spaghetti monster")
+> introduces 'struct ww_acquire_ctx' again, remove the repeated declaration.
+>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+> ---
+>   include/linux/mutex.h | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> index 0cd631a19727..d80c0e22c822 100644
+> --- a/include/linux/mutex.h
+> +++ b/include/linux/mutex.h
+> @@ -20,8 +20,6 @@
+>   #include <linux/osq_lock.h>
+>   #include <linux/debug_locks.h>
+>   
+> -struct ww_acquire_ctx;
+> -
+>   /*
+>    * Simple, straightforward mutexes with strict semantics:
+>    *
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/pinctrl/pinctrl-k210.c | 1 -
- 1 file changed, 1 deletion(-)
+Yes, it is duplicated.
 
-diff --git a/drivers/pinctrl/pinctrl-k210.c b/drivers/pinctrl/pinctrl-k210.c
-index 8a733cf77ba0..f831526d06ff 100644
---- a/drivers/pinctrl/pinctrl-k210.c
-+++ b/drivers/pinctrl/pinctrl-k210.c
-@@ -15,7 +15,6 @@
- #include <linux/pinctrl/pinmux.h>
- #include <linux/pinctrl/pinconf.h>
- #include <linux/pinctrl/pinconf-generic.h>
--#include <linux/io.h>
- 
- #include <dt-bindings/pinctrl/k210-fpioa.h>
- 
--- 
-2.25.1
+Acked-by: Waiman Long <longman@redhat.com>
 
