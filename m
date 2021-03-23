@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1EE3469E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969863469DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhCWUd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:33:26 -0400
-Received: from p3plsmtpa07-03.prod.phx3.secureserver.net ([173.201.192.232]:41554
-        "EHLO p3plsmtpa07-03.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233352AbhCWUdB (ORCPT
+        id S233386AbhCWUcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233305AbhCWUbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:33:01 -0400
-Received: from chrisHP110 ([76.103.216.188])
-        by :SMTPAUTH: with ESMTPA
-        id OnhzlTcHTKQk4OnhzlH5cY; Tue, 23 Mar 2021 13:33:00 -0700
-X-CMAE-Analysis: v=2.4 cv=W6D96Tak c=1 sm=1 tr=0 ts=605a507c
- a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
- a=kj9zAlcOel0A:10 a=cR5ugqiJw0_SYd6LBy0A:9 a=CjuIK1q_8ugA:10
- a=fCgQI5UlmZDRPDxm0A3o:22
-X-SECURESERVER-ACCT: don@thebollingers.org
-From:   "Don Bollinger" <don@thebollingers.org>
-To:     "'Andrew Lunn'" <andrew@lunn.ch>
-Cc:     "'Jakub Kicinski'" <kuba@kernel.org>, <arndb@arndb.de>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
-        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
-        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
-        "'netdev'" <netdev@vger.kernel.org>,
-        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
-References: <YD1ScQ+w8+1H//Y+@lunn.ch> <003901d711f2$be2f55d0$3a8e0170$@thebollingers.org> <20210305145518.57a765bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <005e01d71230$ad203be0$0760b3a0$@thebollingers.org> <YEL3ksdKIW7cVRh5@lunn.ch> <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org> <YEvILa9FK8qQs5QK@lunn.ch> <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org> <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <001201d719c6$6ac826c0$40587440$@thebollingers.org> <YFJHN+raumcJ5/7M@lunn.ch>
-In-Reply-To: <YFJHN+raumcJ5/7M@lunn.ch>
-Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
-Date:   Tue, 23 Mar 2021 13:32:59 -0700
-Message-ID: <009601d72023$b73dbde0$25b939a0$@thebollingers.org>
+        Tue, 23 Mar 2021 16:31:49 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A53C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:31:48 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id 94so16018367qtc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xOQ/VR2f/EQSNjVSoLpprEnzu9FB7rZNdtB4mU/j0KQ=;
+        b=XvfKd7158u9qdeVd8RjPTRAY67/TB0iALIYqWpMOxJh3krZaYOChVXgWIgABbwDrs8
+         V2Y2EAnd0Pv09LbTIXntgoLz3aNXe20taYiVof5vl5ABw0mowqEyD950o+RxaiKb3MLJ
+         HfpacafnQhNo7bBR38Z7rULdidRNxFaeiZbZp8BFeafKfEPkHiGjU/NkLUMia7canJMd
+         3HM1Wis2Ksj4ROOdYolJiU3/PIwQMtQLe2WrkTgWFdlGeeOIZqIYC2r54uIWuHjJTHIF
+         YKP7WFCntW/LEkG00KhmYwvWcZo6B81cB1mmm/bg6op0ZxNs1HgxrfErAOmfqPW0kI05
+         3wgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xOQ/VR2f/EQSNjVSoLpprEnzu9FB7rZNdtB4mU/j0KQ=;
+        b=NnS0Fz7BR9Rl6ug6nap6BQxmxXk0AIPbXHmBQWzomhZ0uIugZY1pV0niCoUF12bT0D
+         DzaQR48lG38e3wkzfIcscQmqKe4PzDj0S5mmXgYrzlwFtEEBVup1heZvKTTA1WEFnI9E
+         8n1cXM+jWW0Igw5xqL35ylr/UeRyo/dQCZsdiBkzWL2O3GM0c+IxDCa47UGcROlQJxgO
+         ZHd+06GVe7PFlJZyrN4ypmN3YBWpX6P75cOtXHDozwHUnCFzNsQmzO2/dbyOymTjYyLJ
+         VBZhw+zwPM7Hd4frNdxJZRlVUtBi2lulppJZQO5q6xRD5AyYsP+WfaKgnpFAVkYDkW86
+         9PgQ==
+X-Gm-Message-State: AOAM5317+JWg8DVIcoTCBYpMBEPNChjSIoSflRpqe5vL6BZFcpolY51g
+        5U0peUJH4VT6sjGxe7dJLLg=
+X-Google-Smtp-Source: ABdhPJzcOtxKGBEoNOu9vO0TPnlz+4816rn+cOlWbDX/XiTMcQu3DBflMyFz29u7Weshy/Eg/F/7fQ==
+X-Received: by 2002:ac8:74c4:: with SMTP id j4mr144739qtr.70.1616531507866;
+        Tue, 23 Mar 2021 13:31:47 -0700 (PDT)
+Received: from Slackware.localdomain ([37.19.198.105])
+        by smtp.gmail.com with ESMTPSA id f20sm4757qtp.67.2021.03.23.13.31.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 13:31:47 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] tracing: Trivial typo fixes
+Date:   Wed, 24 Mar 2021 02:03:17 +0530
+Message-Id: <20210323203317.31944-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQD1wSRROFm+pfi0LxH9mVlD+9L7SgHJzBD7AopQEOUDOo8ypAGU1SetAlPUPSACJ/UZ9QI33dQVAf1peR4CCKQDaAINVcRpq6Vr/PA=
-Content-Language: en-us
-X-CMAE-Envelope: MS4xfJIBAaH3F7AJSZAd+ZLEFUXgT+ZEGtO5iikfJf7m00SE+/yRB+kjCgbKImese4nXhErx8z6PS8EYRMM9OyDwnjukgoygonEYPwehDc5Kf73/3TemuZiQ
- i3tcfxDyohE6IpeYcHzKHX94jQEO57I/TgSAISPjAOOwy4XSAG17M4ZT5yp7F1vmeGAO2yFfb5FBal9zp3g/lk+mrXELe5APX0/OOs2f6sY9YY8hRIujAgxV
- plETaQDBbgBpgClvARdPm0/HzNzXJLJ7pROO8q3nop6Qhx2VUtD2KceyVIj5YoFz4XsfPSnifbzkNb9TPNHze2ujKM3TEYtsN9Bb3DLMEsnc9+SW2IRPhf6x
- 6W25ymm9eor60uh53OBHT5yFTVr7tMAcnqHm+FfGLEY7yYl7/IZRCTPyu2uJbr3JQ+MDx10irxoDhuMYivwXywX/zw7L5tsAXQhN+sWdXXMLIkwzFNcXjpl2
- YXtxiQJoeOt8KP49FKGPiuYwzS49mkj92AtVsPmWz0UmPzQsQtrM0NqOSfEofHkq+QTbNZOTzXQ4/ZeqDL3ihtM8FNPc/+KoKanpqfmEZBP1Sg6eYebE1lkg
- mAAedEj333AQZEe1OZaRQ9yj
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I have offered, in every response, to collaborate with the simple
-> > integration to use optoe as the default upstream driver to access the
-> > module EEPROMs.  optoe would be superior to the existing default
-> > routines in sfp.c
-> 
-> Actually, i'm not sure they would be. Since the KAPI issues are pretty
-much a
-> NACK on their own, i didn't bother raising other issues. Both Russell King
-and
-> I has issues with quirks and hotplug.
-> 
-> Our experience is that a number of SFPs are broken, they don't follow the
-> standard. Some you cannot perform more than 16 bytes reads without them
-> locking up. Others will perform a 16 byte read, but only give you one
-useful
-> byte of data. So you have to read enough of the EEPROM a byte at a time to
-> get the vendor and product strings in order to determine what quirks need
-> to be applied. optoe has nothing like this. Either you don't care and only
-> support well behaved SFPs, or you have the quirk handling in user space,
-in
-> the various vendor code blobs, repeated again and again. To make optoe
-> generically usable, you are going to have to push the quirk handling into
-> optoe. The brokenness should be hidden from userspace.
+Trivial spelling fixes.
 
-Interesting.  I would throw away such devices.  That's why switch vendors
-publish supported parts lists.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ kernel/trace/trace_seq.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Can you point me to the code that is handling those quirks?  Since I haven't
-seen those problems, I don't know what they are and how to address them.
+diff --git a/kernel/trace/trace_seq.c b/kernel/trace/trace_seq.c
+index 1d84fcc78e3e..e03eae7a5577 100644
+--- a/kernel/trace/trace_seq.c
++++ b/kernel/trace/trace_seq.c
+@@ -12,11 +12,11 @@
+  * This will set up the counters within the descriptor. You can call
+  * trace_seq_init() more than once to reset the trace_seq to start
+  * from scratch.
+  * The buffer size is currently PAGE_SIZE, although it may become dynamic
+  * in the future.
+  *
+- * A write to the buffer will either succed or fail. That is, unlike
++ * A write to the buffer will either succeed or fail. That is, unlike
+  * sprintf() there will not be a partial write (well it may write into
+  * the buffer but it wont update the pointers). This allows users to
+  * try to write something into the trace_seq buffer and if it fails
+@@ -73,7 +73,7 @@ int trace_print_seq(struct seq_file *m, struct trace_seq *s)
+  * @fmt: printf format string
+  *
+  * The tracer may use either sequence operations or its own
+- * copy to user routines. To simplify formating of a trace
++ * copy to user routines. To simplify formatting of a trace
+  * trace_seq_printf() is used to store strings into a special
+  * buffer (@s). Then the output may be either used by
+  * the sequencer or pulled into another buffer.
+@@ -133,7 +133,7 @@ EXPORT_SYMBOL_GPL(trace_seq_bitmask);
+  * @fmt: printf format string
+  *
+  * The tracer may use either sequence operations or its own
+- * copy to user routines. To simplify formating of a trace
++ * copy to user routines. To simplify formatting of a trace
+  * trace_seq_printf is used to store strings into a special
+  * buffer (@s). Then the output may be either used by
+  * the sequencer or pulled into another buffer.
+@@ -226,7 +226,7 @@ EXPORT_SYMBOL_GPL(trace_seq_puts);
+  * @c: simple character to record
+  *
+  * The tracer may use either the sequence operations or its own
+- * copy to user routines. This function records a simple charater
++ * copy to user routines. This function records a simple character
+  * into a special buffer (@s) for later retrieval by a sequencer
+  * or other mechanism.
+  */
+@@ -348,7 +348,7 @@ int trace_seq_path(struct trace_seq *s, const struct path *path)
+ EXPORT_SYMBOL_GPL(trace_seq_path);
 
-Note there are a VAST number of data items in those EEPROMs, including
-proprietary capabilities.  Many of the items are configuration dependent,
-and mean different things depending on the value of other data items.  Most
-of these items are not of any interest to kernel networking.  I try to
-minimize the size of the kernel footprint and move those decoding and
-management functions to user space.
-
-> 
-> And then you repeat all the quirk handling sfp.c has. That does not scale,
-we
-> don't want the same quirks in two different places. However, because SFPs
-> are hot pluggable, you need to re-evaluate the quirks whenever there is a
-> hot-plug event. optoe has no idea if there has been a hotplug event, since
-it
-> does not have access to the GPIOs. Your user space vendor code might
-> know, it has access to the GPIOs. So maybe you could add an IOCTL call or
-> something, to let optoe know the module has changed and it needs to
-> update its quirks. Or for every user space read, you actually re-read the
-> vendor IDs and refresh the quirks before performing the read the user
-> actually wants. That all seems ugly and is missing from the current patch.
-
-Actually I do need to know whether the device supports paging, that's the
-only device state I need.  Since I don't detect hotplug events, I read the
-'paging supported' bit on every read that changes the page register.  
-
-There is a GPIO line to detect 'presence', which presumably could be
-accessed via device tree configuration with the GPIO driver.  I haven't
-figured out how to connect those pieces so I just read the page register on
-every access.  Adding that would be a useful feature.
-
-> 
-> I fully agree with Jakub NACK.
-> 
->   Andrew
-
-Don
+ /**
+- * trace_seq_to_user - copy the squence buffer to user space
++ * trace_seq_to_user - copy the sequence buffer to user space
+  * @s: trace sequence descriptor
+  * @ubuf: The userspace memory location to copy to
+  * @cnt: The amount to copy
+--
+2.30.1
 
