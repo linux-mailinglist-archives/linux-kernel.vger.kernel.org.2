@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17222346558
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A323B34655B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhCWQgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
+        id S233331AbhCWQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhCWQfo (ORCPT
+        with ESMTP id S233335AbhCWQg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:35:44 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD9FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:35:43 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lOk0M-0004wd-Am; Tue, 23 Mar 2021 17:35:42 +0100
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
- <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
-Date:   Tue, 23 Mar 2021 17:35:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 23 Mar 2021 12:36:26 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08241C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:36:26 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id gb6so10335543pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:36:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jr5FYe+pG7gGnI4NPChSWjNH7YK3vC58byQZ9zBCWWU=;
+        b=caAT+/Y9z99z7OziYrIiQW7A6ptvfmUjhEbqmQZe0FcRaY9XV/8gPNXGbDmAG1rdvA
+         9k+70Y8IfxUHr/jvMlz6wPkyBvuV4G6m1LjGUy+aa5fK8oIKIkmlV3KU4XomXsbFkrhu
+         Ztvi7Dajdxgx7c/Rz4jV6AuQV7gbrSM4hTOVp5MwX0hzujzuDozddcuO5jFXPwQZRk8T
+         MYQCceXDwzEPlHdUy6DbvCAl6a/O7zH8RROqeSK+pmTQjkqkDalt9iYfaHusQ4f/F2sm
+         QUtsQ+tuk7q5kaRpucPhtRY3PsiKVOnB62/6LJLARPX4iQYQoP45G/AUWUH3JS0Y3T3J
+         S+IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jr5FYe+pG7gGnI4NPChSWjNH7YK3vC58byQZ9zBCWWU=;
+        b=GCBi/NaxXLgqYI4A0a/5mBjBPx9kuHuRYQRXim1e4CLIQvfejjdIDJ8yF9XT21hn8z
+         wylBsrPDcZzytKVqW3Nl96M2i3gqChY+cne/eHyVqnUAJyQSshjBRYvLEGkBQd1bI9Gs
+         q30UIsx02arqV25zRGlQVD6O+/beCa46SN0Czs8F4xgtVwnmMjKJUNUM8ZGMX15SwSiK
+         6cgLH7B3jK54j43m7FfVLrQMUwz1h2pvo1HheBoMnm61/sxQ5Q8vheUb2ebLGI2e5Wkd
+         3tZ+BL2XM6LQb8n8R0o9wuTb8Z1XG5P45kQ1Tnt/bYeDjW5GM1n/GINtfXqSYCt2lxhg
+         zUwg==
+X-Gm-Message-State: AOAM531yjsPMoCaKmDYMC8O3IcoFidRu/9Xf0iiqfChXHti3KnfVkJ/0
+        2dgKyb+4j+Qx/caPe1z87/Tvgw==
+X-Google-Smtp-Source: ABdhPJwLzUDt5195FT4M+X2qSUsLAl+MyqeKnk4dGBkDB29Fvu6e0osZ5t6H5L1RRVyf9Lteh2azzQ==
+X-Received: by 2002:a17:90a:c087:: with SMTP id o7mr5353039pjs.38.1616517385469;
+        Tue, 23 Mar 2021 09:36:25 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id c24sm17595799pfi.193.2021.03.23.09.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 09:36:24 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 16:36:21 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] kbuild: Merge module sections if and only if
+ CONFIG_LTO_CLANG is enabled
+Message-ID: <YFoZBY1SqilWAmx4@google.com>
+References: <20210322234438.502582-1-seanjc@google.com>
+ <CABCJKudMQ9CP1zhvywTf-_=PY5zmeviURR+=PqsMn_bqa_MV-g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABCJKudMQ9CP1zhvywTf-_=PY5zmeviURR+=PqsMn_bqa_MV-g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Horia,
-
-On 21.03.21 21:48, Horia Geantă wrote:
-> On 3/16/2021 7:02 PM, Ahmad Fatoum wrote:
-> [...]
->> +struct trusted_key_ops caam_trusted_key_ops = {
->> +	.migratable = 0, /* non-migratable */
->> +	.init = trusted_caam_init,
->> +	.seal = trusted_caam_seal,
->> +	.unseal = trusted_caam_unseal,
->> +	.exit = trusted_caam_exit,
->> +};
-> caam has random number generation capabilities, so it's worth using that
-> by implementing .get_random.
-
-If the CAAM HWRNG is already seeding the kernel RNG, why not use the kernel's?
-
-Makes for less code duplication IMO.
-
+On Tue, Mar 23, 2021, Sami Tolvanen wrote:
+> On Mon, Mar 22, 2021 at 4:44 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > Merge module sections only when using Clang LTO.  With gcc-10, merging
+> > sections does not appear to update the symbol tables for the module,
+> > e.g. 'readelf -s' shows the value that a symbol would have had, if
+> > sections were not merged.
 > 
-> Horia
-> 
+> I'm fine with limiting this to LTO only, but it would be helpful to
+> understand which sections are actually getting merged here.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+It doesn't appear to matter which sections get merged, the tables only show the
+correct data if there is no merging whatsoever, e.g. allowing merging for any
+one of the four types (.bss, .data, .rodata and .text) results in breakage.
+AFAICT, merging any sections causes the layout to change and throw off the
+symbol tables. 
+
+> Are you compiling the kernel with -ffunction-sections and/or -fdata-sections?
+
+I tried both.  Default off, and forcing those flags by hacking the Makefile had
+no effect.
+
+> Does this issue only happen with gcc 10?
+
+gcc-7 shows the same behavior, I haven't checked anything older or anything in
+between.
