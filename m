@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41D1346AC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11EF346ABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhCWVFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233519AbhCWVFD (ORCPT
+        id S233488AbhCWVFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:05:17 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:59476 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhCWVEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:05:03 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8EBC061763;
-        Tue, 23 Mar 2021 14:05:03 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id o126so19220048lfa.0;
-        Tue, 23 Mar 2021 14:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SuNFKmObS8OGYSr9I3W9TT8GQ+yDQLYI1n29xyxJHPg=;
-        b=hm4go1b2vBdyKDIgjVYuQfO/yQK6V6TcJ4j1SA8iab4Mf9gd6i6n6hDRkyzCOs02AR
-         Lp5YlmH86llULKuGzdch7GKrLtxtztZqMfRnCzD8sWRiudGVL2J2U1fZd+jmTLkA6OXX
-         h0qW+7nlyuuRU46vd1/vwY8in5c34gCR5As0VH3uVXGVOD3F0sh9iMatkWBiy6dRjN+b
-         dFhvTr+64Luxe5iZ8W9HyhYq6qNrvAnYkzXSRtErz2Qess4Y4INPyeAGVvfjQqcaxLaz
-         49TcAHBwlrJ082Glkim/xGGMq6+Nruz+swSfRux21SSbAzuBhxNCBrAC0KiOc5p1hwYx
-         gE2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SuNFKmObS8OGYSr9I3W9TT8GQ+yDQLYI1n29xyxJHPg=;
-        b=tpXej3qi3GHUGDHEUTo8mlf72K4zyNRsEwhMbXfYhGQNXuFH6BTOTcO+nUEpPk4Ww1
-         drgRd8YBrLcBWLS7ngT5oW7FNUNf8WVVywTOTLGJamnDjT3OO55Blt5KBq26qn1eYZ0O
-         wyd22r1a/16K0pSrok7m84X9FYtYGC1gOFKdAIGdKPxhiHLmqXaQXi6991S5emqZTMPX
-         URCnGTPdiCOkvCY3WmCGubfBhVWvJjDQgOWlebwGBcnfmc/slAAUUZdNRCrsYC/Ue2Qv
-         3DIu+tUi2aO0Kif2uE+zU3+orglqWEynANR+zINha6x1D/z5YPHsdzoqCVrKb4eM9fm8
-         kgaw==
-X-Gm-Message-State: AOAM5329QREgtnS8KOWtIHBZeQALHQoyOQ5AcBIGIfjVvBZu6Mt0t43w
-        RoSKkQxFFLF+MGYnVuTKyFM=
-X-Google-Smtp-Source: ABdhPJwD2jw5Nv9ynl9NjHzlZnAdJ0Q+4YgCoMHRQzpKMHv3GjMsJKhqoZ8BQQRWusy1hCq+X2bj1w==
-X-Received: by 2002:ac2:46f5:: with SMTP id q21mr3398827lfo.531.1616533501789;
-        Tue, 23 Mar 2021 14:05:01 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
-        by smtp.gmail.com with ESMTPSA id b28sm18394lfo.219.2021.03.23.14.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 14:05:01 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v1 2/2] memory: tegra20: Protect debug code with a lock
-Date:   Wed, 24 Mar 2021 00:04:46 +0300
-Message-Id: <20210323210446.24867-2-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210323210446.24867-1-digetx@gmail.com>
-References: <20210323210446.24867-1-digetx@gmail.com>
+        Tue, 23 Mar 2021 17:04:48 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E873920B5680;
+        Tue, 23 Mar 2021 14:04:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E873920B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616533488;
+        bh=OXR8yOga0/h10z0/w8+nlFHgpqAPODs3PDqE1WL4q1A=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=BMkCtQ1v6P65n3C3S1DgHgChYKUAfW4cYWty31O2g0bDdyAg4gD9pHKXgc3W/qPPR
+         whSduVPY89bFxr43JQOEoIh2zIZ3a+YOgBV4hfOe6wRECTEhAz5BZoGFHQBWRBIKu4
+         GlHbadEgBZjgG9iBRvnhP3sweuceSHCPBimchckk=
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
+ trace unreliable
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+ <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+ <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+ <20210323145734.GD98545@C02TD0UTHF1T.local>
+ <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
+ <a38e4966-9b0d-3e51-80bd-acc36d8bee9b@linux.microsoft.com>
+ <20210323170236.GF98545@C02TD0UTHF1T.local>
+ <bc450f09-1881-9a9c-bfbc-5bb31c01d8ce@linux.microsoft.com>
+ <20210323183053.GH98545@C02TD0UTHF1T.local>
+ <8aa50127-3f00-818d-d58c-4b3ff7235c74@linux.microsoft.com>
+Message-ID: <5f32abc2-5759-5fb9-a626-cce962ac275a@linux.microsoft.com>
+Date:   Tue, 23 Mar 2021 16:04:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8aa50127-3f00-818d-d58c-4b3ff7235c74@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simultaneous accesses to MC_STAT h/w shouldn't be allowed since one
-collection process stomps on another. There is no good reason for
-polling stats in parallel in practice, nevertheless let's add a
-protection lock, just for consistency.
+Thanks for all the input - Mark Rutland and Mark Brown.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/memory/tegra/tegra20.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I will send out the stack termination patch next. Since I am splitting
+the original series into 3 separate series, I will change the titles and
+start with version 1 in each case, if there is no objection.
 
-diff --git a/drivers/memory/tegra/tegra20.c b/drivers/memory/tegra/tegra20.c
-index 4659c0cea30d..2db68a913b7a 100644
---- a/drivers/memory/tegra/tegra20.c
-+++ b/drivers/memory/tegra/tegra20.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/bitfield.h>
- #include <linux/delay.h>
-+#include <linux/mutex.h>
- #include <linux/of_device.h>
- #include <linux/slab.h>
- #include <linux/string.h>
-@@ -55,6 +56,8 @@
- /* we store collected statistics as a fixed point values */
- #define MC_FX_FRAC_SCALE			100
- 
-+static DEFINE_MUTEX(tegra20_mc_stat_lock);
-+
- struct tegra20_mc_stat_gather {
- 	unsigned int pri_filter;
- 	unsigned int pri_event;
-@@ -615,8 +618,12 @@ static int tegra20_mc_stats_show(struct seq_file *s, void *unused)
- 	if (!stats)
- 		return -ENOMEM;
- 
-+	mutex_lock(&tegra20_mc_stat_lock);
-+
- 	tegra20_mc_collect_stats(mc, stats);
- 
-+	mutex_unlock(&tegra20_mc_stat_lock);
-+
- 	seq_puts(s, "Memory client   Events   Timeout   High priority   Bandwidth ARB   RW change   Successive   Page miss\n");
- 	seq_puts(s, "-----------------------------------------------------------------------------------------------------\n");
- 
--- 
-2.30.2
+Again, Thanks.
 
+Madhavan
+
+On 3/23/21 3:24 PM, Madhavan T. Venkataraman wrote:
+> 
+> 
+> On 3/23/21 1:30 PM, Mark Rutland wrote:
+>> On Tue, Mar 23, 2021 at 12:23:34PM -0500, Madhavan T. Venkataraman wrote:
+>>> On 3/23/21 12:02 PM, Mark Rutland wrote:
+>>
+>> [...]
+>>
+>>> I think that I did a bad job of explaining what I wanted to do. It is not
+>>> for any additional protection at all.
+>>>
+>>> So, let us say we create a field in the task structure:
+>>>
+>>> 	u64		unreliable_stack;
+>>>
+>>> Whenever an EL1 exception is entered or FTRACE is entered and pt_regs get
+>>> set up and pt_regs->stackframe gets chained, increment unreliable_stack.
+>>> On exiting the above, decrement unreliable_stack.
+>>>
+>>> In arch_stack_walk_reliable(), simply do this check upfront:
+>>>
+>>> 	if (task->unreliable_stack)
+>>> 		return -EINVAL;
+>>>
+>>> This way, the function does not even bother unwinding the stack to find
+>>> exception frames or checking for different return addresses or anything.
+>>> We also don't have to worry about code being reorganized, functions
+>>> being renamed, etc. It also may help in debugging to know if a task is
+>>> experiencing an exception and the level of nesting, etc.
+>>
+>> As in my other reply, since this is an optimization that is not
+>> necessary for functional correctness, I would prefer to avoid this for
+>> now. We can reconsider that in future if we encounter performance
+>> problems.
+>>
+>> Even with this there will be cases where we have to identify
+>> non-unwindable functions explicitly (e.g. the patchable-function-entry
+>> trampolines, where the real return address is in x9), and I'd prefer
+>> that we use one mechanism consistently.
+>>
+>> I suspect that in the future we'll need to unwind across exception
+>> boundaries using metadata, and we can treat the non-unwindable metadata
+>> in the same way.
+>>
+>> [...]
+>>
+>>>> 3. Figure out exception boundary handling. I'm currently working to
+>>>>    simplify the entry assembly down to a uniform set of stubs, and I'd
+>>>>    prefer to get that sorted before we teach the unwinder about
+>>>>    exception boundaries, as it'll be significantly simpler to reason
+>>>>    about and won't end up clashing with the rework.
+>>>
+>>> So, here is where I still have a question. Is it necessary for the unwinder
+>>> to know the exception boundaries? Is it not enough if it knows if there are
+>>> exceptions present? For instance, using something like num_special_frames
+>>> I suggested above?
+>>
+>> I agree that it would be legitimate to bail out early if we knew there
+>> was going to be an exception somewhere in the trace. Regardless, I think
+>> it's simpler overall to identify non-unwindability during the trace, and
+>> doing that during the trace aligns more closely with the structure that
+>> we'll need to permit unwinding across these boundaries in future, so I'd
+>> prefer we do that rather than trying to optimize for early returns
+>> today.
+>>
+> 
+> OK. Fair enough.
+> 
+> Thanks.
+> 
+> Madhavan
+> 
