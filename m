@@ -2,65 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A273B345649
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5006E34564B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbhCWDfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 23:35:13 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:40512 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhCWDet (ORCPT
+        id S229920AbhCWDft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhCWDff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 23:34:49 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id B6C0C9801A4;
-        Tue, 23 Mar 2021 11:34:32 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] tools: testing: Remove duplicate include of sched.h
-Date:   Tue, 23 Mar 2021 11:34:11 +0800
-Message-Id: <20210323033413.284420-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Mar 2021 23:35:35 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D7DC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 20:35:34 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id 94so14070304qtc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 20:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WxWS/Gdj9HB8+LY4XIChbYX4Fz5bQD6zz9sFEv2H7Lg=;
+        b=IoftGevVp32A8qjV/yrhPqxOcjTlqVrjANAxbFNRBdflMbRRNI7+mTNV1U3LdtuIo4
+         RA1pcVVbInzLI201oUijy/F+BnXvxpveh/jcSGvly/lj2aej8UGxA0KdoqztH5pOHqme
+         HKesCOzRy2H3PWypJStIaUfZxjQ00LY6Esck3xNxJH4HFZGlKqwMzAwBnRoIseJDv8Z5
+         3spj96MYC02acTuPtn9+MP3kmhtrhzaGbS3Xd5zGXGVbZFJKW8SJgOkFkjl7FFn7yLBC
+         5LM5yEXJPy3ToLpB7tpL+Zi1FeFfnpU2WGvn7YKv9jksKoAvt/FIfNjngRZ+/+veSvm3
+         uxZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WxWS/Gdj9HB8+LY4XIChbYX4Fz5bQD6zz9sFEv2H7Lg=;
+        b=IYkJtgt6xTHrzBi5Kz1OZZWBMo3lGf8tj5LU/2udyG3eWO621/TKLbfAnkpn7NBRRV
+         mAtkh2DmJMcq5mw+0tn8mHW0p9tYf+w/6GfPC6UdVs0n2tUIlXkEPM9nVlIaWcYbPh6F
+         zMbGU+x1zyFCWP6SoI8J6iIKz1dvV6VS9uKVGNntwQtKUV3Bl0mtMnsCsGzHABiXrW8t
+         9a+rHV50X600cFFOx71QmEJpDqmPNJpapvXOWQLRPBl3xP/BcZbGXpo8h0Qjup4QjrzA
+         2Z4L0aPLN8mbcgFbcy9iLIPhddE9piHk9oQIvqU/eVwv1G/7iMl/UiBQV5kBl3nCiems
+         07Ig==
+X-Gm-Message-State: AOAM532WR3y45QFxqm/jbtfszyuCSALZbXfIfDIG+nbB9la9gpY2HR/s
+        Po33Uo29Fgk3JmmZZJW+sNYQBAPVovPmwFEStx7lsQ==
+X-Google-Smtp-Source: ABdhPJy98ud3LIbedWM5prUkB4cwbvYzz+ALqBdd14E0lJ7LMYtU+3XABwmOMuhsgIf/npl1vgNt4at7eih7HFtZaxk=
+X-Received: by 2002:a05:622a:3c8:: with SMTP id k8mr2788365qtx.101.1616470533440;
+ Mon, 22 Mar 2021 20:35:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTxlIGh4aTBhPGBlMVkpNSk1PTEtPQ09MSkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PjI6MTo*Ij8UKDosMwMZMRIS
-        Ax8KCjFVSlVKTUpNT0xLT0NOS0tKVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTEJONwY+
-X-HM-Tid: 0a785d262682d992kuwsb6c0c9801a4
+References: <20210317045949.1584952-1-joshdon@google.com> <20210317082550.GA3881262@gmail.com>
+ <CABk29NvGx6KQa_+RU-6xmL6mUeBrqZjH1twOw93SCVD-NZkbMQ@mail.gmail.com> <20210319090252.GF15768@suse.de>
+In-Reply-To: <20210319090252.GF15768@suse.de>
+From:   Josh Don <joshdon@google.com>
+Date:   Mon, 22 Mar 2021 20:35:22 -0700
+Message-ID: <CABk29NukHXUu22N5WyVx82TA6WEZsz+HOBmk5oAy4GQMx4W+cw@mail.gmail.com>
+Subject: Re: [PATCH] sched: Warn on long periods of pending need_resched
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>, Paul Turner <pjt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sched.h has been included at line 33.
-So we remove the duplicate one at line 36.
+On Fri, Mar 19, 2021 at 2:02 AM Mel Gorman <mgorman@suse.de> wrote:
+>
+> Default disabling and hidden behind a static branch would be useful
+> because the majority of users are not going to know what to do about
+> a need_resched warning and the sysctl is not documented. As Ingo said,
+> SCHED_DEBUG is enabled by default a lot. While I'm not sure what motivates
+> most distributions, I have found it useful to display topology information
+> on boot and in rare cases, for the enabling/disabling of sched features.
+> Hence, sched debug features should avoid adding too much overhead where
+> possible.
+>
+> The static branch would mean splitting the very large inline functions
+> adding by the patch. The inline section should do a static check only and
+> do the main work in a function in kernel/sched/debug.c so it has minimal
+> overhead if unused.
+>
+> --
+> Mel Gorman
+> SUSE Labs
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- tools/testing/selftests/powerpc/mm/tlbie_test.c | 1 -
- 1 file changed, 1 deletion(-)
+Makes sense, I'll include this in v2.
 
-diff --git a/tools/testing/selftests/powerpc/mm/tlbie_test.c b/tools/testing/selftests/powerpc/mm/tlbie_test.c
-index f85a0938ab25..48344a74b212 100644
---- a/tools/testing/selftests/powerpc/mm/tlbie_test.c
-+++ b/tools/testing/selftests/powerpc/mm/tlbie_test.c
-@@ -33,7 +33,6 @@
- #include <sched.h>
- #include <time.h>
- #include <stdarg.h>
--#include <sched.h>
- #include <pthread.h>
- #include <signal.h>
- #include <sys/prctl.h>
--- 
-2.25.1
-
+Thanks,
+Josh
