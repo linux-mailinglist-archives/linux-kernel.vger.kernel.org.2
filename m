@@ -2,258 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B5F345BCE
+	by mail.lfdr.de (Postfix) with ESMTP id C0A09345BCF
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhCWKUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
+        id S230246AbhCWKUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCWKUY (ORCPT
+        with ESMTP id S229448AbhCWKUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:20:24 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BAAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:20:23 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id b16so22811881eds.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:20:23 -0700 (PDT)
+        Tue, 23 Mar 2021 06:20:37 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEBAC061574;
+        Tue, 23 Mar 2021 03:20:36 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id l3so13840517pfc.7;
+        Tue, 23 Mar 2021 03:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YAOD2k3cNTJSwk9m0CYU6SDfn4jX1ojbJ8sUQ1I/0cM=;
-        b=lO4rUzwPJfavXkB2+0Z6ZiwqC0isn1q9zSbfIBhP8pVv+Dp/MusSFbKWXAMpLDWeWK
-         0x4D7hEWEII39oFRCFmIU1kOQQYcqi2eb9HWEvw48vxxdtOesUvrIAm02kd6PtteR99t
-         9CxbDHLgfEs4el9Ho2c3PF6gATiwr/2NMJWt9tsDMwr/5apbbt1YpkmB8aC8KG1TQtjU
-         46xngpvvhSfUqK7tUQg8oTT9qOK2Q43gKhe2phXodBROsYRAm0Rt82sDizBnfOES/YKf
-         SbsYZyaDdpux7aRjC6kF0DSEGJx2y1AKpNnHmq1QPAoQv/rfweQDwSyFyqsdsJHnlbyj
-         jf4w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nzcPoFXDCaYwpKQZvZ+zN63y7/5aPiJS5cAO7WVT9sE=;
+        b=QYFVyiKVFfs3VKVUGIGHBP/Mr6t9JAMVXJ7MeplzC5QVUD2fQH1xgR35yapbEot6RZ
+         nEVR4uJ65N/i4IffpfgTtUgvNbISbqsGXa4bwNG6HHPm58PLClsPPzYi+cdDCB84PMH+
+         weEAR49rCmWvH/XZUVWsE44aYfLio8WlPTYFEefrUKEJMIhBRR+A2fed1LYCyKKD624d
+         yCnpEwSbTfmNDeQZo18DS5L0AbqduA7xXQH8XPA0N3FeodG73gLXjBuTpsg9s6FiJ6BG
+         3JjndOnhW5MGBgL2odPxwR5ydnzEm8O5XSPaYi6hm0G/5p4fZeUljq3HX2MgoxLNhBMH
+         ZI/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YAOD2k3cNTJSwk9m0CYU6SDfn4jX1ojbJ8sUQ1I/0cM=;
-        b=MpNltmsTW1xSpmO/O5EB3WXYM76CW56GKUWjeAfieyTBFGavGNGkID6ekbWXbDHFlq
-         KCasn90C+SBh+wVasImqRpL23LMMFYCuLPYeh2/OoaoFx1iMh36+zwrucOAC8YTZRgNS
-         8v61B3jMgXZ/kRe0EbIN4TIXTURL6+ECOi8VDRk6AZ4b5V2yying3ntl6yfBb5CyMKGs
-         ckMuz33cUFgi4XLM90kwWa+vhHGVzwrAUcWKdmBwBiCG/k7FcF81VsapkQ6aDLiyjASF
-         uS+sU/Zu1SUySqsaAURluPB8RthFrxRTt+VVvnyldAA0+HbQgIex2hNZnQ/WSh7QSj/Q
-         paPg==
-X-Gm-Message-State: AOAM533rqQpIMsqjo7ooP9u9qzVSsPKjv0Lxv8WMvQhGCF35gxPuXE30
-        uSv6FCLwJoR1sgZtT9XsI5cxLiF52+ZU9JCD3KGzPw==
-X-Google-Smtp-Source: ABdhPJxqEvWFJdvgaGdb3OuaR1JOuw5MP7iT+mq0shdzqzxXH3S87eGe43lRy2VG8RnXWCDjakJdIyzls7YdYpVVok4=
-X-Received: by 2002:aa7:dc04:: with SMTP id b4mr3806679edu.221.1616494822201;
- Tue, 23 Mar 2021 03:20:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nzcPoFXDCaYwpKQZvZ+zN63y7/5aPiJS5cAO7WVT9sE=;
+        b=Pm3zYK//r6fpdPQ716ljLmcY+F1+i/VoaL7ge6fvb9by/UWuOlBR9Rdl77stUjJtKJ
+         acD7+Y7n0iXqmDo3n3IVHAVtO/QqGJGeyfDJ6jQuic2/MPkKkFKMHUdacjlPhVZN2Sjk
+         iJklPbvysOKKZOSvUnBIqLzeJVqo3PhRjrF0HAi/PGV/o/KeECkeaiU4vPxLtoRV49Ze
+         5Y8svZfySTGMSucuMAIfAOGmhXnL9RRxBB93vAeftxPY49N7CplBrLg2GQT83GWggfge
+         JnSTbyGaFy5p/DCodTnX7WtxjWdVd8vxfthXkE8xyP3QM09qE13ZTDX0xGj/GVRT3y/D
+         q5Cg==
+X-Gm-Message-State: AOAM5314tS/JRiQdv701BMwbPBtyg///REEvZFturEUtxERo5769jM/A
+        /v8Dl1/i8LTJXTEVQrRN7tI=
+X-Google-Smtp-Source: ABdhPJzXxVQl29n+FT1kkA6ff1CHX31psw1BbA9O9a8oYeLJF0PCLd3IQuxYOO1vH19TjJrnZoby3Q==
+X-Received: by 2002:a63:5d6:: with SMTP id 205mr3338043pgf.278.1616494835986;
+        Tue, 23 Mar 2021 03:20:35 -0700 (PDT)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id gm9sm2117207pjb.13.2021.03.23.03.20.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Mar 2021 03:20:35 -0700 (PDT)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] net: ipv4: route.c: Remove unnecessary {else} if()
+Date:   Tue, 23 Mar 2021 18:20:28 +0800
+Message-Id: <20210323102028.11765-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210322121922.372583154@linuxfoundation.org>
-In-Reply-To: <20210322121922.372583154@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Mar 2021 15:50:10 +0530
-Message-ID: <CA+G9fYtUFWMWy-pTxtLzYbHWA8mUU+d=kPEOpChTmxo08b2ReA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/60] 5.4.108-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 at 18:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.108 release.
-> There are 60 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.108-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Put if and else if together, and remove unnecessary judgments, because
+it's caller can make sure it is true. And add likely() in
+ipv4_confirm_neigh().
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/ipv4/route.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index fa68c2612252..f4ba07c5c1b1 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -440,7 +440,7 @@ static void ipv4_confirm_neigh(const struct dst_entry *dst, const void *daddr)
+ 	struct net_device *dev = dst->dev;
+ 	const __be32 *pkey = daddr;
+ 
+-	if (rt->rt_gw_family == AF_INET) {
++	if (likely(rt->rt_gw_family == AF_INET)) {
+ 		pkey = (const __be32 *)&rt->rt_gw4;
+ 	} else if (rt->rt_gw_family == AF_INET6) {
+ 		return __ipv6_confirm_neigh_stub(dev, &rt->rt_gw6);
+@@ -814,19 +814,15 @@ static void ip_do_redirect(struct dst_entry *dst, struct sock *sk, struct sk_buf
+ 
+ static struct dst_entry *ipv4_negative_advice(struct dst_entry *dst)
+ {
+-	struct rtable *rt = (struct rtable *)dst;
++	struct rtable *rt = container_of(dst, struct rtable, dst);
+ 	struct dst_entry *ret = dst;
+ 
+-	if (rt) {
+-		if (dst->obsolete > 0) {
+-			ip_rt_put(rt);
+-			ret = NULL;
+-		} else if ((rt->rt_flags & RTCF_REDIRECTED) ||
+-			   rt->dst.expires) {
+-			ip_rt_put(rt);
+-			ret = NULL;
+-		}
++	if (dst->obsolete > 0 || rt->dst.expires ||
++	    (rt->rt_flags & RTCF_REDIRECTED)) {
++		ip_rt_put(rt);
++		ret = NULL;
+ 	}
++
+ 	return ret;
+ }
+ 
+-- 
+2.29.0
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.108-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 5094cb203da71ac5da8f1715dec97fe69fbfb326
-git describe: v5.4.107-61-g5094cb203da7
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.107-61-g5094cb203da7
-
-No regressions (compared to build v5.4.107)
-
-No fixes (compared to build v5.4.107)
-
-
-Ran 60075 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm-debug
-- qemu-arm64-clang
-- qemu-arm64-debug
-- qemu-arm64-kasan
-- qemu-i386-debug
-- qemu-x86_64-clang
-- qemu-x86_64-debug
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* perf/Zstd-perf.data-compression
-* v4l2-compliance
-* fwts
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-rseq
-* kselftest-tc-testing
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* network-basic-tests
-* kselftest-kexec
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-vm
-* kselftest-x86
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-math-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* igt-gpu-tools
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
