@@ -2,226 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2B1345761
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0915A345764
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhCWFgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:36:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229670AbhCWFgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:36:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BDDE619B1;
-        Tue, 23 Mar 2021 05:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616477778;
-        bh=PlHn8wG9vL9HkHJl+j/PkKSJBl638YVP4K8v9hKj6XM=;
-        h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
-        b=kxt2j2fefrr/S+3iC98N2IZdoxMtX5rwYW9ooCXoywgviO1rtddp3+ofnLU4XHU8q
-         7710diVlwqTwo8e1ooRKxSeYLTTGjvrn8M9FvnokV4u214khhWynm1ac6QCfP9nSeK
-         4PJF2vy/ye20+otd+9btMNmlFovKklQArpHDyKe+T26KfqnxIIzEJqyZEiX6WBHhFx
-         qMJBXrxAURG7UnJaLUCkmD9c9gadM7WepW8dhi1BOQFY4tttNTIp4IRo59mJqhgDw7
-         /tr6CqrGXje0IIHVLRWWFM4KQjm2lQaAHQc1Y5aKUanXEu4ZNLqi82xTTHudq3wHbc
-         m/QjSMB5m51Sw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0BDF735239E6; Mon, 22 Mar 2021 22:36:18 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 22:36:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix various typos in comments
-Message-ID: <20210323053618.GU2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210322230258.GA1983587@gmail.com>
- <YFlYzkY7h+OD0WCb@ArchLinux>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFlYzkY7h+OD0WCb@ArchLinux>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S229761AbhCWFhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:37:47 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:33277 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhCWFhh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 01:37:37 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210323053735epoutp047bf9327f3b1dc20004de6b5820dd0f1f~u4guDlCFG2700227002epoutp04U
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:37:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210323053735epoutp047bf9327f3b1dc20004de6b5820dd0f1f~u4guDlCFG2700227002epoutp04U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616477855;
+        bh=uyzlbgbXw381TKZi8Ui8NC3M6tr5mvhpMRk8Yzi6zI0=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=LQZYcBabaYYiUFSZmc2wU1p+GcRS5/jqJtNhaU1gFA5wFbni3fXR1u2G19aZ95ASw
+         K3jE5CvoFDIbPDopRg60ZDsJDeiAPE32DzeF7d0/xATltNbRm250Gyz4DjQyqKOqBT
+         tXmFbDt5cFPFH7iLdLQ0DfjU0TwZBaeUw4e1at18=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210323053734epcas2p3abb59e35e5052ef078a7d22f798f5e29~u4gtQZIKp0174801748epcas2p35;
+        Tue, 23 Mar 2021 05:37:34 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.183]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4F4KrX17MJz4x9Q7; Tue, 23 Mar
+        2021 05:37:32 +0000 (GMT)
+X-AuditID: b6c32a47-b81ff7000000148e-df-60597e9bb388
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        25.17.05262.B9E79506; Tue, 23 Mar 2021 14:37:32 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Can Guo <cang@codeaurora.org>, Bean Huo <huobean@gmail.com>
+CC:     Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
+Date:   Tue, 23 Mar 2021 14:37:31 +0900
+X-CMS-MailID: 20210323053731epcms2p70788f357b546e9ca21248175a8884554
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGJsWRmVeSWpSXmKPExsWy7bCmqe6cusgEg1czmSwezNvGZrG37QS7
+        xcufV9kspn34yWzxaf0yVouXhzQtdh08yGax6kG4RfPi9WwWc842MFn09m9ls9h8cAOzxeM7
+        n9ktFt3YxmTR/6+dxWLbZ0GL4yffMVpc3jWHzaL7+g42i+XH/zFZLN16k9Gic/oaFgcxj8tX
+        vD0u9/UyeeycdZfdY8KiA4we++euYfdoObmfxePj01ssHn1bVjF6fN4k59F+oJspgCsqxyYj
+        NTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6E0lhbLEnFKg
+        UEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhYYFecWJucWleul5yfq6VoYGBkSlQZUJOxvmr
+        zewF3/grjn5oZ2tgnMPdxcjJISFgItFw5TZbFyMXh5DADkaJnh23mLoYOTh4BQQl/u4QBqkR
+        FvCW+HNhKhuILSSgJLH+4ix2iLiexK2HaxhBbDYBHYnpJ+6zg7SKCNhLrGwKAhnJLPCHTWLp
+        rcdMELt4JWa0P2WBsKUlti/fCtbLKWAnceD/W1aIuIbEj2W9zBC2qMTN1W/ZYez3x+YzQtgi
+        Eq33zkLVCEo8+LkbKi4pcWz3B6hd9RJb7/xiBDlCQqCHUeLwzltQC/QlrnVsBDuCV8BX4v/u
+        T2CDWARUJS72TAH7XULARWLvKX2QMLOAvMT2t3OYQcLMApoS63fpQ1QoSxy5xQLzVcPG3+zo
+        bGYBPomOw3/h4jvmPYG6TE1i3c/1TBMYlWchwnkWkl2zEHYtYGRexSiWWlCcm55abFRgjBy1
+        mxjBCV7LfQfjjLcf9A4xMnEwHmKU4GBWEuFtCY9IEOJNSaysSi3Kjy8qzUktPsRoCvTkRGYp
+        0eR8YI7JK4k3NDUyMzOwNLUwNTOyUBLnLTZ4EC8kkJ5YkpqdmlqQWgTTx8TBKdXA1HzEYMHt
+        Tq+vk/c2uxn7mGmtiK+V+1S+JPEK164yVYOTPEHfPZMaIqX+xwTnLRd9sO5R4e1vxy5vXPgj
+        0b5J7vem6roNujmFV83e6Dd9yKh/FrKF7ejpT3bGTDZWiuske/an8DytZm6Mkin/W3GQY77I
+        9tp37gd7f/duaKj4Y+NmsOrnhgt3FQ/Lxx3dtaqxZ01QC6dU+aQetr4zNc8mdi9y/2uc1Dnh
+        w4/un66qdbFnNvorXf3wyy337i2JQ219Ike+er230Zed8VLxcl/TwX9P7iqkxE2LX76Ap/Tp
+        5k2CE3um5bSkRS7nd3ESWrn7qYbC5pcnQ85vEXIIzFH8yRob9E9tsccMB1ORqBNflViKMxIN
+        tZiLihMBCfCDI3kEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860
+References: <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
+        <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+        <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
+        <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
+        <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
+        <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 08:26:14AM +0530, Bhaskar Chowdhury wrote:
-> On 00:02 Tue 23 Mar 2021, Ingo Molnar wrote:
-> > 
-> > Hi Paul,
-> > 
-> > Was working on automation to make it a bit more straightforward to fix
-> > typos within comments (which we tend to reintroduce during
-> > development), and here are the ones it found in the RCU code.
-> > 
-> > Thanks,
-> > 
-> > 	Ingo
-> > 
-> > =========>
-> > From: Ingo Molnar <mingo@kernel.org>
-> > Date: Mon, 22 Mar 2021 23:57:26 +0100
-> > Subject: [PATCH] rcu: Fix various typos in comments
-> > 
-> > Fix ~12 single-word typos in RCU code comments.
-> > 
-> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> > kernel/rcu/srcutree.c                                           | 4 ++--
-> > kernel/rcu/sync.c                                               | 2 +-
-> > kernel/rcu/tasks.h                                              | 8 ++++----
-> > kernel/rcu/tree.c                                               | 4 ++--
-> > kernel/rcu/tree.h                                               | 2 +-
-> > kernel/rcu/tree_plugin.h                                        | 2 +-
-> > tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h | 2 +-
-> > 7 files changed, 12 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index e26547b34ad3..036ff5499ad5 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -777,9 +777,9 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
-> > 	spin_unlock_irqrestore_rcu_node(sdp, flags);
-> > 
-> > 	/*
-> > -	 * No local callbacks, so probabalistically probe global state.
-> > +	 * No local callbacks, so probabilistically probe global state.
-> > 	 * Exact information would require acquiring locks, which would
-> > -	 * kill scalability, hence the probabalistic nature of the probe.
-> > +	 * kill scalability, hence the probabilistic nature of the probe.
-> > 	 */
-> > 
-> > 	/* First, see if enough time has passed since the last GP. */
-> > diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
-> > index d4558ab7a07d..3eeb871cf0de 100644
-> > --- a/kernel/rcu/sync.c
-> > +++ b/kernel/rcu/sync.c
-> > @@ -94,7 +94,7 @@ static void rcu_sync_func(struct rcu_head *rhp)
-> > 		rcu_sync_call(rsp);
-> > 	} else {
-> > 		/*
-> > -		 * We're at least a GP after the last rcu_sync_exit(); eveybody
-> > +		 * We're at least a GP after the last rcu_sync_exit(); everybody
-> > 		 * will now have observed the write side critical section.
-> > 		 * Let 'em rip!.
-> > 		 */
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index af7c19439f4e..ac3c362e08a3 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -23,7 +23,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-> >  * Definition for a Tasks-RCU-like mechanism.
-> >  * @cbs_head: Head of callback list.
-> >  * @cbs_tail: Tail pointer for callback list.
-> > - * @cbs_wq: Wait queue allowning new callback to get kthread's attention.
-> > + * @cbs_wq: Wait queue allowing new callback to get kthread's attention.
-> >  * @cbs_lock: Lock protecting callback list.
-> >  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
-> >  * @gp_func: This flavor's grace-period-wait function.
-> > @@ -504,7 +504,7 @@ DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
-> >  * or transition to usermode execution.  As such, there are no read-side
-> >  * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
-> >  * this primitive is intended to determine that all tasks have passed
-> > - * through a safe state, not so much for data-strcuture synchronization.
-> > + * through a safe state, not so much for data-structure synchronization.
-> >  *
-> >  * See the description of call_rcu() for more detailed information on
-> >  * memory ordering guarantees.
-> > @@ -637,7 +637,7 @@ DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
-> >  * there are no read-side primitives analogous to rcu_read_lock() and
-> >  * rcu_read_unlock() because this primitive is intended to determine
-> >  * that all tasks have passed through a safe state, not so much for
-> > - * data-strcuture synchronization.
-> > + * data-structure synchronization.
-> >  *
+>On 2021-03-23 12:22, Can Guo wrote:
+>> On 2021-03-22 17:11, Bean Huo wrote:
+>>> On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
+>>>> +       switch (rsp_field->hpb_op) {
+>>>> 
+>>>> +       case HPB_RSP_REQ_REGION_UPDATE:
+>>>> 
+>>>> +               if (data_seg_len != DEV_DATA_SEG_LEN)
+>>>> 
+>>>> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>>> 
+>>>> +                                "%s: data seg length is not
+>>>> same.\n",
+>>>> 
+>>>> +                                __func__);
+>>>> 
+>>>> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
+>>>> 
+>>>> +               break;
+>>>> 
+>>>> +       case HPB_RSP_DEV_RESET:
+>>>> 
+>>>> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>>> 
+>>>> +                        "UFS device lost HPB information during
+>>>> PM.\n");
+>>>> 
+>>>> +               break;
+>>> 
+>>> Hi Deajun,
+>>> This series looks good to me. Just here I have one question. You 
+>>> didn't
+>>> handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS, how 
+>>> to
+>>> handle HPB_RSP_DEV_RESET from the host side? Do you think we shoud
+>>> reset host side HPB entry as well or what else?
+>>> 
+>>> 
+>>> Bean
+>> 
+>> Same question here - I am still collecting feedbacks from flash vendors 
+>> about
+>> what is recommanded host behavior on reception of HPB Op code 0x2, 
+>> since it
+>> is not cleared defined in HPB2.0 specs.
+>> 
+>> Can Guo.
 > 
-> The "hyphen" in the middle of the word "data structure" is required or keeping by
-> convention or has some significance?
+>I think the question should be asked in the HPB2.0 patch, since in 
+>HPB1.0 device
+>control mode, a HPB reset in device side does not impact anything in 
+>host side -
+>host is not writing back any HPB entries to device anyways and HPB Read 
+>cmd with
+>invalid HPB entries shall be treated as normal Read(10) cmd without any 
+>problems.
 
-Yes, this is one of many peculiarities of English, and an optional one
-at that.  English is not a block-structured language, so grouping can
-be ambiguous.  Is is "(data structure) synchronization" or is it instead
-"data (structure synchronization)"?  The default is the latter, and
-the hyphen indicates the former.  In this case, the former is intended,
-hence the hyphen.
+Yes, UFS device will process read command even the HPB entries are valid or
+not. So it is warning about read performance drop by dev reset.
 
-> >  * See the description of call_rcu() for more detailed information on
-> >  * memory ordering guarantees.
-> > @@ -1127,7 +1127,7 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
-> >  * there are no read-side primitives analogous to rcu_read_lock() and
-> >  * rcu_read_unlock() because this primitive is intended to determine
-> >  * that all tasks have passed through a safe state, not so much for
-> > - * data-strcuture synchronization.
-> > + * data-structure synchronization.
-> >  *
-> Same like above.
+Thanks,
+Daejun
 
-Ditto!
-
-							Thanx, Paul
-
-> >  * See the description of call_rcu() for more detailed information on
-> >  * memory ordering guarantees.
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index da6f5213fb74..ab5bd5b391e6 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -2490,7 +2490,7 @@ int rcutree_dead_cpu(unsigned int cpu)
-> > 
-> > /*
-> >  * Invoke any RCU callbacks that have made it to the end of their grace
-> > - * period.  Thottle as specified by rdp->blimit.
-> > + * period.  Throttle as specified by rdp->blimit.
-> >  */
-> > static void rcu_do_batch(struct rcu_data *rdp)
-> > {
-> > @@ -4013,7 +4013,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
-> > /*
-> >  * Propagate ->qsinitmask bits up the rcu_node tree to account for the
-> >  * first CPU in a given leaf rcu_node structure coming online.  The caller
-> > - * must hold the corresponding leaf rcu_node ->lock with interrrupts
-> > + * must hold the corresponding leaf rcu_node ->lock with interrupts
-> >  * disabled.
-> >  */
-> > static void rcu_init_new_rnp(struct rcu_node *rnp_leaf)
-> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > index 71821d59d95c..abff7abd59ee 100644
-> > --- a/kernel/rcu/tree.h
-> > +++ b/kernel/rcu/tree.h
-> > @@ -153,7 +153,7 @@ struct rcu_data {
-> > 	unsigned long	gp_seq;		/* Track rsp->gp_seq counter. */
-> > 	unsigned long	gp_seq_needed;	/* Track furthest future GP request. */
-> > 	union rcu_noqs	cpu_no_qs;	/* No QSes yet for this CPU. */
-> > -	bool		core_needs_qs;	/* Core waits for quiesc state. */
-> > +	bool		core_needs_qs;	/* Core waits for quiescent state. */
-> > 	bool		beenonline;	/* CPU online at least once. */
-> > 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
-> > 	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 2d603771c7dc..2a28f05cf467 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -2772,7 +2772,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
-> > 	wastimer = timer_pending(&rdp->nocb_bypass_timer);
-> > 	wassleep = swait_active(&rdp->nocb_gp_wq);
-> > 	if (!rdp->nocb_gp_sleep && !waslocked && !wastimer && !wassleep)
-> > -		return;  /* Nothing untowards. */
-> > +		return;  /* Nothing untoward. */
-> > 
-> > 	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
-> > 		"lL"[waslocked],
-> > diff --git a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
-> > index cf6938d679d7..1e24827f96f1 100644
-> > --- a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
-> > +++ b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
-> > @@ -174,7 +174,7 @@ static inline bool spin_trylock(spinlock_t *lock)
-> > }
-> > 
-> > struct completion {
-> > -	/* Hopefuly this won't overflow. */
-> > +	/* Hopefully this won't overflow. */
-> > 	unsigned int count;
-> > };
-> > 
+>Please correct me if I am wrong.
 
 
+
+>Thanks,
+>Can Guo.
+> 
+> 
+>  
