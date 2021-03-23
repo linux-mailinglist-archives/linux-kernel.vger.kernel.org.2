@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F16346B29
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E4A346B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233634AbhCWVe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        id S233641AbhCWVhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233614AbhCWVeg (ORCPT
+        with ESMTP id S233560AbhCWVgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:34:36 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD9CC061574;
-        Tue, 23 Mar 2021 14:34:36 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id s21so10687418pjq.1;
-        Tue, 23 Mar 2021 14:34:36 -0700 (PDT)
+        Tue, 23 Mar 2021 17:36:42 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316E9C061574;
+        Tue, 23 Mar 2021 14:36:41 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id w3so29508675ejc.4;
+        Tue, 23 Mar 2021 14:36:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XzV5iTFFRxwiIThTNNC9D1IR/At6zFkZ2wYh9lkF1SU=;
-        b=Jy7FC4M+wnWAOhFPxob1iQf1L5XGBjCj2qlrDLgjeDXvk/+kWeFghSYsmlkG7Hxoc1
-         0i+aCswR0sETqik3aTEuE2u8aVoeo8vNhT++VHXoHdy2tmBNvWh9jCRzGGo3WRS3yzPl
-         4fr3+OiPEjWDDZPc64/yV0yw6RSOLtsWBWgBnhVJMTPRihCcR021Eu1oGqHmxuRheq5/
-         1afh6TzMB4XOb27SZiZ38lL9Tk9hEVz+O1lkhNIauMRAn3u9XsPjNGQpLvJBop2FhbtW
-         Zhec0LJ1YgzXqOn2XNb/NXXnVPhjy6x9dvnDSSl24RBQZ8b26qK71rPHyjzISo9Uiv2a
-         G7eQ==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tFARsFj6G6XnxpNZg94WWZT6eJ0EvH/1YhJXH6db/GM=;
+        b=hQ2FHoHRGajLA4j5gih9viiqjuceuy9pDG9idkOf2ruP5/eTxxKxlKe+ldaH89avGn
+         LhoDHGmd1mDEkcehXy6K8H8jvYyiRLKGSaVfc9EJyUgPVT9GIWGQq1a57VafD6t3X/tM
+         IvwAN7YSedyOAKIt+/yA2lHLJF7ZGyMv5SdrAkfSci1YV1fOlh+JHf1buVJVe/6CShii
+         oUGddUiPX05migzCZoMcX4orQQ6NMbtFEVeWvWF4WeOKpuIDfFjsYGSMLJ/c56dl/hv9
+         x8PVkT58lTdaX0sZabCDoeJlZJfYh71cCA+Flpn2Aa7GvuSB2q6ujetmlyMaWQG0W3Q5
+         ofJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XzV5iTFFRxwiIThTNNC9D1IR/At6zFkZ2wYh9lkF1SU=;
-        b=Zwmi3aqKpYzEUg4XvqsyznCaVkRYu3BJw9E5BbqkVtKSy5Cvt8opTVW77izKneZgI+
-         IWvujZarmfU6lf4s/7aq+eL3+eF0EABNi4MD3HPApMoLkAYXrMSJgAMSEQ7P8qgLnoIy
-         m+8w5mUePSNCq4hio/3sFMMEoZZWGOUvu0+Uyf+CDd5xpgdFkELvufTHyA68lS9alPPi
-         m5pJpMBxudqQMOsHhkcql4wYTpJCuMKb/4ND1WBvbNcS+vdMid5g69WpBq58Z8lbIeTW
-         YZIiKuMDIdFDqEXtYr0F4YC8NxAtcFHmMM8Un09n1iaBtqTnN8tEuwX1NHCiE8iQrj5y
-         skuw==
-X-Gm-Message-State: AOAM530TYnFmfbS7wOw0jYd+dPC60eRt8QtwDg0JLnggiaA95Lw+QA3+
-        B5369HV64RedWX7VmK5Fmps=
-X-Google-Smtp-Source: ABdhPJxnJuEj+5k+aUzVsbSogIKDPj/wR4O+N2VxzAw3EG9nN5IHRwdA8kcnRDebzLc4ENgYQxZJ3g==
-X-Received: by 2002:a17:90a:a503:: with SMTP id a3mr104638pjq.235.1616535276278;
-        Tue, 23 Mar 2021 14:34:36 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
-        by smtp.gmail.com with ESMTPSA id a22sm146699pgw.52.2021.03.23.14.34.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 14:34:35 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 14:34:32 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     od@zcrc.me, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] input: gpio-keys: Use hrtimer for software
- debounce, if possible
-Message-ID: <YFpe6EhydawiMjHB@google.com>
-References: <20210307222240.380583-1-paul@crapouillou.net>
- <20210307222240.380583-3-paul@crapouillou.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tFARsFj6G6XnxpNZg94WWZT6eJ0EvH/1YhJXH6db/GM=;
+        b=izTJ8VlcvPHecE3lgOaF8zG2GjL0YB933jo5rc4ox4mJ9KRW8upvbo18k+jNUPki6r
+         UVpKsS/7H/T209j8kCESSzjnuLkOdYZcvQE1mWAFZI7vcE2gNDJ1W81AbUCbv1ltIv/T
+         Ik5eZtio6DwTzCeuVTtEkFU2YKPVXIczc/My7WsFDfGd5PrLo+lAodBAFvqcZvlSbGlR
+         S2dT00+3YO8r2PyIxddsN8/OMXOD6N4+7l9DSFGqSajBL2jtT0Lft60DVw7vJWwvkO7q
+         rfSiH9fY57cCz4FHy3JatB/kzwQCiDk+dzgtBjkYbPq/DJVbxOMa9RWrgalF/nCuGoac
+         F6SA==
+X-Gm-Message-State: AOAM532NYynFSTiEV8vZmdSKHRoxjMd9OHLkJAV3Qh1S+0kIEfqopC1j
+        SBjPdAR8nXA385OT3JeumCUYCfzOqEK+dk5KoYI=
+X-Google-Smtp-Source: ABdhPJwx9fPxfIIkRAvbrX8L29AYkkSxTjTk4GDR7+TnKy+9eYa2i/Fp1/ws2zM1Cl04c4z103ujMsKRGxZkChFWSEY=
+X-Received: by 2002:a17:907:e87:: with SMTP id ho7mr257007ejc.2.1616535399923;
+ Tue, 23 Mar 2021 14:36:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210307222240.380583-3-paul@crapouillou.net>
+References: <20201230012724.1326156-1-martin.blumenstingl@googlemail.com>
+ <20201230012724.1326156-5-martin.blumenstingl@googlemail.com> <YFLARj7RX0m+BBsA@builder.lan>
+In-Reply-To: <YFLARj7RX0m+BBsA@builder.lan>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 23 Mar 2021 22:36:29 +0100
+Message-ID: <CAFBinCBx1GtN_CYqOorfKVgXq8utXAr04ab815sVbNH5+qGBQQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] remoteproc: meson-mx-ao-arc: Add a driver for the AO
+ ARC remote procesor
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, ohad@wizery.com, robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 10:22:40PM +0000, Paul Cercueil wrote:
-> We want to be able to report the input event as soon as the debounce
-> delay elapsed. However, the current code does not really ensure that,
-> as it uses the jiffies-based schedule_delayed_work() API. With a small
-> enough HZ value (HZ <= 100), this results in some input events being
-> lost, when a key is quickly pressed then released (on a human's time
-> scale).
-> 
-> Switching to hrtimers fixes this issue, and will work even on extremely
-> low HZ values (tested at HZ=24). This is however only possible if
-> reading the GPIO is possible without sleeping. If this condition is not
-> met, the previous approach of using a jiffies-based timer is taken.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Hi Bjorn,
 
-Applied with minor edits to make more use of debounce_use_hrtimer flag.
+On Thu, Mar 18, 2021 at 3:51 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 29 Dec 19:27 CST 2020, Martin Blumenstingl wrote:
+>
+> > Amlogic Meson6, Meson8, Meson8b and Meson8m2 embed an ARC core in the
+> > Always-On (AO) power-domain. This is typically used for waking up the
+> > ARM cores after system suspend.
+> >
+> > The configuration is spread across three different registers:
+> > - AO_REMAP_REG0 which must be programmed to zero, it's actual purpose
+> >   is unknown. There is a second remap register which is not used in the
+> >   vendor kernel (which served as reference for this driver).
+> > - AO_CPU_CNTL is used to start and stop the ARC core.
+> > - AO_SECURE_REG0 in the SECBUS2 register area with unknown purpose.
+> >
+> > To boot the ARC core we also need to enable it's gate clock and trigger
+> > a reset.
+> >
+> > The actual code for this ARC core can come from an ELF binary, for
+> > example by building the Zephyr RTOS for an ARC EM4 core and then taking
+> > "zephyr.elf" as firmware. This executable does not have any "rsc table"
+> > so we are skipping rproc_elf_load_rsc_table (rproc_ops.parse_fw) and
+> > rproc_elf_find_loaded_rsc_table (rproc_ops.find_loaded_rsc_table).
+> >
+>
+> Thanks for the patch Martin, it looks really good. Just some minor
+> things as I expect a respin of the DT binding as well.
+thank you for your comments.
+I will send an updated series in the next few days and include all of
+your suggested changes
 
-Thanks.
+since I sent this series (it's been a few days) I also got an update
+from Amlogic so I know have better understanding of some (but
+unfortunately not all) registers
+so it'll be a bigger update. but don't worry: I'll include a changelog
 
--- 
-Dmitry
+
+Best regards,
+Martin
