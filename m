@@ -2,156 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE455346265
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAEE34626B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhCWPIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:08:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232689AbhCWPI2 (ORCPT
+        id S232559AbhCWPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232711AbhCWPJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:08:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616512108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 23 Mar 2021 11:09:05 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D297C061763;
+        Tue, 23 Mar 2021 08:09:04 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:08:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616512137;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7Dk+kTaXIBxkfJmBKu6XikBMXUgoktdgDa5FmOR121g=;
-        b=DCNnizOGr1mD3hmIQ2ADe1YeF5+vIzvH8jwPoLCMwmeMr6ZvzVesjeVKWk1NGZcQ9BWOG/
-        OqzlrGDlFvR+WGQcnnvIg9MvNvxTuUJLODjA1qNAg7XwzU3zb4u3tv1WQJZlUc3VvPc8c4
-        wZ8BAES5PqAF3M7HxQXFwSegxPWlGWI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-d0GLNY50MHKwkdaeWWEmNA-1; Tue, 23 Mar 2021 11:08:23 -0400
-X-MC-Unique: d0GLNY50MHKwkdaeWWEmNA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD5B4612A1;
-        Tue, 23 Mar 2021 15:08:21 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 69805196E3;
-        Tue, 23 Mar 2021 15:08:15 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 16:08:14 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Message-ID: <20210323160814.62a248fb@carbon>
-In-Reply-To: <20210323104421.GK3697@techsingularity.net>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
-        <20210323104421.GK3697@techsingularity.net>
+        bh=4ARHa8gpU9B77j/k8U6moQMTkidbCHbkbQPl9F3msYc=;
+        b=Vl/Ll0ZctqyKjIEbN/tIw/u+iSztchGDHaYaFfEXF6p1brGYk+t53DvSRk9P/EjdHpxoTM
+        RkC3QpCNs5TOEc0lPN6h3Mwt1M1vn0GxQ63RhUzkj1wNtwXK+SKBUdvstdVpmugCWX5Yri
+        sDn+4ukEjqti1b2l3J99uKbAiBSr8GuWLcC8hbfdqw3FFiskfyzmIjFFnYb1yrBkorgEzo
+        Slk5iaBZITfqdc7whr1P6FNGXDh+IZJlA7ZvBiSIliZ63jNXlj7/v033XPfHcrP5Gs93se
+        pRZAUYjbkkPJ8/CH/0r7axRc1nYGowXHP5H9K1PiC+j4c+toIUZxCx3zlIdZBw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616512137;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ARHa8gpU9B77j/k8U6moQMTkidbCHbkbQPl9F3msYc=;
+        b=ROT33VLVgWMON74GBjfukGytz7GtfbAmw0fZbWsN+19cJPWAygNpuKKk663fKiijY2TSRH
+        i4iCcuVVvysHO9AA==
+From:   "tip-bot2 for Aubrey Li" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Reduce long-tail newly idle balance cost
+Cc:     Aubrey Li <aubrey.li@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1614154549-116078-1-git-send-email-aubrey.li@intel.com>
+References: <1614154549-116078-1-git-send-email-aubrey.li@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <161651213645.398.4816489988541907975.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 10:44:21 +0000
-Mel Gorman <mgorman@techsingularity.net> wrote:
+The following commit has been merged into the sched/core branch of tip:
 
-> On Mon, Mar 22, 2021 at 09:18:42AM +0000, Mel Gorman wrote:
-> > This series is based on top of Matthew Wilcox's series "Rationalise
-> > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
-> > test and are not using Andrew's tree as a baseline, I suggest using the
-> > following git tree
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v5r9
-> >   
-> 
-> Jesper and Chuck, would you mind rebasing on top of the following branch
-> please? 
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r2
-> 
-> The interface is the same so the rebase should be trivial.
-> 
-> Jesper, I'm hoping you see no differences in performance but it's best
-> to check.
+Commit-ID:     acb4decc1e900468d51b33c5f1ee445278e716a7
+Gitweb:        https://git.kernel.org/tip/acb4decc1e900468d51b33c5f1ee445278e716a7
+Author:        Aubrey Li <aubrey.li@intel.com>
+AuthorDate:    Wed, 24 Feb 2021 16:15:49 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 23 Mar 2021 16:01:59 +01:00
 
-I will rebase and check again.
+sched/fair: Reduce long-tail newly idle balance cost
 
-The current performance tests that I'm running, I observe that the
-compiler layout the code in unfortunate ways, which cause I-cache
-performance issues.  I wonder if you could integrate below patch with
-your patchset? (just squash it)
+A long-tail load balance cost is observed on the newly idle path,
+this is caused by a race window between the first nr_running check
+of the busiest runqueue and its nr_running recheck in detach_tasks.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Before the busiest runqueue is locked, the tasks on the busiest
+runqueue could be pulled by other CPUs and nr_running of the busiest
+runqueu becomes 1 or even 0 if the running task becomes idle, this
+causes detach_tasks breaks with LBF_ALL_PINNED flag set, and triggers
+load_balance redo at the same sched_domain level.
 
-[PATCH] mm: optimize code layout for __alloc_pages_bulk
+In order to find the new busiest sched_group and CPU, load balance will
+recompute and update the various load statistics, which eventually leads
+to the long-tail load balance cost.
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+This patch clears LBF_ALL_PINNED flag for this race condition, and hence
+reduces the long-tail cost of newly idle balance.
 
-Looking at perf-report and ASM-code for __alloc_pages_bulk() then the code
-activated is suboptimal. The compiler guess wrong and place unlikely code in
-the beginning. Due to the use of WARN_ON_ONCE() macro the UD2 asm
-instruction is added to the code, which confuse the I-cache prefetcher in
-the CPU
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/1614154549-116078-1-git-send-email-aubrey.li@intel.com
 ---
- mm/page_alloc.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/sched/fair.c |  9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f60f51a97a7b..88a5c1ce5b87 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5003,10 +5003,10 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	unsigned int alloc_flags;
- 	int nr_populated = 0, prep_index = 0;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index aaa0dfa..6d73bdb 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7687,6 +7687,15 @@ static int detach_tasks(struct lb_env *env)
  
--	if (WARN_ON_ONCE(nr_pages <= 0))
-+	if (unlikely(nr_pages <= 0))
+ 	lockdep_assert_held(&env->src_rq->lock);
+ 
++	/*
++	 * Source run queue has been emptied by another CPU, clear
++	 * LBF_ALL_PINNED flag as we will not test any task.
++	 */
++	if (env->src_rq->nr_running <= 1) {
++		env->flags &= ~LBF_ALL_PINNED;
++		return 0;
++	}
++
+ 	if (env->imbalance <= 0)
  		return 0;
  
--	if (WARN_ON_ONCE(page_list && !list_empty(page_list)))
-+	if (unlikely(page_list && !list_empty(page_list)))
- 		return 0;
- 
- 	/* Skip populated array elements. */
-@@ -5018,7 +5018,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		prep_index = nr_populated;
- 	}
- 
--	if (nr_pages == 1)
-+	if (unlikely(nr_pages == 1))
- 		goto failed;
- 
- 	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-@@ -5054,7 +5054,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	 * If there are no allowed local zones that meets the watermarks then
- 	 * try to allocate a single page and reclaim if necessary.
- 	 */
--	if (!zone)
-+	if (unlikely(!zone))
- 		goto failed;
- 
- 	/* Attempt the batch allocation */
-@@ -5075,7 +5075,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 
- 		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
--		if (!page) {
-+		if (unlikely(!page)) {
- 			/* Try and get at least one page */
- 			if (!nr_populated)
- 				goto failed_irq;
-
