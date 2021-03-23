@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A34345D7D
+	by mail.lfdr.de (Postfix) with ESMTP id 9898F345D7E
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhCWL5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
+        id S229576AbhCWL5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:57:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:4042 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhCWL4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:56:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D48F6191F;
-        Tue, 23 Mar 2021 11:56:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616500608;
-        bh=tq02Vd5NqpuFLSWzDRKQbq1PXhG1AGLHdMYDxgmkTaE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1qz4yEgix7wGFQBvKOSXcCiEwQkrYLSh/VLIfLFo/8mItyPGjLztqoJ+LZTscswvN
-         wN6sQmwZ5GFskJ6DFIGKH9T7nwoHsCT+ALz1ksuTuWizxGo53z/mwopBFPDurjEcUp
-         a6BfPfxhu0mal6n7JsWQKsPAAVj3QL9/2wOx4AQk=
-Date:   Tue, 23 Mar 2021 12:56:45 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Cc:     Felipe Balbi <balbi@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        gschmottlach@gmail.com, linux-usb@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] USB Audio Gadget part 2: Feedback endpoint,
- Volume/Mute support
-Message-ID: <YFnXfUr21JrweUoU@kroah.com>
-References: <1614603943-11668-1-git-send-email-ruslan.bilovol@gmail.com>
+        id S230096AbhCWL5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:57:09 -0400
+IronPort-SDR: h7L9McVi264EvfC99WY0aEAMBd1K8NfbWphNbyLzAcHsB2kHI4IMg04yim6pCepxwN8xXVbbcT
+ odp2PFsoVaXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190557692"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="190557692"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:57:08 -0700
+IronPort-SDR: Kr2qfO3W8v609q5JOMoXa9erA7jtCQRTIvS2rfsyrndNYusfhViN4JuCuHZWRip8Hf13O4vO5W
+ /5g/WtmcgzBQ==
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="408283704"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:57:07 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lOfei-00F0Ou-Ky; Tue, 23 Mar 2021 13:57:04 +0200
+Date:   Tue, 23 Mar 2021 13:57:04 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v1 1/1] mfd: lpc_sch: Partially revert "Add support for
+ Intel Quark X1000"
+Message-ID: <YFnXkPIIbq+lDacz@smile.fi.intel.com>
+References: <20210303164944.41962-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1614603943-11668-1-git-send-email-ruslan.bilovol@gmail.com>
+In-Reply-To: <20210303164944.41962-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 03:05:35PM +0200, Ruslan Bilovol wrote:
-> This is extendend version of "UAC2 Feedback endpoint" patch set
-> I've sent back in 2020 [1]. It is extended with
-> bi-directional Volume/Mute controls support for both UAC1
-> and UAC2 gadgets.
+On Wed, Mar 03, 2021 at 06:49:44PM +0200, Andy Shevchenko wrote:
+> The IRQ support for SCH GPIO is not specific to the Intel Quark SoC.
+> Moreover the IRQ routing is quite interesting there, so while it's
+> needs a special support, the driver haven't it anyway yet.
 > 
-> It fixes issues with enumeration in various operation systems
-> because of Feedback endpoint implementation, yet also adds
-> new Volume/Mute support which allows developers to control
-> UAC1/2 Gadget's Volume/Mute from the Host and in the same way
-> UAC1/2 Gadget can control Volume/Mute of the Host making it
-> closer to a real USB Audio card.
+> Due to above remove basically redundant code of IRQ support.
 > 
-> This patch set should be applied on top of USB Audio Gadget
-> part 1 fixes/improvements that I've sent previously to the
-> mailing list [2]
+> This reverts commit ec689a8a8155ce8b966bd5d7737a3916f5e48be3.
 
-This series did not apply to my tree (except for the first patch).  Can
-you rebase it on my usb-testing branch and resend?
+Lee, just in case you missed this somehow.
 
-thanks,
+Additional note: I have added IRQ support to the GPIO driver but it does NOT
+require anything from MFD part. So, this patch stays correct.
 
-greg k-h
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
