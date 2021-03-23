@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A59346B45
+	by mail.lfdr.de (Postfix) with ESMTP id ADF93346B46
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbhCWVl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:41:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35868 "EHLO
+        id S233802AbhCWVld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:41:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35882 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233624AbhCWVjt (ORCPT
+        with ESMTP id S233619AbhCWVjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:39:49 -0400
-Message-Id: <20210323213708.195031688@linutronix.de>
+        Tue, 23 Mar 2021 17:39:51 -0400
+Message-Id: <20210323213708.305191020@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616535588;
+        s=2020; t=1616535589;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=erVQNMrM1P/5eIpWf0Wv6X7PSPbYJedxbQMK3vysrrw=;
-        b=hDTYP5gPamcoNwqu5TbvpfI5yhxF2xN23ZLMQdTfVujXizEDE1lBG0M6jk+RXQD+BYjEeP
-        f06U7Xgfm0LS2n4lgnoEgUZtECOEk0PGE7iU2zqU79IBBWZzpZseZyRaJpqNrxSppaAEhM
-        TegYJzG//5kNV8qbpEXfuczH3igx6V5lG5ZL1iypnb+7gDgIaJni/F75jAhx7v1JR8hoS3
-        P+SXXT0EYChVylOGCc4xS5m+oDxp69+9vUFudGFY15CQSVoEpm1Xs1Bf0JWu7nxsPMEsSV
-        upIDkEiF8MCuLSHaRoNpQD8JqS1AqXroL6lkvwb///fhO7p2jCr5w7K5qyMV5Q==
+        bh=WQ79W0UKQ3FaQqUk75fa8vxbtUiLoQOfE/l0ic+As9Y=;
+        b=0dwiNOtvsHICNKbN4FI/g8BuGzIsiMoFI0tjDiIMsE5xjeHZ15I/MzIBwWvD0d1i0fuXEK
+        w8u9Cn/rFO7ro+ZlyOHT830q1Qa+gdCHvEcthePOA/Vgoq34EMzUk5XudODwHTIxYmRk4e
+        JndbzldEtV+oruFstumU3tjTR8nMvks7uSWVnpa+OMl4JJGhpspO++yNkLiVwkM2srQ4lD
+        AWHHvlyzdepLt640jN61aOe4IK2AbyWUhDlQqPYntOBAnewzaw1Id3BFsJE9B3fcQsGCGK
+        dk4JDDrDTv3R3El5aq4VpcFaC+MSmZcY4FglWuemmbTJGRdpTo+XMNEN9+2qXw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616535588;
+        s=2020e; t=1616535589;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=erVQNMrM1P/5eIpWf0Wv6X7PSPbYJedxbQMK3vysrrw=;
-        b=Ir/kVzg7yIfg626XDK44l7lxPBHoDoQkTgfyg1bEizlIcDX4aD1lquNzRCnTplVju0csMQ
-        PA+PKQDJKWdNLoDA==
-Date:   Tue, 23 Mar 2021 22:30:26 +0100
+        bh=WQ79W0UKQ3FaQqUk75fa8vxbtUiLoQOfE/l0ic+As9Y=;
+        b=nwWcJYRQRF+7MxEGrE05poWn6aMKu7zZvnCHFiPWt2Z1UPbbtW4LnPt4hFMfYuMxwhmCy+
+        X2jeRLHlo0dPVqCA==
+Date:   Tue, 23 Mar 2021 22:30:27 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -41,7 +41,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch 07/14] locking/rtmutex: Inline chainwalk depth check
+Subject: [patch 08/14] locking/rtmutex: Remove pointless CONFIG_RT_MUTEXES=n stubs
 References: <20210323213019.217008708@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,31 +50,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no point for this wrapper at all.
+None of these functions is used when CONFIG_RT_MUTEXES=n.
+
+Remove the gunk. Remove pointless comments and clean up the coding style
+mess while at it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/locking/rtmutex.c |   11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ kernel/locking/rtmutex_common.h |   56 +++++++---------------------------------
+ 1 file changed, 11 insertions(+), 45 deletions(-)
 
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -343,14 +343,9 @@ static void rt_mutex_adjust_prio(struct
- static bool rt_mutex_cond_detect_deadlock(struct rt_mutex_waiter *waiter,
- 					  enum rtmutex_chainwalk chwalk)
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -23,29 +23,25 @@
+  * @tree_entry:		pi node to enqueue into the mutex waiters tree
+  * @pi_tree_entry:	pi node to enqueue into the mutex owner waiters tree
+  * @task:		task reference to the blocked task
++ * @lock:		Pointer to the rt_mutex on which the waiter blocks
++ * @prio:		Priority of the waiter
++ * @deadline:		Deadline of the waiter if applicable
+  */
+ struct rt_mutex_waiter {
+-	struct rb_node          tree_entry;
+-	struct rb_node          pi_tree_entry;
++	struct rb_node		tree_entry;
++	struct rb_node		pi_tree_entry;
+ 	struct task_struct	*task;
+ 	struct rt_mutex		*lock;
+-	int prio;
+-	u64 deadline;
++	int			prio;
++	u64			deadline;
+ };
+ 
+-/*
+- * Various helpers to access the waiters-tree:
+- */
+-
+-#ifdef CONFIG_RT_MUTEXES
+-
+ static inline int rt_mutex_has_waiters(struct rt_mutex *lock)
  {
--	/*
--	 * This is just a wrapper function for the following call,
--	 * because debug_rt_mutex_detect_deadlock() smells like a magic
--	 * debug feature and I wanted to keep the cond function in the
--	 * main source file along with the comments instead of having
--	 * two of the same in the headers.
--	 */
--	return debug_rt_mutex_detect_deadlock(waiter, chwalk);
-+	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEX))
-+		return waiter != NULL;
-+	return chwalk == RT_MUTEX_FULL_CHAINWALK;
+ 	return !RB_EMPTY_ROOT(&lock->waiters.rb_root);
  }
  
- /*
+-static inline struct rt_mutex_waiter *
+-rt_mutex_top_waiter(struct rt_mutex *lock)
++static inline struct rt_mutex_waiter *rt_mutex_top_waiter(struct rt_mutex *lock)
+ {
+ 	struct rb_node *leftmost = rb_first_cached(&lock->waiters);
+ 	struct rt_mutex_waiter *w = NULL;
+@@ -62,42 +58,12 @@ static inline int task_has_pi_waiters(st
+ 	return !RB_EMPTY_ROOT(&p->pi_waiters.rb_root);
+ }
+ 
+-static inline struct rt_mutex_waiter *
+-task_top_pi_waiter(struct task_struct *p)
+-{
+-	return rb_entry(p->pi_waiters.rb_leftmost,
+-			struct rt_mutex_waiter, pi_tree_entry);
+-}
+-
+-#else
+-
+-static inline int rt_mutex_has_waiters(struct rt_mutex *lock)
+-{
+-	return false;
+-}
+-
+-static inline struct rt_mutex_waiter *
+-rt_mutex_top_waiter(struct rt_mutex *lock)
+-{
+-	return NULL;
+-}
+-
+-static inline int task_has_pi_waiters(struct task_struct *p)
+-{
+-	return false;
+-}
+-
+-static inline struct rt_mutex_waiter *
+-task_top_pi_waiter(struct task_struct *p)
++static inline struct rt_mutex_waiter *task_top_pi_waiter(struct task_struct *p)
+ {
+-	return NULL;
++	return rb_entry(p->pi_waiters.rb_leftmost, struct rt_mutex_waiter,
++			pi_tree_entry);
+ }
+ 
+-#endif
+-
+-/*
+- * lock->owner state tracking:
+- */
+ #define RT_MUTEX_HAS_WAITERS	1UL
+ 
+ static inline struct task_struct *rt_mutex_owner(struct rt_mutex *lock)
 
