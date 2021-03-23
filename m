@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D963466A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B873466A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhCWRp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:45:56 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:43918 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhCWRpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:45:38 -0400
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12NHj4K6020428
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 18:45:04 +0100
-Received: from md1za8fc.ad001.siemens.net ([167.87.18.164])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12NHj2Dc032073;
-        Tue, 23 Mar 2021 18:45:03 +0100
-Date:   Tue, 23 Mar 2021 18:45:01 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Alexander Dahl <ada@thorsis.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux LED Subsystem" <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20210323184501.39c81a97@md1za8fc.ad001.siemens.net>
-In-Reply-To: <1819093001.11427.1616071258857@seven.thorsis.com>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
-        <20210315095710.7140-3-henning.schild@siemens.com>
-        <CAHp75VcBdR8xqfWqKe+DwGAUYByVL7SBK0p7tHcKPs7m4Ay1iw@mail.gmail.com>
-        <e2c6bec5-1f8e-c69a-9219-5c0a9f63ba56@metux.net>
-        <1819093001.11427.1616071258857@seven.thorsis.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230480AbhCWRq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhCWRqw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:46:52 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E727C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:46:52 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id u9so28519671ejj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ql4xcjbxDiQewQBjoY2RWA9a9mOAjHNHjjlKvX5iKME=;
+        b=ImQ/kiWhqm2FHjRW4oVru2YORFDIcuEufuObYX9u2FjTzqYgYl6/r+JWf6xVtdTz2u
+         7AU6abiSQGDTT7olhxvb6fgkSt7EelRi/m7lBYnOoYzmq+N6bwBvzfhamelCfOTKlKle
+         94UAtK9vvgLBgLB2JkZPoTsTnbiIp05/3xP8smzwihxYVzAP+gS/E9HrRpzqNq8onYCH
+         N6xrpljENJkRbmx++O8szjm5Yptf9M+IQ5PegIQH8voLWKR9AW3xgdeoauIT7JLEsOJd
+         9eLo41s0uq/w0dFZVtNXmypUl0lDG4ZDlWSDdKAzbnjDG9q0qgF2pnf6fVPUNs6NuRIx
+         gkyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ql4xcjbxDiQewQBjoY2RWA9a9mOAjHNHjjlKvX5iKME=;
+        b=At7eASmTDOlYwl/37F7N4O/HldPMEEyNv87qJypvAeZgd4q0eQARxkeHV5qLyq5NPF
+         d13RawDwlVSb0PF4QFe5Ric7LCwXKKNYMFBObUDdtxU3YKnQ0mHu/pTklMk7qKSpmwIg
+         0w9ivxkHQE5Bck3G5UrK3pYiXhPfeTpUQxkqsmISV1LRDf7OQNg/gf0eYDzQ591bxJau
+         7o8bsMKrTLQOEnL2lJ/A8hdGNHtfnch3tGihIjbAtF1U7NF0OzP/sYlLwTI1gVenQv+a
+         aXwhVoHjosX5cdmI2jlFsOj6sWrCJn/cemvoeN+S+y4TUT94tBjIaqJtZBLAc/0AWmy6
+         3hMg==
+X-Gm-Message-State: AOAM5320wNRD1cGYVCW8IrdYcbeX8cSMieh/1Fa1zoLMZTHBexiUcwRe
+        f8hgzQyyXasU/5QXo6xUInygLc1iFXovW2hHzk8=
+X-Google-Smtp-Source: ABdhPJxzFOGovvGm7xPD0TAOzpfYJ7X7k6cVcDxxZ6cFVl+Mf2WmiyLIAIKDWgQsgMBVjCyZho29t1+GVrcC1UKB3GE=
+X-Received: by 2002:a17:906:bcfc:: with SMTP id op28mr6035782ejb.238.1616521610786;
+ Tue, 23 Mar 2021 10:46:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210323135405.65059-1-linmiaohe@huawei.com> <20210323135405.65059-3-linmiaohe@huawei.com>
+In-Reply-To: <20210323135405.65059-3-linmiaohe@huawei.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 23 Mar 2021 10:46:39 -0700
+Message-ID: <CAHbLzkq7-vjiv-dbGTbY4f-TURF9W9bsMgRf4r9NZyvEW-jKgw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] mm/migrate.c: remove unnecessary rc !=
+ MIGRATEPAGE_SUCCESS check in 'else' case
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Thu, 18 Mar 2021 13:40:58 +0100
-schrieb Alexander Dahl <ada@thorsis.com>:
+On Tue, Mar 23, 2021 at 6:54 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> It's guaranteed that in the 'else' case of the rc == MIGRATEPAGE_SUCCESS
+> check, rc does not equal to MIGRATEPAGE_SUCCESS. Remove this unnecessary
+> check.
 
-> Hei hei,
-> 
-> > Enrico Weigelt, metux IT consult <lkml@metux.net> hat am 18.03.2021
-> > 11:27 geschrieben:
-> > 
-> >  
-> > On 15.03.21 11:48, Andy Shevchenko wrote:
-> > 
-> > Hi,
-> >   
-> > > I have a question, why we can't provide a GPIO driver which is
-> > > already in the kernel and, with use of the patch series I sent,
-> > > to convert this all magic to GPIO LEDs as it's done for all
-> > > normal cases?  
-> > 
-> > Do we alread have a generic led driver that for cases that just
-> > set/clear bits in some mem/io location ? If not, that would be
-> > really great to have.  
-> 
-> Yes, there is. Look out for compatible "register-bit-led" in device
-> tree. That's from driver in drivers/leds/leds-syscon.c and you can
-> use it inside a syscon node in dts.
-> 
-> It assumes one bit per LED.
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-Sorry guys, i am lost here. Is there a driver i can base mine on, if so
-which one? Maybe you can point me to a good example that is
-conceptually similar.
-
-As i already wrote in the reviews of v1, the ACPI tables will not
-change on the machines in question. So there is a need for a driver.
-Either one like i did propose or maybe something that patches ACPI or
-loads device-tree snippets, again please point me to good examples.
-
-We are talking about x86-only here.
-
-Henning 
-
-> Greets
-> Alex
-
+>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/migrate.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index facec65c7374..97da1fabdf72 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1374,7 +1374,7 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+>  out:
+>         if (rc == MIGRATEPAGE_SUCCESS)
+>                 putback_active_hugepage(hpage);
+> -       else if (rc != -EAGAIN && rc != MIGRATEPAGE_SUCCESS)
+> +       else if (rc != -EAGAIN)
+>                 list_move_tail(&hpage->lru, ret);
+>
+>         /*
+> --
+> 2.19.1
+>
