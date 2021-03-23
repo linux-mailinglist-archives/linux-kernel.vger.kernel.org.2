@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEC63465AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF003465AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhCWQtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
+        id S233342AbhCWQv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbhCWQtX (ORCPT
+        with ESMTP id S233268AbhCWQvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:49:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8B8C061574;
-        Tue, 23 Mar 2021 09:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=zsWUChpUzdyyXAnKfXL0ouDcOEMmm/9rEethWKfPjz8=; b=vEL4bbC/Jxk/aJHjrDr4zv0gw/
-        7xKgFDlEoY6YM6CJEd/JF6DBP7Z/KWMZcmDQlNviBJ+TB+shHR9lRjzu5rW1jkhzifEOz7aI/GjVt
-        90ekrEfBIfR2OpFrb1GCm8ND+hRkNd/C1SXsChV5TY1J8/dPWGkDQtu7Ra/iNOtPrgByCiQm5zWlN
-        trEVbueUvBtDlxH+kaF5/w0N0hKN5Qf5OXndL6FBtbThWCoJibHIEbM0duicOJIO0FQJd8LJTiT+Q
-        EOjxIB/P/DBrnmNWfMZPgjeoakePbbCMLRNhcUsUoGRtbjY/uhA5U3mWLySyrHAsut6mzWjDrzNN3
-        v1YfDERQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOkCl-00AIu2-8i; Tue, 23 Mar 2021 16:48:36 +0000
-Subject: Re: [PATCH v2] fs/exec: fix typos and sentence disorder
-To:     Xiaofeng Cao <cxfcosmos@gmail.com>, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>
-References: <20210323074212.15444-1-caoxiaofeng@yulong.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1a4f3de7-54a6-6ef9-ce41-4abbf05fe0d3@infradead.org>
-Date:   Tue, 23 Mar 2021 09:48:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 12:51:17 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643FDC061765
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:51:17 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id b184so14909008pfa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:51:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ff/dfLlyOzHdPDlHSVc6uKmy6e9wrU4ymq44nCy5dSM=;
+        b=nb6k9RMnO0SEpqDMoEDygbgq2JdmkHlxt1rj4O4DPF3FfLzdzrb1HzBmiPwjdEUSFm
+         HlBnfo+jMkiM3CBQPw38e7kKqnKYVEnaz3nro04L0pmVRp9u/JaRf/UZ0FJhxZL4xuSi
+         dToiOiF52H0DGvZLrg1e8KroAywJLNR5CFsecizgvNVf5vu8VtCxTEuTmg5hEKlaU8vx
+         tlcBmvraUqDOPZF7lMP87EJuARXwppJvtbBIYu0YgT1PnBM+KHSRoixvUp2V2LsWnbVH
+         iHnC+8nSdL0QBmf8KuuPa8T4iaffHKVcIZBhZZNBA7DtVT/4it5mUUbR0rBVTWIjxYxq
+         3rFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ff/dfLlyOzHdPDlHSVc6uKmy6e9wrU4ymq44nCy5dSM=;
+        b=SHAnRzvEE0x8EOEcKAV8SgPmBGgrxfYJsrXrQGsEbRxAl8Iu6S2IQrVMRVqmNpCwU4
+         QrJD/3TbJ2SIE2cNr4EZWt0Z9os5wFW9AZEIvtzEs/NNDGFO437bURMwLzqzrfBOD1gt
+         iLJ0V7BA5498vWngLtea0eGUYN3bZ4ov8TBjR7X2bMTUzAlRYiBEFmamXBJ0XWRitv/e
+         ypZKRd5U4bsjkQ++rz/HfwkR9pG3LpImDNSyUxmhEaeOtcOPL46yJG7KoVtWk7kc9/Ja
+         k1fWbXTmRWjXfArmIqXXHlJJwBDW5DRe6P8YHULzPyqLiD4yYhBj9ETX7DGLcSlaVTBV
+         IspQ==
+X-Gm-Message-State: AOAM531O1G3yXwX1YW2LriSPR0Pp5GC7ZF5x/EhztFR2nWIzitHdknNA
+        UQuTAV8FD5LG8ynfKpXXzE5kxA==
+X-Google-Smtp-Source: ABdhPJz4JugX4G1Rb9cwl4cMNKr/OKCMAwe/BTVthjUPsMDOQCAN4SeXCCedrmITaBENodfs7st8oQ==
+X-Received: by 2002:aa7:9989:0:b029:1f5:aa05:94af with SMTP id k9-20020aa799890000b02901f5aa0594afmr5783950pfh.34.1616518276602;
+        Tue, 23 Mar 2021 09:51:16 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id p3sm15783705pgi.24.2021.03.23.09.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 09:51:16 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 16:51:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <YFocgJ+OD/0rCsvg@google.com>
+References: <20210322191540.GH6481@zn.tnic>
+ <YFjx3vixDURClgcb@google.com>
+ <20210322210645.GI6481@zn.tnic>
+ <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
+ <20210322223726.GJ6481@zn.tnic>
+ <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
+ <YFoNCvBYS2lIYjjc@google.com>
+ <20210323160604.GB4729@zn.tnic>
+ <YFoVmxIFjGpqM6Bk@google.com>
+ <20210323163258.GC4729@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20210323074212.15444-1-caoxiaofeng@yulong.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323163258.GC4729@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 12:42 AM, Xiaofeng Cao wrote:
-> change 'backwords' to 'backwards'
-> change 'and argument' to 'an argument'
-> change 'visibile' to 'visible'
-> change 'wont't' to 'won't'
-> reorganize sentence
+On Tue, Mar 23, 2021, Borislav Petkov wrote:
+> On Tue, Mar 23, 2021 at 04:21:47PM +0000, Sean Christopherson wrote:
+> > I like the idea of pointing at the documentation.  The documentation should
+> > probably emphasize that something is very, very wrong.
 > 
-> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
-> v2: resume the right boundary
->  fs/exec.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> Yap, because no matter how we formulate the error message, it still ain't enough
+> and needs a longer explanation.
 > 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 18594f11c31f..5e23101f9259 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -536,7 +536,7 @@ static int copy_strings(int argc, struct user_arg_ptr argv,
->  		if (!valid_arg_len(bprm, len))
->  			goto out;
->  
-> -		/* We're going to work our way backwords. */
-> +		/* We're going to work our way backwards. */
->  		pos = bprm->p;
->  		str += len;
->  		bprm->p -= len;
-> @@ -603,7 +603,7 @@ static int copy_strings(int argc, struct user_arg_ptr argv,
->  }
->  
->  /*
-> - * Copy and argument/environment string from the kernel to the processes stack.
-> + * Copy an argument/environment string from the kernel to the processes stack.
->   */
->  int copy_string_kernel(const char *arg, struct linux_binprm *bprm)
->  {
-> @@ -718,9 +718,9 @@ static int shift_arg_pages(struct vm_area_struct *vma, unsigned long shift)
->  	} else {
->  		/*
->  		 * otherwise, clean from old_start; this is done to not touch
-> -		 * the address space in [new_end, old_start) some architectures
-> +		 * the address space in [new_end, old_start). Some architectures
->  		 * have constraints on va-space that make this illegal (IA64) -
-> -		 * for the others its just a little faster.
-> +		 * for the others it's just a little faster.
->  		 */
->  		free_pgd_range(&tlb, old_start, old_end, new_end,
->  			vma->vm_next ? vma->vm_next->vm_start : USER_PGTABLES_CEILING);
-> @@ -1120,7 +1120,7 @@ static int de_thread(struct task_struct *tsk)
->  		 */
->  
->  		/* Become a process group leader with the old leader's pid.
-> -		 * The old leader becomes a thread of the this thread group.
-> +		 * The old leader becomes a thread of this thread group.
->  		 */
->  		exchange_tids(tsk, leader);
->  		transfer_pid(leader, tsk, PIDTYPE_TGID);
-> @@ -1142,7 +1142,7 @@ static int de_thread(struct task_struct *tsk)
->  		/*
->  		 * We are going to release_task()->ptrace_unlink() silently,
->  		 * the tracer can sleep in do_wait(). EXIT_DEAD guarantees
-> -		 * the tracer wont't block again waiting for this thread.
-> +		 * the tracer won't block again waiting for this thread.
->  		 */
->  		if (unlikely(leader->ptrace))
->  			__wake_up_parent(leader, leader->parent);
-> @@ -1270,7 +1270,7 @@ int begin_new_exec(struct linux_binprm * bprm)
->  
->  	/*
->  	 * Must be called _before_ exec_mmap() as bprm->mm is
-> -	 * not visibile until then. This also enables the update
-> +	 * not visible until then. This also enables the update
->  	 * to be lockless.
->  	 */
->  	set_mm_exe_file(bprm->mm, bprm->file);
+> > E.g. if a kernel bug triggers EREMOVE failure and isn't detected until
+> > the kernel is widely deployed in a fleet, then the folks deploying the
+> > kernel probably _should_ be in all out panic. For this variety of bug
+> > to escape that far, it means there are huge holes in test coverage, in
+> > both the kernel itself and in the infrasturcture of whoever is rolling
+> > out their new kernel.
 > 
+> You sound just like someone who works at a company with a big fleet, oh
+> wait...
+> 
+> :-)
+> 
+> And yap, you big fleeted guys will more likely catch it but we do have
+> all these other customers who have a handful of servers only so they
+> probably won't be able to do such a wide coverage.
 
+The size of the fleet shouldn't matter for this specific case.  This bug
+requires the _host_ to be running enclaves, and obviously it also requires the
+system to be running SGX-enabled guests as well.  In such a setup, the SGX
+workload running in the host should be very well defined and understood, i.e.
+testing should be a well-bounded problem to solve.
 
--- 
-~Randy
+Running enclaves in both the host and guest should be uncommon in and of itself,
+and for such setups, running _any_ SGX workloads in the host, let alone more
+than 1 or 2 unique workloads, without ensuring guests are fully isolated is,
+IMO, insane.
 
+But yeah, what can happen, will happen.
+ 
+> So I hope they'll appreciate this longer explanation about what to do
+> when they hit it. And normally I wouldn't even care but we almost never
+> tell people to reboot their boxes to fix sh*t - that's the other OS.
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
