@@ -2,155 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1D834618E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D657346192
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhCWOem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:34:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232000AbhCWOdy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:33:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616510034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Jq/F710yph7giIFuOon0hHnQr6Etp9FxSOgX4AsDyE=;
-        b=RKoYtfx+3+DaLUBPw8xDzwKhGPY2qqm6ZEpwREjGmIf8I41SscW8dKkJYa6mFu9Hse22lp
-        f9r/pNDc+1HQuj4G2b/NipoeB3A+q7OclCzGCXfy4Y9kvbVdAlc22Cy91zp50LPi/x13Dt
-        6E5Afzj3TSPDj50THJUBwNur+4sxdvY=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-EBdiPE7SNb-JLl5xgFi_iA-1; Tue, 23 Mar 2021 10:33:52 -0400
-X-MC-Unique: EBdiPE7SNb-JLl5xgFi_iA-1
-Received: by mail-ot1-f69.google.com with SMTP id c21so1196604oto.18
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:33:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0Jq/F710yph7giIFuOon0hHnQr6Etp9FxSOgX4AsDyE=;
-        b=fAx7+r/zWEiZRbDuT2fMQ+Xc4QTihxibKWuFm7inAqTJgCGc1WMMlWvY0UHnXG3o7e
-         +UHBD804Or8cSMYqE2PYRIlsZw4r2DADdteZV+h7Y6jm9fA8fM2SjbQ85vHXYqLWVskE
-         c4a7D7xNmQFt649Z3sOBqGO0o8G28C0WXebd+gzijy6kfJzk97we1LMgAdg+tdYhTvbd
-         poF9A1mztxBbk/4xowBVoG6v9GqodNyM7h97Q/olynvupVV24X87CUk4L+/m2NHXI6w1
-         cc5hYoYWWYbJwNYPzDPmBWzEpoeoAN4qd6WsMl5hMK+uswRZAQ/ZlW+Q6lkSQCLJp90e
-         NXqA==
-X-Gm-Message-State: AOAM533GirFsDk3TPCmdNYeM3xHZjj9TXGw990yHUfRLxMjka3XAjJ/u
-        RA9Xk+ZQet5LHOk5UY/c8iXQhdgu9OVTPtKybq24C2XGfCnZmMxwc5svwtfuzepdqMf+2/ri249
-        tsJ5fym9N1UnFqRkpceQo5TvYKwrv6knGSBG3W88AkTtyJxhIcAOdKeimSJSJC2LJFsQbS0egzQ
-        ==
-X-Received: by 2002:aca:4a95:: with SMTP id x143mr3509569oia.59.1616510031286;
-        Tue, 23 Mar 2021 07:33:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxok3f6ziJ9zKDi8trmoswuyjnL5pOr/KQa4kLV4auhi+XJnxMJJpMV5++pTTR3OV7D20fw4A==
-X-Received: by 2002:aca:4a95:: with SMTP id x143mr3509539oia.59.1616510030878;
-        Tue, 23 Mar 2021 07:33:50 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id a13sm3696881ooj.14.2021.03.23.07.33.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 07:33:50 -0700 (PDT)
-Subject: Re: [PATCH] fuse: Fix a potential double free in virtio_fs_get_tree
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, vgoyal@redhat.com,
-        stefanha@redhat.com, miklos@szeredi.hu
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <db475406-76d1-dffd-f492-3e5bb955f08e@redhat.com>
-Date:   Tue, 23 Mar 2021 09:33:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S232367AbhCWOev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232299AbhCWOeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:34:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11C67619B1;
+        Tue, 23 Mar 2021 14:34:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616510062;
+        bh=uolG3k4LdR7sNp3nhqeZs4kY3Swdrw5YqIAu6VwDEF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WJGxO6sh9WI4E9eyoScnUt7zLwXa5AzA5yKuyvZ+yxEt2pVFvVyrAI7uWteEjk/+H
+         WtZylFekO843Bo4ibXoEOkoNyaX6iLlBsrOoV1GuLKd5oyJUo5e202vCZVxfHMXNx3
+         1q2AT3Fb8fpfqGqup8b02vCzETKlKVel7Exaen3dSWzgas61/luzGD1dQ8hMT23k2w
+         fgQhRgqJZS0tWqgy00+y2JxmPNAZjVKPcfQRWzefCVkReLVIYNJWyGa4GaEizWGUe2
+         sJzkkuHGPN3J0dxQ15/trcDT9IFKaONBcz13tMIgzqf2bPWwCSUH8X2MJR0JBvOXsz
+         L0iLnrMW1GgfA==
+Received: by pali.im (Postfix)
+        id 6AD4C92C; Tue, 23 Mar 2021 15:34:19 +0100 (CET)
+Date:   Tue, 23 Mar 2021 15:34:19 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     alex.williamson@redhat.com, bhelgaas@google.com,
+        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210323143419.syqf4dg7wcxorcmk@pali>
+References: <20210315145238.6sg5deblr2z2pupu@pali>
+ <20210315090339.54546e91@x1.home.shazbot.org>
+ <20210317190206.zrtzwgskxdogl7dz@pali>
+ <20210317131536.38f398b0@omen.home.shazbot.org>
+ <20210317192424.kpfybcrsen3ivr4f@pali>
+ <20210317133245.7d95909c@omen.home.shazbot.org>
+ <20210317194024.nkzrbbvi6utoznze@pali>
+ <20210317140020.4375ba76@omen.home.shazbot.org>
+ <20210317201346.v6t4rde6nzmt7fwr@pali>
+ <20210318143155.4vuf3izuzihiujaa@archlinux>
 MIME-Version: 1.0
-In-Reply-To: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210318143155.4vuf3izuzihiujaa@archlinux>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 12:18 AM, Lv Yunlong wrote:
-> In virtio_fs_get_tree, fm is allocated by kzalloc() and
-> assigned to fsc->s_fs_info by fsc->s_fs_info=fm statement.
-> If the kzalloc() failed, it will goto err directly, so that
+On Thursday 18 March 2021 20:01:55 Amey Narkhede wrote:
+> On 21/03/17 09:13PM, Pali Rohár wrote:
+> > On Wednesday 17 March 2021 14:00:20 Alex Williamson wrote:
+> > > On Wed, 17 Mar 2021 20:40:24 +0100
+> > > Pali Rohár <pali@kernel.org> wrote:
+> > >
+> > > > On Wednesday 17 March 2021 13:32:45 Alex Williamson wrote:
+> > > > > On Wed, 17 Mar 2021 20:24:24 +0100
+> > > > > Pali Rohár <pali@kernel.org> wrote:
+> > > > >
+> > > > > > On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote:
+> > > > > > > On Wed, 17 Mar 2021 20:02:06 +0100
+> > > > > > > Pali Rohár <pali@kernel.org> wrote:
+> > > > > > >
+> > > > > > > > On Monday 15 March 2021 09:03:39 Alex Williamson wrote:
+> > > > > > > > > On Mon, 15 Mar 2021 15:52:38 +0100
+> > > > > > > > > Pali Rohár <pali@kernel.org> wrote:
+> > > > > > > > >
+> > > > > > > > > > On Monday 15 March 2021 08:34:09 Alex Williamson wrote:
+> > > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > > > > > > > > > Pali Rohár <pali@kernel.org> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wrote:
+> > > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) and secondary bus
+> > > > > > > > > > > > > reset(pci_parent_bus_reset) which I think are hot reset and
+> > > > > > > > > > > > > warm reset respectively.
+> > > > > > > > > > > >
+> > > > > > > > > > > > No. PCI secondary bus reset = PCIe Hot Reset. Slot reset is just another
+> > > > > > > > > > > > type of reset, which is currently implemented only for PCIe hot plug
+> > > > > > > > > > > > bridges and for PowerPC PowerNV platform and it just call PCI secondary
+> > > > > > > > > > > > bus reset with some other hook. PCIe Warm Reset does not have API in
+> > > > > > > > > > > > kernel and therefore drivers do not export this type of reset via any
+> > > > > > > > > > > > kernel function (yet).
+> > > > > > > > > > >
+> > > > > > > > > > > Warm reset is beyond the scope of this series, but could be implemented
+> > > > > > > > > > > in a compatible way to fit within the pci_reset_fn_methods[] array
+> > > > > > > > > > > defined here.
+> > > > > > > > > >
+> > > > > > > > > > Ok!
+> > > > > > > > > >
+> > > > > > > > > > > Note that with this series the resets available through
+> > > > > > > > > > > pci_reset_function() and the per device reset attribute is sysfs remain
+> > > > > > > > > > > exactly the same as they are currently.  The bus and slot reset
+> > > > > > > > > > > methods used here are limited to devices where only a single function is
+> > > > > > > > > > > affected by the reset, therefore it is not like the patch you proposed
+> > > > > > > > > > > which performed a reset irrespective of the downstream devices.  This
+> > > > > > > > > > > series only enables selection of the existing methods.  Thanks,
+> > > > > > > > > > >
+> > > > > > > > > > > Alex
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > But with this patch series, there is still an issue with PCI secondary
+> > > > > > > > > > bus reset mechanism as exported sysfs attribute does not do that
+> > > > > > > > > > remove-reset-rescan procedure. As discussed in other thread, this reset
+> > > > > > > > > > let device in unconfigured / broken state.
+> > > > > > > > >
+> > > > > > > > > No, there's not:
+> > > > > > > > >
+> > > > > > > > > int pci_reset_function(struct pci_dev *dev)
+> > > > > > > > > {
+> > > > > > > > >         int rc;
+> > > > > > > > >
+> > > > > > > > >         if (!dev->reset_fn)
+> > > > > > > > >                 return -ENOTTY;
+> > > > > > > > >
+> > > > > > > > >         pci_dev_lock(dev);
+> > > > > > > > > >>>     pci_dev_save_and_disable(dev);
+> > > > > > > > >
+> > > > > > > > >         rc = __pci_reset_function_locked(dev);
+> > > > > > > > >
+> > > > > > > > > >>>     pci_dev_restore(dev);
+> > > > > > > > >         pci_dev_unlock(dev);
+> > > > > > > > >
+> > > > > > > > >         return rc;
+> > > > > > > > > }
+> > > > > > > > >
+> > > > > > > > > The remove/re-scan was discussed primarily because your patch performed
+> > > > > > > > > a bus reset regardless of what devices were affected by that reset and
+> > > > > > > > > it's difficult to manage the scope where multiple devices are affected.
+> > > > > > > > > Here, the bus and slot reset functions will fail unless the scope is
+> > > > > > > > > limited to the single device triggering this reset.  Thanks,
+> > > > > > > > >
+> > > > > > > > > Alex
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > I was thinking a bit more about it and I'm really sure how it would
+> > > > > > > > behave with hotplugging PCIe bridge.
+> > > > > > > >
+> > > > > > > > On aardvark PCIe controller I have already tested that secondary bus
+> > > > > > > > reset bit is triggering Hot Reset event and then also Link Down event.
+> > > > > > > > These events are not handled by aardvark driver yet (needs to
+> > > > > > > > implemented into kernel's emulated root bridge code).
+> > > > > > > >
+> > > > > > > > But I'm not sure how it would behave on real HW PCIe hotplugging bridge.
+> > > > > > > > Kernel has already code which removes PCIe device if it changes presence
+> > > > > > > > bit (and inform via interrupt). And Link Down event triggers this
+> > > > > > > > change.
+> > > > > > >
+> > > > > > > This is the difference between slot and bus resets, the slot reset is
+> > > > > > > implemented by the hotplug controller and disables presence detection
+> > > > > > > around the bus reset.  Thanks,
+> > > > > >
+> > > > > > Yes, but I'm talking about bus reset, not about slot reset.
+> > > > > >
+> > > > > > I mean: to use bus reset via sysfs on hardware which supports slots and
+> > > > > > hotplugging.
+> > > > > >
+> > > > > > And if I'm reading code correctly, this combination is allowed, right?
+> > > > > > Via these new patches it is possible to disable slot reset and enable
+> > > > > > bus reset.
+> > > > >
+> > > > > That's true, a slot reset is simply a bus reset wrapped around code
+> > > > > that prevents the device from getting ejected.
+> > > >
+> > > > Yes, this makes slot reset "safe". But bus reset is "unsafe".
+> > > >
+> > > > > Maybe it would make
+> > > > > sense to combine the two as far as this interface is concerned, ie. a
+> > > > > single "bus" reset method that will always use slot reset when
+> > > > > available.  Thanks,
+> > > >
+> > > > That should work when slot reset is available.
+> > > >
+> > > > Other option is that mentioned remove-reset-rescan procedure.
+> > >
+> > > That's not something we can introduce to the pci_reset_function() path
+> > > without a fair bit of collateral in using it through vfio-pci.
+> > >
+> > > > But quick search in drivers/pci/hotplug/ results that not all hotplug
+> > > > drivers implement reset_slot method.
+> > > >
+> > > > So there is a possible issue with hotplug driver which may eject device
+> > > > during bus reset (because e.g. slot reset is not implemented)?
+> > >
+> > > People aren't reporting it, so maybe those controllers aren't being
+> > > used for this use case.  Or maybe introducing this patch will make
+> > > these reset methods more readily accessible for testing.  We can fix or
+> > > blacklist those controllers for bus reset when reports come in.  Thanks,
+> >
+> > Ok! I do not know neither if those controllers are used, but looks like
+> > that there are still changes in hotplug code.
+> >
+> > So I guess with these patches people can test it and report issues when
+> > such thing happen.
+> So after a bit research as I understood we need to group slot
+> and bus reset together in a single category of reset methods and
+> then implicitly use slot reset if it is available when bus reset is
+> enabled by the user.
+> Is that right?
 
-Right, I follow this so far.
-
-> fsc->s_fs_info must be non-NULL and fm will be freed.
-
-But this I don't follow in the context of the stuff that happens in out_err.
-
-> But later fm is freed again when virtio_fs_fill_super() fialed.
-> I think the statement if (fsc->s_fs_info) {kfree(fm);} is
-> misplaced.
-
-I'm not sure this can double free, because:
-
-* If fm = kzalloc[..] fails, the function bails early.
-
-* If sget_fc() fails, the function cleans up fm and fc and bails early.
-
-* If sget_fc() succeeds and allocated a new superblock, fc->s_fs_info 
-pointer is moved to sb->s_fs_info and fc->s_fs_info is set to NULL, so 
-the first free hasn't happened yet.
-
-* If sget_fc() succeeds and somehow returns an existing superblock 
-(which I think is tested by checking if fc->s_fs_info is not NULL, since 
-otherwise it'd have been moved to the superblock and set to NULL in 
-sget_fc), I think sb->s_root would not be NULL, therefore the flow of 
-control wouldn't enter the if-block where virtio_fs_fill_super could 
-fail which means the code won't reach the double free.
-
-That's just my reading of it though, and I'm wondering if that makes 
-sense to others :-)
-
-One last comment inline:
-
-> My patch puts this statement in the correct palce to avoid
-> double free.
-> 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->   fs/fuse/virtio_fs.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 8868ac31a3c0..727cf436828f 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -1437,10 +1437,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
->   
->   	fsc->s_fs_info = fm;
->   	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
-> -	if (fsc->s_fs_info) {
-> -		fuse_conn_put(fc);
-> -		kfree(fm);
-> -	}
-> +
->   	if (IS_ERR(sb))
->   		return PTR_ERR(sb);
-
-By removing the check from here, it now looks like if sget_fc() fails, 
-then this early return will leak fm's memory and fc's reference.
-
-Connor
-
->   
-> @@ -1457,6 +1454,11 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
->   		sb->s_flags |= SB_ACTIVE;
->   	}
->   
-> +	if (fsc->s_fs_info) {
-> +		fuse_conn_put(fc);
-> +		kfree(fm);
-> +	}
-> +
->   	WARN_ON(fsc->root);
->   	fsc->root = dget(sb->s_root);
->   	return 0;
-> 
-
+Yes, I understand it in same way. Just I do not know which name to
+choose for this reset category. In PCI spec it is called Secondary Bus
+Reset (as it resets whole bus with all devices; but we allow this reset
+in this patch series only if on the bus is connected exactly one device).
+In PCIe spec it is called Hot Reset. And if kernel detects Slot support
+then kernel currently calls it Slot reset. But it is still same thing.
+Any opinion? I think that we could call it Hot Reset as this patch
+series exports it only for single device (so calling it _bus_ is not the
+best match).
