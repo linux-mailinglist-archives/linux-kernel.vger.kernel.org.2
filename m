@@ -2,186 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B140F3459DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63DB3459E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCWIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S229913AbhCWIhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhCWIgg (ORCPT
+        with ESMTP id S230041AbhCWIhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:36:36 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFE2C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:36:35 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id y6so22477438eds.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:36:35 -0700 (PDT)
+        Tue, 23 Mar 2021 04:37:10 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E74C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:37:10 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id h25so10953770pgm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:37:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=f/MW/BemQ7oviNUfk5rw4aPJnsP1RW/2LEki39GacAs=;
-        b=fZcQmN4fiRh9DYTGxVh5vDvBACbVQQ5MSRBYb9xRO++y050pr6MI8DjQzDhrRT+Nlo
-         4x34B5H0SlRuD7RgdHqxAHFbnw1hbDX5ORMpbH7q7HXsFrt6Cd7mnjSzQY60lBscgNaE
-         TJhLnc4Cf92bKNKIqJIfHvVxfapYGP+Q84hT/U6UMiHWju+UEoQ+FwCQbmRZnh2KQtd6
-         AERLKok/Ajs6uTvJJUk8/ptVm+4H2/vhpgkjuhqA7ceDqHSOVZAx3AsexbXKB9mF8/z+
-         hDX+4BSjpaCRzk42KeFVaOtCLU/kPFQOPz+i/ggEvAPxz+NOZaXx9fmL7GPIbQQ8Vabr
-         fUOg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nJ49K0Y3pc/vXvz/MndKHeIP8eApFdm0tvtyJXXJc4M=;
+        b=bDOGPvAeLeCdI4C/k38kkvfbz9fXXt1xc0yrKayV8taQLf93FDl4YJMl+26PM30Q9q
+         yDBnqP7miYpbw+biEcxk+I62t5aib0Vt9+77b7X3516cgQE3obpYN4Zj7GL0tmHvfoVu
+         h47XGGW0XX3At7qAUrSKpYspp+VBelGiSEqN8xHLltcrezDis3ugL9W8aVMAeLO4VwBv
+         6n0wBMEH7sQLYNxTWChdcJ8LKqQy3byhvC5LgsSLcuoWSVYy2MTnhMtcJQSC0o0p8WuH
+         gXuVCIbk4Ug6HaKr3NQ6qkwtWJX/oj4nUAWcHf+GWkrD0y3wY/ewCrETqFO/j1Fwfbn1
+         c4xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=f/MW/BemQ7oviNUfk5rw4aPJnsP1RW/2LEki39GacAs=;
-        b=R1Kx1/Wjs3godALNnumD/Gi2a/wWnnZSJIVMup0c8TUoJrThRDZWz5ZcFGu2jGurhZ
-         /35xJaM8hVXQCZfXf8AJhYv5jvZpx49afmz2bvQyyc1VQQfa0YK9ovrPW2M5uMppiZ4Y
-         W70ong7raun20qmx1Lo16XIZ/zztbRz72PpQJsXuDiYQrUrf3+Pa0Q8AWAev8d4TumeP
-         BcL4tGctYfDGYaMd7ipqO29fpvk2zEu0YraYJrCPWAXxmJiwjoa9G7Sn/cAmSYo6SAIH
-         Ljz+iaFDltoDUzeN498Jal9chX0M5pTrZNUZKU2fDR6pjAOq/Pr3a4TYTlEPYPEcoWns
-         5/oQ==
-X-Gm-Message-State: AOAM531ObYiQIqQk/0IbbBSCzruRriL8/uwuM0SjVNDALx7XqciNtXlE
-        1NcBhK4mC4SGgU7AwQ/8V+VRPA==
-X-Google-Smtp-Source: ABdhPJy0VDsYYV6quQqQy47nXqKIcFzgIaUTMhBb+JTD5y8MEuu0ls0eRqKZFg2j5m7GAeMn3o4Vyg==
-X-Received: by 2002:a05:6402:d4:: with SMTP id i20mr3509321edu.147.1616488594058;
-        Tue, 23 Mar 2021 01:36:34 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id u16sm12990701edq.4.2021.03.23.01.36.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 01:36:33 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 08:36:31 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colin Cross <ccross@android.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Josh Cartwright <joshc@codeaurora.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        netdev <netdev@vger.kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH v2 00/10] Rid W=1 warnings from OF
-Message-ID: <20210323083631.GE2916463@dell>
-References: <20210318104036.3175910-1-lee.jones@linaro.org>
- <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nJ49K0Y3pc/vXvz/MndKHeIP8eApFdm0tvtyJXXJc4M=;
+        b=hWxh9tPqLdkwsfGgrVFpzyQSS6A7Y8Rylgoc1fjkx6vE+9jiXppp0PI6qBt4Hg58Y5
+         +DWJeh3m8qtaRffaYd83dq+yAzrmlmXa+LyWhHgpHF4tEx9p50lIF9B/l1xIlIQfTom0
+         RLwrecTJRC1Ku5N71B8dqAugMsiCtVkh7eQeZMNYYcSIzHj6wZv+3p/1UZ8RNBcEKkvg
+         Pnw5Cr3RchVmrdMgzPSS86qDjKyvD46TWzDT9dA4V+rBv0wznfN3ZZjBWwCxlAOveFuU
+         MZvoiGQxcceT+MmjjL2oKNfYpbjjqDFls1DlZOnH2iXbX7MioMgyR4gn2MvN1lcifg+S
+         NDUg==
+X-Gm-Message-State: AOAM533p+l0b8D7pVGOoowShzivGT2983ulE/W/VIdZexD1TF5o1ZnEF
+        6fbc7buIfrMy50eDR0fRsD3wZFpZUFSHWl0S53yNzA==
+X-Google-Smtp-Source: ABdhPJwTzKZlfXnOfsWp9P6XVptQULaFAqOpbq72bJOqIMs1aR5DlqdyZC28GcSCMl/VJcnM4gObI+jgJVzhfDk9NVo=
+X-Received: by 2002:a17:902:7d8d:b029:e6:4061:b767 with SMTP id
+ a13-20020a1709027d8db02900e64061b767mr4342010plm.32.1616488629727; Tue, 23
+ Mar 2021 01:37:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
+References: <20210322100420.125616-1-robert.foss@linaro.org>
+ <20210322100420.125616-2-robert.foss@linaro.org> <b3f17dd3-d4b3-930c-db02-9f67748e4427@somainline.org>
+In-Reply-To: <b3f17dd3-d4b3-930c-db02-9f67748e4427@somainline.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 23 Mar 2021 09:36:58 +0100
+Message-ID: <CAG3jFysRW7ObLONrcydYKk6XLetNkR1vYfqGNXL=gTdL9O4zhQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sm8350: Add thermal zones and
+ throttling support
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>, amitk@kernel.org,
+        rui.zhang@intel.com, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>, linux-pm@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vinod.koul@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021, Rob Herring wrote:
+Hey Konrad,
 
-> On Thu, Mar 18, 2021 at 4:40 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > This set is part of a larger effort attempting to clean-up W=1
-> > kernel builds, which are currently overwhelmingly riddled with
-> > niggly little warnings.
-> >
-> > v2:
-> >  - Provided some descriptions to exported functions
-> >
-> > Lee Jones (10):
-> >   of: device: Fix function name in header and provide missing
-> >     descriptions
-> >   of: dynamic: Fix incorrect parameter name and provide missing
-> >     descriptions
-> >   of: platform: Demote kernel-doc abuse
-> >   of: base: Fix some formatting issues and provide missing descriptions
-> >   of: property: Provide missing member description and remove excess
-> >     param
-> >   of: address: Provide descriptions for 'of_address_to_resource's params
-> >   of: fdt: Demote kernel-doc abuses and fix function naming
-> >   of: of_net: Provide function name and param description
-> >   of: overlay: Fix function name disparity
-> >   of: of_reserved_mem: Demote kernel-doc abuses
-> >
-> >  drivers/of/address.c         |  3 +++
-> >  drivers/of/base.c            | 16 +++++++++++-----
-> >  drivers/of/device.c          |  7 ++++++-
-> >  drivers/of/dynamic.c         |  4 +++-
-> >  drivers/of/fdt.c             | 23 ++++++++++++-----------
-> >  drivers/of/of_net.c          |  3 +++
-> >  drivers/of/of_reserved_mem.c |  6 +++---
-> >  drivers/of/overlay.c         |  2 +-
-> >  drivers/of/platform.c        |  2 +-
-> >  drivers/of/property.c        |  2 +-
-> >  10 files changed, 44 insertions(+), 24 deletions(-)
-> 
-> I still see some warnings (note this is with DT files added to doc
-> build). Can you send follow-up patches:
-> 
-> ../include/linux/of.h:1193: warning: Function parameter or member
-> 'output' not described in 'of_property_read_string_index'
-> ../include/linux/of.h:1193: warning: Excess function parameter
-> 'out_string' description in 'of_property_read_string_index'
-> ../include/linux/of.h:1461: warning: cannot understand function
-> prototype: 'enum of_overlay_notify_action '
-> ../drivers/of/base.c:1781: warning: Excess function parameter 'prob'
-> description in '__of_add_property'
-> ../drivers/of/base.c:1804: warning: Excess function parameter 'prob'
-> description in 'of_add_property'
-> ../drivers/of/base.c:1855: warning: Function parameter or member
-> 'prop' not described in 'of_remove_property'
-> ../drivers/of/base.c:1855: warning: Excess function parameter 'prob'
-> description in 'of_remove_property'
+Thanks for the review!
 
-You don't want much do you! ;)
 
-Sure, I plan to clean up all of the kernel with subsequent patches.
+On Mon, 22 Mar 2021 at 18:27, Konrad Dybcio
+<konrad.dybcio@somainline.org> wrote:
+>
+> Hi!
+>
+>
+> > +             tsens0: thermal-sensor@c222000 {
+> > +                     compatible = "qcom,sm8350-tsens", "qcom,tsens-v2";
+> > +                     reg = <0 0x0C263000 0 0x1ff>, /* TM */
+> > +                           <0 0x0C222000 0 0x8>; /* SROT */
+>
+> Please use lowercase hex
 
-> BTW, there some more which I guess W=1 doesn't find:
-> 
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:906: WARNING: Block quote ends without a blank
-> line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1465: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1469: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1473: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1517: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1521: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1526: WARNING: Unexpected indentation.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1528: WARNING: Block quote ends without a blank
-> line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1529: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1533: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
-> ../drivers/of/base.c:1705: WARNING: Definition list ends without a
-> blank line; unexpected unindent.
-> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:49:
-> ../drivers/of/overlay.c:1183: WARNING: Inline emphasis start-string
-> without end-string.
+Ack
 
-What command did you use to find these?
+>
+>
+> > +             tsens1: thermal-sensor@c223000 {
+> > +                     compatible = "qcom,sm8350-tsens", "qcom,tsens-v2";
+> > +                     reg = <0 0x0C265000 0 0x1ff>, /* TM */
+> > +                           <0 0x0c223000 0 0x8>; /* SROT */
+>
+> Ditto
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Ack
+
+>
+>
+> > +                     trips {
+> > +                             cpu0_alert0: trip-point0 {
+> > +                                     temperature = <90000>;
+> > +                                     hysteresis = <2000>;
+> > +                                     type = "passive";
+> > +                             };
+> > +
+> > +                             cpu0_alert1: trip-point1 {
+> > +                                     temperature = <95000>;
+> > +                                     hysteresis = <2000>;
+> > +                                     type = "passive";
+>
+> Shouldn't this be "hot"? Possibly ditto for all cpu*alert1-labeled nodes.
+
+I based this patch on the upstream DTS for sm8250 & sdm845, and this
+is what they use. However, if you think it is incorrect I'm happy to
+do a little digging.
+
+>
+>
+> > +                             };
+> > +
+> > +                             cpu0_crit: cpu_crit {
+> > +                                     temperature = <110000>;
+> > +                                     hysteresis = <1000>;
+> > +                                     type = "critical";
+> > +                             };
+> > +                     };
+>
+> These values seem, err.. scorching hot.. Are they alright?
+
+I agree :) This is what the vendor ships in their downstream DTS.
+
+>
+>
+>
+> > +             // TODO: What is the NSP subsystem?
+> Please use C-style comments (/* foo */)
+
+Removing comment.
