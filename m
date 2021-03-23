@@ -2,147 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB866346607
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300EF34660C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhCWRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhCWRKT (ORCPT
+        id S230081AbhCWRME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:12:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229890AbhCWRLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:10:19 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B0CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:10:18 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id d10so12024332ils.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:10:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=nl7QaIos4KVB6wLD0CE4Fe3WB0mMHl24sYGz8H8gaAE=;
-        b=Qh8RLG2/qYMPKJTZKqZJ6HOBgm//heQscHSAXDjVn8vG6tp1ZPCh+Ge/6Iq8z7rH78
-         A74nTu9wLskgNP4YNSqRUGVAIUlDD9ChcRDLLklwaZP5d5gkNrUFtS/Nb1H8fgfZ15yX
-         6B+IiqN4V3HmDuq1HuPqZ+GzGrBDkp8Cj/+uQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=nl7QaIos4KVB6wLD0CE4Fe3WB0mMHl24sYGz8H8gaAE=;
-        b=lyMPaQJ10UbDskDr4rwfWlEs+XL4QL4qEmeU5nXRny5/e5RzxAQzcO/sgKQCQNMVLe
-         eoda/bIBDWa1avzS+3R0P3SW9uf7lwmaR3hBVegiHpaFocXQ5bUAe7Id/SvlPACLRgGO
-         RQcjwnboeF+Heq0M9IAjTpDBQYCHuLQ4THj429n2Hzvk9g/K4Ze21rK9BVsdOE7Vr7TG
-         BxfGLnOB9zy2jp4NkopV2K3gfH5VxmbrxyP2UsWMEgOi4k2K5CplDeN+AanIGDsmDZRL
-         mbvsKfLCLWYNQSHzgbCzYTJwcYFicscCmJr6iKMaisUICX/sZ4UReu/ni9YDIc2ZLZla
-         wCCA==
-X-Gm-Message-State: AOAM5320PghnvnatGzO6bD/r2OmvDYiR3dRhn9JS/PwproVrLDRJRbOb
-        oHzemwx75TmDnEOMypVhNiOUxA==
-X-Google-Smtp-Source: ABdhPJz+oJMhX7q0O0fiu6m6Y9fiJBZzQtZ0uxeBctDr7oCjj8KnB2tkCVoj2a28N9rI/FLhMXuPeg==
-X-Received: by 2002:a05:6e02:ee3:: with SMTP id j3mr5858838ilk.85.1616519418458;
-        Tue, 23 Mar 2021 10:10:18 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h2sm9304504ioj.30.2021.03.23.10.10.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 10:10:17 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] KUnit fixes update for Linux 5.12-rc5
-Message-ID: <13097e8e-2877-b63d-cd44-6393c1744a66@linuxfoundation.org>
-Date:   Tue, 23 Mar 2021 11:10:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------4118C60156499C14911455A1"
-Content-Language: en-US
+        Tue, 23 Mar 2021 13:11:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616519511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CKHlmcAcFrOM8c13z+gPq/cfF8DQ2S4kR6iZLDzuW8w=;
+        b=BzlWdVnZsaDD2BtCJ2ruOfVTGl9PVH0R9gqK5ASQgc/1pRGQ/5rKddAObq0zndwTTd/cSH
+        dJuP02Hr5bANdD0s1dPQU7yJ3nRRuUcFZ4mZ1rnWW/iqjQL5RoqEWU8FnM+CxI1AsDJbvD
+        cg45Ezxa3oiTcNsbIzCJyyPa6wrwuUw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-sR3Ur4hPO2qR45qt9qq_hw-1; Tue, 23 Mar 2021 13:11:47 -0400
+X-MC-Unique: sR3Ur4hPO2qR45qt9qq_hw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A67B05F9E1;
+        Tue, 23 Mar 2021 17:11:45 +0000 (UTC)
+Received: from ovpn-112-207.phx2.redhat.com (ovpn-112-207.phx2.redhat.com [10.3.112.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EB045C232;
+        Tue, 23 Mar 2021 17:11:30 +0000 (UTC)
+Message-ID: <5612cd9e298488ea9277f8d99ce0fd35240bdc53.camel@redhat.com>
+Subject: Re: md/dm-mpath: check whether all pgpaths have same uuid in
+ multipath_ctr()
+From:   "Ewan D. Milne" <emilne@redhat.com>
+To:     lixiaokeng <lixiaokeng@huawei.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Cc:     agk@redhat.com, dm-devel@redhat.com,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linfeilong <linfeilong@huawei.com>,
+        "wubo (T)" <wubo40@huawei.com>
+Date:   Tue, 23 Mar 2021 13:11:30 -0400
+In-Reply-To: <a46013db-8143-7b41-95a8-182439b385f2@huawei.com>
+References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
+         <20210322081155.GE1946905@infradead.org>
+         <20210322142207.GB30698@redhat.com>
+         <a46013db-8143-7b41-95a8-182439b385f2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------4118C60156499C14911455A1
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, 2021-03-23 at 15:47 +0800, lixiaokeng wrote:
+> 
+> On 2021/3/22 22:22, Mike Snitzer wrote:
+> > On Mon, Mar 22 2021 at  4:11am -0400,
+> > Christoph Hellwig <hch@infradead.org> wrote:
+> > 
+> > > On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
+> > > > From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> > > > 
+> > > > When we make IO stress test on multipath device, there will
+> > > > be a metadata err because of wrong path. In the test, we
+> > > > concurrent execute 'iscsi device login|logout' and
+> > > > 'multipath -r' command with IO stress on multipath device.
+> > > > In some case, systemd-udevd may have not time to process
+> > > > uevents of iscsi device logout|login, and then 'multipath -r'
+> > > > command triggers multipathd daemon calls ioctl to load table
+> > > > with incorrect old device info from systemd-udevd.
+> > > > Then, one iscsi path may be incorrectly attached to another
+> > > > multipath which has different uuid. Finally, the metadata err
+> > > > occurs when umounting filesystem to down write metadata on
+> > > > the iscsi device which is actually not owned by the multipath
+> > > > device.
+> > > > 
+> > > > So we need to check whether all pgpaths of one multipath have
+> > > > the same uuid, if not, we should throw a error.
+> > > > 
+> > > > Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> > > > Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
+> > > > Signed-off-by: linfeilong <linfeilong@huawei.com>
+> > > > Signed-off-by: Wubo <wubo40@huawei.com>
+> > > > ---
+> > > >  drivers/md/dm-mpath.c   | 52
+> > > > +++++++++++++++++++++++++++++++++++++++++
+> > > >  drivers/scsi/scsi_lib.c |  1 +
+> > > >  2 files changed, 53 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
+> > > > index bced42f082b0..f0b995784b53 100644
+> > > > --- a/drivers/md/dm-mpath.c
+> > > > +++ b/drivers/md/dm-mpath.c
+> > > > @@ -24,6 +24,7 @@
+> > > >  #include <linux/workqueue.h>
+> > > >  #include <linux/delay.h>
+> > > >  #include <scsi/scsi_dh.h>
+> > > > +#include <linux/dm-ioctl.h>
+> > > >  #include <linux/atomic.h>
+> > > >  #include <linux/blk-mq.h>
+> > > > 
+> > > > @@ -1169,6 +1170,45 @@ static int parse_features(struct
+> > > > dm_arg_set *as, struct multipath *m)
+> > > >  	return r;
+> > > >  }
+> > > > 
+> > > > +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
+> > > > +#define MPATH_UUID_PREFIX_LEN 7
+> > > > +static int check_pg_uuid(struct priority_group *pg, char
+> > > > *md_uuid)
+> > > > +{
+> > > > +	char pgpath_uuid[DM_UUID_LEN] = {0};
+> > > > +	struct request_queue *q;
+> > > > +	struct pgpath *pgpath;
+> > > > +	struct scsi_device *sdev;
+> > > > +	ssize_t count;
+> > > > +	int r = 0;
+> > > > +
+> > > > +	list_for_each_entry(pgpath, &pg->pgpaths, list) {
+> > > > +		q = bdev_get_queue(pgpath->path.dev->bdev);
+> > > > +		sdev = scsi_device_from_queue(q);
+> > > 
+> > > Common dm-multipath code should never poke into scsi
+> > > internals.  This
+> > > is something for the device handler to check.  It probably also
+> > > won't
+> > > work for all older devices.
+> > 
+> > Definitely.
+> > 
+> > But that aside, userspace (multipathd) _should_ be able to do extra
+> > validation, _before_ pushing down a new table to the kernel, rather
+> > than
+> > forcing the kernel to do it.
+> > 
+> 
+> Martin (committer of multipath-tools) said that:
+> "Don't get me wrong, I don't argue against tough testing. But we
+> should
+> be aware that there are always time intervals during which
+> multipathd's
+> picture of the present devices is different from what the kernel
+> sees."
+> 
+> It is difficult to solve this in multipathd.
+> 
+> Regards,
+> Lixiaokeng
+> 
 
-Hi Linus,
+I think the patch is no good.  There are plenty of devices that don't
+support VPD page 83h:
 
-Please pull the following KUnit fixes update for Linux 5.12-rc5.
+int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+{
+        u8 cur_id_type = 0xff;
+        u8 cur_id_size = 0;
+        unsigned char *d, *cur_id_str;
+        unsigned char __rcu *vpd_pg83;
+        int id_size = -EINVAL;
 
-This KUnit update for Linux 5.12-rc5 consists of two fixes to kunit
-tool from David Gow.
+        rcu_read_lock();
+        vpd_pg83 = rcu_dereference(sdev->vpd_pg83);
+        if (!vpd_pg83) {
+                rcu_read_unlock();
+                return -ENXIO;
+        }
 
-diff is attached.
+and the DM layer should not be looking at the properties of the
+underlying devices in this way anyway.  It should be pushed down
+to the table.
 
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
-tags/linux-kselftest-kunit-fixes-5.12-rc5.1
-
-for you to fetch changes up to 7fd53f41f771d250eb08db08650940f017e37c26:
-
-   kunit: tool: Disable PAGE_POISONING under --alltests (2021-03-11 
-14:37:37 -0700)
-
-----------------------------------------------------------------
-linux-kselftest-kunit-fixes-5.12-rc5.1
-
-This KUnit update for Linux 5.12-rc5 consists of two fixes to kunit
-tool from David Gow.
-
-----------------------------------------------------------------
-David Gow (2):
-       kunit: tool: Fix a python tuple typing error
-       kunit: tool: Disable PAGE_POISONING under --alltests
-
-  tools/testing/kunit/configs/broken_on_uml.config | 2 ++
-  tools/testing/kunit/kunit_config.py              | 2 +-
-  2 files changed, 3 insertions(+), 1 deletion(-)
-
-----------------------------------------------------------------
+-Ewan
 
 
---------------4118C60156499C14911455A1
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-kunit-fixes-5.12-rc5.1.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-kunit-fixes-5.12-rc5.1.diff"
 
-diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
-index a7f0603d33f6..690870043ac0 100644
---- a/tools/testing/kunit/configs/broken_on_uml.config
-+++ b/tools/testing/kunit/configs/broken_on_uml.config
-@@ -40,3 +40,5 @@
- # CONFIG_RESET_BRCMSTB_RESCAL is not set
- # CONFIG_RESET_INTEL_GW is not set
- # CONFIG_ADI_AXI_ADC is not set
-+# CONFIG_DEBUG_PAGEALLOC is not set
-+# CONFIG_PAGE_POISONING is not set
-diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
-index 0b550cbd667d..1e2683dcc0e7 100644
---- a/tools/testing/kunit/kunit_config.py
-+++ b/tools/testing/kunit/kunit_config.py
-@@ -13,7 +13,7 @@ from typing import List, Set
- CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_(\w+) is not set$'
- CONFIG_PATTERN = r'^CONFIG_(\w+)=(\S+|".*")$'
- 
--KconfigEntryBase = collections.namedtuple('KconfigEntry', ['name', 'value'])
-+KconfigEntryBase = collections.namedtuple('KconfigEntryBase', ['name', 'value'])
- 
- class KconfigEntry(KconfigEntryBase):
- 
-
---------------4118C60156499C14911455A1--
