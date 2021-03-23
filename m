@@ -2,123 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9E8345A88
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2931345A8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhCWJOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S229923AbhCWJOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhCWJNh (ORCPT
+        with ESMTP id S229675AbhCWJOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:13:37 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF77C061574;
-        Tue, 23 Mar 2021 02:13:37 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id e8so16916931iok.5;
-        Tue, 23 Mar 2021 02:13:37 -0700 (PDT)
+        Tue, 23 Mar 2021 05:14:16 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312BAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:14:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id c4so13595065qkg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:14:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=hUu76xvBuKlFUtxA4sEFLwZtnBeONf1UGq6mrYmq+do=;
-        b=G7jTbDii/LboOW8tmRhRZapGx+LJoEdZ9fElgmms3ersZSkrRi6XNborl8LuVNMO7/
-         4KnsL8zISN+f+k10rEgydHqJUanRrb4L1ago/n4yXQKY0SXCk/CF4Uj/Il+WeXfixSj9
-         WAbaioscGzhtKYEoNJyzEetwLxpUyl40FY8YjdywC4taeeW9v9trAf/iiNHPQ/sAhJEn
-         +R0crJAAMpS4RllyThucCRFteiFkFW34Q3qI4+ZXGA7Kor6zDYD6lXi0chxb3oXkidjb
-         2i8YScKdtMKXvQmCigeOOGxd+LRURvrVJDKHRFD5H9vgowlvBD6JVT6XlrsSGUne0T77
-         FFGA==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yKamrg4WQ+8FkyynMWBliZ0t9JpsQat8oBO83DGW1QQ=;
+        b=k15rQQYFTnRWn6UkVkfxPOjIFEe2JNn89l2ipW6jz1vPKm1gH0MDxAUp4C/nuJc1y4
+         tyWhu1SvPXNHdMdMTukSPNrOhQKZLkseHbidtLwUqnjxDLieaj4iqexwesLvbPbESDvW
+         RTZKBQxIzZIshmKqsw1t6BRCDjc5kANvrRX13FX5eBNZ2i12u50LKPa5T5bkyFzW5sLm
+         xedVrbyWvwC5dZCk5pX7XdIo6ZX+r77F/cC496THBXcN7oFR5axZ512/ZgthJs9kPXen
+         5cgakFG+Qjhs7hCKhgL8jgfEwcudMRLtMFFsTSukOpbNlSdq4kBNMeIG/oooMhGt9dgC
+         14Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=hUu76xvBuKlFUtxA4sEFLwZtnBeONf1UGq6mrYmq+do=;
-        b=JbJz5LzV8FJFE1IqAEZX74IPGYBmm1FLIpq8PVGMFhpjluiDQnqf3TnNXU1Xb/aIfl
-         0HjYSv3ghHDFH3fL3ngQVebReYUNOhMwI3vAY3JPko3+5Mj6KzP8CKM7BTSJXI2F39ao
-         BI69ixlsCgF/pNAiLC+lmEG2qpeNiMiEm0sM01omR6ccZHbevtX4BrpzhvnA/dkLxE1D
-         ctSo9IXfFoL9zAfX6MFUDuofAfyegrNDXxEA6uwPZwEYv0p/eK9xHGWYkEd6IBEJ+2JK
-         HYMpsIWNZirbpxhKpV5jNG0CBToK81im83CnwLhtC6Af648rZ1dATUVk3xkUbAoC9KWn
-         Gk/Q==
-X-Gm-Message-State: AOAM531RVC0mam1i2b7adLHiqOkap+q/YHYfnD7v4cVf6RJNLggfPbPM
-        03HvjOTcMJI0e6v8xNq4j9GfxY76zn2tUP/259s=
-X-Google-Smtp-Source: ABdhPJy/iw32GvYyZ8GrFs0bVcF60DnRU9mR9mCPomSVX8taAezyBvnTsoOWf3OrgRO12U9MNCTRNcvcPUMUqU5u9Cs=
-X-Received: by 2002:a5e:8610:: with SMTP id z16mr3379020ioj.57.1616490816696;
- Tue, 23 Mar 2021 02:13:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=yKamrg4WQ+8FkyynMWBliZ0t9JpsQat8oBO83DGW1QQ=;
+        b=NsIczTxZRNVlyjb8wK6ORMEJ5eFFFmJRiMYDnybxXEwDK+Xm2cHuhxeaJpm0hQEWPw
+         S6ej0GWG1I2jp1l6oz0Yh1h8bJZCLygqPMRXh+lYvhGdUdxuuqMHJ9KUiokJ5qAjq2a6
+         1mZa86APRyjj69/lLMUBqmVgh14EmWKlfKoTQlOdrPHCYUbiDSTi1A+scjuHp0iLvZBu
+         4ho/RDTz6ubRJz2H0BrRE69e0AVCVcbCBZ1oWZFjtitBKSQOjxoc/vM1rgcQAO3Ze3rA
+         m/P+XUQQ6y9m3FfSJViMb9dTeNgxVChwGjFgLRRgA3nnlXt1BUa/uLx/jm3zRIpkSBRA
+         btcA==
+X-Gm-Message-State: AOAM530QETekdiPHcLSYFDo4VGcy5un6bfmJQfRWPeaNvh60dbKlX4h6
+        6JCxLoDdvJ9/z1JB47TxdVU=
+X-Google-Smtp-Source: ABdhPJyh+0q5eJDWd+9DOmDi7kVHzpO0V0QZjUYLIszZuhys5Tq3g2ATH+OsE+oQNX+ksfTyjUENvw==
+X-Received: by 2002:a37:a643:: with SMTP id p64mr4178667qke.276.1616490855481;
+        Tue, 23 Mar 2021 02:14:15 -0700 (PDT)
+Received: from ArchLinux ([143.244.44.229])
+        by smtp.gmail.com with ESMTPSA id z5sm12793861qkz.2.2021.03.23.02.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 02:14:13 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 14:43:58 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, imre.deak@intel.com,
+        ville.syrjala@linux.intel.com, lucas.demarchi@intel.com,
+        matthew.d.roper@intel.com,
+        tejaskumarx.surendrakumar.upadhyay@intel.com,
+        aditya.swarup@intel.com, anusha.srivatsa@intel.com,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] drm/i915: A typo fix
+Message-ID: <YFmxVmcW/hIzsP4o@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, imre.deak@intel.com,
+        ville.syrjala@linux.intel.com, lucas.demarchi@intel.com,
+        matthew.d.roper@intel.com,
+        tejaskumarx.surendrakumar.upadhyay@intel.com,
+        aditya.swarup@intel.com, anusha.srivatsa@intel.com,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+References: <20210323011607.182803-1-unixbhaskar@gmail.com>
+ <87blba5jzo.fsf@intel.com>
 MIME-Version: 1.0
-References: <nycvar.YFH.7.76.2103021125430.12405@cbobk.fhfr.pm>
- <nycvar.YFH.7.76.2103080925230.12405@cbobk.fhfr.pm> <nycvar.YFH.7.76.2103130242460.12405@cbobk.fhfr.pm>
- <87h7lfbowr.fsf@tynnyri.adurom.net> <nycvar.YFH.7.76.2103131642290.12405@cbobk.fhfr.pm>
- <f103b4a29b7c1942f091bd7b90d7a927d72c20a2.camel@coelho.fi>
- <87zgz7t246.fsf@codeaurora.org> <c1681fa49280189c48ecf9f86fe54b81d662dc07.camel@coelho.fi>
- <nycvar.YFH.7.76.2103221311560.12405@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2103221311560.12405@cbobk.fhfr.pm>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 23 Mar 2021 10:13:00 +0100
-Message-ID: <CA+icZUWNbOpTXEy8SXMSJM=Or82gyVD8GUr10-A62dNtXa_Bnw@mail.gmail.com>
-Subject: Re: [PATCH] iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_enqueue_hcmd()
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Luca Coelho <luca@coelho.fi>, Kalle Valo <kvalo@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Murphy <lists@colorremedies.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ssc5NCDR3r865LSQ"
+Content-Disposition: inline
+In-Reply-To: <87blba5jzo.fsf@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 1:13 PM Jiri Kosina <jikos@kernel.org> wrote:
->
-> On Sat, 13 Mar 2021, Luca Coelho wrote:
->
-> > > > > > > > > It's possible for iwl_pcie_enqueue_hcmd() to be called with hard IRQs
-> > > > > > > > > disabled (e.g. from LED core). We can't enable BHs in such a situation.
-> > > > > > > > >
-> > > > > > > > > Turn the unconditional BH-enable/BH-disable code into
-> > > > > > > > > hardirq-disable/conditional-enable.
-> > > > > > > > >
-> > > > > > > > > This fixes the warning below.
-> > > > > > > >
-> > > > > > > > Hi,
-> > > > > > > >
-> > > > > > > > friendly ping on this one ...
-> > > > > > >
-> > > > > > > Luca,
-> > > > > > >
-> > > > > > > Johannes is telling me that he merged this patch internally, but I have no
-> > > > > > > idea what is happening to it ... ?
-> > > > > > >
-> > > > > > > The reported splat is a clear bug, so it should be fixed one way or the
-> > > > > > > other.
-> > > > > >
-> > > > > > Should I take this to wireless-drivers?
-> > > > >
-> > > > > I can't speak for the maintainers, but as far as I am concerned, it
-> > > > > definitely is a 5.12 material, as it fixes real scheduling bug.
-> > > >
-> > > > Yes, please take this to w-d.  We have a similar patch internally, but
-> > > > there's a backlog and it will take me some time to get to it.  I'll
-> > > > resolve eventual conflicts when time comes.
-> > >
-> > > Ok, can I have your ack for patchwork?
-> >
-> > Sorry, forgot that.
-> >
-> > Acked-by: Luca Coelho <luciano.coelho@intel.com>
->
-> Sorry for sounding like broken record :) but this fix is still not in any
-> tree as far as I can tell. And it's fixing real scheduling in atomic bug.
->
-> Thanks,
->
 
-[ CC Chris Murphy <lists@colorremedies.com> ]
+--ssc5NCDR3r865LSQ
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-A week ago Chris sent an email to linux-wireless with pointing to:
+On 10:53 Tue 23 Mar 2021, Jani Nikula wrote:
+>On Tue, 23 Mar 2021, Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+>> s/nothign/nothing/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>
+>You've sent the same patch before? I've already pushed it.
+>
+Apologies and thanks.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=212297
+>BR,
+>Jani.
+>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_dpll_mgr.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+>> index f6ad257a260e..14d784a6fae5 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+>> @@ -4185,7 +4185,7 @@ static void icl_pll_disable(struct drm_i915_private *dev_priv,
+>>  	/*
+>>  	 * DVFS pre sequence would be here, but in our driver the cdclk code
+>>  	 * paths should already be setting the appropriate voltage, hence we do
+>> -	 * nothign here.
+>> +	 * nothing here.
+>>  	 */
+>>
+>>  	val = intel_de_read(dev_priv, enable_reg);
+>> --
+>> 2.31.0
+>>
+>
+>--
+>Jani Nikula, Intel Open Source Graphics Center
 
-AFAICS, that is the same bug.
+--ssc5NCDR3r865LSQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-- Sedat -
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBZsVYACgkQsjqdtxFL
+KRUJpggAiFamaV0R4z6RkkkOUE2bYAPm7eweNYgy2jWuLdI61fbw7FH7AmbBWH+a
+kNgXlnPT6uSmy2jiu9uO3GVguYcxe25APtYd3VVNyRfiCONj1KvD1RNHFR3dG8aY
+cai0XiI0dFA283DCP0LRMdTzHPIPwEfXW47CVbk5tfMINQV70VZKjDPnAxsoa5ch
+gvHo8wo/ZQAb9K+2VeaoTaf2CF6hjf7U/UCV8WI9acO4+AJ6kM79ZchZlLT75q/w
+5gtSUMK704FFFnYWNbsoMJiKXUHqs+2NuqQpTuyU/Z64pwppKJTTDvbJV3RJkYM3
+0Vjb8Zewp05xO/bBwkAzecMr5u8JLw==
+=WIVI
+-----END PGP SIGNATURE-----
+
+--ssc5NCDR3r865LSQ--
