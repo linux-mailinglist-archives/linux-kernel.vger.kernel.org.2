@@ -2,121 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60043456FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCC634570E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbhCWEt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 00:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhCWEs5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 00:48:57 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E71C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 21:48:56 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id o19so9918237qvu.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 21:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8o4w3qvGY4wX+/J7guXd6pbU7uRScmOE2FBMsZ1kUOo=;
-        b=KWJs/3rpjKokr24+2+rEAutt7PhwLMsqwfrBLewOIjE9Dx9JuAvzk0wH/F1lt615mp
-         pFg+Jn3x4XlfyaJ48tLm5PrKcGhRLmTgwCZpfjxMmh1rz7FM6aQq5G8NWNF11F2UrSeB
-         rsM4TmW8a0Y+ZdV9TcdGEwik6oJi3O4ebaHisqfm72YxLHvsOarVJzvGmRuGGXFyA+0q
-         zlxTxfxSYXapy6ySdk+/Wk5CX9WsyO8Bcc20V63/w05RSk08Nwmreu4qFYbLLIpyuCKL
-         S0O3nZNe8DOCNZzMJzRXO9ff+lrChx/0EteYESGK3AFa6e4SwFmRa64vMk1QIeKGWfU0
-         ErrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=8o4w3qvGY4wX+/J7guXd6pbU7uRScmOE2FBMsZ1kUOo=;
-        b=Mz+kpuq5iHOx2kgSAxc3S7ki3jzDhPGRKbzuhdMnsSFRFZNapH3xX+I2DiR2BkBNMs
-         Zj5xzEDtX7Niv9ZPOX1cYu+ZvyDASn9AnLHG/nzQMf+Am8shzD3lWasGWlTAYwLOj1Fu
-         KOfGapM70BltdI1Lkzo40QNuIBMZ4kDauSlnlCh9ujMTvWqsEcIibxq/3tOYA7gBzDD8
-         gLiAuE3MedCOhAQIIYwq9+IST/m4MCjsyBr3OQhdt9K0VV/UyI2deGwCCUday5p9Z4hy
-         zm02z55o0ht4NkSIr7yMbTFoly3/7Cp3Acf046n/MnzR7GRCWJM/OFQ/+2rcUSp51QYE
-         9i3A==
-X-Gm-Message-State: AOAM533tdJbYdKJkL7iYs9bBQjkdWjNSrHClStOC+6VPFvwWsa2PPSpM
-        5QrBlxQPM7HwImrYDcRpgJQ=
-X-Google-Smtp-Source: ABdhPJy+Lui8GtXG1HUpy8iHpBLLve2dzRGvc2AtjtdKGldvBIpiU8cV4VdRqbzxaYjCKY7cWzcDHg==
-X-Received: by 2002:ad4:56e1:: with SMTP id cr1mr3020837qvb.25.1616474935325;
-        Mon, 22 Mar 2021 21:48:55 -0700 (PDT)
-Received: from ArchLinux ([156.146.54.208])
-        by smtp.gmail.com with ESMTPSA id y1sm12380688qki.9.2021.03.22.21.48.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 21:48:54 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 10:18:41 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     gregkh@linuxfoundation.org, colin.king@canonical.com,
-        davem@davemloft.net, lee.jones@linaro.org, arnd@arndb.de,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wimax: Mundane typo fixes
-Message-ID: <YFlzKap5VsILZG+P@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, gregkh@linuxfoundation.org,
-        colin.king@canonical.com, davem@davemloft.net, lee.jones@linaro.org,
-        arnd@arndb.de, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-References: <20210323010607.3918516-1-unixbhaskar@gmail.com>
- <36821877-7a6c-9a15-4e94-cb657ef29dad@infradead.org>
+        id S229653AbhCWE66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 00:58:58 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14846 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229452AbhCWE6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 00:58:24 -0400
+IronPort-SDR: vwqeh7Cm2qPTGnK55Pk37tIaTkiTCVm2o9OSq+xpAqbglO3ffxV9z98mBKS23W/K2a3rm6vfp0
+ abjWj8vqLoQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="170368033"
+X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; 
+   d="scan'208";a="170368033"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 21:58:24 -0700
+IronPort-SDR: ooxjGvn4ekfdPJ8HEd4MsJVDW7Bny0B3L0ncynQjsQDe+lHBBvCACkS/QJeHaZjCugq/D1P1FC
+ e6m+pKdqO2mA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; 
+   d="scan'208";a="408133327"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Mar 2021 21:58:22 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lOZ7W-0000Mr-9s; Tue, 23 Mar 2021 04:58:22 +0000
+Date:   Tue, 23 Mar 2021 12:57:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:lkmm] BUILD SUCCESS 49ab51b01ec6fd837ae3efe2e0cdb41fcf5cf048
+Message-ID: <6059753e.daSInfGbkisMFgMJ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fV3FxdRXDNWSw7XV"
-Content-Disposition: inline
-In-Reply-To: <36821877-7a6c-9a15-4e94-cb657ef29dad@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git lkmm
+branch HEAD: 49ab51b01ec6fd837ae3efe2e0cdb41fcf5cf048  tools/memory-model: Add access-marking documentation
 
---fV3FxdRXDNWSw7XV
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+elapsed time: 720m
 
-On 21:14 Mon 22 Mar 2021, Randy Dunlap wrote:
->On 3/22/21 6:06 PM, Bhaskar Chowdhury wrote:
->>
->> s/procesing/processing/
->> s/comunication/communication/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->
->drivers/staging/wimax/ is in the process of being deleted.
->
-Yes ...I saw the mail day or two back ...skipped my mind ...anyway we can
-ignore this.
->> ---
->>  drivers/staging/wimax/i2400m/driver.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/staging/wimax/i2400m/driver.c b/drivers/staging/wimax/i2400m/driver.c
->> index f5186458bb3d..162a92682977 100644
->> --- a/drivers/staging/wimax/i2400m/driver.c
->> +++ b/drivers/staging/wimax/i2400m/driver.c
->
->
->--
->~Randy
->
+configs tested: 129
+configs skipped: 3
 
---fV3FxdRXDNWSw7XV
-Content-Type: application/pgp-signature; name="signature.asc"
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
------BEGIN PGP SIGNATURE-----
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arc                          axs101_defconfig
+m68k                          amiga_defconfig
+powerpc                     asp8347_defconfig
+sh                     sh7710voipgw_defconfig
+m68k                       m5208evb_defconfig
+arc                         haps_hs_defconfig
+powerpc                      katmai_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                           ip27_defconfig
+riscv                    nommu_virt_defconfig
+arc                              alldefconfig
+arc                          axs103_defconfig
+powerpc                   motionpro_defconfig
+powerpc                      chrp32_defconfig
+arm                          moxart_defconfig
+arm                  colibri_pxa270_defconfig
+arm                         s3c2410_defconfig
+arm                          ixp4xx_defconfig
+mips                           ip28_defconfig
+arm                             mxs_defconfig
+riscv                            alldefconfig
+sh                        edosk7705_defconfig
+powerpc                     mpc5200_defconfig
+mips                      pic32mzda_defconfig
+powerpc                      ppc64e_defconfig
+sh                         ecovec24_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                                  defconfig
+mips                  decstation_64_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                      walnut_defconfig
+mips                       capcella_defconfig
+arm                     am200epdkit_defconfig
+powerpc                         wii_defconfig
+powerpc                     akebono_defconfig
+powerpc                     redwood_defconfig
+arm                            lart_defconfig
+arm                         palmz72_defconfig
+arm                        mvebu_v7_defconfig
+sh                           se7780_defconfig
+powerpc                 mpc836x_rdk_defconfig
+openrisc                         alldefconfig
+m68k                       m5249evb_defconfig
+mips                        maltaup_defconfig
+arm                           omap1_defconfig
+i386                                defconfig
+arm                  colibri_pxa300_defconfig
+mips                           jazz_defconfig
+powerpc                     mpc83xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210323
+i386                 randconfig-a004-20210323
+i386                 randconfig-a001-20210323
+i386                 randconfig-a002-20210323
+i386                 randconfig-a006-20210323
+i386                 randconfig-a005-20210323
+i386                 randconfig-a004-20210322
+i386                 randconfig-a003-20210322
+i386                 randconfig-a001-20210322
+i386                 randconfig-a002-20210322
+i386                 randconfig-a006-20210322
+i386                 randconfig-a005-20210322
+x86_64               randconfig-a012-20210322
+x86_64               randconfig-a015-20210322
+x86_64               randconfig-a013-20210322
+x86_64               randconfig-a014-20210322
+x86_64               randconfig-a016-20210322
+x86_64               randconfig-a011-20210322
+i386                 randconfig-a014-20210322
+i386                 randconfig-a011-20210322
+i386                 randconfig-a015-20210322
+i386                 randconfig-a016-20210322
+i386                 randconfig-a012-20210322
+i386                 randconfig-a013-20210322
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBZcyUACgkQsjqdtxFL
-KRWv6Qf+NZyfQE34E3YqU/2plOy1xbmrT//aurhwcCVfxGjK6daNggG42HjsMnXs
-tZad38De4zGZZttW+0HxF2K7r6dsOL0n+aBcu5L81zsfOQFkqcav5Vm5/GBsE7sY
-4mnvD/a2NFRcaQEviM0rUxKKiK6aDDQyZVMqZC5f9z8yXHkMDwLVrJrfp6My63YY
-EooWkA6OSqquVqOmcLtQWy01q4hcqMSI6ENsecYfedjwbUP9OwNkTYxa2pI42ton
-4yD9wIlaTs7cFQUku8FHBQhnl1EpA6xBO7DWbR0P1XLCcSywwlUAfZCy6Vh5RFCf
-m/eXN/cyUyhfYDlMMJhsL6dWOvAqyg==
-=ccl5
------END PGP SIGNATURE-----
+clang tested configs:
+x86_64               randconfig-a002-20210322
+x86_64               randconfig-a003-20210322
+x86_64               randconfig-a001-20210322
+x86_64               randconfig-a006-20210322
+x86_64               randconfig-a004-20210322
+x86_64               randconfig-a005-20210322
 
---fV3FxdRXDNWSw7XV--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
