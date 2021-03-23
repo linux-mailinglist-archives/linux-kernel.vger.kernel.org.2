@@ -2,112 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7269345908
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E2C345909
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhCWHq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:46:27 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:9619 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhCWHqP (ORCPT
+        id S229798AbhCWHq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhCWHqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:46:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1616485551; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=a5ko9wFednbVsuUshpCD9/xsFXp9c7VRGfCFQ2qynZpXc18vn81z4kucCB8GOaag2e
-    +yqaeSu6hB2Ps0GA+0the0gRtsAMtdod6R0Jc79Xn0+hsayY96klKoLkgYspUjHqCdCc
-    XXoXhLFn39M4MKF2px/5z3K/cILoXPlyd1JunJqrXrzCjIJHxwchyDqespdXwC0zfNym
-    xezCQ9cvofLYIkQjjXDaTGN4HeOOVk2s1luYABK8zBOcq94tbo4WMyYmK6Q13EKo3x65
-    ajE+2I8qsj6Gp2ZXkMpVrqSttf5M7NAl/lF+qIKYZjXjtNQhsTEkuSJBg+Dtk96qZ4hx
-    GtBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616485551;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=CmIu2MA93XDFmrtFzpr67oVqTlKv0FFgJFFKMq6G36Q=;
-    b=UE0irVoz48Q+juUH5ssHuuvcqgf34ybYf9BOK0SX6LXAHqaXt/oCEawCETUYrDXVtf
-    2FVHzR2D3R+jZ/u0Inh6spZeBxHYJ9F1SQxa/bTs54ALhlwUNQGTXAj07Fh43rXcxvj7
-    BJTG5VoW/AR958y8RBnhYrHkrrsbqeNlvK/aK9cOW0FbuXC86QgEuKl5DvAnFddp6tb8
-    htEXcjNio62pjClidOG8Wo9Kt/+d2gGnX0ak1q1X2WB8UP/eJQXhEuox7oCukdB3fhAB
-    EdmsOIC7v84XeLZO0pB0XqEU3zYNghL2fRkWBKNgaxXbqplY4FYxv1LUa/SKH3owMj6c
-    QYJw==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616485551;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=CmIu2MA93XDFmrtFzpr67oVqTlKv0FFgJFFKMq6G36Q=;
-    b=r5iRS84ZzjKdxUpyEXSGuF15Vzf9gN9HHaMbvGPoXgXjUq5QkgTHr1yBpXDiylvHLl
-    lRJpzNjvpv+a1P9dzAUbbbu834ScqMx2fMsvf4cYVUH96xCftNbnN9OYA9NUk1sO4xRt
-    EhlV9QHtbJlbQceOLLKs9q9A2a8uAZUwGxnAm5J6wzXdF7ysj3cQ9bIcenO8PGABzFAI
-    Uv2B81CL8ybjp13jhoYpVdHVAeLH1dZMagfCcEoePn/lm6PpPOpY+ukYZnz8QpwX5zFf
-    5l8BVXkd5hApd7EDDtlEKufR4IZv8TZwhhLglHzz5ezJBfqDOStaRrQC72M+SuYBV2bv
-    hpEw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J8xswl0="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.10.137]
-    by smtp.strato.de (RZmta 47.21.0 DYNA|AUTH)
-    with ESMTPSA id R01debx2N7joDr4
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 23 Mar 2021 08:45:50 +0100 (CET)
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Patrick Menschel <menschel.p@posteo.de>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
- <20210323073437.yo63wreqnubbeqby@pengutronix.de>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
-Date:   Tue, 23 Mar 2021 08:45:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 03:46:14 -0400
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A79C061574;
+        Tue, 23 Mar 2021 00:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=O18FJ1N2ZnMBsuKWvbeujuurm5C2kQ1VBxSCMJvGcZY=; b=cWPKqUjpsMjCIpmkK6qCc5RlZ9
+        BUO/fZSsBt5FneHlsDo3pLwn/HMORTIIWKHOnhzQP9rJU1dAqvzO/oX7owDaZDbGlu8APesldHFlg
+        6daNHdlLmQufWP8Vcj8XAbgpdQhQ/ckKqplvta8DeHh+9uO8vCb15iGT2dwsu2VYSDK4=;
+Received: from p4ff13c8d.dip0.t-ipconnect.de ([79.241.60.141] helo=nf.local)
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <nbd@nbd.name>)
+        id 1lObjl-0002Ce-18; Tue, 23 Mar 2021 08:46:01 +0100
+Subject: Re: [RFC 2/7] ath10k: Add support to process rx packet in thread
+To:     Ben Greear <greearb@candelatech.com>,
+        Brian Norris <briannorris@chromium.org>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Rajkumar Manoharan <rmanohar@codeaurora.org>,
+        Rakesh Pillai <pillair@codeaurora.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Doug Anderson <dianders@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
+ <1595351666-28193-3-git-send-email-pillair@codeaurora.org>
+ <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
+ <d79ae05e-e75a-de2f-f2e3-bc73637e1501@nbd.name>
+ <04d7301d5ad7555a0377c7df530ad8522fc00f77.camel@sipsolutions.net>
+ <1f2726ff-8ba9-5278-0ec6-b80be475ea98@nbd.name>
+ <06a4f84b-a0d4-3f90-40bb-f02f365460ec@candelatech.com>
+ <CA+ASDXOotYHmtqOvSwBES6_95bnbAbEu6F7gQ5TjacJWUKdaPw@mail.gmail.com>
+ <47d8be60-14ce-0223-bdf3-c34dc2451945@candelatech.com>
+From:   Felix Fietkau <nbd@nbd.name>
+Message-ID: <633feaed-7f34-15d3-1899-81eb1d6ae14f@nbd.name>
+Date:   Tue, 23 Mar 2021 08:45:59 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210323073437.yo63wreqnubbeqby@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <47d8be60-14ce-0223-bdf3-c34dc2451945@candelatech.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.03.21 08:34, Marc Kleine-Budde wrote:
-> On 23.03.2021 10:54:40, Rong Chen wrote:
->> I tried arm-linux-gnueabi (gcc version 10.2.0) and the problem still
->> exists, btw we prefer to not use the latest gcc compiler to avoid
->> false positives.
+
+On 2021-03-23 04:01, Ben Greear wrote:
+> On 3/22/21 6:20 PM, Brian Norris wrote:
+>> On Mon, Mar 22, 2021 at 4:58 PM Ben Greear <greearb@candelatech.com> wrote:
+>>> On 7/22/20 6:00 AM, Felix Fietkau wrote:
+>>>> On 2020-07-22 14:55, Johannes Berg wrote:
+>>>>> On Wed, 2020-07-22 at 14:27 +0200, Felix Fietkau wrote:
+>>>>>
+>>>>>> I'm considering testing a different approach (with mt76 initially):
+>>>>>> - Add a mac80211 rx function that puts processed skbs into a list
+>>>>>> instead of handing them to the network stack directly.
+>>>>>
+>>>>> Would this be *after* all the mac80211 processing, i.e. in place of the
+>>>>> rx-up-to-stack?
+>>>> Yes, it would run all the rx handlers normally and then put the
+>>>> resulting skbs into a list instead of calling netif_receive_skb or
+>>>> napi_gro_frags.
+>>>
+>>> Whatever came of this?  I realized I'm running Felix's patch since his mt76
+>>> driver needs it.  Any chance it will go upstream?
+>> 
+>> If you're asking about $subject (moving NAPI/RX to a thread), this
+>> landed upstream recently:
+>> http://git.kernel.org/linus/adbb4fb028452b1b0488a1a7b66ab856cdf20715
+>> 
+>> It needs a bit of coaxing to work on a WiFi driver (including: WiFi
+>> drivers tend to have a different netdev for NAPI than they expose to
+>> /sys/class/net/), but it's there.
+>> 
+>> I'm not sure if people had something else in mind in the stuff you're
+>> quoting though.
 > 
-> FWIW:
+> No, I got it confused with something Felix did:
 > 
-> I'm using latest debian arm compiler and the BUILD_BUG never triggered.
-> gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+> https://github.com/greearb/mt76/blob/master/patches/0001-net-add-support-for-threaded-NAPI-polling.patch
 > 
+> Maybe the NAPI/RX to a thread thing superceded Felix's patch?
+Yes, it did and it's in linux-next already.
+I sent the following change to make mt76 use it:
+https://github.com/nbd168/wireless/commit/1d4ff31437e5aaa999bd7a
 
-Thanks Marc!
-
-IMO we facing a compiler problem here - and we should be very happy that 
-the BUILD_BUG_ON() triggered an issue after years of silence.
-
-I do not have a good feeling about what kind of strange effects this 
-compiler issue might have in other code of other projects.
-
-So I would explicitly suggest NOT to change the af_can.c code to work 
-around this compiler issue.
-
-Let the gcc people fix their product and let them thank all of us for 
-detecting it.
-
-Regards,
-Oliver
+- Felix
