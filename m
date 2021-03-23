@@ -2,145 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DCB3463CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 961123463CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhCWPzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:55:22 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:23082 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhCWPy6 (ORCPT
+        id S232953AbhCWPzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:55:17 -0400
+Received: from smtp-bc0b.mail.infomaniak.ch ([45.157.188.11]:35425 "EHLO
+        smtp-bc0b.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232858AbhCWPyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:54:58 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 23 Mar 2021 08:54:58 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Mar 2021 08:54:56 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 23 Mar 2021 21:24:41 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 3B6752168C; Tue, 23 Mar 2021 21:24:39 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v9 2/2] venus: venc: Add support for Long Term Reference (LTR) controls
-Date:   Tue, 23 Mar 2021 21:24:27 +0530
-Message-Id: <1616514867-16496-3-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616514867-16496-1-git-send-email-dikshita@codeaurora.org>
-References: <1616514867-16496-1-git-send-email-dikshita@codeaurora.org>
+        Tue, 23 Mar 2021 11:54:53 -0400
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F4bXq3T57zMqLwv;
+        Tue, 23 Mar 2021 16:54:51 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F4bXk5PQBzlh8t0;
+        Tue, 23 Mar 2021 16:54:46 +0100 (CET)
+Subject: Re: [PATCH v30 07/12] landlock: Support filesystem access-control
+To:     Jann Horn <jannh@google.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-8-mic@digikod.net>
+ <CAG48ez1arKO3uYzwng8fst-UHkcH6J7YzyHFN+vfXUT2=1HT+w@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <b41a021c-69f4-075f-e9a0-a4483b280df8@digikod.net>
+Date:   Tue, 23 Mar 2021 16:55:20 +0100
+User-Agent: 
+MIME-Version: 1.0
+In-Reply-To: <CAG48ez1arKO3uYzwng8fst-UHkcH6J7YzyHFN+vfXUT2=1HT+w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for below LTR controls in encoder:
-- V4L2_CID_MPEG_VIDEO_LTR_COUNT
-- V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX
-- V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/venc_ctrls.c | 55 +++++++++++++++++++++++++-
- 1 file changed, 54 insertions(+), 1 deletion(-)
+On 23/03/2021 01:13, Jann Horn wrote:
+>  On Tue, Mar 16, 2021 at 9:43 PM Mickaël Salaün <mic@digikod.net> wrote:
+>> Using Landlock objects and ruleset, it is possible to tag inodes
+>> according to a process's domain.
+> [...]
+>> +static void release_inode(struct landlock_object *const object)
+>> +       __releases(object->lock)
+>> +{
+>> +       struct inode *const inode = object->underobj;
+>> +       struct super_block *sb;
+>> +
+>> +       if (!inode) {
+>> +               spin_unlock(&object->lock);
+>> +               return;
+>> +       }
+>> +
+>> +       /*
+>> +        * Protects against concurrent use by hook_sb_delete() of the reference
+>> +        * to the underlying inode.
+>> +        */
+>> +       object->underobj = NULL;
+>> +       /*
+>> +        * Makes sure that if the filesystem is concurrently unmounted,
+>> +        * hook_sb_delete() will wait for us to finish iput().
+>> +        */
+>> +       sb = inode->i_sb;
+>> +       atomic_long_inc(&landlock_superblock(sb)->inode_refs);
+>> +       spin_unlock(&object->lock);
+>> +       /*
+>> +        * Because object->underobj was not NULL, hook_sb_delete() and
+>> +        * get_inode_object() guarantee that it is safe to reset
+>> +        * landlock_inode(inode)->object while it is not NULL.  It is therefore
+>> +        * not necessary to lock inode->i_lock.
+>> +        */
+>> +       rcu_assign_pointer(landlock_inode(inode)->object, NULL);
+>> +       /*
+>> +        * Now, new rules can safely be tied to @inode with get_inode_object().
+>> +        */
+>> +
+>> +       iput(inode);
+>> +       if (atomic_long_dec_and_test(&landlock_superblock(sb)->inode_refs))
+>> +               wake_up_var(&landlock_superblock(sb)->inode_refs);
+>> +}
+> [...]
+>> +static struct landlock_object *get_inode_object(struct inode *const inode)
+>> +{
+>> +       struct landlock_object *object, *new_object;
+>> +       struct landlock_inode_security *inode_sec = landlock_inode(inode);
+>> +
+>> +       rcu_read_lock();
+>> +retry:
+>> +       object = rcu_dereference(inode_sec->object);
+>> +       if (object) {
+>> +               if (likely(refcount_inc_not_zero(&object->usage))) {
+>> +                       rcu_read_unlock();
+>> +                       return object;
+>> +               }
+>> +               /*
+>> +                * We are racing with release_inode(), the object is going
+>> +                * away.  Wait for release_inode(), then retry.
+>> +                */
+>> +               spin_lock(&object->lock);
+>> +               spin_unlock(&object->lock);
+>> +               goto retry;
+>> +       }
+>> +       rcu_read_unlock();
+>> +
+>> +       /*
+>> +        * If there is no object tied to @inode, then create a new one (without
+>> +        * holding any locks).
+>> +        */
+>> +       new_object = landlock_create_object(&landlock_fs_underops, inode);
+>> +       if (IS_ERR(new_object))
+>> +               return new_object;
+>> +
+>> +       /* Protects against concurrent get_inode_object() calls. */
+>> +       spin_lock(&inode->i_lock);
+>> +       object = rcu_dereference_protected(inode_sec->object,
+>> +                       lockdep_is_held(&inode->i_lock));
+> 
+> rcu_dereference_protected() requires that inode_sec->object is not
+> concurrently changed, but I think another thread could call
+> get_inode_object() while we're in landlock_create_object(), and then
+> we could race with the NULL write in release_inode() here? (It
+> wouldn't actually be a UAF though because we're not actually accessing
+> `object` here.) Or am I missing a lock that prevents this?
+> 
+> In v28 this wasn't an issue because release_inode() was holding
+> inode->i_lock (and object->lock) during the NULL store; but in v29 and
+> this version the NULL store in release_inode() moved out of the locked
+> region. I think you could just move the NULL store in release_inode()
+> back up (and maybe add a comment explaining the locking rules for
+> landlock_inode(...)->object)?
+> 
+> (Or alternatively you could use rcu_dereference_raw() with a comment
+> explaining that the read pointer is only used to check for NULL-ness,
+> and that it is guaranteed that the pointer can't change if it is NULL
+> and we're holding the lock. But that'd be needlessly complicated, I
+> think.)
 
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index a52b800..bb4261b 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -20,6 +20,7 @@
- #define INTRA_REFRESH_MBS_MAX	300
- #define AT_SLICE_BOUNDARY	\
- 	V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY
-+#define MAX_LTR_FRAME_COUNT 4
- 
- static int venc_calc_bpframes(u32 gop_size, u32 conseq_b, u32 *bf, u32 *pf)
- {
-@@ -72,6 +73,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	struct venc_controls *ctr = &inst->controls.enc;
- 	struct hfi_enable en = { .enable = 1 };
- 	struct hfi_bitrate brate;
-+	struct hfi_ltr_use ltr_use;
-+	struct hfi_ltr_mark ltr_mark;
-+	struct hfi_ltr_mode ltr_mode;
- 	u32 bframes;
- 	u32 ptype;
- 	int ret;
-@@ -276,6 +280,43 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID:
- 		ctr->base_priority_id = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-+		ptype = HFI_PROPERTY_PARAM_VENC_LTRMODE;
-+		ltr_mode.ltr_count = ctrl->val;
-+		ltr_mode.ltr_mode = HFI_LTR_MODE_MANUAL;
-+		ltr_mode.trust_mode = 1;
-+		ret = hfi_session_set_property(inst, ptype, &ltr_mode);
-+		if (ret)
-+			return ret;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-+		mutex_lock(&inst->lock);
-+		if (inst->streamon_out && inst->streamon_cap) {
-+			ptype = HFI_PROPERTY_CONFIG_VENC_MARKLTRFRAME;
-+			ltr_mark.mark_frame = ctrl->val;
-+			ret = hfi_session_set_property(inst, ptype, &ltr_mark);
-+			if (ret) {
-+				mutex_unlock(&inst->lock);
-+				return ret;
-+			}
-+		}
-+		mutex_unlock(&inst->lock);
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
-+		mutex_lock(&inst->lock);
-+		if (inst->streamon_out && inst->streamon_cap) {
-+			ptype = HFI_PROPERTY_CONFIG_VENC_USELTRFRAME;
-+			ltr_use.ref_ltr = ctrl->val;
-+			ltr_use.use_constrnt = true;
-+			ltr_use.frames = 0;
-+			ret = hfi_session_set_property(inst, ptype, &ltr_use);
-+			if (ret) {
-+				mutex_unlock(&inst->lock);
-+				return ret;
-+			}
-+		}
-+		mutex_unlock(&inst->lock);
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -291,7 +332,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 51);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 54);
- 	if (ret)
- 		return ret;
- 
-@@ -498,6 +539,18 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID, 0,
- 			  6, 1, 0);
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES, 0,
-+			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_LTR_COUNT, 0,
-+			  MAX_LTR_FRAME_COUNT, 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX, 0,
-+			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
--- 
-2.7.4
+To reach rcu_assign_pointer(landlock_inode(inode)->object, NULL) in
+release_inode() or in hook_sb_delete(), the
+landlock_inode(inode)->object need to be non-NULL, which implies that a
+call to get_inode_object(inode) either "retry" (because release_inode is
+only called by landlock_put_object, which set object->usage to 0) until
+it creates a new object, or reuses the existing referenced object (and
+increments object->usage). The worse case would be if
+get_inode_object(inode) is called just before the
+rcu_assign_pointer(landlock_inode(inode)->object, NULL) from
+hook_sb_delete(), which would result in an object with a NULL underobj,
+which is the expected behavior (and checked by release_inode).
 
+The line rcu_assign_pointer(inode_sec->object, new_object) from
+get_inode_object() can only be reached if the underlying inode doesn't
+reference an object, in which case hook_sb_delete() will not reach the
+rcu_assign_pointer(landlock_inode(inode)->object, NULL) line for this
+same inode.
+
+This works because get_inode_object(inode) is mutually exclusive to
+itself with the same inode (i.e. an inode can only point to an object
+that references this same inode).
+
+I tried to explain this with the comment "Protects against concurrent
+get_inode_object() calls" in get_inode_object(), and the comments just
+before both rcu_assign_pointer(landlock_inode(inode)->object, NULL).
+
+> 
+> 
+>> +       if (unlikely(object)) {
+>> +               /* Someone else just created the object, bail out and retry. */
+>> +               spin_unlock(&inode->i_lock);
+>> +               kfree(new_object);
+>> +
+>> +               rcu_read_lock();
+>> +               goto retry;
+>> +       }
+>> +
+>> +       rcu_assign_pointer(inode_sec->object, new_object);
+>> +       /*
+>> +        * @inode will be released by hook_sb_delete() on its superblock
+>> +        * shutdown.
+>> +        */
+>> +       ihold(inode);
+>> +       spin_unlock(&inode->i_lock);
+>> +       return new_object;
+>> +}
