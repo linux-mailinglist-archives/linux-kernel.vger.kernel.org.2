@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78114346AF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42791346AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbhCWVWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
+        id S233534AbhCWVWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233491AbhCWVWJ (ORCPT
+        with ESMTP id S233526AbhCWVWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:22:09 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F5CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:22:09 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id z10so15982391qkz.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S396biM8o8RPLnciZxIEy80rbyRdWgEBUKF0cvQlSyo=;
-        b=EvWRn0T2iIHkgup69AHMODGgJNzl7irkfXK8uWTlZ5TF9x9IKYzaNwTcrXuDUQVnfW
-         NouWO6dRY6SaqiRCPfvIcX14yw/3fJanUY/e3G/QFYoxs/da8CuKESqkbdlVc9mbWiST
-         F2R3g8K2sFx3DORbEvBUi2lFJ3k1JOUaCpSFhQ0NmfOZS2VDiYBRVnCzi+H8EC5P6Xz8
-         Vwixz07G8GftkSLucF0u1O8uytqjFdYWalTYwRLuKC+noQNrwa/oQVcFT6/yne8yexxi
-         4QlYg5Q5wtVmWRmj5m4OXVv8VIQcydUwrSZf0zKFLZPLPkkYnw+sb5+PRyYlvCzwrI6j
-         EkpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S396biM8o8RPLnciZxIEy80rbyRdWgEBUKF0cvQlSyo=;
-        b=YM1gokNR/PexAigyCRExpHq/+IHX/XG+oY5P9qBLXTGudBepFHQGZOV9NbR/O/QLjJ
-         z/MyrVmdC+kJfFKP14anZJJFKdvzI5uFIttZhoVLaHAJSDT286zkub/+T4bnGKloXQsO
-         C0zdNFjO6HoL2Y807QMMhY3+g9UFihp3Yo5Ck1wVytlggQDExfaFk0EUdHgfrs6yHbiF
-         iWs4rbkQR8v/E2utTJeov5D/qKld34hEuTa4Ej/BJbFIwR0VZZUmFc2bYKIwHhSHZYCp
-         14MZLl62dmLzV6sjSQ8BCzn8XP9Vn27N0JoTduCan+IrcOZZQy1c11BukDeExN9jNG7I
-         fskQ==
-X-Gm-Message-State: AOAM53246xO86vByj3q9EIqx/WUbLFCf/0pQpVC44p/NPS598SrMWn+9
-        MTZh6tWp1Hcr5XbTbu5VglsLdBG4Pjcohsuv9aPF0Q==
-X-Google-Smtp-Source: ABdhPJy26bR5ZlPqxp7UrO0LaZBkYxaJ+tVPh6tPxECcrVYO/x1K2HtP1CLppz7I8eci1kQEZm1n7HWBomBf/qxo5v8=
-X-Received: by 2002:a37:a350:: with SMTP id m77mr58325qke.146.1616534528531;
- Tue, 23 Mar 2021 14:22:08 -0700 (PDT)
+        Tue, 23 Mar 2021 17:22:24 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D1FC061574;
+        Tue, 23 Mar 2021 14:22:24 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4kph6B2Cz9sTD;
+        Wed, 24 Mar 2021 08:22:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616534541;
+        bh=HHg5AMZSRFwErldy4EsT6EYOEciP0BALVolkfmYDTAY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=St5R9vVaI3SBJ/TmE4n3nPgJns0JAYh1hguJH9OdAFifjPVhMTDCnZB1tiXb4xr1A
+         VyN0ucY2+oIMjo6IKKETIYnr0EHUJBCNHh6/pNRCC0zI1vlFtGPqnJZUSAC+Vs5+s+
+         sQwLUxLNviznwE0OkiJzwCtwcdeocZ94xP83ia5vLCq9mn8Ror/wDXYBIYBuSk0mYu
+         FGrBdSZseBuSHGkSikVyyaQzg0i9Omy8o0SzOWcX1JWZNIDleIV/SG73bJRWECT2T6
+         JukGPAVBcNvw+LW4VP9wZ9AyDf+S+IIcEbxhDkfTahxxxJuOeu8LNvfK1ftgmN0kXK
+         6nHdrlueybTFg==
+Date:   Wed, 24 Mar 2021 08:22:19 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the devfreq tree
+Message-ID: <20210324082219.186e69a2@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210319203253.3352417-2-joel@joelfernandes.org> <20210320153457.GX4746@worktop.programming.kicks-ass.net>
- <28e13609-c526-c6ee-22a3-898652aed5e6@linux.intel.com> <YFhL4CMPB+Pfo965@hirez.programming.kicks-ass.net>
- <af3f6ea6-2c71-233f-fc6b-af039b004923@linux.intel.com> <YFhcD/jz7kC8jaXa@hirez.programming.kicks-ass.net>
- <bb075bed-150c-8ea0-3035-0a8c3c98e572@linux.intel.com> <YFiT4/mmisnBFJ96@hirez.programming.kicks-ass.net>
- <e21e7ce1-d9b3-63d7-bda2-a643294518a3@linux.intel.com>
-In-Reply-To: <e21e7ce1-d9b3-63d7-bda2-a643294518a3@linux.intel.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 23 Mar 2021 14:21:57 -0700
-Message-ID: <CABk29NsL4SmUQ1G0ULnvJp3xqoKO_J8iKOvQOKJhz4CWL8PE=w@mail.gmail.com>
-Subject: Re: [PATCH 1/6] sched: migration changes for core scheduling
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Steven Rostedt <rostedt@goodmis.org>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/k3dfanFJxq/y/LP=wTpx3OJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 8:54 PM Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->
-> On 2021/3/22 20:56, Peter Zijlstra wrote:
-> > On Mon, Mar 22, 2021 at 08:31:09PM +0800, Li, Aubrey wrote:
-> >> Please let me know if I put cookie match check at the right position
-> >> in task_hot(), if so, I'll obtain some performance data of it.
-> >>
+--Sig_/k3dfanFJxq/y/LP=wTpx3OJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Will be sending out a rebased stack soon, with this updated patch included.
+Hi all,
+
+n commit
+
+  e5171e6d46fc ("PM / devfreq: Use more accurate returned new_freq as resum=
+e_freq")
+
+Fixes tag
+
+  Fixes: 83f8ca45afbf0 ("PM / devfreq: add support for suspend/resume of a
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+Please do not split Fixes tags over more than one line.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/k3dfanFJxq/y/LP=wTpx3OJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBaXAsACgkQAVBC80lX
+0Gzy/Af/R7vQ4HescVIb/ck0L/XuTCjbvwIXgGQOJPmYEkTdcSwet5R86ED77KqX
+VrpeYI6BRlHsPyXuB4NXvZmN1jeoaCbTmWeiBFKmBPwt8ZKFW5rvL4nUJkj5xTA2
+/ULRK7wSnSvo6Hr49hLt7+a1PzlauwCJfLe3BGXqntJITHrSbyXlkbZtn9kKh0vr
+/TwrC6loeE68kBhqA39Cp5I7DOGQss5DkOCpR9DbnZe04WumA9plTR4Vum8YzJip
+slfA/iJdtJtnkuwDv5hytjemcQKtctZllurTrgJ/2/dRHv/F4bFX/lFLfU0UvQtn
+LiVgNhhazpkYU4O5NG7ltk8JZJYH8g==
+=GgdT
+-----END PGP SIGNATURE-----
+
+--Sig_/k3dfanFJxq/y/LP=wTpx3OJ--
