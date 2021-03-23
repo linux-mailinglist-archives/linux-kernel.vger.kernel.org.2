@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB921346337
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 320E234633D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhCWPn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:43:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35112 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232803AbhCWPn2 (ORCPT
+        id S233018AbhCWPpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232803AbhCWPpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616514208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fQwwd9nOnJe1+uHPoxzHuoEj26bQew0s4XHSj0Ikdsw=;
-        b=HuzKUsbf6KN5VkDGpNwoZsEE4E7xHnqn7c1qdryOfkuir47gmDC/rr5uIN60Z/1Xgt/wJg
-        iS/mahoAjyaKxavDU+M1PPgsL9+Lq0QR+p07STRyu41dgwOG8PXylGXoA1WVMNTPfEbIj3
-        YDUZllYRywlPCo/hHJ6rduBN+a1XesM=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-TbzI2IHLOcSp-XE-LQbUqA-1; Tue, 23 Mar 2021 11:43:24 -0400
-X-MC-Unique: TbzI2IHLOcSp-XE-LQbUqA-1
-Received: by mail-qv1-f72.google.com with SMTP id u15so1855603qvo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:43:23 -0700 (PDT)
+        Tue, 23 Mar 2021 11:45:19 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2398BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:45:19 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id e33so12117660pgm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=snhOtPXQe2J1ZAWrEwjkykkapTRBCKFqiae/8n9YpYs=;
+        b=NGiRtGP2lrC/aCXhBKYGix0CG8zR5dTTCeZcJOZytUJrR57spr46P98rg4u6LC5gJx
+         sEjRXAUZWwI37whFuI3rFdBSgDKuO6XTjK0FfgXBuSKz7qw46lWQMohyZmeSyoKnX2rI
+         y0qm0/KujODkhbnn6vJquE+Yh4PatGizvIGrjsi6aD9tMq7JBDCkk5i5RcY1fGTx7a0K
+         83ZhGp6a+Mxv8oNa3a0AouQtpCRPXEAdvahbogDySt+Xzy/3QuF3DzdWR+AO8XYnUyPU
+         rPEW1+Tk8EoldDdWCeKoFIryKRLtvhEplc9jBIb62YeM7whs36+VxxYwDqgEpQh78vPJ
+         Q/yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=fQwwd9nOnJe1+uHPoxzHuoEj26bQew0s4XHSj0Ikdsw=;
-        b=d9cIaz78EPHOC6gEwZQ1v0Ok4vBVvB01ZYu1JRleZ8RR/MAVmoVGaYOnWrkg6lFvuC
-         j1xHlnx3BQ1lqLsnVuKmNW7D5Dk9FQ94Swz4yJufpeLRaRZ025ROPzix9JEjIImIzJVg
-         10jB13/14gV46ArN27X2lebwiGkQf83k5G1CVFSmZaJnCsRQLicJeDP23n4Iy1Ub+sDW
-         wbe6trQnHgUiyRRFP9GCNRLLBvCLcNTJvKbpLJSTFeC6rDkGzq8+3/IWyc9LwwtCl+/x
-         sT74+sQt6nPm0syXHNkkY1xZPuzF01wZhbyBC3gkiQiF61ba7kSBZMFAibNfSfM8JBQ0
-         Y7RQ==
-X-Gm-Message-State: AOAM531qh+PhH5V/2GdGDjRHWAUqT09GqcbDM5SiArSy0uGV0T7vhLvg
-        I7ySeoxZmVaS7mwREJcQBL/0gjWXNzNptql5DUKhj685WWZ3bogOk89DGg0Ak5eEasg2Rjm6T4W
-        yGMV/kWiiOUaxQ6egjHEbnF6k
-X-Received: by 2002:a05:620a:981:: with SMTP id x1mr5807036qkx.501.1616514203216;
-        Tue, 23 Mar 2021 08:43:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJym/kQ1w5u7o1QHL31laqkymPkn/C2lVnlgp1kv4esRLoT59gBX0FFLLopujlqx2vELTjFLBA==
-X-Received: by 2002:a05:620a:981:: with SMTP id x1mr5807023qkx.501.1616514203017;
-        Tue, 23 Mar 2021 08:43:23 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id z14sm10958800qti.87.2021.03.23.08.43.21
+        bh=snhOtPXQe2J1ZAWrEwjkykkapTRBCKFqiae/8n9YpYs=;
+        b=qpEUW/L/jdpeYjjLCOCdnodLUfJUFegaTa5mLL7L8YXa2OBcTV8sCRjdgQwMm+u69M
+         EYXmv9HUUroSCkiZBiuleDZoT6UqU+pIPOroYBPyDmBmuBZ54qWoO5YMxPvMHomdm+pf
+         ZoT+ySGmFHhYlPSfvJVeFpk0SyvNkTm3FhyP4kKmK9RlQGqbLNEi0cacpmo7OYmw65Bk
+         +FkVi7m9/nVfGLh6QhqI0KUiD+DT+N3NqDApaH8d+c0JAHdbGVFL49dR859DBctJ7bmr
+         Hc39NEvKGBTTut2KQj9/iSsumOy1RgW5RHUvdOdqGdo2bS7pMfjNXtFKmiOAdixzLWTT
+         ojjA==
+X-Gm-Message-State: AOAM530PnYXAJsVDpyp0NF78tBoqCE2uS1ASHHn+vGBmm7e6Zl3dKVvi
+        TLeDV29vzATCvk1cr9m87XGn9A==
+X-Google-Smtp-Source: ABdhPJxVpVQfzozgZX/lg4XhHyyD8ED7FqtBYCxj4KUELDnV/dy+o6fdX0pKOqoShlkqz5H3J6XOYg==
+X-Received: by 2002:a63:3744:: with SMTP id g4mr4398884pgn.387.1616514318486;
+        Tue, 23 Mar 2021 08:45:18 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id k5sm17452049pfg.215.2021.03.23.08.45.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 08:43:22 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 11:43:21 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH 07/23] mm: Introduce zap_details.zap_flags
-Message-ID: <20210323154321.GG6486@xz-x1>
-References: <20210323004912.35132-1-peterx@redhat.com>
- <20210323004912.35132-8-peterx@redhat.com>
- <20210323021129.GZ1719932@casper.infradead.org>
+        Tue, 23 Mar 2021 08:45:17 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:45:14 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <YFoNCvBYS2lIYjjc@google.com>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+ <20210322181646.GG6481@zn.tnic>
+ <YFjoZQwB7e3oQW8l@google.com>
+ <20210322191540.GH6481@zn.tnic>
+ <YFjx3vixDURClgcb@google.com>
+ <20210322210645.GI6481@zn.tnic>
+ <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
+ <20210322223726.GJ6481@zn.tnic>
+ <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323021129.GZ1719932@casper.infradead.org>
+In-Reply-To: <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:11:29AM +0000, Matthew Wilcox wrote:
-> On Mon, Mar 22, 2021 at 08:48:56PM -0400, Peter Xu wrote:
-> > +/* Whether to check page->mapping when zapping */
-> > +#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
-> > +
-> >  /*
-> >   * Parameter block passed down to zap_pte_range in exceptional cases.
-> >   */
-> >  struct zap_details {
-> > -	struct address_space *check_mapping;	/* Check page->mapping if set */
-> > +	struct address_space *zap_mapping;	/* Check page->mapping if set */
+On Tue, Mar 23, 2021, Kai Huang wrote:
+> On Mon, 22 Mar 2021 23:37:26 +0100 Borislav Petkov wrote:
+> > "The instruction fails if the operand is not properly aligned or does
+> > not refer to an EPC page or the page is in use by another thread, or
+> > other threads are running in the enclave to which the page belongs. In
+> > addition the instruction fails if the operand refers to an SECS with
+> > associations."
+> > 
+> > And I guess those conditions will become more in the future.
+
+Yep, IME these types of bugs rarely, if ever, lead to isolated failures.
+
+> > Now, let's play. I'm the cloud admin and you're cloud OS customer
+> > support. I say:
+> > 
+> > "I got this scary error message while running enclaves on my server
+> > 
+> > "EREMOVE returned ... .  EPC page leaked.  Reboot required to retrieve leaked pages."
+> > 
+> > but I cannot reboot that machine because there are guests running on it
+> > and I'm getting paid for those guests and I might get sued if I do?"
+> > 
+> > Your turn, go wild.
 > 
-> Now the comment is wrong.  It used to mean "If this is NULL, zap pages
-> with any mapping", but now it's always set, and the decision about whether
-> to check the mapping is in the flag.
-> 
-> Honestly, I'd remove the comments from both these members.  They don't add
-> anything to understandability now.
+> I suppose admin can migrate those VMs, and then engineers can analyse the root
+> cause of such failure, and then fix it.
 
-Agreed, I'm removing them.  Thanks,
+That's more than likely what will happen, though there are a lot of "ifs" and
+"buts" in any answer, e.g. things will go downhill fast if the majority of
+systems in the fleet are running the buggy kernel and are triggering the error.
 
--- 
-Peter Xu
-
+Practically speaking, "basic" deployments of SGX VMs will be insulated from
+this bug.  KVM doesn't support EPC oversubscription, so even if all EPC is
+exhausted, new VMs will fail to launch, but existing VMs will continue to chug
+along with no ill effects.  There are again caveats, e.g. if EPC is being lazily
+allocated for VMs, then running VMs will be affected if a VM starts using SGX
+after the leak in the host occurs.  But, IMO doing lazy allocation _and_ running
+enclaves in the host falls firmly into the "advanced" bucket; anyone going that
+route had better do their homework to understand the various EPC interactions.
