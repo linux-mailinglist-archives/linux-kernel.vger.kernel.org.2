@@ -2,202 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFD2346924
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB15F34692D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhCWTd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:33:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26826 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230287AbhCWTdH (ORCPT
+        id S230173AbhCWTgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230138AbhCWTg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:33:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616527987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UVjweup2vzSyW273usfznQT8Yb0z+TVjjvRS2WCC93M=;
-        b=TXU9XgGmwZdDhoQiuID9wkYOcBX5ikdBHIv6m0wfpF+ZJHip3NTqfhaPhjpyR1YZ63WTaq
-        uEz2LB5zAdMCSRmNeaUvUKS7mMa4yHtIu26YlyYoO4etIwUSd21cR8lfYgRs1FekZA8bTi
-        YBL2p1Nx0XlmXO2lSBatfny7m6YCnhU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-wj7nmj1vMBGfozz-QwGMPw-1; Tue, 23 Mar 2021 15:32:58 -0400
-X-MC-Unique: wj7nmj1vMBGfozz-QwGMPw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B73B107BEFA;
-        Tue, 23 Mar 2021 19:32:56 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E027D60BE5;
-        Tue, 23 Mar 2021 19:32:55 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 13:32:54 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Steven Sistare <steven.sistare@oracle.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] vfio/type1: Batch page pinning
-Message-ID: <20210323133254.33ed9161@omen.home.shazbot.org>
-In-Reply-To: <20210219161305.36522-4-daniel.m.jordan@oracle.com>
-References: <20210219161305.36522-1-daniel.m.jordan@oracle.com>
-        <20210219161305.36522-4-daniel.m.jordan@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 23 Mar 2021 15:36:26 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79731C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:36:25 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id k4so2304673qvf.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=56VTN0FUBRnVBARbqzGdkyXYNoI8u6ilkqebe9VyH9c=;
+        b=GUS+CWBcIQkh8I8fr5OKzOYFk+tloF8Q/GWf18p53CrTIht/js1LArNJNrcQ8JkxA2
+         F+Fp58EZl/Ce+EnQwG3oOgP1Wz6JuJyY/qt3LEQFqR2aBelPMOimhS4d6QVSmTM75gyw
+         +DSaAdwFwC8ec4GdBytwn1uygKvHoienPD4LcEnCF6AJ9YqeLQgWncKkLBuEbATBBfDq
+         nXIu73guCAynLC74XYx5iVB6y5nDoU6GIEaQqU9Gvw253sFgMdFnMeg+Jk9XD5srh1Gm
+         qV9si7k0wDds3Z/qnypWd2FFbj1rNb0ok+kK/JWkW0zgm0c207YF8MRhCbTViJJ3nLaP
+         MRgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=56VTN0FUBRnVBARbqzGdkyXYNoI8u6ilkqebe9VyH9c=;
+        b=lhTUZr4LM4mTZksvVYc8EfJo6cnka3RaSDQzPad/8W0aQNbIAADaCFj7tktew+D5zt
+         eY+lg9ZNm6hXCVR0jalFderiv0YpAJkQ5RzXsugWPz/JLPvDCltYsYKx3S9m2NvwzMY7
+         Zc40C2TMgzrNQGo5zqHMgnrZlj1un+HMVx5R0ibjQtWWS1ipA968d3IuLgWCrZG4ulDp
+         VdmGhs9H7CnQDp5YXZXIx4MISCUP4sEr1hpEi7j3MXHw2G5GVUZq/WTpBFAzzmCJDsDa
+         nBQn1sEoQsQYpXzoHX/JsIVFtNUySaJ4zAeX0bYpat68Vo1C9mW5abRebmtckmdzZZgG
+         TuHg==
+X-Gm-Message-State: AOAM533vFBuFcE8EChFs++3Lsqhdq/V6G7i1mONZ7YHfeKLkg4ib5MKb
+        GjWQAdiFGxUxUgyQWMNwdXkZ35V0GujU
+X-Google-Smtp-Source: ABdhPJwISvLmCwG0KFIeJLNbZT26tdkIL0Z/h5xkEggwPo8ZcgN7mlNpSLdcGWggyp+0rX/UMnwFoF3kwIqe
+X-Received: from coin.lon.corp.google.com ([2a00:79e0:d:204:cd66:be0a:5c1f:e5d4])
+ (user=pterjan job=sendgmr) by 2002:a0c:f505:: with SMTP id
+ j5mr6352108qvm.61.1616528184501; Tue, 23 Mar 2021 12:36:24 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 19:36:17 +0000
+Message-Id: <20210323193617.3748164-1-pterjan@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH] rtl8xxxu: Fix device info for RTL8192EU devices
+From:   Pascal Terjan <pterjan@google.com>
+To:     Jes Sorensen <Jes.Sorensen@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Pascal Terjan <pterjan@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Based on 2001:3319 and 2357:0109 which I used to test the fix and
+0bda:818b and 2357:0108 for which I found efuse dumps online.
 
-I've found a bug in this patch that we need to fix.  The diff is a
-little difficult to follow, so I'll discuss it in the resulting
-function below...
+== 2357:0109 ==
+=== Before ===
+Vendor: Realtek
+Product: \x03802.11n NI
+Serial:
+=== After ===
+Vendor: Realtek
+Product: 802.11n NIC
+Serial not available.
 
-(1) Imagine the user has passed a vaddr range that alternates pfnmaps
-and pinned memory per page.
+== 2001:3319 ==
+=== Before ===
+Vendor: Realtek
+Product: Wireless N
+Serial: no USB Adap
+=== After ===
+Vendor: Realtek
+Product: Wireless N Nano USB Adapter
+Serial not available.
 
+Signed-off-by: Pascal Terjan <pterjan@google.com>
+---
+ .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  | 11 ++--
+ .../realtek/rtl8xxxu/rtl8xxxu_8192e.c         | 53 ++++++++++++++++---
+ 2 files changed, 50 insertions(+), 14 deletions(-)
 
-static long vfio_pin_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
-                                  long npage, unsigned long *pfn_base,
-                                  unsigned long limit, struct vfio_batch *batch)
-{
-        unsigned long pfn;
-        struct mm_struct *mm = current->mm;
-        long ret, pinned = 0, lock_acct = 0;
-        bool rsvd;
-        dma_addr_t iova = vaddr - dma->vaddr + dma->iova;
-
-        /* This code path is only user initiated */
-        if (!mm)
-                return -ENODEV;
-
-        if (batch->size) {
-                /* Leftover pages in batch from an earlier call. */
-                *pfn_base = page_to_pfn(batch->pages[batch->offset]);
-                pfn = *pfn_base;
-                rsvd = is_invalid_reserved_pfn(*pfn_base);
-
-(4) We're called again and fill our local variables from the batch.  The
-    batch only has one page, so we'll complete the inner loop below and refill.
-
-(6) We're called again, batch->size is 1, but it was for a pfnmap, the pages
-    array still contains the last pinned page, so we end up incorrectly using
-    this pfn again for the next entry.
-
-        } else {
-                *pfn_base = 0;
-        }
-
-        while (npage) {
-                if (!batch->size) {
-                        /* Empty batch, so refill it. */
-                        long req_pages = min_t(long, npage, batch->capacity);
-
-                        ret = vaddr_get_pfns(mm, vaddr, req_pages, dma->prot,
-                                             &pfn, batch->pages);
-                        if (ret < 0)
-                                goto unpin_out;
-
-(2) Assume the 1st page is pfnmap, the 2nd is pinned memory
-
-                        batch->size = ret;
-                        batch->offset = 0;
-
-                        if (!*pfn_base) {
-                                *pfn_base = pfn;
-                                rsvd = is_invalid_reserved_pfn(*pfn_base);
-                        }
-                }
-
-                /*
-                 * pfn is preset for the first iteration of this inner loop and
-                 * updated at the end to handle a VM_PFNMAP pfn.  In that case,
-                 * batch->pages isn't valid (there's no struct page), so allow
-                 * batch->pages to be touched only when there's more than one
-                 * pfn to check, which guarantees the pfns are from a
-                 * !VM_PFNMAP vma.
-                 */
-                while (true) {
-                        if (pfn != *pfn_base + pinned ||
-                            rsvd != is_invalid_reserved_pfn(pfn))
-                                goto out;
-
-(3) On the 2nd page, both tests are probably true here, so we take this goto,
-    leaving the batch with the next page.
-
-(5) Now we've refilled batch, but the next page is pfnmap, so likely both of the
-    above tests are true... but this is a pfnmap'ing!
-
-(7) Do we add something like if (batch->size == 1 && !batch->offset) {
-    put_pfn(pfn, dma->prot); batch->size = 0; }?
-
-                        /*
-                         * Reserved pages aren't counted against the user,
-                         * externally pinned pages are already counted against
-                         * the user.
-                         */
-                        if (!rsvd && !vfio_find_vpfn(dma, iova)) {
-                                if (!dma->lock_cap &&
-                                    mm->locked_vm + lock_acct + 1 > limit) {
-                                        pr_warn("%s: RLIMIT_MEMLOCK (%ld) exceeded\n",
-                                                __func__, limit << PAGE_SHIFT);
-                                        ret = -ENOMEM;
-                                        goto unpin_out;
-                                }
-                                lock_acct++;
-                        }
-
-                        pinned++;
-                        npage--;
-                        vaddr += PAGE_SIZE;
-                        iova += PAGE_SIZE;
-                        batch->offset++;
-                        batch->size--;
-
-                        if (!batch->size)
-                                break;
-
-                        pfn = page_to_pfn(batch->pages[batch->offset]);
-                }
-
-                if (unlikely(disable_hugepages))
-                        break;
-        }
-
-out:
-        ret = vfio_lock_acct(dma, lock_acct, false);
-
-unpin_out:
-        if (ret < 0) {
-                if (pinned && !rsvd) {
-                        for (pfn = *pfn_base ; pinned ; pfn++, pinned--)
-                                put_pfn(pfn, dma->prot);
-                }
-                vfio_batch_unpin(batch, dma);
-
-(8) These calls to batch_unpin are rather precarious as well, any time batch->size is
-    non-zero, we risk using the pages array for a pfnmap.  We might actually want the
-    above change in (7) moved into this exit path so that we can never return a potential
-    pfnmap batch.
-
-                return ret;
-        }
-
-        return pinned;
-}
-
-This is a regression that not only causes incorrect mapping for the
-user, but also allows the user to trigger bad page counts, so we need
-a fix for v5.12.  Thanks,
-
-Alex
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+index d6d1be4169e5..acb6b0cd3667 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+@@ -853,15 +853,10 @@ struct rtl8192eu_efuse {
+ 	u8 usb_optional_function;
+ 	u8 res9[2];
+ 	u8 mac_addr[ETH_ALEN];		/* 0xd7 */
+-	u8 res10[2];
+-	u8 vendor_name[7];
+-	u8 res11[2];
+-	u8 device_name[0x0b];		/* 0xe8 */
+-	u8 res12[2];
+-	u8 serial[0x0b];		/* 0xf5 */
+-	u8 res13[0x30];
++	u8 device_info[80];
++	u8 res11[3];
+ 	u8 unknown[0x0d];		/* 0x130 */
+-	u8 res14[0xc3];
++	u8 res12[0xc3];
+ };
+ 
+ struct rtl8xxxu_reg8val {
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
+index cfe2dfdae928..9c5fad49ed2a 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
+@@ -554,9 +554,39 @@ rtl8192e_set_tx_power(struct rtl8xxxu_priv *priv, int channel, bool ht40)
+ 	}
+ }
+ 
++static void rtl8192eu_log_device_info(struct rtl8xxxu_priv *priv,
++				      char *record_name,
++				      char **record)
++{
++	/* A record is [ total length | 0x03 | value ] */
++	unsigned char l = (*record)[0];
++
++	/* The whole section seems to be 80 characters so a record should not
++	 * be able to be that large.
++	 */
++	if (l > 80) {
++		dev_warn(&priv->udev->dev,
++			 "invalid record length %d while parsing \"%s\".\n",
++			 l, record_name);
++		return;
++	}
++
++	if (l >= 2) {
++		char value[80];
++
++		memcpy(value, &(*record)[2], l - 2);
++		value[l - 2] = '\0';
++		dev_info(&priv->udev->dev, "%s: %s\n", record_name, value);
++		*record = *record + l;
++	} else {
++		dev_info(&priv->udev->dev, "%s not available.\n", record_name);
++	}
++}
++
+ static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
+ {
+ 	struct rtl8192eu_efuse *efuse = &priv->efuse_wifi.efuse8192eu;
++	char *record = efuse->device_info;
+ 	int i;
+ 
+ 	if (efuse->rtl_id != cpu_to_le16(0x8129))
+@@ -604,12 +634,23 @@ static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
+ 	priv->has_xtalk = 1;
+ 	priv->xtalk = priv->efuse_wifi.efuse8192eu.xtal_k & 0x3f;
+ 
+-	dev_info(&priv->udev->dev, "Vendor: %.7s\n", efuse->vendor_name);
+-	dev_info(&priv->udev->dev, "Product: %.11s\n", efuse->device_name);
+-	if (memchr_inv(efuse->serial, 0xff, 11))
+-		dev_info(&priv->udev->dev, "Serial: %.11s\n", efuse->serial);
+-	else
+-		dev_info(&priv->udev->dev, "Serial not available.\n");
++	/* device_info section seems to be laid out as records
++	 * [ total length | 0x03 | value ] so:
++	 * - vendor length + 2
++	 * - 0x03
++	 * - vendor string (not null terminated)
++	 * - product length + 2
++	 * - 0x03
++	 * - product string (not null terminated)
++	 * Then there is one or 2 0x00 on all the 4 devices I own or found
++	 * dumped online.
++	 * As previous version of the code handled an optional serial
++	 * string, I now assume there may be a third record if the
++	 * length is not 0.
++	 */
++	rtl8192eu_log_device_info(priv, "Vendor", &record);
++	rtl8192eu_log_device_info(priv, "Product", &record);
++	rtl8192eu_log_device_info(priv, "Serial", &record);
+ 
+ 	if (rtl8xxxu_debug & RTL8XXXU_DEBUG_EFUSE) {
+ 		unsigned char *raw = priv->efuse_wifi.raw;
+-- 
+2.30.2
 
