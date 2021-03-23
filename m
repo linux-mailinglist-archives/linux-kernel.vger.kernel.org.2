@@ -2,75 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6EF345F9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D34345FAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhCWN14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:27:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231360AbhCWN1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:27:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5417F61974;
-        Tue, 23 Mar 2021 13:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616506049;
-        bh=rQBfDYMFEiJw4DHlR6zQMYTJlg5EjzC1/boylnQBBY4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ACuICoesxC8oqVeQxm540X8VSv6hCE3GXz9YJ/hh8+UDCFYJTWEHpOy6wMUvdNW0d
-         9oQa0TkxoBGlF4H/uogolCAG1TytUpi2zwjZL2ZQB+9PYrmexfRyP9VhyJr6SloSpN
-         2TkgvpcvzZXjf+AZrn8moD+ZjA0ekwQh8TmwLlXajpXkWb9aK6QxwweVDeEQNavYqe
-         +TXxx+o+WWSZ8qkGK8QbLEBSTplpIfhPVUv7uSFTL851pIOQuknnIP7z7ATjGBt9nk
-         Ks/2hNEtrQtNWe1vXiqt2G01Nvoj3fGiY7AizFxSpwALH/6+dDWZW5G/qdmvj1chrq
-         9yzGIXh6FJGjQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lOh4U-0003Q4-10; Tue, 23 Mar 2021 14:27:46 +0100
-Date:   Tue, 23 Mar 2021 14:27:46 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     caizhichao <tomstomsczc@163.com>
-Cc:     perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, Zhichao Cai <caizhichao@yulong.com>
-Subject: Re: [PATCH] sound/i2c: Simplify the return expression of
- snd_i2c_bit_sendbyte()
-Message-ID: <YFns0gJzu4iN8x5F@hovoldconsulting.com>
-References: <20210323121443.1276-1-tomstomsczc@163.com>
+        id S231375AbhCWN3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230064AbhCWN3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:29:06 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64D1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=N22ubGJYBatnLB0FQ3aMgIjwQpebKFwTd2aBJXaAtcE=; b=dVP8Rnruf62ZNvmbO5B0fQyBT
+        kNVTyXiDJvSL4bKQGHMBP84vP5U6BrykWzRDEUlOaIcnUnnRyzFnFGnwdZxLg+nvRu5VEuSqhWXEb
+        Y3WgxnWAAcanp5GhzZeJaNSy5vGfLyNnmcJahmw7BtBMQHMmV9JqOCscWhXZdJ3CZsIaiBCyBzP2h
+        Bh5AO1/XjT2ZPD2wdUb5TKqX4MDwHeHCgSJEQw7CqyHIqdfwbgtbP509FD18+rBmhhRX7ng9cdiO0
+        iN4vQa6p6iWFW/0sQrxU2X7u2pdxA1J47TNAQP9jm6mVfEmJTQ4E+Kiasv2FND7oXKfp4a1sBiWT3
+        eKpHlITDg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51624)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lOh5a-0007la-IS; Tue, 23 Mar 2021 13:28:54 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lOh5W-0004Bp-JP; Tue, 23 Mar 2021 13:28:50 +0000
+Date:   Tue, 23 Mar 2021 13:28:50 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dma-mapping: fix out of bounds access in CMA
+Message-ID: <20210323132850.GB1463@shell.armlinux.org.uk>
+References: <20210323131423.2581218-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323121443.1276-1-tomstomsczc@163.com>
+In-Reply-To: <20210323131423.2581218-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 08:14:43PM +0800, caizhichao wrote:
-> From: Zhichao Cai <caizhichao@yulong.com>
+On Tue, Mar 23, 2021 at 02:14:13PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Simplify the return expression.
+> Dereferencing a zero-length array is always a bug, and we get a warning
+> with 'make W=1' here:
 > 
-> Signed-off-by: Zhichao Cai <caizhichao@yulong.com>
+> arch/arm/mm/dma-mapping.c: In function 'dma_contiguous_early_fixup':
+> arch/arm/mm/dma-mapping.c:395:15: error: array subscript <unknown> is outside array bounds of 'struct dma_contig_early_reserve[0]' [-Werror=array-bounds]
+>   395 |  dma_mmu_remap[dma_mmu_remap_num].base = base;
+>       |  ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> arch/arm/mm/dma-mapping.c:389:40: note: while referencing 'dma_mmu_remap'
+>   389 | static struct dma_contig_early_reserve dma_mmu_remap[MAX_CMA_AREAS] __initdata;
+>       |                                        ^~~~~~~~~~~~~
+> arch/arm/mm/dma-mapping.c:396:15: error: array subscript <unknown> is outside array bounds of 'struct dma_contig_early_reserve[0]' [-Werror=array-bounds]
+> 
+> Add a runtime check to prevent this from happening, while also
+> avoiding the compile-time warning.
+> 
+> Fixes: c79095092834 ("ARM: integrate CMA with DMA-mapping subsystem")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  sound/i2c/i2c.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  arch/arm/mm/dma-mapping.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/sound/i2c/i2c.c b/sound/i2c/i2c.c
-> index 847e3b6..dfcc87e 100644
-> --- a/sound/i2c/i2c.c
-> +++ b/sound/i2c/i2c.c
-> @@ -235,9 +235,7 @@ static int snd_i2c_bit_sendbyte(struct snd_i2c_bus *bus, unsigned char data)
->  	for (i = 7; i >= 0; i--)
->  		snd_i2c_bit_send(bus, !!(data & (1 << i)));
->  	err = snd_i2c_bit_ack(bus);
-> -	if (err < 0)
-> -		return err;
-> -	return 0;
-> +	return err < 0 ? err : 0;
-
-This isn't a simplification, you're just making the code harder to read
-for no good reason.
-
->  }
+> diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+> index c4b8df2ad328..af29344fb150 100644
+> --- a/arch/arm/mm/dma-mapping.c
+> +++ b/arch/arm/mm/dma-mapping.c
+> @@ -392,6 +392,11 @@ static int dma_mmu_remap_num __initdata;
 >  
->  static int snd_i2c_bit_readbyte(struct snd_i2c_bus *bus, int last)
+>  void __init dma_contiguous_early_fixup(phys_addr_t base, unsigned long size)
+>  {
+> +	if (!MAX_CMA_AREAS || dma_mmu_remap_num >= MAX_CMA_AREAS) {
+> +		WARN_ONCE(1, "number of CMA areas\n");
+> +		return;
+> +	}
+> +
 
-Johan
+What if dma_mmu_remap_num were negative - that condition is not checked
+and will also result in an overflow of the array. If we're being fussy
+enough to bounds check, we ought to do it properly.
+
+So, I think a better solution would be to make dma_mmu_remap_num an
+unsigned int, and then to use:
+
+	if (dma_mmu_remap_num >= ARRAY_SIZE(dma_mmu_remap)) {
+		...
+	}
+
+which is really the condition we're after here.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
