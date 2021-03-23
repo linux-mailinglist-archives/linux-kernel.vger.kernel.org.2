@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0908A3465CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A513465D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbhCWQ6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
+        id S229592AbhCWRBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233258AbhCWQ6Z (ORCPT
+        with ESMTP id S229547AbhCWRA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:58:25 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC320C061574;
-        Tue, 23 Mar 2021 09:58:24 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso10375563pjb.3;
-        Tue, 23 Mar 2021 09:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1x45VA7iwWhj8NjeFCXCpxwGnPrZpl1jcoi1rF0hZ9w=;
-        b=ke+ejE0bAH1Y71b5mmeNuAyY1ml9x8g9/7Py0npzHShe7uK6H391nOp/Mx6X4QNggs
-         5yUY/8VQ4KeqonJ4nZpFniQEkSE+WLzhOoW92vaJZxtlCFDO5pIpjwmRgWKOfSxXLveq
-         riQEzQeMpEJpnLIndAtEu6i4EPj4ISaVbyliKhg0HWIGJ8Uyl1QrrNmC4rlMYX9Y0rRI
-         o8dSttDyneLw2HQWRp4qRghCj5YUTkx1BtxbUYaZj37yw0nxz/vToOBzMPaqaTL+pvDx
-         owD4IJv+8xhgGIuJY0ZllwjRgdlSSXsrml4Itjj6bLecKm5Brx4CwO9R1+K4Yn4JjOG1
-         kAPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1x45VA7iwWhj8NjeFCXCpxwGnPrZpl1jcoi1rF0hZ9w=;
-        b=TH0AsAoltWfBVVLzyl3vjnL9XK5f0D3sA2EOwEO7fO6CR54FVsORBC7uwUMxwlc272
-         ohIrlbEAjhWTALBgKkarObjNpRL2g4g0cKfDHj9qXFyyp+JfwbdyK20i/+sK+d6cEPGx
-         t4t0zHT8s2o0dZhLEL/uBM9d/JrykaJ11XH4O6fUscV8J7cFpFKBqKTmPA01YY83IEX2
-         Zn1kIroxkSyiGJFWY82BK7u1WiquHhsyWqDEG5x/w1/UnmyT+wUvaxdfu3ZngcW/OucK
-         Gcgucj9Ar9PQIBW5eCmOTULB6o20J77xmi6AQHOKlYkNU0EvJyedJWPWlFLLcbtyBPZz
-         QmrQ==
-X-Gm-Message-State: AOAM533RS+ooSPMWsEsLDDyfLbYuJr+0jzI4Kdri9spN0GtrBK48T+HU
-        5Fddi8HNlE5ZYG2Rlam61Ew=
-X-Google-Smtp-Source: ABdhPJwqZuTpeqfQujnX6uAGYpmek9ibkHlzDlN4XM5CaoFRZgq4IAbIv7dHPcORYTXP1aznxDIAzQ==
-X-Received: by 2002:a17:90a:ec15:: with SMTP id l21mr5272921pjy.164.1616518704185;
-        Tue, 23 Mar 2021 09:58:24 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
-        by smtp.gmail.com with ESMTPSA id gw20sm3192971pjb.3.2021.03.23.09.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 09:58:23 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:58:19 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        Kevin Locke <kevin@kevinlocke.name>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        David Pedersen <limero1337@gmail.com>,
-        Rajat Jain <rajatja@google.com>,
-        Chris Chiu <chiu@endlessos.org>, Jiri Kosina <jkosina@suse.cz>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: i8042 - fix Pegatron C15B ID entry
-Message-ID: <YFoeKw4byr1U+SGN@google.com>
-References: <20210323130623.2302402-1-arnd@kernel.org>
+        Tue, 23 Mar 2021 13:00:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8488BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=825tfiSvqVacuyUEuxcQyTkRHvhtiZqC5C0oGwhAk3U=; b=IG2hdbEj73cEqAaxuioR7niNeI
+        eqG1gXQAJVxT1kpo4kcup5UnZicObPInYv4eDJ8Ld29xgpZMBMhpzxGNES60Me+UllXJkUMcBiNO3
+        duMiNk3uU2rytKtK6XZl32zaLE/DdNIw0awSb2/IZwDgK2VjMBKx5y5YdkoVxFRT/6fHtbQg7xZZn
+        oDniuLcSPc6zeprWrYQ6tASZ0TSyib0eQX0S2QSm8nvCOf/NSqyNHpYbxVNAVIjwxnK6xvf6j/WT2
+        8ExfuazMO5TN2jAbi+WJga4xVTaXJgO+pytn+14NREcYZrmu0Hc5LSs+omtUwOjtwxxo6g/UKNFsr
+        eK60zCDg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOkNh-00AJUl-3C; Tue, 23 Mar 2021 17:00:02 +0000
+Date:   Tue, 23 Mar 2021 16:59:49 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Thomas Hellstr??m (Intel)" <thomas_os@shipmail.org>,
+        dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <20210323165949.GA2457820@infradead.org>
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+ <YFnST5VLcEgv9q+s@phenom.ffwll.local>
+ <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
+ <20210323163715.GJ2356281@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323130623.2302402-1-arnd@kernel.org>
+In-Reply-To: <20210323163715.GJ2356281@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:06:13PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Mar 23, 2021 at 01:37:15PM -0300, Jason Gunthorpe wrote:
+> Isn't the devmap PTE flag arch optional? Does this fall back to not
+> using huge pages on arches that don't support it?
 > 
-> The Zenbook Flip entry that was added overwrites a previous one
-> because of a typo:
-> 
-> In file included from drivers/input/serio/i8042.h:23,
->                  from drivers/input/serio/i8042.c:131:
-> drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
->   591 |                 .matches = {
->       |                            ^
-> drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
-> 
-> Add the missing separator between the two.
-> 
-> Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Also, I feel like this code to install "pte_special" huge pages does
+> not belong in the drm subsystem..
 
-Applied, thank you.
-
--- 
-Dmitry
+It doesn't.  Unfortunately the drm code has a lot of such warts where
+it pokes way to deep into VM internals. 
