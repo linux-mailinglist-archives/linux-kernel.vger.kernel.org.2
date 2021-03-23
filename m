@@ -2,94 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB6E345C6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5817F345C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhCWLGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:06:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:43996 "EHLO foss.arm.com"
+        id S230376AbhCWLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:07:16 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31764 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230289AbhCWLFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:05:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F95D1042;
-        Tue, 23 Mar 2021 04:05:49 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC00C3F719;
-        Tue, 23 Mar 2021 04:05:47 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 11:05:45 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     'Leon Romanovsky' <leon@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, bhelgaas@google.com, kishon@ti.com,
-        pankaj.dubey@samsung.com, sriram.dash@samsung.com,
-        niyas.ahmed@samsung.com, p.rajanbabu@samsung.com,
-        l.mehra@samsung.com, hari.tv@samsung.com
-Subject: Re: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for
- ->get_features()
-Message-ID: <20210323110545.GB29286@e121166-lin.cambridge.arm.com>
-References: <CGME20210112140234epcas5p4f97e9cf12e68df9fb55d1270bd14280c@epcas5p4.samsung.com>
- <1610460145-14645-1-git-send-email-shradha.t@samsung.com>
- <20210113072104.GH4678@unreal>
- <147801d6ee49$2ecd2d30$8c678790$@samsung.com>
+        id S229639AbhCWLHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:07:04 -0400
+IronPort-SDR: buNFVQCzrq7BlKMhvhjw4ka9jlaG7YNpvnKe+Q0maOPr0o2dGnIzwh5n77akr9TDqd6EbIcG99
+ 6+kYjLms1RyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189854540"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="189854540"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:06:58 -0700
+IronPort-SDR: 304IViLktmB5zaz+KAlxvL9xxLnyisMiMXHxnNWIiNXPid/uKsBA+gPKmU0XGStD/ykneHpXXO
+ 7/DpAWjhEH/A==
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="414939300"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:06:52 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lOes4-00EziS-Of; Tue, 23 Mar 2021 13:06:48 +0200
+Date:   Tue, 23 Mar 2021 13:06:48 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
+        Oscar Salvador <osalvador@suse.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v1 1/3] kernel/resource: make walk_system_ram_res() find
+ all busy IORESOURCE_SYSTEM_RAM resources
+Message-ID: <YFnLyJF4u5HVXcc2@smile.fi.intel.com>
+References: <20210322160200.19633-1-david@redhat.com>
+ <20210322160200.19633-2-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <147801d6ee49$2ecd2d30$8c678790$@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210322160200.19633-2-david@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 03:25:10PM +0530, Shradha Todi wrote:
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Subject: Re: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for -
-> > >get_features()
-> > 
-> > On Tue, Jan 12, 2021 at 07:32:25PM +0530, Shradha Todi wrote:
-> > > get_features ops of pci_epc_ops may return NULL, causing NULL pointer
-> > > dereference in pci_epf_test_bind function. Let us add a check for
-> > > pci_epc_feature pointer in pci_epf_test_bind before we access it to
-> > > avoid any such NULL pointer dereference and return -ENOTSUPP in case
-> > > pci_epc_feature is not found.
-> > >
-> > > When the patch is not applied and EPC features is not implemented in
-> > > the platform driver, we see the following dump due to kernel NULL
-> > > pointer dereference.
-> > >
-> > > [  105.135936] Call trace:
-> > > [  105.138363]  pci_epf_test_bind+0xf4/0x388 [  105.142354]
-> > > pci_epf_bind+0x3c/0x80 [  105.145817]  pci_epc_epf_link+0xa8/0xcc [
-> > > 105.149632]  configfs_symlink+0x1a4/0x48c [  105.153616]
-> > > vfs_symlink+0x104/0x184 [  105.157169]  do_symlinkat+0x80/0xd4 [
-> > > 105.160636]  __arm64_sys_symlinkat+0x1c/0x24 [  105.164885]
-> > > el0_svc_common.constprop.3+0xb8/0x170
-> > > [  105.169649]  el0_svc_handler+0x70/0x88 [  105.173377]
-> > > el0_svc+0x8/0x640 [  105.176411] Code: d2800581 b9403ab9 f9404ebb
-> > > 8b394f60 (f9400400) [  105.182478] ---[ end trace a438e3c5a24f9df0
-> > > ]---
-> > 
-> > 
-> > Description and call trace don't correlate with the proposed code change.
-> > 
-> > The code in pci_epf_test_bind() doesn't dereference epc_features, at least
-> in
-> > direct manner.
-> > 
-> > Thanks
+On Mon, Mar 22, 2021 at 05:01:58PM +0100, David Hildenbrand wrote:
+> It used to be true that we can have busy system RAM only on the first level
+> in the resourc tree. However, this is no longer holds for driver-managed
+> system RAM (i.e., added via dax/kmem and virtio-mem), which gets added on
+> lower levels.
 > 
-> Thanks for the review. Yes, you're right. The dereference does not happen in
-> the pci_epf_test_bind() itself, but in pci_epf_test_alloc_space() being
-> called within. We will update the line "causing NULL pointer dereference in
-> pci_epf_test_bind function. " in the commit message to "causing NULL pointer
-> dereference in pci_epf_test_alloc_space function. " Would that be good
-> enough?
- 
-Remove the timestamp information as well from the commit log, that's
-completely irrelevant information.
+> We have two users of walk_system_ram_res(), which currently only
+> consideres the first level:
+> a) kernel/kexec_file.c:kexec_walk_resources() -- We properly skip
+>    IORESOURCE_SYSRAM_DRIVER_MANAGED resources via
+>    locate_mem_hole_callback(), so even after this change, we won't be
+>    placing kexec images onto dax/kmem and virtio-mem added memory. No
+>    change.
+> b) arch/x86/kernel/crash.c:fill_up_crash_elf_data() -- we're currently
+>    not adding relevant ranges to the crash elf info, resulting in them
+>    not getting dumped via kdump.
+> 
+> This change fixes loading a crashkernel via kexec_file_load() and including
 
-I shall mark this as "changes requested", waiting for a new version
-(please keep the review tags).
+"...fixes..." effectively means to me that Fixes tag should be provided.
 
-Lorenzo
+> dax/kmem and virtio-mem added System RAM in the crashdump on x86-64. Note
+> that e.g,, arm64 relies on memblock data and, therefore, always considers
+> all added System RAM already.
+> 
+> Let's find all busy IORESOURCE_SYSTEM_RAM resources, making the function
+> behave like walk_system_ram_range().
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Cc: Signed-off-by: David Hildenbrand <david@redhat.com>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Keith Busch <keith.busch@intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Eric Biederman <ebiederm@xmission.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: x86@kernel.org
+> Cc: kexec@lists.infradead.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  kernel/resource.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index 627e61b0c124..4efd6e912279 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -457,7 +457,7 @@ int walk_system_ram_res(u64 start, u64 end, void *arg,
+>  {
+>  	unsigned long flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>  
+> -	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, true,
+> +	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
+>  				     arg, func);
+>  }
+>  
+> -- 
+> 2.29.2
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
