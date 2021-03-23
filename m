@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9BA3466C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7D83466C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhCWRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhCWRug (ORCPT
+        id S231317AbhCWRv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:51:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33511 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231233AbhCWRvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:50:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8F2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=cYs10JHyoH5yneJP4u6+GykhJn1wBKFRR7cwcnvw6Do=; b=GtuOKmEvP5K2FUuiOup0T3CKZ9
-        24YJ2Qm/iMTdJSYxmWg/71DkEzbxagYXCwBYCW+u1e9msRuJ6m6eXfwGiFdfKACpa1bXCcQqx9/hQ
-        n0/NcNjVcwvSHQBL7nVmyuPoQKdQGV9yG4EeAjeJnrcKG/+UX2H4Dfo01Eo+OFGVnjOBh4iERx0Ht
-        KDMlYutRKY7gSLHic4unMobis2RnQqrg47iTrZ+wLIL0xWvkZ/YzL30VLZTUdMd/ZwFKh+xqO/Iey
-        QMFJpwtspR0X1f2LVzDuWyrIN0wm7xhDFBIjYS1VG/0Nzkq0E4R2dr9IsOjwtrfF/6bVUaoB9Hs/O
-        CFrlq1LA==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOlAE-00AMiA-V5; Tue, 23 Mar 2021 17:50:06 +0000
-Subject: Re: [PATCH V2]staging: rtl8723bs: Trivial typo fix
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        yanaijie@huawei.com, amarjargal16@gmail.com,
-        matthew.v.deangelis@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-References: <20210323092300.1740913-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <118087c5-e4f5-37da-1302-ee8206e9519c@infradead.org>
-Date:   Tue, 23 Mar 2021 10:49:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 13:51:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616521860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LouRr+fCG0OmszLhP6L8WRvJgJF/XEnWkAzpMfXY6u4=;
+        b=ZeCFpsYMf6XdBAaQcxlV1Ayo1Hp9Mm7pu+DTPf6MgkIOqT6vWfGmv60Bv6soXRh76RYjZQ
+        Mr1492+Cu/+iK58eKojgV20Djq5dcjUfSi4NeAP0VHDywkbvpTjWytajjJAUa1Bw/mgqNE
+        OqII3EX3JUC0PHcl5uivUJlWKROmZnQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-02Qt-z3bNpaoL_QStgOmuw-1; Tue, 23 Mar 2021 13:50:56 -0400
+X-MC-Unique: 02Qt-z3bNpaoL_QStgOmuw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F5D387A83E;
+        Tue, 23 Mar 2021 17:50:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C517C6E6FB;
+        Tue, 23 Mar 2021 17:50:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YFja/LRC1NI6quL6@cmpxchg.org>
+References: <YFja/LRC1NI6quL6@cmpxchg.org> <20210320054104.1300774-1-willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     dhowells@redhat.com,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org
+Subject: Re: [PATCH v5 00/27] Memory Folios
 MIME-Version: 1.0
-In-Reply-To: <20210323092300.1740913-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2749828.1616521831.1@warthog.procyon.org.uk>
+Date:   Tue, 23 Mar 2021 17:50:31 +0000
+Message-ID: <2749829.1616521831@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 2:23 AM, Bhaskar Chowdhury wrote:
-> s/netowrk/network/
-> 
-> ..and an extra space has removed from the sentence.
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> So I fully agree with the motivation behind this patch. But I do
+> wonder why it's special-casing the commmon case instead of the rare
+> case. It comes at a huge cost. Short term, the churn of replacing
+> 'page' with 'folio' in pretty much all instances is enormous.
+> 
+> And longer term, I'm not convinced folio is the abstraction we want
+> throughout the kernel. If nobody should be dealing with tail pages in
+> the first place, why are we making everybody think in 'folios'? Why
+> does a filesystem care that huge pages are composed of multiple base
+> pages internally? This feels like an implementation detail leaking out
+> of the MM code. The vast majority of places should be thinking 'page'
+> with a size of 'page_size()'. Including most parts of the MM itself.
 
-> ---
->   Changes from V1:
->   I have missed to remove an extra space in the sentence,
->   corrected,Greg pointed out,thanks.
-> 
->  drivers/staging/rtl8723bs/core/rtw_mlme.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> index 2c9425e2a1e9..562bc929be4c 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> @@ -599,7 +599,7 @@ void rtw_update_scanned_network(struct adapter *adapter, struct wlan_bssid_ex *t
->  		}
-> 
->  		if (rtw_roam_flags(adapter)) {
-> -			/* TODO: don't  select netowrk in the same ess as oldest if it's new enough*/
-> +			/* TODO: don't select network in the same ess as oldest if it's new enough*/
->  		}
-> 
->  		if (oldest == NULL || time_after(oldest->last_scanned, pnetwork->last_scanned))
-> --
+I like the idea of logically separating individual hardware pages from
+abstract bundles of pages by using a separate type for them - at least in
+filesystem code.  I'm trying to abstract some of the handling out of the
+network filesystems and into a common library plus ITER_XARRAY to insulate
+those filesystems from the VM.
 
-
--- 
-~Randy
+David
 
