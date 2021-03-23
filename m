@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF70345894
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36B53458AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCWHYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:24:17 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13665 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhCWHYH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:24:07 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4N8b1LFZznVJr;
-        Tue, 23 Mar 2021 15:21:35 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Tue, 23 Mar 2021
- 15:23:58 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <xuzaibo@huawei.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-Subject: [PATCH -next] crypto: hisilicon/hpre: fix link error
-Date:   Tue, 23 Mar 2021 15:27:16 +0800
-Message-ID: <20210323072716.3146252-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S229822AbhCWH2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:28:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229730AbhCWH2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:28:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A87C619B2;
+        Tue, 23 Mar 2021 07:28:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616484484;
+        bh=4DVYsL8aC5zK4lFEUymSCq9jscwZnKFMJYdueKLFPo4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LzlIuCd+0stZ4n4SJ8jvKbl6SUTPuC4SXLr+EbWrUPV9FvtmfNHfb3A7TMiPMfS79
+         6ZuDpvry/GVHWOFYaTBZVJZmtyPpBAiWunPiIHRjrbLu7YYjjiGkFK8i2aQLUAt1A8
+         jWzoKvRRNOHkgSO0kiIr245MZJq4r1rBakJqKknQ=
+Date:   Tue, 23 Mar 2021 08:28:02 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Ingo Molnar <mingo@elte.hu>,
+        Douglas Anderson <dianders@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kgdb: fix gcc-11 warning on indentation
+Message-ID: <YFmYgk2HDrIx1VNp@kroah.com>
+References: <20210322164308.827846-1-arnd@kernel.org>
+ <20210322170330.wil52d2geopfnfka@maple.lan>
+ <CAK8P3a30_E5ouw2eGF0wAYd0CiKcekKkEe9xBay2K+OXkyx-gw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a30_E5ouw2eGF0wAYd0CiKcekKkEe9xBay2K+OXkyx-gw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the follow link error by select config CRYPTO_ECC and CRYPTO_ECDH.
+On Mon, Mar 22, 2021 at 07:03:45PM +0100, Arnd Bergmann wrote:
+> On Mon, Mar 22, 2021 at 6:03 PM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> >
+> > Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+> >
+> > Which tree do you want to merge this one though? I've got nothing else
+> > pending for this file so I am very relaxed about the route...
+> 
+> I don't plan to merge any of the build fixes through my own tree.
+> If you don't have anything else, maybe Greg can pick it up
+> in the char-misc tree.
 
-ERROR: modpost: "ecc_get_curve25519" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
-ERROR: modpost: "ecc_get_curve" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
-ERROR: modpost: "crypto_ecdh_decode_key" [drivers/crypto/hisilicon/hpre/hisi_hpre.ko] undefined!
+Yes, I can take it, thanks.
 
-Fixes: 90274769cf79 ("crypto: hisilicon/hpre - add 'CURVE25519' algorithm")
-Fixes: 05e7b906aa7c ("crypto: hisilicon/hpre - add 'ECDH' algorithm")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/crypto/hisilicon/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
-index c45adb15ce8d..d87c89af2a7f 100644
---- a/drivers/crypto/hisilicon/Kconfig
-+++ b/drivers/crypto/hisilicon/Kconfig
-@@ -69,6 +69,8 @@ config CRYPTO_DEV_HISI_HPRE
- 	select CRYPTO_DEV_HISI_QM
- 	select CRYPTO_DH
- 	select CRYPTO_RSA
-+	select CRYPTO_ECC
-+	select CRYPTO_ECDH
- 	help
- 	  Support for HiSilicon HPRE(High Performance RSA Engine)
- 	  accelerator, which can accelerate RSA and DH algorithms.
--- 
-2.25.1
-
+greg k-h
