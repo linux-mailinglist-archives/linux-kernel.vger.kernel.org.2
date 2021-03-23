@@ -2,123 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE33C3457C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AC63457C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhCWGZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:25:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:41545 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhCWGZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:25:53 -0400
+        id S230009AbhCWG1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:27:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18207 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230011AbhCWG04 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:26:56 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616480753; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=xAtJAW22wshljF0u7U/N/2tn/kZSmDX0sMzuBmxR0jk=; b=Pnx4tOlHgNxrPwDB+HppQrzxzyN1J0ftYugxLD8COK9ueMRWR486oYo0IRNRk3ZJIQB9uu4u
- peh22xDIIhd89gL3rp4jC+U2ZMx9JGa/yS+UmKAlcIJ3L2wGDeQMxu2wZNdGO3MaBqHsnCt3
- CAf9LzG8kGRuWyVLgAyJBHvofVA=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ s=smtp; t=1616480815; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=nxG09/5fx3UUe4ayx42t/gXPfWay4ftms22djpfW9nQ=;
+ b=qDSH0tLwK3Z/xfDP2B2RotkSHin69cBtjCV++uXh9khkY4/8lVe+aqjQlau6JaTZyL6BOpNl
+ EKCyEW/2vAen3TdwI63bUbvPmPSxDdjNjDBtJoWuBiFrJl8AB8wRhPd6YEG05Beh6MXki51w
+ QjjG3kBzBNcxn957sb1nuOzEgug=
+X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 605989ed5d70193f887c25cf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Mar 2021 06:25:49
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60598a2fc32ceb3a918110c8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Mar 2021 06:26:55
  GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
+Sender: cang=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D7A62C43461; Tue, 23 Mar 2021 06:25:48 +0000 (UTC)
+        id 06F5DC43464; Tue, 23 Mar 2021 06:26:54 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0002C433CA;
-        Tue, 23 Mar 2021 06:25:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0002C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-Date:   Mon, 22 Mar 2021 23:25:42 -0700
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-Subject: Re: [PATCH] usb: gadget: Stall OS descriptor request for unsupported
- functions
-Message-ID: <20210323062542.GA17922@jackp-linux.qualcomm.com>
-References: <1616464217-2650-1-git-send-email-wcheng@codeaurora.org>
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0D90FC433C6;
+        Tue, 23 Mar 2021 06:26:53 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616464217-2650-1-git-send-email-wcheng@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 23 Mar 2021 14:26:53 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     daejun7.park@samsung.com
+Cc:     Bean Huo <huobean@gmail.com>, Greg KH <gregkh@linuxfoundation.org>,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
+In-Reply-To: <20210323061922epcms2p739666492ebb458d70deab026d074caf4@epcms2p7>
+References: <1df7bb51dc481c3141cdcf85105d3a5b@codeaurora.org>
+ <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
+ <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+ <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
+ <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
+ <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
+ <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
+ <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p7>
+ <20210323061922epcms2p739666492ebb458d70deab026d074caf4@epcms2p7>
+Message-ID: <f224bea78cf235ee94823528f07e28a6@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wesley,
+On 2021-03-23 14:19, Daejun Park wrote:
+>> On 2021-03-23 13:37, Daejun Park wrote:
+>>>> On 2021-03-23 12:22, Can Guo wrote:
+>>>>> On 2021-03-22 17:11, Bean Huo wrote:
+>>>>>> On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
+>>>>>>> +       switch (rsp_field->hpb_op) {
+>>>>>>> 
+>>>>>>> +       case HPB_RSP_REQ_REGION_UPDATE:
+>>>>>>> 
+>>>>>>> +               if (data_seg_len != DEV_DATA_SEG_LEN)
+>>>>>>> 
+>>>>>>> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>>>>>> 
+>>>>>>> +                                "%s: data seg length is not
+>>>>>>> same.\n",
+>>>>>>> 
+>>>>>>> +                                __func__);
+>>>>>>> 
+>>>>>>> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
+>>>>>>> 
+>>>>>>> +               break;
+>>>>>>> 
+>>>>>>> +       case HPB_RSP_DEV_RESET:
+>>>>>>> 
+>>>>>>> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>>>>>> 
+>>>>>>> +                        "UFS device lost HPB information during
+>>>>>>> PM.\n");
+>>>>>>> 
+>>>>>>> +               break;
+>>>>>> 
+>>>>>> Hi Deajun,
+>>>>>> This series looks good to me. Just here I have one question. You
+>>>>>> didn't
+>>>>>> handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS, 
+>>>>>> how
+>>>>>> to
+>>>>>> handle HPB_RSP_DEV_RESET from the host side? Do you think we shoud
+>>>>>> reset host side HPB entry as well or what else?
+>>>>>> 
+>>>>>> 
+>>>>>> Bean
+>>>>> 
+>>>>> Same question here - I am still collecting feedbacks from flash
+>>>>> vendors
+>>>>> about
+>>>>> what is recommanded host behavior on reception of HPB Op code 0x2,
+>>>>> since it
+>>>>> is not cleared defined in HPB2.0 specs.
+>>>>> 
+>>>>> Can Guo.
+>>>> 
+>>>> I think the question should be asked in the HPB2.0 patch, since in
+>>>> HPB1.0 device
+>>>> control mode, a HPB reset in device side does not impact anything in
+>>>> host side -
+>>>> host is not writing back any HPB entries to device anyways and HPB
+>>>> Read
+>>>> cmd with
+>>>> invalid HPB entries shall be treated as normal Read(10) cmd without
+>>>> any
+>>>> problems.
+>>> 
+>>> Yes, UFS device will process read command even the HPB entries are
+>>> valid or
+>>> not. So it is warning about read performance drop by dev reset.
+>> 
+>> Yeah, but still I am 100% sure about what should host do in case of
+>> HPB2.0
+>> when it receives HPB Op code 0x2, I am waiting for feedbacks.
+> 
+> I think the host has two choices when it receives 0x2.
+> One is nothing on host.
+> The other is discarding all HPB entries in the host.
+> 
+> In the JEDEC HPB spec, it as follows:
+> When the device is powered off by the host, the device may restore L2P 
+> map
+> data upon power up or build from the host’s HPB READ command.
+> 
+> If some UFS builds L2P map data from the host's HPB READ commands, we 
+> don't
+> have to discard HPB entries in the host.
+> 
+> So I thinks there is nothing to do when it receives 0x2.
 
-On Mon, Mar 22, 2021 at 06:50:17PM -0700, Wesley Cheng wrote:
-> From: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-> 
-> Hosts which request "OS descriptors" from gadgets do so during
-> the enumeration phase and before the configuration is set with
-> SET_CONFIGURATION. Composite driver supports OS descriptor
-> handling in composite_setup function. This requires to pass
-> signature field, vendor code, compatibleID and subCompatibleID
-> from user space.
-> 
-> For USB compositions that contain functions which don't implement os
-> descriptors, Windows is sending vendor specific requests for os
-> descriptors and composite driver handling this request with invalid
-> data. With this invalid info host resetting the bus and never
-> selecting the configuration and leading enumeration issue.
-> 
-> Fix this by bailing out from the OS descriptor setup request
-> handling if the functions does not have OS descriptors compatibleID.
-> 
-> Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> ---
->  drivers/usb/gadget/composite.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-> index 72a9797..473edda6 100644
-> --- a/drivers/usb/gadget/composite.c
-> +++ b/drivers/usb/gadget/composite.c
-> @@ -1945,6 +1945,12 @@ composite_setup(struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
->  				buf[6] = w_index;
->  				/* Number of ext compat interfaces */
->  				count = count_ext_compat(os_desc_cfg);
-> +				/*
-> +				 * Bailout if device does not
-> +				 * have ext_compat interfaces.
-> +				 */
-> +				if (count == 0)
-> +					break;
->  				buf[8] = count;
->  				count *= 24; /* 24 B/ext compat desc */
->  				count += 16; /* header */
+But in HPB2.0, if we do nothing to active regions in host side, host can 
+write
+HPB entries (which host thinks valid, but actually invalid in device 
+side since
+reset happened) back to device through HPB Write Buffer cmds (BUFFER ID 
+= 0x2).
+My question is that are all UFSs OK with this?
 
-Do we still need this fix? IIRC we had this change in our downstream
-kernel to fix the case when dynamically re-configuring ConfigFS, i.e.
-changing the composition of functions wherein none of the interfaces
-support OS Descriptors, so this causes count_ext_compat() to return
-0 and results in the issue described in $SUBJECT.
+Thanks,
+Can Guo.
 
-But I think this is more of a problem of an improperly configured
-ConfigFS gadget. If userspace instead removes the config from the
-gadget's os_desc subdirectory that should cause cdev->os_desc_config to
-be set to NULL and hence composite_setup() should never enter this
-handling at all, right?
-
-Jack
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> 
+> Thanks,
+> Daejun
+> 
+>> Thanks,
+>> Can Guo.
+>> 
+>>> 
+>>> Thanks,
+>>> Daejun
+>>> 
+>>>> Please correct me if I am wrong.
+>>> 
+>>> 
+>>> 
+>>>> Thanks,
+>>>> Can Guo.
+>>>> 
+>>>> 
+>>>> 
+>> 
+>> 
+>> 
