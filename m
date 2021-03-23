@@ -2,152 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30C7345C33
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643AF345C3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhCWKt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhCWKti (ORCPT
+        id S230361AbhCWKug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:50:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229879AbhCWKuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:49:38 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C467EC061574;
-        Tue, 23 Mar 2021 03:49:37 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id a1so25004490ljp.2;
-        Tue, 23 Mar 2021 03:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=nqW3Ssldrc7vBRXGjDD6xe91KrdIMEodDP2y2NpZseY=;
-        b=EVBlk//qPyN52fAdm6hrUKkQ1byMjaraioY8QM0GiLM2VbJYf076+4MhId/aqpLSPt
-         AwvwtWVca73S2oREW2pwhfY018ZnPevM1NYa/4C/JeLimwR7bwbcZhWyIzUVlCQO7UHe
-         YR0l3D26QuLLt/2N7XaUuTdt1Cp6RFW3JNPlsQPE3r8iAXn4yx9iL4gzPaGt+cd1uJkq
-         Y75+v4JuHgBLMWq6F04P7V0TZyseM+g3B7J93TNJhJ9HCVNIuXCqmY9Ko0DpB4aRdlVb
-         cFg+OKiBUr/wycCdfV1BDvKA5KpigjzcCx02SoAsNzYjYFm5OnIZvTJig4WwVjdJK5UF
-         h+Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=nqW3Ssldrc7vBRXGjDD6xe91KrdIMEodDP2y2NpZseY=;
-        b=UWuDMqG0qYSsX3zKsqO4xt6QPUNCv8j2GkerlWKHDSsBADHTSLAPv7OeCG8YZ8WaM2
-         uwt9wh09m3LYiEh2dHsOpS9T6oGElV3rLtzr+6MsTKrlpMo1uyRS+EflOpwiZX7GSAYF
-         Mx1vlrNBHxn0BCcd6nookcUjhDeHbOMiYt+egsx6UsSg8ZGvUZNZxmkB2Ky1vWWtzyrk
-         VgiHVzZ568Lnfm82vJh7891Q/pwUwQn4gekNkqD6cVcqD8fxeUpPlGI5dhh5nh63EYSc
-         L1+/xkUHA7LuniMXF8pKOZCZUjTxFiDgjPRLhoB/UT3cSSYLwwK2RGjij8Cc0JAJV7Ut
-         VcRg==
-X-Gm-Message-State: AOAM531asfiMb5IqoO7ElDYPCP/ZamrLlrs3uFEJVUC4gPl1Qw/LyNOm
-        uPo2OrYFC0yi5XsFG22BiCQBm08RU1tyI9z9/BiVU1zNqu0=
-X-Google-Smtp-Source: ABdhPJy+WLZ9h16QR1ddpur0PtaCVNzYgWP1G4TbbIRKPq3+ybrdN3BIV/WkYDXrstfCWwcth0AYuHy/8/gFgfFhcDM=
-X-Received: by 2002:a05:651c:481:: with SMTP id s1mr2635809ljc.152.1616496576241;
- Tue, 23 Mar 2021 03:49:36 -0700 (PDT)
+        Tue, 23 Mar 2021 06:50:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616496624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/bI9nwhFk2DKqkC/aoj4hH4auyvs7crsyQYXcXFO72U=;
+        b=eDedz08axggDlYWFL+Ky65UkmCEYcxGI2XPgZlpACaTiYngp/ZX5YrOZnIEOSuF1OCjaCL
+        Gqd4JMZyBSxCuUb2GgNbpybeClB1UAf1mZOGU1CXCpfsGGM6bXJ/uYpWzpQLWampXSzF+v
+        xO+sgOhd2UWONjTowY3DEpMWzCOFosM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-kzry4YCGMDuX_GTXN1g2Qw-1; Tue, 23 Mar 2021 06:50:22 -0400
+X-MC-Unique: kzry4YCGMDuX_GTXN1g2Qw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0626180FCA9;
+        Tue, 23 Mar 2021 10:50:20 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B67C93805;
+        Tue, 23 Mar 2021 10:50:18 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] s390/kvm: VSIE: fix MVPG handling for prefixing
+ and MSO
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210322140559.500716-1-imbrenda@linux.ibm.com>
+ <20210322140559.500716-3-imbrenda@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <31b791e1-1398-8b50-fa09-964c5833a3ec@redhat.com>
+Date:   Tue, 23 Mar 2021 11:50:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210320045720.11872-1-chgokhl@gmail.com> <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
-In-Reply-To: <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
-Reply-To: chgokhl@163.com
-From:   hieagle <chgokhl@gmail.com>
-Date:   Tue, 23 Mar 2021 18:49:24 +0800
-Message-ID: <CAMjpFAW0D12vxNSYLcwSWxf-zB+toT5cmiQ8mtUUE+nzWMJZ3g@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kehuanlin@fishsemi.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210322140559.500716-3-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We encounter a resume issue in our device sometimes. The mmc device's
-parent list is
-mmc0:0001->mmc_host mmc0->fa630000.mmc->soc in our soc. We found in the blo=
-w
-case with mmc0->power.disable_depth=3D0 the mmc_runtime_resume will be skip=
-ped,
-which cause subsequent mmc command fail.
+On 22.03.21 15:05, Claudio Imbrenda wrote:
+> Prefixing needs to be applied to the guest real address to translate it
+> into a guest absolute address.
+> 
+> The value of MSO needs to be added to a guest-absolute address in order to
+> obtain the host-virtual.
+> 
+> Fixes: 223ea46de9e79 ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Reported-by: Janosch Frank <frankja@linux.ibm.com>
+> ---
+>   arch/s390/kvm/vsie.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> index 48aab6290a77..ac86f11e46dc 100644
+> --- a/arch/s390/kvm/vsie.c
+> +++ b/arch/s390/kvm/vsie.c
+> @@ -1002,7 +1002,7 @@ static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page,
+>   static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>   {
+>   	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
+> -	unsigned long pei_dest, pei_src, src, dest, mask;
+> +	unsigned long pei_dest, pei_src, dest, src, mask, mso, prefix;
+>   	u64 *pei_block = &vsie_page->scb_o->mcic;
+>   	int edat, rc_dest, rc_src;
+>   	union ctlreg0 cr0;
+> @@ -1010,9 +1010,13 @@ static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>   	cr0.val = vcpu->arch.sie_block->gcr[0];
+>   	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
+>   	mask = _kvm_s390_logical_to_effective(&scb_s->gpsw, PAGE_MASK);
+> +	mso = scb_s->mso & ~(1UL << 20);
+> +	prefix = scb_s->prefix << GUEST_PREFIX_SHIFT;
+>   
+>   	dest = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16) & mask;
+> +	dest = _kvm_s390_real_to_abs(prefix, dest) + mso;
+>   	src = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20) & mask;
+> +	src = _kvm_s390_real_to_abs(prefix, src) + mso;
+>   
+>   	rc_dest = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, dest, &pei_dest);
+>   	rc_src = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, src, &pei_src);
+> 
 
-mmc_get_card(mmc0:0001)->pm_runtime_get_sync->rpm_resume(mmc0:0001)->rpm_re=
-sume(mmc0)
-The rpm_resume(mmc0) return -ENOSYS due to no callback and
-mmc0->power.runtime_status
-keep RPM_SUSPENDED. This lead to rpm_resume(mmc0:0001) return -EBUSY and sk=
-ip
-rpm_callback which call mmc_runtime_resume, the mmc is still in
-suspended and the
-subsequent mmc command fail.
+mso is always confusing, but I think this should be correct.
 
-[  198.856157] Call trace:
-[  198.858917] [<ffffff800808bd9c>] dump_backtrace+0x0/0x1cc
-[  198.864966] [<ffffff800808bf7c>] show_stack+0x14/0x1c
-[  198.870627] [<ffffff8008400e88>] dump_stack+0xa8/0xe0
-[  198.876288] [<ffffff800854d38c>] rpm_resume+0x850/0x938
-[  198.882141] [<ffffff800854cd8c>] rpm_resume+0x250/0x938
-[  198.887994] [<ffffff800854d4c4>] __pm_runtime_resume+0x50/0x74
-[  198.894530] [<ffffff80087b9e64>] mmc_get_card+0x3c/0xb8
-[  198.900388] [<ffffff80087cd2e0>] mmc_blk_issue_rq+0x2b0/0x4d8
-[  198.906824] [<ffffff80087cd5e4>] mmc_queue_thread+0xdc/0x198
-[  198.913165] [<ffffff80080d4b2c>] kthread+0xec/0x100
-[  198.918632] [<ffffff8008083890>] ret_from_fork+0x10/0x40
-[  198.924582] mmc0  callback           (null)
-[  198.935837] mmcblk mmc0:0001: __pm_runtime_resume ret -16
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Mark mmc_host device with pm_runtime_no_callbacks will solve the issue.
-Thanks.
-Huanlin Ke
+-- 
+Thanks,
 
-Ulf Hansson <ulf.hansson@linaro.org> =E4=BA=8E2021=E5=B9=B43=E6=9C=8822=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=886:26=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sat, 20 Mar 2021 at 05:57, kehuanlin <chgokhl@gmail.com> wrote:
-> >
-> > The rpm_resume() will call parent's resume callback recursively.
-> > Since mmc_host has no its own pm_runtime callbacks, the mmc devices
-> > may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
-> > device with pm_runtime_no_callbacks can fix the issue.
->
-> Can you please elaborate more on this? What do you mean by "sometimes"?
->
-> More precisely, how do you trigger the rpm_callback() for mmc class
-> device to return -ENOSYS?
->
-> Don't get me wrong, the patch is fine, but I want to understand if it
-> actually solves a problem for you - or that it's better considered as
-> an optimization?
->
-> Kind regards
-> Uffe
->
-> >
-> > Signed-off-by: kehuanlin <chgokhl@gmail.com>
-> > ---
-> >  drivers/mmc/core/host.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> > index 9b89a91b6b47..177bebd9a6c4 100644
-> > --- a/drivers/mmc/core/host.c
-> > +++ b/drivers/mmc/core/host.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/of.h>
-> >  #include <linux/of_gpio.h>
-> >  #include <linux/pagemap.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include <linux/pm_wakeup.h>
-> >  #include <linux/export.h>
-> >  #include <linux/leds.h>
-> > @@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct d=
-evice *dev)
-> >         host->class_dev.class =3D &mmc_host_class;
-> >         device_initialize(&host->class_dev);
-> >         device_enable_async_suspend(&host->class_dev);
-> > +       pm_runtime_no_callbacks(&host->class_dev);
-> >
-> >         if (mmc_gpio_alloc(host)) {
-> >                 put_device(&host->class_dev);
-> > --
-> > 2.30.0
-> >
+David / dhildenb
+
