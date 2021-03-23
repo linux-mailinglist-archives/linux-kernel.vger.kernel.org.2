@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A285C346AAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F1E346AAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhCWVCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S233506AbhCWVCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233434AbhCWVBa (ORCPT
+        with ESMTP id S233469AbhCWVBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:01:30 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6994EC061574;
-        Tue, 23 Mar 2021 14:01:29 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso106220wmi.0;
-        Tue, 23 Mar 2021 14:01:29 -0700 (PDT)
+        Tue, 23 Mar 2021 17:01:35 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080C5C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:01:34 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id h25so12993656pgm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:01:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dl26BKNx8DNxpiYwsjFKzS/TV8T1jYq2tKrn4c6d7Vc=;
-        b=vHc0a+1N0Wb045wyuX2p9V5HaKFx7awbvWb6be/RKSpvJWUvNcab+dTN/cx4ZB6K5I
-         TVwKzHHDk1CT5EV2R+F+Kr7e/WY57f6emxb5R1ZTsmA/nfxMSxWP8+kZOjBYPjPpLJos
-         QYmgYQKvD8p20uWodiIGbnNRxrE7C2bsVDAVtUbJt6GrPfRbZlNOVOdZgHVb6gEPwYn5
-         B/miDENkPhedGpOJ2T7xn2iEviejrvISqsgbFmrQPNiUTNyRD2Nizj+yPUsZ+xlJKJst
-         XCMgQCBBYNRIK4gfkP5Csp0cqlZot7DtS5DsDP2lgnDQjXomBowJMGLcfDt/LNH9+VWB
-         k/ew==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=j+3BKrM5me7auELaARAPwAS0rivnyHdPonNpXLIjgro=;
+        b=hcjviBgIQ6fe5fnQkbvXjT0gP4wOpIiSxoK0n/0cLGbkVhMOQH9HkpHhxhhQGQe6TL
+         epk2vtpx/VDLXbDMJPsb9JxcJFztD4XrY2b5qFXD3zCD/yiVCAr9ApuCub6uoxGDmcKc
+         XgjPlyZmWF7uYz+KaOC5eofj9eIzLIAkcsbBM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dl26BKNx8DNxpiYwsjFKzS/TV8T1jYq2tKrn4c6d7Vc=;
-        b=haYBdCfVDK4nylvzd39iOFh3t4F2hioApBI2iAxqG5/UESlOfTliqHyr/h7qgYbGs0
-         oW+fpUAPcL9rTlSmQJ4hQJpxdPEuh9QrEjgax+fa7KLtQsfb552wnb/RS4OJ/O5SuRIG
-         eBzxtoyz5y6i/ntLRpoJYm/ccz0Y6FbFl6ksSp+vxW6YmjCjvs5JbOUMYAKLZ7/lRD/U
-         tCEJydtU7B1UwyMutO+yFgBjfWut9gZyqwddn+uHDta1bTEQdXTxDec1J19XFaHajlf9
-         +lpe1c1EZCWVuCAXtRva94sqqGDOPOVj+xlha6MtlqEmLi87l5o9A6gv9vxzRwc/7eJ5
-         994g==
-X-Gm-Message-State: AOAM53343u0WNz9bnH9uJOBej3ZTu1L+q8weFxKIQvP35CCI1Ixe9Xph
-        Cg369Wz3+oth+JxDrLDxqF0=
-X-Google-Smtp-Source: ABdhPJwMjaAPC9k+4+ITAn2yGmPbQI7Dx448+GLZE0st2l4iOesfyxceh+Mg4muGv4viQH1qoh5FOA==
-X-Received: by 2002:a7b:cc84:: with SMTP id p4mr5069251wma.10.1616533288113;
-        Tue, 23 Mar 2021 14:01:28 -0700 (PDT)
-Received: from luca020400-laptop-arch.lan ([2001:b07:5d33:19f:ea1f:2342:ea78:219a])
-        by smtp.googlemail.com with ESMTPSA id p18sm176637wro.18.2021.03.23.14.01.27
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=j+3BKrM5me7auELaARAPwAS0rivnyHdPonNpXLIjgro=;
+        b=PrxIIT98BbhtVhjdbhBsKfVC82ddHc+OjtBeNW+5PZiQzDsjeaOwDNdTaRDbxnwl6c
+         EJuUN+bjBiXo8lm1r/co4Of3mavEaLOc5eNcL7BEX/uSaVP34paUsDLaeBG/vkwP8kSu
+         asOw7QMAv6zBBxcYf/FGrRC+6uh0tlr9yrvQHSejBUQJJ8CIANh9mn3+N2i/uR3TEc6T
+         JhRPjXscL4XMXZ+iJsX2Kax1L0ccP4Vss+fhWAe3UbFM7vghowl8FkCV5jw8DYdoa6d4
+         qfNV235IrmDTaNSh6YltSWXHsJ/Q8MiBQCOfNeWS0uxwtErNUxS8TNUp45/T3l1mJqFi
+         WnkQ==
+X-Gm-Message-State: AOAM532Z1yz741mfa+NfMly8mDPHP4c8Y6rwOEJklKlp9nO+q5mIGJaX
+        01vUVXUN4qz0t3QcFsU5GCtkmg==
+X-Google-Smtp-Source: ABdhPJy9VXxmhfEyOS8ICDrQ14e4OC/h87W74XrDtXDEVQUnVRUhGKTFvcqy27HUIUkaRwpqZ6HO9A==
+X-Received: by 2002:a62:78d4:0:b029:1f1:595b:dfdf with SMTP id t203-20020a6278d40000b02901f1595bdfdfmr149205pfc.81.1616533294364;
+        Tue, 23 Mar 2021 14:01:34 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
+        by smtp.gmail.com with ESMTPSA id c24sm102212pfi.193.2021.03.23.14.01.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 14:01:27 -0700 (PDT)
-From:   Luca Stefani <luca.stefani.ge1@gmail.com>
-Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] platform/x86: asus-wmi: Add param to turn fn-lock mode on by default
-Date:   Tue, 23 Mar 2021 22:01:26 +0100
-Message-Id: <20210323210126.145286-1-luca.stefani.ge1@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
-References: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
+        Tue, 23 Mar 2021 14:01:33 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1615978901-4202-2-git-send-email-sanm@codeaurora.org>
+References: <1615978901-4202-1-git-send-email-sanm@codeaurora.org> <1615978901-4202-2-git-send-email-sanm@codeaurora.org>
+Subject: Re: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: Add bindings for SC7280
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-usb@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Date:   Tue, 23 Mar 2021 14:01:32 -0700
+Message-ID: <161653329214.3012082.3763700105699946359@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* On recent ZenBooks the fn-lock is disabled
-  by default on boot while running Windows.
+Quoting Sandeep Maheswaram (2021-03-17 04:01:39)
+> Add the compatible string for sc7280 SoC from Qualcomm.
+>=20
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
 
-* Add a module param ( fnlock_default ) that allows
-  changing the default at probe time
-
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
----
- drivers/platform/x86/asus-wmi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 9ca15f724343..ebaeb7bb80f5 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -47,6 +47,9 @@ MODULE_AUTHOR("Corentin Chary <corentin.chary@gmail.com>, "
- MODULE_DESCRIPTION("Asus Generic WMI Driver");
- MODULE_LICENSE("GPL");
- 
-+static bool fnlock_default = true;
-+module_param(fnlock_default, bool, 0444);
-+
- #define to_asus_wmi_driver(pdrv)					\
- 	(container_of((pdrv), struct asus_wmi_driver, platform_driver))
- 
-@@ -2673,7 +2676,7 @@ static int asus_wmi_add(struct platform_device *pdev)
- 		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT, 2, NULL);
- 
- 	if (asus_wmi_has_fnlock_key(asus)) {
--		asus->fnlock_locked = true;
-+		asus->fnlock_locked = fnlock_default;
- 		asus_wmi_fnlock_update(asus);
- 	}
- 
--- 
-2.31.0
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
