@@ -2,58 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F623458B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6673458BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhCWHaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229622AbhCWH3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:29:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96357619AB;
-        Tue, 23 Mar 2021 07:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616484580;
-        bh=Aj5SamPuQDIK94vu6wAnw3TzJIL9R+1C87wF3TyVc1w=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=EzlGxsxTsHITh7w8RrzfAKsKGjEMXv8PFuX5FcfTMhgJ2IR0rdqHjAFMTri1aPYs5
-         hHrG19NbREgNZVZ8btyJBWh50RZ41FPgTES1TbwqEb3Pdlnmics6N+ZBzslyooOPN6
-         0ig5K3qyypY0KXarnustNWGKw56sEZHtVjdsqSy2nM1SU1M0H4YFngswO7NsMW45JN
-         btodP6kxbPM1zYWhyhCQsgs7t89W6MKfVoY4sWv9MkZPVv1R5kDPdpjND77Nr5iTIz
-         xFNTsc6FVlZHIrKYqOU9hg4umMRmd/Lt+SWBMfACuuuT0Qi9n/dIaKX0qiEuxm8+5V
-         EEg4bhmzW1Etw==
-Content-Type: text/plain; charset="utf-8"
+        id S229500AbhCWHcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhCWHbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:31:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D875C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:31:53 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lObVz-0005mg-FY; Tue, 23 Mar 2021 08:31:47 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:c81e:25b5:b851:4b31])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E8F295FDBF1;
+        Tue, 23 Mar 2021 07:30:49 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 08:30:49 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Dan Murphy <dmurphy@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
+Subject: Re: [PATCH] net: can: Remove duplicate include of regmap.h
+Message-ID: <20210323073049.xtsa4qfquezickon@pengutronix.de>
+References: <20210323021026.140460-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1616140054-5141-1-git-send-email-tdas@codeaurora.org>
-References: <1616140054-5141-1-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH] clk: qcom: camcc: Update the clock ops for the SC7180
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 23 Mar 2021 00:29:39 -0700
-Message-ID: <161648457933.3012082.10324281519544090271@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2x7tt3dycidjeo77"
+Content-Disposition: inline
+In-Reply-To: <20210323021026.140460-1-wanjiabing@vivo.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2021-03-19 00:47:34)
-> Update the RCGs to use shared ops to park the RCGs at XO.
 
-s/Update/fix/?
+--2x7tt3dycidjeo77
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Can you also elaborate more on why we need to park the RCGs here for all
-these different clks? Is the camera driver supposed to not touch these
-and let the firmware take over? Is there zero coordination between the
-kernel and the firmware?
+On 23.03.2021 10:10:25, Wan Jiabing wrote:
+> linux/regmap.h has been included at line 13, so remove the=20
+> duplicate one at line 14.
 
->=20
-> Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller drive=
-r for SC7180")
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+applied to linux-can-next/testing.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--2x7tt3dycidjeo77
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBZmSYACgkQqclaivrt
+76k9hgf9E1gyqjyXoEpiqFqSf7ZDUNLduopZyW4BCvi6dF4SoZnaFmgPLbRuZTup
+n4/0ylnbQ7Y4T/5Yyzv7nXaZlr9SLP86uAS+pqUzlQiKl0+Woz3c9SSvjaJDdrvu
+BZEbBx2Bhc0olUgFvuJsHMbgC7VSpQHqLOTpszYJGu14fd2u4CNawknJtNAUP8Bs
+emBNEA0Yq6nic70t16UhrPzjlUgZfhDDj0BBFyu1CBrBb5Vq3GG/3A74sVneVhvW
+BsSfZTpl1i1+IyFi+FXDi2tJ4SML7d4tAKV2G8COP8sEnrlBp5mubw3NUH7JRz3l
+mU9iAbLp5LCCKhdJubnUCP7e+FNQpQ==
+=05VG
+-----END PGP SIGNATURE-----
+
+--2x7tt3dycidjeo77--
