@@ -2,370 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDE6346C70
+	by mail.lfdr.de (Postfix) with ESMTP id 293EF346C6F
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbhCWWWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:22:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60593 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234044AbhCWWTq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:19:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616537986;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gufZF03aikU0m4CS07S8txj0eANqSXRALNr39cJjgsc=;
-        b=O+bGSbe8oZ890MjPwgdUBNM2+bSiadAKJE9bXBRNFDEWMUcQ28QHed3G02BOKwkNRrN7gW
-        9KXWVrz9dr9sB5DEZTV11lrWcp0JspRiACqdHrYWR18kr2OETuVqys40AUnGBvazwe+amQ
-        QcZwoQ//bfrb0fLvt3lIMIXM9mHVeLs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-wsUrgrjJOdCufJ7Vh56J-Q-1; Tue, 23 Mar 2021 18:19:42 -0400
-X-MC-Unique: wsUrgrjJOdCufJ7Vh56J-Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E886A801817;
-        Tue, 23 Mar 2021 22:19:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CFB7C6E6F5;
-        Tue, 23 Mar 2021 22:19:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v5 11/28] netfs: Gather stats
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 22:19:37 +0000
-Message-ID: <161653797700.2770958.5801990354413178228.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-References: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S234287AbhCWWWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:22:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234037AbhCWWTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 18:19:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C783619B3;
+        Tue, 23 Mar 2021 22:19:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616537981;
+        bh=hCB5Ph3FFz48xKeAxtmyZUvCAPJWnOJQU5bn9hbls78=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=nPj5Hltm5PS/XtPw8EhpbAjV985Dk/FLiwh1DCgxn0aW3mtcc8cPuAxBA47TuxXwp
+         OzL64YIwRKeuCp2t484VYw3DSdjC9nf9g2pE5WttCWSk9nJnsTLDpo4xuCn1yqXWbB
+         dYUffi3etn74k0gFWelQeZUuwJgRKoVSMHhp3uqB2viDT7ewYSX9VGHogrUBoMgrqm
+         BE3fgAtYRJSlOF7xurkLLFK5sRB3KAJBgkax1HR0a5UypOFPP6zmu5xZVzsoeC92HV
+         ps9YsZrJb3vhuISbpWVKS9iiza7NyBm+fyCtvW7dGktanjSL80Lo5ovtOfVK37ooPm
+         f//YirHtcvHJg==
+Date:   Tue, 23 Mar 2021 17:19:40 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     Scott Murray <scott@spiteful.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: hotplug: fix null-ptr-dereferencd in cpcihp error
+ path
+Message-ID: <20210323221940.GA493013@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210321055109.322496-1-ztong0001@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gather statistics from the netfs interface that can be exported through a
-seqfile.  This is intended to be called by a later patch when viewing
-/proc/fs/fscache/stats.
+On Sun, Mar 21, 2021 at 01:51:08AM -0400, Tong Zhang wrote:
+> There is an issue in the error path, which cpci_thread may remain NULL.
+> Calling kthread_stop(cpci_thread) will trigger a BUG().
+> It is better to check whether the thread is really created and started
+> before stop it.
+> 
+> [    1.292859] BUG: kernel NULL pointer dereference, address: 0000000000000028
+> [    1.293252] #PF: supervisor write access in kernel mode
+> [    1.293533] #PF: error_code(0x0002) - not-present page
+> [    1.295163] RIP: 0010:kthread_stop+0x22/0x170
+> [    1.300491] Call Trace:
+> [    1.300628]  cpci_hp_unregister_controller+0xf6/0x130
+> [    1.300906]  zt5550_hc_init_one+0x27a/0x27f [cpcihp_zt5550]
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@redhat.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-mm@kvack.org
-cc: linux-cachefs@redhat.com
-cc: linux-afs@lists.infradead.org
-cc: linux-nfs@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: v9fs-developer@lists.sourceforge.net
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/161118139247.1232039.10556850937548511068.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161034669.2537118.2761232524997091480.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340397101.1303470.17581910581108378458.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539539959.286939.6794352576462965914.stgit@warthog.procyon.org.uk/ # v4
----
+Wow, I didn't know anybody actually used this driver :)
 
- fs/netfs/Kconfig       |   15 +++++++++++++
- fs/netfs/Makefile      |    3 +--
- fs/netfs/internal.h    |   34 ++++++++++++++++++++++++++++++
- fs/netfs/read_helper.c |   23 ++++++++++++++++++++
- fs/netfs/stats.c       |   54 ++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/netfs.h  |    1 +
- 6 files changed, 128 insertions(+), 2 deletions(-)
- create mode 100644 fs/netfs/stats.c
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> ---
+>  drivers/pci/hotplug/cpci_hotplug_core.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/hotplug/cpci_hotplug_core.c b/drivers/pci/hotplug/cpci_hotplug_core.c
+> index d0559d2faf50..b44da397d631 100644
+> --- a/drivers/pci/hotplug/cpci_hotplug_core.c
+> +++ b/drivers/pci/hotplug/cpci_hotplug_core.c
+> @@ -47,7 +47,7 @@ static atomic_t extracting;
+>  int cpci_debug;
+>  static struct cpci_hp_controller *controller;
+>  static struct task_struct *cpci_thread;
+> -static int thread_finished;
+> +static int thread_started;
 
-diff --git a/fs/netfs/Kconfig b/fs/netfs/Kconfig
-index 2ebf90e6ca95..578112713703 100644
---- a/fs/netfs/Kconfig
-+++ b/fs/netfs/Kconfig
-@@ -6,3 +6,18 @@ config NETFS_SUPPORT
- 	  This option enables support for network filesystems, including
- 	  helpers for high-level buffered I/O, abstracting out read
- 	  segmentation, local caching and transparent huge page support.
-+
-+config NETFS_STATS
-+	bool "Gather statistical information on local caching"
-+	depends on NETFS_SUPPORT && PROC_FS
-+	help
-+	  This option causes statistical information to be gathered on local
-+	  caching and exported through file:
-+
-+		/proc/fs/fscache/stats
-+
-+	  The gathering of statistics adds a certain amount of overhead to
-+	  execution as there are a quite a few stats gathered, and on a
-+	  multi-CPU system these may be on cachelines that keep bouncing
-+	  between CPUs.  On the other hand, the stats are very useful for
-+	  debugging purposes.  Saying 'Y' here is recommended.
-diff --git a/fs/netfs/Makefile b/fs/netfs/Makefile
-index 4b4eff2ba369..c15bfc966d96 100644
---- a/fs/netfs/Makefile
-+++ b/fs/netfs/Makefile
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--netfs-y := \
--	read_helper.o
-+netfs-y := read_helper.o stats.o
- 
- obj-$(CONFIG_NETFS_SUPPORT) := netfs.o
-diff --git a/fs/netfs/internal.h b/fs/netfs/internal.h
-index ee665c0e7dc8..98b6f4516da1 100644
---- a/fs/netfs/internal.h
-+++ b/fs/netfs/internal.h
-@@ -16,8 +16,42 @@
-  */
- extern unsigned int netfs_debug;
- 
-+/*
-+ * stats.c
-+ */
-+#ifdef CONFIG_NETFS_STATS
-+extern atomic_t netfs_n_rh_readahead;
-+extern atomic_t netfs_n_rh_readpage;
-+extern atomic_t netfs_n_rh_rreq;
-+extern atomic_t netfs_n_rh_sreq;
-+extern atomic_t netfs_n_rh_download;
-+extern atomic_t netfs_n_rh_download_done;
-+extern atomic_t netfs_n_rh_download_failed;
-+extern atomic_t netfs_n_rh_download_instead;
-+extern atomic_t netfs_n_rh_read;
-+extern atomic_t netfs_n_rh_read_done;
-+extern atomic_t netfs_n_rh_read_failed;
-+extern atomic_t netfs_n_rh_zero;
-+extern atomic_t netfs_n_rh_short_read;
-+extern atomic_t netfs_n_rh_write;
-+extern atomic_t netfs_n_rh_write_done;
-+extern atomic_t netfs_n_rh_write_failed;
-+
-+
-+static inline void netfs_stat(atomic_t *stat)
-+{
-+	atomic_inc(stat);
-+}
-+
-+static inline void netfs_stat_d(atomic_t *stat)
-+{
-+	atomic_dec(stat);
-+}
-+
-+#else
- #define netfs_stat(x) do {} while(0)
- #define netfs_stat_d(x) do {} while(0)
-+#endif
- 
- /*****************************************************************************/
- /*
-diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
-index 799eee7f4ee6..6d6ed30f417e 100644
---- a/fs/netfs/read_helper.c
-+++ b/fs/netfs/read_helper.c
-@@ -56,6 +56,7 @@ static struct netfs_read_request *netfs_alloc_read_request(
- 		refcount_set(&rreq->usage, 1);
- 		__set_bit(NETFS_RREQ_IN_PROGRESS, &rreq->flags);
- 		ops->init_rreq(rreq, file);
-+		netfs_stat(&netfs_n_rh_rreq);
- 	}
- 
- 	return rreq;
-@@ -88,6 +89,7 @@ static void netfs_free_read_request(struct work_struct *work)
- 		rreq->netfs_ops->cleanup(rreq->mapping, rreq->netfs_priv);
- 	trace_netfs_rreq(rreq, netfs_rreq_trace_free);
- 	kfree(rreq);
-+	netfs_stat_d(&netfs_n_rh_rreq);
- }
- 
- static void netfs_put_read_request(struct netfs_read_request *rreq, bool was_async)
-@@ -117,6 +119,7 @@ static struct netfs_read_subrequest *netfs_alloc_subrequest(
- 		refcount_set(&subreq->usage, 2);
- 		subreq->rreq = rreq;
- 		netfs_get_read_request(rreq);
-+		netfs_stat(&netfs_n_rh_sreq);
- 	}
- 
- 	return subreq;
-@@ -134,6 +137,7 @@ static void __netfs_put_subrequest(struct netfs_read_subrequest *subreq,
- 
- 	trace_netfs_sreq(subreq, netfs_sreq_trace_free);
- 	kfree(subreq);
-+	netfs_stat_d(&netfs_n_rh_sreq);
- 	netfs_put_read_request(rreq, was_async);
- }
- 
-@@ -156,6 +160,7 @@ static void netfs_clear_unread(struct netfs_read_subrequest *subreq)
- static void netfs_fill_with_zeroes(struct netfs_read_request *rreq,
- 				   struct netfs_read_subrequest *subreq)
- {
-+	netfs_stat(&netfs_n_rh_zero);
- 	__set_bit(NETFS_SREQ_CLEAR_TAIL, &subreq->flags);
- 	netfs_subreq_terminated(subreq, 0, false);
- }
-@@ -179,6 +184,7 @@ static void netfs_fill_with_zeroes(struct netfs_read_request *rreq,
- static void netfs_read_from_server(struct netfs_read_request *rreq,
- 				   struct netfs_read_subrequest *subreq)
- {
-+	netfs_stat(&netfs_n_rh_download);
- 	rreq->netfs_ops->issue_op(subreq);
- }
- 
-@@ -288,6 +294,7 @@ static void netfs_rreq_short_read(struct netfs_read_request *rreq,
- 	__clear_bit(NETFS_SREQ_SHORT_READ, &subreq->flags);
- 	__set_bit(NETFS_SREQ_SEEK_DATA_READ, &subreq->flags);
- 
-+	netfs_stat(&netfs_n_rh_short_read);
- 	trace_netfs_sreq(subreq, netfs_sreq_trace_resubmit_short);
- 
- 	netfs_get_read_subrequest(subreq);
-@@ -319,6 +326,7 @@ static bool netfs_rreq_perform_resubmissions(struct netfs_read_request *rreq)
- 				break;
- 			subreq->source = NETFS_DOWNLOAD_FROM_SERVER;
- 			subreq->error = 0;
-+			netfs_stat(&netfs_n_rh_download_instead);
- 			trace_netfs_sreq(subreq, netfs_sreq_trace_download_instead);
- 			netfs_get_read_subrequest(subreq);
- 			atomic_inc(&rreq->nr_rd_ops);
-@@ -414,6 +422,17 @@ void netfs_subreq_terminated(struct netfs_read_subrequest *subreq,
- 	       subreq->debug_index, subreq->start, subreq->flags,
- 	       transferred_or_error);
- 
-+	switch (subreq->source) {
-+	case NETFS_READ_FROM_CACHE:
-+		netfs_stat(&netfs_n_rh_read_done);
-+		break;
-+	case NETFS_DOWNLOAD_FROM_SERVER:
-+		netfs_stat(&netfs_n_rh_download_done);
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	if (IS_ERR_VALUE(transferred_or_error)) {
- 		subreq->error = transferred_or_error;
- 		goto failed;
-@@ -470,8 +489,10 @@ void netfs_subreq_terminated(struct netfs_read_subrequest *subreq,
- 
- failed:
- 	if (subreq->source == NETFS_READ_FROM_CACHE) {
-+		netfs_stat(&netfs_n_rh_read_failed);
- 		set_bit(NETFS_RREQ_INCOMPLETE_IO, &rreq->flags);
- 	} else {
-+		netfs_stat(&netfs_n_rh_download_failed);
- 		set_bit(NETFS_RREQ_FAILED, &rreq->flags);
- 		rreq->error = subreq->error;
- 	}
-@@ -653,6 +674,7 @@ void netfs_readahead(struct readahead_control *ractl,
- 	rreq->start	= readahead_pos(ractl);
- 	rreq->len	= readahead_length(ractl);
- 
-+	netfs_stat(&netfs_n_rh_readahead);
- 	trace_netfs_read(rreq, readahead_pos(ractl), readahead_length(ractl),
- 			 netfs_read_trace_readahead);
- 
-@@ -722,6 +744,7 @@ int netfs_readpage(struct file *file,
- 	rreq->start	= page_index(page) * PAGE_SIZE;
- 	rreq->len	= thp_size(page);
- 
-+	netfs_stat(&netfs_n_rh_readpage);
- 	trace_netfs_read(rreq, rreq->start, rreq->len, netfs_read_trace_readpage);
- 
- 	netfs_get_read_request(rreq);
-diff --git a/fs/netfs/stats.c b/fs/netfs/stats.c
-new file mode 100644
-index 000000000000..df6ff5718f25
---- /dev/null
-+++ b/fs/netfs/stats.c
-@@ -0,0 +1,54 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Netfs support statistics
-+ *
-+ * Copyright (C) 2021 Red Hat, Inc. All Rights Reserved.
-+ * Written by David Howells (dhowells@redhat.com)
-+ */
-+
-+#include <linux/export.h>
-+#include <linux/seq_file.h>
-+#include <linux/netfs.h>
-+#include "internal.h"
-+
-+atomic_t netfs_n_rh_readahead;
-+atomic_t netfs_n_rh_readpage;
-+atomic_t netfs_n_rh_rreq;
-+atomic_t netfs_n_rh_sreq;
-+atomic_t netfs_n_rh_download;
-+atomic_t netfs_n_rh_download_done;
-+atomic_t netfs_n_rh_download_failed;
-+atomic_t netfs_n_rh_download_instead;
-+atomic_t netfs_n_rh_read;
-+atomic_t netfs_n_rh_read_done;
-+atomic_t netfs_n_rh_read_failed;
-+atomic_t netfs_n_rh_zero;
-+atomic_t netfs_n_rh_short_read;
-+atomic_t netfs_n_rh_write;
-+atomic_t netfs_n_rh_write_done;
-+atomic_t netfs_n_rh_write_failed;
-+
-+void netfs_stats_show(struct seq_file *m)
-+{
-+	seq_printf(m, "RdHelp : RA=%u RP=%u rr=%u sr=%u\n",
-+		   atomic_read(&netfs_n_rh_readahead),
-+		   atomic_read(&netfs_n_rh_readpage),
-+		   atomic_read(&netfs_n_rh_rreq),
-+		   atomic_read(&netfs_n_rh_sreq));
-+	seq_printf(m, "RdHelp : ZR=%u sh=%u\n",
-+		   atomic_read(&netfs_n_rh_zero),
-+		   atomic_read(&netfs_n_rh_short_read));
-+	seq_printf(m, "RdHelp : DL=%u ds=%u df=%u di=%u\n",
-+		   atomic_read(&netfs_n_rh_download),
-+		   atomic_read(&netfs_n_rh_download_done),
-+		   atomic_read(&netfs_n_rh_download_failed),
-+		   atomic_read(&netfs_n_rh_download_instead));
-+	seq_printf(m, "RdHelp : RD=%u rs=%u rf=%u\n",
-+		   atomic_read(&netfs_n_rh_read),
-+		   atomic_read(&netfs_n_rh_read_done),
-+		   atomic_read(&netfs_n_rh_read_failed));
-+	seq_printf(m, "RdHelp : WR=%u ws=%u wf=%u\n",
-+		   atomic_read(&netfs_n_rh_write),
-+		   atomic_read(&netfs_n_rh_write_done),
-+		   atomic_read(&netfs_n_rh_write_failed));
-+}
-+EXPORT_SYMBOL(netfs_stats_show);
-diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index 8e8c6a4e4dde..db4af80cbae3 100644
---- a/include/linux/netfs.h
-+++ b/include/linux/netfs.h
-@@ -166,5 +166,6 @@ extern int netfs_readpage(struct file *,
- 			  void *);
- 
- extern void netfs_subreq_terminated(struct netfs_read_subrequest *, ssize_t, bool);
-+extern void netfs_stats_show(struct seq_file *);
- 
- #endif /* _LINUX_NETFS_H */
+Why are we messing around with "thread_started" or "thread_finished"?
+We should know whether cpci_thread has been started by the control
+flow.
 
+There are two ways to start cpci_thread:
 
+  1)  cpcihp_generic_init                        # module_init function
+        cpci_hp_start
+          cpci_start_thread
+            cpci_thread = kthread_run(...)
+
+  2)  zt5550_hc_init_one                         # .probe function
+        cpci_hp_start
+          cpci_start_thread
+            cpci_thread = kthread_run(...)
+
+cpci_hp_start() returns a non-zero error if kthread_run() fails, and 
+both cpcihp_generic_init() and zt5550_hc_init_one() clean up and exit
+in that case.
+
+The error cleanup is a little sloppy: if cpci_hp_register_bus() fails,
+cpcihp_generic_init() calls cpci_hp_unregister_controller(), which
+stops cpci_thread if it has been started.  But in that case, we *know*
+there's no cpci_thread because we haven't even tried to start it.  I
+think this error cleanup could be done better by splitting the
+cpci_stop_thread() out from cpci_hp_unregister_controller() so it
+could be done separately.  zt5550_hc_init_one() has a similar problem.
+
+If cpcihp_generic_init() or zt5550_hc_init_one() succeeds, we *know*
+there is a cpci_thread.  We should be able to call kthread_stop() on
+it unconditionally in the cpcihp_generic_exit() and
+zt5550_hc_remove_one() paths.
+
+What do you think?  It's a little more restructuring work, but I think
+"thread_started" and "thread_finished" are basically kind of kludgy
+and they add complication without giving me confidence that they're
+actually correct.
+
+>  static int enable_slot(struct hotplug_slot *slot);
+>  static int disable_slot(struct hotplug_slot *slot);
+> @@ -447,7 +447,7 @@ event_thread(void *data)
+>  				msleep(500);
+>  			} else if (rc < 0) {
+>  				dbg("%s - error checking slots", __func__);
+> -				thread_finished = 1;
+> +				thread_started = 0;
+>  				goto out;
+>  			}
+>  		} while (atomic_read(&extracting) && !kthread_should_stop());
+> @@ -479,7 +479,7 @@ poll_thread(void *data)
+>  					msleep(500);
+>  				} else if (rc < 0) {
+>  					dbg("%s - error checking slots", __func__);
+> -					thread_finished = 1;
+> +					thread_started = 0;
+>  					goto out;
+>  				}
+>  			} while (atomic_read(&extracting) && !kthread_should_stop());
+> @@ -501,7 +501,7 @@ cpci_start_thread(void)
+>  		err("Can't start up our thread");
+>  		return PTR_ERR(cpci_thread);
+>  	}
+> -	thread_finished = 0;
+> +	thread_started = 1;
+>  	return 0;
+>  }
+>  
+> @@ -509,7 +509,7 @@ static void
+>  cpci_stop_thread(void)
+>  {
+>  	kthread_stop(cpci_thread);
+> -	thread_finished = 1;
+> +	thread_started = 0;
+>  }
+>  
+>  int
+> @@ -571,7 +571,7 @@ cpci_hp_unregister_controller(struct cpci_hp_controller *old_controller)
+>  	int status = 0;
+>  
+>  	if (controller) {
+> -		if (!thread_finished)
+> +		if (thread_started)
+>  			cpci_stop_thread();
+>  		if (controller->irq)
+>  			free_irq(controller->irq, controller->dev_id);
+> -- 
+> 2.25.1
+> 
