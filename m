@@ -2,126 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3323456C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD8B3456D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhCWE3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 00:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhCWE2Z (ORCPT
+        id S229716AbhCWEe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 00:34:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:20371 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhCWEde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 00:28:25 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D156FC061574;
-        Mon, 22 Mar 2021 21:28:24 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id c6so14098434qtc.1;
-        Mon, 22 Mar 2021 21:28:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BQxVkNiVM8UV8IHnKGNUWqzyC2HDMRY5fES8wozWivI=;
-        b=hcyJutkUV28x+qZD/KN5G4F59DEugD7nt3R5RX7R7+QhAiskjWduYqqQ+6PBHEmWy3
-         M7WWlk+IlayTPLVpzK2h9AXIutQZNhjH6gj3eM9Kkn7X6pl6rJdAGys2slz2UOIgayZj
-         0e9dJK/IPm1pSuq1KDCaaM485tGBgCkksx3zrX1w8X/h2dpkTagCzvYxJg87ahQZ8rDC
-         u15GnF/TQ3Gb4U+6oCYCfmOuoJgseHrjujbKMBEu+I+gbgY0M+l5V84kLelCntjsbZRj
-         wp+ugwG2wA/NMl2g1HulmR2YvJyaB6L9G+TqgSSZJ4ppmpZqsdqRea/I3MNM02E3CBhn
-         u7MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BQxVkNiVM8UV8IHnKGNUWqzyC2HDMRY5fES8wozWivI=;
-        b=U+6oRNRC0HHAhK9VZyiCNdqCLP6+Kv4CdvI5a62TBOMVHNk2/1YMvWeP/yCYxtQPyN
-         rGp9yQ98FaYMug3fi2HdSrqC/HjCSyUZsyLqTlva5R9Ef3DNnI5DO4ge5+7wg5E+PpXl
-         5DDeoPjUgMbWax5c126ncieQ/+mQCcRR3oOhrJgn13NbmVQyxODA3fqZYcCU6m+QZmHW
-         lNSVqiFCcKwuJ+/ghAT4G+f04ATTfobwdb/EXk2DR51/fElSE8QzEdwIwFiN58puKwOc
-         /E3jR3nsQuqfXx8ez0Dyk/oZF1eg69KEm2iVL8arWYRPfhEyhDhBQXJ/Yx2TVbqKvXpn
-         rDgw==
-X-Gm-Message-State: AOAM5333OsXTxhDzvEUksuDhKZiqvvEfOdF1m430bmWl5fgnuKyYO0FM
-        LZMPn1pjOlSmH8gyS6COjlA=
-X-Google-Smtp-Source: ABdhPJzkX04ovpUYRkWxYCvb5rMf/hVg9BEa2oUv9weCYG22NY/KKXelqFOMF7N3Ihmio9fmmSIBzQ==
-X-Received: by 2002:ac8:7951:: with SMTP id r17mr2957175qtt.207.1616473703933;
-        Mon, 22 Mar 2021 21:28:23 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.208])
-        by smtp.gmail.com with ESMTPSA id j26sm10341273qtp.30.2021.03.22.21.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 21:28:23 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] octeontx2-af: cn10k: Few mundane typos fixed
-Date:   Tue, 23 Mar 2021 09:58:00 +0530
-Message-Id: <20210323042800.923096-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        Tue, 23 Mar 2021 00:33:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616474014; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=SlVVUjLXGkG3TFAabnPU9kolUTIfCpf1WVOkmTbnXoU=;
+ b=HMkgnwf4+M0C27Ba4ZkOxBiguxIzOj+EY/4ZOIJrc7qVO0WOY0EYZUL2AetbYPjVozpyQbD5
+ BCHyUkQ9wIu/OmuEVAJWFlGdDzPYB/1HZTUgnDHAYa3mkBUfGCqUAlZAN6JOBRRn1Y0WiUd/
+ 8T4uS3s9wEJu8XjfICuSt0RgEfY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60596f944db3bb680177d6ef (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Mar 2021 04:33:24
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7DE2FC43461; Tue, 23 Mar 2021 04:33:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0F5EC433C6;
+        Tue, 23 Mar 2021 04:33:22 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 23 Mar 2021 12:33:22 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
+In-Reply-To: <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
+References: <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+ <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p4>
+ <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
+ <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
+ <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
+Message-ID: <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-23 12:22, Can Guo wrote:
+> On 2021-03-22 17:11, Bean Huo wrote:
+>> On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
+>>> +       switch (rsp_field->hpb_op) {
+>>> 
+>>> +       case HPB_RSP_REQ_REGION_UPDATE:
+>>> 
+>>> +               if (data_seg_len != DEV_DATA_SEG_LEN)
+>>> 
+>>> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>> 
+>>> +                                "%s: data seg length is not
+>>> same.\n",
+>>> 
+>>> +                                __func__);
+>>> 
+>>> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
+>>> 
+>>> +               break;
+>>> 
+>>> +       case HPB_RSP_DEV_RESET:
+>>> 
+>>> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+>>> 
+>>> +                        "UFS device lost HPB information during
+>>> PM.\n");
+>>> 
+>>> +               break;
+>> 
+>> Hi Deajun,
+>> This series looks good to me. Just here I have one question. You 
+>> didn't
+>> handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS, how 
+>> to
+>> handle HPB_RSP_DEV_RESET from the host side? Do you think we shoud
+>> reset host side HPB entry as well or what else?
+>> 
+>> 
+>> Bean
+> 
+> Same question here - I am still collecting feedbacks from flash vendors 
+> about
+> what is recommanded host behavior on reception of HPB Op code 0x2, 
+> since it
+> is not cleared defined in HPB2.0 specs.
+> 
+> Can Guo.
 
-s/preceeds/precedes/  .....two different places
-s/rsponse/response/
-s/cetain/certain/
-s/precison/precision/
+I think the question should be asked in the HPB2.0 patch, since in 
+HPB1.0 device
+control mode, a HPB reset in device side does not impact anything in 
+host side -
+host is not writing back any HPB entries to device anyways and HPB Read 
+cmd with
+invalid HPB entries shall be treated as normal Read(10) cmd without any 
+problems.
+Please correct me if I am wrong.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index ea456099b33c..14a184c3f6a4 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -74,13 +74,13 @@ struct otx2_mbox {
- 	struct otx2_mbox_dev *dev;
- };
-
--/* Header which preceeds all mbox messages */
-+/* Header which precedes all mbox messages */
- struct mbox_hdr {
- 	u64 msg_size;	/* Total msgs size embedded */
- 	u16  num_msgs;   /* No of msgs embedded */
- };
-
--/* Header which preceeds every msg and is also part of it */
-+/* Header which precedes every msg and is also part of it */
- struct mbox_msghdr {
- 	u16 pcifunc;     /* Who's sending this msg */
- 	u16 id;          /* Mbox message ID */
-@@ -277,7 +277,7 @@ struct msg_req {
- 	struct mbox_msghdr hdr;
- };
-
--/* Generic rsponse msg used a ack or response for those mbox
-+/* Generic response msg used a ack or response for those mbox
-  * messages which doesn't have a specific rsp msg format.
-  */
- struct msg_rsp {
-@@ -299,7 +299,7 @@ struct ready_msg_rsp {
-
- /* Structure for requesting resource provisioning.
-  * 'modify' flag to be used when either requesting more
-- * or to detach partial of a cetain resource type.
-+ * or to detach partial of a certain resource type.
-  * Rest of the fields specify how many of what type to
-  * be attached.
-  * To request LFs from two blocks of same type this mailbox
-@@ -489,7 +489,7 @@ struct cgx_set_link_mode_rsp {
- };
-
- #define RVU_LMAC_FEAT_FC		BIT_ULL(0) /* pause frames */
--#define RVU_LMAC_FEAT_PTP		BIT_ULL(1) /* precison time protocol */
-+#define RVU_LMAC_FEAT_PTP		BIT_ULL(1) /* precision time protocol */
- #define RVU_MAC_VERSION			BIT_ULL(2)
- #define RVU_MAC_CGX			BIT_ULL(3)
- #define RVU_MAC_RPM			BIT_ULL(4)
---
-2.31.0
-
+Thanks,
+Can Guo.
