@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238C33466AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F6E3466B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbhCWRtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230378AbhCWRss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:48:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3B5A61585;
-        Tue, 23 Mar 2021 17:48:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616521728;
-        bh=DT7S4ANP/ZZuhKQtMce/aXHnvlXtr9OnxskEhH4djlk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r1x4uled6bRtRcVetmBH/l2bRYlraEGJe7UjUD0WmTDX4ajHIripgIMoSk+YUcTUn
-         ftxUshYg6/bAmBNfPpTqEXFXXjgaymqfew7euiLU57QrERWSqofcRMrQkp3RV5keyI
-         bOqH851sblS8JiQl38haGgEA1UB2YFIKK8u3U28ZDqZ4/5zOtDE/ARK+b53F8s3JcJ
-         3VnEPdR9FbQGPMlYO3b33rAnqg28aECe6LJQhRlM+7Ul7gjM4MEK42+Kn55B9zstvt
-         EoCLhD6EI6jjEJQsCbHoAYVym00wx6pobXzurxbtEQt1PjDFqUDNFUTCg6xcCDMbas
-         qjVH83p0H3/IQ==
-Date:   Tue, 23 Mar 2021 17:48:41 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>, j.neuschaefer@gmx.net,
+        id S231178AbhCWRtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbhCWRtZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:49:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAB1C061574;
+        Tue, 23 Mar 2021 10:49:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=mGEfqR1UYPmFe4Iqx4QUJhJA8g5z7S5be6OQeBV2P6c=; b=oLjBoU33t5KC2LpJ1AoIAZq7YP
+        wslL/KfZNrYL74hZ0l3NZqrgA3VVOPNJz4hlbFRLVXAMvX2+vtoxz+3w6SnJmGi9Yt+CG7DOdTGI2
+        rUiNdHGCRhTznZPNxfo4DO7J4Sl2XJm0737x496SomCHArahEn4rdyWOQQ0LRZR0o0IDnvzUV/fiM
+        4PoLE7ZtO9YRoFKTQiJHRZfpVQMerGOnOLnbMDJwCr4lvptaSsSrBWTdfrezbm2gABHtH+Vz5k9H3
+        +Laybg5WGl7qwkxrkdG8edAiaFVYK+u/tIiIkDPMCLVrqAMySATgeUDN2/LmnWJe1N59Z0DcSPvD4
+        R08ut6vw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOl9E-00AMe8-VV; Tue, 23 Mar 2021 17:48:59 +0000
+Subject: Re: [PATCH V2] octeontx2-af: Few mundane typos fixed
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
+        hkelam@marvell.com, sbhatta@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
-Message-ID: <20210323174841.GD5490@sirena.org.uk>
-References: <20210308212952.20774-1-andreas@kemnade.info>
- <20210310094821.GB701493@dell>
- <20210311184033.GJ4962@sirena.org.uk>
- <20210322145925.GY2916463@dell>
- <20210323171143.GA5490@sirena.org.uk>
- <20210323172002.GY2916463@dell>
+References: <20210323094327.2386998-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b2cb2dc4-93f6-8b0e-4d1a-56a1d1c16285@infradead.org>
+Date:   Tue, 23 Mar 2021 10:48:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="PHCdUe6m4AxPMzOu"
-Content-Disposition: inline
-In-Reply-To: <20210323172002.GY2916463@dell>
-X-Cookie: Formatted to fit your screen.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210323094327.2386998-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/23/21 2:43 AM, Bhaskar Chowdhury wrote:
+> s/preceeds/precedes/  .....two different places
+> s/rsponse/response/
+> s/cetain/certain/
+> s/precison/precision/
+> 
+> Fix a sentence construction as per suggestion.
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
---PHCdUe6m4AxPMzOu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-On Tue, Mar 23, 2021 at 05:20:02PM +0000, Lee Jones wrote:
-> On Tue, 23 Mar 2021, Mark Brown wrote:
->=20
-> > On Mon, Mar 22, 2021 at 02:59:25PM +0000, Lee Jones wrote:
-> > > On Thu, 11 Mar 2021, Mark Brown wrote:
+Thanks.
 
-> > > > If there were more users it'd be better to have this in the core so=
- that
-> > > > problems we can detect like cache stuff if that's used but if it's =
-just
-> > > > one broken device it's probably not worth it, this seems like somet=
-hing
-> > > > you'd have to try to end up with and which is going to cause timeout
-> > > > problems with a lot of I2C controllers which would tank performance
-> > > > enough that people would notice.
+> ---
+>  Changes from V1:
+>   Bad sentence construction missed my eyes , correced by following
+>   Randy's suggestion.
+> 
+>  drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> index ea456099b33c..8a6227287e34 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> @@ -74,13 +74,13 @@ struct otx2_mbox {
+>  	struct otx2_mbox_dev *dev;
+>  };
+> 
+> -/* Header which preceeds all mbox messages */
+> +/* Header which precedes all mbox messages */
+>  struct mbox_hdr {
+>  	u64 msg_size;	/* Total msgs size embedded */
+>  	u16  num_msgs;   /* No of msgs embedded */
+>  };
+> 
+> -/* Header which preceeds every msg and is also part of it */
+> +/* Header which precedes every msg and is also part of it */
+>  struct mbox_msghdr {
+>  	u16 pcifunc;     /* Who's sending this msg */
+>  	u16 id;          /* Mbox message ID */
+> @@ -277,8 +277,8 @@ struct msg_req {
+>  	struct mbox_msghdr hdr;
+>  };
+> 
+> -/* Generic rsponse msg used a ack or response for those mbox
+> - * messages which doesn't have a specific rsp msg format.
+> +/* Generic response msg used an ack or response for those mbox
+> + * messages which don't have a specific rsp msg format.
+>   */
+>  struct msg_rsp {
+>  	struct mbox_msghdr hdr;
+> @@ -299,7 +299,7 @@ struct ready_msg_rsp {
+> 
+>  /* Structure for requesting resource provisioning.
+>   * 'modify' flag to be used when either requesting more
+> - * or to detach partial of a cetain resource type.
+> + * or to detach partial of a certain resource type.
+>   * Rest of the fields specify how many of what type to
+>   * be attached.
+>   * To request LFs from two blocks of same type this mailbox
+> @@ -489,7 +489,7 @@ struct cgx_set_link_mode_rsp {
+>  };
+> 
+>  #define RVU_LMAC_FEAT_FC		BIT_ULL(0) /* pause frames */
+> -#define RVU_LMAC_FEAT_PTP		BIT_ULL(1) /* precison time protocol */
+> +#define RVU_LMAC_FEAT_PTP		BIT_ULL(1) /* precision time protocol */
+>  #define RVU_MAC_VERSION			BIT_ULL(2)
+>  #define RVU_MAC_CGX			BIT_ULL(3)
+>  #define RVU_MAC_RPM			BIT_ULL(4)
+> --
 
-> > > So Yoda, is this to go into the core, or stay where it is?
 
-> > Well, nobody's sent me any patches.
+-- 
+~Randy
 
-> Code is still in the driver in v4.
-
-> My question is; should these functions really live in the SS?
-
-Perhaps we could avoid using that particular abbreviation.
-
-Like I say it depends on how common this is - are we seeing other
-devices with the same problem?
-
---PHCdUe6m4AxPMzOu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBaKfgACgkQJNaLcl1U
-h9CLWgf+N0kLQl/2ZQ2baUjBK0WRJO/GmByHzzTEeVPzmUxA5JJ1U4jmQqnMTRo6
-Apnb5Ofwzv/voAVBCKYfixNb8IYTXBbToOlybeWeuwgoy/TiBPCQmulTI0XVajmC
-4bTo6ME3aRoNeR5FPkXVrNHLKZlb00NFmN2PxgCeeW2BH3ymbYJ0P+eQ8siL4jBA
-0cb7NqryhfXsc5yXWZupQaauvgx9S5i8gq/YwfCwzKCqcvU/VPsV38i/HXb9A5tV
-TS9ps8z/2BziU8E7rr4r4vLHI9iRtq1K88t+RuR9gOPIsgp3vyYgaJBWTKserAix
-RBJbKvE3D5MbNeRHWdwt7zkCiLQFyQ==
-=BHaw
------END PGP SIGNATURE-----
-
---PHCdUe6m4AxPMzOu--
