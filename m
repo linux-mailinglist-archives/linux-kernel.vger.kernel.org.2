@@ -2,181 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A5F346A80
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C65F346A87
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbhCWUza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233424AbhCWUzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:55:01 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E537FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:55:00 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id h13so25088081eds.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sIlhwezzW3BH4ibh6p5EOcG1PRMUgx4NenwqaMmx55s=;
-        b=NhEf2QJOcj3iOZD88Yu0ZLce0jFAF2oJ0a4zOpB89R+20Dnm1wJxmHvStKsHMcXIEU
-         u669BILvepA3CMjYHpxucpAG7ZNB3shoKU8iAzkFtfrzwfxVQrb0NnRf13IytDNKcwR6
-         9/7irFGnst5FsQFkUYhi/hyZwUIkwPDGAQ5nw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sIlhwezzW3BH4ibh6p5EOcG1PRMUgx4NenwqaMmx55s=;
-        b=XVDQiCrXzoyRo442QpKXBgK+VE20Yce3oHUsqSySMGL7Yjobz3vbuoAs5C0wYdR8IR
-         O4FwRUH8BcNh21TruGdZSY8Tm9BGLxk3e1nls70RmW0PAYLsMTRYBUQUqLv3vVwDYbt1
-         T6LZs2hzHzBrPO4QPymhnZojQK2wmEehmb6Lt6AZaW8/VEvKXWuKM0p1e2n1uRTDiqWd
-         pNG/BI+vZxLV5xLTJGshZAMMqK4uirDvH71Z8LtkSBd/LxR+3nS4cPStbN/3JdN2rmHa
-         xcPXOwktlpccG5qGqZfLqZ8k0iAxZhtMCsQ8yrBw9b618+6ptmVv5uQ4CfSk9L9aCmAs
-         XWIw==
-X-Gm-Message-State: AOAM533lqEPEc0TNFZBmev8GFuwzGmmyXels8otmVCLlBWbs2+vpDjC9
-        72GHb9l76Artl9/Y3WO8KwPDGw==
-X-Google-Smtp-Source: ABdhPJzEQWJWPosRftiYW44Z3IJtNRzghYlLC0WDM9fktlTBuiNRk6eHiX1Sk8MTnpyOK9RSo8b88A==
-X-Received: by 2002:a05:6402:2695:: with SMTP id w21mr6430957edd.99.1616532899600;
-        Tue, 23 Mar 2021 13:54:59 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id ym4sm3844663ejb.100.2021.03.23.13.54.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 13:54:59 -0700 (PDT)
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Patrick Menschel <menschel.p@posteo.de>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
- <20210323073437.yo63wreqnubbeqby@pengutronix.de>
- <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
- <a5599800-53f4-c53f-abcc-e166ea9028b9@rasmusvillemoes.dk>
- <080d9e5c-fe1f-4a64-2938-8ca6d8a98d78@hartkopp.net>
- <0a8e8e95-c1a2-ede6-9f87-1ab7a0a155e3@rasmusvillemoes.dk>
- <212c8bc3-89f9-9c33-ed1b-b50ac04e7532@hartkopp.net>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <1a6dd272-8bc2-57dc-5592-47a08493193a@rasmusvillemoes.dk>
-Date:   Tue, 23 Mar 2021 21:54:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233424AbhCWU6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:58:00 -0400
+Received: from mga05.intel.com ([192.55.52.43]:57574 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233228AbhCWU5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 16:57:31 -0400
+IronPort-SDR: 0hvAKdjLchKagBXa9KQAG/sSuM1+MHjjN7A6aXMKsU8363v4B3rED+egkyUACrJpmxXN4I+kVH
+ kSvY2dQsk1aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="275664082"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="275664082"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 13:57:30 -0700
+IronPort-SDR: FKD0CIRA+eArYvRqEmuH7ge4ZU9grEiJh4fSE2jUSs8xudwaHBMqiOBG16GJHoBYmYGxA6en1s
+ uIcwL6wr+Q6w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="391033654"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 23 Mar 2021 13:56:29 -0700
+Received: from [10.251.24.54] (kliang2-MOBL.ccr.corp.intel.com [10.251.24.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 1D64758069F;
+        Tue, 23 Mar 2021 13:56:28 -0700 (PDT)
+Subject: Re: [PATCH v4 RESEND 3/5] perf/x86/lbr: Move cpuc->lbr_xsave
+ allocation out of sleeping region
+To:     Like Xu <like.xu@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210322060635.821531-1-like.xu@linux.intel.com>
+ <20210322060635.821531-4-like.xu@linux.intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <34a4ae84-8305-b6d2-42f8-658fafe73f73@linux.intel.com>
+Date:   Tue, 23 Mar 2021 16:56:27 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <212c8bc3-89f9-9c33-ed1b-b50ac04e7532@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210322060635.821531-4-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/2021 19.59, Oliver Hartkopp wrote:
+
+
+On 3/22/2021 2:06 AM, Like Xu wrote:
+> If the kernel is compiled with the CONFIG_LOCKDEP option, the conditional
+> might_sleep_if() deep in kmem_cache_alloc() will generate the following
+> trace, and potentially cause a deadlock when another LBR event is added:
 > 
+> [  243.115549] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:196
+> [  243.117576] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 839, name: perf
+> [  243.119326] INFO: lockdep is turned off.
+> [  243.120249] irq event stamp: 0
+> [  243.120967] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [  243.122415] hardirqs last disabled at (0): [<ffffffff810d9bf5>] copy_process+0xa45/0x1dc0
+> [  243.124302] softirqs last  enabled at (0): [<ffffffff810d9bf5>] copy_process+0xa45/0x1dc0
+> [  243.126255] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [  243.128119] CPU: 0 PID: 839 Comm: perf Not tainted 5.11.0-rc4-guest+ #8
+> [  243.129654] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
+> [  243.131520] Call Trace:
+> [  243.132112]  dump_stack+0x8d/0xb5
+> [  243.132896]  ___might_sleep.cold.106+0xb3/0xc3
+> [  243.133984]  slab_pre_alloc_hook.constprop.85+0x96/0xd0
+> [  243.135208]  ? intel_pmu_lbr_add+0x152/0x170
+> [  243.136207]  kmem_cache_alloc+0x36/0x250
+> [  243.137126]  intel_pmu_lbr_add+0x152/0x170
+> [  243.138088]  x86_pmu_add+0x83/0xd0
+> [  243.138889]  ? lock_acquire+0x158/0x350
+> [  243.139791]  ? lock_acquire+0x158/0x350
+> [  243.140694]  ? lock_acquire+0x158/0x350
+> [  243.141625]  ? lock_acquired+0x1e3/0x360
+> [  243.142544]  ? lock_release+0x1bf/0x340
+> [  243.143726]  ? trace_hardirqs_on+0x1a/0xd0
+> [  243.144823]  ? lock_acquired+0x1e3/0x360
+> [  243.145742]  ? lock_release+0x1bf/0x340
+> [  243.147107]  ? __slab_free+0x49/0x540
+> [  243.147966]  ? trace_hardirqs_on+0x1a/0xd0
+> [  243.148924]  event_sched_in.isra.129+0xf8/0x2a0
+> [  243.149989]  merge_sched_in+0x261/0x3e0
+> [  243.150889]  ? trace_hardirqs_on+0x1a/0xd0
+> [  243.151869]  visit_groups_merge.constprop.135+0x130/0x4a0
+> [  243.153122]  ? sched_clock_cpu+0xc/0xb0
+> [  243.154023]  ctx_sched_in+0x101/0x210
+> [  243.154884]  ctx_resched+0x6f/0xc0
+> [  243.155686]  perf_event_exec+0x21e/0x2e0
+> [  243.156641]  begin_new_exec+0x5e5/0xbd0
+> [  243.157540]  load_elf_binary+0x6af/0x1770
+> [  243.158478]  ? __kernel_read+0x19d/0x2b0
+> [  243.159977]  ? lock_acquire+0x158/0x350
+> [  243.160876]  ? __kernel_read+0x19d/0x2b0
+> [  243.161796]  bprm_execve+0x3c8/0x840
+> [  243.162638]  do_execveat_common.isra.38+0x1a5/0x1c0
+> [  243.163776]  __x64_sys_execve+0x32/0x40
+> [  243.164676]  do_syscall_64+0x33/0x40
+> [  243.165514]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [  243.166746] RIP: 0033:0x7f6180a26feb
+> [  243.167590] Code: Unable to access opcode bytes at RIP 0x7f6180a26fc1.
+> [  243.169097] RSP: 002b:00007ffc6558ce18 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
+> [  243.170844] RAX: ffffffffffffffda RBX: 00007ffc65592d30 RCX: 00007f6180a26feb
+> [  243.172514] RDX: 000055657f408dc0 RSI: 00007ffc65592410 RDI: 00007ffc65592d30
+> [  243.174162] RBP: 00007ffc6558ce80 R08: 00007ffc6558cde0 R09: 0000000000000000
+> [  243.176042] R10: 0000000000000008 R11: 0000000000000202 R12: 00007ffc65592410
+> [  243.177696] R13: 000055657f408dc0 R14: 0000000000000001 R15: 00007ffc65592410
 > 
-> On 23.03.21 15:00, Rasmus Villemoes wrote:
-
->> Now what CONFIG_* knobs are responsible for putting -mabi=apcs-gnu in
->> CFLAGS is left as an exercise for the reader. Regardless, it is not a
->> bug in the compiler. The error is the assumption that this language
->>
->> "Aggregates and Unions
->>
->> Structures and unions assume the alignment of their most strictly
->> aligned component.
+> One of the solution is to use GFP_ATOMIC, but it will make the code less
+> reliable under memory pressue. Let's move the memory allocation out of
+> the sleeping region and put it into the x86_reserve_hardware().
 > 
-> (parse error in sentence)
-
-It was a direct quote, but I can try to paraphrase with an example. If
-you have a struct foo { T1 m1; T2 m2; T3 m3; }, then alignof(struct foo)
-= max(alignof(T1), alignof(T2), alignof(T3)). Same for a "union foo".
-
-But this is specifically for x86-64; for (some flavors of) ARM, other
-rules apply - namely, alignof(T) is 4 unless T is char or short (or
-(un)signed variants), ignoring bitfields which have their own rules.
-Note that while
-
-union u {char a; char b;}
-
-has alignment 4 on ARM and 1 on x86-64, other types are less strictly
-aligned on ARM; e.g. s64 aka long long is 8-byte aligned on x86-64 but
-(still) just 4-byte aligned on ARM. And again, this is just for specific
--mabi= options.
-
->> Each member is assigned to the lowest available offset with the
->> appropriate
->> alignment. The size of any object is always a multiple of the object‘s
->> alignment."
->>
->> from the x86-64 ABI applies on all other architectures/ABIs.
->>
->>> I'm not a compiler expert but this does not seem to be consistent.
->>>
->>> Especially as we only have byte sizes (inside and outside of the union)
->>> and "A field with a char type is aligned to the next available byte."
->>
->> Yes, and that's exactly what you got before the anon union was
->> introduced.
+> The disadvantage of this fix is that the cpuc->lbr_xsave memory
+> will be allocated for each cpu like the legacy ds_buffer.
 > 
-> Before(!) the union there is nothing to pad.
+> Fixes: c085fb8774 ("perf/x86/intel/lbr: Support XSAVES for arch LBR read")
+> Suggested-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
 
-Just to be clear, my "before" was in the temporal sense, i.e. "prior to
-commit ea7800565a128", all the u8s in struct can_frame were placed one
-after the other. But after that commit, struct can_frame has a new
-member replacing can_dlc which happens to occupy 4 bytes (for some
-ABIs), pushing the subsequent members __pad, __res0 and len8_dlc
-(formerly known as __res1) ahead.
+I observed the same issue when I did LBR test on an ADL machine. This 
+patch fixes the issue.
 
->>> The union is indeed aligned to the word boundary - but the following
->>> byte is not aligned to the next available byte.
->>
->> Yes it is, because the union occupies 4 bytes. The first byte is shared
->> by the two char members, the remaining three bytes are padding.
+Tested-by: Kan Liang <kan.liang@linux.intel.com>
+
+Thanks,
+Kan
+> ---
+>   arch/x86/events/core.c       |  8 +++++---
+>   arch/x86/events/intel/bts.c  |  2 +-
+>   arch/x86/events/intel/lbr.c  | 22 ++++++++++++++++------
+>   arch/x86/events/perf_event.h |  8 +++++++-
+>   4 files changed, 29 insertions(+), 11 deletions(-)
 > 
-> But why is the union 4 bytes long here and adds a padding of three bytes
-> at the end?
-
-Essentially, because arrays. It's true for _any_ type T that sizeof(T)
-must be a multiple of alignof(T). Take an array "T x[9]". If x[0] is
-4-byte aligned, then in order for x[1] to be 4-byte aligned as well,
-x[0] must occupy a multiple of 4 bytes.
-
-It doesn't matter at all that this happens to be an anonymous union.
-Layout-wise, you could as well have a definition
-
-union uuu { __u8 len; __u8 can_dlc; }
-
-and made struct can_frame
-
-struct can_frame {
-   canid_t can_id;
-   union uuu u;
-   __u8 __pad;
-   ...
-};
-
-(you lose the anonymity trick so you'd have to do frame->u.can_dlc
-instead of just frame->can_dlc). You have a member with alignof()==4 and
- sizeof()==4; that sizeof() cannot magically become 1 just because that
-particular instance of the type is not part of an array. Imagine what
-would happen if the compiler pulled subsequent char members into
-trailing padding of a previous compound member. E.g. consider
-
-struct a { int x; char y; } // alignof==4, sizeof==8, offsetof(y)==4
-struct b { struct a a; char z; }
-
-If I have a "struct b *b", I'm allowed to do "&b->a" and get a "pointer
-to struct a". Then I can do memset(&b->a, 0, sizeof(struct a)). Clearly,
-z must not have been placed inside the trailing padding of struct a.
-
-Rasmus
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 18df17129695..a4ce669cc78d 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -373,7 +373,7 @@ set_ext_hw_attr(struct hw_perf_event *hwc, struct perf_event *event)
+>   	return x86_pmu_extra_regs(val, event);
+>   }
+>   
+> -int x86_reserve_hardware(void)
+> +int x86_reserve_hardware(struct perf_event *event)
+>   {
+>   	int err = 0;
+>   
+> @@ -382,8 +382,10 @@ int x86_reserve_hardware(void)
+>   		if (atomic_read(&pmc_refcount) == 0) {
+>   			if (!reserve_pmc_hardware())
+>   				err = -EBUSY;
+> -			else
+> +			else {
+>   				reserve_ds_buffers();
+> +				reserve_lbr_buffers(event);
+> +			}
+>   		}
+>   		if (!err)
+>   			atomic_inc(&pmc_refcount);
+> @@ -634,7 +636,7 @@ static int __x86_pmu_event_init(struct perf_event *event)
+>   	if (!x86_pmu_initialized())
+>   		return -ENODEV;
+>   
+> -	err = x86_reserve_hardware();
+> +	err = x86_reserve_hardware(event);
+>   	if (err)
+>   		return err;
+>   
+> diff --git a/arch/x86/events/intel/bts.c b/arch/x86/events/intel/bts.c
+> index 731dd8d0dbb1..057bb2f761a9 100644
+> --- a/arch/x86/events/intel/bts.c
+> +++ b/arch/x86/events/intel/bts.c
+> @@ -564,7 +564,7 @@ static int bts_event_init(struct perf_event *event)
+>   	if (x86_add_exclusive(x86_lbr_exclusive_bts))
+>   		return -EBUSY;
+>   
+> -	ret = x86_reserve_hardware();
+> +	ret = x86_reserve_hardware(event);
+>   	if (ret) {
+>   		x86_del_exclusive(x86_lbr_exclusive_bts);
+>   		return ret;
+> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+> index 355ea70f1879..237876733e12 100644
+> --- a/arch/x86/events/intel/lbr.c
+> +++ b/arch/x86/events/intel/lbr.c
+> @@ -658,7 +658,6 @@ static inline bool branch_user_callstack(unsigned br_sel)
+>   
+>   void intel_pmu_lbr_add(struct perf_event *event)
+>   {
+> -	struct kmem_cache *kmem_cache = event->pmu->task_ctx_cache;
+>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>   
+>   	if (!x86_pmu.lbr_nr)
+> @@ -696,11 +695,6 @@ void intel_pmu_lbr_add(struct perf_event *event)
+>   	perf_sched_cb_inc(event->ctx->pmu);
+>   	if (!cpuc->lbr_users++ && !event->total_time_running)
+>   		intel_pmu_lbr_reset();
+> -
+> -	if (static_cpu_has(X86_FEATURE_ARCH_LBR) &&
+> -	    kmem_cache && !cpuc->lbr_xsave &&
+> -	    (cpuc->lbr_users != cpuc->lbr_pebs_users))
+> -		cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
+>   }
+>   
+>   void release_lbr_buffers(void)
+> @@ -721,6 +715,22 @@ void release_lbr_buffers(void)
+>   	}
+>   }
+>   
+> +void reserve_lbr_buffers(struct perf_event *event)
+> +{
+> +	struct kmem_cache *kmem_cache = x86_get_pmu()->task_ctx_cache;
+> +	struct cpu_hw_events *cpuc;
+> +	int cpu;
+> +
+> +	if (!static_cpu_has(X86_FEATURE_ARCH_LBR))
+> +		return;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
+> +		if (kmem_cache && !cpuc->lbr_xsave && !event->attr.precise_ip)
+> +			cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
+> +	}
+> +}
+> +
+>   void intel_pmu_lbr_del(struct perf_event *event)
+>   {
+>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+> index 53b2b5fc23bc..2fe77d3a98d6 100644
+> --- a/arch/x86/events/perf_event.h
+> +++ b/arch/x86/events/perf_event.h
+> @@ -968,7 +968,7 @@ int x86_add_exclusive(unsigned int what);
+>   
+>   void x86_del_exclusive(unsigned int what);
+>   
+> -int x86_reserve_hardware(void);
+> +int x86_reserve_hardware(struct perf_event *event);
+>   
+>   void x86_release_hardware(void);
+>   
+> @@ -1135,6 +1135,8 @@ void reserve_ds_buffers(void);
+>   
+>   void release_lbr_buffers(void);
+>   
+> +void reserve_lbr_buffers(struct perf_event *event);
+> +
+>   extern struct event_constraint bts_constraint;
+>   extern struct event_constraint vlbr_constraint;
+>   
+> @@ -1282,6 +1284,10 @@ static inline void release_lbr_buffers(void)
+>   {
+>   }
+>   
+> +static inline void reserve_lbr_buffers(struct perf_event *event)
+> +{
+> +}
+> +
+>   static inline int intel_pmu_init(void)
+>   {
+>   	return 0;
+> 
