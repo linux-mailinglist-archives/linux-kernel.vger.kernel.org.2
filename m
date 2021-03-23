@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC28834629A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535383462AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbhCWPPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232741AbhCWPPM (ORCPT
+        id S232802AbhCWPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:18:16 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2733 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232758AbhCWPRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:15:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17228C061574;
-        Tue, 23 Mar 2021 08:15:12 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 15:15:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616512510;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N5f+JtearIqagJ1GzYNc6HBNnuwqttJZd1Nb7+jvtuU=;
-        b=2Mo7Dxh8Ql+GW+9HUJ03Bn9DCfOinilRo0168v0xoRCJOxnoapzMvHOlNiXTOWqJeW0RTm
-        ZbTzGd3rqMbb4mtKuz36L4xhOz5Ad4WK6f2F371RpgARJeM2PI9vjIr10LCOpakRypeD1P
-        iUXjFGZ8l5t8K1OBjHGkHzse4cd7P2wXnzgPZStQMsC/cq+QzsHoY9+q83BhGfTJXVSPY0
-        x51qMkvmrNE6T3Zfv61vHdksiQ6Lw7E+tOBh8A43OI2ltY6R78Fx+XQgiyBjMNfq1SS0BX
-        WYXLs5nVpI7HVYoslwRpDO9OfnsE813GB7TPDbqP+Bwne0lfWT/PYBlz8P/ZXA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616512510;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N5f+JtearIqagJ1GzYNc6HBNnuwqttJZd1Nb7+jvtuU=;
-        b=xIuwY5mysWhTNRPOwfA+qMDmUcPiY/ZO3oH9xc+KZaGwrldYe9OWHJ8p1EyKrID15F69ZN
-        Y3H2GCoXE52T5UCA==
-From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/kprobes: Retrieve correct opcode for group instruction
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <161469872400.49483.18214724458034233166.stgit@devnote2>
-References: <161469872400.49483.18214724458034233166.stgit@devnote2>
+        Tue, 23 Mar 2021 11:17:35 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F4ZWh2YZ1z682g8;
+        Tue, 23 Mar 2021 23:08:48 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 23 Mar 2021 16:17:32 +0100
+Received: from [10.47.11.95] (10.47.11.95) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 23 Mar
+ 2021 15:17:30 +0000
+Subject: Re: [PATCHv4 00/19] perf metric: Add support to reuse metric
+To:     "Paul A. Clarke" <pc@us.ibm.com>
+CC:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+References: <20200729091908.1378911-1-jolsa@kernel.org>
+ <20200801114050.GB377079@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <7682e4c3-5840-bb6d-5e76-6b3fd37b04c0@huawei.com>
+ <20210323150604.GB8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a233702a-89b7-ae47-d47a-a7b4539c191e@huawei.com>
+Date:   Tue, 23 Mar 2021 15:15:16 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Message-ID: <161651250981.398.14785132555334741464.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210323150604.GB8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.11.95]
+X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+On 23/03/2021 15:06, Paul A. Clarke wrote:
+> On Mon, Mar 22, 2021 at 11:36:23AM +0000, John Garry wrote:
+>> On 01/08/2020 12:40, Paul A. Clarke wrote:
+>>>> v4 changes:
+>>>>     - removed acks from patch because it changed a bit
+>>>>       with the last fixes:
+>>>>         perf metric: Collect referenced metrics in struct metric_ref_node
+>>>>     - fixed runtime metrics [Kajol Jain]
+>>>>     - increased recursion depth [Paul A. Clarke]
+>>>>     - changed patches due to dependencies:
+>>>>         perf metric: Collect referenced metrics in struct metric_ref_node
+>>>>         perf metric: Add recursion check when processing nested metrics
+>>>>         perf metric: Rename struct egroup to metric
+>>>>         perf metric: Rename group_list to metric_list
+>>>>
+>>>> Also available in here:
+>>>>     git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>>>>     perf/metric
+>>> I built and ran from the above git branch, and things seem to work.
+>>> Indeed, I was able to apply my changes to exploit the new capabilities
+>>> via modifications to tools/perf/pmu-events/arch/powerpc/power9/metrics.json,
+>>> as I posted earlier (and will submit once this set gets merged).
+>> I was just wondering: Does perf subtest 10.3 work ok for you with the metric
+>> reuse?
+>>
+>> That's "Parsing of PMU event table metrics" subtest.
+> I confess I'm not sure what you are asking. Using the latest mainline
+> (84196390620ac0e5070ae36af84c137c6216a7dc), perf subtest 10.3 does
+> pass for me:
+> --
+> $ ./perf test 10
+> 10: PMU events                                                      :
+> 10.1: PMU event table sanity                                        : Ok
+> 10.2: PMU event map aliases                                         : Ok
+> 10.3: Parsing of PMU event table metrics                            : Ok
+> 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> --
+Since commit 8989f5f07605 ("perf stat: Update POWER9 metrics to utilize 
+other metrics"), power9 has reused metrics.
 
-Commit-ID:     d60ad3d46f1d04a282c56159f1deb675c12733fd
-Gitweb:        https://git.kernel.org/tip/d60ad3d46f1d04a282c56159f1deb675c12733fd
-Author:        Masami Hiramatsu <mhiramat@kernel.org>
-AuthorDate:    Wed, 03 Mar 2021 00:25:24 +09:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 23 Mar 2021 16:07:55 +01:00
+And I am finding that subtest 10.3 caused problems when I tried to 
+introduce metric reuse on arm64, so I was just asking you to check.
 
-x86/kprobes: Retrieve correct opcode for group instruction
+Now I am a bit confused...
 
-Since the opcodes start from 0xff are group5 instruction group which is
-not 2 bytes opcode but the extended opcode determined by the MOD/RM byte.
-
-The commit abd82e533d88 ("x86/kprobes: Do not decode opcode in resume_execution()")
-used insn->opcode.bytes[1], but that is not correct. We have to refer
-the insn->modrm.bytes[1] instead.
-
-Fixes: abd82e533d88 ("x86/kprobes: Do not decode opcode in resume_execution()")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/161469872400.49483.18214724458034233166.stgit@devnote2
----
- arch/x86/kernel/kprobes/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 60a540f..9b31790 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -453,7 +453,11 @@ static void set_resume_flags(struct kprobe *p, struct insn *insn)
- 		break;
- #endif
- 	case 0xff:
--		opcode = insn->opcode.bytes[1];
-+		/*
-+		 * Since the 0xff is an extended group opcode, the instruction
-+		 * is determined by the MOD/RM byte.
-+		 */
-+		opcode = insn->modrm.bytes[0];
- 		if ((opcode & 0x30) == 0x10) {
- 			/*
- 			 * call absolute, indirect
+Thanks for checking,
+john
