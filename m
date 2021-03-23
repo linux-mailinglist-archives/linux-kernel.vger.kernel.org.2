@@ -2,207 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C1A345C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A459C345C82
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhCWLJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhCWLJK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:09:10 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A25C061574;
-        Tue, 23 Mar 2021 04:09:10 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id u9so26389164ejj.7;
-        Tue, 23 Mar 2021 04:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AthyaDoKKyndv1i/NrrVvhda/enAojvpcI/TJWbKNcA=;
-        b=etmj2WE+fgF26Q9xj7+WcJJ4AUtOO+QeRW4yJa6Ql/93WqgpmEPIbFGVYFFGTsmWdm
-         lYTMlfMW07XG0VLQ1bXGjLDPOjzJ9vRG0OAPjkUa4TyEicf6SFi3vnwcOXuJyCpDGLIG
-         o9coLj5JTM9969JZFuB/RgnVF+8bj5mRs3KT+pkHzekDypJMzXS3qnJpEJlApU5NZQVt
-         qAzcWoaI/DDnNWp6syRUNbcURE6x34Ypa/nhpU6NRTFtVwDkKWcSyrTDEge1iQVmaCz3
-         qc1Vi8XmEacN814I39MoB7hqUcsueuBrf3xI187jDvWIxiB4rH+aEBHcWRFgjCu330zh
-         BMkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AthyaDoKKyndv1i/NrrVvhda/enAojvpcI/TJWbKNcA=;
-        b=dlUKtR8q5MAj+b/MKr+3euklV8D660t2PoaGZyRpetInEZIuAQkyojtQq49LMxNkDD
-         Hvzx5aOUjPRLA29d0JHodp6kUYSomYLoJGM3snvw5yUJ+fKXHj07xvZ9DrN8uRikRo9C
-         OYmhJT0XdVQatJbh5mjRr3npAE5UaW6sy3wjLDOk3BkhD4oocJM0Qd4J0A39tbHqtqi/
-         8loYzv8B/oKuNmqCJl9iK6pkzuTMVPpiFOJvLPbmX2eGZO8z2FNoFU/A2EYTn/R3RLA0
-         Y3PsODeWyBUtDxFTg3BCTO2FH5NVt8RRYWgvdd5HBqxwpekfL0Af8aYHwbp4LBH5rFNJ
-         1TWw==
-X-Gm-Message-State: AOAM5334GYGz2geAga/Xb1gjowMnQGsOVBcjKUB3SLip79Z6fsZadXlR
-        baxEnsct9vRdmDedzy0C8WEUWHYg4PyaoSBQbGo=
-X-Google-Smtp-Source: ABdhPJxwDdq5iXqaWZVGQZFfxnXDVq736giW9rFR/kJcpR1leX3ubItOP8NW/oOY9lhJQBIFuejzXYH9oM6obw9FMyA=
-X-Received: by 2002:a17:906:3ac3:: with SMTP id z3mr4498479ejd.106.1616497749061;
- Tue, 23 Mar 2021 04:09:09 -0700 (PDT)
+        id S230305AbhCWLLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:11:33 -0400
+Received: from mga09.intel.com ([134.134.136.24]:65415 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230287AbhCWLLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:11:14 -0400
+IronPort-SDR: oA6itixW/c6TkZQnjQUkPIegUJMlL1o/0RxM7kGxnY882cJsbzBH3LI7DxGNzSTi4cCZnIThkT
+ WeXbsIrRgz9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190550145"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="190550145"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:11:13 -0700
+IronPort-SDR: 64mApGEIQa4io6AeSQL7N9FDzK2pxtOcSUqA/mPu2Y8sojK3JidjZnvPI8H3aOWneM66tt8KiQ
+ cYhmhCVNRbiA==
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="604269151"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:11:08 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lOewC-00Ezlc-F7; Tue, 23 Mar 2021 13:11:04 +0200
+Date:   Tue, 23 Mar 2021 13:11:04 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
+        Oscar Salvador <osalvador@suse.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v1 3/3] kernel/resource: remove first_lvl / siblings_only
+ logic
+Message-ID: <YFnMyJl7dAZLM6S3@smile.fi.intel.com>
+References: <20210322160200.19633-1-david@redhat.com>
+ <20210322160200.19633-4-david@redhat.com>
 MIME-Version: 1.0
-References: <20210308120555.252524-1-adrien.grassein@gmail.com>
- <20210308120555.252524-3-adrien.grassein@gmail.com> <CAG3jFytoE9hWvq2e2Caqn4qP_RuEOnm4r9VQ85ffbAcguSLf+w@mail.gmail.com>
- <CABkfQAGvPy3DzXQnDJqm1q_rOLWR7BQTXb8z05iML3s3Mc8LJw@mail.gmail.com> <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
-In-Reply-To: <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Tue, 23 Mar 2021 12:08:58 +0100
-Message-ID: <CABkfQAGcSsQ74FtvAK4_awHRXswgBrThKww_xhpmTzordZ5X8w@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322160200.19633-4-david@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mar. 23 mars 2021 =C3=A0 11:42, Robert Foss <robert.foss@linaro.org> a =
-=C3=A9crit :
->
-> On Tue, 23 Mar 2021 at 11:01, Adrien Grassein <adrien.grassein@gmail.com>=
- wrote:
-> >
-> > Hey Robert,
-> >
-> > Thanks for the update.
-> >
-> > Le mar. 23 mars 2021 =C3=A0 10:10, Robert Foss <robert.foss@linaro.org>=
- a =C3=A9crit :
-> > >
-> > > Hey Adrien,
-> > >
-> > > Sorry about the slow reply, but I just received the documentation fro=
-m
-> > > the vendor. So let's dig in to the HPD issue.
-> >
-> > No problem :)
-> > >
-> > > > +static enum drm_connector_status lt8912_check_cable_status(struct =
-lt8912 *lt)
-> > > > +{
-> > > > +       int ret;
-> > > > +       unsigned int reg_val;
-> > > > +
-> > > > +       ret =3D regmap_read(lt->regmap[I2C_MAIN], 0xC1, &reg_val);
-> > > > +       if (ret)
-> > > > +               return connector_status_unknown;
-> > > > +
-> > > > +       if (reg_val & BIT(7))
-> > > > +               return connector_status_connected;
-> > >
-> > > Register 0xc0 & BIT(7) - HPD signal after debounce
-> > > Register 0xc0 & BIT(6) - HPD signal for TX HPD pad
-> >
-> > So, if I understand well, I need to write 0xc0 & BIT(6) with 1 to
-> > enable the HPD pin.
->
-> Ah, sorry about being a bit terse.
->
-> Both bit 6 & 7 are read only, and are probably best read after an IRQ.
-
-In my case, IRQ is not triggered at all.
-When reading the value of the HPD pin, I always get 1 (and no
-transition occurs when plugging / unplugging a cable).
-The HPD IRQ is done on the HDMI connector driver [5].
-I think a register configuration should be done to enable the IRQ pin
-or maybe there is a nug in electronics.
-The HPD pin is linked to a 2.2k pullup resistor (maybe it's wrong)
-
->
-> > >
-> > > > +
-> > > > +static int lt8912_probe(struct i2c_client *client,
-> > > > +        const struct i2c_device_id *id)
-> > > > +{
-> > > > +       static struct lt8912 *lt;
-> > > > +       int ret =3D 0;
-> > > > +       struct device *dev =3D &client->dev;
-> > > > +
-> > > > +       lt =3D devm_kzalloc(dev, sizeof(struct lt8912), GFP_KERNEL)=
-;
-> > > > +       if (!lt)
-> > > > +               return -ENOMEM;
-> > > > +
-> > > > +       lt->dev =3D dev;
-> > > > +       lt->i2c_client[0] =3D client;
-> > > > +       lt->cable_status =3D connector_status_unknown;
-> > > > +       lt->workq =3D create_workqueue("lt8912_workq");
-> > >
-> > > Looking at [1] and maybe even better [2], I think this polling
-> > > approach is the wrong way to go. And with access to documentation, I
-> > > think we should be able to sort this out.
-> >
-> > I neither like the polling approach too. I did it to go on this issue.
-> > I will totally remove it once the HPD issue will be resolved.
-> > >
-> > > Using the irq driver approach requires the interrupt pin to be
-> > > configured. Pin 63 of the lt8912b is the IRQ output pin.
-> > >
-> > > In order to trigger interrupts based on it, the dt-binding would need
-> > > to be updated[3][4] as well as whichever DTS you're using.
-> > >
-> >
-> > The IRQ part is working well in my DTB. It test it by adding some
-> > electronics to emulate the HPD pin on the GPIO expander where the HPD
-> > pin is linked.
->
-> Looking at the dt-binding patch, it does not seem to list any
-> interrupts. So that should be added. I think the irq support from [3]
-> & [4] can be pretty much copied.
->
-> Then we can come back and replace the polling code with the IRQ driven
-> code from [2].
-
-My board uses a "max7323" GPIO expander and the HPD pin is linked to it.
-I test this GPIO expander by soldering a pull up resistor and an
-interrupt on it and an interrupt was correctly triggered in both
-max7323 driver and hdmi-connector;
-So I guess that my DTB configuration is correct.
-I made my DBT configuration available:
-  - hdmi-connector node: [6]
-  - lt8912b node: |7]
-  - max7323 node: [8].
+On Mon, Mar 22, 2021 at 05:02:00PM +0100, David Hildenbrand wrote:
+> All IORESOURCE_SYSTEM_RAM and IORESOURCE_MEM now properly consider the
+> whole resource tree, not just the first level. Let's drop the unused
+> first_lvl / siblings_only logic.
+> 
+> All functions properly search the whole tree, so remove documentation
+> that indicates that some functions behave differently.
 
 
->
-> >
-> > >
-> > > [1] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bri=
-dge/analogix/anx7625.c#L1751
-> > >
-> > > [2] https://github.com/torvalds/linux/blob/v5.11/drivers/gpu/drm/brid=
-ge/lontium-lt9611.c#L1160
-> > >
-> > > [3] https://github.com/torvalds/linux/blob/v5.11/Documentation/device=
-tree/bindings/display/bridge/lontium,lt9611.yaml#L27
-> > >
-> > > [4] https://github.com/torvalds/linux/blob/v5.11/Documentation/device=
-tree/bindings/display/bridge/lontium,lt9611.yaml#L144
+Like this clean up!
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[5] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bridge/di=
-splay-connector.c#L199
-[6] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/dts/=
-freescale/imx8mq-nitrogen.dts#L37
-[7] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/dts/=
-freescale/imx8mq-nitrogen.dts#L249
-[8] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/dts/=
-freescale/imx8mq-nitrogen.dts#L291
+Although a few nit-picks below.
+
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Cc: Signed-off-by: David Hildenbrand <david@redhat.com>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Keith Busch <keith.busch@intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Eric Biederman <ebiederm@xmission.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: x86@kernel.org
+> Cc: kexec@lists.infradead.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  kernel/resource.c | 45 ++++++++++++---------------------------------
+>  1 file changed, 12 insertions(+), 33 deletions(-)
+> 
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index 16e0c7e8ed24..7e00239a023a 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -64,12 +64,8 @@ static DEFINE_RWLOCK(resource_lock);
+>  static struct resource *bootmem_resource_free;
+>  static DEFINE_SPINLOCK(bootmem_resource_lock);
+>  
+> -static struct resource *next_resource(struct resource *p, bool sibling_only)
+> +static struct resource *next_resource(struct resource *p)
+>  {
+> -	/* Caller wants to traverse through siblings only */
+> -	if (sibling_only)
+> -		return p->sibling;
+> -
+>  	if (p->child)
+>  		return p->child;
+>  	while (!p->sibling && p->parent)
+> @@ -81,7 +77,7 @@ static void *r_next(struct seq_file *m, void *v, loff_t *pos)
+>  {
+>  	struct resource *p = v;
+>  	(*pos)++;
+> -	return (void *)next_resource(p, false);
+> +	return (void *)next_resource(p);
+>  }
+>  
+>  #ifdef CONFIG_PROC_FS
+> @@ -330,14 +326,10 @@ EXPORT_SYMBOL(release_resource);
+>   * of the resource that's within [@start..@end]; if none is found, returns
+>   * -ENODEV.  Returns -EINVAL for invalid parameters.
+>   *
+> - * This function walks the whole tree and not just first level children
+> - * unless @first_lvl is true.
+> - *
+>   * @start:	start address of the resource searched for
+>   * @end:	end address of same resource
+>   * @flags:	flags which the resource must have
+>   * @desc:	descriptor the resource must have
+> - * @first_lvl:	walk only the first level children, if set
+>   * @res:	return ptr, if resource found
+>   *
+>   * The caller must specify @start, @end, @flags, and @desc
+> @@ -345,9 +337,8 @@ EXPORT_SYMBOL(release_resource);
+>   */
+>  static int find_next_iomem_res(resource_size_t start, resource_size_t end,
+>  			       unsigned long flags, unsigned long desc,
+> -			       bool first_lvl, struct resource *res)
+> +			       struct resource *res)
+>  {
+> -	bool siblings_only = true;
+>  	struct resource *p;
+>  
+>  	if (!res)
+> @@ -358,7 +349,7 @@ static int find_next_iomem_res(resource_size_t start, resource_size_t end,
+>  
+>  	read_lock(&resource_lock);
+>  
+> -	for (p = iomem_resource.child; p; p = next_resource(p, siblings_only)) {
+> +	for (p = iomem_resource.child; p; p = next_resource(p)) {
+>  		/* If we passed the resource we are looking for, stop */
+>  		if (p->start > end) {
+>  			p = NULL;
+> @@ -369,13 +360,6 @@ static int find_next_iomem_res(resource_size_t start, resource_size_t end,
+>  		if (p->end < start)
+>  			continue;
+>  
+> -		/*
+> -		 * Now that we found a range that matches what we look for,
+> -		 * check the flags and the descriptor. If we were not asked to
+> -		 * use only the first level, start looking at children as well.
+> -		 */
+> -		siblings_only = first_lvl;
+> -
+>  		if ((p->flags & flags) != flags)
+>  			continue;
+>  		if ((desc != IORES_DESC_NONE) && (desc != p->desc))
+> @@ -402,14 +386,14 @@ static int find_next_iomem_res(resource_size_t start, resource_size_t end,
+>  
+>  static int __walk_iomem_res_desc(resource_size_t start, resource_size_t end,
+>  				 unsigned long flags, unsigned long desc,
+> -				 bool first_lvl, void *arg,
+
+> +				 void *arg,
+>  				 int (*func)(struct resource *, void *))
+
+Can it be one line?
+
+>  {
+>  	struct resource res;
+>  	int ret = -EINVAL;
+>  
+>  	while (start < end &&
+> -	       !find_next_iomem_res(start, end, flags, desc, first_lvl, &res)) {
+> +	       !find_next_iomem_res(start, end, flags, desc, &res)) {
+>  		ret = (*func)(&res, arg);
+>  		if (ret)
+>  			break;
+> @@ -431,7 +415,6 @@ static int __walk_iomem_res_desc(resource_size_t start, resource_size_t end,
+>   * @arg: function argument for the callback @func
+>   * @func: callback function that is called for each qualifying resource area
+>   *
+> - * This walks through whole tree and not just first level children.
+>   * All the memory ranges which overlap start,end and also match flags and
+>   * desc are valid candidates.
+>   *
+> @@ -441,7 +424,7 @@ static int __walk_iomem_res_desc(resource_size_t start, resource_size_t end,
+>  int walk_iomem_res_desc(unsigned long desc, unsigned long flags, u64 start,
+>  		u64 end, void *arg, int (*func)(struct resource *, void *))
+>  {
+> -	return __walk_iomem_res_desc(start, end, flags, desc, false, arg, func);
+> +	return __walk_iomem_res_desc(start, end, flags, desc, arg, func);
+>  }
+>  EXPORT_SYMBOL_GPL(walk_iomem_res_desc);
+>  
+> @@ -457,8 +440,8 @@ int walk_system_ram_res(u64 start, u64 end, void *arg,
+>  {
+>  	unsigned long flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>  
+> -	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
+> -				     arg, func);
+
+> +	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, arg,
+> +				     func);
+
+I guess you may do it on one line.
+
+>  }
+>  
+>  /*
+> @@ -470,17 +453,14 @@ int walk_mem_res(u64 start, u64 end, void *arg,
+>  {
+>  	unsigned long flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+>  
+> -	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
+> -				     arg, func);
+> +	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, arg,
+> +				     func);
+
+Ditto.
+
+>  }
+>  
+>  /*
+>   * This function calls the @func callback against all memory ranges of type
+>   * System RAM which are marked as IORESOURCE_SYSTEM_RAM and IORESOUCE_BUSY.
+>   * It is to be used only for System RAM.
+> - *
+> - * This will find System RAM ranges that are children of top-level resources
+> - * in addition to top-level System RAM resources.
+>   */
+>  int walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
+>  			  void *arg, int (*func)(unsigned long, unsigned long, void *))
+> @@ -495,8 +475,7 @@ int walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
+>  	end = ((u64)(start_pfn + nr_pages) << PAGE_SHIFT) - 1;
+>  	flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>  	while (start < end &&
+> -	       !find_next_iomem_res(start, end, flags, IORES_DESC_NONE,
+> -				    false, &res)) {
+> +	       !find_next_iomem_res(start, end, flags, IORES_DESC_NONE, &res)) {
+>  		pfn = PFN_UP(res.start);
+>  		end_pfn = PFN_DOWN(res.end + 1);
+>  		if (end_pfn > pfn)
+> -- 
+> 2.29.2
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Thanks,
