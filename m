@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5136D3461D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 589003461DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhCWOsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:48:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3316 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232330AbhCWOsB (ORCPT
+        id S232341AbhCWOvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232170AbhCWOu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:48:01 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NEX47B171508;
-        Tue, 23 Mar 2021 10:47:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=NnXAMaZivCEU2YhepXfaUriWVaKzCU08wVSdcBmDLsw=;
- b=M1SGJd1u/vafmKhjjTilyDlb8NX4sKYWN8Lq0+z3xMsXYOMnkvL5Qq12vtODsRDcadBY
- P9CbToDSFikZv5trIjR7EEcRNjGM4lG90PCmJL+BCZtNB5kr+zmzjG0Vyon8vsjn1Tgf
- jSP1o9WRjo2yspTerEo8VfhrAze+kWbU7M/oD6Hg+zUiwOj2GnU2SP+eXmvqnM12ISCf
- 9ZLwmI+VMZqXuALcKlZsdaP6e5A02tgiRS7suCSGTHiCcVNUrvf+zSYPUdFeiWuI8+EQ
- ZVEyvev0bl2D9J0Nz/kScG3VRlKcOoVXUGJTem2xT9/1q9pvD5Gkd5ECxIVczUeoQEZz yQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37ef54xjc5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 10:47:53 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NEYObs178755;
-        Tue, 23 Mar 2021 10:47:53 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37ef54xjb9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 10:47:52 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NEiAZF011254;
-        Tue, 23 Mar 2021 14:47:51 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 37d9by9t2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 14:47:50 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NElmkV55771526
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 14:47:48 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A9E19AE04D;
-        Tue, 23 Mar 2021 14:47:48 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF310AE045;
-        Tue, 23 Mar 2021 14:47:46 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.41.170])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Mar 2021 14:47:46 +0000 (GMT)
-Message-ID: <3ed2004413e0ac07c7bd6f10294d6b6fac6fdbf3.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH 2/2] integrity: double check iint_cache was
- initialized
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     linux-integrity@vger.kernel.org, James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Date:   Tue, 23 Mar 2021 10:47:45 -0400
-In-Reply-To: <8a8763a7-eeeb-3578-d50c-c15919fbe1f9@i-love.sakura.ne.jp>
-References: <20210319200358.22816-1-zohar@linux.ibm.com>
-         <20210319200358.22816-2-zohar@linux.ibm.com>
-         <8450c80a-104a-3f36-0963-0ae8fa69e0f2@i-love.sakura.ne.jp>
-         <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
-         <1a2245c6-3cab-7085-83d3-55b083619303@i-love.sakura.ne.jp>
-         <8039976be3df9bd07374fe4f1931b8ce28b89dab.camel@linux.ibm.com>
-         <cde00350-2a18-1759-d53b-2e7489b6cc0e@i-love.sakura.ne.jp>
-         <8a8763a7-eeeb-3578-d50c-c15919fbe1f9@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 spamscore=0 priorityscore=1501 clxscore=1015 phishscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230107
+        Tue, 23 Mar 2021 10:50:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104E2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Pg7wqWo9GbGyOf6ruKFdy0o/AhXiWPevvjIgX9aMZf4=; b=ECz38tvMKB5jtTDsSG2TZ/iR2v
+        +YHeOFi889aUNPnP08xwsJZS8LKD+dR5yg1LCArXpzruad/ZYA7t/0k9HYGd04oQgK0fAc9zcR71D
+        IQ86W0ZLvaga6M3DWpuEUkSTzUpVcTLq7U5ntKV8z84ymeYLTLjtKDyKYrHiBKL0WJ1uHo2y+9gbw
+        iGHQTGV6kiOYLjkXrXJy9QpJippuGE+YR0KUhHOsYuDVgM9YaYOcYrHaIazZVSiNeu6/YhAS3eJJD
+        kIhWB1yKmy8fPjmniwrD5E4HLyTQNe4lmK36ex2ell6IeuGkk1Xk44xMcGqyw+UqymfAB2mHfrNcS
+        0gXL9mQw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOiLr-00ABYJ-SM; Tue, 23 Mar 2021 14:49:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 136A13003E1;
+        Tue, 23 Mar 2021 15:49:46 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EF8292360188E; Tue, 23 Mar 2021 15:49:45 +0100 (CET)
+Date:   Tue, 23 Mar 2021 15:49:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH v2] sched/fair: reduce long-tail newly idle balance cost
+Message-ID: <YFoACa0+cGBDxWSF@hirez.programming.kicks-ass.net>
+References: <1614154549-116078-1-git-send-email-aubrey.li@intel.com>
+ <74f65436-09f2-a4f0-345f-8887b11a51bf@linux.intel.com>
+ <CAKfTPtCauiWo1yf90XnHK0HKZhS=dPVuJQ6C5gFSLF5_QA-OwA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtCauiWo1yf90XnHK0HKZhS=dPVuJQ6C5gFSLF5_QA-OwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-23 at 23:01 +0900, Tetsuo Handa wrote:
-> On 2021/03/23 22:37, Tetsuo Handa wrote:
-> > On 2021/03/23 21:09, Mimi Zohar wrote:
-> >> Please take a look at the newer version of this patch.   Do you want to
-> >> add any tags?
-> > 
-> > Oh, I didn't know that you already posted the newer version.
-> > 
-> >> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> >> index 1d20003243c3..0ba01847e836 100644
-> >> --- a/security/integrity/iint.c
-> >> +++ b/security/integrity/iint.c
-> >> @@ -98,6 +98,14 @@ struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
-> >>  	struct rb_node *node, *parent = NULL;
-> >>  	struct integrity_iint_cache *iint, *test_iint;
-> >>  
-> >> +	/*
-> >> +	 * The integrity's "iint_cache" is initialized at security_init(),
-> >> +	 * unless it is not included in the ordered list of LSMs enabled
-> >> +	 * on the boot command line.
-> >> +	 */
-> >> +	if (!iint_cache)
-> >> +		panic("%s: lsm=integrity required.\n", __func__);
-> >> +
-> > 
-> > This looks strange. If "lsm=" parameter must include "integrity",
-> > it implies that nobody is allowed to disable "integrity" at boot.
+On Tue, Mar 23, 2021 at 02:44:57PM +0100, Vincent Guittot wrote:
+> Hi Aurey,
+> 
+> On Tue, 16 Mar 2021 at 05:27, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+> >
+> > On 2021/2/24 16:15, Aubrey Li wrote:
+> > > A long-tail load balance cost is observed on the newly idle path,
+> > > this is caused by a race window between the first nr_running check
+> > > of the busiest runqueue and its nr_running recheck in detach_tasks.
+> > >
+> > > Before the busiest runqueue is locked, the tasks on the busiest
+> > > runqueue could be pulled by other CPUs and nr_running of the busiest
+> > > runqueu becomes 1 or even 0 if the running task becomes idle, this
+> > > causes detach_tasks breaks with LBF_ALL_PINNED flag set, and triggers
+> > > load_balance redo at the same sched_domain level.
+> > >
+> > > In order to find the new busiest sched_group and CPU, load balance will
+> > > recompute and update the various load statistics, which eventually leads
+> > > to the long-tail load balance cost.
+> > >
+> > > This patch clears LBF_ALL_PINNED flag for this race condition, and hence
+> > > reduces the long-tail cost of newly idle balance.
+> >
+> > Ping...
+> 
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Integrity isn't always required.  Only when something tries to use it,
-does it need to be enabled.  Since both integrity and the integrity
-caller are runtime dependent, it is up to the user/admin to specify
-"integrity" as an "lsm=" option.
-
-> > Then, why not unconditionally call integrity_iintcache_init() by
-> > not counting on DEFINE_LSM(integrity) declaration?
-
-Initially I also questioned making "integrity" an LSM.  Perhaps it's
-time to reconsider.   For now, it makes sense to just fix the NULL
-pointer dereferencing.
-
-Mimi
-
+Thanks!
