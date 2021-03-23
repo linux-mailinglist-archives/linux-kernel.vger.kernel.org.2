@@ -2,77 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67663346B77
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8579A346B87
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbhCWV6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233630AbhCWV55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:57:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87955619D1;
-        Tue, 23 Mar 2021 21:57:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616536677;
-        bh=8EtGiHDV0aGfT6JHT+y8795nI5qrUiRVp2/1aJHgw3Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Y6HWEAfJnMhDMS30qt92NgDTbvw6z2SvltX0zWvOBGC+Aq4XD42KCSK9aYwjYALH9
-         7N5oQUlCAXsNln2A6HUuZH5spYzMZEPaQVm6mKYwjBNmADVqF7QOpucHszg8oirOsL
-         h7hrD+8gENTosITtjfpQ2Jzh93nIazoQ6rO+uMfF0aDAP3AGf/D92uRdt1cjIMn2VS
-         pQP071aW3wTtLePyD6hS/qkn6zZte2vp/Gj8T2iE4pLRo/n4/LQIU9GQYOz0w6eNjS
-         Tc0mXVoopoVuprZmhLQ8kuqFlC9cxH8Dq++C9NUD88z8n9pMeCXg7B2rd0e5EYtRMp
-         X81FOjyEq92lg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Philip J Kelleher <pjk1939@linux.vnet.ibm.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] rsxx: remove extraneous 'const' qualifier
-Date:   Tue, 23 Mar 2021 22:57:26 +0100
-Message-Id: <20210323215753.281668-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233835AbhCWV7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:59:19 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18162 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233745AbhCWV6m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:58:42 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NLXMps074109;
+        Tue, 23 Mar 2021 17:58:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=4LVjkSJOzytLD6tJY6/ZRad6GE00ydx04Yfw+LE5C78=;
+ b=SOzokrfjApCXTcZYsDSg6iBJzPpAf2L7VnN0/ePDR9DANpEpwrQe+4/ookCQudx4hbiy
+ 0HcP1CMGi0WjjIbSkIwsZsffNwkL3LHp3S8B8gygJthfcN2FbYmcu2tQ/y3YeE6GI91n
+ ZzCVQ5LeaX+f+mMMGr7sK280PYTfVOimgHlQCNBYic9OaRgHIzemH4L3jPrBeog6Joqi
+ 4Q4xwyOhfgq1P233cFfVyVJ2SpssutMYjEEe6/DSSZO/k8s0JHyzStlErqKZWSZO01ym
+ HOy/bLsI0W/4hi+dol6wGY6TPDK5n6Kj+KTaOTKg8o4f8KbMJzI1N+gukddeqgtghTP2 IA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fkx8r9g9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 17:58:25 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NLYVqU077008;
+        Tue, 23 Mar 2021 17:58:25 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fkx8r9fn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 17:58:25 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NLwNpH001166;
+        Tue, 23 Mar 2021 21:58:23 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 37d9a61y5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 21:58:22 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NLwJqM36241892
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 21:58:19 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C65024C044;
+        Tue, 23 Mar 2021 21:58:19 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 713904C040;
+        Tue, 23 Mar 2021 21:58:19 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Mar 2021 21:58:19 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Li Wang <liwang@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     ltp@lists.linux.it, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: [PATCH 0/3] s390 vdso fixes
+Date:   Tue, 23 Mar 2021 22:58:16 +0100
+Message-Id: <20210323215819.4161164-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YFmUrVOyX4q+8Dy9@osiris>
+References: <YFmUrVOyX4q+8Dy9@osiris>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_11:2021-03-23,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=872
+ priorityscore=1501 impostorscore=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 spamscore=0 malwarescore=0 clxscore=1011
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103230159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Li Wang reported that clock_gettime(CLOCK_MONOTONIC_RAW, ...) does not
+work correctly on s390 via vdso. Debugging this also revealed an
+unrelated bug (first patch).
 
-The returned string from rsxx_card_state_to_str is 'const',
-but the other qualifier doesn't change anything here except
-causing a warning with 'clang -Wextra':
+The second patch fixes the problem: the tod clock steering parameters
+required by __arch_get_hw_counter() are only present within the first
+element of the _vdso_data array and not at all within the _timens_data
+array.
 
-drivers/block/rsxx/core.c:393:21: warning: 'const' type qualifier on return type has no effect [-Wignored-qualifiers]
-static const char * const rsxx_card_state_to_str(unsigned int state)
+Instead of working around this simply provide an s390 specific vdso
+data page which contains the tod clock steering parameters.
 
-Fixes: f37912039eb0 ("block: IBM RamSan 70/80 trivial changes.")
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/block/rsxx/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This allows also to remove ARCH_HAS_VDSO_DATA again.
 
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 5ac1881396af..813b0a554d4a 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -392,7 +392,7 @@ static irqreturn_t rsxx_isr(int irq, void *pdata)
- }
- 
- /*----------------- Card Event Handler -------------------*/
--static const char * const rsxx_card_state_to_str(unsigned int state)
-+static const char *rsxx_card_state_to_str(unsigned int state)
- {
- 	static const char * const state_strings[] = {
- 		"Unknown", "Shutdown", "Starting", "Formatting",
+Heiko Carstens (3):
+  s390/vdso: fix tod clock steering
+  s390/vdso: fix arch_data access for __arch_get_hw_counter()
+  lib/vdso: remove struct arch_vdso_data from vdso data struct
+
+ arch/Kconfig                              |  3 ---
+ arch/s390/Kconfig                         |  1 -
+ arch/s390/include/asm/vdso.h              |  4 +++-
+ arch/s390/include/asm/vdso/data.h         | 13 ------------
+ arch/s390/include/asm/vdso/datapage.h     | 17 +++++++++++++++
+ arch/s390/include/asm/vdso/gettimeofday.h | 11 ++++++++--
+ arch/s390/kernel/time.c                   |  5 +++--
+ arch/s390/kernel/vdso.c                   | 25 ++++++++++++++++++++---
+ arch/s390/kernel/vdso64/vdso64.lds.S      |  3 ++-
+ include/vdso/datapage.h                   | 10 ---------
+ 10 files changed, 56 insertions(+), 36 deletions(-)
+ delete mode 100644 arch/s390/include/asm/vdso/data.h
+ create mode 100644 arch/s390/include/asm/vdso/datapage.h
+
 -- 
-2.29.2
+2.25.1
 
