@@ -2,147 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7B134589C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252D53458A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhCWHZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhCWHZn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:25:43 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098AEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:25:43 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso11758551pji.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=UKDB4tP1o/qAJ5iZQYJec7JsyNelKTQdItmX1ycjyQk=;
-        b=ZETG82JILVxDJCi3qiI1q0/LQNcWe9kN64W1uB852/RlDMI5Yh6PhOnBgKohVs1Xhq
-         b2j43WJ1y0Gj/KQt3KYF3WXHWu9xefZzPtfdm40QocAiaK4lE24hDSjYV219L8YJWjol
-         dupj1bUlLOxCnPRBRReCjJHZS8pgOjJ51nnXI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=UKDB4tP1o/qAJ5iZQYJec7JsyNelKTQdItmX1ycjyQk=;
-        b=Q7Bs7ZgpmCjBwkklcaym5KSPkvpJJGyGeeBjFm8zUyaL0GdMwVeB9dQricJWzwTgyN
-         nH8ha8/+BCjVT0YcxUlhcuP9QJoxBw49aOZBp4Ley+ATNgkJE1xnKHCTi8pnOgH/aehi
-         3g/MQqURKniJQVB+90H1DHKl/p9vzvFKKYhMWT1HZ/nQrfmcrw/5ddxPhl1C8sIoyf+/
-         TuK4sBW88XF3eG4iC/GS3ifQCLJVPa1EDbyD65YmVbBlVk6Szk7GveJJCqaLB4ctiggt
-         Ae8ALAni14YPJJ+OQKWBJyGvKrVmUVr7fGBBHw2ZQ4P/Kbw1Q9BHpkQhOxv/3haJugH7
-         Sk+Q==
-X-Gm-Message-State: AOAM533qTvIzIwMkk3YZYcfXqbAu2fADw32uo6nrp7UfyL8DJjRljsxt
-        Z4q+d4yzwmy+XHIxsW5OsHGGPA==
-X-Google-Smtp-Source: ABdhPJyPgeACfzPrxFvaTFzN2uVCCvcZfR0JEVYNsM780SwaiY1fnBGhInJl6nD7HjGAyflWidV26A==
-X-Received: by 2002:a17:90a:c902:: with SMTP id v2mr3287152pjt.144.1616484342636;
-        Tue, 23 Mar 2021 00:25:42 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:e90d:d453:87ae:2e10])
-        by smtp.gmail.com with ESMTPSA id z1sm15806362pfn.127.2021.03.23.00.25.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 00:25:41 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S229832AbhCWH12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:27:28 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:39347 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhCWH06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:26:58 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id C6A332400FE
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:26:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1616484416; bh=wjDMqOP5WB2g46s/lrBrOAAKFhKaX5fxTrbYRqYNI0Y=;
+        h=To:Cc:From:Autocrypt:Subject:Date:From;
+        b=dETfi8hXRGGnIm6/H0Eg/UpWQ6o+AJIKHIyXqk4P6QaUCCSMZgcMNlXSmf/r1r8bJ
+         IL7Q3k2tlxiYXoS/UbwR6A9ILYV8VvsltnSIyV+Y3SvXjXjotXRpsbe9+T0PvKQnTV
+         sFfPpTOSLm4WunPtmtN6gofwTsgI9fccTfJE53Y9ZBlRxXZfHpB/g6m3IF2zDV1Z02
+         72ZsW1NpZTO+i1qmro7rOs4/yOuxRzc5AAIsLkyU7TFpkfhIwFfYq0R9MbxIdsLLIR
+         xMYyzNISPgrjofmmJpLPAyhelvo8JO8rkhCo+0m9JK8jCQcIHBFlFMqodlvNkd2uBK
+         cqI0AicdLsBeQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4F4NGl3nTlz6tmM;
+        Tue, 23 Mar 2021 08:26:55 +0100 (CET)
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>
+References: <202103210435.I0fiBGAC-lkp@intel.com>
+ <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
+ <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
+ <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
+ <b10903ca-c424-b305-d981-fe0004500190@intel.com>
+ <CAMZ6RqK0-7DaoscTgKD+APDxtPw1q0Dz0Kef_doa0PZOnBav=w@mail.gmail.com>
+ <52e57719-7b55-b21a-5e30-4be2fb4e776c@intel.com>
+From:   Patrick Menschel <menschel.p@posteo.de>
+Autocrypt: addr=menschel.p@posteo.de; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkZ3RG1RZ0JFQUMr
+ elBRRy9KTHQyWUpiNTRERFBKd0Jtd25EUTh4dUZQcEFjRjNYSVVuZkFOTGs0OUpoClhWczFR
+ TnVHZk1VLytmY3RPWGd0SmF6Q3doc3NGdlUvWStPc1Nmd3FTN1ROOXhIWE1DZmtnK1gxRHhI
+ ZGtqcmoKL1pUYkxHd1FUQlE2SVpVeW9BTEVSQ2RHZFBETFVqWERSS0poSTdvV3RqYlVFWUVr
+ ZE9RYnY2eDhLVWd1bGtHUgpYYWxka1hJZ0R0VWZLaUE0VGhBVXpncVJuZ09DV2ZITis4TnBo
+ Q2pGVlFnclRSakxCc3pkZTFnTmJkZ2kvdWxiClcyTngvS1Jqa0F1TTdFUVJvVUJ2QUJWb2FX
+ R3ZYenIzUmphUFhrSk5wNHdFbm1IcVoxZlVteWMvSGZRNnVjWnkKRW5QZnlEWExtWTJQUU5P
+ N2ZCemZLMTJVRTdWZHh0OTBDNURPSkRBc25kNHYreloxNHJObEpmTHNwaDZkVlNIbApsS2t2
+ NE1BTndNaGxRT3Bta1pLMHhVU0Q2R0M1OHRiV0RSbEg4b3UrWUhDYlh2OHJCTXphR0phWDVB
+ S25lNTJTCmZEUCtiQVVTdWVQdDhrRG5TaU1ZNk9iUEdObWhqcW1JN1RmNkU1NDdqRXUzcmxr
+ aVI3Rno2cktVVzA5VlBlcnAKUnVya3orSTFtTDZ5ZTlZdGFDZ3MwbFR4b3VuYnA5emROVE04
+ djZFOGJsMWNoSnRoYWs1bkEvRktnbmRtVHdhUQpNclFTRFEyNmxMcUw0MXRPZzhlVXFhTzJI
+ TXVPRGNaaVVIMGVNWHlQZjhsbXhMcy9sbUVZU3hGUXFMWlBjWW9pClA0SGxVcDNSMkxIa0hO
+ WDg1WDBKUldwRkkwLzNKMTFiWEpjLzc1MzVKODExdE9aRDkyRHlkK20zS3dBUkFRQUIKdENk
+ UVlYUnlhV05ySUUxbGJuTmphR1ZzSUR4dFpXNXpZMmhsYkM1d1FIQnZjM1JsYnk1a1pUNkpB
+ bFFFRXdFSwpBRDRXSVFUcFZLQkNXcGNoUW9QQURFY3g1bTR3ejYrNFRnVUNYQU9aQ0FJYkl3
+ VUpDV1lCZ0FVTENRZ0hBZ1lWCkNna0lDd0lFRmdJREFRSWVBUUlYZ0FBS0NSQXg1bTR3ejYr
+ NFRnQTJELzBTQW92U0xuK1pTcGUzK0d4UUhKMzYKWmJ1TWs0REVSa0RKMnIveStvc254WUd2
+ TmNtU3N5Q1pBaVZjTTlFM0kxUXVtdDZvWHpoditJUDJNd09MZTlQMwpvUmhJQ1JyQ2RwWmY1
+ YjdDb0lOc3lENUJwNGFsSUs5UFpHUDdXTjRHeGE3OVpNYkRhNVBNWGVQZ2psckFNVGNOCjRv
+ c2Q5NVB4eFNkV1dheTB2TUh0VWYwRGJkaDFRNUs1U3lkREpxdG56dFBkNzBzUG9wOHBRSWhE
+ NExGUWdpcFgKL3VRdkEvWnZpN2c5T3N4YThCNnRDTG41VG5LT2lNYktCVUFya1FHTDFnbDQ4
+ NFJtKzRlR011YVZrVjVBb3VYMApOaGQvTVU3eEMxS2dGcWZwYTMzZ0ZRdUxTSTU2aStuRkt6
+ dzNIdiszeHBJOXJjaHFXQjNnSWNVQ2lQZmFxcU1vCnI4RVNKODF0NWlvckQrRlpQb1RyMUEz
+ aGZTMTNuMGxWUytsZUd3dlNucjRRZ0gvcjZ5eGw4RERIaUdFMUFXblAKaTNaWFNKWnkxRUJW
+ TWJXTXFBNzFwczZDS2ZnbmpmSHVvVmNsTElXd3cxT2gwYXlER1hMZUFic1VPTGtGOXAxMwo1
+ MWxRS0lJWUZpcXVwL09qa0pKMlgxaTdITjlqV2xRVnR0SER3QlhZOWNYWDRHUzk3cnNwSVhj
+ S2hHRytFSVB0CjFEaFdBdDR1ZDdqcDIrSDRmTXlKZGlVK0wrYTVXNjlTODZpOURTMjBUdXd2
+ K3JRemNQWTQ3MkVxZmo0elhWWmsKNUNzZ2kxVDZzQ1lnZDd5TGpHMnFYblZsSTJqQ1JyT0RW
+ dGJiY25jSi9peEhPQ1h2TmlvRzZPREhBM3ZtNlZxaQpEelBmYTBFaWZveWMxbDRvSUZvQ2c3
+ a0NEUVJjQTVrSUFSQUEwdUlXUGNrRlpzb0ZVZG1Sd29vMW95YzhmSyttCll6TmhTc1l0UTlI
+ ZDMvQmlWeUxwUERQK0F6eks4U2JvWXVGcTJOaGRJaTIyeFRTZ2pyRFZMOU10YTdNbDB6cHgK
+ QnJSTitySm5LRFl3bThJeUl6eUpCRmhXU1l3YnVPSXVqbnB6U1IvVGVDT1VvelRadFhnQmRU
+ YzZrUG5kV1BWTgpDWU9hZVFXdDI1Qnc3ZGNVbllUQ1FWYm9EN0RFVWFEVkVqM1BKM2U0aGli
+ TEp1UnEvK1dQY3kxQ3g2UFNucTJ6CkdQN1pVNWh6NjF2ZGovbVJJa2QxS2UzUTZmWUwzSVRN
+ T1l1WGF6VUVEZ3l3TlN0bVkwRmZUT05GWEtGTXdSNm8KcUtuSGlTN2tINytxQWFodUpkdVFB
+ MW9SU2xUTWRFb3F2WHEySlVJTm1NaGdYL0ZQN3ZpZEFxcTdnVjRXWElxcAptckliVHBiNVpz
+ U0N6dUJBd3lkOTYxM1lmYWpZVGlUYkJGRzQ1Mld4TnlJeTFUdVpWMmIxZlhPbGdLRjNvbmUx
+ CnhwbURqbTFlZVhSdjRnV0d0Vks5cXlEaUtYWnlmQ0YyL2o5d08xaTNnUHZqYmFvU1dhT2hH
+ T2V6dlNFQzB4RjgKWU9TMitGSmxVclVyVm54UXZsZkdyWFYxbUpRTHpvcFJ5N0VndjNlRDI0
+ NUx5YjhjUHpOUmppelRqV2RYN0g0MwpuNTlXMkdWTkFLTkNyV1pkOGNjZEdJK1RodmwzUUh1
+ YWQ3NEY5cGdDUUNZWXM5dG92YVZldFR1WlI2Y3JMaG10CmxmK1V4ME5SV29PV2ZTR0w5anBt
+ dkR3aGlwWCszMUlvb1FiOTZ1a2UzOFBZMUVOMjJ6QlBxZ25jVVVrUkxQQncKbEhYbnpFVit6
+ U1p4QXpFQUVRRUFBWWtDUEFRWUFRb0FKaFloQk9sVW9FSmFseUZDZzhBTVJ6SG1iakRQcjdo
+ TwpCUUpjQTVrSUFoc01CUWtKWmdHQUFBb0pFREhtYmpEUHI3aE9Db0lQLzNTanBFdTl4Wkpj
+ TlZvU0s5MTA0enB6CmtnS2FUVmcrR0tZSEFJa1NZL3U2NU1zVmFTWk14bWVDSzdtTiswNU1w
+ RUZCYW9uMG5sVTlRK0ZMRDFkRDBsenYKTVBkOEZOcEx4VEMxVDQwbXBVN0ZCV1hlVjZWRHoz
+ STY5VkFBdjRWVDM4ZVZhYXBOS1lmVGdwcFRYVEVNYVdoTApVYUpGaU1HaFNYaGkrR01GV2Ji
+ NVNFOGJJRTZ0WUpONWlYZUFNVFE4NjhYVGtHS0VHTjk3bEU2S09odmpWV0kxCkhiUVIzZ0tV
+ ck1uVmlhbGp0YnV4bGNvS2YrblRvNG85OUEyTkprRCswaFozclJZTWhacFR1MitkcCt2Rm9p
+ aEQKdVNFTCtoblZhNFRMd2pYd2gzNzNweU9XMFhra2E5YWpNTEFoMUFtMmRBa0pLSDhzMVlJ
+ UUlpL2Q3bEkyYXQ1awpIcWtIa2p0YzE1ZkgrQUU5Q0VSM3RCSVNoYU9Fb0hXTXc0WEs5NS9n
+ MWVnMVB1cmJmN3RwRnltcklxU3ppQjlvCjJBWituSHVDQ001ZC9pQXh5MmJOcndqNDhPM2Z5
+ WXd1a0pManUyNlJKbzRMNStjNEJoTU1Ray9nVWROdldHK2YKNUxreVhvbHNMY0p0SktLdStD
+ V1pFK1hxc2RGWHd2d2xDRVNSQ012cGZyQmNtY1hrT0g3S1JKVy9pUjFXVjVRZApjR3ZDcDl0
+ a08vaEhSb2t0dzBibUl1MlFhZkovajZLTGJqZWV4cTc0TWUyb0U5YmkxY3B2azYvSElDV0JQ
+ dHVYCnNqd2o1Q2M3UlZOMjJLekdZT0RKVGtxU0d4RjV1NVlkTHVNVG5CVGNweEphR2h3MzNq
+ QjgwY3o3enFwQXBpREIKZFFnR2psVlNQT3ZidU04aXBPZDYKPW1nREMKLS0tLS1FTkQgUEdQ
+ IFBVQkxJQyBLRVkgQkxPQ0stLS0tLQo=
+Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
+ call to '__compiletime_assert_536' declared with attribute error:
+ BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
+ canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
+Message-ID: <f215591d-1d5f-b5ae-38fe-4f6407bb2116@posteo.de>
+Date:   Tue, 23 Mar 2021 08:26:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YFkvl9tzP5Nj54C4@pendragon.ideasonboard.com>
-References: <20201030011738.2028313-1-swboyd@chromium.org> <20201101173741.GA1293305@ravnborg.org> <160436612483.884498.883110130131457033@swboyd.mtv.corp.google.com> <YFkvl9tzP5Nj54C4@pendragon.ideasonboard.com>
-Subject: Re: [PATCH v2 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Date:   Tue, 23 Mar 2021 00:25:40 -0700
-Message-ID: <161648434035.3012082.16414745959476755420@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <52e57719-7b55-b21a-5e30-4be2fb4e776c@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Laurent Pinchart (2021-03-22 17:00:23)
-> Hi Stephen,
->=20
-> On Mon, Nov 02, 2020 at 05:15:24PM -0800, Stephen Boyd wrote:
-> > Quoting Sam Ravnborg (2020-11-01 09:37:41)
-> > > Hi Stephen.
-> > >=20
-> > > On Thu, Oct 29, 2020 at 06:17:34PM -0700, Stephen Boyd wrote:
-> > > > This patch series cleans up the DDC code a little bit so that
-> > > > it is more efficient time wise and supports grabbing the EDID
-> > > > of the eDP panel over the aux channel. I timed this on a board
-> > > > I have on my desk and it takes about 20ms to grab the EDID out
-> > > > of the panel and make sure it is valid.
-> > > >=20
-> > > > The first two patches seem less controversial so I stuck them at
-> > > > the beginning. The third patch does the EDID reading and caches
-> > > > it so we don't have to keep grabbing it over and over again. And
-> > > > finally the last patch updates the reply field so that short
-> > > > reads and nacks over the channel are reflected properly instead of
-> > > > treating them as some sort of error that can't be discerned.
-> > > >=20
-> > > > Stephen Boyd (4):
-> > > >   drm/bridge: ti-sn65dsi86: Combine register accesses in
-> > > >     ti_sn_aux_transfer()
-> > > >   drm/bridge: ti-sn65dsi86: Make polling a busy loop
-> > > >   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
-> > > >   drm/bridge: ti-sn65dsi86: Update reply on aux failures
-> > >=20
-> > > Series looks good. You can add my a-b on the full series.
-> > > Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> > >=20
-> > > I can apply after Douglas have had a look at the patches he did not r=
--b
-> > > yet.
-> > >=20
-> > > Any chance we can convince you to prepare this bridge driver for use =
-in
-> > > a chained bridge setup where the connector is created by the display
-> > > driver and uses drm_bridge_funcs?
-> > >=20
-> > > First step wuld be to introduce the use of a panel_bridge.
-> > > Then add get_edid to drm_bridge_funcs and maybe more helpers.
-> > >=20
-> > > Then natural final step would be to move connector creation to the
-> > > display driver - see how other uses drm_bridge_connector_init() to do=
- so
-> > > - it is relatively simple.
-> > >=20
-> > > Should be doable - and reach out if you need some help.
-> >=20
-> > I started to look at this and got stuck at ti_sn_bridge_get_bpp(). Where
-> > can I get the details of the bpc for the downstream bridge or panel? Is
-> > there some function that can tell this bridge what the bpc is for the
-> > attached connector?
->=20
-> I've posted a patch series to convert to DRM_BRIDGE_ATTACH_NO_CONNECTOR
-> yesterday (and have CC'ed you), but I've overlooked this particular
-> problem :-S
 
-!
+Am 23.03.21 um 07:06 schrieb Rong Chen:
+>>>> Ugh! Why did the compiler extend the space for the union to 4 bytes?!?
+>> Just a random idea but maybe the added padding is due to some
+>> kind of odd intrication with the __attribute__((__aligned__(8)))
+>> just below? Does this reproduce if we remove the
+>> __attribute__((__aligned__(8)))?
+> 
+> Here is the layout without __attribute__((__aligned__(8))),
+> the union is still extended to 4 bytes:
+> 
+> struct can_frame {
+>         canid_t                    can_id;               /* 0     4 */
+>         union {
+>                 __u8               len;                  /* 4     1 */
+>                 __u8               can_dlc;              /* 4     1 */
+>         };                                               /* 4     4 */
+>         __u8                       __pad;                /* 8     1 */
+>         __u8                       __res0;               /* 9     1 */
+>         __u8                       len8_dlc;             /* 10     1 */
+>         __u8                       data[8];              /* 11     8 */
+> 
+>         /* size: 20, cachelines: 1, members: 6 */
+>         /* padding: 1 */
+>         /* last cacheline: 20 bytes */
+> };
+> 
+> Best Regards,
+> Rong Chen
 
->=20
-> You can't get the connector in the .enable() operation, but you can get
-> it in .atomic_enable(), with
-> drm_atomic_get_new_connector_for_encoder(). This being said, it's
-> probably not the right option.
->=20
-> What matters here isn't the bpc for the connector, but the format
-> expected by the next bridge in the chain. drm_bridge_funcs has two
-> operations, .atomic_get_output_bus_fmts() and
-> .atomic_get_input_bus_fmts(), to negotiate that format along a chain of
-> bridges. The panel bridge driver (drivers/gpu/drm/bridge/panel.c)
-> doesn't implement those operations, and neither does
-> display-connector.c, so that may be what we should start with.
+Hi,
 
-Ok, makes sense. I'd gladly test things out if you come up with some
-solution here.
+I would suggest a try with __attribute__((__aligned__(8))) only on
+can_frame, not on data[8].
+
+If the structure length is a multiple of 8, the compiler should
+recognize this and keep the union a single byte in favor of an array
+configuration of that struct.
+
+The __attribute__((__aligned__(8))) on data[8] has strange propagation
+effects upwards.
+
+If the attributes are really necessary, I would suggest to have both
+
+__attribute__((packed))
+__attribute__((__aligned__(8)))
+
+on structure level instead of inside, so no padding happens inside the
+structure while the structure itself is aligned.
+Using aligned and packaged inside a structure may be contradictive to
+the compiler.
+
+This reminds me of the alignment/gap issue with my python3
+implementation of bcm message while alternating between X86_64 and
+ARMHF. Using c_types was a mess but bytestrings worked in the end.
+Be aware native alignment apparently is 4 on armhf linux and 8 on X86_64
+linux.
+
+https://marc.info/?l=linux-can&m=161251622904527&w=2
+https://gitlab.com/Menschel/socketcan/-/commit/afc6744129448ae4333629fc0297808dd42e3530#e522710a8423075cfd1147ae6b7f44facac3ffb0_133_132
+
+Best Regards,
+Patrick Menschel
