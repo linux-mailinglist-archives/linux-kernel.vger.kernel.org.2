@@ -2,86 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A0B346010
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5C534601D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhCWNrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:47:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229929AbhCWNrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:47:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD45F6198C;
-        Tue, 23 Mar 2021 13:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616507238;
-        bh=wD/B/xKbW2tuyo74fJsKiZyXFeGvnaD7QOI+wgfl9pk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nq9tvCpDgQ1sai5Z6lh8JLchXCQR5/7LdyGK+Z0NlN+t7lyzXiti6RLKxUpNBGev4
-         1Sj6D82hf6TZLBWvEI/l2rsGOF+IyOGZy2+G8wr0n8NI+KHuOrKmLZIOh5CEsg3Azz
-         u6m9dl56vFSMK/tAMkZS+4cc4Ep8gMCZpRBXrRps=
-Date:   Tue, 23 Mar 2021 14:47:15 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ray Chi <raychi@google.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, naresh.kamboju@linaro.org,
-        Kyle Tso <kyletso@google.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Subject: Re: [PATCH] usb: dwc3: fix build error when POWER_SUPPLY is not
- enabled
-Message-ID: <YFnxY7AW9QGQApKQ@kroah.com>
-References: <20210308133146.3168995-1-raychi@google.com>
- <20210309185807.ka4iljasq5cmpmil@earth.universe>
- <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com>
+        id S231191AbhCWNtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:49:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23242 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230078AbhCWNsm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:48:42 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NDXlxp103559;
+        Tue, 23 Mar 2021 09:48:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=xGsb52ZcTBJ7qanx8S8CEfUtuLSMQ6g5bWEbVc8NDJQ=;
+ b=Q1fTnkOe2irl9Q7prTv5vz0THKPtjOdHmgQeUW9xS19dFoh8Pu65omW7G1nxXTxhq9D3
+ Msm0QiKxBXSfK+uDd8VfrQefXxOlSnfoyeZVKjHktwtk3Y0ScQ1yEi1BMX5cxBxKRp7c
+ 8y7vWqk9DObzdBdqFLo2OEsoif7K4l6WpxBMBuncWe+EZXn/oYWW97qGf9TrpawhwqG/
+ HizB+w0Tnmj2xPOfG2LxGp+tk1tnY7kqg6Vs+2dylGxAc/SNCU0O+X3NKDW4fAZHYeHt
+ 63XQRW5Et9syEp3udgy6F0EsMxtscn2tpEOQRxTHhz1vnIXIeXYK5WK/NtzrlUCng25U AQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b2ent-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 09:48:38 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NDY1vP104602;
+        Tue, 23 Mar 2021 09:48:38 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b2emv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 09:48:38 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NDlJUM019724;
+        Tue, 23 Mar 2021 13:48:35 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 37d9bmkd98-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 13:48:35 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NDmFbM36110830
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 13:48:15 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EDAB9A4040;
+        Tue, 23 Mar 2021 13:48:32 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8642BA405E;
+        Tue, 23 Mar 2021 13:48:32 +0000 (GMT)
+Received: from osiris (unknown [9.171.54.53])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 23 Mar 2021 13:48:32 +0000 (GMT)
+Date:   Tue, 23 Mar 2021 14:48:31 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Li Wang <liwang@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        LTP List <ltp@lists.linux.it>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [s390x vDSO Bug?] clock_gettime(CLOCK_MONOTONIC_RAW, ...) gets
+ abnormal ts value
+Message-ID: <YFnxr1ZlMIOIqjfq@osiris>
+References: <CAEemH2cELFSMzEYM-Gd1LxNuFzVE2PcG1chzyaVhW2YCJjjzdw@mail.gmail.com>
+ <YFmUrVOyX4q+8Dy9@osiris>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com>
+In-Reply-To: <YFmUrVOyX4q+8Dy9@osiris>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103230100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 09:57:56PM +0800, Ray Chi wrote:
-> Hi Sebastian,
+On Tue, Mar 23, 2021 at 08:11:41AM +0100, Heiko Carstens wrote:
+> On Tue, Mar 23, 2021 at 02:21:52PM +0800, Li Wang wrote:
+> > Hi linux-s390 experts,
+> > 
+> > We observed that LTP/clock_gettime04 always FAIL on s390x with
+> > kernel-v5.12-rc3.
+> > To simply show the problem, I rewrite the LTP reproducer as a simple C
+> > below.
+> > Maybe it's a new bug introduced from the kernel-5.12 series branch?
+> > 
+> > PASS:
+> > ------------
+> > # uname -r
+> > 5.11.0-*.s390x
+> > 
+> > # grep TIME_NS /boot/config-5.11.0-*.s390x
+> > no TIME_NS enabled
+> > 
+> > ## ./test-timer
+> > vdso_ts_nsec = 898169901815, vdso_ts.tv_sec = 898, vdso_ts.tv_nsec =
+> > 169901815
+> > sys_ts_nsec  = 898169904269, sys_ts.tv_sec  = 898, sys_ts.tv_nsec  =
+> > 169904269
+> > ===> PASS
+> > 
+> > FAIL:
+> > ----------
+> > # uname -r
+> > 5.12.0-0.rc3.*.s390x
+> > 
+> > # grep TIME_NS /boot/config-5.12.0-0.rc3.s390x
+> > CONFIG_TIME_NS=y
+> > CONFIG_GENERIC_VDSO_TIME_NS=y
+> > 
+> > # ./test-timer
+> > vdso_ts_nsec = 4484351380985507, vdso_ts.tv_sec = 4484351, vdso_ts.tv_nsec
+> > = 380985507
+> > sys_ts_nsec  = 1446923235377, sys_ts.tv_sec  = 1446, sys_ts.tv_nsec  =
+> > 923235377
+> > ===> FAIL
 > 
-> Sorry for the late reply.
+> Thanks for reporting!
 > 
-> On Wed, Mar 10, 2021 at 2:58 AM Sebastian Reichel <sre@kernel.org> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, Mar 08, 2021 at 09:31:46PM +0800, Ray Chi wrote:
-> > > Fix build error when CONFIG_POWER_SUPPLY is not enabled.
-> > >
-> > > The build error occurs in mips (cavium_octeon_defconfig).
-> > >
-> > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_remove':
-> > > drivers/usb/dwc3/core.c:1657: undefined reference to `power_supply_put'
-> > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_get_properties':
-> > > drivers/usb/dwc3/core.c:1270: undefined reference to `power_supply_get_by_name'
-> > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_probe':
-> > > drivers/usb/dwc3/core.c:1632: undefined reference to `power_supply_put'
-> > >
-> > > Fixes: 59fa3def35de ("usb: dwc3: add a power supply for current control")
-> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > > Signed-off-by: Ray Chi <raychi@google.com>
-> > > ---
-> >
-> > While I'm fine with merging this after fixing up the subject, the
-> > original patch for dwc3 [0] looks completly incorrect to me.
-> >
-> > First of all it uses wrong scale (power-supply uses uA, not mA),
-> > so you are charging 1000x slower than expected. Then the patchset
-> > introduces a new DT property to get the power-supply device, but
-> > does not update the DT binding documentation and does not Cc the
-> > DT binding maintainer.
-> 
-> Yes, it should use uA and send this information, and I will update a
-> patch to fix it and add the DT binding documentation.
+> I'll look later today into this. I would nearly bet that I broke it
+> with commit f8d8977a3d97 ("s390/time: convert tod_clock_base to
+> union")
 
-So should I revert what we currently have in my usb-next tree, or do
-you have a fix for this?
+So, I broke it with commit 1ba2d6c0fd4e ("s390/vdso: simplify
+__arch_get_hw_counter()"). Reverting that patch will fix it for non
+time namespace processes only.
 
-thanks,
+The problem is that the vdso data page contains an array of struct
+vdso_data's for each clock source. However only the first member of
+that array contains a/the valid struct arch_vdso_data, which is
+required for __arch_get_hw_counter(). Which alone is a bit odd...
 
-greg k-h
+However for a process which is within a time namespace there is no
+(easy) way to access that page (the time namespace specific vdso data
+page does not contain valid arch_vdso_data). I guess the real fix is
+to simply map yet another page into the vvar mapping and put the
+arch_data there. What a mess... :/
