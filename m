@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7463B346A5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60724346A5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbhCWUlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233585AbhCWUkZ (ORCPT
+        id S233608AbhCWUlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:41:36 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53058 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233518AbhCWUkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:40:25 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7145CC0613EF
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:40:21 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id u6so14132qvu.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:40:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=WZ2fsTX5FLJhX01BulIdj9aVU+u+1SaaqVDcWrlk7vo=;
-        b=ec/02RNqMxC3NtjfEqCKWLv4qwmQTmHrkXsCeNO2KBn8qSqKzTE24FKGqfuKH+TVkK
-         X/VKFkbL4vsRYCrPeFIrZP8DeiwqKS96n7WGnqpK5r2/VAz0Iab+2cnLr9ixgbVx3i2+
-         bJO7ki2MVhZqoAWHQEzmE5B7oTVS3IIOSVMH6lZh48SF/0j7bgW6jHNwPIk8gKuBLJqR
-         4qQ5N4v6mKVofR2cSUqiTSphpJlczKzRN+vOPaGMsYJ3GFsS6r9eXFPtqA3WSVhoq05F
-         zPIbSYNFmagSwu4VxL+cE8EfslHOGZyTYBOn5X3fzMMM4mw38aQ1r1FrLS9fBfhCQ2tj
-         1law==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WZ2fsTX5FLJhX01BulIdj9aVU+u+1SaaqVDcWrlk7vo=;
-        b=qNMFLP8HMVIiXeDQ5gjbD8fyplW6Hd/Sst5yf2GcX005GP1am5g/O5QExHunQqPsn9
-         iQ8JtGw1UhsD9xm4a7F5fY1nscWRWfn68gf4qrXycG2Zc+atCJRWwfvGJHux+rgwp6IJ
-         wQwkFubtZMX3Ty//0m6LQo2NSnBFD/o8YMguWIwqjCHXpdNfG6VdMxgsnWP9WucJvQ9J
-         b0zDidMTXpr6SaAh8qENbbttSp3hnkeXDUUlU2U9igFqs4rstik87XEWeRAcLlPM/qs1
-         thv0yJhwKc9WooAQ0c/cIgz6+VeDrw7G7bfCPMwyoB1EvUhE2fs/j/17euZRAZZ0JBed
-         +waw==
-X-Gm-Message-State: AOAM532jz9WvHEfZ/i/z1ac91EqZGusD2IT3AGGTbVhr00lclJ5v84gJ
-        3vXDWmOYq3JdTPDx/yyZ6n9UyI2NJ5pAoDhPwGE=
-X-Google-Smtp-Source: ABdhPJyxpPvs3kGL5X0rhxaceHJDwoHelX5/WOAlmnNB1fMlzzx1j3iwVr8PFhB1zHKJQ3nkMRVGiRyWH5xdyb6dFU8=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:e9a3:260d:763b:67dc])
- (user=samitolvanen job=sendgmr) by 2002:a0c:bec3:: with SMTP id
- f3mr6577376qvj.49.1616532020445; Tue, 23 Mar 2021 13:40:20 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 13:39:46 -0700
-In-Reply-To: <20210323203946.2159693-1-samitolvanen@google.com>
-Message-Id: <20210323203946.2159693-18-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210323203946.2159693-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v3 17/17] arm64: allow CONFIG_CFI_CLANG to be selected
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 23 Mar 2021 16:40:42 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 082FF1C0B81; Tue, 23 Mar 2021 21:40:39 +0100 (CET)
+Date:   Tue, 23 Mar 2021 21:40:38 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH 17/17] auxdisplay: ht16k33: Add segment display LED
+ support
+Message-ID: <20210323204038.GA10002@duo.ucw.cz>
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-18-geert@linux-m68k.org>
+ <543ec200931af3192541fef51bc8e96a@protonic.nl>
+ <CAMuHMdXMQYoGbyLsbiZSEWKK0+iPZe7WELmtDUTjqK-VKMZURg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXMQYoGbyLsbiZSEWKK0+iPZe7WELmtDUTjqK-VKMZURg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5656e7aacd69..2eefdbc3e3c9 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -75,6 +75,7 @@ config ARM64
- 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
- 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
-+	select ARCH_SUPPORTS_CFI_CLANG
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
- 	select ARCH_SUPPORTS_NUMA_BALANCING
--- 
-2.31.0.291.g576ba9dcdaf-goog
+Hi!
 
+> CC linux-leds (which I intended, but forgot to add)
+>=20
+> cover letter at
+> https://lore.kernel.org/linux-devicetree/20210322144848.1065067-1-geert@l=
+inux-m68k.org/
+
+Still does not tell me... riscv on fpga with 4 character display. What
+is this? :-).
+
+
+> On Tue, Mar 23, 2021 at 11:08 AM Robin van der Gracht <robin@protonic.nl>=
+ wrote:
+> >
+> > On 2021-03-22 15:48, Geert Uytterhoeven wrote:
+> > > Instantiate a single LED for a segment display.  This allows the user
+> > > to
+> > > control display brightness and blinking through the LED class API and
+> > > triggers, and exposes the display color.
+> > >
+> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > ---
+> > > For setting display brightness, this could use the existing backlight
+> > > support for frame buffer devices instantiated for dot-matrix displays.
+> > > However, using the leds subsystem instead has the advantage that the
+> > > driver can make use of the HT16K33's hardware blinking support, and c=
+an
+> > > expose the display color.
+
+We have multicolor support now...
+
+> > > -     err =3D ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
+> > > +     of_property_read_u32(node, "color", &color);
+> > > +     seg->led.name =3D devm_kasprintf(dev, GFP_KERNEL,
+> > > +                     DRIVER_NAME ":%s:" LED_FUNCTION_BACKLIGHT,
+> > > +                     color < LED_COLOR_ID_MAX ? led_colors[color] : =
+"");
+
+And would prefer not to see driver_name as part of LED name.
+
+> > > +     err =3D ht16k33_brightness_set(priv, seg->led.brightness);
+> > >       if (err)
+> > >               return err;
+> >
+> > The LED class can pretty much do what the backlight class can and more.
+> >
+> > Maybe we can stop registering a backlight device in the fbdev case and
+> > register a led device for both. This makes the code cleaner and drops
+> > a dependency but will break backwards compatibility.
+> >
+> > I'd prefer a single solution that covers both use cases, but I'm not
+> > sure about the 'breaking backwards compatibility' consequence...
+
+For new drivers, breaking compatibility should not be a problem.
+
+Best regards,
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYFpSRgAKCRAw5/Bqldv6
+8gx1AJ9DrhY+6jZ2APCdwgx/TBVkD/BG/QCfZ9Mg2jmE6B1ZET6bJceiU04bD7g=
+=7qmH
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
