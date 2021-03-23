@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7EB34615C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DBE346165
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhCWOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbhCWOT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:19:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29323619A9;
-        Tue, 23 Mar 2021 14:19:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616509195;
-        bh=Wctfq10oQ7ClbxMnP/cRUCla14+kxy0D+hLSZJhO6qQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mI74jkxW1+48gr1J47uCQ/U+PD6M529yoLtqnveerHk883YTsI+heQhc28xco0MgJ
-         PKKcBbOGSaGDuLGMecQHKpgTpa0rAR1PoLw/Xu90tsI4cYeIbho5FbZnLpv84V+8HQ
-         R0ddXnGY4ghWbux/uODn8JaYEJasNIgnPzUw/92o=
-Date:   Tue, 23 Mar 2021 15:19:53 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
-Message-ID: <YFn5CSB1O3i+SzgR@kroah.com>
-References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
- <eec1797734e3d080662aa732c565ed4a3c261799.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
- <e064fdd7-b276-6732-16fe-2eb2564b2179@redhat.com>
+        id S231963AbhCWOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:23:16 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:44251 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232129AbhCWOXF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:23:05 -0400
+Received: by mail-io1-f69.google.com with SMTP id e11so1987316ioh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:23:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=2CgcKrHeCWGBs2yP0zbh1B1ArVXrjGOfPGKUarVfunQ=;
+        b=VHv+5oz88PyrcOfuLLiRXQK7CY9cR81ekCslTWhkkh0Z9LwBt+vPFTCSu+hssaDMfv
+         rzgYgaGLM9RR4Yf1AoBqwWkDyVowQ+F46sKE8LLMOPgsyF9u7dSiIggJFV1OD2P6cVvI
+         cWQ2V3lnmHfP5gccv6miKwGraWr9qpxlcLj1R5/kQB4haVePrgHsSQKlkC2nltYYlz01
+         m914bfarbxk1/F8ri30cYq4fEC6FYWumeT3aD/ID5ffTGfPPCROp+GSr3wMzTwiuUBus
+         51rxukw59sLZ/mt8SuWX3aNYyqxQIfcWvLhi9Fh/o/QhN9MYVri1q+AZ6JmoCpib2iV5
+         GpIg==
+X-Gm-Message-State: AOAM532zQaQngJy+4X4O5cKHMSumi2gLrNlpzTOCfrT13x0DNX/tzrhJ
+        +qLaaQcI9jUocjGoafFwZhitfoUg+qDoWMO0nNgBPWv0YNaX
+X-Google-Smtp-Source: ABdhPJzgwzFP6+3QtkQvdgHTxAvfMkCaGRBXU5kycZm2+e6m/Rd9tLH2IWwqzc64Az8TvaRN7DDSTSnNIy8qnY2e68q1xXxjnlh2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e064fdd7-b276-6732-16fe-2eb2564b2179@redhat.com>
+X-Received: by 2002:a05:6e02:1c21:: with SMTP id m1mr5184931ilh.204.1616509384532;
+ Tue, 23 Mar 2021 07:23:04 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 07:23:04 -0700
+In-Reply-To: <08603c70-64df-5dcc-f5c7-1646056af74b@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a427e805be34eb03@google.com>
+Subject: Re: [syzbot] WARNING in io_wq_put
+From:   syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:58:28PM +0100, Hans de Goede wrote:
-> Hi,
-> 
-> On 3/23/21 2:56 PM, Matti Vaittinen wrote:
-> > Devm helper header containing small inline helpers was added.
-> > Hans promised to maintain it.
-> > 
-> > Add Hans as maintainer and myself as designated reviewer.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> 
-> Yes I did promise that, didn't I?  FWIW going this route is still
-> fine by me, assuming that having someone else maintain this makes
-> this easier on / more acceptable to Greg.
-> 
-> Ultimately this is up to Greg though, so lets wait and see what
-> Greg has to say about this.
+Hello,
 
-Can we move some of the devm_* calls in include/device.h into here as
-well so that you all can be in charge of them instead of me?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-If so, I'm happy :)
+Reported-and-tested-by: syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com
 
-Anyway, this looks sane, I'll queue it up and let's see what breaks in
-linux-next...
+Tested on:
 
-thanks,
+commit:         c95a47c2 io-wq: eliminate the need for a manager thread
+git tree:       git://git.kernel.dk/linux-block wq-no-manager
+kernel config:  https://syzkaller.appspot.com/x/.config?x=175bf2d0517d3b04
+dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
+compiler:       Debian clang version 11.0.1-2
 
-greg k-h
+Note: testing is done by a robot and is best-effort only.
