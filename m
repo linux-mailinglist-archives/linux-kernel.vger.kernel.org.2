@@ -2,175 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3B73453D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5CE3453D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhCWA1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:27:31 -0400
-Received: from ozlabs.org ([203.11.71.1]:41225 "EHLO ozlabs.org"
+        id S230512AbhCWA2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:28:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230166AbhCWA1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:27:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4ByL3Mvlz9sSC;
-        Tue, 23 Mar 2021 11:27:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616459226;
-        bh=eFN2ccEoIxgAK/hFX9cj0zHHYca0TUOx9QjALavqtyk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LAvMixINFOXO4Mh5o2MJG6ftHadiKc7CDXrf8Wzv7/P7okl+ds/TFG8/Cf20HO4vZ
-         ROsUx7qotLucVkXNULfKcqWGMmwWiDk4XuSqpKxFdxC14ynZgTQEcCFXFPzPd2FeyZ
-         k/L3cySycllPxIEhJvfKde+j+xgDUJKDdmYJ0VT9GzUE9jVk5Qsa+e0P45LyIkYGqH
-         1aMlAninRo2C2XbMk6K07FQ/eXe5Co2QJlRGKNeeqiJ9unW8YrdGx5UFEqtgxVZn+R
-         hTcfmop6oKbOXyYZJ/uEWxBQwavtKnj4hI093dJ6jOJjSJi75vMmiy7UKRxUO3NR/6
-         VVfjx47l1Hziw==
-Date:   Tue, 23 Mar 2021 11:27:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Yangtao Li <tiny.windzz@gmail.com>
-Subject: linux-next: manual merge of the opp tree with the v4l-dvb tree
-Message-ID: <20210323112705.3094525d@canb.auug.org.au>
+        id S230455AbhCWA2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:28:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 096A3619AC;
+        Tue, 23 Mar 2021 00:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616459302;
+        bh=kB1iKyIkVp+5of0jUhEAoDEu5yIkWwoMlSfclhSGwyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CWJXQe7XWyhMgIjZQMz16RzEXK5ydEp+vSb3pGCFZnLiGIti+FJ1dL1WsCLZcE6rs
+         fy41lk7J90/UqRKOip/L1Lsbdc6RF1ViMzCqkp9QXJYFd2ym9gD9B0gkipOGTx4c3e
+         xvvuHI7jM8qQ/j8GjRchJqE+UwlF0dSlLj0OC9PNKZcjihg96fvNeRbdvD+uTlc8n3
+         zDVgLw2ol3SJIlYGPEC6R5IL5p0/aCj1O5HGvcCWZBI3AQLRORjCxVUKUtniN65fSZ
+         vAPooZ0OIOh4mp26pn31tQpAHpQK5s4F1uxNTNNjQm+4QY8aOnfGEXKc/cgukjjOMF
+         mn3LuONP7x6kA==
+Date:   Mon, 22 Mar 2021 17:28:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH 07/18] f2fs: convert to miscattr
+Message-ID: <YFk2JPmc7X7GFXni@gmail.com>
+References: <20210203124112.1182614-1-mszeredi@redhat.com>
+ <20210203124112.1182614-8-mszeredi@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I1qCCZIArNB4+41BasbJ/YD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203124112.1182614-8-mszeredi@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I1qCCZIArNB4+41BasbJ/YD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Feb 03, 2021 at 01:41:01PM +0100, Miklos Szeredi wrote:
+> @@ -3071,123 +3012,54 @@ static int f2fs_ioc_setproject(struct file *filp, __u32 projid)
+>  }
+>  #endif
+>  
+> -/* FS_IOC_FSGETXATTR and FS_IOC_FSSETXATTR support */
+> -
+> -/*
+> - * To make a new on-disk f2fs i_flag gettable via FS_IOC_FSGETXATTR and settable
+> - * via FS_IOC_FSSETXATTR, add an entry for it to f2fs_xflags_map[], and add its
+> - * FS_XFLAG_* equivalent to F2FS_SUPPORTED_XFLAGS.
+> - */
+> -
+> -static const struct {
+> -	u32 iflag;
+> -	u32 xflag;
+> -} f2fs_xflags_map[] = {
+> -	{ F2FS_SYNC_FL,		FS_XFLAG_SYNC },
+> -	{ F2FS_IMMUTABLE_FL,	FS_XFLAG_IMMUTABLE },
+> -	{ F2FS_APPEND_FL,	FS_XFLAG_APPEND },
+> -	{ F2FS_NODUMP_FL,	FS_XFLAG_NODUMP },
+> -	{ F2FS_NOATIME_FL,	FS_XFLAG_NOATIME },
+> -	{ F2FS_PROJINHERIT_FL,	FS_XFLAG_PROJINHERIT },
+> -};
 
-Hi all,
+There's another comment just above which talks about FS_IOC_GETFLAGS and
+FS_IOC_SETFLAGS:
 
-Today's linux-next merge of the opp tree got a conflict in:
+	/* FS_IOC_GETFLAGS and FS_IOC_SETFLAGS support */
 
-  drivers/media/platform/qcom/venus/pm_helpers.c
+	/*
+	 * To make a new on-disk f2fs i_flag gettable via FS_IOC_GETFLAGS, add an entry
+	 * for it to f2fs_fsflags_map[], and add its FS_*_FL equivalent to
+	 * F2FS_GETTABLE_FS_FL.  To also make it settable via FS_IOC_SETFLAGS, also add
+	 * its FS_*_FL equivalent to F2FS_SETTABLE_FS_FL.
+	 */
 
-between commit:
+This patch seems to make that outdated, since now both FS_IOC_[GS]ETFLAGS and
+FS_IOC_[GS]ETFSXATTR are handled together.
 
-  08b1cf474b7f ("media: venus: core, venc, vdec: Fix probe dependency error=
-")
+Can you please update the comment to properly describe what's going on?
 
-from the v4l-dvb tree and commit:
-
-  857219ae4043 ("media: venus: Convert to use resource-managed OPP API")
-
-from the opp tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/media/platform/qcom/venus/pm_helpers.c
-index e349d01422c5,e61317220b9a..000000000000
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@@ -750,12 -753,11 +750,11 @@@ static int venc_power_v4(struct device=20
-  	return ret;
-  }
- =20
- -static int vcodec_domains_get(struct device *dev)
- +static int vcodec_domains_get(struct venus_core *core)
-  {
-  	int ret;
-- 	struct opp_table *opp_table;
-  	struct device **opp_virt_dev;
- -	struct venus_core *core =3D dev_get_drvdata(dev);
- +	struct device *dev =3D core->dev;
-  	const struct venus_resources *res =3D core->res;
-  	struct device *pd;
-  	unsigned int i;
-@@@ -826,13 -825,11 +821,11 @@@ skip_pmdomains
- =20
-  	if (core->opp_dl_venus)
-  		device_link_del(core->opp_dl_venus);
--=20
-- 	dev_pm_opp_detach_genpd(core->opp_table);
-  }
- =20
- -static int core_get_v4(struct device *dev)
- +static int core_get_v4(struct venus_core *core)
-  {
- -	struct venus_core *core =3D dev_get_drvdata(dev);
- +	struct device *dev =3D core->dev;
-  	const struct venus_resources *res =3D core->res;
-  	int ret;
- =20
-@@@ -871,35 -867,24 +863,24 @@@
-  		}
-  	}
- =20
- -	ret =3D vcodec_domains_get(dev);
- +	ret =3D vcodec_domains_get(core);
-- 	if (ret) {
-- 		if (core->has_opp_table)
-- 			dev_pm_opp_of_remove_table(dev);
-- 		dev_pm_opp_put_clkname(core->opp_table);
-+ 	if (ret)
-  		return ret;
-- 	}
- =20
-  	return 0;
-  }
- =20
- -static void core_put_v4(struct device *dev)
- +static void core_put_v4(struct venus_core *core)
-  {
-- 	struct device *dev =3D core->dev;
--=20
-  	if (legacy_binding)
-  		return;
- =20
- -	vcodec_domains_put(dev);
- +	vcodec_domains_put(core);
--=20
-- 	if (core->has_opp_table)
-- 		dev_pm_opp_of_remove_table(dev);
-- 	dev_pm_opp_put_clkname(core->opp_table);
--=20
-  }
- =20
- -static int core_power_v4(struct device *dev, int on)
- +static int core_power_v4(struct venus_core *core, int on)
-  {
- -	struct venus_core *core =3D dev_get_drvdata(dev);
- +	struct device *dev =3D core->dev;
-  	struct device *pmctrl =3D core->pmdomains[0];
-  	int ret =3D 0;
- =20
-
---Sig_/I1qCCZIArNB4+41BasbJ/YD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBZNdkACgkQAVBC80lX
-0GyHHQf/YHTo3fHYKpoXF+D6dkaYMBAJfV/uiOmsewn7fDOz38nw0vbxrCo+yT4I
-MWpR1MmBMdUNa+cMAh26LJ8y95smgyH7LJb85ejkM4LuTW7JMtYeCrrCcvJpgiHp
-R8neocYehQFH49qoNzWVTKcN4OJouMMXNQqlsuFzfOwKdN4bCY1kXiKSbFJRu4oj
-uC/1bbgmoox6hvP7DP2ENpwSRKcd0qBi2C2Jz9WXGRGA3pj1Dsj5O8toIiwpw0Z+
-sA3oQ/fw7UVoo7Rh8wU7NtxAy0HHHDknvZJbmvcpxXTdKzsE+OCvZxOK3s/QFXZg
-cJL2LaXYhaWXda/YFnjIiqEl1Evf1w==
-=oY2V
------END PGP SIGNATURE-----
-
---Sig_/I1qCCZIArNB4+41BasbJ/YD--
+- Eric
