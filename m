@@ -2,315 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23CB3458EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CF93458F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCWHk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        id S229670AbhCWHld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhCWHjy (ORCPT
+        with ESMTP id S229658AbhCWHlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:39:54 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCC1C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:39:54 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id j25so13404621pfe.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:39:54 -0700 (PDT)
+        Tue, 23 Mar 2021 03:41:19 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D941C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:41:19 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id h25so10830943pgm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:41:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w0Dc7Z/1PtflixS4YTRrVIJxz0ZJpUsSszIaqgAgIVA=;
-        b=lwmY830nLJA1dh8DShHTwjPkSTpzKl4JNN7tg5BiJuKgxinIEwG1emUGKqyPfgCejn
-         Fqn50ums5A34ge7Pr5cDJVFrpnrDu4Q6ZRps/Wf7Axi4fXvaPv7JHTFeRVtJdeOS/fGw
-         TF5qktJ66QF/tkw05I3xaNyj3molQe0Ar3yes38cSiSMR1+uC9FUVsoxL3K/Bqfx4jfh
-         iQ+zn1CiSV1GuOWL33FGLXDQQQqpwVRbaUP7ZXqBSHa044hqCR08nfTsZC4LfrOb6i0R
-         +C6u7bSDCxk5b9meOfOVaZF7xBrQgDx2I6O/53pgCOiJAcMfEJdZ74dj0PFxdrWA8GZv
-         FISQ==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=gcmI11wouIpDwxdi+NStOdrVppM7cT0Mia1ThanzCd0=;
+        b=UE5+wbRmZdYUdQ0G8bX362ijyRwJ9biLMH7je5sLG9tnGEthPDD8cms1zmPguoF2Vz
+         PdJgmfHFxwX09TuzdZ6OiVb5rBOwbl6JvTiwYJ4ZpFQGLsCHU5fms4JjJqtMYnQ5J+h+
+         0ryMxlh8oqxok6IQtckoXOeiOaGx77B4tbt11zmPUMa2vX+O9NFx7zXvpTw1HrFwBztz
+         NPeXe/t0wUwM/uI0Mx8vQuL1oKQIQQhXDwlPgESgSrKwScDtQ3ErlHqczwAUiobBAjDv
+         Y3WAeJwnHB3G8M+PonvwePYXgPUy82uDV+D3i6i9rRjiqTF9B7VfjIRofihNj13QksRB
+         PVcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w0Dc7Z/1PtflixS4YTRrVIJxz0ZJpUsSszIaqgAgIVA=;
-        b=ioRKGScmeJaGdawCKCC8dKAUa2fA8nUp1hnV4JnmZiFU5AahEH/buvnGylbeDBuTAy
-         LdYXgc+2FIplHPoXxU2jCkp27oaIGsvwL5RiMBWTXN65ndf59cFjO0HaNR1RNyqd4zUR
-         3gxbS7HdXJ0Sz7iaTEzZDM3/BgdGhudCAI2xkaUezi9NJ2qnWG9T0nJYcqyws97oLmc5
-         WRQwkxtkwv4Kd+YilfY7wmBm+HGs/ccA9c+02syVtmGsTH1QaZwDOLpmS2DBkv4ucf1s
-         90zNxRMmXgzo/a14WY3kTjpRYYvZfRtzseJj0EaCiopjerfGc686w4EBCm0a6A59LiW3
-         m/vQ==
-X-Gm-Message-State: AOAM532dF1hvcCIC3EenSPyOQsHp6F9daAoh/msFd5CwMu6dVa2gP47y
-        clDTlkt191M/4jCmGtdxHCPW
-X-Google-Smtp-Source: ABdhPJyAl0oPGwTfWG55wWy4r1+xQQPT6r4e7BxJn8AclWa7ujLc9c+G/fgXfg5SD5zmDrgixdt9Iw==
-X-Received: by 2002:a05:6a00:1484:b029:214:23e5:a4f3 with SMTP id v4-20020a056a001484b029021423e5a4f3mr3740285pfu.26.1616485193873;
-        Tue, 23 Mar 2021 00:39:53 -0700 (PDT)
-Received: from localhost.localdomain ([103.77.37.149])
-        by smtp.gmail.com with ESMTPSA id fs9sm1587465pjb.40.2021.03.23.00.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 00:39:53 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boris.brezillon@collabora.com, Daniele.Palmas@telit.com,
-        bjorn.andersson@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v8 3/3] mtd: rawnand: Add support for secure regions in NAND memory
-Date:   Tue, 23 Mar 2021 13:09:30 +0530
-Message-Id: <20210323073930.89754-4-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210323073930.89754-1-manivannan.sadhasivam@linaro.org>
-References: <20210323073930.89754-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=gcmI11wouIpDwxdi+NStOdrVppM7cT0Mia1ThanzCd0=;
+        b=iyjiK2m/KpDE+sO56jMEDCAtYEBm+GrckaTAR50arKcueGB1iOxubg1aF1TXFKzjv2
+         OelsQBRd35gM3DeAcw/uvaNv7UjAhdlW41OkqVourTo3Krr1zejd+8M6LYFd70IRXMse
+         jrw/dExERGMNo1XOjJ6x52mTQSizytJPcq2oz5mjgdLk2VQGfD8J6DQUjVj4Pp/rVn7y
+         00K/JsnJYJ0jqzNQGr3p2yOhal1CN4BnZNclKCQ2adcbwJ2UjIFs2gmkwlE1Gu7dybz9
+         EAL1xkotjRfKeLwpY6G4TpZMBq8eFcA4p8ElPD26t6C/RAPEcUtTyy0/rOhPleiIl/EC
+         3leg==
+X-Gm-Message-State: AOAM532UCo5vOlbOSQPVL8zrWyH5T0sYuN+VOYIba0gIfns4qWl0L17h
+        edJX59h6YDZkrnJarhEl+Vl2L7f4GsEa91fm
+X-Google-Smtp-Source: ABdhPJwErHiyQzkdLbopxkOHcUNRxbNwmPsMCMOGUe+a7whz50kbLU6xArS7p5n4wvFkqiQmxoY6wg==
+X-Received: by 2002:a62:7ed2:0:b029:21d:1806:fe30 with SMTP id z201-20020a627ed20000b029021d1806fe30mr731380pfc.5.1616485277056;
+        Tue, 23 Mar 2021 00:41:17 -0700 (PDT)
+Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
+        by smtp.gmail.com with UTF8SMTPSA id 4sm1593011pjl.51.2021.03.23.00.41.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 00:41:16 -0700 (PDT)
+Message-ID: <2088f84c-08fb-fecc-f5d4-5735357dc296@ozlabs.ru>
+Date:   Tue, 23 Mar 2021 18:41:09 +1100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:87.0) Gecko/20100101
+ Thunderbird/87.0
+Subject: Re: [PATCH 1/1] powerpc/iommu: Enable remaining IOMMU Pagesizes
+ present in LoPAR
+Content-Language: en-US
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Joel Stanley <joel@jms.id.au>, brking@linux.vnet.ibm.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210322190943.715368-1-leobras.c@gmail.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210322190943.715368-1-leobras.c@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a typical end product, a vendor may choose to secure some regions in
-the NAND memory which are supposed to stay intact between FW upgrades.
-The access to those regions will be blocked by a secure element like
-Trustzone. So the normal world software like Linux kernel should not
-touch these regions (including reading).
 
-The regions are declared using a NAND chip DT property,
-"secure-regions". So let's make use of this property in the raw NAND
-core and skip access to the secure regions present in a system.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/mtd/nand/raw/nand_base.c | 105 +++++++++++++++++++++++++++++++
- include/linux/mtd/rawnand.h      |  14 +++++
- 2 files changed, 119 insertions(+)
+On 23/03/2021 06:09, Leonardo Bras wrote:
+> According to LoPAR, ibm,query-pe-dma-window output named "IO Page Sizes"
+> will let the OS know all possible pagesizes that can be used for creating a
+> new DDW.
+> 
+> Currently Linux will only try using 3 of the 8 available options:
+> 4K, 64K and 16M. According to LoPAR, Hypervisor may also offer 32M, 64M,
+> 128M, 256M and 16G.
+> 
+> Enabling bigger pages would be interesting for direct mapping systems
+> with a lot of RAM, while using less TCE entries.
+> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> ---
+>   arch/powerpc/include/asm/iommu.h       |  8 ++++++++
+>   arch/powerpc/platforms/pseries/iommu.c | 28 +++++++++++++++++++-------
+>   2 files changed, 29 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/iommu.h b/arch/powerpc/include/asm/iommu.h
+> index deef7c94d7b6..c170048b7a1b 100644
+> --- a/arch/powerpc/include/asm/iommu.h
+> +++ b/arch/powerpc/include/asm/iommu.h
+> @@ -19,6 +19,14 @@
+>   #include <asm/pci-bridge.h>
+>   #include <asm/asm-const.h>
+>   
+> +#define IOMMU_PAGE_SHIFT_16G	34
+> +#define IOMMU_PAGE_SHIFT_256M	28
+> +#define IOMMU_PAGE_SHIFT_128M	27
+> +#define IOMMU_PAGE_SHIFT_64M	26
+> +#define IOMMU_PAGE_SHIFT_32M	25
+> +#define IOMMU_PAGE_SHIFT_16M	24
+> +#define IOMMU_PAGE_SHIFT_64K	16
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index c33fa1b1847f..2a990219f498 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -278,11 +278,46 @@ static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
- 	return 0;
- }
- 
-+/**
-+ * nand_check_secure_region() - Check if the region is secured
-+ * @chip: NAND chip object
-+ * @offset: Offset of the region to check
-+ * @size: Size of the region to check
-+ *
-+ * Checks if the region is secured by comparing the offset and size with the
-+ * list of secure regions obtained from DT. Returns -EIO if the region is
-+ * secured else 0.
-+ */
-+static int nand_check_secure_region(struct nand_chip *chip, loff_t offset, u64 size)
-+{
-+	int i;
-+
-+	/* Skip touching the secure regions if present */
-+	for (i = 0; i < chip->nr_secure_regions; i++) {
-+		const struct nand_secure_region *region = &chip->secure_regions[i];
-+
-+		if (offset + size < region->offset ||
-+		    offset >= region->offset + region->size)
-+			continue;
-+
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
- {
-+	int ret;
-+
- 	if (chip->options & NAND_NO_BBM_QUIRK)
- 		return 0;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_secure_region(chip, ofs, 0);
-+	if (ret)
-+		return ret;
-+
- 	if (chip->legacy.block_bad)
- 		return chip->legacy.block_bad(chip, ofs);
- 
-@@ -397,6 +432,11 @@ static int nand_do_write_oob(struct nand_chip *chip, loff_t to,
- 		return -EINVAL;
- 	}
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_secure_region(chip, to, ops->ooblen);
-+	if (ret)
-+		return ret;
-+
- 	chipnr = (int)(to >> chip->chip_shift);
- 
- 	/*
-@@ -565,6 +605,11 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- 
- 	if (!chip->bbt)
- 		return 0;
-+
-+	/* Check if the region is secured */
-+	if (nand_check_secure_region(chip, ofs, 0))
-+		return -EIO;
-+
- 	/* Return info from the table */
- 	return nand_isreserved_bbt(chip, ofs);
- }
-@@ -3127,6 +3172,11 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 	int retry_mode = 0;
- 	bool ecc_fail = false;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_secure_region(chip, from, readlen);
-+	if (ret)
-+		return ret;
-+
- 	chipnr = (int)(from >> chip->chip_shift);
- 	nand_select_target(chip, chipnr);
- 
-@@ -3458,6 +3508,11 @@ static int nand_do_read_oob(struct nand_chip *chip, loff_t from,
- 	pr_debug("%s: from = 0x%08Lx, len = %i\n",
- 			__func__, (unsigned long long)from, readlen);
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_secure_region(chip, from, readlen);
-+	if (ret)
-+		return ret;
-+
- 	stats = mtd->ecc_stats;
- 
- 	len = mtd_oobavail(mtd, ops);
-@@ -3979,6 +4034,11 @@ static int nand_do_write_ops(struct nand_chip *chip, loff_t to,
- 		return -EINVAL;
- 	}
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_secure_region(chip, to, writelen);
-+	if (ret)
-+		return ret;
-+
- 	column = to & (mtd->writesize - 1);
- 
- 	chipnr = (int)(to >> chip->chip_shift);
-@@ -4180,6 +4240,11 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 	if (check_offs_len(chip, instr->addr, instr->len))
- 		return -EINVAL;
- 
-+	/* Check if the region is secured */
-+	ret = nand_check_secure_region(chip, instr->addr, instr->len);
-+	if (ret)
-+		return ret;
-+
- 	/* Grab the lock and see if the device is available */
- 	ret = nand_get_device(chip);
- 	if (ret)
-@@ -4995,10 +5060,37 @@ static bool of_get_nand_on_flash_bbt(struct device_node *np)
- 	return of_property_read_bool(np, "nand-on-flash-bbt");
- }
- 
-+static int of_get_nand_secure_regions(struct nand_chip *chip)
-+{
-+	struct device_node *dn = nand_get_flash_node(chip);
-+	struct property *prop;
-+	int length, nr_elem, i, j;
-+
-+	prop = of_find_property(dn, "secure-regions", &length);
-+	if (prop) {
-+		nr_elem = length / sizeof(u64);
-+		chip->nr_secure_regions = nr_elem / 2;
-+
-+		chip->secure_regions = kcalloc(nr_elem, sizeof(*chip->secure_regions), GFP_KERNEL);
-+		if (!chip->secure_regions)
-+			return -ENOMEM;
-+
-+		for (i = 0, j = 0; i < chip->nr_secure_regions; i++, j += 2) {
-+			of_property_read_u64_index(dn, "secure-regions", j,
-+						   &chip->secure_regions[i].offset);
-+			of_property_read_u64_index(dn, "secure-regions", j + 1,
-+						   &chip->secure_regions[i].size);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int rawnand_dt_init(struct nand_chip *chip)
- {
- 	struct nand_device *nand = mtd_to_nanddev(nand_to_mtd(chip));
- 	struct device_node *dn = nand_get_flash_node(chip);
-+	int ret;
- 
- 	if (!dn)
- 		return 0;
-@@ -5015,6 +5107,16 @@ static int rawnand_dt_init(struct nand_chip *chip)
- 	of_get_nand_ecc_user_config(nand);
- 	of_get_nand_ecc_legacy_user_config(chip);
- 
-+	/*
-+	 * Look for secure regions in the NAND chip. These regions are supposed
-+	 * to be protected by a secure element like Trustzone. So the read/write
-+	 * accesses to these regions will be blocked in the runtime by this
-+	 * driver.
-+	 */
-+	ret = of_get_nand_secure_regions(chip);
-+	if (!ret)
-+		return ret;
-+
- 	/*
- 	 * If neither the user nor the NAND controller have requested a specific
- 	 * ECC engine type, we will default to NAND_ECC_ENGINE_TYPE_ON_HOST.
-@@ -6068,6 +6170,9 @@ void nand_cleanup(struct nand_chip *chip)
- 	/* Free manufacturer priv data. */
- 	nand_manufacturer_cleanup(chip);
- 
-+	/* Free secure regions data */
-+	kfree(chip->secure_regions);
-+
- 	/* Free controller specific allocations after chip identification */
- 	nand_detach(chip);
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 6b3240e44310..17ddc900a1dc 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1036,6 +1036,16 @@ struct nand_manufacturer {
- 	void *priv;
- };
- 
-+/**
-+ * struct nand_secure_region - NAND secure region structure
-+ * @offset: Offset of the start of the secure region
-+ * @size: Size of the secure region
-+ */
-+struct nand_secure_region {
-+	u64 offset;
-+	u64 size;
-+};
-+
- /**
-  * struct nand_chip - NAND Private Flash Chip Data
-  * @base: Inherit from the generic NAND device
-@@ -1086,6 +1096,8 @@ struct nand_manufacturer {
-  *          NAND Controller drivers should not modify this value, but they're
-  *          allowed to read it.
-  * @read_retries: The number of read retry modes supported
-+ * @secure_regions: Structure containing the secure regions info
-+ * @nr_secure_regions: Number of secure regions
-  * @controller: The hardware controller	structure which is shared among multiple
-  *              independent devices
-  * @ecc: The ECC controller structure
-@@ -1135,6 +1147,8 @@ struct nand_chip {
- 	unsigned int suspended : 1;
- 	int cur_cs;
- 	int read_retries;
-+	struct nand_secure_region *secure_regions;
-+	u8 nr_secure_regions;
- 
- 	/* Externals */
- 	struct nand_controller *controller;
+
+These are not very descriptive, these are just normal shifts, could be 
+as simple as __builtin_ctz(SZ_4K) (gcc will optimize this) and so on.
+
+OTOH the PAPR page sizes need macros as they are the ones which are 
+weird and screaming for macros.
+
+I'd steal/rework spapr_page_mask_to_query_mask() from QEMU. Thanks,
+
+
+
+
+> +
+>   #define IOMMU_PAGE_SHIFT_4K      12
+>   #define IOMMU_PAGE_SIZE_4K       (ASM_CONST(1) << IOMMU_PAGE_SHIFT_4K)
+>   #define IOMMU_PAGE_MASK_4K       (~((1 << IOMMU_PAGE_SHIFT_4K) - 1))
+> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> index 9fc5217f0c8e..02958e80aa91 100644
+> --- a/arch/powerpc/platforms/pseries/iommu.c
+> +++ b/arch/powerpc/platforms/pseries/iommu.c
+> @@ -1099,6 +1099,24 @@ static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
+>   			 ret);
+>   }
+>   
+> +/* Returns page shift based on "IO Page Sizes" output at ibm,query-pe-dma-window. SeeL LoPAR */
+> +static int iommu_get_page_shift(u32 query_page_size)
+> +{
+> +	const int shift[] = {IOMMU_PAGE_SHIFT_4K,   IOMMU_PAGE_SHIFT_64K,  IOMMU_PAGE_SHIFT_16M,
+> +			     IOMMU_PAGE_SHIFT_32M,  IOMMU_PAGE_SHIFT_64M,  IOMMU_PAGE_SHIFT_128M,
+> +			     IOMMU_PAGE_SHIFT_256M, IOMMU_PAGE_SHIFT_16G};
+> +	int i = ARRAY_SIZE(shift) - 1;
+> +
+> +	/* Looks for the largest page size supported */
+> +	for (; i >= 0; i--) {
+> +		if (query_page_size & (1 << i))
+> +			return shift[i];
+> +	}
+> +
+> +	/* No valid page size found. */
+> +	return 0;
+> +}
+> +
+>   /*
+>    * If the PE supports dynamic dma windows, and there is space for a table
+>    * that can map all pages in a linear offset, then setup such a table,
+> @@ -1206,13 +1224,9 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+>   			goto out_failed;
+>   		}
+>   	}
+> -	if (query.page_size & 4) {
+> -		page_shift = 24; /* 16MB */
+> -	} else if (query.page_size & 2) {
+> -		page_shift = 16; /* 64kB */
+> -	} else if (query.page_size & 1) {
+> -		page_shift = 12; /* 4kB */
+> -	} else {
+> +
+> +	page_shift = iommu_get_page_shift(query.page_size);
+> +	if (!page_shift) {
+>   		dev_dbg(&dev->dev, "no supported direct page size in mask %x",
+>   			  query.page_size);
+>   		goto out_failed;
+> 
+
 -- 
-2.25.1
-
+Alexey
