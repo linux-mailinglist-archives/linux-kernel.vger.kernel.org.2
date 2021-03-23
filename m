@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B0D3465DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9C43465E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhCWRCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhCWRCu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:02:50 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5334BC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:02:50 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id v3so12358089pgq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ndoYppsutVe9wAfx1BDabw/4l2WnR7bXko0osmOYBwU=;
-        b=OIKIT/y6gSqe2Cnk5qDFtFqcUKk3dlMgIKs/JNqqQrXTzAGj4jCBKtqNMmZ3gpmMA7
-         koCpGE1L3LyuNSUcaG2YlBrZKxL9/4n/yiZAVRVp/InnNc/10yBWUoEX0k04NQfl6T2H
-         VRhzhYtCYOk+W07tbtxyiM/mBpTj2ATZiTMTwiuPUyfyhkLPvE+IAP3q0+NxEmqUZJIZ
-         4thJF93BgL4qPIeiQ+Z2qc3chfbNsvbMcgwhycJJzolwiqnvc4OGXVJhWwTimFWDW8ae
-         QL00EPacqIL+3aDU22EZ+DX/xyFox8MPOKyMEsnHCoiz7QCdrb+XHM4EP4e0WMzSmLpB
-         FNHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ndoYppsutVe9wAfx1BDabw/4l2WnR7bXko0osmOYBwU=;
-        b=OUA/WvaM7ZdCHOkrxbvrPOHAjYuWCOdrTi9k+8SMbeNyf81XM62ctcVcBCKEf49vG6
-         4I3IctNVgfiaLKwk7MXg0+op+lFx0DP0OqeV5ep0ZmrXwezOeC/dfnQymEkL3nNfYaAB
-         0SLzj75Hvoh7/RKlohuIYfD+F/Se14VJtaD0otPyOAcNkrMyIEaqrtdfDHvkCmZOT+GP
-         pwfBbY303+rhWk40VEeQXduhOL+fUcKhlOOak37dDUKFvFJMxajSNKa+nWRte8AgOG/e
-         1PE22KpRkLHzYk5yqpHsR4tRuLEaee6Ue63+XnL5swvfuPpy3vBOrlKVnkA7RO2wjvha
-         73fw==
-X-Gm-Message-State: AOAM533PnNHfi7G5kXQz/mFiaCKULdl8pfAYQmugRad/0KoPeUycfzxJ
-        /EmAxL/caJP2vXCJmrSUeqAwAw==
-X-Google-Smtp-Source: ABdhPJwHWZyK5FMHigJVHSfxS3kAPRRK6LzWKYi9DS+twjjePYkh8ZTcr3ol8eh9A2GBzlLwoJGj/Q==
-X-Received: by 2002:a05:6a00:2345:b029:20b:c007:f9a4 with SMTP id j5-20020a056a002345b029020bc007f9a4mr5708563pfj.42.1616518969617;
-        Tue, 23 Mar 2021 10:02:49 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id o9sm18628845pfh.47.2021.03.23.10.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 10:02:48 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 17:02:45 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Kai Huang <kai.huang@intel.com>,
-        kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <YFofNRLPGpEWoKtH@google.com>
-References: <YFjoZQwB7e3oQW8l@google.com>
- <20210322191540.GH6481@zn.tnic>
- <YFjx3vixDURClgcb@google.com>
- <20210322210645.GI6481@zn.tnic>
- <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
- <20210322223726.GJ6481@zn.tnic>
- <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
- <YFoNCvBYS2lIYjjc@google.com>
- <20210323160604.GB4729@zn.tnic>
- <41dd6e78-5fe4-259e-cd0b-209de452a760@redhat.com>
+        id S229730AbhCWRFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:05:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:49324 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229669AbhCWRF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:05:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 809361042;
+        Tue, 23 Mar 2021 10:05:29 -0700 (PDT)
+Received: from [10.57.55.187] (unknown [10.57.55.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B24123F718;
+        Tue, 23 Mar 2021 10:05:27 -0700 (PDT)
+Subject: Re: (subset) [PATCH v5 00/19] coresight: Add support for ETE and TRBE
+To:     Marc Zyngier <maz@kernel.org>, linux-arm-kernel@lists.infradead.org
+Cc:     leo.yan@linaro.org, catalin.marinas@arm.com,
+        Linu Cherian <lcherian@marvell.com>,
+        Will Deacon <will@kernel.org>, coresight@lists.linaro.org,
+        Peter Zilstra <peterz@infradead.org>,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        mathieu.poirier@linaro.org, linux-kernel@vger.kernel.org
+References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+ <161651726490.2050093.5536833570808361940.b4-ty@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <bd50ab75-19eb-1957-942a-f045e3df8a51@arm.com>
+Date:   Tue, 23 Mar 2021 17:05:26 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <41dd6e78-5fe4-259e-cd0b-209de452a760@redhat.com>
+In-Reply-To: <161651726490.2050093.5536833570808361940.b4-ty@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021, Paolo Bonzini wrote:
-> On 23/03/21 17:06, Borislav Petkov wrote:
-> > > Practically speaking, "basic" deployments of SGX VMs will be insulated from
-> > > this bug.  KVM doesn't support EPC oversubscription, so even if all EPC is
-> > > exhausted, new VMs will fail to launch, but existing VMs will continue to chug
-> > > along with no ill effects....
-> > 
-> > Ok, so it sounds to me like*at*  *least*  there should be some writeup in
-> > Documentation/ explaining to the user what to do when she sees such an
-> > EREMOVE failure, perhaps the gist of this thread and then possibly the
-> > error message should point to that doc.
+On 23/03/2021 16:34, Marc Zyngier wrote:
+> On Tue, 23 Mar 2021 12:06:28 +0000, Suzuki K Poulose wrote:
+>> This series enables future IP trace features Embedded Trace Extension
+>> (ETE) and Trace Buffer Extension (TRBE). This series applies on
+>> v5.12-rc4 + some patches queued. A standalone tree is also available here [0].
+>> The queued patches (almost there) are included in this posting for
+>> the sake of constructing a tree from the posting.
+>>
+>> ETE is the PE (CPU) trace unit for CPUs, implementing future
+>> architecture extensions. ETE overlaps with the ETMv4 architecture, with
+>> additions to support the newer architecture features and some restrictions
+>> on the supported features w.r.t ETMv4. The ETE support is added by extending
+>> the ETMv4 driver to recognise the ETE and handle the features as exposed by
+>> the TRCIDRx registers. ETE only supports system instructions access from the
+>> host CPU. The ETE could be integrated with a TRBE (see below), or with
+>> the legacy CoreSight trace bus (e.g, ETRs). Thus the ETE follows same
+>> firmware description as the ETMs and requires a node per instance.
+>>
+>> [...]
 > 
-> That's important, but it's even more important *to developers* that the
-> commit message spells out why this would be a kernel bug more often than
-> not.  I for one do not understand it, and I suspect I'm not alone.
+> Applied to fixes, thanks!
 > 
-> Maybe (optimistically) once we see that explanation we decide that the
-> documentation is not important.  Sean, Kai, can you explain it?
+> [01/19] kvm: arm64: Hide system instruction access to Trace registers
+>          commit: 4af0afe252a2701732c317585f7c3ef6596b8f3d
+> 
 
-Thought of a good analogy that can be used for the changelog and/or docs:
-
-This is effectively a kernel use-after-free of EPC, and due to the way SGX works,
-the bug is detected at freeing.  Rather than add the page back to the pool of
-available EPC, the kernel intentionally leaks the page to avoid additional
-errors in the future.
-
-Does that help?
+Thanks Marc !
