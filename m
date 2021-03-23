@@ -2,64 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7893462C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAA43462CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhCWP0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:26:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232779AbhCWP0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:26:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C20E61992;
-        Tue, 23 Mar 2021 15:26:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616513169;
-        bh=ngQXoqy6y8sLrs0z1JGl1+LPm+uDGKDMfZoSEjUnW1s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gP97Yn/jeTWKAK7uEmrFRIzTESb9qbf/oyuEN5mLbHkUs53YleN9NPiKTsHZtxH2n
-         EOMaCAfStgAkAb/BM75sXnELhIv43cjnwK/jCNMD7sGXaIwB2CyodlicoKJM/imQgI
-         72J/qqsdG/OvAVwRyHsA+A051qvCg38WbVjJ1+Bw=
-Date:   Tue, 23 Mar 2021 16:26:06 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rjw@rjwysocki.net, rafael@kernel.org, ionela.voinescu@arm.com,
-        Dietmar.Eggemann@arm.com
-Subject: Re: [PATCH] PM / EM: postpone creating the debugfs dir till
- fs_initcall
-Message-ID: <YFoIjt3E+MIK3yQQ@kroah.com>
-References: <20210323145608.29832-1-lukasz.luba@arm.com>
+        id S232813AbhCWP12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:27:28 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44468 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232798AbhCWP0w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 11:26:52 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 96DC720B5680;
+        Tue, 23 Mar 2021 08:26:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 96DC720B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616513212;
+        bh=d5zEZG4k7ovVr063Y6JJHF1nJVd22PuP0B4L3ZYyzlQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hnDT7VH5CrXQzd4FIlxRs4CW5S2gk098IVDOJi7NeUr3hSO9HAhljqBufGdG3THsw
+         1AvJIsXA+5MOYYxb3TTPtpKg17PWf0Ejpys7Ef51hcp1dcl6i7o8sGQuNoxsS9xizL
+         Tr42rBSUgPKG3jS0twkIXT2dHNvVXNcPCtBBgCTY=
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
+ trace unreliable
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+ <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+ <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+ <20210323145734.GD98545@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
+Date:   Tue, 23 Mar 2021 10:26:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323145608.29832-1-lukasz.luba@arm.com>
+In-Reply-To: <20210323145734.GD98545@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:56:08PM +0000, Lukasz Luba wrote:
-> The debugfs directory '/sys/kernel/debug/energy_model' is needed before
-> the Energy Model registration can happen. With the recent change in
-> debugfs subsystem it's not allowed to create this directory at early stage
-> (core_initcall). Thus creating this directory would fail.
-> Postpone the creation of the EM debug dir to later stage: fs_initcall.
-> It should be safe since all clients: CPUFreq drivers, Devfreq drivers will
-> be initialized in later stages.
-> The custom debug log below prints the time of creation the EM debug dir at
-> fs_initcall and successful registration of EMs at later stages.
-> 
-> [    1.505717] energy_model: creating rootdir
-> [    3.698307] cpu cpu0: EM: created perf domain
-> [    3.709022] cpu cpu1: EM: created perf domain
-> 
-> fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-> Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
-> Hi Rafael,
-> 
-> Please take this patch into your PM v5.12 fixes. The change described in
-> the patch above landed in v5.12-rc1. Some of our EAS/EM tests are failing.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+On 3/23/21 9:57 AM, Mark Rutland wrote:
+> On Tue, Mar 23, 2021 at 09:15:36AM -0500, Madhavan T. Venkataraman wrote:
+>> Hi Mark,
+>>
+>> I have a general question. When exceptions are nested, how does it work? Let us consider 2 cases:
+>>
+>> 1. Exception in a page fault handler itself. In this case, I guess one more pt_regs will get
+>>    established in the task stack for the second exception.
+> 
+> Generally (ignoring SDEI and stack overflow exceptions) the regs will be
+> placed on the stack that was in use when the exception occurred, e.g.
+> 
+>   task -> task
+>   irq -> irq
+>   overflow -> overflow
+> 
+> For SDEI and stack overflow, we'll place the regs on the relevant SDEI
+> or overflow stack, e.g.
+> 
+>   task -> overflow
+>   irq -> overflow
+> 
+>   task -> sdei
+>   irq -> sdei
+> 
+> I tried to explain the nesting rules in:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/stacktrace.c?h=v5.11#n59
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/arm64/kernel/stacktrace.c?h=v5.11&id=592700f094be229b5c9cc1192d5cea46eb4c7afc
+> 
+>> 2. Exception in an interrupt handler. Here the interrupt handler is running on the IRQ stack.
+>>    Will the pt_regs get created on the IRQ stack?
+> 
+> For an interrupt the regs will be placed on the stack that was in use
+> when the interrupt was taken. The kernel switches to the IRQ stack
+> *after* stacking the registers. e.g.
+> 
+>   task -> task // subsequently switches to IRQ stack
+>   irq -> irq
+> 
+>> Also, is there a maximum nesting for exceptions?
+> 
+> In practice, yes, but the specific number isn't a constant, so in the
+> unwind code we have to act as if there is no limit other than stack
+> sizing.
+> 
+> We try to prevent cerain exceptions from nesting (e.g. debug exceptions
+> cannot nest), but there are still several level sof nesting, and some
+> exceptions which can be nested safely (like faults). For example, it's
+> possible to have a chain:
+> 
+>  syscall -> fault -> interrupt -> fault -> pNMI -> fault -> SError -> fault -> watchpoint -> fault -> overflow -> fault -> BRK
+> 
+> ... and potentially longer than that.
+> 
+> The practical limit is the size of all the stacks, and the unwinder's 
+> stack monotonicity checks ensure that an unwind will terminate.
+> 
+
+Thanks for explaining the nesting. It is now clear to me.
+
+So, my next question is - can we define a practical limit for the nesting so that any nesting beyond that
+is fatal? The reason I ask is - if there is a max, then we can allocate an array of stack frames out of
+band for the special frames so they are not part of the stack and will not likely get corrupted.
+
+Also, we don't have to do any special detection. If the number of out of band frames used is one or more
+then we have exceptions and the stack trace is unreliable.
+
+Thanks.
+
+Madhavan
