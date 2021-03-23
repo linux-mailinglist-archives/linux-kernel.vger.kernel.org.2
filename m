@@ -2,182 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0915A345764
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FC9345766
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCWFhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:37:47 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:33277 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCWFhh (ORCPT
+        id S229822AbhCWFkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229452AbhCWFkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:37:37 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210323053735epoutp047bf9327f3b1dc20004de6b5820dd0f1f~u4guDlCFG2700227002epoutp04U
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:37:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210323053735epoutp047bf9327f3b1dc20004de6b5820dd0f1f~u4guDlCFG2700227002epoutp04U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616477855;
-        bh=uyzlbgbXw381TKZi8Ui8NC3M6tr5mvhpMRk8Yzi6zI0=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=LQZYcBabaYYiUFSZmc2wU1p+GcRS5/jqJtNhaU1gFA5wFbni3fXR1u2G19aZ95ASw
-         K3jE5CvoFDIbPDopRg60ZDsJDeiAPE32DzeF7d0/xATltNbRm250Gyz4DjQyqKOqBT
-         tXmFbDt5cFPFH7iLdLQ0DfjU0TwZBaeUw4e1at18=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210323053734epcas2p3abb59e35e5052ef078a7d22f798f5e29~u4gtQZIKp0174801748epcas2p35;
-        Tue, 23 Mar 2021 05:37:34 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.183]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4F4KrX17MJz4x9Q7; Tue, 23 Mar
-        2021 05:37:32 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-df-60597e9bb388
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        25.17.05262.B9E79506; Tue, 23 Mar 2021 14:37:32 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>, Bean Huo <huobean@gmail.com>
-CC:     Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
-Date:   Tue, 23 Mar 2021 14:37:31 +0900
-X-CMS-MailID: 20210323053731epcms2p70788f357b546e9ca21248175a8884554
+        Tue, 23 Mar 2021 01:40:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7871AC061574;
+        Mon, 22 Mar 2021 22:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=icJplTGGxz2G/Khqfbp5NSjgVDQ3QMHoDvs8dUu35/g=; b=fzQXiMuSOQgfzL4PpG40ZAiYUh
+        zuPqXC4LOZPPPhb/A3eC+mM1ElYgrDZxxSHAmdLm1nrK4WUAw06hbj4hqdpeFAlU0haOdvCQ/GQ5J
+        +8pNeqc8K5/ToeZspfzrb4+REnirY5IuXSl4XS/C2icNm8hSe5dhCQQ/ZgkrdqRgkv0FeVyPANKuB
+        pWfUfqcK9podU0vfb2I22NmTUULj3xTKjxtt23dAyZyWqA+GJIsZVelcxuUr/9EN4z8Dl3kIHW6mT
+        OWlrPGiC3wlrsc9J/HLLKux6S7byIPZ3/PTBLJZZ7Ybk5ZkPPu5lAFVZQV+qu01fHUkfZT8wLGAkq
+        mmQgO6ag==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOZlX-009bhI-9F; Tue, 23 Mar 2021 05:39:50 +0000
+Subject: Re: [PATCH] perf tools: Trivial spelling fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, irogers@google.com,
+        kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20210323044605.1788192-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <dc1cde42-f0a6-8f1a-1353-9e767ae3cd31@infradead.org>
+Date:   Mon, 22 Mar 2021 22:39:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210323044605.1788192-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGJsWRmVeSWpSXmKPExsWy7bCmqe6cusgEg1czmSwezNvGZrG37QS7
-        xcufV9kspn34yWzxaf0yVouXhzQtdh08yGax6kG4RfPi9WwWc842MFn09m9ls9h8cAOzxeM7
-        n9ktFt3YxmTR/6+dxWLbZ0GL4yffMVpc3jWHzaL7+g42i+XH/zFZLN16k9Gic/oaFgcxj8tX
-        vD0u9/UyeeycdZfdY8KiA4we++euYfdoObmfxePj01ssHn1bVjF6fN4k59F+oJspgCsqxyYj
-        NTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6E0lhbLEnFKg
-        UEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhYYFecWJucWleul5yfq6VoYGBkSlQZUJOxvmr
-        zewF3/grjn5oZ2tgnMPdxcjJISFgItFw5TZbFyMXh5DADkaJnh23mLoYOTh4BQQl/u4QBqkR
-        FvCW+HNhKhuILSSgJLH+4ix2iLiexK2HaxhBbDYBHYnpJ+6zg7SKCNhLrGwKAhnJLPCHTWLp
-        rcdMELt4JWa0P2WBsKUlti/fCtbLKWAnceD/W1aIuIbEj2W9zBC2qMTN1W/ZYez3x+YzQtgi
-        Eq33zkLVCEo8+LkbKi4pcWz3B6hd9RJb7/xiBDlCQqCHUeLwzltQC/QlrnVsBDuCV8BX4v/u
-        T2CDWARUJS72TAH7XULARWLvKX2QMLOAvMT2t3OYQcLMApoS63fpQ1QoSxy5xQLzVcPG3+zo
-        bGYBPomOw3/h4jvmPYG6TE1i3c/1TBMYlWchwnkWkl2zEHYtYGRexSiWWlCcm55abFRgjBy1
-        mxjBCV7LfQfjjLcf9A4xMnEwHmKU4GBWEuFtCY9IEOJNSaysSi3Kjy8qzUktPsRoCvTkRGYp
-        0eR8YI7JK4k3NDUyMzOwNLUwNTOyUBLnLTZ4EC8kkJ5YkpqdmlqQWgTTx8TBKdXA1HzEYMHt
-        Tq+vk/c2uxn7mGmtiK+V+1S+JPEK164yVYOTPEHfPZMaIqX+xwTnLRd9sO5R4e1vxy5vXPgj
-        0b5J7vem6roNujmFV83e6Dd9yKh/FrKF7ejpT3bGTDZWiuske/an8DytZm6Mkin/W3GQY77I
-        9tp37gd7f/duaKj4Y+NmsOrnhgt3FQ/Lxx3dtaqxZ01QC6dU+aQetr4zNc8mdi9y/2uc1Dnh
-        w4/un66qdbFnNvorXf3wyy337i2JQ219Ike+er230Zed8VLxcl/TwX9P7iqkxE2LX76Ap/Tp
-        5k2CE3um5bSkRS7nd3ESWrn7qYbC5pcnQ85vEXIIzFH8yRob9E9tsccMB1ORqBNflViKMxIN
-        tZiLihMBCfCDI3kEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860
-References: <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
-        <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
-        <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
-        <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
-        <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
-        <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 2021-03-23 12:22, Can Guo wrote:
->> On 2021-03-22 17:11, Bean Huo wrote:
->>> On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
->>>> +       switch (rsp_field->hpb_op) {
->>>> 
->>>> +       case HPB_RSP_REQ_REGION_UPDATE:
->>>> 
->>>> +               if (data_seg_len != DEV_DATA_SEG_LEN)
->>>> 
->>>> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->>>> 
->>>> +                                "%s: data seg length is not
->>>> same.\n",
->>>> 
->>>> +                                __func__);
->>>> 
->>>> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
->>>> 
->>>> +               break;
->>>> 
->>>> +       case HPB_RSP_DEV_RESET:
->>>> 
->>>> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->>>> 
->>>> +                        "UFS device lost HPB information during
->>>> PM.\n");
->>>> 
->>>> +               break;
->>> 
->>> Hi Deajun,
->>> This series looks good to me. Just here I have one question. You 
->>> didn't
->>> handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS, how 
->>> to
->>> handle HPB_RSP_DEV_RESET from the host side? Do you think we shoud
->>> reset host side HPB entry as well or what else?
->>> 
->>> 
->>> Bean
->> 
->> Same question here - I am still collecting feedbacks from flash vendors 
->> about
->> what is recommanded host behavior on reception of HPB Op code 0x2, 
->> since it
->> is not cleared defined in HPB2.0 specs.
->> 
->> Can Guo.
+On 3/22/21 9:46 PM, Bhaskar Chowdhury wrote:
 > 
->I think the question should be asked in the HPB2.0 patch, since in 
->HPB1.0 device
->control mode, a HPB reset in device side does not impact anything in 
->host side -
->host is not writing back any HPB entries to device anyways and HPB Read 
->cmd with
->invalid HPB entries shall be treated as normal Read(10) cmd without any 
->problems.
-
-Yes, UFS device will process read command even the HPB entries are valid or
-not. So it is warning about read performance drop by dev reset.
-
-Thanks,
-Daejun
-
->Please correct me if I am wrong.
-
-
-
->Thanks,
->Can Guo.
+> s/succeded/succeeded/ ........five different places
+> s/revsions/revisions/
 > 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  tools/perf/util/header.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
->  
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index 20effdff76ce..97a0eeb6d2ab 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -127,7 +127,7 @@ static int __do_write_buf(struct feat_fd *ff,  const void *buf, size_t size)
+>  	return 0;
+>  }
+> 
+> -/* Return: 0 if succeded, -ERR if failed. */
+> +/* Return: 0 if succeeded, -ERR if failed. */
+>  int do_write(struct feat_fd *ff, const void *buf, size_t size)
+>  {
+>  	if (!ff->buf)
+> @@ -135,7 +135,7 @@ int do_write(struct feat_fd *ff, const void *buf, size_t size)
+>  	return __do_write_buf(ff, buf, size);
+>  }
+> 
+> -/* Return: 0 if succeded, -ERR if failed. */
+> +/* Return: 0 if succeeded, -ERR if failed. */
+>  static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
+>  {
+>  	u64 *p = (u64 *) set;
+> @@ -154,7 +154,7 @@ static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
+>  	return 0;
+>  }
+> 
+> -/* Return: 0 if succeded, -ERR if failed. */
+> +/* Return: 0 if succeeded, -ERR if failed. */
+>  int write_padded(struct feat_fd *ff, const void *bf,
+>  		 size_t count, size_t count_aligned)
+>  {
+> @@ -170,7 +170,7 @@ int write_padded(struct feat_fd *ff, const void *bf,
+>  #define string_size(str)						\
+>  	(PERF_ALIGN((strlen(str) + 1), NAME_ALIGN) + sizeof(u32))
+> 
+> -/* Return: 0 if succeded, -ERR if failed. */
+> +/* Return: 0 if succeeded, -ERR if failed. */
+>  static int do_write_string(struct feat_fd *ff, const char *str)
+>  {
+>  	u32 len, olen;
+> @@ -266,7 +266,7 @@ static char *do_read_string(struct feat_fd *ff)
+>  	return NULL;
+>  }
+> 
+> -/* Return: 0 if succeded, -ERR if failed. */
+> +/* Return: 0 if succeeded, -ERR if failed. */
+>  static int do_read_bitmap(struct feat_fd *ff, unsigned long **pset, u64 *psize)
+>  {
+>  	unsigned long *set;
+> @@ -3485,7 +3485,7 @@ static const size_t attr_pipe_abi_sizes[] = {
+>   * between host recording the samples, and host parsing the samples is the
+>   * same. This is not always the case given that the pipe output may always be
+>   * redirected into a file and analyzed on a different machine with possibly a
+> - * different endianness and perf_event ABI revsions in the perf tool itself.
+> + * different endianness and perf_event ABI revisions in the perf tool itself.
+>   */
+>  static int try_all_pipe_abis(uint64_t hdr_sz, struct perf_header *ph)
+>  {
+> --
+
+
+-- 
+~Randy
+
