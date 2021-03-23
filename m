@@ -2,114 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBEA34633F
+	by mail.lfdr.de (Postfix) with ESMTP id DBCA8346341
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbhCWPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbhCWPpv (ORCPT
+        id S233057AbhCWPql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:46:41 -0400
+Received: from pio-pvt-msa1.bahnhof.se ([79.136.2.40]:57348 "EHLO
+        pio-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhCWPqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:45:51 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29A1C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:45:50 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id c17so18549258ilj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eNcwAhe8EECmJ+67E5IQtqOhMGQZ7Q8SnR6/Iu7GDqo=;
-        b=fVK+hoNA6Z2If7+jw9Gya5oau5Kach+9ONPCC98VmVCKgB4pZffbmH6s/XcAaWqPqD
-         M/uzfO6MA60ffmQUFGfBsII0Gs3aEnnfEkQa/S1AUZa7pRXV5MHBEzpsG9anLsb2jYRm
-         nw4KRLJGJ66ZASt/uEssfPghYVLeDMv9fin5A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eNcwAhe8EECmJ+67E5IQtqOhMGQZ7Q8SnR6/Iu7GDqo=;
-        b=HP4md+4SgKTDNDmCyZri/Gj3XJ0LXgqPuy2cet3xSgEQbaR4D4iTuh9k8n+NqtKBGZ
-         E8LV6PPI8cBUBmdKLbl0/1K6zaSZ1V1TI80TrOI+hIv6sikiWnzzKAxXL71AMmoBigJP
-         osLg74p4LU408/RbOdaO4Z8ZFHdFJnDu8sUkQnoaFo7u1G+ojz7uuyAlEo5zjf6yYhfs
-         bGWYa8lK1P50XKNmBy7HPtx+oNR0GQ8fAre1qtoi6Q+1AC/MaX7veGXD6FlOg9QFqfnT
-         3oIqCg8bnwDm0R4QpzhUzvG3y8of3Ky1HWxbHScxKbuEyMBmwHd91CpOKdAmAaWrdB3Z
-         nzTg==
-X-Gm-Message-State: AOAM530vI6zVbCAIVc8kbOzp78O4fnwFnAZ6y5kxxaR6d+WIdpssNn0Q
-        iYyvc7hT4Quw4QDTg5JyoNgtXw==
-X-Google-Smtp-Source: ABdhPJwzXXZ1kbUwrfW/PKshnh8p7S8RyqnAU3cfcJS+Mlzbh8jJMJWVUnCNfW1coxUngiS3AGwGqQ==
-X-Received: by 2002:a92:2c04:: with SMTP id t4mr5377940ile.99.1616514350412;
-        Tue, 23 Mar 2021 08:45:50 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 18sm9742312ilj.59.2021.03.23.08.45.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 08:45:49 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] usbip: tools: add usage of device mode in
- usbip_list.c
-To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Antonio Borneo <borneo.antonio@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <YFnmlwlau57tj3dE@Sun>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3d5c3b76-40a4-8db7-8e12-a210f0c52e51@linuxfoundation.org>
-Date:   Tue, 23 Mar 2021 09:45:48 -0600
+        Tue, 23 Mar 2021 11:46:10 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id CB47340788;
+        Tue, 23 Mar 2021 16:46:08 +0100 (CET)
+Authentication-Results: pio-pvt-msa1.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b="rHKVk9Lc";
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tFJo68TOyrQL; Tue, 23 Mar 2021 16:46:07 +0100 (CET)
+Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 5ACE040789;
+        Tue, 23 Mar 2021 16:46:05 +0100 (CET)
+Received: from [192.168.0.209] (unknown [192.198.151.43])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id 282813602AF;
+        Tue, 23 Mar 2021 16:46:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1616514364; bh=/YRbLyyT2+b0x+xy9LzPsteGLOtTqIZRl6La1xXuixw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rHKVk9LcDAJi/SFeskJmGVMZq6XkliOXWcwycvl8g1nRLVTmb4RIpIgFak5JH/47E
+         7xkSJb3MvPNZA1viPKpoAz16O2Zy+u/aA7/MJRjbs3g4VyZQ5qPYACWBnuYg0pvNiY
+         ecAJqm0cFWJxCsXdn1qoqg2Pq7HyVugR8sFtk6+U=
+Subject: Re: [RFC PATCH 2/2] mm,drm/ttm: Use VM_PFNMAP for TTM vmas
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-3-thomas_os@shipmail.org>
+ <20210323140030.GE2356281@nvidia.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <dff54e6f-91bf-8cb9-4d15-259a45154ceb@shipmail.org>
+Date:   Tue, 23 Mar 2021 16:46:00 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YFnmlwlau57tj3dE@Sun>
+In-Reply-To: <20210323140030.GE2356281@nvidia.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 7:01 AM, Hongren Zheng (Zenithal) wrote:
-> The option '-d/--device' was implemented in 'usbip list' but not
-> shown in usage. Hence this commit adds this option to usage.
-> 
-> Signed-off-by: Hongren Zheng <i@zenithal.me>
-> ---
->   tools/usb/usbip/src/usbip_list.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> PATCH v2:
->      Add signed-off-by line
-> 
-> PATCH v3:
->      Move patch changelog after the marker line
->      Remove nickname in signed-off-by line
-> 
-> PATCH v4:
->      Use commit short hash and message instead of long hash only when
->        referring to commit in the kernel
-> 
-> diff --git a/tools/usb/usbip/src/usbip_list.c b/tools/usb/usbip/src/usbip_list.c
-> index 8625b0f514ee..3d810bcca02f 100644
-> --- a/tools/usb/usbip/src/usbip_list.c
-> +++ b/tools/usb/usbip/src/usbip_list.c
-> @@ -33,7 +33,8 @@ static const char usbip_list_usage_string[] =
->   	"usbip list [-p|--parsable] <args>\n"
->   	"    -p, --parsable         Parsable list format\n"
->   	"    -r, --remote=<host>    List the exportable USB devices on <host>\n"
-> -	"    -l, --local            List the local USB devices\n";
-> +	"    -l, --local            List the local USB devices\n"
-> +	"    -d, --device           List the local USB gadgets bound to usbip-vudc\n";
->   
->   void usbip_list_usage(void)
->   {
-> 
 
-Looks good to me. Thanks for adding this.
+On 3/23/21 3:00 PM, Jason Gunthorpe wrote:
+> On Sun, Mar 21, 2021 at 07:45:29PM +0100, Thomas Hellström (Intel) wrote:
+>> To block fast gup we need to make sure TTM ptes are always special.
+>> With MIXEDMAP we, on architectures that don't support pte_special,
+>> insert normal ptes, but OTOH on those architectures, fast is not
+>> supported.
+>> At the same time, the function documentation to vm_normal_page() suggests
+>> that ptes pointing to system memory pages of MIXEDMAP vmas are always
+>> normal, but that doesn't seem consistent with what's implemented in
+>> vmf_insert_mixed(). I'm thus not entirely sure this patch is actually
+>> needed.
+>>
+>> But to make sure and to avoid also normal (non-fast) gup, make all
+>> TTM vmas PFNMAP. With PFNMAP we can't allow COW mappings
+>> anymore so make is_cow_mapping() available and use it to reject
+>> COW mappigs at mmap time.
+>>
+>> There was previously a comment in the code that WC mappings together
+>> with x86 PAT + PFNMAP was bad for performance. However from looking at
+>> vmf_insert_mixed() it looks like in the current code PFNMAP and MIXEDMAP
+>> are handled the same for architectures that support pte_special. This
+>> means there should not be a performance difference anymore, but this
+>> needs to be verified.
+>>
+>> Cc: Christian Koenig <christian.koenig@amd.com>
+>> Cc: David Airlie <airlied@linux.ie>
+>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Jason Gunthorpe <jgg@nvidia.com>
+>> Cc: linux-mm@kvack.org
+>> Cc: dri-devel@lists.freedesktop.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Thomas Hellström (Intel) <thomas_os@shipmail.org>
+>>   drivers/gpu/drm/ttm/ttm_bo_vm.c | 22 ++++++++--------------
+>>   include/linux/mm.h              |  5 +++++
+>>   mm/internal.h                   |  5 -----
+>>   3 files changed, 13 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+>> index 1c34983480e5..708c6fb9be81 100644
+>> +++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+>> @@ -372,12 +372,7 @@ vm_fault_t ttm_bo_vm_fault_reserved(struct vm_fault *vmf,
+>>   		 * at arbitrary times while the data is mmap'ed.
+>>   		 * See vmf_insert_mixed_prot() for a discussion.
+>>   		 */
+>> -		if (vma->vm_flags & VM_MIXEDMAP)
+>> -			ret = vmf_insert_mixed_prot(vma, address,
+>> -						    __pfn_to_pfn_t(pfn, PFN_DEV),
+>> -						    prot);
+>> -		else
+>> -			ret = vmf_insert_pfn_prot(vma, address, pfn, prot);
+>> +		ret = vmf_insert_pfn_prot(vma, address, pfn, prot);
+>>   
+>>   		/* Never error on prefaulted PTEs */
+>>   		if (unlikely((ret & VM_FAULT_ERROR))) {
+>> @@ -555,18 +550,14 @@ static void ttm_bo_mmap_vma_setup(struct ttm_buffer_object *bo, struct vm_area_s
+>>   	 * Note: We're transferring the bo reference to
+>>   	 * vma->vm_private_data here.
+>>   	 */
+>> -
+>>   	vma->vm_private_data = bo;
+>>   
+>>   	/*
+>> -	 * We'd like to use VM_PFNMAP on shared mappings, where
+>> -	 * (vma->vm_flags & VM_SHARED) != 0, for performance reasons,
+>> -	 * but for some reason VM_PFNMAP + x86 PAT + write-combine is very
+>> -	 * bad for performance. Until that has been sorted out, use
+>> -	 * VM_MIXEDMAP on all mappings. See freedesktop.org bug #75719
+>> +	 * PFNMAP forces us to block COW mappings in mmap(),
+>> +	 * and with MIXEDMAP we would incorrectly allow fast gup
+>> +	 * on TTM memory on architectures that don't have pte_special.
+>>   	 */
+>> -	vma->vm_flags |= VM_MIXEDMAP;
+>> -	vma->vm_flags |= VM_IO | VM_DONTEXPAND | VM_DONTDUMP;
+>> +	vma->vm_flags |= VM_PFNMAP | VM_IO | VM_DONTEXPAND | VM_DONTDUMP;
+>>   }
+>>   
+>>   int ttm_bo_mmap(struct file *filp, struct vm_area_struct *vma,
+>> @@ -579,6 +570,9 @@ int ttm_bo_mmap(struct file *filp, struct vm_area_struct *vma,
+>>   	if (unlikely(vma->vm_pgoff < DRM_FILE_PAGE_OFFSET_START))
+>>   		return -EINVAL;
+>>   
+>> +	if (unlikely(is_cow_mapping(vma->vm_flags)))
+>> +		return -EINVAL;
+>> +
+>>   	bo = ttm_bo_vm_lookup(bdev, vma->vm_pgoff, vma_pages(vma));
+>>   	if (unlikely(!bo))
+>>   		return -EINVAL;
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index 77e64e3eac80..c6ebf7f9ddbb 100644
+>> +++ b/include/linux/mm.h
+>> @@ -686,6 +686,11 @@ static inline bool vma_is_accessible(struct vm_area_struct *vma)
+>>   	return vma->vm_flags & VM_ACCESS_FLAGS;
+>>   }
+>>   
+>> +static inline bool is_cow_mapping(vm_flags_t flags)
+>> +{
+>> +	return (flags & (VM_SHARED | VM_MAYWRITE)) == VM_MAYWRITE;
+>> +}
+> Most driver places are just banning VM_SHARED.
+>
+> I see you copied this from remap_pfn_range(), but that logic is so
+> special I'm not sure..
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+It's actually used all over the place. Both in drivers and also 
+redefined with
+CONFIG_MEM_SOFT_DIRTY which makes me think Daniels idea of 
+vma_is_cow_mapping() is better since it won't clash and cause 
+compilation failures...
 
-thanks,
--- Shuah
+>
+> Can the user mprotect the write back on with the above logic?
+No, it's blocked by mprotect.
+> Do we
+> need VM_DENYWRITE too?
+
+Seems tied to MAP_DENYWRITE which is nowadays ignored according to man 
+mmap().
+
+Thanks,
+
+Thomas
+
+>
+> Jason
