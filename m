@@ -2,121 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5126D345915
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E9834584F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhCWHvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:51:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43218 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhCWHu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:50:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616485855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=em7Mh7/jQWzjXPLfUlB2ichd+yqNpORfvlzy4NL7PTA=;
-        b=nt2HsBEutCp/U6FFk2o0sbIdvI7VjPWT7lXr9Ob/Z7aFG1mjuBouljptVTJBrt4rrsOxdP
-        4U8Q+tc/+QvsdzYycsbpXVKH3wabSciQ5xVDgs0UsWoc58tYtAM55bS010lDG1okEWExYy
-        tF1vbLSEzVS4gWN7xSkcx4qXUi0ZmNk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 185A8AB8A;
-        Tue, 23 Mar 2021 07:50:55 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:50:53 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/8] hugetlb: recompute min_count when dropping
- hugetlb_lock
-Message-ID: <YFmd3d5B2VT4GkiG@dhcp22.suse.cz>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-3-mike.kravetz@oracle.com>
- <YFikrdN6DHQSEm6a@dhcp22.suse.cz>
- <a7d90d58-fa6a-7fa1-77c9-a08515746018@oracle.com>
+        id S229761AbhCWHJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:09:07 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14428 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229452AbhCWHI7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:08:59 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F4Mr90rhDzkc0L;
+        Tue, 23 Mar 2021 15:07:21 +0800 (CST)
+Received: from hulk-robot-4.huawei.com (10.175.124.27) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 15:08:46 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>, <leo.yan@linaro.org>,
+        <alexander.shishkin@linux.intel.com>, <coresight@lists.linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] coresight: etm-perf: Mark format_attr_contextid with static keyword
+Date:   Tue, 23 Mar 2021 07:54:52 +0000
+Message-ID: <20210323075452.38920-1-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7d90d58-fa6a-7fa1-77c9-a08515746018@oracle.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22-03-21 16:07:29, Mike Kravetz wrote:
-> On 3/22/21 7:07 AM, Michal Hocko wrote:
-> > On Fri 19-03-21 15:42:03, Mike Kravetz wrote:
-> >> The routine set_max_huge_pages reduces the number of hugetlb_pages,
-> >> by calling free_pool_huge_page in a loop.  It does this as long as
-> >> persistent_huge_pages() is above a calculated min_count value.
-> >> However, this loop can conditionally drop hugetlb_lock and in some
-> >> circumstances free_pool_huge_page can drop hugetlb_lock.  If the
-> >> lock is dropped, counters could change the calculated min_count
-> >> value may no longer be valid.
-> > 
-> > OK, this one looks like a real bug fix introduced by 55f67141a8927.
-> > Unless I am missing something we could release pages which are reserved
-> > already.
-> >  
-> >> The routine try_to_free_low has the same issue.
-> >>
-> >> Recalculate min_count in each loop iteration as hugetlb_lock may have
-> >> been dropped.
-> >>
-> >> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> >> ---
-> >>  mm/hugetlb.c | 25 +++++++++++++++++++++----
-> >>  1 file changed, 21 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> >> index d5be25f910e8..c537274c2a38 100644
-> >> --- a/mm/hugetlb.c
-> >> +++ b/mm/hugetlb.c
-> >> @@ -2521,11 +2521,20 @@ static void __init report_hugepages(void)
-> >>  	}
-> >>  }
-> >>  
-> >> +static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
-> >> +{
-> >> +	unsigned long min_count;
-> >> +
-> >> +	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
-> >> +	return max(count, min_count);
-> > 
-> > Just out of curiousity, is compiler allowed to inline this piece of code
-> > and then cache the value? In other words do we need to make these
-> > READ_ONCE or otherwise enforce the no-caching behavior?
-> 
-> I honestly do not know if the compiler is allowed to do that.  The
-> assembly code generated by my compiler does not cache the value, but
-> that does not guarantee anything.  I can add READ_ONCE to make the
-> function look something like:
-> 
-> static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
-> {
-> 	unsigned long min_count;
-> 
-> 	min_count = READ_ONCE(h->resv_huge_pages) + READ_ONCE(h->nr_huge_pages)
-> 					- READ_ONCE(h->free_huge_pages);
-> 	return max(count, min_count);
-> }
+Fix the following sparse warning:
 
-Maybe just forcing to never inline the function should be sufficient.
-This is not a hot path to micro optimize for no function call. But there
-are much more qualified people on the CC list on this matter who could
-clarify. Peter?
+drivers/hwtracing/coresight/coresight-etm-perf.c:61:25: warning: symbol
+'format_attr_contextid' was not declared. Should it be static?
+
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/hwtracing/coresight/coresight-etm-perf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index 0f603b4094f2..bdbb77334329 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -58,7 +58,7 @@ static ssize_t format_attr_contextid_show(struct device *dev,
+ 	return sprintf(page, "config:%d\n", pid_fmt);
+ }
+ 
+-struct device_attribute format_attr_contextid =
++static struct device_attribute format_attr_contextid =
+ 	__ATTR(contextid, 0444, format_attr_contextid_show, NULL);
+ 
+ static struct attribute *etm_config_formats_attr[] = {
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
