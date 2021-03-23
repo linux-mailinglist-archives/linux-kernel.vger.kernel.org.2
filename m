@@ -2,164 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFD3346B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD63346BB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhCWWEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233745AbhCWWD4 (ORCPT
+        id S233860AbhCWWGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:06:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233810AbhCWWGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:03:56 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41633C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:03:56 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c4so16105790qkg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f9Uq3XPpmlgltCRhfVyth1crnNqB1PwbcPkWKy7CQp0=;
-        b=irrr9DNl5oEXkt990dnROFD3G4dgkAPMDDe+Xokv1cP/sJg8W4BpYbpmRBJqXRK/9s
-         L42rcpcpz4Sr55hg4m8M7WdNYWHWoSFkwOJhv4nnGKTMSB9kPfjRFAn/zulItL1jkF6V
-         UbAi6nP7O/PYI0SV/E6fqrSb3KCW8J/iEHYdgPZ/tmexH126GtPpvubahVCynGGGD15+
-         GkO/XueuqIbkv+xgmAdSjxXFZv4eZAMiC7sqS2DbHQshycqWduuwq2IAlTThJqsz/6jp
-         u05oxHUrZ31fbGFT5hbTFnnFmZLkzn85YP8uLUNHK5kOGi5NBA8FdloY7p5hr2ZBDAOs
-         WuZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=f9Uq3XPpmlgltCRhfVyth1crnNqB1PwbcPkWKy7CQp0=;
-        b=GilAAm/MytNwIcp77h6qeyHAqHfITCCIg5Etg7TxnehEtF2XGDeN5SDWV+ffxf8bnA
-         sDko3/YZOqZPpMaBESo4VNV8F4QvqD9OVJR6CfDm+GB2vWcW1pFLGclg6XufS4ekPQvG
-         1pXvA97c3vinaaL12dmCi7qwd6OCI3vVd5ZzaJCP//IHeYf+cxlSvOn6DL8nB44CDsd7
-         EKMYS9gDZg0A+2yXBJSNokEQW1YXIV5OqDMOTJLfk9uwuGjyGGmeORH1zOp3uB8ZUFyW
-         qdIquhKKFHOwz9LypkpHAxylHAHuLBObY+rZEh/Xid9mV8d5dziE/mPr8vTZW1GPLjVF
-         QPvg==
-X-Gm-Message-State: AOAM531Ja+H7XDNh1OZI2GbihvewFBc1iY+t0U/qAQeLT++6taAaMQCG
-        2jloJxr+olGpK0eln0iQtvFp/D57wPRCDvHa
-X-Google-Smtp-Source: ABdhPJxeVGYQXhX6jqZurlKZDaw/Z4ti98wrhy42voheAUO7eykFoUg7ijcAy7fmy0G7X8pYwD/Q7Q==
-X-Received: by 2002:a05:620a:118f:: with SMTP id b15mr183992qkk.5.1616537034525;
-        Tue, 23 Mar 2021 15:03:54 -0700 (PDT)
-Received: from Slackware ([37.19.198.86])
-        by smtp.gmail.com with ESMTPSA id o23sm178672qtm.31.2021.03.23.15.03.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 15:03:53 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 03:35:42 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: Trivial typo fixes
-Message-ID: <YFpmNjPnsaDlTuoB@Slackware>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, rostedt@goodmis.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org
-References: <20210323203317.31944-1-unixbhaskar@gmail.com>
- <c9589765-b5cd-7cb5-4af5-2f7760a0a7a0@infradead.org>
+        Tue, 23 Mar 2021 18:06:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616537178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pRq3eZVbRV0oWPAPcRDv0Y/ExsjTvRldW+ZwtCTRY5g=;
+        b=Tp8NjKXIGklgcEYMLogsUQIKvLMvkUl/ENsE2kylwO+mngHPFFduvg5Ho8mIQW++unADKV
+        vTpTjjBArt3boJhreJAKMeqL5pxrngGE7IDbnaVfeVpN/pibgTW/nPlRvVTAISYYFbrG2u
+        g4/8KVL4g867QzVN8knMhjdt2epKYJo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-kYdx-kK4MaCmJMrG8tZ3eA-1; Tue, 23 Mar 2021 18:06:15 -0400
+X-MC-Unique: kYdx-kK4MaCmJMrG8tZ3eA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0FF7800D53;
+        Tue, 23 Mar 2021 22:06:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 28FFB50C0E;
+        Tue, 23 Mar 2021 22:06:05 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <2503810.1616508988@warthog.procyon.org.uk>
+References: <2503810.1616508988@warthog.procyon.org.uk> <20210323135116.GF1719932@casper.infradead.org> <1885296.1616410586@warthog.procyon.org.uk> <20210321105309.GG3420@casper.infradead.org> <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk> <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk> <2499407.1616505440@warthog.procyon.org.uk>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for PG_private_2/PG_fscache
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="uTT4n9JFT1mm9czE"
-Content-Disposition: inline
-In-Reply-To: <c9589765-b5cd-7cb5-4af5-2f7760a0a7a0@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2769313.1616537164.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 23 Mar 2021 22:06:04 +0000
+Message-ID: <2769314.1616537164@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+David Howells <dhowells@redhat.com> wrote:
 
---uTT4n9JFT1mm9czE
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+> > > -	wait_on_page_writeback(page);
+> > > +	if (wait_on_page_writeback_killable(page) < 0)
+> > > +		return VM_FAULT_RETRY | VM_FAULT_LOCKED;
+> > =
 
-On 14:53 Tue 23 Mar 2021, Randy Dunlap wrote:
->On 3/23/21 1:33 PM, Bhaskar Chowdhury wrote:
->> Trivial spelling fixes.
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->
->Ingo has already fixed all of these.
->Plus many more that are trace-related.
->
-Okay, Nevermind.
->> ---
->>  kernel/trace/trace_seq.c | 12 ++++++------
->>  1 file changed, 6 insertions(+), 6 deletions(-)
->>
->> diff --git a/kernel/trace/trace_seq.c b/kernel/trace/trace_seq.c
->> index 1d84fcc78e3e..e03eae7a5577 100644
->> --- a/kernel/trace/trace_seq.c
->> +++ b/kernel/trace/trace_seq.c
->> @@ -12,11 +12,11 @@
->>   * This will set up the counters within the descriptor. You can call
->>   * trace_seq_init() more than once to reset the trace_seq to start
->>   * from scratch.
->>   * The buffer size is currently PAGE_SIZE, although it may become dynamic
->>   * in the future.
->>   *
->> - * A write to the buffer will either succed or fail. That is, unlike
->> + * A write to the buffer will either succeed or fail. That is, unlike
->>   * sprintf() there will not be a partial write (well it may write into
->>   * the buffer but it wont update the pointers). This allows users to
->>   * try to write something into the trace_seq buffer and if it fails
->> @@ -73,7 +73,7 @@ int trace_print_seq(struct seq_file *m, struct trace_seq *s)
->>   * @fmt: printf format string
->>   *
->>   * The tracer may use either sequence operations or its own
->> - * copy to user routines. To simplify formating of a trace
->> + * copy to user routines. To simplify formatting of a trace
->>   * trace_seq_printf() is used to store strings into a special
->>   * buffer (@s). Then the output may be either used by
->>   * the sequencer or pulled into another buffer.
->> @@ -133,7 +133,7 @@ EXPORT_SYMBOL_GPL(trace_seq_bitmask);
->>   * @fmt: printf format string
->>   *
->>   * The tracer may use either sequence operations or its own
->> - * copy to user routines. To simplify formating of a trace
->> + * copy to user routines. To simplify formatting of a trace
->>   * trace_seq_printf is used to store strings into a special
->>   * buffer (@s). Then the output may be either used by
->>   * the sequencer or pulled into another buffer.
->> @@ -226,7 +226,7 @@ EXPORT_SYMBOL_GPL(trace_seq_puts);
->>   * @c: simple character to record
->>   *
->>   * The tracer may use either the sequence operations or its own
->> - * copy to user routines. This function records a simple charater
->> + * copy to user routines. This function records a simple character
->>   * into a special buffer (@s) for later retrieval by a sequencer
->>   * or other mechanism.
->>   */
->> @@ -348,7 +348,7 @@ int trace_seq_path(struct trace_seq *s, const struct path *path)
->>  EXPORT_SYMBOL_GPL(trace_seq_path);
->>
->>  /**
->> - * trace_seq_to_user - copy the squence buffer to user space
->> + * trace_seq_to_user - copy the sequence buffer to user space
->>   * @s: trace sequence descriptor
->>   * @ubuf: The userspace memory location to copy to
->>   * @cnt: The amount to copy
->> --
->
->
->--
->~Randy
->
+> > You forgot to unlock the page.
+> =
 
---uTT4n9JFT1mm9czE
-Content-Type: application/pgp-signature; name="signature.asc"
+> Do I need to?  Doesn't VM_FAULT_LOCKED indicate that to the caller?  Or =
+is it
+> impermissible to do it like that?
 
------BEGIN PGP SIGNATURE-----
+Looks like, yes, I do need to.  VM_FAULT_LOCKED is ignored if RETRY is giv=
+en.
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBaZjIACgkQsjqdtxFL
-KRVIcQf/ce0mMMqTXTPKYWnvLHDO/QUFEbx38Vg9WPMAdNWdaveks5MkKmbDkj9H
-okoVOpnm04/hDYtZvgLbJiEW5JeA+lRDJX8ov+6hKVjnzNKVQACmedwlQ3xbUE8a
-J0tG01pOja9+IIkLwGgOcf7A8rapF6SNXl8KBsBJGhQFIrskZZa3DT7kjO+8esyE
-Z2CJbTf4Ltz+2PVi+B+Q479tb3Pmjo4uPTXVv8719YBqngvVXRm6dt+EJAnceDif
-XhTs8ZTg7xLO6xHYaegyXgtSOQAZQDAwcAlHuP+QawMudQsktBfqakPL77q6fkiX
-4DZi2u8tcd2nNsbWANV5Sf4uT/oCVg==
-=9v9E
------END PGP SIGNATURE-----
+David
 
---uTT4n9JFT1mm9czE--
