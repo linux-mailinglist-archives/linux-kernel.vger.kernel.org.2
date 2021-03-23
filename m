@@ -2,133 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD9B345B33
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6812345B30
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhCWJoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhCWJnr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:43:47 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9010EC061574;
-        Tue, 23 Mar 2021 02:43:47 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id f12so14452769qtq.4;
-        Tue, 23 Mar 2021 02:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jtS9ZIUBeGm+Car1XcRrWGY+RpAJ9p6p/GMgJGpuzSA=;
-        b=r8I2PgBaqbpaqz/hop4GR5W80JClYYoBef05T/kBKyHWY1Zv86W8z/jaN9js8zrxXW
-         sSEJZzha1e5sCtLhd29NitTswFrvkBYL8IF5AAURWDeqNqAN+PGjnxazFV2rtyuxVZ+E
-         TRyggrm/7YMzxbtOBIfUJNg4j2x2silhfJQSGPJUIuFvvWFivzwZrLjjRzDupSMjTj7V
-         /IzfHhi93AOHiXZXn+BR2N/0fUQrKg9dQw5d38TxaoVEmhzgX49FNqWHI+/O+6lDNOso
-         EUSBoQo6KkCv2O1Mj6lk2rXxIioy38rOW1qOLvlfn+e2HOvy8W4q/yWmJHeRVA+qnLp5
-         j5xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jtS9ZIUBeGm+Car1XcRrWGY+RpAJ9p6p/GMgJGpuzSA=;
-        b=mOTp+tqM+eMpJ1emgWSTZAtlOPVW1xmWNW38r/eebk96BDcDlMcLIHsIrhgPd8nUDv
-         xxz+dM03zdtf2PYHJtcEnPgUfRzCyzAUQHUKyQYtXtUnNBs1xcPWxbGvI6XS8hjuF90y
-         fWoVHIpHG4ZeOw9HSSNMt6JVSDsQx1k87FwQ/59LuYSz8Fb52WPKQOBCu15A7VK5Psgw
-         /PsXavNq6I7N0Ga5jqexHHs3tZ2POD32UMX4FlCw+yRYoIN/TRLGFVVnZn3N6oNiQKLw
-         LUiRI0hgxYmrjXvAIsZo8Nt9JrJGmdC1UyukrSAYGWPIG7ZomM5EFxHYy6MM9Mij6bdD
-         kCLg==
-X-Gm-Message-State: AOAM530bPBzb+vkiRi5oLhBaA3vE09aA9epwn1+cP6/cBoe9gQ/70xOX
-        RHFoWnOU7YQIgry9oeTCMUY=
-X-Google-Smtp-Source: ABdhPJx0Wk1NO/n3IiIbD1/cNVBH5NsahagRLR2LNU9s4sspmeHZt82MqXE/RUnilbAKvSnv7O+Pvw==
-X-Received: by 2002:a05:622a:1454:: with SMTP id v20mr3531885qtx.372.1616492626889;
-        Tue, 23 Mar 2021 02:43:46 -0700 (PDT)
-Received: from localhost.localdomain ([143.244.44.229])
-        by smtp.gmail.com with ESMTPSA id h5sm11677473qko.83.2021.03.23.02.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 02:43:45 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] octeontx2-af: Few mundane typos fixed
-Date:   Tue, 23 Mar 2021 15:13:27 +0530
-Message-Id: <20210323094327.2386998-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        id S230119AbhCWJnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230009AbhCWJne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 05:43:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB2B619B8;
+        Tue, 23 Mar 2021 09:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616492614;
+        bh=YCyCLhznKcFVXwLxds7wttaB7Svnmw1PkwCziewsozM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o2a9VUsupjNzqfsw3gmEkUo8Ktg/EgoJh4OX9VPreLt85XTrfJz6lYTReB0FZrzC7
+         lKOJZbT+5z5DxcLOmteBGgfo6uFYAhx3/djEawNMAx1Q1lwR2O+shpuE77MbPONZYl
+         o6jbvqKTMJnh6BciUk3m2SN0sw2K2NpZDiwKSCtg=
+Date:   Tue, 23 Mar 2021 10:43:31 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     caizhichao <tomstomsczc@163.com>
+Cc:     matthias.bgg@gmail.com, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        caizhichao <caizhichao@yulong.com>
+Subject: Re: [PATCH] tty:serial: fix spelling typo of values
+Message-ID: <YFm4Q4vej4nlg9Ab@kroah.com>
+References: <20210323092846.819-1-tomstomsczc@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323092846.819-1-tomstomsczc@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/preceeds/precedes/  .....two different places
-s/rsponse/response/
-s/cetain/certain/
-s/precison/precision/
+On Tue, Mar 23, 2021 at 05:28:46PM +0800, caizhichao wrote:
+> From: caizhichao <caizhichao@yulong.com>
+> 
+> vaules -> values
+> 
+> Signed-off-by: caizhichao <caizhichao@yulong.com>
 
-Fix a sentence construction as per suggestion.
+Please use your "full" name here.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- Changes from V1:
-  Bad sentence construction missed my eyes , correced by following
-  Randy's suggestion.
+thanks,
 
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index ea456099b33c..8a6227287e34 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -74,13 +74,13 @@ struct otx2_mbox {
- 	struct otx2_mbox_dev *dev;
- };
-
--/* Header which preceeds all mbox messages */
-+/* Header which precedes all mbox messages */
- struct mbox_hdr {
- 	u64 msg_size;	/* Total msgs size embedded */
- 	u16  num_msgs;   /* No of msgs embedded */
- };
-
--/* Header which preceeds every msg and is also part of it */
-+/* Header which precedes every msg and is also part of it */
- struct mbox_msghdr {
- 	u16 pcifunc;     /* Who's sending this msg */
- 	u16 id;          /* Mbox message ID */
-@@ -277,8 +277,8 @@ struct msg_req {
- 	struct mbox_msghdr hdr;
- };
-
--/* Generic rsponse msg used a ack or response for those mbox
-- * messages which doesn't have a specific rsp msg format.
-+/* Generic response msg used an ack or response for those mbox
-+ * messages which don't have a specific rsp msg format.
-  */
- struct msg_rsp {
- 	struct mbox_msghdr hdr;
-@@ -299,7 +299,7 @@ struct ready_msg_rsp {
-
- /* Structure for requesting resource provisioning.
-  * 'modify' flag to be used when either requesting more
-- * or to detach partial of a cetain resource type.
-+ * or to detach partial of a certain resource type.
-  * Rest of the fields specify how many of what type to
-  * be attached.
-  * To request LFs from two blocks of same type this mailbox
-@@ -489,7 +489,7 @@ struct cgx_set_link_mode_rsp {
- };
-
- #define RVU_LMAC_FEAT_FC		BIT_ULL(0) /* pause frames */
--#define RVU_LMAC_FEAT_PTP		BIT_ULL(1) /* precison time protocol */
-+#define RVU_LMAC_FEAT_PTP		BIT_ULL(1) /* precision time protocol */
- #define RVU_MAC_VERSION			BIT_ULL(2)
- #define RVU_MAC_CGX			BIT_ULL(3)
- #define RVU_MAC_RPM			BIT_ULL(4)
---
-2.31.0
-
+greg k-h
