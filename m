@@ -2,138 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720C4345EAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE8C345EB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhCWM5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:57:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:53430 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCWM4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:56:43 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A21E320B5680;
-        Tue, 23 Mar 2021 05:56:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A21E320B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616504202;
-        bh=9C5FVkGdJSAlL7ed0hNrX3OIMvNkBdBiqKHLwSxiMIE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=BNO6uEk5h0LzM4a3Nkr1K2NycMd4M3Vh321R5LSJsP2GqLlQLO3uaM5CvD3Www1S5
-         Keb5+YKquEZbJdsjXh2HG53i89PcSnLqOECJDpYpRxWnWeApEtTkVIm4FR65d67Gq2
-         aYkCqzQ5JP69VonHbPc5JIdM+oN3yWKMuuSYw00U=
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
- trace unreliable
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-6-madvenka@linux.microsoft.com>
- <20210323105118.GE95840@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 07:56:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231470AbhCWM5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231475AbhCWM52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:57:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79F01619B9;
+        Tue, 23 Mar 2021 12:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616504247;
+        bh=KFyvKHQFlrz0ttTR9uhddPSigUqRv7aIt+l1vkmpXBk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KzngoMGoICqflWzvgtnmxdzBD0Ik6qmeV1Q45PSqrJA6jkO921Zxc7XC6RmKlaiN3
+         TuPEyhyZeFH6pAyRnaJF2z4lK/rxYrtvCX5+OvSipM7Vz8n8LpbLC9mxsz0V/GZCnp
+         j+Mc+g2p5CJnnC7/cePlpS3ocrOwuPWpwty3rKbi0vMkfldKx0D7ebgLB4HVe5dFWO
+         4MW4Oy2odfU4BX7f4qM05/ENEJ2HKODbPaY8VJ5VhcTbq+zv7uFALV3I09Dj4rlCMm
+         8yUdJt3zfdUuCHjvShh1F5v+wHjuo4Wjo38tpSvIRMvjWgcHTXQk0pHWjmk2bG19Xb
+         +OCkh9F580gtQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luciano Coelho <coelho@ti.com>, Arik Nemtsov <arik@wizery.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] wlcore: fix overlapping snprintf arguments in debugfs
+Date:   Tue, 23 Mar 2021 13:57:14 +0100
+Message-Id: <20210323125723.1961432-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210323105118.GE95840@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+gcc complains about undefined behavior in calling snprintf()
+with the same buffer as input and output:
 
-On 3/23/21 5:51 AM, Mark Rutland wrote:
-> On Mon, Mar 15, 2021 at 11:57:57AM -0500, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> When CONFIG_DYNAMIC_FTRACE_WITH_REGS is enabled and tracing is activated
->> for a function, the ftrace infrastructure is called for the function at
->> the very beginning. Ftrace creates two frames:
->>
->> 	- One for the traced function
->>
->> 	- One for the caller of the traced function
->>
->> That gives a reliable stack trace while executing in the ftrace
->> infrastructure code. When ftrace returns to the traced function, the frames
->> are popped and everything is back to normal.
->>
->> However, in cases like live patch, execution is redirected to a different
->> function when ftrace returns. A stack trace taken while still in the ftrace
->> infrastructure code will not show the target function. The target function
->> is the real function that we want to track.
->>
->> So, if an FTRACE frame is detected on the stack, just mark the stack trace
->> as unreliable.
-> 
-> To identify this case, please identify the ftrace trampolines instead,
-> e.g. ftrace_regs_caller, return_to_handler.
-> 
+drivers/net/wireless/ti/wl18xx/debugfs.c: In function 'diversity_num_of_packets_per_ant_read':
+drivers/net/wireless/ti/wl18xx/../wlcore/debugfs.h:86:3: error: 'snprintf' argument 4 overlaps destination object 'buf' [-Werror=restrict]
+   86 |   snprintf(buf, sizeof(buf), "%s[%d] = %d\n",  \
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   87 |     buf, i, stats->sub.name[i]);   \
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/wireless/ti/wl18xx/debugfs.c:24:2: note: in expansion of macro 'DEBUGFS_FWSTATS_FILE_ARRAY'
+   24 |  DEBUGFS_FWSTATS_FILE_ARRAY(a, b, c, wl18xx_acx_statistics)
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/wireless/ti/wl18xx/debugfs.c:159:1: note: in expansion of macro 'WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY'
+  159 | WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY(diversity, num_of_packets_per_ant,
 
-Yes. As part of the return address checking, I will check this. IIUC, I think that
-I need to check for the inner labels that are defined at the point where the
-instructions are patched for ftrace. E.g., ftrace_call and ftrace_graph_call.
+There are probably other ways of handling the debugfs file, without
+using on-stack buffers, but a simple workaround here is to remember the
+current position in the buffer and just keep printing in there.
 
-SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
-        bl      ftrace_stub	<====================================
+Fixes: bcca1bbdd412 ("wlcore: add debugfs macro to help print fw statistics arrays")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/ti/wlcore/boot.c    | 13 ++++++++-----
+ drivers/net/wireless/ti/wlcore/debugfs.h |  7 ++++---
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
-        nop	<=======                // If enabled, this will be replaced
-                                        // "b ftrace_graph_caller"
-#endif
+diff --git a/drivers/net/wireless/ti/wlcore/boot.c b/drivers/net/wireless/ti/wlcore/boot.c
+index e14d88e558f0..85abd0a2d1c9 100644
+--- a/drivers/net/wireless/ti/wlcore/boot.c
++++ b/drivers/net/wireless/ti/wlcore/boot.c
+@@ -72,6 +72,7 @@ static int wlcore_validate_fw_ver(struct wl1271 *wl)
+ 	unsigned int *min_ver = (wl->fw_type == WL12XX_FW_TYPE_MULTI) ?
+ 		wl->min_mr_fw_ver : wl->min_sr_fw_ver;
+ 	char min_fw_str[32] = "";
++	int off = 0;
+ 	int i;
+ 
+ 	/* the chip must be exactly equal */
+@@ -105,13 +106,15 @@ static int wlcore_validate_fw_ver(struct wl1271 *wl)
+ 	return 0;
+ 
+ fail:
+-	for (i = 0; i < NUM_FW_VER; i++)
++	for (i = 0; i < NUM_FW_VER && off < sizeof(min_fw_str); i++)
+ 		if (min_ver[i] == WLCORE_FW_VER_IGNORE)
+-			snprintf(min_fw_str, sizeof(min_fw_str),
+-				  "%s*.", min_fw_str);
++			off += snprintf(min_fw_str + off,
++					sizeof(min_fw_str) - off,
++					"*.");
+ 		else
+-			snprintf(min_fw_str, sizeof(min_fw_str),
+-				  "%s%u.", min_fw_str, min_ver[i]);
++			off += snprintf(min_fw_str + off,
++					sizeof(min_fw_str) - off,
++					"%u.", min_ver[i]);
+ 
+ 	wl1271_error("Your WiFi FW version (%u.%u.%u.%u.%u) is invalid.\n"
+ 		     "Please use at least FW %s\n"
+diff --git a/drivers/net/wireless/ti/wlcore/debugfs.h b/drivers/net/wireless/ti/wlcore/debugfs.h
+index b143293e694f..715edfa5f89f 100644
+--- a/drivers/net/wireless/ti/wlcore/debugfs.h
++++ b/drivers/net/wireless/ti/wlcore/debugfs.h
+@@ -78,13 +78,14 @@ static ssize_t sub## _ ##name## _read(struct file *file,		\
+ 	struct wl1271 *wl = file->private_data;				\
+ 	struct struct_type *stats = wl->stats.fw_stats;			\
+ 	char buf[DEBUGFS_FORMAT_BUFFER_SIZE] = "";			\
++	int pos = 0;							\
+ 	int i;								\
+ 									\
+ 	wl1271_debugfs_update_stats(wl);				\
+ 									\
+-	for (i = 0; i < len; i++)					\
+-		snprintf(buf, sizeof(buf), "%s[%d] = %d\n",		\
+-			 buf, i, stats->sub.name[i]);			\
++	for (i = 0; i < len && pos < sizeof(buf); i++)			\
++		pos += snprintf(buf + pos, sizeof(buf),			\
++			 "[%d] = %d\n", i, stats->sub.name[i]);		\
+ 									\
+ 	return wl1271_format_buffer(userbuf, count, ppos, "%s", buf);	\
+ }									\
+-- 
+2.29.2
 
-For instance, the stack trace I got while tracing do_mmap() with the stack trace
-tracer looks like this:
-
-		 ...
-[  338.911793]   trace_function+0xc4/0x160
-[  338.911801]   function_stack_trace_call+0xac/0x130
-[  338.911807]   ftrace_graph_call+0x0/0x4
-[  338.911813]   do_mmap+0x8/0x598
-[  338.911820]   vm_mmap_pgoff+0xf4/0x188
-[  338.911826]   ksys_mmap_pgoff+0x1d8/0x220
-[  338.911832]   __arm64_sys_mmap+0x38/0x50
-[  338.911839]   el0_svc_common.constprop.0+0x70/0x1a8
-[  338.911846]   do_el0_svc+0x2c/0x98
-[  338.911851]   el0_svc+0x2c/0x70
-[  338.911859]   el0_sync_handler+0xb0/0xb8
-[  338.911864]   el0_sync+0x180/0x1c0
-
-> It'd be good to check *exactly* when we need to reject, since IIUC when
-> we have a graph stack entry the unwind will be correct from livepatch's
-> PoV.
-> 
-
-The current unwinder already handles this like this:
-
-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-        if (tsk->ret_stack &&
-                (ptrauth_strip_insn_pac(frame->pc) == (unsigned long)return_to_handler)) {
-                struct ftrace_ret_stack *ret_stack;
-                /*
-                 * This is a case where function graph tracer has
-                 * modified a return address (LR) in a stack frame
-                 * to hook a function return.
-                 * So replace it to an original value.
-                 */
-                ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
-                if (WARN_ON_ONCE(!ret_stack))
-                        return -EINVAL;
-                frame->pc = ret_stack->ret;
-        }
-#endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-
-Is there anything else that needs handling here?
-
-Thanks,
-
-Madhavan
