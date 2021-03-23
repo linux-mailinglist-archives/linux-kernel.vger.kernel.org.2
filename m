@@ -2,110 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C322346725
+	by mail.lfdr.de (Postfix) with ESMTP id C7633346726
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhCWSFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:05:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46315 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230370AbhCWSE6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:04:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616522696;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uPBDv/mZ0qWoPNfORl57Q3pvUHhVaQ4+uuhu3tZh9RI=;
-        b=dvKJEGTOYQ+Cwh5V5jNjiGTBj6jKocMRNHC2m2blw+n9Goimd84oB1eItCEtHKL93HHlm4
-        N/Crc0QaBfQVQ1BCIGkWrudUuuGngpB8036i8awPaY8l9qobPh9SK6UZke8QYx7zUstMCp
-        +/yaqzDaFe0qBtqUKKBpjbajhxYuJLs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-1vgo39YoP1G6D-t3hbEmMQ-1; Tue, 23 Mar 2021 14:04:55 -0400
-X-MC-Unique: 1vgo39YoP1G6D-t3hbEmMQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB9D32E95;
-        Tue, 23 Mar 2021 18:04:52 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.84])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E952A60BE5;
-        Tue, 23 Mar 2021 18:04:43 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 23 Mar 2021 19:04:52 +0100 (CET)
-Date:   Tue, 23 Mar 2021 19:04:42 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [patch V4 2/2] signal: Allow tasks to cache one sigqueue struct
-Message-ID: <20210323180442.GC29219@redhat.com>
-References: <20210322091941.909544288@linutronix.de>
- <20210322092259.067712342@linutronix.de>
+        id S231371AbhCWSFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:05:17 -0400
+Received: from mga11.intel.com ([192.55.52.93]:21877 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231183AbhCWSFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 14:05:02 -0400
+IronPort-SDR: qW+RQsju1/XEd8SqnWsNbRuIipdbzxUEF1FQrVlaqWzh+zRnDcbPN9qL40pPrBIk0HlEOpJxMx
+ BQsXnmMw3k2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="187218096"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="187218096"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 11:04:52 -0700
+IronPort-SDR: Z2ObeTmpUlkDr6bTqCFEhX+vfuo6CwWnRk6o1YPHiFoTswLTT10oqzfpFkyrsSSbEpiU5inl6N
+ +QkpMs8WdZOQ==
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="452251609"
+Received: from laguitie-mobl.amr.corp.intel.com (HELO [10.252.129.185]) ([10.252.129.185])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 11:04:50 -0700
+Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, vkoul@kernel.org,
+        vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        hui.wang@canonical.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
+ <YFmatyAoMZmBmkuZ@kroah.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <777b4ca6-0d51-285d-549f-6ef768f2a523@linux.intel.com>
+Date:   Tue, 23 Mar 2021 13:04:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322092259.067712342@linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <YFmatyAoMZmBmkuZ@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/22, Thomas Gleixner wrote:
->
-> +static void sigqueue_cache_or_free(struct sigqueue *q, bool cache)
-> +{
-> +	/*
-> +	 * Cache one sigqueue per task. This pairs with the consumer side
-> +	 * in __sigqueue_alloc() and needs READ/WRITE_ONCE() to prevent the
-> +	 * compiler from store tearing and to tell KCSAN that the data race
-> +	 * is intentional when run without holding current->sighand->siglock,
-> +	 * which is fine as current obviously cannot run __sigqueue_free()
-> +	 * concurrently.
-> +	 */
-> +	if (cache && !READ_ONCE(current->sigqueue_cache))
-> +		WRITE_ONCE(current->sigqueue_cache, q);
-> +	else
-> +		kmem_cache_free(sigqueue_cachep, q);
-> +}
-> +
-> +void exit_task_sigqueue_cache(struct task_struct *tsk)
-> +{
-> +	/* Race free because @tsk is mopped up */
-> +	struct sigqueue *q = tsk->sigqueue_cache;
-> +
-> +	if (q) {
-> +		tsk->sigqueue_cache = NULL;
-> +		/* If task is self reaping, don't cache it back */
-> +		sigqueue_cache_or_free(q, tsk != current);
-                                          ^^^^^^^^^^^^^^
-Still not right or I am totally confused.
 
-tsk != current can be true if an exiting (and autoreaping) sub-thread
-releases its group leader.
+>> Note that the auxiliary bus API has separate init and add steps, which
+>> requires more attention in the error unwinding paths. The main loop
+>> needs to deal with kfree() and auxiliary_device_uninit() for the
+>> current iteration before jumping to the common label which releases
+>> everything allocated in prior iterations.
+> 
+> The init/add steps can be moved together in the aux bus code if that
+> makes this usage simpler.  Please do that instead.
 
-IOW. Suppose a process has 2 threads, its parent ignores SIGCHLD.
+IIRC the two steps were separated during the auxbus reviews to allow the 
+parent to call kfree() on an init failure, and auxiliary_device_uninit() 
+afterwards.
 
-The group leader L exits. Then its sub-thread T exits too and calls
-release_task(T). In this case the tsk != current is false.
+https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#auxiliary-device
 
-But after that T calls release_task(L) and L != T is true.
-
-I'd suggest to free tsk->sigqueue_cache in __exit_signal() unconditionally and
-remove the "bool cache" argument from sigqueue_cache_or_free().
-
-Oleg.
+With a single auxbus_register(), the parent wouldn't know whether to use 
+kfree() or auxiliary_device_uinit() when an error is returned, would it?
 
