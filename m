@@ -2,177 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33BF345FDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E44345FDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbhCWNjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:39:49 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:58964 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbhCWNjA (ORCPT
+        id S231610AbhCWNkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhCWNjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:39:00 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A4DD020B5680;
-        Tue, 23 Mar 2021 06:38:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A4DD020B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616506740;
-        bh=DwRsLoQPY0fFMEhsi2TeLN5GvE6GzKWHyVlv0powA4Y=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=rPua/ORFsVGJ5Wqu8WYJ/bMN52OnjWRzUx3NyvoZWpxTafNMBz5nQdnB+qWKzx9F9
-         XIMs4+6hvCF9Q+U/qs6sPqZbfKdnyt6CdwpEdfoib3PD98nlVoWgud+3SR6lmAMDj7
-         l3oKoMYWqJtabVYmoxI79DJge2dhumkOH7d/FSfI=
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
- trace unreliable
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-6-madvenka@linux.microsoft.com>
- <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 08:38:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 23 Mar 2021 09:39:52 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03914C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:39:52 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id o126so17174009lfa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=GsZ8EQ7xo9qOEuh2WpTOdoZcBhguMAaLAwrVN0efz38=;
+        b=sQDmFNJimqWxJfAuIitwAn7TCqWFYQ8D2+gM/zDiC1E7Gm9i9iaamhdz83ArQkxY/M
+         dsLOq2k7chi5P5QN9/sYh9G4nWLb3MVX9AjDEFhNauT2SE8nCHYGtqfjmkDbdDCwCZ/W
+         h+VANLdwQ9LpRGq/mXxmgeEnhv0at0EmzD7Vver6OKFrGMe5hDlfTVxA+Rdd94ukroXa
+         RZWX0G9QzAlkqYFtEfKy+Y1cC0OwRUUgc091W+hD/oNuLkAbWUW26+ELIs+SMHmGBDXL
+         MFFdF7itVLks6INtTCayQkCXP9uz+Qi+dkECcar0A8z5L8oI1vPexp0TCbHaHNo3a12B
+         5dIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=GsZ8EQ7xo9qOEuh2WpTOdoZcBhguMAaLAwrVN0efz38=;
+        b=fR1Sgff4UYynwvr6t4CZm8LpKcFXd4nXriDPcoEJfVhcKBPPNdIDoGS0jZcBu298Sx
+         /eHFYI6iTex9WQJ2rbOy+x7fmzrNkYBAJ9V05Q5VZwY4BEQgzizNpJpkap+ybJlwOugm
+         8l7dxDFh8RiquT4922vG8xGz5gEI/3JMcQIkI1YEQxBBlvMkE6hLpM9TbBqUTfrbvv5o
+         PzVEN2mmIk/80kqy0jNpNlhka7fv0T3U22FDQrxhPfG+UCiUuRW8kj6ScetqEVUO/VYm
+         BCMqMDQFwa6nLD9YBMnQXRJ9c9gV+tU9VaInuoRYYqfP/E9e/yW5uJBdnLIN2BeO4IWC
+         InIA==
+X-Gm-Message-State: AOAM532HOZWSlOUygEkH8uLYj6/b9ZJR5P+1VuepU7Lo9DOTEAT3WGCv
+        AHpdPxpka5uRH0+6RfFfV7E=
+X-Google-Smtp-Source: ABdhPJw+3M97tzAhRB0yU+rkwUEM9KbELgrpFArkT0ZVO+fFgDL6tEQpLn/JyRFnNgpCVH/2o/znHg==
+X-Received: by 2002:a19:7e97:: with SMTP id z145mr2880169lfc.280.1616506790390;
+        Tue, 23 Mar 2021 06:39:50 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id h26sm2327139ljc.17.2021.03.23.06.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 06:39:49 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 23 Mar 2021 14:39:48 +0100
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 2/2] mm/vmalloc: Use kvmalloc to allocate the table of
+ pages
+Message-ID: <20210323133948.GA10046@pc638.lan>
+References: <20210322193820.2140045-1-willy@infradead.org>
+ <20210322193820.2140045-2-willy@infradead.org>
+ <20210322223619.GA56503@pc638.lan>
+ <20210322230311.GY1719932@casper.infradead.org>
+ <20210323120436.GA1949@pc638.lan>
+ <20210323123913.GD1719932@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210323133611.GB98545@C02TD0UTHF1T.local>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323123913.GD1719932@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 12:39:13PM +0000, Matthew Wilcox wrote:
+> On Tue, Mar 23, 2021 at 01:04:36PM +0100, Uladzislau Rezki wrote:
+> > On Mon, Mar 22, 2021 at 11:03:11PM +0000, Matthew Wilcox wrote:
+> > > I suspect the vast majority of the time is spent calling alloc_pages_node()
+> > > 1024 times.  Have you looked at Mel's patch to do ... well, exactly what
+> > > vmalloc() wants?
+> > > 
+> > <snip>
+> >          - __vmalloc_node_range
+> >             - 45.25% __alloc_pages_nodemask
+> >                - 37.59% get_page_from_freelist
+> [...]
+> >       - 44.61% 0xffffffffc047348d
+> >          - __vunmap
+> >             - 35.56% free_unref_page
+> 
+> Hmm!  I hadn't been thinking about the free side of things.
+> Does this make a difference?
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 4f5f8c907897..61d5b769fea0 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2277,16 +2277,8 @@ static void __vunmap(const void *addr, int deallocate_pages)
+>  	vm_remove_mappings(area, deallocate_pages);
+>  
+>  	if (deallocate_pages) {
+> -		int i;
+> -
+> -		for (i = 0; i < area->nr_pages; i++) {
+> -			struct page *page = area->pages[i];
+> -
+> -			BUG_ON(!page);
+> -			__free_pages(page, 0);
+> -		}
+> +		release_pages(area->pages, area->nr_pages);
+>  		atomic_long_sub(area->nr_pages, &nr_vmalloc_pages);
+> -
+>  		kvfree(area->pages);
+>  	}
+> 
+Will check it today!
 
+> release_pages does a bunch of checks that are unnecessary ... we could
+> probably just do:
+> 
+> 		LIST_HEAD(pages_to_free);
+> 
+> 		for (i = 0; i < area->nr_pages; i++) {
+> 			struct page *page = area->pages[i];
+> 			if (put_page_testzero(page))
+> 				list_add(&page->lru, &pages_to_free);
+> 		}
+> 		free_unref_page_list(&pages_to_free);
+> 
+> but let's see if the provided interface gets us the performance we want.
+>  
+> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > 
+> > Thanks!
+> 
+> Thank you!
+You are welcome. A small nit:
 
-On 3/23/21 8:36 AM, Mark Rutland wrote:
-> On Tue, Mar 23, 2021 at 07:56:40AM -0500, Madhavan T. Venkataraman wrote:
->>
->>
->> On 3/23/21 5:51 AM, Mark Rutland wrote:
->>> On Mon, Mar 15, 2021 at 11:57:57AM -0500, madvenka@linux.microsoft.com wrote:
->>>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>>>
->>>> When CONFIG_DYNAMIC_FTRACE_WITH_REGS is enabled and tracing is activated
->>>> for a function, the ftrace infrastructure is called for the function at
->>>> the very beginning. Ftrace creates two frames:
->>>>
->>>> 	- One for the traced function
->>>>
->>>> 	- One for the caller of the traced function
->>>>
->>>> That gives a reliable stack trace while executing in the ftrace
->>>> infrastructure code. When ftrace returns to the traced function, the frames
->>>> are popped and everything is back to normal.
->>>>
->>>> However, in cases like live patch, execution is redirected to a different
->>>> function when ftrace returns. A stack trace taken while still in the ftrace
->>>> infrastructure code will not show the target function. The target function
->>>> is the real function that we want to track.
->>>>
->>>> So, if an FTRACE frame is detected on the stack, just mark the stack trace
->>>> as unreliable.
->>>
->>> To identify this case, please identify the ftrace trampolines instead,
->>> e.g. ftrace_regs_caller, return_to_handler.
->>>
->>
->> Yes. As part of the return address checking, I will check this. IIUC, I think that
->> I need to check for the inner labels that are defined at the point where the
->> instructions are patched for ftrace. E.g., ftrace_call and ftrace_graph_call.
->>
->> SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
->>         bl      ftrace_stub	<====================================
->>
->> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->> SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
->>         nop	<=======                // If enabled, this will be replaced
->>                                         // "b ftrace_graph_caller"
->> #endif
->>
->> For instance, the stack trace I got while tracing do_mmap() with the stack trace
->> tracer looks like this:
->>
->> 		 ...
->> [  338.911793]   trace_function+0xc4/0x160
->> [  338.911801]   function_stack_trace_call+0xac/0x130
->> [  338.911807]   ftrace_graph_call+0x0/0x4
->> [  338.911813]   do_mmap+0x8/0x598
->> [  338.911820]   vm_mmap_pgoff+0xf4/0x188
->> [  338.911826]   ksys_mmap_pgoff+0x1d8/0x220
->> [  338.911832]   __arm64_sys_mmap+0x38/0x50
->> [  338.911839]   el0_svc_common.constprop.0+0x70/0x1a8
->> [  338.911846]   do_el0_svc+0x2c/0x98
->> [  338.911851]   el0_svc+0x2c/0x70
->> [  338.911859]   el0_sync_handler+0xb0/0xb8
->> [  338.911864]   el0_sync+0x180/0x1c0
->>
->>> It'd be good to check *exactly* when we need to reject, since IIUC when
->>> we have a graph stack entry the unwind will be correct from livepatch's
->>> PoV.
->>>
->>
->> The current unwinder already handles this like this:
->>
->> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->>         if (tsk->ret_stack &&
->>                 (ptrauth_strip_insn_pac(frame->pc) == (unsigned long)return_to_handler)) {
->>                 struct ftrace_ret_stack *ret_stack;
->>                 /*
->>                  * This is a case where function graph tracer has
->>                  * modified a return address (LR) in a stack frame
->>                  * to hook a function return.
->>                  * So replace it to an original value.
->>                  */
->>                 ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
->>                 if (WARN_ON_ONCE(!ret_stack))
->>                         return -EINVAL;
->>                 frame->pc = ret_stack->ret;
->>         }
->> #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-> 
-> Beware that this handles the case where a function will return to
-> return_to_handler, but doesn't handle unwinding from *within*
-> return_to_handler, which we can't do reliably today, so that might need
-> special handling.
-> 
+  CC      mm/vmalloc.o
+mm/vmalloc.c: In function ‘__vmalloc_area_node’:
+mm/vmalloc.c:2492:14: warning: passing argument 4 of ‘kvmalloc_node_caller’ makes integer from pointer without a cast [-Wint-conversion]
+          area->caller);
+          ~~~~^~~~~~~~
+In file included from mm/vmalloc.c:12:
+./include/linux/mm.h:782:7: note: expected ‘long unsigned int’ but argument is of type ‘const void *’
+ void *kvmalloc_node_caller(size_t size, gfp_t flags, int node,
 
-OK. I will take a look at this.
+<snip>
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 8a202ba263f6..ee6fa44983bc 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2489,7 +2489,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 
+        /* Please note that the recursion is strictly bounded. */
+        pages = kvmalloc_node_caller(array_size, nested_gfp, node,
+-                                                                area->caller);
++                               (unsigned long) area->caller);
+        if (!pages) {
+                free_vm_area(area);
+                return NULL;
+<snip>
 
->> Is there anything else that needs handling here?
-> 
-> I wrote up a few cases to consider in:
-> 
-> https://www.kernel.org/doc/html/latest/livepatch/reliable-stacktrace.html
-> 
-> ... e.g. the "Obscuring of return addresses" case.
-> 
-> It might be that we're fine so long as we refuse to unwind across
-> exception boundaries, but it needs some thought. We probably need to go
-> over each of the trampolines instruction-by-instruction to consider
-> that.
-> 
-> As mentioned above, within return_to_handler when we call
-> ftrace_return_to_handler, there's a period where the real return address
-> has been removed from the ftrace return stack, but hasn't yet been
-> placed in x30, and wouldn't show up in a trace (e.g. if we could somehow
-> hook the return from ftrace_return_to_handler).
-> 
-> We might be saved by the fact we'll mark traces across exception
-> boundaries as unreliable, but I haven't thought very hard about it. We
-> might want to explciitly reject unwinds within return_to_handler in case
-> it's possible to interpose ftrace_return_to_handler somehow.
-> 
+As for the bulk-array interface. I have checked the:
 
-OK. I will study the above.
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r2
 
-Thanks.
+applied the patch that is in question + below one:
 
-Madhavan
+<snip>
+@@ -2503,25 +2498,13 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+        area->pages = pages;
+        area->nr_pages = nr_pages;
+ 
+-       for (i = 0; i < area->nr_pages; i++) {
+-               struct page *page;
+-
+-               if (node == NUMA_NO_NODE)
+-                       page = alloc_page(gfp_mask);
+-               else
+-                       page = alloc_pages_node(node, gfp_mask, 0);
+-
+-               if (unlikely(!page)) {
+-                       /* Successfully allocated i pages, free them in __vfree() */
+-                       area->nr_pages = i;
+-                       atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+-                       goto fail;
+-               }
+-               area->pages[i] = page;
+-               if (gfpflags_allow_blocking(gfp_mask))
+-                       cond_resched();
++       ret = alloc_pages_bulk_array(gfp_mask, area->nr_pages, area->pages);
++       if (ret == nr_pages)
++               atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
++       else {
++               area->nr_pages = ret;
++               goto fail;
+        }
+-       atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+<snip>
+
+single CPU, 4MB allocation, 1000000 avg: 70639437 usec
+single CPU, 4MB allocation, 1000000 avg: 89218654 usec
+
+and now we get ~21% delta. That is very good :)
+
+--
+Vlad Rezki
