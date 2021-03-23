@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1C1345963
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD06345967
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbhCWIOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229632AbhCWIOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:14:47 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14012 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhCWIOR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 04:14:17 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:48866 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229632AbhCWINz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:13:55 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 8A43420185;
-        Tue, 23 Mar 2021 09:13:54 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EHVO46SgRBPQ; Tue, 23 Mar 2021 09:13:54 +0100 (CET)
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 11A8F20534;
-        Tue, 23 Mar 2021 09:13:54 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 23 Mar 2021 09:13:53 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 23 Mar
- 2021 09:13:53 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 0D3A33180449; Tue, 23 Mar 2021 09:13:53 +0100 (CET)
-Date:   Tue, 23 Mar 2021 09:13:53 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <sebastian.siewior@linutronix.de>
-Subject: Re: [PATCH v1 0/2] net: xfrm: Use seqcount_spinlock_t
-Message-ID: <20210323081353.GM62598@gauss3.secunet.de>
-References: <20210316105630.1020270-1-a.darwish@linutronix.de>
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4PH00ggbzrTb9;
+        Tue, 23 Mar 2021 16:12:12 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.117) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Tue, 23 Mar 2021
+ 16:14:03 +0800
+Subject: Re: [PATCH] pci: fix memory leak when virtio pci hotplug
+To:     Wu Bo <wubo40@huawei.com>, <rjw@rjwysocki.net>, <lenb@kernel.org>,
+        <bhelgaas@google.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, linfeilong <linfeilong@huawei.com>
+References: <c48998b7-5308-e196-66b5-905fc8c4edc4@huawei.com>
+ <768d4a60-7442-fbdd-9c00-cc927a54d340@huawei.com>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <fc38cd3b-9e48-6787-afe6-1c991a7186ca@huawei.com>
+Date:   Tue, 23 Mar 2021 16:14:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210316105630.1020270-1-a.darwish@linutronix.de>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <768d4a60-7442-fbdd-9c00-cc927a54d340@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 11:56:28AM +0100, Ahmed S. Darwish wrote:
-> Hi,
-> 
-> This is a small series to trasform xfrm_state_hash_generation sequence
-> counter to seqcount_spinlock_t, instead of plain seqcount_t.
-> 
-> In general, seqcount_LOCKNAME_t sequence counters allows to associate
-> the lock used for write serialization with the seqcount. This enables
-> lockdep to verify that the write serialization lock is always held
-> before entering the seqcount write section.
-> 
-> If lockdep is disabled, this lock association is compiled out and has
-> neither storage size nor runtime overhead.
-> 
-> The first patch is a general mainline fix, and has a Fixes tag.
-> 
-> Thanks,
-> 
-> 8<----------
-> 
-> Ahmed S. Darwish (2):
->   net: xfrm: Localize sequence counter per network namespace
->   net: xfrm: Use sequence counter with associated spinlock
+friendly ping..
 
-Applied to the ipsec tree, thanks a lot!
+On 2021/3/22 10:43, Wu Bo wrote:
+> On 2021/3/21 23:29, Zhiqiang Liu wrote:
+>> From: Feilong Lin <linfeilong@huawei.com>
+>>
+>> Repeated hot-plugging of pci devices for a virtual
+>> machine driven by virtio, we found that there is a
+>> leak in kmalloc-4k, which was confirmed as the memory
+>> of the pci_device structure. Then we found out that
+>> it was missing pci_dev_put() after pci_get_slot() in
+>> enable_slot() of acpiphp_glue.c.
+>>
+>> Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+>> Reviewed-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+>> ---
+>>   drivers/pci/hotplug/acpiphp_glue.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+>> index 3365c93abf0e..f031302ad401 100644
+>> --- a/drivers/pci/hotplug/acpiphp_glue.c
+>> +++ b/drivers/pci/hotplug/acpiphp_glue.c
+>> @@ -533,6 +533,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+>>               slot->flags &= ~SLOT_ENABLED;
+>>               continue;
+>>           }
+>> +        pci_dev_put(dev);
+>>       }
+>>   }
+>>
+> Reviewed-by: Wu Bo <wubo40@huawei.com>
+>
+> .
+
