@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F31A3462FD
+	by mail.lfdr.de (Postfix) with ESMTP id 240073462FC
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhCWPeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:34:24 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34962 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232853AbhCWPeB (ORCPT
+        id S232827AbhCWPeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232850AbhCWPd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:34:01 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NFXcFP150155;
-        Tue, 23 Mar 2021 11:33:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YqS3na95Ho535in/dh2q3fs8bdKZ7R+TwkyLJxzgWbA=;
- b=pAeB6mwriUHnYO/APRkVbX4gPJ+/0hA5hMbejcsrUv7i0BxlDO3SaFzh2U37aVJ7mIDb
- SO2Y9C4DA4AvFiQ4ayiDepCsglS6bNPrl2wUWaG6Edouk5OV+wXBmVuUJ35YA38623U+
- m7uxV8egq0HEj8BXL0Wc1eYpnT6j2oAducuCnisq04E9wkH6SZ92HBEdscLYE0Zshr/z
- zDpHinFveEAJ0paHO04H+oidt5wg9iXHxxSUpMeSRgBThkoYyiW97VQshHvAB8wGGjW9
- TNZsRo0aYSN7/eO5csIuAWdnP790IPawqh/uG+Fmsgi+COGq9+BhwfQxASXnAR76rpTw Dg== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37fjp18rx1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 11:33:39 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NFNMUE014649;
-        Tue, 23 Mar 2021 15:33:22 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 37d9d8sthu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 15:33:22 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NFXKaZ19988922
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 15:33:20 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2EAB052051;
-        Tue, 23 Mar 2021 15:33:20 +0000 (GMT)
-Received: from [9.199.34.65] (unknown [9.199.34.65])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 9BB5C52057;
-        Tue, 23 Mar 2021 15:33:15 +0000 (GMT)
-Subject: Re: [PATCH v3 01/10] fsdax: Factor helpers to simplify dax fault code
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
-Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
-References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
- <20210319015237.993880-2-ruansy.fnst@fujitsu.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Message-ID: <b55aab1e-95d9-108d-9bb3-199f588c0fbe@linux.ibm.com>
-Date:   Tue, 23 Mar 2021 21:03:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 23 Mar 2021 11:33:58 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4909C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:33:58 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so19841974ote.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BU22F3GylJCKeCQWy9MpZdNcfqLAl6Ije4lLEtEa8GY=;
+        b=FBzNhcrN7thCIaDBITnPorfkjdlRIsHFHiUvYcccyToaj4vMKgH80eNBrdw/Gnw3tB
+         uErAaGg4NWxUEbPUWotD7t8VcUg2Zf71LavYayx6de7yRsxby7ufzIauY1L4URerzG/W
+         VDEJX0K/fIyHR9ieW8q9zQZ5q/rJgB+i3tHbwHNAyJFrWV5I1XM8hngCNi5ltGeUu8nQ
+         VHsKIBJQor4+2XLwUCrJjKejy78IuAt9lL0pP/P4NBQq/2/hsmo48+sDFlRFWywlHZuk
+         reuzf40q/emMKXjMjpt1RpDlBl7CngRU+UDa0YZc1Mh2uERPFssPgsvKilX+DcAb9hwP
+         tRPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BU22F3GylJCKeCQWy9MpZdNcfqLAl6Ije4lLEtEa8GY=;
+        b=f2q7nQCrw0rnUOLw7ZfwMooQ2lS+5MtHk8Julw4kfOgRxO0iKWfD8UaCkXHN6NrObj
+         k0agTLY8P97qjMcdkUMHUjZYDCQkKD6JEXIhJDN9O6dkDNpdn7jhw5//AZF7RS6J9sxb
+         +j6R4uclWxEjcL7RssiYM3JDoFkVLbiPSRzoDiY9+UhbUhyQvJg8oFT4SIuht1y3/gcp
+         2NKrVMuQ9TfHcsPwaxLMgqVXBXf5SqHANMOghLIaXrF3DDk4jBstK7e7OWSV9T+b3YAY
+         iydfitQUbEI/eI8vj3xAZlkUdYt8HpAROEAUNaevOgYq6/0b0Bpo0lLGG2Pi6TFGv6AH
+         zPyQ==
+X-Gm-Message-State: AOAM530kt22YLF4fkgOHN7C3nEj/y852V3OoTnOkdt9WXgLDXttrcKml
+        /jDGm9B3tsjZRW/VS3WZQ7PdKjI4luO+e+Fz2tO7qWP3
+X-Google-Smtp-Source: ABdhPJxFXYs/7acwhn00qep8mlUpC9T+CKHJrdfAbBpBhuQNReaMkZBPCVNWLBPFYIy648/pkeGe+lCHThIvm+KGocQ=
+X-Received: by 2002:a05:6830:408f:: with SMTP id x15mr5048220ott.132.1616513638090;
+ Tue, 23 Mar 2021 08:33:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210319015237.993880-2-ruansy.fnst@fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_07:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 impostorscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103230114
+References: <20210323130430.2250052-1-arnd@kernel.org>
+In-Reply-To: <20210323130430.2250052-1-arnd@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 23 Mar 2021 11:33:47 -0400
+Message-ID: <CADnq5_MYZF2VWe=fYOqj-M5QA2myYTy-Lwu6uchuXZEz+oZbQw@mail.gmail.com>
+Subject: Re: [PATCH] amdgpu: fix gcc -Wrestrict warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jinzhou Su <Jinzhou.Su@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Huang Rui <ray.huang@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
+Alex
 
-On 3/19/21 7:22 AM, Shiyang Ruan wrote:
-> The dax page fault code is too long and a bit difficult to read. And it
-> is hard to understand when we trying to add new features. Some of the
-> PTE/PMD codes have similar logic. So, factor them as helper functions to
-> simplify the code.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Tue, Mar 23, 2021 at 9:04 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc warns about an sprintf() that uses the same buffer as source
+> and destination, which is undefined behavior in C99:
+>
+> drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c: In function 'amdgpu_securedisplay_debugfs_write':
+> drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:141:6: error: 'sprintf' argument 3 overlaps destination object 'i2c_output' [-Werror=restrict]
+>   141 |      sprintf(i2c_output, "%s 0x%X", i2c_output,
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   142 |       securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+>       |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:97:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+>    97 |  char i2c_output[256];
+>       |       ^~~~~~~~~~
+>
+> Rewrite it to remember the current offset into the buffer instead.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->   fs/dax.c | 152 ++++++++++++++++++++++++++++++-------------------------
->   1 file changed, 84 insertions(+), 68 deletions(-)
-> 
-
-Refactoring & the changes looks good to me.
-Feel free to add.
-
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> index 834440ab9ff7..69d7f6bff5d4 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> @@ -136,9 +136,10 @@ static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __u
+>                 ret = psp_securedisplay_invoke(psp, TA_SECUREDISPLAY_COMMAND__SEND_ROI_CRC);
+>                 if (!ret) {
+>                         if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS) {
+> +                               int pos = 0;
+>                                 memset(i2c_output,  0, sizeof(i2c_output));
+>                                 for (i = 0; i < TA_SECUREDISPLAY_I2C_BUFFER_SIZE; i++)
+> -                                       sprintf(i2c_output, "%s 0x%X", i2c_output,
+> +                                       pos += sprintf(i2c_output + pos, " 0x%X",
+>                                                 securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+>                                 dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is :%s\n", i2c_output);
+>                         } else {
+> --
+> 2.29.2
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
