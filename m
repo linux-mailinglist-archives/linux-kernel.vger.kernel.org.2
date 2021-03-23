@@ -2,155 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954CA346CCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4D0346CCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234526AbhCWWZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:25:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234302AbhCWWWS (ORCPT
+        id S234536AbhCWWZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:25:09 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:46717 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234314AbhCWWWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:22:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616538138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FD+KgrQ8dfy27WhB3DYQ1hA9qcORPXR6QTcvejvM78c=;
-        b=OtnsI61kVtuovn7s4vFs0wY55SXFoctJ/XnD2sinAK/ILbUx2sPGzCs0sXRmHC98V6Vrnw
-        240fbCKehYO6i9Sh8uloGnIDvs94vViaKm31xroGYT0C1s15cdpoQSNeACCUdthj4PJrjn
-        7hqw9+kAoEBHzzdIWj9XKMaBaU3TVOs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-1XQG1GoRPMC3GKeT13tTlA-1; Tue, 23 Mar 2021 18:22:16 -0400
-X-MC-Unique: 1XQG1GoRPMC3GKeT13tTlA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7ECA91853023;
-        Tue, 23 Mar 2021 22:22:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1815F60877;
-        Tue, 23 Mar 2021 22:22:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v5 23/28] afs: Wait on PG_fscache before modifying/releasing a
- page
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 22:22:07 +0000
-Message-ID: <161653812726.2770958.18167145829938766503.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-References: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 23 Mar 2021 18:22:21 -0400
+Received: by mail-il1-f171.google.com with SMTP id j11so19605670ilu.13;
+        Tue, 23 Mar 2021 15:22:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Lsd3JZQm8JZcQF66tUklgJKPkCMFSVQcW29hFT1TSjY=;
+        b=nZVksIKtv+hko0NL4ZucbHTwCuFns0Je1QC3xAhao3CYCQoNczCLRmtD54SA6fSap8
+         dNAGGzIxRshJZvkEQmOkk6GATGjsfZQAZtq8vsg/RBWR4Mih3AeBs9ieME+0N7CyXptl
+         wEewWLCFx31RmTMvh4RKZCsw+eZ+8NeONVPYZodIh5OzNS6PaN7r17XKUQ9ukQ+YTzQD
+         GFXXOhpHWSb//cLamQ9u2rDYI32eYwGgmqTzxKjROcmhInrRZfnd1WvvHaDqjJ8J4R36
+         YIzpzyXh1SHVbT1SVYtOX5YZGmsi7SiPgAcGdFNUa6oDZfNi1JBN56HeGFoQFV8Q181s
+         7BaQ==
+X-Gm-Message-State: AOAM530kKW/MhNTID2JTeSsK+1VTtPLTTF62d9yuHLaFWMg00RcI5ERm
+        XBJ2yg23K0Nja+bLIJE6Zw==
+X-Google-Smtp-Source: ABdhPJy1mfm2ar/RBe8uqyNsXyrCuWeqAUwQtroz7ofYeqG9JJ599ISfl+6oOZJP/gF5PpfZNfJc3g==
+X-Received: by 2002:a92:7d11:: with SMTP id y17mr314366ilc.93.1616538140810;
+        Tue, 23 Mar 2021 15:22:20 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id w1sm87900iom.53.2021.03.23.15.22.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 15:22:20 -0700 (PDT)
+Received: (nullmailer pid 1449360 invoked by uid 1000);
+        Tue, 23 Mar 2021 22:22:18 -0000
+Date:   Tue, 23 Mar 2021 16:22:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v8 15/22] dt-bindings: add BCM6368 GPIO sysctl binding
+ documentation
+Message-ID: <20210323222218.GA1449305@robh.at.kernel.org>
+References: <20210317143803.26127-1-noltari@gmail.com>
+ <20210317143803.26127-16-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317143803.26127-16-noltari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PG_fscache is going to be used to indicate that a page is being written to
-the cache, and that the page should not be modified or released until it's
-finished.
+On Wed, 17 Mar 2021 15:37:56 +0100, Álvaro Fernández Rojas wrote:
+> Add binding documentation for the GPIO sysctl found in BCM6368 SoCs.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> ---
+>  v8: add changes suggested by Rob Herring
+>  v7: add changes suggested by Rob Herring
+> 
+>  .../mfd/brcm,bcm6368-gpio-sysctl.yaml         | 246 ++++++++++++++++++
+>  1 file changed, 246 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/brcm,bcm6368-gpio-sysctl.yaml
+> 
 
-Make afs_invalidatepage() and afs_releasepage() wait for it.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/158861253957.340223.7465334678444521655.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/159465832417.1377938.3571599385208729791.stgit@warthog.procyon.org.uk/
-Link: https://lore.kernel.org/r/160588536286.3465195.13231895135369807920.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161118153708.1232039.3535103645871176749.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161049369.2537118.11591934943429117060.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340412903.1303470.6424701655031380012.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539556890.286939.5873470593519458598.stgit@warthog.procyon.org.uk/ # v4
----
-
- fs/afs/file.c  |    9 +++++++++
- fs/afs/write.c |   10 ++++++++++
- 2 files changed, 19 insertions(+)
-
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index f1bab69e99d4..acbc21a8c80e 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -594,6 +594,7 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
- 	if (PagePrivate(page))
- 		afs_invalidate_dirty(page, offset, length);
- 
-+	wait_on_page_fscache(page);
- 	_leave("");
- }
- 
-@@ -611,6 +612,14 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- 
- 	/* deny if page is being written to the cache and the caller hasn't
- 	 * elected to wait */
-+#ifdef CONFIG_AFS_FSCACHE
-+	if (PageFsCache(page)) {
-+		if (!(gfp_flags & __GFP_DIRECT_RECLAIM) || !(gfp_flags & __GFP_FS))
-+			return false;
-+		wait_on_page_fscache(page);
-+	}
-+#endif
-+
- 	if (PagePrivate(page)) {
- 		detach_page_private(page);
- 		trace_afs_page_dirty(vnode, tracepoint_string("rel"), page);
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index dd4dc1c868b5..e1791de90478 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -117,6 +117,10 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 		SetPageUptodate(page);
- 	}
- 
-+#ifdef CONFIG_AFS_FSCACHE
-+	wait_on_page_fscache(page);
-+#endif
-+
- try_again:
- 	/* See if this page is already partially written in a way that we can
- 	 * merge the new write with.
-@@ -857,6 +861,11 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	/* Wait for the page to be written to the cache before we allow it to
- 	 * be modified.  We then assume the entire page will need writing back.
- 	 */
-+#ifdef CONFIG_AFS_FSCACHE
-+	if (PageFsCache(vmf->page) &&
-+	    wait_on_page_bit_killable(vmf->page, PG_fscache) < 0)
-+		return VM_FAULT_RETRY;
-+#endif
- 
- 	if (PageWriteback(vmf->page) &&
- 	    wait_on_page_bit_killable(vmf->page, PG_writeback) < 0)
-@@ -948,5 +957,6 @@ int afs_launder_page(struct page *page)
- 
- 	detach_page_private(page);
- 	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
-+	wait_on_page_fscache(page);
- 	return ret;
- }
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
