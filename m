@@ -2,157 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F736346B98
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB51346B9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbhCWWCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbhCWWCU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:02:20 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050A0C061574;
-        Tue, 23 Mar 2021 15:02:19 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id h10so25244922edt.13;
-        Tue, 23 Mar 2021 15:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ivsOqhW2+D74/AwbFBvEr85D6ijorwLO62zcbAkI7IE=;
-        b=pfidhFKkrp9+ErXwBRySo2qrCGaZXS1BMWpyiAx/mUSvRCRwg4rfu6+S5MGpZgqo5e
-         REJYv8v/rI+L2JleN4kwi8GidBQmXKlFpTfbKcRxAgs2y834qEaCAasWV/jfIj0QRvgI
-         MC4thxv/rR87ULMU+jI0OL240wfOxmvasxZrTp8SM3h3O2HjTPhnbyIalC9zBBJFTnB/
-         FM5LA7ZVsPrn8e+EZMz00Ux9S/yT8VcSbXwZQeZ65q4y9usjmCRFysFiLY5g8/dZSW/8
-         feBAtP64lG1CHojzlKsYAy7fTAOevofQedTKO8zopesOUKUfRHOxTaKL939ubFM5dE9t
-         Qb/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ivsOqhW2+D74/AwbFBvEr85D6ijorwLO62zcbAkI7IE=;
-        b=S258RetiPFeK9UowIij57rzAek4thFYKw/N3jsFBrrG3TCNFFGEvs61K+1vBtSy2+s
-         1oTu7sKfkrxLli2drtNx95Hct0uDgm5zWPHSdwitTRJM/cUeinB8I2nvO8OhF1gdVsjA
-         fhbznZaMmeJNDKsS1OvkiDR9c0w5B6GryOM0xhhcji0d2KmidQ9DKJq85fvCSB4sVU6l
-         L44M5lKlqLj4jYGPRopReKcopj/2MAiauE1rRDYZATFxdkPtEGc0R4hpG6szj58m/F1E
-         dxbtgrrqd/aMe30X2nbSH0BGEj+rT8EHbQ+/+IdOX0SI8pj9N8PhoF/HAjxzGb5/hHRj
-         wkGQ==
-X-Gm-Message-State: AOAM53316REkDtJ6B1Q37jHB6ZGkfScKdrBoKWk74Ld99PF2CUWZZ+Aa
-        XT3W7z8zMEGOxvQYlMK8/GpZSInB7HJGbHPUGwk=
-X-Google-Smtp-Source: ABdhPJzbfUqdJeS4YDqyzcGjKwLZHPdc+wof3W4AtN2VMMnnLPKG6WhLpXgerC4ow+tdldg7A331UdrsC6FNbRlJScU=
-X-Received: by 2002:a50:f747:: with SMTP id j7mr6500507edn.338.1616536937737;
- Tue, 23 Mar 2021 15:02:17 -0700 (PDT)
+        id S233825AbhCWWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:03:19 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:48489 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233504AbhCWWCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 18:02:51 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4ljJ5HdMz9sTD;
+        Wed, 24 Mar 2021 09:02:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616536964;
+        bh=Oa/KJdsPgcOZqeNnWZkHi6YvrCuGbwjz4me2+pP6Vsg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=U6GiFAZ5+0R2G76Hf4sVGy4ElWvy0dDQE34yX4QSO2EXFfGT4VwRJsM9ffQoO+c/w
+         1ZZ2IGQT7JTdXLK4hjM09JStauM75m7we09NR/Wmila6r7113SWWzU6I20nKJTI44l
+         gPFLjxWQq57vyna3eN2gnMuffIkCFRY7wBXD8T0aVf8qBwIBO7QdlxsUNxUmmz3WXI
+         ZNnMu+Kq0KE3ie8MOKuWXGO0dTUCYyTpUZD0rawrAfd4yPJec1jC6cuJiHDap26A/k
+         Ii0RpwjSPhF0eSpO/TLHCA3QF5gdp6ylZvIe5X5oYD6WKZNw17S2rVrFrIArYsMZRp
+         ogiqcjX5DNLiQ==
+Date:   Wed, 24 Mar 2021 09:02:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Adam Ford <aford173@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: bad topic branch merged into the clk-imx tree
+Message-ID: <20210324090243.6523cf32@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201230012724.1326156-1-martin.blumenstingl@googlemail.com>
- <20201230012724.1326156-4-martin.blumenstingl@googlemail.com> <YFLBPGNQpT9mM3AJ@builder.lan>
-In-Reply-To: <YFLBPGNQpT9mM3AJ@builder.lan>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 23 Mar 2021 23:02:06 +0100
-Message-ID: <CAFBinCA92411o5+AGApr8+nkMdmzJ4ddzVY+Cb5FLBez+-92nA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] dt-bindings: remoteproc: Add the documentation for
- Meson AO ARC rproc
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ohad@wizery.com, robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/RR7nAqagxbxUUK_HzVgjUQv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+--Sig_/RR7nAqagxbxUUK_HzVgjUQv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 18, 2021 at 3:55 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
-[...]
-> > +examples:
-> > +  - |
-> > +    remoteproc@1c {
-> > +      compatible= "amlogic,meson8-ao-arc", "amlogic,meson-mx-ao-arc";
-> > +      reg = <0x1c 0x8>, <0x38 0x8>;
->
-> I'm generally not in favor of mapping "individual" registers, do you
-> know what hardware block this is part of? Can you express the whole
-> block as an single entity in your DT?
-the answer is unfortunately not easy :-)
+Hi all,
 
-some background information:
-Amlogic SoCs have two power domains:
-- AO (Always-On)
-- EE (Everything-Else)
+Please try to avoid merging branches based on v5.12-rc1-dontuse - ask
+the branch owner to rebase onto (at least) v5.12-rc2.
 
-AO includes (at least) one ARC core for which this remoteproc dt-binding is.
-EE includes ARM Cortex-A7/15/... cores
+--=20
+Cheers,
+Stephen Rothwell
 
-The AO registers can be accessed from the EE power-domain and vice versa
+--Sig_/RR7nAqagxbxUUK_HzVgjUQv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Following is an extract (with comments added by me) for the AO
-registers (taken from the GPL vendor kernel):
-#define AO_RTI_STATUS_REG0 ((0x00 << 10) | (0x00 << 2))
-#define AO_RTI_STATUS_REG1 ((0x00 << 10) | (0x01 << 2))
-#define AO_RTI_STATUS_REG2 ((0x00 << 10) | (0x02 << 2))
-these three are used for communication with the firmware on the AO ARC core
-I am not sure into which Linux subsystem these would fit into best
+-----BEGIN PGP SIGNATURE-----
 
-#define AO_RTI_PWR_CNTL_REG1 ((0x00 << 10) | (0x03 << 2))
-#define AO_RTI_PWR_CNTL_REG0 ((0x00 << 10) | (0x04 << 2))
-this includes various power-domains for the following functionality
-(and probably more):
-- DDR PHY I/O
-- AHB SRAM
-- video encoder/decoders
-- EE domain isolation
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBaZYMACgkQAVBC80lX
+0Gy1Lwf+OM8QTFznPeUuA1Z3K7y6aJ0PVvdnHEMiC9ZS9opqg4qT84jXkWq7geEY
+ROiiQh0Y0detT2AS9WUecke4RvsE1lAIA7VB1LSWp7Oq+Vp9vegNbh78kMA30fqM
+5JmB7JIltbbVDdHjY181IvnbOVIpsSG/1bkDeXBioeAA/k6aEBpjfhct1jdbwxsp
+YlR1XzaoNLbXvh9y2tmhKyNGMHOz1Dz5RQC+9szNSvd+PKjQ7uoBeM2i7h4Kt8s0
+NnWF9L7w/ytrUNcm6AlBAF/8RzbnRLQy6MrKSTvdkWAlfkoBopv/54Xq6bicOWaB
+acYOkDbqNvUpQlA3HGdI6OWxnafT0Q==
+=w1z+
+-----END PGP SIGNATURE-----
 
-#define AO_RTI_PIN_MUX_REG ((0x00 << 10) | (0x05 << 2))
-first part of the pin controller registers for the "AO" bank pads
-this includes various GPIOs, UART, I2C for communication with a PMIC,
-infrared remote decoder, two PWMs, etc.
-all (known) functionality can be used by Linux as well.
-especially the UART, I2C, IR decoder and GPIOs are functionality that
-we use with Linux today - without involving the AO ARC
-remote-processor.
-
-#define AO_WD_GPIO_REG ((0x00 << 10) | (0x06 << 2))
-(I think this is related to the watchdog being able to trigger the
-SoC's reset line, but there's no documentation on this register)
-
-#define AO_REMAP_REG0 ((0x00 << 10) | (0x07 << 2))
-#define AO_REMAP_REG1 ((0x00 << 10) | (0x08 << 2))
-remap registers for the AO ARC remote-processor as used in this binding
-
-#define AO_GPIO_O_EN_N ((0x00 << 10) | (0x09 << 2))
-#define AO_GPIO_I ((0x00 << 10) | (0x0A << 2))
-GPIO controller registers for the "AO" bank pads
-
-#define AO_RTI_PULL_UP_REG ((0x00 << 10) | (0x0B << 2))
-second part of the pin controller registers for the "AO" bank pads
-
-#define AO_RTI_WD_MARK ((0x00 << 10) | (0x0D << 2))
-again, I think this is somehow related to the watchdog but there's no
-documentation on this
-
-#define AO_CPU_CNTL ((0x00 << 10) | (0x0E << 2))
-#define AO_CPU_STAT ((0x00 << 10) | (0x0F << 2))
-used for booting the AO ARC remote-processor
-
-#define AO_RTI_GEN_CNTL_REG0 ((0x00 << 10) | (0x10 << 2))
-seems to be a multi purpose register as it (seems to) contains some
-reset bits (for the AO UART and RTC) - not documented
-
-(more registers are following)
-
-to summarize this: I think there's indeed three different sets of registers
-having one big device-tree node spanning all of these registers seems
-incorrect to me as the other IPs are independent of the AO ARC
-remote-processor.
-so the way I have done it in the original patch is the best I could
-come up with.
-
-Please let me know what you think!
-
-
-Best regards,
-Martin
+--Sig_/RR7nAqagxbxUUK_HzVgjUQv--
