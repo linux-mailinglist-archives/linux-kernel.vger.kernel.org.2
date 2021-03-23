@@ -2,82 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14C8346AB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B32346AB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhCWVCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbhCWVCX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:02:23 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4949EC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:02:23 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id n11so12991187pgm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=0nmdLKTQUU2U2MlvkwteXMP5AIq4bw0Xz/4Qd0uYKt4=;
-        b=lWuQcN3sK9Ca9FEj5KeA4qv6DqeYqUD11pu0cCKxPc6Eaoj5OyTu+43rBNtwonazoa
-         wTK251fZxSM+LfcEGxYIBj0jOpyeMZbTbdbUC4uH1BGj6pVeOTb+GSva15KnPeFN2k97
-         VRqSeNt/1nM5ZgTa37IkDyfwn+g7cucu5xpg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=0nmdLKTQUU2U2MlvkwteXMP5AIq4bw0Xz/4Qd0uYKt4=;
-        b=tymLidM6wm97XdbwOkOaGeZ35c+m3eMB68EyJcnFFy69iiE0sJbx3fCMSAmIwZBV0I
-         5NevveTiGepO7kVGrMbBBMlbC1IyCGucsf2i+6gyAHFbSWs7AL3UMsFzaPBpKXlTQueO
-         0X8XMlTwJg0MAIzgzLUJ1miQFGf/3/8CWTmoTNvsOnZ3TgaTfuKUZAKDU7lM8I5R2/7B
-         cvNfqadii1pDc7zqd5NVJ5UjQY//QiAOkl+UdcTDN4tVf5m4v0yAooVhLdjRVPsq+io5
-         E7jiuddD52/v278bpa2KG7Jp40JUbPqaekuQ8nCisYo0JfLeTylzNZpPrjBEkp5nGLPl
-         3hrA==
-X-Gm-Message-State: AOAM533dla+L2jAzImYnXwjZX2zyyanBvXYhlXgRH3wQvhfCLIJ9VeEH
-        e2y0cHaj/H1f72Q9y+x6jEjChw==
-X-Google-Smtp-Source: ABdhPJymVqgWCHhY+IXyAkrmtX70mjVttdAPK3H+B3EXnXCLpFLS4kYrDMHtxJRkN04PoUGhyOQ2pQ==
-X-Received: by 2002:a17:902:e549:b029:e6:6b3a:49f7 with SMTP id n9-20020a170902e549b02900e66b3a49f7mr171266plf.52.1616533342892;
-        Tue, 23 Mar 2021 14:02:22 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
-        by smtp.gmail.com with ESMTPSA id c2sm109388pfb.121.2021.03.23.14.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 14:02:22 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S233444AbhCWVEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:04:12 -0400
+Received: from mga02.intel.com ([134.134.136.20]:56723 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233291AbhCWVDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:03:44 -0400
+IronPort-SDR: gDgamGXJIKeAKiF89M5W0H2dMt/LQyP+CLLI3kuWfjg9+ImzopS97DDdlgVOdyALtnpzR8rxDe
+ aeIho+vRTNGw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="177687203"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="177687203"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 14:03:43 -0700
+IronPort-SDR: MeVn035X0DnNhkg1ktcTUNDoBtJVhhAZ7Cud4eLJ8Ee/Ta0TQIKBo35AS40MPkUMefwCl6pYBB
+ Wtim3d7C3Cag==
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="452304540"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.32.182]) ([10.209.32.182])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 14:03:41 -0700
+Subject: Re: [PATCH v23 00/28] Control-flow Enforcement: Shadow Stack
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210316151054.5405-1-yu-cheng.yu@intel.com>
+ <20210316211552.GU4746@worktop.programming.kicks-ass.net>
+ <adb72123-e8b3-c022-47da-b8c423952caf@intel.com>
+ <20210323204932.GC4746@worktop.programming.kicks-ass.net>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <80890046-f91f-f512-6c71-b6c963905636@intel.com>
+Date:   Tue, 23 Mar 2021 14:03:41 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1615978901-4202-3-git-send-email-sanm@codeaurora.org>
-References: <1615978901-4202-1-git-send-email-sanm@codeaurora.org> <1615978901-4202-3-git-send-email-sanm@codeaurora.org>
-Subject: Re: [PATCH 2/3] dt-bindings: phy: qcom,usb-snps-femto-v2: Add bindings for SC7280
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-usb@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>
-Date:   Tue, 23 Mar 2021 14:02:21 -0700
-Message-ID: <161653334107.3012082.10885367970914434263@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210323204932.GC4746@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sandeep Maheswaram (2021-03-17 04:01:40)
-> Add the compatible string for sc7280 SoC from Qualcomm
->=20
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
+On 3/23/2021 1:49 PM, Peter Zijlstra wrote:
+> On Fri, Mar 19, 2021 at 02:43:04PM -0700, Yu, Yu-cheng wrote:
+>> On 3/16/2021 2:15 PM, Peter Zijlstra wrote:
+>>> On Tue, Mar 16, 2021 at 08:10:26AM -0700, Yu-cheng Yu wrote:
+>>>> Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+>>>> return/jump-oriented programming attacks.  Details are in "Intel 64 and
+>>>> IA-32 Architectures Software Developer's Manual" [1].
+>>>>
+>>>> CET can protect applications and the kernel.  This series enables only
+>>>> application-level protection, and has three parts:
+>>>>
+>>>>     - Shadow stack [2],
+>>>>     - Indirect branch tracking [3], and
+>>>>     - Selftests [4].
+>>>
+>>> CET is marketing; afaict SS and IBT are 100% independent and there's no
+>>> reason what so ever to have them share any code, let alone a Kconfig
+>>> knob.
+>>>> In fact, I think all of this would improve is you remove the CET name
+>>> from all of this entirely. Put this series under CONFIG_X86_SHSTK (or
+>>> _SS) and use CONFIG_X86_IBT for the other one.
+>>>
+>>> Similarly with the .c file.
+>>>
+>>> All this CET business is just pure confusion.
+>>>
+>>
+>> What about this, we bring back CONFIG_X86_SHSTK and CONFIG_X86_IBT.
+>> For the CET name itself, can we change it to CFE (Control Flow Enforcement),
+>> or just CF?
+> 
+> Carry Flag :-)
+> 
+>> In signal handling, ELF header parsing and arch_prctl(), shadow stack and
+>> IBT pretty much share the same code.  It is better not to split them into
+>> two sets of files.
+> 
+> Aside from redoing the UAPI we're stuck with that I suppose :/ And since
+> I think the CET name is all over the UAPI, you might as well keep it for
+> the kernel part of it as well :-(
+> 
+> But if there's sufficient !UAPI bits it might still make sense to also
+> have ibt.c and shstk.c
+> 
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+I will move code around and separate it into shadow stack and ibt. 
+Hopefully in the next iteration, things will be more organized.
+
+Thanks,
+Yu-cheng
