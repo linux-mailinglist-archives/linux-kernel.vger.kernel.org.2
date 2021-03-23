@@ -2,246 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EC6346145
+	by mail.lfdr.de (Postfix) with ESMTP id AD3ED346147
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbhCWOSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhCWOQ1 (ORCPT
+        id S232289AbhCWOSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:18:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31694 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232257AbhCWOQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:16:27 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC928C061765;
-        Tue, 23 Mar 2021 07:16:22 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id l4so27347549ejc.10;
-        Tue, 23 Mar 2021 07:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MlOooBXSewsLualNMgvU6D6sRFXHNUQ608epm4QPvWs=;
-        b=K6BNGvZE4HLcVpDQArNpA/XFtjuJcUNCbBXwd5VC/WYL8x1S6irIL+c6wRlJzU6vl4
-         nxHShgvd5SESFS+yvIZR5iGl8D5qzSHsyf9Q0lfypAQhTYo8UR35gu6tuotjRLHyvVtl
-         VdhidD4P+skXtaVujXXEMg1GjBvVnsK/cCYhfA8kZ6q6d7ZBuWn5h57ZfqZJ9ct6mPyr
-         513IKg5Yp9Q/GaFyflvxz5zuFY4KI9/ajF0XLuiRe6wj09+3GSAzj41RMOUFwU301OJx
-         R4BxhDhguT/ew75EwTIVu8Ou5N4JxzQo6y4/4j/CFtuJqctB+5NmvV8wB2ed+Ye8JyMh
-         0IZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MlOooBXSewsLualNMgvU6D6sRFXHNUQ608epm4QPvWs=;
-        b=lrgBX2mQwYtCEK95sjefS1PEHv41PjZ9qhv/Nvrmh26lZGVka/g2Di1QVsLMUB/uI7
-         PlUqaL9aon5edEYeWz1LjcJKX1KQVtNKRkjQSuwY9S+wmUV62+IozMf/MZYn5GSWouKS
-         B8ldMAoJ7u2PI/lMPx64vfPGUVQlVhjJlDtjs3jLnxGcomFGJvcWtad2dlpFbqvoLKZn
-         /PZUY1+febQaTrlYyJffdzWeh7KtCrC6O09uuivPTpodLryVbFDGH6fhk5ddp0tQZDoz
-         UBZS7FphNcxXwHnDCjcpu9yqjsTNoKAW7AWpCIKBlstLxscTRVap0NfHOIUAOfgWECd4
-         bgKA==
-X-Gm-Message-State: AOAM531Ok6bA0j1XUDC64OePU6rnRVn3ltKvQDA/B8uTE0dhNluN+rmz
-        MQHXuoKkHGnt9EPcmNFiE0hLtYZHAv2/pV4LwqY=
-X-Google-Smtp-Source: ABdhPJwj/plMO91rQ93L+RbYk+zwPDyZuqAWjLpcugqv3a8iDsleVbcDFezMkCTAwZZ2q4REVXVVyQK8ZLqJtOp5GhA=
-X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr4965121ejc.133.1616508981333;
- Tue, 23 Mar 2021 07:16:21 -0700 (PDT)
+        Tue, 23 Mar 2021 10:16:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616509000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ecY1CzrvE1DPEu+sD2G/cZP9TNuYSjbK9W1EHfXolDw=;
+        b=M7GAMfXqr8B5H/LhUTF2IlgI+Ty2EAIOXMsz+rQsA+w+BlCZOkYmua11woYOwci+xObPSf
+        zm1XP9zdpRm+On8hSALX33cp2PaapPmJssPEQ8aeQndtqVfAhEOCDaKJAnPEF+Ps4jXRs0
+        1aRrg+MGnnIUgR+L7vrLVv+5Ktg37BM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-exvroquTOx2NCDRTMVZpiw-1; Tue, 23 Mar 2021 10:16:39 -0400
+X-MC-Unique: exvroquTOx2NCDRTMVZpiw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C2855B365;
+        Tue, 23 Mar 2021 14:16:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E189C10016FD;
+        Tue, 23 Mar 2021 14:16:28 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210323135116.GF1719932@casper.infradead.org>
+References: <20210323135116.GF1719932@casper.infradead.org> <1885296.1616410586@warthog.procyon.org.uk> <20210321105309.GG3420@casper.infradead.org> <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk> <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk> <2499407.1616505440@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for PG_private_2/PG_fscache
 MIME-Version: 1.0
-References: <20210308120555.252524-1-adrien.grassein@gmail.com>
- <20210308120555.252524-3-adrien.grassein@gmail.com> <CAG3jFytoE9hWvq2e2Caqn4qP_RuEOnm4r9VQ85ffbAcguSLf+w@mail.gmail.com>
- <CABkfQAGvPy3DzXQnDJqm1q_rOLWR7BQTXb8z05iML3s3Mc8LJw@mail.gmail.com>
- <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
- <CABkfQAGcSsQ74FtvAK4_awHRXswgBrThKww_xhpmTzordZ5X8w@mail.gmail.com> <CAG3jFyvQt=Bv2_Hi8UdOhgznp1gVZwAw8gZv6FnLwHJV4WD6Kw@mail.gmail.com>
-In-Reply-To: <CAG3jFyvQt=Bv2_Hi8UdOhgznp1gVZwAw8gZv6FnLwHJV4WD6Kw@mail.gmail.com>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Tue, 23 Mar 2021 15:16:10 +0100
-Message-ID: <CABkfQAGS24AM90veQhGA+=V4S50y7JwzqLMspMaEFptcYpmdMQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2503809.1616508988.1@warthog.procyon.org.uk>
+Date:   Tue, 23 Mar 2021 14:16:28 +0000
+Message-ID: <2503810.1616508988@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mar. 23 mars 2021 =C3=A0 15:07, Robert Foss <robert.foss@linaro.org> a =
-=C3=A9crit :
->
-> > > > >
-> > > > > > +static enum drm_connector_status lt8912_check_cable_status(str=
-uct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       int ret;
-> > > > > > +       unsigned int reg_val;
-> > > > > > +
-> > > > > > +       ret =3D regmap_read(lt->regmap[I2C_MAIN], 0xC1, &reg_va=
-l);
-> > > > > > +       if (ret)
-> > > > > > +               return connector_status_unknown;
-> > > > > > +
-> > > > > > +       if (reg_val & BIT(7))
-> > > > > > +               return connector_status_connected;
-> > > > >
-> > > > > Register 0xc0 & BIT(7) - HPD signal after debounce
-> > > > > Register 0xc0 & BIT(6) - HPD signal for TX HPD pad
-> > > >
-> > > > So, if I understand well, I need to write 0xc0 & BIT(6) with 1 to
-> > > > enable the HPD pin.
-> > >
-> > > Ah, sorry about being a bit terse.
-> > >
-> > > Both bit 6 & 7 are read only, and are probably best read after an IRQ=
-.
-> >
-> > In my case, IRQ is not triggered at all.
->
-> Are you saying that pin 63 never is high, or that an irq/isr routine
-> isn't getting executed?
->
-> > When reading the value of the HPD pin, I always get 1 (and no
-> > transition occurs when plugging / unplugging a cable).
-> > The HPD IRQ is done on the HDMI connector driver [5].
-> > I think a register configuration should be done to enable the IRQ pin
-> > or maybe there is a nug in electronics.
->
-> After looking at the documentation a bit more, I think we can ignore
-> pin63 and instead have a look at pin14. It is the HDMI TX HPD Control
-> pin. It has a 100k pull-down, so it should be active high.
+Matthew Wilcox <willy@infradead.org> wrote:
 
-pin63 is always active high.
-pin14 is connected to the HDMI logic (pin 19 of the HDMI connector)
-with a 100k pull-down.
+> On Tue, Mar 23, 2021 at 01:17:20PM +0000, David Howells wrote:
+> > +++ b/fs/afs/write.c
+> > @@ -846,7 +846,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+> >  	 */
+> >  #ifdef CONFIG_AFS_FSCACHE
+> >  	if (PageFsCache(page) &&
+> > -	    wait_on_page_bit_killable(page, PG_fscache) < 0)
+> > +	    wait_on_page_fscache_killable(page) < 0)
+> >  		return VM_FAULT_RETRY;
+> >  #endif
+> >  
+> > @@ -861,7 +861,8 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+> >  	 * details the portion of the page we need to write back and we might
+> >  	 * need to redirty the page if there's a problem.
+> >  	 */
+> > -	wait_on_page_writeback(page);
+> > +	if (wait_on_page_writeback_killable(page) < 0)
+> > +		return VM_FAULT_RETRY | VM_FAULT_LOCKED;
+> 
+> You forgot to unlock the page.
 
->
-> I also found some different I2C addresses than what you've used, I
-> assume the device is available on both addresses.
->
-> Chip control registers, address:0x90
-> CEC control registers, address 0x92
->
-Strange, configuration seems to be working well with the address used
-in my driver.
+Do I need to?  Doesn't VM_FAULT_LOCKED indicate that to the caller?  Or is it
+impermissible to do it like that?
 
-> > The HPD pin is linked to a 2.2k pullup resistor (maybe it's wrong)
->
-> The datasheet isn't entirely clear about if pin14 has an internal 100k
-> pull-down, or if they recommend adding a 100k pull-down.
->
-> But this does seem like an issue.
+> Also, if you're waiting killably here, do you need to wait before you get
+> the page lock?  Ditto for waiting on fscache -- do you want to do that
+> before or after you get the page lock?
 
-pin14 can't be used directly. I guess it's used by the internal logic
-of the chip to generate the HPD (pin63) signal.
->
-> >
-> > >
-> > > > >
-> > > > > > +
-> > > > > > +static int lt8912_probe(struct i2c_client *client,
-> > > > > > +        const struct i2c_device_id *id)
-> > > > > > +{
-> > > > > > +       static struct lt8912 *lt;
-> > > > > > +       int ret =3D 0;
-> > > > > > +       struct device *dev =3D &client->dev;
-> > > > > > +
-> > > > > > +       lt =3D devm_kzalloc(dev, sizeof(struct lt8912), GFP_KER=
-NEL);
-> > > > > > +       if (!lt)
-> > > > > > +               return -ENOMEM;
-> > > > > > +
-> > > > > > +       lt->dev =3D dev;
-> > > > > > +       lt->i2c_client[0] =3D client;
-> > > > > > +       lt->cable_status =3D connector_status_unknown;
-> > > > > > +       lt->workq =3D create_workqueue("lt8912_workq");
-> > > > >
-> > > > > Looking at [1] and maybe even better [2], I think this polling
-> > > > > approach is the wrong way to go. And with access to documentation=
-, I
-> > > > > think we should be able to sort this out.
-> > > >
-> > > > I neither like the polling approach too. I did it to go on this iss=
-ue.
-> > > > I will totally remove it once the HPD issue will be resolved.
-> > > > >
-> > > > > Using the irq driver approach requires the interrupt pin to be
-> > > > > configured. Pin 63 of the lt8912b is the IRQ output pin.
-> > > > >
-> > > > > In order to trigger interrupts based on it, the dt-binding would =
-need
-> > > > > to be updated[3][4] as well as whichever DTS you're using.
-> > > > >
-> > > >
-> > > > The IRQ part is working well in my DTB. It test it by adding some
-> > > > electronics to emulate the HPD pin on the GPIO expander where the H=
-PD
-> > > > pin is linked.
-> > >
-> > > Looking at the dt-binding patch, it does not seem to list any
-> > > interrupts. So that should be added. I think the irq support from [3]
-> > > & [4] can be pretty much copied.
-> > >
-> > > Then we can come back and replace the polling code with the IRQ drive=
-n
-> > > code from [2].
-> >
-> > My board uses a "max7323" GPIO expander and the HPD pin is linked to it=
-.
-> > I test this GPIO expander by soldering a pull up resistor and an
-> > interrupt on it and an interrupt was correctly triggered in both
-> > max7323 driver and hdmi-connector;
-> > So I guess that my DTB configuration is correct.
-> > I made my DBT configuration available:
-> >   - hdmi-connector node: [6]
-> >   - lt8912b node: |7]
-> >   - max7323 node: [8].
->
-> Looking at [7] I think that you would want to add something like:
->
-> hdmi-bridge@48 {
->         interrupts-extended =3D <&max7323 $LT8912B_PIN_14 IRQ_TYPE_EDGE_R=
-ISING>;
-> }
->
-> And of course add the corresponding parts from [2] and [3].
->
-> >
-> >
-> > >
-> > > >
-> > > > >
-> > > > > [1] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm=
-/bridge/analogix/anx7625.c#L1751
-> > > > >
-> > > > > [2] https://github.com/torvalds/linux/blob/v5.11/drivers/gpu/drm/=
-bridge/lontium-lt9611.c#L1160
-> > > > >
-> > > > > [3] https://github.com/torvalds/linux/blob/v5.11/Documentation/de=
-vicetree/bindings/display/bridge/lontium,lt9611.yaml#L27
-> > > > >
-> > > > > [4] https://github.com/torvalds/linux/blob/v5.11/Documentation/de=
-vicetree/bindings/display/bridge/lontium,lt9611.yaml#L144
-> >
-> > [5] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bridg=
-e/display-connector.c#L199
-> > [6] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/=
-dts/freescale/imx8mq-nitrogen.dts#L37
-> > [7] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/=
-dts/freescale/imx8mq-nitrogen.dts#L249
-> > [8] https://github.com/grassead/linux-next/blob/master/arch/arm64/boot/=
-dts/freescale/imx8mq-nitrogen.dts#L291
-> >
-> >
-> > Thanks,
+I'm waiting both before and after.  If I wait before, write() can go and
+trample over the page between PG_writeback/PG_fscache being cleared and us
+getting the lock here.  Probably I should only be waiting after locking the
+page.
 
-Maybe the conclusion is that we cannot have the HPD working.
+> Also, I never quite understood why you needed to wait for fscache
+> writes to finish before allowing the page to be dirtied.  Is this a
+> wait_for_stable_page() kind of situation, where the cache might be
+> calculating a checksum on it?  Because as far as I can tell, once the
+> page is dirty in RAM, the contents of the on-disk cache are irrelevant ...
+> unless they're part of a RAID 5 checksum kind of situation.
 
-Thanks,
+Um.  I do want to add disconnected operation in the future and cache
+encryption, but, as things currently stand, it isn't necessary because the
+cache object is marked "in use" and will be discarded on rebinding after a
+power loss or crash if it's still marked when it's opened again.
+
+Also, the thought has occurred to me that I can make use of reflink copy to
+handle the caching of local modifications to cached files, in which case I'd
+rather have a clean copy to link from.
+
+David
+
