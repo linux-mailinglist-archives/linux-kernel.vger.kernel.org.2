@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074163454A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A6C3454AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhCWBHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 21:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        id S230465AbhCWBJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 21:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhCWBGZ (ORCPT
+        with ESMTP id S231180AbhCWBIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 21:06:25 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626C4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:06:22 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id g24so13829098qts.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:06:22 -0700 (PDT)
+        Mon, 22 Mar 2021 21:08:52 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213A4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:08:52 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id 7so12773044qka.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5t/jCtSLeHZoOOMhMV4BFYY7qCyPGvwggJUnBiFthlE=;
-        b=BpEY9QZrUQZpHCC98cVeTwkh80XOSYKbXQDE+cSgBkc9LiOWKm69pmnOeuZdqqHSG0
-         KJNqKkR80p2F9dNrQ15Afq2gA6oSHYF+gnLJK3tQlbScKYq7cuucmkB/sTxrg22vu9Mx
-         wn5rU+kEC1EHLIcPE1VAIQAwYX0rCd/r9uDPZ0ZJG4+ihfls3jEFXRRsCsl48guIjGh5
-         OZBNM2Lqf6U+CYcs6rfi5h0leG8AWIZGLQjei4iAtezfZRYb6uwwffJI3gDiJbbH7+hz
-         /jUEWeTtZ00i4fgCwNw9HYDv359kQYXs60xb0su+O6QRbvzKYi1/5bdIS5XrIWZtj5oT
-         Dj6g==
+        bh=uVmhqGnsjGsJrmduRvggndhRWp4nQB/gucWOwGEWlgY=;
+        b=RaJzkIiK+kyv2JKxuECtZ7H+a1zFXXmKcTbamFIDba3UKrjAUmD7zsQiQYbTAKTyK1
+         EDSTiT2hyT1Mepa++PgoyD7kotVFmhy823Nh2eJuvudBxwvlsZi2yZ/XnuITcTFONUMw
+         6CDH0+d5rJoLiRZLPSjZlvu+awRmSsL/mjH9ST9MT13bN3eFeB3g3wNInVsuYgbWXLlV
+         HLdidqq8LDr6rWM7bymmtm4v5OVlGReA0ALkdVzxxl7bq6pVbhdlHDrKSWp5y/X/jSs4
+         FCtwRuPHYQe//VPQlDldWlONua6eseP2mi4bl2tRU93uEolBJKrAiZRQQwrm7NbuCare
+         UH2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5t/jCtSLeHZoOOMhMV4BFYY7qCyPGvwggJUnBiFthlE=;
-        b=QgGRgZTifcRoJ775qPcOpqj7fANdlGQBSFDh/AmCBOroDPSHDsYjcFYoIM2OGg+SG0
-         TjjzeIaZdOMjj66i8YyJWwjPWJWaQGTQot7W2+dG04gTrz6DCuX0wCjyGfFPQNqXZwme
-         6VSf0SIdXNZ6pzGyh7i10eYBSmT5VKYYc/wOm2FpGcxakcAuK8NtvlY6dusHZRTmlrIO
-         BEK4EVeJGrq/5nQQKZ06EcFROOwBYsBj0nyCAPEeEP3PChYF0J3NO1cO2aoEdTz+bQx3
-         AiLG2JoiogMoWdv0fcCFYImL2uGngNu3k7QOqx2LmjtuL9wtXrgS8IurZLuTLyA0Y86i
-         R8Qw==
-X-Gm-Message-State: AOAM531XKMusJkcjSGx2ZTWLC3sF5dWN4Lw0Iugrk3Tx5OB9efJNiMAc
-        t6MhEBuvH7wHytoeMAy1+j0=
-X-Google-Smtp-Source: ABdhPJwkQDN/Fo6TpY8sEm0rxqv+f/tjLOnca8zDgVzCCdSzmQGs4kXJRSBCxwKHEV15eB3xHCf0mw==
-X-Received: by 2002:ac8:5bcd:: with SMTP id b13mr2411847qtb.122.1616461581620;
-        Mon, 22 Mar 2021 18:06:21 -0700 (PDT)
+        bh=uVmhqGnsjGsJrmduRvggndhRWp4nQB/gucWOwGEWlgY=;
+        b=YCqpkxvxRJ1PWxrw2d9c/vzndNH95yOupt/MAFLM6rWpZ7TioBZXrSuiwPpAeURsC1
+         uM+lL7Qaa/6GGDhLVEivwoX7/SzMFn6ZZUqahTKRvkA9y7EclSFLOOgipR6HSvUhUQ4d
+         g/Itvz7V9UEUCtS6/o5jWJVGtKdI/iCthJ5L9w8zJbQFC8PS3ebO//NCdto6ZNk445aS
+         U3d5iWpYPciDC5Ta0RBh8P2HPVhp/hBPE4GKu1OMoz+ClCqZydXGo7K/0DC1Hxaqrna5
+         mRQDfHMC8Rv8roiicUYU6MA+9aLC3q81d/4A24yKv9Cbn5jr8qjmEMZOGuE/DKR5B/mI
+         2WcQ==
+X-Gm-Message-State: AOAM530Pfs5t7jpps2zySZSut+OiWrGCFtYX1b15cWU2Cr8s46HQk4t4
+        11VFCsp9AvQBWnvIcOWB4bC1tTbJ9/1jvCs2
+X-Google-Smtp-Source: ABdhPJyDbo8xmxYwhGFChaGdt7aO1URHQUC3yWhshdHzxrH8NJQaB1QFTZyXxmeDaQUa3wZI4SfCEg==
+X-Received: by 2002:a37:a10a:: with SMTP id k10mr2978573qke.171.1616461731424;
+        Mon, 22 Mar 2021 18:08:51 -0700 (PDT)
 Received: from localhost.localdomain ([37.19.198.117])
-        by smtp.gmail.com with ESMTPSA id v66sm11523338qkd.113.2021.03.22.18.06.17
+        by smtp.gmail.com with ESMTPSA id j13sm3943745qth.57.2021.03.22.18.08.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 18:06:21 -0700 (PDT)
+        Mon, 22 Mar 2021 18:08:50 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     gregkh@linuxfoundation.org, colin.king@canonical.com,
-        unixbhaskar@gmail.com, davem@davemloft.net, lee.jones@linaro.org,
-        arnd@arndb.de, devel@driverdev.osuosl.org,
+To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        yanaijie@huawei.com, matthew.v.deangelis@gmail.com,
+        amarjargal16@gmail.com, izabela.bakollari@gmail.com,
+        unixbhaskar@gmail.com, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
 Cc:     rdunlap@infradead.org
-Subject: [PATCH] staging: wimax: Mundane typo fixes
-Date:   Tue, 23 Mar 2021 06:36:07 +0530
-Message-Id: <20210323010607.3918516-1-unixbhaskar@gmail.com>
+Subject: [PATCH] staging: rtl8723bs: Trivial typo fix
+Date:   Tue, 23 Mar 2021 06:38:35 +0530
+Message-Id: <20210323010835.4061779-1-unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,36 +66,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/procesing/processing/
-s/comunication/communication/
+s/netowrk/network/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/staging/wimax/i2400m/driver.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_mlme.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/wimax/i2400m/driver.c b/drivers/staging/wimax/i2400m/driver.c
-index f5186458bb3d..162a92682977 100644
---- a/drivers/staging/wimax/i2400m/driver.c
-+++ b/drivers/staging/wimax/i2400m/driver.c
-@@ -96,7 +96,7 @@ MODULE_PARM_DESC(barkers,
-  *
-  * This function just verifies that the header declaration and the
-  * payload are consistent and then deals with it, either forwarding it
-- * to the device or procesing it locally.
-+ * to the device or processing it locally.
-  *
-  * In the i2400m, messages are basically commands that will carry an
-  * ack, so we use i2400m_msg_to_dev() and then deliver the ack back to
-@@ -835,7 +835,7 @@ EXPORT_SYMBOL_GPL(i2400m_reset);
-  *
-  * Returns: 0 if ok, < 0 errno code on error.
-  *
-- * Sets up basic device comunication infrastructure, boots the ROM to
-+ * Sets up basic device communication infrastructure, boots the ROM to
-  * read the MAC address, registers with the WiMAX and network stacks
-  * and then brings up the device.
-  */
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+index 2c9425e2a1e9..3888d3984ec0 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+@@ -599,7 +599,7 @@ void rtw_update_scanned_network(struct adapter *adapter, struct wlan_bssid_ex *t
+ 		}
+
+ 		if (rtw_roam_flags(adapter)) {
+-			/* TODO: don't  select netowrk in the same ess as oldest if it's new enough*/
++			/* TODO: don't  select network in the same ess as oldest if it's new enough*/
+ 		}
+
+ 		if (oldest == NULL || time_after(oldest->last_scanned, pnetwork->last_scanned))
 --
 2.31.0
 
