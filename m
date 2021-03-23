@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D884E34624C
+	by mail.lfdr.de (Postfix) with ESMTP id C918A34624B
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhCWPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:05:46 -0400
-Received: from pio-pvt-msa3.bahnhof.se ([79.136.2.42]:36388 "EHLO
-        pio-pvt-msa3.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbhCWPFR (ORCPT
+        id S232598AbhCWPFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:05:43 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:57628 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232384AbhCWPFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 11:05:17 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id 8ADF93FBD2;
-        Tue, 23 Mar 2021 16:05:15 +0100 (CET)
-Authentication-Results: pio-pvt-msa3.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=FHZiIXFT;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from pio-pvt-msa3.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa3.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id bl9FkwmAFN1D; Tue, 23 Mar 2021 16:05:14 +0100 (CET)
-Received: by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id A80863F84E;
-        Tue, 23 Mar 2021 16:05:11 +0100 (CET)
-Received: from [192.168.0.209] (unknown [192.198.151.43])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id E31823602AF;
-        Tue, 23 Mar 2021 16:05:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1616511911; bh=ERRcOLv79yXvN5bQmSpWkBFFjvHOVmKGZWh48H3jXZg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FHZiIXFTZJTov+7Y6hz8XbGGOxxnA+/UU9rC1aJzGqUPG4RYqXwljopR6NAfvmX3B
-         RiGxPJdgALXFMrqDKNaoxOdiQ5zhUMmji651p/Z0wqlmVOUtjqL+8HNcZGQvtU+1WP
-         Rh5WLj/6apbPakGeqElDVHyhNnfY1yMSz79lQtEY=
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-2-thomas_os@shipmail.org>
- <20210323135217.GD2356281@nvidia.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <ea011a3d-d9f8-77b7-9624-f2ae4777f019@shipmail.org>
-Date:   Tue, 23 Mar 2021 16:05:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210323135217.GD2356281@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: from marcel-macbook.holtmann.net (p4fefce19.dip0.t-ipconnect.de [79.239.206.25])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 1A97FCECE4;
+        Tue, 23 Mar 2021 16:12:53 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2] Bluetooth: check for zapped sk before connecting
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210323163141.v2.1.I6c4306f6e8ba3ccc9106067d4eb70092f8cb2a49@changeid>
+Date:   Tue, 23 Mar 2021 16:05:13 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com,
+        Alain Michaud <alainm@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <94F81995-4C43-4788-9EF1-54FB3C905784@holtmann.org>
+References: <20210323163141.v2.1.I6c4306f6e8ba3ccc9106067d4eb70092f8cb2a49@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Archie,
 
-On 3/23/21 2:52 PM, Jason Gunthorpe wrote:
-> On Sun, Mar 21, 2021 at 07:45:28PM +0100, Thomas Hellström (Intel) wrote:
->> diff --git a/mm/gup.c b/mm/gup.c
->> index e40579624f10..1b6a127f0bdd 100644
->> +++ b/mm/gup.c
->> @@ -1993,6 +1993,17 @@ static void __maybe_unused undo_dev_pagemap(int *nr, int nr_start,
->>   }
->>   
->>   #ifdef CONFIG_ARCH_HAS_PTE_SPECIAL
->> +/*
->> + * If we can't determine whether or not a pte is special, then fail immediately
->> + * for ptes. Note, we can still pin HugeTLB as it is guaranteed not to be
->> + * special. For THP, special huge entries are indicated by xxx_devmap()
->> + * returning true, but a corresponding call to get_dev_pagemap() will
->> + * return NULL.
->> + *
->> + * For a futex to be placed on a THP tail page, get_futex_key requires a
->> + * get_user_pages_fast_only implementation that can pin pages. Thus it's still
->> + * useful to have gup_huge_pmd even if we can't operate on ptes.
->> + */
-> Why move this comment? I think it was correct where it was
+> There is a possibility of receiving a zapped sock on
+> l2cap_sock_connect(). This could lead to interesting crashes, one
+> such case is tearing down an already tore l2cap_sock as is happened
+> with this call trace:
+> 
+> __dump_stack lib/dump_stack.c:15 [inline]
+> dump_stack+0xc4/0x118 lib/dump_stack.c:56
+> register_lock_class kernel/locking/lockdep.c:792 [inline]
+> register_lock_class+0x239/0x6f6 kernel/locking/lockdep.c:742
+> __lock_acquire+0x209/0x1e27 kernel/locking/lockdep.c:3105
+> lock_acquire+0x29c/0x2fb kernel/locking/lockdep.c:3599
+> __raw_spin_lock_bh include/linux/spinlock_api_smp.h:137 [inline]
+> _raw_spin_lock_bh+0x38/0x47 kernel/locking/spinlock.c:175
+> spin_lock_bh include/linux/spinlock.h:307 [inline]
+> lock_sock_nested+0x44/0xfa net/core/sock.c:2518
+> l2cap_sock_teardown_cb+0x88/0x2fb net/bluetooth/l2cap_sock.c:1345
+> l2cap_chan_del+0xa3/0x383 net/bluetooth/l2cap_core.c:598
+> l2cap_chan_close+0x537/0x5dd net/bluetooth/l2cap_core.c:756
+> l2cap_chan_timeout+0x104/0x17e net/bluetooth/l2cap_core.c:429
+> process_one_work+0x7e3/0xcb0 kernel/workqueue.c:2064
+> worker_thread+0x5a5/0x773 kernel/workqueue.c:2196
+> kthread+0x291/0x2a6 kernel/kthread.c:211
+> ret_from_fork+0x4e/0x80 arch/x86/entry/entry_64.S:604
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reported-by: syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com
+> Reviewed-by: Alain Michaud <alainm@chromium.org>
+> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Reviewed-by: Guenter Roeck <groeck@chromium.org>
+> ---
+> 
+> Changes in v2:
+> * Modify locking order for better visibility
+> 
+> net/bluetooth/l2cap_sock.c | 8 ++++++++
+> 1 file changed, 8 insertions(+)
 
-Yes, you're right. I misread it to refer to the actual code in the 
-gup_pte_range function rather than to the empty version. I'll move it back.
+patch has been applied to bluetooth-next tree.
 
-/Thomas
+Regards
 
+Marcel
 
->
-> Jason
