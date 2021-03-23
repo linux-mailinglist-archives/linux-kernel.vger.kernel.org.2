@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E4F34543D
+	by mail.lfdr.de (Postfix) with ESMTP id D632C34543E
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhCWAvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:51:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33916 "EHLO
+        id S231737AbhCWAvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:51:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20547 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231673AbhCWAu7 (ORCPT
+        by vger.kernel.org with ESMTP id S231694AbhCWAvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:50:59 -0400
+        Mon, 22 Mar 2021 20:51:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616460659;
+        s=mimecast20190719; t=1616460663;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SEgaZPIzrTaIsi5MnPxcYnngkBF3yoI3KwetqriOawQ=;
-        b=Gyb1LazSPjxw/ndKEozfHKmStxvYFWG8fUhu3J7CcdKfwVFcQoIpymPkUnT3021tBT/MEK
-        pvRSVVZU6VQhljSfXW7joRoy56+Sax+qz56EDJ948JHP7gMehNjkQcIFEbIrpmWP4+IctP
-        BFP4uwNvN5BPJOjy6Z1CkTr9vOzeCj4=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-C85is02CNkai1_Yx1vY0hg-1; Mon, 22 Mar 2021 20:50:57 -0400
-X-MC-Unique: C85is02CNkai1_Yx1vY0hg-1
-Received: by mail-qk1-f199.google.com with SMTP id u5so812818qkj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:50:57 -0700 (PDT)
+        bh=gMz4zykUsRqLQsQnpjugwWFonlMak/AsLri3yN76IU8=;
+        b=dD12kLNO+igxA10TNEQmG8OMgT/sYt51o5Oi+enqVRBmZuOyixn07L7hoEcj8ptTiQKvxB
+        tZCiZTcjqaKZrvh9vecZ1HPN0EkLZ/Y6vyc9NB5YO+oIL9vNG38PNXA6zbimpMCsA+MkDY
+        qKobfZyKkI96E+zokmIsR44iIzSPqIs=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-56-21BHm0cgMY-6qBJ-_Ir9tg-1; Mon, 22 Mar 2021 20:51:00 -0400
+X-MC-Unique: 21BHm0cgMY-6qBJ-_Ir9tg-1
+Received: by mail-qv1-f69.google.com with SMTP id k92so542362qva.20
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:51:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SEgaZPIzrTaIsi5MnPxcYnngkBF3yoI3KwetqriOawQ=;
-        b=tj5l8Bol1CznoRHCoEwUHkJech68RCB1pORsumYk0kbB2osui5Z73ZL30jRHijiGaN
-         dfkOcL51Bs+ysz4zwz7TRFDVXx2QtvJipfwZQBjXm8V7QiS+EXKOQkLLA+hVbEkTryk3
-         QTnpUkJEfxGTG/H2CaYvABT0sqmM4PfXR3GgQkROmYJVkmwiUce/T7hmyfhxYo4LuBib
-         VUTtYttXyIcM3kvkhizAvSYqX6SeAyTb8kSMvgpKZ4JN+FQDW8rX4bt5Pvs/szGoZM7s
-         O71TFOQAkx1Msdx5xcRbZ+XMjPshpxR1m/8ZJNPL5QBBc06rjhq55o79v/eMRZKDaJ+f
-         G1tA==
-X-Gm-Message-State: AOAM530V8FFUorQ7k2NPbfHSmXiytASk21RCeo351tiILE44iV+Z1CYV
-        QMSgxQHjDUaATCIpFeXGBwrrFEJ3cdB1zryjCdXJCV461eiNTjCkN1lFxAYdH5a81Z5LRAfiLrp
-        51x9I0WS6Iv+cUhZkHhsrng/7
-X-Received: by 2002:a37:946:: with SMTP id 67mr2838356qkj.194.1616460657217;
-        Mon, 22 Mar 2021 17:50:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzoPSRNxbgLdbNd+eWCnJrXrf5UvKBY7it33yfIre1UGnCBiLS4TmBBCxQoaDUEz5lsAjK4ew==
-X-Received: by 2002:a37:946:: with SMTP id 67mr2838337qkj.194.1616460656902;
-        Mon, 22 Mar 2021 17:50:56 -0700 (PDT)
+        bh=gMz4zykUsRqLQsQnpjugwWFonlMak/AsLri3yN76IU8=;
+        b=n34tD2KIVtBUZOQq+5daefoGW4eXKo1+u+aoSo5sstjc7p3/SA6lpiqx3exJgzEJI1
+         vLIW07InfzDcEoJu9di0CoAZY738TfXWxsUotob0SKl14gb3nPHRfepqW0N5RZ0yjUXi
+         cPDeH+SWLUV7gcuXINKq2JakoZiWK0enxsOtWvsoNW+8/C8veBVenVI+Ede7fhn/ceM9
+         mK62WFeTLP9Y588tVIenyun5grkl0d1GMls/dNEMXZE7064XU9KetYs3bqdYJ7SH2Xi3
+         mtUjjoUbbQ1nBmwZSCXOP9JmUgmbq2C8wJzi6QG5/VcZNDsk72Il5AbQGqynNMy8XEpb
+         i7OA==
+X-Gm-Message-State: AOAM532hHHbNq2gd6W7CJr2FFlSs6iJyRgyMMfOXb3QuiJNGfam226Rm
+        ZRwjE5A8YWubX/2xd9lPTrEGHQfXhwR/YncEJKzxQ/q8OfuAzSsnkpWi2r8e5QxohqkUYu32GYK
+        UQu2PX3hA7tDcwSOtMJ/QKTVj
+X-Received: by 2002:a37:6848:: with SMTP id d69mr2970010qkc.159.1616460659702;
+        Mon, 22 Mar 2021 17:50:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3wt9SmWeNMBwi1yvJ4wgntypuHoNSgIQv+r28OKmzDrhpIEGPoRQZMlpRSyZw5Ld0JfAMuA==
+X-Received: by 2002:a37:6848:: with SMTP id d69mr2969993qkc.159.1616460659449;
+        Mon, 22 Mar 2021 17:50:59 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id y13sm9837618qto.39.2021.03.22.17.50.55
+        by smtp.gmail.com with ESMTPSA id c27sm12337483qko.71.2021.03.22.17.50.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 17:50:56 -0700 (PDT)
+        Mon, 22 Mar 2021 17:50:58 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>,
@@ -63,9 +63,9 @@ Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>,
         Axel Rasmussen <axelrasmussen@google.com>, peterx@redhat.com,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH 21/23] hugetlb/userfaultfd: Only drop uffd-wp special pte if required
-Date:   Mon, 22 Mar 2021 20:50:54 -0400
-Message-Id: <20210323005054.35973-1-peterx@redhat.com>
+Subject: [PATCH 22/23] mm/userfaultfd: Enable write protection for shmem & hugetlbfs
+Date:   Mon, 22 Mar 2021 20:50:57 -0400
+Message-Id: <20210323005057.36027-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210323004912.35132-1-peterx@redhat.com>
 References: <20210323004912.35132-1-peterx@redhat.com>
@@ -75,208 +75,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like what we've done with shmem uffd-wp special ptes, we shouldn't drop
-uffd-wp special swap pte for hugetlb too, only if we're going to unmap the
-whole vma, or we're punching a hole with safe locks held.
+We've had all the necessary changes ready for both shmem and hugetlbfs.  Turn
+on all the shmem/hugetlbfs switches for userfaultfd-wp.
 
-For example, remove_inode_hugepages() is safe to drop uffd-wp ptes, because it
-has taken hugetlb fault mutex so that no concurrent page fault would trigger.
-While the call to hugetlb_vmdelete_list() in hugetlbfs_punch_hole() is not
-safe.  That's why the previous call will be with ZAP_FLAG_DROP_FILE_UFFD_WP,
-while the latter one won't be able to.
+Now we can remove the flags parameter for vma_can_userfault() since not used
+any more.  Meanwhile, we can expand UFFD_API_RANGE_IOCTLS_BASIC with
+_UFFDIO_WRITEPROTECT too because all existing types now support write
+protection mode.
+
+Since vma_can_userfault() will be used elsewhere, move into userfaultfd_k.h.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- fs/hugetlbfs/inode.c    | 15 +++++++++------
- include/linux/hugetlb.h | 13 ++++++++-----
- mm/hugetlb.c            | 27 +++++++++++++++++++++------
- mm/memory.c             |  5 ++++-
- 4 files changed, 42 insertions(+), 18 deletions(-)
+ fs/userfaultfd.c                 | 18 ------------------
+ include/linux/userfaultfd_k.h    | 14 ++++++++++++++
+ include/uapi/linux/userfaultfd.h |  7 +++++--
+ mm/userfaultfd.c                 | 10 +++-------
+ 4 files changed, 22 insertions(+), 27 deletions(-)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index d81f52b87bd7..5fe19e801a2b 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -399,7 +399,8 @@ static void remove_huge_page(struct page *page)
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index f6fa34f58c37..b4f30fe84aa3 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -1275,24 +1275,6 @@ static __always_inline int validate_range(struct mm_struct *mm,
+ 	return 0;
  }
  
- static void
--hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end)
-+hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end,
-+		      unsigned long zap_flags)
+-static inline bool vma_can_userfault(struct vm_area_struct *vma,
+-				     unsigned long vm_flags)
+-{
+-	/* FIXME: add WP support to hugetlbfs and shmem */
+-	if (vm_flags & VM_UFFD_WP) {
+-		if (is_vm_hugetlb_page(vma) || vma_is_shmem(vma))
+-			return false;
+-	}
+-
+-	if (vm_flags & VM_UFFD_MINOR) {
+-		if (!(is_vm_hugetlb_page(vma) || vma_is_shmem(vma)))
+-			return false;
+-	}
+-
+-	return vma_is_anonymous(vma) || is_vm_hugetlb_page(vma) ||
+-	       vma_is_shmem(vma);
+-}
+-
+ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
+ 				unsigned long arg)
  {
- 	struct vm_area_struct *vma;
+diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+index fefebe6e9656..413323fc81ca 100644
+--- a/include/linux/userfaultfd_k.h
++++ b/include/linux/userfaultfd_k.h
+@@ -16,6 +16,7 @@
+ #include <linux/fcntl.h>
+ #include <linux/mm.h>
+ #include <asm-generic/pgtable_uffd.h>
++#include <linux/hugetlb_inline.h>
  
-@@ -432,7 +433,7 @@ hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end)
- 		}
- 
- 		unmap_hugepage_range(vma, vma->vm_start + v_offset, v_end,
--									NULL);
-+				     NULL, zap_flags);
- 	}
+ /* The set of all possible UFFD-related VM flags. */
+ #define __VM_UFFD_FLAGS (VM_UFFD_MISSING | VM_UFFD_WP | VM_UFFD_MINOR)
+@@ -132,6 +133,19 @@ static inline bool userfaultfd_armed(struct vm_area_struct *vma)
+ 	return vma->vm_flags & __VM_UFFD_FLAGS;
  }
  
-@@ -513,7 +514,8 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
- 				mutex_lock(&hugetlb_fault_mutex_table[hash]);
- 				hugetlb_vmdelete_list(&mapping->i_mmap,
- 					index * pages_per_huge_page(h),
--					(index + 1) * pages_per_huge_page(h));
-+					(index + 1) * pages_per_huge_page(h),
-+					ZAP_FLAG_DROP_FILE_UFFD_WP);
- 				i_mmap_unlock_write(mapping);
- 			}
- 
-@@ -579,7 +581,8 @@ static void hugetlb_vmtruncate(struct inode *inode, loff_t offset)
- 	i_mmap_lock_write(mapping);
- 	i_size_write(inode, offset);
- 	if (!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root))
--		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0);
-+		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0,
-+				      ZAP_FLAG_DROP_FILE_UFFD_WP);
- 	i_mmap_unlock_write(mapping);
- 	remove_inode_hugepages(inode, offset, LLONG_MAX);
- }
-@@ -612,8 +615,8 @@ static long hugetlbfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
- 		i_mmap_lock_write(mapping);
- 		if (!RB_EMPTY_ROOT(&mapping->i_mmap.rb_root))
- 			hugetlb_vmdelete_list(&mapping->i_mmap,
--						hole_start >> PAGE_SHIFT,
--						hole_end  >> PAGE_SHIFT);
-+					      hole_start >> PAGE_SHIFT,
-+					      hole_end >> PAGE_SHIFT, 0);
- 		i_mmap_unlock_write(mapping);
- 		remove_inode_hugepages(inode, hole_start, hole_end);
- 		inode_unlock(inode);
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 92710600596e..4047fa042782 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -121,14 +121,15 @@ long follow_hugetlb_page(struct mm_struct *, struct vm_area_struct *,
- 			 unsigned long *, unsigned long *, long, unsigned int,
- 			 int *);
- void unmap_hugepage_range(struct vm_area_struct *,
--			  unsigned long, unsigned long, struct page *);
-+			  unsigned long, unsigned long, struct page *,
-+			  unsigned long);
- void __unmap_hugepage_range_final(struct mmu_gather *tlb,
- 			  struct vm_area_struct *vma,
- 			  unsigned long start, unsigned long end,
--			  struct page *ref_page);
-+			  struct page *ref_page, unsigned long zap_flags);
- void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 				unsigned long start, unsigned long end,
--				struct page *ref_page);
-+				struct page *ref_page, unsigned long zap_flags);
- void hugetlb_report_meminfo(struct seq_file *);
- int hugetlb_report_node_meminfo(char *buf, int len, int nid);
- void hugetlb_show_meminfo(void);
-@@ -361,14 +362,16 @@ static inline unsigned long hugetlb_change_protection(
- 
- static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
- 			struct vm_area_struct *vma, unsigned long start,
--			unsigned long end, struct page *ref_page)
-+			unsigned long end, struct page *ref_page,
-+			unsigned long zap_flags)
- {
- 	BUG();
- }
- 
- static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
- 			struct vm_area_struct *vma, unsigned long start,
--			unsigned long end, struct page *ref_page)
-+			unsigned long end, struct page *ref_page,
-+			unsigned long zap_flags)
- {
- 	BUG();
- }
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index d4acf9d9d087..deeae6d40dad 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3936,7 +3936,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 
- void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 			    unsigned long start, unsigned long end,
--			    struct page *ref_page)
-+			    struct page *ref_page, unsigned long zap_flags)
- {
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long address;
-@@ -3988,6 +3988,19 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 			continue;
- 		}
- 
-+		if (unlikely(is_swap_special_pte(pte))) {
-+			WARN_ON_ONCE(!pte_swp_uffd_wp_special(pte));
-+			/*
-+			 * Only drop the special swap uffd-wp pte if
-+			 * e.g. unmapping a vma or punching a hole (with proper
-+			 * lock held so that concurrent page fault won't happen).
-+			 */
-+			if (zap_flags & ZAP_FLAG_DROP_FILE_UFFD_WP)
-+				huge_pte_clear(mm, address, ptep, sz);
-+			spin_unlock(ptl);
-+			continue;
-+		}
++static inline bool vma_can_userfault(struct vm_area_struct *vma,
++				     unsigned long vm_flags)
++{
++	if (vm_flags & VM_UFFD_MINOR) {
++		if (!(is_vm_hugetlb_page(vma) || vma_is_shmem(vma)))
++			return false;
++	}
 +
- 		/*
- 		 * Migrating hugepage or HWPoisoned hugepage is already
- 		 * unmapped and its refcount is dropped, so just clear pte here.
-@@ -4039,9 +4052,10 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
++	return vma_is_anonymous(vma) || is_vm_hugetlb_page(vma) ||
++	       vma_is_shmem(vma);
++}
++
++
+ extern int dup_userfaultfd(struct vm_area_struct *, struct list_head *);
+ extern void dup_userfaultfd_complete(struct list_head *);
  
- void __unmap_hugepage_range_final(struct mmu_gather *tlb,
- 			  struct vm_area_struct *vma, unsigned long start,
--			  unsigned long end, struct page *ref_page)
-+			  unsigned long end, struct page *ref_page,
-+			  unsigned long zap_flags)
- {
--	__unmap_hugepage_range(tlb, vma, start, end, ref_page);
-+	__unmap_hugepage_range(tlb, vma, start, end, ref_page, zap_flags);
+diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
+index 47d9790d863d..000cc4cfc787 100644
+--- a/include/uapi/linux/userfaultfd.h
++++ b/include/uapi/linux/userfaultfd.h
+@@ -32,7 +32,8 @@
+ 			   UFFD_FEATURE_SIGBUS |		\
+ 			   UFFD_FEATURE_THREAD_ID |		\
+ 			   UFFD_FEATURE_MINOR_HUGETLBFS |	\
+-			   UFFD_FEATURE_MINOR_SHMEM)
++			   UFFD_FEATURE_MINOR_SHMEM |		\
++			   UFFD_FEATURE_WP_HUGETLBFS_SHMEM)
+ #define UFFD_API_IOCTLS				\
+ 	((__u64)1 << _UFFDIO_REGISTER |		\
+ 	 (__u64)1 << _UFFDIO_UNREGISTER |	\
+@@ -46,7 +47,8 @@
+ #define UFFD_API_RANGE_IOCTLS_BASIC		\
+ 	((__u64)1 << _UFFDIO_WAKE |		\
+ 	 (__u64)1 << _UFFDIO_COPY |		\
+-	 (__u64)1 << _UFFDIO_CONTINUE)
++	 (__u64)1 << _UFFDIO_CONTINUE |		\
++	 (__u64)1 << _UFFDIO_WRITEPROTECT)
  
- 	/*
- 	 * Clear this flag so that x86's huge_pmd_share page_table_shareable
-@@ -4057,12 +4071,13 @@ void __unmap_hugepage_range_final(struct mmu_gather *tlb,
- }
+ /*
+  * Valid ioctl command number range with this API is from 0x00 to
+@@ -198,6 +200,7 @@ struct uffdio_api {
+ #define UFFD_FEATURE_THREAD_ID			(1<<8)
+ #define UFFD_FEATURE_MINOR_HUGETLBFS		(1<<9)
+ #define UFFD_FEATURE_MINOR_SHMEM		(1<<10)
++#define UFFD_FEATURE_WP_HUGETLBFS_SHMEM		(1<<11)
+ 	__u64 features;
  
- void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
--			  unsigned long end, struct page *ref_page)
-+			  unsigned long end, struct page *ref_page,
-+			  unsigned long zap_flags)
- {
- 	struct mmu_gather tlb;
- 
- 	tlb_gather_mmu(&tlb, vma->vm_mm);
--	__unmap_hugepage_range(&tlb, vma, start, end, ref_page);
-+	__unmap_hugepage_range(&tlb, vma, start, end, ref_page, zap_flags);
- 	tlb_finish_mmu(&tlb);
- }
- 
-@@ -4117,7 +4132,7 @@ static void unmap_ref_private(struct mm_struct *mm, struct vm_area_struct *vma,
- 		 */
- 		if (!is_vma_resv_set(iter_vma, HPAGE_RESV_OWNER))
- 			unmap_hugepage_range(iter_vma, address,
--					     address + huge_page_size(h), page);
-+					     address + huge_page_size(h), page, 0);
+ 	__u64 ioctls;
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index a2b0dcc80a19..e6c6095878bb 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -452,7 +452,6 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+ 			break;
+ 		}
+ 	} else {
+-		VM_WARN_ON_ONCE(wp_copy);
+ 		err = shmem_mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
+ 					     src_addr, mode, page, wp_copy);
  	}
- 	i_mmap_unlock_write(mapping);
- }
-diff --git a/mm/memory.c b/mm/memory.c
-index 766946d3eab0..4bf7f8e83733 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1515,8 +1515,11 @@ static void unmap_single_vma(struct mmu_gather *tlb,
- 			 * safe to do nothing in this case.
- 			 */
- 			if (vma->vm_file) {
-+				unsigned long zap_flags = details ?
-+				    details->zap_flags : 0;
- 				i_mmap_lock_write(vma->vm_file->f_mapping);
--				__unmap_hugepage_range_final(tlb, vma, start, end, NULL);
-+				__unmap_hugepage_range_final(tlb, vma, start, end,
-+							     NULL, zap_flags);
- 				i_mmap_unlock_write(vma->vm_file->f_mapping);
- 			}
- 		} else
+@@ -683,15 +682,12 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 
+ 	err = -ENOENT;
+ 	dst_vma = find_dst_vma(dst_mm, start, len);
+-	/*
+-	 * Make sure the vma is not shared, that the dst range is
+-	 * both valid and fully within a single existing vma.
+-	 */
+-	if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
++
++	if (!dst_vma)
+ 		goto out_unlock;
+ 	if (!userfaultfd_wp(dst_vma))
+ 		goto out_unlock;
+-	if (!vma_is_anonymous(dst_vma))
++	if (!vma_can_userfault(dst_vma, dst_vma->vm_flags))
+ 		goto out_unlock;
+ 
+ 	if (is_vm_hugetlb_page(dst_vma)) {
 -- 
 2.26.2
 
