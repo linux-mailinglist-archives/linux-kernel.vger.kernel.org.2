@@ -2,168 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B758C345DFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECC3345DFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhCWM0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhCWMZs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:25:48 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336B2C061574;
-        Tue, 23 Mar 2021 05:25:48 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so12108788pjq.5;
-        Tue, 23 Mar 2021 05:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=22WapxlsL5Vep3Jfk2Q9IvrWzyL5hDN2I+44snTBXPk=;
-        b=HsU1ZuivSi6tHNkA220k4j8xUNCECpij38gODzRHQ1P88/n27LlMbPdIn8diVI3igY
-         P6fQ+CIpTU9LwnnMp05+atJT43fA6wOix1ZjTG1qWUWcJH8N13AlfiB34XkZwwGJhJiU
-         qnC2b6G7QgM7iMrhqAOPUjHu6ssbuH/GOAfTl4JIvTYICmAFbw0syTiQ0vdHPtFojHDi
-         LQWCdme4XjdZKKvAebV2yjtYyI5KWWrA7phNYoiAQqUOv10VsiAa3VmqmqSdI1UGZ+HK
-         KN2TL0zVfcMk7arHdz94LEstGIMdzv5S9FETZitz5LkwC4wnwnJ1juwI9gTmGHRb4NmZ
-         rlXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=22WapxlsL5Vep3Jfk2Q9IvrWzyL5hDN2I+44snTBXPk=;
-        b=e9LdjAODsQ3DmOtikPeMd0G6AybMvu9cL2JTb20vL2Gd/GGboOjRyKWUQNbNhGVLKT
-         1hFu8ataZM0f55zOsMbn3RnEe3fd92Rhu6eYASW7Q0ianDGQweZWWD2bUjFTDHQwCDfV
-         /LujaPk8ROkZCQYCOJfjsyUYGsL+YdPPfbGO5Vv1pSvS3eidspVMZZzXrMT1t4ovBTKP
-         AvRxv+SHf3LX5ZV0+CTbfvyuWs1gkRCCudFxpeGncvNx3lgRe9slqm7ZbCKhI0B0W2ga
-         5U9PSlogAvUCfkZF8Zjejc6ABF7LsqTTHwliogqbZDMwZ5uSh02yPn/O8TuFNGaNRcZt
-         8EKQ==
-X-Gm-Message-State: AOAM53126NM3MuwfM3c1isk0w005i2Sdj2+6uNqcgJOgkyjBYU5WWaiF
-        f9+1jiaTdTrYK6A/vmG9z+U=
-X-Google-Smtp-Source: ABdhPJzyTafoesjtuxwDYIHYjS/gPPqyQyTRdXSJ15HIX9/Sz5rea86ks9uauzes2kKRIgnK570J+Q==
-X-Received: by 2002:a17:90a:bc4c:: with SMTP id t12mr4338074pjv.223.1616502347695;
-        Tue, 23 Mar 2021 05:25:47 -0700 (PDT)
-Received: from DESKTOP-4V60UBS.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id e63sm16659013pfe.208.2021.03.23.05.25.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 05:25:47 -0700 (PDT)
-From:   Xiaofeng Cao <cxfcosmos@gmail.com>
-X-Google-Original-From: Xiaofeng Cao <caoxiaofeng@yulong.com>
-To:     mchehab@kernel.org
-Cc:     hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
-Subject: [PATCH] drivers/media/pci/bt8xx/bttv-cards: fix typos
-Date:   Tue, 23 Mar 2021 20:25:46 +0800
-Message-Id: <20210323122546.16262-1-caoxiaofeng@yulong.com>
-X-Mailer: git-send-email 2.25.1
+        id S230340AbhCWM0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230259AbhCWMZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:25:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B568560200;
+        Tue, 23 Mar 2021 12:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616502355;
+        bh=TbKwuKKoEzuEZJ3vx+sy5Y9U9M9Zz0MUGiL5mAwzUmo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ukC0L9UTvI3nAVTiOxPc0+GzGZ21h1cEmUoTXspkGjpOXMnJq/KKmZyfhHJZGUnaM
+         yK+2zBC1rRko+BNPN9MTJw+ma6rmfyjvEkFCntFq8Ts8PsqqeZV6sIntz9HqhjGaOm
+         aPdiGdNErounHHseE6Sfvmk7mMiVIZwuzx8jhKRRwtj+bgcsJRbNkow08dANEUhUIz
+         ErxUfXRT99mhyqUPGAQj3I9pNjUtlkdebymwIHkyAKrvAHPCWyRrLxQ80iiWZcbdIS
+         D0kIiE5O0PfhJh8p6ojZLWYZJiGl0Hh55GGC+EkVZZrf8Bv7YNFDWkLtXtva5MSaZu
+         kxSOAF9zcXQFQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 60B7D40647; Tue, 23 Mar 2021 09:25:52 -0300 (-03)
+Date:   Tue, 23 Mar 2021 09:25:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@redhat.com,
+        namhyung@kernel.org, jolsa@kernel.org
+Subject: Re: [PATCH v2 1/3] perf-stat: introduce bperf, share hardware PMCs
+ with BPF
+Message-ID: <YFneUHDiAt8Rg0cc@kernel.org>
+References: <20210316211837.910506-1-songliubraving@fb.com>
+ <20210316211837.910506-2-songliubraving@fb.com>
+ <YFPC4UbLWzTuzyER@krava>
+ <YFTwdWxUvqHDNe1x@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFTwdWxUvqHDNe1x@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change 'vodeo'     to 'video'
-change 'nevery'    to 'never'
-change 'is'        to 'it'
-change 'connevted' to 'connected'
-change 'swichers'  to 'switchers'
-change 'strucure'  to 'structure'
-change 'unblanced' to 'unbalanced'
-change 'fonctionality' to 'functionality'
+Em Fri, Mar 19, 2021 at 03:41:57PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Thu, Mar 18, 2021 at 10:15:13PM +0100, Jiri Olsa escreveu:
+> > On Tue, Mar 16, 2021 at 02:18:35PM -0700, Song Liu wrote:
+> > > bperf is off by default. To enable it, pass --bpf-counters option to
+> > > perf-stat. bperf uses a BPF hashmap to share information about BPF
+> > > programs and maps used by bperf. This map is pinned to bpffs. The default
+> > > path is /sys/fs/bpf/perf_attr_map. The user could change the path with
+> > > option --bpf-attr-map.
+> > > 
+> > > Signed-off-by: Song Liu <songliubraving@fb.com>
+> > 
+> > Reviewed-by: Jiri Olsa <jolsa@redhat.com>
+> 
+> After applying just this first patch in the series I'm getting this
+> after a 'make -C tools/ clean', now I'm checking if I need some new
+> clang, ideas?
 
-Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
----
- drivers/media/pci/bt8xx/bttv-cards.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Works now with clang from fedora 33, I was using a locally built, older,
+now I get this when trying as non-root, expected, but we need to improve
+the wording.
 
-diff --git a/drivers/media/pci/bt8xx/bttv-cards.c b/drivers/media/pci/bt8xx/bttv-cards.c
-index ca20b806e82d..9a07e1094978 100644
---- a/drivers/media/pci/bt8xx/bttv-cards.c
-+++ b/drivers/media/pci/bt8xx/bttv-cards.c
-@@ -2011,7 +2011,7 @@ struct tvcard bttv_tvcards[] = {
- 		/* .audio_inputs= 0, */
- 		.svhs           = 9,
- 		.gpiomask       = 0x00,
--		.gpiomask2      = 0x03, /* used for external vodeo mux */
-+		.gpiomask2      = 0x03, /* used for external video mux */
- 		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 0),
- 		.muxsel_hook	= phytec_muxsel,
- 		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
-@@ -2025,7 +2025,7 @@ struct tvcard bttv_tvcards[] = {
- 		/* .audio_inputs= 0, */
- 		.svhs           = 9,
- 		.gpiomask       = 0x00,
--		.gpiomask2      = 0x03, /* used for external vodeo mux */
-+		.gpiomask2      = 0x03, /* used for external video mux */
- 		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 1),
- 		.muxsel_hook	= phytec_muxsel,
- 		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
-@@ -2180,8 +2180,8 @@ struct tvcard bttv_tvcards[] = {
- 	[BTTV_BOARD_PICOLO_TETRA_CHIP] = {
- 		/*Eric DEBIEF <debief@telemsa.com>*/
- 		/*EURESYS Picolo Tetra : 4 Conexant Fusion 878A, no audio, video input set with analog multiplexers GPIO controlled*/
--		/* adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration strucure, and #define BTTV_BOARD_PICOLO_TETRA_CHIP*/
--		/*0x79 in bttv.h*/
-+		/*adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration*/
-+		/*structure and #define BTTV_BOARD_PICOLO_TETRA_CHIP 0x79 in bttv.h*/
- 		.name           = "Euresys Picolo Tetra",
- 		.video_inputs   = 4,
- 		/* .audio_inputs= 0, */
-@@ -2506,7 +2506,7 @@ struct tvcard bttv_tvcards[] = {
- 	     one external BNC composite input (mux 2)
- 	     three internal composite inputs (unknown muxes)
- 	     an 18-bit stereo A/D (CS5331A), which has:
--	       one external stereo unblanced (RCA) audio connection
-+	       one external stereo unbalanced(RCA) audio connection
- 	       one (or 3?) internal stereo balanced (XLR) audio connection
- 	       input is selected via gpio to a 14052B mux
- 		 (mask=0x300, unbal=0x000, bal=0x100, ??=0x200,0x300)
-@@ -3924,7 +3924,7 @@ static void osprey_eeprom(struct bttv *btv, const u8 ee[256])
- 	u32 serial = 0;
- 	int cardid = -1;
+[acme@five perf]$ perf stat --bpf-counters sleep 1
+Failed to lock perf_event_attr map
+[acme@five perf]$
  
--	/* This code will nevery actually get called in this case.... */
-+	/* This code will never actually get called in this case.... */
- 	if (btv->c.type == BTTV_BOARD_UNKNOWN) {
- 		/* this might be an antique... check for MMAC label in eeprom */
- 		if (!strncmp(ee, "MMAC", 4)) {
-@@ -4086,7 +4086,7 @@ static void avermedia_eeprom(struct bttv *btv)
- /*
-  * For Voodoo TV/FM and Voodoo 200.  These cards' tuners use a TDA9880
-  * analog demod, which is not I2C controlled like the newer and more common
-- * TDA9887 series.  Instead is has two tri-state input pins, S0 and S1,
-+ * TDA9887 series.  Instead it has two tri-state input pins, S0 and S1,
-  * that control the IF for the video and audio.  Apparently, bttv GPIO
-  * 0x10000 is connected to S0.  S0 low selects a 38.9 MHz VIF for B/G/D/K/I
-  * (i.e., PAL) while high selects 45.75 MHz for M/N (i.e., NTSC).
-@@ -4144,7 +4144,7 @@ static void init_PXC200(struct bttv *btv)
- 	int tmp;
- 	u32 val;
- 
--	/* Initialise GPIO-connevted stuff */
-+	/* Initialise GPIO-connected stuff */
- 	gpio_inout(0xffffff, (1<<13));
- 	gpio_write(0);
- 	udelay(3);
-@@ -4580,7 +4580,7 @@ static void xguard_muxsel(struct bttv *btv, unsigned int input)
- }
- static void picolo_tetra_init(struct bttv *btv)
- {
--	/*This is the video input redirection fonctionality : I DID NOT USED IT. */
-+	/*This is the video input redirection functionality : I DID NOT USED IT. */
- 	btwrite (0x08<<16,BT848_GPIO_DATA);/*GPIO[19] [==> 4053 B+C] set to 1 */
- 	btwrite (0x04<<16,BT848_GPIO_DATA);/*GPIO[18] [==> 4053 A]  set to 1*/
- }
-@@ -4598,7 +4598,7 @@ static void picolo_tetra_muxsel (struct bttv* btv, unsigned int input)
-  * ivc120_muxsel [Added by Alan Garfield <alan@fromorbit.com>]
-  *
-  * The IVC120G security card has 4 i2c controlled TDA8540 matrix
-- * swichers to provide 16 channels to MUX0. The TDA8540's have
-+ * switchers to provide 16 channels to MUX0. The TDA8540's have
-  * 4 independent outputs and as such the IVC120G also has the
-  * optional "Monitor Out" bus. This allows the card to be looking
-  * at one input while the monitor is looking at another.
+> - Arnaldo
+> 
+> [acme@quaco perf]$ make O=/tmp/build/perf -C tools/perf BUILD_BPF_SKEL=1 PYTHON=python3 install-bin
+> make: Entering directory '/home/acme/git/perf/tools/perf'
+>   BUILD:   Doing 'make -j8' parallel build
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from latest version at 'include/uapi/linux/kvm.h'
+> diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
+> Warning: Kernel ABI header at 'tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl' differs from latest version at 'arch/mips/kernel/syscalls/syscall_n64.tbl'
+> diff -u tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl arch/mips/kernel/syscalls/syscall_n64.tbl
+> 
+> Auto-detecting system features:
+> ...                         dwarf: [ on  ]
+> ...            dwarf_getlocations: [ on  ]
+> ...                         glibc: [ on  ]
+> ...                        libbfd: [ on  ]
+> ...                libbfd-buildid: [ on  ]
+> ...                        libcap: [ on  ]
+> ...                        libelf: [ on  ]
+> ...                       libnuma: [ on  ]
+> ...        numa_num_possible_cpus: [ on  ]
+> ...                       libperl: [ on  ]
+> ...                     libpython: [ on  ]
+> ...                     libcrypto: [ on  ]
+> ...                     libunwind: [ on  ]
+> ...            libdw-dwarf-unwind: [ on  ]
+> ...                          zlib: [ on  ]
+> ...                          lzma: [ on  ]
+> ...                     get_cpuid: [ on  ]
+> ...                           bpf: [ on  ]
+> ...                        libaio: [ on  ]
+> ...                       libzstd: [ on  ]
+> ...        disassembler-four-args: [ on  ]
+> 
+>   GEN      /tmp/build/perf/common-cmds.h
+>   CC       /tmp/build/perf/exec-cmd.o
+>   MKDIR    /tmp/build/perf/fd/
+>   MKDIR    /tmp/build/perf/fs/
+>   CC       /tmp/build/perf/fs/fs.o
+>   CC       /tmp/build/perf/event-parse.o
+>   CC       /tmp/build/perf/fd/array.o
+>   CC       /tmp/build/perf/core.o
+>   GEN      /tmp/build/perf/bpf_helper_defs.h
+>   CC       /tmp/build/perf/event-plugin.o
+>   MKDIR    /tmp/build/perf/staticobjs/
+>   PERF_VERSION = 5.12.rc2.g3df07f57f205
+>   CC       /tmp/build/perf/staticobjs/libbpf.o
+>   CC       /tmp/build/perf/cpu.o
+>   LD       /tmp/build/perf/fd/libapi-in.o
+>   CC       /tmp/build/perf/cpumap.o
+>   CC       /tmp/build/perf/help.o
+>   MKDIR    /tmp/build/perf/fs/
+>   CC       /tmp/build/perf/fs/tracing_path.o
+>   CC       /tmp/build/perf/fs/cgroup.o
+>   CC       /tmp/build/perf/trace-seq.o
+>   CC       /tmp/build/perf/pager.o
+>   CC       /tmp/build/perf/parse-options.o
+>   LD       /tmp/build/perf/fs/libapi-in.o
+>   CC       /tmp/build/perf/debug.o
+>   CC       /tmp/build/perf/str_error_r.o
+>   CC       /tmp/build/perf/run-command.o
+>   CC       /tmp/build/perf/sigchain.o
+>   LD       /tmp/build/perf/libapi-in.o
+>   AR       /tmp/build/perf/libapi.a
+>   CC       /tmp/build/perf/subcmd-config.o
+>   CC       /tmp/build/perf/threadmap.o
+>   CC       /tmp/build/perf/evsel.o
+>   CC       /tmp/build/perf/parse-filter.o
+>   MKDIR    /tmp/build/perf/staticobjs/
+>   CC       /tmp/build/perf/staticobjs/bpf.o
+>   CC       /tmp/build/perf/evlist.o
+>   CC       /tmp/build/perf/parse-utils.o
+>   CC       /tmp/build/perf/kbuffer-parse.o
+>   CC       /tmp/build/perf/tep_strerror.o
+>   CC       /tmp/build/perf/mmap.o
+>   CC       /tmp/build/perf/zalloc.o
+>   CC       /tmp/build/perf/event-parse-api.o
+>   LD       /tmp/build/perf/libsubcmd-in.o
+>   AR       /tmp/build/perf/libsubcmd.a
+>   CC       /tmp/build/perf/xyarray.o
+>   LD       /tmp/build/perf/libtraceevent-in.o
+>   LINK     /tmp/build/perf/libtraceevent.a
+>   CC       /tmp/build/perf/staticobjs/nlattr.o
+>   CC       /tmp/build/perf/staticobjs/btf.o
+>   CC       /tmp/build/perf/lib.o
+>   CC       /tmp/build/perf/staticobjs/libbpf_errno.o
+>   CC       /tmp/build/perf/staticobjs/str_error.o
+>   CC       /tmp/build/perf/staticobjs/netlink.o
+>   CC       /tmp/build/perf/staticobjs/bpf_prog_linfo.o
+>   CC       /tmp/build/perf/staticobjs/libbpf_probes.o
+>   LD       /tmp/build/perf/libperf-in.o
+>   AR       /tmp/build/perf/libperf.a
+>   MKDIR    /tmp/build/perf/pmu-events/
+>   HOSTCC   /tmp/build/perf/pmu-events/json.o
+>   CC       /tmp/build/perf/plugin_jbd2.o
+>   CC       /tmp/build/perf/staticobjs/xsk.o
+>   MKDIR    /tmp/build/perf/pmu-events/
+>   HOSTCC   /tmp/build/perf/pmu-events/jsmn.o
+>   CC       /tmp/build/perf/staticobjs/hashmap.o
+>   LD       /tmp/build/perf/plugin_jbd2-in.o
+>   CC       /tmp/build/perf/staticobjs/btf_dump.o
+>   CC       /tmp/build/perf/plugin_hrtimer.o
+>   HOSTCC   /tmp/build/perf/pmu-events/jevents.o
+>   LD       /tmp/build/perf/plugin_hrtimer-in.o
+>   CC       /tmp/build/perf/plugin_kmem.o
+>   CC       /tmp/build/perf/staticobjs/ringbuf.o
+>   LD       /tmp/build/perf/plugin_kmem-in.o
+>   CC       /tmp/build/perf/plugin_kvm.o
+>   HOSTLD   /tmp/build/perf/pmu-events/jevents-in.o
+>   CC       /tmp/build/perf/perf-read-vdso32
+>   CC       /tmp/build/perf/plugin_mac80211.o
+>   LD       /tmp/build/perf/plugin_kvm-in.o
+>   CC       /tmp/build/perf/plugin_sched_switch.o
+>   CC       /tmp/build/perf/plugin_function.o
+>   MKDIR    /tmp/build/perf/jvmti/
+>   CC       /tmp/build/perf/jvmti/libjvmti.o
+>   LD       /tmp/build/perf/plugin_mac80211-in.o
+>   GEN      perf-archive
+>   LD       /tmp/build/perf/plugin_sched_switch-in.o
+>   CC       /tmp/build/perf/plugin_futex.o
+>   CC       /tmp/build/perf/plugin_xen.o
+>   CC       /tmp/build/perf/plugin_scsi.o
+>   LD       /tmp/build/perf/plugin_function-in.o
+>   CC       /tmp/build/perf/plugin_cfg80211.o
+>   LD       /tmp/build/perf/plugin_futex-in.o
+>   LD       /tmp/build/perf/plugin_xen-in.o
+>   LINK     /tmp/build/perf/plugin_jbd2.so
+>   LINK     /tmp/build/perf/plugin_hrtimer.so
+>   CC       /tmp/build/perf/plugin_tlb.o
+>   LINK     /tmp/build/perf/plugin_kmem.so
+>   LINK     /tmp/build/perf/plugin_kvm.so
+>   LD       /tmp/build/perf/plugin_scsi-in.o
+>   LINK     /tmp/build/perf/plugin_mac80211.so
+>   LINK     /tmp/build/perf/plugin_sched_switch.so
+>   LINK     /tmp/build/perf/plugin_function.so
+>   LINK     /tmp/build/perf/plugin_futex.so
+>   LD       /tmp/build/perf/plugin_cfg80211-in.o
+>   LINK     /tmp/build/perf/plugin_xen.so
+>   LINK     /tmp/build/perf/plugin_scsi.so
+>   LD       /tmp/build/perf/plugin_tlb-in.o
+>   MKDIR    /tmp/build/perf/jvmti/
+>   LINK     /tmp/build/perf/plugin_cfg80211.so
+>   CC       /tmp/build/perf/jvmti/jvmti_agent.o
+>   LINK     /tmp/build/perf/plugin_tlb.so
+>   GEN      perf-with-kcore
+>   CC       /tmp/build/perf/jvmti/libstring.o
+> CFLAGS= make -C ../bpf/bpftool \
+> 	OUTPUT=/tmp/build/perf/util/bpf_skel/.tmp/ bootstrap
+>   CC       /tmp/build/perf/jvmti/libctype.o
+>   GEN      /tmp/build/perf/libtraceevent-dynamic-list
+>   LINK     /tmp/build/perf/pmu-events/jevents
+>   DESCEND  plugins
+>   GEN      /tmp/build/perf/python/perf.so
+>   GEN      /tmp/build/perf/pmu-events/pmu-events.c
+>   CC       /tmp/build/perf/plugins/plugin_jbd2.o
+>   CC       /tmp/build/perf/plugins/plugin_hrtimer.o
+>   LD       /tmp/build/perf/plugins/plugin_jbd2-in.o
+>   LD       /tmp/build/perf/plugins/plugin_hrtimer-in.o
+>   CC       /tmp/build/perf/plugins/plugin_kmem.o
+>   CC       /tmp/build/perf/plugins/plugin_kvm.o
+>   LD       /tmp/build/perf/jvmti/jvmti-in.o
+>   LD       /tmp/build/perf/plugins/plugin_kmem-in.o
+>   LINK     /tmp/build/perf/libperf-jvmti.so
+>   CC       /tmp/build/perf/plugins/plugin_mac80211.o
+>   CC       /tmp/build/perf/plugins/plugin_sched_switch.o
+>   CC       /tmp/build/perf/pmu-events/pmu-events.o
+>   LD       /tmp/build/perf/plugins/plugin_kvm-in.o
+>   CC       /tmp/build/perf/plugins/plugin_function.o
+>   LD       /tmp/build/perf/plugins/plugin_mac80211-in.o
+>   CC       /tmp/build/perf/plugins/plugin_futex.o
+>   LD       /tmp/build/perf/plugins/plugin_sched_switch-in.o
+>   CC       /tmp/build/perf/plugins/plugin_xen.o
+>   LD       /tmp/build/perf/plugins/plugin_function-in.o
+>   CC       /tmp/build/perf/plugins/plugin_scsi.o
+>   LD       /tmp/build/perf/plugins/plugin_futex-in.o
+>   CC       /tmp/build/perf/plugins/plugin_cfg80211.o
+>   LD       /tmp/build/perf/plugins/plugin_xen-in.o
+>   CC       /tmp/build/perf/plugins/plugin_tlb.o
+>   LD       /tmp/build/perf/plugins/plugin_scsi-in.o
+>   LD       /tmp/build/perf/plugins/plugin_cfg80211-in.o
+>   LINK     /tmp/build/perf/plugins/plugin_jbd2.so
+>   LINK     /tmp/build/perf/plugins/plugin_hrtimer.so
+>   LINK     /tmp/build/perf/plugins/plugin_kmem.so
+>   LINK     /tmp/build/perf/plugins/plugin_kvm.so
+>   LINK     /tmp/build/perf/plugins/plugin_mac80211.so
+>   LD       /tmp/build/perf/plugins/plugin_tlb-in.o
+>   LINK     /tmp/build/perf/plugins/plugin_function.so
+>   LINK     /tmp/build/perf/plugins/plugin_sched_switch.so
+>   LINK     /tmp/build/perf/plugins/plugin_futex.so
+>   LINK     /tmp/build/perf/plugins/plugin_xen.so
+>   LINK     /tmp/build/perf/plugins/plugin_scsi.so
+>   LINK     /tmp/build/perf/plugins/plugin_cfg80211.so
+>   LINK     /tmp/build/perf/plugins/plugin_tlb.so
+>   INSTALL  trace_plugins
+>   LD       /tmp/build/perf/pmu-events/pmu-events-in.o
+> 
+> Auto-detecting system features:
+> ...                        libbfd: [ on  ]
+> ...        disassembler-four-args: [ on  ]
+> ...                          zlib: [ on  ]
+> ...                        libcap: [ on  ]
+> ...               clang-bpf-co-re: [ on  ]
+> 
+>   MKDIR    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/
+>   MKDIR    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/main.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/common.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/json_writer.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/gen.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/btf.o
+>   GEN      /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/bpf_helper_defs.h
+>   MKDIR    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+>   MKDIR    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/bpf.o
+>   MKDIR    /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/nlattr.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/btf.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf_errno.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/str_error.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/netlink.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/bpf_prog_linfo.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf_probes.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/xsk.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/hashmap.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/btf_dump.o
+>   CC       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/ringbuf.o
+>   LD       /tmp/build/perf/staticobjs/libbpf-in.o
+>   LINK     /tmp/build/perf/libbpf.a
+>   CLANG    /tmp/build/perf/util/bpf_skel/.tmp/bpf_prog_profiler.bpf.o
+>   CLANG    /tmp/build/perf/util/bpf_skel/.tmp/bperf_leader.bpf.o
+>   CLANG    /tmp/build/perf/util/bpf_skel/.tmp/bperf_follower.bpf.o
+>   LD       /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/staticobjs/libbpf-in.o
+>   LINK     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/libbpf/libbpf.a
+>   LINK     /tmp/build/perf/util/bpf_skel/.tmp//bootstrap/bpftool
+>   GEN-SKEL /tmp/build/perf/util/bpf_skel/bpf_prog_profiler.skel.h
+>   GEN-SKEL /tmp/build/perf/util/bpf_skel/bperf_leader.skel.h
+>   GEN-SKEL /tmp/build/perf/util/bpf_skel/bperf_follower.skel.h
+> libbpf: map 'prev_readings': unexpected def kind var.
+> Error: failed to open BPF object file: Invalid argument
+> libbpf: map 'diff_readings': unexpected def kind var.
+> Error: failed to open BPF object file: Invalid argument
+> make[2]: *** [Makefile.perf:1029: /tmp/build/perf/util/bpf_skel/bperf_leader.skel.h] Error 255
+> make[2]: *** Waiting for unfinished jobs....
+> make[2]: *** [Makefile.perf:1029: /tmp/build/perf/util/bpf_skel/bperf_follower.skel.h] Error 255
+> make[1]: *** [Makefile.perf:236: sub-make] Error 2
+> make: *** [Makefile:110: install-bin] Error 2
+> make: Leaving directory '/home/acme/git/perf/tools/perf'
+> [acme@quaco perf]$ clang -v
+> clang version 11.0.0 (https://github.com/llvm/llvm-project 67420f1b0e9c673ee638f2680fa83f468019004f)
+> Target: x86_64-unknown-linux-gnu
+> Thread model: posix
+> InstalledDir: /usr/local/bin
+> Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+> Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+> Candidate multilib: .;@m64
+> Candidate multilib: 32;@m32
+> Selected multilib: .;@m64
+> [acme@quaco perf]$
+
 -- 
-2.25.1
 
+- Arnaldo
