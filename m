@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BD73458CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8171B3458D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhCWHeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        id S230071AbhCWHep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhCWHd4 (ORCPT
+        with ESMTP id S229670AbhCWHeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:33:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6934FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RV79MNudtBE8lOMnZ4MTlcx7T/dwd5UQK0UyE/kmjoA=; b=o2R2IGy4YEqLXdupCdiPDA1S2z
-        loRQEyvdqrl6/JHIRzKM0PuYJq2Ae80RZ19nnOPF1ZqH+LIj8oqmbI7szuTy66l2ZZPOxSkTdUCzy
-        0brnOO9sAVgA+4/bOaJeVkHahUA14l3jdErwm3IZFdMPLu5rrbtTkRu/o+hWrucVVy1vvKM5TV5la
-        ap7fVXNMnoh+JPZR1EH4Seh3fr8x7WFw2HnLYKSJgiLA7A8k+S05BGeV+rjThxG9/B5vEkJnyjDNg
-        ltxtkHXXmXszdi1B+Fk2QuwVq8/6hk9YhVB2E6P1vf1QVMEzg6Xa1Q3NrjCMZ3mnk3bd2XnauWP0C
-        /6jK9+nw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lObXm-00E9UD-P8; Tue, 23 Mar 2021 07:33:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C1ED3010C8;
-        Tue, 23 Mar 2021 08:33:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3F7F32BD11CB8; Tue, 23 Mar 2021 08:33:37 +0100 (CET)
-Date:   Tue, 23 Mar 2021 08:33:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] static_call: fix function type mismatch
-Message-ID: <YFmZ0a1I+PvyPvne@hirez.programming.kicks-ass.net>
-References: <20210322214309.730556-1-arnd@kernel.org>
+        Tue, 23 Mar 2021 03:34:21 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BD46BC061574;
+        Tue, 23 Mar 2021 00:34:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=bhswRq59Lz
+        Qz4IxCsSIGEpezgpMNfSZEGd8ZjnkD4Ks=; b=vn2fP1t8k7f5tsYZTq/9CGjnha
+        H7GDHwYOenEl1ReUy1MUsIZccTcGlESML7iAAygUivjRz7acdXlmtqtxOVCcIu0U
+        OMZ6GKwYMIvgbEVM/pbNaBVG4fAZ9DjPgrMfxAylJQdFLWeCfWXqRhJyK3lq3toF
+        /UYd/ikvHwcLmmdVk=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3v0vhmVlgw3seAA--.4S4;
+        Tue, 23 Mar 2021 15:33:53 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] video/fbdev: Fix a double free in hvfb_probe
+Date:   Tue, 23 Mar 2021 00:33:50 -0700
+Message-Id: <20210323073350.17697-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322214309.730556-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygC3v0vhmVlgw3seAA--.4S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArW5WFWfJryrAw17WF47CFg_yoW8JFWUpF
+        4kJFyqyrWrtr1j93ykAr4vyFyF9F4fKr9xWr12ya4Fka43J3y8Wr13AFW2krZ5ArW5Gw13
+        ZF1Yy345Ga45CaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUYhL8DUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:42:24PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The __static_call_return0() function is declared to return a 'long',
-> while it aliases a couple of functions that all return 'int'. When
-> building with 'make W=1', gcc warns about this:
-> 
-> kernel/sched/core.c:5420:37: error: cast between incompatible function types from 'long int (*)(void)' to 'int (*)(void)' [-Werror=cast-function-type]
->  5420 |   static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
-> 
-> Change all these function to return 'long' as well, but remove the cast to
-> ensure we get a warning if any of the types ever change.
+In function hvfb_probe in hyperv_fb.c, it calls hvfb_getmem(hdev, info)
+and return err when info->apertures is freed.
 
-I still think it's utter batshit.
+In the error1 label of hvfb_probe, info->apertures will be freed twice
+by framebuffer_release(info).
 
-Please explain which architecture ABI is affected and why the warning is
-sane.
+My patch sets info->apertures to NULL after it was freed to avoid
+double free.
+
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/video/fbdev/hyperv_fb.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index c8b0ae676809..2fc9b507e73a 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -1032,6 +1032,7 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 		if (!pdev) {
+ 			pr_err("Unable to find PCI Hyper-V video\n");
+ 			kfree(info->apertures);
++			info->apertures = NULL;
+ 			return -ENODEV;
+ 		}
+ 
+@@ -1130,6 +1131,7 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 		pci_dev_put(pdev);
+ 	}
+ 	kfree(info->apertures);
++	info->apertures = NULL;
+ 
+ 	return 0;
+ 
+@@ -1142,6 +1144,7 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 	if (!gen2vm)
+ 		pci_dev_put(pdev);
+ 	kfree(info->apertures);
++	info->apertures = NULL;
+ 
+ 	return -ENOMEM;
+ }
+-- 
+2.25.1
+
+
