@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AC93466C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9BA3466C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhCWRuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
+        id S231255AbhCWRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbhCWRtz (ORCPT
+        with ESMTP id S231331AbhCWRug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:49:55 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A4FC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:49:55 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id j3so24416843edp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RTCh+EZo7qjVQ20U6rRdw9u9Z+9l7eaBj85Pos8rwx4=;
-        b=YSMqG32cbIHQ8jrFEam1sB3b8ZGrVqMu6SIb2djC4/YL4gITtSACGuScppgqvjTMk2
-         tLVyTkT9BNM55K6/HyVLuFQRjIyqxQUyusVW90hOo2+l5xVbNTeFzntMQ6YAnix+AkML
-         TDbrNO+gvaL+F8tPIyab83H46ReUTAKEMy26nCuG2ZDc16jPVplBTmj7u2tvepN07bWM
-         tEfmw0Zq/zMh22TzoI4XMe0AKfnMnmmK6J0eD3Iqzoculez82O+SIjohBN7pP64Gi4Ur
-         16dzDeg1xtd2F1et8u+CI8Tvz6dgLoW6E9YFGAaxsol4UVkRsf5mOsovoP7sPisVVW7t
-         +MxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=RTCh+EZo7qjVQ20U6rRdw9u9Z+9l7eaBj85Pos8rwx4=;
-        b=WXjORjuzrUtInlldxkPl39BCc1hOpXLqYS4J8E/j+7bMyn5ye9lwqHA5FYSZF2xVtW
-         1rEzalTpemd0kJRBkMQjXJMzlgcj8uFigfCUvhgKlCk6YnEgAYGz2PsLo4o6k9njOLuB
-         57oTUofsHVSrk1G5id16YsModpbmd7Kx+DDx3936IFv6gvpin8dUirFPxoVMjLoG76/r
-         aQvJV9ZAddQ2m6Dw+iitE3jNhXVFlNbxCpH3scY++mqamAzDXDq9FynIxnRWOhDOViOm
-         j+gzgP94d18Ctgjs7y2+84N+vDGqa/p2VfRqdzBLzPJlSWab7uhWPAY/dqhD0i7BJE7z
-         yOHg==
-X-Gm-Message-State: AOAM531Q/yA9SAiCjHHbDW88y3YA66B4AsBNzmAPFRt1XzsbnlsdFNYc
-        NXlaeAL63DtHg/KcBWPHFXQ=
-X-Google-Smtp-Source: ABdhPJydQX+3YLlS2+89qNhdiV7/j5O505cyFcqlb6Zg9pgklYIsy8qSUllNqzIdkZVq7G8tZKtZZQ==
-X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr5684544edy.232.1616521794024;
-        Tue, 23 Mar 2021 10:49:54 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id r17sm11660710ejz.109.2021.03.23.10.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 10:49:53 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 23 Mar 2021 18:49:51 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH, -v2] tracing: Fix various typos in comments
-Message-ID: <20210323174951.GB4176821@gmail.com>
-References: <20210322224546.GA1981273@gmail.com>
- <5e563a58-2ed6-3a1a-d92d-231fb6eecfa9@infradead.org>
- <20210323111150.GA3939639@gmail.com>
- <20210323085424.78dd3d78@gandalf.local.home>
+        Tue, 23 Mar 2021 13:50:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8F2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:50:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=cYs10JHyoH5yneJP4u6+GykhJn1wBKFRR7cwcnvw6Do=; b=GtuOKmEvP5K2FUuiOup0T3CKZ9
+        24YJ2Qm/iMTdJSYxmWg/71DkEzbxagYXCwBYCW+u1e9msRuJ6m6eXfwGiFdfKACpa1bXCcQqx9/hQ
+        n0/NcNjVcwvSHQBL7nVmyuPoQKdQGV9yG4EeAjeJnrcKG/+UX2H4Dfo01Eo+OFGVnjOBh4iERx0Ht
+        KDMlYutRKY7gSLHic4unMobis2RnQqrg47iTrZ+wLIL0xWvkZ/YzL30VLZTUdMd/ZwFKh+xqO/Iey
+        QMFJpwtspR0X1f2LVzDuWyrIN0wm7xhDFBIjYS1VG/0Nzkq0E4R2dr9IsOjwtrfF/6bVUaoB9Hs/O
+        CFrlq1LA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOlAE-00AMiA-V5; Tue, 23 Mar 2021 17:50:06 +0000
+Subject: Re: [PATCH V2]staging: rtl8723bs: Trivial typo fix
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        yanaijie@huawei.com, amarjargal16@gmail.com,
+        matthew.v.deangelis@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210323092300.1740913-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <118087c5-e4f5-37da-1302-ee8206e9519c@infradead.org>
+Date:   Tue, 23 Mar 2021 10:49:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323085424.78dd3d78@gandalf.local.home>
+In-Reply-To: <20210323092300.1740913-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Tue, 23 Mar 2021 12:11:50 +0100
-> Ingo Molnar <mingo@kernel.org> wrote:
+On 3/23/21 2:23 AM, Bhaskar Chowdhury wrote:
+> s/netowrk/network/
 > 
-> > -v2 attached - I preemptively added your Reviewed-by as well, if 
-> > that's fine. :-)
-> > 
-> > Thanks,
-> > 
-> > 	Ingo
-> > 
-> > =====================>  
-> > From: Ingo Molnar <mingo@kernel.org>
-> > Date: Mon, 22 Mar 2021 23:45:46 +0100
-> > Subject: [PATCH] tracing: Fix various typos in comments
+> ..and an extra space has removed from the sentence.
 > 
-> Hi Ingo,
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>   Changes from V1:
+>   I have missed to remove an extra space in the sentence,
+>   corrected,Greg pointed out,thanks.
 > 
-> Can you send this again as a separate patch in its own thread?
+>  drivers/staging/rtl8723bs/core/rtw_mlme.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I use an internal patchwork on my inbox, and it wont pick up patches sent
-> embedded in an email, and it doesn't always pick up patches that are in
-> threads of other patches.
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> index 2c9425e2a1e9..562bc929be4c 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> @@ -599,7 +599,7 @@ void rtw_update_scanned_network(struct adapter *adapter, struct wlan_bssid_ex *t
+>  		}
+> 
+>  		if (rtw_roam_flags(adapter)) {
+> -			/* TODO: don't  select netowrk in the same ess as oldest if it's new enough*/
+> +			/* TODO: don't select network in the same ess as oldest if it's new enough*/
+>  		}
+> 
+>  		if (oldest == NULL || time_after(oldest->last_scanned, pnetwork->last_scanned))
+> --
 
-Sure, done.
 
-Thanks,
+-- 
+~Randy
 
-	Ingo
