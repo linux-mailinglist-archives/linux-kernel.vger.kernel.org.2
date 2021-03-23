@@ -2,145 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60E8345CFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A2B345D03
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhCWLfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:35:06 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:55894 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhCWLeb (ORCPT
+        id S230084AbhCWLfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230079AbhCWLen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:34:31 -0400
-Received: by mail-wm1-f43.google.com with SMTP id 12so10847694wmf.5;
-        Tue, 23 Mar 2021 04:34:31 -0700 (PDT)
+        Tue, 23 Mar 2021 07:34:43 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414BEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:34:43 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 12so10847960wmf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:34:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kJG6PyZc23JI+PUGii9zTxJBB3El6qdcUXm7Ja4hn5w=;
+        b=WH+kDMCfYBdW7/F2qQa1invWtJWWKHsmhMnK7Wa6ORo5PhDr8OH1NtstjlLVKkIYNJ
+         zE+MVu0P11LlLzWbcm8J/yUSsIPb2gXI7FPN5EedkchW8r7aT+8ayoOl8KiNNR1p2XVk
+         bToehT/I1pqXS+twn7B1+B76Tu0Ojh7JAtVUc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Sx96tZdFzleJmckps5BrYhpq4EiEUeB9mDj5nietAwc=;
-        b=VLJE43x/D6um2I2ZS3MJso1bDCY7siKL/DkaaWz3L5FFTJjKajv9qqaR32vb7ujcqm
-         Z0OerjueE7fqfATtG7g9Ho/YSM2y1kfUSfw4nyl+p3kvC+pCQxzK6ufrUX2c/OrvXNmQ
-         M38UXJtzShNGoWMuKA4Ufnb0BL3p6MUKIbyu7qex5IyeOXD5sUTOAMj3X48zeMRo98Nf
-         GJ5i59aIb87hccUrHHvRlnFcMxuslbMDfkunQ2AiS0CG1MsUrNX8kL6q+ZrDxOLjHowc
-         sjpNK6U+jmOFWUcRZmGy1ajdVyMatbzUfOEyhJrCjvwHJzqkj1lLsfMotDIqAJrG9tmN
-         HaNw==
-X-Gm-Message-State: AOAM532FNrzHX5Zc0J+ML2ic9tMqvgTnKAZY8aDjmtFlmghYnAPt7W85
-        lKE63EQqN4PJwxXELsd7BHWdwarKeU0=
-X-Google-Smtp-Source: ABdhPJw4zc1Gt3nGU1IVl568bG4fASUlM6JPACxb5i4BgPxchKFJZxXDzvbsw7VUejy+q6Kk/2V1FQ==
-X-Received: by 2002:a1c:4b15:: with SMTP id y21mr3003900wma.94.1616499270661;
-        Tue, 23 Mar 2021 04:34:30 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id u17sm2226301wmq.3.2021.03.23.04.34.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=kJG6PyZc23JI+PUGii9zTxJBB3El6qdcUXm7Ja4hn5w=;
+        b=SNS9Gkxqb07ZsvdXfOUuWCQzQs9kmIAkQO3Ln0kIty5koHo4psmMGkLhMKo0e31U0e
+         1pKxp5JouBwzqZo486Wf5PO74p8VzVSmTTwg113B8FBcpaZJyYMOE4nBNld4fgCX3+of
+         xgPRgtVDLYx184PU5kxdw6qL3c+Lvo/kN3ccgKIHQjhQD3vaUQNLPqylPdDKPrViU3//
+         ZIvSrsGN7Zz1evRqrfT+OShg+p/klks4oIyboL8HceVusjKmzYIFIdGlFV3i83Mnt0b1
+         M8BqGeqYfEMERxcE8ympB9XeMeROM5dI/LQaieJYDL7zBxuJx8jjOGHLhh3XbGezBlXX
+         iHng==
+X-Gm-Message-State: AOAM531dNXY4PK96rA/MEiWgIfLDngDBaM1e1ZOfvRxBeeucmzxTiDSk
+        XoGKr4utG9Jnaqvc6f0HdC5zvQ==
+X-Google-Smtp-Source: ABdhPJxIn1uOvVoXyyDbPHMe7z9nkcLsx6iPBeZVerfGAZRaAPQO90B8PHsR5Uu1okld1HMrH4DIcg==
+X-Received: by 2002:a1c:498b:: with SMTP id w133mr2995826wma.134.1616499281914;
+        Tue, 23 Mar 2021 04:34:41 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z2sm26287859wrm.0.2021.03.23.04.34.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 04:34:30 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 11:34:29 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Michael Kelley <mikelley@microsoft.com>,
-        Xu Yihang <xuyihang@huawei.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "johnny.chenyi@huawei.com" <johnny.chenyi@huawei.com>,
-        "heying24@huawei.com" <heying24@huawei.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH -next] x86: Fix unused variable 'msr_val' warning
-Message-ID: <20210323113429.zj64itbfpqkruval@liuwe-devbox-debian-v2>
-References: <20210322031713.23853-1-xuyihang@huawei.com>
- <20210322210828.GA1961861@gmail.com>
- <MWHPR21MB15939242EA50C7C1728412D0D7659@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210323001303.GA3092649@gmail.com>
+        Tue, 23 Mar 2021 04:34:41 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 12:34:39 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <YFnST5VLcEgv9q+s@phenom.ffwll.local>
+Mail-Followup-To: Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
+        dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210323001303.GA3092649@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210321184529.59006-2-thomas_os@shipmail.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:13:03AM +0100, Ingo Molnar wrote:
+On Sun, Mar 21, 2021 at 07:45:28PM +0100, Thomas Hellström (Intel) wrote:
+> TTM sets up huge page-table-entries both to system- and device memory,
+> and we don't want gup to assume there are always valid backing struct
+> pages for these. For PTEs this is handled by setting the pte_special bit,
+> but for the huge PUDs and PMDs, we have neither pmd_special nor
+> pud_special. Normally, huge TTM entries are identified by looking at
+> vma_is_special_huge(), but fast gup can't do that, so as an alternative
+> define _devmap entries for which there are no backing dev_pagemap as
+> special, update documentation and make huge TTM entries _devmap, after
+> verifying that there is no backing dev_pagemap.
 > 
-> * Michael Kelley <mikelley@microsoft.com> wrote:
+> One other alternative would be to block TTM huge page-table-entries
+> completely, and while currently only vmwgfx use them, they would be
+> beneficial to other graphis drivers moving forward as well.
 > 
-> > From: Ingo Molnar <mingo.kernel.org@gmail.com> Sent: Monday, March 22, 2021 2:08 PM
-> > > 
-> > > * Xu Yihang <xuyihang@huawei.com> wrote:
-> > > 
-> > > > Fixes the following W=1 kernel build warning(s):
-> > > > arch/x86/hyperv/hv_spinlock.c:28:16: warning: variable 'msr_val' set but not used [-
-> > > Wunused-but-set-variable]
-> > > >   unsigned long msr_val;
-> > > >
-> > > > As Hypervisor Top-Level Functional Specification states in chapter 7.5 Virtual Processor
-> > > Idle Sleep State, "A partition which possesses the AccessGuestIdleMsr privilege (refer to
-> > > section 4.2.2) may trigger entry into the virtual processor idle sleep state through a read to
-> > > the hypervisor-defined MSR HV_X64_MSR_GUEST_IDLE". That means only a read is
-> > > necessary, msr_val is not uesed, so __maybe_unused should be added.
-> > > >
-> > > > Reference:
-> > > >
-> > > > https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
-> > > >
-> > > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > > Signed-off-by: Xu Yihang <xuyihang@huawei.com>
-> > > > ---
-> > > >  arch/x86/hyperv/hv_spinlock.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/arch/x86/hyperv/hv_spinlock.c b/arch/x86/hyperv/hv_spinlock.c
-> > > > index f3270c1fc48c..67bc15c7752a 100644
-> > > > --- a/arch/x86/hyperv/hv_spinlock.c
-> > > > +++ b/arch/x86/hyperv/hv_spinlock.c
-> > > > @@ -25,7 +25,7 @@ static void hv_qlock_kick(int cpu)
-> > > >
-> > > >  static void hv_qlock_wait(u8 *byte, u8 val)
-> > > >  {
-> > > > -	unsigned long msr_val;
-> > > > +	unsigned long msr_val __maybe_unused;
-> > > >  	unsigned long flags;
-> > > 
-> > > Please don't add new __maybe_unused annotations to the x86 tree -
-> > > improve the flow instead to help GCC recognize the initialization
-> > > sequence better.
-> > > 
-> > > Thanks,
-> > > 
-> > > 	Ingo
-> > 
-> > Could you elaborate on the thinking here, or point to some written
-> > discussion?   I'm just curious.   In this particular case, it's not a problem
-> > with the flow or gcc detection.  This code really does read an MSR and
-> > ignore that value that is read, so it's not clear how gcc would ever
-> > figure out that's OK.
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Jason Gunthorpe <jgg@nvidia.com>
+> Cc: linux-mm@kvack.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Thomas Hellström (Intel) <thomas_os@shipmail.org>
+> ---
+>  drivers/gpu/drm/ttm/ttm_bo_vm.c | 17 ++++++++++++++++-
+>  mm/gup.c                        | 21 +++++++++++----------
+>  mm/memremap.c                   |  5 +++++
+>  3 files changed, 32 insertions(+), 11 deletions(-)
 > 
-> Yeah, so the canonical way to signal that the msr_val isn't used would 
-> be to rewrite this as:
-> 
-> 
-> 	if (READ_ONCE(*byte) == val) {
-> 		unsigned long msr_val;
-> 
-> 		rdmsrl(HV_X64_MSR_GUEST_IDLE, msr_val);
-> 
-> 		(void)msr_val;
-> 	}
-> 
-> (Also see the patch below - untested.)
-> 
-> This makes it abundantly clear that the rdmsr() msr_val return value 
-> is not 'maybe' unused, but totally intentionally skipped.
-> 
-> Thanks,
-> 
-> 	Ingo
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+> index 6dc96cf66744..1c34983480e5 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+> @@ -195,6 +195,7 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
+>  	pfn_t pfnt;
+>  	struct ttm_tt *ttm = bo->ttm;
+>  	bool write = vmf->flags & FAULT_FLAG_WRITE;
+> +	struct dev_pagemap *pagemap;
+>  
+>  	/* Fault should not cross bo boundary. */
+>  	page_offset &= ~(fault_page_size - 1);
+> @@ -210,6 +211,20 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
+>  	if ((pfn & (fault_page_size - 1)) != 0)
+>  		goto out_fallback;
+>  
+> +	/*
+> +	 * Huge entries must be special, that is marking them as devmap
+> +	 * with no backing device map range. If there is a backing
+> +	 * range, Don't insert a huge entry.
+> +	 * If this check turns out to be too much of a performance hit,
+> +	 * we can instead have drivers indicate whether they may have
+> +	 * backing device map ranges and if not, skip this lookup.
+> +	 */
+
+I think we can do this statically:
+- if it's system memory we know there's no devmap for it, and we do the
+  trick to block gup_fast
+- if it's iomem, we know gup_fast wont work anyway if don't set PFN_DEV,
+  so might as well not do that
+
+I think that would cover all cases without this check here?
+-Daniel
+
+> +	pagemap = get_dev_pagemap(pfn, NULL);
+> +	if (pagemap) {
+> +		put_dev_pagemap(pagemap);
+> +		goto out_fallback;
+> +	}
+> +
+>  	/* Check that memory is contiguous. */
+>  	if (!bo->mem.bus.is_iomem) {
+>  		for (i = 1; i < fault_page_size; ++i) {
+> @@ -223,7 +238,7 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
+>  		}
+>  	}
+>  
+> -	pfnt = __pfn_to_pfn_t(pfn, PFN_DEV);
+> +	pfnt = __pfn_to_pfn_t(pfn, PFN_DEV | PFN_MAP);
+>  	if (fault_page_size == (HPAGE_PMD_SIZE >> PAGE_SHIFT))
+>  		ret = vmf_insert_pfn_pmd_prot(vmf, pfnt, pgprot, write);
+>  #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> diff --git a/mm/gup.c b/mm/gup.c
+> index e40579624f10..1b6a127f0bdd 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1993,6 +1993,17 @@ static void __maybe_unused undo_dev_pagemap(int *nr, int nr_start,
+>  }
+>  
+>  #ifdef CONFIG_ARCH_HAS_PTE_SPECIAL
+> +/*
+> + * If we can't determine whether or not a pte is special, then fail immediately
+> + * for ptes. Note, we can still pin HugeTLB as it is guaranteed not to be
+> + * special. For THP, special huge entries are indicated by xxx_devmap()
+> + * returning true, but a corresponding call to get_dev_pagemap() will
+> + * return NULL.
+> + *
+> + * For a futex to be placed on a THP tail page, get_futex_key requires a
+> + * get_user_pages_fast_only implementation that can pin pages. Thus it's still
+> + * useful to have gup_huge_pmd even if we can't operate on ptes.
+> + */
+>  static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+>  			 unsigned int flags, struct page **pages, int *nr)
+>  {
+> @@ -2069,16 +2080,6 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+>  	return ret;
+>  }
+>  #else
+> -
+> -/*
+> - * If we can't determine whether or not a pte is special, then fail immediately
+> - * for ptes. Note, we can still pin HugeTLB and THP as these are guaranteed not
+> - * to be special.
+> - *
+> - * For a futex to be placed on a THP tail page, get_futex_key requires a
+> - * get_user_pages_fast_only implementation that can pin pages. Thus it's still
+> - * useful to have gup_huge_pmd even if we can't operate on ptes.
+> - */
+>  static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+>  			 unsigned int flags, struct page **pages, int *nr)
+>  {
+> diff --git a/mm/memremap.c b/mm/memremap.c
+> index 7aa7d6e80ee5..757551cd2a4d 100644
+> --- a/mm/memremap.c
+> +++ b/mm/memremap.c
+> @@ -471,6 +471,11 @@ void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns)
+>   *
+>   * If @pgmap is non-NULL and covers @pfn it will be returned as-is.  If @pgmap
+>   * is non-NULL but does not cover @pfn the reference to it will be released.
+> + *
+> + * Return: A referenced pointer to a struct dev_pagemap containing @pfn,
+> + * or NULL if there was no such pagemap registered. For interpretion
+> + * of NULL returns for pfns extracted from valid huge page table entries,
+> + * please see gup_pte_range().
+>   */
+>  struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+>  		struct dev_pagemap *pgmap)
+> -- 
+> 2.30.2
 > 
 
-Thank you for the advice, Ingo.
-
-Wei.
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
