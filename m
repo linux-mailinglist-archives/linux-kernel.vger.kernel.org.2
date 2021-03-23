@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA75345CD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59351345CD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhCWL2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:28:43 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14126 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhCWL2i (ORCPT
+        id S230479AbhCWL3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:29:15 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:36455 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhCWL2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:28:38 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4TbK3Nspz19HGk;
-        Tue, 23 Mar 2021 19:26:37 +0800 (CST)
-Received: from [10.174.178.163] (10.174.178.163) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Mar 2021 19:28:32 +0800
-Subject: Re: [PATCH 3/5] mm/migrate.c: fix potential indeterminate pte entry
- in migrate_vma_insert_page()
-To:     Alistair Popple <apopple@nvidia.com>
-CC:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>,
-        <jglisse@redhat.com>, <shy828301@gmail.com>, <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210320093701.12829-1-linmiaohe@huawei.com>
- <20210320093701.12829-4-linmiaohe@huawei.com>
- <0bee2243-5771-4969-7b92-aaca67abc90c@redhat.com>
- <5999334.9xz1uWCbsP@nvdebian>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <eca49322-a5d2-d3b0-d2eb-ee7a5db3a942@huawei.com>
-Date:   Tue, 23 Mar 2021 19:28:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 23 Mar 2021 07:28:42 -0400
+Received: by mail-wm1-f41.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso4774099wmq.1;
+        Tue, 23 Mar 2021 04:28:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8LbqrlY0e/I2k2EOkhIXKnRaA0GFx4v9lyKMDDc0jhM=;
+        b=f1FLlsbMCeDeRsxa58vyPQ1q8vczV9sZAbGU36ByNP6zOLe1/tB8hp38918j1ao2Yz
+         zCHqVpe5vrxkRKZmzmMhlYB+TXA2Q8cJeV6IEYqv6d/roXmlSs8MrLOiTi7qAb4YdOuL
+         b2ic/hjrCgDwqfCS7/UyRAq14Ylr0aFqvneI4MOfliDtvHubSE9tZbYFKDtEHLn2rr4G
+         bezx0Yk1w+N06FoRyBXYVLGsaawMpI3jIG0ezdOgNjv9og9su73spg7vGBipDcHzZjKm
+         RV6ugVU+lxdmxKzc4oEa6Hlx5jFHfeyjHxY9gNzR+26wDwZA1hFBZh7v0Mk7H2WD4/au
+         YtLg==
+X-Gm-Message-State: AOAM531BlwzTClCrgVvYHXDgFJLNOqjxE4J5F6d7vhR5dmYLsnaMi56F
+        6Oh5c0F+YVklt0mHf2eLX5eXPp+WRNU=
+X-Google-Smtp-Source: ABdhPJzfQNTkQtfE9Jt/vjGsMVVTfI4aNamprQvdmWk3kTbMn0ewGjrwQkPpKUx+ONN5WOO2vjw7gg==
+X-Received: by 2002:a7b:c0d1:: with SMTP id s17mr2848291wmh.153.1616498920672;
+        Tue, 23 Mar 2021 04:28:40 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t1sm23144490wry.90.2021.03.23.04.28.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 04:28:40 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 11:28:38 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] video/fbdev: Fix a double free in hvfb_probe
+Message-ID: <20210323112838.xrastmol4fnxqxub@liuwe-devbox-debian-v2>
+References: <20210323073350.17697-1-lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <5999334.9xz1uWCbsP@nvdebian>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.163]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323073350.17697-1-lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/23 19:07, Alistair Popple wrote:
-> On Tuesday, 23 March 2021 9:26:43 PM AEDT David Hildenbrand wrote:
->> On 20.03.21 10:36, Miaohe Lin wrote:
->>> If the zone device page does not belong to un-addressable device memory,
->>> the variable entry will be uninitialized and lead to indeterminate pte
->>> entry ultimately. Fix this unexpectant case and warn about it.
->>
->> s/unexpectant/unexpected/
->>
->>>
->>> Fixes: df6ad69838fc ("mm/device-public-memory: device memory cache 
-> coherent with CPU")
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> ---
->>>   mm/migrate.c | 7 +++++++
->>>   1 file changed, 7 insertions(+)
->>>
->>> diff --git a/mm/migrate.c b/mm/migrate.c
->>> index 20a3bf75270a..271081b014cb 100644
->>> --- a/mm/migrate.c
->>> +++ b/mm/migrate.c
->>> @@ -2972,6 +2972,13 @@ static void migrate_vma_insert_page(struct 
-> migrate_vma *migrate,
->>>   
->>>   			swp_entry = make_device_private_entry(page, vma->vm_flags & 
-> VM_WRITE);
->>>   			entry = swp_entry_to_pte(swp_entry);
->>> +		} else {
->>> +			/*
->>> +			 * For now we only support migrating to un-addressable
->>> +			 * device memory.
->>> +			 */
->>> +			WARN_ON(1);
->>> +			goto abort;
->>
->> Fix it by crashing the kernel with panic_on_warn? :)
->>
->> If this case can actual happen, than no WARN_ON() - rather a 
->> pr_warn_once(). If this case cannot happen, why do we even care (it's 
->> not a fix then)?
+Thanks for your patch.
+
+I would like to change the prefix to "video: hyperv_fb:" to be more
+specific.
+
+On Tue, Mar 23, 2021 at 12:33:50AM -0700, Lv Yunlong wrote:
+> In function hvfb_probe in hyperv_fb.c, it calls hvfb_getmem(hdev, info)
+> and return err when info->apertures is freed.
 > 
-> There is also already a check for this case in migrate_vma_pages(). The 
-> problem is it happens after the call to migrate_vma_insert_page(). I wonder if 
-> instead it would be better just to move the existing check to before that 
-> call?
+> In the error1 label of hvfb_probe, info->apertures will be freed twice
+> by framebuffer_release(info).
 > 
 
-Yes, sounds good! Many thanks for your advice! :)
+I would say "freed for the second time" here. What you wrote reads to me
+fraembuffer_release frees the buffer twice all by itself.
 
-> >
-> .
+> My patch sets info->apertures to NULL after it was freed to avoid
+> double free.
 > 
 
+I think this approach works. I would like to give other people a chance
+to comment though.
+
+Fixes: 3a6fb6c4255c ("video: hyperv: hyperv_fb: Use physical memory for fb on HyperV Gen 1 VMs.")
+
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/video/fbdev/hyperv_fb.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+> index c8b0ae676809..2fc9b507e73a 100644
+> --- a/drivers/video/fbdev/hyperv_fb.c
+> +++ b/drivers/video/fbdev/hyperv_fb.c
+> @@ -1032,6 +1032,7 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  		if (!pdev) {
+>  			pr_err("Unable to find PCI Hyper-V video\n");
+>  			kfree(info->apertures);
+> +			info->apertures = NULL;
+>  			return -ENODEV;
+>  		}
+>  
+> @@ -1130,6 +1131,7 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  		pci_dev_put(pdev);
+>  	}
+>  	kfree(info->apertures);
+> +	info->apertures = NULL;
+>  
+>  	return 0;
+>  
+> @@ -1142,6 +1144,7 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+>  	if (!gen2vm)
+>  		pci_dev_put(pdev);
+>  	kfree(info->apertures);
+> +	info->apertures = NULL;
+>  
+>  	return -ENOMEM;
+>  }
+> -- 
+> 2.25.1
+> 
+> 
