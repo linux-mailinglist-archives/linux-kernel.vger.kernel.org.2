@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80685345BD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D131345BDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhCWKVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhCWKU5 (ORCPT
+        id S229730AbhCWKYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:24:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27582 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229836AbhCWKX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:20:57 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE5CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:20:55 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id b14so12555502lfv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BB6iDk9UpBGmPGbu+ghUyjEA1Kda/UN3SpCDghH0B5c=;
-        b=WomPoPdoW5GOsKYyT430+r/mSiWfj945nqa4iqLouEQsrrU7Xh/F0zEJ0HIJ7wIooh
-         YKIO/jEX8O0nfWYdpkxm43FNb86d4vK5g63L5KOjF1RoN/sP9Mh9GDrmj/iYzm6fhU2V
-         fmvjkfvz+qmB6Gdl565Xl08zyQ48GXFvrI4d4djUejBFDB6+3wF5j7kJTUwe8ickvnN6
-         3U/mpp3u4uc/jBtGCueTEAsJLt3GKdqd5yJzRtJIZOG+iHzQbnMS0002HEnhNtgKq/fu
-         DYGzpuU+H37Ak0v8QeIyjg0MmzPh14c2aIebaRHryMViUdE7dqd6CQ0xMSVXCkiVF9jP
-         6kpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BB6iDk9UpBGmPGbu+ghUyjEA1Kda/UN3SpCDghH0B5c=;
-        b=bfIwSxB7lIIylbI5TtvKE9ctvhl4Z+iLllJMmuIxU5qC0MwRhEnEkEntDZAJIaU9VK
-         JTB+y6wnAx/9SxVMEwNf18B2ua/p6Np6f+3RdNuASQG6uz/YvLMqIf80AymAYRoeaio2
-         Ha8wGteUGl2oDUFexQT3WQnwh4tUiMWLS0qNaNEaBsH3WmqhpLGCfS+/DltH/Syyj492
-         dXjzxEcs4wqggCko5AB68bU4VHFfDMZlOPwOssQ6KlBE2eUpOwAhBP0aage+Q8rzRqWY
-         I1tu4yY8kQ0FiOW5WZ4I2h7S2oQ/dTxeEwVP19utcT1iJylMp66XefApH8C4Ye9CnvZ9
-         M5Wg==
-X-Gm-Message-State: AOAM5329CLfcSrjesdViy1egPcYXASjAKt5bChaf16cB2+lGO6gtwunp
-        5XVf/kgV0cTZmi9Lj2yzHHdm2Yq/C1+u+w==
-X-Google-Smtp-Source: ABdhPJzgdFUDyokcBKwzML4HMu8jaFZVB8pi1e3dYerLEXLqSrQQr03ps8Vrsal3Ci0SWIcQ5svd/A==
-X-Received: by 2002:a19:23c7:: with SMTP id j190mr2200690lfj.148.1616494854448;
-        Tue, 23 Mar 2021 03:20:54 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id z1sm2253926ljh.29.2021.03.23.03.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 03:20:53 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id D1B6F101A1C; Tue, 23 Mar 2021 13:21:01 +0300 (+03)
-Date:   Tue, 23 Mar 2021 13:21:01 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     yanfei.xu@windriver.com
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] khugepaged: Raplace barrier() with READ_ONCE() for a
- selective variable
-Message-ID: <20210323102101.tvlgbijpy37hclgj@box>
-References: <20210323092730.247583-1-yanfei.xu@windriver.com>
+        Tue, 23 Mar 2021 06:23:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616495039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PLZ5nMEJ4tec7irmbW0K+juMgN+jQFrKCu8kDdRqTRs=;
+        b=iprKI4929KTE0cyxaLbcVnbmdjbYMxUdYi7hLJchMxmxie+k4k/hnfCY4vGQI6WB7rsWvQ
+        RyKRugw67JrDT7OTEmK1xL4eVIcOEurl5p8q6fpvhtE13Hg1c+925J4yS0bmeVPJQT/f1H
+        S4bzq7lpEXS13xLCxauN18S2pmNNDpA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-237-SVjAu0dwMkmQxUsQ-RPp5Q-1; Tue, 23 Mar 2021 06:23:57 -0400
+X-MC-Unique: SVjAu0dwMkmQxUsQ-RPp5Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE5958015BD;
+        Tue, 23 Mar 2021 10:23:55 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 939CA59452;
+        Tue, 23 Mar 2021 10:23:54 +0000 (UTC)
+Subject: Re: [PATCH 2/5] mm/migrate.c: remove unnecessary rc !=
+ MIGRATEPAGE_SUCCESS check in 'else' case
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     jglisse@redhat.com, shy828301@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210320093701.12829-1-linmiaohe@huawei.com>
+ <20210320093701.12829-3-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <db2547db-5510-1fb6-9714-670b3fa18a39@redhat.com>
+Date:   Tue, 23 Mar 2021 11:23:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323092730.247583-1-yanfei.xu@windriver.com>
+In-Reply-To: <20210320093701.12829-3-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 05:27:30PM +0800, yanfei.xu@windriver.com wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
+On 20.03.21 10:36, Miaohe Lin wrote:
+> It's guaranteed that in the 'else' case of the rc == MIGRATEPAGE_SUCCESS
+> check, rc does not equal to MIGRATEPAGE_SUCCESS. Remove this unnecessary
+> check.
 > 
-> READ_ONCE() is more selective and lightweight. It is more appropriate that
-> using a READ_ONCE() for the certain variable to prevent the compiler from
-> reordering.
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/migrate.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index e4ca5ef508ea..20a3bf75270a 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1374,7 +1374,7 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+>   out:
+>   	if (rc == MIGRATEPAGE_SUCCESS)
+>   		putback_active_hugepage(hpage);
+> -	else if (rc != -EAGAIN && rc != MIGRATEPAGE_SUCCESS)
+> +	else if (rc != -EAGAIN)
+>   		list_move_tail(&hpage->lru, ret);
+>   
+>   	/*
+> 
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
- Kirill A. Shutemov
+Thanks,
+
+David / dhildenb
+
