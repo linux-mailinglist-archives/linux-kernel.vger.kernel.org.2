@@ -2,81 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9080434667A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810E8346680
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhCWRf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:35:28 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:57042 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhCWRfN (ORCPT
+        id S230253AbhCWRhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhCWRgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:35:13 -0400
-Date:   Tue, 23 Mar 2021 17:35:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1616520910; bh=wu/vIyNG8bowz2h1UHHz2tTlQrq4yx+F+/I3ASmWS2c=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=F7FI/LY5Lnhz0FcaWuKQUxIHIkYGZXsfQWTjw0QVz2JavPkVkcUC0cTpJXpP0mlqk
-         77ITTyvH1+1YpZ7YcidisetJsEcOKJ1ui4e2rSpnVFV8pwXf8ZiuklkhiRcRSn0J+n
-         zwoj25G/sRKXaXXnYgGcz9QOAekh95BwXZ50uCEy9rFC7XVmW9WMtkaM6L+N0fLyHC
-         7He9A5kUdG8CEvg1w7q9ibM24gMgZc+NYUXt/euRrgMQKUg5Itqf63IH77v6OmvInm
-         uIgk8oWosL7My40OCbtBz9y29N8cicxoeWRsC4XA8KqWTLxAkYhPnNexxWKg59IWQC
-         EbagArjMvXlsQ==
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-mtd@lists.infradead.org, stable@vger.kernel.org,
+        Tue, 23 Mar 2021 13:36:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B7AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TduDshJQGkQTjlXrbKj6sW7pDov6LaUmnXncWO3w/7Y=; b=b5tQHF2+SVbcHrAfokqu3fZeIN
+        X5xgQjPTckJ/wRBvW02WErtEBqHyWn7JOzdl8jQqw2xPs168p/Xrmnaf0YF4/eDPWMmLR68bTSy4u
+        I6x1UB3yoAKCfBr3qH6cTZAS8NL8rItv4AmIyUyVc2Rroa8hU+lZ/ZYSw0q3aYZFRJETKNbVn5L1X
+        oRwCw4ygN9MLtQg22Qvq0/pwNNWvrc3aOLYxxwP0IqqeW8lDV012aKJj5M3P9MOnNDjiP1uAuwTde
+        yOXUaIMby4buKf4maMlPPoFypmz7jkWhp2EGfehdusaIfTRWOLqRc4Em04fi45MPnBbes9KBEZQG/
+        DdeuVLRQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOkwO-00ALgm-DC; Tue, 23 Mar 2021 17:35:50 +0000
+Date:   Tue, 23 Mar 2021 17:35:40 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        ashok.raj@intel.com, kevin.tian@intel.com, jacob.jun.pan@intel.com,
+        yi.l.liu@intel.com, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mtd/fixes] mtd: spinand: core: add missing MODULE_DEVICE_TABLE()
-Message-ID: <20210323173451.317461-1-alobakin@pm.me>
+Subject: Re: [PATCH 4/5] iommu/vt-d: Remove unused function declarations
+Message-ID: <20210323173540.GE2463754@infradead.org>
+References: <20210323010600.678627-1-baolu.lu@linux.intel.com>
+ <20210323010600.678627-5-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323010600.678627-5-baolu.lu@linux.intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The module misses MODULE_DEVICE_TABLE() for both SPI and OF ID tables
-and thus never autoloads on ID matches.
-Add the missing declarations.
-Present since day-0 of spinand framework introduction.
+On Tue, Mar 23, 2021 at 09:05:59AM +0800, Lu Baolu wrote:
+> Some functions have been deprecated. Remove the remaining function
+> delarations.
 
-Cc: stable@vger.kernel.org # 4.19+
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- drivers/mtd/nand/spi/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+s/deprecated/removed/g
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 61d932c1b718..17f63f95f4a2 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1263,12 +1263,14 @@ static const struct spi_device_id spinand_ids[] =3D=
- {
- =09{ .name =3D "spi-nand" },
- =09{ /* sentinel */ },
- };
-+MODULE_DEVICE_TABLE(spi, spinand_ids);
+Otherwise looks good:
 
- #ifdef CONFIG_OF
- static const struct of_device_id spinand_of_ids[] =3D {
- =09{ .compatible =3D "spi-nand" },
- =09{ /* sentinel */ },
- };
-+MODULE_DEVICE_TABLE(of, spinand_of_ids);
- #endif
-
- static struct spi_mem_driver spinand_drv =3D {
---
-2.31.0
-
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
