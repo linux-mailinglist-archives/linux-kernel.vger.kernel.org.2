@@ -2,216 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF7F345FC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660D1345FC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhCWNgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbhCWNfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:35:36 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2764FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:35:36 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id k10so27162299ejg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tsEGpa4dqu8Xcycnuv/YrEf3ZyFT/539KnPTDuqzdP8=;
-        b=mH9DyFhrr5BDsaj0c1NV4J7A2ukBV1DFd8j3i/o1qXbPmU1xxOFgIrvCIzD9yn+sz0
-         r2Gb5Dq+5JcXWvjBjObjvLQ3/bmJxtAbn6OmZ/fM4H7AlCy4OQ2YmBzMqLlHs+vVjOsD
-         hxGA1byVN8ode5lkSu9Nqw9KdG3w4gN1UheWkNvmYl3ELkOXzoH805/1YQHJWjxVW9ec
-         7awsvuyVOhHmatQlwJ/ewBeU/u7lQ0A5h97COpOAW1ocidnmn9oofXcv1rHtsBt5Wa/4
-         DhZOgVuQxRexG6C1qCklHBIRZjjFkcY+ZqKaN0ojps6v8A6hUjWAi3eAGYLCqB7EYk9M
-         Jv+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tsEGpa4dqu8Xcycnuv/YrEf3ZyFT/539KnPTDuqzdP8=;
-        b=Tac5itzVaQYUyDs3oLnFPax4RiaqzK3Jv1xf7RBXpc+/GcBzxePFqGDbS2ilKyXY6u
-         2oAjgP4UILUw3eGT3njIWMj10s0HFl4CJvVX5fgln2sdDwr/bQsS63tTd4dnW5r48j79
-         WQ4bbvbMi9ZjN55JUCajPFVHDC0r9OyiYAPcGEHBqcdVoz7t+8IBW1vPpiG0igBSOn46
-         Hr1/4cIhzMTaU10uYc1GZ5iaT8Ffy2v7K5ajVNsHwvVmx+FiA+tTcDRrp/RtNaNxhZ5k
-         HGUmdMEx98V9zomXS1NsrOJAqyFWo89Rux1La/J+6iZHNGzgqLxIqmBXWejgvsxOmri7
-         Dk0A==
-X-Gm-Message-State: AOAM533zley9GxotdRFVJmAGOyqiGssZquppWKF00i0r/wbd9XFeeK+E
-        mQ9jzqQl6jYAAL0wQD5u6Y8r8g==
-X-Google-Smtp-Source: ABdhPJwPqixCXPHpTdqmHxHjcReynBvL6XTAPgly76xA/rzaqs2csiRUYGIcvBS/GHLwKgtcubrbIg==
-X-Received: by 2002:a17:906:379b:: with SMTP id n27mr5154146ejc.182.1616506534885;
-        Tue, 23 Mar 2021 06:35:34 -0700 (PDT)
-Received: from localhost.localdomain (hst-221-103.medicom.bg. [84.238.221.103])
-        by smtp.gmail.com with ESMTPSA id m7sm12627104edp.81.2021.03.23.06.35.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 06:35:34 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     hverkuil-cisco@xs4all.nl,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v3 2/2] venus: vdec: Add support for conceal control
-Date:   Tue, 23 Mar 2021 15:35:20 +0200
-Message-Id: <20210323133520.943317-3-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210323133520.943317-1-stanimir.varbanov@linaro.org>
-References: <20210323133520.943317-1-stanimir.varbanov@linaro.org>
+        id S231577AbhCWNgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:36:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:46550 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231474AbhCWNgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:36:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4187D6E;
+        Tue, 23 Mar 2021 06:36:15 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B3D8E3F719;
+        Tue, 23 Mar 2021 06:36:13 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 13:36:11 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
+ stack trace unreliable
+Message-ID: <20210323133611.GB98545@C02TD0UTHF1T.local>
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for decoder conceal color control.
+On Tue, Mar 23, 2021 at 07:56:40AM -0500, Madhavan T. Venkataraman wrote:
+> 
+> 
+> On 3/23/21 5:51 AM, Mark Rutland wrote:
+> > On Mon, Mar 15, 2021 at 11:57:57AM -0500, madvenka@linux.microsoft.com wrote:
+> >> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+> >>
+> >> When CONFIG_DYNAMIC_FTRACE_WITH_REGS is enabled and tracing is activated
+> >> for a function, the ftrace infrastructure is called for the function at
+> >> the very beginning. Ftrace creates two frames:
+> >>
+> >> 	- One for the traced function
+> >>
+> >> 	- One for the caller of the traced function
+> >>
+> >> That gives a reliable stack trace while executing in the ftrace
+> >> infrastructure code. When ftrace returns to the traced function, the frames
+> >> are popped and everything is back to normal.
+> >>
+> >> However, in cases like live patch, execution is redirected to a different
+> >> function when ftrace returns. A stack trace taken while still in the ftrace
+> >> infrastructure code will not show the target function. The target function
+> >> is the real function that we want to track.
+> >>
+> >> So, if an FTRACE frame is detected on the stack, just mark the stack trace
+> >> as unreliable.
+> > 
+> > To identify this case, please identify the ftrace trampolines instead,
+> > e.g. ftrace_regs_caller, return_to_handler.
+> > 
+> 
+> Yes. As part of the return address checking, I will check this. IIUC, I think that
+> I need to check for the inner labels that are defined at the point where the
+> instructions are patched for ftrace. E.g., ftrace_call and ftrace_graph_call.
+> 
+> SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
+>         bl      ftrace_stub	<====================================
+> 
+> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
+>         nop	<=======                // If enabled, this will be replaced
+>                                         // "b ftrace_graph_caller"
+> #endif
+> 
+> For instance, the stack trace I got while tracing do_mmap() with the stack trace
+> tracer looks like this:
+> 
+> 		 ...
+> [  338.911793]   trace_function+0xc4/0x160
+> [  338.911801]   function_stack_trace_call+0xac/0x130
+> [  338.911807]   ftrace_graph_call+0x0/0x4
+> [  338.911813]   do_mmap+0x8/0x598
+> [  338.911820]   vm_mmap_pgoff+0xf4/0x188
+> [  338.911826]   ksys_mmap_pgoff+0x1d8/0x220
+> [  338.911832]   __arm64_sys_mmap+0x38/0x50
+> [  338.911839]   el0_svc_common.constprop.0+0x70/0x1a8
+> [  338.911846]   do_el0_svc+0x2c/0x98
+> [  338.911851]   el0_svc+0x2c/0x70
+> [  338.911859]   el0_sync_handler+0xb0/0xb8
+> [  338.911864]   el0_sync+0x180/0x1c0
+> 
+> > It'd be good to check *exactly* when we need to reject, since IIUC when
+> > we have a graph stack entry the unwind will be correct from livepatch's
+> > PoV.
+> > 
+> 
+> The current unwinder already handles this like this:
+> 
+> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>         if (tsk->ret_stack &&
+>                 (ptrauth_strip_insn_pac(frame->pc) == (unsigned long)return_to_handler)) {
+>                 struct ftrace_ret_stack *ret_stack;
+>                 /*
+>                  * This is a case where function graph tracer has
+>                  * modified a return address (LR) in a stack frame
+>                  * to hook a function return.
+>                  * So replace it to an original value.
+>                  */
+>                 ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
+>                 if (WARN_ON_ONCE(!ret_stack))
+>                         return -EINVAL;
+>                 frame->pc = ret_stack->ret;
+>         }
+> #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h       |  1 +
- drivers/media/platform/qcom/venus/hfi_cmds.c   | 18 ++++++++++++++++--
- drivers/media/platform/qcom/venus/hfi_helper.h | 10 ++++++++++
- drivers/media/platform/qcom/venus/vdec.c       | 11 ++++++++++-
- drivers/media/platform/qcom/venus/vdec_ctrls.c |  9 ++++++++-
- 5 files changed, 45 insertions(+), 4 deletions(-)
+Beware that this handles the case where a function will return to
+return_to_handler, but doesn't handle unwinding from *within*
+return_to_handler, which we can't do reliably today, so that might need
+special handling.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 13c18c49714d..177b4abcd3a6 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -174,6 +174,7 @@ struct vdec_controls {
- 	u32 level;
- 	u32 display_delay;
- 	u32 display_delay_enable;
-+	u64 conceal_color;
- };
- 
- struct venc_controls {
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 4f7565834469..884339aae6a7 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -760,7 +760,9 @@ static int pkt_session_set_property_1x(struct hfi_session_set_property_pkt *pkt,
- 		struct hfi_conceal_color *color = prop_data;
- 		u32 *in = pdata;
- 
--		color->conceal_color = *in;
-+		color->conceal_color = *in & 0xff;
-+		color->conceal_color |= ((*in >> 10) & 0xff) << 8;
-+		color->conceal_color |= ((*in >> 20) & 0xff) << 16;
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
- 		break;
- 	}
-@@ -1255,7 +1257,19 @@ pkt_session_set_property_6xx(struct hfi_session_set_property_pkt *pkt,
- 		cq->frame_quality = in->frame_quality;
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*cq);
- 		break;
--	} default:
-+	}
-+	case HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR: {
-+		struct hfi_conceal_color_v4 *color = prop_data;
-+		u32 *in = pdata;
-+
-+		color->conceal_color_8bit = *in & 0xff;
-+		color->conceal_color_8bit |= ((*in >> 10) & 0xff) << 8;
-+		color->conceal_color_8bit |= ((*in >> 20) & 0xff) << 16;
-+		color->conceal_color_10bit = *in;
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
-+		break;
-+	}
-+	default:
- 		return pkt_session_set_property_4xx(pkt, cookie, ptype, pdata);
- 	}
- 
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 6b524c7cde5f..fa49b49170b7 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -685,10 +685,20 @@ struct hfi_vc1e_perf_cfg_type {
- 	u32 search_range_y_subsampled[3];
- };
- 
-+/*
-+ * 0 - 7bit -> Luma (def: 16)
-+ * 8 - 15bit -> Chroma (def: 128)
-+ * format is valid up to v4
-+ */
- struct hfi_conceal_color {
- 	u32 conceal_color;
- };
- 
-+struct hfi_conceal_color_v4 {
-+	u32 conceal_color_8bit;
-+	u32 conceal_color_10bit;
-+};
-+
- struct hfi_intra_period {
- 	u32 pframes;
- 	u32 bframes;
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index c20496a14a55..ecb7deef5785 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -620,7 +620,7 @@ static int vdec_set_properties(struct venus_inst *inst)
- {
- 	struct vdec_controls *ctr = &inst->controls.dec;
- 	struct hfi_enable en = { .enable = 1 };
--	u32 ptype, decode_order;
-+	u32 ptype, decode_order, conceal;
- 	int ret;
- 
- 	if (ctr->post_loop_deb_mode) {
-@@ -638,6 +638,15 @@ static int vdec_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	ptype = HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR;
-+	conceal = ctr->conceal_color & 0xffff;
-+	conceal |= ((ctr->conceal_color >> 16) & 0xffff) << 10;
-+	conceal |= ((ctr->conceal_color >> 32) & 0xffff) << 20;
-+
-+	ret = hfi_session_set_property(inst, ptype, &conceal);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
- 
-diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-index 07680aae0a36..fbe12a608b21 100644
---- a/drivers/media/platform/qcom/venus/vdec_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-@@ -36,6 +36,9 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE:
- 		ctr->display_delay_enable = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
-+		ctr->conceal_color = *ctrl->p_new.p_s64;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -95,7 +98,7 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	struct v4l2_ctrl *ctrl;
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 11);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 12);
- 	if (ret)
- 		return ret;
- 
-@@ -172,6 +175,10 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_DEC_DISPLAY_DELAY_ENABLE,
- 			  0, 1, 1, 0);
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &vdec_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR, 0,
-+			  0xffffffffffffLL, 1, 0x8000800010LL);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret) {
- 		v4l2_ctrl_handler_free(&inst->ctrl_handler);
--- 
-2.25.1
+> Is there anything else that needs handling here?
 
+I wrote up a few cases to consider in:
+
+https://www.kernel.org/doc/html/latest/livepatch/reliable-stacktrace.html
+
+... e.g. the "Obscuring of return addresses" case.
+
+It might be that we're fine so long as we refuse to unwind across
+exception boundaries, but it needs some thought. We probably need to go
+over each of the trampolines instruction-by-instruction to consider
+that.
+
+As mentioned above, within return_to_handler when we call
+ftrace_return_to_handler, there's a period where the real return address
+has been removed from the ftrace return stack, but hasn't yet been
+placed in x30, and wouldn't show up in a trace (e.g. if we could somehow
+hook the return from ftrace_return_to_handler).
+
+We might be saved by the fact we'll mark traces across exception
+boundaries as unreliable, but I haven't thought very hard about it. We
+might want to explciitly reject unwinds within return_to_handler in case
+it's possible to interpose ftrace_return_to_handler somehow.
+
+Thanks,
+Mark.
