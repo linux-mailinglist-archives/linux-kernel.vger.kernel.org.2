@@ -2,398 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2487346CA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC65346CB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbhCWWXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:23:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32131 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233995AbhCWWU5 (ORCPT
+        id S234471AbhCWWYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234020AbhCWWVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:20:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616538056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ULcRNBX3c7jHASqDOyJlI70Z4QCNtCJkeM3lCFzH4Ig=;
-        b=SEh9b+tl4jN5/4ClCEojOzfoSVbZNrI1T8R7NzbJAiaQ9fW5lEMSDnvxw1NbmKA0trJddd
-        TTIWhDD+rGjShiiJjW4oFcDeguvzlSuTsUvkaylb+D4LDDEPhko92zOhb7IjUc9iyQYu4f
-        U9MYOlqJ35sI/8vO+XA0lo9eUkcaSiw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-chNxSFflPs68UbqzAaXdoQ-1; Tue, 23 Mar 2021 18:20:52 -0400
-X-MC-Unique: chNxSFflPs68UbqzAaXdoQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C20E87A826;
-        Tue, 23 Mar 2021 22:20:50 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A88621972B;
-        Tue, 23 Mar 2021 22:20:43 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v5 16/28] afs: Pass page into dirty region helpers to provide
- THP size
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 22:20:42 +0000
-Message-ID: <161653804285.2770958.3497360004849598038.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-References: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 23 Mar 2021 18:21:36 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A736C0613DB;
+        Tue, 23 Mar 2021 15:21:34 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id i22so1640134pgl.4;
+        Tue, 23 Mar 2021 15:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RJqSTLOSJZiiTZiNKUsL2KlFgCZZceQr/nQknnwb9MA=;
+        b=Y1HlnqyZNrvf5DJ5x+wynjpw0aiTDVsei0SSQvp1xsZ3NikqMb9Dm6wd85G7GccL4U
+         1tc02MSvz2P9638LbnlZ9fFWOUgZaAFCCwd2zJNmICiOnEhbOyqD8Ci1Gcll74q7iW+9
+         9BAfXkwLOEUM5Xi00GV2a0HPo+x8hpDe1BSvyP0ckJQaz6KilWRtMHFCzC8/qphapN3R
+         oUG5QW2+5xwxRdVDsct8J+UR6qfPJauvF++Qy8Twhg96ouJe9q9H5OlGlTAHY+3jd4rg
+         VyvTUlsJTTG1PXCZkYuw9YZWFVl37SRUjAVbb364dox9ZYsYO2oMqRgCMi24OXL3YeCH
+         nHNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RJqSTLOSJZiiTZiNKUsL2KlFgCZZceQr/nQknnwb9MA=;
+        b=fsMBFrVj6G2BStpEld+VgvuqExOd2aZKZT6tZ/3IK7POi4mTz2nxEroCdn2d4mzOA4
+         wFWEZCH5+IxVhXz2RNqRUj2oCTFdreziCwc78FW9DshhjnB3zh1br8pw5lV/qn5KQcLl
+         eSgxNNIjCMzI3fKOpxIDzuqgGDTniCWZT8tSqWM926UISIe8g1Azvb8B97OMVYrF7aXj
+         FJdW4fjiTvpV6jTQbcHhWrWJqHEg6M87x18DaYaZY5aQ5pGh6qeFHx5DaGoFn6TLX68t
+         CVppwnnFbtGfjL9NHHL2Cs4yc1kM/X3A2RO8pJwjXGPwTt5u19dRN72KZCHMX1/baerx
+         Dpkg==
+X-Gm-Message-State: AOAM530h0nh9Yvl2u0VIkO/wXnMIcatxvVTznyMS/8gSWKlbvJ3kwv/l
+        /wF2vDGnoO+XHHArlpcDNcGHps2PXpU=
+X-Google-Smtp-Source: ABdhPJyJJ1UXh+9HrsWV9QFqwvdCJUZ9zTK+PHHv9mN5rw/boKEgRx9QjhDq2tUuZIuGhfYMiWWAmw==
+X-Received: by 2002:a17:902:e545:b029:e6:6499:cd19 with SMTP id n5-20020a170902e545b02900e66499cd19mr521394plf.53.1616538093277;
+        Tue, 23 Mar 2021 15:21:33 -0700 (PDT)
+Received: from localhost.localdomain (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id f21sm200168pfe.6.2021.03.23.15.21.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 15:21:32 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yousong Zhou <yszhou4tech@gmail.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michel Lespinasse <walken@google.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] MIPS: Add support for CONFIG_DEBUG_VIRTUAL
+Date:   Tue, 23 Mar 2021 15:20:43 -0700
+Message-Id: <20210323222103.34225-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass a pointer to the page being accessed into the dirty region helpers so
-that the size of the page can be determined in case it's a transparent huge
-page.
+Provide hooks to intercept bad usages of virt_to_phys() and
+__pa_symbol() throughout the kernel. To make this possible, we need to
+rename the current implement of virt_to_phys() into
+__virt_to_phys_nodebug() and wrap it around depending on
+CONFIG_DEBUG_VIRTUAL.
 
-This also required the page to be passed into the afs_page_dirty trace
-point - so there's no need to specifically pass in the index or private
-data as these can be retrieved directly from the page struct.
+A similar thing is needed for __pa_symbol() which is now aliased to
+__phys_addr_symbol() whose implementation is either the direct return of
+RELOC_HIDE or goes through the debug version.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/160588527183.3465195.16107942526481976308.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161118144921.1232039.11377711180492625929.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161040747.2537118.11435394902674511430.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340404553.1303470.11414163641767769882.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539548385.286939.8864598314493255313.stgit@warthog.procyon.org.uk/ # v4
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
+Changes in v2:
+- fixed sparse warning in arch/mips/kernel/vdso.c
 
- fs/afs/file.c              |   20 +++++++--------
- fs/afs/internal.h          |   16 ++++++------
- fs/afs/write.c             |   60 ++++++++++++++++++--------------------------
- include/trace/events/afs.h |   23 ++++++++++-------
- 4 files changed, 55 insertions(+), 64 deletions(-)
+ arch/mips/Kconfig            |  1 +
+ arch/mips/include/asm/io.h   | 14 ++++++++-
+ arch/mips/include/asm/page.h |  9 +++++-
+ arch/mips/kernel/vdso.c      |  2 +-
+ arch/mips/mm/Makefile        |  2 ++
+ arch/mips/mm/physaddr.c      | 55 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 80 insertions(+), 3 deletions(-)
+ create mode 100644 arch/mips/mm/physaddr.c
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 6d43713fde01..21868bfc3a44 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -515,8 +515,8 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
- 		return;
- 
- 	/* We may need to shorten the dirty region */
--	f = afs_page_dirty_from(priv);
--	t = afs_page_dirty_to(priv);
-+	f = afs_page_dirty_from(page, priv);
-+	t = afs_page_dirty_to(page, priv);
- 
- 	if (t <= offset || f >= end)
- 		return; /* Doesn't overlap */
-@@ -534,17 +534,17 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
- 	if (f == t)
- 		goto undirty;
- 
--	priv = afs_page_dirty(f, t);
-+	priv = afs_page_dirty(page, f, t);
- 	set_page_private(page, priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page->index, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page);
- 	return;
- 
- undirty:
--	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page->index, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page);
- 	clear_page_dirty_for_io(page);
- full_invalidate:
--	priv = (unsigned long)detach_page_private(page);
--	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page->index, priv);
-+	detach_page_private(page);
-+	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page);
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d89efba3d8a4..0904d6351808 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -4,6 +4,7 @@ config MIPS
+ 	default y
+ 	select ARCH_32BIT_OFF_T if !64BIT
+ 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
++	select ARCH_HAS_DEBUG_VIRTUAL if !64BIT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 78537aa23500..2c138450ad3b 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -100,11 +100,23 @@ static inline void set_io_port_base(unsigned long base)
+  *     almost all conceivable cases a device driver should not be using
+  *     this function
+  */
+-static inline unsigned long virt_to_phys(volatile const void *address)
++static inline unsigned long __virt_to_phys_nodebug(volatile const void *address)
+ {
+ 	return __pa(address);
  }
  
++#ifdef CONFIG_DEBUG_VIRTUAL
++extern phys_addr_t __virt_to_phys(volatile const void *x);
++#else
++#define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
++#endif
++
++#define virt_to_phys virt_to_phys
++static inline phys_addr_t virt_to_phys(const volatile void *x)
++{
++	return __virt_to_phys(x);
++}
++
  /*
-@@ -572,7 +572,6 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
- static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
--	unsigned long priv;
+  *     phys_to_virt    -       map physical address to virtual
+  *     @address: address to remap
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index 65acab9c41f9..195ff4e9771f 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -210,9 +210,16 @@ static inline unsigned long ___pa(unsigned long x)
+  * also affect MIPS so we keep this one until GCC 3.x has been retired
+  * before we can apply https://patchwork.linux-mips.org/patch/1541/
+  */
++#define __pa_symbol_nodebug(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
++
++#ifdef CONFIG_DEBUG_VIRTUAL
++extern phys_addr_t __phys_addr_symbol(unsigned long x);
++#else
++#define __phys_addr_symbol(x)	__pa_symbol_nodebug(x)
++#endif
  
- 	_enter("{{%llx:%llu}[%lu],%lx},%x",
- 	       vnode->fid.vid, vnode->fid.vnode, page->index, page->flags,
-@@ -581,9 +580,8 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- 	/* deny if page is being written to the cache and the caller hasn't
- 	 * elected to wait */
- 	if (PagePrivate(page)) {
--		priv = (unsigned long)detach_page_private(page);
--		trace_afs_page_dirty(vnode, tracepoint_string("rel"),
--				     page->index, priv);
-+		detach_page_private(page);
-+		trace_afs_page_dirty(vnode, tracepoint_string("rel"), page);
- 	}
- 
- 	/* indicate that the page can be released */
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index b626e38e9ab5..180eae8134da 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -875,31 +875,31 @@ struct afs_vnode_cache_aux {
- #define __AFS_PAGE_PRIV_MMAPPED	0x8000UL
+ #ifndef __pa_symbol
+-#define __pa_symbol(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
++#define __pa_symbol(x)		__phys_addr_symbol((unsigned long)(x))
  #endif
  
--static inline unsigned int afs_page_dirty_resolution(void)
-+static inline unsigned int afs_page_dirty_resolution(struct page *page)
- {
--	int shift = PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
-+	int shift = thp_order(page) + PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
- 	return (shift > 0) ? shift : 0;
- }
+ #define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
+diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
+index 7d0b91ad2581..e3fd93ca480a 100644
+--- a/arch/mips/kernel/vdso.c
++++ b/arch/mips/kernel/vdso.c
+@@ -158,7 +158,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
  
--static inline size_t afs_page_dirty_from(unsigned long priv)
-+static inline size_t afs_page_dirty_from(struct page *page, unsigned long priv)
- {
- 	unsigned long x = priv & __AFS_PAGE_PRIV_MASK;
+ 	/* Map GIC user page. */
+ 	if (gic_size) {
+-		gic_pfn = virt_to_phys(mips_gic_base + MIPS_GIC_USER_OFS) >> PAGE_SHIFT;
++		gic_pfn = virt_to_phys((void *)mips_gic_base + MIPS_GIC_USER_OFS) >> PAGE_SHIFT;
  
- 	/* The lower bound is inclusive */
--	return x << afs_page_dirty_resolution();
-+	return x << afs_page_dirty_resolution(page);
- }
- 
--static inline size_t afs_page_dirty_to(unsigned long priv)
-+static inline size_t afs_page_dirty_to(struct page *page, unsigned long priv)
- {
- 	unsigned long x = (priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV_MASK;
- 
- 	/* The upper bound is immediately beyond the region */
--	return (x + 1) << afs_page_dirty_resolution();
-+	return (x + 1) << afs_page_dirty_resolution(page);
- }
- 
--static inline unsigned long afs_page_dirty(size_t from, size_t to)
-+static inline unsigned long afs_page_dirty(struct page *page, size_t from, size_t to)
- {
--	unsigned int res = afs_page_dirty_resolution();
-+	unsigned int res = afs_page_dirty_resolution(page);
- 	from >>= res;
- 	to = (to - 1) >> res;
- 	return (to << __AFS_PAGE_PRIV_SHIFT) | from;
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 92eaa88000d7..9d0cef35ecba 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -112,15 +112,14 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	t = f = 0;
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
--		f = afs_page_dirty_from(priv);
--		t = afs_page_dirty_to(priv);
-+		f = afs_page_dirty_from(page, priv);
-+		t = afs_page_dirty_to(page, priv);
- 		ASSERTCMP(f, <=, t);
- 	}
- 
- 	if (f != t) {
- 		if (PageWriteback(page)) {
--			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"),
--					     page->index, priv);
-+			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"), page);
- 			goto flush_conflicting_write;
- 		}
- 		/* If the file is being filled locally, allow inter-write
-@@ -204,21 +203,19 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
--		f = afs_page_dirty_from(priv);
--		t = afs_page_dirty_to(priv);
-+		f = afs_page_dirty_from(page, priv);
-+		t = afs_page_dirty_to(page, priv);
- 		if (from < f)
- 			f = from;
- 		if (to > t)
- 			t = to;
--		priv = afs_page_dirty(f, t);
-+		priv = afs_page_dirty(page, f, t);
- 		set_page_private(page, priv);
--		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"), page);
- 	} else {
--		priv = afs_page_dirty(from, to);
-+		priv = afs_page_dirty(page, from, to);
- 		attach_page_private(page, (void *)priv);
--		trace_afs_page_dirty(vnode, tracepoint_string("dirty"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("dirty"), page);
- 	}
- 
- 	set_page_dirty(page);
-@@ -321,7 +318,6 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
- 				   pgoff_t first, pgoff_t last)
- {
- 	struct pagevec pv;
--	unsigned long priv;
- 	unsigned count, loop;
- 
- 	_enter("{%llx:%llu},{%lx-%lx}",
-@@ -340,9 +336,9 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
- 		ASSERTCMP(pv.nr, ==, count);
- 
- 		for (loop = 0; loop < count; loop++) {
--			priv = (unsigned long)detach_page_private(pv.pages[loop]);
-+			detach_page_private(pv.pages[loop]);
- 			trace_afs_page_dirty(vnode, tracepoint_string("clear"),
--					     pv.pages[loop]->index, priv);
-+					     pv.pages[loop]);
- 			end_page_writeback(pv.pages[loop]);
- 		}
- 		first += count;
-@@ -516,15 +512,13 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 	 */
- 	start = primary_page->index;
- 	priv = page_private(primary_page);
--	offset = afs_page_dirty_from(priv);
--	to = afs_page_dirty_to(priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("store"),
--			     primary_page->index, priv);
-+	offset = afs_page_dirty_from(primary_page, priv);
-+	to = afs_page_dirty_to(primary_page, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("store"), primary_page);
- 
- 	WARN_ON(offset == to);
- 	if (offset == to)
--		trace_afs_page_dirty(vnode, tracepoint_string("WARN"),
--				     primary_page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("WARN"), primary_page);
- 
- 	if (start >= final_page ||
- 	    (to < PAGE_SIZE && !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)))
-@@ -562,8 +556,8 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 			}
- 
- 			priv = page_private(page);
--			f = afs_page_dirty_from(priv);
--			t = afs_page_dirty_to(priv);
-+			f = afs_page_dirty_from(page, priv);
-+			t = afs_page_dirty_to(page, priv);
- 			if (f != 0 &&
- 			    !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)) {
- 				unlock_page(page);
-@@ -571,8 +565,7 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 			}
- 			to = t;
- 
--			trace_afs_page_dirty(vnode, tracepoint_string("store+"),
--					     page->index, priv);
-+			trace_afs_page_dirty(vnode, tracepoint_string("store+"), page);
- 
- 			if (!clear_page_dirty_for_io(page))
- 				BUG();
-@@ -861,14 +854,13 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	 */
- 	wait_on_page_writeback(vmf->page);
- 
--	priv = afs_page_dirty(0, PAGE_SIZE);
-+	priv = afs_page_dirty(vmf->page, 0, PAGE_SIZE);
- 	priv = afs_page_dirty_mmapped(priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"),
--			     vmf->page->index, priv);
- 	if (PagePrivate(vmf->page))
- 		set_page_private(vmf->page, priv);
- 	else
- 		attach_page_private(vmf->page, (void *)priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"), vmf->page);
- 	file_update_time(file);
- 
- 	sb_end_pagefault(inode->i_sb);
-@@ -921,17 +913,15 @@ int afs_launder_page(struct page *page)
- 		f = 0;
- 		t = PAGE_SIZE;
- 		if (PagePrivate(page)) {
--			f = afs_page_dirty_from(priv);
--			t = afs_page_dirty_to(priv);
-+			f = afs_page_dirty_from(page, priv);
-+			t = afs_page_dirty_to(page, priv);
- 		}
- 
--		trace_afs_page_dirty(vnode, tracepoint_string("launder"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
- 		ret = afs_store_data(mapping, page->index, page->index, t, f, true);
- 	}
- 
--	priv = (unsigned long)detach_page_private(page);
--	trace_afs_page_dirty(vnode, tracepoint_string("laundered"),
--			     page->index, priv);
-+	detach_page_private(page);
-+	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
- 	return ret;
- }
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 4a5cc8c64be3..9203cf6a8c53 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -969,30 +969,33 @@ TRACE_EVENT(afs_dir_check_failed,
- 	    );
- 
- TRACE_EVENT(afs_page_dirty,
--	    TP_PROTO(struct afs_vnode *vnode, const char *where,
--		     pgoff_t page, unsigned long priv),
-+	    TP_PROTO(struct afs_vnode *vnode, const char *where, struct page *page),
- 
--	    TP_ARGS(vnode, where, page, priv),
-+	    TP_ARGS(vnode, where, page),
- 
- 	    TP_STRUCT__entry(
- 		    __field(struct afs_vnode *,		vnode		)
- 		    __field(const char *,		where		)
- 		    __field(pgoff_t,			page		)
--		    __field(unsigned long,		priv		)
-+		    __field(unsigned long,		from		)
-+		    __field(unsigned long,		to		)
- 			     ),
- 
- 	    TP_fast_assign(
- 		    __entry->vnode = vnode;
- 		    __entry->where = where;
--		    __entry->page = page;
--		    __entry->priv = priv;
-+		    __entry->page = page->index;
-+		    __entry->from = afs_page_dirty_from(page, page->private);
-+		    __entry->to = afs_page_dirty_to(page, page->private);
-+		    __entry->to |= (afs_is_page_dirty_mmapped(page->private) ?
-+				    (1UL << (BITS_PER_LONG - 1)) : 0);
- 			   ),
- 
--	    TP_printk("vn=%p %lx %s %zx-%zx%s",
-+	    TP_printk("vn=%p %lx %s %lx-%lx%s",
- 		      __entry->vnode, __entry->page, __entry->where,
--		      afs_page_dirty_from(__entry->priv),
--		      afs_page_dirty_to(__entry->priv),
--		      afs_is_page_dirty_mmapped(__entry->priv) ? " M" : "")
-+		      __entry->from,
-+		      __entry->to & ~(1UL << (BITS_PER_LONG - 1)),
-+		      __entry->to & (1UL << (BITS_PER_LONG - 1)) ? " M" : "")
- 	    );
- 
- TRACE_EVENT(afs_call_state,
-
+ 		ret = io_remap_pfn_range(vma, base, gic_pfn, gic_size,
+ 					 pgprot_noncached(vma->vm_page_prot));
+diff --git a/arch/mips/mm/Makefile b/arch/mips/mm/Makefile
+index 865926a37775..fa1f729e0700 100644
+--- a/arch/mips/mm/Makefile
++++ b/arch/mips/mm/Makefile
+@@ -40,3 +40,5 @@ obj-$(CONFIG_R5000_CPU_SCACHE)	+= sc-r5k.o
+ obj-$(CONFIG_RM7000_CPU_SCACHE) += sc-rm7k.o
+ obj-$(CONFIG_MIPS_CPU_SCACHE)	+= sc-mips.o
+ obj-$(CONFIG_SCACHE_DEBUGFS)	+= sc-debugfs.o
++
++obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
+diff --git a/arch/mips/mm/physaddr.c b/arch/mips/mm/physaddr.c
+new file mode 100644
+index 000000000000..008b524a96b2
+--- /dev/null
++++ b/arch/mips/mm/physaddr.c
+@@ -0,0 +1,55 @@
++#include <linux/bug.h>
++#include <linux/export.h>
++#include <linux/types.h>
++#include <linux/mmdebug.h>
++#include <linux/mm.h>
++
++#include <asm/sections.h>
++#include <asm/io.h>
++#include <asm/page.h>
++#include <asm/dma.h>
++
++static inline bool __debug_virt_addr_valid(unsigned long x)
++{
++	/* high_memory does not get immediately defined, and there
++	 * are early callers of __pa() against PAGE_OFFSET
++	 */
++	if (!high_memory && x >= PAGE_OFFSET)
++		return true;
++
++	if (high_memory && x >= PAGE_OFFSET && x < (unsigned long)high_memory)
++		return true;
++
++	/*
++	 * MAX_DMA_ADDRESS is a virtual address that may not correspond to an
++	 * actual physical address. Enough code relies on
++	 * virt_to_phys(MAX_DMA_ADDRESS) that we just need to work around it
++	 * and always return true.
++	 */
++	if (x == MAX_DMA_ADDRESS)
++		return true;
++
++	return false;
++}
++
++phys_addr_t __virt_to_phys(volatile const void *x)
++{
++	WARN(!__debug_virt_addr_valid((unsigned long)x),
++	     "virt_to_phys used for non-linear address: %pK (%pS)\n",
++	     x, x);
++
++	return __virt_to_phys_nodebug(x);
++}
++EXPORT_SYMBOL(__virt_to_phys);
++
++phys_addr_t __phys_addr_symbol(unsigned long x)
++{
++	/* This is bounds checking against the kernel image only.
++	 * __pa_symbol should only be used on kernel symbol addresses.
++	 */
++	VIRTUAL_BUG_ON(x < (unsigned long)_text ||
++		       x > (unsigned long)_end);
++
++	return __pa_symbol_nodebug(x);
++}
++EXPORT_SYMBOL(__phys_addr_symbol);
+-- 
+2.25.1
 
