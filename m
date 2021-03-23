@@ -2,120 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A89C3457FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAADC345786
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCWGug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S229548AbhCWFvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhCWGuA (ORCPT
+        with ESMTP id S229452AbhCWFvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:50:00 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1124C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 23:49:59 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id s11-20020a056830124bb029021bb3524ebeso1740125otp.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 23:49:59 -0700 (PDT)
+        Tue, 23 Mar 2021 01:51:50 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3536C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 22:51:49 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id c204so13156344pfc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 22:51:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yZZJL9tMbCU4qyjcbaauUNvkSw0s/ZCjez5b1Gyz4S8=;
-        b=oECYu6YlH6Xy3A+Q3DJws9QupqCPURtpETO8BHQJ73xnbY2Jw/t9myjwODxL5T3T0K
-         BOSPs9kDXkeAJd6v5T+cbgc2vzFqQccYCF8uOL6uO6WdqLzdiq3SJzUJ+KmDrLSVO/fV
-         Ico+21m0wwuoGcxTqVNJ3N8kR3cF/cYtjWHJHSWg/Zp9hP+5/bksxJQkrKjgUqIgJZq0
-         N6T+VuWsl7QFwtOSAfTlPS/7WRFoNzvOp5/l+UUss659mLC1wmtlk6PxX+iCMSWJnCtv
-         puum9NUw6Hp4qJxh8JYgyeGChieey6MfOAKJKlv25sUBFOdHdYhcCY5HxzfmL5LHcg7f
-         XT9g==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FtIC9ocJ4+NOnMRBa7jQB43OlZx1SC3ik3qdbBBdMIA=;
+        b=X/5/uuwrxFYcF8Awxi1cwtq18Vl4EymKBcOaK9VmY+oiNsIsueGIxRe1utA/39s1qG
+         7FbBz+ekJlBjND28eTk8IF0Ah/P72WMDBm6F0UtBW+rUSBRpCuQmI6L9F4AWAjn/S2Le
+         9960srFiKAxVa69Tps1YeIwAqpv/24hSuXRKo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yZZJL9tMbCU4qyjcbaauUNvkSw0s/ZCjez5b1Gyz4S8=;
-        b=lfNQ17YvVjvPbAafulsjCrmBhPCYu2dhvl4Hiokytmk6+a4trKKDkqAZSZvxOpy6WX
-         pzkQVU/Tomd3TnukFUbRWF2liUvBOyQYUQOivpqFmivxApz0NBCZLIHkGIc/erJtxXBr
-         rCDmxK8LCc1j/oIKuS5KKdSnwjbiS1C81qD9COAGiKlzlC0oU21iewLsYb/VcSZ8ct0v
-         XP+7FBhYkc+BvOOV8L+mwRt/h5g4YaIhjgtMe8G4EfAxCvnVmyNeKqw/EsIlEFeDCQEp
-         oXrTGaF00rnEEUqGamdLqXFxdwysn+Y2PPURCS7GVxJMFjHxlZSBtQEMv6aUEKhTW8P1
-         zRIw==
-X-Gm-Message-State: AOAM533yfBfED+jZb2qf7b9CN+PKCt/peSwdBJtx7A1PDFzrLsL3cSPc
-        UNxMqdHf9/BepPIXJU23oQKg9p7akxwyXJeGllyQ6Ietxa/oLsU7qFU=
-X-Google-Smtp-Source: ABdhPJwXaegWtmXRx2z3HnIUdy2+xQ7NoaXw4TsiY606NDIxA7o1ioERcpkTu4NzhLvG6UeYSdXTzRZWpXiIAscT2+I=
-X-Received: by 2002:a25:76c3:: with SMTP id r186mr3073528ybc.365.1616478516726;
- Mon, 22 Mar 2021 22:48:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FtIC9ocJ4+NOnMRBa7jQB43OlZx1SC3ik3qdbBBdMIA=;
+        b=cdIdiDkqql0TyXpFmnUOxatr47fyCgAn4N1BGVRTsHzPHmLXNgHYz6bkwSbi4zBwGs
+         NMslCfTl0E2eOjSkW2gCkzghD8mVCUi4w7RCOmUZFseErOl1k0iz18YF4PYlt5gJOs64
+         Icx9zfkqbuOwYxAwjGjzZcBySJ+ZjHzMrDaKDdZ7vF6jMYDXAv1HeyAzwHvDQglikmYv
+         hFUcNrJFXQ8QEkfIg5a+ynf3/4mOcRDuoMaD17485RU5lghMww6dulp3xSm/UxDGLGUb
+         DLeQ1PZh9tl/VWk66Ab+wMtjev1JobVVE5zr6L6/TwCqObCA3eMt6bRW0rpJu/s8z77E
+         pnIg==
+X-Gm-Message-State: AOAM5306iitGO5RC7F03TcX6PU7vyD1leMAAylvIVlzNt3lpYy8yKN/y
+        kcAkgWyUBuKJQ2zrtnO1Mff3xc801BJr6NlS
+X-Google-Smtp-Source: ABdhPJwmGyPV1d4xdJ5P70Yke6owQpM9u/Z2Pscxia8QZ1e+ryjZ+XQiEohTES5v5I74LSSlE1mXbQ==
+X-Received: by 2002:a17:902:834a:b029:e6:b6bc:f58c with SMTP id z10-20020a170902834ab02900e6b6bcf58cmr3622329pln.85.1616478708902;
+        Mon, 22 Mar 2021 22:51:48 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:c8d1:279a:cb3a:39cd])
+        by smtp.gmail.com with ESMTPSA id k11sm7621837pgc.38.2021.03.22.22.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 22:51:48 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, drinkcat@chromium.org,
+        weiyi.lu@mediatek.com, ck.hu@mediatek.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, enric.balletbo@collabora.com
+Subject: [PATCH] soc: mediatek: mmsys: Add mt8183 mmsys routing table
+Date:   Tue, 23 Mar 2021 13:51:43 +0800
+Message-Id: <20210323055143.607529-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-References: <20210322114730.71103-1-yuchao0@huawei.com>
-In-Reply-To: <20210322114730.71103-1-yuchao0@huawei.com>
-From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date:   Tue, 23 Mar 2021 13:48:26 +0800
-Message-ID: <CAFcO6XMak8GSRqQbZ3nPdGvV_eM6DL0+P0z1X2y0G9hkrccaCg@mail.gmail.com>
-Subject: Re: [PATCH] f2fs: fix to avoid out-of-bounds memory access
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>, chao@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, I have tested the patch on 5.12.0-rc4+, it seems to fix the problem.
+mt8183 has different routing registers than mt8173.
 
-Regards,
- butt3rflyh4ck.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+This patch is based on series ("soc: mediatek: Prepare MMSYS for DDP routing using tables")[1]
+and tested with mt8183 krand and mt8183 juniper device.
+The register value is referenced from [2].
 
+[1] https://patchwork.kernel.org/project/linux-mediatek/cover/20210317181711.795245-1-enric.balletbo@collabora.com/
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/1609815993-22744-6-git-send-email-yongqiang.niu@mediatek.com/
+---
+ drivers/soc/mediatek/mtk-mmsys.c |  2 ++
+ drivers/soc/mediatek/mtk-mmsys.h | 47 ++++++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
 
-On Mon, Mar 22, 2021 at 7:47 PM Chao Yu <yuchao0@huawei.com> wrote:
->
-> butt3rflyh4ck <butterflyhuangxx@gmail.com> reported a bug found by
-> syzkaller fuzzer with custom modifications in 5.12.0-rc3+ [1]:
->
->  dump_stack+0xfa/0x151 lib/dump_stack.c:120
->  print_address_description.constprop.0.cold+0x82/0x32c mm/kasan/report.c:232
->  __kasan_report mm/kasan/report.c:399 [inline]
->  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
->  f2fs_test_bit fs/f2fs/f2fs.h:2572 [inline]
->  current_nat_addr fs/f2fs/node.h:213 [inline]
->  get_next_nat_page fs/f2fs/node.c:123 [inline]
->  __flush_nat_entry_set fs/f2fs/node.c:2888 [inline]
->  f2fs_flush_nat_entries+0x258e/0x2960 fs/f2fs/node.c:2991
->  f2fs_write_checkpoint+0x1372/0x6a70 fs/f2fs/checkpoint.c:1640
->  f2fs_issue_checkpoint+0x149/0x410 fs/f2fs/checkpoint.c:1807
->  f2fs_sync_fs+0x20f/0x420 fs/f2fs/super.c:1454
->  __sync_filesystem fs/sync.c:39 [inline]
->  sync_filesystem fs/sync.c:67 [inline]
->  sync_filesystem+0x1b5/0x260 fs/sync.c:48
->  generic_shutdown_super+0x70/0x370 fs/super.c:448
->  kill_block_super+0x97/0xf0 fs/super.c:1394
->
-> The root cause is, if nat entry in checkpoint journal area is corrupted,
-> e.g. nid of journalled nat entry exceeds max nid value, during checkpoint,
-> once it tries to flush nat journal to NAT area, get_next_nat_page() may
-> access out-of-bounds memory on nat_bitmap due to it uses wrong nid value
-> as bitmap offset.
->
-> [1] https://lore.kernel.org/lkml/CAFcO6XOMWdr8pObek6eN6-fs58KG9doRFadgJj-FnF-1x43s2g@mail.gmail.com/T/#u
->
-> Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
->  fs/f2fs/node.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index caf43970510e..8311b2367c7c 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -2790,6 +2790,9 @@ static void remove_nats_in_journal(struct f2fs_sb_info *sbi)
->                 struct f2fs_nat_entry raw_ne;
->                 nid_t nid = le32_to_cpu(nid_in_journal(journal, i));
->
-> +               if (f2fs_check_nid_range(sbi, nid))
-> +                       continue;
-> +
->                 raw_ne = nat_in_journal(journal, i);
->
->                 ne = __lookup_nat_cache(nm_i, nid);
-> --
-> 2.29.2
->
+diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+index c46d8ab8b0c2..16bb55b0463a 100644
+--- a/drivers/soc/mediatek/mtk-mmsys.c
++++ b/drivers/soc/mediatek/mtk-mmsys.c
+@@ -40,6 +40,8 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
+ 
+ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
+ 	.clk_driver = "clk-mt8183-mm",
++	.routes = mmsys_mt8183_routing_table,
++	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
+ };
+ 
+ struct mtk_mmsys {
+diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-mmsys.h
+index a760a34e6eca..c55baf5932b8 100644
+--- a/drivers/soc/mediatek/mtk-mmsys.h
++++ b/drivers/soc/mediatek/mtk-mmsys.h
+@@ -66,6 +66,28 @@
+ #define DPI_SEL_IN_BLS				0x0
+ #define DSI_SEL_IN_RDMA				0x1
+ 
++#define MT8183_DISP_OVL0_MOUT_EN		0xf00
++#define MT8183_DISP_OVL0_2L_MOUT_EN		0xf04
++#define MT8183_DISP_OVL1_2L_MOUT_EN		0xf08
++#define MT8183_DISP_DITHER0_MOUT_EN		0xf0c
++#define MT8183_DISP_PATH0_SEL_IN		0xf24
++#define MT8183_DISP_DSI0_SEL_IN			0xf2c
++#define MT8183_DISP_DPI0_SEL_IN			0xf30
++#define MT8183_DISP_RDMA0_SOUT_SEL_IN		0xf50
++#define MT8183_DISP_RDMA1_SOUT_SEL_IN		0xf54
++
++#define MT8183_OVL0_MOUT_EN_OVL0_2L		BIT(4)
++#define MT8183_OVL0_2L_MOUT_EN_DISP_PATH0	BIT(0)
++#define MT8183_OVL1_2L_MOUT_EN_RDMA1		BIT(4)
++#define MT8183_DITHER0_MOUT_IN_DSI0		BIT(0)
++#define MT8183_DISP_PATH0_SEL_IN_OVL0_2L	0x1
++#define MT8183_DSI0_SEL_IN_RDMA0		0x1
++#define MT8183_DSI0_SEL_IN_RDMA1		0x3
++#define MT8183_DPI0_SEL_IN_RDMA0		0x1
++#define MT8183_DPI0_SEL_IN_RDMA1		0x2
++#define MT8183_RDMA0_SOUT_COLOR0		0x1
++#define MT8183_RDMA1_SOUT_DSI0			0x1
++
+ struct mtk_mmsys_routes {
+ 	u32 from_comp;
+ 	u32 to_comp;
+@@ -212,4 +234,29 @@ static const struct mtk_mmsys_routes mmsys_default_routing_table[] = {
+ 	}
+ };
+ 
++static const struct mtk_mmsys_routes mmsys_mt8183_routing_table[] = {
++	{
++		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
++		MT8183_DISP_OVL0_MOUT_EN, MT8183_OVL0_MOUT_EN_OVL0_2L
++	}, {
++		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
++		MT8183_DISP_OVL0_2L_MOUT_EN, MT8183_OVL0_2L_MOUT_EN_DISP_PATH0
++	}, {
++		DDP_COMPONENT_OVL_2L1, DDP_COMPONENT_RDMA1,
++		MT8183_DISP_OVL1_2L_MOUT_EN, MT8183_OVL1_2L_MOUT_EN_RDMA1
++	}, {
++		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
++		MT8183_DISP_DITHER0_MOUT_EN, MT8183_DITHER0_MOUT_IN_DSI0
++	}, {
++		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
++		MT8183_DISP_PATH0_SEL_IN, MT8183_DISP_PATH0_SEL_IN_OVL0_2L
++	}, {
++		DDP_COMPONENT_RDMA1, DDP_COMPONENT_DPI0,
++		MT8183_DISP_DPI0_SEL_IN, MT8183_DPI0_SEL_IN_RDMA1
++	}, {
++		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
++		MT8183_DISP_RDMA0_SOUT_SEL_IN, MT8183_RDMA0_SOUT_COLOR0
++	}
++};
++
+ #endif /* __SOC_MEDIATEK_MTK_MMSYS_H */
+-- 
+2.31.0.rc2.261.g7f71774620-goog
+
