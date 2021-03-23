@@ -2,139 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F921345C5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF7B345C6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCWK43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhCWK4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:56:07 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F28C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:56:06 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lOehb-0003uq-5I; Tue, 23 Mar 2021 11:55:59 +0100
-Subject: Re: [PATCH] ARM: dts: at91-sama5d27_som1: fix phy address to 7
-To:     Alexander Dahl <ada@thorsis.com>, nicolas.ferre@microchip.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        stable@vger.kernel.org,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Oleksij Rempel <ore@pengutronix.de>
-References: <20210217113808.21804-1-nicolas.ferre@microchip.com>
- <1732882030.11903.1616496356027@seven.thorsis.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <ddedd53b-6087-f7a5-3c41-2b91fec35980@pengutronix.de>
-Date:   Tue, 23 Mar 2021 11:55:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230313AbhCWLFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:05:39 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31610 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhCWLF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:05:29 -0400
+IronPort-SDR: Iut2h5aE/y4yWu0097pxYK3JTpdav8CHGnopx4JMywUByEfSmOy8mvVMTZ1Oefs9uMuCiL0aa7
+ AyCbci10ewmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189854350"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="189854350"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:05:22 -0700
+IronPort-SDR: YuARCY5NsHDZ0ybCrSAyF7P8IWMCmEBQjrkxEsSqxGO0f3YbTLERo0LkkDkr+SuNQVhTQ87zeZ
+ klqIpUGPflxw==
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="604267746"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:05:16 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lOeqW-00EzhN-Vs; Tue, 23 Mar 2021 13:05:12 +0200
+Date:   Tue, 23 Mar 2021 13:05:12 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v1 0/3] kernel/resource: make walk_system_ram_res() and
+ walk_mem_res() search the whole tree
+Message-ID: <YFnLaLsTRv8T9fPe@smile.fi.intel.com>
+References: <20210322160200.19633-1-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1732882030.11903.1616496356027@seven.thorsis.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322160200.19633-1-david@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexander,
-
-On 23.03.21 11:45, Alexander Dahl wrote:
-> Hei hei,
+On Mon, Mar 22, 2021 at 05:01:57PM +0100, David Hildenbrand wrote:
+> Playing with kdump+virtio-mem I noticed that kexec_file_load() does not
+> consider System RAM added via dax/kmem and virtio-mem when preparing the
+> elf header for kdump. Looking into the details, the logic used in
+> walk_system_ram_res() and walk_mem_res() seems to be outdated.
 > 
-> I could not get ethernet to work on SAMA5D27-SOM1-EK1 with kernels v5.10 and v5.11 built by a recent ptxdist based DistroKit BSP, while it used to work with an older v4.19 kernel. Just applying this patch to the tree made ethernet working again, thus:
+> walk_system_ram_range() already does the right thing, let's change
+> walk_system_ram_res() and walk_mem_res(), and clean up.
 > 
-> Tested-by: Alexander Dahl <ada@thorsis.com>
+> Loading a kdump kernel via "kexec -p -s" ... will result in the kdump
+> kernel to also dump dax/kmem and virtio-mem added System RAM now.
 > 
-> Not sure why it worked with that older kernel, though.
+> Note: kexec-tools on x86-64 also have to be updated to consider this
+> memory in the kexec_load() case when processing /proc/iomem.
 
-Thanks for investigating! Seems that somehow PHY broadcast worked on this
-board with older kernels (and current barebox), but no longer does with
-newer kernels.
 
-A bisection could shed some light onto what broke this.
+> Against next-20210322.
 
-As the KSZ8081 driver disables broadcast in the phy config init, this change
-looks appropriate regardless. The fixes tag doesn't refer to an upstream
-commit though. This should probably read:
-Fixes: af690fa37e39 ("ARM: dts: at91: at91-sama5d27_som1: add sama5d27 SoM1 support")
-
-With this addressed:
-
-Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-You could send a proper patch and stick your S-o-b under it.
-
-Cheers,
-Ahmad
+Hint: `git format-patch --base ...`
 
 > 
-> I added Ahmad to Cc, he added board support to DistroKit for that board, and might want to know. And I added the devicetree list to Cc, I wondered why the patch was not there and get_maintainers.pl proposed it.
+> David Hildenbrand (3):
+>   kernel/resource: make walk_system_ram_res() find all busy
+>     IORESOURCE_SYSTEM_RAM resources
+>   kernel/resource: make walk_mem_res() find all busy IORESOURCE_MEM
+>     resources
+>   kernel/resource: remove first_lvl / siblings_only logic
 > 
-> Thanks for fixing this and greetings
-> Alex
+>  kernel/resource.c | 45 ++++++++++++---------------------------------
+>  1 file changed, 12 insertions(+), 33 deletions(-)
 > 
->> nicolas.ferre@microchip.com hat am 17.02.2021 12:38 geschrieben:
->>
->>  
->> From: Claudiu Beznea <claudiu.beznea@microchip.com>
->>
->> Fix the phy address to 7 for Ethernet PHY on SAMA5D27 SOM1. No
->> connection established if phy address 0 is used.
->>
->> The board uses the 24 pins version of the KSZ8081RNA part, KSZ8081RNA
->> pin 16 REFCLK as PHYAD bit [2] has weak internal pull-down.  But at
->> reset, connected to PD09 of the MPU it's connected with an internal
->> pull-up forming PHYAD[2:0] = 7.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
->> Fixes: 2f61929eb10a ("ARM: dts: at91: at91-sama5d27_som1: fix PHY ID")
->> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
->> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->> Cc: <stable@vger.kernel.org> # 4.14+
->> ---
->>  arch/arm/boot/dts/at91-sama5d27_som1.dtsi | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
->> index 1b1163858b1d..e3251f3e3eaa 100644
->> --- a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
->> +++ b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
->> @@ -84,8 +84,8 @@ macb0: ethernet@f8008000 {
->>  				pinctrl-0 = <&pinctrl_macb0_default>;
->>  				phy-mode = "rmii";
->>  
->> -				ethernet-phy@0 {
->> -					reg = <0x0>;
->> +				ethernet-phy@7 {
->> +					reg = <0x7>;
->>  					interrupt-parent = <&pioA>;
->>  					interrupts = <PIN_PD31 IRQ_TYPE_LEVEL_LOW>;
->>  					pinctrl-names = "default";
->> -- 
->> 2.30.0
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> -- 
+> 2.29.2
 > 
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+With Best Regards,
+Andy Shevchenko
+
+
