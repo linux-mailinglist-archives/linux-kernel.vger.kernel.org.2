@@ -2,188 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37102346463
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF847346462
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbhCWQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:06:02 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36268 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbhCWQFt (ORCPT
+        id S232855AbhCWQF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233048AbhCWQF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:05:49 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12NG5Voo061626;
-        Tue, 23 Mar 2021 11:05:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616515531;
-        bh=K4fwQJg6ForgmFFqDP5hpVwKkfU//raomS14z9sDVDs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=VlQNUlC4T4qbziL3cqSwVR78bDxHopSDUHyYWbLHoCL6RZs5quyDFcNsruukGC8ZX
-         KW7AUDqVb3XSpway/2V1EhOyU7U21vLleVZBzndJMXU3LFYNdV/gEPnrWHXLYpXi6h
-         BzIEuJ4s6zlKALTt8XkhdyKV/o34zjLcS3HJL3J4=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12NG5VdQ049384
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Mar 2021 11:05:31 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
- Mar 2021 11:05:09 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 23 Mar 2021 11:05:09 -0500
-Received: from [10.250.232.230] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12NG55P4089384;
-        Tue, 23 Mar 2021 11:05:06 -0500
-Subject: Re: [PATCH RESEND] PCI: dwc: Fix MSI not work after resume
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-CC:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-References: <20210323151250.GA576016@bjorn-Precision-5520>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <310d1d4b-a4b5-37c6-6f59-c822acbe9b19@ti.com>
-Date:   Tue, 23 Mar 2021 21:34:58 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 23 Mar 2021 12:05:28 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B200C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:28 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id u10so18584315ilb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b6VOuxdr8+wbIMXO16OHPMoQ9DHNhjuVRpBItfVqOck=;
+        b=Y6VEZ8TqdQQSZUqF4HaKfYmHVgqGNwe9DQKsVq6JXNLfA2b4WHXHZ3Bm3DESgRM/oj
+         mg+l+KgKtuZEctX17wkd5awRTQkruAG+wVeNi7E9Ykv5b1HFp++DMvSNUqOuVwR8Hves
+         HxBI1DlkktITIjEwmuq84xMAAedQHTeuxVBEQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b6VOuxdr8+wbIMXO16OHPMoQ9DHNhjuVRpBItfVqOck=;
+        b=GoxLoszOfgTj9tdqKgCR8yroG/1wftby1VU21wEcQxyoi5sLzVojYFvuLulwMUxz5O
+         QM3kTiXN2RjhwUTBoz5EPtGm3E2aY4s7P+DwrnSxAX2dulNedBsehQ+xihm2zEPiQb5f
+         aENOtJnAkceUqrCacbvardT/oS5GpiJM8w0HWA49xxkH1Ke8pJmSil8Apk/G4g1+RCt0
+         881+Fy1owZosjM9VpGzUEQfkNaZ5hvVu0vdQ9+wQC3RNHM1VSHbNp+8Vtqfz8FGmDLdj
+         PSJD6ysxa0aaRYJ9GPQ4GorbAOJjDjBlgXKPol3T+5gTDMYTCCEMIu80YQi7UpHfHJhM
+         R0RQ==
+X-Gm-Message-State: AOAM531HrDokQquYP06zLNurHXqR+Ggp36B3b55CN2gLL5ZSSm1wOG2h
+        g629+XMDuLh7GzMgfkW5niOmVGVozZ7DYw==
+X-Google-Smtp-Source: ABdhPJy3QC4/uPt6Rd5ewcFDrMPmHWgOyBy4EmJ8ZLSP0wePsyLVQ4RcpmshSRTJfrze5SOGgrwLfA==
+X-Received: by 2002:a92:dc83:: with SMTP id c3mr5543540iln.167.1616515527470;
+        Tue, 23 Mar 2021 09:05:27 -0700 (PDT)
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
+        by smtp.gmail.com with ESMTPSA id o15sm9776863ils.87.2021.03.23.09.05.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 09:05:27 -0700 (PDT)
+Received: by mail-il1-f170.google.com with SMTP id t6so18631631ilp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:27 -0700 (PDT)
+X-Received: by 2002:a05:6e02:dc5:: with SMTP id l5mr5360532ilj.218.1616515526531;
+ Tue, 23 Mar 2021 09:05:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323151250.GA576016@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210319055342.127308-1-senozhatsky@chromium.org> <20210319055342.127308-3-senozhatsky@chromium.org>
+In-Reply-To: <20210319055342.127308-3-senozhatsky@chromium.org>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Tue, 23 Mar 2021 17:05:15 +0100
+X-Gmail-Original-Message-ID: <CANiDSCua-9=SoVxNOo3rmXR7ihj=Rro-=wqAmJpAU4JwyTvQXg@mail.gmail.com>
+Message-ID: <CANiDSCua-9=SoVxNOo3rmXR7ihj=Rro-=wqAmJpAU4JwyTvQXg@mail.gmail.com>
+Subject: Re: [PATCHv3 2/6] media: v4l UAPI: document ROI selection targets
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Sergey
 
-On 23/03/21 8:42 pm, Bjorn Helgaas wrote:
-> [-cc Dilip (mail to him bounced)]
-> 
-> On Tue, Mar 23, 2021 at 11:01:15AM +0800, Jisheng Zhang wrote:
->> On Mon, 22 Mar 2021 20:24:41 -0500 Bjorn Helgaas wrote:
->>>
->>> [+cc Kishon, Richard, Lucas, Dilip]
->>>
->>> On Mon, Mar 01, 2021 at 11:10:31AM +0800, Jisheng Zhang wrote:
->>>> After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
->>>> MSI stops working after resume. Because dw_pcie_host_init() is only
->>>> called once during probe. To fix this issue, we move dw_pcie_msi_init()
->>>> to dw_pcie_setup_rc().  
->>>
->>> This patch looks fine, but I don't think the commit log tells the
->>> whole story.
->>>
->>> Prior to 59fbab1ae40e, it looks like the only dwc-based drivers with
->>> resume functions were dra7xx, imx6, intel-gw, and tegra [1].
->>>
->>> Only tegra called dw_pcie_msi_init() in the resume path, and I do
->>> think 59fbab1ae40e broke MSI after resume because it removed the
->>> dw_pcie_msi_init() call from tegra_pcie_enable_msi_interrupts().
->>>
->>> I'm not convinced this patch fixes it reliably, though.  The call
->>> chain looks like this:
->>>
->>>   tegra_pcie_dw_resume_noirq
->>>     tegra_pcie_dw_start_link
->>>       if (dw_pcie_wait_for_link(pci))
->>>         dw_pcie_setup_rc
->>>
->>> dw_pcie_wait_for_link() returns 0 if the link is up, so we only call
->>> dw_pcie_setup_rc() in the case where the link *didn't* come up.  If
->>> the link comes up nicely without retry, we won't call
->>> dw_pcie_setup_rc() and hence won't call dw_pcie_msi_init().
->>
->> The v1 version patch was sent before commit 275e88b06a (PCI: tegra: Fix host
->> link initialization"). At that time, the resume path looks like this:
->>
->> tegra_pcie_dw_resume_noirq
->>   tegra_pcie_dw_host_init
->>     tegra_pcie_prepare_host
->>       dw_pcie_setup_rc
->>
->> so after patch, dw_pcie_msi_init() will be called. But now it seems that
->> the tegra version needs one more fix for the resume.
->>
->> So could I sent a new patch to update the commit-msg a bit?
-> 
-> This patch only touches the dwc core, and the commit log says
-> generically that it fixes MSI after resume, so one could assume that
-> it applies to all dwc-based drivers.  But I don't think it's that
-> simple, so I'd like to know *which* drivers are fixed and which
-> commits are related.  I don't see how 59fbab1ae40e breaks anything
-> except tegra.
-> 
->>> Since then, exynos added a resume function.  My guess is MSI never
->>> worked after resume for dra7xx, exynos, imx6, and intel-gw because
->>> they don't call dw_pcie_msi_init() in their resume functions.
->>>
->>> This patch looks like it should fix MSI after resume for exynos, imx6,
->>> and intel-gw because they *do* call dw_pcie_setup_rc() from their
->>> resume functions [2], and after this patch, dw_pcie_msi_init() will be
->>> called from there.
->>>
->>> I suspect MSI after resume still doesn't work on dra7xx.
->>
->> I checked the dra7xx history, I'm afraid that the resume never works
->> from the beginning if the host lost power during suspend, I guess the
->> platform never power off the host but only the phy?
+On Fri, Mar 19, 2021 at 6:53 AM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> Document V4L2 selection targets that will be used to ROI
+> implementation.
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  .../media/v4l/selection-api-configuration.rst | 22 +++++++++++++++
+>  .../media/v4l/selection-api-examples.rst      | 28 +++++++++++++++++++
+>  .../media/v4l/v4l2-selection-targets.rst      | 24 ++++++++++++++++
+>  3 files changed, 74 insertions(+)
+>
+> diff --git a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+> index fee49bf1a1c0..b5fdd765e2db 100644
+> --- a/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+> +++ b/Documentation/userspace-api/media/v4l/selection-api-configuration.rst
+> @@ -135,3 +135,25 @@ and the height of rectangles obtained using ``V4L2_SEL_TGT_CROP`` and
+>  ``V4L2_SEL_TGT_COMPOSE`` targets. If these are not equal then the
+>  scaling is applied. The application can compute the scaling ratios using
+>  these values.
+> +
+> +Configuration of Region of Interest (ROI)
+> +=========================================
+> +
+> +The range of auto-controls values and of coordinates of the top left
+> +corner, width and height of areas that can be ROI is given by the
+> +``V4L2_SEL_TGT_ROI_BOUNDS_MIN`` and ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``
+> +targets. It is recommended for the driver developers to put the top/left
+> +corner at position ``(0,0)``.
+> +
+> +The top left corner, width and height of the Region of Interest area
+> +and auto-controls currently being employed by the device are given by
+> +the ``V4L2_SEL_TGT_ROI`` target. It uses the same coordinate system
+> +as ``V4L2_SEL_TGT_ROI_BOUNDS_MIN`` and ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``.
+> +
+> +In order to change active ROI top left, width and height coordinates
+> +and ROI auto-controls use ``V4L2_SEL_TGT_ROI`` target.
+> +
+> +Each capture device has a default ROI rectangle and auto-controls
+> +value given by the ``V4L2_SEL_TGT_ROI_DEFAULT`` target. Drivers shall
 
-Suspend on dra7xx disabled clocks and powered off phy (at-least while
-suspend/resume hooks were merged) and resume enabled clocks and phy.
-However suspend/resume is broken in dra7xx system and is not validated.
-I'll send a patch to remove the suspend/resume hooks in dra7xx.
+nit:  Drivers may, instead of shall?
 
-Thanks
-Kishon
 
-> 
-> Sounds like that would make sense.
-> 
->>> [1] git grep -A20 -e "static.*resume_noirq" 59fbab1ae40e^:drivers/pci/controller/dwc
->>> [2] git grep -A20 -e "static.*resume_noirq" drivers/pci/controller/dwc
->>>
->>>> Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
->>>> Reviewed-by: Rob Herring <robh@kernel.org>
->>>> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
->>>> ---
->>>> Since v1:
->>>>  - collect Reviewed-by tag
->>>>
->>>>  drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
->>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
->>>> index 7e55b2b66182..e6c274f4485c 100644
->>>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
->>>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
->>>> @@ -400,7 +400,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
->>>>       }
->>>>
->>>>       dw_pcie_setup_rc(pp);
->>>> -     dw_pcie_msi_init(pp);
->>>>
->>>>       if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
->>>>               ret = pci->ops->start_link(pci);
->>>> @@ -551,6 +550,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
->>>>               }
->>>>       }
->>>>
->>>> +     dw_pcie_msi_init(pp);
->>>> +
->>>>       /* Setup RC BARs */
->>>>       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
->>>>       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
->>>> --
->>>> 2.30.1
->>>>  
->>
+
+> +set the ROI rectangle to the default when the driver is first loaded,
+> +but not later.
+> diff --git a/Documentation/userspace-api/media/v4l/selection-api-examples.rst b/Documentation/userspace-api/media/v4l/selection-api-examples.rst
+> index 5f8e8a1f59d7..ad2664888700 100644
+> --- a/Documentation/userspace-api/media/v4l/selection-api-examples.rst
+> +++ b/Documentation/userspace-api/media/v4l/selection-api-examples.rst
+> @@ -82,3 +82,31 @@ Example: Querying for scaling factors
+>         /* computing scaling factors */
+>         hscale = (double)compose.r.width / crop.r.width;
+>         vscale = (double)compose.r.height / crop.r.height;
+> +
+> +Setting Region Of Interest area to half of the default value
+> +
+> +Example: Simple ROI
+> +===========================
+> +
+> +.. code-block:: c
+> +
+> +       struct v4l2_selection roi = {
+> +           .type = V4L2_BUF_TYPE_VIDEO_CAPTURE,
+> +           .target = V4L2_SEL_TGT_ROI_DEFAULT,
+> +       };
+> +       struct v4l2_rect r;
+> +
+> +       ret = ioctl(fd, VIDIOC_G_SELECTION, &roi);
+> +       if (ret)
+> +           exit(-1);
+> +       /* setting smaller ROI rectangle */
+> +       r.width = roi.r.width / 2;
+> +       r.height = roi.r.height / 2;
+> +       r.left = roi.r.width / 4;
+> +       r.top = roi.r.height / 4;
+> +       roi.r = r;
+> +       roi.target = V4L2_SEL_TGT_ROI;
+> +       roi.flags = V4L2_SEL_FLAG_ROI_AUTO_EXPOSURE;
+> +       ret = ioctl(fd, VIDIOC_S_SELECTION, &roi);
+> +       if (ret)
+> +           exit(-1);
+> diff --git a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+> index b46bae984f35..d1dc9c50eb05 100644
+> --- a/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+> +++ b/Documentation/userspace-api/media/v4l/v4l2-selection-targets.rst
+> @@ -75,6 +75,30 @@ of the two interfaces they are used.
+>         modified by hardware.
+>        - Yes
+>        - No
+> +    * - ``V4L2_SEL_TGT_ROI``
+> +      - 0x0200
+> +      - Current Region of Interest rectangle and auto-controls value.
+> +      - Yes
+> +      - No
+> +    * - ``V4L2_SEL_TGT_ROI_DEFAULT``
+> +      - 0x0201
+> +      - Suggested Region of Interest rectangle and auto-controls value.
+> +      - Yes
+> +      - No
+> +    * - ``V4L2_SEL_TGT_ROI_BOUNDS_MIN``
+> +      - 0x0202
+> +      - Minimum bounds of the Region of Interest rectangle and minimum
+> +       auto-controls value. All valid ROI rectangles and auto-controls
+> +       should be within minimum-maximum range.
+> +      - Yes
+> +      - No
+> +    * - ``V4L2_SEL_TGT_ROI_BOUNDS_MAX``
+> +      - 0x0203
+> +      - Maximum bounds of the Region of Interest rectangle and maximum
+> +       auto-controls value. All valid ROI rectangles and auto-controls
+> +       should be within minimum-maximum range.
+> +      - Yes
+> +      - No
+>
+>  .. raw:: latex
+>
+> --
+> 2.31.0.rc2.261.g7f71774620-goog
+>
+
+
+--
+Ricardo Ribalda
