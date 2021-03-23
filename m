@@ -2,212 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D0D345690
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6C6345675
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhCWEFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 00:05:30 -0400
-Received: from mail-mw2nam10on2084.outbound.protection.outlook.com ([40.107.94.84]:44224
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229437AbhCWEFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 00:05:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nri7GVrhmNLE+nk9f8SEfEknLEdhYS+t3EPFg6QC5mP3hZqk3qZIQ6Na0pCoo2gE061Mlbr3SecFypB+nLvljdnMaUqNSo6li3uf9n15xJamOs9Il6v4+AZPYiy250RUf3v0m+sLchdLhGBLIG5Bwd0bSCHFXjv43Z5UOaOUdcjvOuCGmKDdivduNTSgNM/A6Ok6zepz3xmooWhh6bruP63vKn7AeMJ4nc+pyjbP1dqp4aJbtdm5GTZnLtQnBoT+3rVY6qTpBDlXOtkJkqoihxuaJGY+Hg8fdIO5TufhIOBS1vvZAn55WB2paEHvFk17eJiEgy6OpNBSesPWl6p5FA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GLFl47n2VcJTWiT8DJoE49hyvlc8M/LVceE76ez0rmo=;
- b=EfS4KBnPhjO7c5lIt1DH7wfcGFb7h6gs+OFG0IoLX5qRrmQJyQMEdvPReJXHK21oSAuphST9jH5bJ2SvFdMTVs5bje+pyANnMpGT8Kh7JyjO7UliwnNpRI8//4SfMLJEgRsbhy2ExVSBHdKYdYy47HjQ8eyoZTLCe0T8WLhScTJtUjDeWgO/vl6Jw82OI62suXH5dW7J5G1J0JicF0+Gf6YHnjtwP3mq15g7eMJNRjqkkYPSWI/ku8vfwrWq3J7S3c7JFUfF3NU7EbjfyhW9veOFlJz9C5VyhPMGjvIbkE/Wn9HLqG7yqTXvaSovuMWnEPeXAu0n+1vQhE76OBcjYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GLFl47n2VcJTWiT8DJoE49hyvlc8M/LVceE76ez0rmo=;
- b=V71aiBJPyX1o+iyvDg5G0M8efbrDJ4ji5KAqV7h+KQqx0uivapAFE1U6EWd1tA51RYpZzzA6wfUKs1xp/36+AaabgQWb66XPhAn00YFgIlS9gtIQuMADLZj/sOo/CCFO7tvCXO6YXffZfZ4DAZn85yhSPgzUMnxzTIe1ET4Q4ULpAwl4MPkqy9Ty7aGcrH2jG7jVeQONXWxGEphS7wWPjuIhU5/GZp/irGphbXEkARs3S2vMoMsgsmqSC6znQqU0cdVsTib/S90Rx6vo9lThRdBm4JrGxTdNjV4ixoixE7DQ0EJ3sHOI9hrovLJ9kTNbQPBox1LCCGjkbg3oH6cqhg==
-Received: from DM6PR02CA0138.namprd02.prod.outlook.com (2603:10b6:5:1b4::40)
- by BN7PR12MB2723.namprd12.prod.outlook.com (2603:10b6:408:2d::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
- 2021 04:05:23 +0000
-Received: from DM6NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1b4:cafe::56) by DM6PR02CA0138.outlook.office365.com
- (2603:10b6:5:1b4::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Tue, 23 Mar 2021 04:05:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- DM6NAM11FT042.mail.protection.outlook.com (10.13.173.165) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 04:05:23 +0000
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Mar
- 2021 21:05:22 -0700
-Received: from [172.17.173.69] (172.20.145.6) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2 via Frontend
- Transport; Tue, 23 Mar 2021 04:05:21 +0000
-Subject: Re: GTE - The hardware timestamping engine
-To:     Kent Gibson <warthog618@gmail.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Richard Cochran" <richardcochran@gmail.com>
-References: <4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com>
- <CACRpkdbmqww6UQ8CFYo=+bCtVYBJwjMxVixc4vS6D3B+dUHScw@mail.gmail.com>
- <20210322060047.GA226745@sol>
- <d48fa7b5-8c17-c3d7-10a9-a9811c410a39@nvidia.com> <20210323003208.GA6105@sol>
- <7961d9df-4120-e37c-d042-528655bd0270@nvidia.com>
- <20210323025933.GA10669@sol>
-X-Nvconfidentiality: public
-From:   Dipen Patel <dipenp@nvidia.com>
-Message-ID: <16ff9b8a-15d9-f2fd-24f4-817a7078c40e@nvidia.com>
-Date:   Mon, 22 Mar 2021 21:09:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229728AbhCWDyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:54:20 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:21105 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhCWDyL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 23:54:11 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210323035409epoutp049c698e1a0bbec93d626d3dd783898472~u3GaIlXOg3202632026epoutp04O
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:54:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210323035409epoutp049c698e1a0bbec93d626d3dd783898472~u3GaIlXOg3202632026epoutp04O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616471649;
+        bh=np2sXMPS9QrGQ0lOPl+ID1HmzTpfCD92XNEJiQyLgnU=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=X2HXFa4emYHV5yfEY4EyqAOnq6sWKffWwsEiJpl3VbAEFf/5eVLALo5lMMV7YlAXp
+         ml1sxEdeUMt/Jqsw8x+xQzMq7R6GemvFVoDZmRPwxOGyEGyTw/PuP0x0NQuqyd+TVL
+         ynxJEsmomWmwk2joWIHcyhC9YhfEZ4562bogPK5c=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210323035408epcas1p2edc9c167a31f96886853fb32c1dc14d9~u3GZHhhv31220812208epcas1p2w;
+        Tue, 23 Mar 2021 03:54:08 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.155]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4F4HY94CVVz4x9QG; Tue, 23 Mar
+        2021 03:54:05 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B7.5C.63458.D5669506; Tue, 23 Mar 2021 12:54:05 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210323035404epcas1p16b02136773431d453dd224f9063517f8~u3GWCiFXH3092130921epcas1p18;
+        Tue, 23 Mar 2021 03:54:04 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210323035404epsmtrp2f7453c6a60f8a82603d5de7b85b4fd0b~u3GWBm6EK0951309513epsmtrp2T;
+        Tue, 23 Mar 2021 03:54:04 +0000 (GMT)
+X-AuditID: b6c32a36-6c9ff7000000f7e2-69-6059665d1f9d
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CA.9A.08745.C5669506; Tue, 23 Mar 2021 12:54:04 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210323035404epsmtip1aaee3dfe32006a13d9166f51c13ebd07~u3GVxkg6Z0043500435epsmtip12;
+        Tue, 23 Mar 2021 03:54:04 +0000 (GMT)
+Subject: Re: [PATCH V2 0/6] PM / devfreq: a few small fixes and improvements
+To:     Dong Aisheng <dongas86@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        Abel Vesa <abel.vesa@nxp.com>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <ffcd13a3-68cd-9b57-1fae-ac1b6624ddfe@samsung.com>
+Date:   Tue, 23 Mar 2021 13:11:06 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <20210323025933.GA10669@sol>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAA+hA=Sb+eXqaVFKtSgzM6RsnwufqEHcKrbnD_rmnDW3-qGJSQ@mail.gmail.com>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad624d5f-f25d-441a-abce-08d8edb0e218
-X-MS-TrafficTypeDiagnostic: BN7PR12MB2723:
-X-Microsoft-Antispam-PRVS: <BN7PR12MB27230F4047399FA7B00621E6AE649@BN7PR12MB2723.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YuQFX+gGYAG6C57kkWJk1ARqFM5Q5FyXmNqLF91b08qQEdRbP4MvAQBBZ9x5EDhG2QJfJEMkMX5Uara7wmCjgvEIjV7my2Tj4ug/vK7AMy5atW85TePXYkQWEvVQ0StC6Q22qn5DeTuzlHNKIryhQiMNXvggP+6by/FxZFpHNKW3P0QkRC6j3Gl3oTk+GRxoeJFL3sc56ogMc8bUQZXRX1+9MX8KqGkPfSkbrtN+6z0uOzMEGpayjcYgVtdkTQQfsY9hCiiNYx/HAvQr8cOYkP6M2qDVQPdj06zpCTyRzP0FBZhD6Cj5d5Y7W9CH70N2mk1v1mzP33UDjAUuT6WT2i4hJ5yK2QeTqEe6vLruncar2drgKC7HluC4/A46slXZAkdryQz9+6Xzd9a8PFd1II2rim4VVirpbS91is2c5jkEx1jisbhWKDt9EDAbXKHc9xGM4fwOlJtZ5kk7GgLdBZDMF5Snz3JmMF3UnEjFAoUHbdkKt1eG3N/OJ7Vgg6nG8IqDNM818uT6MWjf+xyBiUZBgLpUPyqqXBYBoiwhe7+IVb9d6U61USDMXgG7urVklOLq8+zSro4mStXaU/k1+bcOb000jxN0nXhcJcxhyjM08Nc/zvUJozj7J9g0u7WaE9XsqwxD+bd50bjyU1UncnlkET6jCDPbCuCedy4W7NA67lVGnBmi3sBzHBRyggy6
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(36840700001)(46966006)(7636003)(36860700001)(31686004)(83380400001)(8676002)(31696002)(47076005)(36756003)(4326008)(53546011)(8936002)(86362001)(356005)(82740400003)(6666004)(54906003)(82310400003)(70206006)(6916009)(2906002)(5660300002)(186003)(336012)(26005)(316002)(478600001)(7416002)(70586007)(426003)(2616005)(16576012)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 04:05:23.5220
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad624d5f-f25d-441a-abce-08d8edb0e218
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT042.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2723
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMJsWRmVeSWpSXmKPExsWy7bCmrm5sWmSCwZY3shbLLh1ltPgydRez
+        xd/N09ksVk3dyWJxtukNu8Wmx9dYLbp+rWS2uLxrDpvF594jjBa3G1ewWbzYIu7A7bFz1l12
+        j02rOtk8Ni+p99j4bgeTR/9fA4++LasYPT5vkgtgj8q2yUhNTEktUkjNS85PycxLt1XyDo53
+        jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAG6UEmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xi
+        q5RakJJTYFmgV5yYW1yal66XnJ9rZWhgYGQKVJiQnTGzZzlzQbNAxeoD/1gbGLfzdDFyckgI
+        mEg82rOVtYuRi0NIYAejxNq57xghnE+MEo+mH4NyPjNKzG3YyATTsvXgXDaIxC5GiWeNa1hB
+        EkIC7xklbj0rBrGFBXwkfk5ZCtYgIuAlsezhUnYQm1ngF5PE/D+qIDabgJbE/hc32EBsfgFF
+        ias/HjOC2LwCdhKnly5lBrFZBFQlZmzZCjZHVCBM4uS2FqgaQYmTM5+wgNicAoES0+ZNYYKY
+        Ly5x68l8KFteYvvbOcwgh0oIHOGQeHPzBDvEBy4Sq7dNZIawhSVeHd8CFZeS+PxuLxuEXS2x
+        8uQRNojmDkaJLfsvsEIkjCX2L50MtIEDaIOmxPpd+hBhRYmdv+cyQizmk3j3tYcVpERCgFei
+        o00IokRZ4vKDu9BAlJRY3N7JNoFRaRaSd2YheWEWkhdmISxbwMiyilEstaA4Nz212LDACDm2
+        NzGCU6+W2Q7GSW8/6B1iZOJgPMQowcGsJMLbEh6RIMSbklhZlVqUH19UmpNafIjRFBjAE5ml
+        RJPzgck/ryTe0NTI2NjYwsTQzNTQUEmcN9HgQbyQQHpiSWp2ampBahFMHxMHp1QDU7FV0I47
+        FqznDOffDO6oOfl+efhs9TXNxytrUkUTre42655PPlW75r+5dWUGv+pS2zeRb0TtW9PPc6Uk
+        FZrKJYbfcFo7LS7M/jbXJZ/VC0+p6SfNOrzO+OMzpv/n1b9w/fg293mNu9/prUvO+vx/YPC5
+        uvN1m0zW3tafe478nO3EVix3vHKhmXTjhFNFim4FdqnB72qYkg6b3QjN0X4xc4HX0U7dlp9Z
+        jm6t2aYWjCvPiK613nd5xU5b5uaNviIruXfMti898a5lReSt+RKnREXadySZFyX2rz6jeutj
+        bd+pHRpLrYsuWfKKpi7QMFpzJ7bYomh/+P+9EzaerdSTWPp9JevkpqIwlQPGZwoWK7EUZyQa
+        ajEXFScCAPoPeXlGBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPIsWRmVeSWpSXmKPExsWy7bCSnG5MWmSCwf9ubYtll44yWnyZuovZ
+        4u/m6WwWq6buZLE42/SG3WLT42usFl2/VjJbXN41h83ic+8RRovbjSvYLF5sEXfg9tg56y67
+        x6ZVnWwem5fUe2x8t4PJo/+vgUffllWMHp83yQWwR3HZpKTmZJalFunbJXBlzOxZzlzQLFCx
+        +sA/1gbG7TxdjJwcEgImElsPzmXrYuTiEBLYwShxcv5vRoiEpMS0i0eZuxg5gGxhicOHiyFq
+        3jJKzHx5FKxGWMBH4ueUpUwgtoiAl8Syh0vZQYqYBf4wSfxZ8JkZouM+o8Snec3MIFVsAloS
+        +1/cYAOx+QUUJa7+eAw2iVfATuL00qVgNSwCqhIztmwFmyoqECaxc8ljJogaQYmTM5+wgNic
+        AoES0+ZNAYszC6hL/Jl3iRnCFpe49WQ+VFxeYvvbOcwTGIVnIWmfhaRlFpKWWUhaFjCyrGKU
+        TC0ozk3PLTYsMMpLLdcrTswtLs1L10vOz93ECI5DLa0djHtWfdA7xMjEwXiIUYKDWUmEtyU8
+        IkGINyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJJanZqakFqUUwWSYOTqkGJpnOsLvM
+        5/b9bOZbLHBK/9CWF1e0d8dkHvO6XSARabW3ySLZlrP7yGaT7Rax0XO6W1RvmZ9eOeGUzdKQ
+        x283XXotJpd6c7vUz5WXPQq+mlybdmTbfrFG3dMuytPm7fvxZMNPkesRzu/4Q3LnLlm9PXnN
+        E0a5tZpTwkrfem6taUmO2fXrXfktBneFA3mz+rce2X8hjyPfIcFhcWGZ8/dUproG4cS+Kds4
+        S4+dzYk0/Td1yYSZG9tjr2nMSHbds1tu4/quR1VXlFnC+soTTqsFK5qYbAx+qDr1ZkTxN60m
+        j+si9rV9np9tTUs/Wnlv3dFa9CfjgZGy5wWuDvPWMzP36J+JcVlXZFUbc0TsyPpP4UosxRmJ
+        hlrMRcWJAB6Sr5QyAwAA
+X-CMS-MailID: 20210323035404epcas1p16b02136773431d453dd224f9063517f8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210323032617epcas1p162bd7e8bff584af99b6065a2f7c13325
+References: <1616468359-14513-1-git-send-email-aisheng.dong@nxp.com>
+        <CGME20210323032617epcas1p162bd7e8bff584af99b6065a2f7c13325@epcas1p1.samsung.com>
+        <CAA+hA=Sb+eXqaVFKtSgzM6RsnwufqEHcKrbnD_rmnDW3-qGJSQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On 3/23/21 12:25 PM, Dong Aisheng wrote:
+> Hi Chanwoo,
+> 
+> On Tue, Mar 23, 2021 at 11:13 AM Dong Aisheng <aisheng.dong@nxp.com> wrote:
+>>
+>> A few small fixes and improvements
+>>
+>> ChangeLog:
+>> v1->v2:
+>>  * squash a few patches
+>>  * rebase to devfreq-testing
+> 
+> I have to rebase to devfreq-testing instead of devfreq-next because
+> below two patches
+> only exist in devfreq-testing.
+> 5cc75e9252e9 (devfreq/devfreq-testing) PM / devfreq: Add
+> devfreq_transitions debugfs file
+> dc9e557845c1 PM / devfreq: Add new up_threshold and down_differential
+> sysfs attrs
+> My patch 5 needs change based on it according to your suggestion. So i have to
+> rebase to that branch.
+> 
+> However, i found devfreq-testing can't build with GOV_PASSVIE enabled.
+> Patch 1 fixed it. You can squash to the original one when apply.
+> 
+> Please help take a look at this new series.
 
-On 3/22/21 7:59 PM, Kent Gibson wrote:
-> On Mon, Mar 22, 2021 at 06:53:10PM -0700, Dipen Patel wrote:
->>
->>
->> On 3/22/21 5:32 PM, Kent Gibson wrote:
->>> On Mon, Mar 22, 2021 at 01:21:46PM -0700, Dipen Patel wrote:
->>>> Hi Linus and Kent,
->>>>
-> 
-> [snip]
-> 
->>> In response to all your comments above...
->>>
->>> Firstly, I'm not suggesting that other kernel modules would use the
->>> cdev lineevents, only that they would use the same mechanism that
->>> gpiolib-cdev would use to timestamp the lineevents for userspace.
->>>
->> Sure, I just wanted to mention the different scenarios and wanted to know
->> how can we fit all those together. Having said that, shouldn't this serve
->> an opportunity to extend the linevent framework to accommodate kernel
->> drivers as a clients?
->>
->> If we can't, then there is a risk of duplicating lineevent mechanism in all
->> of those kernel drivers or at least in GTE framework/infrastructure as far
->> as GPIO related GTE part is concerned.
->>  
-> 
-> In-kernel the lineevents are just IRQs so anything needing a "lineevent"
-> can request the IRQ directly.  Or am I missing something?
-> 
+Please rebase your patches either devfreq-next or linux-next.git
+Because devfreq-testing branch is not official. 
 
-In the GPIO context, I meant we can extend line_event_timestamp to kernel
-drivers as well in that way, both userspace and kernel drivers requesting
-particular GPIO for the hardware timestamp would be managed by same
-lineevent_* infrastructure from the gpiolib. Something like lineevent_create
-version of the kernel drivers, so if they need hardware timestamp on the
-GPIO line, they can request with some flags. In that way, GTE can leverage
-linevent* codes from gpiolib to cover its both the GPIO related use cases i.e.
-userspace app and kernel drivers.
-
->>> As to that mechanism, my current thinking is that the approach of
->>> associating GTE event FIFO entries with particular physical IRQ events is
->>> problematic, as keeping the two in sync would be difficult, if not
->>> impossible.
->>>
->>> A more robust approach is to ignore the physical IRQs and instead service
->>> the GTE event FIFO, generating IRQs from those events in software -
->>> essentially a pre-timestamped IRQ.  The IRQ framework could provide the
->>> timestamping functionality, equivalent to line_event_timestamp(), for
->>> the IRQ handler/thread and in this case provide the timestamp from the GTE
->>> event.
->>>
+> Thanks
+> 
+> Regards
+> Aisheng
+> 
+>>  * drop two patches which are already in devfreq-next
 >>
->> I have not fully understood above two paragraphs (except about
->> lineevent_event_timestamp related part).
+>> Dong Aisheng (6):
+>>   PM / devfreq: fix build error when DEVFREQ_GOV_PASSIVE enabled
+>>   PM / devfreq: Use more accurate returned new_freq as resume_freq
+>>   PM / devfreq: Remove the invalid description for get_target_freq
+>>   PM / devfreq: bail out early if no freq changes in devfreq_set_target
+>>   PM / devfreq: governor: optimize simpleondemand get_target_freq
+>>   PM / devfreq: imx8m-ddrc: remove imx8m_ddrc_get_dev_status
 >>
->> I have no idea what it means to "ignore the physical IRQs and service the
->> GTE event FIFO". Just like GPIO clients, there could be IRQ clients which
->> want to monitor certain IRQ line, like ethernet driver wanted to retrieve
->> timestamp for its IRQ line and so on.
+>>  Documentation/ABI/testing/sysfs-class-devfreq |  5 +--
+>>  drivers/devfreq/devfreq.c                     | 37 +++++++------------
+>>  drivers/devfreq/governor.h                    |  2 -
+>>  drivers/devfreq/governor_simpleondemand.c     | 31 ++++++++++------
+>>  drivers/devfreq/imx8m-ddrc.c                  | 14 -------
+>>  5 files changed, 35 insertions(+), 54 deletions(-)
+>>
+>> --
+>> 2.25.1
 >>
 > 
-> I mean that in the IRQ framework, rather than enabling the physical IRQ
-> line it would leave that masked and would instead enable the FIFO line to
-> service the FIFO, configure the GTE to generate the events for that
-> line, and then generate IRQs in response to the FIFO events.
-> That way the client requesting the IRQ is guaranteed to only receive an
-> IRQ that corresponds to a GTE FIFO event and the timestamp stored in the
-> IRQ framework would match.
 > 
 
-I do not think we need to do such things, for example, below is
-the rough sequence how GTE can notify its clients be it GPIO or IRQ
-lines. I believe this will also help understand better ongoing GPIO
-discussions.
 
-1. Configure GTE FIFO watermark or threshold, lets assume 1, i.e
-   generate GTE interrupt when FIFO depth is 1.
-2. In the GTE ISR or ISR thread, drain internal FIFO entries
-3. Through GTE driver's internal mapping, identify which IRQ or
-   GPIO number this entry belongs to. (This is possible as GTE
-   has predefined bits for each supported signals, for example GTE
-   supports 40 GPIOs and 352 IRQ lines, and it has multliple GTE instances
-   which can take care all of them)
-4. GTE driver pushes the event data (in this case it will be timestamp and
-   direction of the event ie.rising or falling) to the GTE generic framework
-5. GTE framework will store per event data to its per client/event sw FIFO
-6. wake up any sleeping client thread
-7. Points 3 to 6 are happening in GTE ISR context. 
-8. gte_retrieve_event (which can block if no event) at later convenient
-   time do whatever it wants with it. We can extend it to non blocking
-   version where some sort of client callbacks can be implemented.
-
-> And that is what I mean by this being an IRQ feature.
-> We need feedback from the IRQ guys as to whether that makes sense to
-> them.
-> 
-> Cheers,
-> Kent.
-> 
+-- 
 Best Regards,
-Dipen Patel
+Chanwoo Choi
+Samsung Electronics
