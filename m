@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A323B34655B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7A9346565
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhCWQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233335AbhCWQg0 (ORCPT
+        id S233371AbhCWQhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:37:16 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:38660 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233374AbhCWQgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:36:26 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08241C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:36:26 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id gb6so10335543pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jr5FYe+pG7gGnI4NPChSWjNH7YK3vC58byQZ9zBCWWU=;
-        b=caAT+/Y9z99z7OziYrIiQW7A6ptvfmUjhEbqmQZe0FcRaY9XV/8gPNXGbDmAG1rdvA
-         9k+70Y8IfxUHr/jvMlz6wPkyBvuV4G6m1LjGUy+aa5fK8oIKIkmlV3KU4XomXsbFkrhu
-         Ztvi7Dajdxgx7c/Rz4jV6AuQV7gbrSM4hTOVp5MwX0hzujzuDozddcuO5jFXPwQZRk8T
-         MYQCceXDwzEPlHdUy6DbvCAl6a/O7zH8RROqeSK+pmTQjkqkDalt9iYfaHusQ4f/F2sm
-         QUtsQ+tuk7q5kaRpucPhtRY3PsiKVOnB62/6LJLARPX4iQYQoP45G/AUWUH3JS0Y3T3J
-         S+IA==
+        Tue, 23 Mar 2021 12:36:40 -0400
+Received: by mail-io1-f42.google.com with SMTP id e8so18348375iok.5;
+        Tue, 23 Mar 2021 09:36:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jr5FYe+pG7gGnI4NPChSWjNH7YK3vC58byQZ9zBCWWU=;
-        b=GCBi/NaxXLgqYI4A0a/5mBjBPx9kuHuRYQRXim1e4CLIQvfejjdIDJ8yF9XT21hn8z
-         wylBsrPDcZzytKVqW3Nl96M2i3gqChY+cne/eHyVqnUAJyQSshjBRYvLEGkBQd1bI9Gs
-         q30UIsx02arqV25zRGlQVD6O+/beCa46SN0Czs8F4xgtVwnmMjKJUNUM8ZGMX15SwSiK
-         6cgLH7B3jK54j43m7FfVLrQMUwz1h2pvo1HheBoMnm61/sxQ5Q8vheUb2ebLGI2e5Wkd
-         3tZ+BL2XM6LQb8n8R0o9wuTb8Z1XG5P45kQ1Tnt/bYeDjW5GM1n/GINtfXqSYCt2lxhg
-         zUwg==
-X-Gm-Message-State: AOAM531yjsPMoCaKmDYMC8O3IcoFidRu/9Xf0iiqfChXHti3KnfVkJ/0
-        2dgKyb+4j+Qx/caPe1z87/Tvgw==
-X-Google-Smtp-Source: ABdhPJwLzUDt5195FT4M+X2qSUsLAl+MyqeKnk4dGBkDB29Fvu6e0osZ5t6H5L1RRVyf9Lteh2azzQ==
-X-Received: by 2002:a17:90a:c087:: with SMTP id o7mr5353039pjs.38.1616517385469;
-        Tue, 23 Mar 2021 09:36:25 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c24sm17595799pfi.193.2021.03.23.09.36.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=541LKQ57D+BvmUsaoliHNppqzLoXCmsKVD7T7MlJimQ=;
+        b=CNJ4mw6rgTAtpdW63r+nsyyPaPyLuFB4Og/8Kdb0GtV5MyOV+XY9uLw9KcJc9f5652
+         CJZM9vTwbPsp5S6oJLQ3TQPcgPW6phjvyjT/hwg/lnonEX8mGGjldgSoy8Jk3Oz5seoz
+         lHisu2tx/8yZfRdni/kGv2/JB5XZ+sPPRJKoTQ07H97oAyhTsaKPsZWpvuXayw+p1bhI
+         3jlId4Ui2jf2dG73aUp5MODAp9vDOiL4ndDmkRF45mqzdiFES9fPEvVh3A7KUn3cSAsv
+         XMqGfG8SsJuWq4qOFSZVLO3yS70K2Ql2O1b+NpQO715bgzy4Z628NyZr3IXsHsubU7d7
+         j0ww==
+X-Gm-Message-State: AOAM531i91YIlsLQGYPhw8oDVk/kcPbsZvS1RDjob1wb335z4pTXcgzN
+        DECJrn62h8fcoCWEgAPS+g==
+X-Google-Smtp-Source: ABdhPJzR+wm/3d7iE9OkgZDgKyWi2DrqnKcHW2ercCH72t76IuuS7N0iQNoI+0NwhAVjeDhFDK1lMQ==
+X-Received: by 2002:a02:7419:: with SMTP id o25mr5241097jac.100.1616517399087;
+        Tue, 23 Mar 2021 09:36:39 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.253])
+        by smtp.googlemail.com with ESMTPSA id r18sm9771268ilj.86.2021.03.23.09.36.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 09:36:24 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 16:36:21 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] kbuild: Merge module sections if and only if
- CONFIG_LTO_CLANG is enabled
-Message-ID: <YFoZBY1SqilWAmx4@google.com>
-References: <20210322234438.502582-1-seanjc@google.com>
- <CABCJKudMQ9CP1zhvywTf-_=PY5zmeviURR+=PqsMn_bqa_MV-g@mail.gmail.com>
+        Tue, 23 Mar 2021 09:36:37 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: [PATCH 0/3] ASoC: dt-bindings: Rework audio-graph-port schema
+Date:   Tue, 23 Mar 2021 10:36:31 -0600
+Message-Id: <20210323163634.877511-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKudMQ9CP1zhvywTf-_=PY5zmeviURR+=PqsMn_bqa_MV-g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021, Sami Tolvanen wrote:
-> On Mon, Mar 22, 2021 at 4:44 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > Merge module sections only when using Clang LTO.  With gcc-10, merging
-> > sections does not appear to update the symbol tables for the module,
-> > e.g. 'readelf -s' shows the value that a symbol would have had, if
-> > sections were not merged.
-> 
-> I'm fine with limiting this to LTO only, but it would be helpful to
-> understand which sections are actually getting merged here.
+This series refactors the audio-graph-port.yaml schema moving the
+'port' node out of the schema and updating to use graph.yaml schema.
+This allows users to define what each 'port' node is like other graph
+binding users.
 
-It doesn't appear to matter which sections get merged, the tables only show the
-correct data if there is no merging whatsoever, e.g. allowing merging for any
-one of the four types (.bss, .data, .rodata and .text) results in breakage.
-AFAICT, merging any sections causes the layout to change and throw off the
-symbol tables. 
+Rob
 
-> Are you compiling the kernel with -ffunction-sections and/or -fdata-sections?
+Cc: alsa-devel@alsa-project.org
+Cc: linux-tegra@vger.kernel.org
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Lubomir Rintel <lkundrak@v3.sk>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Sameer Pujar <spujar@nvidia.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
 
-I tried both.  Default off, and forcing those flags by hacking the Makefile had
-no effect.
+Rob Herring (3):
+  ASoC: dt-bindings: Move port/ports properties out of
+    audio-graph-port.yaml
+  ASoC: dt-bindings: Use OF graph schema
+  ASoC: dt-bindings: socionext: Use audio-graph-port schema
 
-> Does this issue only happen with gcc 10?
+ .../bindings/sound/audio-graph-port.yaml      | 104 ++++++++----------
+ .../bindings/sound/marvell,mmp-sspa.yaml      |   6 +-
+ .../bindings/sound/nvidia,tegra186-dspk.yaml  |  11 +-
+ .../sound/nvidia,tegra210-admaif.yaml         |  11 +-
+ .../bindings/sound/nvidia,tegra210-ahub.yaml  |  11 +-
+ .../bindings/sound/nvidia,tegra210-dmic.yaml  |  11 +-
+ .../bindings/sound/nvidia,tegra210-i2s.yaml   |  11 +-
+ .../bindings/sound/renesas,rsnd.yaml          |   5 +-
+ .../sound/socionext,uniphier-aio.yaml         |   8 +-
+ .../sound/socionext,uniphier-evea.yaml        |   8 +-
+ 10 files changed, 89 insertions(+), 97 deletions(-)
 
-gcc-7 shows the same behavior, I haven't checked anything older or anything in
-between.
+-- 
+2.27.0
+
