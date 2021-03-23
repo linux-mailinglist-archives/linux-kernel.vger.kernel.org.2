@@ -2,135 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4DF346873
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B30346876
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbhCWTFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbhCWTEi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:04:38 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ED4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:04:37 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id a132-20020a1c668a0000b029010f141fe7c2so11414300wmc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:04:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RbFpbq45kpggLm6Psx0owbwRXsYpSfJN7JgeqcP2Mu4=;
-        b=UZKiqbd5+BBdc0NgTu+GUe/wC4bea0GtvB29FWI7Spj3k/dxu8QOO3dVhiIyeJMucF
-         vQC8feWgvEa9X3J7SMPxAwT6My2YOBhRcWaJ0yiBDG71JxnDD8Hh53nv/GPFX/N/VLv7
-         jORi2aeofPCaEkYJT5x4PdkHS3eG0kBUdwfk5RqPLfGQpfiCQiZa2Uq12ZERjfBBu3Ty
-         vThjutiV4MKI4efT85EHcLjz4bik64raZ063NTEN9k6h+7RnPiZukFM19+mXRKd7jNeL
-         /ouBOF8Jqyovbt2ep53M/NOUW90gwGnJSod16lrWiQl16cT319HWHdSPDoCueq4hLT5P
-         hb1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RbFpbq45kpggLm6Psx0owbwRXsYpSfJN7JgeqcP2Mu4=;
-        b=oyU+uhuRWsBb5GTIkUYEDaQIqSG125YDmTVR4q0r2ulAesBwe+WrtnB/2SdluGhbTh
-         BGV0QiTdtLZEJgLKeYdRAN04BJlrcsb/KwIkjxvTDVlrOsUVXT5Z3/pFpJWF9v2ahpwU
-         2TJ/Sdz1uz5uoQsKcWz84Qi/p09o7+d9GegLwjT3GTDDTICqYtMq4bQ0Scqj5YUyR0zs
-         OFLC3oiFBMes28OPjeSJK56NbcTcB1hTvrNggJUzKv/QnsA7yHZODoXQyoI2FGYaC9Rh
-         ApZlX6ZEedw3empu6C9ZU+l74+WwvNB4z++QmPh0+wf5sHaKwvCUaE0US+t6csqD/q4C
-         Tjlw==
-X-Gm-Message-State: AOAM530RO08pKpXuegHdFSoDeAoj4oyawqZFlzP2Is0IaQHWEL16zirf
-        8boUbfPaI34pISu8BxZKt4w=
-X-Google-Smtp-Source: ABdhPJxwi/mZg8TzTxJs26AM44HgpG1L47R7B6VUOtQ3vitadRNoKha3GN9uDw+lEk5ZSiOX+t9e+w==
-X-Received: by 2002:a1c:23c2:: with SMTP id j185mr4663665wmj.54.1616526276276;
-        Tue, 23 Mar 2021 12:04:36 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id l9sm3194098wmq.2.2021.03.23.12.04.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 12:04:35 -0700 (PDT)
-Subject: Re: [PATCH v5 1/3] mm: Extend MREMAP_DONTUNMAP to non-anonymous
- mappings
-To:     Brian Geffon <bgeffon@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Dmitry Safonov <dima@arista.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>
-References: <20210303175235.3308220-1-bgeffon@google.com>
- <20210323182520.2712101-1-bgeffon@google.com>
-From:   Dmitry Safonov <0x7f454c46@gmail.com>
-Message-ID: <fef17cb0-ae0a-db3f-e847-3febd318a81a@gmail.com>
-Date:   Tue, 23 Mar 2021 19:04:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S233089AbhCWTFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:05:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:50768 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233000AbhCWTE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:04:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15EC81042;
+        Tue, 23 Mar 2021 12:04:57 -0700 (PDT)
+Received: from [10.57.50.37] (unknown [10.57.50.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 370123F718;
+        Tue, 23 Mar 2021 12:04:51 -0700 (PDT)
+Subject: Re: [PATCH v2 12/15] PCI/MSI: Let PCI host bridges declare their
+ reliance on MSI domains
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+References: <20210322184614.802565-1-maz@kernel.org>
+ <20210322184614.802565-13-maz@kernel.org>
+ <6a2eaa5d-1d83-159f-69e5-c9e0a00a7b50@arm.com> <87im5hkahr.wl-maz@kernel.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <be2d9ea0-6657-b7aa-01b5-1b4a704cb478@arm.com>
+Date:   Tue, 23 Mar 2021 19:04:44 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210323182520.2712101-1-bgeffon@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <87im5hkahr.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 6:25 PM, Brian Geffon wrote:
-> Currently MREMAP_DONTUNMAP only accepts private anonymous mappings.
-> This restriction was placed initially for simplicity and not because
-> there exists a technical reason to do so.
+On 2021-03-23 18:09, Marc Zyngier wrote:
+> Hi Robin,
 > 
-> This change will widen the support to include any mappings which are not
-> VM_DONTEXPAND or VM_PFNMAP. The primary use case is to support
-> MREMAP_DONTUNMAP on mappings which may have been created from a memfd.
-> This change will result in mremap(MREMAP_DONTUNMAP) returning -EINVAL
-> if VM_DONTEXPAND or VM_PFNMAP mappings are specified.
+> On Tue, 23 Mar 2021 11:45:02 +0000,
+> Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2021-03-22 18:46, Marc Zyngier wrote:
+>>> The new 'no_msi' attribute solves the problem of advertising the lack
+>>> of MSI capability for host bridges that know for sure that there will
+>>> be no MSI for their end-points.
+>>>
+>>> However, there is a whole class of host bridges that cannot know
+>>> whether MSIs will be provided or not, as they rely on other blocks
+>>> to provide the MSI functionnality, using MSI domains.  This is
+>>> the case for example on systems that use the ARM GIC architecture.
+>>>
+>>> Introduce a new attribute ('msi_domain') indicating that implicit
+>>> dependency, and use this property to set the NO_MSI flag when
+>>> no MSI domain is found at probe time.
+>>>
+>>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>>> ---
+>>>    drivers/pci/probe.c | 2 +-
+>>>    include/linux/pci.h | 1 +
+>>>    2 files changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+>>> index 146bd85c037e..bac9f69a06a8 100644
+>>> --- a/drivers/pci/probe.c
+>>> +++ b/drivers/pci/probe.c
+>>> @@ -925,7 +925,7 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>>>    	device_enable_async_suspend(bus->bridge);
+>>>    	pci_set_bus_of_node(bus);
+>>>    	pci_set_bus_msi_domain(bus);
+>>> -	if (bridge->no_msi)
+>>> +	if (bridge->no_msi || (bridge->msi_domain && !bus->dev.msi_domain))
+>>>    		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+>>>      	if (!parent)
+>>> diff --git a/include/linux/pci.h b/include/linux/pci.h
+>>> index 48605cca82ae..d322d00db432 100644
+>>> --- a/include/linux/pci.h
+>>> +++ b/include/linux/pci.h
+>>> @@ -551,6 +551,7 @@ struct pci_host_bridge {
+>>>    	unsigned int	preserve_config:1;	/* Preserve FW resource setup */
+>>>    	unsigned int	size_windows:1;		/* Enable root bus sizing */
+>>>    	unsigned int	no_msi:1;		/* Bridge has no MSI support */
+>>> +	unsigned int	msi_domain:1;		/* Bridge wants MSI domain */
+>>
+>> Aren't these really the same thing? Either way we're saying the bridge
+>> itself doesn't handle MSIs, it's just in one case we're effectively
+>> encoding a platform-specific assumption that an external domain won't
+>> be provided. I can't help wondering whether that distinction is really
+>> necessary...
 > 
-> Lokesh Gidra who works on the Android JVM, provided an explanation of how
-> such a feature will improve Android JVM garbage collection:
-> "Android is developing a new garbage collector (GC), based on userfaultfd.
-> The garbage collector will use userfaultfd (uffd) on the java heap during
-> compaction. On accessing any uncompacted page, the application threads will
-> find it missing, at which point the thread will create the compacted page
-> and then use UFFDIO_COPY ioctl to get it mapped and then resume execution.
-> Before starting this compaction, in a stop-the-world pause the heap will be
-> mremap(MREMAP_DONTUNMAP) so that the java heap is ready to receive
-> UFFD_EVENT_PAGEFAULT events after resuming execution.
+> There is a subtle difference: no_msi indicates that there is no way
+> *any* MSI can be dealt with whatsoever (maybe because the RC doesn't
+> forward the corresponding TLPs?). msi_domain says "no MSI unless...".
 
-Pretty interesting idea :-)
+PCI says that MSIs are simply memory writes at the transaction level, so 
+AFAIK unless the host bridge can't support DMA at all, it shouldn't be 
+in a position to make any assumptions about what transactions mean what.
 
-> 
-> To speedup mremap operations, pagetable movement was optimized by moving
-> PUD entries instead of PTE entries [1]. It was necessary as mremap of even
-> modest sized memory ranges also took several milliseconds, and stopping the
-> application for that long isn't acceptable in response-time sensitive
-> cases.
-> 
-> With UFFDIO_CONTINUE feature [2], it will be even more efficient to
-> implement this GC, particularly the 'non-moveable' portions of the heap.
-> It will also help in reducing the need to copy (UFFDIO_COPY) the pages.
-> However, for this to work, the java heap has to be on a 'shared' vma.
-> Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this
-> patch will enable using UFFDIO_CONTINUE for the new userfaultfd-based heap
-> compaction."
-> 
-> [1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
-> [2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
-> 
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Tested-by: Lokesh Gidra <lokeshgidra@google.com>
+I suppose there could in theory be an issue in the other direction, 
+where config space somehow didn't allow access to the MSI capability in 
+the first place, but then we'd presumably just never detect any device 
+as being MSI-capable in the first place, and it wouldn't matter either way.
 
-Reviewed-by: Dmitry Safonov <0x7f454c46@gmail.com>
+> We could implement the former with the latter, but I have the feeling
+> that's not totally bullet proof. Happy to revisit this if you think it
+> really matters.
 
-Thanks,
-Dmitry
+I would expect it to be a fairly safe assumption that a host bridge 
+which "doesn't support MSIs" wouldn't have an msi-parent set, but I 
+don't have a strong opinion either way - I just figured we could 
+probably save a little bit of complexity here.
+
+Cheers,
+Robin.
