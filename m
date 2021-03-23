@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60D9346D34
+	by mail.lfdr.de (Postfix) with ESMTP id 6816D346D33
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbhCWWeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbhCWWaw (ORCPT
+        id S233994AbhCWWd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:33:57 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:35514 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233517AbhCWWau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:30:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61313C061763;
-        Tue, 23 Mar 2021 15:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GxysH/sfU1TRUv+WvnZiMSjg/sA1NBgFdqQhe6AYykM=; b=fRUKQx2x/zx7PmmwJts4MHI/NR
-        95iESrw7QXBgCBBbHUerY5stBfvIU3FFM5LEb8AY63U0y+k2XQLC487fqYIxQeLMf5C71vLiuof8p
-        shoIy+C57BF0nF2GLWWI+NhGOHK0s53vggCD3M+K6G9Ie2FZJFp7AxqHSJWnixj7CRIZX9xPkgwOY
-        D1qwNz2tlvwp2eSKrF6FSOTXBf8X+dzktmiH/UMa0JqxgW+xDIiFHybb57zN0sV/421FR6+nVXUEL
-        x13slsZ7B6edcstfJ3f17yNst264htMW9mtI4m3TWUbNHGAO9SmuP/UAfvdF+pmuT1Zl/AUczJWTZ
-        gxTrZZbg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOpXM-00Abyu-Hv; Tue, 23 Mar 2021 22:30:10 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AF73A9864F6; Tue, 23 Mar 2021 23:30:07 +0100 (CET)
-Date:   Tue, 23 Mar 2021 23:30:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v4 10/12] x86/kprobes: Push a fake return address at
- kretprobe_trampoline
-Message-ID: <20210323223007.GG4746@worktop.programming.kicks-ass.net>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
- <161639530062.895304.16962383429668412873.stgit@devnote2>
+        Tue, 23 Mar 2021 18:30:50 -0400
+Received: by mail-io1-f42.google.com with SMTP id x17so8184832iog.2;
+        Tue, 23 Mar 2021 15:30:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z0xQqmzALS2FhLdkzcWSihGa+FeQuFbmAwvE7tjw9YI=;
+        b=hg6pON8MGD4ng0CsW4feWL7PSpiFAc/AXBUmtQzdV4Jyy3mXfqa7Vm3cZCmj1WC92b
+         u/z4juipN77P5SfFtRqsBYFCRi2pPeq61VKFCESU53yP8Xt2z7GXC7rpmHHKqRBg3EcI
+         A1d4ctGwR3Ig4Z0UKnENGgz1Y+0KvYfvlFsJ1oeSSdwvL0+ZnlUcpvEFoxv8l08/+XyH
+         IbqOjPMyYimiSM+vJ+/QyqHxOGnyqZ4nfmSxoF/hl837LDoG6gEQMcjOUdmlYnqi8/gm
+         PwXphgbKHTl8v9rNmXwwThPkb9P8i8kXluFwQ2QiTxNLhXrkeZKC0QVDDYR6APHmRTrJ
+         w2Mw==
+X-Gm-Message-State: AOAM532hcjggdnAqbSlH8zXjF+ID731Wu9Jn97w/N2IK50+kTc/1aq5c
+        ftj8pMw3kye57Tz5nJJRAQ==
+X-Google-Smtp-Source: ABdhPJyp2GyxLMCUzepm+Z+ITtn/OVbU1LfwLQWNFPA34sQJ/S7koa026FSCFUPs4pbKlfdAi0qdVA==
+X-Received: by 2002:a5d:9959:: with SMTP id v25mr238442ios.189.1616538647518;
+        Tue, 23 Mar 2021 15:30:47 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id x6sm107877ioh.19.2021.03.23.15.30.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 15:30:46 -0700 (PDT)
+Received: (nullmailer pid 1463268 invoked by uid 1000);
+        Tue, 23 Mar 2021 22:30:44 -0000
+Date:   Tue, 23 Mar 2021 16:30:44 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Devera <devik@eaxlabs.cz>
+Cc:     Le Ray <erwan.leray@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        fabrice.gasnier@foss.st.com, linux-kernel@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Subject: Re: [PATCH v7 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
+Message-ID: <20210323223044.GA1463209@robh.at.kernel.org>
+References: <1615559009.788146.2976052.nullmailer@robh.at.kernel.org>
+ <20210312153702.12349-1-devik@eaxlabs.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161639530062.895304.16962383429668412873.stgit@devnote2>
+In-Reply-To: <20210312153702.12349-1-devik@eaxlabs.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:41:40PM +0900, Masami Hiramatsu wrote:
->  	".global kretprobe_trampoline\n"
->  	".type kretprobe_trampoline, @function\n"
->  	"kretprobe_trampoline:\n"
->  #ifdef CONFIG_X86_64
+On Fri, 12 Mar 2021 16:37:01 +0100, Martin Devera wrote:
+> Add new rx-tx-swap property to allow for RX & TX pin swapping.
+> 
+> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> ---
+> v7:
+>   - fix yaml linter warning
+> v6:
+>   - add version changelog
+> v5:
+>   - yaml fixes based on Rob Herring comments
+>     - add serial.yaml reference
+>     - move compatible from 'then' to 'if'
+> v3:
+>   - don't allow rx-tx-swap for st,stm32-uart (suggested
+>     by Fabrice Gasnier)
+> v2:
+>   - change st,swap to rx-tx-swap (suggested by Rob Herring)
+> ---
+>  .../devicetree/bindings/serial/st,stm32-uart.yaml  | 29 ++++++++++++++--------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+> 
 
-So what happens if we get an NMI here? That is, after the RET but before
-the push? Then our IP points into the trampoline but we've not done that
-push yet.
-
-> +	/* Push fake return address to tell the unwinder it's a kretprobe */
-> +	"	pushq $kretprobe_trampoline\n"
->  	UNWIND_HINT_FUNC
-> +	/* Save the sp-8, this will be fixed later */
-> +	"	pushq %rsp\n"
->  	"	pushfq\n"
->  	SAVE_REGS_STRING
->  	"	movq %rsp, %rdi\n"
->  	"	call trampoline_handler\n"
->  	RESTORE_REGS_STRING
-> +	"	addq $8, %rsp\n"
->  	"	popfq\n"
+Reviewed-by: Rob Herring <robh@kernel.org>
