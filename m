@@ -2,94 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CB3345E53
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B5A345E48
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhCWMio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbhCWMiY (ORCPT
+        id S230365AbhCWMhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:37:55 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:35073 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhCWMhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:38:24 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B7AC061574;
-        Tue, 23 Mar 2021 05:38:23 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id v2so11550156pgk.11;
-        Tue, 23 Mar 2021 05:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=1A1x6rnbVrqFAZgFlS5moMGgnUzPHz2Psn4t+8eo22E=;
-        b=ToSaHNA3NTnHzdwfC4D2/IRpHgKy3G/Yea1Zg11GFtQg6hKD/XI753YfjflN4hRfQa
-         +qsj+z53hdZ7PoGUrin1hxu9vZSJbcd/fJvR0Yc46Ztngo1ubYCZ4h5F7SEpFDbipUSV
-         lNaoucTboXuCboxC+44nj878gKFQ456Cu5ptmtSuVx/g0LXuF4zuPp7Q16ZS8M/x4+XR
-         wSeY9yYCnpInKtycZw1tPHGrSNrCKBFhM23e3XwYnFql/IjGkiNXYtfAMVZ+nRW8DPGP
-         Q4+8h8fltRfC8oYLB65O64pL8E3EShpOJL5h2ilepdHJvAmXYDmvXGf51nzNAGFZ/A5R
-         +9lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1A1x6rnbVrqFAZgFlS5moMGgnUzPHz2Psn4t+8eo22E=;
-        b=ryUnA/PBQE32lQpNTJcmPTAq6FdaYvaIl7R4BgF0Mk27LJo1qUJ7WFDmeC0c9iNYKi
-         59w8lcB5UTrOpsmjE/4s3ruv3/L7IoyfgzsRGb9mEjSFq1oLAkq1KsDlsKLiBQX0T33R
-         8FKS4dJwj5BdmEvlE1bu56la/YSALnOLeL8nTpuPlj15e8tr9Ttq178UwDhUV8r4VQJy
-         0Sg1uB1311UKd602efuR/iiAP4HFIio32DNt9dvrSvpweh6ppyF18Ak5MJh/2jLr8FYa
-         qlXRZ4dxDj4jzZR0wokqJ4NlIFTZDHPk0Kh0NjOqDwo9olLYtgTQwOjbh+5e6LZpwAgK
-         L/uQ==
-X-Gm-Message-State: AOAM530KZ6sLt3fvqKMJ1OVKcNQhXJOo5inV04HYw/2563FVjsaiyVdW
-        GIU5tT9p2pi1MVKRv+BxsMY=
-X-Google-Smtp-Source: ABdhPJybH2X41CmpPj1jVAY5imx9xQTG0VEOCNZVnc6T6J6lFgYPian7xrOeFeU52lovwRpNIQ3Nmw==
-X-Received: by 2002:a63:5c1e:: with SMTP id q30mr3734328pgb.259.1616503103539;
-        Tue, 23 Mar 2021 05:38:23 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.113])
-        by smtp.gmail.com with ESMTPSA id j35sm17087811pgj.45.2021.03.23.05.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 05:38:23 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        weiyongjun1@huawei.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH v2] usb: gadget: legacy: fix error return code of msg_bind()
-Date:   Tue, 23 Mar 2021 05:36:48 -0700
-Message-Id: <20210323123648.3997-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 23 Mar 2021 08:37:37 -0400
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 923A0283530;
+        Tue, 23 Mar 2021 20:37:35 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AHoA7gBvDieBN0w9ILASHaqg.3.1616503055590.Hmail.wangqing@vivo.com>
+To:     Petr Mladek <pmladek@suse.com>, Tejun Heo <tj@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andrey Ignatov <rdna@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWMl0gd29ya3F1ZXVlOiB3YXRjaGRvZzogdXBkYXRlIHdxX3dhdGNoZG9nX3RvdWNoZWQgZm9yIHVuYm91bmQgbG9ja3VwIGNoZWNraW5n?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <YFh4kWFZTw4wSOq3@alley>
+MIME-Version: 1.0
+Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 23 Mar 2021 20:37:35 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Tue, 23 Mar 2021 20:37:35 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZShkZSx9NSxpKTUMZVkpNSk1OS0hLTk5NSk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JSUxLT0xLSEhNN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6MxQ6TBw5DT8SHjk1SwxCMjc6KDMaChxVSFVKTUpNTktIS05NS0tDVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBTE9CTjcG
+X-HM-Tid: 0a785f1724f29395kuws923a0283530
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When usb_otg_descriptor_alloc() returns NULL to usb_desc, no error
-return code of msg_bind() is assigned.
-To fix this bug, status is assigned with -ENOMEM in this case.
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
-v2:
-* Fix a mistake in the report.
-  Thank Greg for good advice.
-
----
- drivers/usb/gadget/legacy/mass_storage.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/gadget/legacy/mass_storage.c b/drivers/usb/gadget/legacy/mass_storage.c
-index 9ed22c5fb7fe..ac1741126619 100644
---- a/drivers/usb/gadget/legacy/mass_storage.c
-+++ b/drivers/usb/gadget/legacy/mass_storage.c
-@@ -175,8 +175,10 @@ static int msg_bind(struct usb_composite_dev *cdev)
- 		struct usb_descriptor_header *usb_desc;
- 
- 		usb_desc = usb_otg_descriptor_alloc(cdev->gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto fail_string_ids;
-+		}
- 		usb_otg_descriptor_init(cdev->gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
--- 
-2.17.1
-
+Cj5PbiBGcmkgMjAyMS0wMy0xOSAxNjowMDozNiwgV2FuZyBRaW5nIHdyb3RlOgo+PiBXaGVuIHRv
+dWNoX3NvZnRsb2NrdXBfd2F0Y2hkb2coKSBpcyBjYWxsZWQsIG9ubHkgd3Ffd2F0Y2hkb2dfdG91
+Y2hlZF9jcHUgCj4+IHVwZGF0ZWQsIHdoaWxlIHRoZSB1bmJvdW5kIHdvcmtlcl9wb29sIHJ1bm5p
+bmcgb24gaXRzIGNvcmUgdXNlcyAKPj4gd3Ffd2F0Y2hkb2dfdG91Y2hlZCB0byBkZXRlcm1pbmUg
+d2hldGhlciBsb2NrZWQgdXAuIFRoaXMgbWF5IGJlIG1pc2NoZWNrZWQuCj4KPkJ5IG90aGVyIHdv
+cmRzLCB1bmJvdW5kIHdvcmtxdWV1ZXMgYXJlIG5vdCBhd2FyZSBvZiB0aGUgbW9yZSBjb21tb24K
+PnRvdWNoX3NvZnRsb2NrdXBfd2F0Y2hkb2coKSBiZWNhdXNlIGl0IHVwZGF0ZXMgb25seQo+d3Ff
+d2F0Y2hkb2dfdG91Y2hlZF9jcHUgZm9yIHRoZSBhZmZlY3RlZCBDUFUuIEFzIGEgcmVzdWx0LAo+
+dGhlIHdvcmtxdWV1ZSB3YXRjaGRvZyBtaWdodCByZXBvcnQgbG9ja3VwIGluIHVuYm91bmQgd29y
+a3F1ZXVlCj5ldmVuIHRob3VnaCBpdCBpcyBibG9ja2VkIGJ5IGEga25vd24gc2xvdyBjb2RlLgoK
+WWVzLCB0aGlzIGlzIHRoZSBwcm9ibGVtIEknbSB0YWxraW5nIGFib3V0Lgo+Cj4+IE15IHN1Z2dl
+c3Rpb24gaXMgdG8gdXBkYXRlIGJvdGggd2hlbiB0b3VjaF9zb2Z0bG9ja3VwX3dhdGNoZG9nKCkg
+aXMgY2FsbGVkLCAKPj4gdXNlIHdxX3dhdGNoZG9nX3RvdWNoZWRfY3B1IHRvIGNoZWNrIGJvdW5k
+LCBhbmQgdXNlIHdxX3dhdGNoZG9nX3RvdWNoZWQgCj4+IHRvIGNoZWNrIHVuYm91bmQgd29ya2Vy
+X3Bvb2wuCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBXYW5nIFFpbmcgPHdhbmdxaW5nQHZpdm8uY29t
+Pgo+PiAtLS0KPj4gIGtlcm5lbC93YXRjaGRvZy5jICB8ICA1ICsrKy0tCj4+ICBrZXJuZWwvd29y
+a3F1ZXVlLmMgfCAxNyArKysrKystLS0tLS0tLS0tLQo+PiAgMiBmaWxlcyBjaGFuZ2VkLCA5IGlu
+c2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQo+PiAKPj4gZGlmZiAtLWdpdCBhL2tlcm5lbC93
+YXRjaGRvZy5jIGIva2VybmVsL3dhdGNoZG9nLmMKPj4gaW5kZXggNzExMDkwNi4uMTA3YmMzOAo+
+PiAtLS0gYS9rZXJuZWwvd2F0Y2hkb2cuYwo+PiArKysgYi9rZXJuZWwvd2F0Y2hkb2cuYwo+PiBA
+QCAtMjc4LDkgKzI3OCwxMCBAQCB2b2lkIHRvdWNoX2FsbF9zb2Z0bG9ja3VwX3dhdGNoZG9ncyh2
+b2lkKQo+PiAgCSAqIHVwZGF0ZSBhcyB3ZWxsLCB0aGUgb25seSBzaWRlIGVmZmVjdCBtaWdodCBi
+ZSBhIGN5Y2xlIGRlbGF5IGZvcgo+PiAgCSAqIHRoZSBzb2Z0bG9ja3VwIGNoZWNrLgo+PiAgCSAq
+Lwo+PiAtCWZvcl9lYWNoX2NwdShjcHUsICZ3YXRjaGRvZ19hbGxvd2VkX21hc2spCj4+ICsJZm9y
+X2VhY2hfY3B1KGNwdSwgJndhdGNoZG9nX2FsbG93ZWRfbWFzaykgewo+PiAgCQlwZXJfY3B1KHdh
+dGNoZG9nX3RvdWNoX3RzLCBjcHUpID0gU09GVExPQ0tVUF9SRVNFVDsKPj4gLQl3cV93YXRjaGRv
+Z190b3VjaCgtMSk7Cj4+ICsJCXdxX3dhdGNoZG9nX3RvdWNoKGNwdSk7Cj4KPk5vdGUgdGhhdCB3
+cV93YXRjaGRvZ190b3VjaChjcHUpIG5ld2x5IGFsd2F5cyB1cGRhdGVzCj53cV93YXRjaGRvZ190
+b3VjaGVkLiBUaGlzIGN5Y2xlIHdpbGwgc2V0IHRoZSBzYW1lIGppZmZpZXMKPnZhbHVlIGNwdS10
+aW1lcyB0byB0aGUgc2FtZSB2YXJpYWJsZS4KPgpBbHRob3VnaCB0aGVyZSBpcyBhIGJpdCBvZiBy
+ZWR1bmRhbmN5IGhlcmUsIGJ1dCB0aGUgbW9zdCBjb25jaXNlIHdheSBvZiAKaW1wbGVtZW50YXRp
+b24sIGFuZCBpdCBpcyBjZXJ0YWluIHRoYXQgaXQgd2lsbCBub3QgYWZmZWN0IHBlcmZvcm1hbmNl
+LgoKPj4gKwl9Cj4+ICB9Cj4+ICAKPj4gIHZvaWQgdG91Y2hfc29mdGxvY2t1cF93YXRjaGRvZ19z
+eW5jKHZvaWQpCj4+IGRpZmYgLS1naXQgYS9rZXJuZWwvd29ya3F1ZXVlLmMgYi9rZXJuZWwvd29y
+a3F1ZXVlLmMKPj4gaW5kZXggMGQxNTBkYS4uYmUwODI5NQo+PiAtLS0gYS9rZXJuZWwvd29ya3F1
+ZXVlLmMKPj4gKysrIGIva2VybmVsL3dvcmtxdWV1ZS5jCj4+IEBAIC01Nzg3LDIyICs1Nzg3LDE3
+IEBAIHN0YXRpYyB2b2lkIHdxX3dhdGNoZG9nX3RpbWVyX2ZuKHN0cnVjdCB0aW1lcl9saXN0ICp1
+bnVzZWQpCj4+ICAJCQljb250aW51ZTsKPj4gIAo+PiAgCQkvKiBnZXQgdGhlIGxhdGVzdCBvZiBw
+b29sIGFuZCB0b3VjaGVkIHRpbWVzdGFtcHMgKi8KPj4gKwkJaWYgKHBvb2wtPmNwdSA+PSAwKQo+
+PiArCQkJdG91Y2hlZCA9IFJFQURfT05DRShwZXJfY3B1KHdxX3dhdGNoZG9nX3RvdWNoZWRfY3B1
+LCBwb29sLT5jcHUpKTsKPj4gKwkJZWxzZQo+PiArCQkJdG91Y2hlZCA9IFJFQURfT05DRSh3cV93
+YXRjaGRvZ190b3VjaGVkKTsKPj4gIAkJcG9vbF90cyA9IFJFQURfT05DRShwb29sLT53YXRjaGRv
+Z190cyk7Cj4+IC0JCXRvdWNoZWQgPSBSRUFEX09OQ0Uod3Ffd2F0Y2hkb2dfdG91Y2hlZCk7Cj4+
+ICAKPj4gIAkJaWYgKHRpbWVfYWZ0ZXIocG9vbF90cywgdG91Y2hlZCkpCj4+ICAJCQl0cyA9IHBv
+b2xfdHM7Cj4+ICAJCWVsc2UKPj4gIAkJCXRzID0gdG91Y2hlZDsKPj4gIAo+PiAtCQlpZiAocG9v
+bC0+Y3B1ID49IDApIHsKPj4gLQkJCXVuc2lnbmVkIGxvbmcgY3B1X3RvdWNoZWQgPQo+PiAtCQkJ
+CVJFQURfT05DRShwZXJfY3B1KHdxX3dhdGNoZG9nX3RvdWNoZWRfY3B1LAo+PiAtCQkJCQkJICBw
+b29sLT5jcHUpKTsKPj4gLQkJCWlmICh0aW1lX2FmdGVyKGNwdV90b3VjaGVkLCB0cykpCj4+IC0J
+CQkJdHMgPSBjcHVfdG91Y2hlZDsKPj4gLQkJfQo+PiAtCj4+ICAJCS8qIGRpZCB3ZSBzdGFsbD8g
+Ki8KPj4gIAkJaWYgKHRpbWVfYWZ0ZXIoamlmZmllcywgdHMgKyB0aHJlc2gpKSB7Cj4+ICAJCQls
+b2NrdXBfZGV0ZWN0ZWQgPSB0cnVlOwo+PiBAQCAtNTgyNiw4ICs1ODIxLDggQEAgbm90cmFjZSB2
+b2lkIHdxX3dhdGNoZG9nX3RvdWNoKGludCBjcHUpCj4+ICB7Cj4+ICAJaWYgKGNwdSA+PSAwKQo+
+PiAgCQlwZXJfY3B1KHdxX3dhdGNoZG9nX3RvdWNoZWRfY3B1LCBjcHUpID0gamlmZmllczsKPj4g
+LQllbHNlCj4+IC0JCXdxX3dhdGNoZG9nX3RvdWNoZWQgPSBqaWZmaWVzOwo+PiArCj4+ICsJd3Ff
+d2F0Y2hkb2dfdG91Y2hlZCA9IGppZmZpZXM7Cj4+ICB9Cj4+ICAKPj4gIHN0YXRpYyB2b2lkIHdx
+X3dhdGNoZG9nX3NldF90aHJlc2godW5zaWduZWQgbG9uZyB0aHJlc2gpCj4KPlRoaXMgbGFzdCBo
+dW5rIGlzIGVub3VnaCB0byBmaXggdGhlIHByb2JsZW0uIHdxX3dhdGNoZG9nX3RvdWNoZWQgd2ls
+bAo+Z2V0IHVwZGF0ZWQgYWxzbyBmcm9tIGNwdS1zcGVjaWZpYyB0b3VjaF9zb2Z0bG9ja3VwX3dh
+dGNoZG9nKCkuCgpOb3QgZW5vdWdoIGluIGZhY3QsIGJlY2F1c2Ugd3Ffd2F0Y2hkb2dfdG91Y2hl
+ZCB3YXMgdXBkYXRlZCBpbiB3cV93YXRjaGRvZ190b3VjaCgpLCAKc28gd3Ffd2F0Y2hkb2dfdG91
+Y2hlZCBjYW4gbm8gbG9uZ2VyIGJlIHVzZWQgdG8ganVkZ2UgdGhlIGJvdW5kIHBvb2wsIHdlIG11
+c3QgdXBkYXRlIApldmVyeSB3cV93YXRjaGRvZ190b3VjaGVkX2NwdSBpbiB0b3VjaF9hbGxfc29m
+dGxvY2t1cF93YXRjaGRvZ3MoKSBmb3IgYm91bmQganVkZ21lbnQuCgpUaGFua3MsClFpbmcgV2Fu
+Zwo+Cj5UaGUgb3JpZ2luYWwgcGF0Y2ggc2ltcGxpZmllZCB0aGUgbG9naWMgb2Ygd3Ffd2F0Y2hk
+b2dfdGltZXJfZm4oKS4KPkJ1dCBpdCBhZGRlZCB1bi1uZWNlc3NhcnkgYXNzaWdubWVudHMgaW50
+bwo+dG91Y2hfYWxsX3NvZnRsb2NrdXBfd2F0Y2hkb2dzKHZvaWQpLgo+Cj5JIGRvIG5vdCBoYXZl
+IHN0cm9uZyBvcGluaW9uIHdoYXQgc29sdXRpb24gaXMgYmV0dGVyLiBJIHNsaWdodGx5Cj5wcmVm
+ZXIgdG8ga2VlcCBvbmx5IHRoaXMgbGFzdCBodW5rLgo+Cj5CZXN0IFJlZ2FyZHMsCj5QZXRyCg0K
+DQo=
