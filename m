@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE8934650F
+	by mail.lfdr.de (Postfix) with ESMTP id D39BC346511
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhCWQ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        id S233304AbhCWQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233152AbhCWQ0X (ORCPT
+        with ESMTP id S233169AbhCWQ0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:26:23 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AC0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:23 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id f26so1525080qtq.17
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:23 -0700 (PDT)
+        Tue, 23 Mar 2021 12:26:25 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D98FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:25 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id e129so3143441yba.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=XPRq1W/wuES2HJCP2WXgJHm10YoXyWPHE5kWVTMZXI4=;
-        b=Z2BuAR3KJ1S3vRUxnuAIr23jCEDLS3JCMZT54LNGkWacyQ5/tTVzFNsfhXV/iifyf0
-         UMYh70Gvk7dGWuubbFlPUZmxni1D3bn7Dbes24AkjDkZIhRl9yC61pAzMKtkgENZx4kq
-         P+PBjD9MqmAGYbHpeZ0eXb0f2gJQaARF2P4aw6hlq0gtwPIEulhe3cHJ+VyoIZZawZ6X
-         399Z71YgRFMGdFR4U7X7D4jxBeOCuP19SB37meORrEb9mLXtGlOBevosPF7Sp/OENwcK
-         uCCiXL/7rQjdgagMSw6Cd2396aEhXZvrYrO7PQ1RO0jnYXmc/nKMcko3Wd22ptqvvEdb
-         OK6Q==
+        bh=XqDxfe4GGK69zvJtB/kYAUp+QZJt4kx+lv6J7Sr9tRs=;
+        b=BN4R/SJlfmcF5MRIrxPoBwW20iiC/MHlTCW0VYed+6puAkNQS0W8hNYSc0z3VZrKU7
+         SdXClPSNc/C/NYsLV4vTi4vZNc0/AGi6qDvqmUlUHAWNi4uLCVSE5gkZW6mJVHRL99mI
+         ltJGMNh4n8loh4cIEsHnQsKiC39Ni2bg1YeHvygmRR2iWfGS8EZTOCZ0I1Vx0j9d9YYP
+         cZ8DxeGA/D6uP80gCQxVsnPLg8Gp/0X4PGa1LkJArMpKk0FZ8bqNE7gVDZcdP2rFckJK
+         ufL1CAcGTTDMXnnUszwKKTePG8XQ5cGF2FOgn72T31iZNhUwepjLyvL4po2DtVT06tOU
+         u08w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=XPRq1W/wuES2HJCP2WXgJHm10YoXyWPHE5kWVTMZXI4=;
-        b=KVxf5Q0vBAAIZkYO7xkrGu0WnwcygPZK+X1yXwZsbD++7R7kCK8VXJ6+rbI5bfRMR3
-         nNTXQKrqoThIcpzeZ6lpIpGdKoSm0gQuBcFbmGENLcCfiKuP0wdmxmJGn9LZCGMy2pRs
-         Pt9mFXzmIfQwM7YVxo1FLH+yOif/6e/ev9y5bJdjJ+TakFWsi+9sPmtJdOw02QnLAN8R
-         bbwqFUKPK8iBAkl+KRc4vJc9pLGUBXe2KlV4SPNqvQ3UsX4n0W0JRivUdKWME/XNULlM
-         whwW9Q5+1vsGfhfL5CRO0QudHM3QwqNpkhPWVY6EBWL0RTHeZTVhWiodNA27/n9qdY+t
-         tvxg==
-X-Gm-Message-State: AOAM5334ND1JGhn9jblj+7pBPvqSKHAxDi/CO1XgVB/lsN1UvulHzO8o
-        f89WgZljX2vO+jo6Q6/zxyAcYkKTm1ES
-X-Google-Smtp-Source: ABdhPJyGdN/dicqW1iEYZxwWdGQCRoITAp4US/P7dcpV3ycZ/tXYuvuxuUYPrt1uW3ocUDX9KfMawrcaeZ3W
+        bh=XqDxfe4GGK69zvJtB/kYAUp+QZJt4kx+lv6J7Sr9tRs=;
+        b=qG5ST2SHCFw3oJJ0ke0UF1CdhmejH+qVNAsq9tbp4Piwy5QXzYKCeKcgYzeJKNDkqh
+         waN4xiW7LU9utIRPy/+qy3veDH13pX8ZqhcicSHyZ+9mtS3g2n6GSTwswxUd1jUH6UuH
+         Bya10LGTvid9Vef2rQPySFDBEpGbMYl+54btTfm0aCGCZJ3xYkoMnDihHTsMH0Q19MVe
+         somFifeGgSWYfF53JrFD7W+s6eayPwTzGk5/meP5CM1/zlsEMHFaQeT9iTWIFZ8+6ttM
+         viOmY41OsLpUh3g+hQAdVYeqvRhQs5DR6t29Gndn7V/W+kictrt2JahTJ4308OJsZGq4
+         rYbw==
+X-Gm-Message-State: AOAM532fJstPMcRZvku3LbUcpo8xcOaS2unOlm9PpAHVgbxa9ai7U1Tz
+        ATb8DIQrV92NcJZzsz3/I9uVh3X3xdd5
+X-Google-Smtp-Source: ABdhPJyY6VFYJLcVfPwJqFGB/P8vkSlXhFXE+bJzCD7z0F2IHTQD7BmT8z01lHuh89TOcB3QZeNXivPGk6B0
 X-Received: from bg.sfo.corp.google.com ([2620:15c:8:10:b5cc:cacb:2875:ae6e])
- (user=bgeffon job=sendgmr) by 2002:a05:6214:80a:: with SMTP id
- df10mr6038618qvb.46.1616516782596; Tue, 23 Mar 2021 09:26:22 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:26:10 -0700
+ (user=bgeffon job=sendgmr) by 2002:a25:58c5:: with SMTP id
+ m188mr6582856ybb.286.1616516784790; Tue, 23 Mar 2021 09:26:24 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:26:11 -0700
 In-Reply-To: <20210323162611.2398613-1-bgeffon@google.com>
-Message-Id: <20210323162611.2398613-3-bgeffon@google.com>
+Message-Id: <20210323162611.2398613-4-bgeffon@google.com>
 Mime-Version: 1.0
 References: <20210303175235.3308220-1-bgeffon@google.com> <20210323162611.2398613-1-bgeffon@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v4 3/3] selftests: Add a MREMAP_DONTUNMAP selftest for shmem
+Subject: [PATCH] mremap.2: MREMAP_DONTUNMAP to reflect to supported mappings
 From:   Brian Geffon <bgeffon@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Axel Rasmussen <axelrasmussen@google.com>,
@@ -75,84 +75,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This test extends the current mremap tests to validate that
-the MREMAP_DONTUNMAP operation can be performed on shmem mappings.
+mremap(2) now supports MREMAP_DONTUNMAP with mapping types other
+than private anonymous.
 
 Signed-off-by: Brian Geffon <bgeffon@google.com>
 ---
- tools/testing/selftests/vm/mremap_dontunmap.c | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ man2/mremap.2 | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/mremap_dontunmap.c b/tools/testing/selftests/vm/mremap_dontunmap.c
-index 3a7b5ef0b0c6..f01dc4a85b0b 100644
---- a/tools/testing/selftests/vm/mremap_dontunmap.c
-+++ b/tools/testing/selftests/vm/mremap_dontunmap.c
-@@ -127,6 +127,57 @@ static void mremap_dontunmap_simple()
- 	       "unable to unmap source mapping");
- }
- 
-+// This test validates that MREMAP_DONTUNMAP on a shared mapping works as expected.
-+static void mremap_dontunmap_simple_shmem()
-+{
-+	unsigned long num_pages = 5;
-+
-+	int mem_fd = memfd_create("memfd", MFD_CLOEXEC);
-+	BUG_ON(mem_fd < 0, "memfd_create");
-+
-+	BUG_ON(ftruncate(mem_fd, num_pages * page_size) < 0,
-+			"ftruncate");
-+
-+	void *source_mapping =
-+	    mmap(NULL, num_pages * page_size, PROT_READ | PROT_WRITE,
-+		 MAP_FILE | MAP_SHARED, mem_fd, 0);
-+	BUG_ON(source_mapping == MAP_FAILED, "mmap");
-+
-+	BUG_ON(close(mem_fd) < 0, "close");
-+
-+	memset(source_mapping, 'a', num_pages * page_size);
-+
-+	// Try to just move the whole mapping anywhere (not fixed).
-+	void *dest_mapping =
-+	    mremap(source_mapping, num_pages * page_size, num_pages * page_size,
-+		   MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
-+	if (dest_mapping == MAP_FAILED && errno == EINVAL) {
-+		// Old kernel which doesn't support MREMAP_DONTUNMAP on shmem.
-+		BUG_ON(munmap(source_mapping, num_pages * page_size) == -1,
-+			"unable to unmap source mapping");
-+		return;
-+	}
-+
-+	BUG_ON(dest_mapping == MAP_FAILED, "mremap");
-+
-+	// Validate that the pages have been moved, we know they were moved if
-+	// the dest_mapping contains a's.
-+	BUG_ON(check_region_contains_byte
-+	       (dest_mapping, num_pages * page_size, 'a') != 0,
-+	       "pages did not migrate");
-+
-+	// Because the region is backed by shmem, we will actually see the same
-+	// memory at the source location still.
-+	BUG_ON(check_region_contains_byte
-+	       (source_mapping, num_pages * page_size, 'a') != 0,
-+	       "source should have no ptes");
-+
-+	BUG_ON(munmap(dest_mapping, num_pages * page_size) == -1,
-+	       "unable to unmap destination mapping");
-+	BUG_ON(munmap(source_mapping, num_pages * page_size) == -1,
-+	       "unable to unmap source mapping");
-+}
-+
- // This test validates MREMAP_DONTUNMAP will move page tables to a specific
- // destination using MREMAP_FIXED, also while validating that the source
- // remains intact.
-@@ -300,6 +351,7 @@ int main(void)
- 	BUG_ON(page_buffer == MAP_FAILED, "unable to mmap a page.");
- 
- 	mremap_dontunmap_simple();
-+	mremap_dontunmap_simple_shmem();
- 	mremap_dontunmap_simple_fixed();
- 	mremap_dontunmap_partial_mapping();
- 	mremap_dontunmap_partial_mapping_overwrite();
+diff --git a/man2/mremap.2 b/man2/mremap.2
+index 3ed0c0c0a..72acbc111 100644
+--- a/man2/mremap.2
++++ b/man2/mremap.2
+@@ -118,16 +118,6 @@ This flag, which must be used in conjunction with
+ remaps a mapping to a new address but does not unmap the mapping at
+ .IR old_address .
+ .IP
+-The
+-.B MREMAP_DONTUNMAP
+-flag can be used only with private anonymous mappings
+-(see the description of
+-.BR MAP_PRIVATE
+-and
+-.BR MAP_ANONYMOUS
+-in
+-.BR mmap (2)).
+-.IP
+ After completion,
+ any access to the range specified by
+ .IR old_address
+@@ -227,7 +217,8 @@ was specified, but one or more pages in the range specified by
+ .IR old_address
+ and
+ .IR old_size
+-were not private anonymous;
++were part of a special mapping or the mapping is one that
++does not support merging or expanding;
+ .IP *
+ .B MREMAP_DONTUNMAP
+ was specified and
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
