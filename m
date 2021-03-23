@@ -2,149 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3A634652B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65613346528
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhCWQ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:29:48 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:52298 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbhCWQ3J (ORCPT
+        id S233328AbhCWQ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:29:37 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50604 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233300AbhCWQ3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:29:09 -0400
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 50D0D20B5684;
-        Tue, 23 Mar 2021 09:29:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 50D0D20B5684
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616516949;
-        bh=wWC5laX9IDoCEzRycyyox6gck/DlbB0qqaILtReIe6U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iPUPVcwmfeMhzq1717y6BGYGBREhAWaqdduP7d4jTpKVtV7/H1LEu3fWDh1tj97fD
-         EzOFr41L/K7sPQ4k6l1bIfC8h+m+n2wiQ8akx1j9Gei1ev0QY4cwdRcEvgjt3GAN+4
-         cVBtI+GtUiCejLxglJ5xKlArX1QLgS17MMB7jeaQ=
-Received: by mail-pj1-f46.google.com with SMTP id t18so10305421pjs.3;
-        Tue, 23 Mar 2021 09:29:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533CHoXVFEko43kX6Pj3KP+qarHUg5yqQpaIGOq0n7YJJ8BguPp/
-        6RmmMMRGXDsQ66OweGtHARHevz3vyC8bj+Fhp80=
-X-Google-Smtp-Source: ABdhPJzKNVedOi+ZW5BsUCPk7n1vLnsCXUlcFkk0/uFRDBsAS9TmrDgU5Gk7RN5Bmx35cH9o65pTPHJHYuPlBRoxuK4=
-X-Received: by 2002:a17:90a:f190:: with SMTP id bv16mr5136541pjb.187.1616516948785;
- Tue, 23 Mar 2021 09:29:08 -0700 (PDT)
+        Tue, 23 Mar 2021 12:29:03 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NGOKux165187;
+        Tue, 23 Mar 2021 16:28:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=1ScIhvLv6Nes4C4m0+RtwcGa3nJPqdKwu0NBXEnpmZw=;
+ b=l/u8XudfeM39hQbOXyPViMwviv5lB6VzlmNEZnNEG2JxnzOJnqfwI2xYbXMtkaTcK2Bs
+ qcuv8vhIFsiGCyoVPK+rW5s4gEq+QBA7teBzSwVRqTwnVI10PRGrpZP86EUJIR1uO/o9
+ XI27/RecCcUk2dTr6wuZwZiwmcW/ua7WM3a+nv/Q0tT/KorlLkdCosbp5L54LWq1HqHW
+ H7Qbgr+l3UTnyLOWPuhUSl34UExJL8+S9vq9NrfiAokwjLdOCyiQ+Z36H9URoAeScagM
+ KzwPjVKWunhpB9mHNT+QMsRjioY7b7PuPHPCcOvqkKxracYMUBxzM8OIdr5TLEy2YHss 6w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 37d9pmyps4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 16:28:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12NGKPA4136233;
+        Tue, 23 Mar 2021 16:28:40 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
+        by aserp3020.oracle.com with ESMTP id 37dtxyfe58-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 16:28:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q5JMq3e7Vvsqg1dAOEye5dxvRjYXdOu9O4a02qleYtFjH/uORXS3itCxZG4YCctEDri7J0gwHz02QDU5drdAidFjiq+GkI//Np0BELhQ8PGuxeSF3D73CQT1RjX8K0q8TOgA9WlIA0IoX9mHNxGRu/Pb/SwFIkSQBqJvPjiLUdlcJC76BmtLUV1DEbVCQgvyd6ehC6QWQZInQN6a+na9nMiPLBPajUi8nlHRZn18gcNtxh872V7U3uS9i2N1fNQap/gxASort4r/lPiZnDtvqGgfo0HxT6q7bwQ/QOLWFM70l7eyw1s/yUdSY/W4EF5BGmw42voNPwBc4i0NpaPufg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1ScIhvLv6Nes4C4m0+RtwcGa3nJPqdKwu0NBXEnpmZw=;
+ b=SS6yeTUtEix8c7r6DNM3Tdusdxk4MaC/4XMBzZRyJ/aE8LF2ugcgaCLL/s/3nPuwX9ZeVKX1oYsl3+zujeIbN63mhY06ht2+VgDATOV2nfQdsvShPjtZQHwlhw+F9mWY4E+35BRftYcIbE0tHgvhxmN2WmPlUY3o5kmJmYTlXUMhVQhAorpDFx/7IEKyJEewym3vrEKTEG9lYi+wNOKVY/hSm8Xkc+3HPnk3l+TYVRvQeYoMRbK7QyvqI122XQXS4NYcCFg+9tW/YHw2lAqRQcjMN7ifgtkPt+yglhvY7KgT87Ld+8je7mxMAGRWPiQozBeYVdeHr81sXNkpppryAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1ScIhvLv6Nes4C4m0+RtwcGa3nJPqdKwu0NBXEnpmZw=;
+ b=lkeM9eAy9FPy8kTMQA3eET2z5yO/NOyJvvQOFalDUqH4P7VXJoK9yALThaQ0/W5MBaryyd5UbZm78oLHhGQ/LHo28blxVtfClJV7DP7fLrUmgAmozmLJhp0goqEu47kfurfM+3MtUmwfRaWfoqdRTBgZdF0nfPlGZ47IELRuf88=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
+ by BY5PR10MB4226.namprd10.prod.outlook.com (2603:10b6:a03:210::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
+ 2021 16:28:38 +0000
+Received: from BYAPR10MB3573.namprd10.prod.outlook.com
+ ([fe80::50bb:7b66:35ee:4a4]) by BYAPR10MB3573.namprd10.prod.outlook.com
+ ([fe80::50bb:7b66:35ee:4a4%7]) with mapi id 15.20.3955.025; Tue, 23 Mar 2021
+ 16:28:38 +0000
+Subject: Re: [PATCH] target: Fix a double put in transport_free_session
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210323025851.11782-1-lyl2019@mail.ustc.edu.cn>
+From:   michael.christie@oracle.com
+Message-ID: <9d02b016-c924-79e3-9593-c073da0c769d@oracle.com>
+Date:   Tue, 23 Mar 2021 11:28:35 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
+In-Reply-To: <20210323025851.11782-1-lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [73.88.28.6]
+X-ClientProxiedBy: DM5PR18CA0064.namprd18.prod.outlook.com
+ (2603:10b6:3:22::26) To BYAPR10MB3573.namprd10.prod.outlook.com
+ (2603:10b6:a03:11e::32)
 MIME-Version: 1.0
-References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
- <20210323154112.131110-1-alobakin@pm.me> <YFoNoohTULmcpeCr@enceladus>
- <20210323170447.78d65d05@carbon> <YFoTBm0mJ4GyuHb6@enceladus>
-In-Reply-To: <YFoTBm0mJ4GyuHb6@enceladus>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 17:28:32 +0100
-X-Gmail-Original-Message-ID: <CAFnufp1K+t76n9shfOZB_scV7myUWCTXbB+yf5sr-8ORYQxCEQ@mail.gmail.com>
-Message-ID: <CAFnufp1K+t76n9shfOZB_scV7myUWCTXbB+yf5sr-8ORYQxCEQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [20.15.0.5] (73.88.28.6) by DM5PR18CA0064.namprd18.prod.outlook.com (2603:10b6:3:22::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 16:28:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a5ce6aa2-e7fa-4d83-fc05-08d8ee18b626
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4226:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR10MB4226C84C6068D80B60D56317F1649@BY5PR10MB4226.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VoBW5mp93IghqmQ2Lbac2Xf9lZ37kWhRmHlfyCpIK7NOloKcJy0MyjJkhCQ7qaTD7la/0ZZR5dU44YuM8OdshyIvA6UgBWigkDCjih8nz4OJI5Yi56JCNj8A854ZtgLA18pEekT4ahyHaY3tt20egLjDi7uqOJNSbIIGTboLzNuumu9Un0yBMip3L+WuiIqxmm6XZ2jj8/rGtCvHm1VWURU5x1zdgLrWlcuVxA0uKW5DwPy6/A/UwCj3h30YSjZS40RyQ33m6NcWiiMq0gxdewl/I3c2mJFVZehQhulwFHf+LqgDqyRm5+eklLZQxUxmwoIZSs1hKN/ZQ5koDuvp0T4EIPeSCub6gmSys7IcvRTV5Yu25GrhD2U2ybwvkpUqWdN+xYlojOObyzupERjmqRER4X/fCIpd9vewMuBXvP0CYOllcKJeogrJXr/LALjMIvvPLR1QdqlyzviU8zbMlHxTe8oOf61cLEuTW3nsxxtOobZMpccv6vd1cYR+ibiPpb7e5yJOGnM1XgijNDapEog1k2/AptFmJYEJcBD024MmY/tLitHQyC7eaUuKZMXxwNBoJzz3EFinBBY0Nv0mbtBUG5YUKbw+sVDs05C1YyzdTpraPrBZykraq77IYvfDhn17W0j5FNLCYCvCeR0NzuB2HlEmm9JtG2OjdPEVwxA+dQfjYyD+7i4sbn45Use/pSWWwzcJqacHMrkqtw0fHQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(346002)(136003)(396003)(9686003)(26005)(2906002)(478600001)(66946007)(16576012)(316002)(5660300002)(86362001)(8676002)(66476007)(4326008)(31686004)(66556008)(6486002)(186003)(16526019)(8936002)(53546011)(38100700001)(2616005)(83380400001)(31696002)(6706004)(36756003)(956004)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NHhlbExQdDBJOXJkNHFZNXliNVJrYmlUWFhYSlhScFZrOTYwU2ZLZXA5VWVv?=
+ =?utf-8?B?aFUxZGdma3VtcW95OU5oTm5ROXpMUm1DRHBOQXlCRXpuVncxcmhGU2JwbHg3?=
+ =?utf-8?B?THJwTTR6cTVWUlY5b3QxMkxHZmJxeVBXUDdqRUhTQXhUZVJUdzIvVFNENWJz?=
+ =?utf-8?B?MythUHlQRnZkakk1c1A0a21YWU9aN050MS9VTGlaNUcySDhwbDJhVUZMRWRK?=
+ =?utf-8?B?aENPQlZxUVo5MXRDSkJ4eXdGb2JEa0NKQWhEc0FwdCtUUmdBRkpzang1THdB?=
+ =?utf-8?B?eVowL1d4L3lES0NDZHJlLys2K25mTGgrT3RIL1lxcWJ0MTZneDluN0ozNDZ6?=
+ =?utf-8?B?bkpLYUlzYVJIYk5CMWw1WjhJTFNSazNObVNRQWtkWWk0cW1UcWJFY3QraTMv?=
+ =?utf-8?B?cE9VQmxZUU1pT2ZoRVhMSUZKU2p1cmdCV1pQVDVjRU8wN1VFOENwMG1Xckx1?=
+ =?utf-8?B?V0hobkp6M1FDV21wMS9wcU1qWXYrczZFSUc3WVZMTWNtRjRuODg0OWh3ZDh1?=
+ =?utf-8?B?d3NGTGhhZ1F4dFR6L2c5WGlzcnZPOGpibDQ2Rm5kQlRnUW1odFlQb3Z2K1Bs?=
+ =?utf-8?B?eTQrWnFXQ2dRN01lVmZMajlXRnZvdHE4RFFJcEFHVE1XL1IrK2k1ZEU5NjEz?=
+ =?utf-8?B?QklWbTE3VVN4R2wvRnF5TWtTS0ZyNitIcThFSFA3RDRoOHlxdktCTFZlZ1pr?=
+ =?utf-8?B?WkZoL3pUR0l5MEVLSWVjMDVDQjlxanNWM2NZYU9yRkJMNjhrYlBiRDVjRFUw?=
+ =?utf-8?B?NS93R0tGNVFEbVVCeWZzZFc1T2pScTRwNEVNRDFNT29oczBrL1ljYmRDMWJy?=
+ =?utf-8?B?ay9LVWN3YzZNWUJBUHBXaXlncW9oSGF2VHoxUWFXc0ExK2QwdHFxYzZ0RTlR?=
+ =?utf-8?B?bHlzRTUwODlpcFd6NDNhZ01JMXRwektOQUZkYnhqc0xTL0RvbForNEFCMU5l?=
+ =?utf-8?B?end1SDRRQnNvQklBckVhM2ZKT0hTQlZoZHVGOUZjb3Q3UGJ0aE5ldlQvWUIy?=
+ =?utf-8?B?WnUwRURBMGFiMEhlT253TEU0bVVZNW1SbE5vWE1FUTlkYWdzcDVCdVRIU0ZJ?=
+ =?utf-8?B?WERidVJEMlkzMWNNZGdVUHg4OCtBK1Y1S0RiY01HM0QydjZlZlhCdm5HMUJa?=
+ =?utf-8?B?U3QyOU54QW1ucXlIWmtTSGZpdWtoOHZ0bkZTQXQ2RGY5dS9SK1hGSkIrVGtL?=
+ =?utf-8?B?bk0wbkV5SXphYmcvYVc3MzRPTE9tbHdQYjhmajdiTE9YSnkwTVp1KzA0TCtl?=
+ =?utf-8?B?K1NGTkpKbUR3dmM2WVVETXZnY3U1QTVaVFFHaVM1KzkydHVWUEVJWFgvNHZ3?=
+ =?utf-8?B?U3dSTFU1b0pCcEZxc1JzMWFQTnROZ0crRk0vSjA1KzJpN3IyZzU0aVhyZnQ5?=
+ =?utf-8?B?LytzZW1ScGVySU5sNWJZQ0NNNUoyN1AwL0ZwN1kwQXVJMWlLOFQ0WTB3ZGt6?=
+ =?utf-8?B?NWd5ejJFQVVPNlpEMmR4MUcwOTdPZmp0RGtJeGRoMnIwWTdlYVRPWjgzK29V?=
+ =?utf-8?B?SGQvNDlZZG4zckl2YkVzVEV5K01sYk5LL2VPODdyTm9zbDRDd0wxMFpOZVl4?=
+ =?utf-8?B?VWY1ZDhVVXc0cWF3SW5sUXdPUVYxYkR2RjNQcjNDYzRXdTNJSnZwb01SRzkx?=
+ =?utf-8?B?VGowdTJjWjY2ZUZLa1BYUDNTL0krRHhvaFNNVC9oYXhrMnRFTk4yUEZNUElK?=
+ =?utf-8?B?STlldmcvemhtdjVaVElaQzMxUXdtZ29oNm54UkREaHVEUGVnUjVuL29Rdzhj?=
+ =?utf-8?Q?OFMSXPsOwjhci1/jEEuHauTOxrts/YDVNQtVtmL?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5ce6aa2-e7fa-4d83-fc05-08d8ee18b626
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 16:28:37.9686
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N1QGXEBv1i1byYehc+hKAjwO01Zg2UAKyYrDbJBHNqFXn1u2w1sVhpOy+ORXC+Ml7x+AL+M+06GNcm4G1CiEvgt1ZTB5pSk2NBZ+E4MV5ms=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4226
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103230119
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
+ adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103230119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 5:10 PM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> On Tue, Mar 23, 2021 at 05:04:47PM +0100, Jesper Dangaard Brouer wrote:
-> > On Tue, 23 Mar 2021 17:47:46 +0200
-> > Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
-> >
-> > > On Tue, Mar 23, 2021 at 03:41:23PM +0000, Alexander Lobakin wrote:
-> > > > From: Matteo Croce <mcroce@linux.microsoft.com>
-> > > > Date: Mon, 22 Mar 2021 18:02:55 +0100
-> > > >
-> > > > > From: Matteo Croce <mcroce@microsoft.com>
-> > > > >
-> > > > > This series enables recycling of the buffers allocated with the page_pool API.
-> > > > > The first two patches are just prerequisite to save space in a struct and
-> > > > > avoid recycling pages allocated with other API.
-> > > > > Patch 2 was based on a previous idea from Jonathan Lemon.
-> > > > >
-> > > > > The third one is the real recycling, 4 fixes the compilation of __skb_frag_unref
-> > > > > users, and 5,6 enable the recycling on two drivers.
-> > > > >
-> > > > > In the last two patches I reported the improvement I have with the series.
-> > > > >
-> > > > > The recycling as is can't be used with drivers like mlx5 which do page split,
-> > > > > but this is documented in a comment.
-> > > > > In the future, a refcount can be used so to support mlx5 with no changes.
-> > > > >
-> > > > > Ilias Apalodimas (2):
-> > > > >   page_pool: DMA handling and allow to recycles frames via SKB
-> > > > >   net: change users of __skb_frag_unref() and add an extra argument
-> > > > >
-> > > > > Jesper Dangaard Brouer (1):
-> > > > >   xdp: reduce size of struct xdp_mem_info
-> > > > >
-> > > > > Matteo Croce (3):
-> > > > >   mm: add a signature in struct page
-> > > > >   mvpp2: recycle buffers
-> > > > >   mvneta: recycle buffers
-> > > > >
-> > > > >  .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
-> > > > >  drivers/net/ethernet/marvell/mvneta.c         |  4 +-
-> > > > >  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
-> > > > >  drivers/net/ethernet/marvell/sky2.c           |  2 +-
-> > > > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
-> > > > >  include/linux/mm_types.h                      |  1 +
-> > > > >  include/linux/skbuff.h                        | 33 +++++++++++--
-> > > > >  include/net/page_pool.h                       | 15 ++++++
-> > > > >  include/net/xdp.h                             |  5 +-
-> > > > >  net/core/page_pool.c                          | 47 +++++++++++++++++++
-> > > > >  net/core/skbuff.c                             | 20 +++++++-
-> > > > >  net/core/xdp.c                                | 14 ++++--
-> > > > >  net/tls/tls_device.c                          |  2 +-
-> > > > >  13 files changed, 138 insertions(+), 26 deletions(-)
-> > > >
-> > > > Just for the reference, I've performed some tests on 1G SoC NIC with
-> > > > this patchset on, here's direct link: [0]
-> > > >
-> > >
-> > > Thanks for the testing!
-> > > Any chance you can get a perf measurement on this?
-> >
-> > I guess you mean perf-report (--stdio) output, right?
-> >
->
-> Yea,
-> As hinted below, I am just trying to figure out if on Alexander's platform the
-> cost of syncing, is bigger that free-allocate. I remember one armv7 were that
-> was the case.
->
-> > > Is DMA syncing taking a substantial amount of your cpu usage?
-> >
-> > (+1 this is an important question)
-> >
-> > > >
-> > > > [0] https://lore.kernel.org/netdev/20210323153550.130385-1-alobakin@pm.me
-> > > >
-> >
+On 3/22/21 9:58 PM, Lv Yunlong wrote:
+> In transport_free_session, se_nacl is got from se_sess
+> with the initial reference. If se_nacl->acl_sess_list is
+> empty, se_nacl->dynamic_stop is set to true. Then the first
+> target_put_nacl(se_nacl) will drop the initial reference
+> and free se_nacl. Later there is a second target_put_nacl()
+> to put se_nacl. It may cause error in race.
+>> My patch sets se_nacl->dynamic_stop to false to avoid the
+> double put.
+> 
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/target/target_core_transport.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+> index 5ecb9f18a53d..c266defe694f 100644
+> --- a/drivers/target/target_core_transport.c
+> +++ b/drivers/target/target_core_transport.c
+> @@ -584,8 +584,10 @@ void transport_free_session(struct se_session *se_sess)
+>  		}
+>  		mutex_unlock(&se_tpg->acl_node_mutex);
+>  
+> -		if (se_nacl->dynamic_stop)
+> +		if (se_nacl->dynamic_stop) {
+>  			target_put_nacl(se_nacl);
+> +			se_nacl->dynamic_stop = false;
+> +		}
+>  
+>  		target_put_nacl(se_nacl);
+Could you describe the race a little more?
 
-That would be the same as for mvneta:
+Is the race:
 
-Overhead  Shared Object     Symbol
-  24.10%  [kernel]          [k] __pi___inval_dcache_area
-  23.02%  [mvneta]          [k] mvneta_rx_swbm
-   7.19%  [kernel]          [k] kmem_cache_alloc
+1. thread1 called core_tpg_check_initiator_node_acl and found the acl.
+sess->se_node_acl is set to the found acl.
+2. thread2 is running transport_free_session. It now grabs the acl_node_mutex
+and sees se_nacl->acl_sess_list is empty.
+3. thread2 does the dynamic_stop=true operations in transport_free_session.
+4. thread1 now calls transport_register_session now adds the sess to acl's
+acl_sess_list.
 
-Anyway, I tried to use the recycling *and* napi_build_skb on mvpp2,
-and I get lower packet rate than recycling alone.
-I don't know why, we should investigate it.
+Later when the session that thread 1 created is deleted dynamic_stop is still
+set, so we do an extra target_put_nacl?
 
-Regards,
--- 
-per aspera ad upstream
+I'm not sure your patch will handle this race. When we delete the session thread1
+created dynamic_node_acl is still set, so this:
+
+                mutex_lock(&se_tpg->acl_node_mutex);
+                if (se_nacl->dynamic_node_acl &&
+                    !se_tfo->tpg_check_demo_mode_cache(se_tpg)) {
+                        spin_lock_irqsave(&se_nacl->nacl_sess_lock, flags);
+                        if (list_empty(&se_nacl->acl_sess_list))
+                                se_nacl->dynamic_stop = true;
+
+can set dynamic_stop to true again and we can end up doing the extra put still.
+
+On top of the extra put we also do
+
+list_del(&se_nacl->acl_list);
+
+twice so we have to handle that as well.
+
+Is there also another bug in this code. If someone adds an acl while there is a
+dynamic acl in place core_tpg_add_initiator_node_acl will clear dynamic_node_acl
+but we leave the extra reference, so later when transport_free_session is called
+we will not do the extra put.
+
