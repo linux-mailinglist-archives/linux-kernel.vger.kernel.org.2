@@ -2,79 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F959345BEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34838345BF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhCWKcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:32:04 -0400
-Received: from mga18.intel.com ([134.134.136.126]:65353 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230281AbhCWKbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:31:32 -0400
-IronPort-SDR: XLWhfbc7hpmMh5uXYyjgFI/NwVtP0qCNAh9DLrVVaaQC3bvRzcCEGl8WAqQ4R7qyJYnG3cttMn
- HAP6CacVFduQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="178013997"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="178013997"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 03:31:31 -0700
-IronPort-SDR: sao+WvMsGOPTn2Hd9AC/1S3XYw2MZOrDmssNUZc3q0bPAbFWqq+8GlpN7WSDtbrmM9fVIe2GfN
- 6cW4xNtqbiwQ==
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="408258631"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 03:31:29 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lOeJr-00EzHw-56; Tue, 23 Mar 2021 12:31:27 +0200
-Date:   Tue, 23 Mar 2021 12:31:27 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH v1 1/5] mfd: intel_quark_i2c_gpio: revert "Constify
- static struct resources"
-Message-ID: <YFnDf9A0Vq6cFtPi@smile.fi.intel.com>
-References: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
- <20210323091453.GL2916463@dell>
+        id S230315AbhCWKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230165AbhCWKcO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:32:14 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FD2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:32:14 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id bf3so22858606edb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:32:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Kj12+mxvJ+i0/4H7ureazLhFHG7dYKE3ygASVGopRQQ=;
+        b=FSIKeYJf+uFoy0axmgrUr3YHA2I7tlG8QWeuFLnPpnZ0xj0FNf1dePYs1iVi3JXWLl
+         ZuFdXFUyA7ZTOG9tTIdXpeo5cPWoJ/SvwuPPr6LODQ4tr0SUzyRHMtlxMlZkpg6zmf5e
+         1R6lCjslbnH/TSiEJdxClxzUkJMiFrvHw7DfQwTTIH3HP05862NtZuyyBVWzJdglhViN
+         +l6Lc4eL+TNpac2050T+mE2Nus8HAHoDVW31cJ4fPsrFD+pCPxoY/HWayr1/fX+pRx4L
+         CCEW+nbeZaa4wikdhzmRGK/2xQIPHFHu8uu/zgIKCQpmVceIVawsTpQTuu1oZ0PTPSBL
+         GrrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Kj12+mxvJ+i0/4H7ureazLhFHG7dYKE3ygASVGopRQQ=;
+        b=VNtjnyAB+gVENWgSOhpDIAjOeld9UHg6Vr+UFVpQK2XNe92Xg37/FEZuxFIDq1WOOR
+         R8Butn7p3n+Ry5q8ephvcf2xiGxFPeApzjzzTEhLgx/MXHoqB1nG6Cq9KjVbH8vttaj0
+         YznfL6C6CLYrBBqRzr50IkyRxjUP9YN/e0Pg6r+ExYa5z3qZjwrxUB74luXwMZ+mk9HF
+         11pW/mVQM40oST9YC5E0iFVKVpRa8/H4PCovyqkns29oRW8T6H401TCwTf72QGl9Tc3g
+         qeaIb/eTYQY01zi0H9yWcqztp94y2s8SVRmgmV/zF+y7+gvfESDN6bHFQnrmZOv2vCNw
+         cmLg==
+X-Gm-Message-State: AOAM532V/OaiX9wYS0tcxIDaQYEChCHuari696LtrkzrUKaoOzMlYlBu
+        RmwUn0gA3JXd15yFuufPxDXbPB/Q/C2+qUiKLvMwxw==
+X-Google-Smtp-Source: ABdhPJzM+8QH6hxX6iAId1BUNdMppRlPxMX3AX6Gb0uf6j+kdf2PeF288dIYDS7XYPqJiDLT4E638Usa97qyksl4x78=
+X-Received: by 2002:aa7:d416:: with SMTP id z22mr3833201edq.239.1616495532435;
+ Tue, 23 Mar 2021 03:32:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323091453.GL2916463@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210322121919.936671417@linuxfoundation.org>
+In-Reply-To: <20210322121919.936671417@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 23 Mar 2021 16:01:56 +0530
+Message-ID: <CA+G9fYsKJOvt=6dzEkmpqAnoST2F2-ZM=_cS2Kh9tEytNwvj2A@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/43] 4.19.183-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 09:14:53AM +0000, Lee Jones wrote:
-> On Tue, 02 Mar 2021, Andy Shevchenko wrote:
-> 
-> > The structures are used as place holders, so they are modified at run-time.
-> > Obviously they may not be constants.
-> > 
-> >   BUG: unable to handle page fault for address: d0643220
-> >   ...
-> >   CPU: 0 PID: 110 Comm: modprobe Not tainted 5.11.0+ #1
-> >   Hardware name: Intel Corp. QUARK/GalileoGen2, BIOS 0x01000200 01/01/2014
-> >   EIP: intel_quark_mfd_probe+0x93/0x1c0 [intel_quark_i2c_gpio]
-> > 
-> > This partially reverts the commit c4a164f41554d2899bed94bdcc499263f41787b4.
-> > 
-> > While at it, add a comment to avoid similar changes in the future.
-> > 
-> > Fixes: c4a164f41554 ("mfd: Constify static struct resources")
-> > Cc: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  drivers/mfd/intel_quark_i2c_gpio.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> Applied to -fixes for testing, thanks.
+On Mon, 22 Mar 2021 at 18:20, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.183 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.183-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Thanks!
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+Summary
+------------------------------------------------------------------------
 
+kernel: 4.19.183-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 155590e98805144ae9800805ca98d3edcd2228de
+git describe: v4.19.182-44-g155590e98805
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.182-44-g155590e98805
+
+No regressions (compared to build v4.19.182)
+
+No fixes (compared to build v4.19.182)
+
+Ran 55402 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- powerpc
+- qemu-arm-debug
+- qemu-arm64-clang
+- qemu-arm64-debug
+- qemu-arm64-kasan
+- qemu-i386-debug
+- qemu-x86_64-clang
+- qemu-x86_64-debug
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-kvm
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kvm-unit-tests
+* ltp-fs-tests
+* network-basic-tests
+* perf
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* fwts
+* rcutorture
+* igt-gpu-tools
+* ssuite
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
