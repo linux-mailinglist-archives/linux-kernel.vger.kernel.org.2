@@ -2,131 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B3B34697E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF89A346985
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbhCWUBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:01:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48998 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233109AbhCWUAs (ORCPT
+        id S230048AbhCWUEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:04:25 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:56039 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhCWUDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:00:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616529647;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bNZnjO42gjVhs5dIrJp7IOz6pVwoWDKxlsrX2l5lccI=;
-        b=GkP4e5zYn0sx1lEtQLtJ+pUjdVfc6qYijPmjs6Cs9PkP03xBOutam4eJdjaWf7Zby5z9VI
-        34b5r44hJulKUNbJ5ZPcO7GnaLcYjw3tRZazzyEBPL9HF6fljKpaabHPvuYAhhOwPTZ9R1
-        zGzems3okq3w/qOov9EiSvC6VkCZSDg=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-118-R1piomdUMUyqAdnDYRScSw-1; Tue, 23 Mar 2021 16:00:45 -0400
-X-MC-Unique: R1piomdUMUyqAdnDYRScSw-1
-Received: by mail-ej1-f72.google.com with SMTP id en21so1557755ejc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:00:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bNZnjO42gjVhs5dIrJp7IOz6pVwoWDKxlsrX2l5lccI=;
-        b=c+2/2ja5N280vjgCvpXctYrCvJrJu8KSQ05cvS3hq3Xrz4xDGS1AVFMkaNzKH6bLE/
-         pQ1YmXWzlNQHtr6NY3n1TGJuj9mdrYxZ3Di+fvi8kCasfqetaT0+3V37zg6PV/phq+WX
-         WSli6kjF2r9SESB9vjHnHYHyPIznEonyp/Pb9DrxrDhCCzeuRorBHIhttCIMfl4cby5B
-         KWmYeZ+GRcOzWqH8tg9K/FGv5YeDKZ0cOB3gqcwbnA7q8fMNe8befK4PTVKzZvC+2xGd
-         K8wLFyemgFzcx3jp4rxmac29zPVftjUuDp9xbXESGMcPpdwCi/gX7SUmGm8V6a/d2jTN
-         jM8w==
-X-Gm-Message-State: AOAM530VtuSDJGh/ty3obWHr9LAEUuzE61Ipi4lwCSXWVIbZYyF1T6J6
-        PpUbIJUICFD84AA7LQD99wGSvPHjh9zS3vSOIb/ZuqXMyAHey5nIMEmvvh4bZg7Vrf5MrHnaB3A
-        A0nYO2Gwr2hmZgdFAdZp9mEwu
-X-Received: by 2002:a05:6402:4407:: with SMTP id y7mr6211375eda.247.1616529644232;
-        Tue, 23 Mar 2021 13:00:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwh2ay7mE48Qtx5mN3z/Kd46hbrymSoqNAOGINWQybomqJrcMyzc0xZMTC0DqTMcMpgPmXOOA==
-X-Received: by 2002:a05:6402:4407:: with SMTP id y7mr6211358eda.247.1616529644103;
-        Tue, 23 Mar 2021 13:00:44 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id f21sm11620875ejw.124.2021.03.23.13.00.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 13:00:43 -0700 (PDT)
-Subject: Re: [PATCH] asus-laptop: fix kobj_to_dev.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        acpi4asus-user@lists.sourceforge.net
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, Denis Efremov <efremov@linux.com>
-References: <alpine.DEB.2.22.394.2103171258010.2981@hadrien>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <6e2b729c-11c7-cdf9-18cc-8d3aa988e134@redhat.com>
-Date:   Tue, 23 Mar 2021 21:00:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 23 Mar 2021 16:03:52 -0400
+Date:   Tue, 23 Mar 2021 20:03:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1616529830; bh=KzQfT9TlC/HL+PAaYny121WxluMck+pIoVeudAPRlxs=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=XxMdhfeHie96mRVGyP/C8uaM55wnnyIASJEQ+hp8QHascdyICmoiYUh1wI8P24IK8
+         wqKEOFUlU4lrvSX1lsK3fugyI26dF70RSaLbcTrA7Pfl1qmISXUoa0uz+csTPZfAaH
+         P61buRnQ06GwQMZ4Bihhr8S46Kr97+LA+0g88bXxqwfHcXG7+/LzO5LICChnNmPd8R
+         G/P5KVhqRiTvsqWvykYHjEiG3/xyRypYsf+G91g8OhhpA5PU4iatgMN4cqqYtxC97L
+         bURkxvT7FpCjVe3zUoEBx0r4K0M2WGC6r1jpsp6rfHDt14g+gbj8/kfHNiAd8X5uNX
+         8vDC5MNhJJQvw==
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
+Message-ID: <20210323200338.578264-1-alobakin@pm.me>
+In-Reply-To: <YFofANKiR3tD9zgm@enceladus>
+References: <20210322170301.26017-1-mcroce@linux.microsoft.com> <20210323154112.131110-1-alobakin@pm.me> <YFoNoohTULmcpeCr@enceladus> <20210323170447.78d65d05@carbon> <YFoTBm0mJ4GyuHb6@enceladus> <CAFnufp1K+t76n9shfOZB_scV7myUWCTXbB+yf5sr-8ORYQxCEQ@mail.gmail.com> <20210323165523.187134-1-alobakin@pm.me> <YFofANKiR3tD9zgm@enceladus>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2103171258010.2981@hadrien>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Tue, 23 Mar 2021 19:01:52 +0200
 
-On 3/17/21 1:00 PM, Julia Lawall wrote:
-> From: kernel test robot <lkp@intel.com>
-> 
-> Use kobj_to_dev() instead of container_of()
-> 
-> Generated by: scripts/coccinelle/api/kobj_to_dev.cocci
-> 
-> CC: Denis Efremov <efremov@linux.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> On Tue, Mar 23, 2021 at 04:55:31PM +0000, Alexander Lobakin wrote:
+> > > > > > >
+>
+> [...]
+>
+> > > > > >
+> > > > > > Thanks for the testing!
+> > > > > > Any chance you can get a perf measurement on this?
+> > > > >
+> > > > > I guess you mean perf-report (--stdio) output, right?
+> > > > >
+> > > >
+> > > > Yea,
+> > > > As hinted below, I am just trying to figure out if on Alexander's p=
+latform the
+> > > > cost of syncing, is bigger that free-allocate. I remember one armv7=
+ were that
+> > > > was the case.
+> > > >
+> > > > > > Is DMA syncing taking a substantial amount of your cpu usage?
+> > > > >
+> > > > > (+1 this is an important question)
+> >
+> > Sure, I'll drop perf tools to my test env and share the results,
+> > maybe tomorrow or in a few days.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Oh we-e-e-ell...
+Looks like I've been fooled by I-cache misses or smth like that.
+That happens sometimes, not only on my machines, and not only on
+MIPS if I'm not mistaken.
+Sorry for confusing you guys.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+I got drastically different numbers after I enabled CONFIG_KALLSYMS +
+CONFIG_PERF_EVENTS for perf tools.
+The only difference in code is that I rebased onto Mel's
+mm-bulk-rebase-v6r4.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+(lunar is my WIP NIC driver)
 
-Regards,
+1. 5.12-rc3 baseline:
 
-Hans
+TCP: 566 Mbps
+UDP: 615 Mbps
 
+perf top:
+     4.44%  [lunar]              [k] lunar_rx_poll_page_pool
+     3.56%  [kernel]             [k] r4k_wait_irqoff
+     2.89%  [kernel]             [k] free_unref_page
+     2.57%  [kernel]             [k] dma_map_page_attrs
+     2.32%  [kernel]             [k] get_page_from_freelist
+     2.28%  [lunar]              [k] lunar_start_xmit
+     1.82%  [kernel]             [k] __copy_user
+     1.75%  [kernel]             [k] dev_gro_receive
+     1.52%  [kernel]             [k] cpuidle_enter_state_coupled
+     1.46%  [kernel]             [k] tcp_gro_receive
+     1.35%  [kernel]             [k] __rmemcpy
+     1.33%  [nf_conntrack]       [k] nf_conntrack_tcp_packet
+     1.30%  [kernel]             [k] __dev_queue_xmit
+     1.22%  [kernel]             [k] pfifo_fast_dequeue
+     1.17%  [kernel]             [k] skb_release_data
+     1.17%  [kernel]             [k] skb_segment
 
-> ---
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   1df27313f50a57497c1faeb6a6ae4ca939c85a7d
-> commit: a2fc3718bc22e85378085568ecc5765fb28cabce coccinelle: api: add kobj_to_dev.cocci script
-> :::::: branch date: 5 hours ago
-> :::::: commit date: 7 months ago
-> 
->  asus-laptop.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/drivers/platform/x86/asus-laptop.c
-> +++ b/drivers/platform/x86/asus-laptop.c
-> @@ -1569,7 +1569,7 @@ static umode_t asus_sysfs_is_visible(str
->  				    struct attribute *attr,
->  				    int idx)
->  {
-> -	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct device *dev = kobj_to_dev(kobj);
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  	acpi_handle handle = asus->handle;
->  	bool supported;
-> 
+free_unref_page() and get_page_from_freelist() consume a lot.
+
+2. 5.12-rc3 + Page Pool recycling by Matteo:
+TCP: 589 Mbps
+UDP: 633 Mbps
+
+perf top:
+     4.27%  [lunar]              [k] lunar_rx_poll_page_pool
+     2.68%  [lunar]              [k] lunar_start_xmit
+     2.41%  [kernel]             [k] dma_map_page_attrs
+     1.92%  [kernel]             [k] r4k_wait_irqoff
+     1.89%  [kernel]             [k] __copy_user
+     1.62%  [kernel]             [k] dev_gro_receive
+     1.51%  [kernel]             [k] cpuidle_enter_state_coupled
+     1.44%  [kernel]             [k] tcp_gro_receive
+     1.40%  [kernel]             [k] __rmemcpy
+     1.38%  [nf_conntrack]       [k] nf_conntrack_tcp_packet
+     1.37%  [kernel]             [k] free_unref_page
+     1.35%  [kernel]             [k] __dev_queue_xmit
+     1.30%  [kernel]             [k] skb_segment
+     1.28%  [kernel]             [k] get_page_from_freelist
+     1.27%  [kernel]             [k] r4k_dma_cache_inv
+
++20 Mbps increase on both TCP and UDP. free_unref_page() and
+get_page_from_freelist() dropped down the list significantly.
+
+3. 5.12-rc3 + Page Pool recycling + PP bulk allocator (Mel & Jesper):
+TCP: 596
+UDP: 641
+
+perf top:
+     4.38%  [lunar]              [k] lunar_rx_poll_page_pool
+     3.34%  [kernel]             [k] r4k_wait_irqoff
+     3.14%  [kernel]             [k] dma_map_page_attrs
+     2.49%  [lunar]              [k] lunar_start_xmit
+     1.85%  [kernel]             [k] dev_gro_receive
+     1.76%  [kernel]             [k] free_unref_page
+     1.76%  [kernel]             [k] __copy_user
+     1.65%  [kernel]             [k] inet_gro_receive
+     1.57%  [kernel]             [k] tcp_gro_receive
+     1.48%  [kernel]             [k] cpuidle_enter_state_coupled
+     1.43%  [nf_conntrack]       [k] nf_conntrack_tcp_packet
+     1.42%  [kernel]             [k] __rmemcpy
+     1.25%  [kernel]             [k] skb_segment
+     1.21%  [kernel]             [k] r4k_dma_cache_inv
+
++10 Mbps on top of recycling.
+get_page_from_freelist() is gone.
+NAPI polling, CPU idle cycle (r4k_wait_irqoff) and DMA mapping
+routine became the top consumers.
+
+4-5. __always_inline for rmqueue_bulk() and __rmqueue_pcplist(),
+removing 'noinline' from net/core/page_pool.c etc.
+
+...makes absolutely no sense anymore.
+I see Mel took Jesper's patch to make __rmqueue_pcplist() inline into
+mm-bulk-rebase-v6r5, not sure if it's really needed now.
+
+So I'm really glad we sorted out the things and I can see the real
+performance improvements from both recycling and bulk allocations.
+
+> > From what I know for sure about MIPS and my platform,
+> > post-Rx synching (dma_sync_single_for_cpu()) is a no-op, and
+> > pre-Rx (dma_sync_single_for_device() etc.) is a bit expensive.
+> > I always have sane page_pool->pp.max_len value (smth about 1668
+> > for MTU of 1500) to minimize the overhead.
+> >
+> > By the word, IIRC, all machines shipped with mvpp2 have hardware
+> > cache coherency units and don't suffer from sync routines at all.
+> > That may be the reason why mvpp2 wins the most from this series.
+>
+> Yep exactly. It's also the reason why you explicitly have to opt-in using=
+ the
+> recycling (by marking the skb for it), instead of hiding the feature in t=
+he
+> page pool internals
+>
+> Cheers
+> /Ilias
+>
+> >
+> > > > > > >
+> > > > > > > [0] https://lore.kernel.org/netdev/20210323153550.130385-1-al=
+obakin@pm.me
+> > > > > > >
+> > > > >
+> > >
+> > > That would be the same as for mvneta:
+> > >
+> > > Overhead  Shared Object     Symbol
+> > >   24.10%  [kernel]          [k] __pi___inval_dcache_area
+> > >   23.02%  [mvneta]          [k] mvneta_rx_swbm
+> > >    7.19%  [kernel]          [k] kmem_cache_alloc
+> > >
+> > > Anyway, I tried to use the recycling *and* napi_build_skb on mvpp2,
+> > > and I get lower packet rate than recycling alone.
+> > > I don't know why, we should investigate it.
+> >
+> > mvpp2 driver doesn't use napi_consume_skb() on its Tx completion path.
+> > As a result, NAPI percpu caches get refilled only through
+> > kmem_cache_alloc_bulk(), and most of skbuff_head recycling
+> > doesn't work.
+> >
+> > > Regards,
+> > > --
+> > > per aspera ad upstream
+> >
+> > Oh, I love that one!
+> >
+> > Al
+> >
+
+Thanks,
+Al
 
