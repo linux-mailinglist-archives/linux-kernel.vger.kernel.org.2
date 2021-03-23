@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2110346B44
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A59346B45
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhCWVlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233632AbhCWVjs (ORCPT
+        id S233793AbhCWVl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:41:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35868 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233624AbhCWVjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:39:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870F4C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:39:48 -0700 (PDT)
-Message-Id: <20210323213708.096477462@linutronix.de>
+        Tue, 23 Mar 2021 17:39:49 -0400
+Message-Id: <20210323213708.195031688@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616535587;
+        s=2020; t=1616535588;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=hZngBOF/WMIAjvOPxKkDELflT8GbZQDWBYrZa3xDuVo=;
-        b=y7mXghTiwjRt47N+AZvuGiFnzTh/QlSMcm/bVidWMBEXiTWNQ64iCTsRQsZ5MjBszTNZvF
-        PJHP+bBklZq24mtnKZ3PJx5MbsdjtnWCzvrzXZ5a0NkvWNDQg0ZHN/bd9HjyBkh6TbbR++
-        0fOqpUZQPq0b3DgSKmtfmrPfbs7BG4IoPlxlMfKlv+6Qy/eu9wy65rl4gfggt1ynHHhVgj
-        Dsq7na2e/PXkUTejBJBCwCOa3X9+HN8RRpLUMHo/WUDg/XjqWsRqvNDcgykDOKMEB528mD
-        crHdVs/+CEB8pyPYln9rfiSWsMzRRm1RJL78CYS9+3k44VTxLQTNVu0fBlBPrA==
+        bh=erVQNMrM1P/5eIpWf0Wv6X7PSPbYJedxbQMK3vysrrw=;
+        b=hDTYP5gPamcoNwqu5TbvpfI5yhxF2xN23ZLMQdTfVujXizEDE1lBG0M6jk+RXQD+BYjEeP
+        f06U7Xgfm0LS2n4lgnoEgUZtECOEk0PGE7iU2zqU79IBBWZzpZseZyRaJpqNrxSppaAEhM
+        TegYJzG//5kNV8qbpEXfuczH3igx6V5lG5ZL1iypnb+7gDgIaJni/F75jAhx7v1JR8hoS3
+        P+SXXT0EYChVylOGCc4xS5m+oDxp69+9vUFudGFY15CQSVoEpm1Xs1Bf0JWu7nxsPMEsSV
+        upIDkEiF8MCuLSHaRoNpQD8JqS1AqXroL6lkvwb///fhO7p2jCr5w7K5qyMV5Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616535587;
+        s=2020e; t=1616535588;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=hZngBOF/WMIAjvOPxKkDELflT8GbZQDWBYrZa3xDuVo=;
-        b=dIJF0rBilL66wzi2Iqay1vVLbN39UVfguyR/aPY/hECY59om+IKbj6GMUs7Y0SrW9rEPoX
-        CLgRHNWSctk59zAQ==
-Date:   Tue, 23 Mar 2021 22:30:25 +0100
+        bh=erVQNMrM1P/5eIpWf0Wv6X7PSPbYJedxbQMK3vysrrw=;
+        b=Ir/kVzg7yIfg626XDK44l7lxPBHoDoQkTgfyg1bEizlIcDX4aD1lquNzRCnTplVju0csMQ
+        PA+PKQDJKWdNLoDA==
+Date:   Tue, 23 Mar 2021 22:30:26 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -44,7 +41,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch 06/14] locking/rtmutex: Move rt_mutex_debug_task_free() to rtmutex.c
+Subject: [patch 07/14] locking/rtmutex: Inline chainwalk depth check
 References: <20210323213019.217008708@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,41 +50,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for removing the header maze.
+There is no point for this wrapper at all.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/locking/rtmutex-debug.c |    6 ------
- kernel/locking/rtmutex.c       |    8 ++++++++
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ kernel/locking/rtmutex.c |   11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
---- a/kernel/locking/rtmutex-debug.c
-+++ b/kernel/locking/rtmutex-debug.c
-@@ -32,12 +32,6 @@
- 
- #include "rtmutex_common.h"
- 
--void rt_mutex_debug_task_free(struct task_struct *task)
--{
--	DEBUG_LOCKS_WARN_ON(!RB_EMPTY_ROOT(&task->pi_waiters.rb_root));
--	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
--}
--
- void debug_rt_mutex_unlock(struct rt_mutex *lock)
- {
- 	DEBUG_LOCKS_WARN_ON(rt_mutex_owner(lock) != current);
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -1828,3 +1828,11 @@ bool rt_mutex_cleanup_proxy_lock(struct
- 
- 	return cleanup;
+@@ -343,14 +343,9 @@ static void rt_mutex_adjust_prio(struct
+ static bool rt_mutex_cond_detect_deadlock(struct rt_mutex_waiter *waiter,
+ 					  enum rtmutex_chainwalk chwalk)
+ {
+-	/*
+-	 * This is just a wrapper function for the following call,
+-	 * because debug_rt_mutex_detect_deadlock() smells like a magic
+-	 * debug feature and I wanted to keep the cond function in the
+-	 * main source file along with the comments instead of having
+-	 * two of the same in the headers.
+-	 */
+-	return debug_rt_mutex_detect_deadlock(waiter, chwalk);
++	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEX))
++		return waiter != NULL;
++	return chwalk == RT_MUTEX_FULL_CHAINWALK;
  }
-+
-+#ifdef CONFIG_DEBUG_RT_MUTEXES
-+void rt_mutex_debug_task_free(struct task_struct *task)
-+{
-+	DEBUG_LOCKS_WARN_ON(!RB_EMPTY_ROOT(&task->pi_waiters.rb_root));
-+	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
-+}
-+#endif
+ 
+ /*
 
