@@ -2,125 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98241346623
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE13346629
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCWRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhCWRSC (ORCPT
+        id S230140AbhCWRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:20:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59791 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229730AbhCWRT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:18:02 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470FCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:18:02 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a7so28367897ejs.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sIksllOwwOhhczn6psOt0I0GoHXhkwJmcDYhamv8gKE=;
-        b=vSZ2XfjPA7Q0x7nDslI0TUHCfgjE8OzQMOyiNBobfPbkI7lBvvFArrtxoeDIweJhPl
-         8JHZOJTEfIN6cYo/3ONtzOz9XyV/C/Vyrb/R6bUfDuZWuDjZWUOsg+XY8wQfiHn8anFp
-         NM496MAMALYcNbbsrGFVgyFgWqCos84G/R0MK46SuowtveMtrjpGirzN8vpR9zQIVz/l
-         ej7DRfCobng5+6YzAzAgL1CJOA3zSyREUFYJ/+gUv/Yyr2wZgUmeVGLPyJuWTN/V3T1A
-         NrnV3ziZIMZSj47PoXTFhNY0ghO/BugGK9eIjMuUeDl5riC1yWLStB+wjJtX01YDeeRk
-         dkUg==
+        Tue, 23 Mar 2021 13:19:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616519998;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NporAmmj4L3RcGRFRknw2IvghUGU1cT9aJdVv6NKWMw=;
+        b=R4mGwpSqp3UK6cArqDrxolcrhh3hRypLkMvraxdTLEwR/T6APIn8l652zJEeazafR+Wdld
+        blpYAPV+Ztjf5kVbko5phhIqrF4lk/0SaOCvRyKXikkHFD1SL4hbEVOPy+xm4EtBToYmBt
+        YkwFLtG4K2IkxLcLpeNMkEOrBT5n+74=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-539-Hlr9eeV5Oie2MhtUqxU3iQ-1; Tue, 23 Mar 2021 13:19:56 -0400
+X-MC-Unique: Hlr9eeV5Oie2MhtUqxU3iQ-1
+Received: by mail-qt1-f200.google.com with SMTP id t5so1655859qti.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:19:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sIksllOwwOhhczn6psOt0I0GoHXhkwJmcDYhamv8gKE=;
-        b=N5HWRa6lhgAAQKLzZul5Gw8i07D7+550xVZkb+JJESYHxRW9MkOrHsJW+8I1j8hevS
-         Ngpf6JIomAiIDPqvzazhRa9lFOGfxOHZ2E//tWXSxYWdpGQV8Zv8RnCOlzxTZBOmMus9
-         ZZgyHu9aeglA99Fe62g/8h1Pl2QKrtTPuBHc5hji/oy+2Ml6bG3eF4ctkHpE8yTAuTGh
-         FX7jOCKvQ2ljcgmq752VYA3vhgw7GCscbeu1P2hyWOyc7MOJTRnYgpCjAv5085onlWrY
-         WY0ymF2yXY6OPPENny4kUwfPvettAPlYq7P4d+EDckqQnKExETII3Y+d65kwDNj42+VC
-         1Wjg==
-X-Gm-Message-State: AOAM531+7wwGyn0LhL/mqyRWzs1aCt8x4QQ9HNcXUi2dozvGlR7M5pQi
-        9BzTxm6kEFjzBWchNsIARdIz/NEfidXesxFIfkQ=
-X-Google-Smtp-Source: ABdhPJwU2t5vL8Vrp8UxhxH5Rh72ecVZHaOXV1n09OFWS/tmbQifotHY4rvMhWKy6CC87aCytJUDsCpsRi6eSvqyKx0=
-X-Received: by 2002:a17:906:a51:: with SMTP id x17mr5954970ejf.25.1616519881066;
- Tue, 23 Mar 2021 10:18:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323135405.65059-1-linmiaohe@huawei.com> <20210323135405.65059-6-linmiaohe@huawei.com>
-In-Reply-To: <20210323135405.65059-6-linmiaohe@huawei.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 23 Mar 2021 10:17:48 -0700
-Message-ID: <CAHbLzkoSsPWSdyZQBR03NbU8i3AG_DTL4P-efYULvuYmWzyYbg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] mm/migrate.c: fix potential deadlock in NUMA
- balancing shared exec THP case
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=NporAmmj4L3RcGRFRknw2IvghUGU1cT9aJdVv6NKWMw=;
+        b=GiWOpw7zj0lhyGwbZsRJzyQwbwjIDLU8g90RrXoduaVY4FZMq2NDxtm9LUe5Z1uBBa
+         PSv4R88Dimv3TJ+dhBM729tttOeBjEeOcYqollw9Q3pFqfhpL1+6o/l1egqPxqQT4PuI
+         tbsbl17qcmGCpMHeeby65lvtHBhgh6vG2s0iBHPKNF/YFIfl0bu19pipvdsxJ5H1y6Mn
+         ljgaU3xxBnqVm5ghG5wcFhWWGxSoaSTtrZxir3c0b7E63NxUQoX54E8feAONiyeqv2BV
+         fnbljg5qrGV3S3RqOm3TjPkXZQ4NkvDK7j0uSZlt+Bo6b0MOcRmmCfnD2qbJOhYblOtx
+         yBLg==
+X-Gm-Message-State: AOAM532+tbXQK5h6bMSMyWIeDBVUniHNB+BeBFRPBioIFOegSQprBdJL
+        ci+dnH0RKCBMwXgEwKTHTiQyx0UnfnEFc2uZv5uaT6tXx4jsU3LwRIVbyWjuL/3Lh9NZYvgsQ7z
+        QE+IOCkCDDs58v+3AvXpnEPh+
+X-Received: by 2002:ac8:1405:: with SMTP id k5mr5442893qtj.262.1616519995036;
+        Tue, 23 Mar 2021 10:19:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwiLznM9M+kk+bDsK0zDhwCbPTH1MxTleA2r2FpQmjUe9jLcoI66vGcNor+jHw3s4hmjHGqPA==
+X-Received: by 2002:ac8:1405:: with SMTP id k5mr5442877qtj.262.1616519994809;
+        Tue, 23 Mar 2021 10:19:54 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id f136sm14236517qke.24.2021.03.23.10.19.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 10:19:54 -0700 (PDT)
+Message-ID: <4b95f72806c07348e4d26f1770326223b40fa845.camel@redhat.com>
+Subject: Re: [PATCH] drm/i915/dpcd_bl: Don't try vesa interface unless
+ specified by VBT
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Jani Nikula <jani.nikula@intel.com>,
+        intel-gfx@lists.freedesktop.org
+Cc:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sean Paul <seanpaul@chromium.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Dave Airlie <airlied@redhat.com>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 23 Mar 2021 13:19:53 -0400
+In-Reply-To: <87k0py3qya.fsf@intel.com>
+References: <20210318170204.513000-1-lyude@redhat.com>
+         <dfec442a4888c8387a6002b0424415ee5d8be343.camel@redhat.com>
+         <87k0py3qya.fsf@intel.com>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 6:55 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> Since commit c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA
-> balancing"), the NUMA balancing would skip shared exec transhuge page.
-> But this enhancement is not suitable for transhuge page. Because it's
-> required that page_mapcount() must be 1 due to no migration pte dance
-> is done here. On the other hand, the shared exec transhuge page will
-> leave the migrate_misplaced_page() with pte entry untouched and page
-> locked. Thus pagefault for NUMA will be triggered again and deadlock
-> occurs when we start waiting for the page lock held by ourselves.
+On Tue, 2021-03-23 at 16:06 +0200, Jani Nikula wrote:
+> On Thu, 18 Mar 2021, Lyude Paul <lyude@redhat.com> wrote:
+> > Actually-NAK this. I just realized I've been misreading the bug and that
+> > this
+> > doesn't actually seem to be fixed. Will resend once I figure out what's
+> > going on
+> 
+> Well, I think there are actually multiple issues on multiple
+> machines. This fixes the issue on ThinkPad X1 Titanium Gen1 [1].
+> 
+> I suspect reverting 98e497e203a5 ("drm/i915/dpcd_bl: uncheck PWM_PIN_CAP
+> when detect eDP backlight capabilities") would too. But then that would
+> break *other* machines that claim support for *both* eDP PWM pin and
+> DPCD backlight control, I think.
+> 
+> I think there are issues with how we try setup DPCD backlight if the GOP
+> has set up PWM backlight. For example, we don't set the backlight
+> control mode correctly until the next disable/enable sequence. However,
+> I tried to fix this, and I think I was doing all the right things, and
+> DPCD reads seemed to confirm this, yet I was not able to control
+> brightness using DPCD. I don't know what gives, but I do know eDP PWM
+> pin control works.
 
-Thanks for catching this. By relooking the code I think the other
-important reason for removing this is
-migrate_misplaced_transhuge_page() actually can't see shared exec file
-THP at all since page_lock_anon_vma_read() is called before and if
-page is not anonymous page it will just restore the PMD without
-migrating anything.
+Should we go ahead and push the VESA fix for this then? If you're willing to
+test future patches on that machine, we could give another shot at enabling this
+in the future if we find reason to.
 
-The pages for private mapped file vma may be anonymous pages due to
-COW but they can't be THP so it won't trigger THP numa fault at all. I
-think this is why no bug was reported. I overlooked this in the first
-place.
+> 
+> 
+> BR,
+> Jani.
+> 
+> 
+> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/3158
+> 
+> 
+> > 
+> > On Thu, 2021-03-18 at 13:02 -0400, Lyude Paul wrote:
+> > > Looks like that there actually are another subset of laptops on the market
+> > > that don't support the Intel HDR backlight interface, but do advertise
+> > > support for the VESA DPCD backlight interface despite the fact it doesn't
+> > > seem to work.
+> > > 
+> > > Note though I'm not entirely clear on this - on one of the machines where
+> > > this issue was observed, I also noticed that we appeared to be rejecting
+> > > the VBT defined backlight frequency in
+> > > intel_dp_aux_vesa_calc_max_backlight(). It's noted in this function that:
+> > > 
+> > > /* Use highest possible value of Pn for more granularity of brightness
+> > >  * adjustment while satifying the conditions below.
+> > >  * ...
+> > >  * - FxP is within 25% of desired value.
+> > >  *   Note: 25% is arbitrary value and may need some tweak.
+> > >  */
+> > > 
+> > > So it's possible that this value might just need to be tweaked, but for
+> > > now
+> > > let's just disable the VESA backlight interface unless it's specified in
+> > > the VBT just to be safe. We might be able to try enabling this again by
+> > > default in the future.
+> > > 
+> > > Fixes: 2227816e647a ("drm/i915/dp: Allow forcing specific interfaces
+> > > through
+> > > enable_dpcd_backlight")
+> > > Cc: Jani Nikula <jani.nikula@intel.com>
+> > > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> > > Bugzilla: https://gitlab.freedesktop.org/drm/intel/-/issues/3169
+> > > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > > ---
+> > >  drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c | 1 -
+> > >  1 file changed, 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > > b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > > index 651884390137..4f8337c7fd2e 100644
+> > > --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > > +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+> > > @@ -646,7 +646,6 @@ int intel_dp_aux_init_backlight_funcs(struct
+> > > intel_connector *connector)
+> > >                         break;
+> > >                 case INTEL_BACKLIGHT_DISPLAY_DDI:
+> > >                         try_intel_interface = true;
+> > > -                       try_vesa_interface = true;
+> > >                         break;
+> > >                 default:
+> > >                         return -ENODEV;
+> 
 
-Your fix is correct, and please add the above justification to your commit log.
+-- 
+Sincerely,
+   Lyude Paul (she/her)
+   Software Engineer at Red Hat
+   
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
-
->
-> Fixes: c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA balancing")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/migrate.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 5357a8527ca2..68bfa1625898 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -2192,9 +2192,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
->         int page_lru = page_is_file_lru(page);
->         unsigned long start = address & HPAGE_PMD_MASK;
->
-> -       if (is_shared_exec_page(vma, page))
-> -               goto out;
-> -
->         new_page = alloc_pages_node(node,
->                 (GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
->                 HPAGE_PMD_ORDER);
-> @@ -2306,7 +2303,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
->
->  out_unlock:
->         unlock_page(page);
-> -out:
->         put_page(page);
->         return 0;
->  }
-> --
-> 2.19.1
->
