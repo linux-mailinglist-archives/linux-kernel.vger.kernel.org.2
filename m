@@ -2,189 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE7B3468A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816653468AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhCWTNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        id S232858AbhCWTOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233026AbhCWTMo (ORCPT
+        with ESMTP id S233298AbhCWTNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:12:44 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DBEC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:12:43 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id 124so9995782vsg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:12:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NziR4wdTwbPmQRK5YhnnRmXhP9symav7D77le3H4K+M=;
-        b=PMVJrfgoW6IO/eykiWrjsd3M2rhVX4YPMZxActq4wpEAmRKoODLJqZ5eOI8hAd3Ui/
-         kSzrQ3FuaOzZIBiwn4SSeTiH56nva7fJ7jwJArxrKBI9I08bC2iOW/X4AFzNtLAsNXVw
-         fIdYVNCx+ySgZrYUG4o13ipFMssy5VH6uWnpKJyoinFpA+/8heYRsB9WTXd4ONt/Bv7O
-         +LCu9D9LBylKYOceGf33CRSQzA3Vf9iXuF4A9rSuewX9xMRvJ+rKmskixMa6u1701MFN
-         KAZ3CnQdmXTvVit/bpC9d7KazulRxJUeQ0HNNX5bneUJLaxYamCbK0WSNJFdJKmbm+5W
-         bGZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NziR4wdTwbPmQRK5YhnnRmXhP9symav7D77le3H4K+M=;
-        b=rGVjibg+Mu/9MOaEEytL/kZNwfYoyvES0m+XlSqcoiZs/K26kOEkwNvxiF4ssB3Z/n
-         jJEygtGnPiEuOEBeFMeW8q4A5c1HShh+pdltxlfGWKie33DEeNImJpjWKw9DawVhnv41
-         oBb9EYB6yGBhRQm9b5bZl+OcwuYgtwp3xpr5wdlKTM73d6ABZsmBD3Fi/yK4T0UkSa3w
-         wAZNsrN1V0hQ72pG0q/KXKRBkOTp0cJAZdmiYUjiMLoB7QvxccT0AzDp/AmBkOc2tNI6
-         DElHPuGpscE9N5BsQ0QSrTX4NdXLKjmjj8/FzUjkG4j9Fj9+CGiQnMTlFbo2FgZhuUnU
-         6xKA==
-X-Gm-Message-State: AOAM532Msgn3m4wvqvUKwcpg8ZOkeGrgrUOvH02OPmRnkSpraMSMtTp7
-        ja9Bi00ki90qwGg8F15Kc+MubhP01tWocpcn37cYpA==
-X-Google-Smtp-Source: ABdhPJzXFydY5TcCz9J1Or2xn4GBkykV9ba3oKyGbccCBa4HxmuOl+Gv/PYBfFODfgfgi/kqTbKgrJDTOyQZhsuqwfY=
-X-Received: by 2002:a67:77c1:: with SMTP id s184mr4758525vsc.55.1616526762989;
- Tue, 23 Mar 2021 12:12:42 -0700 (PDT)
+        Tue, 23 Mar 2021 15:13:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74E9C061574;
+        Tue, 23 Mar 2021 12:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5Z0WR90dUR0c8O+Ghca91EEE7yMOJD4p7F63jROsdls=; b=icwXA+ar6ra1hlZuLW8OIAW/xA
+        Al6ajurXvvGV5WRst3/GGWSzOnrYZVZxCEGKJJIfB+dSF6BTOK/h2cq2ZNrN63RLBMDS5SJa0lyVa
+        70IUsot7vahFotNehhva+olPZZvTW9kdHQV2eow5ow70SvWHCFw7jccUWSR9DWW/w1nAn8yp722if
+        SzWGyP9sID4+6Mok1PhDAgaltHLzi8Jvq+1z5zDDb2jSWHgepVc2LUd8+iDOevZ2mlJjixvigzj9t
+        Ks7n+MJKAtADgkGQe5lMRhd6cGrCLUdiDzYHRWAnjAC6lseavVVdsAMGIgXEA4bQumWAfNpZFKNbw
+        TprxQfoQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOmRj-00ARsu-4J; Tue, 23 Mar 2021 19:12:20 +0000
+Date:   Tue, 23 Mar 2021 19:12:07 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+Message-ID: <20210323191207.GJ1719932@casper.infradead.org>
+References: <20210319071547.60973-1-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
+ <YFo7SOni0s0TbXUm@cmpxchg.org>
 MIME-Version: 1.0
-References: <20210315132501.441681-1-Jerome.Pouiller@silabs.com>
- <4503971.bAhddQ8uqO@pc-42> <CAPDyKFoXgV3m-rMKfjqRj91PNjOGaWg6odWG-EGdFKkL+dGWoA@mail.gmail.com>
- <5713463.b6Cmjs1FeV@pc-42>
-In-Reply-To: <5713463.b6Cmjs1FeV@pc-42>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 23 Mar 2021 20:12:06 +0100
-Message-ID: <CAPDyKFrONrUvbVVVF9iy4P17jZ_Fq+1pGMmsqM6C1hOXOWQnBw@mail.gmail.com>
-Subject: Re: [PATCH v5 08/24] wfx: add bus_sdio.c
-To:     =?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFo7SOni0s0TbXUm@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 at 18:53, J=C3=A9r=C3=B4me Pouiller
-<jerome.pouiller@silabs.com> wrote:
->
-> On Tuesday 23 March 2021 15:11:56 CET Ulf Hansson wrote:
-> > On Mon, 22 Mar 2021 at 18:14, J=C3=A9r=C3=B4me Pouiller <jerome.pouille=
-r@silabs.com> wrote:
-> > > On Monday 22 March 2021 13:20:35 CET Ulf Hansson wrote:
-> > > > On Mon, 15 Mar 2021 at 14:25, Jerome Pouiller <Jerome.Pouiller@sila=
-bs.com> wrote:
-> > > > >
-> > > > > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> > > > >
-> > > > > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.=
-com>
-> > > > > ---
-> > > > >  drivers/net/wireless/silabs/wfx/bus_sdio.c | 259 +++++++++++++++=
-++++++
-> > > > >  1 file changed, 259 insertions(+)
-> > > > >  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
-> > > >
-> > > > [...]
-> > > >
-> > > > > +static const struct sdio_device_id wfx_sdio_ids[] =3D {
-> > > > > +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILAB=
-S_WF200) },
-> > > > > +       { },
-> > > > > +};
-> > > > > +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
-> > > > > +
-> > > > > +struct sdio_driver wfx_sdio_driver =3D {
-> > > > > +       .name =3D "wfx-sdio",
-> > > > > +       .id_table =3D wfx_sdio_ids,
-> > > > > +       .probe =3D wfx_sdio_probe,
-> > > > > +       .remove =3D wfx_sdio_remove,
-> > > > > +       .drv =3D {
-> > > > > +               .owner =3D THIS_MODULE,
-> > > > > +               .of_match_table =3D wfx_sdio_of_match,
-> > > >
-> > > > It's not mandatory to support power management, like system
-> > > > suspend/resume. However, as this looks like this is a driver for an
-> > > > embedded SDIO device, you probably want this.
-> > > >
-> > > > If that is the case, please assign the dev_pm_ops here and implemen=
-t
-> > > > the ->suspend|resume() callbacks.
-> > >
-> > > I have no platform to test suspend/resume, so I have only a
-> > > theoretical understanding of this subject.
-> >
-> > I see.
-> >
-> > >
-> > > I understanding is that with the current implementation, the
-> > > device will be powered off on suspend and then totally reset
-> > > (including reloading of the firmware) on resume. I am wrong?
-> >
-> > You are correct, for a *removable* SDIO card. In this case, the
-> > mmc/sdio core will remove the corresponding SDIO card/device and its
-> > corresponding SDIO func devices at system suspend. It will then be
-> > redetected at system resume (and the SDIO func driver re-probed).
-> >
-> > Although, as this is an embedded SDIO device, per definition it's not
-> > a removable card (MMC_CAP_NONREMOVABLE should be set for the
-> > corresponding mmc host), the SDIO card will stick around and instead
-> > the ->suspend|resume() callback needs to be implemented for the SDIO
-> > func driver.
->
-> If I follow what has been done in other drivers I would write something
-> like:
->
->   static int wfx_sdio_suspend(struct device *dev)
->   {
->           struct sdio_func *func =3D dev_to_sdio_func(dev);
->           struct wfx_sdio_priv *bus =3D sdio_get_drvdata(func);
->
->           config_reg_write_bits(bus->core, CFG_IRQ_ENABLE_DATA, 0);
->           // Necessary to keep device firmware in RAM
->           return sdio_set_host_pm_flags(func, MMC_PM_KEEP_POWER);
+On Tue, Mar 23, 2021 at 03:02:32PM -0400, Johannes Weiner wrote:
+> >From f6f062a3ec46f4fb083dcf6792fde9723f18cfc5 Mon Sep 17 00:00:00 2001
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> Date: Fri, 19 Mar 2021 02:17:00 -0400
+> Subject: [PATCH] mm: page_alloc: fix allocation imbalances from speculative
+>  cache lookup
+> 
+> When the freeing of a higher-order page block (non-compound) races
+> with a speculative page cache lookup, __free_pages() needs to leave
+> the first order-0 page in the chunk to the lookup but free the buddy
+> pages that the lookup doesn't know about separately.
+> 
+> There are currently two problems with it:
+> 
+> 1. It checks PageHead() to see whether we're dealing with a compound
+>    page after put_page_testzero(). But the speculative lookup could
+>    have freed the page after our put and cleared PageHead, in which
+>    case we would double free the tail pages.
+> 
+>    To fix this, test PageHead before the put and cache the result for
+>    afterwards.
+> 
+> 2. If such a higher-order page is charged to a memcg (e.g. !vmap
+>    kernel stack)), only the first page of the block has page->memcg
+>    set. That means we'll uncharge only one order-0 page from the
+>    entire block, and leak the remainder.
+> 
+>    To fix this, add a split_page_memcg() before it starts freeing tail
+>    pages, to ensure they all have page->memcg set up.
+> 
+> While at it, also update the comments a bit to clarify what exactly is
+> happening to the page during that race.
+> 
+> Fixes: e320d3012d25 mm/page_alloc.c: fix freeing non-compound pages
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Reported-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: <stable@vger.kernel.org> # 5.10+
 
-This will tell the mmc/sdio core to keep the SDIO card powered on
-during system suspend. Thus, it doesn't need to re-initialize it at
-system resume - and the firmware should not need to be re-programmed.
+This version makes me happy.
 
-On the other hand, if you don't plan to support system wakeups, it
-would probably be better to power off the card, to avoid wasting
-energy while the system is suspended. I assume that means you need to
-re-program the firmware as well. Normally, it's these kinds of things
-that need to be managed from a ->resume() callback.
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
->   }
->
-> However, why not the implementation below?
->
->   static int wfx_sdio_suspend(struct device *dev)
->   {
->           struct sdio_func *func =3D dev_to_sdio_func(dev);
->
->           wfx_sdio_remove(func);
-
-I don't know what wfx_sdio_remove() does, but for sure you would need
-a ->resume() callback to make it possible to restore power/firmware.
-
->           return 0;
->   }
->
-> In both cases, I worry to provide these functions without being able to
-> test them.
-
-Alright, let's simply leave this driver without having the PM
-callbacks assigned. I guess we can revisit this at some later point.
-
-The mmc core will log a message about the missing callbacks, in case
-someone tries to execute system suspend/resume when the driver has
-been probed.
-
-Kind regards
-Uffe
+Thanks for fixing my buggy fix.
