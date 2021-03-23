@@ -2,94 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF086346466
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D8E346468
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbhCWQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        id S233098AbhCWQGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232733AbhCWQF4 (ORCPT
+        with ESMTP id S232833AbhCWQGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:05:56 -0400
+        Tue, 23 Mar 2021 12:06:09 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6985FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B41C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lKpytMVS6/ftOFf2bnc4fc09YEOmBW8jbciH2TkLvS8=; b=PPw+hHlVgAnxt5La/yIIDDs1Lj
-        FolUqBA0A2s2VR+8dKC/f20eRqtXaDMF2h3BY4EaIjnlxONkgMd2ftOZyyMfeDFFMHVRFbSmj62hf
-        hpLHC0If0WTpRBJsaRWqbSjI3VTPZRXy9VsTFAeHMX1KOznmSSich82au2AmmGpoPO4UFRJ9kiPza
-        fv4M4pKuSaUAfCr8jw49Gjr2f1oT8mis0sjwtPzAqG9Ak4w4D3NmUx1aP8NtJNaG1MBZ79flEtbbD
-        /f1X7ytcHUs81pU72yfiJlh+afLAzS2olUcQbn3rIBoqchMt/oiUBegy28vxJq7ABkTjZLnnHJW60
-        cDCdKoBA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=fZcfVXMNH8Rqgz7ZPFakLkIDfdVeLG7nLhI59YHj9co=; b=lMOrluIoN3Bs2Mo8BG6bBVPe3G
+        6z9cq/EAfMqG93d41MeY+xmTDqUwotXIIi/M2eRKeVcqR+oTfP2YquPaatw+SwMSQt2nigMZdLklC
+        KzqM/F5FS8nYrXu2nYk+/Uc8QqCtpNZiQn8s7XbC0iIYxW/9fL+9LoWL9zhyLym0F234FdPzuMAL3
+        jYLHJVtlwD0GJCkMC4iLM+Mu38Va46jh46z7Wzr57t7Y+KmJSLDTQIcsoEdlM2+pl/CqMDbF4Lg5y
+        gY/Eoq4WBbgXzPKXd99D4ZsHXyzovowyE6lLs1UBMrJrubQvPX46G5xm5O6K0u5TeY4Ozsfq4AhnQ
+        YQOeHemA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
         by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOjX0-00FHsw-LO; Tue, 23 Mar 2021 16:05:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3EE493003E1;
-        Tue, 23 Mar 2021 17:05:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 239712D98F229; Tue, 23 Mar 2021 17:05:21 +0100 (CET)
-Date:   Tue, 23 Mar 2021 17:05:21 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] ftrace: shut up -Wcast-function-type warning for
- ftrace_ops_no_ops
-Message-ID: <YFoRwYBeHAN0Vn5q@hirez.programming.kicks-ass.net>
-References: <20210322215006.1028517-1-arnd@kernel.org>
- <YFmbHI4hnKg5UH2M@hirez.programming.kicks-ass.net>
- <20210323085742.18477aad@gandalf.local.home>
- <YFoIU0xC3lXBwc9Y@hirez.programming.kicks-ass.net>
+        id 1lOjXj-00FHuv-5b; Tue, 23 Mar 2021 16:06:07 +0000
+Subject: Re: [PATCH, -v2] tracing: Fix various typos in comments
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
+References: <20210322224546.GA1981273@gmail.com>
+ <5e563a58-2ed6-3a1a-d92d-231fb6eecfa9@infradead.org>
+ <20210323111150.GA3939639@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <50de05ac-9206-5555-4448-1c1d8da87753@infradead.org>
+Date:   Tue, 23 Mar 2021 09:06:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFoIU0xC3lXBwc9Y@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210323111150.GA3939639@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:25:07PM +0100, Peter Zijlstra wrote:
-> On Tue, Mar 23, 2021 at 08:57:42AM -0400, Steven Rostedt wrote:
+On 3/23/21 4:11 AM, Ingo Molnar wrote:
+> Fixed.
 > 
-> > Well, from what I understand is that typecasting functions to other types
-> > of functions is one of the mistakes that cause security bugs to happen. And
-> > there's been a few of them in the kernel. Which is why the compilers have
-> > now been flagging them.
-> 
-> Doing the cast in the first pace is an indication something weird is
-> happening anyway. C will already warn you if you assign non-matching
-> pointer types.
-> 
-> So if there's bugs, audit all (function) pointer casts. Don't wreck
-> casts.
-> 
-> This warning will only make people add more (void *) intermediate casts
-> and then we have uglier code and an equal amount of hidden bugs. IE. we
-> really didn't win anything at all.
-> 
-> > This particular instance of the typecasting is unique and there's a bit of
-> > magic involved. Adding this little work around here is fine. Probably needs
-> > a better comment though.
-> 
-> Nah, it's not unique, static_call() has a whole bunch of them, including
-> the exact same you have. Yes, we're doing something C thinks is UB, but
-> we do that all day every day.
+> -v2 attached - I preemptively added your Reviewed-by as well, if 
+> that's fine. :-)
 
-Here's weakening static_call_update() to get around this new
-fail^Wfeature:
+Sure.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-https://lkml.kernel.org/r/YFoN7nCl8OfGtpeh@hirez.programming.kicks-ass.net
+thanks.
+-- 
+~Randy
+
