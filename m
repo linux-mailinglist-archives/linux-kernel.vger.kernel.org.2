@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB37345D74
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E877345D68
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhCWLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:55:37 -0400
-Received: from m12-17.163.com ([220.181.12.17]:40284 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230121AbhCWLzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:55:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yld4K
-        a6D/wNwWDvksBvh6iy6WYppMiQm7zrvFrJHt3s=; b=dW1Sny9s5Ae6DtuW+PeGB
-        7ASNO/xvjQSC91dY8DM6YSVAflJQZk+32eQtPnOzNgYi97YEa+/8d4FupeT09nsG
-        CQA4txSQWGKEm+dGduNrsZlpQVAoGlx7K2MX7bZ14WjnSTqXv9hGCuNfGP+FJi0V
-        7SDne3DzAROU4I3GOeJFew=
-Received: from caizhichao.ccdomain.com (unknown [218.94.48.178])
-        by smtp13 (Coremail) with SMTP id EcCowAA3P5f01llgllIkrg--.21875S2;
-        Tue, 23 Mar 2021 19:54:37 +0800 (CST)
-From:   caizhichao <tomstomsczc@163.com>
-To:     gregkh@linuxfoundation.org, matthias.bgg@gmail.com
-Cc:     jirislaby@kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        caizhichao <caizhichao@yulong.com>
-Subject: [PATCH v3] tty:serial: fix spelling typo of values
-Date:   Tue, 23 Mar 2021 19:53:27 +0800
-Message-Id: <20210323115327.1199-1-tomstomsczc@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
+        id S230051AbhCWLyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:54:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25634 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229728AbhCWLxs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:53:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616500427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lumMgAdwXyhnl+R2Z3fSylhLVHDsECYsMOyRTYA/Iy0=;
+        b=dVYJd2QcfRvAAZczMU/MIQjZ2zTICCgtmfnKRSse6xYT4Pxk6+UzCCNE+bhbOTqamRnqmF
+        YGQyI2GJKt5rscVE9QTtRc1ynauwjY1IIURLrKMJm/lOASZUreu+vwe40TWpqD4tsLtsIS
+        2pBipW0UDgtTjhmSerr6vgEPKvWvzXY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-qlWy5tDFOXCL1jNjWhjiMA-1; Tue, 23 Mar 2021 07:53:43 -0400
+X-MC-Unique: qlWy5tDFOXCL1jNjWhjiMA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4C42190B2A5;
+        Tue, 23 Mar 2021 11:53:41 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 123875D6AD;
+        Tue, 23 Mar 2021 11:53:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 1/3] fs/cachefiles: Remove wait_bit_key layout dependency
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        dhowells@redhat.com,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 23 Mar 2021 11:53:36 +0000
+Message-ID: <161650041625.2445805.664163782892781172.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161650040278.2445805.7652115256944270457.stgit@warthog.procyon.org.uk>
+References: <161650040278.2445805.7652115256944270457.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAA3P5f01llgllIkrg--.21875S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Gr1DJF1fXF4DAw48Gw4fAFb_yoWfuFcE9r
-        1kXwsxZwnYyFnYkw15Arn8urWIka1UWF1xA3W8X3srA398Za1kAFy0vrZ8tr1vqFn3Ary7
-        Ar1DKr1xtw1DujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnjL9UUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pwrp23prpvu6rf6rljoofrz/1tbiXx5eil1502GPfQAAsx
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: caizhichao <caizhichao@yulong.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-vaules -> values
+Cachefiles was relying on wait_page_key and wait_bit_key being the
+same layout, which is fragile.  Now that wait_page_key is exposed in
+the pagemap.h header, we can remove that fragility
 
-Signed-off-by: Zhichao Cai <caizhichao@yulong.com>
+A comment on the need to maintain structure layout equivalence was added by
+Linus[1] and that is no longer applicable.
+
+Fixes: 62906027091f ("mm: add PageWaiters indicating tasks are waiting for a page bit")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: linux-cachefs@redhat.com
+cc: linux-mm@kvack.org
+Link: https://lore.kernel.org/r/20210320054104.1300774-2-willy@infradead.org/
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3510ca20ece0150af6b10c77a74ff1b5c198e3e2 [1]
 ---
-v3: use full name and capitalize personal name.
- drivers/tty/serial/8250/8250_mtk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
-index f7d3023..c6633dc 100644
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -325,7 +325,7 @@ static void mtk8250_set_flow_ctrl(struct uart_8250_port *up, int mode)
- 	 * Mediatek UARTs use an extra highspeed register (MTK_UART_HIGHS)
- 	 *
- 	 * We need to recalcualte the quot register, as the claculation depends
--	 * on the vaule in the highspeed register.
-+	 * on the value in the highspeed register.
- 	 *
- 	 * Some baudrates are not supported by the chip, so we use the next
- 	 * lower rate supported and update termios c_flag.
--- 
-1.9.1
+ fs/cachefiles/rdwr.c    |    7 +++----
+ include/linux/pagemap.h |    1 -
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
+index e027c718ca01..8ffc40e84a59 100644
+--- a/fs/cachefiles/rdwr.c
++++ b/fs/cachefiles/rdwr.c
+@@ -24,17 +24,16 @@ static int cachefiles_read_waiter(wait_queue_entry_t *wait, unsigned mode,
+ 		container_of(wait, struct cachefiles_one_read, monitor);
+ 	struct cachefiles_object *object;
+ 	struct fscache_retrieval *op = monitor->op;
+-	struct wait_bit_key *key = _key;
++	struct wait_page_key *key = _key;
+ 	struct page *page = wait->private;
+ 
+ 	ASSERT(key);
+ 
+ 	_enter("{%lu},%u,%d,{%p,%u}",
+ 	       monitor->netfs_page->index, mode, sync,
+-	       key->flags, key->bit_nr);
++	       key->page, key->bit_nr);
+ 
+-	if (key->flags != &page->flags ||
+-	    key->bit_nr != PG_locked)
++	if (key->page != page || key->bit_nr != PG_locked)
+ 		return 0;
+ 
+ 	_debug("--- monitor %p %lx ---", page, page->flags);
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 20225b067583..8f4daac6eb4b 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -559,7 +559,6 @@ static inline pgoff_t linear_page_index(struct vm_area_struct *vma,
+ 	return pgoff;
+ }
+ 
+-/* This has the same layout as wait_bit_key - see fs/cachefiles/rdwr.c */
+ struct wait_page_key {
+ 	struct page *page;
+ 	int bit_nr;
 
 
