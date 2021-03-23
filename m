@@ -2,109 +2,446 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC01345C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202C4345C68
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhCWLHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:07:50 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40572 "EHLO mga17.intel.com"
+        id S230232AbhCWLEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:04:06 -0400
+Received: from mga12.intel.com ([192.55.52.136]:41160 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhCWLHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:07:40 -0400
-IronPort-SDR: +r2w4QbmonGTnzjbicX8rR2P8CB6GI1+3gATyoiS4Pz7XYmjJaSt/N8jGRjzRDOEBmjAb0M7BM
- fu+Ue9Xe441w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="170419679"
+        id S229448AbhCWLD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:03:28 -0400
+IronPort-SDR: ePy+5NCHMZBBjzIer0LMRGRkKODZoOzYYNS4XwN3EvUMzqC0GmIWRVyFkI2ll2VX7nLUgIIElI
+ GsnfG/1VsRiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="169787904"
 X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="170419679"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:07:40 -0700
-IronPort-SDR: 414qVntEfxbN+cn7Mq/J1eIWwY4ihjJKpuPpfO7rHNtVCipnB/6DDCMp9T5eomjtuPBEtY4MTs
- CGgN+0IWwUxA==
+   d="scan'208";a="169787904"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:03:26 -0700
+IronPort-SDR: 2o/Vm+yTIIzIDuKJWZ1unTTJuOR3VX5RqP3tunNTe5IhWB0lhYnles4+0yJOm7EIed3mSNQDR8
+ iSKeV7FT2dhA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="607685015"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:07:34 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lOesk-00EzjH-AE; Tue, 23 Mar 2021 13:07:30 +0200
-Date:   Tue, 23 Mar 2021 13:07:30 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
-        Oscar Salvador <osalvador@suse.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH v1 1/3] kernel/resource: make walk_system_ram_res() find
- all busy IORESOURCE_SYSTEM_RAM resources
-Message-ID: <YFnL8q6X97T3xAp6@smile.fi.intel.com>
-References: <20210322160200.19633-1-david@redhat.com>
- <20210322160200.19633-2-david@redhat.com>
- <e4a088e3-fc26-cb59-8af8-a746932b108c@redhat.com>
+   d="scan'208";a="381318391"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 23 Mar 2021 04:03:23 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
+        by linux.intel.com (Postfix) with ESMTP id 3F513580718;
+        Tue, 23 Mar 2021 04:03:20 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>
+Subject: [PATCH net-next 1/1] net: stmmac: Add hardware supported cross-timestamp
+Date:   Tue, 23 Mar 2021 19:07:34 +0800
+Message-Id: <20210323110734.3800-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4a088e3-fc26-cb59-8af8-a746932b108c@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:40:33AM +0100, David Hildenbrand wrote:
-> On 22.03.21 17:01, David Hildenbrand wrote:
-> > It used to be true that we can have busy system RAM only on the first level
-> > in the resourc tree. However, this is no longer holds for driver-managed
-> > system RAM (i.e., added via dax/kmem and virtio-mem), which gets added on
-> > lower levels.
-> > 
-> > We have two users of walk_system_ram_res(), which currently only
-> > consideres the first level:
-> > a) kernel/kexec_file.c:kexec_walk_resources() -- We properly skip
-> >     IORESOURCE_SYSRAM_DRIVER_MANAGED resources via
-> >     locate_mem_hole_callback(), so even after this change, we won't be
-> >     placing kexec images onto dax/kmem and virtio-mem added memory. No
-> >     change.
-> > b) arch/x86/kernel/crash.c:fill_up_crash_elf_data() -- we're currently
-> >     not adding relevant ranges to the crash elf info, resulting in them
-> >     not getting dumped via kdump.
-> > 
-> > This change fixes loading a crashkernel via kexec_file_load() and including
-> > dax/kmem and virtio-mem added System RAM in the crashdump on x86-64. Note
-> > that e.g,, arm64 relies on memblock data and, therefore, always considers
-> > all added System RAM already.
-> > 
-> > Let's find all busy IORESOURCE_SYSTEM_RAM resources, making the function
-> > behave like walk_system_ram_range().
-> > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > Cc: Signed-off-by: David Hildenbrand <david@redhat.com>
-> 
-> ^ My copy-paste action when creating the cc list slipped in a duplicate  SO
-> in all 3 patches. I can resend if desired.
+From: Tan Tee Min <tee.min.tan@intel.com>
 
-I think to address my comments you will need to resend anyway (as v2).
+Cross timestamping is supported on Integrated Ethernet Controller in
+Intel SoC such as EHL and TGL with Always Running Timer.
 
+The hardware cross-timestamp result is made available to
+applications through the PTP_SYS_OFFSET_PRECISE ioctl which calls
+stmmac_getcrosststamp().
+
+Device time is stored in the MAC Auxiliary register. The 64-bit System
+time (ART timestamp) is stored in registers that are only addressable
+by using MDIO space.
+
+Signed-off-by: Tan Tee Min <tee.min.tan@intel.com>
+Co-developed-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/common.h  |   2 +
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 108 ++++++++++++++++++
+ drivers/net/ethernet/stmicro/stmmac/dwmac4.h  |   8 ++
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |   2 +
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |   3 +
+ .../ethernet/stmicro/stmmac/stmmac_hwtstamp.c |  11 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  |  32 ++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_ptp.h  |  23 ++++
+ include/linux/stmmac.h                        |   4 +
+ 9 files changed, 193 insertions(+)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index 1c0c60bdf854..95469059dca1 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -388,6 +388,8 @@ struct dma_features {
+ 	unsigned int estsel;
+ 	unsigned int fpesel;
+ 	unsigned int tbssel;
++	/* Numbers of Auxiliary Snapshot Inputs */
++	unsigned int aux_snapshot_n;
+ };
+ 
+ /* RX Buffer size must be multiple of 4/8/16 bytes */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index 763b549e3c2d..992294d25706 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -8,6 +8,7 @@
+ #include "dwmac-intel.h"
+ #include "dwmac4.h"
+ #include "stmmac.h"
++#include "stmmac_ptp.h"
+ 
+ #define INTEL_MGBE_ADHOC_ADDR	0x15
+ #define INTEL_MGBE_XPCS_ADDR	0x16
+@@ -240,6 +241,108 @@ static void intel_mgbe_ptp_clk_freq_config(void *npriv)
+ 	writel(gpio_value, priv->ioaddr + GMAC_GPIO_STATUS);
+ }
+ 
++static void get_arttime(struct mii_bus *mii, int intel_adhoc_addr,
++			u64 *art_time)
++{
++	u64 ns;
++
++	ns = mdiobus_read(mii, intel_adhoc_addr, PMC_ART_VALUE3);
++	ns <<= GMAC4_ART_TIME_SHIFT;
++	ns |= mdiobus_read(mii, intel_adhoc_addr, PMC_ART_VALUE2);
++	ns <<= GMAC4_ART_TIME_SHIFT;
++	ns |= mdiobus_read(mii, intel_adhoc_addr, PMC_ART_VALUE1);
++	ns <<= GMAC4_ART_TIME_SHIFT;
++	ns |= mdiobus_read(mii, intel_adhoc_addr, PMC_ART_VALUE0);
++
++	*art_time = ns;
++}
++
++static int intel_crosststamp(ktime_t *device,
++			     struct system_counterval_t *system,
++			     void *ctx)
++{
++	struct intel_priv_data *intel_priv;
++
++	struct stmmac_priv *priv = (struct stmmac_priv *)ctx;
++	void __iomem *ptpaddr = priv->ptpaddr;
++	void __iomem *ioaddr = priv->hw->pcsr;
++	unsigned long flags;
++	u64 art_time = 0;
++	u64 ptp_time = 0;
++	u32 num_snapshot;
++	u32 gpio_value;
++	u32 acr_value;
++	int ret;
++	u32 v;
++	int i;
++
++	if (!boot_cpu_has(X86_FEATURE_ART))
++		return -EOPNOTSUPP;
++
++	intel_priv = priv->plat->bsp_priv;
++
++	/* Enable Internal snapshot trigger */
++	acr_value = readl(ptpaddr + PTP_ACR);
++	acr_value &= ~PTP_ACR_MASK;
++	switch (priv->plat->int_snapshot_num) {
++	case AUX_SNAPSHOT0:
++		acr_value |= PTP_ACR_ATSEN0;
++		break;
++	case AUX_SNAPSHOT1:
++		acr_value |= PTP_ACR_ATSEN1;
++		break;
++	case AUX_SNAPSHOT2:
++		acr_value |= PTP_ACR_ATSEN2;
++		break;
++	case AUX_SNAPSHOT3:
++		acr_value |= PTP_ACR_ATSEN3;
++		break;
++	default:
++		return -EINVAL;
++	}
++	writel(acr_value, ptpaddr + PTP_ACR);
++
++	/* Clear FIFO */
++	acr_value = readl(ptpaddr + PTP_ACR);
++	acr_value |= PTP_ACR_ATSFC;
++	writel(acr_value, ptpaddr + PTP_ACR);
++
++	/* Trigger Internal snapshot signal
++	 * Create a rising edge by just toggle the GPO1 to low
++	 * and back to high.
++	 */
++	gpio_value = readl(ioaddr + GMAC_GPIO_STATUS);
++	gpio_value &= ~GMAC_GPO1;
++	writel(gpio_value, ioaddr + GMAC_GPIO_STATUS);
++	gpio_value |= GMAC_GPO1;
++	writel(gpio_value, ioaddr + GMAC_GPIO_STATUS);
++
++	/* Poll for time sync operation done */
++	ret = readl_poll_timeout(priv->ioaddr + GMAC_INT_STATUS, v,
++				 (v & GMAC_INT_TSIE), 100, 10000);
++
++	if (ret == -ETIMEDOUT) {
++		pr_err("%s: Wait for time sync operation timeout\n", __func__);
++		return ret;
++	}
++
++	num_snapshot = (readl(ioaddr + GMAC_TIMESTAMP_STATUS) &
++			GMAC_TIMESTAMP_ATSNS_MASK) >>
++			GMAC_TIMESTAMP_ATSNS_SHIFT;
++
++	/* Repeat until the timestamps are from the FIFO last segment */
++	for (i = 0; i < num_snapshot; i++) {
++		spin_lock_irqsave(&priv->ptp_lock, flags);
++		stmmac_get_ptptime(priv, ptpaddr, &ptp_time);
++		*device = ns_to_ktime(ptp_time);
++		spin_unlock_irqrestore(&priv->ptp_lock, flags);
++		get_arttime(priv->mii, intel_priv->mdio_adhoc_addr, &art_time);
++		*system = convert_art_to_tsc(art_time);
++	}
++
++	return 0;
++}
++
+ static void common_default_data(struct plat_stmmacenet_data *plat)
+ {
+ 	plat->clk_csr = 2;	/* clk_csr_i = 20-35MHz & MDC = clk_csr_i/16 */
+@@ -384,6 +487,11 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
+ 	plat->mdio_bus_data->phy_mask = 1 << INTEL_MGBE_ADHOC_ADDR;
+ 	plat->mdio_bus_data->phy_mask |= 1 << INTEL_MGBE_XPCS_ADDR;
+ 
++	plat->int_snapshot_num = AUX_SNAPSHOT1;
++
++	plat->has_crossts = true;
++	plat->crosststamp = intel_crosststamp;
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4.h b/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
+index ef8502d2b6e6..462ca7ed095a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4.h
+@@ -50,6 +50,7 @@
+ #define GMAC_L4_ADDR(reg)		(0x904 + (reg) * 0x30)
+ #define GMAC_L3_ADDR0(reg)		(0x910 + (reg) * 0x30)
+ #define GMAC_L3_ADDR1(reg)		(0x914 + (reg) * 0x30)
++#define GMAC_TIMESTAMP_STATUS		0x00000b20
+ 
+ /* RX Queues Routing */
+ #define GMAC_RXQCTRL_AVCPQ_MASK		GENMASK(2, 0)
+@@ -144,6 +145,7 @@
+ #define GMAC_INT_PCS_PHYIS		BIT(3)
+ #define GMAC_INT_PMT_EN			BIT(4)
+ #define GMAC_INT_LPI_EN			BIT(5)
++#define GMAC_INT_TSIE			BIT(12)
+ 
+ #define	GMAC_PCS_IRQ_DEFAULT	(GMAC_INT_RGSMIIS | GMAC_INT_PCS_LINK |	\
+ 				 GMAC_INT_PCS_ANE)
+@@ -260,6 +262,7 @@ enum power_event {
+ #define GMAC_HW_RXFIFOSIZE		GENMASK(4, 0)
+ 
+ /* MAC HW features2 bitmap */
++#define GMAC_HW_FEAT_AUXSNAPNUM		GENMASK(30, 28)
+ #define GMAC_HW_FEAT_PPSOUTNUM		GENMASK(26, 24)
+ #define GMAC_HW_FEAT_TXCHCNT		GENMASK(21, 18)
+ #define GMAC_HW_FEAT_RXCHCNT		GENMASK(15, 12)
+@@ -305,6 +308,11 @@ enum power_event {
+ #define GMAC_L4DP0_SHIFT		16
+ #define GMAC_L4SP0			GENMASK(15, 0)
+ 
++/* MAC Timestamp Status */
++#define GMAC_TIMESTAMP_AUXTSTRIG	BIT(2)
++#define GMAC_TIMESTAMP_ATSNS_MASK	GENMASK(29, 25)
++#define GMAC_TIMESTAMP_ATSNS_SHIFT	25
++
+ /*  MTL registers */
+ #define MTL_OPERATION_MODE		0x00000c00
+ #define MTL_FRPE			BIT(15)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+index 8958778d16b7..8954b85eb850 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+@@ -412,6 +412,8 @@ static void dwmac4_get_hw_feature(void __iomem *ioaddr,
+ 
+ 	/* IEEE 1588-2002 */
+ 	dma_cap->time_stamp = 0;
++	/* Number of Auxiliary Snapshot Inputs */
++	dma_cap->aux_snapshot_n = (hw_cap & GMAC_HW_FEAT_AUXSNAPNUM) >> 28;
+ 
+ 	/* MAC HW feature3 */
+ 	hw_cap = readl(ioaddr + GMAC_HW_FEATURE3);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index 692541c7b419..59bf7078a754 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -508,6 +508,7 @@ struct stmmac_hwtimestamp {
+ 	int (*adjust_systime) (void __iomem *ioaddr, u32 sec, u32 nsec,
+ 			       int add_sub, int gmac4);
+ 	void (*get_systime) (void __iomem *ioaddr, u64 *systime);
++	void (*get_ptptime)(void __iomem *ioaddr, u64 *ptp_time);
+ };
+ 
+ #define stmmac_config_hw_tstamping(__priv, __args...) \
+@@ -522,6 +523,8 @@ struct stmmac_hwtimestamp {
+ 	stmmac_do_callback(__priv, ptp, adjust_systime, __args)
+ #define stmmac_get_systime(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, ptp, get_systime, __args)
++#define stmmac_get_ptptime(__priv, __args...) \
++	stmmac_do_void_callback(__priv, ptp, get_ptptime, __args)
+ 
+ /* Helpers to manage the descriptors for chain and ring modes */
+ struct stmmac_mode_ops {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+index d291612eeafb..113c51bcc0b5 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
+@@ -153,6 +153,16 @@ static void get_systime(void __iomem *ioaddr, u64 *systime)
+ 		*systime = ns;
+ }
+ 
++static void get_ptptime(void __iomem *ptpaddr, u64 *ptp_time)
++{
++	u64 ns;
++
++	ns = readl(ptpaddr + PTP_ATNR);
++	ns += readl(ptpaddr + PTP_ATSR) * NSEC_PER_SEC;
++
++	*ptp_time = ns;
++}
++
+ const struct stmmac_hwtimestamp stmmac_ptp = {
+ 	.config_hw_tstamping = config_hw_tstamping,
+ 	.init_systime = init_systime,
+@@ -160,4 +170,5 @@ const struct stmmac_hwtimestamp stmmac_ptp = {
+ 	.config_addend = config_addend,
+ 	.adjust_systime = adjust_systime,
+ 	.get_systime = get_systime,
++	.get_ptptime = get_ptptime,
+ };
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
+index 8b10fd10446f..b164ae22e35f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
+@@ -9,6 +9,7 @@
+ *******************************************************************************/
+ #include "stmmac.h"
+ #include "stmmac_ptp.h"
++#include "dwmac4.h"
+ 
+ /**
+  * stmmac_adjust_freq
+@@ -165,6 +166,36 @@ static int stmmac_enable(struct ptp_clock_info *ptp,
+ 	return ret;
+ }
+ 
++/**
++ * stmmac_get_syncdevicetime
++ * @device: current device time
++ * @system: system counter value read synchronously with device time
++ * @ctx: context provided by timekeeping code
++ * Description: Read device and system clock simultaneously and return the
++ * corrected clock values in ns.
++ **/
++static int stmmac_get_syncdevicetime(ktime_t *device,
++				     struct system_counterval_t *system,
++				     void *ctx)
++{
++	struct stmmac_priv *priv = (struct stmmac_priv *)ctx;
++
++	if (priv->plat->crosststamp)
++		return priv->plat->crosststamp(device, system, ctx);
++	else
++		return -EOPNOTSUPP;
++}
++
++static int stmmac_getcrosststamp(struct ptp_clock_info *ptp,
++				 struct system_device_crosststamp *xtstamp)
++{
++	struct stmmac_priv *priv =
++		container_of(ptp, struct stmmac_priv, ptp_clock_ops);
++
++	return get_device_system_crosststamp(stmmac_get_syncdevicetime,
++					     priv, NULL, xtstamp);
++}
++
+ /* structure describing a PTP hardware clock */
+ static struct ptp_clock_info stmmac_ptp_clock_ops = {
+ 	.owner = THIS_MODULE,
+@@ -180,6 +211,7 @@ static struct ptp_clock_info stmmac_ptp_clock_ops = {
+ 	.gettime64 = stmmac_get_time,
+ 	.settime64 = stmmac_set_time,
+ 	.enable = stmmac_enable,
++	.getcrosststamp = stmmac_getcrosststamp,
+ };
+ 
+ /**
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+index 7abb1d47e7da..f88727ce4d30 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
+@@ -23,6 +23,9 @@
+ #define	PTP_STSUR	0x10	/* System Time – Seconds Update Reg */
+ #define	PTP_STNSUR	0x14	/* System Time – Nanoseconds Update Reg */
+ #define	PTP_TAR		0x18	/* Timestamp Addend Reg */
++#define	PTP_ACR		0x40	/* Auxiliary Control Reg */
++#define	PTP_ATNR	0x48	/* Auxiliary Timestamp - Nanoseconds Reg */
++#define	PTP_ATSR	0x4c	/* Auxiliary Timestamp - Seconds Reg */
+ 
+ #define	PTP_STNSUR_ADDSUB_SHIFT	31
+ #define	PTP_DIGITAL_ROLLOVER_MODE	0x3B9ACA00	/* 10e9-1 ns */
+@@ -64,4 +67,24 @@
+ #define	PTP_SSIR_SSINC_MASK		0xff
+ #define	GMAC4_PTP_SSIR_SSINC_SHIFT	16
+ 
++/* Auxiliary Control defines */
++#define	PTP_ACR_ATSFC		BIT(0)	/* Auxiliary Snapshot FIFO Clear */
++#define	PTP_ACR_ATSEN0		BIT(4)	/* Auxiliary Snapshot 0 Enable */
++#define	PTP_ACR_ATSEN1		BIT(5)	/* Auxiliary Snapshot 1 Enable */
++#define	PTP_ACR_ATSEN2		BIT(6)	/* Auxiliary Snapshot 2 Enable */
++#define	PTP_ACR_ATSEN3		BIT(7)	/* Auxiliary Snapshot 3 Enable */
++#define	PTP_ACR_MASK		GENMASK(7, 4)	/* Aux Snapshot Mask */
++#define	PMC_ART_VALUE0		0x01	/* PMC_ART[15:0] timer value */
++#define	PMC_ART_VALUE1		0x02	/* PMC_ART[31:16] timer value */
++#define	PMC_ART_VALUE2		0x03	/* PMC_ART[47:32] timer value */
++#define	PMC_ART_VALUE3		0x04	/* PMC_ART[63:48] timer value */
++#define	GMAC4_ART_TIME_SHIFT	16	/* ART TIME 16-bits shift */
++
++enum aux_snapshot {
++	AUX_SNAPSHOT0 = 0x10,
++	AUX_SNAPSHOT1 = 0x20,
++	AUX_SNAPSHOT2 = 0x40,
++	AUX_SNAPSHOT3 = 0x80,
++};
++
+ #endif	/* __STMMAC_PTP_H__ */
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 10abc80b601e..5134e802f39a 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -186,6 +186,8 @@ struct plat_stmmacenet_data {
+ 	void (*exit)(struct platform_device *pdev, void *priv);
+ 	struct mac_device_info *(*setup)(void *priv);
+ 	int (*clks_config)(void *priv, bool enabled);
++	int (*crosststamp)(ktime_t *device, struct system_counterval_t *system,
++			   void *ctx);
+ 	void *bsp_priv;
+ 	struct clk *stmmac_clk;
+ 	struct clk *pclk;
+@@ -206,5 +208,7 @@ struct plat_stmmacenet_data {
+ 	u8 vlan_fail_q;
+ 	unsigned int eee_usecs_rate;
+ 	struct pci_dev *pdev;
++	bool has_crossts;
++	int int_snapshot_num;
+ };
+ #endif
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
