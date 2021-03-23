@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB173455B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAE23455B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhCWCul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 22:50:41 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:44284 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhCWCuH (ORCPT
+        id S229984AbhCWCvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 22:51:12 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14426 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhCWCuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:50:07 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id A8CE79804AC;
-        Tue, 23 Mar 2021 10:50:01 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] [v2] drivers: watchdog: Remove duplicate include of kernel.h
-Date:   Tue, 23 Mar 2021 10:49:53 +0800
-Message-Id: <20210323024953.239233-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Mar 2021 22:50:32 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F4G5y1fLmzkcpC;
+        Tue, 23 Mar 2021 10:48:54 +0800 (CST)
+Received: from vm-Yoda-Ubuntu1804.huawei.com (10.67.174.59) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 10:50:20 +0800
+From:   Xu Yihang <xuyihang@huawei.com>
+To:     <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <sthemmin@microsoft.com>, <wei.liu@kernel.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>
+CC:     <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <xuyihang@huawei.com>, <johnny.chenyi@huawei.com>
+Subject: [PATCH -next] x86: Fix unused variable 'hi'
+Date:   Tue, 23 Mar 2021 10:50:13 +0800
+Message-ID: <20210323025013.191533-1-xuyihang@huawei.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210318074607.124663-1-xuyihang@huawei.com>
+References: <20210318074607.124663-1-xuyihang@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTxoeSRgfTEJDTU8eVkpNSk1PTUxDS0pCSUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OT46DSo*Kj8JEjowSyNOQxgq
-        PFFPFBdVSlVKTUpNT01MQ0tJQ0tKVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTklPNwY+
-X-HM-Tid: 0a785cfd36f0d992kuwsa8ce79804ac
+X-Originating-IP: [10.67.174.59]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux/kernel.h has been included at line 22. According to
-alphabetic order, we remove the duplicate one at line 17.
+Fixes the following W=1 kernel build warning(s):
+arch/x86/hyperv/hv_apic.c:58:15: warning: variable ‘hi’ set but not used [-Wunused-but-set-variable]
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Compiled with CONFIG_HYPERV enabled:
+make allmodconfig ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+make W=1 arch/x86/hyperv/hv_apic.o ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+
+HV_X64_MSR_EOI stores on bit 31:0 and HV_X64_MSR_TPR stores in bit 7:0, which means higher
+32 bits are not really used, therefore  potentially cast to void in order to silent this warning.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Xu Yihang <xuyihang@huawei.com>
 ---
- drivers/watchdog/dw_wdt.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/hyperv/hv_apic.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
-index 32d0e1781e63..3aa8bed98759 100644
---- a/drivers/watchdog/dw_wdt.c
-+++ b/drivers/watchdog/dw_wdt.c
-@@ -14,7 +14,6 @@
+diff --git a/arch/x86/hyperv/hv_apic.c b/arch/x86/hyperv/hv_apic.c
+index 284e73661a18..a8b639498033 100644
+--- a/arch/x86/hyperv/hv_apic.c
++++ b/arch/x86/hyperv/hv_apic.c
+@@ -60,9 +60,11 @@ static u32 hv_apic_read(u32 reg)
+ 	switch (reg) {
+ 	case APIC_EOI:
+ 		rdmsr(HV_X64_MSR_EOI, reg_val, hi);
++		(void) hi;
+ 		return reg_val;
+ 	case APIC_TASKPRI:
+ 		rdmsr(HV_X64_MSR_TPR, reg_val, hi);
++		(void) hi;
+ 		return reg_val;
  
- #include <linux/bitops.h>
- #include <linux/limits.h>
--#include <linux/kernel.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/err.h>
+ 	default:
 -- 
-2.25.1
+2.17.1
 
