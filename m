@@ -2,151 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB887346A90
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39B5346A98
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbhCWU7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:59:23 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45563 "EHLO ozlabs.org"
+        id S233468AbhCWVAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:00:32 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:49978 "EHLO raptor.unsafe.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233444AbhCWU65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:58:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4kHd6R4Zz9sTD;
-        Wed, 24 Mar 2021 07:58:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616533134;
-        bh=bVyFiTvUSdKsFHvI8SczURssxLVt9YFCmvLDxVBeI2A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=stQYMbisBU14c4s4nHzPJao2DVVqHuLW6kkYUVTa0Wgq553WxLyaQ5/mbQ85jmKxN
-         oPgGOBfPO5FWOQd3wRo/Lsbt6pZyuRfImj4EPHHgA0NNIVxt69sRatLPVUeyVls7hA
-         Vcf76JtocDZiMkqoBJJW50P6UOuuQB4eXPKzFquTNQqbcd3MH6oppLCx0bqEkaEHxB
-         FFsf3jvJFdlOOBhT7W8/h0ssrfcIEwN/rred1FOvdMvd1tJzTM1FRh591XQM1PNqID
-         DZjQsjxRb4E+uFDrmKk4PzJQG85yhlwmgI3YoicjSJjTrVEUngBGO8dIlpj6iVvdvu
-         n2EcK2S4p7osg==
-Date:   Wed, 24 Mar 2021 07:58:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20210324075852.4ed75c39@canb.auug.org.au>
-In-Reply-To: <20210318205607.63aebcc6@canb.auug.org.au>
-References: <20210318205607.63aebcc6@canb.auug.org.au>
+        id S233378AbhCWVAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:00:12 -0400
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 39E2540C89;
+        Tue, 23 Mar 2021 21:00:05 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH v9 0/8] Count rlimits in each user namespace
+Date:   Tue, 23 Mar 2021 21:59:09 +0100
+Message-Id: <cover.1616533074.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.29.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iC04kSRvKVuu7EF9MubqHwc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.4 (raptor.unsafe.ru [5.9.43.93]); Tue, 23 Mar 2021 21:00:07 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iC04kSRvKVuu7EF9MubqHwc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Preface
+-------
+These patches are for binding the rlimit counters to a user in user namespace.
+This patch set can be applied on top of:
 
-Hi all,
+git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.12-rc4
 
-On Thu, 18 Mar 2021 20:56:07 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> After merging the akpm-current tree, today's linux-next build (sparc
-> defconfig) failed like this:
->=20
-> In file included from arch/sparc/include/asm/pgtable_32.h:25:0,
->                  from arch/sparc/include/asm/pgtable.h:7,
->                  from include/linux/pgtable.h:6,
->                  from include/linux/mm.h:33,
->                  from mm/vmalloc.c:12:
-> mm/vmalloc.c: In function 'vmalloc_to_page':
-> include/asm-generic/pgtable-nopud.h:51:27: error: implicit declaration of=
- function 'pud_page'; did you mean 'put_page'? [-Werror=3Dimplicit-function=
--declaration]
->  #define p4d_page(p4d)    (pud_page((pud_t){ p4d }))
->                            ^
-> mm/vmalloc.c:643:10: note: in expansion of macro 'p4d_page'
->    return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
->           ^~~~~~~~
-> mm/vmalloc.c:643:25: warning: return makes pointer from integer without a=
- cast [-Wint-conversion]
->    return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
-> mm/vmalloc.c:651:25: warning: return makes pointer from integer without a=
- cast [-Wint-conversion]
->    return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
->           ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->=20
-> Caused by commit
->=20
->   70d18d470920 ("mm/vmalloc: fix HUGE_VMAP regression by enabling huge pa=
-ges in vmalloc_to_page")
->=20
-> I have applied the following hack path for today (hopefully someone can
-> come up with something better):
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Thu, 18 Mar 2021 18:32:58 +1100
-> Subject: [PATCH] hack to make SPARC32 build
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  mm/vmalloc.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 57b7f62d25a7..96444d64129a 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -640,7 +640,11 @@ struct page *vmalloc_to_page(const void *vmalloc_add=
-r)
->  	if (p4d_none(*p4d))
->  		return NULL;
->  	if (p4d_leaf(*p4d))
-> +#ifdef CONFIG_SPARC32
-> +		return NULL;
-> +#else
->  		return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
-> +#endif
->  	if (WARN_ON_ONCE(p4d_bad(*p4d)))
->  		return NULL;
-> =20
-> @@ -648,7 +652,11 @@ struct page *vmalloc_to_page(const void *vmalloc_add=
-r)
->  	if (pud_none(*pud))
->  		return NULL;
->  	if (pud_leaf(*pud))
-> +#ifdef CONFIG_SPARC32
-> +		return NULL;
-> +#else
->  		return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-> +#endif
->  	if (WARN_ON_ONCE(pud_bad(*pud)))
->  		return NULL;
-> =20
-> --=20
-> 2.30.0
+Problem
+-------
+The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
+implementation places the counters in user_struct [1]. These limits are global
+between processes and persists for the lifetime of the process, even if
+processes are in different user namespaces.
 
-I am still applying this hack.
---=20
-Cheers,
-Stephen Rothwell
+To illustrate the impact of rlimits, let's say there is a program that does not
+fork. Some service-A wants to run this program as user X in multiple containers.
+Since the program never fork the service wants to set RLIMIT_NPROC=1.
 
---Sig_/iC04kSRvKVuu7EF9MubqHwc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+service-A
+ \- program (uid=1000, container1, rlimit_nproc=1)
+ \- program (uid=1000, container2, rlimit_nproc=1)
 
------BEGIN PGP SIGNATURE-----
+The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
+service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
+since user X already has one running process.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBaVowACgkQAVBC80lX
-0GxNLwf/SqZb1sEecOp4jSmuXPC03vpJKSEQVB6g5YOX+Beg4kznJcSKtYG/fsoC
-odgzhuYX2HjPgSqehS3+xoWCJs9AFTI0QMQ8wkecr4LmW+AFyTxNwPOViLiGpPrH
-jI1c/BGQxCzjs51/uZQOjE3VKUvu2AFYRRQ9gpEX0OxHO4GqnFLOblWhytVRRRFP
-NRCA6aQSSC2Nf+rB9dDejfWVyPk8+dcsvuNx9m1UuRDceFZ7FbGDwW/XF84uXBgL
-JgW17JmtVkEDXhJtIaKWNymWeLbLJ4XZyNkPZ762pDmAxInEWnly35KgkMD4oLur
-IK/U4XrabYP9gvdy1kkzNW+k4YLzwA==
-=BiOi
------END PGP SIGNATURE-----
+The problem is not that the limit from container1 affects container2. The
+problem is that limit is verified against the global counter that reflects
+the number of processes in all containers.
 
---Sig_/iC04kSRvKVuu7EF9MubqHwc--
+This problem can be worked around by using different users for each container
+but in this case we face a different problem of uid mapping when transferring
+files from one container to another.
+
+Eric W. Biederman mentioned this issue [2][3].
+
+Introduced changes
+------------------
+To address the problem, we bind rlimit counters to user namespace. Each counter
+reflects the number of processes in a given uid in a given user namespace. The
+result is a tree of rlimit counters with the biggest value at the root (aka
+init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
+
+[1]: https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+[2]: https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+[3]: https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+
+Changelog
+---------
+v9:
+* Used a negative value to check that the ucounts->count is close to overflow.
+* Rebased onto v5.12-rc4.
+
+v8:
+* Used atomic_t for ucounts reference counting. Also added counter overflow
+  check (thanks to Linus Torvalds for the idea).
+* Fixed other issues found by lkp-tests project in the patch that Reimplements
+  RLIMIT_MEMLOCK on top of ucounts.
+
+v7:
+* Fixed issues found by lkp-tests project in the patch that Reimplements
+  RLIMIT_MEMLOCK on top of ucounts.
+
+v6:
+* Fixed issues found by lkp-tests project.
+* Rebased onto v5.11.
+
+v5:
+* Split the first commit into two commits: change ucounts.count type to atomic_long_t
+  and add ucounts to cred. These commits were merged by mistake during the rebase.
+* The __get_ucounts() renamed to alloc_ucounts().
+* The cred.ucounts update has been moved from commit_creds() as it did not allow
+  to handle errors.
+* Added error handling of set_cred_ucounts().
+
+v4:
+* Reverted the type change of ucounts.count to refcount_t.
+* Fixed typo in the kernel/cred.c
+
+v3:
+* Added get_ucounts() function to increase the reference count. The existing
+  get_counts() function renamed to __get_ucounts().
+* The type of ucounts.count changed from atomic_t to refcount_t.
+* Dropped 'const' from set_cred_ucounts() arguments.
+* Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
+* Commit messages have been updated.
+* Added selftest.
+
+v2:
+* RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
+* Added ucounts for pair uid and user namespace into cred.
+* Added the ability to increase ucount by more than 1.
+
+v1:
+* After discussion with Eric W. Biederman, I increased the size of ucounts to
+  atomic_long_t.
+* Added ucount_max to avoid the fork bomb.
+
+--
+
+Alexey Gladkov (8):
+  Increase size of ucounts to atomic_long_t
+  Add a reference to ucounts for each cred
+  Use atomic_t for ucounts reference counting
+  Reimplement RLIMIT_NPROC on top of ucounts
+  Reimplement RLIMIT_MSGQUEUE on top of ucounts
+  Reimplement RLIMIT_SIGPENDING on top of ucounts
+  Reimplement RLIMIT_MEMLOCK on top of ucounts
+  kselftests: Add test to check for rlimit changes in different user
+    namespaces
+
+ fs/exec.c                                     |   6 +-
+ fs/hugetlbfs/inode.c                          |  16 +-
+ fs/proc/array.c                               |   2 +-
+ include/linux/cred.h                          |   4 +
+ include/linux/hugetlb.h                       |   4 +-
+ include/linux/mm.h                            |   4 +-
+ include/linux/sched/user.h                    |   7 -
+ include/linux/shmem_fs.h                      |   2 +-
+ include/linux/signal_types.h                  |   4 +-
+ include/linux/user_namespace.h                |  26 ++-
+ ipc/mqueue.c                                  |  41 ++---
+ ipc/shm.c                                     |  26 +--
+ kernel/cred.c                                 |  50 +++++-
+ kernel/exit.c                                 |   2 +-
+ kernel/fork.c                                 |  18 +-
+ kernel/signal.c                               |  57 +++----
+ kernel/sys.c                                  |  14 +-
+ kernel/ucount.c                               | 133 ++++++++++++---
+ kernel/user.c                                 |   3 -
+ kernel/user_namespace.c                       |   9 +-
+ mm/memfd.c                                    |   4 +-
+ mm/mlock.c                                    |  23 ++-
+ mm/mmap.c                                     |   4 +-
+ mm/shmem.c                                    |   8 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rlimits/.gitignore    |   2 +
+ tools/testing/selftests/rlimits/Makefile      |   6 +
+ tools/testing/selftests/rlimits/config        |   1 +
+ .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
+ 29 files changed, 493 insertions(+), 145 deletions(-)
+ create mode 100644 tools/testing/selftests/rlimits/.gitignore
+ create mode 100644 tools/testing/selftests/rlimits/Makefile
+ create mode 100644 tools/testing/selftests/rlimits/config
+ create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+
+-- 
+2.29.3
+
