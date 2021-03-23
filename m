@@ -2,139 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F7534543F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DB8345440
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhCWAvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:51:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43334 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231700AbhCWAvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:51:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616460664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCYwl192EbRTTqhTN6RAwmcLAOqLyfsZgbfALtQItf4=;
-        b=CYMwJFZni1QfsPNcoNsjRza0rIJSHAcbD1PaBMxUikaGQeFfXElcO77evRNoBp3cY0a0U9
-        rV7DHz88V5pxRcfJGcjUA7qQ8pdVH3Q0mR507GyXYWhq+7VdJqXCQCMGmbO7OCDnbUnqnT
-        oi2VJVUR2JQr4GktOecqf2wHAa/tkug=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-S74Aj0lPMRmdYsk7NmGtDQ-1; Mon, 22 Mar 2021 20:51:02 -0400
-X-MC-Unique: S74Aj0lPMRmdYsk7NmGtDQ-1
-Received: by mail-qk1-f197.google.com with SMTP id u5so812923qkj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:51:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XCYwl192EbRTTqhTN6RAwmcLAOqLyfsZgbfALtQItf4=;
-        b=h5G7ISpeXeaI1xp/NzLCxjYEyBFv5qliaPIOHj0wj4uzFl+DW8CnhI9jL35/awapt8
-         KCN3DaLe6cxCAJQfB5UAGQN9/zdR8NP5aQ1N11wefF+TN99JQcyY43WM4lDEZwoZFG+P
-         l5hGgZkoK6TP+Lr5uhpgd/ZF2zp5cz/fF45VZZX1VZantY/nqx8AgpZ/sUMHchnHzM5H
-         bymPyjotrLKXhFM2BNlsu0v1hocRdBHUaIH01PxUAhJ8uPrYpgw0rRQenhgw+Z77O1F7
-         tZi3A3X4FFmhKgj+NxjhEGfk3ML1xkzlCdpoybmQH10BYcZ9INczcBY6gsxb/2NmenE1
-         uK3w==
-X-Gm-Message-State: AOAM532vIvVZR7y2vcStIZypy1E2jL77YNKijzDk8S0eNwez4t8wiZkM
-        sUHi2EPfkOPFLhXwsr8T7blUxBSzKb19SXGT4jhlK4lRP6WGsNME/9UTx6zbHoHsl9/troTczYD
-        a7a8HQY6l/BFI5nRx9HBJCs13
-X-Received: by 2002:a0c:aa45:: with SMTP id e5mr2400651qvb.44.1616460662156;
-        Mon, 22 Mar 2021 17:51:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzz8+ectXkImQeBvED857DjCH8Njpx7f7CDz4cyDPiZa49fT5ITS2E9jSS61/fmqfTmNpQtdw==
-X-Received: by 2002:a0c:aa45:: with SMTP id e5mr2400634qvb.44.1616460661914;
-        Mon, 22 Mar 2021 17:51:01 -0700 (PDT)
-Received: from localhost.localdomain (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id i8sm9816695qtj.16.2021.03.22.17.51.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 17:51:01 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Axel Rasmussen <axelrasmussen@google.com>, peterx@redhat.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH 23/23] userfaultfd/selftests: Enable uffd-wp for shmem/hugetlbfs
-Date:   Mon, 22 Mar 2021 20:50:59 -0400
-Message-Id: <20210323005059.36084-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210323004912.35132-1-peterx@redhat.com>
-References: <20210323004912.35132-1-peterx@redhat.com>
+        id S231773AbhCWAwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231716AbhCWAvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:51:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04DC6619A0;
+        Tue, 23 Mar 2021 00:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616460668;
+        bh=0GU+mvpQ6KFpPVwE2ur3Erg8FSP3jRjW/eXtmRXCw7s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SRAQIK6VlIa1BVXD5FgNvXzx34HBQ3nVMbX7leQvXvYXSMTtjgk6mWm4fxRtHdXrG
+         Sl+9cOPfdzkSxJI2g2QhbnigL6cSZfMkC0RXNulceHz9OmyPFHKGTbqAKxWTn8/twn
+         EMzv+hHcg9G2Xmp3tGlnPk4bdmyS+lwe3Zw5YlpwukFKZT4m6kIj5geuBLx+pQG1y4
+         1zJRcn7b5muK8qMSLrlEyTwhClWY39umEzKY43sl4UdqV3ngeHney4bbSaXcYlXV4m
+         SIGJroPcyjPLzcfqW6L4ifaGkbd5OjitKvwFa06caWIHybxlw6K6H+NmicgKjVof6X
+         xrNN0Gkawe9Ig==
+Date:   Mon, 22 Mar 2021 17:51:06 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>
+Subject: Re: [PATCH] crypto: poly1305: fix poly1305_core_setkey() declaration
+Message-ID: <YFk7erL3xBHoGNmj@gmail.com>
+References: <20210322170542.1791154-1-arnd@kernel.org>
+ <CAMj1kXGj+autwGM-Me7qNoORsux9Xz_1-P=7w4m-9vGMXwDq4Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMj1kXGj+autwGM-Me7qNoORsux9Xz_1-P=7w4m-9vGMXwDq4Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After we added support for shmem and hugetlbfs, we can turn uffd-wp test on
-always now.
+On Mon, Mar 22, 2021 at 07:51:47PM +0100, Ard Biesheuvel wrote:
+> On Mon, 22 Mar 2021 at 18:05, Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > gcc-11 points out a mismatch between the declaration and the definition
+> > of poly1305_core_setkey():
+> >
+> > lib/crypto/poly1305-donna32.c:13:67: error: argument 2 of type ‘const u8[16]’ {aka ‘const unsigned char[16]’} with mismatched bound [-Werror=array-parameter=]
+> >    13 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 raw_key[16])
+> >       |                                                          ~~~~~~~~~^~~~~~~~~~~
+> > In file included from lib/crypto/poly1305-donna32.c:11:
+> > include/crypto/internal/poly1305.h:21:68: note: previously declared as ‘const u8 *’ {aka ‘const unsigned char *’}
+> >    21 | void poly1305_core_setkey(struct poly1305_core_key *key, const u8 *raw_key);
+> >
+> > This is harmless in principle, as the calling conventions are the same,
+> > but the more specific prototype allows better type checking in the
+> > caller.
+> >
+> > Change the declaration to match the actual function definition.
+> > The poly1305_simd_init() is a bit suspicious here, as it previously
+> > had a 32-byte argument type, but looks like it needs to take the
+> > 16-byte POLY1305_BLOCK_SIZE array instead.
+> >
+> 
+> This looks ok to me. For historical reasons, the Poly1305 integration
+> is based on an unkeyed shash, and both the Poly1305 key and nonce are
+> passed as ordinary input, prepended to the actual data.
+> poly1305_simd_init() takes only the key but not the nonce, so it
+> should only be passed 16 bytes.
 
-Define HUGETLB_EXPECTED_IOCTLS to avoid using UFFD_API_RANGE_IOCTLS_BASIC,
-because UFFD_API_RANGE_IOCTLS_BASIC is normally a superset of capabilities,
-while the test may not satisfy them all.  E.g., when hugetlb registered without
-minor mode, then we need to explicitly remove _UFFDIO_CONTINUE.  Same thing to
-uffd-wp, as we'll need to explicitly remove _UFFDIO_WRITEPROTECT if not
-registered with uffd-wp.
+Well to be more precise, there are two conventions for using Poly1305.  One
+where it is invoked many times with the same 16-byte key and different 16-byte
+nonces.  And one where every invocation uses a unique key *and* nonce,
+interpreted as a 32-byte "one-time key".
 
-For the long term, we may consider dropping UFFD_API_* macros completely from
-uapi/linux/userfaultfd.h header files, because it may cause kernel header
-update to easily break userspace.
+So that's why there's a mix of 16 and 32 byte "keys".
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+The naming "POLY1305_KEY_SIZE" assumes the second convention, which is a bit
+confusing; it really should be called something like POLY1305_ONETIME_KEY_SIZE.
+I guess the idea was that the one-time key convention is the more common one.
 
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 1f5f9362ec7b..5fa9a506ded5 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -80,7 +80,7 @@ static int test_type;
- static volatile bool test_uffdio_copy_eexist = true;
- static volatile bool test_uffdio_zeropage_eexist = true;
- /* Whether to test uffd write-protection */
--static bool test_uffdio_wp = false;
-+static bool test_uffdio_wp = true;
- 
- static bool map_shared;
- static int shm_fd;
-@@ -319,6 +319,9 @@ struct uffd_test_ops {
- 					 (1 << _UFFDIO_ZEROPAGE) | \
- 					 (1 << _UFFDIO_WRITEPROTECT))
- 
-+#define HUGETLB_EXPECTED_IOCTLS		((1 << _UFFDIO_WAKE) |	\
-+					 (1 << _UFFDIO_COPY))
-+
- static struct uffd_test_ops anon_uffd_test_ops = {
- 	.expected_ioctls = ANON_EXPECTED_IOCTLS,
- 	.allocate_area	= anon_allocate_area,
-@@ -334,7 +337,7 @@ static struct uffd_test_ops shmem_uffd_test_ops = {
- };
- 
- static struct uffd_test_ops hugetlb_uffd_test_ops = {
--	.expected_ioctls = UFFD_API_RANGE_IOCTLS_BASIC & ~(1 << _UFFDIO_CONTINUE),
-+	.expected_ioctls = HUGETLB_EXPECTED_IOCTLS,
- 	.allocate_area	= hugetlb_allocate_area,
- 	.release_pages	= hugetlb_release_pages,
- 	.alias_mapping = hugetlb_alias_mapping,
-@@ -1433,8 +1436,6 @@ static void set_test_type(const char *type)
- 	if (!strcmp(type, "anon")) {
- 		test_type = TEST_ANON;
- 		uffd_test_ops = &anon_uffd_test_ops;
--		/* Only enable write-protect test for anonymous test */
--		test_uffdio_wp = true;
- 	} else if (!strcmp(type, "hugetlb")) {
- 		test_type = TEST_HUGETLB;
- 		uffd_test_ops = &hugetlb_uffd_test_ops;
--- 
-2.26.2
+Anyway, the patch seems to be fine, as it uses the correct length in each
+location.  You can add:
 
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+
+- Eric
