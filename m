@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0205D346B39
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB07346B3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbhCWVj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
+        id S233651AbhCWVkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbhCWVjn (ORCPT
+        with ESMTP id S233563AbhCWVjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:39:43 -0400
+        Tue, 23 Mar 2021 17:39:44 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7FEC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:39:42 -0700 (PDT)
-Message-Id: <20210323213707.465154098@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6E0C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:39:43 -0700 (PDT)
+Message-Id: <20210323213707.630525866@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616535581;
+        s=2020; t=1616535582;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ERv4b/SO2o1L4SIyMqm0aGcbAhBK3azDtTSXDmAG/uY=;
-        b=GmIrKw6zgDLn+HzWD0HZFkZE8yVasS2NLop7HUKnwBFP2jp84vLXQcvshg71Erod0jmXM9
-        PWZM1OKdn4Y05HFWsu/d4l40vyxr74el70WZwkID56IiACDSKRnEF24Jq3pMxEPDHp3kCW
-        vUUEVsV8+HeV+e1iBd1AN+vsx+bnCXKQw1/QrOgCf3eSYKUnPXxVP55eGYY74ezn5D4FAR
-        URuMVcUPcS6JQx90kyHXGkLVkBPyup7p7U5AKtys2sRK6SCRlSdDG5zn43cfK+SFtdPiOU
-        IbvcxoaDfVkM6jGvS/q86bHwNzwgx5cHeCGA4uoZQTiwXhoRnET++0PqviPpxA==
+        bh=Yo+AwdHmiilTULO6uV2YUGCHlgzu/1kUJvKTyHSNTGY=;
+        b=vxifL3Ay08r4Hak5D6Iohw86i3DLmpjfaP2hF01n5dqMyGP0fVXVlaNt6cEHfjiK5gG8nI
+        5mdwmQ9E+WUz/MHrov1M25mAQ5d2Ih3xa//6OC2XhE4Nee1+t+s3FYPl2uZVuh1DnN0yMt
+        KS83Ui16fwNmtkt2OcygcTou+9rmXY81OAoO/g2OVrTQDmPEb2iPRJK7RTjGHagkwiTmvf
+        Z1/bIXX4aMexzZgXjZ3Vv/ccxPZLszIm/6B97wH9hHp1wCu2IS+8erop4gcyjUebopvfmN
+        1cD3gvayeSX0DfsZ1a2bBAWNRVLMnVCyQ4TC4wpeg2uuEU14cqHYKMaABDoz5Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616535581;
+        s=2020e; t=1616535582;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ERv4b/SO2o1L4SIyMqm0aGcbAhBK3azDtTSXDmAG/uY=;
-        b=A02eaKrm0Xcgc9myeEPvjljZRQDgE4ynedfWsxBytuGdRhfyXvHR2e1KuBPEoTb1VMB1oY
-        2ye/qilzxT4599Bg==
-Date:   Tue, 23 Mar 2021 22:30:20 +0100
+        bh=Yo+AwdHmiilTULO6uV2YUGCHlgzu/1kUJvKTyHSNTGY=;
+        b=EVu9EVxo5rgBySQmrs/XpTdSIWGnsV0zei6US8FqwZ/VhTWzcjx8kCAAsdTMU2ZYxpJSQN
+        Mi6wvI/2qYI9OqCw==
+Date:   Tue, 23 Mar 2021 22:30:21 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -44,7 +44,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch 01/14] locking/rtmutex: Remove rt_mutex_timed_lock()
+Subject: [patch 02/14] locking/rtmutex: Remove rtmutex deadlock tester leftovers
 References: <20210323213019.217008708@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,90 +55,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-rt_mutex_timed_lock() has no callers since commit c051b21f71d1f ("rtmutex:
-Confine deadlock logic to futex")
+The following debug members of struct rtmutex are unused:
 
-Remove it.
+ - save_state: No users
+
+ - file,line: Printed if ::name is NULL. This is only used for non-futex
+   	      locks so ::name is never NULL
+
+ - magic:     Assigned to NULL by rt_mutex_destroy(), no further usage
+
+Remove them along with unused inlines and macros leftovers related to
+the long gone deadlock tester.
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/rtmutex.h  |    3 ---
- kernel/locking/rtmutex.c |   46 ----------------------------------------------
- 2 files changed, 49 deletions(-)
+ include/linux/rtmutex.h         |    7 ++-----
+ kernel/locking/rtmutex-debug.c  |    7 +------
+ kernel/locking/rtmutex-debug.h  |    2 --
+ kernel/locking/rtmutex.c        |    3 ---
+ kernel/locking/rtmutex.h        |    2 --
+ kernel/locking/rtmutex_common.h |    1 -
+ 6 files changed, 3 insertions(+), 19 deletions(-)
 
 --- a/include/linux/rtmutex.h
 +++ b/include/linux/rtmutex.h
-@@ -115,9 +115,6 @@ extern void rt_mutex_lock(struct rt_mute
+@@ -32,10 +32,7 @@ struct rt_mutex {
+ 	struct rb_root_cached   waiters;
+ 	struct task_struct	*owner;
+ #ifdef CONFIG_DEBUG_RT_MUTEXES
+-	int			save_state;
+-	const char		*name, *file;
+-	int			line;
+-	void			*magic;
++	const char		*name;
  #endif
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	struct lockdep_map	dep_map;
+@@ -60,7 +57,7 @@ struct hrtimer_sleeper;
  
- extern int rt_mutex_lock_interruptible(struct rt_mutex *lock);
--extern int rt_mutex_timed_lock(struct rt_mutex *lock,
--			       struct hrtimer_sleeper *timeout);
--
- extern int rt_mutex_trylock(struct rt_mutex *lock);
+ #ifdef CONFIG_DEBUG_RT_MUTEXES
+ # define __DEBUG_RT_MUTEX_INITIALIZER(mutexname) \
+-	, .name = #mutexname, .file = __FILE__, .line = __LINE__
++	, .name = #mutexname
  
- extern void rt_mutex_unlock(struct rt_mutex *lock);
+ # define rt_mutex_init(mutex) \
+ do { \
+--- a/kernel/locking/rtmutex-debug.c
++++ b/kernel/locking/rtmutex-debug.c
+@@ -42,12 +42,7 @@ static void printk_task(struct task_stru
+ 
+ static void printk_lock(struct rt_mutex *lock, int print_owner)
+ {
+-	if (lock->name)
+-		printk(" [%p] {%s}\n",
+-			lock, lock->name);
+-	else
+-		printk(" [%p] {%s:%d}\n",
+-			lock, lock->file, lock->line);
++	printk(" [%p] {%s}\n", lock, lock->name);
+ 
+ 	if (print_owner && rt_mutex_owner(lock)) {
+ 		printk(".. ->owner: %p\n", lock->owner);
+--- a/kernel/locking/rtmutex-debug.h
++++ b/kernel/locking/rtmutex-debug.h
+@@ -22,8 +22,6 @@ extern void debug_rt_mutex_deadlock(enum
+ 				    struct rt_mutex_waiter *waiter,
+ 				    struct rt_mutex *lock);
+ extern void debug_rt_mutex_print_deadlock(struct rt_mutex_waiter *waiter);
+-# define debug_rt_mutex_reset_waiter(w)			\
+-	do { (w)->deadlock_lock = NULL; } while (0)
+ 
+ static inline bool debug_rt_mutex_detect_deadlock(struct rt_mutex_waiter *waiter,
+ 						  enum rtmutex_chainwalk walk)
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -1395,21 +1395,6 @@ rt_mutex_fastlock(struct rt_mutex *lock,
- }
- 
- static inline int
--rt_mutex_timed_fastlock(struct rt_mutex *lock, int state,
--			struct hrtimer_sleeper *timeout,
--			enum rtmutex_chainwalk chwalk,
--			int (*slowfn)(struct rt_mutex *lock, int state,
--				      struct hrtimer_sleeper *timeout,
--				      enum rtmutex_chainwalk chwalk))
--{
--	if (chwalk == RT_MUTEX_MIN_CHAINWALK &&
--	    likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
--		return 0;
--
--	return slowfn(lock, state, timeout, chwalk);
--}
--
--static inline int
- rt_mutex_fasttrylock(struct rt_mutex *lock,
- 		     int (*slowfn)(struct rt_mutex *lock))
+@@ -1594,9 +1594,6 @@ void __sched rt_mutex_futex_unlock(struc
+ void rt_mutex_destroy(struct rt_mutex *lock)
  {
-@@ -1517,37 +1502,6 @@ int __sched __rt_mutex_futex_trylock(str
+ 	WARN_ON(rt_mutex_is_locked(lock));
+-#ifdef CONFIG_DEBUG_RT_MUTEXES
+-	lock->magic = NULL;
+-#endif
  }
+ EXPORT_SYMBOL_GPL(rt_mutex_destroy);
  
- /**
-- * rt_mutex_timed_lock - lock a rt_mutex interruptible
-- *			the timeout structure is provided
-- *			by the caller
-- *
-- * @lock:		the rt_mutex to be locked
-- * @timeout:		timeout structure or NULL (no timeout)
-- *
-- * Returns:
-- *  0		on success
-- * -EINTR	when interrupted by a signal
-- * -ETIMEDOUT	when the timeout expired
-- */
--int
--rt_mutex_timed_lock(struct rt_mutex *lock, struct hrtimer_sleeper *timeout)
--{
--	int ret;
--
--	might_sleep();
--
--	mutex_acquire(&lock->dep_map, 0, 0, _RET_IP_);
--	ret = rt_mutex_timed_fastlock(lock, TASK_INTERRUPTIBLE, timeout,
--				       RT_MUTEX_MIN_CHAINWALK,
--				       rt_mutex_slowlock);
--	if (ret)
--		mutex_release(&lock->dep_map, _RET_IP_);
--
--	return ret;
--}
--EXPORT_SYMBOL_GPL(rt_mutex_timed_lock);
--
--/**
-  * rt_mutex_trylock - try to lock a rt_mutex
-  *
-  * @lock:	the rt_mutex to be locked
+--- a/kernel/locking/rtmutex.h
++++ b/kernel/locking/rtmutex.h
+@@ -11,7 +11,6 @@
+  * Non-debug version.
+  */
+ 
+-#define rt_mutex_deadlock_check(l)			(0)
+ #define debug_rt_mutex_init_waiter(w)			do { } while (0)
+ #define debug_rt_mutex_free_waiter(w)			do { } while (0)
+ #define debug_rt_mutex_lock(l)				do { } while (0)
+@@ -21,7 +20,6 @@
+ #define debug_rt_mutex_init(m, n, k)			do { } while (0)
+ #define debug_rt_mutex_deadlock(d, a ,l)		do { } while (0)
+ #define debug_rt_mutex_print_deadlock(w)		do { } while (0)
+-#define debug_rt_mutex_reset_waiter(w)			do { } while (0)
+ 
+ static inline void rt_mutex_print_deadlock(struct rt_mutex_waiter *w)
+ {
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -30,7 +30,6 @@ struct rt_mutex_waiter {
+ 	struct task_struct	*task;
+ 	struct rt_mutex		*lock;
+ #ifdef CONFIG_DEBUG_RT_MUTEXES
+-	unsigned long		ip;
+ 	struct pid		*deadlock_task_pid;
+ 	struct rt_mutex		*deadlock_lock;
+ #endif
 
