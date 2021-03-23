@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF2B345AB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A006345AB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCWJWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhCWJWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:22:33 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B9FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:22:32 -0700 (PDT)
-Received: from bigeasy by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <sebastian@breakpoint.cc>)
-        id 1lOdEz-0003VM-TV; Tue, 23 Mar 2021 10:22:21 +0100
-Date:   Tue, 23 Mar 2021 10:22:21 +0100
-From:   Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH] drm/i915: Use tasklet_unlock_spin_wait() in
- __tasklet_disable_sync_once()
-Message-ID: <20210323092221.awq7g5b2muzypjw3@flow>
-References: <20210322082522.GH32426@xsang-OptiPlex-9020>
+        id S229547AbhCWJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:23:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230018AbhCWJWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 05:22:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E850619BD;
+        Tue, 23 Mar 2021 09:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616491374;
+        bh=nIl5g8+JAuq2Z3PPtrMi5r/ei6Uo3jJtQSZOg96Y6kg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NWqWw+WpZUGeCu615dNX65XaOUfb07H1OLIcUVqWCSaDE3R1AC4lq9pE2m9arSlnm
+         ZQ0JpHxwzlULKbNRMekmDqBfGMuLwkLkzwsL4sNg9RyZCk/+c+FFhFlInF/+NGab//
+         771QRCoHNRvHaKDpBZKZswYuhu7mGICL6Fco4PMg=
+Date:   Tue, 23 Mar 2021 10:22:51 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Jason Li <jason.li@cortina-access.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 1/3] tty: serial: Add UART driver for Cortina-Access
+ platform
+Message-ID: <YFmzax3pWFNtFbn9@kroah.com>
+References: <1613702532-5096-1-git-send-email-alex.nemirovsky@cortina-access.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322082522.GH32426@xsang-OptiPlex-9020>
+In-Reply-To: <1613702532-5096-1-git-send-email-alex.nemirovsky@cortina-access.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i915 driver has its own tasklet interface which was overseen in the
-tasklet rework. __tasklet_disable_sync_once() is a wrapper around
-tasklet_unlock_wait(). tasklet_unlock_wait() might sleep, but the i915
-wrappers invoke it from non-preemtible contexts with bottom halves disabled.
+On Thu, Feb 18, 2021 at 06:42:09PM -0800, Alex Nemirovsky wrote:
+> From: Jason Li <jason.li@cortina-access.com>
+> 
+> This driver supports Cortina Access UART IP integrated
+> in most all CAXXXX line of SoCs. Earlycom is also supported
+> 
+> Signed-off-by: Jason Li <jason.li@cortina-access.com>
+> Reviewed-by: Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
+> ---
+>  MAINTAINERS                                |   5 +
+>  drivers/tty/serial/Kconfig                 |  19 +
+>  drivers/tty/serial/Makefile                |   1 +
+>  drivers/tty/serial/serial_cortina-access.c | 798 +++++++++++++++++++++++++++++
+>  include/uapi/linux/serial_core.h           |   3 +
+>  5 files changed, 826 insertions(+)
+>  create mode 100644 drivers/tty/serial/serial_cortina-access.c
+> 
+>  Change log
+>   drivers/tty/serial/serial_cortina-access.c
+>    v3:
+>     - Remove usage of uintptr_t. Change to pointer to driver's private
+>       structure instead.
 
-Use tasklet_unlock_spin_wait() instead which can be invoked from
-non-preemptible contexts.
+Is this really a "v3"?  The subject lines do not show that, so I'm
+totally confused as to what to review and what has been reviewed here.
 
-Fixes: da044747401fc ("tasklets: Replace spin wait in tasklet_unlock_wait()")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/gpu/drm/i915/i915_gem.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please fix this up and submit a "v4" so we know what is going on :)
 
-diff --git a/drivers/gpu/drm/i915/i915_gem.h b/drivers/gpu/drm/i915/i915_gem.h
-index e622aee6e4be9..440c35f1abc9e 100644
---- a/drivers/gpu/drm/i915/i915_gem.h
-+++ b/drivers/gpu/drm/i915/i915_gem.h
-@@ -105,7 +105,7 @@ static inline bool tasklet_is_locked(const struct tasklet_struct *t)
- static inline void __tasklet_disable_sync_once(struct tasklet_struct *t)
- {
- 	if (!atomic_fetch_inc(&t->count))
--		tasklet_unlock_wait(t);
-+		tasklet_unlock_spin_wait(t);
- }
- 
- static inline bool __tasklet_is_enabled(const struct tasklet_struct *t)
--- 
-2.31.0
+thanks,
 
+greg k-h
