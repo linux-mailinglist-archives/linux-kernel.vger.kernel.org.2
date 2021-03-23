@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007DB3469BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FEE3469BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhCWUUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:20:54 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:43974 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbhCWUUY (ORCPT
+        id S233228AbhCWUWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:22:30 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:39582 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233072AbhCWUWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:20:24 -0400
-Received: by mail-io1-f51.google.com with SMTP id z136so19105504iof.10;
-        Tue, 23 Mar 2021 13:20:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Tp80gy+0OkNwU5Jvc6Bj62i4jpwSRXTDIXhxrL5nq0=;
-        b=CMIcuRhT+iBuiRoxNvUOT8c+R/Kw4QVq8hF2yMMr7zNlFNqIyR0Fxh+5Ms4jpBXb0I
-         Vo/rWxSq4O9Qft/sg+8SX8tFiYV9J51hBctyMVOxnKa7ys5oD/FbEyqtccKmwYQRzVWX
-         k7jOVxDdPuA9LYzEwmjfZ8jG1wsJCaFmZMXpeKWYVkzMEA2LbYb0+L2BgBai619OBemX
-         y6LxWC/gGKfZYApsyHRdB+ClMgnjmffdn9JUAl55E4DvjxCAbrEF41mO2kDvsA7j7KDy
-         qYnRH1+uS7wc+3gjpSbBuD4yiEl1eoIxOUPrJrSMPrTLjRifnFNwGg2YyPTNcgzUfHGL
-         vzoQ==
-X-Gm-Message-State: AOAM531y95xRtkeb4SWdJHyBsF021adhHfEd5rRgz/tuRWY9zg9R860m
-        brBMm+vKvOMBnTHYwOaPIQ==
-X-Google-Smtp-Source: ABdhPJwiamQiJEfKQT0y+jbtus3lBMMGGCM3cCXWnYFJsj5T/y8a7/HZNP8JHP80rewyR1hKdB3KaQ==
-X-Received: by 2002:a5e:d901:: with SMTP id n1mr5947919iop.84.1616530823835;
-        Tue, 23 Mar 2021 13:20:23 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id f13sm9614313ila.51.2021.03.23.13.20.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 13:20:23 -0700 (PDT)
-Received: (nullmailer pid 1250413 invoked by uid 1000);
-        Tue, 23 Mar 2021 20:20:20 -0000
-Date:   Tue, 23 Mar 2021 14:20:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michael Kao <michael.kao@mediatek.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
-        Zhang Rui <rui.zhang@intel.com>, devicetree@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        linux-pm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        srv_heupstream@mediatek.com
-Subject: Re: [v3, 3/3] dt-bindings: thermal: Add binding document for mt6873
- thermal controller
-Message-ID: <20210323202020.GA1250358@robh.at.kernel.org>
-References: <20210312034018.17437-1-michael.kao@mediatek.com>
- <20210312034018.17437-4-michael.kao@mediatek.com>
+        Tue, 23 Mar 2021 16:22:04 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4B6BA891AE;
+        Wed, 24 Mar 2021 09:22:01 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1616530921;
+        bh=BDIYsPirbtYm6xznZoyWhaO+s5HVKu9e1IdTPONNYXg=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=PwRzreRDA4or+tEJnuWdOKwxx5F8OQipdM868RqJ/JFQI5iLjBfRjTRNfm74YKdj2
+         NQK7E7wcEdSZ6ClqTEiCEqJ6STPqEISLwCo14iePXoOmi7w6Hlf/P1hhVeXTD5QRvm
+         YegrZdRRXMdFE2/vcmGVibzmBJwdK72Vb0My71l+zMacl+52xEZMU/3ZljUgpONZWn
+         yov+sqkDt3diwbIcKFnjKySAPKxPpgu5eosr52A8h58TMKRAlgQMuBkQXnAG0K+TMc
+         55HpTj7RC64dbv3MzEWlVy6vo3jWet38rzqgl/4G71jFAz2ZDHa9LCZmuNPx7ByE2r
+         fBRBz+e+8QA5A==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B605a4de90001>; Wed, 24 Mar 2021 09:22:01 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 09:22:00 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Wed, 24 Mar 2021 09:22:00 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Rob Herring <robh@kernel.org>
+CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "wsa@kernel.org" <wsa@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 2/6] dt-bindings: i2c: convert i2c-mpc to json-schema
+Thread-Topic: [PATCH 2/6] dt-bindings: i2c: convert i2c-mpc to json-schema
+Thread-Index: AQHXH5233LnDPck5U0iG88OvYj8e5KqRKb2AgAABdQA=
+Date:   Tue, 23 Mar 2021 20:22:00 +0000
+Message-ID: <f5e86696-07f1-f1d2-9596-af7fa6ae1cdd@alliedtelesis.co.nz>
+References: <20210323043331.21878-1-chris.packham@alliedtelesis.co.nz>
+ <20210323043331.21878-3-chris.packham@alliedtelesis.co.nz>
+ <1616530607.398955.1244764.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1616530607.398955.1244764.nullmailer@robh.at.kernel.org>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CACD322AAEA783469DFBE409B6144F50@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312034018.17437-4-michael.kao@mediatek.com>
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=voM4FWlXAAAA:8 a=QcnDgq45NsFIHwn4wVcA:9 a=QEXdDO2ut3YA:10 a=IC2XNlieTeVoXbcui8wp:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Mar 2021 11:40:18 +0800, Michael Kao wrote:
-> This patch adds binding document for mt6873 thermal controller.
-> 
-> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
-> ---
-> This patch depends on [1].
-> 
-> [1]https://patchwork.kernel.org/project/linux-mediatek/cover/1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com/
-> ---
->  .../thermal/mediatek-thermal-lvts.yaml        | 81 +++++++++++++++++++
->  1 file changed, 81 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+SGkgUm9iLA0KDQpPbiAyNC8wMy8yMSA5OjE2IGFtLCBSb2IgSGVycmluZyB3cm90ZToNCj4gT24g
+VHVlLCAyMyBNYXIgMjAyMSAxNzozMzoyNyArMTMwMCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4+
+IENvbnZlcnQgaTJjLW1wYyB0byBZQU1MLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IENocmlzIFBh
+Y2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4+IC0tLQ0KPj4gICAu
+Li4vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLW1wYy50eHQgICAgICAgfCA2MiAtLS0tLS0t
+LS0tLS0NCj4+ICAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1tcGMueWFtbCAgICAg
+IHwgOTkgKysrKysrKysrKysrKysrKysrKw0KPj4gICAyIGZpbGVzIGNoYW5nZWQsIDk5IGluc2Vy
+dGlvbnMoKyksIDYyIGRlbGV0aW9ucygtKQ0KPj4gICBkZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXBjLnR4dA0KPj4gICBjcmVhdGUg
+bW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXBj
+LnlhbWwNCj4+DQo+IE15IGJvdCBmb3VuZCBlcnJvcnMgcnVubmluZyAnbWFrZSBkdF9iaW5kaW5n
+X2NoZWNrJyBvbiB5b3VyIHBhdGNoOg0KPg0KPiB5YW1sbGludCB3YXJuaW5ncy9lcnJvcnM6DQo+
+IC4vRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXBjLnlhbWw6MTk6
+OTogW3dhcm5pbmddIHdyb25nIGluZGVudGF0aW9uOiBleHBlY3RlZCAxMCBidXQgZm91bmQgOCAo
+aW5kZW50YXRpb24pDQo+IC4vRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9p
+MmMtbXBjLnlhbWw6MjA6MTE6IFt3YXJuaW5nXSB3cm9uZyBpbmRlbnRhdGlvbjogZXhwZWN0ZWQg
+MTIgYnV0IGZvdW5kIDEwIChpbmRlbnRhdGlvbikNCkhtbSBJIGRpZCBydW4gJ21ha2UgZHRfYmlu
+ZGluZ19jaGVjaycgaXMgeWFtbGxpbnQgcnVuIHNlcGFyYXRlbHkgKG9yIG5vdCANCnJ1biBpZiBp
+dCdzIG5vdCBpbnN0YWxsZWQ/KS4NCj4gZHRzY2hlbWEvZHRjIHdhcm5pbmdzL2Vycm9yczoNCj4N
+Cj4gU2VlIGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcGF0Y2gvMTQ1NzA1Mw0KPg0KPiBU
+aGlzIGNoZWNrIGNhbiBmYWlsIGlmIHRoZXJlIGFyZSBhbnkgZGVwZW5kZW5jaWVzLiBUaGUgYmFz
+ZSBmb3IgYSBwYXRjaA0KPiBzZXJpZXMgaXMgZ2VuZXJhbGx5IHRoZSBtb3N0IHJlY2VudCByYzEu
+DQo+DQo+IElmIHlvdSBhbHJlYWR5IHJhbiAnbWFrZSBkdF9iaW5kaW5nX2NoZWNrJyBhbmQgZGlk
+bid0IHNlZSB0aGUgYWJvdmUNCj4gZXJyb3IocyksIHRoZW4gbWFrZSBzdXJlICd5YW1sbGludCcg
+aXMgaW5zdGFsbGVkIGFuZCBkdC1zY2hlbWEgaXMgdXAgdG8NCj4gZGF0ZToNCj4NCj4gcGlwMyBp
+bnN0YWxsIGR0c2NoZW1hIC0tdXBncmFkZQ0KPg0KPiBQbGVhc2UgY2hlY2sgYW5kIHJlLXN1Ym1p
+dC4NClNob3VsZCBiZSBlYXN5IHRvIGZpeCB0aGUgYmluZGluZyBidXQgSSdsbCBzcGVuZCBhIGJp
+dCBvZiB0aW1lIHRyeWluZyB0byANCmdldCBteSB0b29saW5nIHNvcnRlZC4=
