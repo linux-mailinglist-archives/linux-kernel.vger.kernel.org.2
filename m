@@ -2,163 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749993465CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0908A3465CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhCWQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
+        id S233317AbhCWQ6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhCWQ6h (ORCPT
+        with ESMTP id S233258AbhCWQ6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:58:37 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8439DC061574;
-        Tue, 23 Mar 2021 09:58:37 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id l3so14938600pfc.7;
-        Tue, 23 Mar 2021 09:58:37 -0700 (PDT)
+        Tue, 23 Mar 2021 12:58:25 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC320C061574;
+        Tue, 23 Mar 2021 09:58:24 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso10375563pjb.3;
+        Tue, 23 Mar 2021 09:58:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=q6HLBdpORj52B/QlxfKOriW3XwZYRHdxIv9lX/34Xow=;
-        b=DC1l5KdJxmXpfR6SVLRhu8CVDSEPw6lc4Z/Hndn7FKXYmJ5Onzds3ErTQCbRQZ14+5
-         qjFY8dudrNJk/AjtLFl1EcJau02+ZX7CLSeVqmJs2T/DcTWHJ/dQ3T0AVC51eoF2dcLU
-         74KtM5gB7lrbVg14MMyRFb8QaxxxUNPM0r+WnzCDo6CqTIDxP3pJV0+8piz0XrnkPknp
-         12JFpIlEJ7jKnbLXFk0t1xAEoyFg7kvwiY4xfw4vAAJWCXg8+MSvJW1aaomQ9yW5Ye1g
-         Itdu4kVmwtaL/FjZxxEwW+Mzl5ok4B1xTXkvQCl98b/Atu7yj7D3+v5w/A9FlnuhD+GR
-         Gddw==
+         :content-disposition:in-reply-to;
+        bh=1x45VA7iwWhj8NjeFCXCpxwGnPrZpl1jcoi1rF0hZ9w=;
+        b=ke+ejE0bAH1Y71b5mmeNuAyY1ml9x8g9/7Py0npzHShe7uK6H391nOp/Mx6X4QNggs
+         5yUY/8VQ4KeqonJ4nZpFniQEkSE+WLzhOoW92vaJZxtlCFDO5pIpjwmRgWKOfSxXLveq
+         riQEzQeMpEJpnLIndAtEu6i4EPj4ISaVbyliKhg0HWIGJ8Uyl1QrrNmC4rlMYX9Y0rRI
+         o8dSttDyneLw2HQWRp4qRghCj5YUTkx1BtxbUYaZj37yw0nxz/vToOBzMPaqaTL+pvDx
+         owD4IJv+8xhgGIuJY0ZllwjRgdlSSXsrml4Itjj6bLecKm5Brx4CwO9R1+K4Yn4JjOG1
+         kAPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=q6HLBdpORj52B/QlxfKOriW3XwZYRHdxIv9lX/34Xow=;
-        b=AgonEKaR2XwfXMQCi5JiqKWlQE77zMp8T5Gq6rBK9y5ysjiHEmIOwp8p2cJoHLWdjl
-         FHfaXIyEFkjHSmSSvkIERm92MpqwZ7Xf8p1NFOx3mxKM79FqmvkOmRrXz00kbVTeX/zy
-         SHMfhOwJQ3T1Ic7JO60+pR34nnUwtFBcRdJX8HQ0iCnAcj6UiuwbqxJ89Bp6YUlS7GZP
-         uFqms8ix1eFu2NW0ATkmKTJK+Fg6N5/AclT9kiZDnyud5uugHAyWmIWDLLvz33Ciq6oP
-         f57MnANpxOUyzvjt6ZHnnRE6+bAVUyAlsVb0nVcXlJqxpGQxOgadLkWUntDgWfo2Uznt
-         XMJg==
-X-Gm-Message-State: AOAM531Nd/VrRhQfXcoxEL2tV1hBF0N55flUn7gc+8mu6ObYNpO21EFl
-        CYqnhQrPaquQAvezifFdBG4=
-X-Google-Smtp-Source: ABdhPJw9KiqlaeOJI2rlUyzZOufuqJd/B5r/EWkgsH3sUfJoLdASbIs1eBjfLkKF2FJFS04oRnWmhA==
-X-Received: by 2002:a17:902:cecf:b029:e6:ac65:4680 with SMTP id d15-20020a170902cecfb02900e6ac654680mr6858615plg.64.1616518717093;
-        Tue, 23 Mar 2021 09:58:37 -0700 (PDT)
-Received: from localhost ([2401:4900:5298:bb2f:6d40:6041:a658:f52a])
-        by smtp.gmail.com with ESMTPSA id b3sm3171129pjg.41.2021.03.23.09.58.36
+         :mime-version:content-disposition:in-reply-to;
+        bh=1x45VA7iwWhj8NjeFCXCpxwGnPrZpl1jcoi1rF0hZ9w=;
+        b=TH0AsAoltWfBVVLzyl3vjnL9XK5f0D3sA2EOwEO7fO6CR54FVsORBC7uwUMxwlc272
+         ohIrlbEAjhWTALBgKkarObjNpRL2g4g0cKfDHj9qXFyyp+JfwbdyK20i/+sK+d6cEPGx
+         t4t0zHT8s2o0dZhLEL/uBM9d/JrykaJ11XH4O6fUscV8J7cFpFKBqKTmPA01YY83IEX2
+         Zn1kIroxkSyiGJFWY82BK7u1WiquHhsyWqDEG5x/w1/UnmyT+wUvaxdfu3ZngcW/OucK
+         Gcgucj9Ar9PQIBW5eCmOTULB6o20J77xmi6AQHOKlYkNU0EvJyedJWPWlFLLcbtyBPZz
+         QmrQ==
+X-Gm-Message-State: AOAM533RS+ooSPMWsEsLDDyfLbYuJr+0jzI4Kdri9spN0GtrBK48T+HU
+        5Fddi8HNlE5ZYG2Rlam61Ew=
+X-Google-Smtp-Source: ABdhPJwqZuTpeqfQujnX6uAGYpmek9ibkHlzDlN4XM5CaoFRZgq4IAbIv7dHPcORYTXP1aznxDIAzQ==
+X-Received: by 2002:a17:90a:ec15:: with SMTP id l21mr5272921pjy.164.1616518704185;
+        Tue, 23 Mar 2021 09:58:24 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
+        by smtp.gmail.com with ESMTPSA id gw20sm3192971pjb.3.2021.03.23.09.58.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 09:58:36 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 22:27:49 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     alex.williamson@redhat.com, helgaas@kernel.org,
-        lorenzo.pieralisi@arm.com, kabel@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        raphael.norwitz@nutanix.com
-Subject: Re: How long should be PCIe card in Warm Reset state?
-Message-ID: <20210323165749.retjprjgdj7seoan@archlinux>
-References: <20210310110535.zh4pnn4vpmvzwl5q@pali>
- <20210323161941.gim6msj3ruu3flnf@archlinux>
- <20210323162747.tscfovntsy7uk5bk@pali>
+        Tue, 23 Mar 2021 09:58:23 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:58:19 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Kevin Locke <kevin@kevinlocke.name>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        David Pedersen <limero1337@gmail.com>,
+        Rajat Jain <rajatja@google.com>,
+        Chris Chiu <chiu@endlessos.org>, Jiri Kosina <jkosina@suse.cz>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: i8042 - fix Pegatron C15B ID entry
+Message-ID: <YFoeKw4byr1U+SGN@google.com>
+References: <20210323130623.2302402-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210323162747.tscfovntsy7uk5bk@pali>
+In-Reply-To: <20210323130623.2302402-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/03/23 05:27PM, Pali Rohár wrote:
-> On Tuesday 23 March 2021 21:49:41 Amey Narkhede wrote:
-> > On 21/03/10 12:05PM, Pali Rohár wrote:
-> > > Hello!
-> > >
-> > > I would like to open a question about PCIe Warm Reset. Warm Reset of
-> > > PCIe card is triggered by asserting PERST# signal and in most cases
-> > > PERST# signal is controlled by GPIO.
-> > >
-> > > Basically every native Linux PCIe controller driver is doing this Warm
-> > > Reset of connected PCIe card during native driver initialization
-> > > procedure.
-> > >
-> > > And now the important question is: How long should be PCIe card in Warm
-> > > Reset state? After which timeout can be PERST# signal de-asserted by
-> > > Linux controller driver?
-> > >
-> > > Lorenzo and Rob already expressed concerns [1] [2] that this Warm Reset
-> > > timeout should not be driver specific and I agree with them.
-> > >
-> > > I have done investigation which timeout is using which native PCIe
-> > > driver [3] and basically every driver is using different timeout.
-> > >
-> > > I have tried to find timeouts in PCIe specifications, I was not able to
-> > > understand and deduce correct timeout value for Warm Reset from PCIe
-> > > specifications. What I have found is written in my email [4].
-> > >
-> > > Alex (as a "reset expert"), could you look at this issue?
-> > >
-> > > Or is there somebody else who understand PCIe specifications and PCIe
-> > > diagrams to figure out what is the minimal timeout for de-asserting
-> > > PERST# signal?
-> > >
-> > > There are still some issues with WiFi cards (e.g. Compex one) which
-> > > sometimes do not appear on PCIe bus. And based on these "reset timeout
-> > > differences" in Linux PCIe controller drivers, I suspect that it is not
-> > > (only) the problems in WiFi cards but also in Linux PCIe controller
-> > > drivers. In my email [3] I have written that I figured out that WLE1216
-> > > card needs to be in Warm Reset state for at least 10ms, otherwise card
-> > > is not detected.
-> > >
-> > > [1] - https://lore.kernel.org/linux-pci/20200513115940.fiemtnxfqcyqo6ik@pali/
-> > > [2] - https://lore.kernel.org/linux-pci/20200507212002.GA32182@bogus/
-> > > [3] - https://lore.kernel.org/linux-pci/20200424092546.25p3hdtkehohe3xw@pali/
-> > > [4] - https://lore.kernel.org/linux-pci/20200430082245.xblvb7xeamm4e336@pali/
-> >
-> > I somehow got my hands on PCIe Gen4 spec. It says on page no 555-
-> > "When PERST# is provided to a component or adapter, this signal must be
-> > used by the component or adapter as Fundamental Reset.
-> > When PERST# is not provided to a component or adapter, Fundamental Reset is
-> > generated autonomously by the component or adapter, and the details of how
-> > this is done are outside the scope of this document."
-> > Not sure what component/adapter means in this context.
-> >
-> > Then below it says-
-> > "In some cases, it may be possible for the Fundamental Reset mechanism
-> > to be triggered  by hardware without the removal and re-application of
-> > power to the component.  This is called a warm reset. This document does
-> > not specify a means for generating a warm reset."
-> >
-> > Thanks,
-> > Amey
->
-> Hello Amey, PCIe Base document does not specify how to control PERST#
-> signal and how to issue Warm Reset. But it is documented in PCIe CEM,
-> Mini PCIe CEM and M.2 CEM documents (maybe in some other PCIe docs too).
->
-> It is needed look into more documents, "merge them in head" and then
-> deduce final meaning...
-Okay so PCIe CEM revision 2.0(from 2007) on page no 22 says-
-"On power up, the deassertion of PERST# is delayed 100 ms (TPVPERL)
-from the power rails achieving specified operating limits.  Also, within
-this time, the reference clocks  (REFCLK+, REFCLK-) also become stable,
-at least TPERST-CLK before PERST# is deasserted."
+On Tue, Mar 23, 2021 at 02:06:13PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The Zenbook Flip entry that was added overwrites a previous one
+> because of a typo:
+> 
+> In file included from drivers/input/serio/i8042.h:23,
+>                  from drivers/input/serio/i8042.c:131:
+> drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
+>   591 |                 .matches = {
+>       |                            ^
+> drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
+> 
+> Add the missing separator between the two.
+> 
+> Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Then below it says-
-"After there has been time (TPVPERL) for the power and clock to become
-stable, PERST# is deasserted high and the PCI Express functions can start
-up."
+Applied, thank you.
 
-And then there is table of timing on page no 33-
-Symbol 		Parameter 				Min
-TPVPERL 	Power Stable to PERST# inactive 	100ms
-TPERST-CLK 	REFCLK stable before PERST# inactive 	100μs
-TPERST 		PERST# active time 			100μs
-TFAIL 		Power level invalid to PERST# active 	500ns
-...
-
-I agree this is confusing.
-
-Thanks,
-Amey
+-- 
+Dmitry
