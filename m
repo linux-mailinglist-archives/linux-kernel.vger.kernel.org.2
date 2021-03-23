@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642883466AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 238C33466AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhCWRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbhCWRsI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:48:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252D0C061574;
-        Tue, 23 Mar 2021 10:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=WAaAPdguDLLP2yVKPdLWr0ZxkEKHN3J+rUw3FYzZDXo=; b=aPsyQ8nH70OWaOsS4KSMB28jwu
-        fINSBkOnYLyEwJy8So6O83yVEfVFmrZOB3n+0quresGKpXUua1pPeMBbUqmCq+4t4jUlUQTtGK4r3
-        LZU/1JfDRXSJqyKoDYOPhoM7BoeYsjDp4CRBRVkyHfbqE5ejt939m2tpFPeLeBY84g3USjTBVAYJS
-        EexI2KFzeEvGUB2chekrq9QyBG1C6kdcxjlyQn/9/zGNR87wes9nM8yGo7paHg2TWfl9IJeLPaa7H
-        PNaxN87c9MIDt3CnqhEmnCheX6stEch3PqwjJO78pnfOyjtqqgs1uhWflsMCrSKq16zc0IwodZeMA
-        VfHTkg3A==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOl7v-00AMZz-LG; Tue, 23 Mar 2021 17:47:46 +0000
-Subject: Re: [PATCH] power: supply: Trivial spelling fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, sre@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323124206.24813-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1f35f9ff-ae16-443c-b18e-40f32013ccdb@infradead.org>
-Date:   Tue, 23 Mar 2021 10:47:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231146AbhCWRtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:49:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230378AbhCWRss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:48:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3B5A61585;
+        Tue, 23 Mar 2021 17:48:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616521728;
+        bh=DT7S4ANP/ZZuhKQtMce/aXHnvlXtr9OnxskEhH4djlk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r1x4uled6bRtRcVetmBH/l2bRYlraEGJe7UjUD0WmTDX4ajHIripgIMoSk+YUcTUn
+         ftxUshYg6/bAmBNfPpTqEXFXXjgaymqfew7euiLU57QrERWSqofcRMrQkp3RV5keyI
+         bOqH851sblS8JiQl38haGgEA1UB2YFIKK8u3U28ZDqZ4/5zOtDE/ARK+b53F8s3JcJ
+         3VnEPdR9FbQGPMlYO3b33rAnqg28aECe6LJQhRlM+7Ul7gjM4MEK42+Kn55B9zstvt
+         EoCLhD6EI6jjEJQsCbHoAYVym00wx6pobXzurxbtEQt1PjDFqUDNFUTCg6xcCDMbas
+         qjVH83p0H3/IQ==
+Date:   Tue, 23 Mar 2021 17:48:41 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, j.neuschaefer@gmx.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210323174841.GD5490@sirena.org.uk>
+References: <20210308212952.20774-1-andreas@kemnade.info>
+ <20210310094821.GB701493@dell>
+ <20210311184033.GJ4962@sirena.org.uk>
+ <20210322145925.GY2916463@dell>
+ <20210323171143.GA5490@sirena.org.uk>
+ <20210323172002.GY2916463@dell>
 MIME-Version: 1.0
-In-Reply-To: <20210323124206.24813-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PHCdUe6m4AxPMzOu"
+Content-Disposition: inline
+In-Reply-To: <20210323172002.GY2916463@dell>
+X-Cookie: Formatted to fit your screen.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 5:42 AM, Bhaskar Chowdhury wrote:
-> Few trivial spelling fixes .
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+--PHCdUe6m4AxPMzOu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Mar 23, 2021 at 05:20:02PM +0000, Lee Jones wrote:
+> On Tue, 23 Mar 2021, Mark Brown wrote:
+>=20
+> > On Mon, Mar 22, 2021 at 02:59:25PM +0000, Lee Jones wrote:
+> > > On Thu, 11 Mar 2021, Mark Brown wrote:
 
-> ---
->  drivers/power/supply/max17042_battery.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
-> index 79d4b5988360..1d7326cd8fc6 100644
-> --- a/drivers/power/supply/max17042_battery.c
-> +++ b/drivers/power/supply/max17042_battery.c
-> @@ -131,7 +131,7 @@ static int max17042_get_status(struct max17042_chip *chip, int *status)
->  	 *
->  	 * When this cycle the battery gets charged to a higher (calculated)
->  	 * capacity then the previous cycle then FullCAP will get updated
-> -	 * contineously once end-of-charge detection kicks in, so allow the
-> +	 * continuously once end-of-charge detection kicks in, so allow the
->  	 * 2 to differ a bit.
->  	 */
-> 
-> @@ -739,7 +739,7 @@ static void max17042_load_new_capacity_params(struct max17042_chip *chip)
-> 
->  /*
->   * Block write all the override values coming from platform data.
-> - * This function MUST be called before the POR initialization proceedure
-> + * This function MUST be called before the POR initialization procedure
->   * specified by maxim.
->   */
->  static inline void max17042_override_por_values(struct max17042_chip *chip)
-> @@ -811,7 +811,7 @@ static int max17042_init_chip(struct max17042_chip *chip)
->  	 */
->  	msleep(500);
-> 
-> -	/* Initialize configaration */
-> +	/* Initialize configuration */
->  	max17042_write_config_regs(chip);
-> 
->  	/* write cell characterization data */
-> @@ -855,7 +855,7 @@ static void max17042_set_soc_threshold(struct max17042_chip *chip, u16 off)
->  	struct regmap *map = chip->regmap;
->  	u32 soc, soc_tr;
-> 
-> -	/* program interrupt thesholds such that we should
-> +	/* program interrupt thresholds such that we should
->  	 * get interrupt for every 'off' perc change in the soc
->  	 */
->  	regmap_read(map, MAX17042_RepSOC, &soc);
-> --
+> > > > If there were more users it'd be better to have this in the core so=
+ that
+> > > > problems we can detect like cache stuff if that's used but if it's =
+just
+> > > > one broken device it's probably not worth it, this seems like somet=
+hing
+> > > > you'd have to try to end up with and which is going to cause timeout
+> > > > problems with a lot of I2C controllers which would tank performance
+> > > > enough that people would notice.
 
+> > > So Yoda, is this to go into the core, or stay where it is?
 
--- 
-~Randy
+> > Well, nobody's sent me any patches.
 
+> Code is still in the driver in v4.
+
+> My question is; should these functions really live in the SS?
+
+Perhaps we could avoid using that particular abbreviation.
+
+Like I say it depends on how common this is - are we seeing other
+devices with the same problem?
+
+--PHCdUe6m4AxPMzOu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBaKfgACgkQJNaLcl1U
+h9CLWgf+N0kLQl/2ZQ2baUjBK0WRJO/GmByHzzTEeVPzmUxA5JJ1U4jmQqnMTRo6
+Apnb5Ofwzv/voAVBCKYfixNb8IYTXBbToOlybeWeuwgoy/TiBPCQmulTI0XVajmC
+4bTo6ME3aRoNeR5FPkXVrNHLKZlb00NFmN2PxgCeeW2BH3ymbYJ0P+eQ8siL4jBA
+0cb7NqryhfXsc5yXWZupQaauvgx9S5i8gq/YwfCwzKCqcvU/VPsV38i/HXb9A5tV
+TS9ps8z/2BziU8E7rr4r4vLHI9iRtq1K88t+RuR9gOPIsgp3vyYgaJBWTKserAix
+RBJbKvE3D5MbNeRHWdwt7zkCiLQFyQ==
+=BHaw
+-----END PGP SIGNATURE-----
+
+--PHCdUe6m4AxPMzOu--
