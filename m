@@ -2,108 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A926346DD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 00:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E13346DD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 00:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhCWXUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 19:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCWXUT (ORCPT
+        id S234281AbhCWXVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 19:21:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2736 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234257AbhCWXVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 19:20:19 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F246C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 16:20:18 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id b184so15936780pfa.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 16:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2mPqZ8T3s6ATLiDuP1AsIgNdhiWZsvEH4M6lDW4cfTI=;
-        b=FkYfaAkO0Z6/s4JItNqmcW1gokGmTqNJc9DB36xytboCFozRTY5w7JdrA4JFNrrqUc
-         PScrQdfFxWrPte+4sTO//YvN7fQwHcV4zIOKvLkNX+zkTewbGEUrY0GEDOiEQUF4vYuU
-         aFAGddHODC9RZFrFAz47xwrt5Rc5jXEikRcLR5EzlVCiEtalcSZHIkFUV2dR22EvrkrX
-         0xQkfBA3CaMmqYlEvQNU41R3KeX7PtTHWJztwsyq20bzwZz7nyLoXhDTLGfFphS2wpwu
-         5p3iYee6HWfEVuxS+9Mfdy0BB3mLXec96LfugcFuNmiAtUKDyBgTj9/PwhGHdbLPB8XF
-         4C/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2mPqZ8T3s6ATLiDuP1AsIgNdhiWZsvEH4M6lDW4cfTI=;
-        b=Qceb9H1k0BVMd86VGE5RthfiOgBgGGOT6TZ8eET4hFU3ODLni7Z5KEnRMr8Kt+fTxV
-         DCWI9ku2T9LGR974CVO2a4xyIHTsDCBF0rovGWILSEygtEx4Xtpknmhv2cUsJDhJlU8h
-         RxQsRgltu/cw9MVZ8IWzszY32QEpf9Ctv5gXMoKjDcLSN9+LtUPztVNtx6pysCPu9WJD
-         evPgPT14lhMbT2IHqiUfy7d/pmbD4jIzbwbjWnSCR9kJqmwmKIBn1qsQypU5QDWUt2fo
-         McY7SiGqxCU9HWh+Z/q/ND0kgQwCPsC/LrN/jL194v/eiHt0aNiUL76da24I4M39LgEu
-         eyJw==
-X-Gm-Message-State: AOAM531/AdPBFG/wblIhrO/Z5IexwrjfzSDMQT5Lg9Xbt+3LMF0nby9L
-        j3BMT0jrg5DPDSS5StSDLE+Alw==
-X-Google-Smtp-Source: ABdhPJxNQ1MKjV1GEOTfkga2yU4EzySf+ImHzG//t/vH8JyfFvC/Ow4Oj+kKSp7Y3MjTm9kaPF1qEw==
-X-Received: by 2002:a17:902:8e89:b029:e6:ef44:6a54 with SMTP id bg9-20020a1709028e89b02900e6ef446a54mr756979plb.7.1616541617252;
-        Tue, 23 Mar 2021 16:20:17 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 22sm230405pjl.31.2021.03.23.16.20.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 16:20:16 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 17:20:14 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: pru: Fix firmware loading crashes on K3 SoCs
-Message-ID: <20210323232014.GA1782475@xps15>
-References: <20210315205859.19590-1-s-anna@ti.com>
+        Tue, 23 Mar 2021 19:21:15 -0400
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F4nLN6999z681yy;
+        Wed, 24 Mar 2021 07:16:28 +0800 (CST)
+Received: from lhreml721-chm.china.huawei.com (10.201.108.72) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 00:21:13 +0100
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml721-chm.china.huawei.com (10.201.108.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Tue, 23 Mar 2021 23:21:11 +0000
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Wed, 24 Mar 2021 07:21:09 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: RE: [RFC PATCH v5 4/4] scheduler: Add cluster scheduler level for x86
+Thread-Topic: [RFC PATCH v5 4/4] scheduler: Add cluster scheduler level for
+ x86
+Thread-Index: AQHXHHecEK2PZNeGJ0y0ASUDVCEuNqqRruSAgACLbJA=
+Date:   Tue, 23 Mar 2021 23:21:09 +0000
+Message-ID: <67cc380019fd40d88d7a493b6cbc0852@hisilicon.com>
+References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
+ <20210319041618.14316-5-song.bao.hua@hisilicon.com>
+ <110234d1-22ce-8a9a-eabb-c15ac29a5dcd@linux.intel.com>
+In-Reply-To: <110234d1-22ce-8a9a-eabb-c15ac29a5dcd@linux.intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.12]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315205859.19590-1-s-anna@ti.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 03:58:59PM -0500, Suman Anna wrote:
-> The K3 PRUs are 32-bit processors and in general have some limitations
-> in using the standard ARMv8 memcpy function for loading firmware segments,
-> so the driver already uses a custom memcpy implementation. This added
-> logic however is limited to only IRAMs at the moment, but the loading
-> into Data RAMs is not completely ok either and does generate a kernel
-> crash for unaligned accesses.
-> 
-> Fix these crashes by removing the existing IRAM logic limitation and
-> extending the custom memcpy usage to Data RAMs as well for all K3 SoCs.
-> 
-> Fixes: 1d39f4d19921 ("remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs")
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-
-Probably a good idea to CC stable as well...
-
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
-> ---
->  drivers/remoteproc/pru_rproc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-> index 2667919d76b3..16979c1cd2f4 100644
-> --- a/drivers/remoteproc/pru_rproc.c
-> +++ b/drivers/remoteproc/pru_rproc.c
-> @@ -585,7 +585,7 @@ pru_rproc_load_elf_segments(struct rproc *rproc, const struct firmware *fw)
->  			break;
->  		}
->  
-> -		if (pru->data->is_k3 && is_iram) {
-> +		if (pru->data->is_k3) {
->  			ret = pru_rproc_memcpy(ptr, elf_data + phdr->p_offset,
->  					       filesz);
->  			if (ret) {
-> -- 
-> 2.30.1
-> 
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGltIENoZW4gW21haWx0
+bzp0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAy
+NCwgMjAyMSAxMTo1MSBBTQ0KPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSA8c29uZy5i
+YW8uaHVhQGhpc2lsaWNvbi5jb20+Ow0KPiBjYXRhbGluLm1hcmluYXNAYXJtLmNvbTsgd2lsbEBr
+ZXJuZWwub3JnOyByandAcmp3eXNvY2tpLm5ldDsNCj4gdmluY2VudC5ndWl0dG90QGxpbmFyby5v
+cmc7IGJwQGFsaWVuOC5kZTsgdGdseEBsaW51dHJvbml4LmRlOw0KPiBtaW5nb0ByZWRoYXQuY29t
+OyBsZW5iQGtlcm5lbC5vcmc7IHBldGVyekBpbmZyYWRlYWQub3JnOw0KPiBkaWV0bWFyLmVnZ2Vt
+YW5uQGFybS5jb207IHJvc3RlZHRAZ29vZG1pcy5vcmc7IGJzZWdhbGxAZ29vZ2xlLmNvbTsNCj4g
+bWdvcm1hbkBzdXNlLmRlDQo+IENjOiBtc3lzLm1penVtYUBnbWFpbC5jb207IHZhbGVudGluLnNj
+aG5laWRlckBhcm0uY29tOw0KPiBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgSm9uYXRoYW4g
+Q2FtZXJvbiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29tPjsNCj4ganVyaS5sZWxsaUByZWRo
+YXQuY29tOyBtYXJrLnJ1dGxhbmRAYXJtLmNvbTsgc3VkZWVwLmhvbGxhQGFybS5jb207DQo+IGF1
+YnJleS5saUBsaW51eC5pbnRlbC5jb207IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFk
+Lm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtYWNwaUB2Z2VyLmtl
+cm5lbC5vcmc7IHg4NkBrZXJuZWwub3JnOw0KPiB4dXdlaSAoTykgPHh1d2VpNUBodWF3ZWkuY29t
+PjsgWmVuZ3RhbyAoQikgPHByaW1lLnplbmdAaGlzaWxpY29uLmNvbT47DQo+IGd1b2RvbmcueHVA
+bGluYXJvLm9yZzsgeWFuZ3lpY29uZyA8eWFuZ3lpY29uZ0BodWF3ZWkuY29tPjsgTGlndW96aHUg
+KEtlbm5ldGgpDQo+IDxsaWd1b3podUBoaXNpbGljb24uY29tPjsgbGludXhhcm1Ab3BlbmV1bGVy
+Lm9yZzsgaHBhQHp5dG9yLmNvbQ0KPiBTdWJqZWN0OiBSZTogW1JGQyBQQVRDSCB2NSA0LzRdIHNj
+aGVkdWxlcjogQWRkIGNsdXN0ZXIgc2NoZWR1bGVyIGxldmVsIGZvciB4ODYNCj4gDQo+IA0KPiAN
+Cj4gT24gMy8xOC8yMSA5OjE2IFBNLCBCYXJyeSBTb25nIHdyb3RlOg0KPiA+IEZyb206IFRpbSBD
+aGVuIDx0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbT4NCj4gPg0KPiA+IFRoZXJlIGFyZSB4ODYg
+Q1BVIGFyY2hpdGVjdHVyZXMgKGUuZy4gSmFjb2JzdmlsbGUpIHdoZXJlIEwyIGNhaGNlDQo+ID4g
+aXMgc2hhcmVkIGFtb25nIGEgY2x1c3RlciBvZiBjb3JlcyBpbnN0ZWFkIG9mIGJlaW5nIGV4Y2x1
+c2l2ZQ0KPiA+IHRvIG9uZSBzaW5nbGUgY29yZS4NCj4gPg0KPiA+IFRvIHByZXZlbnQgb3ZlcnN1
+YnNjcmlwdGlvbiBvZiBMMiBjYWNoZSwgbG9hZCBzaG91bGQgYmUNCj4gPiBiYWxhbmNlZCBiZXR3
+ZWVuIHN1Y2ggTDIgY2x1c3RlcnMsIGVzcGVjaWFsbHkgZm9yIHRhc2tzIHdpdGgNCj4gPiBubyBz
+aGFyZWQgZGF0YS4NCj4gPg0KPiA+IEFsc28gd2l0aCBjbHVzdGVyIHNjaGVkdWxpbmcgcG9saWN5
+IHdoZXJlIHRhc2tzIGFyZSB3b2tlbiB1cA0KPiA+IGluIHRoZSBzYW1lIEwyIGNsdXN0ZXIsIHdl
+IHdpbGwgYmVuZWZpdCBmcm9tIGtlZXBpbmcgdGFza3MNCj4gPiByZWxhdGVkIHRvIGVhY2ggb3Ro
+ZXIgYW5kIGxpa2VseSBzaGFyaW5nIGRhdGEgaW4gdGhlIHNhbWUgTDINCj4gPiBjbHVzdGVyLg0K
+PiA+DQo+ID4gQWRkIENQVSBtYXNrcyBvZiBDUFVzIHNoYXJpbmcgdGhlIEwyIGNhY2hlIHNvIHdl
+IGNhbiBidWlsZCBzdWNoDQo+ID4gTDIgY2x1c3RlciBzY2hlZHVsZXIgZG9tYWluLg0KPiA+DQo+
+ID4gU2lnbmVkLW9mZi1ieTogVGltIENoZW4gPHRpbS5jLmNoZW5AbGludXguaW50ZWwuY29tPg0K
+PiA+IFNpZ25lZC1vZmYtYnk6IEJhcnJ5IFNvbmcgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29t
+Pg0KPiANCj4gDQo+IEJhcnJ5LA0KPiANCj4gQ2FuIHlvdSBhbHNvIGFkZCB0aGlzIGNodW5rIHRv
+IHRoZSBwYXRjaC4NCj4gVGhhbmtzLg0KDQpTdXJlLCBUaW0sIFRoYW5rcy4gSSdsbCBwdXQgdGhh
+dCBpbnRvIHBhdGNoIDQvNCBpbiB2Ni4NCg0KPiANCj4gVGltDQo+IA0KPiANCj4gZGlmZiAtLWdp
+dCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3RvcG9sb2d5LmgNCj4gYi9hcmNoL3g4Ni9pbmNsdWRl
+L2FzbS90b3BvbG9neS5oDQo+IGluZGV4IDJhMTFjY2MxNGZiMS4uODAwZmE0OGM5ZmNkIDEwMDY0
+NA0KPiAtLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS90b3BvbG9neS5oDQo+ICsrKyBiL2FyY2gv
+eDg2L2luY2x1ZGUvYXNtL3RvcG9sb2d5LmgNCj4gQEAgLTExNSw2ICsxMTUsNyBAQCBleHRlcm4g
+dW5zaWduZWQgaW50IF9fbWF4X2RpZV9wZXJfcGFja2FnZTsNCj4gDQo+ICAjaWZkZWYgQ09ORklH
+X1NNUA0KPiAgI2RlZmluZSB0b3BvbG9neV9kaWVfY3B1bWFzayhjcHUpCQkocGVyX2NwdShjcHVf
+ZGllX21hcCwgY3B1KSkNCj4gKyNkZWZpbmUgdG9wb2xvZ3lfY2x1c3Rlcl9jcHVtYXNrKGNwdSkJ
+CShjcHVfY2x1c3Rlcmdyb3VwX21hc2soY3B1KSkNCj4gICNkZWZpbmUgdG9wb2xvZ3lfY29yZV9j
+cHVtYXNrKGNwdSkJCShwZXJfY3B1KGNwdV9jb3JlX21hcCwgY3B1KSkNCj4gICNkZWZpbmUgdG9w
+b2xvZ3lfc2libGluZ19jcHVtYXNrKGNwdSkJCShwZXJfY3B1KGNwdV9zaWJsaW5nX21hcCwgY3B1
+KSkNCj4gDQoNClRoYW5rcw0KQmFycnkNCg0KDQo=
