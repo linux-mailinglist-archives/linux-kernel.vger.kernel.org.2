@@ -2,198 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337DC345C1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE000345C20
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhCWKnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:43:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:43768 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhCWKm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:42:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A999E1042;
-        Tue, 23 Mar 2021 03:42:55 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CDE633F719;
-        Tue, 23 Mar 2021 03:42:53 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 10:42:51 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     madvenka@linux.microsoft.com
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 4/8] arm64: Detect an EL1 exception frame and mark
- a stack trace unreliable
-Message-ID: <20210323104251.GD95840@C02TD0UTHF1T.local>
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-5-madvenka@linux.microsoft.com>
+        id S230345AbhCWKoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:44:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44945 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230356AbhCWKni (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:43:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616496217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4UvLisLY3QVjpjoeO2+ShNqoiFem2kvMWqAPyPyr9MY=;
+        b=h0ecbV3y60RvSjt18lTdq/q7PgYZ1vvhpPIWbrz94gPKX4iBsF2B4MO/P3iVZyjE7an8Ch
+        gwW8gEH6oQRXTJMiVUp0ly9RUlpeVN5dE53dyYJ08VUWHlsIcu1OVri1GJcNQpTAsZKega
+        /e3bpyOBJ3+xzUZ+jJ82YSPJwl3P0Eo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-pg-DBKDuOOmNOGVHi1kDeA-1; Tue, 23 Mar 2021 06:43:36 -0400
+X-MC-Unique: pg-DBKDuOOmNOGVHi1kDeA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3528593A0;
+        Tue, 23 Mar 2021 10:43:34 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 654EE1A353;
+        Tue, 23 Mar 2021 10:43:32 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selftests: kvm: make hardware_disable_test less verbose
+Date:   Tue, 23 Mar 2021 11:43:31 +0100
+Message-Id: <20210323104331.1354800-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315165800.5948-5-madvenka@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:57:56AM -0500, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> 
-> EL1 exceptions can happen on any instruction including instructions in
-> the frame pointer prolog or epilog. Depending on where exactly they happen,
-> they could render the stack trace unreliable.
-> 
-> If an EL1 exception frame is found on the stack, mark the stack trace as
-> unreliable.
-> 
-> Now, the EL1 exception frame is not at any well-known offset on the stack.
-> It can be anywhere on the stack. In order to properly detect an EL1
-> exception frame the following checks must be done:
-> 
-> 	- The frame type must be EL1_FRAME.
-> 
-> 	- When the register state is saved in the EL1 pt_regs, the frame
-> 	  pointer x29 is saved in pt_regs->regs[29] and the return PC
-> 	  is saved in pt_regs->pc. These must match with the current
-> 	  frame.
+hardware_disable_test produces 512 snippets like
+...
+ main: [511] waiting semaphore
+ run_test: [511] start vcpus
+ run_test: [511] all threads launched
+ main: [511] waiting 368us
+ main: [511] killing child
 
-Before you can do this, you need to reliably identify that you have a
-pt_regs on the stack, but this patch uses a heuristic, which is not
-reliable.
+and this doesn't have much value, let's print this info with pr_debug().
 
-However, instead you can identify whether you're trying to unwind
-through one of the EL1 entry functions, which tells you the same thing
-without even having to look at the pt_regs.
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ tools/testing/selftests/kvm/hardware_disable_test.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-We can do that based on the entry functions all being in .entry.text,
-which we could further sub-divide to split the EL0 and EL1 entry
-functions.
+diff --git a/tools/testing/selftests/kvm/hardware_disable_test.c b/tools/testing/selftests/kvm/hardware_disable_test.c
+index 2f2eeb8a1d86..5aadf84c91c0 100644
+--- a/tools/testing/selftests/kvm/hardware_disable_test.c
++++ b/tools/testing/selftests/kvm/hardware_disable_test.c
+@@ -108,7 +108,7 @@ static void run_test(uint32_t run)
+ 	kvm_vm_elf_load(vm, program_invocation_name, 0, 0);
+ 	vm_create_irqchip(vm);
+ 
+-	fprintf(stderr, "%s: [%d] start vcpus\n", __func__, run);
++	pr_debug("%s: [%d] start vcpus\n", __func__, run);
+ 	for (i = 0; i < VCPU_NUM; ++i) {
+ 		vm_vcpu_add_default(vm, i, guest_code);
+ 		payloads[i].vm = vm;
+@@ -124,7 +124,7 @@ static void run_test(uint32_t run)
+ 			check_set_affinity(throw_away, &cpu_set);
+ 		}
+ 	}
+-	fprintf(stderr, "%s: [%d] all threads launched\n", __func__, run);
++	pr_debug("%s: [%d] all threads launched\n", __func__, run);
+ 	sem_post(sem);
+ 	for (i = 0; i < VCPU_NUM; ++i)
+ 		check_join(threads[i], &b);
+@@ -147,16 +147,16 @@ int main(int argc, char **argv)
+ 		if (pid == 0)
+ 			run_test(i); /* This function always exits */
+ 
+-		fprintf(stderr, "%s: [%d] waiting semaphore\n", __func__, i);
++		pr_debug("%s: [%d] waiting semaphore\n", __func__, i);
+ 		sem_wait(sem);
+ 		r = (rand() % DELAY_US_MAX) + 1;
+-		fprintf(stderr, "%s: [%d] waiting %dus\n", __func__, i, r);
++		pr_debug("%s: [%d] waiting %dus\n", __func__, i, r);
+ 		usleep(r);
+ 		r = waitpid(pid, &s, WNOHANG);
+ 		TEST_ASSERT(r != pid,
+ 			    "%s: [%d] child exited unexpectedly status: [%d]",
+ 			    __func__, i, s);
+-		fprintf(stderr, "%s: [%d] killing child\n", __func__, i);
++		pr_debug("%s: [%d] killing child\n", __func__, i);
+ 		kill(pid, SIGKILL);
+ 	}
+ 
+-- 
+2.30.2
 
-> 
-> Interrupts encountered in kernel code are also EL1 exceptions. At the end
-> of an interrupt, the interrupt handler checks if the current task must be
-> preempted for any reason. If so, it calls the preemption code which takes
-> the task off the CPU. A stack trace taken on the task after the preemption
-> will show the EL1 frame and will be considered unreliable. This is correct
-> behavior as preemption can happen practically at any point in code
-> including the frame pointer prolog and epilog.
-> 
-> Breakpoints encountered in kernel code are also EL1 exceptions. The probing
-> infrastructure uses breakpoints for executing probe code. While in the probe
-> code, the stack trace will show an EL1 frame and will be considered
-> unreliable. This is also correct behavior.
-> 
-> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-> ---
->  arch/arm64/include/asm/stacktrace.h |  2 +
->  arch/arm64/kernel/stacktrace.c      | 57 +++++++++++++++++++++++++++++
->  2 files changed, 59 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-> index eb29b1fe8255..684f65808394 100644
-> --- a/arch/arm64/include/asm/stacktrace.h
-> +++ b/arch/arm64/include/asm/stacktrace.h
-> @@ -59,6 +59,7 @@ struct stackframe {
->  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->  	int graph;
->  #endif
-> +	bool reliable;
->  };
->  
->  extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
-> @@ -169,6 +170,7 @@ static inline void start_backtrace(struct stackframe *frame,
->  	bitmap_zero(frame->stacks_done, __NR_STACK_TYPES);
->  	frame->prev_fp = 0;
->  	frame->prev_type = STACK_TYPE_UNKNOWN;
-> +	frame->reliable = true;
->  }
->  
->  #endif	/* __ASM_STACKTRACE_H */
-> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> index 504cd161339d..6ae103326f7b 100644
-> --- a/arch/arm64/kernel/stacktrace.c
-> +++ b/arch/arm64/kernel/stacktrace.c
-> @@ -18,6 +18,58 @@
->  #include <asm/stack_pointer.h>
->  #include <asm/stacktrace.h>
->  
-> +static void check_if_reliable(unsigned long fp, struct stackframe *frame,
-> +			      struct stack_info *info)
-> +{
-> +	struct pt_regs *regs;
-> +	unsigned long regs_start, regs_end;
-> +
-> +	/*
-> +	 * If the stack trace has already been marked unreliable, just
-> +	 * return.
-> +	 */
-> +	if (!frame->reliable)
-> +		return;
-> +
-> +	/*
-> +	 * Assume that this is an intermediate marker frame inside a pt_regs
-> +	 * structure created on the stack and get the pt_regs pointer. Other
-> +	 * checks will be done below to make sure that this is a marker
-> +	 * frame.
-> +	 */
-
-Sorry, but NAK to this approach specifically. This isn't reliable (since
-it can be influenced by arbitrary data on the stack), and it's far more
-complicated than identifying the entry functions specifically.
-
-Thanks,
-Mark.
-
-> +	regs_start = fp - offsetof(struct pt_regs, stackframe);
-> +	if (regs_start < info->low)
-> +		return;
-> +	regs_end = regs_start + sizeof(*regs);
-> +	if (regs_end > info->high)
-> +		return;
-> +	regs = (struct pt_regs *) regs_start;
-> +
-> +	/*
-> +	 * When an EL1 exception happens, a pt_regs structure is created
-> +	 * on the stack and the register state is recorded. Part of the
-> +	 * state is the FP and PC at the time of the exception.
-> +	 *
-> +	 * In addition, the FP and PC are also stored in pt_regs->stackframe
-> +	 * and pt_regs->stackframe is chained with other frames on the stack.
-> +	 * This is so that the interrupted function shows up in the stack
-> +	 * trace.
-> +	 *
-> +	 * The exception could have happened during the frame pointer
-> +	 * prolog or epilog. This could result in a missing frame in
-> +	 * the stack trace so that the caller of the interrupted
-> +	 * function does not show up in the stack trace.
-> +	 *
-> +	 * So, mark the stack trace as unreliable if an EL1 frame is
-> +	 * detected.
-> +	 */
-> +	if (regs->frame_type == EL1_FRAME && regs->pc == frame->pc &&
-> +	    regs->regs[29] == frame->fp) {
-> +		frame->reliable = false;
-> +		return;
-> +	}
-> +}
-> +
->  /*
->   * AArch64 PCS assigns the frame pointer to x29.
->   *
-> @@ -114,6 +166,11 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->  
->  	frame->pc = ptrauth_strip_insn_pac(frame->pc);
->  
-> +	/*
-> +	 * Check for features that render the stack trace unreliable.
-> +	 */
-> +	check_if_reliable(fp, frame, &info);
-> +
->  	return 0;
->  }
->  NOKPROBE_SYMBOL(unwind_frame);
-> -- 
-> 2.25.1
-> 
