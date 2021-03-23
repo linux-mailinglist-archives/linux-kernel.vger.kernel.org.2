@@ -2,103 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5006B34575F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2B1345761
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhCWFfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbhCWFfX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:35:23 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A60C061574;
-        Mon, 22 Mar 2021 22:35:22 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id l123so13130431pfl.8;
-        Mon, 22 Mar 2021 22:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GLY3ymCl5yT9GXpslLzZrF5s6T8lhJSvt/auSZruXfQ=;
-        b=orFLt0F0qgN/aGMGyrs/We8qyALwk99UUVUHdrDv0NgSa5zdlwMIKJaQStT1vx7/MW
-         bhq9CAFtGTkCPIM0IE9nuERpK4b0Ca0mHEncTonil1OX4aAIsRoaY87FSEuHbk4DbIyj
-         eFelw2hshSxFC6UFtMtXJ6C6ylC2WCPNs+mBDPvkmiL8yO4NZfh+/+DKANeKUaEeeJLl
-         I7qlMiksgpb0UYOYLJxNMKqYNzfXqvFvHxdWBkVHiaC4tywmVUP2heI3h+JiyKB6VKZs
-         e8/1Pii8PJgFa/I9694AC73QkiK/aIV0nHI8WulYj2Ywvu02qPfDDfDC3YkQqhFQcmP/
-         ef/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GLY3ymCl5yT9GXpslLzZrF5s6T8lhJSvt/auSZruXfQ=;
-        b=hKA/czLYD3+84GG9R0WNvjyz4Rpi06g+65yAmqonyaBLocHskXIcNVs6rZv5kdcaZs
-         S5P5B1cJKH7TQ/I4DyjMlbX3gE1aS9cnLDFq1ZdN3CHgGk6FpQsggKiFozEeqq87O4UA
-         jc+a4VFWpfIT4md6bu3QPDCESHUtrqfHb4rIDHGxJrYnRI15wYu5O/Q1HYDsGJflJaxT
-         Qa1rLnwcu4F9ZIk0l7/5IEVnDHvuFze1ms+7CVQOgZyAV1UyT9l2foWHcftQHr1wyHdo
-         QjG03OyWsGTcrjnm+5GieXT/b/eWhgkgqEJ5iIjXrochFWaMeN4ZS9EsYuD7yM5/1/hl
-         ru9Q==
-X-Gm-Message-State: AOAM5314csmTqIvNKztYVTg+x6cek8O4VMvh7/UoDfc5ZW47/DdualUf
-        0Ls1P5QC3jtYzzstALW+uhM=
-X-Google-Smtp-Source: ABdhPJwcW3bHQ54Ai8D9mH5k0CgMAuFEsYrliBGNRjV6P5oxPNZ6wFo2L0GIRNEMm1FfTDZbYBRaBA==
-X-Received: by 2002:a63:fe14:: with SMTP id p20mr2527186pgh.85.1616477722298;
-        Mon, 22 Mar 2021 22:35:22 -0700 (PDT)
-Received: from nirenjan.com ([138.68.227.108])
-        by smtp.gmail.com with ESMTPSA id f135sm15230111pfa.102.2021.03.22.22.35.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 22:35:21 -0700 (PDT)
-From:   Nirenjan Krishnan <nirenjan@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nirenjan Krishnan <nirenjan@gmail.com>
-Subject: [PATCH] HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for Saitek X65
-Date:   Mon, 22 Mar 2021 22:35:11 -0700
-Message-Id: <20210323053511.17887-1-nirenjan@gmail.com>
+        id S229665AbhCWFgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229670AbhCWFgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 01:36:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BDDE619B1;
+        Tue, 23 Mar 2021 05:36:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616477778;
+        bh=PlHn8wG9vL9HkHJl+j/PkKSJBl638YVP4K8v9hKj6XM=;
+        h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
+        b=kxt2j2fefrr/S+3iC98N2IZdoxMtX5rwYW9ooCXoywgviO1rtddp3+ofnLU4XHU8q
+         7710diVlwqTwo8e1ooRKxSeYLTTGjvrn8M9FvnokV4u214khhWynm1ac6QCfP9nSeK
+         4PJF2vy/ye20+otd+9btMNmlFovKklQArpHDyKe+T26KfqnxIIzEJqyZEiX6WBHhFx
+         qMJBXrxAURG7UnJaLUCkmD9c9gadM7WepW8dhi1BOQFY4tttNTIp4IRo59mJqhgDw7
+         /tr6CqrGXje0IIHVLRWWFM4KQjm2lQaAHQc1Y5aKUanXEu4ZNLqi82xTTHudq3wHbc
+         m/QjSMB5m51Sw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0BDF735239E6; Mon, 22 Mar 2021 22:36:18 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 22:36:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Fix various typos in comments
+Message-ID: <20210323053618.GU2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210322230258.GA1983587@gmail.com>
+ <YFlYzkY7h+OD0WCb@ArchLinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFlYzkY7h+OD0WCb@ArchLinux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Saitek X65 joystick has a pair of axes that were used as mouse
-pointer controls by the Windows driver. The corresponding usage page is
-the Game Controls page, which is not recognized by the generic HID
-driver, and therefore, both axes get mapped to ABS_MISC. The quirk makes
-the second axis get mapped to ABS_MISC+1, and therefore made available
-separately.
+On Tue, Mar 23, 2021 at 08:26:14AM +0530, Bhaskar Chowdhury wrote:
+> On 00:02 Tue 23 Mar 2021, Ingo Molnar wrote:
+> > 
+> > Hi Paul,
+> > 
+> > Was working on automation to make it a bit more straightforward to fix
+> > typos within comments (which we tend to reintroduce during
+> > development), and here are the ones it found in the RCU code.
+> > 
+> > Thanks,
+> > 
+> > 	Ingo
+> > 
+> > =========>
+> > From: Ingo Molnar <mingo@kernel.org>
+> > Date: Mon, 22 Mar 2021 23:57:26 +0100
+> > Subject: [PATCH] rcu: Fix various typos in comments
+> > 
+> > Fix ~12 single-word typos in RCU code comments.
+> > 
+> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> > kernel/rcu/srcutree.c                                           | 4 ++--
+> > kernel/rcu/sync.c                                               | 2 +-
+> > kernel/rcu/tasks.h                                              | 8 ++++----
+> > kernel/rcu/tree.c                                               | 4 ++--
+> > kernel/rcu/tree.h                                               | 2 +-
+> > kernel/rcu/tree_plugin.h                                        | 2 +-
+> > tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h | 2 +-
+> > 7 files changed, 12 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index e26547b34ad3..036ff5499ad5 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -777,9 +777,9 @@ static bool srcu_might_be_idle(struct srcu_struct *ssp)
+> > 	spin_unlock_irqrestore_rcu_node(sdp, flags);
+> > 
+> > 	/*
+> > -	 * No local callbacks, so probabalistically probe global state.
+> > +	 * No local callbacks, so probabilistically probe global state.
+> > 	 * Exact information would require acquiring locks, which would
+> > -	 * kill scalability, hence the probabalistic nature of the probe.
+> > +	 * kill scalability, hence the probabilistic nature of the probe.
+> > 	 */
+> > 
+> > 	/* First, see if enough time has passed since the last GP. */
+> > diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
+> > index d4558ab7a07d..3eeb871cf0de 100644
+> > --- a/kernel/rcu/sync.c
+> > +++ b/kernel/rcu/sync.c
+> > @@ -94,7 +94,7 @@ static void rcu_sync_func(struct rcu_head *rhp)
+> > 		rcu_sync_call(rsp);
+> > 	} else {
+> > 		/*
+> > -		 * We're at least a GP after the last rcu_sync_exit(); eveybody
+> > +		 * We're at least a GP after the last rcu_sync_exit(); everybody
+> > 		 * will now have observed the write side critical section.
+> > 		 * Let 'em rip!.
+> > 		 */
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index af7c19439f4e..ac3c362e08a3 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -23,7 +23,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+> >  * Definition for a Tasks-RCU-like mechanism.
+> >  * @cbs_head: Head of callback list.
+> >  * @cbs_tail: Tail pointer for callback list.
+> > - * @cbs_wq: Wait queue allowning new callback to get kthread's attention.
+> > + * @cbs_wq: Wait queue allowing new callback to get kthread's attention.
+> >  * @cbs_lock: Lock protecting callback list.
+> >  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
+> >  * @gp_func: This flavor's grace-period-wait function.
+> > @@ -504,7 +504,7 @@ DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+> >  * or transition to usermode execution.  As such, there are no read-side
+> >  * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
+> >  * this primitive is intended to determine that all tasks have passed
+> > - * through a safe state, not so much for data-strcuture synchronization.
+> > + * through a safe state, not so much for data-structure synchronization.
+> >  *
+> >  * See the description of call_rcu() for more detailed information on
+> >  * memory ordering guarantees.
+> > @@ -637,7 +637,7 @@ DEFINE_RCU_TASKS(rcu_tasks_rude, rcu_tasks_rude_wait_gp, call_rcu_tasks_rude,
+> >  * there are no read-side primitives analogous to rcu_read_lock() and
+> >  * rcu_read_unlock() because this primitive is intended to determine
+> >  * that all tasks have passed through a safe state, not so much for
+> > - * data-strcuture synchronization.
+> > + * data-structure synchronization.
+> >  *
+> 
+> The "hyphen" in the middle of the word "data structure" is required or keeping by
+> convention or has some significance?
 
-Signed-off-by: Nirenjan Krishnan <nirenjan@gmail.com>
----
- drivers/hid/hid-ids.h    | 1 +
- drivers/hid/hid-quirks.c | 1 +
- 2 files changed, 2 insertions(+)
+Yes, this is one of many peculiarities of English, and an optional one
+at that.  English is not a block-structured language, so grouping can
+be ambiguous.  Is is "(data structure) synchronization" or is it instead
+"data (structure synchronization)"?  The default is the latter, and
+the hyphen indicates the former.  In this case, the former is intended,
+hence the hyphen.
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index e42aaae..413a06a0 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -1039,6 +1039,7 @@
- #define USB_DEVICE_ID_SAITEK_X52	0x075c
- #define USB_DEVICE_ID_SAITEK_X52_2	0x0255
- #define USB_DEVICE_ID_SAITEK_X52_PRO	0x0762
-+#define USB_DEVICE_ID_SAITEK_X65	0x0b6a
- 
- #define USB_VENDOR_ID_SAMSUNG		0x0419
- #define USB_DEVICE_ID_SAMSUNG_IR_REMOTE	0x0001
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index 1a9daf0..df68dd7 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -158,6 +158,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_2), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_PRO), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X65), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD2), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SENNHEISER, USB_DEVICE_ID_SENNHEISER_BTD500USB), HID_QUIRK_NOGET },
--- 
-2.7.4
+> >  * See the description of call_rcu() for more detailed information on
+> >  * memory ordering guarantees.
+> > @@ -1127,7 +1127,7 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
+> >  * there are no read-side primitives analogous to rcu_read_lock() and
+> >  * rcu_read_unlock() because this primitive is intended to determine
+> >  * that all tasks have passed through a safe state, not so much for
+> > - * data-strcuture synchronization.
+> > + * data-structure synchronization.
+> >  *
+> Same like above.
+
+Ditto!
+
+							Thanx, Paul
+
+> >  * See the description of call_rcu() for more detailed information on
+> >  * memory ordering guarantees.
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index da6f5213fb74..ab5bd5b391e6 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2490,7 +2490,7 @@ int rcutree_dead_cpu(unsigned int cpu)
+> > 
+> > /*
+> >  * Invoke any RCU callbacks that have made it to the end of their grace
+> > - * period.  Thottle as specified by rdp->blimit.
+> > + * period.  Throttle as specified by rdp->blimit.
+> >  */
+> > static void rcu_do_batch(struct rcu_data *rdp)
+> > {
+> > @@ -4013,7 +4013,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier);
+> > /*
+> >  * Propagate ->qsinitmask bits up the rcu_node tree to account for the
+> >  * first CPU in a given leaf rcu_node structure coming online.  The caller
+> > - * must hold the corresponding leaf rcu_node ->lock with interrrupts
+> > + * must hold the corresponding leaf rcu_node ->lock with interrupts
+> >  * disabled.
+> >  */
+> > static void rcu_init_new_rnp(struct rcu_node *rnp_leaf)
+> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> > index 71821d59d95c..abff7abd59ee 100644
+> > --- a/kernel/rcu/tree.h
+> > +++ b/kernel/rcu/tree.h
+> > @@ -153,7 +153,7 @@ struct rcu_data {
+> > 	unsigned long	gp_seq;		/* Track rsp->gp_seq counter. */
+> > 	unsigned long	gp_seq_needed;	/* Track furthest future GP request. */
+> > 	union rcu_noqs	cpu_no_qs;	/* No QSes yet for this CPU. */
+> > -	bool		core_needs_qs;	/* Core waits for quiesc state. */
+> > +	bool		core_needs_qs;	/* Core waits for quiescent state. */
+> > 	bool		beenonline;	/* CPU online at least once. */
+> > 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
+> > 	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index 2d603771c7dc..2a28f05cf467 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -2772,7 +2772,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+> > 	wastimer = timer_pending(&rdp->nocb_bypass_timer);
+> > 	wassleep = swait_active(&rdp->nocb_gp_wq);
+> > 	if (!rdp->nocb_gp_sleep && !waslocked && !wastimer && !wassleep)
+> > -		return;  /* Nothing untowards. */
+> > +		return;  /* Nothing untoward. */
+> > 
+> > 	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
+> > 		"lL"[waslocked],
+> > diff --git a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
+> > index cf6938d679d7..1e24827f96f1 100644
+> > --- a/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
+> > +++ b/tools/testing/selftests/rcutorture/formal/srcu-cbmc/src/locks.h
+> > @@ -174,7 +174,7 @@ static inline bool spin_trylock(spinlock_t *lock)
+> > }
+> > 
+> > struct completion {
+> > -	/* Hopefuly this won't overflow. */
+> > +	/* Hopefully this won't overflow. */
+> > 	unsigned int count;
+> > };
+> > 
+
 
