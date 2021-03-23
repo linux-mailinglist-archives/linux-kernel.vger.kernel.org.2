@@ -2,228 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C13034688B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A40034688E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhCWTIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:08:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:27725 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232986AbhCWTIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:08:15 -0400
-IronPort-SDR: sc+M0yI8vhQ7L/3NiIaFZYPi2JaNR9uRNounlTSLRz1hDTVz4bCEKUI8irYJfNXMjIekOfbrJt
- IZwU6HtcEWVQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="187230426"
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="187230426"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 12:08:14 -0700
-IronPort-SDR: soqaP0mex//dgVJNdkvhAP1GQ+JdwzHG8fy+7Ho7Mm64Qd+QcUvKPx0v4uhpXCgc/AwFBfarAa
- YA0x0JAoPqhg==
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="374352926"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.31.104])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 12:08:13 -0700
-Subject: Re: [PATCH v8 1/1] fpga: dfl: afu: harden port enable logic
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-References: <20210303014543.68292-1-russell.h.weight@intel.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <4dac610e-2acd-1385-0ea8-e7f279933a65@intel.com>
-Date:   Tue, 23 Mar 2021 12:08:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233075AbhCWTIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:08:55 -0400
+Received: from p3plsmtpa09-10.prod.phx3.secureserver.net ([173.201.193.239]:37905
+        "EHLO p3plsmtpa09-10.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233213AbhCWTIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:08:34 -0400
+Received: from chrisHP110 ([76.103.216.188])
+        by :SMTPAUTH: with ESMTPA
+        id OmOGloMLUEUBIOmOHlOh73; Tue, 23 Mar 2021 12:08:33 -0700
+X-CMAE-Analysis: v=2.4 cv=DvyTREz+ c=1 sm=1 tr=0 ts=605a3cb1
+ a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
+ a=kj9zAlcOel0A:10 a=l0mRdGwMGfW2n43t1tsA:9 a=CjuIK1q_8ugA:10
+X-SECURESERVER-ACCT: don@thebollingers.org
+From:   "Don Bollinger" <don@thebollingers.org>
+To:     "'Greg KH'" <gregkh@linuxfoundation.org>
+Cc:     <arndb@arndb.de>, <linux-kernel@vger.kernel.org>,
+        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
+        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
+        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>
+References: <20210215193821.3345-1-don@thebollingers.org> <YFn3ahkF4w/IClaw@kroah.com> <008d01d72014$7b113900$7133ab00$@thebollingers.org> <YFo6mZqOaY+2zApa@kroah.com>
+In-Reply-To: <YFo6mZqOaY+2zApa@kroah.com>
+Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
+Date:   Tue, 23 Mar 2021 12:08:32 -0700
+Message-ID: <009501d72017$eb30a790$c191f6b0$@thebollingers.org>
 MIME-Version: 1.0
-In-Reply-To: <20210303014543.68292-1-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQKX2ThEytgxSBCv+zte4L/P7xUGAgJXyZnIAyLyigQBNKO+pqjbATNQ
+Content-Language: en-us
+X-CMAE-Envelope: MS4xfO3AKitelYVVPHLocR+d8xd8r2Mr9OlskRLqn7Z6pk2mrQxbXR6uqzS2ixNXIC1ivB4d5BfNwvgG8qeKYGv3perxcnhq8pSh2z7Ji4yTIxXGmRIZg520
+ vv5V3w2irep2xy6Kd6S4Zt6Jun+kmgDLpY/aq70GtMkVrlnxcIVRfLcWV5FNY8um8s6YC9W441gg1QbeC6fJuF6GtDyT6xBlEu5DxA54crHYkOsyFefVVg/9
+ H4tdOqVMm4r2RdrmKqbYk5pRLuGYvMZfCullnjs2DWEk4Xgbta5t0E+VF02QfuBUCLZAha42vv+lst0Yo7P6MtrY6bZ0lZUAsVH26LEmdUvFKVms70Vhx6bO
+ sat7Vg4L+jfwchLfuoHXmzTngkirSZ2VxDv/GkeugTPaea8vMZVEguvvne9kvxprXdQ+4bcT/b89EoYGyRlYNshiJw40Q+Ht+NXnwZu46TWfS/EGIAD2lwbi
+ gXc/87Yru58/BZ9C
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 12:00AM -0700, Greg KH wrote:
+> On Tue, Mar 23, 2021 at 11:43:55AM -0700, Don Bollinger wrote:
+> > On Tue, Mar 23, 2021 at 7:12AM-0700, Greg KH wrote:
+> > > On Mon, Feb 15, 2021 at 11:38:21AM -0800, Don Bollinger wrote:
+> > > > optoe is an i2c based driver that supports read/write access to
+> > > > all the pages (tables) of MSA standard SFP and similar devices
+> > > > (conforming to the SFF-8472 spec), MSA standard QSFP and similar
+> > > > devices (conforming to the SFF-8636 spec) and CMIS and similar
+> > > > devices (conforming to the Common Management Interface
+> Specfication).
+> > >
+> >
+> > I promise not to engage in a drawn out email exchange over this, but I
+> > would like to appeal your decision, just once...
 
+Thanks for your response.  As promised, I'm done.
 
-On 3/2/21 5:45 PM, Russ Weight wrote:
-> Port enable is not complete until ACK = 0. Change
-> __afu_port_enable() to guarantee that the enable process
-> is complete by polling for ACK == 0.
->
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> Acked-by: Wu Hao <hao.wu@intel.com>
-> ---
-> v8:
->   - Rebased to 5.12-rc1 (there were no conflicts)
-> v7:
->   - Added Acked-by tag from Wu Hao
-> v6:
->   - Fixed the dev_warn statement, which had "__func__" embedded in the
->     string instead of treated as a parameter to the format string.
-> v5:
->   - Added Reviewed-by tag to commit message
-> v4:
->   - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
->   - Modified dev_err() message in __afu_port_disable() to say "disable"
->     instead of "reset"
-> v3:
->   - afu_port_err_clear() changed to prioritize port_enable failure over
->     other a detected mismatch in port errors.
->   - reorganized code in port_reset() to be more readable.
-> v2:
->   - Fixed typo in commit message
-> ---
->  drivers/fpga/dfl-afu-error.c | 10 ++++++----
->  drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
->  drivers/fpga/dfl-afu.h       |  2 +-
->  3 files changed, 30 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
-> index c4691187cca9..ab7be6217368 100644
-> --- a/drivers/fpga/dfl-afu-error.c
-> +++ b/drivers/fpga/dfl-afu-error.c
-> @@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
->  	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
->  	struct platform_device *pdev = to_platform_device(dev);
->  	void __iomem *base_err, *base_hdr;
-> -	int ret = -EBUSY;
-> +	int enable_ret = 0, ret = -EBUSY;
->  	u64 v;
->  
->  	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
-> @@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
->  		v = readq(base_err + PORT_FIRST_ERROR);
->  		writeq(v, base_err + PORT_FIRST_ERROR);
->  	} else {
-> +		dev_warn(dev, "%s: received 0x%llx, expected 0x%llx\n",
-> +			 __func__, v, err);
->  		ret = -EINVAL;
->  	}
->  
->  	/* Clear mask */
->  	__afu_port_err_mask(dev, false);
->  
-> -	/* Enable the Port by clear the reset */
-> -	__afu_port_enable(pdev);
-> +	/* Enable the Port by clearing the reset */
-> +	enable_ret = __afu_port_enable(pdev);
->  
->  done:
->  	mutex_unlock(&pdata->lock);
-> -	return ret;
-> +	return enable_ret ? enable_ret : ret;
->  }
->  
->  static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
-> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-> index 753cda4b2568..77dadaae5b8f 100644
-> --- a/drivers/fpga/dfl-afu-main.c
-> +++ b/drivers/fpga/dfl-afu-main.c
-> @@ -21,6 +21,9 @@
->  
->  #include "dfl-afu.h"
->  
-> +#define RST_POLL_INVL 10 /* us */
-> +#define RST_POLL_TIMEOUT 1000 /* us */
-> +
->  /**
->   * __afu_port_enable - enable a port by clear reset
->   * @pdev: port platform device.
-> @@ -32,7 +35,7 @@
->   *
->   * The caller needs to hold lock for protection.
->   */
-> -void __afu_port_enable(struct platform_device *pdev)
-> +int __afu_port_enable(struct platform_device *pdev)
->  {
->  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->  	void __iomem *base;
-> @@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
->  	WARN_ON(!pdata->disable_count);
->  
->  	if (--pdata->disable_count != 0)
-> -		return;
-> +		return 0;
->  
->  	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
->  
-> @@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
->  	v = readq(base + PORT_HDR_CTRL);
->  	v &= ~PORT_CTRL_SFTRST;
->  	writeq(v, base + PORT_HDR_CTRL);
-> -}
->  
-> -#define RST_POLL_INVL 10 /* us */
-> -#define RST_POLL_TIMEOUT 1000 /* us */
-> +	/*
-> +	 * HW clears the ack bit to indicate that the port is fully out
-> +	 * of reset.
-> +	 */
-> +	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-> +			       !(v & PORT_CTRL_SFTRST_ACK),
-> +			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-> +		dev_err(&pdev->dev, "timeout, failure to enable device\n");
-> +		return -ETIMEDOUT;
-> +	}
-> +
-> +	return 0;
-> +}
->  
->  /**
->   * __afu_port_disable - disable a port by hold reset
-> @@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
->  	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
->  			       v & PORT_CTRL_SFTRST_ACK,
->  			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-> -		dev_err(&pdev->dev, "timeout, fail to reset device\n");
-> +		dev_err(&pdev->dev, "timeout, failure to disable device\n");
->  		return -ETIMEDOUT;
->  	}
->  
-> @@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
->  
->  	ret = __afu_port_disable(pdev);
->  	if (!ret)
-The sense of the above condition should have been reversed with this reorganization of the code. I'll submit a new patch.
+Is there a correct protocol for withdrawing a patch, or does it just get
+abandoned?  Still trying to be a good citizen.
 
-- Russ
-> -		__afu_port_enable(pdev);
-> +		return ret;
->  
-> -	return ret;
-> +	return __afu_port_enable(pdev);
->  }
->  
->  static int port_reset(struct platform_device *pdev)
-> @@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
->  static int port_enable_set(struct platform_device *pdev, bool enable)
->  {
->  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
-> -	int ret = 0;
-> +	int ret;
->  
->  	mutex_lock(&pdata->lock);
->  	if (enable)
-> -		__afu_port_enable(pdev);
-> +		ret = __afu_port_enable(pdev);
->  	else
->  		ret = __afu_port_disable(pdev);
->  	mutex_unlock(&pdata->lock);
-> diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
-> index 576e94960086..e5020e2b1f3d 100644
-> --- a/drivers/fpga/dfl-afu.h
-> +++ b/drivers/fpga/dfl-afu.h
-> @@ -80,7 +80,7 @@ struct dfl_afu {
->  };
->  
->  /* hold pdata->lock when call __afu_port_enable/disable */
-> -void __afu_port_enable(struct platform_device *pdev);
-> +int __afu_port_enable(struct platform_device *pdev);
->  int __afu_port_disable(struct platform_device *pdev);
->  
->  void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+Don
+
+> >
+> > > Given this thread, I think that using the SFP interface/api in the
+> > > kernel already seems like the best idea forward.
+> > >
+> > > That being said, your api here is whack, and I couldn't accept it
+anyway.
+> >
+> > I don't understand.  I don't mean you are wrong, I literally don't
+> > understand what is whack about it.  The interface is provided by
+> > nvmem.  I modeled the calls on at24.  The layout of the data provided
+> > by the driver is exactly the same layout that ethtool provides (device,
+> offset, length).
+> > Mapping i2c address, page and offset is exactly what ethtool provides.
+> > So, which part of this is whack?
+> 
+> It's sysfs.  Does nvmem use sysfs for device discovery and enablement?
+> 
+> nvmem is just a "raw" maping of hardware (memory) to userspace.
+> 
+> You have a "real" device here that you are trying to also map to
+userspace,
+> but when you just expose the "raw" registers (i.e. memory) to userspace,
+> you are forcing userspace to handle all of the device differences, instead
+of
+> the kernel.
+> 
+> That's fine, for some things, but for anything with a standard, that's not
+ok,
+> that's what a kernel is for.
+> 
+> In other words, you could do what you want today probably with a UIO
+> driver, just get the kernel out of the way and do it all in userspace.
+> But that's not a viable or suportable api in the long-run for any standard
+> hardware type.
+> 
+> > > Not for the least being it's not even documented in
+> > > Documentation/ABI/
+> > like
+> > > all sysfs files have to be :)
+> >
+> > This could obviously be fixed.  I wasn't aware of this directory.  Now
+> > that you've pointed it out, I see that nvmem is actually documented
+> > there, which is the API I am using.  I document that optoe uses the
+> > nvmem interface, and the mapping of paged memory to linear memory in
+> > my patch in Documentation/misc-devices/optoe.rst.  If you think it
+> > would be useful, I could provide similar information in
+> Documentation/ABI/stable.
+> 
+> Again, nvmem in sysfs is just a dump of the hardware memory.  That should
+> not be how to control a switch device.
+> 
+> > > And it feels like you are abusing sysfs for things it was not ment
+> > > for,
+> > you
+> > > might want to look into configfs?
+> >
+> > I'm using nvmem, which in turn uses sysfs, just like at24.  Why should
+> > optoe be different?  I would think it is actually better to use the
+> > same API (and
+> > code) as at24, and NOT to put it in a different place.
+> 
+> at24 too is just an eeprom behind an i2c bus.  Accessing it for simple
+things is
+> fine for userspace, but not for a standard device type.
+> 
+> The networking developers have said that they feel the kernel should
+> properly control devices like this, with a standard api.  And I agree with
+them
+> (note, I'm biased, I like standard APIs, heck, I've even written specs for
+> them...)  Doing "raw" hardware accesses is great fun for things like
+one-off
+> devices (I have Linux running in a keyboard for something like that, also
+as
+> my doorbell), but doing this for a "real"
+> set of devices is not ok.
+> 
+> Again, it's the difference between the UIO interface and a real ethernet
+> driver in the kernel.  You could just say "all PCI network devices should
+use
+> the UIO interface and put the hardware-specific logic in userspace", but
+> that's not what we (i.e. the Linux kernel developers) feel is the proper
+way
+> to handle the abstraction of device types.
+> 
+> Again, we are kernel developers, we like nice hardware abstractions.
+> Bonus is that it lets new hardware companies create new devices and no
+> userspace modifications are needed!  I think history is on our side here
+:)
+> 
+> > > But really, these are networking devices, so they should be
+> > > controllable
+> > using
+> > > the standard networking apis, not one-off sysfs files.  Moving to
+> > > the
+> > Linux-
+> > > standard tools is a good thing, and will work out better in the end
+> > instead of
+> > > having to encode lots of device-specific state in userspace like
+> > > this
+> > "raw" api
+> > > seems to require.
+> >
+> > This is the real issue.  It turns out, on these switches, there are
+> > two kinds of networking.  Linux kernel networking handles one port, of
+> > 1Gb (or less), which functions as a management port.  This is
+> > typically used for console access.  It is configured and managed as an
+> > ordinary network port, with a kernel network driver and the usual
+> networking utilities.  'ip addr'
+> > will show this port as well as loopback ports.  The linux kernel has
+> > no visibility to the switch networking ports.  'ip addr' will not show
+> > any of the switch networking ports.
+> >
+> > The switch functions, switching at 25Tb/s, are completely invisible to
+> > the linux kernel.  The switch ASIC is managed by a device driver
+> > provided by the ASIC vendor.  That driver is driven by management code
+> > from the ASIC vendor and a host of network applications.  Multiple
+> > vendors compete to provide the best, most innovative, most secure,
+> > easiest...  network capabilities on top of this architecture.  NONE of
+> > them use a kernel network driver, or the layers of control or
+> > management that the linux kernel offers.  On these systems, if you ask
+> > ethtool to provide EEPROM data, you get 'function not implemented'.
+> >
+> > On these systems, SFP/QSFP/CMIS devices are actually not 'networking
+> > devices' from a Linux kernel perspective.  They are GPIO targets and
+> > EEPROM memory.  Switch networking just needs the kernel to toggle the
+> > GPIO lines and read/write the EEPROM.  optoe is just trying to
+read/write
+> the EEPROM.
+> 
+> That sounds like hell.  Let's create a proper api for everyone to use, and
+NOT
+> provide raw access to random device eeproms (i.e. memory).  I thought that
+> is what switchdev was for.  If it is somehow lacking, I'm sure that
+patches are
+> gladly accepted.
+> 
+> Heck, I did a review of the switchdev api and code a long time ago in
+> response to some companies complaining of just this thing.  Sad to see
+they
+> never took my advice of "send patches to get your hardware supported in
+> that api", and persisted in wanting "raw memory" access instead.
+> 
+> > One last note...  The networking folks need a better SFP/QSFP/CMIS
+> > EEPROM driver to access more pages, and to support the new CMIS
+> standard.
+> 
+> Great, work on that!
+> 
+> But raw eeprom/nvram/ram access is not that api.
+> 
+> Again, UIO vs. "struct net_device".  Think of it that way.
+> 
+> thanks,
+> 
+> greg k-h
 
