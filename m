@@ -2,81 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7733458DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 350353458DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhCWHiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhCWHhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:37:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D54C061574;
-        Tue, 23 Mar 2021 00:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=28zxBqK/DmKD7Fz/Yi3TtB21ftumoyYpSPGsW5HWTeM=; b=Ry23EI5FgyKRqUB3aF4Mkk3o7o
-        hOq49wyX34oxJUwBOCSOgCYrHwGf6kTFNZl9VR7gqkAzAjzeM1pBU0H4g0MLqTWDq55vLhKkYNaKX
-        O94clAC69gcftl+6F7nYPhmnu/IC41ShtiIwXuGoNhaI2PlU3/KmsjAVj1i4MWeSD5N/ldXXpXcMM
-        vMSTjHkl45NA0++wvJJBLfPHS4IYr2cyr+qbCkrNC5B+nxSsqHYAMYjvkFPWge1EKQgEmhscD/sUX
-        GXMhxVsDciWe9xIOvQ3c4sHEOvfDUQEFkiQE7pdIEyev86qmCCE5ds6pzrvTBoowDL8FKb90XKP0d
-        Tl+V0+7g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lObbZ-009jFZ-T3; Tue, 23 Mar 2021 07:37:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 95FEF3010C8;
-        Tue, 23 Mar 2021 08:37:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 884AC23601882; Tue, 23 Mar 2021 08:37:33 +0100 (CET)
-Date:   Tue, 23 Mar 2021 08:37:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org
-Subject: Re: [tip: locking/core] static_call: Fix function type mismatch
-Message-ID: <YFmavWCgUOOfibXR@hirez.programming.kicks-ass.net>
-References: <20210322214309.730556-1-arnd@kernel.org>
- <161645580767.398.731817901273202970.tip-bot2@tip-bot2>
+        id S229866AbhCWHiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229675AbhCWHiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:38:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1FD1619BD;
+        Tue, 23 Mar 2021 07:37:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616485079;
+        bh=eJD7MkMG7NvGUc4AsQ76v4Rl/p1aebxzY1jJ29gQGu0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yr3/V827tTXRCgJPvBNjMw164mvK31A6S3uBlyW/qc4i/7xZYi/6W6cUkl0BvVcp7
+         fmOave11vFP0Lnh+mj/zGv9xtCef9VO3aiSVZR8yFggqs/rjNFS5q2Yj/aMkkuDCJU
+         oNNejvC7GJCy+nvo/rtm/95dGUDr9Xi1pL3IHzhI=
+Date:   Tue, 23 Mar 2021 08:37:56 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
+Message-ID: <YFma1ClahDe2bZhR@kroah.com>
+References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
+ <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161645580767.398.731817901273202970.tip-bot2@tip-bot2>
+In-Reply-To: <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:30:07PM -0000, tip-bot2 for Arnd Bergmann wrote:
-> The following commit has been merged into the locking/core branch of tip:
+On Tue, Mar 23, 2021 at 12:18:46PM +0530, Vinod Koul wrote:
+> On 23-03-21, 08:43, Bard Liao wrote:
+> > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > 
+> > Now that the auxiliary_bus exists, there's no reason to use platform
+> > devices as children of a PCI device any longer.
+> > 
+> > This patch refactors the code by extending a basic auxiliary device
+> > with Intel link-specific structures that need to be passed between
+> > controller and link levels. This refactoring is much cleaner with no
+> > need for cross-pointers between device and link structures.
+> > 
+> > Note that the auxiliary bus API has separate init and add steps, which
+> > requires more attention in the error unwinding paths. The main loop
+> > needs to deal with kfree() and auxiliary_device_uninit() for the
+> > current iteration before jumping to the common label which releases
+> > everything allocated in prior iterations.
+> > 
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > ---
+> >  drivers/soundwire/Kconfig           |   1 +
+> >  drivers/soundwire/intel.c           |  52 ++++----
+> >  drivers/soundwire/intel.h           |  14 +-
+> >  drivers/soundwire/intel_init.c      | 190 +++++++++++++++++++---------
+> >  include/linux/soundwire/sdw_intel.h |   6 +-
+> >  5 files changed, 175 insertions(+), 88 deletions(-)
+> > 
+> > diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+> > index 016e74230bb7..2b7795233282 100644
+> > --- a/drivers/soundwire/Kconfig
+> > +++ b/drivers/soundwire/Kconfig
+> > @@ -25,6 +25,7 @@ config SOUNDWIRE_INTEL
+> >  	tristate "Intel SoundWire Master driver"
+> >  	select SOUNDWIRE_CADENCE
+> >  	select SOUNDWIRE_GENERIC_ALLOCATION
+> > +	select AUXILIARY_BUS
+> >  	depends on ACPI && SND_SOC
+> >  	help
+> >  	  SoundWire Intel Master driver.
+> > diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> > index d2254ee2fee2..039a101982c9 100644
+> > --- a/drivers/soundwire/intel.c
+> > +++ b/drivers/soundwire/intel.c
+> > @@ -11,7 +11,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/interrupt.h>
+> >  #include <linux/io.h>
+> > -#include <linux/platform_device.h>
+> > +#include <linux/auxiliary_bus.h>
+> >  #include <sound/pcm_params.h>
+> >  #include <linux/pm_runtime.h>
+> >  #include <sound/soc.h>
+> > @@ -1331,9 +1331,10 @@ static int intel_init(struct sdw_intel *sdw)
+> >  /*
+> >   * probe and init
+> >   */
+> > -static int intel_master_probe(struct platform_device *pdev)
+> > +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
+> >  {
+> > -	struct device *dev = &pdev->dev;
+> > +	struct device *dev = &auxdev->dev;
+> > +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
 > 
-> Commit-ID:     335c73e7c8f7deb23537afbbbe4f8ab48bd5de52
-> Gitweb:        https://git.kernel.org/tip/335c73e7c8f7deb23537afbbbe4f8ab48bd5de52
-> Author:        Arnd Bergmann <arnd@arndb.de>
-> AuthorDate:    Mon, 22 Mar 2021 22:42:24 +01:00
-> Committer:     Ingo Molnar <mingo@kernel.org>
-> CommitterDate: Tue, 23 Mar 2021 00:08:53 +01:00
+> Do we need another abstractions for resources here, why not aux dev
+> creation set the resources required and we skip this step...
 > 
-> static_call: Fix function type mismatch
+> >  	struct sdw_intel *sdw;
+> >  	struct sdw_cdns *cdns;
+> >  	struct sdw_bus *bus;
+> > @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
+> >  	cdns = &sdw->cdns;
+> >  	bus = &cdns->bus;
+> >  
+> > -	sdw->instance = pdev->id;
+> > -	sdw->link_res = dev_get_platdata(dev);
+> > +	sdw->instance = auxdev->id;
 > 
-> The __static_call_return0() function is declared to return a 'long',
-> while it aliases a couple of functions that all return 'int'. When
-> building with 'make W=1', gcc warns about this:
-> 
->   kernel/sched/core.c:5420:37: error: cast between incompatible function types from 'long int (*)(void)' to 'int (*)(void)' [-Werror=cast-function-type]
->    5420 |   static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
-> 
-> Change all these function to return 'long' as well, but remove the cast to
-> ensure we get a warning if any of the types ever change.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Link: https://lore.kernel.org/r/20210322214309.730556-1-arnd@kernel.org
+> so auxdev has id and still we pass id as argument :( Not sure if folks
+> can fix this now
 
-So I strongly disagree and think the warning is bad and should be
-disabled. I'll go uncommit this patch.
+That's odd, yeah, it should be fixed.
+
+greg k-h
