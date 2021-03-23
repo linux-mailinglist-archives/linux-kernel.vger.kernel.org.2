@@ -2,150 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FA2346BBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA4F346BBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233903AbhCWWHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
+        id S233910AbhCWWHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233791AbhCWWGg (ORCPT
+        with ESMTP id S233810AbhCWWGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:06:36 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44858C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:06:36 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so141937pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:06:36 -0700 (PDT)
+        Tue, 23 Mar 2021 18:06:48 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782D1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:06:47 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 184so27663484ljf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:06:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=8BWo86i33iioKOqmV9jmlpLM238hwKZcbsQlqWFESLQ=;
-        b=SRyH0LMOFeDhLTkyt07Fac/cikXZSsPnUOK51gyyB8ilGHXP+rPOfv/H9+0peOLovh
-         WipjBkkj4EfAAhS9/jOZIBlsDKjACD5o51gIU94JtLJEleoZs7l6ABj4/yYJg5mjk4pw
-         A2t2eRw8dh3Zwys/TZPEd8ix5v9gu2xzEoqog=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EHMlmYQIY1zAyaktxhetsYB9LwfRsFjHKsYIqK2yIPE=;
+        b=NL/Co5BLITlTYN7kxz+Jle2CCoEzUx0zdpkXrCp6McutrLYknJDxjaRisePsg0Itdg
+         YXLrzwZf6Jnh7rXEsoNmbick+PowINW9q9DfcxsM13u9UbthdKq9hZb3iaZPnsyKr9LG
+         p8kcrA60ntMrbLpijMBd/6B0OVfISWzW/cNGe49ABVIQ0mUVKCVQXvhLN0awGQG/4PRw
+         +3ArX91ALZHgyp6fDLEfThX/1LzCL+OmTRM3VFv4mU/Bb4x6E/8a+jaagI0ftUbGQtDe
+         yEZCaEpHMQHfuIhPX40LdlJ8WO+3/F+j/FfnMQ7gxMLBSR/VhRJS+THLneV555w6rQVC
+         l5fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=8BWo86i33iioKOqmV9jmlpLM238hwKZcbsQlqWFESLQ=;
-        b=Bwrp+B0aWnE42vtXigPNyclLY3NWXfVKbzDclu9mbuoHFCArwrK3K/JlU3sVf/R6qC
-         83KOWU1yF7zOEDD9tYaCXfinu2y6L2TMWKV9XaUIDnsLkpuJYoZyTNmSC7H3aGKO1JlM
-         O+3sEto8sv4dSM4yytUr7+goDcl6yjfjh6gb5stbd6gWdVpC33P1AYAdwIP00vTd1h40
-         aoxvTotEuYRrQ0rP1QtwPpAPtPw2hN9Y9m0pZ+f3TJJhhLfN4xNainRmj/Au+NDn81Oo
-         a/nT6Nr0SzI9wAlRtDeAg+WaEMcKHXEx7ZG/gKTTh5arAbf4g6D+g7M74WS/pRXpH4TN
-         rsaA==
-X-Gm-Message-State: AOAM530vkfIsaO+Goq16EfZhSSsWzBNn8M3+j531RW20jD3A8ohdqizT
-        z0WSGiqj7H1ksJfm3N7cqyxhEKkSLoHuMw==
-X-Google-Smtp-Source: ABdhPJx3BSKJkGqKncxsCX7h4oQjQSZMLIt2kP+1EHD/sHhFBU6e9vx8boqNaD/PvJjEUtCfSV2mXQ==
-X-Received: by 2002:a17:90a:9e7:: with SMTP id 94mr193837pjo.117.1616537195704;
-        Tue, 23 Mar 2021 15:06:35 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
-        by smtp.gmail.com with ESMTPSA id v135sm161428pgb.82.2021.03.23.15.06.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EHMlmYQIY1zAyaktxhetsYB9LwfRsFjHKsYIqK2yIPE=;
+        b=KW+2XNz5KxsPgWgBEUyCP2LFFWMT12pxeg0hdwnt18+FxQgmT8WkLSOMdwCzpTy2z3
+         rxf8bhNpPK0vhVSDt4N49yYNAqZl4Zzs/KQUY/S56z7Zjusws0Kr1MqWdQBpWlmIX+bY
+         m/bzzSljf2LYV6ge0KeKLLXTnVKb1fSCMF3OcZmyV8fZDj7sWh/vzJEvX9GZ5Nx6/Hms
+         syqgOrOmY9gy6zHqTiUYJcx0gb4HZKZPIWVDR6qHUVtIkS5PwoImjq6YrFZRe0HxgLDb
+         e6xRjbv7czpfTCYZMXV3sjZfAIZ0nU8gAON6AFdSq+CUwALhEcsb2l5YjNVMOjlOhjl5
+         nEuA==
+X-Gm-Message-State: AOAM533DPkGR+gnU6EKUazpiEzSNnQLLklrybHqIRXTLKs9b8Mnk3t4/
+        cTb8uM+vQXnz2Iyd+D36Y6o=
+X-Google-Smtp-Source: ABdhPJwi8ly8FYpgqKCEcCsHJFA0QF0YArKAhDfSRhmrCHP+AtGkInmCrFx24FcVkDT7FxEzd3S3Bw==
+X-Received: by 2002:a2e:b6c7:: with SMTP id m7mr26714ljo.241.1616537205932;
+        Tue, 23 Mar 2021 15:06:45 -0700 (PDT)
+Received: from grain.localdomain ([5.18.171.94])
+        by smtp.gmail.com with ESMTPSA id m3sm33513lfo.190.2021.03.23.15.06.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 15:06:35 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 23 Mar 2021 15:06:44 -0700 (PDT)
+Received: by grain.localdomain (Postfix, from userid 1000)
+        id 4BC1C5601CE; Wed, 24 Mar 2021 01:06:44 +0300 (MSK)
+Date:   Wed, 24 Mar 2021 01:06:44 +0300
+From:   Cyrill Gorcunov <gorcunov@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrey Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v2] prctl: PR_SET_MM - unify copying of user's auvx
+Message-ID: <YFpmdGXmGQ6IetoX@grain>
+References: <YFeuWsnb6qKEU8+h@grain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YE2OJz1pI81Uj8DA@builder.lan>
-References: <1615269111-25559-1-git-send-email-sibis@codeaurora.org> <1615269111-25559-7-git-send-email-sibis@codeaurora.org> <161567197220.1478170.12600358804299446135@swboyd.mtv.corp.google.com> <YE2OJz1pI81Uj8DA@builder.lan>
-Subject: Re: [PATCH 6/6] arm64: dts: qcom: sc7280: Add nodes to boot WPSS
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>, p.zabel@pengutronix.de,
-        robh+dt@kernel.org, agross@kernel.org, mani@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Date:   Tue, 23 Mar 2021 15:06:33 -0700
-Message-ID: <161653719350.3012082.12055201782488576903@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFeuWsnb6qKEU8+h@grain>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-03-13 20:16:39)
-> On Sat 13 Mar 15:46 CST 2021, Stephen Boyd wrote:
->=20
-> > Quoting Sibi Sankar (2021-03-08 21:51:51)
-> > > Add miscellaneous nodes to boot the Wireless Processor Subsystem on
-> >=20
-> > Maybe add (WPSS) after the name so we know they're related.
-> >=20
-> > > SC7280 SoCs.
-> > >=20
-> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > > ---
-> > >=20
-> > > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=3D438=
-217
-> > > Depends on ipcc dt node enablement from ^^=20
-> > >=20
-> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 143 +++++++++++++++++++++++++=
-++++++++++
-> > >  1 file changed, 143 insertions(+)
-> > >=20
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/d=
-ts/qcom/sc7280.dtsi
-> > > index 18637c369c1d..4f03c468df51 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > @@ -244,12 +251,131 @@
-> > >                 reg =3D <0 0x80000000 0 0>;
-> > >         };
-> > > =20
-> > > +       tcsr_mutex: hwlock {
-> > > +               compatible =3D "qcom,tcsr-mutex";
-> > > +               syscon =3D <&tcsr_mutex_regs 0 0x1000>;
-> > > +               #hwlock-cells =3D <1>;
-> > > +       };
-> >=20
-> > Is this node in the right place? I think the node above it is 'memory'?
-> > In which case 'hwlock' comes before 'memory' alphabetically.
-> >=20
->=20
-> Thanks for spotting this, as it's no longer acceptable to have a
-> standalone "syscon" node I was asked to rewrite the binding for this a
-> few months ago. So the tcsr_mutex should now be represented with a reg
-> under /soc.
+prctl(PR_SET_MM, PR_SET_MM_AUXV | PR_SET_MM_MAP, ...) copies user
+provided auxiliary vector to kernel and saves it to mm::saved_auxv,
+this involves same code in to places. Lets move it into one helper
+instead.
 
-Oh nice, I wasn't aware.
+When we copy data from user space we make sure that the vector ends
+up with AT_NULL key/value pair as specification requires. And here
+is a bit vague moment if task is running in compat mode: instead of
+one last value we zeroing two entries at the end. This is done for
+code simplicity (if arch supports compat mode then the initial vector
+size must be big enough to store values needed for the native mode
+as well, that's why we define the vector as an array of longs. In
+particular when Elf executable is loaded the vector is considered
+as pairs of elf_addr_t elements, which is 4 byte per each on 32
+bit environment and 8 byte per each in 64 bit kernel).
 
-> > > +                       #interrupt-cells =3D <2>;
-> > > +               };
-> > > +       };
-> > > +
-> > > +       smp2p-mpss {
-> > > +               compatible =3D "qcom,smp2p";
-> > > +               qcom,smem =3D <435>, <428>;
-> > > +               interrupts-extended =3D <&ipcc IPCC_CLIENT_MPSS
-> > > +                                            IPCC_MPROC_SIGNAL_SMP2P
-> > > +                                            IRQ_TYPE_EDGE_RISING>;
-> > > +               mboxes =3D <&ipcc IPCC_CLIENT_MPSS
-> > > +                               IPCC_MPROC_SIGNAL_SMP2P>;
-> > > +
-> > > +               qcom,local-pid =3D <0>;
-> > > +               qcom,remote-pid =3D <1>;
-> > > +
-> > > +               modem_smp2p_out: master-kernel {
-> > > +                       qcom,entry-name =3D "master-kernel";
-> > > +                       #qcom,smem-state-cells =3D <1>;
-> > > +               };
-> > > +
-> > > +               modem_smp2p_in: slave-kernel {
-> > > +                       qcom,entry-name =3D "slave-kernel";
-> >=20
-> > Do these names need to have 'master' and 'slave' in them? We're trying
-> > to avoid these terms. See Documentation/process/coding-style.rst Section
-> > 4 naming.
-> >=20
->=20
-> They need to match the naming in the firmware, but I would welcome a
-> future change to something in line with the coding style and simply more
-> descriptive.
->=20
+Same time lets drop useless task_lock()/task_unlock() calls from
+PR_SET_MM_AUXV. It doesn't protect anything here and seems to be
+sneaked in accidentally (Oleg pointed me this moment).
 
-Sibi can this be done? I think it's still pretty early days for the
-firmware so hopefully the terms can be replaced with something
-different.
+Reported-by: Alexey Dobriyan <adobriyan@gmail.com>
+Reported-by: Oleg Nesterov <oleg@redhat.com>
+CC: Andrey Vagin <avagin@gmail.com>
+CC: Dmitry Safonov <0x7f454c46@gmail.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Cyrill Gorcunov <gorcunov@gmail.com>
+---
+ kernel/sys.c |   70 ++++++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 38 insertions(+), 32 deletions(-)
+
+Index: linux-tip.git/kernel/sys.c
+===================================================================
+--- linux-tip.git.orig/kernel/sys.c
++++ linux-tip.git/kernel/sys.c
+@@ -1961,6 +1961,30 @@ out:
+ 	return error;
+ }
+ 
++static int copy_auxv_from_user(unsigned long *auxv, size_t auxv_size,
++			       const void __user *addr, size_t len)
++{
++	BUG_ON(auxv_size != sizeof(current->mm->saved_auxv));
++
++	if (!addr || len > auxv_size)
++		return -EINVAL;
++
++	memset(auxv, 0, auxv_size);
++	if (len && copy_from_user(auxv, addr, len))
++		return -EFAULT;
++
++	/*
++	 * Specification requires the vector to be
++	 * ended up with AT_NULL entry so user space
++	 * will notice where to stop enumerating.
++	 */
++	if (len == auxv_size) {
++		auxv[AT_VECTOR_SIZE - 2] = AT_NULL;
++		auxv[AT_VECTOR_SIZE - 1] = AT_NULL;
++	}
++	return 0;
++}
++
+ #ifdef CONFIG_CHECKPOINT_RESTORE
+ static int prctl_set_mm_map(int opt, const void __user *addr, unsigned long data_size)
+ {
+@@ -1987,22 +2011,12 @@ static int prctl_set_mm_map(int opt, con
+ 		return error;
+ 
+ 	if (prctl_map.auxv_size) {
+-		/*
+-		 * Someone is trying to cheat the auxv vector.
+-		 */
+-		if (!prctl_map.auxv ||
+-				prctl_map.auxv_size > sizeof(mm->saved_auxv))
+-			return -EINVAL;
+-
+-		memset(user_auxv, 0, sizeof(user_auxv));
+-		if (copy_from_user(user_auxv,
+-				   (const void __user *)prctl_map.auxv,
+-				   prctl_map.auxv_size))
+-			return -EFAULT;
+-
+-		/* Last entry must be AT_NULL as specification requires */
+-		user_auxv[AT_VECTOR_SIZE - 2] = AT_NULL;
+-		user_auxv[AT_VECTOR_SIZE - 1] = AT_NULL;
++		int error = copy_auxv_from_user(user_auxv,
++						sizeof(user_auxv),
++						prctl_map.auxv,
++						prctl_map.auxv_size);
++		if (error)
++			return error;
+ 	}
+ 
+ 	if (prctl_map.exe_fd != (u32)-1) {
+@@ -2079,25 +2093,17 @@ static int prctl_set_auxv(struct mm_stru
+ 	 * up to the caller to provide sane values here, otherwise userspace
+ 	 * tools which use this vector might be unhappy.
+ 	 */
+-	unsigned long user_auxv[AT_VECTOR_SIZE] = {};
+-
+-	if (len > sizeof(user_auxv))
+-		return -EINVAL;
+-
+-	if (copy_from_user(user_auxv, (const void __user *)addr, len))
+-		return -EFAULT;
+-
+-	/* Make sure the last entry is always AT_NULL */
+-	user_auxv[AT_VECTOR_SIZE - 2] = 0;
+-	user_auxv[AT_VECTOR_SIZE - 1] = 0;
++	unsigned long user_auxv[AT_VECTOR_SIZE];
++	int error;
+ 
+ 	BUILD_BUG_ON(sizeof(user_auxv) != sizeof(mm->saved_auxv));
+ 
+-	task_lock(current);
+-	memcpy(mm->saved_auxv, user_auxv, len);
+-	task_unlock(current);
+-
+-	return 0;
++	error = copy_auxv_from_user(user_auxv, sizeof(user_auxv),
++				    (const void __user *)addr,
++				    len);
++	if (!error)
++		memcpy(mm->saved_auxv, user_auxv, len);
++	return error;
+ }
+ 
+ static int prctl_set_mm(int opt, unsigned long addr,
