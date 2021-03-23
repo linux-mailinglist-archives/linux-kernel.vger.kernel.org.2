@@ -2,144 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA3F3455F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FC83455FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhCWDLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 23:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCWDKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 23:10:37 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C07BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 20:10:36 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j18so19227887wra.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 20:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ij2qTAkV9onciaXLQh2fELQAThocPd0dv9MVIWIx7vM=;
-        b=r+uMOdSRgBmRm7NI0thZSGjZ2EFpekvMjsgqPBW2fQQYCqu283OtxYJYa8IpOBUrfq
-         sAeC0RkRrvztxa7s3L/B7x52qp3mAeL8tLFy9wls9LDXfKjPvgxuR/yvp3GTFgKZxT+w
-         Gfaq6GBmJHMN+HwPfA+zw+WzA7Ja/WTLuWYF2lsS/n+jCz9qvm3Qf9o59mlnDBsuc3zI
-         CS/cTs8yZd4a1F9qz7cNDAG6dac2879aPh9+/8q6DhxhboVd8GsfX0yDn400s3yjAjPe
-         J+h+KWNAV4UP6N8bW2XNF39BEGBvWcKcDMB/K/4Hnknc7UTzMBxyZzhiYRqoOzyDyL9K
-         0pYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ij2qTAkV9onciaXLQh2fELQAThocPd0dv9MVIWIx7vM=;
-        b=MT+YE1daP0iEpWBWAz4aSKsud7P9S5XhQrt0JreTA589ZMUqZxvd7gqRNfm8/e2/EU
-         klTsWgu2lOrjwkI2y4+c01txX20aVW3rKQfi4pTLEjAtV99x5xxA48jxSZB1axOs0enN
-         gyDzM2xNhKVNXGaAh/0NYSjFLIs3Mks/6mQ5uRBbXMFRe7U29MerUVhbYTfplnV4DNRA
-         TaujTOPjCRaRjdivRgVJuqJI9HbITQLF7s8iEFQgTIafvAsa2sv4moSOx1jQpSRptdn+
-         XKkQtM2V+MlKEdjX105dpEEA6IotctU3CSrdyMIv5KQQYfBZWs8aLCEooei6xZTWmWoQ
-         cUKg==
-X-Gm-Message-State: AOAM530aVam8gejWOWIck7urd/nfBpeTXkkr/JSs/c96RPDxQXVdfnMq
-        Z7l6kZSslMDOkuYxcCGxpJL8h0WUfZ5zhvCwT54+Tw==
-X-Google-Smtp-Source: ABdhPJzDmmeiCu1efaHZYtsxpK+AONN+FexOeJinR9KuKjtoVcz+vufseyaAN1twehF15gc+9ImRKywiKphcRdDFcek=
-X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr1545621wry.48.1616469034674;
- Mon, 22 Mar 2021 20:10:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210310104139.679618-1-elver@google.com> <20210310104139.679618-9-elver@google.com>
- <YFiamKX+xYH2HJ4E@elver.google.com>
-In-Reply-To: <YFiamKX+xYH2HJ4E@elver.google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 22 Mar 2021 20:10:22 -0700
-Message-ID: <CAP-5=fW8NnLFbnK8UwLuYFzkwk6Yjvxv=LdOpE8qgXbyL6=CCg@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 8/8] selftests/perf: Add kselftest for remove_on_exec
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        viro@zeniv.linux.org.uk, Arnd Bergmann <arnd@arndb.de>,
-        christian@brauner.io, Dmitry Vyukov <dvyukov@google.com>,
-        jannh@google.com, axboe@kernel.dk,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vince Weaver <vincent.weaver@maine.edu>
-Content-Type: text/plain; charset="UTF-8"
+        id S229675AbhCWDMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:12:05 -0400
+Received: from m12-12.163.com ([220.181.12.12]:52146 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229548AbhCWDLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 23:11:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=US+lAK9tXx3ZQu8YlR
+        j1VnBBEaM3fbPCi1jDiKVVnfk=; b=JM6QntIdZsuKW6pU0JyeYAoLfLchezT0gn
+        uqU+lPFj+SnB/1zUJE9+7wToQYtV6NLOLAeSFxIxeinHS1cAyArRJgy4/oQ37D0e
+        R+koqtcovn4LzE+JhtZG/6xe1GKvo0gKrzCtII27UrJOOh8VxjPsltlVhbBTElXX
+        wvmI7QdF8=
+Received: from bf-rmnj-02.ccdomain.com (unknown [218.94.48.178])
+        by smtp8 (Coremail) with SMTP id DMCowAAHD48xXFlgvk9CWA--.5103S2;
+        Tue, 23 Mar 2021 11:10:56 +0800 (CST)
+From:   Jian Dong <dj0227@163.com>
+To:     abel.vesa@nxp.com, mturquette@baylibre.com, sboyd@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     linux-imx@nxp.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, Jian Dong <dongjian@yulong.com>
+Subject: [PATCH]  clk: imx: reference preceded by free
+Date:   Tue, 23 Mar 2021 11:10:34 +0800
+Message-Id: <1616469034-9691-1-git-send-email-dj0227@163.com>
+X-Mailer: git-send-email 1.9.1
+X-CM-TRANSID: DMCowAAHD48xXFlgvk9CWA--.5103S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKry7Jryxur1DXr43ur18AFb_yoWDZwb_CF
+        18Wrn7XrWvyr43AF15ur1xZrZ0vFnxZFsavF12qry3K39xZr15Jr1Fvw4fKw45Cry8ArWD
+        Cw1DGrWq9FZ8GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn5GYJUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: dgmqjjqx6rljoofrz/1tbiEABe3V8YFUAYNgAAsv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 6:24 AM Marco Elver <elver@google.com> wrote:
->
-> On Wed, Mar 10, 2021 at 11:41AM +0100, Marco Elver wrote:
-> > Add kselftest to test that remove_on_exec removes inherited events from
-> > child tasks.
-> >
-> > Signed-off-by: Marco Elver <elver@google.com>
->
-> To make compatible with more recent libc, we'll need to fixup the tests
-> with the below.
->
-> Also, I've seen that tools/perf/tests exists, however it seems to be
-> primarily about perf-tool related tests. Is this correct?
->
-> I'd propose to keep these purely kernel ABI related tests separate, and
-> that way we can also make use of the kselftests framework which will
-> also integrate into various CI systems such as kernelci.org.
+From: Jian Dong <dongjian@yulong.com>
 
-Perhaps there is a way to have both? Having the perf tool spot an
-errant kernel feels like a feature. There are also
-tools/lib/perf/tests and Vince Weaver's tests [1]. It is possible to
-run standalone tests from within perf test by having them be executed
-by a shell test.
+ when register failed, clk will be freed, it will generate dangling pointer
+ problem in later reference. it should return directly.
 
-Thanks,
-Ian
+Signed-off-by: Jian Dong <dongjian@yulong.com>
+---
+ drivers/clk/imx/clk-lpcg-scu.c | 1 +
+ drivers/clk/imx/clk-scu.c      | 1 +
+ 2 files changed, 2 insertions(+)
 
-[1] https://github.com/deater/perf_event_tests
+diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
+index 77be763..dd5abd0 100644
+--- a/drivers/clk/imx/clk-lpcg-scu.c
++++ b/drivers/clk/imx/clk-lpcg-scu.c
+@@ -114,6 +114,7 @@ struct clk_hw *__imx_clk_lpcg_scu(struct device *dev, const char *name,
+ 	if (ret) {
+ 		kfree(clk);
+ 		hw = ERR_PTR(ret);
++		return hw;
+ 	}
+ 
+ 	if (dev)
+diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
+index 1f5518b7..f89b4da 100644
+--- a/drivers/clk/imx/clk-scu.c
++++ b/drivers/clk/imx/clk-scu.c
+@@ -426,6 +426,7 @@ struct clk_hw *__imx_clk_scu(struct device *dev, const char *name,
+ 	if (ret) {
+ 		kfree(clk);
+ 		hw = ERR_PTR(ret);
++		return hw;
+ 	}
+ 
+ 	if (dev)
+-- 
+1.9.1
 
-> Thanks,
-> -- Marco
->
-> ------ >8 ------
->
-> diff --git a/tools/testing/selftests/perf_events/remove_on_exec.c b/tools/testing/selftests/perf_events/remove_on_exec.c
-> index e176b3a74d55..f89d0cfdb81e 100644
-> --- a/tools/testing/selftests/perf_events/remove_on_exec.c
-> +++ b/tools/testing/selftests/perf_events/remove_on_exec.c
-> @@ -13,6 +13,11 @@
->  #define __have_siginfo_t 1
->  #define __have_sigval_t 1
->  #define __have_sigevent_t 1
-> +#define __siginfo_t_defined
-> +#define __sigval_t_defined
-> +#define __sigevent_t_defined
-> +#define _BITS_SIGINFO_CONSTS_H 1
-> +#define _BITS_SIGEVENT_CONSTS_H 1
->
->  #include <linux/perf_event.h>
->  #include <pthread.h>
-> diff --git a/tools/testing/selftests/perf_events/sigtrap_threads.c b/tools/testing/selftests/perf_events/sigtrap_threads.c
-> index 7ebb9bb34c2e..b9a7d4b64b3c 100644
-> --- a/tools/testing/selftests/perf_events/sigtrap_threads.c
-> +++ b/tools/testing/selftests/perf_events/sigtrap_threads.c
-> @@ -13,6 +13,11 @@
->  #define __have_siginfo_t 1
->  #define __have_sigval_t 1
->  #define __have_sigevent_t 1
-> +#define __siginfo_t_defined
-> +#define __sigval_t_defined
-> +#define __sigevent_t_defined
-> +#define _BITS_SIGINFO_CONSTS_H 1
-> +#define _BITS_SIGEVENT_CONSTS_H 1
->
->  #include <linux/hw_breakpoint.h>
->  #include <linux/perf_event.h>
+
