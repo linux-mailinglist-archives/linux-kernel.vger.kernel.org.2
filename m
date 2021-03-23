@@ -2,131 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9963459BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32B23459BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhCWIdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:33:02 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:28465 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhCWIcg (ORCPT
+        id S229832AbhCWIdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhCWIc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:32:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1616488331; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=DbgzEnR/3yD9m/RpSCcQK6LwJhecbCkN1k6IUG83Ysh+2+dLZEwBdGXXFqfJUtJGa2
-    6qC92SgHT7j8FPsU+wTzPk4gKC6UGph9A2fmTiTPHc+BQVT2su/DUADhmLM0KutQU2tY
-    R3FpVu0HKQBcDaQZfRrt0oZH9pscQZZtpkhAyAXo9d4JUg0zkBNqukdq3Ri0rr+vnniJ
-    7y8nLnmFAjHRYF7CGELeFY9p+JPLkHCqQUm1nSzPJyf0pnL5QNhgkYNuigGL1+wLZduk
-    iX7nEgehS0UNOBbsuVYavHYBZaFxd0qVmFZdcf4Nrk/K13eao67RuKlve3gepXUqG8XS
-    wArg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616488331;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:Date:Message-ID:References:Cc:To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Y4IgOnzalvu2hjJrcEWQexr5i07F4zEpuG/tdwxSpqk=;
-    b=LF4TPEZA/fhFtpsKm83JnZleYaTCTacfL5KtcaW696bnzRwmxuKuCAKnyiMJ75SVw1
-    ZR3Pco7Av2D5PnqEaRH7Ja1dKTlHJMX0XnEFQzzmOzNNHHjddWmfprcDVqf25umMr6wj
-    CqjFUIsHuRCBlocSr89JljGD0yZd1rZhkietGJV+kTCoXD2c6Nkf/lkFd4bb76UjT1ES
-    5jmQ5shQI8rW6uOpjpsinaSkRzoowEdz0KqfWdAourpisbB6LZL39/EM2S7tIII3DY81
-    UocDhk3fmsZAk6RxS73jExsBBSq6DmF0B9YYCJsH7bf9HlltkGCTy+sEf0BljlrFMYTO
-    jDmQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616488331;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:References:Cc:To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Y4IgOnzalvu2hjJrcEWQexr5i07F4zEpuG/tdwxSpqk=;
-    b=Z8/xM0hedv/iL2TnYQLXs8DF1oBjI1bjmYgmdifWfE4WYp7hKlp4FLqkDwa4i5BQ2V
-    KsqGUX7mq8Kh9kAb/S3yq9zCmjBsDDbyJQ4vAUdW/+gLIuwagwmNP/dBeRdntsjqC4lb
-    ysznzENcxnNhDoFZeQYb5CdbO5/5iez2m7t7C/Ag5t/o/mRG2QYYlsGj/4nsVnSdUQmD
-    wYUXnTibARFMkp/s0OOk7OxIeqXdaIsfJlCxRKnFDDOZRSa6ruIuvflonbN7v7sNePY7
-    rng/SpWq4SDCPxQ9biqmqUSHfLUUakE2g8PJhFe9WADYA6fQOj4aRbesyeHFSw6P0HM+
-    2FFg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J8xswl0="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.10.137]
-    by smtp.strato.de (RZmta 47.21.0 DYNA|AUTH)
-    with ESMTPSA id R01debx2N8WAE5p
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 23 Mar 2021 09:32:10 +0100 (CET)
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Patrick Menschel <menschel.p@posteo.de>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
- <20210323073437.yo63wreqnubbeqby@pengutronix.de>
- <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
-Message-ID: <c0fb01a8-6a6a-7e5f-f932-697065d18600@hartkopp.net>
-Date:   Tue, 23 Mar 2021 09:32:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 23 Mar 2021 04:32:27 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1CDC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:32:26 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id o9so1260977pgm.15
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:32:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KtQvqrz3w6xBtTxWdXYr5PEiVwRgjP+6HysrGaoX6eU=;
+        b=DlM4X9aAYWJc8Kcs/DrMzz5CAXYgCgxLO6eh8pdqDX8KSkfklA/9aW54+tDVNPAcHm
+         wIw0s6/IXg/axF4KydHQHgM87VjUuPtVS8otmgkic5ye4vMJ1SgnNc+Ex61qzV/wKvTL
+         JodG8sNLBwGvJvnnoP8B7d3xe4k4w/hGe2P1Slte6KbmxHtmB4Lg8KxLoKQMeH2joxmM
+         4CVtT8sLX4lAk5L/GL5pshLVYMczqGS+ySwTYJB3WpBbQttsElTZjg1fgXoRxlj4TFGY
+         6ZIu6I6hsJdbqZo9EctKYo1WfPFB019LRLA58gwe3NrH+WYYOvZeBEE1ZecCb7JDkCU/
+         GJfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KtQvqrz3w6xBtTxWdXYr5PEiVwRgjP+6HysrGaoX6eU=;
+        b=ZeXhSmOpusDtAlwcCxm6T/06zDsD3I36ETS6nKHul6W/RFTlEVk0yRiInXwmnzfnSh
+         rxftgI0bR8vwiPASkeZaux9U8P7ak+Smx4PI658QBRxrcI8PIcPybKkzVZcgRo9ZCHBH
+         KQlQEjnIrfO33x0u7761NvZEqYF+WHEbOcapph6vBTcIqdf1snTPA2KsnhbSaLu201FH
+         96poep3TZk2HClBAJuzQ1tjV+UT0phdtHpf3UKjiWD3HSKoE5G40HUOuPb2VfOqapehE
+         RVZK27wcjW1WJC+HlcOmTXN1jm8Kuv1su2qPjG6O0LxlS0pcARZEtvCNTYTiruZ2as+B
+         eeaw==
+X-Gm-Message-State: AOAM533YZyZKSSRBPrmtiZxfokpEmz4F6PUN5ezVAaaCEtwZbOSPPyIL
+        Q9rqJleRJHXPet8WdqoVSuQhF97RL5uy
+X-Google-Smtp-Source: ABdhPJx/iVy/TATqUnzYQb+Zxn94peGSevSjnAX+s+QI7WSRkdje6wmgQl9jwrfCamXacJylhEIh0ThDStsh
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:fdf3:9f7d:e4e3:ccad])
+ (user=apusaka job=sendgmr) by 2002:a62:e708:0:b029:1f8:c092:ff93 with SMTP id
+ s8-20020a62e7080000b02901f8c092ff93mr3763813pfh.21.1616488345892; Tue, 23 Mar
+ 2021 01:32:25 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 16:32:20 +0800
+Message-Id: <20210323163141.v2.1.I6c4306f6e8ba3ccc9106067d4eb70092f8cb2a49@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2] Bluetooth: check for zapped sk before connecting
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com,
+        Alain Michaud <alainm@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Answering myself ...
+From: Archie Pusaka <apusaka@chromium.org>
 
-On 23.03.21 08:45, Oliver Hartkopp wrote:
-> On 23.03.21 08:34, Marc Kleine-Budde wrote:
->> On 23.03.2021 10:54:40, Rong Chen wrote:
->>> I tried arm-linux-gnueabi (gcc version 10.2.0) and the problem still
->>> exists, btw we prefer to not use the latest gcc compiler to avoid
->>> false positives.
->>
->> FWIW:
->>
->> I'm using latest debian arm compiler and the BUILD_BUG never triggered.
->> gcc version 10.2.1 20210110 (Debian 10.2.1-6)
->>
+There is a possibility of receiving a zapped sock on
+l2cap_sock_connect(). This could lead to interesting crashes, one
+such case is tearing down an already tore l2cap_sock as is happened
+with this call trace:
 
-@Rong / Marc:
+__dump_stack lib/dump_stack.c:15 [inline]
+dump_stack+0xc4/0x118 lib/dump_stack.c:56
+register_lock_class kernel/locking/lockdep.c:792 [inline]
+register_lock_class+0x239/0x6f6 kernel/locking/lockdep.c:742
+__lock_acquire+0x209/0x1e27 kernel/locking/lockdep.c:3105
+lock_acquire+0x29c/0x2fb kernel/locking/lockdep.c:3599
+__raw_spin_lock_bh include/linux/spinlock_api_smp.h:137 [inline]
+_raw_spin_lock_bh+0x38/0x47 kernel/locking/spinlock.c:175
+spin_lock_bh include/linux/spinlock.h:307 [inline]
+lock_sock_nested+0x44/0xfa net/core/sock.c:2518
+l2cap_sock_teardown_cb+0x88/0x2fb net/bluetooth/l2cap_sock.c:1345
+l2cap_chan_del+0xa3/0x383 net/bluetooth/l2cap_core.c:598
+l2cap_chan_close+0x537/0x5dd net/bluetooth/l2cap_core.c:756
+l2cap_chan_timeout+0x104/0x17e net/bluetooth/l2cap_core.c:429
+process_one_work+0x7e3/0xcb0 kernel/workqueue.c:2064
+worker_thread+0x5a5/0x773 kernel/workqueue.c:2196
+kthread+0x291/0x2a6 kernel/kthread.c:211
+ret_from_fork+0x4e/0x80 arch/x86/entry/entry_64.S:604
 
-I wonder if the compiler configurations (gcc -v) or the options used at 
-kernel build time are identical.
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reported-by: syzbot+abfc0f5e668d4099af73@syzkaller.appspotmail.com
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
+---
 
-Maybe there is a different optimization option selected which causes the 
-compiler to extend the u8 union to a 32 bit space?!?
+Changes in v2:
+* Modify locking order for better visibility
 
-And maybe Debian is a bit more conservative in selecting their 
-optimizations than the setup that Rong was using for the build ...
+ net/bluetooth/l2cap_sock.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Best,
-Oliver
+diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+index f1b1edd0b697..c99d65ef13b1 100644
+--- a/net/bluetooth/l2cap_sock.c
++++ b/net/bluetooth/l2cap_sock.c
+@@ -179,9 +179,17 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr,
+ 	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+ 	struct sockaddr_l2 la;
+ 	int len, err = 0;
++	bool zapped;
+ 
+ 	BT_DBG("sk %p", sk);
+ 
++	lock_sock(sk);
++	zapped = sock_flag(sk, SOCK_ZAPPED);
++	release_sock(sk);
++
++	if (zapped)
++		return -EINVAL;
++
+ 	if (!addr || alen < offsetofend(struct sockaddr, sa_family) ||
+ 	    addr->sa_family != AF_BLUETOOTH)
+ 		return -EINVAL;
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
-> 
-> Thanks Marc!
-> 
-> IMO we facing a compiler problem here - and we should be very happy that 
-> the BUILD_BUG_ON() triggered an issue after years of silence.
-> 
-> I do not have a good feeling about what kind of strange effects this 
-> compiler issue might have in other code of other projects.
-> 
-> So I would explicitly suggest NOT to change the af_can.c code to work 
-> around this compiler issue.
-> 
-> Let the gcc people fix their product and let them thank all of us for 
-> detecting it.
-> 
-> Regards,
-> Oliver
