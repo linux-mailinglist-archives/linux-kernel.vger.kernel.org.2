@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E28346D50
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C55346D5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbhCWWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:38:57 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:45623 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbhCWWiZ (ORCPT
+        id S234092AbhCWWje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:39:34 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44578 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233738AbhCWWi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:38:25 -0400
-Received: by mail-il1-f169.google.com with SMTP id v3so19664826ilj.12;
-        Tue, 23 Mar 2021 15:38:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m3KU9ojkcc0Xo1iQNgnxQRVgpyEXyiLaxGNp9t3RWAs=;
-        b=Bxj20ifXx4ksaBGoijx9zT1Yp6AkmRkW4V5KBuPqAM3gbulloQsF75cUt9JbiVfTOv
-         N0pma4pVaMGOYOeimbqtvq8JHeFLUnaNaicqxlCG7QAcBpyOsuY+eQRXmsQIxnA0XDde
-         MhpvgLvhIr10Jpo4v8wHmETbmxxD6XlGE0Rsnx+AUB37hTxI7FC3PQdqAKlWL8AytlJx
-         uHI3PLboZIRLUtNrB+7lzQnc2V6tXOLviC7GnmEEoMN5T8VsH/vQm1nqcPr258tk3F5S
-         Garl3SXANdxZlO4UtJqqDYPIf3RWJU8YxmftPTUAH7HIKfqLqKnEwqMPzGZWga1ta/oJ
-         i1nw==
-X-Gm-Message-State: AOAM533xRjnAjkmGwNK1Fqvj/K7CD7vHC1CjSVsrWrfezoMKQE7m4w4O
-        z/PnCEcY/bvUMo+88CmfkIODgdOUAA==
-X-Google-Smtp-Source: ABdhPJwAEp/g8EW3zhRIlMs4bDjQqMp5SSZ/GzMzFmgnA7JOvlwtyJF4TANQsYYlTTs3fyak6xPTng==
-X-Received: by 2002:a92:d912:: with SMTP id s18mr340012iln.230.1616539104740;
-        Tue, 23 Mar 2021 15:38:24 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id a14sm112381ilm.68.2021.03.23.15.38.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 15:38:23 -0700 (PDT)
-Received: (nullmailer pid 1475853 invoked by uid 1000);
-        Tue, 23 Mar 2021 22:38:21 -0000
-Date:   Tue, 23 Mar 2021 16:38:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Prashant Gaikwad <pgaikwad@nvidia.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-clk@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Subject: Re: [PATCH v6 7/7] dt-bindings: clock: tegra: Convert to schema
-Message-ID: <20210323223821.GA1475819@robh.at.kernel.org>
-References: <20210320152648.8389-1-digetx@gmail.com>
- <20210320152648.8389-8-digetx@gmail.com>
+        Tue, 23 Mar 2021 18:38:56 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12NMce1b129789;
+        Tue, 23 Mar 2021 17:38:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616539120;
+        bh=TvscpToZMQACxUA/dOzxJjIy1byQa47pq+p1H55TNi8=;
+        h=From:To:CC:Subject:Date;
+        b=Wc8eJbE1OLP2lGt/6l+ILJAaz44jaqQfI9kBhbGAgPBVIjbOJ/DWLu3ABUGxLZk4D
+         EC7WIO7WfY1eC/j7DOx+xsw61lR15QrBSTN3zYxYVhqfB0T3wv3ufAlDTKp1PC4GAI
+         7DGHdeIVwZTTg2dSUG8w71UEYjOEk1On/0KD+qf8=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12NMceEU034124
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Mar 2021 17:38:40 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
+ Mar 2021 17:38:40 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 23 Mar 2021 17:38:40 -0500
+Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12NMcewV058842;
+        Tue, 23 Mar 2021 17:38:40 -0500
+Received: from localhost ([10.250.221.195])
+        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 12NMcdSS102209;
+        Tue, 23 Mar 2021 17:38:39 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] PRU firmware event/interrupt mapping fixes
+Date:   Tue, 23 Mar 2021 17:38:36 -0500
+Message-ID: <20210323223839.17464-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210320152648.8389-8-digetx@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 18:26:48 +0300, Dmitry Osipenko wrote:
-> Convert NVIDIA Tegra clock bindings to schema.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
->  .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
->  .../bindings/clock/nvidia,tegra124-car.yaml   | 115 ++++++++++++++++++
->  .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
->  .../bindings/clock/nvidia,tegra20-car.yaml    |  69 +++++++++++
->  .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
->  .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
->  7 files changed, 184 insertions(+), 352 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.yaml
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
->  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
-> 
+Hi,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The following series includes fixes for various different issues
+associated with the PRU firmware event/interrupt mapping configuration
+logic added in the same commit c75c9fdac66e ("remoteproc: pru: Add
+support for PRU specific interrupt configuration"). The fixes are
+agnostic of SoC family.
+
+Following is the summary of issues and fixes:
+ - Patch #1 fixes the interrupt node finding logic to always use the
+   inherent sibling relationship between a PRU/RTU/Tx_PRU node and its
+   corresponding PRUSS INTC node. This fixes the firmware event mappings
+   for cases when the PRU nodes do not have an 'interrupt-parent' property
+   (this is the norm, the property is neither required nor added in the DT
+   nodes normally).
+ - Patch #2 fixes a minor issue with returning a success value to the
+   caller on a fw event mapping failure.
+ - Patch #3 fixes a kernel crash due to switching of firmwares between
+   consecutive runs, the first one with events and the second one without
+   events. There are no issues when the same firmwares are run or if they
+   are run in reverse order.
+
+Patches should apply cleanly on top of the current rproc-fixes branch
+commit 9afeefcf06fc ("remoteproc: pru: Fix firmware loading crashes on K3 SoCs")
+
+regards
+Suman
+
+Suman Anna (3):
+  remoteproc: pru: Fixup interrupt-parent logic for fw events
+  remoteproc: pru: Fix wrong success return value for fw events
+  remoteproc: pru: Fix and cleanup firmware interrupt mapping logic
+
+ drivers/remoteproc/pru_rproc.c | 33 +++++++++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
+
+-- 
+2.30.1
+
