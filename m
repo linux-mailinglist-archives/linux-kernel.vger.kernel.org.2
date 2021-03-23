@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5CE3453D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E373453E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhCWA2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:28:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38612 "EHLO mail.kernel.org"
+        id S231245AbhCWAap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230455AbhCWA2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:28:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 096A3619AC;
-        Tue, 23 Mar 2021 00:28:21 +0000 (UTC)
+        id S230414AbhCWAaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:30:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AC3D9619A5;
+        Tue, 23 Mar 2021 00:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616459302;
-        bh=kB1iKyIkVp+5of0jUhEAoDEu5yIkWwoMlSfclhSGwyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CWJXQe7XWyhMgIjZQMz16RzEXK5ydEp+vSb3pGCFZnLiGIti+FJ1dL1WsCLZcE6rs
-         fy41lk7J90/UqRKOip/L1Lsbdc6RF1ViMzCqkp9QXJYFd2ym9gD9B0gkipOGTx4c3e
-         xvvuHI7jM8qQ/j8GjRchJqE+UwlF0dSlLj0OC9PNKZcjihg96fvNeRbdvD+uTlc8n3
-         zDVgLw2ol3SJIlYGPEC6R5IL5p0/aCj1O5HGvcCWZBI3AQLRORjCxVUKUtniN65fSZ
-         vAPooZ0OIOh4mp26pn31tQpAHpQK5s4F1uxNTNNjQm+4QY8aOnfGEXKc/cgukjjOMF
-         mn3LuONP7x6kA==
-Date:   Mon, 22 Mar 2021 17:28:20 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 07/18] f2fs: convert to miscattr
-Message-ID: <YFk2JPmc7X7GFXni@gmail.com>
-References: <20210203124112.1182614-1-mszeredi@redhat.com>
- <20210203124112.1182614-8-mszeredi@redhat.com>
+        s=k20201202; t=1616459409;
+        bh=X9v4NcfD9rUYyBXtWv13v7WaeqrgwRJBdA965Ni4R+M=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=O0YkMefA6yW4sY8+/KlHUXZUaOMGZO7W5juL6LulAkDC3gcGUEHSlsVPGuDRsb9gO
+         oC0UO+acd5gYwchPNUUfkXVzzNGL4OqhQ8s3bZ8QZlxpX2N1x6zSqWS8RmAlifQb9q
+         3Bq5xyK5djvsJg//sa4cPYgU5LIdfuXq2hMNkcu25u9O4FAiz3ZOIw9DX4GDPF0+Tv
+         Pk37zVM+aUUiVtjyzMeB5eM4xOjmOJFTTLZi/IEfYS8JdkfGKBnSO6bNr1uZw0C9wr
+         qNlmLsdymCPicoP3pLgkC5fVlr6zn5rEMopnYk/90gSjPDhim6suer/0xeCYkn76AV
+         dMjsCU3l1H7Cg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9937E60A1B;
+        Tue, 23 Mar 2021 00:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203124112.1182614-8-mszeredi@redhat.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] isdn: capi: fix mismatched prototypes
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161645940962.31154.6242142892110069086.git-patchwork-notify@kernel.org>
+Date:   Tue, 23 Mar 2021 00:30:09 +0000
+References: <20210322164447.876440-1-arnd@kernel.org>
+In-Reply-To: <20210322164447.876440-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     isdn@linux-pingi.de, arnd@arndb.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 01:41:01PM +0100, Miklos Szeredi wrote:
-> @@ -3071,123 +3012,54 @@ static int f2fs_ioc_setproject(struct file *filp, __u32 projid)
->  }
->  #endif
->  
-> -/* FS_IOC_FSGETXATTR and FS_IOC_FSSETXATTR support */
-> -
-> -/*
-> - * To make a new on-disk f2fs i_flag gettable via FS_IOC_FSGETXATTR and settable
-> - * via FS_IOC_FSSETXATTR, add an entry for it to f2fs_xflags_map[], and add its
-> - * FS_XFLAG_* equivalent to F2FS_SUPPORTED_XFLAGS.
-> - */
-> -
-> -static const struct {
-> -	u32 iflag;
-> -	u32 xflag;
-> -} f2fs_xflags_map[] = {
-> -	{ F2FS_SYNC_FL,		FS_XFLAG_SYNC },
-> -	{ F2FS_IMMUTABLE_FL,	FS_XFLAG_IMMUTABLE },
-> -	{ F2FS_APPEND_FL,	FS_XFLAG_APPEND },
-> -	{ F2FS_NODUMP_FL,	FS_XFLAG_NODUMP },
-> -	{ F2FS_NOATIME_FL,	FS_XFLAG_NOATIME },
-> -	{ F2FS_PROJINHERIT_FL,	FS_XFLAG_PROJINHERIT },
-> -};
+Hello:
 
-There's another comment just above which talks about FS_IOC_GETFLAGS and
-FS_IOC_SETFLAGS:
+This patch was applied to netdev/net.git (refs/heads/master):
 
-	/* FS_IOC_GETFLAGS and FS_IOC_SETFLAGS support */
+On Mon, 22 Mar 2021 17:44:29 +0100 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc-11 complains about a prototype declaration that is different
+> from the function definition:
+> 
+> drivers/isdn/capi/kcapi.c:724:44: error: argument 2 of type ‘u8 *’ {aka ‘unsigned char *’} declared as a pointer [-Werror=array-parameter=]
+>   724 | u16 capi20_get_manufacturer(u32 contr, u8 *buf)
+>       |                                        ~~~~^~~
+> In file included from drivers/isdn/capi/kcapi.c:13:
+> drivers/isdn/capi/kcapi.h:62:43: note: previously declared as an array ‘u8[64]’ {aka ‘unsigned char[64]’}
+>    62 | u16 capi20_get_manufacturer(u32 contr, u8 buf[CAPI_MANUFACTURER_LEN]);
+>       |                                        ~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/isdn/capi/kcapi.c:790:38: error: argument 2 of type ‘u8 *’ {aka ‘unsigned char *’} declared as a pointer [-Werror=array-parameter=]
+>   790 | u16 capi20_get_serial(u32 contr, u8 *serial)
+>       |                                  ~~~~^~~~~~
+> In file included from drivers/isdn/capi/kcapi.c:13:
+> drivers/isdn/capi/kcapi.h:64:37: note: previously declared as an array ‘u8[8]’ {aka ‘unsigned char[8]’}
+>    64 | u16 capi20_get_serial(u32 contr, u8 serial[CAPI_SERIAL_LEN]);
+>       |                                  ~~~^~~~~~~~~~~~~~~~~~~~~~~
+> 
+> [...]
 
-	/*
-	 * To make a new on-disk f2fs i_flag gettable via FS_IOC_GETFLAGS, add an entry
-	 * for it to f2fs_fsflags_map[], and add its FS_*_FL equivalent to
-	 * F2FS_GETTABLE_FS_FL.  To also make it settable via FS_IOC_SETFLAGS, also add
-	 * its FS_*_FL equivalent to F2FS_SETTABLE_FS_FL.
-	 */
+Here is the summary with links:
+  - isdn: capi: fix mismatched prototypes
+    https://git.kernel.org/netdev/net/c/5ee7d4c7fbc9
 
-This patch seems to make that outdated, since now both FS_IOC_[GS]ETFLAGS and
-FS_IOC_[GS]ETFSXATTR are handled together.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Can you please update the comment to properly describe what's going on?
 
-- Eric
