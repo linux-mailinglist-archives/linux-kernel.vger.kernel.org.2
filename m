@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FB0345878
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B5E345879
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhCWHT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:19:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229972AbhCWHT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:19:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB61E61994;
-        Tue, 23 Mar 2021 07:19:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616483967;
-        bh=rdG665sJM9rxcoSZiQkXRGZEaeY27wUAYv3b17ihGNs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cdmtUal9cpp5FD30YqgHqBg8AP0seCQNOOearh+IsT6XCcLa3K1l/hAKkOk5sgnsK
-         Mq6vOXN6ladJoAeexh33yQVvWfjroVSiQhlEWAA8OSawn+5/YLUIGxIYDpECFRzdxK
-         bJSPfByEgfRmc1xAl0QaKUSulJp3H1y9+vfawZyI=
-Date:   Tue, 23 Mar 2021 08:19:24 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/156] 5.10.26-rc2 review
-Message-ID: <YFmWfPA9vAZzFpWp@kroah.com>
-References: <20210322151845.637893645@linuxfoundation.org>
- <20210322215231.GB51597@roeck-us.net>
+        id S230097AbhCWHT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhCWHTu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:19:50 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB62C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:19:50 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id s21so9700208pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:19:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BPquWIfp6E7g9HIeoKveZqVwGYBc5+UjaXcfopywIAg=;
+        b=csNqnxz+3yqhBUxQfHtn4xR38Z5vSRTJP9PBv448TYYs+pZSQlMpcsCiGijiSA9zBu
+         izPev4j5TRwj2FepauT5Mg+sa+c3TbjavWrpIC/o8EW79xSJoATLor07UOJJsH53HOx9
+         EXAJiRwYAE4BZGtNRyoYcNAVC3akuvft72C80Ie/cHZDB+6PLxynIs9f0v1ynBggh1cW
+         Yq9hvG2SrdaX8ZqzSYykf+dl+ZFEOuCoIWrJUUffwIYR1hJvTGBWEyWRmVfX4M4XnWff
+         9L7tT5fDLoWAPYUCIIXdgEYQDSbP5byoBmne5havqwX2oRDsRZJ3d2TnR7Cx6Bv5ND/0
+         4n8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BPquWIfp6E7g9HIeoKveZqVwGYBc5+UjaXcfopywIAg=;
+        b=s+ooMIQ2KF2N4PRB02KMdU7jk+7tul8J/o8VUdcX5RCsn/yulZEDZFju3lOKAhhSh4
+         Uqu+cOlufglfQBWZuV/SrdEuqNOb6SGrG4eNbINRwa0m2yWyGBG5xHT5DrV0tPoILNMS
+         UFjGELhJ3MX8k4GUriwxfyaZqDHiugsXWg5aAysOrOhkCXdDlpIMjMYQUFIH7pBSCu8b
+         Edmc/6YdWlIzKZS6nBwuvRSd2pKe0Ge7ODcSMkUJr1j3eLQmeSXo7DeFJvyS3dgCFCw1
+         EAbR/2w3mmmS9Ux4vQS7zJx1SrSZe53JfNtLvGIZKezOTwHeXCYMY04ZMUR31N7Uxv9V
+         TGUQ==
+X-Gm-Message-State: AOAM530KQ8zApAU3ZG+w9HhsxaeRPq4asLJsMft/M+12GA2Cf8p2clUg
+        b1hm6gU+2LFb/Owb/dHcbc5oPg==
+X-Google-Smtp-Source: ABdhPJxx1bUOKQ1IxfOZGUNrFItZZ5NIqZkAfRU8xAVL6+uawqnr0rqmMJQXl33Wd88ygrGq4ptviA==
+X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr3171398pjb.87.1616483989591;
+        Tue, 23 Mar 2021 00:19:49 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([116.206.101.232])
+        by smtp.gmail.com with ESMTPSA id l3sm15427132pfc.81.2021.03.23.00.19.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 00:19:49 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:19:44 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] coresight: etm-perf: Mark format_attr_contextid
+ with static keyword
+Message-ID: <20210323071944.GA55918@leoy-ThinkPad-X240s>
+References: <20210323075452.38920-1-zou_wei@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322215231.GB51597@roeck-us.net>
+In-Reply-To: <20210323075452.38920-1-zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:52:31PM -0700, Guenter Roeck wrote:
-> On Mon, Mar 22, 2021 at 04:19:10PM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.26 release.
-> > There are 156 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 24 Mar 2021 15:18:19 +0000.
-> > Anything received after that time might be too late.
-> > 
+On Tue, Mar 23, 2021 at 07:54:52AM +0000, Zou Wei wrote:
+> Fix the following sparse warning:
 > 
-> Build results:
-> 	total: 156 pass: 156 fail: 0
-> Qemu test results:
-> 	total: 432 pass: 428 fail: 4
-> Failed tests:
-> 	arm:realview-pb-a8:realview_defconfig:realview_pb:mem512:arm-realview-pba8:initrd
-> 	arm:realview-pbx-a9:realview_defconfig:realview_pb:arm-realview-pbx-a9:initrd
-> 	arm:realview-eb:realview_defconfig:realview_eb:mem512:arm-realview-eb:initrd
-> 	arm:realview-eb-mpcore:realview_defconfig:realview_eb:mem512:arm-realview-eb-11mp-ctrevb:initrd
+> drivers/hwtracing/coresight/coresight-etm-perf.c:61:25: warning: symbol
+> 'format_attr_contextid' was not declared. Should it be static?
 > 
-> Build failure:
-> 
-> kernel/rcu/tree.c:683:2: error: implicit declaration of function 'IRQ_WORK_INIT'
-> 
-> The patch introducing IRQ_WORK_INIT is not in v5.10.y.
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-That patch keeps coming back, Sasha and I have both added it multiple
-times now... I'll go drop it, thanks.
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-greg k-h
+> ---
+>  drivers/hwtracing/coresight/coresight-etm-perf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index 0f603b4094f2..bdbb77334329 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -58,7 +58,7 @@ static ssize_t format_attr_contextid_show(struct device *dev,
+>  	return sprintf(page, "config:%d\n", pid_fmt);
+>  }
+>  
+> -struct device_attribute format_attr_contextid =
+> +static struct device_attribute format_attr_contextid =
+>  	__ATTR(contextid, 0444, format_attr_contextid_show, NULL);
+>  
+>  static struct attribute *etm_config_formats_attr[] = {
+> -- 
+> 2.17.1
+> 
