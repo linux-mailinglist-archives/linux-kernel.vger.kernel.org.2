@@ -2,85 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25ACA3467F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97443467FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhCWSnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:43:32 -0400
-Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:47287 "EHLO
-        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232249AbhCWSnJ (ORCPT
+        id S232345AbhCWSoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232249AbhCWSnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:43:09 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id F3F42BECEA
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:43:06 +0000 (GMT)
-Received: (qmail 13406 invoked from network); 23 Mar 2021 18:43:06 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Mar 2021 18:43:06 -0000
-Date:   Tue, 23 Mar 2021 18:43:05 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/3] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210323184305.GN3697@techsingularity.net>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
- <20210322091845.16437-3-mgorman@techsingularity.net>
- <20210323170008.5d0732be@carbon>
+        Tue, 23 Mar 2021 14:43:52 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5BEC061574;
+        Tue, 23 Mar 2021 11:43:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=DKyHtKCO0K411018/e/MjJ+tlpnzWhDvazNrYsJOSa8=; b=wCZfve7N74jmvnRTUOrJapFiD
+        leJcWyRdawkhb6OZ4a1jxgzU3R/uQMZ2qIC4/y+Z+g9Sm9wd52sx8s5nB9p/DacOKa0D085kbjhUG
+        t719Zz6QmKCjMRJa189d+8TdFKszHhlT0JCrsUlaN15Ckx/gO6mdtjjXk0VX6m+6vTI47uvdxpJvh
+        2BG/ot8QgcvNes2LaU+gyZF0cTx4dYG2XnofuryoyNBFgVrUagwbgOO2Ln4dpB+6KoQP+1egdlpI6
+        il+83CsRb5nFRb3bPUyPMt1saGI84tHzmPIAIUXwkbKTNs43gPCOy+82tv90e78q6UWOAjTD1usvT
+        97GM9EK/Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51634)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lOlzy-00080o-ME; Tue, 23 Mar 2021 18:43:26 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lOlzt-0004Mo-J1; Tue, 23 Mar 2021 18:43:21 +0000
+Date:   Tue, 23 Mar 2021 18:43:21 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Cye Borg <cyborgyn@gmail.com>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
+Message-ID: <20210323184321.GE1463@shell.armlinux.org.uk>
+References: <20210318045706.200458-1-hch@lst.de>
+ <20210318045706.200458-3-hch@lst.de>
+ <20210319170753.GV1463@shell.armlinux.org.uk>
+ <20210319175311.GW1463@shell.armlinux.org.uk>
+ <20210322145403.GA30942@lst.de>
+ <20210322151503.GX1463@shell.armlinux.org.uk>
+ <224b110e-7c42-4e19-800e-e0fa23d3bf7f@physik.fu-berlin.de>
+ <20210322170338.GZ1463@shell.armlinux.org.uk>
+ <CAD4NMuZWoV0m85OyBDHLt+J8NYCV5wYx7fFZaivBNEgDnrN5xw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323170008.5d0732be@carbon>
+In-Reply-To: <CAD4NMuZWoV0m85OyBDHLt+J8NYCV5wYx7fFZaivBNEgDnrN5xw@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 05:00:08PM +0100, Jesper Dangaard Brouer wrote:
-> > +	/*
-> > +	 * If there are no allowed local zones that meets the watermarks then
-> > +	 * try to allocate a single page and reclaim if necessary.
-> > +	 */
-> > +	if (!zone)
-> > +		goto failed;
-> > +
-> > +	/* Attempt the batch allocation */
-> > +	local_irq_save(flags);
-> > +	pcp = &this_cpu_ptr(zone->pageset)->pcp;
-> > +	pcp_list = &pcp->lists[ac.migratetype];
-> > +
-> > +	while (allocated < nr_pages) {
-> > +		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
-> > +								pcp, pcp_list);
+On Mon, Mar 22, 2021 at 06:10:01PM +0100, Cye Borg wrote:
+> PWS 500au:
 > 
-> The function __rmqueue_pcplist() is now used two places, this cause the
-> compiler to uninline the static function.
+> snow / # lspci -vvx -s 7.1
+> 00:07.1 IDE interface: Contaq Microsystems 82c693 (prog-if 80 [ISA
+> Compatibility mode-only controller, supports bus mastering])
+>         Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+> ParErr+ Stepping- SERR- FastB2B- DisINTx-
+>         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
+> >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>         Latency: 0
+>         Interrupt: pin A routed to IRQ 0
+>         Region 0: I/O ports at 01f0 [size=8]
+>         Region 1: I/O ports at 03f4
+>         Region 4: I/O ports at 9080 [size=16]
+>         Kernel driver in use: pata_cypress
+>         Kernel modules: pata_cypress
+> 00: 80 10 93 c6 45 00 80 02 00 80 01 01 00 00 80 00
+> 10: f1 01 00 00 f5 03 00 00 00 00 00 00 00 00 00 00
+> 20: 81 90 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 30: 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00
 > 
+> snow / # lspci -vvx -s 7.2
+> 00:07.2 IDE interface: Contaq Microsystems 82c693 (prog-if 00 [ISA
+> Compatibility mode-only controller])
+>         Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+> ParErr+ Stepping- SERR- FastB2B- DisINTx-
+>         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
+> >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>         Latency: 0
+>         Interrupt: pin B routed to IRQ 0
+>         Region 0: I/O ports at 0170 [size=8]
+>         Region 1: I/O ports at 0374
+>         Region 4: Memory at 0c240000 (32-bit, non-prefetchable)
+> [disabled] [size=64K]
+>         Kernel modules: pata_cypress
+> 00: 80 10 93 c6 45 00 80 02 00 00 01 01 00 00 80 00
+> 10: 71 01 00 00 75 03 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 24 0c 00 00 00 00 00 00 00 00 00 00 00 00
+> 30: 00 00 00 00 00 00 00 00 00 00 00 00 00 02 00 00
 
-This was expected. It was not something I was particularly happy with
-but avoiding it was problematic without major refactoring.
+Thanks very much.
 
-> My tests show you should inline __rmqueue_pcplist().  See patch I'm
-> using below signature, which also have some benchmark notes. (Please
-> squash it into your patch and drop these notes).
-> 
+Could I also ask for the output of:
 
-The cycle savings per element is very marginal at just 4 cycles. I
-expect just the silly stat updates are way more costly but the series
-that addresses that is likely to be controversial. As I know the cycle
-budget for processing a packet is tight, I've applied the patch but am
-keeping it separate to preserve the data in case someone points out that
-is a big function to inline and "fixes" it.
+# lspci -vxxx -s 7.0
+
+as well please - this will dump all 256 bytes for the ISA bridge, which
+contains a bunch of configuration registers. Thanks.
 
 -- 
-Mel Gorman
-SUSE Labs
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
