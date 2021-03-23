@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9D634679E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BF03467A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbhCWS2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:28:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48770 "EHLO mail.kernel.org"
+        id S231455AbhCWSay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:30:54 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38839 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231862AbhCWS2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:28:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C94B619C0;
-        Tue, 23 Mar 2021 18:28:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616524080;
-        bh=ZZ/sbfEWjmjWbM+sY6+EEzhfSIm8CwgOZMeCjqk2aiI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TM9WZvHfrbZ7xt0+5JhUBYMBSINu9iyvAhbMK1MmUCUz229ezyqdJ5EFldRL6nWhf
-         GHHG1R9tjP5EqrCPsbN4x0+cpC7nNDCBGZrczhMp2Xd0CkCY2zNu7Jz4vYgJ5tOvnH
-         eO/2H6cWdzfaLX1B4hp+4Kp55X7o0WnVxZKoVqOzy78GuhsjQfYbqUQTDcieIZL4lC
-         5Em5Pru//FeQnUHJXRgJohWNLh48hb1dYzEbYOZLT5WOdVDdd2uSaJpHzbVicpyU3f
-         VHP3yT5Ar9uPls7uW6U6qiF9SKyohmEJIx8YFdvnDk5NTSibPlCpACTAESne9oiKcp
-         DeNsi8r94EC0A==
-Date:   Tue, 23 Mar 2021 18:27:53 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, jpoimboe@redhat.com,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
- stack trace unreliable
-Message-ID: <20210323182753.GE5490@sirena.org.uk>
-References: <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
- <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
- <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
- <20210323145734.GD98545@C02TD0UTHF1T.local>
- <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
- <a38e4966-9b0d-3e51-80bd-acc36d8bee9b@linux.microsoft.com>
- <20210323170236.GF98545@C02TD0UTHF1T.local>
- <bc450f09-1881-9a9c-bfbc-5bb31c01d8ce@linux.microsoft.com>
+        id S231178AbhCWSan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 14:30:43 -0400
+IronPort-SDR: 8OhegiBb5bf9gyWkWtZ39AL4fgOgaIBGuW5Br1pRTTTxzfAj7A9lXGjEgZSEQh9jfbRwgLqAc5
+ bT6WMZNPeTbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="190639488"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="190639488"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 11:30:42 -0700
+IronPort-SDR: T9JJiSqyx5OMhoPwEFUsCZlg205hFE47iisvdkawz5cR6nRBRuMAVjrQAbMEN1GFdizjHo2fuC
+ ZHan+M8izCBw==
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="452262070"
+Received: from laguitie-mobl.amr.corp.intel.com (HELO [10.252.129.185]) ([10.252.129.185])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 11:30:40 -0700
+Subject: Re: [PATCH] soundwire: add slave device to linked list after
+ device_register()
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
+        srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20210323022529.21915-1-yung-chuan.liao@linux.intel.com>
+ <YFmRcPUxxFxkuMkr@vkoul-mobl.Dlink>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <82d579ca-5021-341c-1fcd-5c85c54c637b@linux.intel.com>
+Date:   Tue, 23 Mar 2021 13:30:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+SfteS7bOf3dGlBC"
-Content-Disposition: inline
-In-Reply-To: <bc450f09-1881-9a9c-bfbc-5bb31c01d8ce@linux.microsoft.com>
-X-Cookie: Formatted to fit your screen.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFmRcPUxxFxkuMkr@vkoul-mobl.Dlink>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vinod,
 
---+SfteS7bOf3dGlBC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>> We currently add the slave device to a linked list before
+>> device_register(), and then remove it if device_register() fails.
+>>
+>> It's not clear why this sequence was necessary, this patch moves the
+>> linked list management to after the device_register().
+> 
+> Maybe add a comment :-)
+> 
+> The reason here is that before calling device_register() we need to be
+> ready and completely initialized. device_register is absolutely the last
+> step in the flow, always.
+> 
+> The probe of the device can happen and before you get a chance to
+> add to list, many number of things can happen.. So adding after is not a
+> very good idea :)
 
-On Tue, Mar 23, 2021 at 12:23:34PM -0500, Madhavan T. Venkataraman wrote:
-> On 3/23/21 12:02 PM, Mark Rutland wrote:
+Can you describe that 'many number of things' in the SoundWire context?
 
-> > 3. Figure out exception boundary handling. I'm currently working to
-> >    simplify the entry assembly down to a uniform set of stubs, and I'd
-> >    prefer to get that sorted before we teach the unwinder about
-> >    exception boundaries, as it'll be significantly simpler to reason
-> >    about and won't end up clashing with the rework.
+While you are correct in general on the use of device_register(), in 
+this specific case the device registration and the possible Slave driver 
+probe if there's a match doesn't seem to use this linked list.
 
-> So, here is where I still have a question. Is it necessary for the unwinder
-> to know the exception boundaries? Is it not enough if it knows if there are
-> exceptions present? For instance, using something like num_special_frames
-> I suggested above?
+This sdw_slave_add() routine is called while parsing ACPI/DT tables and 
+at this point the bus isn't functional. This sequence only deals with 
+device registration and driver probe, the actual activation and 
+enumeration happen much later. What does matter is that by the time all 
+ACPI/DT devices have been scanned all initialization is complete. The 
+last part of the flow is not the device_register() at the individual 
+peripheral level.
 
-For reliable stack trace we can live with just flagging things as
-unreliable when we know there's an exception boundary somewhere but (as
-Mark mentioned elsewhere) being able to actually go through a subset of
-exception boundaries safely is likely to help usefully improve the
-performance of live patching, and for defensiveness we want to try to
-detect during an actual unwind anyway so it ends up being a performance
-improvment and double check rather than saving us code.  Better
-understanding of what's going on in the presence of exceptions may also
-help other users of the unwinder which can use stacks which aren't
-reliable get better results.
+Even for the Qualcomm case, the steps are different:
 
---+SfteS7bOf3dGlBC
-Content-Type: application/pgp-signature; name="signature.asc"
+	ret = sdw_bus_master_add(&ctrl->bus, dev, dev->fwnode);
+	if (ret) {
+		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
+			ret);
+		goto err_clk;
+	}
 
------BEGIN PGP SIGNATURE-----
+	qcom_swrm_init(ctrl); <<< that's where the bus is functional
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBaMygACgkQJNaLcl1U
-h9DlBAf/VDhf95shcrw6CnGs6PtiVyFMVP2UhH5a5mOOodvlWpsmf6mo+iGsWAvO
-Hp8mEVFU/FTSVBgmDjoyI52XzwYaqrGF0dwPSVu7NarlElFtk0ZcTKgO20bOfqPb
-SVfgGp+eOwe/Tcs0VZm7nNmxU+1UJ8R8quEqQ5hsxR5C0USubAV8MQcRmhie3kiG
-XzWKXeUcrchV8LnB42XyMRZNDSYf1DpEyB17+zYCNadHGrgBc7T186G3/Ace/R+g
-LsgS+JqZS6/K5RnxbUVz4WCI1CzC1e7gvNAN+ItCFWGJ3cH6d/Bazo6Tqu37ZQEj
-BaepHrBhtSiqvSTW85A/J2DsUYLi6Q==
-=cyeR
------END PGP SIGNATURE-----
-
---+SfteS7bOf3dGlBC--
+Note that we are not going to lay on the tracks for this, this sequence 
+was tagged by static analysis tools who don't understand that 
+put_device() actually frees memory by way of the .release callback, but 
+that led us to ask ourselves whether this sequence was actually necessary.
