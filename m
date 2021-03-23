@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130153466A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 642883466AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhCWRsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:48:02 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:42620 "EHLO smtp.gentoo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230374AbhCWRrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:47:45 -0400
-Date:   Tue, 23 Mar 2021 17:47:24 +0000
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
-Subject: Re: [PATCH] ia64: mca: allocate early mca with GFP_ATOMIC
-Message-ID: <20210323174724.78b61c02@sf>
-In-Reply-To: <f351183c-7d70-359f-eed7-4d1722cf41c5@physik.fu-berlin.de>
-References: <20210315085045.204414-1-slyfox@gentoo.org>
-        <f351183c-7d70-359f-eed7-4d1722cf41c5@physik.fu-berlin.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230504AbhCWRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230498AbhCWRsI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:48:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252D0C061574;
+        Tue, 23 Mar 2021 10:48:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=WAaAPdguDLLP2yVKPdLWr0ZxkEKHN3J+rUw3FYzZDXo=; b=aPsyQ8nH70OWaOsS4KSMB28jwu
+        fINSBkOnYLyEwJy8So6O83yVEfVFmrZOB3n+0quresGKpXUua1pPeMBbUqmCq+4t4jUlUQTtGK4r3
+        LZU/1JfDRXSJqyKoDYOPhoM7BoeYsjDp4CRBRVkyHfbqE5ejt939m2tpFPeLeBY84g3USjTBVAYJS
+        EexI2KFzeEvGUB2chekrq9QyBG1C6kdcxjlyQn/9/zGNR87wes9nM8yGo7paHg2TWfl9IJeLPaa7H
+        PNaxN87c9MIDt3CnqhEmnCheX6stEch3PqwjJO78pnfOyjtqqgs1uhWflsMCrSKq16zc0IwodZeMA
+        VfHTkg3A==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOl7v-00AMZz-LG; Tue, 23 Mar 2021 17:47:46 +0000
+Subject: Re: [PATCH] power: supply: Trivial spelling fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, sre@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210323124206.24813-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1f35f9ff-ae16-443c-b18e-40f32013ccdb@infradead.org>
+Date:   Tue, 23 Mar 2021 10:47:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210323124206.24813-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 16:15:06 +0100
-John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
-
-> Hi Andrew!
+On 3/23/21 5:42 AM, Bhaskar Chowdhury wrote:
+> Few trivial spelling fixes .
 > 
-> On 3/15/21 9:50 AM, Sergei Trofimovich wrote:
-> > The sleep warning happens at early boot right at
-> > secondary CPU activation bootup:
-> > 
-> >     smp: Bringing up secondary CPUs ...
-> >     BUG: sleeping function called from invalid context at mm/page_alloc.c:4942
-> >     in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
-> >     CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.12.0-rc2-00007-g79e228d0b611-dirty #99
-> > 
-> >     Call Trace:
-> >      [<a000000100014d10>] show_stack+0x90/0xc0
-> >      [<a000000101111d90>] dump_stack+0x150/0x1c0
-> >      [<a0000001000cbec0>] ___might_sleep+0x1c0/0x2a0
-> >      [<a0000001000cc040>] __might_sleep+0xa0/0x160
-> >      [<a000000100399960>] __alloc_pages_nodemask+0x1a0/0x600
-> >      [<a0000001003b71b0>] alloc_page_interleave+0x30/0x1c0
-> >      [<a0000001003b9b60>] alloc_pages_current+0x2c0/0x340
-> >      [<a00000010038c270>] __get_free_pages+0x30/0xa0
-> >      [<a000000100044730>] ia64_mca_cpu_init+0x2d0/0x3a0
-> >      [<a000000100023430>] cpu_init+0x8b0/0x1440
-> >      [<a000000100054680>] start_secondary+0x60/0x700
-> >      [<a00000010111e1d0>] start_ap+0x750/0x780
-> >     Fixed BSP b0 value from CPU 1
-> > 
-> > As I understand interrupts are not enabled yet and system has a lot
-> > of memory. There is little chance to sleep and switch to GFP_ATOMIC
-> > should be a no-op.
-> > 
-> > CC: Andrew Morton <akpm@linux-foundation.org>
-> > CC: linux-ia64@vger.kernel.org
-> > Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> > ---
-> >  arch/ia64/kernel/mca.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
-> > index d4cae2fc69ca..adf6521525f4 100644
-> > --- a/arch/ia64/kernel/mca.c
-> > +++ b/arch/ia64/kernel/mca.c
-> > @@ -1824,7 +1824,7 @@ ia64_mca_cpu_init(void *cpu_data)
-> >  			data = mca_bootmem();
-> >  			first_time = 0;
-> >  		} else
-> > -			data = (void *)__get_free_pages(GFP_KERNEL,
-> > +			data = (void *)__get_free_pages(GFP_ATOMIC,
-> >  							get_order(sz));
-> >  		if (!data)
-> >  			panic("Could not allocate MCA memory for cpu %d\n",
-> >   
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+>  drivers/power/supply/max17042_battery.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> Has this one been picked up for your tree already?
-
-Should be there: https://www.ozlabs.org/~akpm/mmotm/series
-
-> #NEXT_PATCHES_START mainline-later (next week, approximately)
-> ia64-mca-allocate-early-mca-with-gfp_atomic.patch
+> diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
+> index 79d4b5988360..1d7326cd8fc6 100644
+> --- a/drivers/power/supply/max17042_battery.c
+> +++ b/drivers/power/supply/max17042_battery.c
+> @@ -131,7 +131,7 @@ static int max17042_get_status(struct max17042_chip *chip, int *status)
+>  	 *
+>  	 * When this cycle the battery gets charged to a higher (calculated)
+>  	 * capacity then the previous cycle then FullCAP will get updated
+> -	 * contineously once end-of-charge detection kicks in, so allow the
+> +	 * continuously once end-of-charge detection kicks in, so allow the
+>  	 * 2 to differ a bit.
+>  	 */
+> 
+> @@ -739,7 +739,7 @@ static void max17042_load_new_capacity_params(struct max17042_chip *chip)
+> 
+>  /*
+>   * Block write all the override values coming from platform data.
+> - * This function MUST be called before the POR initialization proceedure
+> + * This function MUST be called before the POR initialization procedure
+>   * specified by maxim.
+>   */
+>  static inline void max17042_override_por_values(struct max17042_chip *chip)
+> @@ -811,7 +811,7 @@ static int max17042_init_chip(struct max17042_chip *chip)
+>  	 */
+>  	msleep(500);
+> 
+> -	/* Initialize configaration */
+> +	/* Initialize configuration */
+>  	max17042_write_config_regs(chip);
+> 
+>  	/* write cell characterization data */
+> @@ -855,7 +855,7 @@ static void max17042_set_soc_threshold(struct max17042_chip *chip, u16 off)
+>  	struct regmap *map = chip->regmap;
+>  	u32 soc, soc_tr;
+> 
+> -	/* program interrupt thesholds such that we should
+> +	/* program interrupt thresholds such that we should
+>  	 * get interrupt for every 'off' perc change in the soc
+>  	 */
+>  	regmap_read(map, MAX17042_RepSOC, &soc);
+> --
 
 
 -- 
+~Randy
 
-  Sergei
