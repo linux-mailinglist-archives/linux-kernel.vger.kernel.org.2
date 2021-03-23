@@ -2,135 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F883462A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BAE3462A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhCWPRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:17:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10892 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232648AbhCWPQs (ORCPT
+        id S232759AbhCWPRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:17:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38094 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232822AbhCWPRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:16:48 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NFDZDh070193;
-        Tue, 23 Mar 2021 11:16:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ec3eXifiJ0YhU8TIyLhA3miwujf1rJNdX4jw45D6vUA=;
- b=PPYQgshziCip+/XUhZR9+xyJY0zco7r4TMNGMPv8pd321G0avRTnvqciEfi5020siaKb
- zK84QnkXHn/haMW4biLn7ZBBkWMUMCEoAJ7IUNWcOT29t5nWvB354iUhdqOlft84cckS
- B4llGzlFeWVg46P+knzTXtgw1y5F7J6DKKAElSSU8CfRl9gPBIrHB6SJZZKBQKcRgz3m
- socW8JnNuM/ZgQq/OIuroV2ekJX+PKE6GRqveoro8+kvV8kM5aCynLcFo7X8aJeYXeyb
- 3r7a1ykZgnUNttoV3D+bLJD03wI6Z0bE5tEhkIDS3b+aGSoKZWT/1JLLBDf7bBOWiiB3 4Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37fjsmg3b2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 11:16:47 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NFDeYl070437;
-        Tue, 23 Mar 2021 11:16:41 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37fjsmg32g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 11:16:41 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NF6mqK032162;
-        Tue, 23 Mar 2021 15:16:22 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 37d9bmkfjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 15:16:22 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NFGJ0p33882454
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 15:16:19 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D12CA405F;
-        Tue, 23 Mar 2021 15:16:19 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 01E23A4054;
-        Tue, 23 Mar 2021 15:16:19 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.5.141])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Mar 2021 15:16:18 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] s390/kvm: VSIE: fix MVPG handling for prefixing
- and MSO
-To:     David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     frankja@linux.ibm.com, cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, stable@vger.kernel.org
-References: <20210322140559.500716-1-imbrenda@linux.ibm.com>
- <20210322140559.500716-3-imbrenda@linux.ibm.com>
- <433933f5-1b6e-ea58-618d-3c844edc73a6@de.ibm.com>
- <830ca8c6-4d21-b1ed-ccaf-e0c12237849e@redhat.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <9293b208-0f1d-fb58-290c-66a8ae30d60c@de.ibm.com>
-Date:   Tue, 23 Mar 2021 16:16:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 11:17:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616512633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pnZOMjj4jYXmW5mErf7S4lMDnI8Zmr8NBFQlDNTpGYY=;
+        b=DNSePo1hQt8qV/04zRbm9Rw3RWr2ezIrsJAx6sZTss66IRj1oVTl9cHkxApE6KQqckvs8P
+        pD0OgE/WTCypQ5BIlLfspLxyeCVGlaCu0exEa73Q0h3qpTjIidb+bhp7l6WgFBReJO3jPs
+        1tJc+xNWsgIeONELN7fu4mt/jpiNNjw=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-300IJVpQPsug8Voz-LYLag-1; Tue, 23 Mar 2021 11:17:12 -0400
+X-MC-Unique: 300IJVpQPsug8Voz-LYLag-1
+Received: by mail-qk1-f199.google.com with SMTP id y22so2152469qkb.23
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:17:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pnZOMjj4jYXmW5mErf7S4lMDnI8Zmr8NBFQlDNTpGYY=;
+        b=A6iIcIjkvZiJOf/uQ68G3CWqePBszOSp/ZjoSavfFBrMUIMFSgyyAAP7ScTVJqS8Wi
+         r5ZvqvEm3qDuo3cVQzWsBAmB3BHthfuq3sOBK1JbFZfrPIlY3Q3hccHBeoaTKo2AF9qi
+         1zw7ttKNllODbRMC4KkBOJQkN4zHXdQqDjSDGJKxzOjXjzC//y2oVwrbdlpGtRFolBuU
+         O0sJln5LWqDmOkr0zIENRM7HzQwaOY+tukSydnngWejZro4hF2gXr+SQQzbOCgoNhNzH
+         +0h1jVj9QxyMokCd1o5aWbKBDxcI+MiSULwN/SYg2WVmBWEXcJJ437+Mxlkng5c8dthm
+         N7mQ==
+X-Gm-Message-State: AOAM533+CQtYL6lygx8BRuucN6b+D/J0E298l3BHcA9GDvVf8l/7BIcE
+        xSPm7zuWRqigPy0CSGG0PpZSKd518rXk8pHGmAPcTfboJZ922/q2hTzgxdFU3a4bQEE08p7U2J8
+        Cy34Zxx8efrHDxqxUcX0CUs0u
+X-Received: by 2002:a05:620a:555:: with SMTP id o21mr5999104qko.207.1616512631765;
+        Tue, 23 Mar 2021 08:17:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyr1aCEk6u3B1QMtbPNWK8hYbsghPWJlD6O+VdVlrvxeumMYAam79KADz00ym29Q1YVgghgqA==
+X-Received: by 2002:a05:620a:555:: with SMTP id o21mr5999078qko.207.1616512631540;
+        Tue, 23 Mar 2021 08:17:11 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
+        by smtp.gmail.com with ESMTPSA id i93sm11373613qtd.48.2021.03.23.08.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 08:17:10 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 11:17:09 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 1/4] userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
+Message-ID: <20210323151709.GE6486@xz-x1>
+References: <20210322220848.52162-1-peterx@redhat.com>
+ <20210322220848.52162-2-peterx@redhat.com>
+ <YFmmdklW9wvs4ep3@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <830ca8c6-4d21-b1ed-ccaf-e0c12237849e@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
- malwarescore=0 adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230112
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YFmmdklW9wvs4ep3@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23.03.21 16:11, David Hildenbrand wrote:
-> On 23.03.21 16:07, Christian Borntraeger wrote:
->>
->>
->> On 22.03.21 15:05, Claudio Imbrenda wrote:
->>> Prefixing needs to be applied to the guest real address to translate it
->>> into a guest absolute address.
->>>
->>> The value of MSO needs to be added to a guest-absolute address in order to
->>> obtain the host-virtual.
->>>
->>> Fixes: 223ea46de9e79 ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
->>> Reported-by: Janosch Frank <frankja@linux.ibm.com>
->>> ---
->>>    arch/s390/kvm/vsie.c | 6 +++++-
->>>    1 file changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
->>> index 48aab6290a77..ac86f11e46dc 100644
->>> --- a/arch/s390/kvm/vsie.c
->>> +++ b/arch/s390/kvm/vsie.c
->>> @@ -1002,7 +1002,7 @@ static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page,
->>>    static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->>>    {
->>>        struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
->>> -    unsigned long pei_dest, pei_src, src, dest, mask;
->>> +    unsigned long pei_dest, pei_src, dest, src, mask, mso, prefix;
->>>        u64 *pei_block = &vsie_page->scb_o->mcic;
->>>        int edat, rc_dest, rc_src;
->>>        union ctlreg0 cr0;
->>> @@ -1010,9 +1010,13 @@ static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->>>        cr0.val = vcpu->arch.sie_block->gcr[0];
->>>        edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
->>>        mask = _kvm_s390_logical_to_effective(&scb_s->gpsw, PAGE_MASK);
->>> +    mso = scb_s->mso & ~(1UL << 20);
->>             shouldnt that be ~((1UL << 20 ) -1)
->>
+On Tue, Mar 23, 2021 at 10:27:34AM +0200, Mike Rapoport wrote:
+> On Mon, Mar 22, 2021 at 06:08:45PM -0400, Peter Xu wrote:
+> > UFFD_FEATURE_THREAD_ID is supported since Linux 4.14.
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  man2/userfaultfd.2 | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> > 
+> > diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+> > index e7dc9f813..555e37409 100644
+> > --- a/man2/userfaultfd.2
+> > +++ b/man2/userfaultfd.2
+> > @@ -77,6 +77,13 @@ When the last file descriptor referring to a userfaultfd object is closed,
+> >  all memory ranges that were registered with the object are unregistered
+> >  and unread events are flushed.
+> >  .\"
+> > +.PP
+> > +Since Linux 4.14, userfaultfd page fault message can selectively embed faulting
+> > +thread ID information into the fault message.
+> > +One needs to enable this feature explicitly using the
+> > +.BR UFFD_FEATURE_THREAD_ID
+> > +feature bit when initializing the userfaultfd context.
+> > +By default, thread ID reporting is diabled.
 > 
-> Looking at shadow_scb(), we can simply take scb_s->mso unmodified.
+> 				     ^ disabled :)
 
-Right, I think I can fix this up (and get rid of the local mso variable)
-when queueing. Or shall Claudio send a new version of the patch?
+Right! :)
+
+I'll wait for another round of Alex's review before reposting.
+
+Thanks,
+
+-- 
+Peter Xu
+
