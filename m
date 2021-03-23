@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FC83455FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C84C345613
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhCWDMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 23:12:05 -0400
-Received: from m12-12.163.com ([220.181.12.12]:52146 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhCWDLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 23:11:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=US+lAK9tXx3ZQu8YlR
-        j1VnBBEaM3fbPCi1jDiKVVnfk=; b=JM6QntIdZsuKW6pU0JyeYAoLfLchezT0gn
-        uqU+lPFj+SnB/1zUJE9+7wToQYtV6NLOLAeSFxIxeinHS1cAyArRJgy4/oQ37D0e
-        R+koqtcovn4LzE+JhtZG/6xe1GKvo0gKrzCtII27UrJOOh8VxjPsltlVhbBTElXX
-        wvmI7QdF8=
-Received: from bf-rmnj-02.ccdomain.com (unknown [218.94.48.178])
-        by smtp8 (Coremail) with SMTP id DMCowAAHD48xXFlgvk9CWA--.5103S2;
-        Tue, 23 Mar 2021 11:10:56 +0800 (CST)
-From:   Jian Dong <dj0227@163.com>
-To:     abel.vesa@nxp.com, mturquette@baylibre.com, sboyd@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     linux-imx@nxp.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, Jian Dong <dongjian@yulong.com>
-Subject: [PATCH]  clk: imx: reference preceded by free
-Date:   Tue, 23 Mar 2021 11:10:34 +0800
-Message-Id: <1616469034-9691-1-git-send-email-dj0227@163.com>
-X-Mailer: git-send-email 1.9.1
-X-CM-TRANSID: DMCowAAHD48xXFlgvk9CWA--.5103S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKry7Jryxur1DXr43ur18AFb_yoWDZwb_CF
-        18Wrn7XrWvyr43AF15ur1xZrZ0vFnxZFsavF12qry3K39xZr15Jr1Fvw4fKw45Cry8ArWD
-        Cw1DGrWq9FZ8GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn5GYJUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: dgmqjjqx6rljoofrz/1tbiEABe3V8YFUAYNgAAsv
+        id S230164AbhCWDOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhCWDOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 23:14:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3B8C061574;
+        Mon, 22 Mar 2021 20:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=s59nlgoQExnRs58MAE4XKiro2mmvCFvZh1detE2d+44=; b=cx5wxKcOV+4X2IxxHN24EjLhH0
+        zuPs/xqbmzPar0ojnPsVATmPdRORybTp8e3+4TLfzzYT47Qgz2KpxjArk59zN6FSXF9H6PFux5BNn
+        eBataK48F/FSe4d6/TmHQvBF2yYg6jNlZnp2NilL6DFconyti5g+7Z0o9TicE+KVlBRCURUivWEW+
+        K0y1Lii/bih6pW3XmwUD+ZuBeUX8g96C+bybmBLls7+D5dUe9j7fwR2thJ3u/gKXgrLDMgOdiGz9N
+        ARyipYG3uBw2+vAMz4ezM6VidT8gbkp1cscvipZUlfbp1wUX+5jQozfHNKpRCPDoak7G7pyWgLXXQ
+        QxDNhyvg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOXTG-009SBo-II; Tue, 23 Mar 2021 03:12:58 +0000
+Date:   Tue, 23 Mar 2021 03:12:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
+        senozhatsky@chromium.org, hyc.lee@gmail.com,
+        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
+        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
+        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
+        colin.king@canonical.com, rdunlap@infradead.org,
+        'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>,
+        'Steve French' <stfrench@microsoft.com>
+Subject: Re: [PATCH 1/5] cifsd: add server handler and tranport layers
+Message-ID: <20210323031242.GA1719932@casper.infradead.org>
+References: <20210322051344.1706-1-namjae.jeon@samsung.com>
+ <CGME20210322052204epcas1p1382cadbfe958d156c0ad9f7fcb8532b7@epcas1p1.samsung.com>
+ <20210322051344.1706-2-namjae.jeon@samsung.com>
+ <20210322221816.GW1719932@casper.infradead.org>
+ <00d901d71f90$cdfd24f0$69f76ed0$@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00d901d71f90$cdfd24f0$69f76ed0$@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Dong <dongjian@yulong.com>
+On Tue, Mar 23, 2021 at 12:01:22PM +0900, Namjae Jeon wrote:
+> > On Mon, Mar 22, 2021 at 02:13:40PM +0900, Namjae Jeon wrote:
+> > > +#define RESPONSE_BUF(w)		((void *)(w)->response_buf)
+> > > +#define REQUEST_BUF(w)		((void *)(w)->request_buf)
+> > 
+> > Why do you do this obfuscation?
+> I don't remember exactly, but back then, It looked easier...
+> > 
+> > > +#define RESPONSE_BUF_NEXT(w)	\
+> > > +	((void *)((w)->response_buf + (w)->next_smb2_rsp_hdr_off))
+> > > +#define REQUEST_BUF_NEXT(w)	\
+> > > +	((void *)((w)->request_buf + (w)->next_smb2_rcv_hdr_off))
+> > 
+> > These obfuscations aren't even used; delete them
+> They are used in many place.
 
- when register failed, clk will be freed, it will generate dangling pointer
- problem in later reference. it should return directly.
-
-Signed-off-by: Jian Dong <dongjian@yulong.com>
----
- drivers/clk/imx/clk-lpcg-scu.c | 1 +
- drivers/clk/imx/clk-scu.c      | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
-index 77be763..dd5abd0 100644
---- a/drivers/clk/imx/clk-lpcg-scu.c
-+++ b/drivers/clk/imx/clk-lpcg-scu.c
-@@ -114,6 +114,7 @@ struct clk_hw *__imx_clk_lpcg_scu(struct device *dev, const char *name,
- 	if (ret) {
- 		kfree(clk);
- 		hw = ERR_PTR(ret);
-+		return hw;
- 	}
- 
- 	if (dev)
-diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
-index 1f5518b7..f89b4da 100644
---- a/drivers/clk/imx/clk-scu.c
-+++ b/drivers/clk/imx/clk-scu.c
-@@ -426,6 +426,7 @@ struct clk_hw *__imx_clk_scu(struct device *dev, const char *name,
- 	if (ret) {
- 		kfree(clk);
- 		hw = ERR_PTR(ret);
-+		return hw;
- 	}
- 
- 	if (dev)
--- 
-1.9.1
-
+Oh, argh.  patch 2/5 was too big, so it didn't make it into the mailing
+list archive I was using to try to review this series.  Please break it
+up into smaller pieces for next time!
 
