@@ -2,225 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAE434668F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6620346694
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhCWRky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:40:54 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40934 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhCWRkd (ORCPT
+        id S230378AbhCWRnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhCWRmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:40:33 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12NHeOWo030169;
-        Tue, 23 Mar 2021 12:40:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616521224;
-        bh=+cFdjSOqih+qi9CCBMvuw/LbRsZ2xPljKLLjT21Dg5s=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=teBPDk7x6r4I/ELayaCMWfjR+jGbjWR9uLpBCPa6RPrADhAhPppLw71SGD4y5ga/3
-         PnqCcdG76fNLGCwc8yiyXlkOez8asC4rDkFFyzqLUyvSzUIOmHvBkwJ4MNGF7aGe3+
-         AoeyDMh+zyhsx6fJ3shP3Vatf32OdG3GCI9e+AH8=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12NHeOPu091269
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Mar 2021 12:40:24 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
- Mar 2021 12:40:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 23 Mar 2021 12:40:24 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12NHeNOA016637;
-        Tue, 23 Mar 2021 12:40:24 -0500
-Date:   Tue, 23 Mar 2021 23:10:23 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add initial sysfs support
-Message-ID: <20210323174021.2tqfi6bbzofonjjh@ti.com>
-References: <20210323143144.12730-1-michael@walle.cc>
- <20210323143144.12730-3-michael@walle.cc>
+        Tue, 23 Mar 2021 13:42:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2675CC061574;
+        Tue, 23 Mar 2021 10:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=prj80dSJB1H4uGiQ4K++/2VJu4iZ1LVIZ5jG7WZGO5A=; b=qjfMynPHYj7TPdw3idmm+KGSdH
+        40eHVfHmrVLtCk52AeicasHl7pXVsC7L1AMArv1fTUeiLZEnTKRvyS1I7LQ23jNWsYhyA8xVnrA0H
+        bW/06rR7J9xWGPVmQz1rgMlLeRqmCgLtG07MLFdDIUUcCKnDjQwSZzQQPChEs4g4VjimeWF7QcVAV
+        3Fp+biFVh+0TK8PEsCa/5PnioZsZEX73/Hs34lARYPSTD+wq92GMHbA7ppFobRCH3mBB6ITokm5sA
+        zLKKHN96LGth7u53hn/cPgA1+G+KgMYOGuzo3P2035Ca5BMzXWqrb5nqabU0uuH01O4vTNOB00JvW
+        rvg1sdKQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOl2n-00AM9Q-Mi; Tue, 23 Mar 2021 17:42:20 +0000
+Subject: Re: [PATCH v2] fs/dcache: fix typos and sentence disorder
+To:     Xiaofeng Cao <cxfcosmos@gmail.com>, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>
+References: <20210323065245.15083-1-caoxiaofeng@yulong.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <36a2d11d-8413-f4a7-9f69-fe513d26c4aa@infradead.org>
+Date:   Tue, 23 Mar 2021 10:42:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210323143144.12730-3-michael@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210323065245.15083-1-caoxiaofeng@yulong.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/21 03:31PM, Michael Walle wrote:
-> Add support to show the name and JEDEC identifier as well as to dump the
-> SFDP table. Not all flashes list their SFDP table contents in their
-> datasheet. So having that is useful. It might also be helpful in bug
-> reports from users.
-
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
-
+On 3/22/21 11:52 PM, Xiaofeng Cao wrote:
+> change 'sould' to 'should'
+> change 'colocated' to 'co-located'
+> change 'talke' to 'take'
+> reorganize sentence
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
 > ---
->  drivers/mtd/spi-nor/Makefile |  2 +-
->  drivers/mtd/spi-nor/core.c   |  5 +++
->  drivers/mtd/spi-nor/core.h   |  3 ++
->  drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 95 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/spi-nor/sysfs.c
+> v2:change 'colocated' to 'co-located' instead of 'collocated'
+>  fs/dcache.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 653923896205..aff308f75987 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/fs/dcache.c b/fs/dcache.c
+> index 7d24ff7eb206..c23834334314 100644
+> --- a/fs/dcache.c
+> +++ b/fs/dcache.c
+> @@ -741,7 +741,7 @@ static inline bool fast_dput(struct dentry *dentry)
+>  	unsigned int d_flags;
 >  
-> -spi-nor-objs			:= core.o sfdp.o
-> +spi-nor-objs			:= core.o sfdp.o sysfs.o
->  spi-nor-objs			+= atmel.o
->  spi-nor-objs			+= catalyst.o
->  spi-nor-objs			+= eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index fbc34158a883..02523ddac612 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3708,6 +3708,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
->  	if (ret)
->  		return ret;
+>  	/*
+> -	 * If we have a d_op->d_delete() operation, we sould not
+> +	 * If we have a d_op->d_delete() operation, we should not
+>  	 * let the dentry count go to zero, so use "put_or_lock".
+>  	 */
+>  	if (unlikely(dentry->d_flags & DCACHE_OP_DELETE))
+> @@ -1053,7 +1053,7 @@ struct dentry *d_find_alias_rcu(struct inode *inode)
+>  	struct dentry *de = NULL;
 >  
-> +	ret = spi_nor_sysfs_create(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->  				   data ? data->nr_parts : 0);
->  }
-> @@ -3717,6 +3721,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
->  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+>  	spin_lock(&inode->i_lock);
+> -	// ->i_dentry and ->i_rcu are colocated, but the latter won't be
+> +	// ->i_dentry and ->i_rcu are co-located, but the latter won't be
+>  	// used without having I_FREEING set, which means no aliases left
+>  	if (likely(!(inode->i_state & I_FREEING) && !hlist_empty(l))) {
+>  		if (S_ISDIR(inode->i_mode)) {
+> @@ -1297,7 +1297,7 @@ void shrink_dcache_sb(struct super_block *sb)
+>  EXPORT_SYMBOL(shrink_dcache_sb);
 >  
->  	spi_nor_restore(nor);
-> +	spi_nor_sysfs_remove(nor);
->  
->  	/* Clean up MTD stuff. */
->  	return mtd_device_unregister(&nor->mtd);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 08d2469837da..599035200a03 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -486,4 +486,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
->  	return mtd->priv;
->  }
->  
-> +int spi_nor_sysfs_create(struct spi_nor *nor);
-> +void spi_nor_sysfs_remove(struct spi_nor *nor);
-> +
->  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> new file mode 100644
-> index 000000000000..c62cc4d6bce6
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/spi/spi-mem.h>
-> +#include <linux/sysfs.h>
-> +
-> +#include "core.h"
-> +
-> +static ssize_t name_show(struct device *dev,
-> +			 struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sysfs_emit(buf, "%s\n", nor->info->name);
-> +}
-> +static DEVICE_ATTR_RO(name);
-> +
-> +static ssize_t jedec_id_show(struct device *dev,
-> +			     struct device_attribute *attr, char *buf)
-> +{
-> +	struct spi_device *spi = to_spi_device(dev);
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	return sysfs_emit(buf, "%*phN\n", nor->info->id_len, nor->info->id);
-> +}
-> +static DEVICE_ATTR_RO(jedec_id);
-> +
-> +static struct attribute *spi_nor_sysfs_entries[] = {
-> +	&dev_attr_name.attr,
-> +	&dev_attr_jedec_id.attr,
-> +	NULL
-> +};
-> +
-> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
-> +			 struct bin_attribute *bin_attr, char *buf,
-> +			 loff_t off, size_t count)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +	struct sfdp *sfdp = nor->sfdp;
-> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
-> +
-> +	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
-> +				       sfdp_size);
-> +}
-> +static BIN_ATTR_RO(sfdp, 0);
-> +
-> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
-> +	&bin_attr_sfdp,
-> +	NULL
-> +};
-> +
-> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-> +					    struct bin_attribute *attr, int n)
-> +{
-> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
-> +	struct spi_mem *spimem = spi_get_drvdata(spi);
-> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> +
-> +	if (attr == &bin_attr_sfdp && !nor->sfdp)
-> +		return 0;
-> +
-> +	return 0444;
-> +}
-> +
-> +static struct attribute_group spi_nor_sysfs_attr_group = {
-> +	.name		= NULL,
-> +	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
-> +	.attrs		= spi_nor_sysfs_entries,
-> +	.bin_attrs	= spi_nor_sysfs_bin_entries,
-> +};
-> +
-> +int spi_nor_sysfs_create(struct spi_nor *nor)
-> +{
-> +	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> +
-> +void spi_nor_sysfs_remove(struct spi_nor *nor)
-> +{
-> +	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> -- 
-> 2.20.1
+>  /**
+> - * enum d_walk_ret - action to talke during tree walk
+> + * enum d_walk_ret - action to take during tree walk
+>   * @D_WALK_CONTINUE:	contrinue walk
+>   * @D_WALK_QUIT:	quit walk
+>   * @D_WALK_NORETRY:	quit when retry is needed
+> @@ -2156,8 +2156,8 @@ EXPORT_SYMBOL(d_obtain_alias);
+>   *
+>   * On successful return, the reference to the inode has been transferred
+>   * to the dentry.  In case of an error the reference on the inode is
+> - * released.  A %NULL or IS_ERR inode may be passed in and will be the
+> - * error will be propagate to the return value, with a %NULL @inode
+> + * released.  A %NULL or IS_ERR inode may be passed in and the error will
+> + * be propagated to the return value, with a %NULL @inode
+>   * replaced by ERR_PTR(-ESTALE).
+>   */
+>  struct dentry *d_obtain_root(struct inode *inode)
 > 
+
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+~Randy
+
