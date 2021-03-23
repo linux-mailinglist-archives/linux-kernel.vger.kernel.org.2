@@ -2,141 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFE13459AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA58C3459B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhCWI15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:27:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25496 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229500AbhCWI1q (ORCPT
+        id S229547AbhCWIbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:31:49 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:60274 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229452AbhCWIbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:27:46 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12N84K52024266;
-        Tue, 23 Mar 2021 04:27:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=LUgqbQvwR+sfvIaSMzft1kWLvPHosRvGCoObmhMnUQI=;
- b=qFGu+AfuXUtFzCsz3Byw9cxakJDw09yyFf7HfvGRn6NiouNUxMVdqcJ0bVCLDdW7Uux/
- QNDUKrloYEVyBN/zasCuBi999pHHPIv6rhrToZFHZOSBLtERt6tKefKsaboI322W/Ufq
- QIMsHeidwaqIxh66mgYlC7BJWumgs5BlNhy4avIZmkSS3tVyNqiH8VmjCJ81KfjX4X1n
- c0cZrl2QtegzfOBWxMuyecu7W/kx2NtB8wLooM2gd17vCH3gKp/i6V1+VhdBkURSCsDz
- aQ9+nahI39S3qax8rllWWoeGOk62KgTddqiBZoQFufzAivWVvN9bFakYFNuILAErwvFX EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dxjwk124-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 04:27:43 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12N85ZGS029957;
-        Tue, 23 Mar 2021 04:27:43 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dxjwk111-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 04:27:42 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12N8RLdn001885;
-        Tue, 23 Mar 2021 08:27:40 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 37d9a61mrh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 08:27:40 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12N8RJAX36372978
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 08:27:20 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBBCBA405B;
-        Tue, 23 Mar 2021 08:27:37 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7700DA405C;
-        Tue, 23 Mar 2021 08:27:36 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.165.64])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 23 Mar 2021 08:27:36 +0000 (GMT)
-Date:   Tue, 23 Mar 2021 10:27:34 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 1/4] userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
-Message-ID: <YFmmdklW9wvs4ep3@linux.ibm.com>
-References: <20210322220848.52162-1-peterx@redhat.com>
- <20210322220848.52162-2-peterx@redhat.com>
+        Tue, 23 Mar 2021 04:31:16 -0400
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id 92ED044A022C;
+        Tue, 23 Mar 2021 09:31:14 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322220848.52162-2-peterx@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_02:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- impostorscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230057
+Date:   Tue, 23 Mar 2021 09:31:14 +0100
+From:   robin <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/17] auxdisplay: ht16k33: Convert to simple i2c probe
+ function
+Reply-To: robin@protonic.nl
+In-Reply-To: <20210322144848.1065067-12-geert@linux-m68k.org>
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-12-geert@linux-m68k.org>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <cbb4de359d041ae1b03cab4b0407822f@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:08:45PM -0400, Peter Xu wrote:
-> UFFD_FEATURE_THREAD_ID is supported since Linux 4.14.
+On 2021-03-22 15:48, Geert Uytterhoeven wrote:
+> ht16k33_probe() does not use the passed i2c_device_id, so the driver 
+> can
+> be converted trivially to the new-style of i2c probing.
 > 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
->  man2/userfaultfd.2 | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+>  drivers/auxdisplay/ht16k33.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
-> index e7dc9f813..555e37409 100644
-> --- a/man2/userfaultfd.2
-> +++ b/man2/userfaultfd.2
-> @@ -77,6 +77,13 @@ When the last file descriptor referring to a userfaultfd object is closed,
->  all memory ranges that were registered with the object are unregistered
->  and unread events are flushed.
->  .\"
-> +.PP
-> +Since Linux 4.14, userfaultfd page fault message can selectively embed faulting
-> +thread ID information into the fault message.
-> +One needs to enable this feature explicitly using the
-> +.BR UFFD_FEATURE_THREAD_ID
-> +feature bit when initializing the userfaultfd context.
-> +By default, thread ID reporting is diabled.
+> diff --git a/drivers/auxdisplay/ht16k33.c 
+> b/drivers/auxdisplay/ht16k33.c
+> index 13d18f218b4d196e..1b67f38109bddba8 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -381,8 +381,7 @@ static int ht16k33_keypad_probe(struct i2c_client 
+> *client,
+>  	return input_register_device(keypad->dev);
+>  }
+> 
+> -static int ht16k33_probe(struct i2c_client *client,
+> -				  const struct i2c_device_id *id)
+> +static int ht16k33_probe(struct i2c_client *client)
+>  {
+>  	int err;
+>  	uint32_t dft_brightness;
+> @@ -523,7 +522,7 @@ static const struct of_device_id ht16k33_of_match[] 
+> = {
+>  MODULE_DEVICE_TABLE(of, ht16k33_of_match);
+> 
+>  static struct i2c_driver ht16k33_driver = {
+> -	.probe		= ht16k33_probe,
+> +	.probe_new	= ht16k33_probe,
+>  	.remove		= ht16k33_remove,
+>  	.driver		= {
+>  		.name		= DRIVER_NAME,
 
-				     ^ disabled :)
->  .SS Usage
->  The userfaultfd mechanism is designed to allow a thread in a multithreaded
->  program to perform user-space paging for the other threads in the process.
-> @@ -229,6 +236,9 @@ struct uffd_msg {
->          struct {
->              __u64 flags;    /* Flags describing fault */
->              __u64 address;  /* Faulting address */
-> +            union {
-> +                __u32 ptid; /* Thread ID of the fault */
-> +            } feat;
->          } pagefault;
-> 
->          struct {            /* Since Linux 4.11 */
-> @@ -358,6 +368,9 @@ otherwise it is a read fault.
->  .\" UFFD_PAGEFAULT_FLAG_WP is not yet supported.
->  .RE
->  .TP
-> +.I pagefault.feat.pid
-> +The thread ID that triggered the page fault.
-> +.TP
->  .I fork.ufd
->  The file descriptor associated with the userfault object
->  created for the child created by
-> -- 
-> 2.26.2
-> 
-
--- 
-Sincerely yours,
-Mike.
+Acked-by: Robin van der Gracht <robin@protonic.nl>
