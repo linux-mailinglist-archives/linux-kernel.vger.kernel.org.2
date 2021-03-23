@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA800345D67
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB37345D74
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCWLyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:54:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21831 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229675AbhCWLxh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:53:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616500416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aA2iKoiePqQtpqGhhTijWBU3ANydJrmSdc9O2oPlqu4=;
-        b=NuO4lyHzj8TMV5zCP/PHEEtJzhUQwBvxtVLjS3SNAniGZ08fyrrYeVpWPkOt/VK5jZQlrl
-        FPjo6o9Y5iFsYYtE/qQlcAHPKKDd91M3qKLF1Rkrg0sBCD3IhsprZ5zeZ3NBnCZzhGWWyf
-        muGnspShbAmtZhBHv6fBqUxr81wD7Sc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-4XzQj2goMvGi9a12EKrHHw-1; Tue, 23 Mar 2021 07:53:32 -0400
-X-MC-Unique: 4XzQj2goMvGi9a12EKrHHw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04F1D101371D;
-        Tue, 23 Mar 2021 11:53:31 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D3D582C168;
-        Tue, 23 Mar 2021 11:53:23 +0000 (UTC)
-Subject: [PATCH 0/3] cachefiles, afs: mm wait fixes
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, dhowells@redhat.com,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 11:53:22 +0000
-Message-ID: <161650040278.2445805.7652115256944270457.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S230133AbhCWLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:55:37 -0400
+Received: from m12-17.163.com ([220.181.12.17]:40284 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230121AbhCWLzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:55:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yld4K
+        a6D/wNwWDvksBvh6iy6WYppMiQm7zrvFrJHt3s=; b=dW1Sny9s5Ae6DtuW+PeGB
+        7ASNO/xvjQSC91dY8DM6YSVAflJQZk+32eQtPnOzNgYi97YEa+/8d4FupeT09nsG
+        CQA4txSQWGKEm+dGduNrsZlpQVAoGlx7K2MX7bZ14WjnSTqXv9hGCuNfGP+FJi0V
+        7SDne3DzAROU4I3GOeJFew=
+Received: from caizhichao.ccdomain.com (unknown [218.94.48.178])
+        by smtp13 (Coremail) with SMTP id EcCowAA3P5f01llgllIkrg--.21875S2;
+        Tue, 23 Mar 2021 19:54:37 +0800 (CST)
+From:   caizhichao <tomstomsczc@163.com>
+To:     gregkh@linuxfoundation.org, matthias.bgg@gmail.com
+Cc:     jirislaby@kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        caizhichao <caizhichao@yulong.com>
+Subject: [PATCH v3] tty:serial: fix spelling typo of values
+Date:   Tue, 23 Mar 2021 19:53:27 +0800
+Message-Id: <20210323115327.1199-1-tomstomsczc@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAA3P5f01llgllIkrg--.21875S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Gr1DJF1fXF4DAw48Gw4fAFb_yoWfuFcE9r
+        1kXwsxZwnYyFnYkw15Arn8urWIka1UWF1xA3W8X3srA398Za1kAFy0vrZ8tr1vqFn3Ary7
+        Ar1DKr1xtw1DujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnjL9UUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pwrp23prpvu6rf6rljoofrz/1tbiXx5eil1502GPfQAAsx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: caizhichao <caizhichao@yulong.com>
 
-Here are some patches to fix page waiting-related issues in cachefiles and
-afs[1]:
+vaules -> values
 
- (1) In cachefiles, remove the use of the wait_bit_key struct to access
-     something that's actually in wait_page_key format.  The proper struct
-     is now available in the header, so that should be used instead.
-
- (2) Add a proper wait function for waiting killably on the page writeback
-     flag.  This includes a recent bugfix here (presumably commit
-     c2407cf7d22d0c0d94cf20342b3b8f06f1d904e7).
-
- (3) In afs, use the function added in (2) rather than using
-     wait_on_page_bit_killable() which doesn't have the aforementioned
-     bugfix.
-
-     Note that I modified this to work with the upstream code where the
-     page pointer isn't cached in a local variable.
-
-The patches can be found here:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
-
-David
-
-Link: https://lore.kernel.org/r/20210320054104.1300774-1-willy@infradead.org[1]
-
+Signed-off-by: Zhichao Cai <caizhichao@yulong.com>
 ---
-Matthew Wilcox (Oracle) (3):
-      fs/cachefiles: Remove wait_bit_key layout dependency
-      mm/writeback: Add wait_on_page_writeback_killable
-      afs: Use wait_on_page_writeback_killable
+v3: use full name and capitalize personal name.
+ drivers/tty/serial/8250/8250_mtk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
- fs/afs/write.c          |  3 +--
- include/linux/pagemap.h |  1 +
- mm/page-writeback.c     | 16 ++++++++++++++++
- 3 files changed, 18 insertions(+), 2 deletions(-)
+diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
+index f7d3023..c6633dc 100644
+--- a/drivers/tty/serial/8250/8250_mtk.c
++++ b/drivers/tty/serial/8250/8250_mtk.c
+@@ -325,7 +325,7 @@ static void mtk8250_set_flow_ctrl(struct uart_8250_port *up, int mode)
+ 	 * Mediatek UARTs use an extra highspeed register (MTK_UART_HIGHS)
+ 	 *
+ 	 * We need to recalcualte the quot register, as the claculation depends
+-	 * on the vaule in the highspeed register.
++	 * on the value in the highspeed register.
+ 	 *
+ 	 * Some baudrates are not supported by the chip, so we use the next
+ 	 * lower rate supported and update termios c_flag.
+-- 
+1.9.1
 
 
