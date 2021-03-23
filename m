@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5C03458D4
+	by mail.lfdr.de (Postfix) with ESMTP id BB9443458D5
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhCWHfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        id S230084AbhCWHfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhCWHeu (ORCPT
+        with ESMTP id S229716AbhCWHez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:34:50 -0400
+        Tue, 23 Mar 2021 03:34:55 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E8FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:34:50 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F66C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:34:55 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lObYl-0006G3-OR; Tue, 23 Mar 2021 08:34:39 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:c81e:25b5:b851:4b31])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 9CB5B5FDC07;
-        Tue, 23 Mar 2021 07:34:37 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:34:37 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-Message-ID: <20210323073437.yo63wreqnubbeqby@pengutronix.de>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lObYx-0006Iu-LX; Tue, 23 Mar 2021 08:34:51 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lObYw-0002Sx-NO; Tue, 23 Mar 2021 08:34:50 +0100
+Date:   Tue, 23 Mar 2021 08:34:47 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Nobs <samuel.nobs@taitradio.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel@pengutronix.de
+Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
+Message-ID: <20210323073447.r3utxintt5c3blb4@pengutronix.de>
+References: <20210322111036.31966-1-johan@kernel.org>
+ <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
+ <20210322113918.ze52gq54cpsspgej@linutronix.de>
+ <20210322115536.knkea7i6vrfpotol@pengutronix.de>
+ <YFiZuXWYmxPIaQH9@hovoldconsulting.com>
+ <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
+ <20210322204836.i4ksobvp6hxl5owh@linutronix.de>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jucf3zuhpwlugk7g"
+        protocol="application/pgp-signature"; boundary="rq5nwb5cqbbuxlll"
 Content-Disposition: inline
-In-Reply-To: <b10903ca-c424-b305-d981-fe0004500190@intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
+In-Reply-To: <20210322204836.i4ksobvp6hxl5owh@linutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
@@ -57,43 +55,85 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---jucf3zuhpwlugk7g
+--rq5nwb5cqbbuxlll
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 23.03.2021 10:54:40, Rong Chen wrote:
-> I tried arm-linux-gnueabi (gcc version 10.2.0) and the problem still
-> exists, btw we prefer to not use the latest gcc compiler to avoid
-> false positives.
+Hello Sebastian,
 
-FWIW:
+On Mon, Mar 22, 2021 at 09:48:36PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-03-22 14:40:32 [+0100], Uwe Kleine-K=C3=B6nig wrote:
+> > From a strictly logically point of view you indeed cannot. But if you go
+> > to the street and say to people there that they can park their car in
+> > this street free of charge between Monday and Friday, I expect that most
+> > of them will assume that they have to pay for parking on weekends.
+>=20
+> If I hear that parking is free on weekdays and on paid on weekends, I
+> expect it to be a scam.
 
-I'm using latest debian arm compiler and the BUILD_BUG never triggered.
-gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+I don't feel taken seriously with this reply.
 
-regards,
-Marc
+> Uwe, the patch reverts a change which was needed for !RT + threadirqs.
+
+This would be a useful information for the commit log.
+
+> The commit message claims that since the referenced commit "=E2=80=A6 int=
+errupt
+> handlers always run with interrupts disabled on non-RT=E2=80=A6 ". This h=
+as
+> nothing to do with _this_ change. It argues why the workaround is not
+> needed.
+
+It argues why the work around is not needed on non-RT. It might be
+obvious for someone who is firm in the RT concepts, but IMHO commit logs
+should be understandable by and make sense for a wider audience than the
+deep experts. From what I know about RT "Force-threaded interrupt
+handlers used to run with interrupts enabled" still applies there.
+
+> If the referenced commit breaks RT then this is another story.
+
+I'm surprised to hear that from you. With the goal to get RT into
+mainline I would expect you to be happy if people consider the effects
+on RT in their reviews.
+
+> > So when you said that on on-RT the reason why it used to need a
+> > workaround is gone made me wonder what that implies for RT.
+>=20
+> There was never reason (or a lockdep splat) for it on RT. If so you
+> should have seen it, right?
+
+No, I don't consider myself to be an RT expert who is aware of all the
+problems. So I admit that for me the effect on RT of the patch under
+discussion isn't obvious. I just wonder that the change is justified
+with being OK on non-RT. So it's either bad that it breaks RT *or*
+improving the commit log would be great.
+
+And even if I had reason to believe that there is no problem with the
+commit on RT, I'd still wish that the commit log wouldn't suggest to the
+casual reader that there might be a problem.
+
+Best regards
+Uwe
 
 --=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---jucf3zuhpwlugk7g
+--rq5nwb5cqbbuxlll
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBZmgoACgkQqclaivrt
-76mwaAgApUoTTkXx1qY9IZ6zUEu3JH4lUypUxxju76Zhf60CX36mqvNnIjhxDUxd
-7vycnZt5Num4MHOF4e9tWEXgCw/bpkYfCSQ+6Ygov0EN7smROs8ACqYeWOmEt1Ew
-atTH+OdgHKf2nW7yrYZVlOnb93kKgqwEaxbSONFwRh7SPSjKId3lqACYzHNL7g4P
-QJ7Y9UQHAOAUL9gsYcVzsAba8izsQ2F1Fwu3YTnyU2Evd13NmuZ4pBY5UCb6EI6C
-3zFgtmtaKrz4p629gZVEsT+KXU/HHygdyNc7cnRZfJ2G30rcezKQub4dGcxeeics
-LKxxexIVwnCelLjh+zqqO/uFM5KJMA==
-=atgV
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBZmhQACgkQwfwUeK3K
+7Amm+wf/au1Z6kNU1D+zrVdm5KAv72xZKa5+FRGc5E8eVVhmHY03AGtMtw4xLpzD
+8DBcJaCEY/K4U9UAENORJXU2u1C3jq6t9uim09oFI+CAU1BGpgX3l34pMGEeqQc4
+8QFSQu4MYSwLPGE1ecSrpmAURl0xeknT+vudFbwrOMMynFbGwlC8M3nQSq9A3HfK
+jwivSjorqA15QW8gBx6jOQvMctKG2kXvXcjmTDq+61p7hwkEgGDty4NgPEGye4g5
+b4fE35/A2THaChliX7HgbCDtynvdHKHA7GQ3awpRMZ7Kx2tFsecoefkDHRKJHse9
+AarPIaHLfeko5L1l9uDCAkA0X6wCbg==
+=OhvM
 -----END PGP SIGNATURE-----
 
---jucf3zuhpwlugk7g--
+--rq5nwb5cqbbuxlll--
