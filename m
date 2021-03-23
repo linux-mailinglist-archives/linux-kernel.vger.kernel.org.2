@@ -2,140 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11EF346ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC2B346AC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhCWVFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:05:17 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:59476 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233489AbhCWVEs (ORCPT
+        id S233608AbhCWVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:05:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35576 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233541AbhCWVFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:04:48 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E873920B5680;
-        Tue, 23 Mar 2021 14:04:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E873920B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616533488;
-        bh=OXR8yOga0/h10z0/w8+nlFHgpqAPODs3PDqE1WL4q1A=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=BMkCtQ1v6P65n3C3S1DgHgChYKUAfW4cYWty31O2g0bDdyAg4gD9pHKXgc3W/qPPR
-         whSduVPY89bFxr43JQOEoIh2zIZ3a+YOgBV4hfOe6wRECTEhAz5BZoGFHQBWRBIKu4
-         GlHbadEgBZjgG9iBRvnhP3sweuceSHCPBimchckk=
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
- trace unreliable
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
- <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
- <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
- <20210323145734.GD98545@C02TD0UTHF1T.local>
- <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
- <a38e4966-9b0d-3e51-80bd-acc36d8bee9b@linux.microsoft.com>
- <20210323170236.GF98545@C02TD0UTHF1T.local>
- <bc450f09-1881-9a9c-bfbc-5bb31c01d8ce@linux.microsoft.com>
- <20210323183053.GH98545@C02TD0UTHF1T.local>
- <8aa50127-3f00-818d-d58c-4b3ff7235c74@linux.microsoft.com>
-Message-ID: <5f32abc2-5759-5fb9-a626-cce962ac275a@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 16:04:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 23 Mar 2021 17:05:40 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616533539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=fYk6NWNOXMGdec5MjB5DlA2zmraER7Ss4x0az26Lu2E=;
+        b=0c1YD0XBHdVdUQyKA/QhTFibTjRduqdWW0Vx8arUp1eVUtkHfm/3NMJ9WQCDpCgrI1Ilrg
+        hWjzg+756lsl1BWmk73ZUbn/xpwa7vh+Q/SRwhwr9hjfRNz1xHM0sIwz0tmha5u8JGZ4nU
+        xDMMJBnkIJUGt0M84heC/kEsc1wR3oDECwB9TA7ZlcmlDS61DpKINqTRAxPfKvdiNrlumh
+        RTzGInzgXzDKhe6sIF3kC54c8QBgqnREwXh0isffyCevaeYqVhnt33EluBIqWuKA2Tj9rX
+        DzT9VPQPSPSn1t+wDYOVoQLY8QL4Cykak0kR+39Z9m5Rxv3yS5Bu/2hY4aHOlg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616533539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=fYk6NWNOXMGdec5MjB5DlA2zmraER7Ss4x0az26Lu2E=;
+        b=F/E4tGIqwNhG7bMcny4thx+mGdAuEeW4O2JuUeloRQ5Cc/ptMIucWonvoDv6t8KF07XDZn
+        3uegkB0Og9GLgfDQ==
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [patch V5 2/2] signal: Allow tasks to cache one sigqueue struct
+In-Reply-To: <87o8f9r7ug.fsf@nanos.tec.linutronix.de>
+Date:   Tue, 23 Mar 2021 22:05:39 +0100
+Message-ID: <87sg4lbmxo.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <8aa50127-3f00-818d-d58c-4b3ff7235c74@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for all the input - Mark Rutland and Mark Brown.
+The idea for this originates from the real time tree to make signal
+delivery for realtime applications more efficient. In quite some of these
+application scenarios a control tasks signals workers to start their
+computations. There is usually only one signal per worker on flight.  This
+works nicely as long as the kmem cache allocations do not hit the slow path
+and cause latencies.
 
-I will send out the stack termination patch next. Since I am splitting
-the original series into 3 separate series, I will change the titles and
-start with version 1 in each case, if there is no objection.
+To cure this an optimistic caching was introduced (limited to RT tasks)
+which allows a task to cache a single sigqueue in a pointer in task_struct
+instead of handing it back to the kmem cache after consuming a signal. When
+the next signal is sent to the task then the cached sigqueue is used
+instead of allocating a new one. This solved the problem for this set of
+application scenarios nicely.
 
-Again, Thanks.
+The task cache is not preallocated so the first signal sent to a task goes
+always to the cache allocator. The cached sigqueue stays around until the
+task exits and is freed when task::sighand is dropped.
 
-Madhavan
+After posting this solution for mainline the discussion came up whether
+this would be useful in general and should not be limited to realtime
+tasks: https://lore.kernel.org/r/m11rcu7nbr.fsf@fess.ebiederm.org
 
-On 3/23/21 3:24 PM, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 3/23/21 1:30 PM, Mark Rutland wrote:
->> On Tue, Mar 23, 2021 at 12:23:34PM -0500, Madhavan T. Venkataraman wrote:
->>> On 3/23/21 12:02 PM, Mark Rutland wrote:
->>
->> [...]
->>
->>> I think that I did a bad job of explaining what I wanted to do. It is not
->>> for any additional protection at all.
->>>
->>> So, let us say we create a field in the task structure:
->>>
->>> 	u64		unreliable_stack;
->>>
->>> Whenever an EL1 exception is entered or FTRACE is entered and pt_regs get
->>> set up and pt_regs->stackframe gets chained, increment unreliable_stack.
->>> On exiting the above, decrement unreliable_stack.
->>>
->>> In arch_stack_walk_reliable(), simply do this check upfront:
->>>
->>> 	if (task->unreliable_stack)
->>> 		return -EINVAL;
->>>
->>> This way, the function does not even bother unwinding the stack to find
->>> exception frames or checking for different return addresses or anything.
->>> We also don't have to worry about code being reorganized, functions
->>> being renamed, etc. It also may help in debugging to know if a task is
->>> experiencing an exception and the level of nesting, etc.
->>
->> As in my other reply, since this is an optimization that is not
->> necessary for functional correctness, I would prefer to avoid this for
->> now. We can reconsider that in future if we encounter performance
->> problems.
->>
->> Even with this there will be cases where we have to identify
->> non-unwindable functions explicitly (e.g. the patchable-function-entry
->> trampolines, where the real return address is in x9), and I'd prefer
->> that we use one mechanism consistently.
->>
->> I suspect that in the future we'll need to unwind across exception
->> boundaries using metadata, and we can treat the non-unwindable metadata
->> in the same way.
->>
->> [...]
->>
->>>> 3. Figure out exception boundary handling. I'm currently working to
->>>>    simplify the entry assembly down to a uniform set of stubs, and I'd
->>>>    prefer to get that sorted before we teach the unwinder about
->>>>    exception boundaries, as it'll be significantly simpler to reason
->>>>    about and won't end up clashing with the rework.
->>>
->>> So, here is where I still have a question. Is it necessary for the unwinder
->>> to know the exception boundaries? Is it not enough if it knows if there are
->>> exceptions present? For instance, using something like num_special_frames
->>> I suggested above?
->>
->> I agree that it would be legitimate to bail out early if we knew there
->> was going to be an exception somewhere in the trace. Regardless, I think
->> it's simpler overall to identify non-unwindability during the trace, and
->> doing that during the trace aligns more closely with the structure that
->> we'll need to permit unwinding across these boundaries in future, so I'd
->> prefer we do that rather than trying to optimize for early returns
->> today.
->>
-> 
-> OK. Fair enough.
-> 
-> Thanks.
-> 
-> Madhavan
-> 
+One concern leading to the original limitation was to avoid a large amount
+of pointlessly cached sigqueues in alive tasks. The other concern was
+vs. RLIMIT_SIGPENDING as these cached sigqueues are not accounted for.
+
+The accounting problem is real, but on the other hand slightly academic.
+After gathering some statistics it turned out that after boot of a regular
+distro install there are less than 10 sigqueues cached in ~1500 tasks.
+
+In case of a 'mass fork and fire signal to child' scenario the extra 80
+bytes of memory per task are well in the noise of the overall memory
+consumption of the fork bomb.
+
+If this should be limited then this would need an extra counter in struct
+user, more atomic instructions and a seperate rlimit. Yet another tunable
+which is mostly unused.
+
+The caching is actually used. After boot and a full kernel compile on a
+64CPU machine with make -j128 the number of 'allocations' looks like this:
+
+  From slab: 	   23996
+  From task cache: 52223
+
+I.e. it reduces the number of slab cache operations by ~68%.
+
+A typical pattern there is:
+
+<...>-58490 __sigqueue_alloc:  for 58488 from slab ffff8881132df460
+<...>-58488 __sigqueue_free:   cache ffff8881132df460
+<...>-58488 __sigqueue_alloc:  for 1149 from cache ffff8881103dc550
+  bash-1149 exit_task_sighand: free ffff8881132df460
+  bash-1149 __sigqueue_free:   cache ffff8881103dc550
+
+The interesting sequence is that the exiting task 58488 grabs the sigqueue
+from bash's task cache to signal exit and bash sticks it back into it's own
+cache. Lather, rinse and repeat.
+
+The caching is probably not noticable for the general use case, but the
+benefit for latency sensitive applications is clear. While kmem caches are
+usually just serving from the fast path the slab merging (default) can
+depending on the usage pattern of the merged slabs cause occasional slow
+path allocations.
+
+The time spared per cached entry is a few micro seconds per signal which is
+not relevant for e.g. a kernel build, but for signal heavy workloads it's
+measurable.
+
+As there is no real downside of this caching mechanism making it
+unconditionally available is preferred over more conditional code or new
+magic tunables.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V5: Self reaping was only mostly correct. Don't try to be smart and
+    make it simple _and_ correct (Oleg)
+
+V4: Handle the self reaping case correctly (Oleg)
+
+V3: Use READ/WRITE_ONCE() for the cache operations and add commentry
+    for it.
+
+V2: Remove the realtime task restriction and get rid of the cmpxchg()
+    (Eric, Oleg)
+    Add more information to the changelog.
+---
+ include/linux/sched.h  |    1 +
+ include/linux/signal.h |    1 +
+ kernel/exit.c          |    1 +
+ kernel/fork.c          |    1 +
+ kernel/signal.c        |   44 ++++++++++++++++++++++++++++++++++++++++++--
+ 5 files changed, 46 insertions(+), 2 deletions(-)
+
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -984,6 +984,7 @@ struct task_struct {
+ 	/* Signal handlers: */
+ 	struct signal_struct		*signal;
+ 	struct sighand_struct __rcu		*sighand;
++	struct sigqueue			*sigqueue_cache;
+ 	sigset_t			blocked;
+ 	sigset_t			real_blocked;
+ 	/* Restored if set_restore_sigmask() was used: */
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -265,6 +265,7 @@ static inline void init_sigpending(struc
+ }
+ 
+ extern void flush_sigqueue(struct sigpending *queue);
++extern void exit_task_sigqueue_cache(struct task_struct *tsk);
+ 
+ /* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
+ static inline int valid_signal(unsigned long sig)
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -162,6 +162,7 @@ static void __exit_signal(struct task_st
+ 		flush_sigqueue(&sig->shared_pending);
+ 		tty_kref_put(tty);
+ 	}
++	exit_task_sigqueue_cache(tsk);
+ }
+ 
+ static void delayed_put_task_struct(struct rcu_head *rhp)
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2003,6 +2003,7 @@ static __latent_entropy struct task_stru
+ 	spin_lock_init(&p->alloc_lock);
+ 
+ 	init_sigpending(&p->pending);
++	p->sigqueue_cache = NULL;
+ 
+ 	p->utime = p->stime = p->gtime = 0;
+ #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -434,7 +434,16 @@ static struct sigqueue *
+ 	rcu_read_unlock();
+ 
+ 	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
+-		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
++		/*
++		 * Preallocation does not hold sighand::siglock so it can't
++		 * use the cache. The lockless caching requires that only
++		 * one consumer and only one producer run at a time.
++		 */
++		q = READ_ONCE(t->sigqueue_cache);
++		if (!q || sigqueue_flags)
++			q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
++		else
++			WRITE_ONCE(t->sigqueue_cache, NULL);
+ 	} else {
+ 		print_dropped_signal(sig);
+ 	}
+@@ -451,13 +460,44 @@ static struct sigqueue *
+ 	return q;
+ }
+ 
++void exit_task_sigqueue_cache(struct task_struct *tsk)
++{
++	/* Race free because @tsk is mopped up */
++	struct sigqueue *q = tsk->sigqueue_cache;
++
++	if (q) {
++		tsk->sigqueue_cache = NULL;
++		/*
++		 * Hand it back to the cache as the task might
++		 * be self reaping which would leak the object.
++		 */
++		 kmem_cache_free(sigqueue_cachep, q);
++	}
++}
++
++static void sigqueue_cache_or_free(struct sigqueue *q)
++{
++	/*
++	 * Cache one sigqueue per task. This pairs with the consumer side
++	 * in __sigqueue_alloc() and needs READ/WRITE_ONCE() to prevent the
++	 * compiler from store tearing and to tell KCSAN that the data race
++	 * is intentional when run without holding current->sighand->siglock,
++	 * which is fine as current obviously cannot run __sigqueue_free()
++	 * concurrently.
++	 */
++	if (!READ_ONCE(current->sigqueue_cache))
++		WRITE_ONCE(current->sigqueue_cache, q);
++	else
++		kmem_cache_free(sigqueue_cachep, q);
++}
++
+ static void __sigqueue_free(struct sigqueue *q)
+ {
+ 	if (q->flags & SIGQUEUE_PREALLOC)
+ 		return;
+ 	if (atomic_dec_and_test(&q->user->sigpending))
+ 		free_uid(q->user);
+-	kmem_cache_free(sigqueue_cachep, q);
++	sigqueue_cache_or_free(q);
+ }
+ 
+ void flush_sigqueue(struct sigpending *queue)
