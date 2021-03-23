@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535383462AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F883462A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbhCWPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:18:16 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2733 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbhCWPRf (ORCPT
+        id S232746AbhCWPRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:17:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10892 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232648AbhCWPQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:17:35 -0400
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F4ZWh2YZ1z682g8;
-        Tue, 23 Mar 2021 23:08:48 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 23 Mar 2021 16:17:32 +0100
-Received: from [10.47.11.95] (10.47.11.95) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 23 Mar
- 2021 15:17:30 +0000
-Subject: Re: [PATCHv4 00/19] perf metric: Add support to reuse metric
-To:     "Paul A. Clarke" <pc@us.ibm.com>
-CC:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-References: <20200729091908.1378911-1-jolsa@kernel.org>
- <20200801114050.GB377079@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <7682e4c3-5840-bb6d-5e76-6b3fd37b04c0@huawei.com>
- <20210323150604.GB8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <a233702a-89b7-ae47-d47a-a7b4539c191e@huawei.com>
-Date:   Tue, 23 Mar 2021 15:15:16 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 23 Mar 2021 11:16:48 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NFDZDh070193;
+        Tue, 23 Mar 2021 11:16:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ec3eXifiJ0YhU8TIyLhA3miwujf1rJNdX4jw45D6vUA=;
+ b=PPYQgshziCip+/XUhZR9+xyJY0zco7r4TMNGMPv8pd321G0avRTnvqciEfi5020siaKb
+ zK84QnkXHn/haMW4biLn7ZBBkWMUMCEoAJ7IUNWcOT29t5nWvB354iUhdqOlft84cckS
+ B4llGzlFeWVg46P+knzTXtgw1y5F7J6DKKAElSSU8CfRl9gPBIrHB6SJZZKBQKcRgz3m
+ socW8JnNuM/ZgQq/OIuroV2ekJX+PKE6GRqveoro8+kvV8kM5aCynLcFo7X8aJeYXeyb
+ 3r7a1ykZgnUNttoV3D+bLJD03wI6Z0bE5tEhkIDS3b+aGSoKZWT/1JLLBDf7bBOWiiB3 4Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fjsmg3b2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 11:16:47 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NFDeYl070437;
+        Tue, 23 Mar 2021 11:16:41 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fjsmg32g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 11:16:41 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NF6mqK032162;
+        Tue, 23 Mar 2021 15:16:22 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 37d9bmkfjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 15:16:22 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NFGJ0p33882454
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 15:16:19 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D12CA405F;
+        Tue, 23 Mar 2021 15:16:19 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01E23A4054;
+        Tue, 23 Mar 2021 15:16:19 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.5.141])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Mar 2021 15:16:18 +0000 (GMT)
+Subject: Re: [PATCH v2 2/2] s390/kvm: VSIE: fix MVPG handling for prefixing
+ and MSO
+To:     David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     frankja@linux.ibm.com, cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+References: <20210322140559.500716-1-imbrenda@linux.ibm.com>
+ <20210322140559.500716-3-imbrenda@linux.ibm.com>
+ <433933f5-1b6e-ea58-618d-3c844edc73a6@de.ibm.com>
+ <830ca8c6-4d21-b1ed-ccaf-e0c12237849e@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <9293b208-0f1d-fb58-290c-66a8ae30d60c@de.ibm.com>
+Date:   Tue, 23 Mar 2021 16:16:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210323150604.GB8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <830ca8c6-4d21-b1ed-ccaf-e0c12237849e@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.11.95]
-X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103230112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/2021 15:06, Paul A. Clarke wrote:
-> On Mon, Mar 22, 2021 at 11:36:23AM +0000, John Garry wrote:
->> On 01/08/2020 12:40, Paul A. Clarke wrote:
->>>> v4 changes:
->>>>     - removed acks from patch because it changed a bit
->>>>       with the last fixes:
->>>>         perf metric: Collect referenced metrics in struct metric_ref_node
->>>>     - fixed runtime metrics [Kajol Jain]
->>>>     - increased recursion depth [Paul A. Clarke]
->>>>     - changed patches due to dependencies:
->>>>         perf metric: Collect referenced metrics in struct metric_ref_node
->>>>         perf metric: Add recursion check when processing nested metrics
->>>>         perf metric: Rename struct egroup to metric
->>>>         perf metric: Rename group_list to metric_list
->>>>
->>>> Also available in here:
->>>>     git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->>>>     perf/metric
->>> I built and ran from the above git branch, and things seem to work.
->>> Indeed, I was able to apply my changes to exploit the new capabilities
->>> via modifications to tools/perf/pmu-events/arch/powerpc/power9/metrics.json,
->>> as I posted earlier (and will submit once this set gets merged).
->> I was just wondering: Does perf subtest 10.3 work ok for you with the metric
->> reuse?
+
+
+On 23.03.21 16:11, David Hildenbrand wrote:
+> On 23.03.21 16:07, Christian Borntraeger wrote:
 >>
->> That's "Parsing of PMU event table metrics" subtest.
-> I confess I'm not sure what you are asking. Using the latest mainline
-> (84196390620ac0e5070ae36af84c137c6216a7dc), perf subtest 10.3 does
-> pass for me:
-> --
-> $ ./perf test 10
-> 10: PMU events                                                      :
-> 10.1: PMU event table sanity                                        : Ok
-> 10.2: PMU event map aliases                                         : Ok
-> 10.3: Parsing of PMU event table metrics                            : Ok
-> 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-> --
-Since commit 8989f5f07605 ("perf stat: Update POWER9 metrics to utilize 
-other metrics"), power9 has reused metrics.
+>>
+>> On 22.03.21 15:05, Claudio Imbrenda wrote:
+>>> Prefixing needs to be applied to the guest real address to translate it
+>>> into a guest absolute address.
+>>>
+>>> The value of MSO needs to be added to a guest-absolute address in order to
+>>> obtain the host-virtual.
+>>>
+>>> Fixes: 223ea46de9e79 ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
+>>> Cc: stable@vger.kernel.org
+>>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+>>> Reported-by: Janosch Frank <frankja@linux.ibm.com>
+>>> ---
+>>>    arch/s390/kvm/vsie.c | 6 +++++-
+>>>    1 file changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+>>> index 48aab6290a77..ac86f11e46dc 100644
+>>> --- a/arch/s390/kvm/vsie.c
+>>> +++ b/arch/s390/kvm/vsie.c
+>>> @@ -1002,7 +1002,7 @@ static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page,
+>>>    static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>>>    {
+>>>        struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
+>>> -    unsigned long pei_dest, pei_src, src, dest, mask;
+>>> +    unsigned long pei_dest, pei_src, dest, src, mask, mso, prefix;
+>>>        u64 *pei_block = &vsie_page->scb_o->mcic;
+>>>        int edat, rc_dest, rc_src;
+>>>        union ctlreg0 cr0;
+>>> @@ -1010,9 +1010,13 @@ static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>>>        cr0.val = vcpu->arch.sie_block->gcr[0];
+>>>        edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
+>>>        mask = _kvm_s390_logical_to_effective(&scb_s->gpsw, PAGE_MASK);
+>>> +    mso = scb_s->mso & ~(1UL << 20);
+>>             shouldnt that be ~((1UL << 20 ) -1)
+>>
+> 
+> Looking at shadow_scb(), we can simply take scb_s->mso unmodified.
 
-And I am finding that subtest 10.3 caused problems when I tried to 
-introduce metric reuse on arm64, so I was just asking you to check.
-
-Now I am a bit confused...
-
-Thanks for checking,
-john
+Right, I think I can fix this up (and get rid of the local mso variable)
+when queueing. Or shall Claudio send a new version of the patch?
