@@ -2,73 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB46346687
+	by mail.lfdr.de (Postfix) with ESMTP id 3E82D346686
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhCWRhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:37:39 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40302 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhCWRhb (ORCPT
+        id S230115AbhCWRhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:37:37 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:62116 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhCWRh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:37:31 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12NHbJx6029342;
-        Tue, 23 Mar 2021 12:37:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616521039;
-        bh=NaCGwoEUHH+k+osfCBM3nTshiBBLSAEhoO5SYYzZHMk=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ZgGoCIZJ7Htt/InCp/+0tA0RHV2AS2vqSV43sv1qxL7nuCb3nSqs95m6W78oT2Wf3
-         sq2wcGNqwX6pPXdfqF6hWc9rJSo0nesaOAx9knZ4POooc8TG/QgqAyzgB9CGGWawqr
-         W3XWt/c13mRH+bTrlYuTKIP+URfyDFCSIrNl/M+A=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12NHbJeL066918
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Mar 2021 12:37:19 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
- Mar 2021 12:37:18 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 23 Mar 2021 12:37:18 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12NHbIQ9011218;
-        Tue, 23 Mar 2021 12:37:18 -0500
-Date:   Tue, 23 Mar 2021 23:07:17 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
-Message-ID: <20210323173715.gyozhzbjyfv5osuc@ti.com>
-References: <20210323143144.12730-1-michael@walle.cc>
- <20210323143144.12730-2-michael@walle.cc>
+        Tue, 23 Mar 2021 13:37:27 -0400
+Date:   Tue, 23 Mar 2021 17:37:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1616521045; bh=B76jZ93shqjUOUQEXOsghNFmKmbiN4UEo8ixi177UoA=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=XygTCk2L+LU5D4FsgMrA/7EH7eqjNqqfnnAceMgTGvAvic+o8zNuuiUHbrrl05uEZ
+         VgG/kaqtVhJkyScYcgjmkuXv0QX4x8LUHro1MoZMUMV0X7Eaav8TzU/6e6bLGi5gAR
+         eNxGVUDiSJsAneAjka7gPkqztAdxGAXTmdFKEwbmsno8dsmsLaYO4OotH0/SvP4yis
+         H8ftHLGMQH40O8P88PNF0wVbD7vlYFTZMwMrvv1/Gm8mc6v4GuSYKIHoRsKfd33P3x
+         +LGxwD11CWjLiLCJvZ+4e1S/cjqlvzHRIL8f/6WlqU4SriImQnwPEDSC3HYj7cLxFm
+         rDFO73qqbWPCw==
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        linux-mtd@lists.infradead.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v2 mtd/fixes] mtd: spinand: core: add missing MODULE_DEVICE_TABLE()
+Message-ID: <20210323173714.317884-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210323143144.12730-2-michael@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/21 03:31PM, Michael Walle wrote:
-> Due to possible mode switching to 8D-8D-8D, it might not be possible to
-> read the SFDP after the initial probe. To be able to dump the SFDP via
-> sysfs afterwards, make a complete copy of it.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+The module misses MODULE_DEVICE_TABLE() for both SPI and OF ID tables
+and thus never autoloads on ID matches.
+Add the missing declarations.
+Present since day-0 of spinand framework introduction.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Fixes: 7529df465248 ("mtd: nand: Add core infrastructure to support SPI NAN=
+Ds")
+Cc: stable@vger.kernel.org # 4.19+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ drivers/mtd/nand/spi/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 61d932c1b718..17f63f95f4a2 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1263,12 +1263,14 @@ static const struct spi_device_id spinand_ids[] =3D=
+ {
+ =09{ .name =3D "spi-nand" },
+ =09{ /* sentinel */ },
+ };
++MODULE_DEVICE_TABLE(spi, spinand_ids);
+
+ #ifdef CONFIG_OF
+ static const struct of_device_id spinand_of_ids[] =3D {
+ =09{ .compatible =3D "spi-nand" },
+ =09{ /* sentinel */ },
+ };
++MODULE_DEVICE_TABLE(of, spinand_of_ids);
+ #endif
+
+ static struct spi_mem_driver spinand_drv =3D {
+--
+2.31.0
+
+
