@@ -2,233 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE30345FF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76518345FFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhCWNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhCWNlA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:41:00 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA34C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:40:59 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id o19so23485628edc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=54fMzulxyHOS7Wa5z7A+h/N7/JoxoBYIy5OqkE1tzqE=;
-        b=NYMIcABAAx9hRWPA5aVHH0/o4nUfU0gfso2WoxLyWfu/VeQfkotYP349F+UvXrfqlz
-         pSfmcd4tpv/93FHMEHPhUp/hpyE4iUE8jSAuGr4D+B566YpMp9U7Yc9oygTTo7fQBq39
-         hQ0Gj/ZALlp310s+9+G0tMApmHSlBEHwibpMZjlLI9oycHMbs+NnlPBzsMNctF4A9lcN
-         PzxYCMEN6OnmHqkdMxE7BZrpfdw5VNnhBJ/mnvb/MeTEJCGHo2y0XLXwn7V6IS7A+pvZ
-         2gAEBBr8dS/b+0qo0isYgM2ccDhYe9CnrxKhTXCAsTNQNOkd5gxNJjayOH2sMIMFXl8f
-         CUTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=54fMzulxyHOS7Wa5z7A+h/N7/JoxoBYIy5OqkE1tzqE=;
-        b=ZDYjDgE17iU3tp583CPKZt+ih4zkWFLDlI1Z/gwlKrWDtJqakZ/N6hjqq/nPTVEn8O
-         iaH6bui7dGM/ex6SMc9GMnoZC6YoINMU70qjv9jem2vtm+1ryvj0xw3Vr6GM4lWaJVfe
-         5NQEiobpLRUdzApOYwDdrQHtoZIJczqyP5Hy1AJd4jd+WNNI2ICsBLgGLSaGRZry3DDO
-         oNZ/A+cpEB9+xhEq2Ic5purapIfM+foUCjQVeD29GX4GXdEnr6J+TwUvfwhbAmqtF0Vv
-         Ymfsnfa+3Cy1EberMlgiE2CnmplgAK+5Pp6TLuCVfm+kGBLrdwhSbQAR78JeI51uZuMI
-         ylfw==
-X-Gm-Message-State: AOAM533JBj6+yjWWLmoYz/4/D5S/PRo+LCuF9aF01LlOQx7U3Dgh9aes
-        1VdBYpoXtKPhdXYSrsH+nTmZqA==
-X-Google-Smtp-Source: ABdhPJwmrBCy5LjD2ofrZz51sHL9i8AO+gMPXPLF+m4PLspzUBSBFEWsX6OKazsFo2Xut4BQXCHX6w==
-X-Received: by 2002:a05:6402:549:: with SMTP id i9mr4746720edx.379.1616506858726;
-        Tue, 23 Mar 2021 06:40:58 -0700 (PDT)
-Received: from localhost.localdomain (hst-221-13.medicom.bg. [84.238.221.13])
-        by smtp.gmail.com with ESMTPSA id r10sm11207317eju.66.2021.03.23.06.40.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 06:40:58 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     hverkuil-cisco@xs4all.nl, ezequiel@collabora.com,
-        nicolas.dufresne@collabora.com,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v6 5/5] venus: venc: Add support for CLL and Mastering display controls
-Date:   Tue, 23 Mar 2021 15:40:40 +0200
-Message-Id: <20210323134040.943757-6-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210323134040.943757-1-stanimir.varbanov@linaro.org>
-References: <20210323134040.943757-1-stanimir.varbanov@linaro.org>
+        id S231400AbhCWNmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:42:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229508AbhCWNmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:42:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BB6161931;
+        Tue, 23 Mar 2021 13:42:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616506938;
+        bh=pIK0Jl792OsAEIbuymZcvsOtYsmlAhpnsbWLU01/6lg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iqxFC5SbGDLebgbe8Q+SCPB7cvqsS8A4UxVdIO1fIkuN6zfVynhSsFkjQiVWUxlGs
+         hFR8ZVpCtJexso7wBltkbvaoVadcFTd/5X1hS6l306fN7pdUaGmZWI4A4lBJyA4Slp
+         zG5UVuEAu2T+ZCt+1PGm+q3hVNFLEqS4YOgHdN+4=
+Date:   Tue, 23 Mar 2021 14:42:15 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        git@xilinx.com, saikrishna12468@gmail.com
+Subject: Re: [PATCH v4 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
+Message-ID: <YFnwN6mqXml5xdR3@kroah.com>
+References: <1615969516-87663-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1615969516-87663-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615969516-87663-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create CLL and Mastering display colour volume v4l2 controls for
-encoder, add handling of HDR10 PQ SEI packet payloads for v4.
+On Wed, Mar 17, 2021 at 01:55:16PM +0530, Sai Krishna Potthuri wrote:
+> Adding pinctrl driver for Xilinx ZynqMP platform.
+> This driver queries pin information from firmware and registers
+> pin control accordingly.
+> 
+> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+> ---
+>  drivers/pinctrl/Kconfig          |   13 +
+>  drivers/pinctrl/Makefile         |    1 +
+>  drivers/pinctrl/pinctrl-zynqmp.c | 1030 ++++++++++++++++++++++++++++++
+>  3 files changed, 1044 insertions(+)
+>  create mode 100644 drivers/pinctrl/pinctrl-zynqmp.c
+> 
+> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> index 815095326e2d..25d3c7208975 100644
+> --- a/drivers/pinctrl/Kconfig
+> +++ b/drivers/pinctrl/Kconfig
+> @@ -341,6 +341,19 @@ config PINCTRL_ZYNQ
+>  	help
+>  	  This selects the pinctrl driver for Xilinx Zynq.
+>  
+> +config PINCTRL_ZYNQMP
+> +	bool "Pinctrl driver for Xilinx ZynqMP"
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h      |  2 ++
- drivers/media/platform/qcom/venus/hfi_cmds.c  |  8 +++++
- .../media/platform/qcom/venus/hfi_helper.h    | 20 +++++++++++++
- drivers/media/platform/qcom/venus/venc.c      | 29 +++++++++++++++++++
- .../media/platform/qcom/venus/venc_ctrls.c    | 16 +++++++++-
- 5 files changed, 74 insertions(+), 1 deletion(-)
+Please make this work as a module.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 13c18c49714d..029f620a28ff 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -241,6 +241,8 @@ struct venc_controls {
- 	} level;
- 
- 	u32 base_priority_id;
-+	struct v4l2_ctrl_hdr10_cll_info cll;
-+	struct v4l2_ctrl_hdr10_mastering_display mastering;
- };
- 
- struct venus_buffer {
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 4f7565834469..d2edf3896cf1 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1217,6 +1217,14 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*info);
- 		break;
- 	}
-+	case HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI: {
-+		struct hfi_hdr10_pq_sei *in = pdata, *hdr10 = prop_data;
-+
-+		memcpy(hdr10, in, sizeof(*hdr10));
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*hdr10);
-+		break;
-+	}
-+
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
- 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 6b524c7cde5f..d32d926c7b2c 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -513,6 +513,7 @@
- #define HFI_PROPERTY_PARAM_VENC_VPX_ERROR_RESILIENCE_MODE	0x2005029
- #define HFI_PROPERTY_PARAM_VENC_HIER_B_MAX_NUM_ENH_LAYER	0x200502c
- #define HFI_PROPERTY_PARAM_VENC_HIER_P_HYBRID_MODE		0x200502f
-+#define HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI			0x2005036
- 
- /*
-  * HFI_PROPERTY_CONFIG_VENC_COMMON_START
-@@ -809,6 +810,25 @@ struct hfi_ltr_mark {
- 	u32 mark_frame;
- };
- 
-+struct hfi_mastering_display_colour_sei_payload {
-+	u32 display_primaries_x[3];
-+	u32 display_primaries_y[3];
-+	u32 white_point_x;
-+	u32 white_point_y;
-+	u32 max_display_mastering_luminance;
-+	u32 min_display_mastering_luminance;
-+};
-+
-+struct hfi_content_light_level_sei_payload {
-+	u32 max_content_light;
-+	u32 max_pic_average_light;
-+};
-+
-+struct hfi_hdr10_pq_sei {
-+	struct hfi_mastering_display_colour_sei_payload mastering;
-+	struct hfi_content_light_level_sei_payload cll;
-+};
-+
- struct hfi_framesize {
- 	u32 buffer_type;
- 	u32 width;
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 505d092dc433..855761c01276 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -612,6 +612,35 @@ static int venc_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		struct hfi_hdr10_pq_sei hdr10;
-+		unsigned int c;
-+
-+		ptype = HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI;
-+
-+		for (c = 0; c < 3; c++) {
-+			hdr10.mastering.display_primaries_x[c] =
-+				ctr->mastering.display_primaries_x[c];
-+			hdr10.mastering.display_primaries_y[c] =
-+				ctr->mastering.display_primaries_y[c];
-+		}
-+
-+		hdr10.mastering.white_point_x = ctr->mastering.white_point_x;
-+		hdr10.mastering.white_point_y = ctr->mastering.white_point_y;
-+		hdr10.mastering.max_display_mastering_luminance =
-+			ctr->mastering.max_display_mastering_luminance;
-+		hdr10.mastering.min_display_mastering_luminance =
-+			ctr->mastering.min_display_mastering_luminance;
-+
-+		hdr10.cll.max_content_light = ctr->cll.max_content_light_level;
-+		hdr10.cll.max_pic_average_light =
-+			ctr->cll.max_pic_average_light_level;
-+
-+		ret = hfi_session_set_property(inst, ptype, &hdr10);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (ctr->num_b_frames) {
- 		u32 max_num_b_frames = NUM_B_FRAMES_MAX;
- 
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 16d6c64d5f64..8a7cf6960811 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -279,6 +279,12 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_AU_DELIMITER:
- 		ctr->aud_enable = ctrl->val;
- 		break;
-+	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:
-+		ctr->cll = *ctrl->p_new.p_hdr10_cll;
-+		break;
-+	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
-+		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -294,7 +300,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 52);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 54);
- 	if (ret)
- 		return ret;
- 
-@@ -504,6 +510,14 @@ int venc_ctrl_init(struct venus_inst *inst)
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
- 			  V4L2_CID_MPEG_VIDEO_AU_DELIMITER, 0, 1, 1, 0);
- 
-+	v4l2_ctrl_new_std_compound(&inst->ctrl_handler, &venc_ctrl_ops,
-+				   V4L2_CID_COLORIMETRY_HDR10_CLL_INFO,
-+				   v4l2_ctrl_ptr_create(NULL));
-+
-+	v4l2_ctrl_new_std_compound(&inst->ctrl_handler, &venc_ctrl_ops,
-+				   V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY,
-+				   v4l2_ctrl_ptr_create(NULL));
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
--- 
-2.25.1
+> --- a/drivers/pinctrl/Makefile
+> +++ b/drivers/pinctrl/Makefile
+> @@ -43,6 +43,7 @@ obj-$(CONFIG_PINCTRL_TB10X)	+= pinctrl-tb10x.o
+>  obj-$(CONFIG_PINCTRL_ST) 	+= pinctrl-st.o
+>  obj-$(CONFIG_PINCTRL_STMFX) 	+= pinctrl-stmfx.o
+>  obj-$(CONFIG_PINCTRL_ZYNQ)	+= pinctrl-zynq.o
+> +obj-$(CONFIG_PINCTRL_ZYNQMP)    += pinctrl-zynqmp.o
 
+Please use a tab like the other lines in this file.
+
+> +
+> +	dev_info(&pdev->dev, "zynqmp pinctrl initialized\n");
+
+When drivers work properly, they are quiet.  Please remove this.
+
+thanks,
+
+greg k-h
