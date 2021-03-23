@@ -2,233 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF669346C2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D22C346C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbhCWWUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:20:07 -0400
-Received: from relay13.mail.gandi.net ([217.70.178.233]:32299 "EHLO
-        relay13.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233926AbhCWWSa (ORCPT
+        id S234115AbhCWWUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:20:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52572 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233944AbhCWWSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:18:30 -0400
-X-Greylist: delayed 3517 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Mar 2021 18:18:22 EDT
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay13.mail.gandi.net (Postfix) with ESMTPSA id BCF098000B;
-        Tue, 23 Mar 2021 22:18:14 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 23:18:14 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     He Ying <heying24@huawei.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        a.zummo@towertech.it, christophe.leroy@csgroup.eu,
-        npiggin@gmail.com, msuchanek@suse.de, tglx@linutronix.de,
-        peterz@infradead.org, geert+renesas@glider.be,
-        kernelfans@gmail.com, frederic@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v2 -next] powerpc: kernel/time.c - cleanup warnings
-Message-ID: <YFppJkpZRHMJFay0@piout.net>
-References: <20210323091257.90054-1-heying24@huawei.com>
+        Tue, 23 Mar 2021 18:18:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616537916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=92+RMyPSZb9UPiHHQXIcTR5pNhYSfMAZfLfhPp4UhXs=;
+        b=U0uDoDaBLG4N9Vem5Fz1U0aV+Trvt3OCqUKa59ImhwbL/kw/JfeBq4SN7jYTQmbIg3CPH8
+        8oTNnX6mCluTyfM/G8/CJRLBBl698mVcWcJds/AwAgIYxxqW0XfkWyKPkLYGUoDEFL1E0R
+        pO994zd5yL5BCRaPSUzKrZcyVmp3irQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-539-cYdMFeqIM26tWgUriYMBcg-1; Tue, 23 Mar 2021 18:18:34 -0400
+X-MC-Unique: cYdMFeqIM26tWgUriYMBcg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 753CF800D53;
+        Tue, 23 Mar 2021 22:18:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F5205C1C5;
+        Tue, 23 Mar 2021 22:18:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH v5 05/28] netfs: Make a netfs helper module
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 23 Mar 2021 22:18:23 +0000
+Message-ID: <161653790328.2770958.6710423217716151549.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
+References: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323091257.90054-1-heying24@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Make a netfs helper module to manage read request segmentation, caching
+support and transparent huge page support on behalf of a network
+filesystem.
 
-On 23/03/2021 05:12:57-0400, He Ying wrote:
-> We found these warnings in arch/powerpc/kernel/time.c as follows:
-> warning: symbol 'decrementer_max' was not declared. Should it be static?
-> warning: symbol 'rtc_lock' was not declared. Should it be static?
-> warning: symbol 'dtl_consumer' was not declared. Should it be static?
-> 
-> Declare 'decrementer_max' and 'rtc_lock' in powerpc asm/time.h.
-> Rename 'rtc_lock' in drviers/rtc/rtc-vr41xx.c to 'vr41xx_rtc_lock' to
-> avoid the conflict with the variable in powerpc asm/time.h.
-> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
-> is declared there.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: He Ying <heying24@huawei.com>
-> ---
-> v2:
-> - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
->   rtc_lock in powerpc asm/time.h.
-> 
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@redhat.com>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: linux-mm@kvack.org
+cc: linux-cachefs@redhat.com
+cc: linux-afs@lists.infradead.org
+cc: linux-nfs@vger.kernel.org
+cc: linux-cifs@vger.kernel.org
+cc: ceph-devel@vger.kernel.org
+cc: v9fs-developer@lists.sourceforge.net
+cc: linux-fsdevel@vger.kernel.org
+Link: https://lore.kernel.org/r/160588496284.3465195.10102643717770106661.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/161118135638.1232039.1622182202673126285.stgit@warthog.procyon.org.uk/ # rfc
+Link: https://lore.kernel.org/r/161161031028.2537118.1213974428943508753.stgit@warthog.procyon.org.uk/ # v2
+Link: https://lore.kernel.org/r/161340391427.1303470.14884950716721956560.stgit@warthog.procyon.org.uk/ # v3
+Link: https://lore.kernel.org/r/161539531569.286939.18317119181653706665.stgit@warthog.procyon.org.uk/ # v4
+---
 
-V1 was actually the correct thing to do. rtc_lock is there exactly
-because chrp and maple are using mc146818 compatible RTCs. This is then
-useful because then drivers/char/nvram.c is enabled. The proper fix
-would be to scrap all of that and use rtc-cmos for those platforms as
-this drives the RTC properly and exposes the NVRAM for the mc146818.
+ fs/netfs/Kconfig |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+ create mode 100644 fs/netfs/Kconfig
 
-Or at least, if there are no users for the char/nvram driver on those
-two platforms, remove the spinlock and stop enabling CONFIG_NVRAM or
-more likely rename the symbol as it seems to be abused by both chrp and
-powermac.
+diff --git a/fs/netfs/Kconfig b/fs/netfs/Kconfig
+new file mode 100644
+index 000000000000..2ebf90e6ca95
+--- /dev/null
++++ b/fs/netfs/Kconfig
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++config NETFS_SUPPORT
++	tristate "Support for network filesystem high-level I/O"
++	help
++	  This option enables support for network filesystems, including
++	  helpers for high-level buffered I/O, abstracting out read
++	  segmentation, local caching and transparent huge page support.
 
-I'm not completely against the rename in vr41xxx but the fix for the
-warnings can and should be contained in arch/powerpc.
 
->  arch/powerpc/include/asm/time.h |  3 +++
->  arch/powerpc/kernel/time.c      |  6 ++----
->  drivers/rtc/rtc-vr41xx.c        | 22 +++++++++++-----------
->  3 files changed, 16 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
-> index 8dd3cdb25338..64a3ef0b4270 100644
-> --- a/arch/powerpc/include/asm/time.h
-> +++ b/arch/powerpc/include/asm/time.h
-> @@ -12,6 +12,7 @@
->  #ifdef __KERNEL__
->  #include <linux/types.h>
->  #include <linux/percpu.h>
-> +#include <linux/spinlock.h>
->  
->  #include <asm/processor.h>
->  #include <asm/cpu_has_feature.h>
-> @@ -22,6 +23,8 @@ extern unsigned long tb_ticks_per_jiffy;
->  extern unsigned long tb_ticks_per_usec;
->  extern unsigned long tb_ticks_per_sec;
->  extern struct clock_event_device decrementer_clockevent;
-> +extern u64 decrementer_max;
-> +extern spinlock_t rtc_lock;
->  
->  
->  extern void generic_calibrate_decr(void);
-> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-> index b67d93a609a2..60b6ac7d3685 100644
-> --- a/arch/powerpc/kernel/time.c
-> +++ b/arch/powerpc/kernel/time.c
-> @@ -150,10 +150,6 @@ bool tb_invalid;
->  u64 __cputime_usec_factor;
->  EXPORT_SYMBOL(__cputime_usec_factor);
->  
-> -#ifdef CONFIG_PPC_SPLPAR
-> -void (*dtl_consumer)(struct dtl_entry *, u64);
-> -#endif
-> -
->  static void calc_cputime_factors(void)
->  {
->  	struct div_result res;
-> @@ -179,6 +175,8 @@ static inline unsigned long read_spurr(unsigned long tb)
->  
->  #include <asm/dtl.h>
->  
-> +void (*dtl_consumer)(struct dtl_entry *, u64);
-> +
->  /*
->   * Scan the dispatch trace log and count up the stolen time.
->   * Should be called with interrupts disabled.
-> diff --git a/drivers/rtc/rtc-vr41xx.c b/drivers/rtc/rtc-vr41xx.c
-> index 5a9f9ad86d32..cc31db058197 100644
-> --- a/drivers/rtc/rtc-vr41xx.c
-> +++ b/drivers/rtc/rtc-vr41xx.c
-> @@ -72,7 +72,7 @@ static void __iomem *rtc2_base;
->  
->  static unsigned long epoch = 1970;	/* Jan 1 1970 00:00:00 */
->  
-> -static DEFINE_SPINLOCK(rtc_lock);
-> +static DEFINE_SPINLOCK(vr41xx_rtc_lock);
->  static char rtc_name[] = "RTC";
->  static unsigned long periodic_count;
->  static unsigned int alarm_enabled;
-> @@ -101,13 +101,13 @@ static inline time64_t read_elapsed_second(void)
->  
->  static inline void write_elapsed_second(time64_t sec)
->  {
-> -	spin_lock_irq(&rtc_lock);
-> +	spin_lock_irq(&vr41xx_rtc_lock);
->  
->  	rtc1_write(ETIMELREG, (uint16_t)(sec << 15));
->  	rtc1_write(ETIMEMREG, (uint16_t)(sec >> 1));
->  	rtc1_write(ETIMEHREG, (uint16_t)(sec >> 17));
->  
-> -	spin_unlock_irq(&rtc_lock);
-> +	spin_unlock_irq(&vr41xx_rtc_lock);
->  }
->  
->  static int vr41xx_rtc_read_time(struct device *dev, struct rtc_time *time)
-> @@ -139,14 +139,14 @@ static int vr41xx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *wkalrm)
->  	unsigned long low, mid, high;
->  	struct rtc_time *time = &wkalrm->time;
->  
-> -	spin_lock_irq(&rtc_lock);
-> +	spin_lock_irq(&vr41xx_rtc_lock);
->  
->  	low = rtc1_read(ECMPLREG);
->  	mid = rtc1_read(ECMPMREG);
->  	high = rtc1_read(ECMPHREG);
->  	wkalrm->enabled = alarm_enabled;
->  
-> -	spin_unlock_irq(&rtc_lock);
-> +	spin_unlock_irq(&vr41xx_rtc_lock);
->  
->  	rtc_time64_to_tm((high << 17) | (mid << 1) | (low >> 15), time);
->  
-> @@ -159,7 +159,7 @@ static int vr41xx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *wkalrm)
->  
->  	alarm_sec = rtc_tm_to_time64(&wkalrm->time);
->  
-> -	spin_lock_irq(&rtc_lock);
-> +	spin_lock_irq(&vr41xx_rtc_lock);
->  
->  	if (alarm_enabled)
->  		disable_irq(aie_irq);
-> @@ -173,7 +173,7 @@ static int vr41xx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *wkalrm)
->  
->  	alarm_enabled = wkalrm->enabled;
->  
-> -	spin_unlock_irq(&rtc_lock);
-> +	spin_unlock_irq(&vr41xx_rtc_lock);
->  
->  	return 0;
->  }
-> @@ -202,7 +202,7 @@ static int vr41xx_rtc_ioctl(struct device *dev, unsigned int cmd, unsigned long
->  
->  static int vr41xx_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
->  {
-> -	spin_lock_irq(&rtc_lock);
-> +	spin_lock_irq(&vr41xx_rtc_lock);
->  	if (enabled) {
->  		if (!alarm_enabled) {
->  			enable_irq(aie_irq);
-> @@ -214,7 +214,7 @@ static int vr41xx_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
->  			alarm_enabled = 0;
->  		}
->  	}
-> -	spin_unlock_irq(&rtc_lock);
-> +	spin_unlock_irq(&vr41xx_rtc_lock);
->  	return 0;
->  }
->  
-> @@ -296,7 +296,7 @@ static int rtc_probe(struct platform_device *pdev)
->  	rtc->range_max = (1ULL << 33) - 1;
->  	rtc->max_user_freq = MAX_PERIODIC_RATE;
->  
-> -	spin_lock_irq(&rtc_lock);
-> +	spin_lock_irq(&vr41xx_rtc_lock);
->  
->  	rtc1_write(ECMPLREG, 0);
->  	rtc1_write(ECMPMREG, 0);
-> @@ -304,7 +304,7 @@ static int rtc_probe(struct platform_device *pdev)
->  	rtc1_write(RTCL1LREG, 0);
->  	rtc1_write(RTCL1HREG, 0);
->  
-> -	spin_unlock_irq(&rtc_lock);
-> +	spin_unlock_irq(&vr41xx_rtc_lock);
->  
->  	aie_irq = platform_get_irq(pdev, 0);
->  	if (aie_irq <= 0) {
-> -- 
-> 2.17.1
-> 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
