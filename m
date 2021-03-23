@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F92434682D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F09B346833
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhCWSyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:54:21 -0400
-Received: from mail-dm6nam10on2120.outbound.protection.outlook.com ([40.107.93.120]:4838
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232117AbhCWSxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:53:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HdYCt9522gz1XvplVTbB2XXuQo8FwKJJxNBc+sOMaQfnR1uuRVVu9xcFBu+HNtRlguuLZ5CUD9AKUZ/eprFesfEbh+0ThM8VG3gEZZC4a9T+JtSHGvM4uTdZooCIMwR900PouPRmu4v6cfdeXNxjquwSFcO9DejXNm3XgR8kbSYv/Xyuzwi1VxpIutsWbaGjhINAbTY/KDPbTQWKl/86buTie93QKqJvTtScZXZT+CDkdCZklnLsXwXsNBdQrsFLNXrGosWmOSMGYdZW25evoMG8ECoLVqcgw2Epl7P/Fdtrt/32ohAdF5Sgo8fp1tSS+HM/CZmDknSmEDGmjgjHPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hL3Plz/6z/Fk4Q7LcCPtQDweYrtDxmzLnFt7S4TU+fQ=;
- b=DBQJE3nAdUHF1XbI6r4eY0XcUcQWnzeIa3ETcf3QdgHOUAPHKgYaIZInz2nrGbAGlf9BDn4rNeI8+mJYVHS9MPb4ALiZ7ftyxEEOi8Q0CQWDmhakuQK4aczWh0IM/PuE6rqBqzpiPJ/hGUXPuF4GaNjMlfAGCA1jWmf4+uZkQZk4L/wVQx0/MUEe6A37MmlAwhW6u4b7HiBzN4hQ9U/Khh73/uECDB1ABOzKmzgiumlATzbKOp150SXZv5bvlCk61pLOXE+vuufkN4kItPlxhgffi59Kh5oQ9FoaAg4WVMYd2aFSnP42lhg6tGJ7dgE+5MGDFQ/eb4FPB4vbV71Jxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hL3Plz/6z/Fk4Q7LcCPtQDweYrtDxmzLnFt7S4TU+fQ=;
- b=Qjs/9ioYLgz8Il14WmwOtQCiqQCshl6Cu8g3ECoc0+ns5Yr3oS78lruJwXob2Jrf2WxjivYjJ/3G+4UjZqqvGwK5Wzw2pIuwqq4wrW2E8uNiKv36M3KwLexrVGKWcMMXWeGPFdlqdumoNf9qByLPNAw3kF9TSB4nQvxQxzt8Pzc=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MWHPR21MB0288.namprd21.prod.outlook.com (2603:10b6:300:7a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Tue, 23 Mar
- 2021 18:53:48 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::cbc:735e:a6a5:8b9c]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::cbc:735e:a6a5:8b9c%8]) with mapi id 15.20.3999.004; Tue, 23 Mar 2021
- 18:53:48 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, vkuznets <vkuznets@redhat.com>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matheus Castello <matheus@castello.eng.br>
-Subject: RE: [PATCH v5] x86/Hyper-V: Support for free page reporting
-Thread-Topic: [PATCH v5] x86/Hyper-V: Support for free page reporting
-Thread-Index: AdcgFH7dfC3BJtekQZWwJ3zQkLf0mgAAUCRg
-Date:   Tue, 23 Mar 2021 18:53:47 +0000
-Message-ID: <MWHPR21MB1593992852105271128FF8C6D7649@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <SN4PR2101MB0880121FA4E2FEC67F35C1DCC0649@SN4PR2101MB0880.namprd21.prod.outlook.com>
-In-Reply-To: <SN4PR2101MB0880121FA4E2FEC67F35C1DCC0649@SN4PR2101MB0880.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f46cd5b4-52b4-4b2e-36a8-08d8ee2cfe1f
-x-ms-traffictypediagnostic: MWHPR21MB0288:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MWHPR21MB0288569B068EE2EB410EFE52D7649@MWHPR21MB0288.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2201;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sG3k8dy75xl9J/AlYUXWhGVNRwY40AJ9SCJL1CnMxfctX1BPK4oeEj3j0If/nifqNbeKNB6dwkga01BU59UrpiaYApVgncJ9MW3cjtG+9X5x0ZtA9kcCLylkeVsOPKnkUqeYcRghRKPpJZJjccq0bc8Dp9jBOfEKkuI1dQNl8HLFMmQWeHl2G5d75nT53LynkE7VOZFATi3EWg5ZdiD8I6daJMPHs5yXRVIoQSlLqTFYMOyoBaUGy9baLJsvjZFIWK8z+78xX+GnPEFjgN0TbM00Cxy+6BGzSzU+lE6FZa+dBhQNsnlyPI5LfKrmNQyU/0IJGR/kYEl6zJhFY5Mc5QWd0vPXSbMiDdQfH6rCe1QaI27fmdCl/IML5Mhnn7kspRuSbwFY1AFCG/PoYb6oqt1X2ybpvBMGAgkvMhElq/KQl5r94AR4Kg5ac6LIw5hv93TPmK/vREvxnBp2ZcxWo5tovHlvhLG6DYYQfWahnyTYfZ10+qDro6y+lzi3pB/DPoszDpsV/4RkBviO5xDou0ObWd98vy9t6Tr3kKnXYFN15SpRjw1DhW2B7tCz+R41phdg+cZU62FVDEOXDP3j8ihCiFBdFflqFIyFBKijR5fCjGF4kBx8XelaLWiV2cXZuPR4UL0z3GIc7bzT9Pn7eRammhbRn42s/W8LZBSXWw7J518NXrU7JGLS47yc3fsy
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(396003)(376002)(136003)(4326008)(6506007)(10290500003)(8936002)(82960400001)(54906003)(478600001)(316002)(8990500004)(26005)(7696005)(66446008)(8676002)(110136005)(66556008)(64756008)(82950400001)(5660300002)(186003)(66476007)(52536014)(76116006)(66946007)(9686003)(55016002)(2906002)(71200400001)(86362001)(33656002)(38100700001)(83380400001)(4533004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9gjNzUHBF8xbamtxTGDjzRWYL5w0mzcy/7Pw8GehUhGzt8cZzTkmjGhe4Q/+?=
- =?us-ascii?Q?wwDxsZm1YMO/7FtC3usb2LiZTbn8DrBhHeV989K4Uxr5GkKvDYiqmLsMdJIm?=
- =?us-ascii?Q?xn9DPZZ16zWescWZq/AqTkrU/6Qhdo8bXNKNsAOf4Hi5WJJ1OagDuS5/EGac?=
- =?us-ascii?Q?ZCdZ1IU3rzN17asd93M5g5P7gPKn+9IvyYesdzWsLni1NKVESMkueB/VXyR+?=
- =?us-ascii?Q?CRmLAFZNGzjKdpNneHOjAz9AT8j1ZzJ7qJMtZxhVvqvWW8xCiHFu3F/Nrs2b?=
- =?us-ascii?Q?ul0xdj4Dz9H0lMo+xWzyjehMljIA+fDKqZ0LaHfCM9A58ZkyuPNyu8Nq6LxO?=
- =?us-ascii?Q?lVnAzl4B9/pFcA0qbaTBjV/TylNcwRuJfRxvteo4gnsadaWq6960hAEjS1ZO?=
- =?us-ascii?Q?IHEoJxFOokKyHLeK6bxN50KXJlJbKNOnReaWH2/J2zuxCV51nF34qf+1LNDA?=
- =?us-ascii?Q?IjCHq8n5GKGURd1p0P2tbSLc0IdyAw5vHFqA2UV0Svpe2E+4JNeJgrMmuVvb?=
- =?us-ascii?Q?g8Zat0dj/SQqUk7PL5dD/DF8gJxUGK4ufqciwXBWX8t6IbpuLtlV8gL47auI?=
- =?us-ascii?Q?yiiKrHiPPl701fT+DSsOx82F4GGmkV0VWOYyNvoQIjarjPqA+Cs8l6yttNt0?=
- =?us-ascii?Q?YbBLhsvcfbsBmkU4TmmUBdTAsFZ5R8p8arockPel3Ef4SVJ5lLrtRYHcNdvH?=
- =?us-ascii?Q?EHXKRL/tGp2ntLckXdkgSQWJa8UpOwI1Vm8zBPKRRl0PG0GX0OAjT9+NnL65?=
- =?us-ascii?Q?L1lBvAlwrUpjEIAL3vCEsKio1BkTHRKyYU55DR+SeQjBs65e0Codve7aeRLq?=
- =?us-ascii?Q?OFJQ64H9wRYRERMUjvLiwg3q4usIfNwDH/dwFBVpAT+xXIvwpnMccJfaqOnP?=
- =?us-ascii?Q?doMwZztxIMsv4JBi8Xu/qODAAMrrggyti/o7rtkRs716mvsbs8zSkIH3QxzY?=
- =?us-ascii?Q?pZP+Ig7B9Qx7sMMkyaZjjcnsmFvWcXeDpuYlqgpNgHkF9glZHipi7ftWrwQO?=
- =?us-ascii?Q?o8NpiraPpXX8b4l6LSTCimvg9Xo4u6jTKyZyVo6HLPL9EIpwanDKAZX/68DY?=
- =?us-ascii?Q?N1+lXdJgn7cix4o1qiC+gZHUQsUfbt6nyGwFVo11aDOYsGagCn9gXSMI8Tys?=
- =?us-ascii?Q?Hhd/XKfKM4+NupaSAuOTdBnrXfeiTEfU4/pzZPe3SbKtqffGIRoZWs/f3UpC?=
- =?us-ascii?Q?ytcKKzCqY2wugjtIYpjoDMMrJaWgJa3UtlxEWkkmghPpN7uCsoDPRX9sL+AR?=
- =?us-ascii?Q?qYnkysArUhzYuy3Sz0oM8+Yu6t1yGdcR5sob2mTA7ZhTcfbXEYhvymmd+M8a?=
- =?us-ascii?Q?f7llDtPJxzAwyJB0m3ueygRf?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f46cd5b4-52b4-4b2e-36a8-08d8ee2cfe1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 18:53:48.0236
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yBd4j3POF3AWwUrylcwY2FpHVByYp7nku6VRxKLwl9/ipRTN0D+28tMcrvxQaK4aiOPCosivANv3A3B4V9UfF8mqtO1Aa6i/ucF5I5I/4es=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0288
+        id S232540AbhCWSz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232562AbhCWSzH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 14:55:07 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB5FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:55:06 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id c1so2674900qke.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=RYIeg+FAZo3N58AkdDKWG73SSjjPsdnT5WfpGKmyRWc=;
+        b=MenOAbW8u/FEj1QE4zVvDCRZ3GxvMYxHAqW/vQq1Otd/70qUmEd+Epa4Fr/Dul15+M
+         EdpQqtmL3TaqapOrXmNEUDv2bxPuNniHwyodHkRl05h94uYjYIaMz/gpUfzCS5XEXqKo
+         Is1CoCpXx0H11blhGVhdIAxQLJPMsPvgB47eKtnzVFguZPC3aHgC9VgEko/q96AEzF+A
+         IvfQ6Af5wUoN5ctwn+F3LrI4Map1O26i3DAwxU6GazWtPDMp3mhMlMIEm4xJxQDYZ+02
+         JAMtyR3mz9fAi0rz7ALfg6YGlcP7RtmATbMU5wSgpg+TW1ISXRWUSa7y7qqBEiyx8dIs
+         BCdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=RYIeg+FAZo3N58AkdDKWG73SSjjPsdnT5WfpGKmyRWc=;
+        b=D4zK6RUblDtjnvFSEK9awalS6RFXFwjZuZOUaWQ4cwsAKwU6wbdCusLxWltOBmA3Ml
+         bxzXOysUnC7phDtdHamTxOC9thVNyJslsWaYtjc12wT8DisV534YteOTC91g7wtm1oFf
+         7e6QDJaUZAh7Hs/kBvCXhRhwR2REyYf/SqnD+Yv9BoF9UXz/+wzjeCd+PcakeeDQxJdE
+         TvNWLoTUGYtEaHW2eEHarlU1hHpm/VW/GKrADgR+3g52DAyi6N6NRe7dkVsnMyQq3FaR
+         /eRmN450vKGXTlWFr38oztAXmrn3vSex09oCe2lwWS2NKpFDgAsdJgfbs2Q01YlbO4tH
+         wBHA==
+X-Gm-Message-State: AOAM532JcALyiDJsGXplCCiiumaP71EBUMYoCVeM4OaNx47xVo9lf491
+        w+ADEdP3dWrUgmYXrpEBnsqhfMbIRQmm
+X-Google-Smtp-Source: ABdhPJydufRLpAYUkWP7OAc5HCE53zn6a0Riy08NSpBqvYAYyUrCb2Y2cjgPOPoQcWq1/INhwREoRisU0Zt4
+X-Received: from yudiliu.mtv.corp.google.com ([2620:15c:202:201:a916:b584:a08a:3fcd])
+ (user=yudiliu job=sendgmr) by 2002:a05:6214:12a1:: with SMTP id
+ w1mr6227626qvu.57.1616525705227; Tue, 23 Mar 2021 11:55:05 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 11:55:01 -0700
+Message-Id: <20210323115459.v1.1.I3f19b22d6eaaa182123e373a9fa1fa85105aba07@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v1] Bluetooth: Return whether a connection is outbound
+From:   Yu Liu <yudiliu@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        chromeos-bluetooth-upstreaming@chromium.org
+Cc:     Yu Liu <yudiliu@google.com>, Miao-chen Chou <mcchou@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sunil Muthuswamy <sunilmut@microsoft.com> Sent: Tuesday, March 23, 20=
-21 11:47 AM
->=20
-> Linux has support for free page reporting now (36e66c554b5c) for
-> virtualized environment. On Hyper-V when virtually backed VMs are
-> configured, Hyper-V will advertise cold memory discard capability,
-> when supported. This patch adds the support to hook into the free
-> page reporting infrastructure and leverage the Hyper-V cold memory
-> discard hint hypercall to report/free these pages back to the host.
->=20
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Tested-by: Matheus Castello <matheus@castello.eng.br>
-> ---
-> In V2:
-> - Addressed feedback comments
-> - Added page reporting config option tied to hyper-v balloon config
->=20
-> In V3:
-> - Addressed feedback from Vitaly
->=20
-> In V4:
-> - Queried and cached the Hyper-V extended capability for the lifetime
->   of the VM
-> - Addressed feedback from Michael Kelley.
->=20
-> In v5:
-> - Added a comment clarifying handling of failed query extended
->   capability hypercall to address Michael's feedback.
-> ---
->  arch/x86/hyperv/hv_init.c         | 51 +++++++++++++++++-
->  arch/x86/kernel/cpu/mshyperv.c    |  9 ++--
->  drivers/hv/Kconfig                |  1 +
->  drivers/hv/hv_balloon.c           | 89 +++++++++++++++++++++++++++++++
->  include/asm-generic/hyperv-tlfs.h | 35 +++++++++++-
->  include/asm-generic/mshyperv.h    |  3 +-
->  6 files changed, 180 insertions(+), 8 deletions(-)
->=20
+When an MGMT_EV_DEVICE_CONNECTED event is reported back to the user
+space we will set the flags to tell if the established connection is
+outbound or not. This is useful for the user space to log better metrics
+and error messages.
 
-Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+
+Signed-off-by: Yu Liu <yudiliu@google.com>
+---
+
+Changes in v1:
+- Initial change
+
+ include/net/bluetooth/mgmt.h | 2 ++
+ net/bluetooth/mgmt.c         | 5 +++++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index a7cffb069565..d66bc6938b58 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -885,6 +885,8 @@ struct mgmt_ev_new_long_term_key {
+ 	struct mgmt_ltk_info key;
+ } __packed;
+ 
++#define MGMT_DEV_CONN_DIRECTION_OUT	0x01
++
+ #define MGMT_EV_DEVICE_CONNECTED	0x000B
+ struct mgmt_ev_device_connected {
+ 	struct mgmt_addr_info addr;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 90334ac4a135..fc0ff6dc7ebf 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -8772,6 +8772,11 @@ void mgmt_device_connected(struct hci_dev *hdev, struct hci_conn *conn,
+ 	bacpy(&ev->addr.bdaddr, &conn->dst);
+ 	ev->addr.type = link_to_bdaddr(conn->type, conn->dst_type);
+ 
++	if (conn->out)
++		flags |= MGMT_DEV_CONN_DIRECTION_OUT;
++	else
++		flags &= ~MGMT_DEV_CONN_DIRECTION_OUT;
++
+ 	ev->flags = __cpu_to_le32(flags);
+ 
+ 	/* We must ensure that the EIR Data fields are ordered and
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
