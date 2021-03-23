@@ -2,167 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163B5345B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88848345B0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhCWJiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        id S230226AbhCWJis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhCWJiL (ORCPT
+        with ESMTP id S229614AbhCWJim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:38:11 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999A5C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:38:10 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id y6so22678582eds.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:38:10 -0700 (PDT)
+        Tue, 23 Mar 2021 05:38:42 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189FEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:38:42 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id v2so11097400pgk.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:38:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0jEA2q4Aaw2ZtcKO1cqlqt1glbyKrTnhi87C48RZtAM=;
-        b=yAvKFG7A0oMQmtxQy5Sp8oXbqx947Q69OvWO2V0qsimcWUAfew4wyVUjqSRQeu/yeo
-         49ZN2P7ECpDDmwbX4PdqmndoYnlRgcnUgZpKYtlNBkgDAl3EIsoBVMBv8+jargId8Arb
-         9Vw/fYAPIjv2RNBoeeEDTaGlj1syolEiQieg08gkP8Z+m8m+jOj5AYcsRrhyowZ8yFjU
-         6tOnH3yCEBeomTxFTf5Ntd3G8ZJV9ijUf2Zo+h5/1VQsjBAHnFoR9XuupRXTAtvqNuhD
-         fxpm2FU2uH43VbAK9jW6DaLEtV4agyabD+vtDEQ2BZE55ZdbkNk75GkegetDuDaovftd
-         3aCw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=xOvBavSnacobKGo+kw6twfWO3MtChZQ04YkTIEe1M94=;
+        b=HISSMh9TBur1wFl5ZLmfc3+KHE5YQVvifXLz4vAOQ/RuTfSWIRc/+hJOtV1qAeRy0S
+         LgEDLD1/j7Y6rx4L4vBedsmW+gRCopsbmarhSCdXfm4lJzOLl5sCLpL/ZDyZEwjyO7VM
+         7yLNQ8b1uX1x016F2STebxxpL+xsWM+8qZIPx41SQh/HvsBnspxiDq8MNWvxVmcRvaQw
+         5t961Stw4pfOeZemjlRiYlj7DS1ck4l325CJ0bGqOyLd2hnZA/xjPgmfwNocY7CaVOhE
+         G0VVlRMoQJ5kMoUmBfZKG/0zztilcaC1VXAz9D7Ze7UPfhedRKf5aGbd3r+COW830HQV
+         CRGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0jEA2q4Aaw2ZtcKO1cqlqt1glbyKrTnhi87C48RZtAM=;
-        b=mJF9Tjy51J7Wo7G1wVI/stxORurU46Kt/JjMrXBHU+EKerIrjBX4hnQ9GIyfzMyNWb
-         MhRomEuZl319onkEtOzvCih3Tej40RA1XvG6dDovizDjQJ0G/75YNTxCjT0Pj+mLb6lr
-         OwOXMjSSU/AEnJ8bJ0lfzJTZ4gGWWOzXrxkbB7NHJodSC4UQFH1CThNzQC6e17xBYxKJ
-         9MU352tlpeOSc+DieddBKmaq2P3CNUBmsUrOBmFa9hb3kxtjz1uFDGhL8Al3v88mZxe6
-         9haIpsfL+YzbdpqQJFnrGx5smUvrwT8gqLSqrGSxlvgfaUsZ2HtohNar/Kcx/6NsHf2J
-         /eAQ==
-X-Gm-Message-State: AOAM531Avgbe+pTHjLbGgqp73RVtbndjDA5l+qdUPD2ON+uemiy+5sPE
-        LKVicAqsSgnw13BwG89C8jHZNQ==
-X-Google-Smtp-Source: ABdhPJwW4mqlJyLJmx5PFFyr4uXYYH6MQQhFbOmFuns9sUC3DPQG6k2/fTJcihGXeieRDqshA10EjA==
-X-Received: by 2002:a05:6402:34d:: with SMTP id r13mr3725729edw.64.1616492289370;
-        Tue, 23 Mar 2021 02:38:09 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id g12sm6470839eje.120.2021.03.23.02.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 02:38:08 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:38:06 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, sre@kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v7 04/11] mfd: mt6360: Combine mt6360 pmic/ldo resources
- into mt6360 regulator resources
-Message-ID: <20210323093806.GR2916463@dell>
-References: <1605177598-23501-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605177598-23501-5-git-send-email-gene.chen.richtek@gmail.com>
- <74b127eb-9a3c-20c9-5692-b00b982f4da3@gmail.com>
- <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
- <20210115073241.GC3975472@dell>
- <CAE+NS37hVMVJA04ZmdcfKvw05ga1-vT=fGRAf=bh17XOJHEh4A@mail.gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xOvBavSnacobKGo+kw6twfWO3MtChZQ04YkTIEe1M94=;
+        b=TkzitsZB3lKdoL1WmUvoNKuzIqagxk1+CusEMqQSFxsJyKuPt0vL7/Xtx/YYJLDvWn
+         1xYpVcRLCl/2abXj14LCZKWjp9Q0Wtrcz1J51e3MQ10pNtGc24WRqC+fJdNRYgTcN5u1
+         vQSKIdgQY5/NOgrRmJWeszODkHZFj5+WjHHApHfEzWiUBszOKk/f9CTl4ZN8zRFKk8is
+         InEzgCRskzXqzW20hWSJOqO9Vd42/GDRpYgFi6Wr1m2ivaELgL6mSuXQOvg70goTAvcL
+         1hedniVb7sGcwl3qONh3FyhYguSJupjQv1ezE7ef6lGaFPGYNgIlYFupcffh2SGWXpzd
+         MD5A==
+X-Gm-Message-State: AOAM532NfeJ0ftY4ZwApqBpDTutkl1WZznNB0h9SVB+sOPADHzblh0XC
+        +uS9TMvR+CaLSnRUIVEFxJx6xw==
+X-Google-Smtp-Source: ABdhPJwR1oX+E6hpUxRWNtnoOQ94lUS52Bsnd7WLvzDi9msLPbGDaofmbxrMaiYzI5TWr0WOhcYF4Q==
+X-Received: by 2002:a63:6744:: with SMTP id b65mr3219875pgc.314.1616492321521;
+        Tue, 23 Mar 2021 02:38:41 -0700 (PDT)
+Received: from localhost ([122.172.6.13])
+        by smtp.gmail.com with ESMTPSA id f135sm16170938pfa.102.2021.03.23.02.38.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Mar 2021 02:38:41 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:08:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210323093839.n7cq7f5poebqdwit@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <20210323090108.ygx76exdgzudeeqi@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE+NS37hVMVJA04ZmdcfKvw05ga1-vT=fGRAf=bh17XOJHEh4A@mail.gmail.com>
+In-Reply-To: <20210323090108.ygx76exdgzudeeqi@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Mar 2021, Gene Chen wrote:
-
-> Lee Jones <lee.jones@linaro.org> 於 2021年1月15日 週五 下午3:32寫道：
-> >
-> > On Fri, 15 Jan 2021, Gene Chen wrote:
-> >
-> > > Matthias Brugger <matthias.bgg@gmail.com> 於 2021年1月12日 週二 下午8:32寫道：
-> > > >
-> > > >
-> > > >
-> > > > On 12/11/2020 11:39, Gene Chen wrote:
-> > > > > From: Gene Chen <gene_chen@richtek.com>
-> > > > >
-> > > > > Combine mt6360 pmic/ldo resources into mt6360 regulator resources
-> > > > > to simplify the similar resources object.
-> > > > >
-> > > > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >  drivers/mfd/mt6360-core.c | 11 +++--------
-> > > > >  1 file changed, 3 insertions(+), 8 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > > > > index 692e47b..5119e51 100644
-> > > > > --- a/drivers/mfd/mt6360-core.c
-> > > > > +++ b/drivers/mfd/mt6360-core.c
-> > > > > @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resources[] = {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt"),
-> > > > >  };
-> > > > >
-> > > > > -static const struct resource mt6360_pmic_resources[] = {
-> > > > > +static const struct resource mt6360_regulator_resources[] = {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
-> > > > > @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resources[] = {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
-> > > > > -};
-> > > > > -
-> > > > > -static const struct resource mt6360_ldo_resources[] = {
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
-> > > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
-> > > > > @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] = {
-> > > > >                   NULL, 0, 0, "mediatek,mt6360-chg"),
-> > > > >       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
-> > > > >                   NULL, 0, 0, "mediatek,mt6360-led"),
-> > > > > -     OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
-> > > > > -                 NULL, 0, 0, "mediatek,mt6360-pmic"),
-> > > > > -     OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
-> > > > > -                 NULL, 0, 0, "mediatek,mt6360-ldo"),
-> > > > > +     OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
-> > > > > +                 NULL, 0, 0, "mediatek,mt6360-regulator"),
-> > > >
-> > > > As discussed with the MFD maintainer [1], the regulator (and probably all cells)
-> > > > shouldn't have a DT binding.
-> > > >
-> > > > So please send a new version which fixes that.
-> > > >
-> > > > Regards,
-> > > > Matthias
-> > > >
-> > > > [1] https://lore.kernel.org/linux-mediatek/20210111164118.GE4728@sirena.org.uk/
-> >
-> > I don't think Mark is correct here.
-> >
-> > We usually do implement compatible strings for sub-devices and they do
-> > tend to have their own device nodes.
-> >
-> > It's a very long time ago since I coded this up myself, but from
-> > memory, you can't have 2 devices share a compatible string.
-> >
+On 23-03-21, 14:31, Viresh Kumar wrote:
+> On 23-03-21, 22:19, Jie Deng wrote:
+> > +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+> > +{
+> > +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> > +	struct virtqueue *vq = vi->vq;
+> > +	struct virtio_i2c_req *reqs;
+> > +	unsigned long time_left;
+> > +	int ret, nr;
+> > +
+> > +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+> > +	if (!reqs)
+> > +		return -ENOMEM;
+> > +
+> > +	mutex_lock(&vi->lock);
+> > +
+> > +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
+> > +	if (ret == 0)
+> > +		goto err_unlock_free;
+> > +
+> > +	nr = ret;
+> > +	reinit_completion(&vi->completion);
 > 
-> Either Mark or Lee suggestion is work.
-> Is there a conclusion that we can apply it?
-> If MFD is already supported of_compatible, we prefer use of_compatible mapping.
+> I think I may have found a possible bug here. This reinit_completion() must
+> happen before we call virtio_i2c_send_reqs(). It is certainly possible (surely
+> in corner cases) that virtio_i2c_msg_done() may get called right after
+> virtio_i2c_send_reqs() and before we were able to call reinit_completion(). And
+> in that case we will never see the completion happen at all.
+> 
+> > +	virtqueue_kick(vq);
 
-I would resubmit the set.  We can start afresh from there.
+I may have misread this. Can the actually start before virtqueue_kick() is
+called ? If not, then completion may be fine where it is.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+viresh
