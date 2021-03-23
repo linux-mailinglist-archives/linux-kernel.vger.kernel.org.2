@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA57C3454CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59253454D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 02:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhCWBPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 21:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
+        id S231562AbhCWBQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 21:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhCWBPe (ORCPT
+        with ESMTP id S231406AbhCWBQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 21:15:34 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA75C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:15:32 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id v70so12791535qkb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:15:32 -0700 (PDT)
+        Mon, 22 Mar 2021 21:16:26 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50D1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:16:25 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id y18so12790241qky.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 18:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=scplLgXPqqZKrtnIxgrt8tEocTmcj46ftQf4U6i2iYA=;
-        b=nChjpddhcwjSCu3obF68BMXJY1m7YhqYrE9QDshrL1zxJwh0t9zHT3e82XFwk4t2Ar
-         qVdTuKvAKNHw6QQcw/JnzStDKlhRHMoYXTj2zgbdt5e0H2Zo5E1GFc45NX55kQv1yxXh
-         OgYUwCVqfMywOGcD5o7OpWp4u9/dak1QJNjAvL8DF9xqDz4LkwNFXIwxm2JtwxSxhox4
-         jq/wY7H/MHwkIf+kagLPOaii9x6tVzxc4p0EV/739TWZhTzT7q1gnC5FKE+wfYIJ8M55
-         vg2iFh8GcgDWw/t9RzZau3mAXgXE9Z/T7ZP/meWmseigZpUlu/leKot8ZuM99l1kqnps
-         TNgg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S5pECjMsM/qvstnesb/+ZKBN9a5m4sodJTA9keXe8fs=;
+        b=dzSqflgkinPRl41IH6b6OavC4s0p/5zLninBkx7jvN5x0aJcq94JpIET1747IB/M34
+         /NQ5JHATUU7E2Pl5dV0kMt5gdt+RQRS5LU+f/X7EDMxiVCiFXWAij/EXKpT1w/elqHhD
+         rb4eZFhPkBSBN0bIgG7ZSLW7HYN7BvToY6tZT3n40b4ucj1vYqJCWZHebwuP8H10sCmk
+         GsUeQdhycaM8SPxIDYfV8dBZH+S86dibxCrrTasFH78QMmsxBZl9rLfkZPoOWLAQ8eQJ
+         mC1iozFhXJBE4szBqDdCTGZcdU0VjF8metQOKmbjGoQnHrYGDrl0JhzHfMNLFXszuV44
+         LP7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=scplLgXPqqZKrtnIxgrt8tEocTmcj46ftQf4U6i2iYA=;
-        b=pTpmWzLUsM5nBYtrDXQi65EstcsNEtH0fl/s7pH6C6XBcN+Avey097JSj2VuopODMY
-         Gm24h2xu2TaYMDlJGnGDcNJ3XRLnas1ZmqBrD4Wu0qNvhCYFFLhv4Bi+pJa6feNtB7Tb
-         uxI3N62yspUtrD/VPbmTRibU/lT7wEuF6n5Dttsw6Q+y1hPj9kqaXm8xS6iAPCdHujtb
-         eL6hEuA6zRcI2xbCJVXEkTGBAxfFABoNqUeYRn/Gxcu8EQQUrFFJ5OlulLBqwwcKj+o6
-         cht61cp5YDCdgkspZj8dg7/QQot6qRIqT/ncns8tNvcmTQxuegZIdpEHvlg5kinH/4E6
-         Ihkg==
-X-Gm-Message-State: AOAM530Fda1AJJk0sJ7vDqERhn3eiqadEO12ZryiPjRn0QEzgYjrfcW/
-        0JFzJQRo9B6Dj8kn8KmkqEzHxApt4N3McehTuAvYqw==
-X-Google-Smtp-Source: ABdhPJzOpro7C1aQUTouUHfe7+0TwOaB6WkuLAry5pJTYJSt3nwE5fu2jXm5nj0XKPds1iiJecOf9/hZgeBYOrvEpJM=
-X-Received: by 2002:a37:a647:: with SMTP id p68mr3035984qke.189.1616462131596;
- Mon, 22 Mar 2021 18:15:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S5pECjMsM/qvstnesb/+ZKBN9a5m4sodJTA9keXe8fs=;
+        b=lR48NPSNxCyiZxj8NnpQMmMX2fSykpVARqnxMFTfdrJ5D6VQ5QnlVKJQLkeCYQMBBd
+         DYxzoJSUbJDkAKv+4LQ5sqWyFaUbKjus3pWNFM//vhNfz5r6s3SYIu1dAkdA8e8uUS/5
+         PaLfl2gN+d87n5KGemIVwo7jceWF1uhVYlxJvj5OxVKzwIl2Ma48RQ3Hr7Se6o2WUBGP
+         9m02zxOVQsdKwaT1cvrLG+Ejmvp4BmaMlwyEB1Rcb8kNsrgnHqTBLnLAEJZIm9S0zcmO
+         txX+owWRoi/bzIq6Z6pbSKeXacVOj8NFIVodeVaPjOq9+2K+L3qf6JEdf+UW9WctILc5
+         QKBQ==
+X-Gm-Message-State: AOAM530+umD5DNaBjz+otf/sVyWCn5sQir4RAvRy7zkTCZk8QoLvYLF+
+        HhGnoB+q/3IcDGwRhVzrw4A=
+X-Google-Smtp-Source: ABdhPJwZ/rCncMQ46/4RmOQg6AKfgCTO4VHUsa9gsBjtXTcAf+WrZsvRdMlXLSN8z2pGmqgSqMrVpQ==
+X-Received: by 2002:a05:620a:1326:: with SMTP id p6mr3178972qkj.217.1616462184987;
+        Mon, 22 Mar 2021 18:16:24 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.117])
+        by smtp.gmail.com with ESMTPSA id i93sm10383114qtd.48.2021.03.22.18.16.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 18:16:24 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        imre.deak@intel.com, ville.syrjala@linux.intel.com,
+        lucas.demarchi@intel.com, matthew.d.roper@intel.com,
+        tejaskumarx.surendrakumar.upadhyay@intel.com,
+        unixbhaskar@gmail.com, aditya.swarup@intel.com,
+        anusha.srivatsa@intel.com, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] drm/i915: A typo fix
+Date:   Tue, 23 Mar 2021 06:46:07 +0530
+Message-Id: <20210323011607.182803-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20210319203253.3352417-1-joel@joelfernandes.org>
- <20210319203253.3352417-3-joel@joelfernandes.org> <20210320154632.GZ4746@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210320154632.GZ4746@worktop.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 22 Mar 2021 18:15:20 -0700
-Message-ID: <CABk29Nvp92i3_qsr4519XEa9=_XjKYemDpj2Ptk45wx90bYgFw@mail.gmail.com>
-Subject: Re: [PATCH 2/6] sched: tagging interface for core scheduling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Steven Rostedt <rostedt@goodmis.org>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static unsigned long sched_core_alloc_task_cookie(void)
-> > +{
-> > +     struct sched_core_task_cookie *ck =
-> > +             kmalloc(sizeof(struct sched_core_task_cookie), GFP_KERNEL);
->
->         struct sched_core_task_cookie *ck = kmalloc(sizeof(*ck), GFP_KERNEL);
->
-> Also, those type names are unfortunately long..
->
-> > +static void sched_core_get_task_cookie(unsigned long cookie)
-> > +{
-> > +     struct sched_core_task_cookie *ptr =
-> > +             (struct sched_core_task_cookie *)cookie;
->
->         struct sched_core_task_cookie *ptr = (void *)cookie;
->
-> Know your language and use it to avoid typing excessively long names :-)
 
-Good point, done. Keeping sched_core_task_cookie for now unless you'd
-prefer a replacement, since it is only used internally by coretag.c.
+s/nothign/nothing/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/gpu/drm/i915/display/intel_dpll_mgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+index f6ad257a260e..14d784a6fae5 100644
+--- a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
++++ b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+@@ -4185,7 +4185,7 @@ static void icl_pll_disable(struct drm_i915_private *dev_priv,
+ 	/*
+ 	 * DVFS pre sequence would be here, but in our driver the cdclk code
+ 	 * paths should already be setting the appropriate voltage, hence we do
+-	 * nothign here.
++	 * nothing here.
+ 	 */
+
+ 	val = intel_de_read(dev_priv, enable_reg);
+--
+2.31.0
+
