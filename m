@@ -2,329 +2,653 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BDD346471
+	by mail.lfdr.de (Postfix) with ESMTP id 720E3346472
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhCWQG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:06:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43114 "EHLO
+        id S233089AbhCWQHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:07:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47764 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233101AbhCWQGd (ORCPT
+        by vger.kernel.org with ESMTP id S233111AbhCWQGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:06:33 -0400
+        Tue, 23 Mar 2021 12:06:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616515593;
+        s=mimecast20190719; t=1616515597;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DCppzRt5yVFQRFuyWqBhrRYjU8pyziGBcX03eT5KikY=;
-        b=OlbYgirNuRaZf99pIoCOb+3z8l6NbYl4xihOaMN7k322SmLL5i5nNOsSDCsmVoZd/HiX31
-        E17+s8dSFSxybYRkQZfSj4+O9tXM2WfuIG7pBPqI2XorDSguuA/yI28AnVnl2xsWmOhB9F
-        ZzIz0nRuTkSm1UqF1rILqH2KHoXhB9Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-7QUfYVdmOHSddyrvPAl3Lg-1; Tue, 23 Mar 2021 12:06:28 -0400
-X-MC-Unique: 7QUfYVdmOHSddyrvPAl3Lg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D827F801817;
-        Tue, 23 Mar 2021 16:06:26 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 650255D9C0;
-        Tue, 23 Mar 2021 16:06:26 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 10:06:25 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     bhelgaas@google.com, pali@kernel.org, raphael.norwitz@nutanix.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210323100625.0021a943@omen.home.shazbot.org>
-In-Reply-To: <20210323153221.n2pwjixqen6hx26h@archlinux>
-References: <20210317190206.zrtzwgskxdogl7dz@pali>
-        <20210317131536.38f398b0@omen.home.shazbot.org>
-        <20210317192424.kpfybcrsen3ivr4f@pali>
-        <20210317133245.7d95909c@omen.home.shazbot.org>
-        <20210317194024.nkzrbbvi6utoznze@pali>
-        <20210317140020.4375ba76@omen.home.shazbot.org>
-        <20210317201346.v6t4rde6nzmt7fwr@pali>
-        <20210318143155.4vuf3izuzihiujaa@archlinux>
-        <20210323143419.syqf4dg7wcxorcmk@pali>
-        <20210323084438.37bfcc8e@omen.home.shazbot.org>
-        <20210323153221.n2pwjixqen6hx26h@archlinux>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dX/ayVfh5rEV5Yovv43n14UWOPJP+O8wg+HRW8qFYCA=;
+        b=AYFkUOYMSudVo/sIrvcf9bIT/USK7hNxQZWLvkO15El84icd1Z2uwfmQ1anej4lv8qoVPW
+        F4B2aDp4v8uwT13ya6UkMG9A8LbLtIRJPqd63Wfts/MKvNl40rPkFdCl6NmUa1qwk6hwOY
+        JIe2JdTT9mx28DBriRg1rDGYXBhrPz8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-XAF61hCWM9ubtD1ixWIMzA-1; Tue, 23 Mar 2021 12:06:34 -0400
+X-MC-Unique: XAF61hCWM9ubtD1ixWIMzA-1
+Received: by mail-ej1-f69.google.com with SMTP id si4so1269111ejb.23
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:06:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dX/ayVfh5rEV5Yovv43n14UWOPJP+O8wg+HRW8qFYCA=;
+        b=q/+jxTEgGHxbpvF/ti2fE+FwRFx6o2DCcDQtacyvVekAtpHR9VSZGX6Gye/IJ4KBkr
+         szA632onFVjL/JZDvzevt8u535C8si4Dm3NqQKrN7fxEpuXTTGX705nh7ZRxjMGnOBti
+         IS2VFpUHlzUm9v9iX79L28ojjFE5jiniCxga1DyMj5JfJ6ydLIRV4t+sRkLMrok1O9Ph
+         TflcWM4JPQpJsLPJluHY51H718zEsMss9MHZCCEG+yBaDtd42MTgGOrF4pu81A+0f2df
+         5iOqjgSaM8Zo7jGg4PmZYBZntY1y9V+DPwx8tZ0GNDQkG4JsYRSdU9nX6XDIHYYqbot9
+         lI9A==
+X-Gm-Message-State: AOAM532DRKn88OmyM2vwb3fZqKUkkPVc28mDqyeFYLECXqg1heRi6q8J
+        cpZoha/2eMP777lTQGaTsKm0imxGqZNIPXNA/3u6FflAPN+fP88a/2EEjEOgC0o23QmlpuGKWza
+        IYWfXh5GFO8lHs29IQium4puA
+X-Received: by 2002:a17:906:2a16:: with SMTP id j22mr5669356eje.247.1616515591804;
+        Tue, 23 Mar 2021 09:06:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw2MM0RHSKms0I/eIPiyz9c5bKOQ/k0ort32dinOjBJNXyxS/0kZSrUc97LXbRV0sFYSkRuqg==
+X-Received: by 2002:a17:906:2a16:: with SMTP id j22mr5669318eje.247.1616515591501;
+        Tue, 23 Mar 2021 09:06:31 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id hd37sm10920653ejc.114.2021.03.23.09.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 09:06:30 -0700 (PDT)
+From:   Miklos Szeredi <mszeredi@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, garyhuang <zjh.20052005@163.com>
+Subject: [PATCH] vfs: allow stacked ->get_acl() in RCU lookup
+Date:   Tue, 23 Mar 2021 17:06:29 +0100
+Message-Id: <20210323160629.228597-1-mszeredi@redhat.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 21:02:21 +0530
-Amey Narkhede <ameynarkhede03@gmail.com> wrote:
+Overlayfs does not cache ACL's to avoid double caching with all its
+problems.  Instead it just calls the underlying filesystem's
+i_op->get_acl(), which will return the cached value, if possible.
 
-> On 21/03/23 08:44AM, Alex Williamson wrote:
-> > On Tue, 23 Mar 2021 15:34:19 +0100
-> > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > =20
-> > > On Thursday 18 March 2021 20:01:55 Amey Narkhede wrote: =20
-> > > > On 21/03/17 09:13PM, Pali Roh=C3=A1r wrote: =20
-> > > > > On Wednesday 17 March 2021 14:00:20 Alex Williamson wrote: =20
-> > > > > > On Wed, 17 Mar 2021 20:40:24 +0100
-> > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > =20
-> > > > > > > On Wednesday 17 March 2021 13:32:45 Alex Williamson wrote: =20
-> > > > > > > > On Wed, 17 Mar 2021 20:24:24 +0100
-> > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > =20
-> > > > > > > > > On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote=
-: =20
-> > > > > > > > > > On Wed, 17 Mar 2021 20:02:06 +0100
-> > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > > > =20
-> > > > > > > > > > > On Monday 15 March 2021 09:03:39 Alex Williamson wrot=
-e: =20
-> > > > > > > > > > > > On Mon, 15 Mar 2021 15:52:38 +0100
-> > > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > > > > > =20
-> > > > > > > > > > > > > On Monday 15 March 2021 08:34:09 Alex Williamson =
-wrote: =20
-> > > > > > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
-> > > > > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > > > > > > > =20
-> > > > > > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhed=
-e wrote: =20
-> > > > > > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) an=
-d secondary bus
-> > > > > > > > > > > > > > > > reset(pci_parent_bus_reset) which I think a=
-re hot reset and
-> > > > > > > > > > > > > > > > warm reset respectively. =20
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > No. PCI secondary bus reset =3D PCIe Hot Rese=
-t. Slot reset is just another
-> > > > > > > > > > > > > > > type of reset, which is currently implemented=
- only for PCIe hot plug
-> > > > > > > > > > > > > > > bridges and for PowerPC PowerNV platform and =
-it just call PCI secondary
-> > > > > > > > > > > > > > > bus reset with some other hook. PCIe Warm Res=
-et does not have API in
-> > > > > > > > > > > > > > > kernel and therefore drivers do not export th=
-is type of reset via any
-> > > > > > > > > > > > > > > kernel function (yet). =20
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Warm reset is beyond the scope of this series, =
-but could be implemented
-> > > > > > > > > > > > > > in a compatible way to fit within the pci_reset=
-_fn_methods[] array
-> > > > > > > > > > > > > > defined here. =20
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Ok!
-> > > > > > > > > > > > > =20
-> > > > > > > > > > > > > > Note that with this series the resets available=
- through
-> > > > > > > > > > > > > > pci_reset_function() and the per device reset a=
-ttribute is sysfs remain
-> > > > > > > > > > > > > > exactly the same as they are currently.  The bu=
-s and slot reset
-> > > > > > > > > > > > > > methods used here are limited to devices where =
-only a single function is
-> > > > > > > > > > > > > > affected by the reset, therefore it is not like=
- the patch you proposed
-> > > > > > > > > > > > > > which performed a reset irrespective of the dow=
-nstream devices.  This
-> > > > > > > > > > > > > > series only enables selection of the existing m=
-ethods.  Thanks,
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Alex
-> > > > > > > > > > > > > > =20
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > But with this patch series, there is still an iss=
-ue with PCI secondary
-> > > > > > > > > > > > > bus reset mechanism as exported sysfs attribute d=
-oes not do that
-> > > > > > > > > > > > > remove-reset-rescan procedure. As discussed in ot=
-her thread, this reset
-> > > > > > > > > > > > > let device in unconfigured / broken state. =20
-> > > > > > > > > > > >
-> > > > > > > > > > > > No, there's not:
-> > > > > > > > > > > >
-> > > > > > > > > > > > int pci_reset_function(struct pci_dev *dev)
-> > > > > > > > > > > > {
-> > > > > > > > > > > >         int rc;
-> > > > > > > > > > > >
-> > > > > > > > > > > >         if (!dev->reset_fn)
-> > > > > > > > > > > >                 return -ENOTTY;
-> > > > > > > > > > > >
-> > > > > > > > > > > >         pci_dev_lock(dev); =20
-> > > > > > > > > > > > >>>     pci_dev_save_and_disable(dev); =20
-> > > > > > > > > > > >
-> > > > > > > > > > > >         rc =3D __pci_reset_function_locked(dev);
-> > > > > > > > > > > > =20
-> > > > > > > > > > > > >>>     pci_dev_restore(dev); =20
-> > > > > > > > > > > >         pci_dev_unlock(dev);
-> > > > > > > > > > > >
-> > > > > > > > > > > >         return rc;
-> > > > > > > > > > > > }
-> > > > > > > > > > > >
-> > > > > > > > > > > > The remove/re-scan was discussed primarily because =
-your patch performed
-> > > > > > > > > > > > a bus reset regardless of what devices were affecte=
-d by that reset and
-> > > > > > > > > > > > it's difficult to manage the scope where multiple d=
-evices are affected.
-> > > > > > > > > > > > Here, the bus and slot reset functions will fail un=
-less the scope is
-> > > > > > > > > > > > limited to the single device triggering this reset.=
-  Thanks,
-> > > > > > > > > > > >
-> > > > > > > > > > > > Alex
-> > > > > > > > > > > > =20
-> > > > > > > > > > >
-> > > > > > > > > > > I was thinking a bit more about it and I'm really sur=
-e how it would
-> > > > > > > > > > > behave with hotplugging PCIe bridge.
-> > > > > > > > > > >
-> > > > > > > > > > > On aardvark PCIe controller I have already tested tha=
-t secondary bus
-> > > > > > > > > > > reset bit is triggering Hot Reset event and then also=
- Link Down event.
-> > > > > > > > > > > These events are not handled by aardvark driver yet (=
-needs to
-> > > > > > > > > > > implemented into kernel's emulated root bridge code).
-> > > > > > > > > > >
-> > > > > > > > > > > But I'm not sure how it would behave on real HW PCIe =
-hotplugging bridge.
-> > > > > > > > > > > Kernel has already code which removes PCIe device if =
-it changes presence
-> > > > > > > > > > > bit (and inform via interrupt). And Link Down event t=
-riggers this
-> > > > > > > > > > > change. =20
-> > > > > > > > > >
-> > > > > > > > > > This is the difference between slot and bus resets, the=
- slot reset is
-> > > > > > > > > > implemented by the hotplug controller and disables pres=
-ence detection
-> > > > > > > > > > around the bus reset.  Thanks, =20
-> > > > > > > > >
-> > > > > > > > > Yes, but I'm talking about bus reset, not about slot rese=
-t.
-> > > > > > > > >
-> > > > > > > > > I mean: to use bus reset via sysfs on hardware which supp=
-orts slots and
-> > > > > > > > > hotplugging.
-> > > > > > > > >
-> > > > > > > > > And if I'm reading code correctly, this combination is al=
-lowed, right?
-> > > > > > > > > Via these new patches it is possible to disable slot rese=
-t and enable
-> > > > > > > > > bus reset. =20
-> > > > > > > >
-> > > > > > > > That's true, a slot reset is simply a bus reset wrapped aro=
-und code
-> > > > > > > > that prevents the device from getting ejected. =20
-> > > > > > >
-> > > > > > > Yes, this makes slot reset "safe". But bus reset is "unsafe".
-> > > > > > > =20
-> > > > > > > > Maybe it would make
-> > > > > > > > sense to combine the two as far as this interface is concer=
-ned, ie. a
-> > > > > > > > single "bus" reset method that will always use slot reset w=
-hen
-> > > > > > > > available.  Thanks, =20
-> > > > > > >
-> > > > > > > That should work when slot reset is available.
-> > > > > > >
-> > > > > > > Other option is that mentioned remove-reset-rescan procedure.=
- =20
-> > > > > >
-> > > > > > That's not something we can introduce to the pci_reset_function=
-() path
-> > > > > > without a fair bit of collateral in using it through vfio-pci.
-> > > > > > =20
-> > > > > > > But quick search in drivers/pci/hotplug/ results that not all=
- hotplug
-> > > > > > > drivers implement reset_slot method.
-> > > > > > >
-> > > > > > > So there is a possible issue with hotplug driver which may ej=
-ect device
-> > > > > > > during bus reset (because e.g. slot reset is not implemented)=
-? =20
-> > > > > >
-> > > > > > People aren't reporting it, so maybe those controllers aren't b=
-eing
-> > > > > > used for this use case.  Or maybe introducing this patch will m=
-ake
-> > > > > > these reset methods more readily accessible for testing.  We ca=
-n fix or
-> > > > > > blacklist those controllers for bus reset when reports come in.=
-  Thanks, =20
-> > > > >
-> > > > > Ok! I do not know neither if those controllers are used, but look=
-s like
-> > > > > that there are still changes in hotplug code.
-> > > > >
-> > > > > So I guess with these patches people can test it and report issue=
-s when
-> > > > > such thing happen. =20
-> > > > So after a bit research as I understood we need to group slot
-> > > > and bus reset together in a single category of reset methods and
-> > > > then implicitly use slot reset if it is available when bus reset is
-> > > > enabled by the user.
-> > > > Is that right? =20
-> > >
-> > > Yes, I understand it in same way. Just I do not know which name to
-> > > choose for this reset category. In PCI spec it is called Secondary Bus
-> > > Reset (as it resets whole bus with all devices; but we allow this res=
-et
-> > > in this patch series only if on the bus is connected exactly one devi=
-ce).
-> > > In PCIe spec it is called Hot Reset. And if kernel detects Slot suppo=
-rt
-> > > then kernel currently calls it Slot reset. But it is still same thing.
-> > > Any opinion? I think that we could call it Hot Reset as this patch
-> > > series exports it only for single device (so calling it _bus_ is not =
-the
-> > > best match). =20
-> >
-> > A similar abstraction where our scope is not limited to a single
-> > function calls this a bus reset:
-> >
-> > int pci_reset_bus(struct pci_dev *pdev)
-> > {
-> >         return (!pci_probe_reset_slot(pdev->slot)) ?
-> >             __pci_reset_slot(pdev->slot) : __pci_reset_bus(pdev->bus);
-> > }
-> >
-> > Thanks,
-> > Alex
-> > =20
-> I was going to use similar function
->=20
-> int pci_bus_reset(struct pci_dev *dev, int probe)
-> {
->        return pci_dev_reset_slot_function(dev, probe) ?
->                pci_parent_bus_reset(dev, probe) : 0;
->=20
-> }
+In rcu path walk, however, get_cached_acl_rcu() is employed to get the
+value from the cache, which will fail on overlayfs resulting in dropping
+out of rcu walk mode.  This can result in a big performance hit in certain
+situations.
 
-I think via the sysfs attribute we can simply call this "bus" reset,
-but internally having both pci_reset_bus() and pci_bus_reset() would be
-really confusing.  We're doing the same thing as pci_bus_reset() but
-with a different scope, so I'd probably suggest
-pci_bus_reset_function().
+Add a flags argument to the ->get_acl() callback, and allow
+get_cached_acl_rcu() to call the ->get_acl() method with LOOKUP_RCU.
 
-Also, the above ternary form isn't true to the original, only -ENOTTY
-allows fall-through, so something more like:
+Don't do this for the generic case of a cache miss, only in case of
+ACL_DONT_CACHE.
 
-int pci_reset_bus_function(struct pci_dev *dev, int probe)
-{
-	int rc =3D pci_dev_reset_slot_function(dev, probe);
+Reported-by: garyhuang <zjh.20052005@163.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+---
+ fs/9p/acl.c                   |  2 +-
+ fs/9p/acl.h                   |  2 +-
+ fs/bad_inode.c                |  2 +-
+ fs/btrfs/acl.c                |  2 +-
+ fs/btrfs/ctree.h              |  2 +-
+ fs/ceph/acl.c                 |  2 +-
+ fs/ceph/super.h               |  2 +-
+ fs/erofs/xattr.c              |  2 +-
+ fs/erofs/xattr.h              |  2 +-
+ fs/ext2/acl.c                 |  2 +-
+ fs/ext2/acl.h                 |  2 +-
+ fs/ext4/acl.c                 |  2 +-
+ fs/ext4/acl.h                 |  2 +-
+ fs/f2fs/acl.c                 |  2 +-
+ fs/f2fs/acl.h                 |  2 +-
+ fs/fuse/acl.c                 |  2 +-
+ fs/fuse/fuse_i.h              |  2 +-
+ fs/gfs2/acl.c                 |  2 +-
+ fs/gfs2/acl.h                 |  2 +-
+ fs/jffs2/acl.c                |  2 +-
+ fs/jffs2/acl.h                |  2 +-
+ fs/jfs/acl.c                  |  2 +-
+ fs/jfs/jfs_acl.h              |  2 +-
+ fs/nfs/nfs3_fs.h              |  2 +-
+ fs/nfs/nfs3acl.c              |  2 +-
+ fs/ocfs2/acl.c                |  2 +-
+ fs/ocfs2/acl.h                |  2 +-
+ fs/orangefs/acl.c             |  2 +-
+ fs/orangefs/orangefs-kernel.h |  2 +-
+ fs/overlayfs/inode.c          |  6 +++++-
+ fs/overlayfs/overlayfs.h      |  2 +-
+ fs/posix_acl.c                | 10 ++++++++--
+ fs/reiserfs/acl.h             |  2 +-
+ fs/reiserfs/xattr_acl.c       |  2 +-
+ fs/xfs/xfs_acl.c              |  2 +-
+ fs/xfs/xfs_acl.h              |  4 ++--
+ include/linux/fs.h            |  2 +-
+ 37 files changed, 49 insertions(+), 39 deletions(-)
 
-	return (rc =3D=3D -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
-}
-
-Thanks,
-Alex
+diff --git a/fs/9p/acl.c b/fs/9p/acl.c
+index bb1b286c49ae..48d0a8fcc038 100644
+--- a/fs/9p/acl.c
++++ b/fs/9p/acl.c
+@@ -97,7 +97,7 @@ static struct posix_acl *v9fs_get_cached_acl(struct inode *inode, int type)
+ 	return acl;
+ }
+ 
+-struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type)
++struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct v9fs_session_info *v9ses;
+ 
+diff --git a/fs/9p/acl.h b/fs/9p/acl.h
+index e4f7e882272b..7b31cef9ef5a 100644
+--- a/fs/9p/acl.h
++++ b/fs/9p/acl.h
+@@ -16,7 +16,7 @@
+ 
+ #ifdef CONFIG_9P_FS_POSIX_ACL
+ extern int v9fs_get_acl(struct inode *, struct p9_fid *);
+-extern struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type);
++extern struct posix_acl *v9fs_iop_get_acl(struct inode *inode, int type, int flags);
+ extern int v9fs_acl_chmod(struct inode *, struct p9_fid *);
+ extern int v9fs_set_create_acl(struct inode *, struct p9_fid *,
+ 			       struct posix_acl *, struct posix_acl *);
+diff --git a/fs/bad_inode.c b/fs/bad_inode.c
+index 48e16144c1f7..dd34decddaa6 100644
+--- a/fs/bad_inode.c
++++ b/fs/bad_inode.c
+@@ -121,7 +121,7 @@ static const char *bad_inode_get_link(struct dentry *dentry,
+ 	return ERR_PTR(-EIO);
+ }
+ 
+-static struct posix_acl *bad_inode_get_acl(struct inode *inode, int type)
++static struct posix_acl *bad_inode_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	return ERR_PTR(-EIO);
+ }
+diff --git a/fs/btrfs/acl.c b/fs/btrfs/acl.c
+index d95eb5c8cb37..1d70bfd31ac1 100644
+--- a/fs/btrfs/acl.c
++++ b/fs/btrfs/acl.c
+@@ -16,7 +16,7 @@
+ #include "btrfs_inode.h"
+ #include "xattr.h"
+ 
+-struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
++struct posix_acl *btrfs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	int size;
+ 	const char *name;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 9ae776ab3967..a450e5fc9df8 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3639,7 +3639,7 @@ static inline int __btrfs_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag)
+ 
+ /* acl.c */
+ #ifdef CONFIG_BTRFS_FS_POSIX_ACL
+-struct posix_acl *btrfs_get_acl(struct inode *inode, int type);
++struct posix_acl *btrfs_get_acl(struct inode *inode, int type, int flags);
+ int btrfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		  struct posix_acl *acl, int type);
+ int btrfs_init_acl(struct btrfs_trans_handle *trans,
+diff --git a/fs/ceph/acl.c b/fs/ceph/acl.c
+index 529af59d9fd3..2b72b03b0586 100644
+--- a/fs/ceph/acl.c
++++ b/fs/ceph/acl.c
+@@ -29,7 +29,7 @@ static inline void ceph_set_cached_acl(struct inode *inode,
+ 	spin_unlock(&ci->i_ceph_lock);
+ }
+ 
+-struct posix_acl *ceph_get_acl(struct inode *inode, int type)
++struct posix_acl *ceph_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	int size;
+ 	unsigned int retry_cnt = 0;
+diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+index c48bb30c8d70..c12712c80668 100644
+--- a/fs/ceph/super.h
++++ b/fs/ceph/super.h
+@@ -1066,7 +1066,7 @@ void ceph_release_acl_sec_ctx(struct ceph_acl_sec_ctx *as_ctx);
+ /* acl.c */
+ #ifdef CONFIG_CEPH_FS_POSIX_ACL
+ 
+-struct posix_acl *ceph_get_acl(struct inode *, int);
++struct posix_acl *ceph_get_acl(struct inode *, int, int);
+ int ceph_set_acl(struct user_namespace *mnt_userns,
+ 		 struct inode *inode, struct posix_acl *acl, int type);
+ int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
+diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
+index 47314a26767a..84c971690292 100644
+--- a/fs/erofs/xattr.c
++++ b/fs/erofs/xattr.c
+@@ -674,7 +674,7 @@ ssize_t erofs_listxattr(struct dentry *dentry,
+ }
+ 
+ #ifdef CONFIG_EROFS_FS_POSIX_ACL
+-struct posix_acl *erofs_get_acl(struct inode *inode, int type)
++struct posix_acl *erofs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct posix_acl *acl;
+ 	int prefix, rc;
+diff --git a/fs/erofs/xattr.h b/fs/erofs/xattr.h
+index 815304bd335f..5e4b917cc6a7 100644
+--- a/fs/erofs/xattr.h
++++ b/fs/erofs/xattr.h
+@@ -81,7 +81,7 @@ static inline int erofs_getxattr(struct inode *inode, int index,
+ #endif	/* !CONFIG_EROFS_FS_XATTR */
+ 
+ #ifdef CONFIG_EROFS_FS_POSIX_ACL
+-struct posix_acl *erofs_get_acl(struct inode *inode, int type);
++struct posix_acl *erofs_get_acl(struct inode *inode, int type, int flags);
+ #else
+ #define erofs_get_acl	(NULL)
+ #endif
+diff --git a/fs/ext2/acl.c b/fs/ext2/acl.c
+index b9a9db98e94b..1dc220f205b3 100644
+--- a/fs/ext2/acl.c
++++ b/fs/ext2/acl.c
+@@ -141,7 +141,7 @@ ext2_acl_to_disk(const struct posix_acl *acl, size_t *size)
+  * inode->i_mutex: don't care
+  */
+ struct posix_acl *
+-ext2_get_acl(struct inode *inode, int type)
++ext2_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	int name_index;
+ 	char *value = NULL;
+diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
+index 917db5f6630a..0bd53a953831 100644
+--- a/fs/ext2/acl.h
++++ b/fs/ext2/acl.h
+@@ -55,7 +55,7 @@ static inline int ext2_acl_count(size_t size)
+ #ifdef CONFIG_EXT2_FS_POSIX_ACL
+ 
+ /* acl.c */
+-extern struct posix_acl *ext2_get_acl(struct inode *inode, int type);
++extern struct posix_acl *ext2_get_acl(struct inode *inode, int type, int flags);
+ extern int ext2_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 			struct posix_acl *acl, int type);
+ extern int ext2_init_acl (struct inode *, struct inode *);
+diff --git a/fs/ext4/acl.c b/fs/ext4/acl.c
+index c5eaffccecc3..b2b06a80eb8b 100644
+--- a/fs/ext4/acl.c
++++ b/fs/ext4/acl.c
+@@ -142,7 +142,7 @@ ext4_acl_to_disk(const struct posix_acl *acl, size_t *size)
+  * inode->i_mutex: don't care
+  */
+ struct posix_acl *
+-ext4_get_acl(struct inode *inode, int type)
++ext4_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	int name_index;
+ 	char *value = NULL;
+diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
+index 84b8942a57f2..b349365c7b33 100644
+--- a/fs/ext4/acl.h
++++ b/fs/ext4/acl.h
+@@ -55,7 +55,7 @@ static inline int ext4_acl_count(size_t size)
+ #ifdef CONFIG_EXT4_FS_POSIX_ACL
+ 
+ /* acl.c */
+-struct posix_acl *ext4_get_acl(struct inode *inode, int type);
++struct posix_acl *ext4_get_acl(struct inode *inode, int type, int flags);
+ int ext4_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		 struct posix_acl *acl, int type);
+ extern int ext4_init_acl(handle_t *, struct inode *, struct inode *);
+diff --git a/fs/f2fs/acl.c b/fs/f2fs/acl.c
+index 965037a9c205..ae86df5e1472 100644
+--- a/fs/f2fs/acl.c
++++ b/fs/f2fs/acl.c
+@@ -195,7 +195,7 @@ static struct posix_acl *__f2fs_get_acl(struct inode *inode, int type,
+ 	return acl;
+ }
+ 
+-struct posix_acl *f2fs_get_acl(struct inode *inode, int type)
++struct posix_acl *f2fs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	return __f2fs_get_acl(inode, type, NULL);
+ }
+diff --git a/fs/f2fs/acl.h b/fs/f2fs/acl.h
+index 986fd1bc780b..3b7b0deb2845 100644
+--- a/fs/f2fs/acl.h
++++ b/fs/f2fs/acl.h
+@@ -33,7 +33,7 @@ struct f2fs_acl_header {
+ 
+ #ifdef CONFIG_F2FS_FS_POSIX_ACL
+ 
+-extern struct posix_acl *f2fs_get_acl(struct inode *, int);
++extern struct posix_acl *f2fs_get_acl(struct inode *, int, int);
+ extern int f2fs_set_acl(struct user_namespace *, struct inode *,
+ 			struct posix_acl *, int);
+ extern int f2fs_init_acl(struct inode *, struct inode *, struct page *,
+diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
+index e9c0f916349d..1ec289668d73 100644
+--- a/fs/fuse/acl.c
++++ b/fs/fuse/acl.c
+@@ -11,7 +11,7 @@
+ #include <linux/posix_acl.h>
+ #include <linux/posix_acl_xattr.h>
+ 
+-struct posix_acl *fuse_get_acl(struct inode *inode, int type)
++struct posix_acl *fuse_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct fuse_conn *fc = get_fuse_conn(inode);
+ 	int size;
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 63d97a15ffde..8f34101c5c62 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -1180,7 +1180,7 @@ extern const struct xattr_handler *fuse_acl_xattr_handlers[];
+ extern const struct xattr_handler *fuse_no_acl_xattr_handlers[];
+ 
+ struct posix_acl;
+-struct posix_acl *fuse_get_acl(struct inode *inode, int type);
++struct posix_acl *fuse_get_acl(struct inode *inode, int type, int flags);
+ int fuse_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		 struct posix_acl *acl, int type);
+ 
+diff --git a/fs/gfs2/acl.c b/fs/gfs2/acl.c
+index 9165d70ead07..3455cb2079b9 100644
+--- a/fs/gfs2/acl.c
++++ b/fs/gfs2/acl.c
+@@ -57,7 +57,7 @@ static struct posix_acl *__gfs2_get_acl(struct inode *inode, int type)
+ 	return acl;
+ }
+ 
+-struct posix_acl *gfs2_get_acl(struct inode *inode, int type)
++struct posix_acl *gfs2_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct gfs2_inode *ip = GFS2_I(inode);
+ 	struct gfs2_holder gh;
+diff --git a/fs/gfs2/acl.h b/fs/gfs2/acl.h
+index eccc6a43326c..cdf8f12089de 100644
+--- a/fs/gfs2/acl.h
++++ b/fs/gfs2/acl.h
+@@ -11,7 +11,7 @@
+ 
+ #define GFS2_ACL_MAX_ENTRIES(sdp) ((300 << (sdp)->sd_sb.sb_bsize_shift) >> 12)
+ 
+-extern struct posix_acl *gfs2_get_acl(struct inode *inode, int type);
++extern struct posix_acl *gfs2_get_acl(struct inode *inode, int type, int flags);
+ extern int __gfs2_set_acl(struct inode *inode, struct posix_acl *acl, int type);
+ extern int gfs2_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 			struct posix_acl *acl, int type);
+diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+index 55a79df70d24..3eade65c95eb 100644
+--- a/fs/jffs2/acl.c
++++ b/fs/jffs2/acl.c
+@@ -173,7 +173,7 @@ static void *jffs2_acl_to_medium(const struct posix_acl *acl, size_t *size)
+ 	return ERR_PTR(-EINVAL);
+ }
+ 
+-struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
++struct posix_acl *jffs2_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct posix_acl *acl;
+ 	char *value = NULL;
+diff --git a/fs/jffs2/acl.h b/fs/jffs2/acl.h
+index 62c50da9d493..afd6f924aacb 100644
+--- a/fs/jffs2/acl.h
++++ b/fs/jffs2/acl.h
+@@ -27,7 +27,7 @@ struct jffs2_acl_header {
+ 
+ #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+ 
+-struct posix_acl *jffs2_get_acl(struct inode *inode, int type);
++struct posix_acl *jffs2_get_acl(struct inode *inode, int type, int flags);
+ int jffs2_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		  struct posix_acl *acl, int type);
+ extern int jffs2_init_acl_pre(struct inode *, struct inode *, umode_t *);
+diff --git a/fs/jfs/acl.c b/fs/jfs/acl.c
+index 43c285c3d2a7..b8a459cc649f 100644
+--- a/fs/jfs/acl.c
++++ b/fs/jfs/acl.c
+@@ -14,7 +14,7 @@
+ #include "jfs_xattr.h"
+ #include "jfs_acl.h"
+ 
+-struct posix_acl *jfs_get_acl(struct inode *inode, int type)
++struct posix_acl *jfs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct posix_acl *acl;
+ 	char *ea_name;
+diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
+index 7ae389a7a366..e86997d1f123 100644
+--- a/fs/jfs/jfs_acl.h
++++ b/fs/jfs/jfs_acl.h
+@@ -7,7 +7,7 @@
+ 
+ #ifdef CONFIG_JFS_POSIX_ACL
+ 
+-struct posix_acl *jfs_get_acl(struct inode *inode, int type);
++struct posix_acl *jfs_get_acl(struct inode *inode, int type, int flags);
+ int jfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		struct posix_acl *acl, int type);
+ int jfs_init_acl(tid_t, struct inode *, struct inode *);
+diff --git a/fs/nfs/nfs3_fs.h b/fs/nfs/nfs3_fs.h
+index c8a192802dda..0f3ba2f3b8da 100644
+--- a/fs/nfs/nfs3_fs.h
++++ b/fs/nfs/nfs3_fs.h
+@@ -11,7 +11,7 @@
+  * nfs3acl.c
+  */
+ #ifdef CONFIG_NFS_V3_ACL
+-extern struct posix_acl *nfs3_get_acl(struct inode *inode, int type);
++extern struct posix_acl *nfs3_get_acl(struct inode *inode, int type, int flags);
+ extern int nfs3_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 			struct posix_acl *acl, int type);
+ extern int nfs3_proc_setacls(struct inode *inode, struct posix_acl *acl,
+diff --git a/fs/nfs/nfs3acl.c b/fs/nfs/nfs3acl.c
+index bb386a691e69..f78ad2f6a80a 100644
+--- a/fs/nfs/nfs3acl.c
++++ b/fs/nfs/nfs3acl.c
+@@ -44,7 +44,7 @@ static void nfs3_abort_get_acl(struct posix_acl **p)
+ 	cmpxchg(p, sentinel, ACL_NOT_CACHED);
+ }
+ 
+-struct posix_acl *nfs3_get_acl(struct inode *inode, int type)
++struct posix_acl *nfs3_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct nfs_server *server = NFS_SERVER(inode);
+ 	struct page *pages[NFSACL_MAXPAGES] = { };
+diff --git a/fs/ocfs2/acl.c b/fs/ocfs2/acl.c
+index 5259badabb56..2d0db332bd0e 100644
+--- a/fs/ocfs2/acl.c
++++ b/fs/ocfs2/acl.c
+@@ -291,7 +291,7 @@ int ocfs2_iop_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 	return status;
+ }
+ 
+-struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type)
++struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct ocfs2_super *osb;
+ 	struct buffer_head *di_bh = NULL;
+diff --git a/fs/ocfs2/acl.h b/fs/ocfs2/acl.h
+index 4e86450917b2..b75028c4ab4b 100644
+--- a/fs/ocfs2/acl.h
++++ b/fs/ocfs2/acl.h
+@@ -18,7 +18,7 @@ struct ocfs2_acl_entry {
+ 	__le32 e_id;
+ };
+ 
+-struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type);
++struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type, int flags);
+ int ocfs2_iop_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		      struct posix_acl *acl, int type);
+ extern int ocfs2_acl_chmod(struct inode *, struct buffer_head *);
+diff --git a/fs/orangefs/acl.c b/fs/orangefs/acl.c
+index 18852b9ed82b..7c61a21cfcb2 100644
+--- a/fs/orangefs/acl.c
++++ b/fs/orangefs/acl.c
+@@ -10,7 +10,7 @@
+ #include "orangefs-bufmap.h"
+ #include <linux/posix_acl_xattr.h>
+ 
+-struct posix_acl *orangefs_get_acl(struct inode *inode, int type)
++struct posix_acl *orangefs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct posix_acl *acl;
+ 	int ret;
+diff --git a/fs/orangefs/orangefs-kernel.h b/fs/orangefs/orangefs-kernel.h
+index 0e6b97682e41..370bd89c670f 100644
+--- a/fs/orangefs/orangefs-kernel.h
++++ b/fs/orangefs/orangefs-kernel.h
+@@ -106,7 +106,7 @@ enum orangefs_vfs_op_states {
+ extern int orangefs_init_acl(struct inode *inode, struct inode *dir);
+ extern const struct xattr_handler *orangefs_xattr_handlers[];
+ 
+-extern struct posix_acl *orangefs_get_acl(struct inode *inode, int type);
++extern struct posix_acl *orangefs_get_acl(struct inode *inode, int type, int flags);
+ extern int orangefs_set_acl(struct user_namespace *mnt_userns,
+ 			    struct inode *inode, struct posix_acl *acl,
+ 			    int type);
+diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+index 003cf83bf78a..994ce7ecebae 100644
+--- a/fs/overlayfs/inode.c
++++ b/fs/overlayfs/inode.c
+@@ -11,6 +11,7 @@
+ #include <linux/posix_acl.h>
+ #include <linux/ratelimit.h>
+ #include <linux/fiemap.h>
++#include <linux/namei.h>
+ #include "overlayfs.h"
+ 
+ 
+@@ -450,7 +451,7 @@ ssize_t ovl_listxattr(struct dentry *dentry, char *list, size_t size)
+ 	return res;
+ }
+ 
+-struct posix_acl *ovl_get_acl(struct inode *inode, int type)
++struct posix_acl *ovl_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct inode *realinode = ovl_inode_real(inode);
+ 	const struct cred *old_cred;
+@@ -459,6 +460,9 @@ struct posix_acl *ovl_get_acl(struct inode *inode, int type)
+ 	if (!IS_ENABLED(CONFIG_FS_POSIX_ACL) || !IS_POSIXACL(realinode))
+ 		return NULL;
+ 
++	if (flags & LOOKUP_RCU)
++		return get_cached_acl_rcu(realinode, type);
++
+ 	old_cred = ovl_override_creds(inode->i_sb);
+ 	acl = get_acl(realinode, type);
+ 	revert_creds(old_cred);
+diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+index 95cff83786a5..d2284fe67978 100644
+--- a/fs/overlayfs/overlayfs.h
++++ b/fs/overlayfs/overlayfs.h
+@@ -456,7 +456,7 @@ int ovl_xattr_set(struct dentry *dentry, struct inode *inode, const char *name,
+ int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char *name,
+ 		  void *value, size_t size);
+ ssize_t ovl_listxattr(struct dentry *dentry, char *list, size_t size);
+-struct posix_acl *ovl_get_acl(struct inode *inode, int type);
++struct posix_acl *ovl_get_acl(struct inode *inode, int type, int flags);
+ int ovl_update_time(struct inode *inode, struct timespec64 *ts, int flags);
+ bool ovl_is_private_xattr(struct super_block *sb, const char *name);
+ 
+diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+index f3309a7edb49..4d1c6c266cf0 100644
+--- a/fs/posix_acl.c
++++ b/fs/posix_acl.c
+@@ -22,6 +22,7 @@
+ #include <linux/xattr.h>
+ #include <linux/export.h>
+ #include <linux/user_namespace.h>
++#include <linux/namei.h>
+ 
+ static struct posix_acl **acl_by_type(struct inode *inode, int type)
+ {
+@@ -56,7 +57,12 @@ EXPORT_SYMBOL(get_cached_acl);
+ 
+ struct posix_acl *get_cached_acl_rcu(struct inode *inode, int type)
+ {
+-	return rcu_dereference(*acl_by_type(inode, type));
++	struct posix_acl *acl = rcu_dereference(*acl_by_type(inode, type));
++
++	if (acl == ACL_DONT_CACHE)
++		acl = inode->i_op->get_acl(inode, type, LOOKUP_RCU);
++
++	return acl;
+ }
+ EXPORT_SYMBOL(get_cached_acl_rcu);
+ 
+@@ -138,7 +144,7 @@ struct posix_acl *get_acl(struct inode *inode, int type)
+ 		set_cached_acl(inode, type, NULL);
+ 		return NULL;
+ 	}
+-	acl = inode->i_op->get_acl(inode, type);
++	acl = inode->i_op->get_acl(inode, type, 0);
+ 
+ 	if (IS_ERR(acl)) {
+ 		/*
+diff --git a/fs/reiserfs/acl.h b/fs/reiserfs/acl.h
+index fd58618da360..bf10841b892d 100644
+--- a/fs/reiserfs/acl.h
++++ b/fs/reiserfs/acl.h
+@@ -48,7 +48,7 @@ static inline int reiserfs_acl_count(size_t size)
+ }
+ 
+ #ifdef CONFIG_REISERFS_FS_POSIX_ACL
+-struct posix_acl *reiserfs_get_acl(struct inode *inode, int type);
++struct posix_acl *reiserfs_get_acl(struct inode *inode, int type, int flags);
+ int reiserfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		     struct posix_acl *acl, int type);
+ int reiserfs_acl_chmod(struct inode *inode);
+diff --git a/fs/reiserfs/xattr_acl.c b/fs/reiserfs/xattr_acl.c
+index a9547144a099..377507a1c7b8 100644
+--- a/fs/reiserfs/xattr_acl.c
++++ b/fs/reiserfs/xattr_acl.c
+@@ -190,7 +190,7 @@ static void *reiserfs_posix_acl_to_disk(const struct posix_acl *acl, size_t * si
+  * inode->i_mutex: down
+  * BKL held [before 2.5.x]
+  */
+-struct posix_acl *reiserfs_get_acl(struct inode *inode, int type)
++struct posix_acl *reiserfs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	char *name, *value;
+ 	struct posix_acl *acl;
+diff --git a/fs/xfs/xfs_acl.c b/fs/xfs/xfs_acl.c
+index d02bef24b32b..27e6e6525cd3 100644
+--- a/fs/xfs/xfs_acl.c
++++ b/fs/xfs/xfs_acl.c
+@@ -125,7 +125,7 @@ xfs_acl_to_disk(struct xfs_acl *aclp, const struct posix_acl *acl)
+ }
+ 
+ struct posix_acl *
+-xfs_get_acl(struct inode *inode, int type)
++xfs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	struct xfs_inode	*ip = XFS_I(inode);
+ 	struct xfs_mount	*mp = ip->i_mount;
+diff --git a/fs/xfs/xfs_acl.h b/fs/xfs/xfs_acl.h
+index 7bdb3a4ed798..38f933f2e281 100644
+--- a/fs/xfs/xfs_acl.h
++++ b/fs/xfs/xfs_acl.h
+@@ -10,13 +10,13 @@ struct inode;
+ struct posix_acl;
+ 
+ #ifdef CONFIG_XFS_POSIX_ACL
+-extern struct posix_acl *xfs_get_acl(struct inode *inode, int type);
++extern struct posix_acl *xfs_get_acl(struct inode *inode, int type, int flags);
+ extern int xfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
+ 		       struct posix_acl *acl, int type);
+ extern int __xfs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
+ void xfs_forget_acl(struct inode *inode, const char *name);
+ #else
+-static inline struct posix_acl *xfs_get_acl(struct inode *inode, int type)
++static inline struct posix_acl *xfs_get_acl(struct inode *inode, int type, int flags)
+ {
+ 	return NULL;
+ }
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index ec8f3ddf4a6a..1683f16f3b06 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1931,7 +1931,7 @@ struct inode_operations {
+ 	struct dentry * (*lookup) (struct inode *,struct dentry *, unsigned int);
+ 	const char * (*get_link) (struct dentry *, struct inode *, struct delayed_call *);
+ 	int (*permission) (struct user_namespace *, struct inode *, int);
+-	struct posix_acl * (*get_acl)(struct inode *, int);
++	struct posix_acl * (*get_acl)(struct inode *, int, int);
+ 
+ 	int (*readlink) (struct dentry *, char __user *,int);
+ 
+-- 
+2.30.2
 
