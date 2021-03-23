@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4005346ACB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FE8346AD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhCWVIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:08:30 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:38518 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233409AbhCWVIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:08:17 -0400
-Received: by mail-io1-f48.google.com with SMTP id e8so19259559iok.5;
-        Tue, 23 Mar 2021 14:08:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JZelDKKXclIol74spAdVi/fynrQDuz+32X7i8r9v4EU=;
-        b=mg4C42YHYYgv5UoZKG3rlJwrFWAz+p5LvsYvKIVFgvwe+iUixLHUJgJBnUEvlrWcyu
-         waVXjCIEYpsqcxTexOh7JwsDFLF1HoA/yH1g/3dtOdLFZuVjELa2Lbr9lCf1hU7Zbfy1
-         AL3VLL1hh8cOGSjWksdvckIQ4jmO88dIzp0uWsMd2ebUn9YcTqj3x+bSRv6jeIS7gI2l
-         GmIGuiqKoT9X7X5gYjWkfP8DBT5gpE/MXqxiDd6gVVGY7Pu2Uc9Wd09woiUnmtocRH1l
-         IbDmDTB3Wz6yXADpBeZ/nDo9oJxvQ8tnQYOyBERS/jh8SswTfh3YLmeG172ku1aPZLoG
-         MKIA==
-X-Gm-Message-State: AOAM530JQB7SSI5qaHYJMN8FVs9OtR65j8Fu3QzKi3FRlpInpB2jMb1M
-        LMES4KAQd2VzvMXf7P693eI1tTV17g==
-X-Google-Smtp-Source: ABdhPJzYlEcksihAORQf6PyjIBkT3hrljQ7weuU86zb0eUS1SWhXvLglPbs4XhJ3YvH3CIu51m+zuA==
-X-Received: by 2002:a6b:4f09:: with SMTP id d9mr65238iob.60.1616533696947;
-        Tue, 23 Mar 2021 14:08:16 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id b9sm11836iof.54.2021.03.23.14.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 14:08:16 -0700 (PDT)
-Received: (nullmailer pid 1325739 invoked by uid 1000);
-        Tue, 23 Mar 2021 21:08:12 -0000
-Date:   Tue, 23 Mar 2021 15:08:12 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>, f.fainelli@gmail.com,
-        phil@raspberrypi.com, tim.gover@raspberrypi.com,
-        adrian.hunter@intel.com, alcooperx@gmail.com,
-        nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: mmc: iproc-sdhci: Convert to json-schema
-Message-ID: <20210323210812.GA1318204@robh.at.kernel.org>
-References: <20210322185816.27582-1-nsaenz@kernel.org>
- <20210322185816.27582-2-nsaenz@kernel.org>
- <0e98588e-65f1-6839-1fcd-584b480a31bd@broadcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e98588e-65f1-6839-1fcd-584b480a31bd@broadcom.com>
+        id S233464AbhCWVJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:09:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233453AbhCWVJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:09:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0A3961879;
+        Tue, 23 Mar 2021 21:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616533765;
+        bh=PryQQGQOOdbNXVqeGFFDDFGtLQcl72kdVVul/251vKs=;
+        h=Subject:From:To:Date:From;
+        b=WKpcVtQZGVOEAtcbVuY3vZwJDf0edGlj7IuZwylmDs+sor0NREDlUSk0MU1NS+6+z
+         n7Zl7ncsUfrZmj5U6YiM3u91Pz2FI4IcGQ3ycYdwoUlwir3zlQJy38R+dXilAnd5+s
+         ZcKuI0IGEHc2nbrXKIfNFStTpiT8I2J/Ed68hsLuO1b/b20SjEUaDJwX9Y24wXGu5P
+         BTDEjlXKBahxMzS7ag8mDjNCfajrFkCXGkWLS7S7LSgw6OWYn0ZOhI2bEmEBo6rk8U
+         0+Au7Y0GEB7IPZSZZJ2gASUTWgWutvuzwjStKIoiWER1EQ9XNNbWtWbRqxVQFO8nB/
+         rm/39HFnT7Oaw==
+Message-ID: <64fa2b3e44451617afc13006b03f6001be677fcc.camel@kernel.org>
+Subject: [ANNOUNCE] 4.19.182-rt74
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Clark Williams <williams@redhat.com>,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
+        Pavel Machek <pavel@denx.de>, Tom Zanussi <zanussi@kernel.org>
+Date:   Tue, 23 Mar 2021 16:09:23 -0500
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 12:11:29PM -0700, Scott Branden wrote:
-> On 2021-03-22 11:58 a.m., Nicolas Saenz Julienne wrote:
-> > Convert the brcm,iproc-sdhci binding to DT schema format using json-schema
-> > 
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> > ---
-> >  .../bindings/mmc/brcm,iproc-sdhci.yaml        | 58 +++++++++++++++++++
-> >  .../bindings/mmc/brcm,sdhci-iproc.txt         | 37 ------------
-> >  2 files changed, 58 insertions(+), 37 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/mmc/brcm,sdhci-iproc.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
-> > new file mode 100644
-> > index 000000000000..19d84f3ef9e6
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
-> > @@ -0,0 +1,58 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mmc/brcm,iproc-sdhci.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Broadcom IPROC SDHCI controller
-> > +
-> > +maintainers:
-> > +  - Nicolas Saenz Julienne <nsaenz@kernel.org>
-> This is already covered in the MAINTAINERS section via "N:	iproc".
-> M:	Ray Jui <ray.jui@broadcom.com>
-> 
-> M:	Scott Branden <scott.branden@broadcom.com>
-> 
-> M:	bcm-kernel-feedback-list@broadcom.com
+Hello RT Folks!
 
-Maybe so, but still required here. The problem is there is no 
-MAINTAINERS file in the DT only tree[1].
+I'm pleased to announce the 4.19.182-rt74 stable release.
 
-Rob
+This release is just an update to the new stable 4.19.182
+version and no RT specific changes have been made.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/devicetree/devicetree-rebasing.git/
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.19-rt
+  Head SHA1: 973d50c65e7a04ce11a946a0725e22432353a82c
+
+Or to build 4.19.182-rt74 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.182.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.182-rt74.patch.xz
+
+Enjoy!
+
+   Tom
+
