@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8765A346510
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0DE346517
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhCWQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233186AbhCWQ0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:26:25 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A82C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:25 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id t6so18696373ilp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VUNBxRkAkOtRY1OiV0crY0KIix9dM5aWEuy0SY7J1Gs=;
-        b=dcPE+srCxCWpXsH961eV0+dJ/taytb1qF8u5NYNy5fMwZ+yLZ6+RyfM7CH3my4ba0u
-         A5/N66JLUZSZKXtMVLh/TCz414yazr4GaLu5DgdYXb2vwx8iwuVz9MFGv1qa2shn28YI
-         BVXBpMN7yUnWGzB8/eCxWIfvknwAm5e48moZA19OcRn1tlXH6CDRTSj3gVwZuL24OueV
-         4pKzGh2AGjwBgqNapPJma3PYYsmf5S/Vv6cQp6ECZhNixBR7DDPe4B5dugPAPAs74qAR
-         L4rZ1RbqcDAhCp/7ItDKurx7zA3s9Ps6ia111LLLrN1curCqA9bSts1nYdcjRRf0BKs/
-         J5SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VUNBxRkAkOtRY1OiV0crY0KIix9dM5aWEuy0SY7J1Gs=;
-        b=E5+rQKFBvZR6Hd8RS3+pMIeXI+2qbSVF8bKQ2DHWnbMLbye0tmj+6S0asXyq2H0wnM
-         8MsIUWGGMkC0NKuNrzD+1iiJJ2y1Ol6FbGEA99K5vIHMry2qiYpmzWyefPzCMyrY2xI6
-         wcgJf8lDaRkbAeyX6M82IQN/63dJ4+m7/2rrpajl4LiUIES8om/TUGNT3zmPasfxAEro
-         t6CktSVHYsLVxZK+RIEkA+Rzo6cclv4sCpk/QfqifSsXZ1y5GpkWhnZgWRG1V/OAVOj4
-         /11OxiU/vO+t2Fxwn7Lubuu/gDuVyBxl21zC5cKUaC+B/4msomG7X7uyVXn2CwvA526x
-         NgHQ==
-X-Gm-Message-State: AOAM532RL25dkAtr6P7vhejF98IGWthtQut240jN+j6IbGbKDmkYJGVU
-        igG/xVBbfxZxRUkdiCVc1mJwYU5nxksMB6iHxpIvqQ==
-X-Google-Smtp-Source: ABdhPJxiWIgvPfl8wUjGs53X8G5LEONTes5gCcGWaxRVmCAD2wYkVHXvRFHP1BbC5uR4+LdJF0cev4pnh7ixq56vgvw=
-X-Received: by 2002:a05:6e02:d0e:: with SMTP id g14mr5433785ilj.285.1616516784956;
- Tue, 23 Mar 2021 09:26:24 -0700 (PDT)
+        id S233220AbhCWQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:27:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233117AbhCWQ1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:27:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10AC261477;
+        Tue, 23 Mar 2021 16:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616516870;
+        bh=jdgaujTZa4YTW3pAKo+Bn89DEHg3n7EiLFOxCUbR6lg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h4tmDF26uCjRSu0Ex3pUvFEydYGXVbZ/vA+Y5lSbk9NxsurbG5ieY09DytyCveQ1j
+         wco4Y58ZSVp7VnyyCt3wZAVRFLns/BwJkOgx/WkpHf4k7MTpvPocSn8Y1hlYc8r1bB
+         O5dDMapZ7+V9ycKnrieorBsgwLHXlNnskKy/dGobRMfvDtwbXKrg2IdRr46Q5a0L9y
+         Tu2FzuR+oyaYmmUutMMRV5tMtraK6iu4HkVOpFsBVdkZVxRgVLhBVBX+G5s0Fatwk1
+         OS8paI9Dn/ndy/qC9/B+ApLwrVK9otVb23/AGq9HskHghCOubG7s4nnfDWL/G0ZWOI
+         2vlCV5ePdIusg==
+Received: by pali.im (Postfix)
+        id A9BB392C; Tue, 23 Mar 2021 17:27:47 +0100 (CET)
+Date:   Tue, 23 Mar 2021 17:27:47 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     alex.williamson@redhat.com, helgaas@kernel.org,
+        lorenzo.pieralisi@arm.com, kabel@kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        raphael.norwitz@nutanix.com
+Subject: Re: How long should be PCIe card in Warm Reset state?
+Message-ID: <20210323162747.tscfovntsy7uk5bk@pali>
+References: <20210310110535.zh4pnn4vpmvzwl5q@pali>
+ <20210323161941.gim6msj3ruu3flnf@archlinux>
 MIME-Version: 1.0
-References: <20210319232006.3468382-1-seanjc@google.com> <20210319232006.3468382-3-seanjc@google.com>
- <CANgfPd_6d+SvJ-rQxP6k5nRmCsRFyUAJ93B0dE3NtpmdPR78wg@mail.gmail.com> <YFkzIAVOeWS32fdX@google.com>
-In-Reply-To: <YFkzIAVOeWS32fdX@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 23 Mar 2021 09:26:14 -0700
-Message-ID: <CANgfPd8ti7Wa3YnPxgVsEiUzhOzraEcKoLyXUW9E=Wjz4L-oNA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Ensure TLBs are flushed when yielding
- during NX zapping
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323161941.gim6msj3ruu3flnf@archlinux>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 5:15 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, Mar 22, 2021, Ben Gardon wrote:
-> > On Fri, Mar 19, 2021 at 4:20 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > @@ -5960,19 +5963,21 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
-> > >                                       lpage_disallowed_link);
-> > >                 WARN_ON_ONCE(!sp->lpage_disallowed);
-> > >                 if (is_tdp_mmu_page(sp)) {
-> > > -                       kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn,
-> > > -                               sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level));
-> > > +                       gfn_end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
-> > > +                       flush = kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, gfn_end,
-> > > +                                                         flush || !list_empty(&invalid_list));
-> > >                 } else {
-> > >                         kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
-> > >                         WARN_ON_ONCE(sp->lpage_disallowed);
-> > >                 }
-> > >
-> > >                 if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
-> > > -                       kvm_mmu_commit_zap_page(kvm, &invalid_list);
-> > > +                       kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
+On Tuesday 23 March 2021 21:49:41 Amey Narkhede wrote:
+> On 21/03/10 12:05PM, Pali Rohár wrote:
+> > Hello!
 > >
-> > This pattern of waiting until a yield is needed or lock contention is
-> > detected has always been a little suspect to me because
-> > kvm_mmu_commit_zap_page does work proportional to the work done before
-> > the yield was needed. That seems like more work than we should like to
-> > be doing at that point.
+> > I would like to open a question about PCIe Warm Reset. Warm Reset of
+> > PCIe card is triggered by asserting PERST# signal and in most cases
+> > PERST# signal is controlled by GPIO.
 > >
-> > The yield in kvm_tdp_mmu_zap_gfn_range makes that phenomenon even
-> > worse. Because we can satisfy the need to yield without clearing out
-> > the invalid list, we can potentially queue many more pages which will
-> > then all need to have their zaps committed at once. This is an
-> > admittedly contrived case which could only be hit in a high load
-> > nested scenario.
+> > Basically every native Linux PCIe controller driver is doing this Warm
+> > Reset of connected PCIe card during native driver initialization
+> > procedure.
 > >
-> > It could be fixed by forbidding kvm_tdp_mmu_zap_gfn_range from
-> > yielding. Since we should only need to zap one SPTE, the yield should
-> > not be needed within the kvm_tdp_mmu_zap_gfn_range call. To ensure
-> > that only one SPTE is zapped we would have to specify the root though.
-> > Otherwise we could end up zapping all the entries for the same GFN
-> > range under an unrelated root.
->
-> Hmm, I originally did exactly that, but changed my mind because this zaps far
-> more than 1 SPTE.  This is zapping a SP that could be huge, but is not, which
-> means it's guaranteed to have a non-zero number of child SPTEs.  The worst case
-> scenario is that SP is a PUD (potential 1gb page) and the leafs are 4k SPTEs.
+> > And now the important question is: How long should be PCIe card in Warm
+> > Reset state? After which timeout can be PERST# signal de-asserted by
+> > Linux controller driver?
+> >
+> > Lorenzo and Rob already expressed concerns [1] [2] that this Warm Reset
+> > timeout should not be driver specific and I agree with them.
+> >
+> > I have done investigation which timeout is using which native PCIe
+> > driver [3] and basically every driver is using different timeout.
+> >
+> > I have tried to find timeouts in PCIe specifications, I was not able to
+> > understand and deduce correct timeout value for Warm Reset from PCIe
+> > specifications. What I have found is written in my email [4].
+> >
+> > Alex (as a "reset expert"), could you look at this issue?
+> >
+> > Or is there somebody else who understand PCIe specifications and PCIe
+> > diagrams to figure out what is the minimal timeout for de-asserting
+> > PERST# signal?
+> >
+> > There are still some issues with WiFi cards (e.g. Compex one) which
+> > sometimes do not appear on PCIe bus. And based on these "reset timeout
+> > differences" in Linux PCIe controller drivers, I suspect that it is not
+> > (only) the problems in WiFi cards but also in Linux PCIe controller
+> > drivers. In my email [3] I have written that I figured out that WLE1216
+> > card needs to be in Warm Reset state for at least 10ms, otherwise card
+> > is not detected.
+> >
+> > [1] - https://lore.kernel.org/linux-pci/20200513115940.fiemtnxfqcyqo6ik@pali/
+> > [2] - https://lore.kernel.org/linux-pci/20200507212002.GA32182@bogus/
+> > [3] - https://lore.kernel.org/linux-pci/20200424092546.25p3hdtkehohe3xw@pali/
+> > [4] - https://lore.kernel.org/linux-pci/20200430082245.xblvb7xeamm4e336@pali/
+> 
+> I somehow got my hands on PCIe Gen4 spec. It says on page no 555-
+> "When PERST# is provided to a component or adapter, this signal must be
+> used by the component or adapter as Fundamental Reset.
+> When PERST# is not provided to a component or adapter, Fundamental Reset is
+> generated autonomously by the component or adapter, and the details of how
+> this is done are outside the scope of this document."
+> Not sure what component/adapter means in this context.
+> 
+> Then below it says-
+> "In some cases, it may be possible for the Fundamental Reset mechanism
+> to be triggered  by hardware without the removal and re-application of
+> power to the component.  This is called a warm reset. This document does
+> not specify a means for generating a warm reset."
+> 
+> Thanks,
+> Amey
 
-It's true that there are potentially 512^2 child sptes, but the code
-to clear those after the single PUD spte is cleared doesn't yield
-anyway. If the TDP MMU is only  operating with one root (as we would
-expect in most cases), there should only be one chance for it to
-yield.
+Hello Amey, PCIe Base document does not specify how to control PERST#
+signal and how to issue Warm Reset. But it is documented in PCIe CEM,
+Mini PCIe CEM and M.2 CEM documents (maybe in some other PCIe docs too).
 
-I've considered how we could allow the recursive changed spte handlers
-to yield, but it gets complicated quite fast because the caller needs
-to know if it yielded and reset the TDP iterator to the root, and
-there are some cases (mmu notifiers + vCPU path) where yielding is not
-desirable.
-
->
-> But, I didn't consider the interplay between invalid_list and the TDP MMU
-> yielding.  Hrm.
+It is needed look into more documents, "merge them in head" and then
+deduce final meaning...
