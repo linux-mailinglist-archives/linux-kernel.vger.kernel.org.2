@@ -2,100 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECABF346475
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE43346478
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhCWQHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
+        id S233103AbhCWQIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhCWQHQ (ORCPT
+        with ESMTP id S232508AbhCWQH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:07:16 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2A3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:07:15 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a7so27993103ejs.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:07:15 -0700 (PDT)
+        Tue, 23 Mar 2021 12:07:59 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F52DC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:07:59 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id o5so14841671qkb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:07:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=CP0ehMUOf3mCAFzDZ02jtEODGJp30hR0Y8EP0w/vBrE=;
-        b=YcKgr/DtDv2nXCct5AdwcCW2CmY1RGG29fFzSwriq2UlXIy1Qc3vbjrkSUbkF+6SOb
-         QmIBVW5PEhyS69qRI4VY+meoATwqNU61AWCFvbEQbfQ+6bXl4VVu2H860EsMhil6NQ4A
-         Bfw491Ao/UguWv4vB0jhPpvWH9+Ke0XF3a5jLx4+Ms8fGT+cHG7rGKUeJ6ERKv1ix3iY
-         /g44MU9XdEnVE6UHaMmh5CYCGIudJWMb9E0Qe6FAnJ6mSA3CcPvLATzM/fNkfwWOsu3m
-         /WhNeDL6vVJauuzX4tSSaZkDEdkYog/5GH/4fW6TDPTg4V+iyj90zUWYD7EcuJY3DFox
-         dDWA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dd78KVo/k+65hHvXqmy428M/itdMaDI0EMLjgBSStvc=;
+        b=Zacl8M6UShpatRgwJ5S4Gv1Q/Q79vfpMMuYtwjRd/taoEOxzT0hRZOpvzrGsmXVcwq
+         hBan0o4xa6ECzobfCVwk1df3fhQxZtnWKQ2FS62ZxRb9JT6ipSQD5WhSjaXQUPIfqwT9
+         RwjAAGGVFgSZIV015gN9/KG3nOmi3xXnEvFx1twpmZH6FWUJxh2/nZTdDB+xcSrENUSe
+         0DvFr3W4VWNvK4hLC3Cq5Ef55yd5K95QO4qZk0Kldirsddr48MGJBbX/2wDAC3twjDVw
+         8Z0gr7bFciWunZkv345G03NqT4TgzBzIrX5W+Y+FlzzWEB3FYw97VOd2DGBvHcZw2VC4
+         DrGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=CP0ehMUOf3mCAFzDZ02jtEODGJp30hR0Y8EP0w/vBrE=;
-        b=NumhZ6XKGjeiRGyx/plA3ih7ZNBqWc+GJmMZdikuParhHvr/1k2fXQUkXLz7PlfXno
-         h/j4dxwoX8RAuFv169VjJgIAC5OuoTLkNg/4wwJ3UaeqCBhW3YN82b1VYX6LZ+zf1V0c
-         qA6Eo2oUt/ZnEdkhnoSl5HnCBGNQTm+1FEiSSYdi/7VzASPDjP9WKjoQ7EAwwb7klP83
-         zBg7ru2HjreyD0t0f/mt0zVbJD861V02IYBFoCdYpqr7dXrz+hWT7TPd9J7bMyMLeOaO
-         2Uc+jxaFQqWwng+S6HNJp2cs1Do9QJTeZhkqlrxE6JETGI7HEk+E5JRwOnN/GfmwvXmu
-         FQ/Q==
-X-Gm-Message-State: AOAM532ORdvB6EsnjqlY0FhpYc/y9x3ANI2qTXeXDXb4/q0zmdc28H79
-        oqXDewzwzARHvpGa1EtbEj8AZxT6D2lDt/leMfw=
-X-Google-Smtp-Source: ABdhPJzpnxS4n0IY2zExxAUZrrc+DNAjs2YjW3Eli+DQOAFaK+akU4C42+1TkxyhlIpjaRGjZC93gZGBJlC/XamRTlo=
-X-Received: by 2002:a17:907:d1f:: with SMTP id gn31mr5538772ejc.536.1616515634471;
- Tue, 23 Mar 2021 09:07:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dd78KVo/k+65hHvXqmy428M/itdMaDI0EMLjgBSStvc=;
+        b=jmFiYrIMo80599vaPuw+9eQ/wO8rm7dyt80Et644ToL2MJ8TtOQYvo7lQvZBxEp757
+         AOgCFzDjlxfM0g9KNyxm+V4KdorUIelPwOacU1rzgh653qiN3GC2Del7r7togJhGJSgo
+         O+uu7If3Z3ydlm2JsQbBybZjTs8AT4PAcDGhW0T9BQ9Lw6IW9TWAvLb7dmnUGoQCojrd
+         s71tGpmvsgk351hFpjBF/zOzhUmCj8Os4BKEImuCd2KqbYpQrFUYkTOG8u37qO04Lcx6
+         N8lWfvD+WM/fDr/nc7Kfg8MWUuFHQ2fuGpPqFDKFQuRCXEYVOgGdfi+q0NIz9tvIjRSZ
+         Tb5A==
+X-Gm-Message-State: AOAM532OZqmoHKADni+huKBhreLVRIEotMoIV/xbMqOTmU2vLYGmbndD
+        SzseqbDfGIx4yuaZ4KYJgxXylA==
+X-Google-Smtp-Source: ABdhPJxc/r/vIzkCrmPr5/mVRQPFep2fDF30vYvBJDdtU58ruq0WNUBKEDlxzrUY0ydcR7PtVEpGiw==
+X-Received: by 2002:a37:bd7:: with SMTP id 206mr6442976qkl.284.1616515678468;
+        Tue, 23 Mar 2021 09:07:58 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id g25sm3116375qtq.7.2021.03.23.09.07.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 09:07:57 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lOjZU-001Zq3-Pm; Tue, 23 Mar 2021 13:07:56 -0300
+Date:   Tue, 23 Mar 2021 13:07:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Cc:     leon@kernel.org, dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        rajesh.sivaramasubramaniom@oracle.com,
+        rama.nichanamatlu@oracle.com, aruna.ramakrishna@oracle.com,
+        jeffery.yoder@oracle.com
+Subject: Re: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt
+ update
+Message-ID: <20210323160756.GE2710221@ziepe.ca>
+References: <1615900141-14012-1-git-send-email-praveen.kannoju@oracle.com>
 MIME-Version: 1.0
-Received: by 2002:a55:d911:0:b029:d1:f763:87ce with HTTP; Tue, 23 Mar 2021
- 09:07:13 -0700 (PDT)
-Reply-To: shannonmccraney2019@gmail.com
-From:   "Sgt,Shannon Mccraney" <gasperquattara@gmail.com>
-Date:   Tue, 23 Mar 2021 20:37:13 +0430
-Message-ID: <CACqsBnVbCJGG3pA5FNJD2=1ZKR5gn_0Pg3dL5+jnqz12AYkEhQ@mail.gmail.com>
-Subject: Greetings to you from here.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615900141-14012-1-git-send-email-praveen.kannoju@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello,
+On Tue, Mar 16, 2021 at 01:09:01PM +0000, Praveen Kumar Kannoju wrote:
+> To update xlt (during mlx5_ib_reg_user_mr()), the driver can request up to
+> 1 MB (order-8) memory, depending on the size of the MR. This costly
+> allocation can sometimes take very long to return (a few seconds),
+> especially if the system is fragmented and does not have any free chunks
+> for orders >= 3. This causes the calling application to hang for a long
+> time. To avoid these long latency spikes, limit max order of allocation to
+> order 3, and reuse that buffer to populate_xlt() for that MR. This will
+> increase the latency slightly (in the order of microseconds) for each
+> mlx5_ib_update_xlt() call, especially for larger MRs (since were making
+> multiple calls to populate_xlt()), but its a small price to pay to avoid
+> the large latency spikes with higher order allocations. The flag
+> __GFP_NORETRY is used while fetching the free pages to ensure that there
+> are no long compaction stalls when the system's memory is in fragmented
+> condition.
+> 
+> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+>  drivers/infiniband/hw/mlx5/mr.c | 22 +++-------------------
+>  1 file changed, 3 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> index db05b0e..dac19f0 100644
+> +++ b/drivers/infiniband/hw/mlx5/mr.c
+> @@ -1004,9 +1004,7 @@ static struct mlx5_ib_mr *alloc_cacheable_mr(struct ib_pd *pd,
+>  	return mr;
+>  }
+>  
+> -#define MLX5_MAX_UMR_CHUNK ((1 << (MLX5_MAX_UMR_SHIFT + 4)) - \
+> -			    MLX5_UMR_MTT_ALIGNMENT)
+> -#define MLX5_SPARE_UMR_CHUNK 0x10000
+> +#define MLX5_SPARE_UMR_CHUNK 0x8000
+>  
+>  /*
+>   * Allocate a temporary buffer to hold the per-page information to transfer to
+> @@ -1028,30 +1026,16 @@ static void *mlx5_ib_alloc_xlt(size_t *nents, size_t ent_size, gfp_t gfp_mask)
+>  	 */
+>  	might_sleep();
+>  
+> -	gfp_mask |= __GFP_ZERO;
+> +	gfp_mask |= __GFP_ZERO | __GFP_NORETRY;
+>  
+> -	/*
+> -	 * If the system already has a suitable high order page then just use
+> -	 * that, but don't try hard to create one. This max is about 1M, so a
+> -	 * free x86 huge page will satisfy it.
+> -	 */
+>  	size = min_t(size_t, ent_size * ALIGN(*nents, xlt_chunk_align),
+> -		     MLX5_MAX_UMR_CHUNK);
+> +		     MLX5_SPARE_UMR_CHUNK);
+>  	*nents = size / ent_size;
+>  	res = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
+>  				       get_order(size));
+>  	if (res)
+>  		return res;
+>  
+> -	if (size > MLX5_SPARE_UMR_CHUNK) {
+> -		size = MLX5_SPARE_UMR_CHUNK;
+> -		*nents = get_order(size) / ent_size;
+> -		res = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
+> -					       get_order(size));
+> -		if (res)
+> -			return res;
+> -	}
 
-Greetings to you and your family as this letter may come to you as a
-surprise since we have not yet met,
+Why did you delete this and make the size smaller? Isn't GFP_NORETRY
+enough?
 
-I want to tell you something important but please kindly accept my
-apology for sending you this email without your consent.I believe you
-are a highly respected personality, considering the fact that I got
-your details through online search on the web during my discreet
-search for a foreign partner who can assist me in taking this business
-to its success.
-
-My Name is Sergeant,Shannon Mccraney.I am female soldier 29 years old
-my parents died when I was five years old Nobody to help me.currently
-I am working as United Nations peace keeping troop in Afghanistan on
-war against terrorism. I have a proposal for you, I need your
-assistance in executing a transaction worth of $3.5 million USD (Three
-million, five hundred thousand Dollars ), I intend to give you 35% of
-the total funds as compensation for your assistance.This however is
-not mandatory nor will I in any manner compel you to honor against
-your will, but I hope you will accept and consider the value I offer.
-
-I want to know if you are capable of handling funds worth $3.5 million
-Dollars, If you can, then please fill the form below if you are
-interested.
-
-1. Full Names
-2.  Age:
-3: Gender:
-4. Current Country:
-5. Nationality:
-6. Occupation:
-
-When you are sure that you can carry out the transaction please get
-back to me and I will provide you with my personal email address.
-
-I await your reply soonest.
-
-Kind Regards,
-Sergeant,Shannon Mccraney.
-Please send your reply to this E-mail:shannonmccraney2019@gmail.com
+Jason
