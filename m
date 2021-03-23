@@ -2,117 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D92345969
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C721345973
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhCWIOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:14:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54124 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhCWIOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:14:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616487255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qg/9oH2DL28aA39SDUTzyvnM+v5iX+Jupkcgmnk0eP8=;
-        b=HSjcd/rujZRJC9TgzQN1VgjKc5vA+MWvlPys3Xn1IcHPpszcqEi006OSV0P2i2XLL+qH39
-        Xcv9qYvi7Ip0b2h/CQOdx4aI+kajl260Erd0JwJA4hfaZMn6jKimoIpFlRCnHP1KN9e27D
-        Y8kT4Tj9Gy9UapkTm0fMX+f3zeMogHI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B2CEAB8A;
-        Tue, 23 Mar 2021 08:14:15 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 09:14:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 2/8] hugetlb: recompute min_count when dropping
- hugetlb_lock
-Message-ID: <YFmjVNnnHHpyxqKe@dhcp22.suse.cz>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-3-mike.kravetz@oracle.com>
- <YFikrdN6DHQSEm6a@dhcp22.suse.cz>
- <a7d90d58-fa6a-7fa1-77c9-a08515746018@oracle.com>
- <YFmd3d5B2VT4GkiG@dhcp22.suse.cz>
- <YFmgPkTzZY6Ocj6X@hirez.programming.kicks-ass.net>
+        id S229576AbhCWIPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:15:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21685 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229992AbhCWIO6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 04:14:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616487298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=F7K6Lh/BNZuQrbqNqcyksNAihXl0YSqISZq+0vfi9Ww=;
+        b=YPrFVUcg8ovZmejr6KGPViLSeZ9CMTOCkcq2M53zXoAJEV37qdO9CIex8K3++rjwO6crSq
+        F9l+dY+N4IjnSdHMromoFgc70q4N2ndite1lcQtCWBUuObML+H9gez8S7DotHhHrlwST1x
+        ZbV3JDD1So/p0GU+vInVATF8UEsH9hM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-wuS5JpfkMiidJHFaeq4bXA-1; Tue, 23 Mar 2021 04:14:56 -0400
+X-MC-Unique: wuS5JpfkMiidJHFaeq4bXA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 750F6800D53;
+        Tue, 23 Mar 2021 08:14:54 +0000 (UTC)
+Received: from localhost (ovpn-13-171.pek2.redhat.com [10.72.13.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1AD6160BD8;
+        Tue, 23 Mar 2021 08:14:47 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>
+Subject: [PATCH 0/2] blktrace: fix trace buffer leak and limit trace buffer size
+Date:   Tue, 23 Mar 2021 16:14:38 +0800
+Message-Id: <20210323081440.81343-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFmgPkTzZY6Ocj6X@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23-03-21 09:01:02, Peter Zijlstra wrote:
-> On Tue, Mar 23, 2021 at 08:50:53AM +0100, Michal Hocko wrote:
-> 
-> > > >> +static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
-> > > >> +{
-> > > >> +	unsigned long min_count;
-> > > >> +
-> > > >> +	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
-> > > >> +	return max(count, min_count);
-> > > > 
-> > > > Just out of curiousity, is compiler allowed to inline this piece of code
-> > > > and then cache the value? In other words do we need to make these
-> > > > READ_ONCE or otherwise enforce the no-caching behavior?
-> > > 
-> > > I honestly do not know if the compiler is allowed to do that.  The
-> > > assembly code generated by my compiler does not cache the value, but
-> > > that does not guarantee anything.  I can add READ_ONCE to make the
-> > > function look something like:
-> > > 
-> > > static inline unsigned long min_hp_count(struct hstate *h, unsigned long count)
-> > > {
-> > > 	unsigned long min_count;
-> > > 
-> > > 	min_count = READ_ONCE(h->resv_huge_pages) + READ_ONCE(h->nr_huge_pages)
-> > > 					- READ_ONCE(h->free_huge_pages);
-> > > 	return max(count, min_count);
-> > > }
-> > 
-> > Maybe just forcing to never inline the function should be sufficient.
-> > This is not a hot path to micro optimize for no function call. But there
-> > are much more qualified people on the CC list on this matter who could
-> > clarify. Peter?
-> 
-> I'm not sure I understand the code right.
+blktrace may pass big trace buffer size via '-b', meantime the system
+may have lots of CPU cores, so too much memory can be allocated for
+blktrace.
 
-We need to ensure the function is evaluated each time it is called
-because it will be used after a lock is dropped and reacquired so
-numbers could have changed. The point of wrapping this into a function
-is to reduce the code duplication IIUC.
+The 1st patch shutdown bltrace in blkdev_close() in case of task
+exiting, for avoiding trace buffer leak.
 
-> But inline or not doesn't
-> matter, LTO completely ruins that game. Just like if it was a static
-> function, then the compiler is free to inline it, even if the function
-> lacks an inline attribute.
+The 2nd patch limits max trace buffer size for avoiding potential
+OOM.
 
-OK
 
-> Basically, without READ_ONCE() the compiler is allowed to entirely elide
-> the load (and use a previous load), or to duplicate the load and do it
-> again later (reaching a different result).
-> 
-> Similarly, the compiler is allowed to byte-wise load the variable in any
-> random order and re-assemble.
-> 
-> If any of that is a problem, you have to use READ_ONCE().
+Ming Lei (2):
+  block: shutdown blktrace in case of fatal signal pending
+  blktrace: limit allowed total trace buffer size
 
-Thanks for the confirmation!
+ fs/block_dev.c          |  6 ++++++
+ kernel/trace/blktrace.c | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
