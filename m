@@ -2,62 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A513465D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C5A3465D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhCWRBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        id S229746AbhCWRCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCWRA4 (ORCPT
+        with ESMTP id S229547AbhCWRBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:00:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8488BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=825tfiSvqVacuyUEuxcQyTkRHvhtiZqC5C0oGwhAk3U=; b=IG2hdbEj73cEqAaxuioR7niNeI
-        eqG1gXQAJVxT1kpo4kcup5UnZicObPInYv4eDJ8Ld29xgpZMBMhpzxGNES60Me+UllXJkUMcBiNO3
-        duMiNk3uU2rytKtK6XZl32zaLE/DdNIw0awSb2/IZwDgK2VjMBKx5y5YdkoVxFRT/6fHtbQg7xZZn
-        oDniuLcSPc6zeprWrYQ6tASZ0TSyib0eQX0S2QSm8nvCOf/NSqyNHpYbxVNAVIjwxnK6xvf6j/WT2
-        8ExfuazMO5TN2jAbi+WJga4xVTaXJgO+pytn+14NREcYZrmu0Hc5LSs+omtUwOjtwxxo6g/UKNFsr
-        eK60zCDg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOkNh-00AJUl-3C; Tue, 23 Mar 2021 17:00:02 +0000
-Date:   Tue, 23 Mar 2021 16:59:49 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Thomas Hellstr??m (Intel)" <thomas_os@shipmail.org>,
-        dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-Message-ID: <20210323165949.GA2457820@infradead.org>
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-2-thomas_os@shipmail.org>
- <YFnST5VLcEgv9q+s@phenom.ffwll.local>
- <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
- <20210323163715.GJ2356281@nvidia.com>
+        Tue, 23 Mar 2021 13:01:43 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D149C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:01:38 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id a11so15459992qto.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aMZf3nAnd3Ur++OR8V/tDE1PbcZI5ey7Mp8g1oFzdQ8=;
+        b=hn+/QKTWQ8HIyPatT9wTlycQejd9EC8+QxrYdIXm2iCp2ZexLrV0+iBG3Z8i4zXusA
+         7/JD+um93ZmFKBY28q3Bna9RyArSGxILyxRJAmTuFK9RmO4VEbll8xungPHroHkZ/g/j
+         Dth/GtDL7UnUJzXClUZQNYArZfATgy2XzyDoJHEtIDqTfq26v8tCj7FnIQJ/y7E3y0sn
+         feoWvo6GCwYAJA4V2MXn8K80zZJdVdYqhxi7TJQv2SusDlupOFf0lMAhfNti9jNbB/ci
+         zq7V0lrPsOlc3l7P5BJgApsv4RQ9/BQrTTg6woTtm6gpjiJJknRrdUwG+YCu7gQ1I6pg
+         rYtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aMZf3nAnd3Ur++OR8V/tDE1PbcZI5ey7Mp8g1oFzdQ8=;
+        b=TqwROtNs7dUE/ScMNsgwxOhzLHvuaooLJmhvTIZERwRHJmuHhb+Rg8TKj3/ySrD5l1
+         AsqEvrPAxukTbLdFVhMp685UOhk1grK4b2q3tedJuR6fswBaB5yOmTB5PFYL5J01iOV2
+         xgEOcYCXivhxEdnUK3QsVA2XOEzQXTONCU3do7XszvB7uj8vyW06BABK+cuAUuncrKdO
+         t0X1IyHoT6CXsDqaEvI2EXm6GO0fTcmzg7bCaFVRU6o0ue+J1P1jwbqImR1JF8NVb2EF
+         CVbTIVcmF3cem/gmyPamGqoYuZsVmLInWQeutFY1buDYw6HNBBO7Ok6tPe0faWS65GLg
+         88/g==
+X-Gm-Message-State: AOAM5302SXjaGyQl2ZQbwd03EkEgedWy1QPgFjvHPqfPNUKU6/k6vQe+
+        db5duMDUN61B2y8NL0YH6APnBQ==
+X-Google-Smtp-Source: ABdhPJzCuLhCkYKHVasYPzgXQeDfWHGfRizwL/eEVZMvB/YhmsZ90glH0Z4eOlPyJJ67gc69/Mr1/w==
+X-Received: by 2002:a05:622a:1389:: with SMTP id o9mr5395247qtk.18.1616518897768;
+        Tue, 23 Mar 2021 10:01:37 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id i14sm5006234qtq.81.2021.03.23.10.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 10:01:37 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 13:01:36 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Arjun Roy <arjunroy@google.com>
+Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
+Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+Message-ID: <YFoe8BO0JsbXTHHF@cmpxchg.org>
+References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+ <YFCH8vzFGmfFRCvV@cmpxchg.org>
+ <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+ <YFJ+5+NBOBiUbGWS@cmpxchg.org>
+ <CAOFY-A17g-Aq_TsSX8=mD7ZaSAqx3gzUuCJT8K0xwrSuYdP4Kw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323163715.GJ2356281@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAOFY-A17g-Aq_TsSX8=mD7ZaSAqx3gzUuCJT8K0xwrSuYdP4Kw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:37:15PM -0300, Jason Gunthorpe wrote:
-> Isn't the devmap PTE flag arch optional? Does this fall back to not
-> using huge pages on arches that don't support it?
+On Mon, Mar 22, 2021 at 02:35:11PM -0700, Arjun Roy wrote:
+> To make sure we're on the same page, then, here's a tentative
+> mechanism - I'd rather get buy in before spending too much time on
+> something that wouldn't pass muster afterwards.
 > 
-> Also, I feel like this code to install "pte_special" huge pages does
-> not belong in the drm subsystem..
+> A) An opt-in mechanism, that a driver needs to explicitly support, in
+> order to get properly accounted receive zerocopy.
 
-It doesn't.  Unfortunately the drm code has a lot of such warts where
-it pokes way to deep into VM internals. 
+Yep, opt-in makes sense. That allows piece-by-piece conversion and
+avoids us having to have a flag day.
+
+> B) Failure to opt-in (e.g. unchanged old driver) can either lead to
+> unaccounted zerocopy (ie. existing behaviour) or, optionally,
+> effectively disabled zerocopy (ie. any call to zerocopy will return
+> something like EINVAL) (perhaps controlled via some sysctl, which
+> either lets zerocopy through or not with/without accounting).
+
+I'd suggest letting it fail gracefully (i.e. no -EINVAL) to not
+disturb existing/working setups during the transition period. But the
+exact policy is easy to change later on if we change our minds on it.
+
+> The proposed mechanism would involve:
+> 1) Some way of marking a page as being allocated by a driver that has
+> decided to opt into this mechanism. Say, a page flag, or a memcg flag.
+
+Right. I would stress it should not be a memcg flag or any direct
+channel from the network to memcg, as this would limit its usefulness
+while having the same maintenance overhead.
+
+It should make the network page a first class MM citizen - like an LRU
+page or a slab page - which can be accounted and introspected as such,
+including from the memcg side.
+
+So definitely a page flag.
+
+> 2) A callback provided by the driver, that takes a struct page*, and
+> returns a boolean. The value of the boolean being true indicates that
+> any and all refs on the page are held by the driver. False means there
+> exists at least one reference that is not held by the driver.
+
+I was thinking the PageNetwork flag would cover this, but maybe I'm
+missing something?
+
+> 3) A branch in put_page() that, for pages marked thus, will consult
+> the driver callback and if it returns true, will uncharge the memcg
+> for the page.
+
+The way I picture it, put_page() (and release_pages) should do this:
+
+void __put_page(struct page *page)
+{
+        if (is_zone_device_page(page)) {
+                put_dev_pagemap(page->pgmap);
+
+                /*
+                 * The page belongs to the device that created pgmap. Do
+                 * not return it to page allocator.
+                 */
+                return;
+        }
++
++	if (PageNetwork(page)) {
++		put_page_network(page);
++		/* Page belongs to the network stack, not the page allocator */
++		return;
++	}
+
+        if (unlikely(PageCompound(page)))
+                __put_compound_page(page);
+        else
+                __put_single_page(page);
+}
+
+where put_page_network() is the network-side callback that uncharges
+the page.
+
+(..and later can be extended to do all kinds of things when informed
+that the page has been freed: update statistics (mod_page_state), put
+it on a private network freelist, or ClearPageNetwork() and give it
+back to the page allocator etc.
+
+But for starters it can set_page_count(page, 1) after the uncharge to
+retain the current silent recycling behavior.)
+
+> The anonymous struct you defined above is part of a union that I think
+> normally is one qword in length (well, could be more depending on the
+> typedefs I saw there) and I think that can be co-opted to provide the
+> driver callback - though, it might require growing the struct by one
+> more qword since there may be drivers like mlx5 that are already using
+> the field already in there  for dma_addr.
+
+The page cache / anonymous struct it's shared with is 5 words (double
+linked list pointers, mapping, index, private), and the network struct
+is currently one word, so you can add 4 words to a PageNetwork() page
+without increasing the size of struct page. That should be plenty of
+space to store auxiliary data for drivers, right?
+
+> Anyways, the callback could then be used by the driver to handle the
+> other accounting quirks you mentioned, without needing to scan the
+> full pool.
+
+Right.
+
+> Of course there are corner cases and such to properly account for, but
+> I just wanted to provide a really rough sketch to see if this
+> (assuming it were properly implemented) was what you had in mind. If
+> so I can put together a v3 patch.
+
+Yeah, makes perfect sense. We can keep iterating like this any time
+you feel you accumulate too many open questions. Not just for MM but
+also for the networking folks - although I suspect that the first step
+would be mostly about the MM infrastructure, and I'm not sure how much
+they care about the internals there ;)
+
+> Per my response to Andrew earlier, this would make it even more
+> confusing whether this is to be applied against net-next or mm trees.
+> But that's a bridge to cross when we get to it.
+
+The mm tree includes -next, so it should be a safe development target
+for the time being.
+
+I would then decide it based on how many changes your patch interacts
+with on either side. Changes to struct page and the put path are not
+very frequent, so I suspect it'll be easy to rebase to net-next and
+route everything through there. And if there are heavy changes on both
+sides, the -mm tree is the better route anyway.
+
+Does that sound reasonable?
