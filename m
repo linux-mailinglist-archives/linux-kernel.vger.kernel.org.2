@@ -2,346 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4305B3464C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4183464C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhCWQQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:16:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27167 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233202AbhCWQPp (ORCPT
+        id S233240AbhCWQRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233235AbhCWQQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:15:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616516145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eMXOr9cqKamxuKoAg/D1bTKRo0SAKBVJ3Gkwela4hHg=;
-        b=DZemtJ04cj+kHKFNGKGbU08e6ZfGmGrTj9iX3zhwY6G1HB707vFpRsCqgyuXiUZBDTN/9b
-        8msWuvPa7SIrxL059enNxgfAXfzDmbphy5dpTQ2HFt0IMw3K7AvtZbkXwJ1U9IM1DiFUvR
-        geSwzhzweZ8oshoEwV9IFyOWyoF6Ed4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-B33VMCFuPSOcktSBz75x_w-1; Tue, 23 Mar 2021 12:15:40 -0400
-X-MC-Unique: B33VMCFuPSOcktSBz75x_w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30F1D107ACCA;
-        Tue, 23 Mar 2021 16:15:39 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B187660BE5;
-        Tue, 23 Mar 2021 16:15:38 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 10:15:38 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     bhelgaas@google.com, pali@kernel.org, raphael.norwitz@nutanix.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <20210323101538.0f683e53@omen.home.shazbot.org>
-In-Reply-To: <20210323100625.0021a943@omen.home.shazbot.org>
-References: <20210317190206.zrtzwgskxdogl7dz@pali>
-        <20210317131536.38f398b0@omen.home.shazbot.org>
-        <20210317192424.kpfybcrsen3ivr4f@pali>
-        <20210317133245.7d95909c@omen.home.shazbot.org>
-        <20210317194024.nkzrbbvi6utoznze@pali>
-        <20210317140020.4375ba76@omen.home.shazbot.org>
-        <20210317201346.v6t4rde6nzmt7fwr@pali>
-        <20210318143155.4vuf3izuzihiujaa@archlinux>
-        <20210323143419.syqf4dg7wcxorcmk@pali>
-        <20210323084438.37bfcc8e@omen.home.shazbot.org>
-        <20210323153221.n2pwjixqen6hx26h@archlinux>
-        <20210323100625.0021a943@omen.home.shazbot.org>
+        Tue, 23 Mar 2021 12:16:52 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F037DC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:16:51 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id y17so6995431ila.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:16:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OdVHouUBIBuDXBCel9+OQ4NaibXA+5UIQV8+SjROSaM=;
+        b=oJHOpEbW0mw5g65y/ym/nu+3gPznNdyqammcqatn85H6d1t7h2FC6fZvCjG931xrsW
+         zrsnIcYN5OIf4O6cjfwK1qPwJDg46VM3kJFykLNNwlVlXkx2qYr/1AojXhHCwWofzCXl
+         pNsxo1rzvA7UpaPYrxM/73iwopyYQi4Z4hzoI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OdVHouUBIBuDXBCel9+OQ4NaibXA+5UIQV8+SjROSaM=;
+        b=ib3hhpO9BqI66NAOsMJC81sCnRtGMl3gEFCA4vW3uYwteZpV4ImEcV8P9q34Qy6gtw
+         LGaqYxQVfaxPPveYH9+NKuJn9rul+99OE96eEfB0g+D9Ba02BzzlYn5PDKS2kUQgKr7X
+         I1dC2FyKKkeM2vBCB+wT9HxGtATWqvPNjUyCPzu9Vr4iIFXyenUHlkGNdN+iijA9guMU
+         lLRXs7iZfW3DmjqRhhwVoAwXXkAGm3ChjmG2xfmAs2/lcaDbp8IYlBSRn1FvaRdSr2En
+         Za8aRGdR/3GziHaOnkmaEgvv+eYkkxK0ohq+ecAmPVdTg/ZnN5a3JImTli/VqEeJ1aEu
+         Mdpw==
+X-Gm-Message-State: AOAM533EWji+cWYJMxw3EeAiiZxlEfTDsZPCfOKBSjwi6WT5D1/xv65F
+        OOutpWkF13hJwYP0Y187cRUq6uQKWx2ZYw==
+X-Google-Smtp-Source: ABdhPJxgFhVKwt0OChV4wyyjj5F5C/vMZ7tqSXVbMy3X4bP5CvIv+lDTh59Fh6XlLgMruFuamJut7A==
+X-Received: by 2002:a05:6e02:1ba4:: with SMTP id n4mr5629576ili.243.1616516211089;
+        Tue, 23 Mar 2021 09:16:51 -0700 (PDT)
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com. [209.85.166.181])
+        by smtp.gmail.com with ESMTPSA id l17sm10028511ilt.27.2021.03.23.09.16.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 09:16:50 -0700 (PDT)
+Received: by mail-il1-f181.google.com with SMTP id y17so6995341ila.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:16:50 -0700 (PDT)
+X-Received: by 2002:a92:3648:: with SMTP id d8mr4989323ilf.69.1616516209776;
+ Tue, 23 Mar 2021 09:16:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210319055342.127308-1-senozhatsky@chromium.org> <20210319055342.127308-6-senozhatsky@chromium.org>
+In-Reply-To: <20210319055342.127308-6-senozhatsky@chromium.org>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Tue, 23 Mar 2021 17:16:38 +0100
+X-Gmail-Original-Message-ID: <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
+Message-ID: <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
+Subject: Re: [PATCHv3 5/6] media: uvcvideo: add UVC 1.5 ROI control
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 10:06:25 -0600
-Alex Williamson <alex.williamson@redhat.com> wrote:
+Hi Sergey
 
-> On Tue, 23 Mar 2021 21:02:21 +0530
-> Amey Narkhede <ameynarkhede03@gmail.com> wrote:
->=20
-> > On 21/03/23 08:44AM, Alex Williamson wrote: =20
-> > > On Tue, 23 Mar 2021 15:34:19 +0100
-> > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > >   =20
-> > > > On Thursday 18 March 2021 20:01:55 Amey Narkhede wrote:   =20
-> > > > > On 21/03/17 09:13PM, Pali Roh=C3=A1r wrote:   =20
-> > > > > > On Wednesday 17 March 2021 14:00:20 Alex Williamson wrote:   =20
-> > > > > > > On Wed, 17 Mar 2021 20:40:24 +0100
-> > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > >   =20
-> > > > > > > > On Wednesday 17 March 2021 13:32:45 Alex Williamson wrote: =
-  =20
-> > > > > > > > > On Wed, 17 Mar 2021 20:24:24 +0100
-> > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > >   =20
-> > > > > > > > > > On Wednesday 17 March 2021 13:15:36 Alex Williamson wro=
-te:   =20
-> > > > > > > > > > > On Wed, 17 Mar 2021 20:02:06 +0100
-> > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > > > >   =20
-> > > > > > > > > > > > On Monday 15 March 2021 09:03:39 Alex Williamson wr=
-ote:   =20
-> > > > > > > > > > > > > On Mon, 15 Mar 2021 15:52:38 +0100
-> > > > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > > > > > >   =20
-> > > > > > > > > > > > > > On Monday 15 March 2021 08:34:09 Alex Williamso=
-n wrote:   =20
-> > > > > > > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
-> > > > > > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> > > > > > > > > > > > > > >   =20
-> > > > > > > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkh=
-ede wrote:   =20
-> > > > > > > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) =
-and secondary bus
-> > > > > > > > > > > > > > > > > reset(pci_parent_bus_reset) which I think=
- are hot reset and
-> > > > > > > > > > > > > > > > > warm reset respectively.   =20
-> > > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > > No. PCI secondary bus reset =3D PCIe Hot Re=
-set. Slot reset is just another
-> > > > > > > > > > > > > > > > type of reset, which is currently implement=
-ed only for PCIe hot plug
-> > > > > > > > > > > > > > > > bridges and for PowerPC PowerNV platform an=
-d it just call PCI secondary
-> > > > > > > > > > > > > > > > bus reset with some other hook. PCIe Warm R=
-eset does not have API in
-> > > > > > > > > > > > > > > > kernel and therefore drivers do not export =
-this type of reset via any
-> > > > > > > > > > > > > > > > kernel function (yet).   =20
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > Warm reset is beyond the scope of this series=
-, but could be implemented
-> > > > > > > > > > > > > > > in a compatible way to fit within the pci_res=
-et_fn_methods[] array
-> > > > > > > > > > > > > > > defined here.   =20
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Ok!
-> > > > > > > > > > > > > >   =20
-> > > > > > > > > > > > > > > Note that with this series the resets availab=
-le through
-> > > > > > > > > > > > > > > pci_reset_function() and the per device reset=
- attribute is sysfs remain
-> > > > > > > > > > > > > > > exactly the same as they are currently.  The =
-bus and slot reset
-> > > > > > > > > > > > > > > methods used here are limited to devices wher=
-e only a single function is
-> > > > > > > > > > > > > > > affected by the reset, therefore it is not li=
-ke the patch you proposed
-> > > > > > > > > > > > > > > which performed a reset irrespective of the d=
-ownstream devices.  This
-> > > > > > > > > > > > > > > series only enables selection of the existing=
- methods.  Thanks,
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > Alex
-> > > > > > > > > > > > > > >   =20
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > But with this patch series, there is still an i=
-ssue with PCI secondary
-> > > > > > > > > > > > > > bus reset mechanism as exported sysfs attribute=
- does not do that
-> > > > > > > > > > > > > > remove-reset-rescan procedure. As discussed in =
-other thread, this reset
-> > > > > > > > > > > > > > let device in unconfigured / broken state.   =20
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > No, there's not:
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > int pci_reset_function(struct pci_dev *dev)
-> > > > > > > > > > > > > {
-> > > > > > > > > > > > >         int rc;
-> > > > > > > > > > > > >
-> > > > > > > > > > > > >         if (!dev->reset_fn)
-> > > > > > > > > > > > >                 return -ENOTTY;
-> > > > > > > > > > > > >
-> > > > > > > > > > > > >         pci_dev_lock(dev);   =20
-> > > > > > > > > > > > > >>>     pci_dev_save_and_disable(dev);   =20
-> > > > > > > > > > > > >
-> > > > > > > > > > > > >         rc =3D __pci_reset_function_locked(dev);
-> > > > > > > > > > > > >   =20
-> > > > > > > > > > > > > >>>     pci_dev_restore(dev);   =20
-> > > > > > > > > > > > >         pci_dev_unlock(dev);
-> > > > > > > > > > > > >
-> > > > > > > > > > > > >         return rc;
-> > > > > > > > > > > > > }
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > The remove/re-scan was discussed primarily becaus=
-e your patch performed
-> > > > > > > > > > > > > a bus reset regardless of what devices were affec=
-ted by that reset and
-> > > > > > > > > > > > > it's difficult to manage the scope where multiple=
- devices are affected.
-> > > > > > > > > > > > > Here, the bus and slot reset functions will fail =
-unless the scope is
-> > > > > > > > > > > > > limited to the single device triggering this rese=
-t.  Thanks,
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Alex
-> > > > > > > > > > > > >   =20
-> > > > > > > > > > > >
-> > > > > > > > > > > > I was thinking a bit more about it and I'm really s=
-ure how it would
-> > > > > > > > > > > > behave with hotplugging PCIe bridge.
-> > > > > > > > > > > >
-> > > > > > > > > > > > On aardvark PCIe controller I have already tested t=
-hat secondary bus
-> > > > > > > > > > > > reset bit is triggering Hot Reset event and then al=
-so Link Down event.
-> > > > > > > > > > > > These events are not handled by aardvark driver yet=
- (needs to
-> > > > > > > > > > > > implemented into kernel's emulated root bridge code=
-).
-> > > > > > > > > > > >
-> > > > > > > > > > > > But I'm not sure how it would behave on real HW PCI=
-e hotplugging bridge.
-> > > > > > > > > > > > Kernel has already code which removes PCIe device i=
-f it changes presence
-> > > > > > > > > > > > bit (and inform via interrupt). And Link Down event=
- triggers this
-> > > > > > > > > > > > change.   =20
-> > > > > > > > > > >
-> > > > > > > > > > > This is the difference between slot and bus resets, t=
-he slot reset is
-> > > > > > > > > > > implemented by the hotplug controller and disables pr=
-esence detection
-> > > > > > > > > > > around the bus reset.  Thanks,   =20
-> > > > > > > > > >
-> > > > > > > > > > Yes, but I'm talking about bus reset, not about slot re=
-set.
-> > > > > > > > > >
-> > > > > > > > > > I mean: to use bus reset via sysfs on hardware which su=
-pports slots and
-> > > > > > > > > > hotplugging.
-> > > > > > > > > >
-> > > > > > > > > > And if I'm reading code correctly, this combination is =
-allowed, right?
-> > > > > > > > > > Via these new patches it is possible to disable slot re=
-set and enable
-> > > > > > > > > > bus reset.   =20
-> > > > > > > > >
-> > > > > > > > > That's true, a slot reset is simply a bus reset wrapped a=
-round code
-> > > > > > > > > that prevents the device from getting ejected.   =20
-> > > > > > > >
-> > > > > > > > Yes, this makes slot reset "safe". But bus reset is "unsafe=
-".
-> > > > > > > >   =20
-> > > > > > > > > Maybe it would make
-> > > > > > > > > sense to combine the two as far as this interface is conc=
-erned, ie. a
-> > > > > > > > > single "bus" reset method that will always use slot reset=
- when
-> > > > > > > > > available.  Thanks,   =20
-> > > > > > > >
-> > > > > > > > That should work when slot reset is available.
-> > > > > > > >
-> > > > > > > > Other option is that mentioned remove-reset-rescan procedur=
-e.   =20
-> > > > > > >
-> > > > > > > That's not something we can introduce to the pci_reset_functi=
-on() path
-> > > > > > > without a fair bit of collateral in using it through vfio-pci.
-> > > > > > >   =20
-> > > > > > > > But quick search in drivers/pci/hotplug/ results that not a=
-ll hotplug
-> > > > > > > > drivers implement reset_slot method.
-> > > > > > > >
-> > > > > > > > So there is a possible issue with hotplug driver which may =
-eject device
-> > > > > > > > during bus reset (because e.g. slot reset is not implemente=
-d)?   =20
-> > > > > > >
-> > > > > > > People aren't reporting it, so maybe those controllers aren't=
- being
-> > > > > > > used for this use case.  Or maybe introducing this patch will=
- make
-> > > > > > > these reset methods more readily accessible for testing.  We =
-can fix or
-> > > > > > > blacklist those controllers for bus reset when reports come i=
-n.  Thanks,   =20
-> > > > > >
-> > > > > > Ok! I do not know neither if those controllers are used, but lo=
-oks like
-> > > > > > that there are still changes in hotplug code.
-> > > > > >
-> > > > > > So I guess with these patches people can test it and report iss=
-ues when
-> > > > > > such thing happen.   =20
-> > > > > So after a bit research as I understood we need to group slot
-> > > > > and bus reset together in a single category of reset methods and
-> > > > > then implicitly use slot reset if it is available when bus reset =
-is
-> > > > > enabled by the user.
-> > > > > Is that right?   =20
-> > > >
-> > > > Yes, I understand it in same way. Just I do not know which name to
-> > > > choose for this reset category. In PCI spec it is called Secondary =
-Bus
-> > > > Reset (as it resets whole bus with all devices; but we allow this r=
-eset
-> > > > in this patch series only if on the bus is connected exactly one de=
-vice).
-> > > > In PCIe spec it is called Hot Reset. And if kernel detects Slot sup=
-port
-> > > > then kernel currently calls it Slot reset. But it is still same thi=
-ng.
-> > > > Any opinion? I think that we could call it Hot Reset as this patch
-> > > > series exports it only for single device (so calling it _bus_ is no=
-t the
-> > > > best match).   =20
-> > >
-> > > A similar abstraction where our scope is not limited to a single
-> > > function calls this a bus reset:
-> > >
-> > > int pci_reset_bus(struct pci_dev *pdev)
-> > > {
-> > >         return (!pci_probe_reset_slot(pdev->slot)) ?
-> > >             __pci_reset_slot(pdev->slot) : __pci_reset_bus(pdev->bus);
-> > > }
-> > >
-> > > Thanks,
-> > > Alex
-> > >   =20
-> > I was going to use similar function
-> >=20
-> > int pci_bus_reset(struct pci_dev *dev, int probe)
-> > {
-> >        return pci_dev_reset_slot_function(dev, probe) ?
-> >                pci_parent_bus_reset(dev, probe) : 0;
-> >=20
-> > } =20
->=20
-> I think via the sysfs attribute we can simply call this "bus" reset,
-> but internally having both pci_reset_bus() and pci_bus_reset() would be
-> really confusing.  We're doing the same thing as pci_bus_reset() but
-> with a different scope, so I'd probably suggest
-> pci_bus_reset_function().
+On Fri, Mar 19, 2021 at 6:54 AM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> This patch implements UVC 1.5 Region of Interest (ROI) control.
+>
+> Note that, UVC 1.5 defines CT_DIGITAL_WINDOW_CONTROL controls
+> and mentions that ROI rectangle coordinates "must be within
+> the current Digital Window as specified by the CT_WINDOW control."
+> (4.2.2.1.20 Digital Region of Interest (ROI) Control).
+>
+> It's is not entirely clear if we need to implement WINDOW_CONTROL.
+> ROI is naturally limited by GET_MIN and GET_MAX rectangles.
+>
+> Another thing to note is that ROI support is implemented as
+> V4L2 selection target: selection rectangle represents ROI
+> rectangle and selection flags represent ROI auto-controls.
+> User-space is required to set valid values for both rectangle
+> and auto-controls every time SET_CUR is issued.
+>
+> Usage example:
+>
+>        struct v4l2_selection roi = {0, };
+>
+>        roi.target     = V4L2_SEL_TGT_ROI;
+>        roi.r.left     = 0;
+>        roi.r.top      = 0;
+>        roi.r.width    = 42;
+>        roi.r.height   = 42;
+>        roi.flags      = V4L2_SEL_FLAG_ROI_AUTO_EXPOSURE;
+>
+>        ioctl(fd, VIDIOC_S_SELECTION, &roi);
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_v4l2.c | 147 ++++++++++++++++++++++++++++++-
+>  include/uapi/linux/usb/video.h   |   1 +
+>  2 files changed, 145 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index 252136cc885c..d0fe6c33fab6 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -1139,14 +1139,66 @@ static int uvc_ioctl_querymenu(struct file *file, void *fh,
+>         return uvc_query_v4l2_menu(chain, qm);
+>  }
+>
+> -static int uvc_ioctl_g_selection(struct file *file, void *fh,
+> -                                struct v4l2_selection *sel)
+> +/* UVC 1.5 ROI rectangle is half the size of v4l2_rect */
+> +struct uvc_roi_rect {
+> +       __u16                   top;
+> +       __u16                   left;
+> +       __u16                   bottom;
+> +       __u16                   right;
+> +       __u16                   auto_controls;
+> +} __packed;
+> +
+> +static int uvc_ioctl_g_roi_target(struct file *file, void *fh,
+> +                                 struct v4l2_selection *sel)
+>  {
+>         struct uvc_fh *handle = fh;
+>         struct uvc_streaming *stream = handle->stream;
+> +       struct uvc_roi_rect *roi;
+> +       u8 query;
+> +       int ret;
+>
+> -       if (sel->type != stream->type)
+> +       switch (sel->target) {
+> +       case V4L2_SEL_TGT_ROI:
+> +               query = UVC_GET_CUR;
+> +               break;
+> +       case V4L2_SEL_TGT_ROI_DEFAULT:
+> +               query = UVC_GET_DEF;
+> +               break;
+> +       case V4L2_SEL_TGT_ROI_BOUNDS_MIN:
+> +               query = UVC_GET_MAX;
+> +               break;
+> +       case V4L2_SEL_TGT_ROI_BOUNDS_MAX:
+> +               query = UVC_GET_MAX;
+> +               break;
+> +       default:
+>                 return -EINVAL;
+> +       }
+> +
+> +       roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
+> +       if (!roi)
+> +               return -ENOMEM;
+> +
+> +       ret = uvc_query_ctrl(stream->dev, query, 1, stream->dev->intfnum,
+> +                            UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
+> +                            sizeof(struct uvc_roi_rect));
+> +       if (!ret) {
+> +               /* ROI left, top, right, bottom are global coordinates. */
+> +               sel->r.left     = roi->left;
+> +               sel->r.top      = roi->top;
+> +               sel->r.width    = roi->right - roi->left + 1;
+> +               sel->r.height   = roi->bottom - roi->top + 1;
+> +               sel->flags      = roi->auto_controls;
+> +       }
+> +
+> +       kfree(roi);
+> +       return ret;
+> +}
+> +
+> +static int uvc_ioctl_g_sel_target(struct file *file, void *fh,
+> +                                 struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+>
+>         switch (sel->target) {
+>         case V4L2_SEL_TGT_CROP_DEFAULT:
+> @@ -1173,6 +1225,94 @@ static int uvc_ioctl_g_selection(struct file *file, void *fh,
+>         return 0;
+>  }
+>
+> +static int uvc_ioctl_g_selection(struct file *file, void *fh,
+> +                                struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+> +
+> +       if (sel->type != stream->type)
+> +               return -EINVAL;
+> +
+> +       switch (sel->target) {
+> +       case V4L2_SEL_TGT_CROP_DEFAULT:
+> +       case V4L2_SEL_TGT_CROP_BOUNDS:
+> +       case V4L2_SEL_TGT_COMPOSE_DEFAULT:
+> +       case V4L2_SEL_TGT_COMPOSE_BOUNDS:
+> +               return uvc_ioctl_g_sel_target(file, fh, sel);
+> +       case V4L2_SEL_TGT_ROI:
+> +       case V4L2_SEL_TGT_ROI_DEFAULT:
+> +       case V4L2_SEL_TGT_ROI_BOUNDS_MIN:
+> +       case V4L2_SEL_TGT_ROI_BOUNDS_MAX:
+> +               return uvc_ioctl_g_roi_target(file, fh, sel);
+> +       }
+> +
+> +       return -EINVAL;
+> +}
+> +
+> +static bool validate_roi_bounds(struct uvc_streaming *stream,
+> +                               struct v4l2_selection *sel)
+> +{
+> +       if (sel->r.left > USHRT_MAX ||
+> +           sel->r.top > USHRT_MAX ||
+> +           (sel->r.width + sel->r.left) > USHRT_MAX ||
+> +           (sel->r.height + sel->r.top) > USHRT_MAX ||
+> +           !sel->r.width || !sel->r.height)
+> +               return false;
+> +
+> +       if (sel->flags > V4L2_SEL_FLAG_ROI_AUTO_HIGHER_QUALITY)
+> +               return false;
 
-I'm already confusing them, s/bus_reset/reset_bus/ in the last sentence
-above.  Thanks,
+Is it not allowed V4L2_SEL_FLAG_ROI_AUTO_IRIS |
+V4L2_SEL_FLAG_ROI_AUTO_HIGHER_QUALITY   ?
 
-Alex
+> +
+> +       return true;
+> +}
+> +
+> +static int uvc_ioctl_s_roi(struct file *file, void *fh,
+> +                          struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+> +       struct uvc_roi_rect *roi;
+> +       int ret;
+> +
+> +       if (!validate_roi_bounds(stream, sel))
+> +               return -E2BIG;
 
->=20
-> Also, the above ternary form isn't true to the original, only -ENOTTY
-> allows fall-through, so something more like:
->=20
-> int pci_reset_bus_function(struct pci_dev *dev, int probe)
-> {
-> 	int rc =3D pci_dev_reset_slot_function(dev, probe);
->=20
-> 	return (rc =3D=3D -ENOTTY) ? pci_parent_bus_reset(dev, probe) : rc;
-> }
->=20
-> Thanks,
-> Alex
->=20
+Not sure if this is the correct approach or if we should convert the
+value to the closest valid...
 
+
+> +
+> +       roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
+> +       if (!roi)
+> +               return -ENOMEM;
+> +
+> +       /* ROI left, top, right, bottom are global coordinates. */
+> +       roi->left               = sel->r.left;
+> +       roi->top                = sel->r.top;
+> +       roi->right              = sel->r.width + sel->r.left - 1;
+> +       roi->bottom             = sel->r.height + sel->r.top - 1;
+> +       roi->auto_controls      = sel->flags;
+> +
+> +       ret = uvc_query_ctrl(stream->dev, UVC_SET_CUR, 1, stream->dev->intfnum,
+> +                            UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
+> +                            sizeof(struct uvc_roi_rect));
+> +
+> +       kfree(roi);
+> +       return ret;
+> +}
+> +
+> +static int uvc_ioctl_s_selection(struct file *file, void *fh,
+> +                                struct v4l2_selection *sel)
+> +{
+> +       struct uvc_fh *handle = fh;
+> +       struct uvc_streaming *stream = handle->stream;
+> +
+> +       if (sel->type != stream->type)
+> +               return -EINVAL;
+> +
+> +       switch (sel->target) {
+> +       case V4L2_SEL_TGT_ROI:
+> +               return uvc_ioctl_s_roi(file, fh, sel);
+> +       }
+> +
+> +       return -EINVAL;
+> +}
+> +
+>  static int uvc_ioctl_g_parm(struct file *file, void *fh,
+>                             struct v4l2_streamparm *parm)
+>  {
+> @@ -1533,6 +1673,7 @@ const struct v4l2_ioctl_ops uvc_ioctl_ops = {
+>         .vidioc_try_ext_ctrls = uvc_ioctl_try_ext_ctrls,
+>         .vidioc_querymenu = uvc_ioctl_querymenu,
+>         .vidioc_g_selection = uvc_ioctl_g_selection,
+> +       .vidioc_s_selection = uvc_ioctl_s_selection,
+>         .vidioc_g_parm = uvc_ioctl_g_parm,
+>         .vidioc_s_parm = uvc_ioctl_s_parm,
+>         .vidioc_enum_framesizes = uvc_ioctl_enum_framesizes,
+> diff --git a/include/uapi/linux/usb/video.h b/include/uapi/linux/usb/video.h
+> index d854cb19c42c..c87624962896 100644
+> --- a/include/uapi/linux/usb/video.h
+> +++ b/include/uapi/linux/usb/video.h
+> @@ -104,6 +104,7 @@
+>  #define UVC_CT_ROLL_ABSOLUTE_CONTROL                   0x0f
+>  #define UVC_CT_ROLL_RELATIVE_CONTROL                   0x10
+>  #define UVC_CT_PRIVACY_CONTROL                         0x11
+> +#define UVC_CT_REGION_OF_INTEREST_CONTROL              0x14
+>
+>  /* A.9.5. Processing Unit Control Selectors */
+>  #define UVC_PU_CONTROL_UNDEFINED                       0x00
+> --
+> 2.31.0.rc2.261.g7f71774620-goog
+>
+
+
+-- 
+Ricardo Ribalda
