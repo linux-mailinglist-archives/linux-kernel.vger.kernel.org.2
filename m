@@ -2,313 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D133455C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7440C3455CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhCWC4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 22:56:02 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6492 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhCWCza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:55:30 -0400
-IronPort-SDR: oSN8t+TeqpTE1LxwpZbawNHDZz+SiQ6GgZo6LFojvUSbo2LPWJlxSMhbTAPDLrZ9IMnhlgck1C
- fgQy9+mumgIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="188074951"
-X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; 
-   d="scan'208";a="188074951"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 19:55:29 -0700
-IronPort-SDR: Qt51m2NdIFWPebJ2Kfbt4AdsLwESOfvS4IR/C3Hdsy11SR8DurC60Lf2S2v7k2OXfN8y01S42V
- ArpnH0y19gmQ==
-X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; 
-   d="scan'208";a="408092779"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 19:55:27 -0700
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <b10903ca-c424-b305-d981-fe0004500190@intel.com>
-Date:   Tue, 23 Mar 2021 10:54:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229890AbhCWC4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 22:56:40 -0400
+Received: from mail-mw2nam10on2078.outbound.protection.outlook.com ([40.107.94.78]:22849
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229898AbhCWC4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 22:56:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oh+F54Lf4zYfRXGBscKkVE85XV8nUZBb3AdM830lGFBiQybRPBf2XTPXr1szz2B4Wz1U/XlTT/CHgYz1J52IezSLA+Dd0JpdDkqCzCnn1l0gkCxRgOpEaJNF1nUj7gFdX6C93sRTo90B0KxekvKtSu+bNpMmTAIlD7Qtahd+fLDbgZcxkocpQnZNZWQFN4APjWj6xsZl9GZuTo3dk/ZCnRCmDRP2iFgJqLNXqR37QqFfVm6sq+y+/v5dRnr04x5VXhBmidv381S9Beg/Il7vU3TtDskvsho6yLNDd+hYJCZdP2YSKuKWKu/ZFlPw5WgFnwP6x0xNxHMjEP1FB97oxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uz4gPygJjBszY1pwW6Ip+u9XdI0w/fmAOLl67Aygzqo=;
+ b=bJW15t3q8+gLx6n3GuZZY0WIIMwMu88b1ldmpzjcSNcg/1zcmNu2fYxLUZTCMTuu3gUCSxxkEc8ec9Kc8D/thEBAik4kur9J5Qu52wmQmvTB0D7zXIAl1yIIap8xP1yQEfb+Z3R2BhBObapTcLeuIjculIqlVuc/f+/j5DO/4R+j2u8BL/XPlol7odLZa4UJdzEstSwF+BDGFejSNFeom4QORuU5lBQtDttleiwy5/WgIeMxD0IliIMByLzCtSciy7olI/JWpeiKD+6VZO08oprJPc8uFgs4Tan5OoK+dZ1BFx5mSjDaQct1yljirbDC0+96GVtIDhmtjHlXe2pIpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uz4gPygJjBszY1pwW6Ip+u9XdI0w/fmAOLl67Aygzqo=;
+ b=UckuP0j+ihvwk0a4ieg/1HJmuYIbKSmlxOwTWMuRSZCAXDiFBcF9EvPNdvzwQLwtqOnC4P8aI2p1Os+aikmugk+azCFFp243BrMDcYzVDlBOZ5DEBGgAgc5ZaYlJOvUGc5OvmZ7g8IQG3yUWGMBhxlBIaEGDhNc5yXCONfc7Kjs=
+Authentication-Results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR1101MB2103.namprd11.prod.outlook.com (2603:10b6:910:17::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24; Tue, 23 Mar
+ 2021 02:56:04 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::d4fe:8135:d8fa:81c0]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::d4fe:8135:d8fa:81c0%5]) with mapi id 15.20.3955.025; Tue, 23 Mar 2021
+ 02:56:04 +0000
+From:   quanyang.wang@windriver.com
+To:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>
+Subject: [V2][PATCH] drm: xlnx: zynqmp: release reset to DP controller before accessing DP registers
+Date:   Tue, 23 Mar 2021 10:55:01 +0800
+Message-Id: <20210323025501.1568039-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: SJ0PR03CA0265.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::30) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by SJ0PR03CA0265.namprd03.prod.outlook.com (2603:10b6:a03:3a0::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 02:56:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: acaf1ad5-7e42-4cfb-b160-08d8eda732b6
+X-MS-TrafficTypeDiagnostic: CY4PR1101MB2103:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1101MB210311F17B9BB06A20F44533F0649@CY4PR1101MB2103.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r+Jtt1PWTVdqztFAmGHfFa5MGzBjrOgAlg7q9WKssMoIE1bJUFGJ5QlHDjSPu5vd3raDeqzQoxfyuHxM93jloi3sXWXT+draha0HuFFiltR0vmroj3GVteTg4j19nZVPCA6EiDV1QQ1WdoCyO/B9XadwlAHHqyf/KUcqvdBaHXBPw4ys8yYkua4q576/YTAQV+5TindKgPClMHnSwpGrswVT/E4a3u9eN3pvllbqubKGX6R2CYALqGArLEb4woG3jcEHS8gZDSvdT5io/nq65sw4oR2Z/ehyM4LMaztZV3qxy41Lrl0fYNE7ySP97BfMZxf9BT74VsCyyj7Gfyt6jhYt9jZ2IqrzWqjxk61gl5qqfOY+FPsIZLjKFACO5kmhWwyKrpONKptbZ4K36YUnlqPHaGMNvqiwGYSe1GD0i2eLbqoLA0cjnZFSw0gyO7ngLnd/ywJVYYlMT1yHX210Jw55JuTxf5obZs0KjEmlZyUBALhKEJikBLsUAa+7M+VxtgLuX54QvngGRyNT+4rEUsHQOsob8cZy2TvoeS1w9xFeJaZq4xCrVDAX/eI10bfPUEcTvKQNgNZjcMnYXLEBXK+9NRBPdXCS38KVqETIhzWN7U1/Z21JZB0idqjeKZ06+TF/ZLqxsKbPVqbLzc9N4BtLQW9s6sIk944wVm64xno=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(39850400004)(396003)(346002)(2906002)(186003)(8676002)(66476007)(66946007)(16526019)(4326008)(316002)(26005)(110136005)(6506007)(36756003)(8936002)(52116002)(66556008)(478600001)(107886003)(83380400001)(6486002)(6636002)(9686003)(6512007)(86362001)(1076003)(38100700001)(2616005)(5660300002)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zlA9HrZ+TYnm4E6Q8uVtlqTWxkULVu5sy0Wu2Fbmi9h48293DRhzOz4ZnQVM?=
+ =?us-ascii?Q?YqLV+WQ3p1f1zszbSBNpITNneV+0vbqxsVfzbKdZ6MM7DwjfrHcmDWJUiFjy?=
+ =?us-ascii?Q?5o3O3K3/JfT06YSsVwgb2TgIfgyQxhzxTxfgOxJKBCLYu+wSBWFb2lKQ2kSu?=
+ =?us-ascii?Q?xQ56CnoStCHyBBm2gl26MpMGhdoP18O/7sbs2FBjSyCn+Ph0w1JOPsw4ZKda?=
+ =?us-ascii?Q?lsRZXcoQt1H4+evCThuXPk8rR/+sg40bpDwMYz5NZntB8Rgh783L0I8uTFIL?=
+ =?us-ascii?Q?gET87FCTjKYSi4YDW6iQ8dXXqrce864eTpezbml6FTODZiIneNpgj/kD5bCw?=
+ =?us-ascii?Q?HkNBq31Rw2HmvLoDZZhq4VrAYen3VkgVf+A7bNOgoTkcR81RgdKGlllbpWEw?=
+ =?us-ascii?Q?I70eZHTKKcyGNHycs2kuVl5w4MYbsT6b+HnYMLKFEANtqhglQM8ysgt8AuGe?=
+ =?us-ascii?Q?78ZRYnm03Xl8V6r9QIF/dCIagMLp5AlUuaXWf+zs558oytGiRLjY+BTEI1Mz?=
+ =?us-ascii?Q?9Ef8uFrfSUv2JFJ0vHfRA8CBpzQ96NmsqPrpY5cvaGC+txnjUwR+QfLZhSuF?=
+ =?us-ascii?Q?BfU2n150qJtkgroVDpAX8Gx2zvuY5/TfJMLFuwLBtXSrqtwztQfjHoCMjkR+?=
+ =?us-ascii?Q?0082mHedahkkkImOiB5wq2Nadg5Ktb006V+M4YSNQvOHGSU0TtNGDddziYer?=
+ =?us-ascii?Q?QS6OvI2B4sBMswyuREEEQLrfVV+Yd5KPpdC2GwQPe65gaywaoUhHRUtKKfnc?=
+ =?us-ascii?Q?goCBf7UAIfEXcQtHKLxSJM87+OGsuXVI9tKTxdGBFfHxLzHzRgaN1QK73RmQ?=
+ =?us-ascii?Q?ZC4AAOnmQ3qMETSDuF7lsS/ficF3ROJquN0LYelWfvoRHb/Ab+qe2g+1Zzd4?=
+ =?us-ascii?Q?dNjM44KaPjvijPokRD9XacsW4pK2EfeZd8zh7Btm7TU8/WtryAbvQX9mSZya?=
+ =?us-ascii?Q?wrax7930jPArjnGG3Bdfe5IyKj6+/FDZqlBYwjABasSwyeewYVPyejXgNpBA?=
+ =?us-ascii?Q?EQs/EZU7i/KQZ7G8c9McTl7Kq6QQTaZzvA5geBIaEIUZA4BzrZrj8LLjwdm2?=
+ =?us-ascii?Q?jg5U22TKtbBuWRop4q5zNVCaBbO/uhIFO2+7Q3IUYeid22eBIXYgiYLjsxq+?=
+ =?us-ascii?Q?WY1xdWtyd3OrU+O/DqWM/difG7ry5PlYUlkHfKb+MoaWOBqWJXlI7OPn4x5q?=
+ =?us-ascii?Q?hRgJZ0iilzQnu2z3E9nqKWZ4quERbyq02VMVgZP2Tx6edETGJjr/XmX3NRbd?=
+ =?us-ascii?Q?s3gNvzH3ZQl9l1CEDmZfvhJNrHAt2v4l131pK8XiM0SYrjGh0gUHckf0SF6v?=
+ =?us-ascii?Q?qAnWGw1b99ZS8mzSKNt0AIKj?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: acaf1ad5-7e42-4cfb-b160-08d8eda732b6
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 02:56:04.6815
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bTnerT0NYYhs61r4xdWmuP1Wum2YfQoXu4tw489LTyd+TSzP+ehO9DYZya6wi6SZMWZgjAE+wKSTObZxe4p1A6mp7xgYca7WwrLLpbLo2sM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
+When insmod zynqmp-dpsub.ko after rmmod it, system will hang with the
+error log as below:
 
-On 3/23/21 12:24 AM, Oliver Hartkopp wrote:
-> Hi Rong,
->
-> On 22.03.21 09:52, Rong Chen wrote:
->
->> On 3/21/21 10:19 PM, Oliver Hartkopp wrote:
->>> Two reminders in two days? ;-)
->>>
->>> Did you check my answer here?
->>> https://lore.kernel.org/lkml/afffeb73-ba4c-ca2c-75d0-9e7899e5cbe1@hartkopp.net/ 
->>>
->>>
->>> And did you try the partly revert?
->>
->> Hi Oliver,
->>
->> Sorry for the delay, we tried the revert patch and the problem still 
->> exists,
->> we also found that commit c7b74967 changed the error message which 
->> triggered
->> the report.
->>
->> The problem is that offsetof(struct can_frame, data) != 
->> offsetof(struct canfd_frame, data)
->> the following struct layout shows that the offset has been changed by 
->> union:
->>
->> struct can_frame {
->>          canid_t                    can_id;               /* 0     4 */
->>          union {
->>                  __u8               len;                  /* 4     1 */
->>                  __u8               can_dlc;              /* 4     1 */
->>          };                                               /* 4     4 */
->
-> Ugh! Why did the compiler extend the space for the union to 4 bytes?!?
->
->>          __u8 __pad;                /* 8     1 */
->>          __u8                       __res0;               /* 9     1 */
->>          __u8                       len8_dlc;             /* 10     1 */
->>
->>          /* XXX 5 bytes hole, try to pack */
->>
->>          __u8                       data[8] 
->> __attribute__((__aligned__(8))); /*    16     8 */
->>
->>          /* size: 24, cachelines: 1, members: 6 */
->>          /* sum members: 19, holes: 1, sum holes: 5 */
->>          /* forced alignments: 1, forced holes: 1, sum forced holes: 
->> 5 */
->>          /* last cacheline: 24 bytes */
->> } __attribute__((__aligned__(8)));
->>
->> struct canfd_frame {
->>          canid_t                    can_id;               /* 0     4 */
->>          __u8                       len;                  /* 4     1 */
->>          __u8                       flags;                /* 5     1 */
->>          __u8                       __res0;               /* 6     1 */
->>          __u8                       __res1;               /* 7     1 */
->>          __u8                       data[64] 
->> __attribute__((__aligned__(8))); /*     8    64 */
->>
->>          /* size: 72, cachelines: 2, members: 6 */
->>          /* forced alignments: 1 */
->>          /* last cacheline: 8 bytes */
->> } __attribute__((__aligned__(8)))
->>
->>
->> and I tried to add "__attribute__((packed))" to the union, the issue 
->> is gone:
->>
->> diff --git a/include/uapi/linux/can.h b/include/uapi/linux/can.h
->> index f75238ac6dce..9842bb55ffd9 100644
->> --- a/include/uapi/linux/can.h
->> +++ b/include/uapi/linux/can.h
->> @@ -113,7 +113,7 @@ struct can_frame {
->>                   */
->>                  __u8 len;
->>                  __u8 can_dlc; /* deprecated */
->> -       };
->> +       } __attribute__((packed));
->>          __u8 __pad; /* padding */
->>          __u8 __res0; /* reserved / padding */
->>          __u8 len8_dlc; /* optional DLC for 8 byte payload length (9 
->> .. 15) */
->
-> This is pretty strange!
->
-> pahole on my x86_64 machine shows the correct data structure layout:
->
-> struct can_frame {
->         canid_t                    can_id;               /* 0     4 */
->         union {
->                 __u8               len;                  /* 4     1 */
->                 __u8               can_dlc;              /* 4     1 */
->         };                                               /* 4     1 */
->         __u8                       __pad;                /* 5     1 */
->         __u8                       __res0;               /* 6     1 */
->         __u8                       len8_dlc;             /* 7     1 */
->         __u8                       data[8] 
-> __attribute__((__aligned__(8))); /*     8     8 */
->
->         /* size: 16, cachelines: 1, members: 6 */
->         /* forced alignments: 1 */
->         /* last cacheline: 16 bytes */
-> } __attribute__((__aligned__(8)));
->
-> Target: x86_64-linux-gnu
-> gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-> Linux 5.12.0-rc3-00070-g8b12a62a4e3e x86_64 GNU/Linux
->
-> So it looks like your compiler does not behave correctly - and I 
-> wonder if it would be the correct approach to add the __packed() 
-> attribute or better fix/change the (ARM) compiler.
+root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+[   88.391289] [drm] Initialized zynqmp-dpsub 1.0.0 20130509 for fd4a0000.display on minor 0
+[   88.529906] Console: switching to colour frame buffer device 128x48
+[   88.549402] zynqmp-dpsub fd4a0000.display: [drm] fb0: zynqmp-dpsubdrm frame buffer device
+[   88.571624] zynqmp-dpsub fd4a0000.display: ZynqMP DisplayPort Subsystem driver probed
+root@xilinx-zynqmp:~# rmmod zynqmp_dpsub
+[   94.023404] Console: switching to colour dummy device 80x25
+root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+	<hang here>
 
-Hi Oliver,
+This is because that in zynqmp_dp_probe it tries to access some DP
+registers while the DP controller is still in the reset state. When
+running "rmmod zynqmp_dpsub", zynqmp_dp_reset(dp, true) in
+zynqmp_dp_phy_exit is called to force the DP controller into the reset
+state. Then insmod will call zynqmp_dp_probe to program the DP registers,
+but at this moment the DP controller hasn't been brought out of the reset
+state yet since the function zynqmp_dp_reset(dp, false) is called later and
+this will result the system hang.
 
-I tried arm-linux-gnueabi (gcc version 10.2.0) and the problem still exists,
-btw we prefer to not use the latest gcc compiler to avoid false positives.
+Releasing the reset to DP controller before any read/write operation to it
+will fix this issue. And for symmetry, move zynqmp_dp_reset() call from
+zynqmp_dp_phy_exit() to zynqmp_dp_remove().
 
-Best Regards,
-Rong Chen
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
 
->
-> At least I'm very happy that the BUILD_BUG_ON() triggered correctly - 
-> so it was worth to have it ;-)
->
-> Best regards,
-> Oliver
->
->
->>>
->>> Maybe there's a mismatch in include files - or BUILD_BUG_ON() 
->>> generally does not work with unions on ARM as assumed here:
->>>
->>> https://lore.kernel.org/lkml/6e57d5d2-9b88-aee6-fb7a-82e24144d179@hartkopp.net/ 
->>>
->>>
->>> In both cases I can not really fix the issue.
->>> When the partly revert (suggested above) works, this would be a hack 
->>> too.
->>>
->>> Best,
->>> Oliver
->>>
->>> On 20.03.21 21:43, kernel test robot wrote:
->>>> Hi Oliver,
->>>>
->>>> FYI, the error/warning still remains.
->>>>
->>>> tree: 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
->>>> master
->>>> head:   812da4d39463a060738008a46cfc9f775e4bfcf6
->>>> commit: c7b74967799b1af52b3045d69d4c26836b2d41de can: replace 
->>>> can_dlc as variable/element for payload length
->>>> date:   4 months ago
->>>> config: arm-randconfig-r016-20210321 (attached as .config)
->>>> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
->>>> reproduce (this is a W=1 build):
->>>>          wget 
->>>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
->>>> -O ~/bin/make.cross
->>>>          chmod +x ~/bin/make.cross
->>>>          # 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c7b74967799b1af52b3045d69d4c26836b2d41de 
->>>>
->>>>          git remote add linus 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>          git fetch --no-tags linus master
->>>>          git checkout c7b74967799b1af52b3045d69d4c26836b2d41de
->>>>          # save the attached .config to linux build tree
->>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 
->>>> make.cross ARCH=arm
->>>>
->>>> If you fix the issue, kindly add following tag as appropriate
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>
->>>> All errors (new ones prefixed by >>):
->>>>
->>>>     In file included from <command-line>:
->>>>     net/can/af_can.c: In function 'can_init':
->>>>>> include/linux/compiler_types.h:315:38: error: call to 
->>>>>> '__compiletime_assert_536' declared with attribute error: 
->>>>>> BUILD_BUG_ON failed: offsetof(struct can_frame, len) != 
->>>>>> offsetof(struct canfd_frame, len) || offsetof(struct can_frame, 
->>>>>> data) != offsetof(struct canfd_frame, data)
->>>>       315 |  _compiletime_assert(condition, msg, 
->>>> __compiletime_assert_, __COUNTER__)
->>>>           |                                      ^
->>>>     include/linux/compiler_types.h:296:4: note: in definition of 
->>>> macro '__compiletime_assert'
->>>>       296 |    prefix ## suffix();    \
->>>>           |    ^~~~~~
->>>>     include/linux/compiler_types.h:315:2: note: in expansion of 
->>>> macro '_compiletime_assert'
->>>>       315 |  _compiletime_assert(condition, msg, 
->>>> __compiletime_assert_, __COUNTER__)
->>>>           |  ^~~~~~~~~~~~~~~~~~~
->>>>     include/linux/build_bug.h:39:37: note: in expansion of macro 
->>>> 'compiletime_assert'
->>>>        39 | #define BUILD_BUG_ON_MSG(cond, msg) 
->>>> compiletime_assert(!(cond), msg)
->>>>           | ^~~~~~~~~~~~~~~~~~
->>>>     include/linux/build_bug.h:50:2: note: in expansion of macro 
->>>> 'BUILD_BUG_ON_MSG'
->>>>        50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " 
->>>> #condition)
->>>>           |  ^~~~~~~~~~~~~~~~
->>>>     net/can/af_can.c:891:2: note: in expansion of macro 'BUILD_BUG_ON'
->>>>       891 |  BUILD_BUG_ON(offsetof(struct can_frame, len) !=
->>>>           |  ^~~~~~~~~~~~
->>>>
->>>>
->>>> vim +/__compiletime_assert_536 +315 include/linux/compiler_types.h
->>>>
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  301
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  302  #define 
->>>> _compiletime_assert(condition, msg, prefix, suffix) \
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  303 
->>>> __compiletime_assert(condition, msg, prefix, suffix)
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  304
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  /**
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  306   * compiletime_assert - 
->>>> break build and emit msg if condition is false
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  307   * @condition: a 
->>>> compile-time constant condition to check
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  308   * @msg:       a 
->>>> message to emit if condition is false
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  309   *
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * In tradition of 
->>>> POSIX assert, this macro will break the build if the
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * supplied condition 
->>>> is *false*, emitting the supplied error message if the
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * compiler has support 
->>>> to do so.
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   */
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  #define 
->>>> compiletime_assert(condition, msg) \
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @315 
->>>> _compiletime_assert(condition, msg, __compiletime_assert_, 
->>>> __COUNTER__)
->>>> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316
->>>>
->>>> :::::: The code at line 315 was first introduced by commit
->>>> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move 
->>>> compiletime_assert() macros into compiler_types.h
->>>>
->>>> :::::: TO: Will Deacon <will@kernel.org>
->>>> :::::: CC: Will Deacon <will@kernel.org>
->>>>
->>>> ---
->>>> 0-DAY CI Kernel Test Service, Intel Corporation
->>>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>>>
->>> _______________________________________________
->>> kbuild-all mailing list -- kbuild-all@lists.01.org
->>> To unsubscribe send an email to kbuild-all-leave@lists.01.org
->>
+V2:
+According to Laurent's comments:
+- add zynqmp_dp_reset(dp, true) in error path in zynqmp_dp_probe
+- move the zynqmp_dp_reset() call from zynqmp_dp_phy_exit() to zynqmp_dp_remove() 
+
+---
+ drivers/gpu/drm/xlnx/zynqmp_dp.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+index 99158ee67d02..337adf0769ad 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+@@ -402,10 +402,6 @@ static int zynqmp_dp_phy_init(struct zynqmp_dp *dp)
+ 		}
+ 	}
+ 
+-	ret = zynqmp_dp_reset(dp, false);
+-	if (ret < 0)
+-		return ret;
+-
+ 	zynqmp_dp_clr(dp, ZYNQMP_DP_PHY_RESET, ZYNQMP_DP_PHY_RESET_ALL_RESET);
+ 
+ 	/*
+@@ -441,8 +437,6 @@ static void zynqmp_dp_phy_exit(struct zynqmp_dp *dp)
+ 				ret);
+ 	}
+ 
+-	zynqmp_dp_reset(dp, true);
+-
+ 	for (i = 0; i < dp->num_lanes; i++) {
+ 		ret = phy_exit(dp->phy[i]);
+ 		if (ret)
+@@ -1682,9 +1676,13 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
+ 		return PTR_ERR(dp->reset);
+ 	}
+ 
++	ret = zynqmp_dp_reset(dp, false);
++	if (ret < 0)
++		return ret;
++
+ 	ret = zynqmp_dp_phy_probe(dp);
+ 	if (ret)
+-		return ret;
++		goto err_reset;
+ 
+ 	/* Initialize the hardware. */
+ 	zynqmp_dp_write(dp, ZYNQMP_DP_TX_PHY_POWER_DOWN,
+@@ -1696,7 +1694,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
+ 
+ 	ret = zynqmp_dp_phy_init(dp);
+ 	if (ret)
+-		return ret;
++		goto err_reset;
+ 
+ 	zynqmp_dp_write(dp, ZYNQMP_DP_TRANSMITTER_ENABLE, 1);
+ 
+@@ -1708,15 +1706,18 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
+ 					zynqmp_dp_irq_handler, IRQF_ONESHOT,
+ 					dev_name(dp->dev), dp);
+ 	if (ret < 0)
+-		goto error;
++		goto err_phy_exit;
+ 
+ 	dev_dbg(dp->dev, "ZynqMP DisplayPort Tx probed with %u lanes\n",
+ 		dp->num_lanes);
+ 
+ 	return 0;
+ 
+-error:
++err_phy_exit:
+ 	zynqmp_dp_phy_exit(dp);
++err_reset:
++	zynqmp_dp_reset(dp, true);
++
+ 	return ret;
+ }
+ 
+@@ -1734,4 +1735,5 @@ void zynqmp_dp_remove(struct zynqmp_dpsub *dpsub)
+ 	zynqmp_dp_write(dp, ZYNQMP_DP_INT_DS, 0xffffffff);
+ 
+ 	zynqmp_dp_phy_exit(dp);
++	zynqmp_dp_reset(dp, true);
+ }
+-- 
+2.25.1
 
