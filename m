@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C851345778
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C950034577B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhCWFpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:45:02 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:64508 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229898AbhCWFoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:44:37 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F4L0g1BgSz9ty3k;
-        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id xbkvXfPDcdXX; Tue, 23 Mar 2021 06:44:35 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F4L0g02wbz9ty3M;
-        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B43258B7AE;
-        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id C10NKDQba7Ie; Tue, 23 Mar 2021 06:44:35 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3AFE38B75F;
-        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
-Subject: Re: [PATCH] tools: testing: Remove duplicate include of sched.h
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20210323033413.284420-1-wanjiabing@vivo.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <218e9c09-e245-9565-a233-a210c49ae590@csgroup.eu>
-Date:   Tue, 23 Mar 2021 06:44:30 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229900AbhCWFpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229904AbhCWFpH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 01:45:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1891C061574;
+        Mon, 22 Mar 2021 22:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=xCCP1GGlU4atbTp8xUP0b27QE4ZGZQy9D17H8dfnMtY=; b=FSbf593d62zBGpt/UfMOnuIOFo
+        kKy9dszibaIE1w/wp8fMYuZslm0/DyIp8bubIZKZOPejQeXJ97MgSYYcXxXwiq5dnkYKOxxGioqzf
+        IGd4mC3w0QcXkHADUMDrGraWkRuETPbqmQl1/jxd2G4inrKpNgPjkjBDFyN9XHS17KLcOMDjVLNW9
+        JV9TyCc0jr86fnRjV6amPl9+CzrBfdOVtE0LTLi0l2N3fd26UVUisuK6IYDIRIQYaZmdvr1OgQf+R
+        FNbe9MfmSsys7sfZYASiRnCp8eF1by7kNJxAqQoaxgWA/pScCztZW7/mUf/880GYPEM4ZI6VdU4pG
+        ExKD7DWA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOZqW-009c0m-7G; Tue, 23 Mar 2021 05:44:55 +0000
+Subject: Re: [PATCH] hwmon: (ftsteutates): Rudimentary typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, jdelvare@suse.com,
+        linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210323043438.1321903-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <cf627727-a448-a679-5887-b81a814649e2@infradead.org>
+Date:   Mon, 22 Mar 2021 22:44:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210323033413.284420-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323043438.1321903-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 23/03/2021 à 04:34, Wan Jiabing a écrit :
-> sched.h has been included at line 33.
-> So we remove the duplicate one at line 36.
-
-Can you please send a single patch for all files in tools/testing/selftests/powerpc/
-
-Thanks
-Christophe
-
+On 3/22/21 9:34 PM, Bhaskar Chowdhury wrote:
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> s/Temprature/Temperature/
+> s/revsion/revision/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
 > ---
->   tools/testing/selftests/powerpc/mm/tlbie_test.c | 1 -
->   1 file changed, 1 deletion(-)
+>  drivers/hwmon/ftsteutates.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/powerpc/mm/tlbie_test.c b/tools/testing/selftests/powerpc/mm/tlbie_test.c
-> index f85a0938ab25..48344a74b212 100644
-> --- a/tools/testing/selftests/powerpc/mm/tlbie_test.c
-> +++ b/tools/testing/selftests/powerpc/mm/tlbie_test.c
-> @@ -33,7 +33,6 @@
->   #include <sched.h>
->   #include <time.h>
->   #include <stdarg.h>
-> -#include <sched.h>
->   #include <pthread.h>
->   #include <signal.h>
->   #include <sys/prctl.h>
+> diff --git a/drivers/hwmon/ftsteutates.c b/drivers/hwmon/ftsteutates.c
+> index ef88a156efc2..ceffc76a0c51 100644
+> --- a/drivers/hwmon/ftsteutates.c
+> +++ b/drivers/hwmon/ftsteutates.c
+> @@ -509,7 +509,7 @@ fan_alarm_store(struct device *dev, struct device_attribute *devattr,
+>  /* SysFS structs							     */
+>  /*****************************************************************************/
 > 
+> -/* Temprature sensors */
+> +/* Temperature sensors */
+>  static SENSOR_DEVICE_ATTR_RO(temp1_input, temp_value, 0);
+>  static SENSOR_DEVICE_ATTR_RO(temp2_input, temp_value, 1);
+>  static SENSOR_DEVICE_ATTR_RO(temp3_input, temp_value, 2);
+> @@ -713,7 +713,7 @@ static int fts_detect(struct i2c_client *client,
+>  {
+>  	int val;
+> 
+> -	/* detection works with revsion greater or equal to 0x2b */
+> +	/* detection works with revision greater or equal to 0x2b */
+>  	val = i2c_smbus_read_byte_data(client, FTS_DEVICE_REVISION_REG);
+>  	if (val < 0x2b)
+>  		return -ENODEV;
+> --
+
+
+-- 
+~Randy
+
