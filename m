@@ -2,115 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F248346264
+	by mail.lfdr.de (Postfix) with ESMTP id AE455346265
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbhCWPIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbhCWPIS (ORCPT
+        id S232700AbhCWPIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:08:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51832 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232689AbhCWPI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:08:18 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2854C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:08:17 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10255891pjv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B/0oH/sIKlTyqEM5+DPElcup5AqdVgWb/d4FeBXrA9I=;
-        b=JlfWnvhobqb7KPsB/eBSI1EH5lQE72OmGcgIdhcPCBB9eoTihO0Ax7ELCPIir4EsyQ
-         x77KBOsN2HZ+al4080A85kYu7oOQCJLkDlZx6Iu5Blt96wS3mPXZVUI/HzU4mZjTI5tW
-         5K1dbve4ICbWxhL/FF6s180ciZxxpFnRDcrb+tsdUDvhrywT/jK7IXZ923YzlwqflJJu
-         OafLvYKnWp0bBdiVPkeMvbtKwPQdcXdOpcgpxJJg0IRdZ5/K9uImnoDsF+LWl3wq/4B1
-         f0y3isYxpBBgG1pG2XBrVdnw8Zhm1zReC766Xy1Aqr64BOHrPqS4zyMZxuKl+DvItOue
-         p5EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B/0oH/sIKlTyqEM5+DPElcup5AqdVgWb/d4FeBXrA9I=;
-        b=IoPKU+IPjPWgBGYNihReYr1RMvCV1fIP9gAGGAvBdE2L0yZ4/+ob/DCbczQYT/83fW
-         /U0+1h98T4lJuPp9sBxZ8Z0PW5+xIC4eWEjHlB2HWF5eGYde6GkJEQKWl7K2ZwupuA2d
-         cL8cQVvboYNhK6gup7R3GrzQ89VgvHdxlvm3Mlc/E5x6id3HCAbm5wkgC7LYjllczcnc
-         nTSx3Gv7Dj8cCTYjU+Xxru+Cx69qL/iXXVp8SyexZDJL68YXUgFIv+JzS4rB2h4hvP4d
-         E9fgWRMcDAqK9rEesAFA0x4xpiR4PaD5I/77nVO7jhwp4WqKdREkMkMpuMKZJ4le68fs
-         UohQ==
-X-Gm-Message-State: AOAM530gJ3wM0BF//omvAcekUApshUuWTpzVw/JYqNV35poENAX62C8I
-        BxmPSaCeiPlVBDxNTTp3x5Xjp4qVBb4uJ+Hnh0NhrA==
-X-Google-Smtp-Source: ABdhPJzzFj67sX3T9XBpNK435A3EOIEqiti1D/vHK8dMXR8/msBwTres5AuDllnhMAZy3aYgHXgps+wIovevf/pyvrg=
-X-Received: by 2002:a17:90a:8c08:: with SMTP id a8mr5052138pjo.136.1616512097128;
- Tue, 23 Mar 2021 08:08:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210315132019.33202-1-vincenzo.frascino@arm.com> <20210318185607.GD10758@arm.com>
-In-Reply-To: <20210318185607.GD10758@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 23 Mar 2021 16:08:05 +0100
-Message-ID: <CAAeHK+w+pHtKNwxz5Scdp9_48jmSLfeBqBGqKQT+-aFO486GzA@mail.gmail.com>
-Subject: Re: [PATCH v16 0/9] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Tue, 23 Mar 2021 11:08:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616512108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Dk+kTaXIBxkfJmBKu6XikBMXUgoktdgDa5FmOR121g=;
+        b=DCNnizOGr1mD3hmIQ2ADe1YeF5+vIzvH8jwPoLCMwmeMr6ZvzVesjeVKWk1NGZcQ9BWOG/
+        OqzlrGDlFvR+WGQcnnvIg9MvNvxTuUJLODjA1qNAg7XwzU3zb4u3tv1WQJZlUc3VvPc8c4
+        wZ8BAES5PqAF3M7HxQXFwSegxPWlGWI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-d0GLNY50MHKwkdaeWWEmNA-1; Tue, 23 Mar 2021 11:08:23 -0400
+X-MC-Unique: d0GLNY50MHKwkdaeWWEmNA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD5B4612A1;
+        Tue, 23 Mar 2021 15:08:21 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 69805196E3;
+        Tue, 23 Mar 2021 15:08:15 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 16:08:14 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>, brouer@redhat.com
+Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
+Message-ID: <20210323160814.62a248fb@carbon>
+In-Reply-To: <20210323104421.GK3697@techsingularity.net>
+References: <20210322091845.16437-1-mgorman@techsingularity.net>
+        <20210323104421.GK3697@techsingularity.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 7:56 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Mon, Mar 15, 2021 at 01:20:10PM +0000, Vincenzo Frascino wrote:
-> > This patchset implements the asynchronous mode support for ARMv8.5-A
-> > Memory Tagging Extension (MTE), which is a debugging feature that allows
-> > to detect with the help of the architecture the C and C++ programmatic
-> > memory errors like buffer overflow, use-after-free, use-after-return, etc.
-> >
-> > MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
-> > (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
-> > subset of its address space that is multiple of a 16 bytes granule. MTE
-> > is based on a lock-key mechanism where the lock is the tag associated to
-> > the physical memory and the key is the tag associated to the virtual
-> > address.
-> > When MTE is enabled and tags are set for ranges of address space of a task,
-> > the PE will compare the tag related to the physical memory with the tag
-> > related to the virtual address (tag check operation). Access to the memory
-> > is granted only if the two tags match. In case of mismatch the PE will raise
-> > an exception.
-> >
-> > The exception can be handled synchronously or asynchronously. When the
-> > asynchronous mode is enabled:
-> >   - Upon fault the PE updates the TFSR_EL1 register.
-> >   - The kernel detects the change during one of the following:
-> >     - Context switching
-> >     - Return to user/EL0
-> >     - Kernel entry from EL1
-> >     - Kernel exit to EL1
-> >   - If the register has been updated by the PE the kernel clears it and
-> >     reports the error.
-> >
-> > The series is based on linux-next/akpm.
->
-> Andrew, could you please pick these patches up via the mm tree? They
-> depend on kasan patches already queued.
+On Tue, 23 Mar 2021 10:44:21 +0000
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-Hi Andrew,
+> On Mon, Mar 22, 2021 at 09:18:42AM +0000, Mel Gorman wrote:
+> > This series is based on top of Matthew Wilcox's series "Rationalise
+> > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
+> > test and are not using Andrew's tree as a baseline, I suggest using the
+> > following git tree
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v5r9
+> >   
+> 
+> Jesper and Chuck, would you mind rebasing on top of the following branch
+> please? 
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r2
+> 
+> The interface is the same so the rebase should be trivial.
+> 
+> Jesper, I'm hoping you see no differences in performance but it's best
+> to check.
 
-Looks like these patches have reached a stable state.
+I will rebase and check again.
 
-Could you please pick them up into mm targeting 5.13?
+The current performance tests that I'm running, I observe that the
+compiler layout the code in unfortunate ways, which cause I-cache
+performance issues.  I wonder if you could integrate below patch with
+your patchset? (just squash it)
 
-Thanks!
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+[PATCH] mm: optimize code layout for __alloc_pages_bulk
+
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+
+Looking at perf-report and ASM-code for __alloc_pages_bulk() then the code
+activated is suboptimal. The compiler guess wrong and place unlikely code in
+the beginning. Due to the use of WARN_ON_ONCE() macro the UD2 asm
+instruction is added to the code, which confuse the I-cache prefetcher in
+the CPU
+
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ mm/page_alloc.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index f60f51a97a7b..88a5c1ce5b87 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5003,10 +5003,10 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	unsigned int alloc_flags;
+ 	int nr_populated = 0, prep_index = 0;
+ 
+-	if (WARN_ON_ONCE(nr_pages <= 0))
++	if (unlikely(nr_pages <= 0))
+ 		return 0;
+ 
+-	if (WARN_ON_ONCE(page_list && !list_empty(page_list)))
++	if (unlikely(page_list && !list_empty(page_list)))
+ 		return 0;
+ 
+ 	/* Skip populated array elements. */
+@@ -5018,7 +5018,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		prep_index = nr_populated;
+ 	}
+ 
+-	if (nr_pages == 1)
++	if (unlikely(nr_pages == 1))
+ 		goto failed;
+ 
+ 	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+@@ -5054,7 +5054,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	 * If there are no allowed local zones that meets the watermarks then
+ 	 * try to allocate a single page and reclaim if necessary.
+ 	 */
+-	if (!zone)
++	if (unlikely(!zone))
+ 		goto failed;
+ 
+ 	/* Attempt the batch allocation */
+@@ -5075,7 +5075,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 
+ 		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
+ 								pcp, pcp_list);
+-		if (!page) {
++		if (unlikely(!page)) {
+ 			/* Try and get at least one page */
+ 			if (!nr_populated)
+ 				goto failed_irq;
+
