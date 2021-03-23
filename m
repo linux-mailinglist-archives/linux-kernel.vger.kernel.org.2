@@ -2,118 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632A534616B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD4D346171
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhCWOYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
+        id S232201AbhCWO1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhCWOYh (ORCPT
+        with ESMTP id S231668AbhCWO1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:24:37 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240ADC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:24:37 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z136so17856032iof.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:24:37 -0700 (PDT)
+        Tue, 23 Mar 2021 10:27:01 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E60C061574;
+        Tue, 23 Mar 2021 07:27:00 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z1so10536143ybf.6;
+        Tue, 23 Mar 2021 07:27:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f3ffjUDEfdpupg8pOxs1DbNdOM7s/25GYVkBS3ZIJKU=;
-        b=QQLotKf2dEUsBufVdFz/Gwl322r+MKxtGAJ4yMe4ovpBB+GAEUYmXcMk1rcijaSgCA
-         ZufTsf7XG9FlO57lBCmtHvPhREGIEYl6VhEC6TUEMwLX8/v6oJkS50uuUKlR+sxNJvFj
-         RSnu71Cuo8NtjPEKaBP2yY/qiSjGA5uqSSCqmmDSSBkmwV4MQi2q56PZttTu2GwTsEpU
-         lFEpDWQqBfYDYyMA7PF4eMiMYU5LXGXeDugJOht6oPhb36sBVXVsWBgoU9Ru4z5i+OiP
-         FO+HF0XKyMa7R6kY8q/5fNspiQXGW2Zkl6ICBTfBkQxuj94a8dAJxtYiFG8Kuz2Gs7LK
-         vuJg==
+        bh=a1UKA4D9x9QmZ1+15HTh/Ges6E1m3MBK/glmFQ+WIEA=;
+        b=kuI5z7BTwTCzb12byWHvnez5Mri863aUQ3Lj3wB4GHCyfdrM6k/PvMxgsDLB4Q56Du
+         Oxsn7JJ1zTtYNbr+YMmHvo6+bSmAhFKqpRsRl/nUyYPyQYUnvqE2CkV6pZCpEPho8r7H
+         iqwsDC953u7rl0alzpfcXzROoV7ZCUkD+yPfl1BRJp5RXXPidKuNgSjSa1EDTy5rb5C9
+         udHkwgLnN9LTrHQcLroeHvLDQIAIelJWHyRQ4Ot9kLYJofbjoaEPhk4WmZAjuJhBcjxv
+         NMRUwLmWeC6RbgjskE7+IApMwa1xCSPkjAzLo89sQxdH6lmwytLDKK29WysJnQOKW+Me
+         b7LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f3ffjUDEfdpupg8pOxs1DbNdOM7s/25GYVkBS3ZIJKU=;
-        b=QyWhCFFSNlKIjDaKeexK96e6Om+TaE6ElVaYfYUynTuXih70/QVG10byxhfNdkpABo
-         PotB1M86JSEYicWH1YHIyzPN5iWApv2x/CXm8BgZwlYxfnl4xZ8L/OyydLWaWOcZH4vE
-         ao0w6xfeNV6zWi5b+JsayXZUxb1P3gm4tTZHqcDbQ593EjPMLuFsuCdq/Dt/YvPwA1LX
-         FtZSYjZvjTd0TEPvJTD6EVTWS/MV9UdD9jNEbZcFkdqj96wml0wCqgH7LmI+6zGWuiwz
-         o/tg98ewn0spjMrZ7PtsoYWHjp38vOVhJS0epyYQXuwdkZtrc6Jz+rAOl5j+Bk//iZut
-         n9VQ==
-X-Gm-Message-State: AOAM530w/a8LoCjGnH5JRpc+6eFLgLeSteTO8tju10zmomfQtrcl3w6x
-        WQUfow0sy5wx5CRGXpuKVumcS8kukS8sxxBJHIMhnQ==
-X-Google-Smtp-Source: ABdhPJzZSN+E9lqMeu6pwYPPzrV612O72rKDlSb2lCnDk6sNkgU1WgQRlF/q8JGKLmFjKwqzZNH+xI4C7iIS7SU8lWQ=
-X-Received: by 2002:a6b:ea04:: with SMTP id m4mr4499897ioc.160.1616509476421;
- Tue, 23 Mar 2021 07:24:36 -0700 (PDT)
+        bh=a1UKA4D9x9QmZ1+15HTh/Ges6E1m3MBK/glmFQ+WIEA=;
+        b=GpwnM6S9TZkKaHIwaDFvHe6c0UI5FhSgDPzJ3nKAdbcCScOHd59FVAY7lO07G72KLC
+         TYpea4RzqDhGH866hePdV8Ia8V9D/k115MKuOQde73bZd+rylPWXYSxFJ2br0bVzrX3o
+         iNXThGo5UgBKFRij0HYMi/EcNNMOF80f2ajkKPFTIp9CBxqSCUgdUJZmrGe2oWcBjbh3
+         qChpdyUustHKBweAIt754zojSW1b4hEhUasOsVImn8x2dToEHlxbbr+HWGhrEUsLtuAk
+         74v83CeuJFaHMnnSb/5IyMWwGbzjwqXmkT5dyJYaG+SK07qVvOWuSiKIAkBwpszwZPDE
+         uutA==
+X-Gm-Message-State: AOAM532znPJB6A0O82ZokM+k0LXtiivtXFErzuPdpwH9+1NHWM1eY1cZ
+        G+Cr9gbA/N9hzXqggdKgqUwrKI7yjW8Dv4QRxfMYKz/9rTg=
+X-Google-Smtp-Source: ABdhPJybD3ce1ekRim1ZhIjnmLmlL/O7qPnH3M5AavmL+8L6MPDtRHWU2dnXIV05AjFpWSQvRk0Q2y0+VBJ4qWnrVSI=
+X-Received: by 2002:a5b:449:: with SMTP id s9mr5786215ybp.115.1616509620027;
+ Tue, 23 Mar 2021 07:27:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210308133146.3168995-1-raychi@google.com> <20210309185807.ka4iljasq5cmpmil@earth.universe>
- <CAPBYUsCJ3ftC4ur412rFZGeeM_kDHrCh=BVci3=8SE2eFdPcQg@mail.gmail.com> <YFnxY7AW9QGQApKQ@kroah.com>
-In-Reply-To: <YFnxY7AW9QGQApKQ@kroah.com>
-From:   Ray Chi <raychi@google.com>
-Date:   Tue, 23 Mar 2021 22:24:25 +0800
-Message-ID: <CAPBYUsCo4p+4qy551+3=3PXmnKR96K6qN+CP=Y7sjKGwpemXSw@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: fix build error when POWER_SUPPLY is not enabled
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Kyle Tso <kyletso@google.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
+References: <20210323032624.1039422-1-mpe@ellerman.id.au> <CANiq72n-tMww2U+eQ=iHOh5u1JQgjM0b1E3XQ9jpWMfpdQ5+=g@mail.gmail.com>
+ <87mtuugj61.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87mtuugj61.fsf@mpe.ellerman.id.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 23 Mar 2021 15:26:49 +0100
+Message-ID: <CANiq72nx6Z=m-Fye7QYuQdjq9q0ZvH2+rkbrfQq-yQRMAadTYg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Rust for Linux for ppc64le
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     rust-for-linux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Tue, Mar 23, 2021 at 1:16 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> It would be nice to be in the CI. I was building natively so I haven't
+> tried cross compiling yet (which we'll need for CI).
 
-I will upload fixes for power supply usage in dwc3 and dt-binding
-documentation for the new device tree this week.
+Indeed -- in the CI we already cross-compile arm64 (and run under QEMU
+both arm64 as well as x86_64), so it is easy to add new ones to the
+matrix.
 
-Thanks,
-Ray
+> I can send a pull request if that's easiest.
 
-On Tue, Mar 23, 2021 at 9:47 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Mar 12, 2021 at 09:57:56PM +0800, Ray Chi wrote:
-> > Hi Sebastian,
-> >
-> > Sorry for the late reply.
-> >
-> > On Wed, Mar 10, 2021 at 2:58 AM Sebastian Reichel <sre@kernel.org> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Mon, Mar 08, 2021 at 09:31:46PM +0800, Ray Chi wrote:
-> > > > Fix build error when CONFIG_POWER_SUPPLY is not enabled.
-> > > >
-> > > > The build error occurs in mips (cavium_octeon_defconfig).
-> > > >
-> > > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_remove':
-> > > > drivers/usb/dwc3/core.c:1657: undefined reference to `power_supply_put'
-> > > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_get_properties':
-> > > > drivers/usb/dwc3/core.c:1270: undefined reference to `power_supply_get_by_name'
-> > > > mips-linux-gnu-ld: drivers/usb/dwc3/core.o: in function `dwc3_probe':
-> > > > drivers/usb/dwc3/core.c:1632: undefined reference to `power_supply_put'
-> > > >
-> > > > Fixes: 59fa3def35de ("usb: dwc3: add a power supply for current control")
-> > > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > > > Signed-off-by: Ray Chi <raychi@google.com>
-> > > > ---
-> > >
-> > > While I'm fine with merging this after fixing up the subject, the
-> > > original patch for dwc3 [0] looks completly incorrect to me.
-> > >
-> > > First of all it uses wrong scale (power-supply uses uA, not mA),
-> > > so you are charging 1000x slower than expected. Then the patchset
-> > > introduces a new DT property to get the power-supply device, but
-> > > does not update the DT binding documentation and does not Cc the
-> > > DT binding maintainer.
-> >
-> > Yes, it should use uA and send this information, and I will update a
-> > patch to fix it and add the DT binding documentation.
->
-> So should I revert what we currently have in my usb-next tree, or do
-> you have a fix for this?
->
-> thanks,
->
-> greg k-h
+No worries, I will pick the patches. But, of course, feel free to join
+us in GitHub! :-)
+
+Cheers,
+Miguel
