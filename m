@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E2E3462CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0443462D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhCWP14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbhCWP1X (ORCPT
+        id S232834AbhCWP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:29:00 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11272 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232816AbhCWP2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:27:23 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64A5C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:27:22 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id r17so12064046pgi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+q4ajk+mvriJOj6DX/n/ZppGdC7koRzzrZpC32hPb3Q=;
-        b=umzKhAGs1TMWIaaMArXgz4HWGd/SlOHR91fZHJqErP1IZAqWCknAXyfkhvQwxr+CFG
-         uUeWBmfrmfypfND2jZZwXWZ8VfRDj2gbxvZB9hz52yWYdB+Brv5QUT8jUwm9erPKgGzy
-         RZ76bM+1XpE5J6QARiRt1AtJCh4fyTZF9d6mVMqB94sIPYX6eGMHmq/xQYIKkMAjKNZK
-         GnZX3oUX+Md3fAWSpfkoLrxkBiVpxvumEWTeSo0QxPFknlF3BMG7S7zOZngEoBSRPhvK
-         WN2/jLF3Mi0LI6LMU0sFpi5NLhV6Yk/hIlnQKaULLT2i5BRYgORqCT84wMbigyKf4J8R
-         50wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+q4ajk+mvriJOj6DX/n/ZppGdC7koRzzrZpC32hPb3Q=;
-        b=lGQQK617I2O1CXWljKzeYJBpN7fRzyjVaN/AcDcaU9tRBB+6porb24E0FDSCyA9G9M
-         q1kAzBw7ngkHjjqLrOkn7igBud6+LJCehFTn705EvA2nBFr8TZ0vXSEX0yiMKgw7YKvH
-         fr0r6o0C1+ruVxv12/b3apDamXqkm41PDtKEO2QEFj/odREgw/14jlCa+3f54PAGZoRp
-         BIpNOObWYswRTWF8wfv79OFVEJG3fT74L6d/O0fjYxskKJXnEET8r6dznciWNgfG+qr3
-         ZYvPvtpb2l3aemUwKWmhBCUfmINDh6vm8Zn073+WNlKnUmlVUbnYLsA6xKevV8msxm53
-         +ezg==
-X-Gm-Message-State: AOAM532vst9CpLEwAjNFew8hkqcX+Of+pKcx6jLakb5DGtbEf2Bmdqqq
-        lYYYGwcYg5V+AXWzMF4zCbahh3Sadm7B9C4QPzFo8A==
-X-Google-Smtp-Source: ABdhPJx2bftmnq7RHCX1El68uj6CuWJqbapCMo07V7M2E2AXoSLaInK7xzowbUr30s36j58NS2yVvPTVFaZebu6Z4cs=
-X-Received: by 2002:aa7:980a:0:b029:20c:5402:5de9 with SMTP id
- e10-20020aa7980a0000b029020c54025de9mr5130024pfl.18.1616513242364; Tue, 23
- Mar 2021 08:27:22 -0700 (PDT)
+        Tue, 23 Mar 2021 11:28:32 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NFGQtq158809;
+        Tue, 23 Mar 2021 11:27:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=HEgPNmOQ2fGg+4o6ggG+TNuvsojvFlxy9dBHlBe6Svc=;
+ b=j6Axg86BIT6TdVpK3dBy599D+sEsSqA4nMaJjCiiop2oShxkrUfHnnN/Xd3h/Swxo7aa
+ 5NKOVTNS1xlKE0pRfPk80TITeQTTiyDX19Dnq2BY0H3i2iy8EC2JnSL5ccfLWBgv394m
+ ab5x/brQxo90AIXLxqy2cFVgak4tCpENma9XCPf+ub+FBQ1D7d2OKK2ItTEFC/J6xGI2
+ 1xzVmwJQR9UAg+rnRwKM2mZ5SzMiZk7aJ6Yj+jPpon/fTZk3u/DB6Vfmq8jCRG2CeNxl
+ jpZEhKAeKLRcD3BG+t2CpzLz6jFlUKn0Cj93iuW7UNljsWf/qS7i2lfaigmROHE9DZ5Q MA== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37fjth8dmw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 11:27:59 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NFLY4H007748;
+        Tue, 23 Mar 2021 15:27:57 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 37d99xhtu1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 15:27:57 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NFRs1e30146828
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 15:27:54 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B779A52052;
+        Tue, 23 Mar 2021 15:27:54 +0000 (GMT)
+Received: from [9.199.34.65] (unknown [9.199.34.65])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 280B65205A;
+        Tue, 23 Mar 2021 15:27:52 +0000 (GMT)
+Subject: Re: [PATCH v3 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
+Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
+        Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Message-ID: <7f9d5477-b156-e084-9412-307dd67149b1@linux.ibm.com>
+Date:   Tue, 23 Mar 2021 20:57:50 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210308120555.252524-1-adrien.grassein@gmail.com>
- <20210308120555.252524-3-adrien.grassein@gmail.com> <CAG3jFytoE9hWvq2e2Caqn4qP_RuEOnm4r9VQ85ffbAcguSLf+w@mail.gmail.com>
- <CABkfQAGvPy3DzXQnDJqm1q_rOLWR7BQTXb8z05iML3s3Mc8LJw@mail.gmail.com>
- <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
- <CABkfQAGcSsQ74FtvAK4_awHRXswgBrThKww_xhpmTzordZ5X8w@mail.gmail.com>
- <CAG3jFyvQt=Bv2_Hi8UdOhgznp1gVZwAw8gZv6FnLwHJV4WD6Kw@mail.gmail.com>
- <CABkfQAGS24AM90veQhGA+=V4S50y7JwzqLMspMaEFptcYpmdMQ@mail.gmail.com> <CAG3jFytY26tdktwE+iorKjM1EDsdAFxo9MBhxsJHoCNLSRsM_g@mail.gmail.com>
-In-Reply-To: <CAG3jFytY26tdktwE+iorKjM1EDsdAFxo9MBhxsJHoCNLSRsM_g@mail.gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 23 Mar 2021 16:27:11 +0100
-Message-ID: <CAG3jFyvMpO9YNCB=qZgHovU9=zT0s1S3jNoeYoj0YkpQAjh5Rg@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ impostorscore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 spamscore=0 clxscore=1011 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103230112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alright, I think the best way forward is to remove the polled HPD support.
-Don't forget to update flags and function pointers.
 
-With that, feel free to add my r-b.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+On 3/19/21 7:22 AM, Shiyang Ruan wrote:
+> From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+> 
+> This patchset is attempt to add CoW support for fsdax, and take XFS,
+> which has both reflink and fsdax feature, as an example.
+
+
+Thanks for the patchset. I have tried reviewing the series from logical
+correctness and to some extent functional correctness.
+Since I am not well versed with the core functionality of COW operation,
+so I may have requested for some clarifications where I could not get
+the code 100% on what it is doing.
+
+
+> 
+> (Rebased on v5.11)
+> ==
+> 
+Thanks. Yes, I see some conflicts when tried to apply on latest kernel.
+
+-ritesh
