@@ -2,117 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC9D345D05
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB29345D07
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhCWLfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:35:15 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3919 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhCWLfB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:35:01 -0400
-Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F4Tkf6Ktbz5hBl;
-        Tue, 23 Mar 2021 19:32:58 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 23 Mar 2021 19:34:56 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 23 Mar
- 2021 19:34:56 +0800
-Subject: Re: [RFC v3] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>
-References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
- <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
- <5bef912e-aa7d-8a27-4d18-ac8cf4f7afdf@pengutronix.de>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <774fadf5-6383-f9e0-bbc6-e5862482a7d1@huawei.com>
-Date:   Tue, 23 Mar 2021 19:34:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S229879AbhCWLfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:35:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhCWLf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:35:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F0A9619B1;
+        Tue, 23 Mar 2021 11:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616499325;
+        bh=bd1lHeohaarMedvzn/T2ZYAwtCAyIqbm8WGP2u4zTt4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=alCNHGS9wr4/obiUew2KdTNGQ0P9Z84PzmMzZqBJjpVTV+bcskuVzaWp0dMhCKdaT
+         jCE4qnHPfMKobMQ8h48qgV//u/ZIMhFLA0WY4kWof+6VebCW1+kmB7ScN+TaPM6qT3
+         aW9b4YrvuyoXg2JNLpf1ItBfsscMTtSm8AZTbS40=
+Date:   Tue, 23 Mar 2021 12:35:23 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     balbi@kernel.org, weiyongjun1@huawei.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: legacy: fix error return code of msg_bind()
+Message-ID: <YFnSe716okrldCHJ@kroah.com>
+References: <20210307084915.22022-1-baijiaju1990@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <5bef912e-aa7d-8a27-4d18-ac8cf4f7afdf@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307084915.22022-1-baijiaju1990@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/23 14:37, Ahmad Fatoum wrote:
-> Hi,
+On Sun, Mar 07, 2021 at 12:49:15AM -0800, Jia-Ju Bai wrote:
+> When usb_otg_descriptor_alloc() returns NULL to usb_desc, no error
+> return code of msg_bind() is assigned.
+> To fix this bug, status is assigned with -ENOMEM in this case.
 > 
-> On 22.03.21 10:09, Yunsheng Lin wrote:
->> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
->> flag set, but queue discipline by-pass does not work for lockless
->> qdisc because skb is always enqueued to qdisc even when the qdisc
->> is empty, see __dev_xmit_skb().
->>
->> This patch calls sch_direct_xmit() to transmit the skb directly
->> to the driver for empty lockless qdisc too, which aviod enqueuing
->> and dequeuing operation. qdisc->empty is set to false whenever a
->> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
->> skb dequeuing return NULL, see pfifo_fast_dequeue().
->>
->> There is a data race between enqueue/dequeue and qdisc->empty
->> setting, qdisc->empty is only used as a hint, so we need to call
->> sch_may_need_requeuing() to see if the queue is really empty and if
->> there is requeued skb, which has higher priority than the current
->> skb.
->>
->> The performance for ip_forward test increases about 10% with this
->> patch.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->> Hi, Vladimir and Ahmad
->> 	Please give it a test to see if there is any out of order
->> packet for this patch, which has removed the priv->lock added in
->> RFC v2.
-> 
-> Overnight test (10h, 64 mil frames) didn't see any out-of-order frames
-> between 2 FlexCANs on a dual core machine:
-> 
-> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> 
-> No performance measurements taken.
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>>
 
-Thanks for the testing.
-And I has done the performance measurement.
+These lines are not written correctly :(
 
-L3 forward testing improves from 1.09Mpps to 1.21Mpps, still about
-10% improvement.
+Please fix up and resend.
 
-pktgen + dummy netdev:
+thanks,
 
- threads  without+this_patch   with+this_patch      delta
-    1       2.56Mpps            3.11Mpps             +21%
-    2       3.76Mpps            4.31Mpps             +14%
-    4       5.51Mpps            5.53Mpps             +0.3%
-    8       2.81Mpps            2.72Mpps             -3%
-   16       2.24Mpps            2.22Mpps             -0.8%
-
-> 
->>
-
-
+greg k-h
