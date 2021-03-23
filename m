@@ -2,85 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E6F345AEA
+	by mail.lfdr.de (Postfix) with ESMTP id AAFA9345AEB
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhCWJe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        id S230034AbhCWJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCWJeF (ORCPT
+        with ESMTP id S229592AbhCWJeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:34:05 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8895C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:34:05 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id h7so14410510qtx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:34:05 -0700 (PDT)
+        Tue, 23 Mar 2021 05:34:09 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02A8C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:34:08 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id l18so14446787edc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:34:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6F6NXGeRgosTfbHvdsjCF0kdLc4P28DODH78gYIvxqw=;
-        b=fV2KtRlBe3pRC9JBnAglQgxeGSx0SOHh5MWpO6JuKtiJZLRckX7LnmLb53KNDNv9RM
-         HPDkxwKKP2o1egsy8SLrXaRPGJDIpsuIDLHW3bOIXLOnVzF5oDhavnE+q1UQj3aR7Q2B
-         8VJACUxTUlp86gI985gqvFExbpI/Rr/qVJILE=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tTpXq5PUWIqX4hPmnIy2Ebapp61tLCl5gNQ4F1z/chY=;
+        b=TNAB+pss73oHQ0QY6wXA30Om65d0gL0aeIHBCFOk3CPqvHPRnnK4QRFP7SGztJPHLl
+         moJkX27GJrSknpDeDTFKd/kUZj7xJrS0Y0nF8cNGfHetxCLjleifYCzl8becBmOCgEoZ
+         jVT6XETkXUpmfJANhCN1wnO3v90XU1347aaeICKefMdjFUlN3e23stBSL08GopcesT8M
+         c3mGnxxNSXQu4ElTDtXZLxo9nDvPT5WK8ZAixzcqcmDcf/uSam8+YbffgHjnVh42hIEp
+         KzSYKmG04FyT9UkHXN5+V0Zw6ms12V8a4igrSpVxmYB0UpJD5T29oKcFA8SxylbP5eri
+         ZTSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6F6NXGeRgosTfbHvdsjCF0kdLc4P28DODH78gYIvxqw=;
-        b=sOJks0m5Y8jqDGX+PSkLMDCt7Hk5CsO44jIJo9EnaNqLYiHGCNjzIWWHe9DvCaBLw/
-         8JYqX6JkC9BbsV9+Imyw45CHlXbUO2AThgdMffDnzrxTc6mqUs97414gcj7gBZRmq2Nb
-         8HitPc3Tn/xzeX/7Tm+qWFh1ZA1zldsmkjCjJQGtNnSdU/1p+S9gwcbjG7CbJJtPnmGK
-         EhB2SvRrDsrkUUkrWWJ2+jIXdGxrN9tJPNC3V191CyjynZZfI4pxJTjNHbMy5j6aOZP2
-         YgKxqk8GvAB+okDXbisxSyNWFPodDhoBR7e2TBeFF8Ayhx6rSi+4zN7ZBLqFLyGuXZMH
-         vREg==
-X-Gm-Message-State: AOAM531cBIfQywbuyRoi0ACztyVM/y2Stm6QKt1F83chqdIdm8B7qaZ+
-        WL/Q3RpLRAL43p5zZRFzTqC9JXkNw1uJ6JTCP+xYKCMPs3w=
-X-Google-Smtp-Source: ABdhPJyaQ6eVd9B6SzxtJ9qIpIV127NwgBWnq05rA8QfHUnr0gUAolRXXUQKXqsEl2qp/wlkQGgU8wZxJnm63FRO2t0=
-X-Received: by 2002:ac8:5313:: with SMTP id t19mr3518326qtn.148.1616492044872;
- Tue, 23 Mar 2021 02:34:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tTpXq5PUWIqX4hPmnIy2Ebapp61tLCl5gNQ4F1z/chY=;
+        b=QhBJoQLi228vdZ/TFDAeEf/Fy2lc/sageyT+buLAqALvK73VOJQAoxV/wtFnrB+pOP
+         AjW/hOdd1Xc7oAz+4/2zrdbG0KEOWQJq9GFMjPrZyfof2B6NkuY75JYLGUN5m+stzE6e
+         gHjKTjYBgij/uDVSX045RExFz34X2Mr8lSqkiPp5M00e60G6iQZWZE5UJM0A6Yw19ojE
+         YxpmLj8sIXOAFrqL0aYra6pZl+XUkEqOdoFtEvn1wHfiNk0JvYdmlS4hTDjK+3Dp7fJ1
+         RaxhZx2KGslhSS1lDaWUq6fPKE2X4fYxh7SsAYRVlBNAS8rwznZWk2xv8PHpz4rdNnRm
+         MaRA==
+X-Gm-Message-State: AOAM5326Zrb19YrEULBhHaNvUjlY/5NqLoJI1s83yTDG5l2yMj88z+SQ
+        2woe3WmTn/kdyp+IvmrT9I4H8Q==
+X-Google-Smtp-Source: ABdhPJyTUR1gRvZuc0hYkZFukQlamkHYSvNsVGRcUySLVY+CIKooPuVEiEfhmlu4Mqr53FQZjxpogQ==
+X-Received: by 2002:a05:6402:b31:: with SMTP id bo17mr3643742edb.113.1616492047679;
+        Tue, 23 Mar 2021 02:34:07 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id da17sm12803300edb.83.2021.03.23.02.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 02:34:07 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:34:05 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Kristoffer Ericson <kristoffer.ericson@gmail.com>,
+        Richard Purdie <rpurdie@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] backlight: journada720: fix Wmisleading-indentation
+ warning
+Message-ID: <20210323093405.dp37pgnmxbpqsiif@maple.lan>
+References: <20210322164134.827091-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210213095724.3411058-1-daniel@0x0f.com> <20210215112409.1a755bf0@xps13>
- <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
- <20210215121653.4edd86c4@xps13> <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
- <20210322193213.18520b9a@xps13>
-In-Reply-To: <20210322193213.18520b9a@xps13>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 23 Mar 2021 18:33:54 +0900
-Message-ID: <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210322164134.827091-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Mon, Mar 22, 2021 at 05:41:28PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> With gcc-11, we get a warning about code that looks correct
+> but badly indented:
+> 
+> drivers/video/backlight/jornada720_bl.c: In function ‘jornada_bl_update_status’:
+> drivers/video/backlight/jornada720_bl.c:66:11: error: this ‘else’ clause does not guard... [-Werror=misleading-indentation]
+>    66 |         } else  /* turn on backlight */
+>       |           ^~~~
+> 
+> Change the formatting according to our normal conventions.
+> 
+> Fixes: 13a7b5dc0d17 ("backlight: Adds HP Jornada 700 series backlight driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On Tue, 23 Mar 2021 at 03:32, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > I think this shows that the datasheet is right in that the complete 64
-> > bytes of "spare area" is usable.
-> > I have no idea where it puts the ECC though. :)
->
-> Argh, I don't like when hardware tries to be smart.
+I'm dubious that the re-indent matches the original authors intent...
+but it certainly does match what was actually written and tested so
+on that basis:
 
-I'm sort of worried that there just isn't any ECC :D
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-> Ok then let's declare no ECC bytes in the OOB layout, I guess it's the
-> best thing to do...
 
-Ok. I think I might add a comment in the code that this is a best guess.
+Daniel.
 
-> I don't recall the state of the patch which triggered this discussion,
-> so I guess it's a good time to respin.
 
-I'll resend it. I've added support for the 2Gb version in the meantime
-so I need to resend it either way.
-
-Thanks,
-
-Daniel
+ ---
+>  drivers/video/backlight/jornada720_bl.c | 44 ++++++++++++-------------
+>  1 file changed, 22 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/video/backlight/jornada720_bl.c b/drivers/video/backlight/jornada720_bl.c
+> index 996f7ba3b373..066d0dc98f60 100644
+> --- a/drivers/video/backlight/jornada720_bl.c
+> +++ b/drivers/video/backlight/jornada720_bl.c
+> @@ -66,30 +66,30 @@ static int jornada_bl_update_status(struct backlight_device *bd)
+>  	} else  /* turn on backlight */
+>  		PPSR |= PPC_LDD1;
+>  
+> -		/* send command to our mcu */
+> -		if (jornada_ssp_byte(SETBRIGHTNESS) != TXDUMMY) {
+> -			dev_info(&bd->dev, "failed to set brightness\n");
+> -			ret = -ETIMEDOUT;
+> -			goto out;
+> -		}
+> +	/* send command to our mcu */
+> +	if (jornada_ssp_byte(SETBRIGHTNESS) != TXDUMMY) {
+> +		dev_info(&bd->dev, "failed to set brightness\n");
+> +		ret = -ETIMEDOUT;
+> +		goto out;
+> +	}
+>  
+> -		/*
+> -		 * at this point we expect that the mcu has accepted
+> -		 * our command and is waiting for our new value
+> -		 * please note that maximum brightness is 255,
+> -		 * but due to physical layout it is equal to 0, so we simply
+> -		 * invert the value (MAX VALUE - NEW VALUE).
+> -		 */
+> -		if (jornada_ssp_byte(BL_MAX_BRIGHT - bd->props.brightness)
+> -			!= TXDUMMY) {
+> -			dev_err(&bd->dev, "set brightness failed\n");
+> -			ret = -ETIMEDOUT;
+> -		}
+> +	/*
+> +	 * at this point we expect that the mcu has accepted
+> +	 * our command and is waiting for our new value
+> +	 * please note that maximum brightness is 255,
+> +	 * but due to physical layout it is equal to 0, so we simply
+> +	 * invert the value (MAX VALUE - NEW VALUE).
+> +	 */
+> +	if (jornada_ssp_byte(BL_MAX_BRIGHT - bd->props.brightness)
+> +		!= TXDUMMY) {
+> +		dev_err(&bd->dev, "set brightness failed\n");
+> +		ret = -ETIMEDOUT;
+> +	}
+>  
+> -		/*
+> -		 * If infact we get an TXDUMMY as output we are happy and dont
+> -		 * make any further comments about it
+> -		 */
+> +	/*
+> +	 * If infact we get an TXDUMMY as output we are happy and dont
+> +	 * make any further comments about it
+> +	 */
+>  out:
+>  	jornada_ssp_end();
+>  
+> -- 
+> 2.29.2
+> 
