@@ -2,109 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6A83461B5
+	by mail.lfdr.de (Postfix) with ESMTP id B7F5E3461B6
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhCWOpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:45:16 -0400
-Received: from mga02.intel.com ([134.134.136.20]:24410 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232272AbhCWOom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:44:42 -0400
-IronPort-SDR: e7vIaYgQkYeu4XopdFj5IWReMoeLCzYWdX2+xNUt4qoEeEghJn+rr8OvZS3wQzfLRG6/4j8Z6r
- 4dfa8bAGQM/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="177613466"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="177613466"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 07:44:34 -0700
-IronPort-SDR: Qbg4TbCdz3qTmD41A4pi6lDDlNVPckD8Tw3EY5/45peH8XlYeYaYR9diw+EC8JLOwhRmLTxrAz
- PiRBxjzbT5CA==
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="415017430"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 07:44:29 -0700
-Received: by lahna (sSMTP sendmail emulation); Tue, 23 Mar 2021 16:44:26 +0200
-Date:   Tue, 23 Mar 2021 16:44:26 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     lyl2019@mail.ustc.edu.cn
-Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
-        YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] thunderbolt: Fix a double put in tb_cfg_read_raw
-Message-ID: <20210323144426.GY2542@lahna.fi.intel.com>
-References: <20210323031512.12234-1-lyl2019@mail.ustc.edu.cn>
- <20210323140647.GV2542@lahna.fi.intel.com>
- <4ff4aeb5.e6c7.1785f7e4edc.Coremail.lyl2019@mail.ustc.edu.cn>
+        id S232348AbhCWOpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:45:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27483 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232177AbhCWOon (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:44:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616510682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ooq+adN18I5oYJFvZHF/vFEW7YJYjplPqj9WCbOhafQ=;
+        b=d/JCt/XR+VTvL/PmTaEotWZPxBl0kJhporb6lf0rj22odQVUTk+bnm5/5liTcCXTkKoirW
+        hQhCRbrtQkV7Iq+DJoVU7E5AVGRnXkfgB8g1PGG7fk1fo1LX4oFWIBpgiholgM5W4ZPyDA
+        j7erw54VuWUhYGR5ejQXAHA0u88QfF0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-bwVVlytLND2WKcBV0ks0zQ-1; Tue, 23 Mar 2021 10:44:40 -0400
+X-MC-Unique: bwVVlytLND2WKcBV0ks0zQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0177F83DD21;
+        Tue, 23 Mar 2021 14:44:39 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8912D5D6AD;
+        Tue, 23 Mar 2021 14:44:38 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 08:44:38 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>, bhelgaas@google.com,
+        raphael.norwitz@nutanix.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210323084438.37bfcc8e@omen.home.shazbot.org>
+In-Reply-To: <20210323143419.syqf4dg7wcxorcmk@pali>
+References: <20210315145238.6sg5deblr2z2pupu@pali>
+        <20210315090339.54546e91@x1.home.shazbot.org>
+        <20210317190206.zrtzwgskxdogl7dz@pali>
+        <20210317131536.38f398b0@omen.home.shazbot.org>
+        <20210317192424.kpfybcrsen3ivr4f@pali>
+        <20210317133245.7d95909c@omen.home.shazbot.org>
+        <20210317194024.nkzrbbvi6utoznze@pali>
+        <20210317140020.4375ba76@omen.home.shazbot.org>
+        <20210317201346.v6t4rde6nzmt7fwr@pali>
+        <20210318143155.4vuf3izuzihiujaa@archlinux>
+        <20210323143419.syqf4dg7wcxorcmk@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4ff4aeb5.e6c7.1785f7e4edc.Coremail.lyl2019@mail.ustc.edu.cn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:30:16PM +0800, lyl2019@mail.ustc.edu.cn wrote:
-> 
-> 
-> 
-> > -----原始邮件-----
-> > 发件人: "Mika Westerberg" <mika.westerberg@linux.intel.com>
-> > 发送时间: 2021-03-23 22:06:47 (星期二)
-> > 收件人: "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
-> > 抄送: andreas.noever@gmail.com, michael.jamet@intel.com, YehezkelShB@gmail.com, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-> > 主题: Re: [PATCH] thunderbolt: Fix a double put in tb_cfg_read_raw
-> > 
-> > Hi,
-> > 
-> > On Mon, Mar 22, 2021 at 08:15:12PM -0700, Lv Yunlong wrote:
-> > > In tb_cfg_read_raw, req is allocated by tb_cfg_request_alloc()
-> > > with an initial reference. Before calling tb_cfg_request_sync(),
-> > > there is no refcount inc operation. tb_cfg_request_sync()
-> > > calls tb_cfg_request(..,req,..) and if the callee failed,
-> > > the initial reference of req is dropped and req is freed.
-> > > 
-> > > Later in tb_cfg_read_raw before the err check,
-> > > tb_cfg_request_put(req) is called again. It may cause error
-> > > in race.
-> > 
-> > Hmm, tb_cfg_request() does tb_cfg_request_get() too and in case of error
-> > it does tb_cfg_request_put(). So the refcount should be fine. What am I
-> > missing?
-> > 
-> > > 
-> > > My patch puts tb_cfg_request_put(req) after the err check
-> > > finished to avoid unexpected result.
-> > > 
-> > > Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> > > ---
-> > >  drivers/thunderbolt/ctl.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/thunderbolt/ctl.c b/drivers/thunderbolt/ctl.c
-> > > index f1aeaff9f368..bb60269c89ab 100644
-> > > --- a/drivers/thunderbolt/ctl.c
-> > > +++ b/drivers/thunderbolt/ctl.c
-> > > @@ -890,11 +890,11 @@ struct tb_cfg_result tb_cfg_read_raw(struct tb_ctl *ctl, void *buffer,
-> > >  
-> > >  		res = tb_cfg_request_sync(ctl, req, timeout_msec);
-> > >  
-> > > -		tb_cfg_request_put(req);
-> > > -
-> > >  		if (res.err != -ETIMEDOUT)
-> > >  			break;
-> > >  
-> > > +		tb_cfg_request_put(req);
-> > > +
-> > >  		/* Wait a bit (arbitrary time) until we send a retry */
-> > >  		usleep_range(10, 100);
-> > >  	}
-> > > -- 
-> > > 2.25.1
-> > > 
-> 
-> I'm very sorry, i was ashamed that i had missed the tb_cfg_request_get() in tb_cfg_request().
+On Tue, 23 Mar 2021 15:34:19 +0100
+Pali Roh=C3=A1r <pali@kernel.org> wrote:
 
-It happens, no worries :)
+> On Thursday 18 March 2021 20:01:55 Amey Narkhede wrote:
+> > On 21/03/17 09:13PM, Pali Roh=C3=A1r wrote: =20
+> > > On Wednesday 17 March 2021 14:00:20 Alex Williamson wrote: =20
+> > > > On Wed, 17 Mar 2021 20:40:24 +0100
+> > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > =20
+> > > > > On Wednesday 17 March 2021 13:32:45 Alex Williamson wrote: =20
+> > > > > > On Wed, 17 Mar 2021 20:24:24 +0100
+> > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > =20
+> > > > > > > On Wednesday 17 March 2021 13:15:36 Alex Williamson wrote: =20
+> > > > > > > > On Wed, 17 Mar 2021 20:02:06 +0100
+> > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > > > =20
+> > > > > > > > > On Monday 15 March 2021 09:03:39 Alex Williamson wrote: =
+=20
+> > > > > > > > > > On Mon, 15 Mar 2021 15:52:38 +0100
+> > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > > > > > =20
+> > > > > > > > > > > On Monday 15 March 2021 08:34:09 Alex Williamson wrot=
+e: =20
+> > > > > > > > > > > > On Mon, 15 Mar 2021 14:52:26 +0100
+> > > > > > > > > > > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > > > > > > > > > > > =20
+> > > > > > > > > > > > > On Monday 15 March 2021 19:13:23 Amey Narkhede wr=
+ote: =20
+> > > > > > > > > > > > > > slot reset (pci_dev_reset_slot_function) and se=
+condary bus
+> > > > > > > > > > > > > > reset(pci_parent_bus_reset) which I think are h=
+ot reset and
+> > > > > > > > > > > > > > warm reset respectively. =20
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > No. PCI secondary bus reset =3D PCIe Hot Reset. S=
+lot reset is just another
+> > > > > > > > > > > > > type of reset, which is currently implemented onl=
+y for PCIe hot plug
+> > > > > > > > > > > > > bridges and for PowerPC PowerNV platform and it j=
+ust call PCI secondary
+> > > > > > > > > > > > > bus reset with some other hook. PCIe Warm Reset d=
+oes not have API in
+> > > > > > > > > > > > > kernel and therefore drivers do not export this t=
+ype of reset via any
+> > > > > > > > > > > > > kernel function (yet). =20
+> > > > > > > > > > > >
+> > > > > > > > > > > > Warm reset is beyond the scope of this series, but =
+could be implemented
+> > > > > > > > > > > > in a compatible way to fit within the pci_reset_fn_=
+methods[] array
+> > > > > > > > > > > > defined here. =20
+> > > > > > > > > > >
+> > > > > > > > > > > Ok!
+> > > > > > > > > > > =20
+> > > > > > > > > > > > Note that with this series the resets available thr=
+ough
+> > > > > > > > > > > > pci_reset_function() and the per device reset attri=
+bute is sysfs remain
+> > > > > > > > > > > > exactly the same as they are currently.  The bus an=
+d slot reset
+> > > > > > > > > > > > methods used here are limited to devices where only=
+ a single function is
+> > > > > > > > > > > > affected by the reset, therefore it is not like the=
+ patch you proposed
+> > > > > > > > > > > > which performed a reset irrespective of the downstr=
+eam devices.  This
+> > > > > > > > > > > > series only enables selection of the existing metho=
+ds.  Thanks,
+> > > > > > > > > > > >
+> > > > > > > > > > > > Alex
+> > > > > > > > > > > > =20
+> > > > > > > > > > >
+> > > > > > > > > > > But with this patch series, there is still an issue w=
+ith PCI secondary
+> > > > > > > > > > > bus reset mechanism as exported sysfs attribute does =
+not do that
+> > > > > > > > > > > remove-reset-rescan procedure. As discussed in other =
+thread, this reset
+> > > > > > > > > > > let device in unconfigured / broken state. =20
+> > > > > > > > > >
+> > > > > > > > > > No, there's not:
+> > > > > > > > > >
+> > > > > > > > > > int pci_reset_function(struct pci_dev *dev)
+> > > > > > > > > > {
+> > > > > > > > > >         int rc;
+> > > > > > > > > >
+> > > > > > > > > >         if (!dev->reset_fn)
+> > > > > > > > > >                 return -ENOTTY;
+> > > > > > > > > >
+> > > > > > > > > >         pci_dev_lock(dev); =20
+> > > > > > > > > > >>>     pci_dev_save_and_disable(dev); =20
+> > > > > > > > > >
+> > > > > > > > > >         rc =3D __pci_reset_function_locked(dev);
+> > > > > > > > > > =20
+> > > > > > > > > > >>>     pci_dev_restore(dev); =20
+> > > > > > > > > >         pci_dev_unlock(dev);
+> > > > > > > > > >
+> > > > > > > > > >         return rc;
+> > > > > > > > > > }
+> > > > > > > > > >
+> > > > > > > > > > The remove/re-scan was discussed primarily because your=
+ patch performed
+> > > > > > > > > > a bus reset regardless of what devices were affected by=
+ that reset and
+> > > > > > > > > > it's difficult to manage the scope where multiple devic=
+es are affected.
+> > > > > > > > > > Here, the bus and slot reset functions will fail unless=
+ the scope is
+> > > > > > > > > > limited to the single device triggering this reset.  Th=
+anks,
+> > > > > > > > > >
+> > > > > > > > > > Alex
+> > > > > > > > > > =20
+> > > > > > > > >
+> > > > > > > > > I was thinking a bit more about it and I'm really sure ho=
+w it would
+> > > > > > > > > behave with hotplugging PCIe bridge.
+> > > > > > > > >
+> > > > > > > > > On aardvark PCIe controller I have already tested that se=
+condary bus
+> > > > > > > > > reset bit is triggering Hot Reset event and then also Lin=
+k Down event.
+> > > > > > > > > These events are not handled by aardvark driver yet (need=
+s to
+> > > > > > > > > implemented into kernel's emulated root bridge code).
+> > > > > > > > >
+> > > > > > > > > But I'm not sure how it would behave on real HW PCIe hotp=
+lugging bridge.
+> > > > > > > > > Kernel has already code which removes PCIe device if it c=
+hanges presence
+> > > > > > > > > bit (and inform via interrupt). And Link Down event trigg=
+ers this
+> > > > > > > > > change. =20
+> > > > > > > >
+> > > > > > > > This is the difference between slot and bus resets, the slo=
+t reset is
+> > > > > > > > implemented by the hotplug controller and disables presence=
+ detection
+> > > > > > > > around the bus reset.  Thanks, =20
+> > > > > > >
+> > > > > > > Yes, but I'm talking about bus reset, not about slot reset.
+> > > > > > >
+> > > > > > > I mean: to use bus reset via sysfs on hardware which supports=
+ slots and
+> > > > > > > hotplugging.
+> > > > > > >
+> > > > > > > And if I'm reading code correctly, this combination is allowe=
+d, right?
+> > > > > > > Via these new patches it is possible to disable slot reset an=
+d enable
+> > > > > > > bus reset. =20
+> > > > > >
+> > > > > > That's true, a slot reset is simply a bus reset wrapped around =
+code
+> > > > > > that prevents the device from getting ejected. =20
+> > > > >
+> > > > > Yes, this makes slot reset "safe". But bus reset is "unsafe".
+> > > > > =20
+> > > > > > Maybe it would make
+> > > > > > sense to combine the two as far as this interface is concerned,=
+ ie. a
+> > > > > > single "bus" reset method that will always use slot reset when
+> > > > > > available.  Thanks, =20
+> > > > >
+> > > > > That should work when slot reset is available.
+> > > > >
+> > > > > Other option is that mentioned remove-reset-rescan procedure. =20
+> > > >
+> > > > That's not something we can introduce to the pci_reset_function() p=
+ath
+> > > > without a fair bit of collateral in using it through vfio-pci.
+> > > > =20
+> > > > > But quick search in drivers/pci/hotplug/ results that not all hot=
+plug
+> > > > > drivers implement reset_slot method.
+> > > > >
+> > > > > So there is a possible issue with hotplug driver which may eject =
+device
+> > > > > during bus reset (because e.g. slot reset is not implemented)? =20
+> > > >
+> > > > People aren't reporting it, so maybe those controllers aren't being
+> > > > used for this use case.  Or maybe introducing this patch will make
+> > > > these reset methods more readily accessible for testing.  We can fi=
+x or
+> > > > blacklist those controllers for bus reset when reports come in.  Th=
+anks, =20
+> > >
+> > > Ok! I do not know neither if those controllers are used, but looks li=
+ke
+> > > that there are still changes in hotplug code.
+> > >
+> > > So I guess with these patches people can test it and report issues wh=
+en
+> > > such thing happen. =20
+> > So after a bit research as I understood we need to group slot
+> > and bus reset together in a single category of reset methods and
+> > then implicitly use slot reset if it is available when bus reset is
+> > enabled by the user.
+> > Is that right? =20
+>=20
+> Yes, I understand it in same way. Just I do not know which name to
+> choose for this reset category. In PCI spec it is called Secondary Bus
+> Reset (as it resets whole bus with all devices; but we allow this reset
+> in this patch series only if on the bus is connected exactly one device).
+> In PCIe spec it is called Hot Reset. And if kernel detects Slot support
+> then kernel currently calls it Slot reset. But it is still same thing.
+> Any opinion? I think that we could call it Hot Reset as this patch
+> series exports it only for single device (so calling it _bus_ is not the
+> best match).
+
+A similar abstraction where our scope is not limited to a single
+function calls this a bus reset:
+
+int pci_reset_bus(struct pci_dev *pdev)
+{
+        return (!pci_probe_reset_slot(pdev->slot)) ?
+            __pci_reset_slot(pdev->slot) : __pci_reset_bus(pdev->bus);
+}
+
+Thanks,
+Alex
+
