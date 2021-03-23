@@ -2,166 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1854345E91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F0D345E9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhCWMyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230258AbhCWMxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:53:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A8B9619B8;
-        Tue, 23 Mar 2021 12:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616504023;
-        bh=B7zKP0wEFU2/3CWm2Zth2CEFBBqTytn5CoddIaTYU+I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oKP9MQbSO7Nq/q3n9+857PVW8po2CYEGWqF9iMOK0snF3j70JImIfLbBlYJNV2NTu
-         K0lac8eIdd4H2GuhddVgKlWxnxl52/XouEIc/0nSF0mUhb2KXeTyHUZ6d0M7TVhd1x
-         PETGi0NGmQqcDedfAQ9Tpewc8sVKByJ9xlH9BRHXNDsBjitZEyPtVQlGqAsP1NST9t
-         9B3DCJyeViYxuIA8Hl+HhHIBVt1VsgR5W6VuxTBCTlDZNLF4ryqYoO0H/7Ya8egFsc
-         xajjxOnlxieXLWYOWAgf7mAw7eqb2Y1xkwYAVsg2V4m+a81HKpbFx9gOTH0ykT2Xqu
-         lr2TE7kBTaTSQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christina Jacob <cjacob@marvell.com>,
-        Zyta Szpak <zyta@marvell.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Rakesh Babu <rsaladi2@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] octeontx2: fix -Wnonnull warning
-Date:   Tue, 23 Mar 2021 13:53:29 +0100
-Message-Id: <20210323125337.1783611-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231382AbhCWMzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhCWMzJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:55:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675B6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LTQEMCkZdiBXrLcpX0fP9V/zBXP3nEkqVdlVQQ2MTjE=; b=FZGahySoelD/j9c7Bm8wddQJGw
+        966+pphwKL3Tb3ETkw+oHfZDIyvpPNhRmwp90/cdsi0oDR/kRWB01pDYErZrv3FfPlGvJz1vMsiRH
+        KopKbMyhZz9dGtIyGKu1aYtLKlC43KXE071VFy9imHYz6N/ZFw6bj7DPPEoYRRoMGDr3H+fGLRc1P
+        bnAGh652qFU2WTRx5OYrkT+CW61CcLgYTQIswre6cmXut4XMDhLi4nd9nnl8vQU7BE2tigkjiACQg
+        tGvvXQWOaU8g5Wpr1GkxGgtPIuNHmUSON6w12ink243xND2t6arvNm5s9GzvYrHq65FJWQPcGd+eI
+        oOVwuIRQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOgXo-00A4AJ-Lf; Tue, 23 Mar 2021 12:54:10 +0000
+Date:   Tue, 23 Mar 2021 12:54:00 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH -next] mm, page_alloc: avoid page_to_pfn() in
+ move_freepages()
+Message-ID: <20210323125400.GE1719932@casper.infradead.org>
+References: <20210323131215.934472-1-liushixin2@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323131215.934472-1-liushixin2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Mar 23, 2021 at 09:12:15PM +0800, Liu Shixin wrote:
+> From: Kefeng Wang <wangkefeng.wang@huawei.com>
+> 
+> The start_pfn and end_pfn are already available in move_freepages_block(),
+> there is no need to go back and forth between page and pfn in move_freepages
+> and move_freepages_block, and pfn_valid_within() should validate pfn first
+> before touching the page.
 
-When compile testing this driver on a platform on which probe() is
-known to fail at compile time, gcc warns about the cgx_lmactype_string[]
-array being uninitialized:
+This looks good to me:
 
-In function 'strncpy',
-    inlined from 'link_status_user_format' at /git/arm-soc/drivers/net/ethernet/marvell/octeontx2/af/cgx.c:838:2,
-    inlined from 'cgx_link_change_handler' at /git/arm-soc/drivers/net/ethernet/marvell/octeontx2/af/cgx.c:853:2:
-include/linux/fortify-string.h:27:30: error: argument 2 null where non-null expected [-Werror=nonnull]
-   27 | #define __underlying_strncpy __builtin_strncpy
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Address this by turning the runtime initialization into a fixed array,
-which should also produce better code.
+>  static int move_freepages(struct zone *zone,
+> -			  struct page *start_page, struct page *end_page,
+> +			  unsigned long start_pfn, unsigned long end_pfn,
+>  			  int migratetype, int *num_movable)
+>  {
+>  	struct page *page;
+> +	unsigned long pfn;
+>  	unsigned int order;
+>  	int pages_moved = 0;
+>  
+> -	for (page = start_page; page <= end_page;) {
+> -		if (!pfn_valid_within(page_to_pfn(page))) {
+> -			page++;
+> +	for (pfn = start_pfn; pfn <= end_pfn;) {
+> +		if (!pfn_valid_within(pfn)) {
+> +			pfn++;
+>  			continue;
+>  		}
+>  
+> +		page = pfn_to_page(pfn);
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- .../net/ethernet/marvell/octeontx2/af/cgx.c   | 60 +++++++++----------
- 1 file changed, 28 insertions(+), 32 deletions(-)
+I wonder if this wouldn't be even better if we did:
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index 9caa375d01b1..ea5a033a1d0b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -30,10 +30,35 @@
- static LIST_HEAD(cgx_list);
- 
- /* Convert firmware speed encoding to user format(Mbps) */
--static u32 cgx_speed_mbps[CGX_LINK_SPEED_MAX];
-+static const u32 cgx_speed_mbps[CGX_LINK_SPEED_MAX] = {
-+	[CGX_LINK_NONE] = 0,
-+	[CGX_LINK_10M] = 10,
-+	[CGX_LINK_100M] = 100,
-+	[CGX_LINK_1G] = 1000,
-+	[CGX_LINK_2HG] = 2500,
-+	[CGX_LINK_5G] = 5000,
-+	[CGX_LINK_10G] = 10000,
-+	[CGX_LINK_20G] = 20000,
-+	[CGX_LINK_25G] = 25000,
-+	[CGX_LINK_40G] = 40000,
-+	[CGX_LINK_50G] = 50000,
-+	[CGX_LINK_80G] = 80000,
-+	[CGX_LINK_100G] = 100000,
-+};
- 
- /* Convert firmware lmac type encoding to string */
--static char *cgx_lmactype_string[LMAC_MODE_MAX];
-+static const char *cgx_lmactype_string[LMAC_MODE_MAX] = {
-+	[LMAC_MODE_SGMII] = "SGMII",
-+	[LMAC_MODE_XAUI] = "XAUI",
-+	[LMAC_MODE_RXAUI] = "RXAUI",
-+	[LMAC_MODE_10G_R] = "10G_R",
-+	[LMAC_MODE_40G_R] = "40G_R",
-+	[LMAC_MODE_QSGMII] = "QSGMII",
-+	[LMAC_MODE_25G_R] = "25G_R",
-+	[LMAC_MODE_50G_R] = "50G_R",
-+	[LMAC_MODE_100G_R] = "100G_R",
-+	[LMAC_MODE_USXGMII] = "USXGMII",
-+};
- 
- /* CGX PHY management internal APIs */
- static int cgx_fwi_link_change(struct cgx *cgx, int lmac_id, bool en);
-@@ -657,34 +682,6 @@ int cgx_fwi_cmd_generic(u64 req, u64 *resp, struct cgx *cgx, int lmac_id)
- 	return err;
- }
- 
--static inline void cgx_link_usertable_init(void)
--{
--	cgx_speed_mbps[CGX_LINK_NONE] = 0;
--	cgx_speed_mbps[CGX_LINK_10M] = 10;
--	cgx_speed_mbps[CGX_LINK_100M] = 100;
--	cgx_speed_mbps[CGX_LINK_1G] = 1000;
--	cgx_speed_mbps[CGX_LINK_2HG] = 2500;
--	cgx_speed_mbps[CGX_LINK_5G] = 5000;
--	cgx_speed_mbps[CGX_LINK_10G] = 10000;
--	cgx_speed_mbps[CGX_LINK_20G] = 20000;
--	cgx_speed_mbps[CGX_LINK_25G] = 25000;
--	cgx_speed_mbps[CGX_LINK_40G] = 40000;
--	cgx_speed_mbps[CGX_LINK_50G] = 50000;
--	cgx_speed_mbps[CGX_LINK_80G] = 80000;
--	cgx_speed_mbps[CGX_LINK_100G] = 100000;
--
--	cgx_lmactype_string[LMAC_MODE_SGMII] = "SGMII";
--	cgx_lmactype_string[LMAC_MODE_XAUI] = "XAUI";
--	cgx_lmactype_string[LMAC_MODE_RXAUI] = "RXAUI";
--	cgx_lmactype_string[LMAC_MODE_10G_R] = "10G_R";
--	cgx_lmactype_string[LMAC_MODE_40G_R] = "40G_R";
--	cgx_lmactype_string[LMAC_MODE_QSGMII] = "QSGMII";
--	cgx_lmactype_string[LMAC_MODE_25G_R] = "25G_R";
--	cgx_lmactype_string[LMAC_MODE_50G_R] = "50G_R";
--	cgx_lmactype_string[LMAC_MODE_100G_R] = "100G_R";
--	cgx_lmactype_string[LMAC_MODE_USXGMII] = "USXGMII";
--}
--
- static int cgx_link_usertable_index_map(int speed)
- {
- 	switch (speed) {
-@@ -826,7 +823,7 @@ static inline void link_status_user_format(u64 lstat,
- 					   struct cgx_link_user_info *linfo,
- 					   struct cgx *cgx, u8 lmac_id)
- {
--	char *lmac_string;
-+	const char *lmac_string;
- 
- 	linfo->link_up = FIELD_GET(RESP_LINKSTAT_UP, lstat);
- 	linfo->full_duplex = FIELD_GET(RESP_LINKSTAT_FDUPLEX, lstat);
-@@ -1375,7 +1372,6 @@ static int cgx_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	list_add(&cgx->cgx_list, &cgx_list);
- 
--	cgx_link_usertable_init();
- 
- 	cgx_populate_features(cgx);
- 
--- 
-2.29.2
+	struct page *start_page = pfn_to_page(start_pfn);
 
+	for (pfn = start_pfn; pfn <= end_pfn; pfn++) {
+		struct page *page = start_page + pfn - start_pfn;
+
+		if (!pfn_valid_within(pfn))
+			continue;
+
+> -
+> -			page++;
+> +			pfn++;
+>  			continue;
+
+... then we can drop the increment of pfn here
+
+>  		}
+>  
+> @@ -2458,7 +2459,7 @@ static int move_freepages(struct zone *zone,
+>  
+>  		order = buddy_order(page);
+>  		move_to_free_list(page, zone, order, migratetype);
+> -		page += 1 << order;
+> +		pfn += 1 << order;
+
+... and change this to pfn += (1 << order) - 1;
+
+Do you have any numbers to quantify the benefit of this change?
