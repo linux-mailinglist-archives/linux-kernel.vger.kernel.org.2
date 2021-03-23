@@ -2,246 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEE734676D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013F4346771
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhCWSTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        id S231621AbhCWSUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhCWSTS (ORCPT
+        with ESMTP id S231439AbhCWSTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:19:18 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462B0C061574;
-        Tue, 23 Mar 2021 11:19:15 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id x16so21777840wrn.4;
-        Tue, 23 Mar 2021 11:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ca1Tuwhu5omAYPstfde+it7eK74ixpm8NMvNQMQFKWE=;
-        b=SoQHhDCi88HemNMTFU8Xmq/0h+uYUn7HXkpJFAEqrZbk52+0U+n7mTSC08d2oZV0KS
-         iWfdH7UItmXdeEyfaSdor4Ws1SvIBQst2GliHMtdVoBp1vixbD61zKveaadRdbhoLJw7
-         7upSHgGEp+cdEhfuR5NEq9oybIn8j5v3k4ao7vloe6UpPY5zThYFfyBzYQJsOHgnQUh2
-         wxb1w61FmThHDVySdE6KFafleUVHFD4MR8npKFMVvCWAa8mSdqoVzhXl9CnN9sj52qw/
-         mb7dtDI0t0gHRinnd2MMgZk89tnkFLK3dVIKxel6FXmv5lm20ieTPwvuoBreGMxNILOp
-         Br/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ca1Tuwhu5omAYPstfde+it7eK74ixpm8NMvNQMQFKWE=;
-        b=IuZtwRNKxkQPgO/QiLFxvVOusDbaDN7DivrhpVj2jUaiIWFbgy2L+UpdhFA9AILOtR
-         6KfoApFNeU7BIjXDvVhTcNzF6OqwES51IIZY2dcwSP6yUvQ122uIzAsZsIlmJx4xTAiI
-         7WXX+Gw98kq1ult9p5mOXYSAWHlsYwcqLusowmyATXP7RiZuaSz1tWDf8IF6F0wTUQUN
-         tq5jeLhIvIeHImjUy0SdkyoMWsh7QAxkM/GES9Qs0xuw//sHw/VnQ5fh4ueC4SZYmQgu
-         Tdmp6m2mhkjbi1/vUmdKrHcwZfV749ReBrCXXCm6xtu3fjlw5ex9j7kPz7MyveojDM5I
-         zNpA==
-X-Gm-Message-State: AOAM533yKLYQKUaYuKu2Istq/527fUxnE/tDG2X1saFc+50qGs8tSGC5
-        mAKVJ4+tZaejwFqB0brLDch5bUMGbgE=
-X-Google-Smtp-Source: ABdhPJzhYMIoiz7bly4TNvwy50fv9d5a96W9TKxOnzC0CLnSERhxeq1TA/+QghHlrHPr0JbBUOOzng==
-X-Received: by 2002:a05:6000:18f:: with SMTP id p15mr5350393wrx.23.1616523554001;
-        Tue, 23 Mar 2021 11:19:14 -0700 (PDT)
-Received: from [10.8.0.206] ([195.53.121.100])
-        by smtp.gmail.com with ESMTPSA id c9sm24034820wrr.78.2021.03.23.11.19.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 11:19:13 -0700 (PDT)
-Subject: Re: [PATCH v4 2/4] userfaultfd.2: Add write-protect mode
-To:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210322220848.52162-1-peterx@redhat.com>
- <20210322220848.52162-3-peterx@redhat.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <9c5a6fd4-e0f6-026a-e6a2-db34234a56c8@gmail.com>
-Date:   Tue, 23 Mar 2021 19:19:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 14:19:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE59C061574;
+        Tue, 23 Mar 2021 11:19:38 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 18:19:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616523575;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D1gCtkYO5bmi4AUfA19RFUBENH5hgj801PbOvdT/H3k=;
+        b=Kl3bJ9s6ojOa4nTwXSblTo8zcWJgiU36ZYWg/oWwgdZmoYwHXxlnZHHJVoY2KMjdpkAFbd
+        5eGppHTs7Zsh9PJwJDEP8TdMHg4qo7/LxjkiIoT1s4Todoi67BTS8rqXyBGomH5mf2F+Lg
+        QQi1+iyDxwK0rtAQv74p4cFs5csyJ+8ICaXshDsB98z9nFqF6jnD96k+6LFtXCVMtL9fsp
+        me+WEXRwFPY06rUWPi+m3f4Aelg/a/sRhUO02TDwgyPzJj6ahEFOabShLJKfztzbPYm94c
+        MOnV9FaEWGo5rngnncY1GT/Y7Jfje0Nk8fkIVwTQAtq6G7PKQ2Os1am+znjDQw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616523575;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D1gCtkYO5bmi4AUfA19RFUBENH5hgj801PbOvdT/H3k=;
+        b=DKsqHyEXmsC8pHumC5LSo6HnWjxOtdU5L5k0syMmX6djSh5OP7it0Z30NVClJXjvLZ8US3
+        i2fDwAlswMom8YCA==
+From:   "tip-bot2 for Mike Rapoport" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/setup: Merge several reservations of start of memory
+Cc:     Mike Rapoport <rppt@linux.ibm.com>, Borislav Petkov <bp@suse.de>,
+        David Hildenbrand <david@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210302100406.22059-3-rppt@kernel.org>
+References: <20210302100406.22059-3-rppt@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210322220848.52162-3-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Message-ID: <161652357483.398.17741953410853599317.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+The following commit has been merged into the x86/boot branch of tip:
 
-Please see a few more comments below.
+Commit-ID:     4c674481dcf9974834b96622fa4b079c176f36f9
+Gitweb:        https://git.kernel.org/tip/4c674481dcf9974834b96622fa4b079c176f36f9
+Author:        Mike Rapoport <rppt@linux.ibm.com>
+AuthorDate:    Tue, 02 Mar 2021 12:04:06 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 23 Mar 2021 17:17:36 +01:00
 
-Thanks,
+x86/setup: Merge several reservations of start of memory
 
-Alex
+Currently, the first several pages are reserved both to avoid leaking
+their contents on systems with L1TF and to avoid corrupting BIOS memory.
 
-On 3/22/21 11:08 PM, Peter Xu wrote:
-> Write-protect mode is supported starting from Linux 5.7.
-> 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->   man2/userfaultfd.2 | 104 ++++++++++++++++++++++++++++++++++++++++++++-
->   1 file changed, 102 insertions(+), 2 deletions(-)
-> 
-> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
-> index 555e37409..8ad4a71b5 100644
-> --- a/man2/userfaultfd.2
-> +++ b/man2/userfaultfd.2
-> @@ -78,6 +78,32 @@ all memory ranges that were registered with the object are unregistered
->   and unread events are flushed.
->   .\"
->   .PP
-> +Userfaultfd supports two modes of registration:
-> +.TP
-> +.BR UFFDIO_REGISTER_MODE_MISSING " (since 4.10)"
-> +When registered with
-> +.B UFFDIO_REGISTER_MODE_MISSING
-> +mode, the userspace will receive a page fault message
-> +when a missing page is accessed.
-> +The faulted thread will be stopped from execution until the page fault is
-> +resolved from the userspace by either an
-> +.B UFFDIO_COPY
-> +or an
-> +.B UFFDIO_ZEROPAGE
-> +ioctl.
-> +.TP
-> +.BR UFFDIO_REGISTER_MODE_WP " (since 5.7)"
-> +When registered with
-> +.B UFFDIO_REGISTER_MODE_WP
-> +mode, the userspace will receive a page fault message
-> +when a write-protected page is written.
-> +The faulted thread will be stopped from execution
-> +until the userspace un-write-protect the page using an
+Merge the two memory reservations.
 
-Here you use un-write-protect, but in the other patch you use 
-write-unprotect.  Please, use a consistent wording if it's the same 
-thing (if there are other similar things with different wordings in 
-different pages, please fix them too, but I didn't see more of those). 
-If there's already a wording for that in any page, please reuse it (I 
-ignore it).
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210302100406.22059-3-rppt@kernel.org
+---
+ arch/x86/kernel/setup.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-> +.B UFFDIO_WRITEPROTECT
-> +ioctl.
-> +.PP
-> +Multiple modes can be enabled at the same time for the same memory range.
-> +.PP
->   Since Linux 4.14, userfaultfd page fault message can selectively embed faulting
->   thread ID information into the fault message.
->   One needs to enable this feature explicitly using the
-> @@ -144,6 +170,17 @@ single threaded non-cooperative userfaultfd manager implementations.
->   .\" and limitations remaining in 4.11
->   .\" Maybe it's worth adding a dedicated sub-section...
->   .\"
-> +.PP
-> +Starting from Linux 5.7, userfaultfd is able to do
-
-The previous paragraph uses "Siince Linux 4.14".  For consistency, 
-please use that same wording here.
-
-> +synchronous page dirty tracking using the new write-protection register mode.
-> +One should check against the feature bit
-> +.B UFFD_FEATURE_PAGEFAULT_FLAG_WP
-> +before using this feature.
-> +Similar to the original userfaultfd missing mode, the write-protect mode will
-> +generate an userfaultfd message when the protected page is written.
-> +The user needs to resolve the page fault by unprotecting the faulted page and
-> +kick the faulted thread to continue.
-> +For more information, please refer to "Userfaultfd write-protect mode" section.
->   .SS Userfaultfd operation
->   After the userfaultfd object is created with
->   .BR userfaultfd (),
-> @@ -219,6 +256,65 @@ userfaultfd can be used only with anonymous private memory mappings.
->   Since Linux 4.11,
->   userfaultfd can be also used with hugetlbfs and shared memory mappings.
->   .\"
-> +.SS Userfaultfd write-protect mode (since 5.7)
-> +Since Linux 5.7, userfaultfd supports write-protect mode.
-> +The user needs to first check availability of this feature using
-> +.B UFFDIO_API
-> +ioctl against the feature bit
-> +.B UFFD_FEATURE_PAGEFAULT_FLAG_WP
-> +before using this feature.
-> +.PP
-> +To register with userfaultfd write-protect mode, the user needs to initiate the
-> +.B UFFDIO_REGISTER
-> +ioctl with mode
-> +.B UFFDIO_REGISTER_MODE_WP
-> +set.
-> +Note that it's legal to monitor the same memory range with multiple modes.
-> +For example, the user can do
-> +.B UFFDIO_REGISTER
-> +with the mode set to
-> +.BR "UFFDIO_REGISTER_MODE_MISSING | UFFDIO_REGISTER_MODE_WP" .
-> +When there is only
-> +.B UFFDIO_REGISTER_MODE_WP
-> +registered, the userspace will
-> +.I not
-> +receive any message when a missing page is written.
-> +Instead, the userspace will only receive a write-protect page fault message
-> +when an existing but write-protected page got written.
-> +.PP
-> +After the
-> +.B UFFDIO_REGISTER
-> +ioctl completed with
-> +.B UFFDIO_REGISTER_MODE_WP
-> +mode set,
-> +the user can write-protect any existing memory within the range using the ioctl
-> +.B UFFDIO_WRITEPROTECT
-> +where
-> +.I uffdio_writeprotect.mode
-> +should be set to
-> +.BR UFFDIO_WRITEPROTECT_MODE_WP .
-> +.PP
-> +When a write-protect event happens,
-> +the userspace will receive a page fault message whose
-> +.I uffd_msg.pagefault.flags
-> +will be with
-> +.B UFFD_PAGEFAULT_FLAG_WP
-> +flag set.
-> +Note: since only writes can trigger such kind of fault,
-> +write-protect messages will always be with
-> +.B UFFD_PAGEFAULT_FLAG_WRITE
-> +bit set too along with bit
-> +.BR UFFD_PAGEFAULT_FLAG_WP .
-> +.PP
-> +To resolve a write-protection page fault, the user should initiate another
-> +.B UFFDIO_WRITEPROTECT
-> +ioctl, whose
-> +.I uffd_msg.pagefault.flags
-> +should have the flag
-> +.B UFFDIO_WRITEPROTECT_MODE_WP
-> +cleared upon the faulted page or range.
-> +.PP
-> +Write-protect mode only supports private anonymous memory.
->   .SS Reading from the userfaultfd structure
->   Each
->   .BR read (2)
-> @@ -364,8 +460,12 @@ flag (see
->   .BR ioctl_userfaultfd (2))
->   and this flag is set, this a write fault;
->   otherwise it is a read fault.
-> -.\"
-> -.\" UFFD_PAGEFAULT_FLAG_WP is not yet supported.
-> +.TP
-> +.B UFFD_PAGEFAULT_FLAG_WP
-> +If the address is in a range that was registered with the
-> +.B UFFDIO_REGISTER_MODE_WP
-> +flag, when this bit is set it means it's a write-protect fault.
-> +Otherwise it's a page missing fault.
->   .RE
->   .TP
->   .I pagefault.feat.pid
-> 
-
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 3e3c603..776fc9b 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -713,11 +713,6 @@ static int __init parse_reservelow(char *p)
+ 
+ early_param("reservelow", parse_reservelow);
+ 
+-static void __init trim_low_memory_range(void)
+-{
+-	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
+-}
+-
+ static void __init early_reserve_memory(void)
+ {
+ 	/*
+@@ -730,10 +725,17 @@ static void __init early_reserve_memory(void)
+ 			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
+ 
+ 	/*
+-	 * Make sure page 0 is always reserved because on systems with
+-	 * L1TF its contents can be leaked to user processes.
++	 * The first 4Kb of memory is a BIOS owned area, but generally it is
++	 * not listed as such in the E820 table.
++	 *
++	 * Reserve the first memory page and typically some additional
++	 * memory (64KiB by default) since some BIOSes are known to corrupt
++	 * low memory. See the Kconfig help text for X86_RESERVE_LOW.
++	 *
++	 * In addition, make sure page 0 is always reserved because on
++	 * systems with L1TF its contents can be leaked to user processes.
+ 	 */
+-	memblock_reserve(0, PAGE_SIZE);
++	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
+ 
+ 	early_reserve_initrd();
+ 
+@@ -746,7 +748,6 @@ static void __init early_reserve_memory(void)
+ 	reserve_bios_regions();
+ 
+ 	trim_snb_memory();
+-	trim_low_memory_range();
+ }
+ 
+ /*
