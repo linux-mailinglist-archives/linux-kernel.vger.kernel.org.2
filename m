@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317BE345A25
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C611345A27
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhCWIyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:54:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:22479 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229972AbhCWIxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:53:39 -0400
-IronPort-SDR: ZM9vjQhsXqJDvIXYuHd7eZ0QiI6m1Fh9HcqV76y4lRzPJh2bBcwYWa4ayjb+PcAqKaVbAAUe4E
- KvUTSFfwXOmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189836000"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="189836000"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 01:53:38 -0700
-IronPort-SDR: t+oiGgHPJCqHwAq8+rSN/RDWKIGZmRczwfRj/GoCOhzU1tWK+Oq7+4XqAwmZMmVM7uLzFsbWnr
- X4EKQEPaHWUw==
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="414883545"
-Received: from wjlloyd-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.53.124])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 01:53:33 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, imre.deak@intel.com,
-        ville.syrjala@linux.intel.com, lucas.demarchi@intel.com,
-        matthew.d.roper@intel.com,
-        tejaskumarx.surendrakumar.upadhyay@intel.com,
-        unixbhaskar@gmail.com, aditya.swarup@intel.com,
-        anusha.srivatsa@intel.com, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: Re: [PATCH] drm/i915: A typo fix
-In-Reply-To: <20210323011607.182803-1-unixbhaskar@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210323011607.182803-1-unixbhaskar@gmail.com>
-Date:   Tue, 23 Mar 2021 10:53:31 +0200
-Message-ID: <87blba5jzo.fsf@intel.com>
+        id S229951AbhCWIyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhCWIyd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 04:54:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3167FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:54:33 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lOcnv-0006nF-9r; Tue, 23 Mar 2021 09:54:23 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:c81e:25b5:b851:4b31])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 9D78B5FDCE9;
+        Tue, 23 Mar 2021 08:54:19 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 09:54:18 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        Patrick Menschel <menschel.p@posteo.de>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
+Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
+ call to '__compiletime_assert_536' declared with attribute error:
+ BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
+ canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
+Message-ID: <20210323085418.4g7rojhkvcg2ib4e@pengutronix.de>
+References: <202103210435.I0fiBGAC-lkp@intel.com>
+ <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
+ <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
+ <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
+ <b10903ca-c424-b305-d981-fe0004500190@intel.com>
+ <20210323073437.yo63wreqnubbeqby@pengutronix.de>
+ <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
+ <c0fb01a8-6a6a-7e5f-f932-697065d18600@hartkopp.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xnic7x6gdvsivnn6"
+Content-Disposition: inline
+In-Reply-To: <c0fb01a8-6a6a-7e5f-f932-697065d18600@hartkopp.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021, Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
-> s/nothign/nothing/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-You've sent the same patch before? I've already pushed it.
+--xnic7x6gdvsivnn6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-BR,
-Jani.
+On 23.03.2021 09:32:10, Oliver Hartkopp wrote:
+> I wonder if the compiler configurations (gcc -v) or the options used at
+> kernel build time are identical.
 
-> ---
->  drivers/gpu/drm/i915/display/intel_dpll_mgr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
-> index f6ad257a260e..14d784a6fae5 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
-> @@ -4185,7 +4185,7 @@ static void icl_pll_disable(struct drm_i915_private *dev_priv,
->  	/*
->  	 * DVFS pre sequence would be here, but in our driver the cdclk code
->  	 * paths should already be setting the appropriate voltage, hence we do
-> -	 * nothign here.
-> +	 * nothing here.
->  	 */
->
->  	val = intel_de_read(dev_priv, enable_reg);
-> --
-> 2.31.0
->
+I tested several compilers and with my .config never triggered a
+problem, but with Rong Chen it does. I'm trying to figure out which
+option it is, stay tuned.
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--xnic7x6gdvsivnn6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBZrLgACgkQqclaivrt
+76nh/Af/XCDATEr7hCC2ZJBPYp/yGLTR7OJDq2gr0SmYtIpxI3vgfr5BfKkMhJ0H
+QdMhm1AcYRJeKAzmcTd6vs5M6Ol62PQqI4xhy+212rzsUCiPpTkSae2lt9P/nkbs
+2UrlkyhygQOPERiavQ46Omb5uD3C8Mftvahh7cJCCmzqKkbW5NJgAbYPtdA+OErA
+G1K70Ekt8WawfYXvyt/WC/vc4TpdbGM70T6mfxWM5xklKL+Lohjp04vIeJWHCG8t
+Qub6aRsrQ2NWCQVsIHB59eq4wKLzMeibCdZ2XhkqF9IY5LhATnUkZaS3st0EFrl7
+VYNJZ/AeZy7aRC47/c3RMCmQpRcyiw==
+=dnxo
+-----END PGP SIGNATURE-----
+
+--xnic7x6gdvsivnn6--
