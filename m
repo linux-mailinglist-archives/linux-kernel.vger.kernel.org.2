@@ -2,152 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4EC3468B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBC53468BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbhCWTO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:14:58 -0400
-Received: from mga02.intel.com ([134.134.136.20]:48530 "EHLO mga02.intel.com"
+        id S233305AbhCWTP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:15:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233258AbhCWTOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:14:23 -0400
-IronPort-SDR: cQjUnhOMCCXuXx12BL1Uy8CehyLQBdlIVEfChUJfbUMSraHRwGCM3X6xmXYqSBZKJ5oNISFhv8
- mRoUtSHGw/6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="177671199"
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="177671199"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 12:14:21 -0700
-IronPort-SDR: LrlxJMmlWHeXpmw4l3JwHxWZYy2E6m+cwtx6PxY3N63PBQoecCG22sZ8zTZW0otLKrYbc7VVWu
- YtY0ZYP+JNAg==
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="452277659"
-Received: from laguitie-mobl.amr.corp.intel.com (HELO [10.252.129.185]) ([10.252.129.185])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 12:14:20 -0700
-Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     alsa-devel@alsa-project.org, vinod.koul@linaro.org,
-        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
-        vkoul@kernel.org, srinivas.kandagatla@linaro.org,
-        sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
- <YFmatyAoMZmBmkuZ@kroah.com>
- <777b4ca6-0d51-285d-549f-6ef768f2a523@linux.intel.com>
- <YFo0WW8hOsHesSFC@kroah.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <35cc8d35-a778-d8b2-bee3-bb53f8a6c51e@linux.intel.com>
-Date:   Tue, 23 Mar 2021 14:14:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233300AbhCWTPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:15:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1FD9619D5;
+        Tue, 23 Mar 2021 19:15:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616526923;
+        bh=vz1/BwgKsE4QbkxEXRmEGYxQ6lPFuYc202DcZfmWPD8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rQFSHnitQ6+kpGJZuvHSKEGBHFXMX+wwPTFR7qY5UowNPpwAoZNZEy1w0auxbFQV6
+         Waok3+0GibjFa/ysyW3jB6MjhXPl33LPeK2B19lgGhljJFV8L75EYoe+cxy68shxb4
+         D+LtRkf8M3g7UN18j2Gh8Ae5N0nIpDlNjN6X3bQaNRtzJiuMIHoz6VMLIxzDUwVNsu
+         Vx+Dmphj3hlUYjc1I9wtyKZ4JnEcJWm65DDMSFvKbDX/Gfszc6YR30Aglh8ABw2BnY
+         Iny/3S32BZFCHZt8nDApWM8V0aMvTFQjp1AQP2rMWwQ0+9joX8xOvYgpye+oCzHfSu
+         2U6gRYJZKMWxw==
+Received: by mail-ed1-f51.google.com with SMTP id b16so24788293eds.7;
+        Tue, 23 Mar 2021 12:15:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530AQh6dGQ2eqUZ/5Khzj17Dw9hMufAfyZ45pfDw/h+2Q3pwHHqj
+        ZJFnKvV8Bfud63CE9lqmcthqdNJMaCO839VC8w==
+X-Google-Smtp-Source: ABdhPJyQUqDZQDlvFKjPPDtTkz4sNMlGLVxwHNqzDZOmCnzfXNGTmq/LBSdLt5mLoL79k61b8WRMes6qPDOkgy4P01Y=
+X-Received: by 2002:a05:6402:2d0:: with SMTP id b16mr6214654edx.194.1616526921538;
+ Tue, 23 Mar 2021 12:15:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YFo0WW8hOsHesSFC@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210323163634.877511-1-robh@kernel.org> <20210323163634.877511-2-robh@kernel.org>
+In-Reply-To: <20210323163634.877511-2-robh@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 23 Mar 2021 13:15:08 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLFj3tUUeEeKoZx=P3AHE4Tu1TzuA-tqK4+qD=4J6c=8Q@mail.gmail.com>
+Message-ID: <CAL_JsqLFj3tUUeEeKoZx=P3AHE4Tu1TzuA-tqK4+qD=4J6c=8Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: Move port/ports properties out of audio-graph-port.yaml
+To:     Mark Brown <broonie@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 10:36 AM Rob Herring <robh@kernel.org> wrote:
+>
+> Users of the audio-graph-port schema need to define how many ports
+> and what each port is, so they need to define 'ports' and/or 'port'
+> anyways. Let's drop 'ports' and 'port' from the schema and adjust users
+> to reference audio-graph-port.yaml from a port property.
+>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Cc: Lubomir Rintel <lkundrak@v3.sk>
+> Cc: Sameer Pujar <spujar@nvidia.com>
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-tegra@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
+> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+> index 31f3e51974bb..e568d6c7dddd 100644
+> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+> @@ -17,9 +17,6 @@ maintainers:
+>    - Jon Hunter <jonathanh@nvidia.com>
+>    - Sameer Pujar <spujar@nvidia.com>
+>
+> -allOf:
+> -  - $ref: audio-graph-port.yaml#
+> -
+>  properties:
+>    $nodename:
+>      pattern: "^ahub@[0-9a-f]*$"
+> @@ -60,12 +57,18 @@ properties:
+>    ranges: true
+>
+>    ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+>      description: |
+>        Contains list of ACIF (Audio CIF) port nodes for AHUB (Audio Hub).
+>        These are connected to ACIF interfaces of AHUB clients. Thus the
+>        number of port nodes depend on the number of clients that AHUB may
+>        have depending on the SoC revision.
+>
+> +    patternProperties:
+> +      '^port@[0-9]':
+> +        $ref: audio-graph-port.yaml#
+> +        unevaluatedProperties: false
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -77,7 +80,7 @@ required:
+>    - "#size-cells"
+>    - ranges
+>
+> -unevaluatedProperties: false
+> +additionalProperties: false
 
-On 3/23/21 1:32 PM, Greg KH wrote:
-> On Tue, Mar 23, 2021 at 01:04:49PM -0500, Pierre-Louis Bossart wrote:
->>
->>>> Note that the auxiliary bus API has separate init and add steps, which
->>>> requires more attention in the error unwinding paths. The main loop
->>>> needs to deal with kfree() and auxiliary_device_uninit() for the
->>>> current iteration before jumping to the common label which releases
->>>> everything allocated in prior iterations.
->>>
->>> The init/add steps can be moved together in the aux bus code if that
->>> makes this usage simpler.  Please do that instead.
->>
->> IIRC the two steps were separated during the auxbus reviews to allow the
->> parent to call kfree() on an init failure, and auxiliary_device_uninit()
->> afterwards.
->>
->> https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#auxiliary-device
->>
->> With a single auxbus_register(), the parent wouldn't know whether to use
->> kfree() or auxiliary_device_uinit() when an error is returned, would it?
->>
-> 
-> It should, you know the difference when you call device_register() vs.
-> device_initialize()/device_add(), for what to do, right?
-> 
-> Should be no difference here either :)
+Adding this results in schema errors in the example, so a prerequisite
+patch is needed.
 
-sorry, not following.
-
-with the regular devices, the errors can only happen on the second "add" 
-stage.
-
-int device_register(struct device *dev)
-{
-	device_initialize(dev);
-	return device_add(dev);
-}
-
-that's not what is currently implemented for the auxiliary bus
-
-the current flow is
-
-ldev = kzalloc(..)
-some inits
-ret = auxiliary_device_init(&ldev->auxdev)
-if (ret < 0) {
-     kfree(ldev);
-     goto err1;
-}
-
-ret = auxiliary_device_add(&ldev->auxdev)
-if (ret < 0)
-     auxiliary_device_uninit(&ldev->auxdev)
-     goto err2;
-}
-...
-err2:
-err1:
-
-How would I convert this to
-
-ldev = kzalloc(..)
-some inits
-ret = auxiliary_device_register()
-if (ret) {
-    kfree(ldev) or not?
-    unit or not?
-}
-
-IIRC during reviews there was an ask that the parent and name be 
-checked, and that's why the code added the two checks below:
-
-int auxiliary_device_init(struct auxiliary_device *auxdev)
-{
-	struct device *dev = &auxdev->dev;
-
-	if (!dev->parent) {
-		pr_err("auxiliary_device has a NULL dev->parent\n");
-		return -EINVAL;
-	}
-
-	if (!auxdev->name) {
-		pr_err("auxiliary_device has a NULL name\n");
-		return -EINVAL;
-	}
-
-	dev->bus = &auxiliary_bus_type;
-	device_initialize(&auxdev->dev);
-	return 0;
-}
-
-does this clarify the sequence?
-
-
-
-
-
-
-
+Rob
