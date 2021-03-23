@@ -2,110 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A05B345CBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B883345CBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhCWLYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhCWLYA (ORCPT
+        id S230487AbhCWLZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:25:04 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14448 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhCWLYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:24:00 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64BDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:23:59 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id jy13so26439244ejc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w2mw+IKy+QrhKxllQ8y4LIdko3rj7rSdl88PKxiyefM=;
-        b=X0TTrJdmjHuSIk+LOr9SUK5uEbvkSjTc1JpNAFLcEMYV0JhCw+8mxPepc7UrqlOqHx
-         iIgKvVwrXB2/BySvG4LwQ9lbBab/13690lXM9h12dVy7kJHa8S0kvBKX7pYJ/hZqfcZv
-         5txEpj9Xu1rRgl874PtpLYbqVTIUyBNO7WtlCBEjUuCweOu/G8omPMYWkEaHINlRqxxn
-         hM/APujpCNeXpI/++joSZafQyGPQutdZU558cNvKDO03kkGOa+B0tkaiBEWgcKuonhX8
-         28I12IlVdu8Pfo7Y4RYkEg7Yrbwm3dzF2hDniLaiSGfANmq9InznLzfzIyem5ehwY3hX
-         SGjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=w2mw+IKy+QrhKxllQ8y4LIdko3rj7rSdl88PKxiyefM=;
-        b=P2iJhecxP29dj+8S2GIRcT5NVtFvzsoXYXewjOEdX8D4SqBXZOGDaZmuilohYm5/Vv
-         bBUOG3O7tAouP+0HM5Q8YxacBxzIVbYN27vYF9tVfRmWRBmKs1t3IEsM1e7js5wjgp5t
-         fwEi35znLivdTQa0XI4VL9AAVayV0tfH1RfvGbUKKl8YvoyGax2MaWyXlTQXuRIMwFct
-         dHOLf/FCoC7h1Mxjc70YVvLGb4f2Jwu2k9fRaOIUD1tbcJ/Ls5kIUCjU5owHt3/jbFw8
-         P3e7BKXl0qFC3xTQxF7h1F+Dvtpjw1cQY/f5zuI+J3Nio+4xY1L6knqI7kmaGzdieIF5
-         3Kww==
-X-Gm-Message-State: AOAM531sSHUAqRM+rwHFykL1brO0PjoLPq1xl3GYOe7oxl30gHhWYCxy
-        eaFJ1bezdZMD/NNQDHDzjUw=
-X-Google-Smtp-Source: ABdhPJy7Ks+XyG8kYY3wAddgRtTyFGomWJfgnpGMbZ7iUi13YceTbgSfbahwTSjSyxL4wdZUgNYajA==
-X-Received: by 2002:a17:906:81c9:: with SMTP id e9mr4364420ejx.456.1616498638748;
-        Tue, 23 Mar 2021 04:23:58 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id mc10sm10837835ejb.56.2021.03.23.04.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 04:23:58 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 23 Mar 2021 12:23:56 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH] locking/mutex: Remove repeated declaration
-Message-ID: <20210323112356.GC3939639@gmail.com>
-References: <1616461774-18644-1-git-send-email-zhangshaokun@hisilicon.com>
+        Tue, 23 Mar 2021 07:24:25 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4TVT0drWzwQ9L;
+        Tue, 23 Mar 2021 19:22:25 +0800 (CST)
+Received: from [10.174.178.163] (10.174.178.163) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 19:24:18 +0800
+Subject: Re: [PATCH 3/5] mm/migrate.c: fix potential indeterminate pte entry
+ in migrate_vma_insert_page()
+To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
+CC:     <jglisse@redhat.com>, <shy828301@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210320093701.12829-1-linmiaohe@huawei.com>
+ <20210320093701.12829-4-linmiaohe@huawei.com>
+ <0bee2243-5771-4969-7b92-aaca67abc90c@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <488547af-3fa0-69bc-1c05-f4a077ab67d1@huawei.com>
+Date:   Tue, 23 Mar 2021 19:24:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616461774-18644-1-git-send-email-zhangshaokun@hisilicon.com>
+In-Reply-To: <0bee2243-5771-4969-7b92-aaca67abc90c@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.163]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Shaokun Zhang <zhangshaokun@hisilicon.com> wrote:
-
-> Commit 0cd39f4600ed ("locking/seqlock, headers: Untangle the spaghetti monster")
-> introduces 'struct ww_acquire_ctx' again, remove the repeated declaration.
+Hi:
+On 2021/3/23 18:26, David Hildenbrand wrote:
+> On 20.03.21 10:36, Miaohe Lin wrote:
+>> If the zone device page does not belong to un-addressable device memory,
+>> the variable entry will be uninitialized and lead to indeterminate pte
+>> entry ultimately. Fix this unexpectant case and warn about it.
 > 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-> ---
->  include/linux/mutex.h | 2 --
->  1 file changed, 2 deletions(-)
+> s/unexpectant/unexpected/
 > 
-> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-> index 0cd631a19727..d80c0e22c822 100644
-> --- a/include/linux/mutex.h
-> +++ b/include/linux/mutex.h
-> @@ -20,8 +20,6 @@
->  #include <linux/osq_lock.h>
->  #include <linux/debug_locks.h>
->  
-> -struct ww_acquire_ctx;
-> -
->  /*
->   * Simple, straightforward mutexes with strict semantics:
->   *
+>>
+>> Fixes: df6ad69838fc ("mm/device-public-memory: device memory cache coherent with CPU")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>   mm/migrate.c | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index 20a3bf75270a..271081b014cb 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -2972,6 +2972,13 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
+>>                 swp_entry = make_device_private_entry(page, vma->vm_flags & VM_WRITE);
+>>               entry = swp_entry_to_pte(swp_entry);
+>> +        } else {
+>> +            /*
+>> +             * For now we only support migrating to un-addressable
+>> +             * device memory.
+>> +             */
+>> +            WARN_ON(1);
+>> +            goto abort;
+> 
+> Fix it by crashing the kernel with panic_on_warn? :)
+> 
 
-Please also group the pre-declarations together, that's the canonical 
-pattern we use in headers.
+Sorry, my bad. :(
 
-I.e. have something like this at the top:
+> If this case can actual happen, than no WARN_ON() - rather a pr_warn_once(). If this case cannot happen, why do we even care (it's not a fix then)?
 
-  struct ww_class;
-  struct ww_acquire_ctx;
+Yep, this case can actual happen. Many thanks for providing alternative pr_warn_once().
 
-Thanks,
+> 
+> 
 
-	Ingo
