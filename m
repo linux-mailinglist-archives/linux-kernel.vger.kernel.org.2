@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034DC346181
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1821346185
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhCWObs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231830AbhCWObd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:31:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19F7C619B1;
-        Tue, 23 Mar 2021 14:31:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616509893;
-        bh=yhZhazX2oACtfcU29Xevp6wA10wkcp2mGKfW9VxdBeM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eag8/TjooaMama1LhkL9+vLR4a0gGdT1zyhNJwRBRrNsvYpxcehxMwrITAD4WwPXV
-         GgPiQHdtaLG63JToJAjT6iRVZdUGMnFaR/i4g3OtRVUEwJM7NPohScAjcA7wNaNoA0
-         rZYT+eNMlHBOY2jNQAFMSo/OCQCSYg5i+qFhLmtAxx2lgmoLD6IJ4gSWmQO6A9KSO5
-         78s4v1G83pE12LxKgHDM/Z9OvR2mbgOClazkH7l5VCzASVqDDEGT0zV0Ff6v6/9FqK
-         7SgrqYMwzqPwl0zriTxXWk8KnrHkn/H7idqffQ9UXRzC7CizphkZKi+Qrjyc8/yvQK
-         uI99OZxiIQ3QQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.cz>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] btrfs: zoned: bail out in btrfs_alloc_chunk for bad input
-Date:   Tue, 23 Mar 2021 15:31:19 +0100
-Message-Id: <20210323143128.1476527-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232319AbhCWOcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232320AbhCWOcB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:32:01 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E261C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:32:00 -0700 (PDT)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 9A8FD22234;
+        Tue, 23 Mar 2021 15:31:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1616509913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jinu5wK2Fgb90K/Icg26zeiD13m248t4W0EyRWdw7co=;
+        b=mM5kW7+CuKde9AKYczyRxp6riiViJLowJPtKuX8EeTNchN49cKpU2u7dtDW8yXUNaJHy28
+        EqBYXJZl8JsFd5D1kdoRC4evSKfwQTW8rZTMeY36X8rJa9Z9PDezy32YTlKNbnmBy5OcsB
+        dTKveqHHcTij8yNo+eHLfglp5Mf0gjA=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH v2 0/2] mtd: spi-nor: support dumping sfdp tables
+Date:   Tue, 23 Mar 2021 15:31:42 +0100
+Message-Id: <20210323143144.12730-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Add the possibility to dump the SFDP data of a flash device.
 
-gcc complains that the ctl->max_chunk_size member might be used
-uninitialized when none of the three conditions for initializing it in
-init_alloc_chunk_ctl_policy_zoned() are true:
+More and more flash devices share the same flash ID and we need per device
+fixups. Usually, these fixups differentiate flashes by looking at
+differences in the SFDP data. Determining the difference is only possible
+if we have the SFDP data for all the flashes which share a flash ID. This
+will lay the foundation to dump the whole SFDP data of a flash device.
 
-In function ‘init_alloc_chunk_ctl_policy_zoned’,
-    inlined from ‘init_alloc_chunk_ctl’ at fs/btrfs/volumes.c:5023:3,
-    inlined from ‘btrfs_alloc_chunk’ at fs/btrfs/volumes.c:5340:2:
-include/linux/compiler-gcc.h:48:45: error: ‘ctl.max_chunk_size’ may be used uninitialized [-Werror=maybe-uninitialized]
- 4998 |         ctl->max_chunk_size = min(limit, ctl->max_chunk_size);
-      |                               ^~~
-fs/btrfs/volumes.c: In function ‘btrfs_alloc_chunk’:
-fs/btrfs/volumes.c:5316:32: note: ‘ctl’ declared here
- 5316 |         struct alloc_chunk_ctl ctl;
-      |                                ^~~
+This is even more important, because some datasheets doesn't even contain
+the SFDP data. Fixups for these kind of flashes are nearly impossible to
+do.
 
-If we ever get into this condition, something is seriously
-wrong, so the same logic as in init_alloc_chunk_ctl_policy_regular()
-and a few other places should be applied. This avoids both further
-data corruption, and the compile-time warning.
+I envision having a database of all the SFDP data for the flashes we
+support and make it a requirement to submit it when a new flash is added.
+This might or might not have legal implications. Thus I'd start with having
+that database private to the SPI NOR maintainers.
 
-Fixes: 1cd6121f2a38 ("btrfs: zoned: implement zoned chunk allocator")
-Link: https://lore.kernel.org/lkml/20210323132343.GF7604@twin.jikos.cz/
-Suggested-by: David Sterba <dsterba@suse.cz>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Note that the -Wmaybe-unintialized warning is globally disabled
-by default. For some reason I got this warning anyway when building
-this specific file with gcc-11.
----
- fs/btrfs/volumes.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changes since v1:
+ - use sysfs_emit()
+ - add comment about the allocation of the sfdp dwords
+ - free SFDP memory in the error path
+ - use BIN_ATTR_RO(sfdp, 0)
+ - use spi_nor_read_sfdp()
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index bc3b33efddc5..d2994305ed77 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4989,6 +4989,8 @@ static void init_alloc_chunk_ctl_policy_zoned(
- 		ctl->max_chunk_size = 2 * ctl->max_stripe_size;
- 		ctl->devs_max = min_t(int, ctl->devs_max,
- 				      BTRFS_MAX_DEVS_SYS_CHUNK);
-+	} else {
-+		BUG();
- 	}
- 
- 	/* We don't want a chunk larger than 10% of writable space */
+Changes since RFC:
+ - Don't read SFDP data after probe. The flash might already be switched to
+   8D-8D-8D mode. Instead, cache the SFDP data
+ - add two sysfs files: jedec-id and name
+ - change the file mode of the sfdp file from 0400 to 0444. There is no
+   hardware access anymore.
+
+Michael Walle (2):
+  mtd: spi-nor: sfdp: save a copy of the SFDP data
+  mtd: spi-nor: add initial sysfs support
+
+ drivers/mtd/spi-nor/Makefile |  2 +-
+ drivers/mtd/spi-nor/core.c   |  5 +++
+ drivers/mtd/spi-nor/core.h   | 13 ++++++
+ drivers/mtd/spi-nor/sfdp.c   | 58 ++++++++++++++++++++++++
+ drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h  |  2 +
+ 6 files changed, 165 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/spi-nor/sysfs.c
+
 -- 
-2.29.2
+2.20.1
 
