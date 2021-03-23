@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DB13459B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9963459BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhCWIbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:31:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32580 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhCWIbn (ORCPT
+        id S229870AbhCWIdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:33:02 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:28465 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhCWIcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:31:43 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12N84bZZ142104;
-        Tue, 23 Mar 2021 04:31:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=RgkkpCY1i5Xe5JLu7SA08Rzz6GvG3yThCD9je1unTSo=;
- b=Fqxzxa+B+hxQNRp9z9861gD6Pth90FL4z2Fx97u//S25e22wSm3QTm1g5Mya5+LtfYL9
- +yyxRjlZg5uMSUp5Dx/MXq62e6eLe1lpt7gOGPS4TLpXOMSpOMimlc66mv0JI9Xlw2Yj
- vsdQ/RGBLo8RHTJtULJW2BrlzxD6cVYEwhnscRxLDqfxMoZDlwaFnLXWlVs4x8x76a7j
- 1wSuHdbnGE32q81V+s0lO9y+Q86pgsAnzWPNEAN7bxxNcS3sCk9Bb+S+I5dK6R01k5Lo
- Rdy863IVOVIa64SLZJALO+u8ktcUk+LyH2XXZOSCfCTkmFpONDsi2J4hdQzl78vUb3Cd Hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4at77t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 04:31:40 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12N85PGi145585;
-        Tue, 23 Mar 2021 04:31:40 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4at776-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 04:31:40 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12N8Qkb9008395;
-        Tue, 23 Mar 2021 08:31:38 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 37d9bmk4q6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 08:31:37 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12N8VZAM1114874
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 08:31:35 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A731A42041;
-        Tue, 23 Mar 2021 08:31:35 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 544524204B;
-        Tue, 23 Mar 2021 08:31:34 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.165.64])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 23 Mar 2021 08:31:34 +0000 (GMT)
-Date:   Tue, 23 Mar 2021 10:31:31 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 0/4] man2: udpate mm/userfaultfd manpages to latest
-Message-ID: <YFmnYxrfz3qAzfR9@linux.ibm.com>
-References: <20210322220848.52162-1-peterx@redhat.com>
+        Tue, 23 Mar 2021 04:32:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1616488331; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=DbgzEnR/3yD9m/RpSCcQK6LwJhecbCkN1k6IUG83Ysh+2+dLZEwBdGXXFqfJUtJGa2
+    6qC92SgHT7j8FPsU+wTzPk4gKC6UGph9A2fmTiTPHc+BQVT2su/DUADhmLM0KutQU2tY
+    R3FpVu0HKQBcDaQZfRrt0oZH9pscQZZtpkhAyAXo9d4JUg0zkBNqukdq3Ri0rr+vnniJ
+    7y8nLnmFAjHRYF7CGELeFY9p+JPLkHCqQUm1nSzPJyf0pnL5QNhgkYNuigGL1+wLZduk
+    iX7nEgehS0UNOBbsuVYavHYBZaFxd0qVmFZdcf4Nrk/K13eao67RuKlve3gepXUqG8XS
+    wArg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616488331;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:Date:Message-ID:References:Cc:To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Y4IgOnzalvu2hjJrcEWQexr5i07F4zEpuG/tdwxSpqk=;
+    b=LF4TPEZA/fhFtpsKm83JnZleYaTCTacfL5KtcaW696bnzRwmxuKuCAKnyiMJ75SVw1
+    ZR3Pco7Av2D5PnqEaRH7Ja1dKTlHJMX0XnEFQzzmOzNNHHjddWmfprcDVqf25umMr6wj
+    CqjFUIsHuRCBlocSr89JljGD0yZd1rZhkietGJV+kTCoXD2c6Nkf/lkFd4bb76UjT1ES
+    5jmQ5shQI8rW6uOpjpsinaSkRzoowEdz0KqfWdAourpisbB6LZL39/EM2S7tIII3DY81
+    UocDhk3fmsZAk6RxS73jExsBBSq6DmF0B9YYCJsH7bf9HlltkGCTy+sEf0BljlrFMYTO
+    jDmQ==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616488331;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:Date:Message-ID:References:Cc:To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Y4IgOnzalvu2hjJrcEWQexr5i07F4zEpuG/tdwxSpqk=;
+    b=Z8/xM0hedv/iL2TnYQLXs8DF1oBjI1bjmYgmdifWfE4WYp7hKlp4FLqkDwa4i5BQ2V
+    KsqGUX7mq8Kh9kAb/S3yq9zCmjBsDDbyJQ4vAUdW/+gLIuwagwmNP/dBeRdntsjqC4lb
+    ysznzENcxnNhDoFZeQYb5CdbO5/5iez2m7t7C/Ag5t/o/mRG2QYYlsGj/4nsVnSdUQmD
+    wYUXnTibARFMkp/s0OOk7OxIeqXdaIsfJlCxRKnFDDOZRSa6ruIuvflonbN7v7sNePY7
+    rng/SpWq4SDCPxQ9biqmqUSHfLUUakE2g8PJhFe9WADYA6fQOj4aRbesyeHFSw6P0HM+
+    2FFg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J8xswl0="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.10.137]
+    by smtp.strato.de (RZmta 47.21.0 DYNA|AUTH)
+    with ESMTPSA id R01debx2N8WAE5p
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 23 Mar 2021 09:32:10 +0100 (CET)
+Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
+ call to '__compiletime_assert_536' declared with attribute error:
+ BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
+ canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Patrick Menschel <menschel.p@posteo.de>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
+References: <202103210435.I0fiBGAC-lkp@intel.com>
+ <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
+ <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
+ <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
+ <b10903ca-c424-b305-d981-fe0004500190@intel.com>
+ <20210323073437.yo63wreqnubbeqby@pengutronix.de>
+ <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
+Message-ID: <c0fb01a8-6a6a-7e5f-f932-697065d18600@hartkopp.net>
+Date:   Tue, 23 Mar 2021 09:32:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322220848.52162-1-peterx@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_02:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103230057
+In-Reply-To: <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:08:44PM -0400, Peter Xu wrote:
-> v4:
-> - Fixed a few "subordinate clauses" (SC) cases [Alex]
-> - Reword in ioctl_userfaultfd.2 to use bold font for the two modes referenced,
->   so as to be clear on what is "both" referring to [Alex]
-> 
-> v3:
-> - Don't use "Currently", instead add "(since x.y)" mark where proper [Alex]
-> - Always use semantic newlines across the whole patchset [Alex]
-> - Use quote when possible, rather than escapes [Alex]
-> - Fix one missing replacement of ".BR" -> ".B" [Alex]
-> - Some other trivial rephrases here and there when fixing up above
-> 
-> v2 changes:
-> - Fix wordings as suggested [MikeR]
-> - convert ".BR" to ".B" where proper for the patchset [Alex]
-> - rearrange a few lines in the last two patches where they got messed up
-> - document more things, e.g. UFFDIO_COPY_MODE_WP; and also on how to resolve a
->   wr-protect page fault.
-> 
-> There're two features missing in current manpage, namely:
-> 
->   (1) Userfaultfd Thread-ID feature
->   (2) Userfaultfd write protect mode
-> 
-> There's also a 3rd one which was just contributed from Axel - Axel, I think it
-> would be great if you can add that part too, probably after the whole
-> hugetlbfs/shmem minor mode reaches the linux master branch.
-> 
-> Please review, thanks.
-> 
-> Peter Xu (4):
->   userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
->   userfaultfd.2: Add write-protect mode
->   ioctl_userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
->   ioctl_userfaultfd.2: Add write-protect mode docs
-> 
->  man2/ioctl_userfaultfd.2 |  89 ++++++++++++++++++++++++++++-
->  man2/userfaultfd.2       | 117 ++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 201 insertions(+), 5 deletions(-)
- 
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Answering myself ...
 
-> -- 
-> 2.26.2
-> 
-> 
+On 23.03.21 08:45, Oliver Hartkopp wrote:
+> On 23.03.21 08:34, Marc Kleine-Budde wrote:
+>> On 23.03.2021 10:54:40, Rong Chen wrote:
+>>> I tried arm-linux-gnueabi (gcc version 10.2.0) and the problem still
+>>> exists, btw we prefer to not use the latest gcc compiler to avoid
+>>> false positives.
+>>
+>> FWIW:
+>>
+>> I'm using latest debian arm compiler and the BUILD_BUG never triggered.
+>> gcc version 10.2.1 20210110 (Debian 10.2.1-6)
+>>
 
--- 
-Sincerely yours,
-Mike.
+@Rong / Marc:
+
+I wonder if the compiler configurations (gcc -v) or the options used at 
+kernel build time are identical.
+
+Maybe there is a different optimization option selected which causes the 
+compiler to extend the u8 union to a 32 bit space?!?
+
+And maybe Debian is a bit more conservative in selecting their 
+optimizations than the setup that Rong was using for the build ...
+
+Best,
+Oliver
+
+> 
+> Thanks Marc!
+> 
+> IMO we facing a compiler problem here - and we should be very happy that 
+> the BUILD_BUG_ON() triggered an issue after years of silence.
+> 
+> I do not have a good feeling about what kind of strange effects this 
+> compiler issue might have in other code of other projects.
+> 
+> So I would explicitly suggest NOT to change the af_can.c code to work 
+> around this compiler issue.
+> 
+> Let the gcc people fix their product and let them thank all of us for 
+> detecting it.
+> 
+> Regards,
+> Oliver
