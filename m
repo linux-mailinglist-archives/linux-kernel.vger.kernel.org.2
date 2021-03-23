@@ -2,178 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423393468EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C123468F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhCWTYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:24:41 -0400
-Received: from smtp-190c.mail.infomaniak.ch ([185.125.25.12]:54327 "EHLO
-        smtp-190c.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232483AbhCWTYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:24:31 -0400
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F4hBh0xVSzMprp8;
-        Tue, 23 Mar 2021 20:24:28 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F4hBf1txVzlh8TD;
-        Tue, 23 Mar 2021 20:24:26 +0100 (CET)
-Subject: Re: [PATCH v30 12/12] landlock: Add user and kernel documentation
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-13-mic@digikod.net> <202103191056.71AB0515A@keescook>
- <81c76347-9e92-244f-6f32-600984a6c5cb@digikod.net>
-Message-ID: <206f1577-0607-1e01-16c2-219418eea332@digikod.net>
-Date:   Tue, 23 Mar 2021 20:25:00 +0100
-User-Agent: 
+        id S233137AbhCWT0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:26:21 -0400
+Received: from mga07.intel.com ([134.134.136.100]:12800 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232695AbhCWTZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:25:59 -0400
+IronPort-SDR: 5C0BXnTkwLyQo1oEEcdNyPBjo2gAxE8zyaWymvtG9H7PZ3jkqG275U58AQBphyCJ3ttSHMd6kO
+ gI4fMgRcpsPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="254549501"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="254549501"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 12:25:56 -0700
+IronPort-SDR: x+OPO9b/i9LEWXEAcRDIffKzth8pec2KbD2O+lB/rSIAU8vRV7XcbNGRVAKiC/eKu+IDyiX4yP
+ 1UCX/s6h5iOw==
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="452280164"
+Received: from laguitie-mobl.amr.corp.intel.com (HELO [10.252.129.185]) ([10.252.129.185])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 12:25:55 -0700
+Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     gustavoars@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+        mirq-linux@rere.qmqm.pl, broonie@kernel.org
+References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <7364fb08-fe43-167d-a083-db4a6234222c@linux.intel.com>
+Date:   Tue, 23 Mar 2021 14:25:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <81c76347-9e92-244f-6f32-600984a6c5cb@digikod.net>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 19/03/2021 19:54, Mickaël Salaün wrote:
+On 3/23/21 6:43 AM, Codrin Ciubotariu wrote:
+> HW constraints are needed to set limitations for HW parameters used to
+> configure the DAIs. All DAIs on the same link must agree upon the HW
+> parameters, so the parameters are affected by the DAIs' features and
+> their limitations. In case of DPCM, the FE DAIs can be used to perform
+> different kind of conversions, such as format or rate changing, bringing
+> the audio stream to a configuration supported by all the DAIs of the BE's
+> link. For this reason, the limitations of the BE DAIs are not always
+> important for the HW parameters between user-space and FE, only for the
+> paratemers between FE and BE DAI links. This brings us to this patch-set,
+> which aims to separate the FE HW constraints from the BE HW constraints.
+> This way, the FE can be used to perform more efficient HW conversions, on
+> the initial audio stream parameters, to parameters supported by the BE
+> DAIs.
+> To achieve this, the first thing needed is to detect whether a HW
+> constraint rule is enforced by a FE or a BE DAI. This means that
+> snd_pcm_hw_rule_add() needs to be able to differentiate between the two
+> type of DAIs. For this, the runtime pointer to struct snd_pcm_runtime is
+> replaced with a pointer to struct snd_pcm_substream, to be able to reach
+> substream->pcm->internal to differentiate between FE and BE DAIs.
+> This change affects many sound drivers (and one gpu drm driver).
+> All these changes are included in the first patch, to have a better
+> overview of the implications created by this change.
+> The second patch adds a new struct snd_pcm_hw_constraints under struct
+> snd_soc_dpcm_runtime, which is used to store the HW constraint rules
+> added by the BE DAIs. This structure is initialized with a subset of the
+> runtime constraint rules which does not include the rules that affect
+> the buffer or period size. snd_pcm_hw_rule_add() will add the BE rules
+> to the new struct snd_pcm_hw_constraints.
+> The third and last patch will apply the BE rule constraints, after the
+> fixup callback. If the fixup HW parameters do not respect the BE
+> constraint rules, the rules will exit with an error. The FE mask and
+> interval constraints are copied to the BE ones, to satisfy the
+> dai_link->dpcm_merged_* flags. The dai_link->dpcm_merged_* flags are
+> used to know if the FE does format or sampling rate conversion.
 > 
-> On 19/03/2021 19:03, Kees Cook wrote:
->> On Tue, Mar 16, 2021 at 09:42:52PM +0100, Mickaël Salaün wrote:
->>> From: Mickaël Salaün <mic@linux.microsoft.com>
->>>
->>> This documentation can be built with the Sphinx framework.
->>
->> Well, yes. :) Maybe describe what the documentation covers instead here.
->> Regardless: yay docs! This is great.
+> I tested with ad1934 and wm8731 codecs as BEs, with a not-yet-mainlined
+> ASRC as FE, that can also do format conversion. I realize that the
+> change to snd_pcm_hw_rule_add() has a big impact, even though all the
+> drivers use snd_pcm_hw_rule_add() with substream->runtime, so passing
+> substream instead of runtime is not that risky.
 
-What about that?
+can you use the BE hw_params_fixup instead?
 
-Add a first document describing userspace API: how to define and enforce
-a Landlock security policy.  This is explained with a simple example.
-The Landlock system calls are described with their expected behavior and
-current limitations.
+That's what we use for SOF.
 
-Another document is dedicated to kernel developers, describing guiding
-principles and some important kernel structures.
+The FE hw_params are propagated to the BE, and then the BE can update 
+the hw_params based on its own limitations and pass the result 
+downstream, e.g. to a codec.
 
-This documentation can be built with the Sphinx framework.
+I'll copy below my understanding of the flow, which we discussed 
+recently in the SOF team:
 
+my understanding is that we start with the front-end hw_params as the 
+basis for the back-end hw_params.
 
->>
->>> [...]
->>> +Bind mounts and OverlayFS
->>> +-------------------------
->>> +
->>> +Landlock enables to restrict access to file hierarchies, which means that these
->>> +access rights can be propagated with bind mounts (cf.
->>> +:doc:`/filesystems/sharedsubtree`) but not with :doc:`/filesystems/overlayfs`.
->>> +
->>> +A bind mount mirrors a source file hierarchy to a destination.  The destination
->>> +hierarchy is then composed of the exact same files, on which Landlock rules can
->>> +be tied, either via the source or the destination path.  These rules restrict
->>> +access when they are encountered on a path, which means that they can restrict
->>> +access to multiple file hierarchies at the same time, whether these hierarchies
->>> +are the result of bind mounts or not.
->>> +
->>> +An OverlayFS mount point consists of upper and lower layers.  These layers are
->>> +combined in a merge directory, result of the mount point.  This merge hierarchy
->>> +may include files from the upper and lower layers, but modifications performed
->>> +on the merge hierarchy only reflects on the upper layer.  From a Landlock
->>> +policy point of view, each OverlayFS layers and merge hierarchies are
->>> +standalone and contains their own set of files and directories, which is
->>> +different from bind mounts.  A policy restricting an OverlayFS layer will not
->>> +restrict the resulted merged hierarchy, and vice versa.
->>
->> Can you include some examples about what a user of landlock should do?
->> i.e. what are some examples of unexpected results when trying to write
->> policy that runs on top of overlayfs, etc?
-> 
-> Landlock works well with overlayfs, at least from my point of view. It
-> may be a bit disturbing with bind mount though, but it is the same with
-> other access-controls (e.g. DAC). Landlock users should just think about
-> file hierarchies and create their policies accordingly. A user should
-> not try to adapt a policy according to his/her understanding of
-> overlayfs, but just think about file hierarchies.
-> 
->>
->>> [...]
->>> +File renaming and linking
->>> +-------------------------
->>> +
->>> +Because Landlock targets unprivileged access controls, it is needed to properly
->>> +handle composition of rules.  Such property also implies rules nesting.
->>> +Properly handling multiple layers of ruleset, each one of them able to restrict
->>> +access to files, also implies to inherit the ruleset restrictions from a parent
->>> +to its hierarchy.  Because files are identified and restricted by their
->>> +hierarchy, moving or linking a file from one directory to another implies to
->>> +propagate the hierarchy constraints.  To protect against privilege escalations
->>> +through renaming or linking, and for the sack of simplicity, Landlock currently
->>
->> typo: sack -> sake
-> 
-> Indeed
-> 
->>
->>> [...]
->>> +Special filesystems
->>> +-------------------
->>> +
->>> +Access to regular files and directories can be restricted by Landlock,
->>> +according to the handled accesses of a ruleset.  However, files that do not
->>> +come from a user-visible filesystem (e.g. pipe, socket), but can still be
->>> +accessed through /proc/self/fd/, cannot currently be restricted.  Likewise,
->>> +some special kernel filesystems such as nsfs, which can be accessed through
->>> +/proc/self/ns/, cannot currently be restricted.  For now, these kind of special
->>> +paths are then always allowed.  Future Landlock evolutions will enable to
->>> +restrict such paths with dedicated ruleset flags.
->>
->> With this series, can /proc (at the top level) be blocked? (i.e. can a
->> landlock user avoid the weirdness by making /proc/$pid/ unavailable?)
-> 
-> /proc can be blocked, but not /proc/*/ns/* because of disconnected
-> roots. I plan to address this.
-> 
->>
->>> +Ruleset layers
->>> +--------------
->>> +
->>> +There is a limit of 64 layers of stacked rulesets.  This can be an issue for a
->>> +task willing to enforce a new ruleset in complement to its 64 inherited
->>> +rulesets.  Once this limit is reached, sys_landlock_restrict_self() returns
->>> +E2BIG.  It is then strongly suggested to carefully build rulesets once in the
->>> +life of a thread, especially for applications able to launch other applications
->>> +that may also want to sandbox themselves (e.g. shells, container managers,
->>> +etc.).
->>
->> How was this value (64) chosen?
->>
-> 
-> It was first an implementation constraint to limit the memory allocated
-> for each rule, but it could now be increased if needed. The
-> implementation still uses u64 for the sake of simplicity, but we could
-> switch to a bitmap type.
-> 
+static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+                  struct snd_pcm_hw_params *params)
+{
+     struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
+     int ret, stream = substream->stream;
+
+     mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+     dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+
+     memcpy(&fe->dpcm[stream].hw_params, params,
+             sizeof(struct snd_pcm_hw_params));
+     ret = dpcm_be_dai_hw_params(fe, stream);
+<<< the BE is handled first.
+     if (ret < 0) {
+         dev_err(fe->dev,"ASoC: hw_params BE failed %d\n", ret);
+         goto out;
+     }
+
+     dev_dbg(fe->dev, "ASoC: hw_params FE %s rate %d chan %x fmt %d\n",
+             fe->dai_link->name, params_rate(params),
+             params_channels(params), params_format(params));
+
+     /* call hw_params on the frontend */
+     ret = soc_pcm_hw_params(substream, params);
+
+then each BE will be configured
+
+int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+{
+     struct snd_soc_dpcm *dpcm;
+     int ret;
+
+     for_each_dpcm_be(fe, stream, dpcm) {
+
+         struct snd_soc_pcm_runtime *be = dpcm->be;
+         struct snd_pcm_substream *be_substream =
+             snd_soc_dpcm_get_substream(be, stream);
+
+         /* is this op for this BE ? */
+         if (!snd_soc_dpcm_be_can_update(fe, be, stream))
+             continue;
+
+         /* copy params for each dpcm */
+         memcpy(&dpcm->hw_params, &fe->dpcm[stream].hw_params,
+                 sizeof(struct snd_pcm_hw_params));
+
+         /* perform any hw_params fixups */
+         ret = snd_soc_link_be_hw_params_fixup(be, &dpcm->hw_params);
+
+The fixup is the key, in SOF this is where we are going to look for 
+information from the topology.
+
+/* fixup the BE DAI link to match any values from topology */
+int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd, struct 
+snd_pcm_hw_params *params)
+{
+     struct snd_interval *rate = hw_param_interval(params,
+             SNDRV_PCM_HW_PARAM_RATE);
+     struct snd_interval *channels = hw_param_interval(params,
+                         SNDRV_PCM_HW_PARAM_CHANNELS);
+     struct snd_mask *fmt = hw_param_mask(params, 
+SNDRV_PCM_HW_PARAM_FORMAT);
+     struct snd_soc_component *component =
+         snd_soc_rtdcom_lookup(rtd, SOF_AUDIO_PCM_DRV_NAME);
+     struct snd_sof_dai *dai =
+         snd_sof_find_dai(component, (char *)rtd->dai_link->name);
+     struct snd_soc_dpcm *dpcm;
+
+     /* no topology exists for this BE, try a common configuration */
+     if (!dai) {
+         dev_warn(component->dev,
+              "warning: no topology found for BE DAI %s config\n",
+              rtd->dai_link->name);
+
+         /*  set 48k, stereo, 16bits by default */
+         rate->min = 48000;
+         rate->max = 48000;
+
+         channels->min = 2;
+         channels->max = 2;
+
+         snd_mask_none(fmt);
+         snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+
+         return 0;
+     }
+
+     /* read format from topology */
+     snd_mask_none(fmt);
+
+     switch (dai->comp_dai.config.frame_fmt) {
+     case SOF_IPC_FRAME_S16_LE:
+         snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+         break;
+     case SOF_IPC_FRAME_S24_4LE:
+         snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+         break;
+     case SOF_IPC_FRAME_S32_LE:
+         snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S32_LE);
+         break;
+     default:
+         dev_err(component->dev, "error: No available DAI format!\n");
+         return -EINVAL;
+     }
+
+     /* read rate and channels from topology */
+     switch (dai->dai_config->type) {
+     case SOF_DAI_INTEL_SSP:
+         rate->min = dai->dai_config->ssp.fsync_rate;
+         rate->max = dai->dai_config->ssp.fsync_rate;
+         channels->min = dai->dai_config->ssp.tdm_slots;
+         channels->max = dai->dai_config->ssp.tdm_slots;
