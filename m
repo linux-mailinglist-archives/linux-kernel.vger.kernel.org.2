@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C65346073
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3CE346082
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhCWN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:56:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231548AbhCWN42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:56:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B19C6199F;
-        Tue, 23 Mar 2021 13:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616507787;
-        bh=8lKy2kI8+VRpgd7UaH5wsraNigVbnf5gjlgvvdBwnBE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ctFllR8M5ADN0PQZGilMeRK2vxtz2PfkIZU/rB+oJPFpyrze0z1jirtPfRojTZe7E
-         K01johJh0sVT0XKGOnU64IktnMSgnZxXU6wiax1/38dRhg6j9LaGsV+yG++7q64tUw
-         14WWIO+Jldbd+pHJ1SwnvFwRfEx1aqP6ADIeycO+RrYseD/Nv8OHdh3TwN/IupPFoU
-         6kRJOLAcnAsFBY5rNa4gFBXu70qInd+nqc7T2yaYnRG2tfJyzRgngYsW6zq4D/UxLY
-         AWmdUbpOuu3HFsgdh5IOBweu2byr8HoJbL/Yv5vkutu2kCphIuxIcoWwgifginyA+H
-         kpnt6hN17p83g==
-Subject: Re: [PATCH] f2fs: fix to align to section for fallocate() on pinned
- file
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>
-References: <20210305095601.96591-1-yuchao0@huawei.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <d9c118eb-45b3-7f35-70bd-cb016957e6e8@kernel.org>
-Date:   Tue, 23 Mar 2021 21:56:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231922AbhCWN5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:57:22 -0400
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:40727 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231847AbhCWN4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:56:54 -0400
+Received: by mail-lj1-f177.google.com with SMTP id u10so25749019lju.7;
+        Tue, 23 Mar 2021 06:56:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SG2RU9BGddGqc8+LmYNU3X5hDH9nRq0LsOGSuQU+0vQ=;
+        b=s0VzzVyD4zLCXcSoRrl9DTO8JC+CvDbhokb//KimK1eBtV39qos6dh4RL8WpZfNyy+
+         CvUKTkxaPbEKJl9EObDmy9vRdD6YBjPj0fqKAwlpo/MWTFEb7cW9189Feab189UJDBym
+         gQenjUAhWA01lATvWfss2fxtrsfODF4up1MMnlvGK/zZlVkaG3NVSuiK7OVZwEXooszi
+         AY5rbjGfk8HOivJ6wuC8Fyn7JYibXH/SzCtMG2oHHX3lr5FFllHmH5B4bh4Tkf3NF/+c
+         ogtKvygdKjbDM9F9+izHiBag4WEGGcrRgSiKL7HYaG3C+pFH4JXgtNA8eOrtfgf9jj57
+         2jbw==
+X-Gm-Message-State: AOAM530EoB2L87yRjZ7RQM3g7mfl9jndPNAPzVvDCTSGmWbnPWnLu33n
+        kTaAKYh8vWYH54m0ldtm/v0=
+X-Google-Smtp-Source: ABdhPJy3Q4ez4TI4HgvOym73a7CNZxNo9F4RX6+quzkcgtglSKAIYgcyFhe8wnD7m830kMhc58yt5Q==
+X-Received: by 2002:a2e:810a:: with SMTP id d10mr3149259ljg.304.1616507812249;
+        Tue, 23 Mar 2021 06:56:52 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id l12sm2351935lji.122.2021.03.23.06.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 06:56:51 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:56:44 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
+Message-ID: <eec1797734e3d080662aa732c565ed4a3c261799.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20210305095601.96591-1-yuchao0@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/5 17:56, Chao Yu wrote:
-> Now, fallocate() on a pinned file only allocates blocks which aligns
-> to segment rather than section, so GC may try to migrate pinned file's
-> block, and after several times of failure, pinned file's block could
-> be migrated to other place, however user won't be aware of such
-> condition, and then old obsolete block address may be readed/written
-> incorrectly.
-> 
-> To avoid such condition, let's try to allocate pinned file's blocks
-> with section alignment.
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Devm helper header containing small inline helpers was added.
+Hans promised to maintain it.
 
-Jaegeuk,
+Add Hans as maintainer and myself as designated reviewer.
 
-Could you please check and apply below diff into original patch?
-
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
-  fs/f2fs/file.c | 10 +++++-----
-  1 file changed, 5 insertions(+), 5 deletions(-)
+Changelog from RFCv2:
+ - RFC dropped. No functional changes.
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 236f3f69681a..24fa68fdcaa0 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1648,13 +1648,13 @@ static int expand_inode_data(struct inode *inode, loff_t offset,
-  		return 0;
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-  	if (f2fs_is_pinned_file(inode)) {
--		block_t len = (map.m_len >> sbi->log_blocks_per_seg) <<
--					sbi->log_blocks_per_seg;
-+		block_t sec_blks = BLKS_PER_SEC(sbi);
-+		block_t len = rounddown(map.m_len, sec_blks);
-
--		if (map.m_len % sbi->blocks_per_seg)
--			len += sbi->blocks_per_seg;
-+		if (map.m_len % sec_blks)
-+			len += sec_blks;
-
--		map.m_len = sbi->blocks_per_seg;
-+		map.m_len = sec_blks;
-  next_alloc:
-  		if (has_not_enough_free_secs(sbi, 0,
-  			GET_SEC_FROM_SEG(sbi, overprovision_segments(sbi)))) {
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9e876927c60d..fa5ac3164678 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5169,6 +5169,12 @@ M:	Torben Mathiasen <device@lanana.org>
+ S:	Maintained
+ W:	http://lanana.org/docs/device-list/index.html
+ 
++DEVICE RESOURCE MANAGEMENT HELPERS
++M:	Hans de Goede <hdegoede@redhat.com>
++R:	Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
++S:	Maintained
++F:	include/linux/devm-helpers.h
++
+ DEVICE-MAPPER  (LVM)
+ M:	Alasdair Kergon <agk@redhat.com>
+ M:	Mike Snitzer <snitzer@redhat.com>
 -- 
-2.22.1
+2.25.4
 
 
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
