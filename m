@@ -2,120 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D36345808
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C7A34580A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCWGxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhCWGwq (ORCPT
+        id S230095AbhCWGxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:53:48 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13664 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhCWGxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:52:46 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E58DC061574;
-        Mon, 22 Mar 2021 23:52:46 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id n11so10717609pgm.12;
-        Mon, 22 Mar 2021 23:52:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4BJC7S/OHZH6r8G1p6h+vG5igR/AXMYKIeleYipdgog=;
-        b=Jmf0RegJqP2Pv3A4c4aF0/gmSf6+6HrlFHRVTSSUrghVF9nCaINxndubGsMjua+9jx
-         nVNN+74OAbU6Zq5NwuVqMNylj12C8z07gbNj3qGIBk+zo3WSvBvN4+MsetAWQPqTLwAR
-         jyZB4TsbmqkKMmqev9FTBFQ7uJrk/4yMYTXzWJYN1upgrZ25BlYgNynx+CX+A4dn+W7o
-         9+Z/ihGuQcb9pa7X9u8LNQQkO3alkdBaFgOmvIUkZR5LO2aDbhbF20GFe7hFctDkqYLZ
-         qa5m1tzZIZNbszlfmjSqM5JI6BIYB4PWQTf+BXADLazyiEOO7K6G8igQhTLes1QbTXt3
-         CE+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4BJC7S/OHZH6r8G1p6h+vG5igR/AXMYKIeleYipdgog=;
-        b=NaV+VsOu4amCwlUiE7oqpmU8lD1WKcQe8ubiP5jl/rUWivg++9Jj24A4gLVI4QNi1v
-         nzkupYThspvHra1sPeVggl5JZRLy4w3wPPLPgBKvUpv4mq+r2QreSqdCeb1qK8kNrYZ5
-         8AbCDVVaFgDKuc6XrdYFXG+ZM629f7HwAZ1HoiUm2aOb89v5d3RchXX3F7/KmfY+h1Qf
-         V9ug4pSRpOludO/SSkY5YWN9GdLRRqp4XX1IkGkz4JocfCOgZsCsIwY9ra6GHyNRwchs
-         abrD3HWN/TPdWUHqGHsp6QcZU+CwxSgVpFuNafMMbYieM8gKGIJ3nP6vQhH714S+BCM1
-         tCKw==
-X-Gm-Message-State: AOAM532J4owVdGSQ5BUV2rJhTr2S3TyZT9ISFypXOZQsROxPnW1wXA2L
-        NXCCtHghcWTz8Gk221Pz8/R8GH7IryAbzw==
-X-Google-Smtp-Source: ABdhPJz8QAYoWG6wxn4mYky+RduES+d7sjpyy67TiBiUF7887q1MlGQU4J6U81nMYI4WCALE38vWdQ==
-X-Received: by 2002:aa7:92cb:0:b029:1f1:542f:2b2b with SMTP id k11-20020aa792cb0000b02901f1542f2b2bmr3454382pfa.31.1616482365799;
-        Mon, 22 Mar 2021 23:52:45 -0700 (PDT)
-Received: from DESKTOP-4V60UBS.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id o9sm16633654pfh.47.2021.03.22.23.52.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 23:52:45 -0700 (PDT)
-From:   Xiaofeng Cao <cxfcosmos@gmail.com>
-X-Google-Original-From: Xiaofeng Cao <caoxiaofeng@yulong.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>
-Subject: [PATCH v2] fs/dcache: fix typos and sentence disorder
-Date:   Tue, 23 Mar 2021 14:52:45 +0800
-Message-Id: <20210323065245.15083-1-caoxiaofeng@yulong.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 23 Mar 2021 02:53:19 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4MT16bhjznVHt;
+        Tue, 23 Mar 2021 14:50:45 +0800 (CST)
+Received: from [10.67.110.136] (10.67.110.136) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 14:53:11 +0800
+Subject: Re: [PATCH -next] powerpc: kernel/time.c - cleanup warnings
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <npiggin@gmail.com>, <msuchanek@suse.de>,
+        <peterz@infradead.org>, <geert+renesas@glider.be>,
+        <kernelfans@gmail.com>, <frederic@kernel.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+References: <20210317103438.177428-1-heying24@huawei.com>
+ <3f4d196b-0a8e-d4c9-cabe-591f5916a2b9@csgroup.eu>
+ <5ee06736-7fc4-7993-a8b5-042e1890a6de@huawei.com>
+ <c6908c07-1814-a7f8-5f48-a4c316fb567c@huawei.com>
+ <5f4ec5e0-af9c-ba47-4a01-589b1b724cb9@csgroup.eu>
+From:   "heying (H)" <heying24@huawei.com>
+Message-ID: <ef45a69e-f6a5-8238-672e-02f35e09e91c@huawei.com>
+Date:   Tue, 23 Mar 2021 14:53:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <5f4ec5e0-af9c-ba47-4a01-589b1b724cb9@csgroup.eu>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.136]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change 'sould' to 'should'
-change 'colocated' to 'co-located'
-change 'talke' to 'take'
-reorganize sentence
+Dear Christophe,
 
-Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
----
-v2:change 'colocated' to 'co-located' instead of 'collocated'
- fs/dcache.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 7d24ff7eb206..c23834334314 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -741,7 +741,7 @@ static inline bool fast_dput(struct dentry *dentry)
- 	unsigned int d_flags;
- 
- 	/*
--	 * If we have a d_op->d_delete() operation, we sould not
-+	 * If we have a d_op->d_delete() operation, we should not
- 	 * let the dentry count go to zero, so use "put_or_lock".
- 	 */
- 	if (unlikely(dentry->d_flags & DCACHE_OP_DELETE))
-@@ -1053,7 +1053,7 @@ struct dentry *d_find_alias_rcu(struct inode *inode)
- 	struct dentry *de = NULL;
- 
- 	spin_lock(&inode->i_lock);
--	// ->i_dentry and ->i_rcu are colocated, but the latter won't be
-+	// ->i_dentry and ->i_rcu are co-located, but the latter won't be
- 	// used without having I_FREEING set, which means no aliases left
- 	if (likely(!(inode->i_state & I_FREEING) && !hlist_empty(l))) {
- 		if (S_ISDIR(inode->i_mode)) {
-@@ -1297,7 +1297,7 @@ void shrink_dcache_sb(struct super_block *sb)
- EXPORT_SYMBOL(shrink_dcache_sb);
- 
- /**
-- * enum d_walk_ret - action to talke during tree walk
-+ * enum d_walk_ret - action to take during tree walk
-  * @D_WALK_CONTINUE:	contrinue walk
-  * @D_WALK_QUIT:	quit walk
-  * @D_WALK_NORETRY:	quit when retry is needed
-@@ -2156,8 +2156,8 @@ EXPORT_SYMBOL(d_obtain_alias);
-  *
-  * On successful return, the reference to the inode has been transferred
-  * to the dentry.  In case of an error the reference on the inode is
-- * released.  A %NULL or IS_ERR inode may be passed in and will be the
-- * error will be propagate to the return value, with a %NULL @inode
-+ * released.  A %NULL or IS_ERR inode may be passed in and the error will
-+ * be propagated to the return value, with a %NULL @inode
-  * replaced by ERR_PTR(-ESTALE).
-  */
- struct dentry *d_obtain_root(struct inode *inode)
--- 
-2.25.1
+在 2021/3/23 14:33, Christophe Leroy 写道:
+>
+>
+> Le 23/03/2021 à 07:21, heying (H) a écrit :
+>> Dear Christophe,
+>>
+>>
+>> 在 2021/3/18 10:28, heying (H) 写道:
+>>>
+>>> 在 2021/3/17 19:16, Christophe Leroy 写道:
+>>>>
+>>>>
+>>>> Le 17/03/2021 à 11:34, He Ying a écrit :
+>>>>> We found these warnings in arch/powerpc/kernel/time.c as follows:
+>>>>> warning: symbol 'decrementer_max' was not declared. Should it be 
+>>>>> static?
+>>>>> warning: symbol 'rtc_lock' was not declared. Should it be static?
+>>>>> warning: symbol 'dtl_consumer' was not declared. Should it be static?
+>>>>>
+>>>>> Declare 'decrementer_max' in arch/powerpc/include/asm/time.h. And 
+>>>>> include
+>>>>> proper header in which 'rtc_lock' is declared. Move 'dtl_consumer'
+>>>>> definition behind "include <asm/dtl.h>" because 'dtl_consumer' is 
+>>>>> declared
+>>>>> there.
+>>>>>
+>>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>>> Signed-off-by: He Ying <heying24@huawei.com>
+>>>>> ---
+>>>>>   arch/powerpc/include/asm/time.h | 1 +
+>>>>>   arch/powerpc/kernel/time.c      | 7 +++----
+>>>>>   2 files changed, 4 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/powerpc/include/asm/time.h 
+>>>>> b/arch/powerpc/include/asm/time.h
+>>>>> index 8dd3cdb25338..2cd2b50bedda 100644
+>>>>> --- a/arch/powerpc/include/asm/time.h
+>>>>> +++ b/arch/powerpc/include/asm/time.h
+>>>>> @@ -22,6 +22,7 @@ extern unsigned long tb_ticks_per_jiffy;
+>>>>>   extern unsigned long tb_ticks_per_usec;
+>>>>>   extern unsigned long tb_ticks_per_sec;
+>>>>>   extern struct clock_event_device decrementer_clockevent;
+>>>>> +extern u64 decrementer_max;
+>>>>>       extern void generic_calibrate_decr(void);
+>>>>> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+>>>>> index b67d93a609a2..409967713ca6 100644
+>>>>> --- a/arch/powerpc/kernel/time.c
+>>>>> +++ b/arch/powerpc/kernel/time.c
+>>>>> @@ -55,6 +55,7 @@
+>>>>>   #include <linux/sched/cputime.h>
+>>>>>   #include <linux/sched/clock.h>
+>>>>>   #include <linux/processor.h>
+>>>>> +#include <linux/mc146818rtc.h>
+>>>>
+>>>> I don't think that's the good place. It has no link to powerpc, it 
+>>>> is only by chance that it has the same name.
+>>>>
+>>>> As rtc_lock is defined in powerpc time.c, I think you should 
+>>>> declare it in powerpc asm/time.h
+>>>
+>>> My first thought was the same as yours. I tried to add declaration 
+>>> in powerpc asm/time.h, but got a compiling error:
+>>>
+>>> drivers/rtc/rtc-vr41xx.c:75:24: error: static declaration of 
+>>> ‘rtc_lock’ follows non-static declaration
+>>>  static DEFINE_SPINLOCK(rtc_lock);
+>>>
+>>> In file included from ./arch/powerpc/include/asm/delay.h:7:0,
+>>>                  from ./arch/powerpc/include/asm/io.h:33,
+>>>                  from ./include/linux/io.h:13,
+>>>                  from drivers/rtc/rtc-vr41xx.c:11:
+>>> ./arch/powerpc/include/asm/time.h:25:19: note: previous declaration 
+>>> of ‘rtc_lock’ was here
+>>>  extern spinlock_t rtc_lock;
+>>>
+>>> There's a conflict. Perhaps I can rename it in 
+>>> drivers/rtc/rtc-vr41xx.c.
+>>>
+>>>
+>>> But I find an existing declaration in linux/mc146818rtc.h and 
+>>> there's only one definition for 'rtc_lock' in powerpc.
+>>>
+>>> There's some includes of mc146818rtc.h in powperc. I wonder they 
+>>> point to the same thing. But I'm not very sure
+>>>
+>>> because the header's name looks a bit strange.
+>>
+>> How about including mc146818rtc.h in powperpc kernel/time.c? May I 
+>> have your opinions please?
+>>
+>
+> As I said, mc146818rtc.h is not related to powerpc, and if it works 
+> that's just chance, and there is no certainty that it will still work 
+> in the future.
+>
+> If you can't find a clean solution, it is better to leave the warning.
+
+OK. I see. Thanks for you relpy. I'll try to find some other better way.
+
+
+Thanks.
+
 
