@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7165346892
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FDF346896
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhCWTJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        id S233187AbhCWTKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbhCWTJK (ORCPT
+        with ESMTP id S233013AbhCWTJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:09:10 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9284C061574;
-        Tue, 23 Mar 2021 12:09:09 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 3D4EC1F455B7
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, ebiggers@google.com, drosen@google.com,
-        ebiggers@kernel.org, yuchao0@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v3 1/5] fs: unicode: Use strscpy() instead of strncpy()
-Organization: Collabora
-References: <20210323183201.812944-1-shreeya.patel@collabora.com>
-        <20210323183201.812944-2-shreeya.patel@collabora.com>
-Date:   Tue, 23 Mar 2021 15:09:05 -0400
-In-Reply-To: <20210323183201.812944-2-shreeya.patel@collabora.com> (Shreeya
-        Patel's message of "Wed, 24 Mar 2021 00:01:57 +0530")
-Message-ID: <87wntxd6we.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Tue, 23 Mar 2021 15:09:59 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28114C061574;
+        Tue, 23 Mar 2021 12:09:58 -0700 (PDT)
+Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lOmPa-0005x5-Uy; Tue, 23 Mar 2021 20:09:54 +0100
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        workflows@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>
+References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
+ <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
+ <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
+ <YFkSqIN90S4a3HiF@mit.edu>
+ <54aeb1f7-ffc7-74e1-a731-8970d44ff852@leemhuis.info>
+ <CAMwyc-Sqbkg=VxCWcfRazkGG7vkwEQ43m9Dov_Nawia5MN_oUQ@mail.gmail.com>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
+ focussed on issues/bugs and regressions
+Message-ID: <f5df1023-eabb-9f46-fe30-dd90851b65f9@leemhuis.info>
+Date:   Tue, 23 Mar 2021 20:09:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAMwyc-Sqbkg=VxCWcfRazkGG7vkwEQ43m9Dov_Nawia5MN_oUQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-BS
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616526598;f34c7120;
+X-HE-SMSGID: 1lOmPa-0005x5-Uy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shreeya Patel <shreeya.patel@collabora.com> writes:
+On 23.03.21 16:01, Konstantin Ryabitsev wrote:
+> On Tue, 23 Mar 2021 at 04:58, Thorsten Leemhuis <linux@leemhuis.info> wrote:
+>>>  If we can
+>>> actually get users to *read* it, I think it's going to save kernel
+>>> developers a huge amount of time and frustration.
+>> And users hopefully as well. But yes, making them read it is the
+>> problem. :-/
+> I've added a very visible admonition on the front of
+> bugzilla.kernel.org. Hopefully, it will help direct some users to
+> their distro bug trackers first.
 
-> Following warning was reported by Kernel Test Robot.
->
-> In function 'utf8_parse_version',
-> inlined from 'utf8_load' at fs/unicode/utf8mod.c:195:7:
->>> fs/unicode/utf8mod.c:175:2: warning: 'strncpy' specified bound 12 equals
-> destination size [-Wstringop-truncation]
-> 175 |  strncpy(version_string, version, sizeof(version_string));
->     |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> The -Wstringop-truncation warning highlights the unintended
-> uses of the strncpy function that truncate the terminating NULL
-> character from the source string.
-> Unlike strncpy(), strscpy() always null-terminates the destination string,
-> hence use strscpy() instead of strncpy().
->
-> Fixes: 9d53690f0d4e5 (unicode: implement higher level API for string handling)
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->
-> Changes in v3
->   - Return error if strscpy() returns value < 0
->
-> Changes in v2
->   - Resolve warning of -Wstringop-truncation reported by
->     kernel test robot.
->
->  fs/unicode/utf8-core.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
+Ahh, great, thx!
 
-Hi Shreeya,
+>>> I wonder if it might be useful to have a form which users could be
+>>> encouraged to fill out so that (a) the information is available in a
+>>> structured format so it's easier for developers to find the relevant
+>>> information, (b) so it is easier for programs to parse, for easier
+>>> reporting or indexing, and (c) as a nudge so that users remember to
+>>> report critical bits of information such as the hardware
+>>> configuration, the exact kernel version, which distribution userspace
+>>> was in use, etc.
+>>>
+>>> There could also be something in the text form which would make it
+>>> easier for lore.kernel.org searches to identify bug reports.  (e.g.,
+>>> "LINUX KERNEL BUG REPORTER TEMPLATE")
+>>
+>> Hmmm, yeah, I like that idea. I'll keep it in mind for later: I would
+>> prefer to get reporting-issues.rst officially blessed and
+>> reporting-bugs.rst gone before working on further enhancements.
+> 
+> To my knowledge, git project uses a tool for that:
+> https://git-scm.com/docs/git-bugreport
+> 
+> Theoretically, a similar tool could exist for the kernel.
 
-Thanks for fixing this.
+Wasn't aware of that tool, thx for pointing it out, will take a closer look.
 
-> diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
-> index dc25823bf..706f086bb 100644
-> --- a/fs/unicode/utf8-core.c
-> +++ b/fs/unicode/utf8-core.c
-> @@ -180,7 +180,10 @@ static int utf8_parse_version(const char *version, unsigned int *maj,
->  		{0, NULL}
->  	};
->  
-> -	strncpy(version_string, version, sizeof(version_string));
-> +	int ret = strscpy(version_string, version, sizeof(version_string));
-
-Usually, no spaces between variable declarations
-
-Other than that,
-
-Acked-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-
-> +
-> +	if (ret < 0)
-> +		return ret;
->  	if (match_token(version_string, token, args) != 1)
->  		return -EINVAL;
-
--- 
-Gabriel Krisman Bertazi
+Ciao, Thorsten
