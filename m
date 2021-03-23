@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BD434650D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE8934650F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233209AbhCWQ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
+        id S233279AbhCWQ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233062AbhCWQ0V (ORCPT
+        with ESMTP id S233152AbhCWQ0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:26:21 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D093C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id b127so3112793ybc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:21 -0700 (PDT)
+        Tue, 23 Mar 2021 12:26:23 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AC0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:23 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id f26so1525080qtq.17
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=h1kYRY8AwyqIQ4kqqiLp5b/6u7yV7ANW049MKdfQVdg=;
-        b=VdWRG2j7HcJm5QzBfljdapciRilN8CcW+XERsTmrqR+VQGLKfLF2WoSMukNI7OwrFn
-         j+36dqfjjthvxuoyUTJHAn9mHRcSgOvKg2RisLZnyMZWV7n/SlTcDU+cMZr3vh+wb3T+
-         9noHhOIqF4ip2WZlydmrsYRAsBCCwuochvPz97K5+dmWm9UpaCtkYlCH1OnuBeGQbTMg
-         7wr1FoVPCZqdhsWEqVnjlIxig62LtTxJilm4PPJmwIi4RS/3wDlZi3Lvhq3847voc4wZ
-         ncRw5k6hpnuBgjy86YY475rOUC8usJH5ynYT6sRcd966LLAvTRZs+VP+NjogEFXqcEjz
-         Y4ZA==
+        bh=XPRq1W/wuES2HJCP2WXgJHm10YoXyWPHE5kWVTMZXI4=;
+        b=Z2BuAR3KJ1S3vRUxnuAIr23jCEDLS3JCMZT54LNGkWacyQ5/tTVzFNsfhXV/iifyf0
+         UMYh70Gvk7dGWuubbFlPUZmxni1D3bn7Dbes24AkjDkZIhRl9yC61pAzMKtkgENZx4kq
+         P+PBjD9MqmAGYbHpeZ0eXb0f2gJQaARF2P4aw6hlq0gtwPIEulhe3cHJ+VyoIZZawZ6X
+         399Z71YgRFMGdFR4U7X7D4jxBeOCuP19SB37meORrEb9mLXtGlOBevosPF7Sp/OENwcK
+         uCCiXL/7rQjdgagMSw6Cd2396aEhXZvrYrO7PQ1RO0jnYXmc/nKMcko3Wd22ptqvvEdb
+         OK6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=h1kYRY8AwyqIQ4kqqiLp5b/6u7yV7ANW049MKdfQVdg=;
-        b=hSCwAJ1gNXjzOnOa9JUkTaJt1Yo95NSScBcv9p7cZ2mFm1DXHWFDwsja3FndlufNFY
-         TcHQXpK0tBWllwrXzgiNaeuBooNBD2iJsnA3A6QDpeMLxxEt6MzXxbyWEpyQ8OR6Mxez
-         kqA3nu7abmtfccggwTAGfmGEs4GQRJ6KxmDPFjC268gd5/HiFA/xet7nJ3BmI2C3pk7N
-         GhcDEvuDwSOrOKNyAWJC7N5w5yNKFKAFK6U9KasDgKrOWkhPgGok0BK727HB2XBTQLiB
-         CGuYzsOF1FrLEPZ/I2J23NJhrkP6H1pPIK5qXfmUZsHPCm/rx+167ktQwg0dh5NTdCN3
-         KLpg==
-X-Gm-Message-State: AOAM532LWIjVF6uX8cf1U3mFIpwpmRLO27PKxOCvkjfcLQpEWh4Hvh3G
-        ej4WnuVN/QTF/qiLWECdv5QekYCMOuNr
-X-Google-Smtp-Source: ABdhPJxgigry6SMhagXnsjKnsxQTkPt5Lf9jprFTGqnLzglZUnY6MQyhwG/04h+AIWvzxzdizmsrvyPW93sk
+        bh=XPRq1W/wuES2HJCP2WXgJHm10YoXyWPHE5kWVTMZXI4=;
+        b=KVxf5Q0vBAAIZkYO7xkrGu0WnwcygPZK+X1yXwZsbD++7R7kCK8VXJ6+rbI5bfRMR3
+         nNTXQKrqoThIcpzeZ6lpIpGdKoSm0gQuBcFbmGENLcCfiKuP0wdmxmJGn9LZCGMy2pRs
+         Pt9mFXzmIfQwM7YVxo1FLH+yOif/6e/ev9y5bJdjJ+TakFWsi+9sPmtJdOw02QnLAN8R
+         bbwqFUKPK8iBAkl+KRc4vJc9pLGUBXe2KlV4SPNqvQ3UsX4n0W0JRivUdKWME/XNULlM
+         whwW9Q5+1vsGfhfL5CRO0QudHM3QwqNpkhPWVY6EBWL0RTHeZTVhWiodNA27/n9qdY+t
+         tvxg==
+X-Gm-Message-State: AOAM5334ND1JGhn9jblj+7pBPvqSKHAxDi/CO1XgVB/lsN1UvulHzO8o
+        f89WgZljX2vO+jo6Q6/zxyAcYkKTm1ES
+X-Google-Smtp-Source: ABdhPJyGdN/dicqW1iEYZxwWdGQCRoITAp4US/P7dcpV3ycZ/tXYuvuxuUYPrt1uW3ocUDX9KfMawrcaeZ3W
 X-Received: from bg.sfo.corp.google.com ([2620:15c:8:10:b5cc:cacb:2875:ae6e])
- (user=bgeffon job=sendgmr) by 2002:a25:e0d7:: with SMTP id
- x206mr6741316ybg.159.1616516780251; Tue, 23 Mar 2021 09:26:20 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:26:09 -0700
+ (user=bgeffon job=sendgmr) by 2002:a05:6214:80a:: with SMTP id
+ df10mr6038618qvb.46.1616516782596; Tue, 23 Mar 2021 09:26:22 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:26:10 -0700
 In-Reply-To: <20210323162611.2398613-1-bgeffon@google.com>
-Message-Id: <20210323162611.2398613-2-bgeffon@google.com>
+Message-Id: <20210323162611.2398613-3-bgeffon@google.com>
 Mime-Version: 1.0
 References: <20210303175235.3308220-1-bgeffon@google.com> <20210323162611.2398613-1-bgeffon@google.com>
 X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH v4 2/3] Revert "mremap: don't allow MREMAP_DONTUNMAP on
- special_mappings and aio"
+Subject: [PATCH v4 3/3] selftests: Add a MREMAP_DONTUNMAP selftest for shmem
 From:   Brian Geffon <bgeffon@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Axel Rasmussen <axelrasmussen@google.com>,
@@ -76,108 +75,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit cd544fd1dc9293c6702fab6effa63dac1cc67e99.
-
-As discussed in [1] this commit was a no-op because the mapping type was
-checked in vma_to_resize before move_vma is ever called. This meant that
-vm_ops->mremap() would never be called on such mappings. Furthermore,
-we've since expanded support of MREMAP_DONTUNMAP to non-anonymous
-mappings, and these special mappings are still protected by the existing
-check of !VM_DONTEXPAND and !VM_PFNMAP which will result in a -EFAULT.
-
-1. https://lkml.org/lkml/2020/12/28/2340
+This test extends the current mremap tests to validate that
+the MREMAP_DONTUNMAP operation can be performed on shmem mappings.
 
 Signed-off-by: Brian Geffon <bgeffon@google.com>
-Acked-by: Hugh Dickins <hughd@google.com>
 ---
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
- fs/aio.c                                  | 5 +----
- include/linux/mm.h                        | 2 +-
- mm/mmap.c                                 | 6 +-----
- mm/mremap.c                               | 2 +-
- 5 files changed, 5 insertions(+), 12 deletions(-)
+ tools/testing/selftests/vm/mremap_dontunmap.c | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index e916646adc69..0daf2f1cf7a8 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -1458,7 +1458,7 @@ static int pseudo_lock_dev_release(struct inode *inode, struct file *filp)
- 	return 0;
+diff --git a/tools/testing/selftests/vm/mremap_dontunmap.c b/tools/testing/selftests/vm/mremap_dontunmap.c
+index 3a7b5ef0b0c6..f01dc4a85b0b 100644
+--- a/tools/testing/selftests/vm/mremap_dontunmap.c
++++ b/tools/testing/selftests/vm/mremap_dontunmap.c
+@@ -127,6 +127,57 @@ static void mremap_dontunmap_simple()
+ 	       "unable to unmap source mapping");
  }
  
--static int pseudo_lock_dev_mremap(struct vm_area_struct *area, unsigned long flags)
-+static int pseudo_lock_dev_mremap(struct vm_area_struct *area)
- {
- 	/* Not supported */
- 	return -EINVAL;
-diff --git a/fs/aio.c b/fs/aio.c
-index 1f32da13d39e..76ce0cc3ee4e 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -323,16 +323,13 @@ static void aio_free_ring(struct kioctx *ctx)
- 	}
- }
++// This test validates that MREMAP_DONTUNMAP on a shared mapping works as expected.
++static void mremap_dontunmap_simple_shmem()
++{
++	unsigned long num_pages = 5;
++
++	int mem_fd = memfd_create("memfd", MFD_CLOEXEC);
++	BUG_ON(mem_fd < 0, "memfd_create");
++
++	BUG_ON(ftruncate(mem_fd, num_pages * page_size) < 0,
++			"ftruncate");
++
++	void *source_mapping =
++	    mmap(NULL, num_pages * page_size, PROT_READ | PROT_WRITE,
++		 MAP_FILE | MAP_SHARED, mem_fd, 0);
++	BUG_ON(source_mapping == MAP_FAILED, "mmap");
++
++	BUG_ON(close(mem_fd) < 0, "close");
++
++	memset(source_mapping, 'a', num_pages * page_size);
++
++	// Try to just move the whole mapping anywhere (not fixed).
++	void *dest_mapping =
++	    mremap(source_mapping, num_pages * page_size, num_pages * page_size,
++		   MREMAP_DONTUNMAP | MREMAP_MAYMOVE, NULL);
++	if (dest_mapping == MAP_FAILED && errno == EINVAL) {
++		// Old kernel which doesn't support MREMAP_DONTUNMAP on shmem.
++		BUG_ON(munmap(source_mapping, num_pages * page_size) == -1,
++			"unable to unmap source mapping");
++		return;
++	}
++
++	BUG_ON(dest_mapping == MAP_FAILED, "mremap");
++
++	// Validate that the pages have been moved, we know they were moved if
++	// the dest_mapping contains a's.
++	BUG_ON(check_region_contains_byte
++	       (dest_mapping, num_pages * page_size, 'a') != 0,
++	       "pages did not migrate");
++
++	// Because the region is backed by shmem, we will actually see the same
++	// memory at the source location still.
++	BUG_ON(check_region_contains_byte
++	       (source_mapping, num_pages * page_size, 'a') != 0,
++	       "source should have no ptes");
++
++	BUG_ON(munmap(dest_mapping, num_pages * page_size) == -1,
++	       "unable to unmap destination mapping");
++	BUG_ON(munmap(source_mapping, num_pages * page_size) == -1,
++	       "unable to unmap source mapping");
++}
++
+ // This test validates MREMAP_DONTUNMAP will move page tables to a specific
+ // destination using MREMAP_FIXED, also while validating that the source
+ // remains intact.
+@@ -300,6 +351,7 @@ int main(void)
+ 	BUG_ON(page_buffer == MAP_FAILED, "unable to mmap a page.");
  
--static int aio_ring_mremap(struct vm_area_struct *vma, unsigned long flags)
-+static int aio_ring_mremap(struct vm_area_struct *vma)
- {
- 	struct file *file = vma->vm_file;
- 	struct mm_struct *mm = vma->vm_mm;
- 	struct kioctx_table *table;
- 	int i, res = -EINVAL;
- 
--	if (flags & MREMAP_DONTUNMAP)
--		return -EINVAL;
--
- 	spin_lock(&mm->ioctx_lock);
- 	rcu_read_lock();
- 	table = rcu_dereference(mm->ioctx_table);
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 64a71bf20536..ecdc6e8dc5af 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -570,7 +570,7 @@ struct vm_operations_struct {
- 	void (*close)(struct vm_area_struct * area);
- 	/* Called any time before splitting to check if it's allowed */
- 	int (*may_split)(struct vm_area_struct *area, unsigned long addr);
--	int (*mremap)(struct vm_area_struct *area, unsigned long flags);
-+	int (*mremap)(struct vm_area_struct *area);
- 	/*
- 	 * Called by mprotect() to make driver-specific permission
- 	 * checks before mprotect() is finalised.   The VMA must not
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 3f287599a7a3..9d7651e4e1fe 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3403,14 +3403,10 @@ static const char *special_mapping_name(struct vm_area_struct *vma)
- 	return ((struct vm_special_mapping *)vma->vm_private_data)->name;
- }
- 
--static int special_mapping_mremap(struct vm_area_struct *new_vma,
--				  unsigned long flags)
-+static int special_mapping_mremap(struct vm_area_struct *new_vma)
- {
- 	struct vm_special_mapping *sm = new_vma->vm_private_data;
- 
--	if (flags & MREMAP_DONTUNMAP)
--		return -EINVAL;
--
- 	if (WARN_ON_ONCE(current->mm != new_vma->vm_mm))
- 		return -EFAULT;
- 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index db5b8b28c2dd..d22629ff8f3c 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -545,7 +545,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
- 	if (moved_len < old_len) {
- 		err = -ENOMEM;
- 	} else if (vma->vm_ops && vma->vm_ops->mremap) {
--		err = vma->vm_ops->mremap(new_vma, flags);
-+		err = vma->vm_ops->mremap(new_vma);
- 	}
- 
- 	if (unlikely(err)) {
+ 	mremap_dontunmap_simple();
++	mremap_dontunmap_simple_shmem();
+ 	mremap_dontunmap_simple_fixed();
+ 	mremap_dontunmap_partial_mapping();
+ 	mremap_dontunmap_partial_mapping_overwrite();
 -- 
 2.31.0.rc2.261.g7f71774620-goog
 
