@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05F5345D6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CCE345D79
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhCWLyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:54:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48385 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229760AbhCWLyH (ORCPT
+        id S230012AbhCWL4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:56:42 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:45476 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCWL4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:54:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616500446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DfTZ5dVZVKYQZ21C4WLUSXr1iMf8RN9mZGDZX59otA4=;
-        b=ZAXbzN1DbrA5mzaXkoQ+kSZ2UbjDLAtRzoLmp6lp9nMKOzsOuPubEpJVgWVnfAtJa5ldnf
-        QeXjStGQBshOvN+eSvAagWepYTgzaKVdwNPXulZLz1wgiWKPzAKsF+3Yir4+HORbj0o7FI
-        qIoOTgrd2ZbYOB/e8BGhIQP3ICqaZaM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-8lNYiJ20P6-kMKuidgbFFg-1; Tue, 23 Mar 2021 07:54:03 -0400
-X-MC-Unique: 8lNYiJ20P6-kMKuidgbFFg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 677F780006E;
-        Tue, 23 Mar 2021 11:54:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1ED27179B3;
-        Tue, 23 Mar 2021 11:53:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 3/3] afs: Use wait_on_page_writeback_killable
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        dhowells@redhat.com,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        Tue, 23 Mar 2021 07:56:34 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.182])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id A2ADD400339;
+        Tue, 23 Mar 2021 19:56:31 +0800 (CST)
+From:   zhouchuangao <zhouchuangao@vivo.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
         linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 11:53:57 +0000
-Message-ID: <161650043737.2445805.16573960069907170426.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161650040278.2445805.7652115256944270457.stgit@warthog.procyon.org.uk>
-References: <161650040278.2445805.7652115256944270457.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Cc:     zhouchuangao <zhouchuangao@vivo.com>
+Subject: [PATCH v2] kernel/signal: Modify the comment of function check_kill_permission()
+Date:   Tue, 23 Mar 2021 04:56:20 -0700
+Message-Id: <1616500582-84709-1-git-send-email-zhouchuangao@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTk1CTU4eHxlNHk1MVkpNSk1OS0tOQkpCSE9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSo6KTo6Pz8RFjkaSzdLGQg*
+        Eg0KCk5VSlVKTUpNTktLTkJJSUJOVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
+        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlLTUM3Bg++
+X-HM-Tid: 0a785ef18cf9d991kuwsa2add400339
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+Maybe it's easier for us to understand the function of
+check_kill_permission().
 
-Open-coding this function meant it missed out on the recent bugfix
-for waiters being woken by a delayed wake event from a previous
-instantiation of the page.
-
-[DH: Changed the patch to use vmf->page rather than variable page which
- doesn't exist yet upstream]
-
-Fixes: 1cf7a1518aef ("afs: Implement shared-writeable mmap")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-mm@kvack.org
-Link: https://lore.kernel.org/r/20210320054104.1300774-4-willy@infradead.org
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
 ---
+ kernel/signal.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- fs/afs/write.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index c9195fc67fd8..eb737ed63afb 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -851,8 +851,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	fscache_wait_on_page_write(vnode->cache, vmf->page);
- #endif
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f2a1b89..e6b6277 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -823,8 +823,10 @@ static bool kill_ok_by_cred(struct task_struct *t)
+ }
  
--	if (PageWriteback(vmf->page) &&
--	    wait_on_page_bit_killable(vmf->page, PG_writeback) < 0)
-+	if (wait_on_page_writeback_killable(vmf->page))
- 		return VM_FAULT_RETRY;
- 
- 	if (lock_page_killable(vmf->page) < 0)
-
+ /*
+- * Bad permissions for sending the signal
+- * - the caller must hold the RCU read lock
++ * Check whether the caller has permissions to send the signal.
++ * - The caller must hold the RCU read lock;
++ * - Return 0 means permission is allowed, otherwise returns the
++ *   corresponding error number.
+  */
+ static int check_kill_permission(int sig, struct kernel_siginfo *info,
+ 				 struct task_struct *t)
+-- 
+2.7.4
 
