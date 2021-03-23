@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFC2346212
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDE5346246
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhCWO5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
+        id S232588AbhCWPFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbhCWO4w (ORCPT
+        with ESMTP id S232578AbhCWPEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:56:52 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C09C061574;
-        Tue, 23 Mar 2021 07:56:51 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id v2so11959394pgk.11;
-        Tue, 23 Mar 2021 07:56:51 -0700 (PDT)
+        Tue, 23 Mar 2021 11:04:36 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D72C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:04:35 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c17so7690980pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ssQ3rdEV5yf/YeyNyTJdaflOgBWGr685A+V9rQo8a0w=;
-        b=e0HOuAUcXtHN2np3pKQ/263Tt0FqEON1Xe0/7tRPTNUxSuPV+Y3Bw4ECQPoljtrjic
-         w4NjlP4dkKPQS4kvGGF0ReSgkcEQXCvZXGBVklVSlg+lgBDf9wUlOzIqt8+CgZiKHK6J
-         Yk04xXgSN4ZZoAY2e9pTWVdHz814Mrgo6gcb69lYzVpstRMQL6un2L8Wrz4+MZR317s6
-         dNFv+w2tVlG/p6RLHsRlF9IWm3C9ow0uVTnR3dHSsmxD4oqEnuzogtMGd8nztKZdIJpI
-         XCN9Wg0GBQJP245+9Jq9Qk/kBTKehidb379o1VgrewZsMxNSsR/NmXyv0OYS+dawrTjm
-         ZDDQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MA6xbw4+r8K+wq0zQny62MlNgzy94Yz5IxA7fznNkvI=;
+        b=bjsLkDqYNs6Nimr2YkIoa0MqhhaWRwuXycLjgACzZ23PSATVqBtlI2HfmXoU9Pfzfc
+         1wC9SYV5Rz1O3qgwI5WbdJFPnbYg7W1Sf+net5S8GinMRw5Pmyvt8WrHZgvR94FqpHRR
+         Ha1u2jwXPjsEeaf3EVVWkZUssMKFJto3S99CknnBU50iccwrUU88WJ9XDZcJUP5RFtx1
+         lQpVZdIiNlcSyIE4kcHqIE70/GzlmPSCANHYTTm0+qeLzUoFRNosqlLZ3nhOvizRxfp8
+         NXC5KAR8vUspWHG9Zwh8DIQl9o2havE0KnYLXRFbELlZ7G25gLmgf5WKnpRprqCQK7pp
+         c7iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ssQ3rdEV5yf/YeyNyTJdaflOgBWGr685A+V9rQo8a0w=;
-        b=X6A6gKAucoVfSozFsfiq5uCL4kctZBFzo/7kOXjXOM68H04ssgDkjZk1+7BpyxaZCG
-         kg0RILCuding1GJtha6/4ArIVsCL4Lx3CVM8X1suyg8zcby8rSpqwEsROo2SM9xS7aPF
-         R+gf8FnSYrXiDgzrnnc0aQ6rHvTEhlr9cKsH79dWxPTnuAGPVXDxAkl5PNeJvcBKt05V
-         m8tc0p2964acXTxcO9GO0FaykOU755QSm5RO6uZm8qN/RuWv2jjQ1AZw+00WllB1Knbv
-         C92W+v9yivBdFoQ5JeHKyOEP3reU2eP4oiJz2ox15SQ1gn36/l32xAPS+EZbzK3RZm14
-         nGpA==
-X-Gm-Message-State: AOAM530FR0EoQGrr0MCMOGV6JbyrmKhqzqjXwdkRomRVZAnrNh7sdqSz
-        7Oo1OHJnen3Qrpsctq+n5SA=
-X-Google-Smtp-Source: ABdhPJzKtqinvjOAfdWt8juPwVzv+UN8SYu52AL0AubTu7Jtb9zWITgPxd7JBnFIrlrOvf3Nx0n+QQ==
-X-Received: by 2002:a17:902:223:b029:e6:e989:964f with SMTP id 32-20020a1709020223b02900e6e989964fmr6086364plc.82.1616511411386;
-        Tue, 23 Mar 2021 07:56:51 -0700 (PDT)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id o18sm2891816pji.10.2021.03.23.07.56.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 07:56:50 -0700 (PDT)
-Subject: Re: [PATCH V2 RESEND 4/4] PM / devfreq: imx8m-ddrc: remove
- imx8m_ddrc_get_dev_status
-To:     Dong Aisheng <aisheng.dong@nxp.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, abel.vesa@nxp.com
-References: <1616484011-26702-1-git-send-email-aisheng.dong@nxp.com>
- <1616484011-26702-5-git-send-email-aisheng.dong@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <4f0cb67c-7f68-580a-9fbe-43b02d74c8a0@gmail.com>
-Date:   Tue, 23 Mar 2021 23:56:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=MA6xbw4+r8K+wq0zQny62MlNgzy94Yz5IxA7fznNkvI=;
+        b=GSxhs7hjE5Q7Yp0m01ny6I0Z94uv4e4bGRUh9cr0HeDbeSlImv8mHYqri12GA8SLdf
+         dXvCweQQxrWbeTcHGQDBH7IWOUenMHgtPpnnz6ERWfWIMUu9PUUIcoHI3VIsasnltsJH
+         vSq5LCPhOW2RGPH45un5zsAvJO7ENMQsZqQC5HVFK4d48F4yQl3t5CorcTs9+AHAgqtt
+         5gZQWCWRMB4NE3c2hy3RQps5dgisf+ZreRYBTD0ZrOgPLS0e1ApfqS+HgC1lDbQZ4IG4
+         1wVeFj5RchuZCFQdn9rTtH5ZuB9jAL00uEn9xv3HIfLTzwXsWX8FSHSFmRnb4QFq/OFW
+         pF4A==
+X-Gm-Message-State: AOAM533Z+NhGHuzf+MTTmA32NLce28IyseFNiIdWEz/mWwas/LOilLaA
+        +YXNElyMJxRONHujVv4ghjigsInLMjenfcN7
+X-Google-Smtp-Source: ABdhPJzwv9I7nq+ty6tFP/gu93RhNIET/zLYJFLrYl9HVXoilh9y17OjemBwBDL4sl71xlthRzQIMQ==
+X-Received: by 2002:a17:902:bcc8:b029:e6:f010:aa15 with SMTP id o8-20020a170902bcc8b02900e6f010aa15mr4950803pls.55.1616511874786;
+        Tue, 23 Mar 2021 08:04:34 -0700 (PDT)
+Received: from localhost.bytedance.net ([139.177.225.234])
+        by smtp.gmail.com with ESMTPSA id 132sm17234595pfu.158.2021.03.23.08.04.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Mar 2021 08:04:34 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vdavydov.dev@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: memcontrol: fix memsw uncharge for root_mem_cgroup
+Date:   Tue, 23 Mar 2021 22:56:53 +0800
+Message-Id: <20210323145653.25684-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <1616484011-26702-5-git-send-email-aisheng.dong@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 3. 23. 오후 4:20, Dong Aisheng wrote:
-> Current driver actually does not support simple ondemand governor
-> as it's unable to provide device load information. So removing
-> the unnecessary callback to avoid confusing.
-> Right now the driver is using userspace governor by default.
-> 
-> polling_ms was also dropped as it's not needed for non-ondemand
-> governor.
-> 
-> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> ---
->   drivers/devfreq/imx8m-ddrc.c | 14 --------------
->   1 file changed, 14 deletions(-)
-> 
-> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
-> index bc82d3653bff..ecb9375aa877 100644
-> --- a/drivers/devfreq/imx8m-ddrc.c
-> +++ b/drivers/devfreq/imx8m-ddrc.c
-> @@ -280,18 +280,6 @@ static int imx8m_ddrc_get_cur_freq(struct device *dev, unsigned long *freq)
->   	return 0;
->   }
->   
-> -static int imx8m_ddrc_get_dev_status(struct device *dev,
-> -				     struct devfreq_dev_status *stat)
-> -{
-> -	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
-> -
-> -	stat->busy_time = 0;
-> -	stat->total_time = 0;
-> -	stat->current_frequency = clk_get_rate(priv->dram_core);
-> -
-> -	return 0;
-> -}
-> -
->   static int imx8m_ddrc_init_freq_info(struct device *dev)
->   {
->   	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
-> @@ -429,9 +417,7 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
->   	if (ret < 0)
->   		goto err;
->   
-> -	priv->profile.polling_ms = 1000;
->   	priv->profile.target = imx8m_ddrc_target;
-> -	priv->profile.get_dev_status = imx8m_ddrc_get_dev_status;
->   	priv->profile.exit = imx8m_ddrc_exit;
->   	priv->profile.get_cur_freq = imx8m_ddrc_get_cur_freq;
->   	priv->profile.initial_freq = clk_get_rate(priv->dram_core);
-> 
+The pages aren't accounted at the root level, so we cannot uncharge the
+page to the memsw counter for the root memcg. Fix this.
 
-Applied it. Thanks.
+Fixes: 1f47b61fb407 ("mm: memcontrol: fix swap counter leak on swapout from offline cgroup")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/memcontrol.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 533b4b31b464..7d765a106684 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7155,7 +7155,8 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 	if (!cgroup_memory_noswap && memcg != swap_memcg) {
+ 		if (!mem_cgroup_is_root(swap_memcg))
+ 			page_counter_charge(&swap_memcg->memsw, nr_entries);
+-		page_counter_uncharge(&memcg->memsw, nr_entries);
++		if (!mem_cgroup_is_root(memcg))
++			page_counter_uncharge(&memcg->memsw, nr_entries);
+ 	}
+ 
+ 	/*
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.11.0
+
