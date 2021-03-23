@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F049B345923
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A706634594D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhCWH6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:58:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45384 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229437AbhCWH5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:57:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616486273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=m+xTnYW1KWqoinuxGp7EGKTcA3wA3snicXhoUVTBaLY=;
-        b=gBI7u2txerAlccab8XBKnv33BbpVCouLB++S/f+B0QjRW5IiiVv71zU/PRXmDO98S/q+Ji
-        0nL/hGlX1rc1pdUc4EAME83m79HAcLyE5NnE8M+f32cTcreLVwooL4ljboejCZxirnWUDx
-        rlnb8xLk9dADwrdKE9+UHE1cLuzBLPc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 86F56AC1D;
-        Tue, 23 Mar 2021 07:57:53 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:57:46 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 5/8] hugetlb: change free_pool_huge_page to
- remove_pool_huge_page
-Message-ID: <YFmfegQjCKuY05jy@dhcp22.suse.cz>
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210319224209.150047-6-mike.kravetz@oracle.com>
- <YFiqJSGjMMG3diWp@dhcp22.suse.cz>
- <fd723ea8-da7c-bd59-8d8a-e506be1b3af5@oracle.com>
+        id S229670AbhCWIJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:09:00 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:60038 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhCWIIi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 04:08:38 -0400
+X-Greylist: delayed 516 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Mar 2021 04:08:37 EDT
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id D1B4D44A022C;
+        Tue, 23 Mar 2021 08:59:59 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fd723ea8-da7c-bd59-8d8a-e506be1b3af5@oracle.com>
+Date:   Tue, 23 Mar 2021 08:59:59 +0100
+From:   robin <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/17] auxdisplay: ht16k33: Use HT16K33_FB_SIZE in
+ ht16k33_initialize()
+Reply-To: robin@protonic.nl
+In-Reply-To: <20210322144848.1065067-10-geert@linux-m68k.org>
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-10-geert@linux-m68k.org>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <7e5eb8c54d7dd196ea071b7f9c31c2ce@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22-03-21 16:28:07, Mike Kravetz wrote:
-> On 3/22/21 7:31 AM, Michal Hocko wrote:
-> > On Fri 19-03-21 15:42:06, Mike Kravetz wrote:
-> > [...]
-> >> @@ -2090,9 +2084,15 @@ static void return_unused_surplus_pages(struct hstate *h,
-> >>  	while (nr_pages--) {
-> >>  		h->resv_huge_pages--;
-> >>  		unused_resv_pages--;
-> >> -		if (!free_pool_huge_page(h, &node_states[N_MEMORY], 1))
-> >> +		page = remove_pool_huge_page(h, &node_states[N_MEMORY], 1);
-> >> +		if (!page)
-> >>  			goto out;
-> >> -		cond_resched_lock(&hugetlb_lock);
-> >> +
-> >> +		/* Drop lock and free page to buddy as it could sleep */
-> >> +		spin_unlock(&hugetlb_lock);
-> >> +		update_and_free_page(h, page);
-> >> +		cond_resched();
-> >> +		spin_lock(&hugetlb_lock);
-> >>  	}
-> >>  
-> >>  out:
-> > 
-> > This is likely a matter of taste but the repeated pattern of unlock,
-> > update_and_free_page, cond_resched and lock seems rather clumsy.
-> > Would it be slightly better/nicer to remove_pool_huge_page into a
-> > list_head under a single lock invocation and then free up the whole lot
-> > after the lock is dropped?
+On 2021-03-22 15:48, Geert Uytterhoeven wrote:
+> Use the existing HT16K33_FB_SIZE definition instead of open-coding the
+> same calculation using an hardcoded value.
+> While at it, restore reverse Christmas tree variable declaration order.
 > 
-> Yes, we can certainly do that.
-> One downside I see is that the list can contain a bunch of pages not
-> accounted for in hugetlb and not free in buddy (or cma).  Ideally, we
-> would want to keep those in sync if possible.  Also, the commit that
-> added the cond_resched talked about freeing up 12 TB worth of huge pages
-> and it holding the lock for 150 seconds.  The new code is not holding
-> the lock while calling free to buddy, but I wonder how long it would
-> take to remove 12 TB worth of huge pages and add them to a separate list?
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  drivers/auxdisplay/ht16k33.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/auxdisplay/ht16k33.c 
+> b/drivers/auxdisplay/ht16k33.c
+> index 1e69cc6d21a0dca2..6d39f12054618fa5 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -168,9 +168,9 @@ static void ht16k33_fb_update(struct work_struct 
+> *work)
+> 
+>  static int ht16k33_initialize(struct ht16k33_priv *priv)
+>  {
+> +	uint8_t data[HT16K33_FB_SIZE];
+>  	uint8_t byte;
+>  	int err;
+> -	uint8_t data[HT16K33_MATRIX_LED_MAX_COLS * 2];
+> 
+>  	/* Clear RAM (8 * 16 bits) */
+>  	memset(data, 0, sizeof(data));
 
-Well, the remove_pool_huge_page is just a accounting part and that
-should be pretty invisible even when the number of pages is large. The
-lockless nature (from hugetlb POV) of the final page release is the
-heavy weight operation and whether you do it in chunks or in a single go
-(with cond_resched) should be visible either. We already do the same
-thing when uncharging memcg pages (mem_cgroup_uncharge_list). 
-
-So I would agree with you that this would be a much bigger problem if
-both the hugetlb and freeing path were equally heavy weight and the
-delay between first pages uncaccounted and freed would be noticeable.
-
-But I do not want to push for this. I just hated the hugetlb_lock dances
-as this is ugly and repetitive pattern.
--- 
-Michal Hocko
-SUSE Labs
+Acked-by: Robin van der Gracht <robin@protonic.nl>
