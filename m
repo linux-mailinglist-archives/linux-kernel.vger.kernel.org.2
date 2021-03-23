@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674BB34617E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D83346177
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhCWObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:31:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33876 "EHLO mail.kernel.org"
+        id S232253AbhCWO3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:29:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:47334 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232186AbhCWObM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:31:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D98026191F;
-        Tue, 23 Mar 2021 14:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616509871;
-        bh=D6pTLSJCRpfh2oXokGcyBU20V0xCNExvFA1A+tFPPuE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eIO7RJw8c8tfFbHT9KHjShbcnOxPcjAURhHBpr9GhD/BN6Jdyg+4HY7krtO/GxRxD
-         CiVDQIoc7GESO2nU9tBEvgz6c6feSYlgv6wBl+qDWHL5upVUDCHvSzLmDBGYzG/3wK
-         ke1xOyaCDFRIMXTIsJLd/JNQnKS8xiQqnRxgewYjrKV85+19J0JEPvuLnt2m2DmCts
-         lOjmNvlVB9Gq4f7vZqoywVkHVoKf7mTfxngsXu0+OSrsc2JvEk1xZnMf8ILXrZWixK
-         OVH7DTpcJuGYfpMZXBx98+89DKjTGuRmav23JfkgQnQ978DVatxbG2U45kWQ11XhD6
-         8RVqrBkCMSqWA==
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, rostedt@goodmis.org, jpoimboe@redhat.com,
-        jbaron@akamai.com, ardb@kernel.org, sumit.garg@linaro.org,
-        oliver.sang@intel.com, jarkko@kernel.org,
-        linux-kernel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>
-Subject: [PATCH] module: treat exit sections the same as init sections when !CONFIG_MODULE_UNLOAD
-Date:   Tue, 23 Mar 2021 15:27:56 +0100
-Message-Id: <20210323142756.11443-1-jeyu@kernel.org>
-X-Mailer: git-send-email 2.30.1
+        id S230359AbhCWO2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:28:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6587D6E;
+        Tue, 23 Mar 2021 07:28:44 -0700 (PDT)
+Received: from [10.57.50.37] (unknown [10.57.50.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 982083F719;
+        Tue, 23 Mar 2021 07:28:43 -0700 (PDT)
+Subject: Re: [PATCH 2/3] arm64: lib: improve copy performance when size is ge
+ 128 bytes
+To:     Will Deacon <will@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, guohanjun@huawei.com
+References: <20210323073432.3422227-1-yangyingliang@huawei.com>
+ <20210323073432.3422227-3-yangyingliang@huawei.com>
+ <03ac41af-c433-cd66-8195-afbf9c49554c@arm.com>
+ <20210323133217.GA11802@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <aadf2619-4282-f9f3-359c-bb166830f488@arm.com>
+Date:   Tue, 23 Mar 2021 14:28:37 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323133217.GA11802@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dynamic code patching (alternatives, jump_label and static_call) can
-have sites in __exit code, even if __exit is never executed. Therefore
-__exit must be present at runtime, at least for as long as __init code
-is.
+On 2021-03-23 13:32, Will Deacon wrote:
+> On Tue, Mar 23, 2021 at 12:08:56PM +0000, Robin Murphy wrote:
+>> On 2021-03-23 07:34, Yang Yingliang wrote:
+>>> When copy over 128 bytes, src/dst is added after
+>>> each ldp/stp instruction, it will cost more time.
+>>> To improve this, we only add src/dst after load
+>>> or store 64 bytes.
+>>
+>> This breaks the required behaviour for copy_*_user(), since the fault
+>> handler expects the base address to be up-to-date at all times. Say you're
+>> copying 128 bytes and fault on the 4th store, it should return 80 bytes not
+>> copied; the code below would return 128 bytes not copied, even though 48
+>> bytes have actually been written to the destination.
+>>
+>> We've had a couple of tries at updating this code (because the whole
+>> template is frankly a bit terrible, and a long way from the well-optimised
+>> code it was derived from), but getting the fault-handling behaviour right
+>> without making the handler itself ludicrously complex has proven tricky. And
+>> then it got bumped down the priority list while the uaccess behaviour in
+>> general was in flux - now that the dust has largely settled on that I should
+>> probably try to find time to pick this up again...
+> 
+> I think the v5 from Oli was pretty close, but it didn't get any review:
+> 
+> https://lore.kernel.org/r/20200914151800.2270-1-oli.swede@arm.com
+> 
+> he also included tests:
+> 
+> https://lore.kernel.org/r/20200916104636.19172-1-oli.swede@arm.com
+> 
+> It would be great if you or somebody else has time to revive those!
 
-Additionally, for jump_label and static_call, the __exit sites must also
-identify as within_module_init(), such that the infrastructure is aware
-to never touch them after module init -- alternatives are only ran once
-at init and hence don't have this particular constraint.
+Yeah, we still have a ticket open for it. Since the uaccess overhaul has 
+pretty much killed off any remaining value in the template idea, I might 
+have a quick go at spinning a series to just update memcpy() and the 
+other library routines to their shiny new versions, then come back and 
+work on some dedicated usercopy routines built around LDTR/STTR (and the 
+desired fault behaviour) as a follow-up.
 
-By making __exit identify as __init for !MODULE_UNLOAD, the above is
-satisfied.
+(I was also holding out hope for copy_in_user() to disappear if we wait 
+long enough, but apparently not yet...)
 
-So the section ordering should look like the following when
-!CONFIG_MODULE_UNLOAD, with the .exit sections moved to the init region of
-the module.
-
-Core section allocation order:
- 	.text
- 	.rodata
- 	__ksymtab_gpl
- 	__ksymtab_strings
- 	.note.* sections
- 	.bss
- 	.data
- 	.gnu.linkonce.this_module
- Init section allocation order:
- 	.init.text
- 	.exit.text
- 	.symtab
- 	.strtab
-
-[jeyu: thanks to Peter Zijlstra for most of the changelog]
-
-Link: https://lore.kernel.org/lkml/YFiuphGw0RKehWsQ@gunter/
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
----
-
-Do you want to take this patch with the other static_call patches? Or
-should I take this through modules-next?
-
- kernel/module.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 30479355ab85..173a09175511 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2802,7 +2802,11 @@ void * __weak module_alloc(unsigned long size)
- 
- bool __weak module_init_section(const char *name)
- {
-+#ifndef CONFIG_MODULE_UNLOAD
-+	return strstarts(name, ".init") || module_exit_section(name);
-+#else
- 	return strstarts(name, ".init");
-+#endif
- }
- 
- bool __weak module_exit_section(const char *name)
-@@ -3116,11 +3120,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
- 		 */
- 		shdr->sh_addr = (size_t)info->hdr + shdr->sh_offset;
- 
--#ifndef CONFIG_MODULE_UNLOAD
--		/* Don't load .exit sections */
--		if (module_exit_section(info->secstrings+shdr->sh_name))
--			shdr->sh_flags &= ~(unsigned long)SHF_ALLOC;
--#endif
- 	}
- 
- 	/* Track but don't keep modinfo and version sections. */
--- 
-2.30.1
-
+Robin.
