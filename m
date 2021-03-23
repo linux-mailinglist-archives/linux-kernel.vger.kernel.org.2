@@ -2,113 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11CE34659E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C9634659F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhCWQpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbhCWQpM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:45:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94C0C061574;
-        Tue, 23 Mar 2021 09:45:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=zzu/xcn7sghWXmeoDI7Yw3IsP/Ljt8YacCwRazpIVIs=; b=FDBnzXOE4hpdcNK/uHISdHlTJL
-        pE5bGCV+YPuJzn5Q0N336UFsRNRyt04ZEaeH4nomMbZFpqNXuYglGSmQmrqkd6siRDQEvi8oaKZOq
-        OOk1zHPQoVuNA/AFJe6vzHkPxT21pKEzqX7IT8G559O61wUlqjGsil9VzzylhjwS2+nCogn/GrdUW
-        NBM+rylskcYIC4aw80702/sRWJL4p/r9DdHJpZZ82V7+/uTAG442ynAPZJLyEz6edmTfEiv89QPVp
-        Uotuxnt4XDlGObVV5DCbJ07ZRRVD0yCaOxAM1x4KoGBjrMr0GMBhv403zWmEXs4/3ZDFi3FGebj1f
-        uT9HE14A==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOk87-00AIWN-H4; Tue, 23 Mar 2021 16:44:04 +0000
-Subject: Re: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <28d3a339-6210-ffd2-950f-ea5340ac23b7@infradead.org>
-Date:   Tue, 23 Mar 2021 09:43:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233341AbhCWQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:46:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233317AbhCWQpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:45:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3A8E61992;
+        Tue, 23 Mar 2021 16:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616517948;
+        bh=PsikL/oh28lMsUHE2XYeQLegL588LmV4SQccoHleLD0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UegLFAeh26fLIPQxGxkz5c1ZjqQaYXNCIB6G2GN77qSsb4o9GeiP8Qi2kD9v4tAQm
+         DlnTqXF3e9IYJ0B+9tabF1aAiHibzKxiEuryZ+ik7XBe9SuGnPqwT6G/pREQrKxTFo
+         MOhkOxQalBybbXecCXmjiFIu8sj9dAMF2D4w+aYGLX3ATUxvFs/BIeHsPkG4PxQb2E
+         I14fFD4b56Fu7bNd/+aEVn2j3BXe8cvdohs/Am38I4jeyxUmL5Wh0i5McNttNszGQt
+         DfU9cHAfyfdeMpdeIWtJSYMygUzfNY2CMbrSDz8XoJ+bZzOsJjRB6hBqzfalxBadbj
+         3dvIxwpxdMLDQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 922F9352261C; Tue, 23 Mar 2021 09:45:48 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:45:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
+ Tiny RCU grace periods
+Message-ID: <20210323164548.GZ2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
+ <20210304002632.23870-2-paulmck@kernel.org>
+ <20210321222855.GA863290@lothringen>
+ <20210322154744.GM2696@paulmck-ThinkPad-P72>
+ <20210322190035.GA874833@lothringen>
+ <20210322194522.GO2696@paulmck-ThinkPad-P72>
+ <20210323140207.GA890343@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323140207.GA890343@lothringen>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 1:35 AM, Tianjia Zhang wrote:
-> The kernel module signature supports the option to use the SM3
-> secure hash (OSCCA GM/T 0004-2012 SM3).
+On Tue, Mar 23, 2021 at 03:02:07PM +0100, Frederic Weisbecker wrote:
+> On Mon, Mar 22, 2021 at 12:45:22PM -0700, Paul E. McKenney wrote:
+> > On Mon, Mar 22, 2021 at 08:00:35PM +0100, Frederic Weisbecker wrote:
+> > > But poll_state_synchronize_rcu() checks that the gp_num has changed,
+> > > which is not needed for cond_synchronize_rcu() since this it is
+> > > only allowed to be called from a QS.
+> > 
+> > Good catch, and thank you!  Back to a single might_sleep() it is!
 > 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->  Documentation/admin-guide/module-signing.rst | 5 +++--
->  crypto/asymmetric_keys/pkcs7_parser.c        | 7 +++++++
->  init/Kconfig                                 | 5 +++++
->  3 files changed, 15 insertions(+), 2 deletions(-)
-> 
+> And then: Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 5f5c776ef192..fed9236078e4 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -2202,6 +2202,10 @@ config MODULE_SIG_SHA512
->  	bool "Sign modules with SHA-512"
->  	select CRYPTO_SHA512
->  
-> +config MODULE_SIG_SM3
-> +	bool "Sign modules with SM3"
-> +	select CRYPTO_SM3
-> +
->  endchoice
->  
->  config MODULE_SIG_HASH
-> @@ -2212,6 +2216,7 @@ config MODULE_SIG_HASH
->  	default "sha256" if MODULE_SIG_SHA256
->  	default "sha384" if MODULE_SIG_SHA384
->  	default "sha512" if MODULE_SIG_SHA512
-> +	default "sm3" if MODULE_SIG_SM3
->  
->  config MODULE_COMPRESS
->  	bool "Compress modules on installation"
-> 
+Thank you!  I will apply this on my next rebase.
 
-checkpatch tells me:
-
-WARNING: please write a paragraph that describes the config symbol fully
-#74: FILE: init/Kconfig:2205:
-+config MODULE_SIG_SM3
-
-
-so yes, it should have some help text there.
-
-thanks.
--- 
-~Randy
-
+							Thanx, Paul
