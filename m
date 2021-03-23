@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5942C345769
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E216A34576B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCWFkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:40:42 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:44474 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhCWFkQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:40:16 -0400
-Received: by mail-io1-f71.google.com with SMTP id e11so1091210ioh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 22:40:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8UIJBBCFx9G0AZ6QPsyJ2f+Jnb2J4vHizufHfr/0rys=;
-        b=JGo7Mnhi3+qyKoEMfXYFW9RWQjH8DFSkUOl4NJNKnnFi3utInuAaPcOhahxTl3+KzF
-         XPrCVFTwgl+mTHA6JRfy9IAIdWIF4WCrNr1CN5TDTbkmy8eMSPhzIEt197Mja82ZfRis
-         rB09HOUHKjT4yQxs5AIqGP5t4Ool+UxLdl8pnSYl0QghNnAnxD+hTy9pxxaxRXZZzLSP
-         o9U7whOdZHohAe3bcbJ75IoTPspbRp/UPZA494wQ4RUdDsx0/K+yfAHZ2XZZSyLTt7I0
-         lDLsStU6FmgZoVwES7LJmMGflNdWtCUHXoZSRcRHXwqaVwwfhE40taEiObf4T7qAfg+T
-         WDYg==
-X-Gm-Message-State: AOAM533rlEDc6wdO/AR1RmDEQ5P0T7fGl/+XnC/z0Z1ZRaz+nUEA6MtU
-        LpNzkvX2WOzrQ8+sdo4I4sujP+66K7ZPXT45+dbLvc0dIGj9
-X-Google-Smtp-Source: ABdhPJywzjL2S5675jBi+LjUShhiMQm7FNQYgD96vO6uxEMlOimdM9ZcZ5MgYdoqaCNTTcck/jPUQlNts8o3Nona6u5GfutE1+LY
+        id S229548AbhCWFmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:42:16 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:1156 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhCWFl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 01:41:59 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F4Kxc6YH5z9v0Ck;
+        Tue, 23 Mar 2021 06:41:56 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id t1PddXMWBVjS; Tue, 23 Mar 2021 06:41:56 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F4Kxc438nz9v0Cj;
+        Tue, 23 Mar 2021 06:41:56 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0F9858B7AE;
+        Tue, 23 Mar 2021 06:41:57 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 6PHfTCxDZ_5z; Tue, 23 Mar 2021 06:41:56 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6006B8B75F;
+        Tue, 23 Mar 2021 06:41:56 +0100 (CET)
+Subject: Re: [PATCH] arch: powerpc: Remove duplicate include of interrupt.h
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        zhouchuangao <zhouchuangao@vivo.com>
+Cc:     kael_w@yeah.net, Qiang Zhao <qiang.zhao@nxp.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, Michal Suchanek <msuchanek@suse.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>
+References: <20210323024126.237840-1-wanjiabing@vivo.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <e38279c5-3284-1693-ec34-4e537bd49c1e@csgroup.eu>
+Date:   Tue, 23 Mar 2021 06:41:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:802:: with SMTP id u2mr3172526ilm.298.1616478015540;
- Mon, 22 Mar 2021 22:40:15 -0700 (PDT)
-Date:   Mon, 22 Mar 2021 22:40:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e754b705be2d9d69@google.com>
-Subject: [syzbot] WARNING in io_sq_thread_park
-From:   syzbot <syzbot+e3a3f84f5cecf61f0583@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210323024126.237840-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    84196390 Merge tag 'selinux-pr-20210322' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=152a6ad6d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
-dashboard link: https://syzkaller.appspot.com/bug?extid=e3a3f84f5cecf61f0583
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e3a3f84f5cecf61f0583@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 27907 at fs/io_uring.c:7147 io_sq_thread_park+0xb5/0xd0 fs/io_uring.c:7147
-Modules linked in:
-CPU: 1 PID: 27907 Comm: iou-sqp-27905 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_sq_thread_park+0xb5/0xd0 fs/io_uring.c:7147
-Code: 3c 02 00 75 29 48 8b ab a8 00 00 00 48 85 ed 74 0d e8 df a3 99 ff 48 89 ef e8 f7 49 75 ff 5b 5d e9 d0 a3 99 ff e8 cb a3 99 ff <0f> 0b eb 85 48 89 ef e8 bf 36 dd ff eb cd 48 89 ef e8 b5 36 dd ff
-RSP: 0018:ffffc90001bff9e8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802489a000 RCX: 0000000000000000
-RDX: ffff88808e7e0000 RSI: ffffffff81da4a65 RDI: ffff88802489a000
-RBP: ffff88802489a0a8 R08: 0000000000000001 R09: ffff88806a7420c7
-R10: ffffed100d4e8418 R11: 0000000000000000 R12: ffff88806a742590
-R13: ffff88806a742458 R14: 1ffff9200037ff42 R15: ffff88806a7424b8
-FS:  00007f63505a8700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000540198 CR3: 0000000024531000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 000000000111062a
-Call Trace:
- io_ring_ctx_wait_and_kill+0x214/0x700 fs/io_uring.c:8619
- io_uring_release+0x3e/0x50 fs/io_uring.c:8646
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:140
- io_run_task_work fs/io_uring.c:2238 [inline]
- io_run_task_work fs/io_uring.c:2228 [inline]
- io_uring_try_cancel_requests+0x8ec/0xc60 fs/io_uring.c:8770
- io_uring_cancel_sqpoll+0x1cf/0x290 fs/io_uring.c:8974
- io_sqpoll_cancel_cb+0x87/0xb0 fs/io_uring.c:8907
- io_run_task_work_head+0x58/0xb0 fs/io_uring.c:1961
- io_sq_thread+0x3e2/0x18d0 fs/io_uring.c:6763
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Le 23/03/2021 à 03:41, Wan Jiabing a écrit :
+> asm/interrupt.h has been included at line 12. According to
+> alphabetic order,we remove the duplicate one at line 10.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Could you please cook a single patch for all files in arch/powerpc/
+
+Thanks
+Christophe
+
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>   arch/powerpc/kernel/interrupt.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+> index c475a229a42a..11d456896772 100644
+> --- a/arch/powerpc/kernel/interrupt.c
+> +++ b/arch/powerpc/kernel/interrupt.c
+> @@ -7,7 +7,6 @@
+>   #include <asm/asm-prototypes.h>
+>   #include <asm/kup.h>
+>   #include <asm/cputime.h>
+> -#include <asm/interrupt.h>
+>   #include <asm/hw_irq.h>
+>   #include <asm/interrupt.h>
+>   #include <asm/kprobes.h>
+> 
