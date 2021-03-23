@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232D53464D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D886D3464DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbhCWQUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbhCWQUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:20:13 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FEFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:20:13 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id h25so9681843vso.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:20:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7LPlOxyxKGimlLzO5bR0NAP5TDBYa4AWRGxw3mAP/fM=;
-        b=faUUSgVejihoVBPrj3v8oQ7Jwv1QWj5rtYVjTXD6eWH7buY2EvbzsJ/B2naG9UoEnq
-         jaX0JXHuwPpJIC7EWLeuSIO7Mm1EbqlEeAVcVG6ijBbfuXWjTrlKifYPQN1QfFdtfoS/
-         zIxWi+Lq0S0XKfkq2VyyHuVermLB/BqAPssHmadNL1uIyadfsflULd8JIhfYAWsroDgH
-         q7EDhNaNmICWVYSrO72ZhYR7IRYlk37G2wZzRO44bqSyzaj/3fjeqzW/DD+EubtpTspH
-         OM6GB2RqLtR9ium8W/RaYF004RaJZ3rbiRvOfOvCRfAzcYsbrdoa6fUGVdeUyoj/Tw10
-         fzVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7LPlOxyxKGimlLzO5bR0NAP5TDBYa4AWRGxw3mAP/fM=;
-        b=hl2z2ZHFFKfg/EjfUHZ0kwOf+jANsT1UVX48pgBTE/Z8FXAuWlvTkeZ34fgnU6t2FD
-         E9MIkzkTPqYBoF1qF7XOHi4HtFKIQGRHZ1KukiIsCtiL9iId7Ui/XK9u718iP8wJZ1aU
-         i3UN60JgDg5+qhioyJ8gtgQyxYLeknSlemx4NLaSspip8wa/OUwJgvYoKOMuOZ5WGh96
-         6PlSIDkbrQZK528G7By1ObfofnCks16kD8o46W1JcU0EGwVRrkbLLVCjebtpYAA3pNWc
-         WigfzNz+s7R4EjhQo2LMQuLdAyo242ECY3EQ9srnvr4COSzECzviSnX8+I9MIXYQ33+9
-         o0dw==
-X-Gm-Message-State: AOAM530DcwjOmpub/io5lBZvJHQ6WeQrpNSMzVjQIJ8CjA9KGImuwl0m
-        mAji9h2nUfnG5bKq/r3u4QnW0mBGVs9zxo/MLCF/8w==
-X-Google-Smtp-Source: ABdhPJwT/MCMwyH0Deiy0nVWLV1tr2Xs2mRDuIU2Q+9dn2v7Q0w3Z3oMXQyV4ZAj83g07sqlrbDFBUDWsOLlxoC/9mk=
-X-Received: by 2002:a67:641:: with SMTP id 62mr4114316vsg.23.1616516409719;
- Tue, 23 Mar 2021 09:20:09 -0700 (PDT)
+        id S233202AbhCWQVF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Mar 2021 12:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233116AbhCWQU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:20:28 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE64561477;
+        Tue, 23 Mar 2021 16:20:26 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 12:20:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        workflows@vger.kernel.org,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: Re: RFC: create mailing list "linux-issues" focussed on issues/bugs
+ and regressions
+Message-ID: <20210323122025.77888b49@gandalf.local.home>
+In-Reply-To: <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
+References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
+        <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
+        <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210322234438.502582-1-seanjc@google.com>
-In-Reply-To: <20210322234438.502582-1-seanjc@google.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 23 Mar 2021 09:19:57 -0700
-Message-ID: <CABCJKudMQ9CP1zhvywTf-_=PY5zmeviURR+=PqsMn_bqa_MV-g@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Merge module sections if and only if
- CONFIG_LTO_CLANG is enabled
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 4:44 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Merge module sections only when using Clang LTO.  With gcc-10, merging
-> sections does not appear to update the symbol tables for the module,
-> e.g. 'readelf -s' shows the value that a symbol would have had, if
-> sections were not merged.
+On Mon, 22 Mar 2021 20:25:15 +0100
+Thorsten Leemhuis <linux@leemhuis.info> wrote:
 
-I'm fine with limiting this to LTO only, but it would be helpful to
-understand which sections are actually getting merged here. Are you
-compiling the kernel with -ffunction-sections and/or -fdata-sections?
-Does this issue only happen with gcc 10?
+> I agree to the last point and yeah, maybe regressions are the more
+> important problem we should work on – at least from the perspective of
+> kernel development.  But from the users perspective (and
+> reporting-issues.rst is written for that perspective) it feel a bit
+> unsatisfying to not have a solution to query for existing report,
+> regressions or not. Hmmmm...
 
-Sami
+I think the bulk of user issues are going to be regressions. Although you
+may be in a better position to know for sure, but at least for me, wearing
+my "user" hat, the thing that gets me the most is upgrading to a new kernel
+and suddenly something that use to work no longer does. And that is the
+definition of a regression. My test boxes still run old distros (one is
+running fedora 13). These are the boxes that catch the most issues, and if
+they do, they are pretty much guaranteed to be a regression.
+
+I like the "linux-regressions" mailing list idea.
+
+-- Steve
