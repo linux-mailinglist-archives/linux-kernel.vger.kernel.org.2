@@ -2,110 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE000345C20
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1F7345C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhCWKoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:44:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44945 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230356AbhCWKni (ORCPT
+        id S230367AbhCWKoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:44:39 -0400
+Received: from outbound-smtp07.blacknight.com ([46.22.139.12]:46231 "EHLO
+        outbound-smtp07.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230356AbhCWKoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:43:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616496217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4UvLisLY3QVjpjoeO2+ShNqoiFem2kvMWqAPyPyr9MY=;
-        b=h0ecbV3y60RvSjt18lTdq/q7PgYZ1vvhpPIWbrz94gPKX4iBsF2B4MO/P3iVZyjE7an8Ch
-        gwW8gEH6oQRXTJMiVUp0ly9RUlpeVN5dE53dyYJ08VUWHlsIcu1OVri1GJcNQpTAsZKega
-        /e3bpyOBJ3+xzUZ+jJ82YSPJwl3P0Eo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-pg-DBKDuOOmNOGVHi1kDeA-1; Tue, 23 Mar 2021 06:43:36 -0400
-X-MC-Unique: pg-DBKDuOOmNOGVHi1kDeA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3528593A0;
-        Tue, 23 Mar 2021 10:43:34 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 654EE1A353;
-        Tue, 23 Mar 2021 10:43:32 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] selftests: kvm: make hardware_disable_test less verbose
-Date:   Tue, 23 Mar 2021 11:43:31 +0100
-Message-Id: <20210323104331.1354800-1-vkuznets@redhat.com>
+        Tue, 23 Mar 2021 06:44:25 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp07.blacknight.com (Postfix) with ESMTPS id 8FBC71C4153
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:44:23 +0000 (GMT)
+Received: (qmail 30040 invoked from network); 23 Mar 2021 10:44:23 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Mar 2021 10:44:23 -0000
+Date:   Tue, 23 Mar 2021 10:44:21 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
+Message-ID: <20210323104421.GK3697@techsingularity.net>
+References: <20210322091845.16437-1-mgorman@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210322091845.16437-1-mgorman@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hardware_disable_test produces 512 snippets like
-...
- main: [511] waiting semaphore
- run_test: [511] start vcpus
- run_test: [511] all threads launched
- main: [511] waiting 368us
- main: [511] killing child
+On Mon, Mar 22, 2021 at 09:18:42AM +0000, Mel Gorman wrote:
+> This series is based on top of Matthew Wilcox's series "Rationalise
+> __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
+> test and are not using Andrew's tree as a baseline, I suggest using the
+> following git tree
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v5r9
+> 
 
-and this doesn't have much value, let's print this info with pr_debug().
+Jesper and Chuck, would you mind rebasing on top of the following branch
+please? 
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- tools/testing/selftests/kvm/hardware_disable_test.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r2
 
-diff --git a/tools/testing/selftests/kvm/hardware_disable_test.c b/tools/testing/selftests/kvm/hardware_disable_test.c
-index 2f2eeb8a1d86..5aadf84c91c0 100644
---- a/tools/testing/selftests/kvm/hardware_disable_test.c
-+++ b/tools/testing/selftests/kvm/hardware_disable_test.c
-@@ -108,7 +108,7 @@ static void run_test(uint32_t run)
- 	kvm_vm_elf_load(vm, program_invocation_name, 0, 0);
- 	vm_create_irqchip(vm);
+The interface is the same so the rebase should be trivial.
+
+Jesper, I'm hoping you see no differences in performance but it's best
+to check.
+
+For Chuck, this version will check for holes and scan the remainder of
+the array to see if nr_pages are allocated before returning. If the holes
+in the array are always at the start (which it should be for sunrpc)
+then it should still be a single IRQ disable/enable. Specifically, each
+contiguous hole in the array will disable/enable IRQs once. I prototyped
+NFS array support and it had a 100% success rate with no sleeps running
+dbench over the network with no memory pressure but that's a basic test
+on a 10G switch.
+
+The basic patch I used to convert sunrpc from using lists to an array
+for testing is as follows;
+
+diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
+index 922118968986..0ce33c1742d9 100644
+--- a/net/sunrpc/svc_xprt.c
++++ b/net/sunrpc/svc_xprt.c
+@@ -642,12 +642,10 @@ static void svc_check_conn_limits(struct svc_serv *serv)
+ static int svc_alloc_arg(struct svc_rqst *rqstp)
+ {
+ 	struct svc_serv *serv = rqstp->rq_server;
+-	unsigned long needed;
+ 	struct xdr_buf *arg;
+-	struct page *page;
+ 	LIST_HEAD(list);
+ 	int pages;
+-	int i;
++	int i = 0;
  
--	fprintf(stderr, "%s: [%d] start vcpus\n", __func__, run);
-+	pr_debug("%s: [%d] start vcpus\n", __func__, run);
- 	for (i = 0; i < VCPU_NUM; ++i) {
- 		vm_vcpu_add_default(vm, i, guest_code);
- 		payloads[i].vm = vm;
-@@ -124,7 +124,7 @@ static void run_test(uint32_t run)
- 			check_set_affinity(throw_away, &cpu_set);
+ 	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
+ 	if (pages > RPCSVC_MAXPAGES) {
+@@ -657,29 +655,15 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
+ 		pages = RPCSVC_MAXPAGES;
+ 	}
+ 
+-	for (needed = 0, i = 0; i < pages ; i++) {
+-		if (!rqstp->rq_pages[i])
+-			needed++;
+-	}
+-	i = 0;
+-	while (needed) {
+-		needed -= alloc_pages_bulk(GFP_KERNEL, needed, &list);
+-		for (; i < pages; i++) {
+-			if (rqstp->rq_pages[i])
+-				continue;
+-			page = list_first_entry_or_null(&list, struct page, lru);
+-			if (likely(page)) {
+-				list_del(&page->lru);
+-				rqstp->rq_pages[i] = page;
+-				continue;
+-			}
++	while (i < pages) {
++		i = alloc_pages_bulk_array(GFP_KERNEL, pages, &rqstp->rq_pages[0]);
++		if (i < pages) {
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 			if (signalled() || kthread_should_stop()) {
+ 				set_current_state(TASK_RUNNING);
+ 				return -EINTR;
+ 			}
+ 			schedule_timeout(msecs_to_jiffies(500));
+-			break;
  		}
  	}
--	fprintf(stderr, "%s: [%d] all threads launched\n", __func__, run);
-+	pr_debug("%s: [%d] all threads launched\n", __func__, run);
- 	sem_post(sem);
- 	for (i = 0; i < VCPU_NUM; ++i)
- 		check_join(threads[i], &b);
-@@ -147,16 +147,16 @@ int main(int argc, char **argv)
- 		if (pid == 0)
- 			run_test(i); /* This function always exits */
- 
--		fprintf(stderr, "%s: [%d] waiting semaphore\n", __func__, i);
-+		pr_debug("%s: [%d] waiting semaphore\n", __func__, i);
- 		sem_wait(sem);
- 		r = (rand() % DELAY_US_MAX) + 1;
--		fprintf(stderr, "%s: [%d] waiting %dus\n", __func__, i, r);
-+		pr_debug("%s: [%d] waiting %dus\n", __func__, i, r);
- 		usleep(r);
- 		r = waitpid(pid, &s, WNOHANG);
- 		TEST_ASSERT(r != pid,
- 			    "%s: [%d] child exited unexpectedly status: [%d]",
- 			    __func__, i, s);
--		fprintf(stderr, "%s: [%d] killing child\n", __func__, i);
-+		pr_debug("%s: [%d] killing child\n", __func__, i);
- 		kill(pid, SIGKILL);
- 	}
- 
--- 
-2.30.2
+ 	rqstp->rq_page_end = &rqstp->rq_pages[pages];
 
+-- 
+Mel Gorman
+SUSE Labs
