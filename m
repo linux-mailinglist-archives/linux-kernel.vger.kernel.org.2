@@ -2,92 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD20B345C18
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2EC345C1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhCWKma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:42:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57201 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230299AbhCWKmP (ORCPT
+        id S230306AbhCWKm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhCWKme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:42:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616496132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gNbDvqmHSmOS17Uw36LiU1hQfbOR+Uaf4HP1sWsQm8M=;
-        b=Z+VfKyDyoitbzWpf5uRe45uq4WUqbWwxfbizTwhQ6V5LJPagpeTZH2ssa66JCmID2mRANE
-        go2QZs+t9ew/OFV5OwZD9PdWQTAYMgc81Fwqs6xsJRPDVf4qO9P4c6PNcp9hdOqNAqVzEp
-        mPiSwbYubPhcaipgzz9bVdtg9sm4EF0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-2uzuLfsCPYS7yX-nLIk14A-1; Tue, 23 Mar 2021 06:42:09 -0400
-X-MC-Unique: 2uzuLfsCPYS7yX-nLIk14A-1
-Received: by mail-ej1-f72.google.com with SMTP id au15so870169ejc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:42:09 -0700 (PDT)
+        Tue, 23 Mar 2021 06:42:34 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1682C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:42:34 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so11995891pjq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:42:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oMvMOVIe+KU4qjnJSB+FFaD+jlcKrEz6x5eQRXRwwRI=;
+        b=vfDRr9dLtgwajRZGiE6ZTC+K+UbG3v8Bjrr35GBxq491Aiq80BSsEOv/TLmKhLI2RP
+         fhrx+2/V1r779BvbKgOQTcrgv5syb6qISCe50pZyKExoBQF3tFhhDFBzYiCcI2FnfEZy
+         4NCNaK72KZ+PihDt5FlcIVRqVJ4VOlTjnG3cU1mW4j5+3kfZ9ghPPZGxFCxAhc8wDy3K
+         etgt8Bh38ixtJnPyGKEuy99WvyLARXYYdoM37RbzYClLwywgeD7P6Nuf5XAGm+CmX9zR
+         DHY6xtOuVPRdwvPV0fBlr2wrD3PZ4rGHamjZe5t30mZhj/0kZVTXspdT58nC+2JGyWSJ
+         Ecjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=gNbDvqmHSmOS17Uw36LiU1hQfbOR+Uaf4HP1sWsQm8M=;
-        b=VdgfdiiSAi4oGmPwlG7RcMaJGPpWr1mKQ0a4JZ1E0I0WNa99al6QdXjs+IKJeO1K3N
-         lycwdBKINdNMXrtQhaP7Fis6J1eHIDV39juA3lDVxUi69O+7IJPjdRwCsFguPL9QijwA
-         NPC5XyIRXqqvwcRY8evRnNv7DedDzHpZof0N8oaysSBioQJhSMXwy32LDbuUGXrTeaLE
-         fNvCQPaD3XpEewEbVcA+4lO1cjFHNMIR3L9LGn/vWkakVqz7J2yHR+LVvLBum/ZiR6Uc
-         0RpRpfR9ii/4QOiA68n06YUmd0ydG1QYRDcKSdbw1wkOJjcmthyOw5PqvssmR0zs2Udy
-         rchw==
-X-Gm-Message-State: AOAM531GKQ0fUi5xFjMEa/Ool9t3N/auSpTIOdjQLe5ZbmxbFdYrO+eA
-        maRoP4yN1zcDMJw9hTjlXjNa4sJnCNTfORVnPytQT31IzWiJE48KO0CPHGyIKM+zW6TaivXuhsY
-        KYFOCDCH8hVifkXdeeIMP1JegGbBJ0Niuln5b/K/iYU5ovnscH0fLRvPy1acjfpavUF6QCny8qI
-        GM
-X-Received: by 2002:a17:906:c058:: with SMTP id bm24mr4259402ejb.335.1616496128739;
-        Tue, 23 Mar 2021 03:42:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHfV1x3tHtVhnWgVqKlxX+gGynmicskM/QyDg69WoGaur0WMcJJEOYrnEMKEzPFcvqr3TD/g==
-X-Received: by 2002:a17:906:c058:: with SMTP id bm24mr4259380ejb.335.1616496128521;
-        Tue, 23 Mar 2021 03:42:08 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g21sm10903399ejd.6.2021.03.23.03.42.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 03:42:07 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Andrew Jones <drjones@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: kvm: make hardware_disable_test less verbose
-In-Reply-To: <20210323100311.zq3yzru4heg4zomu@kamzik.brq.redhat.com>
-References: <20210323085303.1347449-1-vkuznets@redhat.com>
- <20210323100311.zq3yzru4heg4zomu@kamzik.brq.redhat.com>
-Date:   Tue, 23 Mar 2021 11:42:07 +0100
-Message-ID: <875z1iyww0.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oMvMOVIe+KU4qjnJSB+FFaD+jlcKrEz6x5eQRXRwwRI=;
+        b=hvcrXPl+Rfu2ocF75o39w4XP8wo9y5QslduqKdbF+VLThnisPD5eR94TB9XkiloWtp
+         HIyo1l5+R9NIowIeYQP5hNNdKnPxJ/yWZPqCnRTcBIk2aAARs3zxxSLEZPy2guT4TjX6
+         BXzn+tjMGvd1CmdxCqGs+ju9pyEzh6Mk5wG1egNQ0FkGrFzNgWF5po9mtaCee4VaM+Dh
+         U25Y4QfJkW80R27A61UiSnVCJ5IZ04m8htkBbDF34T2z50UYeS4f1BLQFTatrSlWArqO
+         a++wnKQdO0VLss9T40agGQsANIlXmTjxUulN07eovXzr1Ac5upvL9flLT3Ub5t4c0mD3
+         tnjA==
+X-Gm-Message-State: AOAM533GVg6VOnV0z1fYgHVv3NYhtjWb++ged/W77/87kCvOJ/V/UW9R
+        wq9ZExbzor+qzm2DFZ6XR7TcMvkoksFnZXY2g6XV5w==
+X-Google-Smtp-Source: ABdhPJzRh+arBWIbSBRi7xCksNcb/8or1R21ANpA1lUfvc8SPGjzUr89S/mzolqQ2jQU+cBUiIU1E0XmrwmFbQduOtk=
+X-Received: by 2002:a17:90a:be07:: with SMTP id a7mr4016666pjs.75.1616496154215;
+ Tue, 23 Mar 2021 03:42:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210308120555.252524-1-adrien.grassein@gmail.com>
+ <20210308120555.252524-3-adrien.grassein@gmail.com> <CAG3jFytoE9hWvq2e2Caqn4qP_RuEOnm4r9VQ85ffbAcguSLf+w@mail.gmail.com>
+ <CABkfQAGvPy3DzXQnDJqm1q_rOLWR7BQTXb8z05iML3s3Mc8LJw@mail.gmail.com>
+In-Reply-To: <CABkfQAGvPy3DzXQnDJqm1q_rOLWR7BQTXb8z05iML3s3Mc8LJw@mail.gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 23 Mar 2021 11:42:23 +0100
+Message-ID: <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Jones <drjones@redhat.com> writes:
-
-> On Tue, Mar 23, 2021 at 09:53:03AM +0100, Vitaly Kuznetsov wrote:
->> hardware_disable_test produces 512 snippets like
->> ...
->>  main: [511] waiting semaphore
->>  run_test: [511] start vcpus
->>  run_test: [511] all threads launched
->>  main: [511] waiting 368us
->>  main: [511] killing child
->> 
->> and this doesn't have much value, let's just drop these fprintf().
->> Restoring them for debugging purposes shouldn't be too hard.
+On Tue, 23 Mar 2021 at 11:01, Adrien Grassein <adrien.grassein@gmail.com> w=
+rote:
 >
-> Changing them to pr_debug() allows you to keep them and restore
-> with -DDEBUG
+> Hey Robert,
+>
+> Thanks for the update.
+>
+> Le mar. 23 mars 2021 =C3=A0 10:10, Robert Foss <robert.foss@linaro.org> a=
+ =C3=A9crit :
+> >
+> > Hey Adrien,
+> >
+> > Sorry about the slow reply, but I just received the documentation from
+> > the vendor. So let's dig in to the HPD issue.
+>
+> No problem :)
+> >
+> > > +static enum drm_connector_status lt8912_check_cable_status(struct lt=
+8912 *lt)
+> > > +{
+> > > +       int ret;
+> > > +       unsigned int reg_val;
+> > > +
+> > > +       ret =3D regmap_read(lt->regmap[I2C_MAIN], 0xC1, &reg_val);
+> > > +       if (ret)
+> > > +               return connector_status_unknown;
+> > > +
+> > > +       if (reg_val & BIT(7))
+> > > +               return connector_status_connected;
+> >
+> > Register 0xc0 & BIT(7) - HPD signal after debounce
+> > Register 0xc0 & BIT(6) - HPD signal for TX HPD pad
+>
+> So, if I understand well, I need to write 0xc0 & BIT(6) with 1 to
+> enable the HPD pin.
 
-Ah, missed that we have this for selftests! v2 is coming.
+Ah, sorry about being a bit terse.
 
--- 
-Vitaly
+Both bit 6 & 7 are read only, and are probably best read after an IRQ.
 
+> >
+> > > +
+> > > +static int lt8912_probe(struct i2c_client *client,
+> > > +        const struct i2c_device_id *id)
+> > > +{
+> > > +       static struct lt8912 *lt;
+> > > +       int ret =3D 0;
+> > > +       struct device *dev =3D &client->dev;
+> > > +
+> > > +       lt =3D devm_kzalloc(dev, sizeof(struct lt8912), GFP_KERNEL);
+> > > +       if (!lt)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       lt->dev =3D dev;
+> > > +       lt->i2c_client[0] =3D client;
+> > > +       lt->cable_status =3D connector_status_unknown;
+> > > +       lt->workq =3D create_workqueue("lt8912_workq");
+> >
+> > Looking at [1] and maybe even better [2], I think this polling
+> > approach is the wrong way to go. And with access to documentation, I
+> > think we should be able to sort this out.
+>
+> I neither like the polling approach too. I did it to go on this issue.
+> I will totally remove it once the HPD issue will be resolved.
+> >
+> > Using the irq driver approach requires the interrupt pin to be
+> > configured. Pin 63 of the lt8912b is the IRQ output pin.
+> >
+> > In order to trigger interrupts based on it, the dt-binding would need
+> > to be updated[3][4] as well as whichever DTS you're using.
+> >
+>
+> The IRQ part is working well in my DTB. It test it by adding some
+> electronics to emulate the HPD pin on the GPIO expander where the HPD
+> pin is linked.
+
+Looking at the dt-binding patch, it does not seem to list any
+interrupts. So that should be added. I think the irq support from [3]
+& [4] can be pretty much copied.
+
+Then we can come back and replace the polling code with the IRQ driven
+code from [2].
+
+>
+> >
+> > [1] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bridg=
+e/analogix/anx7625.c#L1751
+> >
+> > [2] https://github.com/torvalds/linux/blob/v5.11/drivers/gpu/drm/bridge=
+/lontium-lt9611.c#L1160
+> >
+> > [3] https://github.com/torvalds/linux/blob/v5.11/Documentation/devicetr=
+ee/bindings/display/bridge/lontium,lt9611.yaml#L27
+> >
+> > [4] https://github.com/torvalds/linux/blob/v5.11/Documentation/devicetr=
+ee/bindings/display/bridge/lontium,lt9611.yaml#L144
