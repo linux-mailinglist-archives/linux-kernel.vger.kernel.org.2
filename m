@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3C63460E2
+	by mail.lfdr.de (Postfix) with ESMTP id C6C403460E3
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhCWOCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:02:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232177AbhCWOCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:02:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EB38619B2;
-        Tue, 23 Mar 2021 14:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616508129;
-        bh=V9SR3dGkHatwy10WvCFJJlFM8joEHNaQgtRFNoPR3Ck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U2GoGF/1bpVkAexjpZjMq728p3wpvh+2OW5T9tA8jL8+Niisqm8pFpZBjQxNmRCPm
-         5fw+ctJSasGS0zPqcZGVNrj3GNMgGHqSrJyYd+0WtKsJ4nn2fyE/tD85wxK+53QefC
-         GfoT4Bstg6HaIMRvhfFLnJOqTUGWyid58e6N7tlyCr8v5IN0tqV5KnOnRpao7nZwZ+
-         S9HC8tkuIKJRmUdGdEcRXBrWJP+timG191D/x619ggQZPooqFrqi9AgjTD90rum29I
-         Remu8ofigcjL/5fOfsSq1FB5LlkmMwgxKiqzQnY+h9V1qnEJbUeM6lmn9ioIS0EJ57
-         zjeYflVDOswHQ==
-Date:   Tue, 23 Mar 2021 15:02:07 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 2/3] rcu: Provide polling interfaces for
- Tiny RCU grace periods
-Message-ID: <20210323140207.GA890343@lothringen>
-References: <20210304002605.GA23785@paulmck-ThinkPad-P72>
- <20210304002632.23870-2-paulmck@kernel.org>
- <20210321222855.GA863290@lothringen>
- <20210322154744.GM2696@paulmck-ThinkPad-P72>
- <20210322190035.GA874833@lothringen>
- <20210322194522.GO2696@paulmck-ThinkPad-P72>
+        id S231613AbhCWOCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231839AbhCWOCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:02:25 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D595BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:02:24 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id m12so26781391lfq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ku+levvVxBeqKSuHI7QAU6DJ1TT9V2yW8FV3fTDnwwo=;
+        b=Y4sDWZnWLFkjeVLPKdcxZ9yafDLWRrvFZTzPiEKg8gxPfH70ZCk6lCglyy8tJqxPpm
+         AU4lNcx4+faeYBwKzIlFF4T6qnIGRbykR42u3VFqxtPO6JWxnNVvInx9PdC3LF06Ts+6
+         DKLmuVRW3PKiaxdZjTm3r+/OS+peiAm9T0HuWfdibI8MUHClff3qHkYl3gLpx35sgFUV
+         AugfY7kpJMUBLhaJrR0nfZ24txNcRqwFz2+Tu948DmtkSPGT3zsHP0iaQlibIA+4VTm7
+         VMWQTj+XtpOKOy7fsBkZYAsUp9saldvz1XzJaer6qj266b4DYlaqDf0unUa+0cftwsFy
+         wCJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ku+levvVxBeqKSuHI7QAU6DJ1TT9V2yW8FV3fTDnwwo=;
+        b=HzXCazIs7IPnp9iTpDqluWEWqtm4JAgWER3X/lFAs+ulucIgZAqBaeR+lVDfAcE4HC
+         l8zetdHw7LGqCbbLZnEf9dfg1u3hYo2B56K05oenGcjB1o4/wjDe8/6p/WIFaZqnk+mk
+         N4/roDed/nYpPpYmx7TvaDgSF6r8KYcoBxKdvJacxebwN8EfppiLTpyC0qjAIyAu6W+C
+         ovE31VYrMhWd2aY5IW45vbnZAk+I9PpLaABAacK84YWz9j1GE8PUYc00MKOR/vv4ujN+
+         kqje4MpBPr79jcjEtAY0xWep5F5xbGd0GNktBXpn073x9o973wswmCvXSgJxf5LXiWi+
+         VHtw==
+X-Gm-Message-State: AOAM532uG1pSkh6OMbNVvU9eKL9t7+iAVZZ8dgNLYHC8NYq5LhVZuN0u
+        k/XdQmYJbfBFKE8ew8jeK6Wta7/Ko3GsECL1Y1I=
+X-Google-Smtp-Source: ABdhPJysRw/CzY1wTwDNpPh0ik6UsRhl1MsyNfGxru2rIW2RG1tLkFLSGaeMeUgUm0BNDEhNCX9AVH9Ht53tDcclgd8=
+X-Received: by 2002:a05:6512:3996:: with SMTP id j22mr2564356lfu.443.1616508143271;
+ Tue, 23 Mar 2021 07:02:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322194522.GO2696@paulmck-ThinkPad-P72>
+References: <20210323130550.2289487-1-arnd@kernel.org>
+In-Reply-To: <20210323130550.2289487-1-arnd@kernel.org>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 23 Mar 2021 11:02:12 -0300
+Message-ID: <CAOMZO5AUJ=OjBwB=GA4Y0dy+oheHyzK3eVq+YCgT4HKEaQJhNw@mail.gmail.com>
+Subject: Re: [PATCH] drm/imx: fix out of bounds array access warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Joe Perches <joe@perches.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Liu Ying <victor.liu@nxp.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 12:45:22PM -0700, Paul E. McKenney wrote:
-> On Mon, Mar 22, 2021 at 08:00:35PM +0100, Frederic Weisbecker wrote:
-> > But poll_state_synchronize_rcu() checks that the gp_num has changed,
-> > which is not needed for cond_synchronize_rcu() since this it is
-> > only allowed to be called from a QS.
-> 
-> Good catch, and thank you!  Back to a single might_sleep() it is!
+Hi Arnd,
 
-And then: Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+On Tue, Mar 23, 2021 at 10:05 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When CONFIG_OF is disabled, building with 'make W=1' produces warnings
+> about out of bounds array access:
+>
+> drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
+> drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
 
-Thanks!
+What about making the driver depend on OF instead (like it is done in
+DRM_IMX_HDMI) ?
+
+--- a/drivers/gpu/drm/imx/Kconfig
++++ b/drivers/gpu/drm/imx/Kconfig
+@@ -27,7 +27,7 @@ config DRM_IMX_TVE
+
+ config DRM_IMX_LDB
+        tristate "Support for LVDS displays"
+-       depends on DRM_IMX && MFD_SYSCON
++       depends on DRM_IMX && MFD_SYSCON && OF
+        depends on COMMON_CLK
+        select DRM_PANEL
+        help
