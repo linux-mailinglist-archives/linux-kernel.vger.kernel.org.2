@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9403469B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3950E3469B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhCWURM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:17:12 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:46748 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbhCWUQv (ORCPT
+        id S233360AbhCWURR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:17:17 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:33310 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233276AbhCWURA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:16:51 -0400
-Received: by mail-io1-f50.google.com with SMTP id j26so19069713iog.13;
-        Tue, 23 Mar 2021 13:16:51 -0700 (PDT)
+        Tue, 23 Mar 2021 16:17:00 -0400
+Received: by mail-io1-f41.google.com with SMTP id n198so19106054iod.0;
+        Tue, 23 Mar 2021 13:17:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=2Xsddl20fBjvfqqLCcwceEr+314gBRXnBcSQaiPmnEQ=;
-        b=rSpwkLjvIcMyzepR1bw9U61ggdwnTLqs98O9lfsw7Kz6PHWX4yVG/SZpJAJeWHCZ4v
-         L6zbliO9Q5kzydKP/aSJh3lx9PtZsAzapXF7dUfbnxYbmyab+cM65ZNE74hoEkoxRb+k
-         efJd9w5o2L+NjmXWA66VDqWNTZmMpOwtu8rUHafIlJIz2dRMXJsIavOgnofHcjCYFXun
-         603fit4Jgc1Lq/I4Wmz/vnWWpRUYew87oGFS7GeUWX1G7Dkq9WaxYgmRCBOw0p5pe+QY
-         QFQJPBJBE4rHkklBlhSClr0jmHWHZSRl8zTAkv+2HwvT7VTyb1bvkBGW/gc+9ser2ZZ0
-         kJJg==
-X-Gm-Message-State: AOAM531YqdiquXUZn6AsMGMKPNi7y9qyHb+4q9+km+bt+143d6Ds+++9
-        gPg4dO65l621FNDwnp+Qjf4GH6kaJg==
-X-Google-Smtp-Source: ABdhPJzawX8tfIo854j5immXLxsifbRwp8DwYYTmDA5IrkQdtI5aK3gjoHoK3ViTYHg2qW6qkWk4ww==
-X-Received: by 2002:a02:605d:: with SMTP id d29mr6160144jaf.81.1616530610967;
-        Tue, 23 Mar 2021 13:16:50 -0700 (PDT)
+        bh=20xlh8LGB3xwHBaeVz4zoEufs7vqABRi50X0pBG/dOI=;
+        b=AfUG3OALQa6IDRMJVT+UYiFXnQC/qBHk1iyI+FwTb++1pUtN+VVEIkmSM+nF1ELZjo
+         5qNh6Zd9Z+XXagTcKt7q+TsBflwOpd0WyJxVZhT3fYlch8wUJNhx45wJDH6w8r5eESKH
+         /OD7+A1FvnbmvpGPY2Szp+Xgt30R2jSGLgfAeJyte3nSTEfQG5D4yePjE/tyHuoZCWPN
+         lBMuhrYC3hDKQ5xkUxb1EHYC/CSfew2LJ/vGQs3r3UY51W8l5mH3kG7T2B1Zfp9kdOb6
+         H80wMyZG3O6G3SZMqL9VgU6irhOcauCFKEW7PlZLrry5Bby/IIF5Is0cIeVZyid5gbd7
+         Na1w==
+X-Gm-Message-State: AOAM530wlijKhuo5XbM6IBkDyZMCTQNfzZ8fRqkTnHnWCEHln12+eWfg
+        tBy4LnOwNicDRFHwmeaciw==
+X-Google-Smtp-Source: ABdhPJwm5asRgRsRfOt9jGTSe8CCVpgMEZSzeTd8NVMQZp1yHuSHEBoVyGY9b1E8x2PRYMY5cFm2sA==
+X-Received: by 2002:a05:6602:82:: with SMTP id h2mr5993265iob.20.1616530619907;
+        Tue, 23 Mar 2021 13:16:59 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id b20sm9552288iod.22.2021.03.23.13.16.48
+        by smtp.gmail.com with ESMTPSA id r5sm9700408ilb.75.2021.03.23.13.16.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 13:16:50 -0700 (PDT)
-Received: (nullmailer pid 1244762 invoked by uid 1000);
+        Tue, 23 Mar 2021 13:16:59 -0700 (PDT)
+Received: (nullmailer pid 1244769 invoked by uid 1000);
         Tue, 23 Mar 2021 20:16:47 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenz@kernel.org>
-Cc:     f.fainelli@gmail.com, alcooperx@gmail.com,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, adrian.hunter@intel.com,
-        Ulf Hansson <ulf.hansson@linaro.org>, nsaenzjulienne@suse.de,
-        linux-arm-kernel@lists.infradead.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        tim.gover@raspberrypi.com, linux-kernel@vger.kernel.org,
-        phil@raspberrypi.com, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org
-In-Reply-To: <20210322185816.27582-2-nsaenz@kernel.org>
-References: <20210322185816.27582-1-nsaenz@kernel.org> <20210322185816.27582-2-nsaenz@kernel.org>
-Subject: Re: [PATCH 1/4] dt-bindings: mmc: iproc-sdhci: Convert to json-schema
+To:     Roger Lu <roger.lu@mediatek.com>
+Cc:     HenryC Chen <HenryC.Chen@mediatek.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, YT Lee <yt.lee@mediatek.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        linux-kernel@vger.kernel.org,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Angus Lin <Angus.Lin@mediatek.com>, linux-pm@vger.kernel.org,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>
+In-Reply-To: <20210323135657.2701-2-roger.lu@mediatek.com>
+References: <20210323135657.2701-1-roger.lu@mediatek.com> <20210323135657.2701-2-roger.lu@mediatek.com>
+Subject: Re: [PATCH v13 1/7] dt-bindings: soc: mediatek: add mtk svs dt-bindings
 Date:   Tue, 23 Mar 2021 14:16:47 -0600
-Message-Id: <1616530607.384911.1244761.nullmailer@robh.at.kernel.org>
+Message-Id: <1616530607.423782.1244768.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 19:58:14 +0100, Nicolas Saenz Julienne wrote:
-> Convert the brcm,iproc-sdhci binding to DT schema format using json-schema
+On Tue, 23 Mar 2021 21:56:51 +0800, Roger Lu wrote:
+> Document the binding for enabling mtk svs on MediaTek SoC.
 > 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
 > ---
->  .../bindings/mmc/brcm,iproc-sdhci.yaml        | 58 +++++++++++++++++++
->  .../bindings/mmc/brcm,sdhci-iproc.txt         | 37 ------------
->  2 files changed, 58 insertions(+), 37 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mmc/brcm,sdhci-iproc.txt
+>  .../bindings/soc/mediatek/mtk-svs.yaml        | 81 +++++++++++++++++++
+>  1 file changed, 81 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -74,12 +80,11 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.example.dts:22.25-26 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.example.dt.yaml] Error 1
-make: *** [Makefile:1380: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml: properties:nvmem-cells:maxItems: False schema does not allow 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml: ignoring, error in schema: properties: nvmem-cells: maxItems
+warning: no schema found in file: ./Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
 
-See https://patchwork.ozlabs.org/patch/1456815
+See https://patchwork.ozlabs.org/patch/1457219
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
