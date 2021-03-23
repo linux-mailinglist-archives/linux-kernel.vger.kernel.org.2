@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF93346B46
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54778346B48
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhCWVld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:41:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35882 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbhCWVjv (ORCPT
+        id S233822AbhCWVlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233661AbhCWVjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:39:51 -0400
-Message-Id: <20210323213708.305191020@linutronix.de>
+        Tue, 23 Mar 2021 17:39:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D258C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:39:52 -0700 (PDT)
+Message-Id: <20210323213708.400351704@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616535589;
+        s=2020; t=1616535590;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WQ79W0UKQ3FaQqUk75fa8vxbtUiLoQOfE/l0ic+As9Y=;
-        b=0dwiNOtvsHICNKbN4FI/g8BuGzIsiMoFI0tjDiIMsE5xjeHZ15I/MzIBwWvD0d1i0fuXEK
-        w8u9Cn/rFO7ro+ZlyOHT830q1Qa+gdCHvEcthePOA/Vgoq34EMzUk5XudODwHTIxYmRk4e
-        JndbzldEtV+oruFstumU3tjTR8nMvks7uSWVnpa+OMl4JJGhpspO++yNkLiVwkM2srQ4lD
-        AWHHvlyzdepLt640jN61aOe4IK2AbyWUhDlQqPYntOBAnewzaw1Id3BFsJE9B3fcQsGCGK
-        dk4JDDrDTv3R3El5aq4VpcFaC+MSmZcY4FglWuemmbTJGRdpTo+XMNEN9+2qXw==
+        bh=6rZKFRfc2POSEtJ6HeNKCxqt6gk5ai8upmYP90iivys=;
+        b=MmRXFJwvZlX9JFd0IKuqdsgvGr5S+0z784zbzslL9eEXEUZDXFY3jpE8JfukTbwDyo9vlO
+        V20E/OD+WcLT3PWm6Az3CFmlEp5s0vT6DjupaX1H9mg/LXWlPRF/QpggRpoT6QVe8ZjAQx
+        sOA6Ex2AeaRmRzFtI5uuOrg+VfsFpZnkRANJKORyFohee4hQGdoQgU42927ZT0p7Qwnc6V
+        YTiQdpNu4YnmWFEsKdTkT4jzMPgnm3J+DoRUbK8DFqHuy96xhM6biiBJOc9kMG8BrjFYQm
+        HAzHgxPmJM8zHL5L0zyEOThLV6y+PLSxHFqfT8gaRaOocOreprCxT7pjYG86Fg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616535589;
+        s=2020e; t=1616535590;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WQ79W0UKQ3FaQqUk75fa8vxbtUiLoQOfE/l0ic+As9Y=;
-        b=nwWcJYRQRF+7MxEGrE05poWn6aMKu7zZvnCHFiPWt2Z1UPbbtW4LnPt4hFMfYuMxwhmCy+
-        X2jeRLHlo0dPVqCA==
-Date:   Tue, 23 Mar 2021 22:30:27 +0100
+        bh=6rZKFRfc2POSEtJ6HeNKCxqt6gk5ai8upmYP90iivys=;
+        b=Ioc5Qlj+kdtYUvC/baftLkxubb7mRGwlw8osF+uEdxKPYDPHLShyOBZlE8enUzlCUrL02M
+        5MKjFm9YFKU7aPDw==
+Date:   Tue, 23 Mar 2021 22:30:28 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -41,7 +44,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch 08/14] locking/rtmutex: Remove pointless CONFIG_RT_MUTEXES=n stubs
+Subject: [patch 09/14] locking/rtmutex: Decrapify __rt_mutex_init()
 References: <20210323213019.217008708@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,100 +53,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-None of these functions is used when CONFIG_RT_MUTEXES=n.
-
-Remove the gunk. Remove pointless comments and clean up the coding style
-mess while at it.
+The conditional debug handling is just another layer of obfuscation. Split
+the function so rt_mutex_init_proxy_locked() can invoke the inner init and
+__rt_mutex_init() gets the full treatment.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/locking/rtmutex_common.h |   56 +++++++---------------------------------
- 1 file changed, 11 insertions(+), 45 deletions(-)
+ kernel/locking/rtmutex.c        |   11 ++++-------
+ kernel/locking/rtmutex_common.h |    7 +++++++
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1586,12 +1586,10 @@ void __sched rt_mutex_futex_unlock(struc
+ void __rt_mutex_init(struct rt_mutex *lock, const char *name,
+ 		     struct lock_class_key *key)
+ {
+-	lock->owner = NULL;
+-	raw_spin_lock_init(&lock->wait_lock);
+-	lock->waiters = RB_ROOT_CACHED;
++	debug_check_no_locks_freed((void *)lock, sizeof(*lock));
++	lockdep_init_map(&lock->dep_map, name, key, 0);
+ 
+-	if (name && key)
+-		debug_rt_mutex_init(lock, name, key);
++	__rt_mutex_basic_init(lock);
+ }
+ EXPORT_SYMBOL_GPL(__rt_mutex_init);
+ 
+@@ -1612,8 +1610,7 @@ EXPORT_SYMBOL_GPL(__rt_mutex_init);
+ void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
+ 				struct task_struct *proxy_owner)
+ {
+-	__rt_mutex_init(lock, NULL, NULL);
+-	debug_rt_mutex_proxy_lock(lock, proxy_owner);
++	__rt_mutex_basic_init(lock);
+ 	rt_mutex_set_owner(lock, proxy_owner);
+ }
+ 
 --- a/kernel/locking/rtmutex_common.h
 +++ b/kernel/locking/rtmutex_common.h
-@@ -23,29 +23,25 @@
-  * @tree_entry:		pi node to enqueue into the mutex waiters tree
-  * @pi_tree_entry:	pi node to enqueue into the mutex owner waiters tree
-  * @task:		task reference to the blocked task
-+ * @lock:		Pointer to the rt_mutex on which the waiter blocks
-+ * @prio:		Priority of the waiter
-+ * @deadline:		Deadline of the waiter if applicable
-  */
- struct rt_mutex_waiter {
--	struct rb_node          tree_entry;
--	struct rb_node          pi_tree_entry;
-+	struct rb_node		tree_entry;
-+	struct rb_node		pi_tree_entry;
- 	struct task_struct	*task;
- 	struct rt_mutex		*lock;
--	int prio;
--	u64 deadline;
-+	int			prio;
-+	u64			deadline;
+@@ -88,6 +88,13 @@ enum rtmutex_chainwalk {
+ 	RT_MUTEX_FULL_CHAINWALK,
  };
  
--/*
-- * Various helpers to access the waiters-tree:
-- */
--
--#ifdef CONFIG_RT_MUTEXES
--
- static inline int rt_mutex_has_waiters(struct rt_mutex *lock)
- {
- 	return !RB_EMPTY_ROOT(&lock->waiters.rb_root);
- }
- 
--static inline struct rt_mutex_waiter *
--rt_mutex_top_waiter(struct rt_mutex *lock)
-+static inline struct rt_mutex_waiter *rt_mutex_top_waiter(struct rt_mutex *lock)
- {
- 	struct rb_node *leftmost = rb_first_cached(&lock->waiters);
- 	struct rt_mutex_waiter *w = NULL;
-@@ -62,42 +58,12 @@ static inline int task_has_pi_waiters(st
- 	return !RB_EMPTY_ROOT(&p->pi_waiters.rb_root);
- }
- 
--static inline struct rt_mutex_waiter *
--task_top_pi_waiter(struct task_struct *p)
--{
--	return rb_entry(p->pi_waiters.rb_leftmost,
--			struct rt_mutex_waiter, pi_tree_entry);
--}
--
--#else
--
--static inline int rt_mutex_has_waiters(struct rt_mutex *lock)
--{
--	return false;
--}
--
--static inline struct rt_mutex_waiter *
--rt_mutex_top_waiter(struct rt_mutex *lock)
--{
--	return NULL;
--}
--
--static inline int task_has_pi_waiters(struct task_struct *p)
--{
--	return false;
--}
--
--static inline struct rt_mutex_waiter *
--task_top_pi_waiter(struct task_struct *p)
-+static inline struct rt_mutex_waiter *task_top_pi_waiter(struct task_struct *p)
- {
--	return NULL;
-+	return rb_entry(p->pi_waiters.rb_leftmost, struct rt_mutex_waiter,
-+			pi_tree_entry);
- }
- 
--#endif
--
--/*
-- * lock->owner state tracking:
-- */
- #define RT_MUTEX_HAS_WAITERS	1UL
- 
- static inline struct task_struct *rt_mutex_owner(struct rt_mutex *lock)
++static inline void __rt_mutex_basic_init(struct rt_mutex *lock)
++{
++	lock->owner = NULL;
++	raw_spin_lock_init(&lock->wait_lock);
++	lock->waiters = RB_ROOT_CACHED;
++}
++
+ /*
+  * PI-futex support (proxy locking functions, etc.):
+  */
 
