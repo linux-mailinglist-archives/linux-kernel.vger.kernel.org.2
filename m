@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF003465AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A093465B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbhCWQv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbhCWQvR (ORCPT
+        id S230416AbhCWQxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:53:39 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55348 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231842AbhCWQxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:51:17 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643FDC061765
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:51:17 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id b184so14909008pfa.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ff/dfLlyOzHdPDlHSVc6uKmy6e9wrU4ymq44nCy5dSM=;
-        b=nb6k9RMnO0SEpqDMoEDygbgq2JdmkHlxt1rj4O4DPF3FfLzdzrb1HzBmiPwjdEUSFm
-         HlBnfo+jMkiM3CBQPw38e7kKqnKYVEnaz3nro04L0pmVRp9u/JaRf/UZ0FJhxZL4xuSi
-         dToiOiF52H0DGvZLrg1e8KroAywJLNR5CFsecizgvNVf5vu8VtCxTEuTmg5hEKlaU8vx
-         tlcBmvraUqDOPZF7lMP87EJuARXwppJvtbBIYu0YgT1PnBM+KHSRoixvUp2V2LsWnbVH
-         iHnC+8nSdL0QBmf8KuuPa8T4iaffHKVcIZBhZZNBA7DtVT/4it5mUUbR0rBVTWIjxYxq
-         3rFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ff/dfLlyOzHdPDlHSVc6uKmy6e9wrU4ymq44nCy5dSM=;
-        b=SHAnRzvEE0x8EOEcKAV8SgPmBGgrxfYJsrXrQGsEbRxAl8Iu6S2IQrVMRVqmNpCwU4
-         QrJD/3TbJ2SIE2cNr4EZWt0Z9os5wFW9AZEIvtzEs/NNDGFO437bURMwLzqzrfBOD1gt
-         iLJ0V7BA5498vWngLtea0eGUYN3bZ4ov8TBjR7X2bMTUzAlRYiBEFmamXBJ0XWRitv/e
-         ypZKRd5U4bsjkQ++rz/HfwkR9pG3LpImDNSyUxmhEaeOtcOPL46yJG7KoVtWk7kc9/Ja
-         k1fWbXTmRWjXfArmIqXXHlJJwBDW5DRe6P8YHULzPyqLiD4yYhBj9ETX7DGLcSlaVTBV
-         IspQ==
-X-Gm-Message-State: AOAM531O1G3yXwX1YW2LriSPR0Pp5GC7ZF5x/EhztFR2nWIzitHdknNA
-        UQuTAV8FD5LG8ynfKpXXzE5kxA==
-X-Google-Smtp-Source: ABdhPJz4JugX4G1Rb9cwl4cMNKr/OKCMAwe/BTVthjUPsMDOQCAN4SeXCCedrmITaBENodfs7st8oQ==
-X-Received: by 2002:aa7:9989:0:b029:1f5:aa05:94af with SMTP id k9-20020aa799890000b02901f5aa0594afmr5783950pfh.34.1616518276602;
-        Tue, 23 Mar 2021 09:51:16 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id p3sm15783705pgi.24.2021.03.23.09.51.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 09:51:16 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 16:51:12 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <YFocgJ+OD/0rCsvg@google.com>
-References: <20210322191540.GH6481@zn.tnic>
- <YFjx3vixDURClgcb@google.com>
- <20210322210645.GI6481@zn.tnic>
- <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
- <20210322223726.GJ6481@zn.tnic>
- <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
- <YFoNCvBYS2lIYjjc@google.com>
- <20210323160604.GB4729@zn.tnic>
- <YFoVmxIFjGpqM6Bk@google.com>
- <20210323163258.GC4729@zn.tnic>
+        Tue, 23 Mar 2021 12:53:06 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3C43E20B5680;
+        Tue, 23 Mar 2021 09:53:05 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3C43E20B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616518385;
+        bh=bsWnf5PwIqc8V0tuB6C6T1DpJkJTvse0YHx93Jrj8Xg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Bkm0j+9ZRXt0B8Tn2aSIRanJbDitVzQx4He1n2vaiw/cjk+mhWR23xruB+O7BjPYw
+         Swcynk9xosQ+mND+C0Az/N1ay2W54jPgIfK0XAYxmHRfYK6XvuU/GKFWZ+FdHYQgEC
+         uoC8Bo5zulY5pM92BSr5N3ZxKFIP1ad8riDSJdiM=
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
+ trace unreliable
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+ <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+ <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+ <20210323145734.GD98545@C02TD0UTHF1T.local>
+ <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
+ <20210323164801.GE98545@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <bfc4dbbd-f69b-1a41-c16a-0c5cd0080f90@linux.microsoft.com>
+Date:   Tue, 23 Mar 2021 11:53:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323163258.GC4729@zn.tnic>
+In-Reply-To: <20210323164801.GE98545@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021, Borislav Petkov wrote:
-> On Tue, Mar 23, 2021 at 04:21:47PM +0000, Sean Christopherson wrote:
-> > I like the idea of pointing at the documentation.  The documentation should
-> > probably emphasize that something is very, very wrong.
-> 
-> Yap, because no matter how we formulate the error message, it still ain't enough
-> and needs a longer explanation.
-> 
-> > E.g. if a kernel bug triggers EREMOVE failure and isn't detected until
-> > the kernel is widely deployed in a fleet, then the folks deploying the
-> > kernel probably _should_ be in all out panic. For this variety of bug
-> > to escape that far, it means there are huge holes in test coverage, in
-> > both the kernel itself and in the infrasturcture of whoever is rolling
-> > out their new kernel.
-> 
-> You sound just like someone who works at a company with a big fleet, oh
-> wait...
-> 
-> :-)
-> 
-> And yap, you big fleeted guys will more likely catch it but we do have
-> all these other customers who have a handful of servers only so they
-> probably won't be able to do such a wide coverage.
 
-The size of the fleet shouldn't matter for this specific case.  This bug
-requires the _host_ to be running enclaves, and obviously it also requires the
-system to be running SGX-enabled guests as well.  In such a setup, the SGX
-workload running in the host should be very well defined and understood, i.e.
-testing should be a well-bounded problem to solve.
 
-Running enclaves in both the host and guest should be uncommon in and of itself,
-and for such setups, running _any_ SGX workloads in the host, let alone more
-than 1 or 2 unique workloads, without ensuring guests are fully isolated is,
-IMO, insane.
+On 3/23/21 11:48 AM, Mark Rutland wrote:
+> On Tue, Mar 23, 2021 at 10:26:50AM -0500, Madhavan T. Venkataraman wrote:
+>> On 3/23/21 9:57 AM, Mark Rutland wrote:
+>> Thanks for explaining the nesting. It is now clear to me.
+> 
+> No problem!
+> 
+>> So, my next question is - can we define a practical limit for the
+>> nesting so that any nesting beyond that is fatal? The reason I ask is
+>> - if there is a max, then we can allocate an array of stack frames out
+>> of band for the special frames so they are not part of the stack and
+>> will not likely get corrupted.
+> 
+> I suspect we can't define such a fatal limit without introducing a local
+> DoS vector on some otherwise legitimate workload, and I fear this will
+> further complicate the entry/exit logic, so I'd prefer to avoid
+> introducing a new limit.
+> 
 
-But yeah, what can happen, will happen.
- 
-> So I hope they'll appreciate this longer explanation about what to do
-> when they hit it. And normally I wouldn't even care but we almost never
-> tell people to reboot their boxes to fix sh*t - that's the other OS.
+I suspected as much. But I thought I will ask anyway.
+
+> What exactly do you mean by a "special frame", and why do those need
+> additional protection over regular frame records?
 > 
-> Thx.
+
+Special frame just means pt_regs->stackframe that is used for exceptions.
+No additional protection is needed. I just meant that since they are
+out of band, we can reliably tell that there are exceptions without
+examining the stack. That is all.
+
+>> Also, we don't have to do any special detection. If the number of out
+>> of band frames used is one or more then we have exceptions and the
+>> stack trace is unreliable.
 > 
-> -- 
-> Regards/Gruss,
->     Boris.
+> What is expected to protect against?
 > 
-> https://people.kernel.org/tglx/notes-about-netiquette
+
+It is not a protection thing. I just wanted a reliable way to tell that there
+is an exception without having to unwind the stack up to the exception frame.
+That is all.
+
+Thanks.
+
+Madhavan
