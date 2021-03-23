@@ -2,235 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742D134691A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC28346921
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhCWTaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:30:07 -0400
-Received: from smtp-bc0f.mail.infomaniak.ch ([45.157.188.15]:39161 "EHLO
-        smtp-bc0f.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230138AbhCWT3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:29:34 -0400
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F4hJX0tWDzMqFPM;
-        Tue, 23 Mar 2021 20:29:32 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F4hJT4XNSzlh8TL;
-        Tue, 23 Mar 2021 20:29:29 +0100 (CET)
-Subject: Re: [PATCH v30 07/12] landlock: Support filesystem access-control
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-8-mic@digikod.net> <202103191148.6E819426D@keescook>
- <f705f7e8-3ee3-bae9-c283-174fab41629a@digikod.net>
-Message-ID: <79d96c0a-9254-63aa-6f0b-2c0fce370c29@digikod.net>
-Date:   Tue, 23 Mar 2021 20:30:03 +0100
-User-Agent: 
+        id S230056AbhCWTcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:32:46 -0400
+Received: from mail-bn8nam12on2042.outbound.protection.outlook.com ([40.107.237.42]:17825
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229984AbhCWTcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:32:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ksIP5Klz8XH6lRV2SAr8BmAq8sXW2zhBQ9O212lP2A8sBgY+9USzaH5hwGIYrnv8kzNO/FNV5a7O6Gp4MAbksU0lA3MYrIfesazxIOZF1DwinlQGyDOfMlLITxO6Iog7/zk1P1nSDq5Nk0a0rybxjISBobswYuL7phJCIO08Fjt7RxBOn2oFfRloPRtX6Pbx2Kk9wqeZaS8LGA3M3e2pFWgyfmwuKgm87AsrAWuMPBqYQvMOsKTa0emMBka2xs+KXL9OM6/jH9TFHLKgV6ZdW1yq3NnJnjcn7nc56x0gugvXhoPBnUHbrnOq8ThZ1c5UtVcAmeDRYoPYe5/4LfZmSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kQlU16KGEBJ3O5gbMWmj7xivDSNmcbYiNM8oZpQ1pbM=;
+ b=GsNVwiWRgo74iX3YQSVP8uon3QXlr4z0vIXjQs2aI2vBnOC//Qc3/myFh52ntz+gnYpiM06r7cBmZ6CBp6efiDPYWSLUSTUTjU9i5HUtqcjbMIZvOWsCddRTAqPwUmvGx6alRJ+jYdKhPVdOrsziitrZjThJkKYY/ZYXZqy4bSTgsIBkaxXoANbGvJkMmjlya+8dzcW2PyhZF3o74Lr8GsFcjgU61+SLFbfoD9HsuIB8cez9mBM/tP9WpKUEKXqQuPwq59CzvFzNFdJ3o0XRuiDU/KuxELuV63e/YqotY/UR1XOfWkzBwN5qrgjdo9im137vBKpFMR8pVu6wZxkt2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kQlU16KGEBJ3O5gbMWmj7xivDSNmcbYiNM8oZpQ1pbM=;
+ b=rrTBGCajO+aYKTOD3DxNpKWbiqpJbXaSsoJTAj7eYuLcMHkM2778Z2e59D7TT3DpWcpyJ/jsGCivGJJN9teKWZ25HoyfALOXnkwlKs01WrI6NJOaQnXe7ZmUyKXpGE49O+HJ3BcnR+ItxfXax6jy0uXDdOYVy1YoNMTSsc4XQY+gIvOVdfNHrnPbxeIjg75bLahw7bko+ihbFqsOiRTH7wDCsPpjF9nrtRADlt1I9Wupt856KRwi8Ah5paexU+1tNUvQaWD3zntKkEdvT1iLUjyk8XCLyOz2muaRqemzJUF8Vhgv4I95jbyiXa22W/4W4uXaO/iNKCkbBCtZK7D+jw==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3515.namprd12.prod.outlook.com (2603:10b6:5:15f::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Tue, 23 Mar
+ 2021 19:32:15 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
+ 19:32:15 +0000
+Date:   Tue, 23 Mar 2021 16:32:13 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
+        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
+        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
+        mjrosato@linux.ibm.com
+Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor
+ vfio_pci drivers
+Message-ID: <20210323193213.GM2356281@nvidia.com>
+References: <20210319162033.GA18218@lst.de>
+ <20210319162848.GZ2356281@nvidia.com>
+ <20210319163449.GA19186@lst.de>
+ <20210319113642.4a9b0be1@omen.home.shazbot.org>
+ <20210319200749.GB2356281@nvidia.com>
+ <20210319150809.31bcd292@omen.home.shazbot.org>
+ <20210319225943.GH2356281@nvidia.com>
+ <20210319224028.51b01435@x1.home.shazbot.org>
+ <20210321125818.GM2356281@nvidia.com>
+ <20210322104016.36eb3c1f@omen.home.shazbot.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322104016.36eb3c1f@omen.home.shazbot.org>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0005.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::18)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <f705f7e8-3ee3-bae9-c283-174fab41629a@digikod.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0005.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Tue, 23 Mar 2021 19:32:14 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lOmlB-001f2k-CM; Tue, 23 Mar 2021 16:32:13 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f528cc8f-e351-498f-a84b-08d8ee325d02
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3515:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB351569AE05460EDF8D0A920EC2649@DM6PR12MB3515.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xuJCDgsq+Vtwn7FUoo5sqFbj9vBDzh6PxvXu/yJL/F87sa8RtdQgLsdoGJGOC/4imRZOqyVFVS5P5afBYra95jvo1urVUUAlzYeXa/msfTPDHsB9dI2ZRKKYFwgUroXvUlRfHaYO0d8fSldc7w8D3+J+7XqPU1qkunlRKiFYkRVU28TwT5eogfqN+klDkizCZ0hdn18w+Jbh0NZFTLfQSgo25rI27E7Z5BR7QoV6A91Wrzof/ps46j3tGeiQ066OOKK0qmeyA31DtiCp+wu4LJHEIFYKLVqDzAqVUG2Vcm9kDAtJD4k2QMKvI+oeAa1YvsUXJneJgixut9b4dZrrhE+VPuEXMrWAOb58IgBPekOOy+A9L1fdtdm8c+/L4h3uzoAi9kiBEafTtZZW3w6t6Ey1IuL17m55JAe1Mijy3cOrEhmUICmfl6bzTbXT4drtyU1Yhe25w3h0TvhLwO56PcGh9aMoFdGahwMpfIx9LpMcHui06/+1FkZyRLZzm3kkmhpfPfSth+DOXEOyGP155YiZ19vwfhWIxbzFz4fqrpq0CQJpAxhAbps0Te0AlBC7NIbdnU4QmbIPfFieqkIxJLNOHjk4Va98DpdaJcrJ0IoVOVXSkaJX2ec2JOc8uG/Bjy0mc1a19xxxjKwWx7QDamxguY34kZk+iTqeDcX7crk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(39860400002)(366004)(2616005)(5660300002)(83380400001)(8676002)(8936002)(478600001)(33656002)(1076003)(36756003)(66946007)(2906002)(66476007)(66556008)(426003)(316002)(86362001)(54906003)(38100700001)(9786002)(9746002)(6916009)(26005)(4326008)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?sg95DO7iByEd9DV7phdNXO0PP9pnhco+jT8uLryRucD43q/kwqqN/UuX3cP7?=
+ =?us-ascii?Q?tz6AM1slNuK4QijkQzWTrji03jE3nnkr+2Ol8mQSMebBs8C2N0JJ+xdPu/eY?=
+ =?us-ascii?Q?zcHtiRwsJbgyu5TZl6x1XRqM125kJ6os+V79dUe4pNi90Jn0ix7Jn33pPfNx?=
+ =?us-ascii?Q?uL746MoLkzCfFGz1574x0TbG0QY5KG3aDLZ1HHSsMuYnwxbT3KBDHMntZe8E?=
+ =?us-ascii?Q?Zfm+NblpkfWg0p+g7QF5JhGm8h62B5KjOT5VO0JVKaoor7dCUJknvpaNgkmJ?=
+ =?us-ascii?Q?zUDbfbxnkEKU78CFyKlqiwfb2LQdbtA7Zs8rozoBydPPiK5mHZkthU+cCC8S?=
+ =?us-ascii?Q?QOuDG2jo3kLfqooKtc9kLjDizxus0zTwfSMw2izzTnoIog6ZJ+aD34DE82yV?=
+ =?us-ascii?Q?WCPyF0vqjvaqhybeA32BWFPHoypqhobgm7Ll2M77VlLnIdWdDDcpujWhZxBU?=
+ =?us-ascii?Q?0+VYNtydL5D6P8Cfd/yX0cgFPI9SjJb5bMz+V2VAn/FfFzP5nP5o+eA98ytv?=
+ =?us-ascii?Q?HsZqSwjV1GuWySg3bgdajuKjx2wEJDmz1Co9bY1HLa1sTPPCmWFiuwQqlXAU?=
+ =?us-ascii?Q?u4asv5TW2TJ4bGlzJPEGHb2yvKnuAvdgybQaQ1cEOG8Fnz9bI2E7GJHv6SpF?=
+ =?us-ascii?Q?eakn/0MrBdfXrVA+f5KhuAo22rZSvWfulgsqsD/wyCxntrzywOos2k2sQxBu?=
+ =?us-ascii?Q?sBm4TJfzVde72jFAKY8w65P2l2vf1lfxiVZ60bvgtivjzYGFGCJ1DZx4JxAP?=
+ =?us-ascii?Q?zLqf9eqgVAw2kmIb5YHGNRCwbLjZosUvYfThoYCnrx/w6xdCAJHLWawA15Hi?=
+ =?us-ascii?Q?DoIFLW4mJkcebpH8xbqQf0M2dxydyQvSzHhUjMbYr1qe+yS+ATNuIJ0Muhdh?=
+ =?us-ascii?Q?mCYMSaCPFOXEg1WpHj8IlWtgR4M1YFJCJhx3A9qpHAZObbhR9XnVMsmMQuko?=
+ =?us-ascii?Q?bqgQKjs2wnVsc9pyvodlLhB7HGdt34ewJTlV6xsOkIIaAXWIIHh0s/9WXrC4?=
+ =?us-ascii?Q?J+QJDXcZVHKtsqYa7qtneC0g+IbZ9mjwFNOo69KHlb2AVpGgEnj/KGx+ifMz?=
+ =?us-ascii?Q?0/GqIJBh7dioRy5fO+/tvz/KQdf4/K1P66pcfWv2tntepZb/Gf8EWF+PRMhj?=
+ =?us-ascii?Q?c61haSHOcU2oNyuWNaH3Ye7+2H5ROLwlOd8ZD5cKRJXSzDVWHFQ2ziM/LuYL?=
+ =?us-ascii?Q?HRmEOYS/lXprSMAHaeB1HYvS1q2YGe3k6MkqtZq6yZIVjFwWfFBQrh9X6I1O?=
+ =?us-ascii?Q?8wqK4OzPjPXg1mkHbpC0D7smnSR+rNYgr+LnXsyLG1AvDf8G3vkg+DWeOt55?=
+ =?us-ascii?Q?mZFu0QB9nKdWY9E0Uq1GJbnR?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f528cc8f-e351-498f-a84b-08d8ee325d02
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 19:32:15.2983
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j9et1hMVwhFuPfnT22hGdnzS/jtHrTuwIhkYI5wdnFpOesVdo/VwXd309+gCDAeL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3515
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 10:40:16AM -0600, Alex Williamson wrote:
 
-On 19/03/2021 20:19, Mickaël Salaün wrote:
-> 
-> On 19/03/2021 19:57, Kees Cook wrote:
->> On Tue, Mar 16, 2021 at 09:42:47PM +0100, Mickaël Salaün wrote:
->>> From: Mickaël Salaün <mic@linux.microsoft.com>
->>>
->>> Using Landlock objects and ruleset, it is possible to tag inodes
->>> according to a process's domain.  To enable an unprivileged process to
->>> express a file hierarchy, it first needs to open a directory (or a file)
->>> and pass this file descriptor to the kernel through
->>> landlock_add_rule(2).  When checking if a file access request is
->>> allowed, we walk from the requested dentry to the real root, following
->>> the different mount layers.  The access to each "tagged" inodes are
->>> collected according to their rule layer level, and ANDed to create
->>> access to the requested file hierarchy.  This makes possible to identify
->>> a lot of files without tagging every inodes nor modifying the
->>> filesystem, while still following the view and understanding the user
->>> has from the filesystem.
->>>
->>> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
->>> keep the same struct inodes for the same inodes whereas these inodes are
->>> in use.
->>>
->>> This commit adds a minimal set of supported filesystem access-control
->>> which doesn't enable to restrict all file-related actions.  This is the
->>> result of multiple discussions to minimize the code of Landlock to ease
->>> review.  Thanks to the Landlock design, extending this access-control
->>> without breaking user space will not be a problem.  Moreover, seccomp
->>> filters can be used to restrict the use of syscall families which may
->>> not be currently handled by Landlock.
->>>
->>> Cc: Al Viro <viro@zeniv.linux.org.uk>
->>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->>> Cc: James Morris <jmorris@namei.org>
->>> Cc: Jann Horn <jannh@google.com>
->>> Cc: Jeff Dike <jdike@addtoit.com>
->>> Cc: Kees Cook <keescook@chromium.org>
->>> Cc: Richard Weinberger <richard@nod.at>
->>> Cc: Serge E. Hallyn <serge@hallyn.com>
->>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->>> Link: https://lore.kernel.org/r/20210316204252.427806-8-mic@digikod.net
->>> [...]
->>> +	spin_lock(&sb->s_inode_list_lock);
->>> +	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
->>> +		struct landlock_object *object;
->>> +
->>> +		/* Only handles referenced inodes. */
->>> +		if (!atomic_read(&inode->i_count))
->>> +			continue;
->>> +
->>> +		/*
->>> +		 * Checks I_FREEING and I_WILL_FREE  to protect against a race
->>> +		 * condition when release_inode() just called iput(), which
->>> +		 * could lead to a NULL dereference of inode->security or a
->>> +		 * second call to iput() for the same Landlock object.  Also
->>> +		 * checks I_NEW because such inode cannot be tied to an object.
->>> +		 */
->>> +		spin_lock(&inode->i_lock);
->>> +		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
->>> +			spin_unlock(&inode->i_lock);
->>> +			continue;
->>> +		}
->>
->> This (and elsewhere here) seems like a lot of inode internals getting
->> exposed. Can any of this be repurposed into helpers? I see this test
->> scattered around the kernel a fair bit:
->>
->> $ git grep I_FREEING | grep I_WILL_FREE | grep I_NEW | wc -l
->> 9
-> 
-> Dealing with the filesystem is complex. Some helpers could probably be
-> added, but with a series dedicated to the filesystem. I can work on that
-> once this series is merged.
-> 
->>
->>> +static inline u32 get_mode_access(const umode_t mode)
->>> +{
->>> +	switch (mode & S_IFMT) {
->>> +	case S_IFLNK:
->>> +		return LANDLOCK_ACCESS_FS_MAKE_SYM;
->>> +	case 0:
->>> +		/* A zero mode translates to S_IFREG. */
->>> +	case S_IFREG:
->>> +		return LANDLOCK_ACCESS_FS_MAKE_REG;
->>> +	case S_IFDIR:
->>> +		return LANDLOCK_ACCESS_FS_MAKE_DIR;
->>> +	case S_IFCHR:
->>> +		return LANDLOCK_ACCESS_FS_MAKE_CHAR;
->>> +	case S_IFBLK:
->>> +		return LANDLOCK_ACCESS_FS_MAKE_BLOCK;
->>> +	case S_IFIFO:
->>> +		return LANDLOCK_ACCESS_FS_MAKE_FIFO;
->>> +	case S_IFSOCK:
->>> +		return LANDLOCK_ACCESS_FS_MAKE_SOCK;
->>> +	default:
->>> +		WARN_ON_ONCE(1);
->>> +		return 0;
->>> +	}
->>
->> I'm assuming this won't be reachable from userspace.
-> 
-> It should not, only a bogus kernel code could.
-> 
->>
->>> [...]
->>> index a5d6ef334991..f8e8e980454c 100644
->>> --- a/security/landlock/setup.c
->>> +++ b/security/landlock/setup.c
->>> @@ -11,17 +11,24 @@
->>>  
->>>  #include "common.h"
->>>  #include "cred.h"
->>> +#include "fs.h"
->>>  #include "ptrace.h"
->>>  #include "setup.h"
->>>  
->>> +bool landlock_initialized __lsm_ro_after_init = false;
->>> +
->>>  struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
->>>  	.lbs_cred = sizeof(struct landlock_cred_security),
->>> +	.lbs_inode = sizeof(struct landlock_inode_security),
->>> +	.lbs_superblock = sizeof(struct landlock_superblock_security),
->>>  };
->>>  
->>>  static int __init landlock_init(void)
->>>  {
->>>  	landlock_add_cred_hooks();
->>>  	landlock_add_ptrace_hooks();
->>> +	landlock_add_fs_hooks();
->>> +	landlock_initialized = true;
->>
->> I think this landlock_initialized is logically separate from the optional
->> DEFINE_LSM "enabled" variable, but I thought I'd double check. :)
-> 
-> An LSM can be marked as enabled (at boot) but not yet initialized.
-> 
->>
->> It seems like it's used here to avoid releasing superblocks before
->> landlock_init() is called? What is the scenario where that happens?
-> 
-> It is a condition for LSM hooks, syscalls and superblock management.
-> 
->>
->>>  	pr_info("Up and running.\n");
->>>  	return 0;
->>>  }
->>> diff --git a/security/landlock/setup.h b/security/landlock/setup.h
->>> index 9fdbf33fcc33..1daffab1ab4b 100644
->>> --- a/security/landlock/setup.h
->>> +++ b/security/landlock/setup.h
->>> @@ -11,6 +11,8 @@
->>>  
->>>  #include <linux/lsm_hooks.h>
->>>  
->>> +extern bool landlock_initialized;
->>> +
->>>  extern struct lsm_blob_sizes landlock_blob_sizes;
->>>  
->>>  #endif /* _SECURITY_LANDLOCK_SETUP_H */
->>> -- 
->>> 2.30.2
->>>
->>
->> The locking and inode semantics are pretty complex, but since, again,
->> it's got significant test and syzkaller coverage, it looks good to me.
->>
->> With the inode helper cleanup:
+> Of course if you start looking at features like migration support,
+> that's more than likely not simply an additional region with optional
+> information, it would need to interact with the actual state of the
+> device.  For those, I would very much support use of a specific
+> id_table.  That's not these.
 
-I think the inode helper would have to be in a separate patch focused on
-fs/ (like all matches of your greps, except Landlock). Are you OK if I
-send a patch for that once Landlock is merged?
+What I don't understand is why do we need two different ways of
+inserting vendor code?
 
+> > new_id and driver_override should probably be in that disable list
+> > too..
+> 
+> We don't have this other world yet, nor is it clear that we will have
+> it.
 
->>
->> Reviewed-by: Kees Cook <keescook@chromium.org>
->>
+We do today, it is obscure, but there is a whole set of config options
+designed to disable the unsafe kernel features. Kernels booted with
+secure boot and signed modules tend to enable a lot of them, for
+instance. The people working on the IMA stuff tend to enable a lot
+more as you can defeat the purpose of IMA if you can hijack the
+kernel.
+
+> What sort of id_table is the base vfio-pci driver expected to use?
+
+If it has a match table it would be all match, this is why I called it
+a "universal driver"
+
+If we have a flavour then the flavour controls the activation of
+VFIO, not new_id or driver_override, and in vfio flavour mode we can
+have an all match table, if we can resolve how to choose between two
+drivers with overlapping matches.
+
+> > > > This is why I want to try for fine grained autoloading first. It
+> > > > really is the elegant solution if we can work it out.  
+> > > 
+> > > I just don't see how we create a manageable change to userspace.  
+> > 
+> > I'm not sure I understand. Even if we add a new sysfs to set some
+> > flavour then that is a pretty trivial change for userspace to move
+> > from driver_override?
+> 
+> Perhaps for some definition of trivial that I'm not familiar with.
+> We're talking about changing libvirt and driverctl and every distro and
+> user that's created a custom script outside of those.  Even changing
+> from "vfio-pci" to "vfio-pci*" is a hurdle.
+
+Sure, but it isn't like a major architectural shift, nor is it
+mandatory unless you start using this new hardware class.
+
+Userspace changes when we add kernel functionality.. The kernel just
+has to keep working the way it used to for old functionality.
+
+> > Well, I read through the Intel GPU driver and this is how I felt it
+> > works. It doesn't even check the firmware bit unless certain PCI IDs
+> > are matched first.
+> 
+> The IDs being only the PCI vendor ID and class code.  
+
+I don't mean how vfio works, I mean how the Intel GPU driver works.
+
+eg:
+
+psb_pci_probe()
+ psb_driver_load()
+  psb_intel_opregion_setup()
+           if (memcmp(base, OPREGION_SIGNATURE, 16)) {
+
+i915_pci_probe()
+ i915_driver_probe()
+  i915_driver_hw_probe()
+   intel_opregion_setup()
+	if (memcmp(buf, OPREGION_SIGNATURE, 16)) {
+
+All of these memcmp's are protected by exact id_tables hung off the
+pci_driver's id_table.
+
+VFIO is the different case. In this case the ID match confirms that
+the config space has the ASLS dword at the fixed offset. If the ID
+doesn't match nothing should read the ASLS offset.
+
+> > For NVIDIA GPU Max checked internally and we saw it looks very much
+> > like how Intel GPU works. Only some PCI IDs trigger checking on the
+> > feature the firmware thing is linked to.
+> 
+> And as Alexey noted, the table came up incomplete.  But also those same
+> devices exist on platforms where this extension is completely
+> irrelevant.
+
+I understood he ment that NVIDI GPUs *without* NVLINK can exist, but
+the ID table we have here is supposed to be the NVLINK compatible
+ID's.
+
+> So because we don't check for an Intel specific graphics firmware table
+> when binding to Realtek NIC, we can leap to the conclusion that there
+> must be a concise id_table we can create for IGD support?
+
+Concise? No, but we can see *today* what the ID table is supposed to
+be by just loooking and the three probe functions that touch
+OPREGION_SIGNATURE.
+
+> There's a giant assumption above that I'm missing.  Are you expecting
+> that vendors are actually going to keep up with submitting device IDs
+> that they claim to have tested and support with vfio-pci and all other
+> devices won't be allowed to bind?  That would single handedly destroy
+> any non-enterprise use cases of vfio-pci.
+
+Why not? They do it for the in-tree GPU drivers today! The ID table
+for Intel GPU is even in a *header file* and we can just #include it
+into vfio igd as well.
+
+> So unless you want to do some bitkeeper archaeology, we've always
+> allowed driver probes to fail and fall through to the next one, not
+> even complaining with -ENODEV.  In practice it hasn't been an issue
+> because how many drivers do you expect to have that would even try to
+> claim a device.  
+
+Do you know of anything using this ability? It might be helpful
+
+> Ordering is only important when there's a catch-all so we need to
+> figure out how to make that last among a class of drivers that will
+> attempt to claim a device.  The softdep is a bit of a hack to do
+> that, I'll admit, but I don't see how the alternate driver flavor
+> universe solves having a catch-all either.
+
+Haven't entirely got there yet, but I think the catch all probably has
+to be handled by userspace udev/kmod in some way, as it is the only
+thing that knows if there is a more specific module to load. This is
+the biggest problem..
+
+And again, I feel this is all a big tangent, especially now that HCH
+wants to delete the nvlink stuff we should just leave igd alone.
+
+Jason
