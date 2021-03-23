@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91353345EB9
+	by mail.lfdr.de (Postfix) with ESMTP id DD28F345EBA
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhCWM62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
+        id S231406AbhCWM6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhCWM6O (ORCPT
+        with ESMTP id S231434AbhCWM6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:58:14 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3D0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:58:13 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id bx7so23311715edb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:58:13 -0700 (PDT)
+        Tue, 23 Mar 2021 08:58:17 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B57AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:58:16 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id hq27so26928751ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 05:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hWRwPMPyX/TOjV6wMeQIWCYqUEDrv7MaokSiTNE+z1Q=;
-        b=EJX4dEYfgttXfvSIYC3NixLUAiCTc92+Wfpj0ft0JiMAppD2byG9JeeSGM+DmCV6vf
-         Pu0C+a6ExiF8+/z+dwGxAvvIFOlwW5unWlFgIMS6jf+UO+DZsa/lZMgJfBM0nVhNOmnm
-         poiY7wotFZVup44kG21ZBD/IzztcIDusNimsb+4IYrUURH7Nz2EU01d/KkKBU664gd9I
-         GG/Xp4reD9X8lGf2LOZkQiv+HoLqD1H8I73Fsc+L37+910t1dBA6eVVfGVtbOY9J5PSU
-         x3/av06lPkGLjxW38/VyKjFRBTNAx4faJrNRz7Y9NPeK1HMdz7qdjhd2gILywUYiSwlt
-         oYBw==
+        bh=Bk7L2JiHDOx/IGuh0r9SJpyYVpnH5cwXAynzQTVb+fA=;
+        b=evIvxGk8F6FMbM/wbZcq3iLealOF/+nq4mwaFSYfQulJ2VV14TR4njINb5qdTmmo5I
+         jIq1dc/uoser/WZsbEzzsAGbSX9+nxrHGt9s8Z4OUhWgt334Rvxa2wP7OM9EnAyULlMH
+         CPjFfUK/ZiNIJmzVWDBeq8lTKIpGsVZVEp5n9OS8uTPFxXuN0nXNP5k4trK+6Xm/ychC
+         1VcfrImW7RzmPdyeVimMnS+URBQjZdaXKioHRm5up/naEfm23+IyJW2Vh+NMY6ULlQw+
+         6jUbndCo82mFGNtZtTBHik+wRKIaYz302sWKCDbgX1tlvXmDwnLqzyOjYpBB8GTGnam7
+         PucA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hWRwPMPyX/TOjV6wMeQIWCYqUEDrv7MaokSiTNE+z1Q=;
-        b=eVX0YhYOZAXgMhxEsWo1iShAxCm9O10y9dP34GKqwAkA4esstmF4qAcRNlpJ2PsR57
-         Nj7jgnldbv0QKWzgbW4KKWlD19yj24VSpbjZuZOR0qW7SvR84d2y5CN7yjcSUM9RQ2F+
-         rcvar6nSwlKTB785GOgku0qcYbH7Z+zw5ASPFZCYDbvo1llodfopFgzq5VLiQz4HY9QZ
-         /vpI2Zdth6Ks+DOXj8tHgTUE6xkLPrvDodVPqwE06Iw1L+qyOcDYzfPQ+hgf3EFZ9oVm
-         z2SDpAtxSl2SH9EhVNhBc60RilZW4MBPOCI9PeieWDoHc3eAsLv1ZgVfnzamunFvBpMZ
-         DYAg==
-X-Gm-Message-State: AOAM5305xECssbZHcfSAjNzOCgib4mtx7tYcaZtViqclzLItm5bE7Kiy
-        Qp1+DbzYbQtLRXjAmcEJZLc=
-X-Google-Smtp-Source: ABdhPJzlh9pl/Zz4UK/qFA8OMPYJ9G2G4rQRzaY5UlJCiSqDlwnk8XIKW8oH5f5cuppgrRpHjSQjTQ==
-X-Received: by 2002:a05:6402:b70:: with SMTP id cb16mr4521183edb.11.1616504292747;
-        Tue, 23 Mar 2021 05:58:12 -0700 (PDT)
+        bh=Bk7L2JiHDOx/IGuh0r9SJpyYVpnH5cwXAynzQTVb+fA=;
+        b=sxjzrgfx/1Ne097IFTab+Z61uPYrNbSksJ9eTxjJy4jJImPsqFZeYTuJn/Mou5pjYG
+         +Wrafw36CikI9MJek8L8wPCdF/ifA+kuOgvpW1eGbyQcFQx671aU1VsDkNoi5NJD9xbO
+         ZFSVodceYWOyg9ljrHwN6O60bBODtYOf395P1o0H/pbky/HrCX3oTy7HPq5uPQB+15zJ
+         bmL9xBUvhDWDg6D/0/7PgL7iKwjd7YdydqCC0Ci/B/acOpIBQovtf63jmbB7OHUcBVyR
+         u9BLzVt2aoBahjyZP0pPVSGc8d1rBRyF3a4fZ4Kb79zwnOoqovAvgEff1tQIABbEdKc2
+         zeFg==
+X-Gm-Message-State: AOAM531Bn7BkzP0x9bAnWJL0yzZfl18KQLcsorEwB/6Str7ZtDtB+TFz
+        kmPN26PcKI5OBmDd7Jl/fIU=
+X-Google-Smtp-Source: ABdhPJzvBMpe69lE5RczGwx1OEqElK5/Saz9R1hrYXUna8Yi62WFIySfbS54PrBZmhTWCZlkLgH/AQ==
+X-Received: by 2002:a17:906:110d:: with SMTP id h13mr4841823eja.357.1616504295130;
+        Tue, 23 Mar 2021 05:58:15 -0700 (PDT)
 Received: from agape ([151.57.211.10])
-        by smtp.gmail.com with ESMTPSA id q26sm11184723eja.45.2021.03.23.05.58.11
+        by smtp.gmail.com with ESMTPSA id q16sm11051013ejd.15.2021.03.23.05.58.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 05:58:12 -0700 (PDT)
+        Tue, 23 Mar 2021 05:58:14 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     joe@perches.com, apw@canonical.com, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v2 0/9] fix extern declarations checkpatch issues
-Date:   Tue, 23 Mar 2021 13:56:27 +0100
-Message-Id: <cover.1616503354.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 1/9] staging: rtl8723bs: removed function prototypes in core/rtw_efuse.c
+Date:   Tue, 23 Mar 2021 13:56:28 +0100
+Message-Id: <e9137945e66eccae8f2ae3eabe720ea648262eca.1616503354.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <YFjBHNkQFlFzZKpV@kroah.com>
-References: <YFjBHNkQFlFzZKpV@kroah.com>
+In-Reply-To: <cover.1616503354.git.fabioaiuto83@gmail.com>
+References: <cover.1616503354.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix extern declaration issues warned by checkpatch.
+fix the following checkpatch issues:
 
-Changes in v2:
-	- removal of prototypes when function can be static
-	- move of static function defs inside file to let the code compile
-	- split last patch in two patches (one patch for blank line removal)
+WARNING: externs should be avoided in .c files
+35: FILE: drivers/staging/rtl8723bs/core/rtw_efuse.c:35:
++bool
 
-Fabio Aiuto (9):
-  staging: rtl8723bs: removed function prototypes in core/rtw_efuse.c
-  staging: rtl8723bs: moved function prototype out of
-    core/rtw_ioctl_set.c and core/rtw_mlme.c
-  staging: rtl8723bs: removed function prototypes and made statics in
-    core/rtw_recv.c
-  staging: rtl8723bs: delete extern declarations in core/rtw_wlan_util.c
-  staging: rtl8723bs: remove function prototypes in hal/odm.c
-  staging: rtl8723bs: move function prototypes out of os_dep/int_fs.c
-  staging: rtl8723bs: remove undefined function prototype in of
-    os_dep/sdio_intf.c
-  staging: rtl8723bs: remove unnecessary extern in os_dep/sdio_intf.c
-  staging: rtl8723bs: remove blank line os_dep/os_intfs.c
+removed two function prototypes in core/rtw_efuse.c and
+made definition static
 
- drivers/staging/rtl8723bs/core/rtw_efuse.c    |   14 +-
- .../staging/rtl8723bs/core/rtw_ioctl_set.c    |    1 -
- drivers/staging/rtl8723bs/core/rtw_mlme.c     |    2 -
- drivers/staging/rtl8723bs/core/rtw_recv.c     |  441 ++---
- .../staging/rtl8723bs/core/rtw_wlan_util.c    |    3 -
- drivers/staging/rtl8723bs/hal/odm.c           | 1717 ++++++++---------
- .../staging/rtl8723bs/include/osdep_intf.h    |    2 +
- .../staging/rtl8723bs/include/rtw_ioctl_set.h |    2 +
- .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |    2 -
- drivers/staging/rtl8723bs/os_dep/os_intfs.c   |    5 +-
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c  |    3 -
- 11 files changed, 1038 insertions(+), 1154 deletions(-)
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_efuse.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_efuse.c b/drivers/staging/rtl8723bs/core/rtw_efuse.c
+index 32ca10f01413..3701336e7ff6 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_efuse.c
++++ b/drivers/staging/rtl8723bs/core/rtw_efuse.c
+@@ -32,12 +32,7 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
+ #define REG_EFUSE_CTRL		0x0030
+ #define EFUSE_CTRL			REG_EFUSE_CTRL		/*  E-Fuse Control. */
+ 
+-bool
+-Efuse_Read1ByteFromFakeContent(
+-	struct adapter *padapter,
+-	u16 	Offset,
+-	u8 *Value);
+-bool
++static bool
+ Efuse_Read1ByteFromFakeContent(
+ 	struct adapter *padapter,
+ 	u16 	Offset,
+@@ -53,12 +48,7 @@ Efuse_Read1ByteFromFakeContent(
+ 	return true;
+ }
+ 
+-bool
+-Efuse_Write1ByteToFakeContent(
+-	struct adapter *padapter,
+-	u16 	Offset,
+-	u8 Value);
+-bool
++static bool
+ Efuse_Write1ByteToFakeContent(
+ 	struct adapter *padapter,
+ 	u16 	Offset,
 -- 
 2.20.1
 
