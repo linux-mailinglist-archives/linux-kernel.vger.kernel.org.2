@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681B934626C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2154B3462A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbhCWPJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232712AbhCWPJF (ORCPT
+        id S232523AbhCWPJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:09:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33848 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232685AbhCWPJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:09:05 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950E8C061764;
-        Tue, 23 Mar 2021 08:09:04 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 15:08:56 -0000
+        Tue, 23 Mar 2021 11:09:00 -0400
+Date:   Tue, 23 Mar 2021 15:08:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616512137;
+        s=2020; t=1616512138;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XVbXEkiIHpyXN0C5ijWE4PRqcKypnI5p3HFpnBZ0Pgw=;
-        b=My31Gb9xCbvgX60407o2PgiyfCXD9e8jxYjDmJi+BMqpXPMOsrOv1Fmi+scEWvQtmG7UJe
-        j9zclEk1T8xLktkZw3GXesFqmO3zuF6aOxb7iZ15D4YUwAcUHMg38MUR4+cbQgz2z2Afts
-        GuIj1l4FHXFOH+JJB7jOsQLHIU4O5Y4b6mLVR4BvP0rBPce7hg2d69wbls23aQ49gUq0Ze
-        vxqU6TpPsw1OSP5pREILtIYInJwbsWSP3fIk+S/WkM9wmfaNuz3aKeHAnrimopKflkUG74
-        9Et5CKsEGEBcJt8T1LcQSJLs+Awix148OTWDnq/9RcdPLh27rZ+e928hAuc5+A==
+        bh=SwPdYmVzl6wak2B8Ftvkic+OejtDVfYyFMGoDfjWwiQ=;
+        b=TdyVkPW/E+g5115yOLubVOJ/6nSTe6rgA8tJ8AYcylzmgHxdGsAdeTvFfDGGxQHoRN9sq3
+        YAbR+R8fPKwXpFWkybKFEBrNcAal01O3M7W2Gcn/fT7Kj8tRH5ti5HMnKyWWKOf1I1D3Ph
+        H0qDhje+JZNHqR8efga/Ee5c7JQwc8v5EZEt9nYJ5p7TmVeifrFDzP+FSALFsfWT5LKgGN
+        pUz97qO12geYbba589VTMT3yKu06mkQlMAuBvZfDpmVNBKjNgptV/eNDk/9H0Mz7wBK3jV
+        msAo6/cMW2PxvDlXK7Tx9+Sp2eOGw235ee+YonOw/nIBoS/yLq0cfgddLjlclg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616512137;
+        s=2020e; t=1616512138;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XVbXEkiIHpyXN0C5ijWE4PRqcKypnI5p3HFpnBZ0Pgw=;
-        b=RFWYTnQF7nXVCRCOmf3FmQ3HUBOLzSDcowGwEasVRde2/4TExwVeSlsiwh1kZ+HPqjYS/8
-        sVGFY4L9iRZlRSBg==
-From:   "tip-bot2 for Barry Song" <tip-bot2@linutronix.de>
+        bh=SwPdYmVzl6wak2B8Ftvkic+OejtDVfYyFMGoDfjWwiQ=;
+        b=KvI/5oR+YixcmN+E9z4apsbg4PwjVxv8zOFAh3EPQhjYr6J+d+tVGSeJdztdRJbfNeSmtL
+        o+B0KOkqGgJcUgBw==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Optimize test_idle_cores() for !SMT
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>, x86@kernel.org,
+Subject: [tip: sched/core] stop_machine: Add caller debug info to queue_stop_cpus_work
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210320221432.924-1-song.bao.hua@hisilicon.com>
-References: <20210320221432.924-1-song.bao.hua@hisilicon.com>
+In-Reply-To: <20201210163830.21514-2-valentin.schneider@arm.com>
+References: <20201210163830.21514-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <161651213699.398.5893410671090085517.tip-bot2@tip-bot2>
+Message-ID: <161651213787.398.6254970835942552162.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,60 +58,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     c8987ae5af793a73e2c0d6ce804d8ff454ea377c
-Gitweb:        https://git.kernel.org/tip/c8987ae5af793a73e2c0d6ce804d8ff454ea377c
-Author:        Barry Song <song.bao.hua@hisilicon.com>
-AuthorDate:    Sun, 21 Mar 2021 11:14:32 +13:00
+Commit-ID:     2a2f80ff63bc36a874ed569bcaef932a8fe43514
+Gitweb:        https://git.kernel.org/tip/2a2f80ff63bc36a874ed569bcaef932a8fe43514
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Thu, 10 Dec 2020 16:38:29 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 23 Mar 2021 16:01:59 +01:00
+CommitterDate: Tue, 23 Mar 2021 16:01:58 +01:00
 
-sched/fair: Optimize test_idle_cores() for !SMT
+stop_machine: Add caller debug info to queue_stop_cpus_work
 
-update_idle_core() is only done for the case of sched_smt_present.
-but test_idle_cores() is done for all machines even those without
-SMT.
+Most callsites were covered by commit
 
-This can contribute to up 8%+ hackbench performance loss on a
-machine like kunpeng 920 which has no SMT. This patch removes the
-redundant test_idle_cores() for !SMT machines.
+  a8b62fd08505 ("stop_machine: Add function and caller debug info")
 
-Hackbench is ran with -g {2..14}, for each g it is ran 10 times to get
-an average.
+but this skipped queue_stop_cpus_work(). Add caller debug info to it.
 
-  $ numactl -N 0 hackbench -p -T -l 20000 -g $1
-
-The below is the result of hackbench w/ and w/o this patch:
-
-  g=    2      4     6       8      10     12      14
-  w/o: 1.8151 3.8499 5.5142 7.2491 9.0340 10.7345 12.0929
-  w/ : 1.8428 3.7436 5.4501 6.9522 8.2882  9.9535 11.3367
-			    +4.1%  +8.3%  +7.3%   +6.3%
-
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Link: https://lkml.kernel.org/r/20210320221432.924-1-song.bao.hua@hisilicon.com
+Link: https://lkml.kernel.org/r/20201210163830.21514-2-valentin.schneider@arm.com
 ---
- kernel/sched/fair.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ kernel/stop_machine.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6aad028..aaa0dfa 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6038,9 +6038,11 @@ static inline bool test_idle_cores(int cpu, bool def)
- {
- 	struct sched_domain_shared *sds;
- 
--	sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
--	if (sds)
--		return READ_ONCE(sds->has_idle_cores);
-+	if (static_branch_likely(&sched_smt_present)) {
-+		sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
-+		if (sds)
-+			return READ_ONCE(sds->has_idle_cores);
-+	}
- 
- 	return def;
- }
+diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+index 971d8ac..cbc3027 100644
+--- a/kernel/stop_machine.c
++++ b/kernel/stop_machine.c
+@@ -409,6 +409,7 @@ static bool queue_stop_cpus_work(const struct cpumask *cpumask,
+ 		work->fn = fn;
+ 		work->arg = arg;
+ 		work->done = done;
++		work->caller = _RET_IP_;
+ 		if (cpu_stop_queue_work(cpu, work))
+ 			queued = true;
+ 	}
