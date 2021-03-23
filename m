@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDAD34630D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 614C4346308
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232936AbhCWPgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:36:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:13473 "EHLO mga03.intel.com"
+        id S232918AbhCWPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:36:34 -0400
+Received: from mga12.intel.com ([192.55.52.136]:63207 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232907AbhCWPgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:36:25 -0400
-IronPort-SDR: P87sFH9xvtjaMaTbjiF021+li7bIMWU0kMxtulqhAmqgbDOqEtxnXujSrMEmAmB0iI6IKB15Fn
- I0dLJ4NlThsA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="190532526"
+        id S232902AbhCWPgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 11:36:24 -0400
+IronPort-SDR: cFQzTPOs/cHx7jF7/h1vY/fOiYKl0Sp1Elwnp5omC7QA0NDTMfhHNdvAjREVJcA56bmSnIKb2X
+ S+qgEu96rAtw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="169834699"
 X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="190532526"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 08:36:24 -0700
-IronPort-SDR: vtDaTiLMQF/hLAK1uvGUTbaWJxzG5f75koFPQqk2rsO/YkMXfN/mmvyAv/AkHx3jUFpDPKj0Hx
- 3X2k4qyt6e3A==
+   d="scan'208";a="169834699"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 08:36:24 -0700
+IronPort-SDR: gACjoh6jfW1if95pq2MRKmQtj1aMuxNU3bsFtknl1l0glw0vZ/+jFS6YoiaTBhuUlc+gsuPTSy
+ Z+jFCxjkF26g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="452187446"
+   d="scan'208";a="513788553"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 23 Mar 2021 08:36:22 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 23 Mar 2021 08:36:22 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 30B6B4DB; Tue, 23 Mar 2021 17:36:35 +0200 (EET)
+        id 4E54153E; Tue, 23 Mar 2021 17:36:36 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 3/7] usb: gadget: pch_udc: Check for DMA mapping error
-Date:   Tue, 23 Mar 2021 17:36:22 +0200
-Message-Id: <20210323153626.54908-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 4/7] usb: gadget: pch_udc: Move pch_udc_init() to satisfy kernel doc
+Date:   Tue, 23 Mar 2021 17:36:23 +0200
+Message-Id: <20210323153626.54908-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210323153626.54908-1-andriy.shevchenko@linux.intel.com>
 References: <20210323153626.54908-1-andriy.shevchenko@linux.intel.com>
@@ -45,31 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DMA mapping might fail, we have to check it with dma_mapping_error().
-Otherwise DMA-API is not happy:
+Kernel doc and the content described by it shouldn't be torn apart.
+Otherwise validator is not happy:
 
-  DMA-API: pch_udc 0000:02:02.4: device driver failed to check map error[device address=0x00000000027ee678] [size=64 bytes] [mapped as single]
+.../pch_udc.c:573: warning: expecting prototype for pch_udc_reconnect(). Prototype was for pch_udc_init() instead
 
-Fixes: abab0c67c061 ("usb: pch_udc: Fixed issue which does not work with g_serial")
+Fixes: 1c575d2d2e3f ("usb: gadget: pch_udc: Fix usb/gadget/pch_udc: Fix ether gadget connect/disconnect issue")
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v2: new patch
- drivers/usb/gadget/udc/pch_udc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: Fixed typo in the commit message (Sergei)
+ drivers/usb/gadget/udc/pch_udc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
-index 2e3510dd026c..455fd9cde0e6 100644
+index 455fd9cde0e6..a5365b524617 100644
 --- a/drivers/usb/gadget/udc/pch_udc.c
 +++ b/drivers/usb/gadget/udc/pch_udc.c
-@@ -2946,7 +2946,7 @@ static int init_dma_pools(struct pch_udc_dev *dev)
- 	dev->dma_addr = dma_map_single(&dev->pdev->dev, ep0out_buf,
- 				       UDC_EP0OUT_BUFF_SIZE * 4,
- 				       DMA_FROM_DEVICE);
--	return 0;
-+	return dma_mapping_error(&dev->pdev->dev, dev->dma_addr);
+@@ -563,12 +563,13 @@ static void pch_udc_clear_disconnect(struct pch_udc_dev *dev)
+ 	pch_udc_bit_clr(dev, UDC_DEVCTL_ADDR, UDC_DEVCTL_RES);
  }
  
- static int pch_udc_start(struct usb_gadget *g,
++static void pch_udc_init(struct pch_udc_dev *dev);
++
+ /**
+  * pch_udc_reconnect() - This API initializes usb device controller,
+  *						and clear the disconnect status.
+  * @dev:		Reference to pch_udc_regs structure
+  */
+-static void pch_udc_init(struct pch_udc_dev *dev);
+ static void pch_udc_reconnect(struct pch_udc_dev *dev)
+ {
+ 	pch_udc_init(dev);
 -- 
 2.30.2
 
