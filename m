@@ -2,139 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4701345703
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60043456FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhCWEzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 00:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        id S229547AbhCWEt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 00:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhCWEyn (ORCPT
+        with ESMTP id S229482AbhCWEs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 00:54:43 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCA2C061574;
-        Mon, 22 Mar 2021 21:54:42 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id v70so13163977qkb.8;
-        Mon, 22 Mar 2021 21:54:42 -0700 (PDT)
+        Tue, 23 Mar 2021 00:48:57 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E71C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 21:48:56 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id o19so9918237qvu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 21:48:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QcRlQh1S/zxnKxyt3g/BCdEjQtxtzxHfEqHQxbpK75U=;
-        b=h7U1zimvrj7GoyX7TkR3qcbf+7m5HNJDhy/QRaq0un/mkJtmv8uXV2qKRQqLxIFJ8h
-         xeVSHyM5O3RgeMUhDB7XbsSr1gx4esyQgakp/EGz9nvyXdSEyJiPguKXkwIpCkr0XGLZ
-         PG20ttLT1gg2JWHSa2tDd5c71+qQeIF6v8vtQ3Tltcb5LZCi9/NZt9jT6qQK2kcVHoK1
-         wtyBpPEdZUqxA36VHOy6KHkJwVAAcurHploFqF2B/IqPe7SOLBULTnSz2CpNFmdpjKzt
-         9FR1VtbwGAzFY8K/wjHiwB9KBsAw1pHnjSga6bNKrEXOg2tzFwTUdV6HUgUKxXcpxY+Z
-         LXFA==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8o4w3qvGY4wX+/J7guXd6pbU7uRScmOE2FBMsZ1kUOo=;
+        b=KWJs/3rpjKokr24+2+rEAutt7PhwLMsqwfrBLewOIjE9Dx9JuAvzk0wH/F1lt615mp
+         pFg+Jn3x4XlfyaJ48tLm5PrKcGhRLmTgwCZpfjxMmh1rz7FM6aQq5G8NWNF11F2UrSeB
+         rsM4TmW8a0Y+ZdV9TcdGEwik6oJi3O4ebaHisqfm72YxLHvsOarVJzvGmRuGGXFyA+0q
+         zlxTxfxSYXapy6ySdk+/Wk5CX9WsyO8Bcc20V63/w05RSk08Nwmreu4qFYbLLIpyuCKL
+         S0O3nZNe8DOCNZzMJzRXO9ff+lrChx/0EteYESGK3AFa6e4SwFmRa64vMk1QIeKGWfU0
+         ErrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QcRlQh1S/zxnKxyt3g/BCdEjQtxtzxHfEqHQxbpK75U=;
-        b=rvfWQ/H7+8/Bt7FKZ5cvjjw+83O06qYmnOKAGPh80cDrxzBaqSuK8IpYdcEkF3OT7M
-         vLdLHMcGJULOAnO9qkEqZT7AQX51KbVh1jjKftRWrVWrI59YnEPKovo3/x/mE1zHjCWG
-         ExIhKHKqEzfekBLlGhW5Lbw+9ujxsFk7C2Opp18ek50A9jUkhonfL2lnGr7jOZV6DbKd
-         B3ZU/SBUM1y1V9EJpCxzW8tmUDJc1iay+WVmnC+KWfBYugMJn4FhOXd8TMzQiUAmvsM3
-         IFcLuuWhEMZnXhKBL1RETqb8wH1c7mg5ZzJYscLXfxWZIkr3pKpoEz0RTVT+BC47S16U
-         ZUEw==
-X-Gm-Message-State: AOAM531Qdx3Ze84g9GJgoy7cVApYDWtontTX2Z/mSTY+ppFOvvO7GtDn
-        UXFP8rz02YbQtIrzi4ukE8ERdIM/ZM7lCNsz
-X-Google-Smtp-Source: ABdhPJzQ57h7x+e0PfDKa1SCDPjxDUK2fGVyQ7NusXMc9XQ9odnFQoPWNTIcq3LNNY8AX9K8D+dMbA==
-X-Received: by 2002:ac8:6059:: with SMTP id k25mr2979267qtm.251.1616474797982;
-        Mon, 22 Mar 2021 21:46:37 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.208])
-        by smtp.gmail.com with ESMTPSA id n3sm10283882qtd.93.2021.03.22.21.46.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=8o4w3qvGY4wX+/J7guXd6pbU7uRScmOE2FBMsZ1kUOo=;
+        b=Mz+kpuq5iHOx2kgSAxc3S7ki3jzDhPGRKbzuhdMnsSFRFZNapH3xX+I2DiR2BkBNMs
+         Zj5xzEDtX7Niv9ZPOX1cYu+ZvyDASn9AnLHG/nzQMf+Am8shzD3lWasGWlTAYwLOj1Fu
+         KOfGapM70BltdI1Lkzo40QNuIBMZ4kDauSlnlCh9ujMTvWqsEcIibxq/3tOYA7gBzDD8
+         gLiAuE3MedCOhAQIIYwq9+IST/m4MCjsyBr3OQhdt9K0VV/UyI2deGwCCUday5p9Z4hy
+         zm02z55o0ht4NkSIr7yMbTFoly3/7Cp3Acf046n/MnzR7GRCWJM/OFQ/+2rcUSp51QYE
+         9i3A==
+X-Gm-Message-State: AOAM533tdJbYdKJkL7iYs9bBQjkdWjNSrHClStOC+6VPFvwWsa2PPSpM
+        5QrBlxQPM7HwImrYDcRpgJQ=
+X-Google-Smtp-Source: ABdhPJy+Lui8GtXG1HUpy8iHpBLLve2dzRGvc2AtjtdKGldvBIpiU8cV4VdRqbzxaYjCKY7cWzcDHg==
+X-Received: by 2002:ad4:56e1:: with SMTP id cr1mr3020837qvb.25.1616474935325;
+        Mon, 22 Mar 2021 21:48:55 -0700 (PDT)
+Received: from ArchLinux ([156.146.54.208])
+        by smtp.gmail.com with ESMTPSA id y1sm12380688qki.9.2021.03.22.21.48.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 21:46:37 -0700 (PDT)
+        Mon, 22 Mar 2021 21:48:54 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 10:18:41 +0530
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
-        unixbhaskar@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] perf tools: Trivial spelling fixes
-Date:   Tue, 23 Mar 2021 10:16:05 +0530
-Message-Id: <20210323044605.1788192-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     gregkh@linuxfoundation.org, colin.king@canonical.com,
+        davem@davemloft.net, lee.jones@linaro.org, arnd@arndb.de,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wimax: Mundane typo fixes
+Message-ID: <YFlzKap5VsILZG+P@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>, gregkh@linuxfoundation.org,
+        colin.king@canonical.com, davem@davemloft.net, lee.jones@linaro.org,
+        arnd@arndb.de, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210323010607.3918516-1-unixbhaskar@gmail.com>
+ <36821877-7a6c-9a15-4e94-cb657ef29dad@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fV3FxdRXDNWSw7XV"
+Content-Disposition: inline
+In-Reply-To: <36821877-7a6c-9a15-4e94-cb657ef29dad@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/succeded/succeeded/ ........five different places
-s/revsions/revisions/
+--fV3FxdRXDNWSw7XV
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- tools/perf/util/header.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+On 21:14 Mon 22 Mar 2021, Randy Dunlap wrote:
+>On 3/22/21 6:06 PM, Bhaskar Chowdhury wrote:
+>>
+>> s/procesing/processing/
+>> s/comunication/communication/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>
+>drivers/staging/wimax/ is in the process of being deleted.
+>
+Yes ...I saw the mail day or two back ...skipped my mind ...anyway we can
+ignore this.
+>> ---
+>>  drivers/staging/wimax/i2400m/driver.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/staging/wimax/i2400m/driver.c b/drivers/staging/wimax/i2400m/driver.c
+>> index f5186458bb3d..162a92682977 100644
+>> --- a/drivers/staging/wimax/i2400m/driver.c
+>> +++ b/drivers/staging/wimax/i2400m/driver.c
+>
+>
+>--
+>~Randy
+>
 
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 20effdff76ce..97a0eeb6d2ab 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -127,7 +127,7 @@ static int __do_write_buf(struct feat_fd *ff,  const void *buf, size_t size)
- 	return 0;
- }
+--fV3FxdRXDNWSw7XV
+Content-Type: application/pgp-signature; name="signature.asc"
 
--/* Return: 0 if succeded, -ERR if failed. */
-+/* Return: 0 if succeeded, -ERR if failed. */
- int do_write(struct feat_fd *ff, const void *buf, size_t size)
- {
- 	if (!ff->buf)
-@@ -135,7 +135,7 @@ int do_write(struct feat_fd *ff, const void *buf, size_t size)
- 	return __do_write_buf(ff, buf, size);
- }
+-----BEGIN PGP SIGNATURE-----
 
--/* Return: 0 if succeded, -ERR if failed. */
-+/* Return: 0 if succeeded, -ERR if failed. */
- static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
- {
- 	u64 *p = (u64 *) set;
-@@ -154,7 +154,7 @@ static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
- 	return 0;
- }
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBZcyUACgkQsjqdtxFL
+KRWv6Qf+NZyfQE34E3YqU/2plOy1xbmrT//aurhwcCVfxGjK6daNggG42HjsMnXs
+tZad38De4zGZZttW+0HxF2K7r6dsOL0n+aBcu5L81zsfOQFkqcav5Vm5/GBsE7sY
+4mnvD/a2NFRcaQEviM0rUxKKiK6aDDQyZVMqZC5f9z8yXHkMDwLVrJrfp6My63YY
+EooWkA6OSqquVqOmcLtQWy01q4hcqMSI6ENsecYfedjwbUP9OwNkTYxa2pI42ton
+4yD9wIlaTs7cFQUku8FHBQhnl1EpA6xBO7DWbR0P1XLCcSywwlUAfZCy6Vh5RFCf
+m/eXN/cyUyhfYDlMMJhsL6dWOvAqyg==
+=ccl5
+-----END PGP SIGNATURE-----
 
--/* Return: 0 if succeded, -ERR if failed. */
-+/* Return: 0 if succeeded, -ERR if failed. */
- int write_padded(struct feat_fd *ff, const void *bf,
- 		 size_t count, size_t count_aligned)
- {
-@@ -170,7 +170,7 @@ int write_padded(struct feat_fd *ff, const void *bf,
- #define string_size(str)						\
- 	(PERF_ALIGN((strlen(str) + 1), NAME_ALIGN) + sizeof(u32))
-
--/* Return: 0 if succeded, -ERR if failed. */
-+/* Return: 0 if succeeded, -ERR if failed. */
- static int do_write_string(struct feat_fd *ff, const char *str)
- {
- 	u32 len, olen;
-@@ -266,7 +266,7 @@ static char *do_read_string(struct feat_fd *ff)
- 	return NULL;
- }
-
--/* Return: 0 if succeded, -ERR if failed. */
-+/* Return: 0 if succeeded, -ERR if failed. */
- static int do_read_bitmap(struct feat_fd *ff, unsigned long **pset, u64 *psize)
- {
- 	unsigned long *set;
-@@ -3485,7 +3485,7 @@ static const size_t attr_pipe_abi_sizes[] = {
-  * between host recording the samples, and host parsing the samples is the
-  * same. This is not always the case given that the pipe output may always be
-  * redirected into a file and analyzed on a different machine with possibly a
-- * different endianness and perf_event ABI revsions in the perf tool itself.
-+ * different endianness and perf_event ABI revisions in the perf tool itself.
-  */
- static int try_all_pipe_abis(uint64_t hdr_sz, struct perf_header *ph)
- {
---
-2.31.0
-
+--fV3FxdRXDNWSw7XV--
