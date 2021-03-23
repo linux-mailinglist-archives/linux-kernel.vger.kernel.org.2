@@ -2,68 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4503463DA
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8D13463DB
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbhCWP4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:56:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:48394 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232861AbhCWP4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:56:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9780D6E;
-        Tue, 23 Mar 2021 08:56:21 -0700 (PDT)
-Received: from [10.57.6.111] (unknown [10.57.6.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E155E3F718;
-        Tue, 23 Mar 2021 08:56:19 -0700 (PDT)
-Subject: Re: [PATCH] powercap/drivers/dtpm: Add dtpm devfreq with energy model
- support
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     cwchoi00@gmail.com, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rafael@kernel.org
-References: <20210319162836.9364-1-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <9a9931f4-ece5-4fe9-5f88-871a2e759200@arm.com>
-Date:   Tue, 23 Mar 2021 15:56:17 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233000AbhCWP4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232728AbhCWP4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 11:56:35 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E9BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:56:35 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id q5so14742853pfh.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IB7zf1R6bjb743xZ3yYB40a3jvRkNLGZGF69Se67w24=;
+        b=s8c4dcLK+4AXHOn9nzjP9vwGRY6Em1440uG7EVt1LRzRtFbLKVDsg4o3V0Out1eH9U
+         zORK6mgiUCBhKturU77wwUs0Vm0YdxUeGEaoypQpJY6Qyy61PrmuIPwH1nxIV6/XWUIo
+         He6ROxXeT45KsHan/LX8pfTaWGHDTOROZA3113p7y67rvYHFeGESlunILhwkMVv+MWYK
+         fqr5nDGnx7W1rTwC8txtieC33Xm/A1FvTT9+ok5uQPVRM8hbbifPtg7ioTWIy/LfWcgW
+         v1ghGwLI3JYh4CgO9mbtjz/o1I5c8wCewBnZyn2/j40ZRqh8hWQpTNeMfOkFzZsUjFNw
+         r1Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IB7zf1R6bjb743xZ3yYB40a3jvRkNLGZGF69Se67w24=;
+        b=E8oUdPf9sgHePD5zL1rbUEZMug2YVDAmbkkGliVR38ox1l9C/b83eMfGSBZ6GHCAva
+         AsvpOhvOaKxUWirtfSAiY+rQjqHeWGgXWeiH65VPl7TQmDKICxI9nCGDjkIrewAhHj/9
+         9lztaKKGmNa1aRYzJqorFB/Aczrn+GDebrY/60JTYa9NN/zM4ycHQpwtJzP/LtbLzREd
+         sH3haoXQ2nBkBU6e7Hfm8nxHHYBRIt2tIOPYdVZ1mftHEvF+JCCchaXvcJb8gWTHpnnz
+         ghEfCD5P5ruaWVlV4ljVqIZofj+bidXgzY//3fBYnWQHO1PChJ2GhgjmYq1bZIhRbong
+         pekQ==
+X-Gm-Message-State: AOAM532/jL+jv1AlpP1h/dpS25StwsRTvg0Qe8jhQd1ApYiRF81Xtrzv
+        jDHQfeuWJPCJH4lWmhf/UdwcIQ==
+X-Google-Smtp-Source: ABdhPJxFTHVj140MGkcJ8SQQQfy90L68lc/1EOpcPzEdAiWGTTzevUuiAEkdQMU4HmUDHYW4zkUl8g==
+X-Received: by 2002:a17:902:d201:b029:e6:bba:52b3 with SMTP id t1-20020a170902d201b02900e60bba52b3mr6446418ply.51.1616514994988;
+        Tue, 23 Mar 2021 08:56:34 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id v26sm16926093pff.195.2021.03.23.08.56.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 08:56:34 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:56:30 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] KVM: nVMX: Sync L2 guest CET states between L1/L2
+Message-ID: <YFoPro1bw07YEaXe@google.com>
+References: <20210315071841.7045-1-weijiang.yang@intel.com>
+ <20210315071841.7045-2-weijiang.yang@intel.com>
+ <YE+PF1zfkZTTgwxn@google.com>
+ <20210316090347.GA13548@local-michael-cet-test.sh.intel.com>
+ <20210323004305.GA3647@local-michael-cet-test.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210319162836.9364-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323004305.GA3647@local-michael-cet-test.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-On 3/19/21 4:28 PM, Daniel Lezcano wrote:
-> Currently the dtpm supports the CPUs via cpufreq and the energy
-> model. This change provides the same for the device which supports
-> devfreq.
+On Tue, Mar 23, 2021, Yang Weijiang wrote:
+> On Tue, Mar 16, 2021 at 05:03:47PM +0800, Yang Weijiang wrote:
 > 
-> Each device supporting devfreq and having an energy model can register
-> themselves in the list of supported devices.
+> Hi, Sean,
+> Could you respond my below rely? I'm not sure how to proceed, thanks!
 > 
-> The concept is the same as the cpufreq dtpm support: the QoS is used
-> to aggregate the requests and the energy model gives the value of the
-> instantaneous power consumption ponderated by the load of the device.
-> 
+> > On Mon, Mar 15, 2021 at 09:45:11AM -0700, Sean Christopherson wrote:
+> > > On Mon, Mar 15, 2021, Yang Weijiang wrote:
 
+...
 
-I've just started the review, but I have a blocking question:
+> > > > @@ -2556,6 +2563,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+> > > >  	if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
+> > > >  	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
+> > > >  		vmcs_write64(GUEST_BNDCFGS, vmx->nested.vmcs01_guest_bndcfgs);
+> > > > +
+> > > > +	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
+> > > > +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE))) {
+> > > 
+> > > Not your code per se, since this pattern comes from BNDCFGS and DEBUGCTL, but I
+> > > don't see how loading vmcs01 state in this combo is correct:
+> > > 
+> > >     a. kvm_xxx_supported()              == 1
+> > >     b. nested_run_pending               == false
+> > >     c. vm_entry_controls.load_xxx_state == true
+> > > 
+> > > nested_vmx_enter_non_root_mode() only snapshots vmcs01 if 
+> > > vm_entry_controls.load_xxx_state == false, which means the above combo is
+> > > loading stale values (or more likely, zeros).
+> > > 
+> > > I _think_ nested_vmx_enter_non_root_mode() just needs to snapshot vmcs01 if
+> > > nested_run_pending=false.  For migration, if userspace restores MSRs after
+> > > KVM_SET_NESTED_STATE, then what's done here is likely irrelevant.  If userspace
+> > > restores MSRs before nested state, then vmcs01 will hold the desired value since
+> > > setting MSRs would have written the value into vmcs01.
+> > 
+> > Then the code nested_vmx_enter_non_root_mode() would look like:
+> > 
+> > if (kvm_cet_supported() && !vmx->nested.nested_run_pending &&
+> >     !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> > 	...
+> >     }
+> > 
+> > I have another concern now, if vm_entry_controls.load_cet_state == false, and L1
+> > updated vmcs fields, so the latest states are in vmcs12, but they cannot
+> > be synced to vmcs02 because in prepare_vmcs02_rare():
+> > 
+> > if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
+> >     (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> > 	...
+> >     }
+> > 
+> > so L2 got stale status. IMO, L1 guest sets vm_entry_controls.load_cet_state == false
+> > should be rare case. We can even igore this case :-)
 
-Why there is no unregister function (like 'dtmp_unregister_devfreq')?
-Do you consider any devfreq drivers to be modules?
+Yes, that's an L1 bug if it expects L2 state to come from vmcs12 in that case.
+Architecturally, the vcms12 value won't be visible to L2 until L1 enables the
+VM-Entry control, at which point KVM would detect the refreshed vmcs12 and sync
+the "rare" fields.
 
-The code looks like an API that it's going to be called directly in
-e.g. GPU driver in it's probe function. In that case probably the
-module unloading should call dtmp unregister.
+> > > I suspect no one has reported this issue because guests simply don't use MPX,
+> > > and up until the recent LBR stuff, KVM effectively zeroed out DEBUGCTL for the
+> > > guest.
+> > > 
+> > So for MPX and DEBUGCTL, is it worth some separate fix patch?
 
-Could you explain this to me please? So I can continue the review.
+Yes, assuming my analysis is correct.  That doesn't necessarily need to be your
+responsibility, though patches are of course welcome :-)
 
-Regards,
-Lukasz
+Jim, Paolo, any thoughts?
+
+> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > > index 45622e9c4449..4184ff601120 100644
+> > > --- a/arch/x86/kvm/vmx/nested.c
+> > > +++ b/arch/x86/kvm/vmx/nested.c
+> > > @@ -3298,10 +3298,11 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+> > >         if (likely(!evaluate_pending_interrupts) && kvm_vcpu_apicv_active(vcpu))
+> > >                 evaluate_pending_interrupts |= vmx_has_apicv_interrupt(vcpu);
+> > > 
+> > > -       if (!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
+> > > +       if (!vmx->nested.nested_run_pending ||
+> > > +           !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
+> > >                 vmx->nested.vmcs01_debugctl = vmcs_read64(GUEST_IA32_DEBUGCTL);
+> > > -       if (kvm_mpx_supported() &&
+> > > -               !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+> > > +       if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
+> > > +           !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
+> > >                 vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+> > > 
+> > >         /*
+> > > 
+> > > 
+> > > Side topic, all of this code is broken for SMM emulation.  SMI+RSM don't do a
+> > > full VM-Exit -> VM-Entry; the CPU forcefully exits non-root, but most state that
+> > > is loaded from the VMCS is left untouched.  It's the SMI handler's responsibility
+> > > to not enable features, e.g. to not set CR4.CET.  For sane use cases, this
+> > > probably doesn't matter as vmcs12 will be configured to context switch state,
+> > > but if L1 is doing anything out of the ordinary, SMI+RSM will corrupt state.
+> > > 
+> > > E.g. if L1 enables MPX in the guest, does not intercept L2 writes to BNDCFGS,
+> > > and does not load BNDCFGS on VM-Entry, then SMI+RSM would corrupt BNDCFGS since
+> > > the SMI "exit" would clear BNDCFGS, and the RSM "entry" would load zero.  This
+> > > is 100% contrived, and probably doesn't impact real world use cases, but it
+> > > still bugs me :-)
+> > 
+> > Exactly, should it be fixed by separate patch or leave it as is?
+
+Definitely leave it for now, properly fixing the SMI+RSM code goes far beyond
+basic CET support.
