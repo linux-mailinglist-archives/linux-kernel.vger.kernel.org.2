@@ -2,147 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5C534601D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54D2346023
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhCWNtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:49:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23242 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230078AbhCWNsm (ORCPT
+        id S231511AbhCWNtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:49:49 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:42655 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230078AbhCWNtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:48:42 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NDXlxp103559;
-        Tue, 23 Mar 2021 09:48:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=xGsb52ZcTBJ7qanx8S8CEfUtuLSMQ6g5bWEbVc8NDJQ=;
- b=Q1fTnkOe2irl9Q7prTv5vz0THKPtjOdHmgQeUW9xS19dFoh8Pu65omW7G1nxXTxhq9D3
- Msm0QiKxBXSfK+uDd8VfrQefXxOlSnfoyeZVKjHktwtk3Y0ScQ1yEi1BMX5cxBxKRp7c
- 8y7vWqk9DObzdBdqFLo2OEsoif7K4l6WpxBMBuncWe+EZXn/oYWW97qGf9TrpawhwqG/
- HizB+w0Tnmj2xPOfG2LxGp+tk1tnY7kqg6Vs+2dylGxAc/SNCU0O+X3NKDW4fAZHYeHt
- 63XQRW5Et9syEp3udgy6F0EsMxtscn2tpEOQRxTHhz1vnIXIeXYK5WK/NtzrlUCng25U AQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b2ent-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 09:48:38 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NDY1vP104602;
-        Tue, 23 Mar 2021 09:48:38 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b2emv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 09:48:38 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NDlJUM019724;
-        Tue, 23 Mar 2021 13:48:35 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 37d9bmkd98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 13:48:35 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NDmFbM36110830
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 13:48:15 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDAB9A4040;
-        Tue, 23 Mar 2021 13:48:32 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8642BA405E;
-        Tue, 23 Mar 2021 13:48:32 +0000 (GMT)
-Received: from osiris (unknown [9.171.54.53])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 23 Mar 2021 13:48:32 +0000 (GMT)
-Date:   Tue, 23 Mar 2021 14:48:31 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Li Wang <liwang@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        LTP List <ltp@lists.linux.it>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-s390@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [s390x vDSO Bug?] clock_gettime(CLOCK_MONOTONIC_RAW, ...) gets
- abnormal ts value
-Message-ID: <YFnxr1ZlMIOIqjfq@osiris>
-References: <CAEemH2cELFSMzEYM-Gd1LxNuFzVE2PcG1chzyaVhW2YCJjjzdw@mail.gmail.com>
- <YFmUrVOyX4q+8Dy9@osiris>
+        Tue, 23 Mar 2021 09:49:31 -0400
+Received: by mail-lj1-f175.google.com with SMTP id 184so25677965ljf.9;
+        Tue, 23 Mar 2021 06:49:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=mFWNgc1FW5QaVvw/wsJgMcMblBrOgtay4PdG9vIWiv0=;
+        b=FvVyVQVsLQoE4k5/J1DM8EN5nXrnEwwGou+LREOttVV++wOuq/w19+yy6kvngoIypl
+         b2hwIJqaId0vkehPrAKTy3mmSYFPjdQsLzTD+O3b8SJOKWhz7/ehXJBAduY63o/xCXKF
+         ctl9Bt7CHW66JZ2Lk/sFc+8M762u/3aFRA0hhhgWKxAw8WF8gAIZBRawgRKvS0LFKuxO
+         jb5oloSGf0EE0N4VpkeO4qYcZEdWrqQQfmN8Kparl2f+w6ZQ6d5xAEBZiwTsTb/onUvW
+         O38yvciw4SEqBawanEGzOCOT5KPhBfubQZukp1IvM3p0Pj+mncdXDMIe3P/XHqzJN3f4
+         /6Ug==
+X-Gm-Message-State: AOAM5321c8uPfPcT0FIM4pKrkY04Hx2jMHvLvmOAjLAm7Dm3ayjPBn+K
+        ykfyp6vFGVJLM2rNWf1jg+E=
+X-Google-Smtp-Source: ABdhPJzCrYWUnFHopBuwoTQCnEVSaGjYd/0HCeCkwyJiUJo8kLjKK212FjDHsyFBrcl4geyYwMfp3w==
+X-Received: by 2002:a2e:9b4a:: with SMTP id o10mr3196706ljj.485.1616507369334;
+        Tue, 23 Mar 2021 06:49:29 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id i30sm1079430lfj.206.2021.03.23.06.49.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 06:49:28 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:49:21 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v3 0/8] Add managed version of delayed work init
+Message-ID: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFmUrVOyX4q+8Dy9@osiris>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103230100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 08:11:41AM +0100, Heiko Carstens wrote:
-> On Tue, Mar 23, 2021 at 02:21:52PM +0800, Li Wang wrote:
-> > Hi linux-s390 experts,
-> > 
-> > We observed that LTP/clock_gettime04 always FAIL on s390x with
-> > kernel-v5.12-rc3.
-> > To simply show the problem, I rewrite the LTP reproducer as a simple C
-> > below.
-> > Maybe it's a new bug introduced from the kernel-5.12 series branch?
-> > 
-> > PASS:
-> > ------------
-> > # uname -r
-> > 5.11.0-*.s390x
-> > 
-> > # grep TIME_NS /boot/config-5.11.0-*.s390x
-> > no TIME_NS enabled
-> > 
-> > ## ./test-timer
-> > vdso_ts_nsec = 898169901815, vdso_ts.tv_sec = 898, vdso_ts.tv_nsec =
-> > 169901815
-> > sys_ts_nsec  = 898169904269, sys_ts.tv_sec  = 898, sys_ts.tv_nsec  =
-> > 169904269
-> > ===> PASS
-> > 
-> > FAIL:
-> > ----------
-> > # uname -r
-> > 5.12.0-0.rc3.*.s390x
-> > 
-> > # grep TIME_NS /boot/config-5.12.0-0.rc3.s390x
-> > CONFIG_TIME_NS=y
-> > CONFIG_GENERIC_VDSO_TIME_NS=y
-> > 
-> > # ./test-timer
-> > vdso_ts_nsec = 4484351380985507, vdso_ts.tv_sec = 4484351, vdso_ts.tv_nsec
-> > = 380985507
-> > sys_ts_nsec  = 1446923235377, sys_ts.tv_sec  = 1446, sys_ts.tv_nsec  =
-> > 923235377
-> > ===> FAIL
-> 
-> Thanks for reporting!
-> 
-> I'll look later today into this. I would nearly bet that I broke it
-> with commit f8d8977a3d97 ("s390/time: convert tod_clock_base to
-> union")
+It's not rare that device drivers need delayed work.
+It's not rare that this work needs driver's data.
 
-So, I broke it with commit 1ba2d6c0fd4e ("s390/vdso: simplify
-__arch_get_hw_counter()"). Reverting that patch will fix it for non
-time namespace processes only.
+Often this means that driver must ensure the work is not queued when
+driver is detached. Often it is done by ensuring new work is not added and
+then calling cancel_delayed_work_sync() at remove(). In many cases this
+may also require cleanup at probe error path - which is easy to forget.
 
-The problem is that the vdso data page contains an array of struct
-vdso_data's for each clock source. However only the first member of
-that array contains a/the valid struct arch_vdso_data, which is
-required for __arch_get_hw_counter(). Which alone is a bit odd...
+Also the "by ensuring new work is not added" has a gotcha.
 
-However for a process which is within a time namespace there is no
-(easy) way to access that page (the time namespace specific vdso data
-page does not contain valid arch_vdso_data). I guess the real fix is
-to simply map yet another page into the vvar mapping and put the
-arch_data there. What a mess... :/
+It is not strange to see devm managed IRQs scheduling (delayed) work.
+Mixing this with manua wq clean-up is hard to do correctly because the
+devm is likely to free the IRQ only after the remove() is ran. So manual
+wq cancellation and devm-based IRQ management do not mix well - there is
+a short(?) time-window after the wq clean-up when IRQs are still not
+freed and may schedule new work.
+
+When both WQs and IRQs are managed by devm things are likely to just
+work. WQs should be initialized before IRQs (when IRQs need to schedule
+work) and devm unwinds things in "FILO" order.
+
+This series implements delayed wq cancellation on top of devm and replaces
+the obvious cases where only thing remove call-back in a driver does is
+cancelling the work. There might be other cases where we could switch
+more than just work cancellation to use managed version and thus get rid
+of remove or mixed (manual and devm) resource management.
+
+The series introduces include/linux/devm-helpers.h file which
+hopefully works as a place where this kind of helpers can be inlined.
+
+Please see previous discussion here:
+RFC v1:
+https://lore.kernel.org/lkml/cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com/
+
+Changelog v3:
+  - Dropped RFC as advieced by Greg.
+  - No functional changes.
+
+Changelog RFC v2 resend:
+  - rebased on 5.12-rc4
+
+Changelog RFC v2:
+  - used correct terminology ("driver detach" instead of "exit, ...")
+  - inlined the devm_delayed_work_autocancel() in a header
+  - added Hans as a maintainer for the new header + myself as a reviewer
+  - used devm_add_action() instead of using plain devres_add()
+
+---
+
+Matti Vaittinen (8):
+  workqueue: Add resource managed version of delayed work init
+  MAINTAINERS: Add entry for devm helpers
+  extconn: Clean-up few drivers by using managed work init
+  hwmon: raspberry-pi: Clean-up few drivers by using managed work init
+  platform/x86: gpd pocket fan: Clean-up by using managed work init
+  power: supply: Clean-up few drivers by using managed work init
+  regulator: qcom_spmi-regulator: Clean-up by using managed work init
+  watchdog: retu_wdt: Clean-up by using managed work init
+
+ MAINTAINERS                                  |  6 +++
+ drivers/extcon/extcon-gpio.c                 | 15 ++----
+ drivers/extcon/extcon-intel-int3496.c        | 16 ++----
+ drivers/extcon/extcon-palmas.c               | 17 +++----
+ drivers/extcon/extcon-qcom-spmi-misc.c       | 17 +++----
+ drivers/hwmon/raspberrypi-hwmon.c            | 17 +++----
+ drivers/platform/x86/gpd-pocket-fan.c        | 17 +++----
+ drivers/power/supply/axp20x_usb_power.c      | 15 ++----
+ drivers/power/supply/bq24735-charger.c       | 18 +++----
+ drivers/power/supply/ltc2941-battery-gauge.c | 20 +++-----
+ drivers/power/supply/sbs-battery.c           | 16 ++----
+ drivers/regulator/qcom_spmi-regulator.c      | 34 +++----------
+ drivers/watchdog/retu_wdt.c                  | 22 +++-----
+ include/linux/devm-helpers.h                 | 53 ++++++++++++++++++++
+ 14 files changed, 128 insertions(+), 155 deletions(-)
+ create mode 100644 include/linux/devm-helpers.h
+
+
+base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
