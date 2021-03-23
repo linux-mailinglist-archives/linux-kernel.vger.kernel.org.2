@@ -2,113 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4D7345FDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33BF345FDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhCWNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhCWNij (ORCPT
+        id S231615AbhCWNjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:39:49 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:58964 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231250AbhCWNjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:38:39 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1EA6C061574;
-        Tue, 23 Mar 2021 06:38:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=XJCuu4Snnpqdsj3VqAriEhuGZbjh/SUv8sY/
-        HinetRc=; b=P9OuaOhsd2jNpHCwEzjb8GBwu2ncVRPH4+PvMVXvvrSyabVkJTog
-        C0c5MWdvsvnOGQgkVgF4KskCfT0MO9OhfnGAI1oeO4N661C69q8eKOEg5DxPe4rA
-        x/GACSj24hS/AIz5vhDAIMM45bx21k/pEASVjMdwAmE9CUa2CYxeBh0=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Tue, 23 Mar
- 2021 21:38:16 +0800 (GMT+08:00)
-X-Originating-IP: [202.38.69.14]
-Date:   Tue, 23 Mar 2021 21:38:16 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Maxim Mikityanskiy" <maximmi@nvidia.com>
-Cc:     borisp@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, maximmi@mellanox.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] net/mlx5: Fix a potential use after free in
- mlx5e_ktls_del_rx
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <0b9cd54f-cab4-7675-cecf-171d4d45b897@nvidia.com>
-References: <20210322142109.6305-1-lyl2019@mail.ustc.edu.cn>
- <0b9cd54f-cab4-7675-cecf-171d4d45b897@nvidia.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Tue, 23 Mar 2021 09:39:00 -0400
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A4DD020B5680;
+        Tue, 23 Mar 2021 06:38:59 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A4DD020B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616506740;
+        bh=DwRsLoQPY0fFMEhsi2TeLN5GvE6GzKWHyVlv0powA4Y=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rPua/ORFsVGJ5Wqu8WYJ/bMN52OnjWRzUx3NyvoZWpxTafNMBz5nQdnB+qWKzx9F9
+         XIMs4+6hvCF9Q+U/qs6sPqZbfKdnyt6CdwpEdfoib3PD98nlVoWgud+3SR6lmAMDj7
+         l3oKoMYWqJtabVYmoxI79DJge2dhumkOH7d/FSfI=
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
+ trace unreliable
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+Date:   Tue, 23 Mar 2021 08:38:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Message-ID: <62957134.e4cb.1785f4eb34d.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygB3f0NI71lg6tQkAA--.0W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoJBlQhn5V7twAEsz
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+In-Reply-To: <20210323133611.GB98545@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIk1heGltIE1pa2l0
-eWFuc2tpeSIgPG1heGltbWlAbnZpZGlhLmNvbT4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTIz
-IDE2OjUyOjA3ICjmmJ/mnJ/kuowpDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5
-QG1haWwudXN0Yy5lZHUuY24+LCBib3Jpc3BAbnZpZGlhLmNvbSwgc2FlZWRtQG52aWRpYS5jb20s
-IGxlb25Aa2VybmVsLm9yZywgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldCwga3ViYUBrZXJuZWwub3JnLCBt
-YXhpbW1pQG1lbGxhbm94LmNvbQ0KPiDmioTpgIE6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcsIGxp
-bnV4LXJkbWFAdmdlci5rZXJuZWwub3JnLCBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+
-IOS4u+mimDogUmU6IFtQQVRDSF0gbmV0L21seDU6IEZpeCBhIHBvdGVudGlhbCB1c2UgYWZ0ZXIg
-ZnJlZSBpbiBtbHg1ZV9rdGxzX2RlbF9yeA0KPiANCj4gT24gMjAyMS0wMy0yMiAxNjoyMSwgTHYg
-WXVubG9uZyB3cm90ZToNCj4gPiBNeSBzdGF0aWMgYW5hbHl6ZXIgdG9vbCByZXBvcnRlZCBhIHBv
-dGVudGlhbCB1YWYgaW4NCj4gPiBtbHg1ZV9rdGxzX2RlbF9yeC4gSW4gdGhpcyBmdW5jdGlvbiwg
-aWYgdGhlIGNvbmRpdGlvbg0KPiA+IGNhbmNlbF93b3JrX3N5bmMoJnJlc3luYy0+d29yaykgaXMg
-dHJ1ZSwgYW5kIHRoZW4NCj4gPiBwcml2X3J4IGNvdWxkIGJlIGZyZWVkLiBCdXQgcHJpdl9yeCBp
-cyB1c2VkIGxhdGVyLg0KPiA+IA0KPiA+IEknbSB1bmZhbWlsaWFyIHdpdGggaG93IHRoaXMgZnVu
-Y3Rpb24gd29ya3MuIE1heWJlIHRoZQ0KPiA+IG1haW50YWluZXIgZm9yZ290IHRvIGFkZCByZXR1
-cm4gYWZ0ZXIgZnJlZWluZyBwcml2X3J4Pw0KPiANCj4gVGhhbmtzIGZvciBydW5uaW5nIGEgc3Rh
-dGljIGFuYWx5emVyIG92ZXIgb3VyIGNvZGUhIFNhZGx5LCB0aGUgZml4IGlzIA0KPiBub3QgY29y
-cmVjdCBhbmQgYnJlYWtzIHN0dWZmLCBhbmQgdGhlcmUgaXMgbm8gcHJvYmxlbSB3aXRoIHRoaXMg
-Y29kZS4NCj4gDQo+IEZpcnN0IG9mIGFsbCwgbWx4NWVfa3Rsc19wcml2X3J4X3B1dCBkb2Vzbid0
-IG5lY2Vzc2FyaWx5IGZyZWUgcHJpdl9yeC4gDQo+IEl0IGRlY3JlbWVudHMgdGhlIHJlZmNvdW50
-IGFuZCBmcmVlcyB0aGUgb2JqZWN0IG9ubHkgd2hlbiB0aGUgcmVmY291bnQgDQo+IGdvZXMgdG8g
-emVyby4gVW5sZXNzIHRoZXJlIGFyZSBvdGhlciBidWdzLCB0aGUgcmVmY291bnQgaW4gdGhpcyBi
-cmFuY2ggDQo+IGlzIG5vdCBleHBlY3RlZCB0byBnbyB0byB6ZXJvLCBzbyB0aGVyZSBpcyBubyB1
-c2UtYWZ0ZXItZnJlZSBpbiB0aGUgY29kZSANCj4gYmVsb3cuIFRoZSBjb3JyZXNwb25kaW5nIGVs
-ZXZhdGlvbiBvZiB0aGUgcmVmY291bnQgaGFwcGVucyBiZWZvcmUgDQo+IHF1ZXVlX3dvcmsgb2Yg
-cmVzeW5jLT53b3JrLiBTbywgbm8sIHdlIGhhdmVuJ3QgZm9yZ290IHRvIGFkZCBhIHJldHVybiwg
-DQo+IHdlIGp1c3QgZXhwZWN0IHByaXZfcnggdG8gc3RheSBhbGl2ZSBhZnRlciB0aGlzIGNhbGws
-IGFuZCB3ZSB3YW50IHRvIHJ1biANCj4gdGhlIGNsZWFudXAgY29kZSBiZWxvdyB0aGlzIGBpZmAs
-IHdoaWxlIHlvdXIgZml4IHNraXBzIHRoZSBjbGVhbnVwIGFuZCANCj4gc2tpcHMgdGhlIHNlY29u
-ZCBtbHg1ZV9rdGxzX3ByaXZfcnhfcHV0IGluIHRoZSBlbmQgb2YgdGhpcyBmdW5jdGlvbiwgDQo+
-IGxlYWRpbmcgdG8gYSBtZW1vcnkgbGVhay4NCj4gDQo+IElmIHlvdSdkIGxpa2UgdG8gY2FsbSBk
-b3duIHRoZSBzdGF0aWMgYW5hbHl6ZXIsIHlvdSBjb3VsZCB0cnkgdG8gYWRkIGEgDQo+IFdBUk5f
-T04gYXNzZXJ0aW9uIHRvIGNoZWNrIHRoYXQgbWx4NWVfa3Rsc19wcml2X3J4X3B1dCByZXR1cm5z
-IGZhbHNlIGluIA0KPiB0aGF0IGBpZmAgKG1lYW5pbmcgdGhhdCB0aGUgb2JqZWN0IGhhc24ndCBi
-ZWVuIGZyZWVkKS4gSWYgd291bGQgYmUgbmljZSANCj4gdG8gaGF2ZSB0aGlzIFdBUk5fT04gcmVn
-YXJkbGVzcyBvZiBzdGF0aWMgYW5hbHl6ZXJzLg0KPiANCj4gPiBGaXhlczogYjg1MGJiZmY5NjUx
-MiAoIm5ldC9tbHg1ZToga1RMUywgVXNlIHJlZmNvdW50cyB0byBmcmVlIGtUTFMgUlggcHJpdiBj
-b250ZXh0IikNCj4gPiBTaWduZWQtb2ZmLWJ5OiBMdiBZdW5sb25nIDxseWwyMDE5QG1haWwudXN0
-Yy5lZHUuY24+DQo+ID4gLS0tDQo+ID4gICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9t
-bHg1L2NvcmUvZW5fYWNjZWwva3Rsc19yeC5jIHwgNCArKystDQo+ID4gICAxIGZpbGUgY2hhbmdl
-ZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl9hY2NlbC9rdGxzX3J4
-LmMgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYWNjZWwva3Rs
-c19yeC5jDQo+ID4gaW5kZXggZDA2NTMyZDBiYWE0Li41NGE3N2RmNDIzMTYgMTAwNjQ0DQo+ID4g
-LS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2FjY2VsL2t0
-bHNfcnguYw0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29y
-ZS9lbl9hY2NlbC9rdGxzX3J4LmMNCj4gPiBAQCAtNjYzLDggKzY2MywxMCBAQCB2b2lkIG1seDVl
-X2t0bHNfZGVsX3J4KHN0cnVjdCBuZXRfZGV2aWNlICpuZXRkZXYsIHN0cnVjdCB0bHNfY29udGV4
-dCAqdGxzX2N0eCkNCj4gPiAgIAkJICovDQo+ID4gICAJCXdhaXRfZm9yX2NvbXBsZXRpb24oJnBy
-aXZfcngtPmFkZF9jdHgpOw0KPiA+ICAgCXJlc3luYyA9ICZwcml2X3J4LT5yZXN5bmM7DQo+ID4g
-LQlpZiAoY2FuY2VsX3dvcmtfc3luYygmcmVzeW5jLT53b3JrKSkNCj4gPiArCWlmIChjYW5jZWxf
-d29ya19zeW5jKCZyZXN5bmMtPndvcmspKSB7DQo+ID4gICAJCW1seDVlX2t0bHNfcHJpdl9yeF9w
-dXQocHJpdl9yeCk7DQo+ID4gKwkJcmV0dXJuOw0KPiA+ICsJfQ0KPiA+ICAgDQo+ID4gICAJcHJp
-dl9yeC0+c3RhdHMtPnRsc19kZWwrKzsNCj4gPiAgIAlpZiAocHJpdl9yeC0+cnVsZS5ydWxlKQ0K
-PiA+IA0KPiANCg0KT2ssIGl0IGlzIGEgZ29vZCBpZGVhLiANCg0KVGhhbmsgeW91IGZvciB5b3Vy
-IGdlbmVyb3VzIGFkdmljZSAhDQo=
+
+
+On 3/23/21 8:36 AM, Mark Rutland wrote:
+> On Tue, Mar 23, 2021 at 07:56:40AM -0500, Madhavan T. Venkataraman wrote:
+>>
+>>
+>> On 3/23/21 5:51 AM, Mark Rutland wrote:
+>>> On Mon, Mar 15, 2021 at 11:57:57AM -0500, madvenka@linux.microsoft.com wrote:
+>>>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>>>
+>>>> When CONFIG_DYNAMIC_FTRACE_WITH_REGS is enabled and tracing is activated
+>>>> for a function, the ftrace infrastructure is called for the function at
+>>>> the very beginning. Ftrace creates two frames:
+>>>>
+>>>> 	- One for the traced function
+>>>>
+>>>> 	- One for the caller of the traced function
+>>>>
+>>>> That gives a reliable stack trace while executing in the ftrace
+>>>> infrastructure code. When ftrace returns to the traced function, the frames
+>>>> are popped and everything is back to normal.
+>>>>
+>>>> However, in cases like live patch, execution is redirected to a different
+>>>> function when ftrace returns. A stack trace taken while still in the ftrace
+>>>> infrastructure code will not show the target function. The target function
+>>>> is the real function that we want to track.
+>>>>
+>>>> So, if an FTRACE frame is detected on the stack, just mark the stack trace
+>>>> as unreliable.
+>>>
+>>> To identify this case, please identify the ftrace trampolines instead,
+>>> e.g. ftrace_regs_caller, return_to_handler.
+>>>
+>>
+>> Yes. As part of the return address checking, I will check this. IIUC, I think that
+>> I need to check for the inner labels that are defined at the point where the
+>> instructions are patched for ftrace. E.g., ftrace_call and ftrace_graph_call.
+>>
+>> SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
+>>         bl      ftrace_stub	<====================================
+>>
+>> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>> SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL) // ftrace_graph_caller();
+>>         nop	<=======                // If enabled, this will be replaced
+>>                                         // "b ftrace_graph_caller"
+>> #endif
+>>
+>> For instance, the stack trace I got while tracing do_mmap() with the stack trace
+>> tracer looks like this:
+>>
+>> 		 ...
+>> [  338.911793]   trace_function+0xc4/0x160
+>> [  338.911801]   function_stack_trace_call+0xac/0x130
+>> [  338.911807]   ftrace_graph_call+0x0/0x4
+>> [  338.911813]   do_mmap+0x8/0x598
+>> [  338.911820]   vm_mmap_pgoff+0xf4/0x188
+>> [  338.911826]   ksys_mmap_pgoff+0x1d8/0x220
+>> [  338.911832]   __arm64_sys_mmap+0x38/0x50
+>> [  338.911839]   el0_svc_common.constprop.0+0x70/0x1a8
+>> [  338.911846]   do_el0_svc+0x2c/0x98
+>> [  338.911851]   el0_svc+0x2c/0x70
+>> [  338.911859]   el0_sync_handler+0xb0/0xb8
+>> [  338.911864]   el0_sync+0x180/0x1c0
+>>
+>>> It'd be good to check *exactly* when we need to reject, since IIUC when
+>>> we have a graph stack entry the unwind will be correct from livepatch's
+>>> PoV.
+>>>
+>>
+>> The current unwinder already handles this like this:
+>>
+>> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>>         if (tsk->ret_stack &&
+>>                 (ptrauth_strip_insn_pac(frame->pc) == (unsigned long)return_to_handler)) {
+>>                 struct ftrace_ret_stack *ret_stack;
+>>                 /*
+>>                  * This is a case where function graph tracer has
+>>                  * modified a return address (LR) in a stack frame
+>>                  * to hook a function return.
+>>                  * So replace it to an original value.
+>>                  */
+>>                 ret_stack = ftrace_graph_get_ret_stack(tsk, frame->graph++);
+>>                 if (WARN_ON_ONCE(!ret_stack))
+>>                         return -EINVAL;
+>>                 frame->pc = ret_stack->ret;
+>>         }
+>> #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+> 
+> Beware that this handles the case where a function will return to
+> return_to_handler, but doesn't handle unwinding from *within*
+> return_to_handler, which we can't do reliably today, so that might need
+> special handling.
+> 
+
+OK. I will take a look at this.
+
+>> Is there anything else that needs handling here?
+> 
+> I wrote up a few cases to consider in:
+> 
+> https://www.kernel.org/doc/html/latest/livepatch/reliable-stacktrace.html
+> 
+> ... e.g. the "Obscuring of return addresses" case.
+> 
+> It might be that we're fine so long as we refuse to unwind across
+> exception boundaries, but it needs some thought. We probably need to go
+> over each of the trampolines instruction-by-instruction to consider
+> that.
+> 
+> As mentioned above, within return_to_handler when we call
+> ftrace_return_to_handler, there's a period where the real return address
+> has been removed from the ftrace return stack, but hasn't yet been
+> placed in x30, and wouldn't show up in a trace (e.g. if we could somehow
+> hook the return from ftrace_return_to_handler).
+> 
+> We might be saved by the fact we'll mark traces across exception
+> boundaries as unreliable, but I haven't thought very hard about it. We
+> might want to explciitly reject unwinds within return_to_handler in case
+> it's possible to interpose ftrace_return_to_handler somehow.
+> 
+
+OK. I will study the above.
+
+Thanks.
+
+Madhavan
