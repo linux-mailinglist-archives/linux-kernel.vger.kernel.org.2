@@ -2,219 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507163455E0
+	by mail.lfdr.de (Postfix) with ESMTP id 04B2E3455DF
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 04:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhCWDBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 23:01:44 -0400
-Received: from mail-bn8nam11on2062.outbound.protection.outlook.com ([40.107.236.62]:14561
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229574AbhCWDBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 23:01:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EyemWk/f2UAO9DirQ+H77MPn9oLyia6W182NZ3bZVmQ+gNmk0irBNPXHlFiUwFF7IHJS13bDw0NdIQwNK7IA2gfeJWSvLvF4w/V7s69KEzcddRjmDZGVALjyw/YNqMUGoYm5fNErUMWMxzCnykmOSuB5qVDRf+gQFxL/KBu0+KDMcUJeSGUI+mpyIhRM2KN3qEprCLUGXIkbdOkQAfCwJ3O2V2O4WdPrs6iPdXYZwzeWFtl1ghCermzMNKNFZ9J854ebn7fD0JgPCnmnn0651h1gyIg4X46NDNK9icIn39BQTf3nri4YXcocMCBUj1ouTWb2Z1wIFDGENilKiDOcNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gZC+DsSq8uiOXzlLcsFdrz+zpECXrJsuTC5MQ3fDK3I=;
- b=DujOoVWutjhTryfLWopeOJAyvlPvDWGfrpw0MWigUG1/4tnvkRcYPLzVQb8rryqR8DF3uYPa1khAYFPZ44PePaoN2eL0H/5P1SWaAFH+t11nT9MqQRYvM0hixk7TnOhnYrgnWwlR8AP6/+KXxG4CII9jI/n74GXyVkdWfVPC1KW+Not3TT5TJ3b4nnrAbHUsTOLvbmg82LR6vy7d8QZGhOcu8M5OgncbhCqaeTlwBQjjhX9BXs8K7EPbOAn8v7dsMnFXuGBwJBhivuc/X6YZgOHOz5+qYuWtgK9sj0Z9khHCt7OjT3wwqR0aU2YMOLgbSaUUpZQwTvO+eU+CRWHQ4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gZC+DsSq8uiOXzlLcsFdrz+zpECXrJsuTC5MQ3fDK3I=;
- b=K3ilxEhPxPa/lHBBf/sS3pbEV/qqILQxwnNAHrM1TKQ0irMEJQNYZWWp9Y4vzHZn+lKSOjR2USYdbptBiG3aw500Gbtrvqukc1sw8lyfTLbtP9wpFOzqFTkB7GPJeSGqxc+d83u5RgNOlHZqqz2udla+cEzQS5odzVkiNLfxdIE=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by SJ0PR03MB6272.namprd03.prod.outlook.com (2603:10b6:a03:3aa::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24; Tue, 23 Mar
- 2021 03:01:27 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%7]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
- 03:01:26 +0000
-Date:   Tue, 23 Mar 2021 11:01:15 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Dilip Kota <eswara.kota@linux.intel.com>
-Subject: Re: [PATCH RESEND] PCI: dwc: Fix MSI not work after resume
-Message-ID: <20210323110115.3740f6b1@xhacker.debian>
-In-Reply-To: <20210323012441.GA515937@bjorn-Precision-5520>
-References: <20210301111031.220a38b8@xhacker.debian>
-        <20210323012441.GA515937@bjorn-Precision-5520>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR11CA0077.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::18) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+        id S229955AbhCWDBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 23:01:42 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:56792 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCWDB0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 23:01:26 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210323030124epoutp03f21d5d1766a2fc875e82632cbb264f30~u2YWtVvvx1038810388epoutp03C
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:01:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210323030124epoutp03f21d5d1766a2fc875e82632cbb264f30~u2YWtVvvx1038810388epoutp03C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616468484;
+        bh=zBS8pwQVYwk/Dc+dG60rDT0FuBHEKko+RRMZ08todfw=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=GtCUyKg4rS67yZeQQvZcmr3BK3HaRW/6X06eRDKA79+VX9jWot6gpogiO9NyjGGDY
+         LpnXsa6HmahUz+coj7nlPSy6E4nhxdUoAnxYHyUMOtkLPqA0I00jZjTZD7EpK8OSSF
+         AswXHUGSVSsmes+L+1i+vtwgLnevyY8DQmTNbM2U=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210323030123epcas1p283ad5d568f2a1e6a2220b1eee9c252fc~u2YWLLu_j0184801848epcas1p23;
+        Tue, 23 Mar 2021 03:01:23 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4F4GNL60P2z4x9QF; Tue, 23 Mar
+        2021 03:01:22 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EF.12.63458.20A59506; Tue, 23 Mar 2021 12:01:22 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210323030122epcas1p147f5f0b852da3e35e928496737b85f0e~u2YUpHm2t2478424784epcas1p1o;
+        Tue, 23 Mar 2021 03:01:22 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210323030122epsmtrp285c519b915fdba75e16667736fb75baa~u2YUn8Ryl1483914839epsmtrp2T;
+        Tue, 23 Mar 2021 03:01:22 +0000 (GMT)
+X-AuditID: b6c32a36-6dfff7000000f7e2-bb-60595a021871
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        67.C4.08745.10A59506; Tue, 23 Mar 2021 12:01:22 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210323030121epsmtip27f30b5160f4fafe3846d6e38d6f83351~u2YUTe8JZ0545905459epsmtip2_;
+        Tue, 23 Mar 2021 03:01:21 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Matthew Wilcox'" <willy@infradead.org>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-cifs@vger.kernel.org>,
+        <linux-cifsd-devel@lists.sourceforge.net>, <smfrench@gmail.com>,
+        <senozhatsky@chromium.org>, <hyc.lee@gmail.com>,
+        <viro@zeniv.linux.org.uk>, <hch@lst.de>, <hch@infradead.org>,
+        <ronniesahlberg@gmail.com>, <aurelien.aptel@gmail.com>,
+        <aaptel@suse.com>, <sandeen@sandeen.net>,
+        <dan.carpenter@oracle.com>, <colin.king@canonical.com>,
+        <rdunlap@infradead.org>,
+        "'Sergey Senozhatsky'" <sergey.senozhatsky@gmail.com>,
+        "'Steve French'" <stfrench@microsoft.com>
+In-Reply-To: <20210322221816.GW1719932@casper.infradead.org>
+Subject: RE: [PATCH 1/5] cifsd: add server handler and tranport layers
+Date:   Tue, 23 Mar 2021 12:01:22 +0900
+Message-ID: <00d901d71f90$cdfd24f0$69f76ed0$@samsung.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR11CA0077.namprd11.prod.outlook.com (2603:10b6:a03:f4::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 03:01:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e38b3cb-4312-4687-304a-08d8eda7f2e5
-X-MS-TrafficTypeDiagnostic: SJ0PR03MB6272:
-X-Microsoft-Antispam-PRVS: <SJ0PR03MB6272C955D340E1F39E85823EED649@SJ0PR03MB6272.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JdYV4oyY8znnIByP8BRs4HrTsx41u6z2W1KqNTQJMQPbbKvATPTYNNUNV2NL2Qp8RiY9QY4tg2uA/JWylESVzbXIhXhIzRRSFQBPuauetF1R4k09sL6jEXKhpdJs+4suROYkgCpY0GgbtT08gVUKMtFowxUMTfgFxmEyr4IYykqL326Fska9BIhyioJbP3Nl0qVvi5aIUSuoMQ+7I+T6PanmFsdTHJ9o7AfBUR30nJwqdo/Zexfk3JctSEnpEOYMFf8Dhs0a4xclNp5ZM/o1fvJbZtAC9TZrNdPZ4MMvEoXipEzQ5yBdkUmsroVTGf6vIpYDIAE2AOkhIi9oP8KO/TUAB8BG1+VPcZpiEXe90JMLxJt+W6s37Jgpgp+iMUNAsy5wnO2K5Vc/tlx5dcQOa+KdeZsMnuA7Hf/JnGgRSOPolvtovhJ/eGT/cSzeYzyS+c7NGXGksko4gigK9WzQoDPz1mF2KeNYxvydrxWRFIcfvzczhcWKhGw5NSoeMMOFoT5iRUT/nXAWTEvrBXHPu+R2fLwSJ9WceS0XhyQSHODpUdVaYaarNPqJHzuQs1w/C7cL2uUND+5f0bwAGr+8NDPiS9WRC2diCX+t+z9IDfyxK+XTKO7MmX0oBmGjbR4cC0CQejQSyrWMOg8uVoUvbZHwSxT6jFUqA+XHgN0iiGE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(376002)(136003)(39860400002)(2906002)(83380400001)(6506007)(1076003)(186003)(956004)(16526019)(38100700001)(5660300002)(86362001)(6666004)(7416002)(26005)(55016002)(54906003)(478600001)(316002)(8676002)(4326008)(7696005)(52116002)(66556008)(6916009)(9686003)(66476007)(8936002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?rCHkPqSV24QykX5RgZxFZivB1kCMO2uBpJqP6mM0CPuxHUEC1jBDOpyiGxP9?=
- =?us-ascii?Q?h5wGbnIyTMXtM3nyecjj4xIabeR8Abzhf5PolpXxpcToXeO/OrebSl+5Rapt?=
- =?us-ascii?Q?AbTapEZp1MPFBQdeiEodSt+LnggU+iAkEEF/m8dOuYYR8t0LUaYeqeVbn95x?=
- =?us-ascii?Q?B2gN9/YhBShpLH2kw3s3s/N0QzaA0OMb7p205qVFxTVkeUT2eDJQV7HkBfSF?=
- =?us-ascii?Q?3M1IoDcrXRZm0vIsktH8OKcTtw1qCIkSsdlVs1VDUJN7WjkOoL555AiK9A4u?=
- =?us-ascii?Q?sapGHbME9lVtFZW82IWCXsPBtTnPzMfs03TpdFnzcHmsPTzbSh2u0bYaKw05?=
- =?us-ascii?Q?czrjTAbAaMwu+Oo4SmsBrSKciEs/XilXtRK0ElCYPMNAd8PHQmvZnBAOj2y0?=
- =?us-ascii?Q?M7IihAtk6pOZRabvvRPsOnLb4FRLyGPSJCfIeGG3VRRxR3douRG1HjHJntxK?=
- =?us-ascii?Q?4esmJQk9kzYYzg/N9gEpxxayomVaBeRhsIWw7qB+PrSq2GoO2rwn2Rj2XD6g?=
- =?us-ascii?Q?2SpvNHi5HyqHDgRxntENZnnyP+NmVJ2fOSXM53W6HYdGysgFAVI6BS8uurzO?=
- =?us-ascii?Q?Y5l7Z6zRQ16tWHa1un0i+hsr0TiAGqTfJ3iNGOEUBy538BjPY1aM5cWySTJ6?=
- =?us-ascii?Q?cQf9vJRZReEu2dQs2rTAwanM2Q6PlsNjD8iyf4GbeOHOaK7EdczYWee7tR/n?=
- =?us-ascii?Q?PP5De51F1vTPlpffVDiS0MtLec0o48tQ85+p41CDwdAK5q6tQ6mLIjuZlq2/?=
- =?us-ascii?Q?wIXp2lF7TjOHb3cPT+YJYjU5zEBFvu4JrQvx8WNhNSNT8+CE3SPnM1DgZOaH?=
- =?us-ascii?Q?OxiyNJLVBAF2Le/49FFs760BnNsDi2oEDj9qKrA++kJziuFjOJRVDWO7+UWM?=
- =?us-ascii?Q?EX5QhqRqVVRVKOiBTLRHSv5mTepVUhV1Eo/gCzETeZZEk2WBxoiSS6cWf2ta?=
- =?us-ascii?Q?RhZrsS3TW6RrRUWQjLSoegJ+zdeIf9ipcg+yVjCrosoYogwt7NTuqXbPhR33?=
- =?us-ascii?Q?9pylv/UKoBLQPrKpsnlbeZ5m8zeHvb9Y80qmHIHUl8SO1swwyKEbNzuDzbn+?=
- =?us-ascii?Q?qTvlsyr1Xm1qQWjmzdS5fS0FAqV40IPpBKhB7TINqPpPK81CyxX+lqko7aRl?=
- =?us-ascii?Q?VXsDubsPhIlC9ku/3UySPOpgngGMgl+FpNdWoMOSu/qodpcfxvBqzu+D6RYv?=
- =?us-ascii?Q?O/14xU0okxAabIzbCR2De7hwoAG6AdQHpQlmfnJMxA9EZ9fe5PWA4ywZx81B?=
- =?us-ascii?Q?woLp5zbXH97m0qwvjJ6aEfdwoExdbB6CrZKaUgssfttZQzXi9XSYLQVBrl1i?=
- =?us-ascii?Q?fDimANkFu6eLLaRz+OAF/wiu?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e38b3cb-4312-4687-304a-08d8eda7f2e5
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 03:01:26.5642
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o+VKZ3fD+ErPke3Lv3+Ku9NMsE0MVPFr53B+EAdp4NrsNnQk4AkHLU8AUgJBUxRtFof+2fG2In1Obo+IlL8MAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB6272
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGKnGOaYF8FWW41Vo1OapoCvoUV0QMoPiJ6Am1CcOcBjsy+tqrwuGGg
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxjO6Tk9LbK6Y6n4BRctx7Eh49JSWz9MIWRTdhLIJMFFxrK0BzgD
+        RmlrC9ucP1Y3biIwL3NoQYY4uYwtXETAIkPLEFxhCooJTBQjZLBSJ3RTLgIrPZrx73mf93ne
+        N8/35eWjwgXch5+mzWQMWlpD4uuwlq7tIUGchA/UksojQfCww4bBHvsSDy7WFeHQvlyCQdux
+        Sg6srevmwLsP/ubByRULCudXniHwSscNDN62lOHQcc+lKyqe5cKcOwGwvbEShz87H/Hg9GQX
+        DkeOf4/Dm0s9XLg4V4ZHiiizqQinSk0DGHXZPMqjLtYEUO0VTg7VPmzCqZy2JR41MzGCUc3n
+        H3Ko+uYhjHI2baGaxh2c2FcSNMpUhk5mDGJGm6RLTtOmhJPRcap3VHKFRBokDYM7SbGWzmDC
+        yd0xsUFRaRpXUFL8Ka3JclGxtNFIhkQoDbqsTEacqjNmhpOMPlmjl0r0wUY6w5ilTQlO0mXs
+        kkokoXKXUq1JLb42gerzhZ9fKD+LmZCS9QWIBx8QO8Cf7afQAmQdX0i0IeB23ddctphFQNf1
+        FpwtnAgoXVjmFSB8t2V6ZjPLWxBQOHURYYspBFxrvIqtzsWJILD8vBNfxSIiEBRMtbrHokQz
+        BnoXvuKsNjwIJbA+HXVjLyIKtFw96TZghB+Y7qt18wIiDNhH8zAWbwA3zoy7MUpsBa2OMpQN
+        IQbzE1VcdlkUqBwyoaxGBEqP5LrDAaLaA9gLm3msYTeY/anohdkL/NXzkvcBzscdOBvzEJjp
+        fCHJR8Dks3AWy8BwfQN3VYIS20G9JYSlfcHlxbMIu3Y9ePxvIZedIgD5uUJW4geKB7s4LN4M
+        CvKe8I4hpHlNMPOaYOY1Acz/L6tAsB8Rb0ZvzEhhjFJ96NrPbkLcRxCgaENOOJ4EWxEOH7Ei
+        gI+SIkH2/ni1UJBMH/yCMehUhiwNY7QictdTH0d9NibpXFekzVRJ5aEymQzuUOxUyGXkJgEt
+        GVMJiRQ6k0lnGD1jeOnj8D18TBy0f+rp6/vyv4m0+Pd9FGcb8s2WjVuC45Vn+h2tYjUYi7gg
+        +EMURtQvdCjfG/TsHr2+yzl1yXNMkfyD/yb5gWxh7pVfogfvDxQN1o3EmW71ndbHdN6vqdF7
+        g8DIOc3eu/5kxMbEjz31K1V3fj8X7Kh+95HsnGPBj9Zma6K/6zx6ujVOuefgAVgR6HfJMZS4
+        IdbyYbXtUP/egYC5XtvbJ167uaXqk21bfw0xhT//R33e+9S9mobflpp8y49aiZLyZq/+xoHe
+        Ze/0hNrPKCI0L+nVB/FC4tss2+FK4lZ3j1Wx5w3dl3nR74tm35xJ7bI9fCvHbt8Wl75Psl/V
+        MG4bThTGqOfLSMyYSksDUIOR/g8xNy5gjQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0yMcRzHfZ/ne889Rfa4bnyVidswpx/yY75IMbTHGCWbtLXuTo+06tzu
+        qfzadLYKZ9fkt7sTZZnEWlfqUsKdSor8KD+iJSpZHdJC03Xc3Uz/vff+vN7vvf/40KToA/Sh
+        E5WpnFopT5ZQnrDCKvELIGJ2yBbm5AN82NYEcUO/XYh/F+so3D92DuKmEwUELiquI/DLzq9C
+        3Oe4TeIRx0+Aa+40QvzitpHCtnd/OV3OdwHOapXi6tICCt8c+ijEA31WCrfnXqJwi71BgH//
+        MlKrxaxeo6NYg+YZZKv0HUK27JqUrb48RLDVbzQUm2W2C9nBnnbIll/pItiS8jbIDplmsqZu
+        GxExKcYzJJ5LTkzn1EGhMs/dOfd7SNVR0b7CvItQA85N1gKaRswSNDDoqwUetIgxA/TIscup
+        EeOL6h82k27EG1mtvBZ4/kU+AXS2tYRyMhQTgMZG77q0mPFH2s+VAidEMo8gKtXlC9wJG0Bl
+        OjvhpDyYEGT50eHS3kw4qrh3ypWGzBw00Fzk8r2Y5ai/4wh06ymo8UI3dK4gmUCUXQqcNsn4
+        oUqbkXQPnYVGeq4K3CPCUUGbhnQzYmQ4lk2eAN76cU36/036cU36cYnLAF4H0zkVn5KQwger
+        Fim5vYG8PIVPUyYE7tyTYgKuN5BKzaDm+rdACyBoYAGIJiVir8zt0TKRV7x8/wFOvSdOnZbM
+        8RbgS0PJNK+n2sY4EZMgT+WSOE7Fqf9dCdrDR0PcDPXfpihjorLIN4+XtphiM6ZGLltYbMge
+        nvDF//2EZR8z2Lolrb31qLf4U6lmUJl/6rlE/Hb2ytCuysW5W+cmyw6uMZkjU/POrCtve0nX
+        rnQYkqy3cgq3RAY/2OSYZd9qXV4Y3Lq+6bNwwX4F96HXGkJXmTMVe8M21E/NCDqba8x6/7oQ
+        vFKkvz1pJA0+Y7wKRm+e0RT25NtoXqwcFlV0+9mj1tb6xJqj4rsqRu6FHFgw/xBuXH+8Pb2v
+        xOZ9fnje6KQH0uakfXTcxB2W8PCamLSGNdaJYZ1gMC5US4fJthgd0fIBwK2KiJg9xtM/9Z2b
+        YKbwxQqwserG6VHFsFoC+d3yYCmp5uV/AB1dI011AwAA
+X-CMS-MailID: 20210323030122epcas1p147f5f0b852da3e35e928496737b85f0e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210322052204epcas1p1382cadbfe958d156c0ad9f7fcb8532b7
+References: <20210322051344.1706-1-namjae.jeon@samsung.com>
+        <CGME20210322052204epcas1p1382cadbfe958d156c0ad9f7fcb8532b7@epcas1p1.samsung.com>
+        <20210322051344.1706-2-namjae.jeon@samsung.com>
+        <20210322221816.GW1719932@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+> On Mon, Mar 22, 2021 at 02:13:40PM +0900, Namjae Jeon wrote:
+> > +#define RESPONSE_BUF(w)		((void *)(w)->response_buf)
+> > +#define REQUEST_BUF(w)		((void *)(w)->request_buf)
+> 
+> Why do you do this obfuscation?
+I don't remember exactly, but back then, It looked easier...
+> 
+> > +#define RESPONSE_BUF_NEXT(w)	\
+> > +	((void *)((w)->response_buf + (w)->next_smb2_rsp_hdr_off))
+> > +#define REQUEST_BUF_NEXT(w)	\
+> > +	((void *)((w)->request_buf + (w)->next_smb2_rcv_hdr_off))
+> 
+> These obfuscations aren't even used; delete them
+They are used in many place.
+./smb2pdu.c:            *rsp = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:            err_rsp = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:            rsp_hdr = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:    struct smb2_hdr *hdr = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:    struct smb2_hdr *rsp = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:    rsp_hdr = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:            rsp = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:            rsp = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:            hdr = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:            hdr = RESPONSE_BUF_NEXT(work);
+./smb2pdu.c:            rsp = RESPONSE_BUF_NEXT(work);
 
-On Mon, 22 Mar 2021 20:24:41 -0500 Bjorn Helgaas wrote:
-
-
+./smb2pdu.c:            *req = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:            rcv_hdr = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:    struct smb2_hdr *req_hdr = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:    struct smb2_hdr *req = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:    rcv_hdr = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:    hdr = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:            req = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:            req = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:            hdr = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:    req_hdr = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:            hdr = REQUEST_BUF_NEXT(work);
+./smb2pdu.c:    req_hdr = REQUEST_BUF_NEXT(work);
 > 
-> [+cc Kishon, Richard, Lucas, Dilip]
-> 
-> On Mon, Mar 01, 2021 at 11:10:31AM +0800, Jisheng Zhang wrote:
-> > After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
-> > MSI stops working after resume. Because dw_pcie_host_init() is only
-> > called once during probe. To fix this issue, we move dw_pcie_msi_init()
-> > to dw_pcie_setup_rc().  
-> 
-> This patch looks fine, but I don't think the commit log tells the
-> whole story.
-> 
-> Prior to 59fbab1ae40e, it looks like the only dwc-based drivers with
-> resume functions were dra7xx, imx6, intel-gw, and tegra [1].
-> 
-> Only tegra called dw_pcie_msi_init() in the resume path, and I do
-> think 59fbab1ae40e broke MSI after resume because it removed the
-> dw_pcie_msi_init() call from tegra_pcie_enable_msi_interrupts().
-> 
-> I'm not convinced this patch fixes it reliably, though.  The call
-> chain looks like this:
-> 
->   tegra_pcie_dw_resume_noirq
->     tegra_pcie_dw_start_link
->       if (dw_pcie_wait_for_link(pci))
->         dw_pcie_setup_rc
-> 
-> dw_pcie_wait_for_link() returns 0 if the link is up, so we only call
-> dw_pcie_setup_rc() in the case where the link *didn't* come up.  If
-> the link comes up nicely without retry, we won't call
-> dw_pcie_setup_rc() and hence won't call dw_pcie_msi_init().
-
-The v1 version patch was sent before commit 275e88b06a (PCI: tegra: Fix host
-link initialization"). At that time, the resume path looks like this:
-
-tegra_pcie_dw_resume_noirq
-  tegra_pcie_dw_host_init
-    tegra_pcie_prepare_host
-      dw_pcie_setup_rc
-
-so after patch, dw_pcie_msi_init() will be called. But now it seems that
-the tegra version needs one more fix for the resume.
-
-So could I sent a new patch to update the commit-msg a bit?
-
-> 
-> Since then, exynos added a resume function.  My guess is MSI never
-> worked after resume for dra7xx, exynos, imx6, and intel-gw because
-> they don't call dw_pcie_msi_init() in their resume functions.
-> 
-> This patch looks like it should fix MSI after resume for exynos, imx6,
-> and intel-gw because they *do* call dw_pcie_setup_rc() from their
-> resume functions [2], and after this patch, dw_pcie_msi_init() will be
-> called from there.
-> 
-> I suspect MSI after resume still doesn't work on dra7xx.
-
-I checked the dra7xx history, I'm afraid that the resume never works
-from the beginning if the host lost power during suspend, I guess the
-platform never power off the host but only the phy?
-
-> 
-> [1] git grep -A20 -e "static.*resume_noirq" 59fbab1ae40e^:drivers/pci/controller/dwc
-> [2] git grep -A20 -e "static.*resume_noirq" drivers/pci/controller/dwc
-> 
-> > Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> > ---
-> > Since v1:
-> >  - collect Reviewed-by tag
-> >
-> >  drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > index 7e55b2b66182..e6c274f4485c 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > @@ -400,7 +400,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
-> >       }
-> >
-> >       dw_pcie_setup_rc(pp);
-> > -     dw_pcie_msi_init(pp);
-> >
-> >       if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
-> >               ret = pci->ops->start_link(pci);
-> > @@ -551,6 +550,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
-> >               }
-> >       }
-> >
-> > +     dw_pcie_msi_init(pp);
+> > +#define RESPONSE_SZ(w)		((w)->response_sz)
 > > +
-> >       /* Setup RC BARs */
-> >       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
-> >       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
-> > --
-> > 2.30.1
-> >  
+> > +#define INIT_AUX_PAYLOAD(w)	((w)->aux_payload_buf = NULL)
+> > +#define HAS_AUX_PAYLOAD(w)	((w)->aux_payload_sz != 0)
+> 
+> I mean, do you really find it clearer to write:
+> 
+> 	if (HAS_AUX_PAYLOAD(work))
+> than
+> 	if (work->aux_payload_sz)
+> 
+> The unobfuscated version is actually shorter!
+Yep, looks better, Will fix it.
+
+Thanks for your review!
+
 
