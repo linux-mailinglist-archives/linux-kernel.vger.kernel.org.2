@@ -2,71 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24E83457E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2823457E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhCWGmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:42:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14064 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhCWGmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:42:05 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4MD52N5yzNq8r;
-        Tue, 23 Mar 2021 14:39:33 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Mar 2021 14:41:56 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] Revert "f2fs: give a warning only for readonly partition"
-Date:   Tue, 23 Mar 2021 14:41:55 +0800
-Message-ID: <20210323064155.12582-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S229670AbhCWGne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:43:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49072 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229961AbhCWGn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:43:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616481807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4+J7sSDIvj9y/zAn9QU5NutVEzWadCStd/aNpRQiSdo=;
+        b=qQQzdVPkr+M1kwoWp1l4X2g4T0sUXkuxK+QyhkM2fZNZzseKA3+8A8K5g44fwOALNQPcsH
+        sZDo12EqwB4Uci3RaLb8Wc7oT7Tg1FW590LxFZg2t8ooXVTpigXnZveTNKo8kuEiuCZnbm
+        p1j9aL2Iy2BXT2/A3d3PozgFI6TqnB4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 90CBAAC1D;
+        Tue, 23 Mar 2021 06:43:27 +0000 (UTC)
+Subject: Re: [PATCH 2/2] Revert "xen: fix p2m size in dom0 for disabled memory
+ hotplug case"
+To:     Roger Pau Monne <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jan Beulich <jbeulich@suse.com>, xen-devel@lists.xenproject.org
+References: <20210317110401.46322-1-roger.pau@citrix.com>
+ <20210317110401.46322-3-roger.pau@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <be20366d-8640-a309-259b-6a0e94661cf4@suse.com>
+Date:   Tue, 23 Mar 2021 07:43:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210317110401.46322-3-roger.pau@citrix.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ifWB3LGqY1k1qOmNVnq2VDRqZzZaosRZ5"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ifWB3LGqY1k1qOmNVnq2VDRqZzZaosRZ5
+Content-Type: multipart/mixed; boundary="pUzoMSktAAxtEQwxmACON8972zP1zHqb6";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Roger Pau Monne <roger.pau@citrix.com>, linux-kernel@vger.kernel.org
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>, Jan Beulich
+ <jbeulich@suse.com>, xen-devel@lists.xenproject.org
+Message-ID: <be20366d-8640-a309-259b-6a0e94661cf4@suse.com>
+Subject: Re: [PATCH 2/2] Revert "xen: fix p2m size in dom0 for disabled memory
+ hotplug case"
+References: <20210317110401.46322-1-roger.pau@citrix.com>
+ <20210317110401.46322-3-roger.pau@citrix.com>
+In-Reply-To: <20210317110401.46322-3-roger.pau@citrix.com>
 
-Because that commit fails generic/050 testcase which expect failure
-during mount a recoverable readonly partition.
+--pUzoMSktAAxtEQwxmACON8972zP1zHqb6
+Content-Type: multipart/mixed;
+ boundary="------------A0B69D3B8ED2300231DFC1EF"
+Content-Language: en-US
 
-Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/super.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+This is a multi-part message in MIME format.
+--------------A0B69D3B8ED2300231DFC1EF
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index b48281642e98..2b78ee11f093 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 		 * previous checkpoint was not done by clean system shutdown.
- 		 */
- 		if (f2fs_hw_is_readonly(sbi)) {
--			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
-+			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
-+				err = -EROFS;
- 				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
--			else
--				f2fs_info(sbi, "write access unavailable, skipping recovery");
-+				goto free_meta;
-+			}
-+			f2fs_info(sbi, "write access unavailable, skipping recovery");
- 			goto reset_checkpoint;
- 		}
- 
--- 
-2.29.2
+On 17.03.21 12:04, Roger Pau Monne wrote:
+> This partially reverts commit 882213990d32fd224340a4533f6318dd152be4b2.=
 
+>=20
+> There's no need to special case XEN_UNPOPULATED_ALLOC anymore in order
+> to correctly size the p2m. The generic memory hotplug option has
+> already been tied together with the Xen hotplug limit, so enabling
+> memory hotplug should already trigger a properly sized p2m on Xen PV.
+
+Can you add some words here that XEN_UNPOPULATED_ALLOC depends on
+MEMORY_HOTPLUG via ZONE_DEVICE?
+
+
+Juergen
+
+--------------A0B69D3B8ED2300231DFC1EF
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------A0B69D3B8ED2300231DFC1EF--
+
+--pUzoMSktAAxtEQwxmACON8972zP1zHqb6--
+
+--ifWB3LGqY1k1qOmNVnq2VDRqZzZaosRZ5
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmBZjg4FAwAAAAAACgkQsN6d1ii/Ey8T
+pwgAgkQmk7ZYJ1ZPz0h4CgGGDGYV0kbjFNUa6Lso76tXMHd/PPpI+GqHKbaFkPU8IdguvnxHNFBp
+Ek4cJFBnKwE6n+PwyU+FUTdcQmvr79VL1ae7jijgPMnlFqS2Zn19sNt7mFzg0beNbcmSFg5RdBY1
+jJBRNZhmHZOiKLlcl05LoMzZx7XVX/bDlEAA/GNd29WzO4gOudSHjbjVo57XCD8EL9+1fj5hUEVS
+DEA+HyC0eU6I7j3lxQvjTU+jd85twpH4duy8RrlZADHPXLeWChJO+Zj6Q9f3HnR5Kc3pP/a5cf0k
+sXqvOeLJrK1DiEeCUycUHO8r8pAhaJdPCHcUIy3PUg==
+=D9vP
+-----END PGP SIGNATURE-----
+
+--ifWB3LGqY1k1qOmNVnq2VDRqZzZaosRZ5--
