@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD4D346171
+	by mail.lfdr.de (Postfix) with ESMTP id 97B06346172
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhCWO1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhCWO1B (ORCPT
+        id S232249AbhCWO1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:27:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49786 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232129AbhCWO1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:27:01 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E60C061574;
-        Tue, 23 Mar 2021 07:27:00 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id z1so10536143ybf.6;
-        Tue, 23 Mar 2021 07:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a1UKA4D9x9QmZ1+15HTh/Ges6E1m3MBK/glmFQ+WIEA=;
-        b=kuI5z7BTwTCzb12byWHvnez5Mri863aUQ3Lj3wB4GHCyfdrM6k/PvMxgsDLB4Q56Du
-         Oxsn7JJ1zTtYNbr+YMmHvo6+bSmAhFKqpRsRl/nUyYPyQYUnvqE2CkV6pZCpEPho8r7H
-         iqwsDC953u7rl0alzpfcXzROoV7ZCUkD+yPfl1BRJp5RXXPidKuNgSjSa1EDTy5rb5C9
-         udHkwgLnN9LTrHQcLroeHvLDQIAIelJWHyRQ4Ot9kLYJofbjoaEPhk4WmZAjuJhBcjxv
-         NMRUwLmWeC6RbgjskE7+IApMwa1xCSPkjAzLo89sQxdH6lmwytLDKK29WysJnQOKW+Me
-         b7LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a1UKA4D9x9QmZ1+15HTh/Ges6E1m3MBK/glmFQ+WIEA=;
-        b=GpwnM6S9TZkKaHIwaDFvHe6c0UI5FhSgDPzJ3nKAdbcCScOHd59FVAY7lO07G72KLC
-         TYpea4RzqDhGH866hePdV8Ia8V9D/k115MKuOQde73bZd+rylPWXYSxFJ2br0bVzrX3o
-         iNXThGo5UgBKFRij0HYMi/EcNNMOF80f2ajkKPFTIp9CBxqSCUgdUJZmrGe2oWcBjbh3
-         qChpdyUustHKBweAIt754zojSW1b4hEhUasOsVImn8x2dToEHlxbbr+HWGhrEUsLtuAk
-         74v83CeuJFaHMnnSb/5IyMWwGbzjwqXmkT5dyJYaG+SK07qVvOWuSiKIAkBwpszwZPDE
-         uutA==
-X-Gm-Message-State: AOAM532znPJB6A0O82ZokM+k0LXtiivtXFErzuPdpwH9+1NHWM1eY1cZ
-        G+Cr9gbA/N9hzXqggdKgqUwrKI7yjW8Dv4QRxfMYKz/9rTg=
-X-Google-Smtp-Source: ABdhPJybD3ce1ekRim1ZhIjnmLmlL/O7qPnH3M5AavmL+8L6MPDtRHWU2dnXIV05AjFpWSQvRk0Q2y0+VBJ4qWnrVSI=
-X-Received: by 2002:a5b:449:: with SMTP id s9mr5786215ybp.115.1616509620027;
- Tue, 23 Mar 2021 07:27:00 -0700 (PDT)
+        Tue, 23 Mar 2021 10:27:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616509639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DIxwh79zPLwHGUGDrqcLjesEnHFkUQgilSVBipYKhCw=;
+        b=HjMB7RcaMRz70Zoi9VgcprWFj3wQUGim2EpIp9BWzQNVKn82LLnpFah+skchSQJsYNUHK7
+        zgeS7CJd/+KtlV6iYDXBJHE93njHaj1G4T6OsW4XiNMBVtSat70cnf26cD8P2M4MXHlOAP
+        n++0CInIlC2SCEwwkBxRRX9WV9jR0as=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-122-6i6RmrVTMmedm_5mnsaAdQ-1; Tue, 23 Mar 2021 10:27:18 -0400
+X-MC-Unique: 6i6RmrVTMmedm_5mnsaAdQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA7D1108BD06;
+        Tue, 23 Mar 2021 14:27:16 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 03E73196E3;
+        Tue, 23 Mar 2021 14:27:14 +0000 (UTC)
+Subject: Re: [PATCH v2 1/5] mm/migrate.c: remove unnecessary VM_BUG_ON_PAGE on
+ putback_movable_page()
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     jglisse@redhat.com, shy828301@gmail.com, aquini@redhat.com,
+        apopple@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210323135405.65059-1-linmiaohe@huawei.com>
+ <20210323135405.65059-2-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <0017dfc4-05a4-1989-59dc-3f34f7b3517c@redhat.com>
+Date:   Tue, 23 Mar 2021 15:27:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210323032624.1039422-1-mpe@ellerman.id.au> <CANiq72n-tMww2U+eQ=iHOh5u1JQgjM0b1E3XQ9jpWMfpdQ5+=g@mail.gmail.com>
- <87mtuugj61.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87mtuugj61.fsf@mpe.ellerman.id.au>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 23 Mar 2021 15:26:49 +0100
-Message-ID: <CANiq72nx6Z=m-Fye7QYuQdjq9q0ZvH2+rkbrfQq-yQRMAadTYg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Rust for Linux for ppc64le
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     rust-for-linux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210323135405.65059-2-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 1:16 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> It would be nice to be in the CI. I was building natively so I haven't
-> tried cross compiling yet (which we'll need for CI).
+On 23.03.21 14:54, Miaohe Lin wrote:
+> The !PageLocked() check is implicitly done in PageMovable(). Remove this
+> explicit one.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/migrate.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 47df0df8f21a..facec65c7374 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -145,7 +145,6 @@ void putback_movable_page(struct page *page)
+>   {
+>   	struct address_space *mapping;
+>   
+> -	VM_BUG_ON_PAGE(!PageLocked(page), page);
+>   	VM_BUG_ON_PAGE(!PageMovable(page), page);
+>   	VM_BUG_ON_PAGE(!PageIsolated(page), page);
+>   
+> 
 
-Indeed -- in the CI we already cross-compile arm64 (and run under QEMU
-both arm64 as well as x86_64), so it is easy to add new ones to the
-matrix.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-> I can send a pull request if that's easiest.
+-- 
+Thanks,
 
-No worries, I will pick the patches. But, of course, feel free to join
-us in GitHub! :-)
+David / dhildenb
 
-Cheers,
-Miguel
