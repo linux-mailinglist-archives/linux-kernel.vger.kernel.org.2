@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A5234618B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1D834618E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhCWOeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:34:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:47416 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231830AbhCWOdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:33:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6C8BD6E;
-        Tue, 23 Mar 2021 07:33:49 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D98F03F719;
-        Tue, 23 Mar 2021 07:33:47 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 14:33:45 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 4/8] arm64: Detect an EL1 exception frame and mark
- a stack trace unreliable
-Message-ID: <20210323143345.GC98545@C02TD0UTHF1T.local>
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-5-madvenka@linux.microsoft.com>
- <20210323104251.GD95840@C02TD0UTHF1T.local>
- <c4a36a6f-c84f-1ad9-cd03-974f6a39c37b@linux.microsoft.com>
- <20210323130425.GA98545@C02TD0UTHF1T.local>
- <f5dd48d3-c0ea-a719-c10d-83e62db3e7c0@linux.microsoft.com>
+        id S232349AbhCWOem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:34:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232000AbhCWOdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:33:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616510034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Jq/F710yph7giIFuOon0hHnQr6Etp9FxSOgX4AsDyE=;
+        b=RKoYtfx+3+DaLUBPw8xDzwKhGPY2qqm6ZEpwREjGmIf8I41SscW8dKkJYa6mFu9Hse22lp
+        f9r/pNDc+1HQuj4G2b/NipoeB3A+q7OclCzGCXfy4Y9kvbVdAlc22Cy91zp50LPi/x13Dt
+        6E5Afzj3TSPDj50THJUBwNur+4sxdvY=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-EBdiPE7SNb-JLl5xgFi_iA-1; Tue, 23 Mar 2021 10:33:52 -0400
+X-MC-Unique: EBdiPE7SNb-JLl5xgFi_iA-1
+Received: by mail-ot1-f69.google.com with SMTP id c21so1196604oto.18
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:33:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0Jq/F710yph7giIFuOon0hHnQr6Etp9FxSOgX4AsDyE=;
+        b=fAx7+r/zWEiZRbDuT2fMQ+Xc4QTihxibKWuFm7inAqTJgCGc1WMMlWvY0UHnXG3o7e
+         +UHBD804Or8cSMYqE2PYRIlsZw4r2DADdteZV+h7Y6jm9fA8fM2SjbQ85vHXYqLWVskE
+         c4a7D7xNmQFt649Z3sOBqGO0o8G28C0WXebd+gzijy6kfJzk97we1LMgAdg+tdYhTvbd
+         poF9A1mztxBbk/4xowBVoG6v9GqodNyM7h97Q/olynvupVV24X87CUk4L+/m2NHXI6w1
+         cc5hYoYWWYbJwNYPzDPmBWzEpoeoAN4qd6WsMl5hMK+uswRZAQ/ZlW+Q6lkSQCLJp90e
+         NXqA==
+X-Gm-Message-State: AOAM533GirFsDk3TPCmdNYeM3xHZjj9TXGw990yHUfRLxMjka3XAjJ/u
+        RA9Xk+ZQet5LHOk5UY/c8iXQhdgu9OVTPtKybq24C2XGfCnZmMxwc5svwtfuzepdqMf+2/ri249
+        tsJ5fym9N1UnFqRkpceQo5TvYKwrv6knGSBG3W88AkTtyJxhIcAOdKeimSJSJC2LJFsQbS0egzQ
+        ==
+X-Received: by 2002:aca:4a95:: with SMTP id x143mr3509569oia.59.1616510031286;
+        Tue, 23 Mar 2021 07:33:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxok3f6ziJ9zKDi8trmoswuyjnL5pOr/KQa4kLV4auhi+XJnxMJJpMV5++pTTR3OV7D20fw4A==
+X-Received: by 2002:aca:4a95:: with SMTP id x143mr3509539oia.59.1616510030878;
+        Tue, 23 Mar 2021 07:33:50 -0700 (PDT)
+Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
+        by smtp.gmail.com with ESMTPSA id a13sm3696881ooj.14.2021.03.23.07.33.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 07:33:50 -0700 (PDT)
+Subject: Re: [PATCH] fuse: Fix a potential double free in virtio_fs_get_tree
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, vgoyal@redhat.com,
+        stefanha@redhat.com, miklos@szeredi.hu
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
+From:   Connor Kuehl <ckuehl@redhat.com>
+Message-ID: <db475406-76d1-dffd-f492-3e5bb955f08e@redhat.com>
+Date:   Tue, 23 Mar 2021 09:33:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5dd48d3-c0ea-a719-c10d-83e62db3e7c0@linux.microsoft.com>
+In-Reply-To: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 08:31:50AM -0500, Madhavan T. Venkataraman wrote:
-> On 3/23/21 8:04 AM, Mark Rutland wrote:
-> > On Tue, Mar 23, 2021 at 07:46:10AM -0500, Madhavan T. Venkataraman wrote:
-> >> On 3/23/21 5:42 AM, Mark Rutland wrote:
-> >>> On Mon, Mar 15, 2021 at 11:57:56AM -0500, madvenka@linux.microsoft.com wrote:
-> >>>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> >>>>
-> >>>> EL1 exceptions can happen on any instruction including instructions in
-> >>>> the frame pointer prolog or epilog. Depending on where exactly they happen,
-> >>>> they could render the stack trace unreliable.
-> >>>>
-> >>>> If an EL1 exception frame is found on the stack, mark the stack trace as
-> >>>> unreliable.
-> >>>>
-> >>>> Now, the EL1 exception frame is not at any well-known offset on the stack.
-> >>>> It can be anywhere on the stack. In order to properly detect an EL1
-> >>>> exception frame the following checks must be done:
-> >>>>
-> >>>> 	- The frame type must be EL1_FRAME.
-> >>>>
-> >>>> 	- When the register state is saved in the EL1 pt_regs, the frame
-> >>>> 	  pointer x29 is saved in pt_regs->regs[29] and the return PC
-> >>>> 	  is saved in pt_regs->pc. These must match with the current
-> >>>> 	  frame.
-> >>>
-> >>> Before you can do this, you need to reliably identify that you have a
-> >>> pt_regs on the stack, but this patch uses a heuristic, which is not
-> >>> reliable.
-> >>>
-> >>> However, instead you can identify whether you're trying to unwind
-> >>> through one of the EL1 entry functions, which tells you the same thing
-> >>> without even having to look at the pt_regs.
-> >>>
-> >>> We can do that based on the entry functions all being in .entry.text,
-> >>> which we could further sub-divide to split the EL0 and EL1 entry
-> >>> functions.
-> >>
-> >> Yes. I will check the entry functions. But I still think that we should
-> >> not rely on just one check. The additional checks will make it robust.
-> >> So, I suggest that the return address be checked first. If that passes,
-> >> then we can be reasonably sure that there are pt_regs. Then, check
-> >> the other things in pt_regs.
-> > 
-> > What do you think this will catch?
+On 3/23/21 12:18 AM, Lv Yunlong wrote:
+> In virtio_fs_get_tree, fm is allocated by kzalloc() and
+> assigned to fsc->s_fs_info by fsc->s_fs_info=fm statement.
+> If the kzalloc() failed, it will goto err directly, so that
+
+Right, I follow this so far.
+
+> fsc->s_fs_info must be non-NULL and fm will be freed.
+
+But this I don't follow in the context of the stuff that happens in out_err.
+
+> But later fm is freed again when virtio_fs_fill_super() fialed.
+> I think the statement if (fsc->s_fs_info) {kfree(fm);} is
+> misplaced.
+
+I'm not sure this can double free, because:
+
+* If fm = kzalloc[..] fails, the function bails early.
+
+* If sget_fc() fails, the function cleans up fm and fc and bails early.
+
+* If sget_fc() succeeds and allocated a new superblock, fc->s_fs_info 
+pointer is moved to sb->s_fs_info and fc->s_fs_info is set to NULL, so 
+the first free hasn't happened yet.
+
+* If sget_fc() succeeds and somehow returns an existing superblock 
+(which I think is tested by checking if fc->s_fs_info is not NULL, since 
+otherwise it'd have been moved to the superblock and set to NULL in 
+sget_fc), I think sb->s_root would not be NULL, therefore the flow of 
+control wouldn't enter the if-block where virtio_fs_fill_super could 
+fail which means the code won't reach the double free.
+
+That's just my reading of it though, and I'm wondering if that makes 
+sense to others :-)
+
+One last comment inline:
+
+> My patch puts this statement in the correct palce to avoid
+> double free.
 > 
-> I am not sure that I have an exact example to mention here. But I will attempt
-> one. Let us say that a task has called arch_stack_walk() in the recent past.
-> The unwinder may have copied a stack frame onto some location in the stack
-> with one of the return addresses we check. Let us assume that there is some
-> stack corruption that makes a frame pointer point to that exact record. Now,
-> we will get a match on the return address on the next unwind.
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>   fs/fuse/virtio_fs.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 8868ac31a3c0..727cf436828f 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -1437,10 +1437,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+>   
+>   	fsc->s_fs_info = fm;
+>   	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
+> -	if (fsc->s_fs_info) {
+> -		fuse_conn_put(fc);
+> -		kfree(fm);
+> -	}
+> +
+>   	if (IS_ERR(sb))
+>   		return PTR_ERR(sb);
 
-I don't see how this is material to the pt_regs case, as either:
+By removing the check from here, it now looks like if sget_fc() fails, 
+then this early return will leak fm's memory and fc's reference.
 
-* When the unwinder considers this frame, it appears to be in the middle
-  of an EL1 entry function, and the unwinder must mark the unwinding as
-  unreliable regardless of the contents of any regs (so there's no need
-  to look at the regs).
+Connor
 
-* When the unwinder considers this frame, it does not appear to be in
-  the middle of an EL1 entry function, so the unwinder does not think
-  there are any regs to consider, and so we cannot detect this case.
+>   
+> @@ -1457,6 +1454,11 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+>   		sb->s_flags |= SB_ACTIVE;
+>   	}
+>   
+> +	if (fsc->s_fs_info) {
+> +		fuse_conn_put(fc);
+> +		kfree(fm);
+> +	}
+> +
+>   	WARN_ON(fsc->root);
+>   	fsc->root = dget(sb->s_root);
+>   	return 0;
+> 
 
-... unless I've misunderstood the example?
-
-There's a general problem that it's possible to corrupt any portion of
-the chain to skip records, e.g.
-
-  A -> B -> C -> D -> E -> F -> G -> H -> [final]
-
-... could get corrupted to:
-
-  A -> B -> D -> H -> [final]
-
-... regardless of whether C/E/F/G had associated pt_regs. AFAICT there's
-no good way to catch this generally unless we have additional metadata
-to check the unwinding against.
-
-The likelihood of this happening without triggering other checks is
-vanishingly low, and as we don't have a reliable mechanism for detecting
-this, I don't think it's worthwhile attempting to do so.
-
-If and when we try to unwind across EL1 exception boundaries, the
-potential mismatch between the frame record and regs will be more
-significant, and I agree at that point thisd will need more thought.
-
-> Pardon me if the example is somewhat crude. My point is that it is
-> highly unlikely but not impossible for the return address to be on the
-> stack and for the unwinder to get an unfortunate match.
-
-I agree that this is possible in theory, but as above I don't think this
-is a practical concern.
-
-Thanks,
-Mark.
