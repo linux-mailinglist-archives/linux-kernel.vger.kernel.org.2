@@ -2,105 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AA8345C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE81345C2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhCWKqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:46:13 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:40847 "EHLO mail.thorsis.com"
+        id S230284AbhCWKrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:47:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39698 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230228AbhCWKqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:46:05 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id DB1845E8;
-        Tue, 23 Mar 2021 11:46:02 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id W5N2qbRT1jL0; Tue, 23 Mar 2021 11:46:02 +0100 (CET)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id 2EDCF1FAB; Tue, 23 Mar 2021 11:46:02 +0100 (CET)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-Date:   Tue, 23 Mar 2021 11:45:55 +0100 (CET)
-From:   Alexander Dahl <ada@thorsis.com>
-To:     nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Message-ID: <1732882030.11903.1616496356027@seven.thorsis.com>
-In-Reply-To: <20210217113808.21804-1-nicolas.ferre@microchip.com>
-References: <20210217113808.21804-1-nicolas.ferre@microchip.com>
-Subject: Re: [PATCH] ARM: dts: at91-sama5d27_som1: fix phy address to 7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Originating-Client: open-xchange-appsuite
+        id S230305AbhCWKrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:47:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616496429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NaRa85INpsZEqfLCsgSNBVcWiWiVhHqblotAh21dc+g=;
+        b=oHzwm0gbjvu2H5TBXXIAZpZ2mBJqANURQ9iX6ikT28yQVji58JxGeeppjss0XrZM1ZZWea
+        caTlRvhtIaZKPvfm2oLB1aYphDNG6LDGwjb1hEScbeSQxt3V1REGNc9Ip/XFnnXpxWMwqN
+        Rq4yFjFTmENEiqJ9XtTZAmurd9j+EgY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8A7A0AD6D;
+        Tue, 23 Mar 2021 10:47:09 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 11:47:06 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Rafael Aquini <aquini@redhat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH next v1 2/3] printk: remove safe buffers
+Message-ID: <YFnHKlCvIA2nI41c@alley>
+References: <20210316233326.10778-1-john.ogness@linutronix.de>
+ <20210316233326.10778-3-john.ogness@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316233326.10778-3-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hei hei,
-
-I could not get ethernet to work on SAMA5D27-SOM1-EK1 with kernels v5.10 and v5.11 built by a recent ptxdist based DistroKit BSP, while it used to work with an older v4.19 kernel. Just applying this patch to the tree made ethernet working again, thus:
-
-Tested-by: Alexander Dahl <ada@thorsis.com>
-
-Not sure why it worked with that older kernel, though.
-
-I added Ahmad to Cc, he added board support to DistroKit for that board, and might want to know. And I added the devicetree list to Cc, I wondered why the patch was not there and get_maintainers.pl proposed it.
-
-Thanks for fixing this and greetings
-Alex
-
-> nicolas.ferre@microchip.com hat am 17.02.2021 12:38 geschrieben:
+On Wed 2021-03-17 00:33:25, John Ogness wrote:
+> With @logbuf_lock removed, the high level printk functions for
+> storing messages are lockless. Messages can be stored from any
+> context, so there is no need for the NMI and safe buffers anymore.
+> Remove the NMI and safe buffers.
 > 
+> Although the safe buffers are removed, the NMI and safe context
+> tracking is still in place. In these contexts, store the message
+> immediately but still use irq_work to defer the console printing.
+> 
+> Since printk recursion tracking is in place, safe context tracking
+> for most of printk is not needed. Remove it. Only safe context
+> tracking relating to the console lock is left in place. This is
+> because the console lock is needed for the actual printing.
+
+I have two more questions after actually checking the entire patch.
+See below.
+
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1084,7 +1069,6 @@ void __init setup_log_buf(int early)
+>  	struct printk_record r;
+>  	size_t new_descs_size;
+>  	size_t new_infos_size;
+> -	unsigned long flags;
+>  	char *new_log_buf;
+>  	unsigned int free;
+>  	u64 seq;
+> @@ -1142,8 +1126,6 @@ void __init setup_log_buf(int early)
+>  		 new_descs, ilog2(new_descs_count),
+>  		 new_infos);
 >  
-> From: Claudiu Beznea <claudiu.beznea@microchip.com>
-> 
-> Fix the phy address to 7 for Ethernet PHY on SAMA5D27 SOM1. No
-> connection established if phy address 0 is used.
-> 
-> The board uses the 24 pins version of the KSZ8081RNA part, KSZ8081RNA
-> pin 16 REFCLK as PHYAD bit [2] has weak internal pull-down.  But at
-> reset, connected to PD09 of the MPU it's connected with an internal
-> pull-up forming PHYAD[2:0] = 7.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> Fixes: 2f61929eb10a ("ARM: dts: at91: at91-sama5d27_som1: fix PHY ID")
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> Cc: <stable@vger.kernel.org> # 4.14+
-> ---
->  arch/arm/boot/dts/at91-sama5d27_som1.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
-> index 1b1163858b1d..e3251f3e3eaa 100644
-> --- a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
-> +++ b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
-> @@ -84,8 +84,8 @@ macb0: ethernet@f8008000 {
->  				pinctrl-0 = <&pinctrl_macb0_default>;
->  				phy-mode = "rmii";
+> -	printk_safe_enter_irqsave(flags);
+> -
+>  	log_buf_len = new_log_buf_len;
+>  	log_buf = new_log_buf;
+>  	new_log_buf_len = 0;
+> @@ -1159,8 +1141,6 @@ void __init setup_log_buf(int early)
+>  	 */
+>  	prb = &printk_rb_dynamic;
 >  
-> -				ethernet-phy@0 {
-> -					reg = <0x0>;
-> +				ethernet-phy@7 {
-> +					reg = <0x7>;
->  					interrupt-parent = <&pioA>;
->  					interrupts = <PIN_PD31 IRQ_TYPE_LEVEL_LOW>;
->  					pinctrl-names = "default";
-> -- 
-> 2.30.0
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> -	printk_safe_exit_irqrestore(flags);
+
+This will allow to add new messages from the IRQ context when we
+are copying them to the new buffer. They might get lost in
+the small race window.
+
+Also the messages from NMI might get lost because they are not
+longer stored in the per-CPU buffer.
+
+A possible solution might be to do something like this:
+
+	prb_for_each_record(0, &printk_rb_static, seq, &r)
+		free -= add_to_rb(&printk_rb_dynamic, &r);
+
+	prb = &printk_rb_dynamic;
+
+	/*
+	 * Copy the remaining messages that might have appeared
+	 * from IRQ or NMI context after we ended copying and
+	 * before we switched the buffers. They must be finalized
+	 * because only one CPU is up at this stage.
+	 */
+	prb_for_each_record(seq, &printk_rb_static, seq, &r)
+		free -= add_to_rb(&printk_rb_dynamic, &r);
+
+
+> -
+>  	if (seq != prb_next_seq(&printk_rb_static)) {
+>  		pr_err("dropped %llu messages\n",
+>  		       prb_next_seq(&printk_rb_static) - seq);
+> @@ -2666,7 +2631,6 @@ void console_unlock(void)
+>  		size_t ext_len = 0;
+>  		size_t len;
+>  
+> -		printk_safe_enter_irqsave(flags);
+>  skip:
+>  		if (!prb_read_valid(prb, console_seq, &r))
+>  			break;
+> @@ -2711,6 +2675,8 @@ void console_unlock(void)
+>  				printk_time);
+>  		console_seq++;
+>  
+> +		printk_safe_enter_irqsave(flags);
+
+What is the purpose of the printk_safe context here, please?
+
+I guess that you wanted to prevent calling console drivers
+recursively. But it is already serialized by console_lock().
+
+IMHO, the only risk is when manipulating console_sem->lock
+or console_owner_lock. But they are already guarded by
+printk_safe context, for example, in console_lock() or
+console_lock_spinning_enable().
+
+Do I miss something, please?
+
+
+> +
+>  		/*
+>  		 * While actively printing out messages, if another printk()
+>  		 * were to occur on another CPU, it may wait for this one to
+> @@ -2745,8 +2711,6 @@ void console_unlock(void)
+>  	 * flush, no worries.
+>  	 */
+>  	retry = prb_read_valid(prb, console_seq, NULL);
+> -	printk_safe_exit_irqrestore(flags);
+> -
+>  	if (retry && console_trylock())
+>  		goto again;
+>  }
+
+Heh, all these patches feels like stripping printk of an armour. I hope
+that we trained it enough to be flexible and avoid any damage.
+
+Best Regards,
+Petr
