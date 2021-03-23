@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89055346433
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0567346440
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhCWP7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
+        id S232806AbhCWQAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbhCWP64 (ORCPT
+        with ESMTP id S233024AbhCWP77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:58:56 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65C0C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:55 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id z3so18223574ioc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:55 -0700 (PDT)
+        Tue, 23 Mar 2021 11:59:59 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF10DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:59:58 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so13313278wml.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NO3WLs2vlBKiTCA7DRRz2cdPr87od0vVxyebRQ/JakY=;
-        b=f3vd+CopGTvevG8pEPkv8DeH4ALqoBzv+RVf1kXcnba6/+sTCctXQaaEajrj65fhwt
-         YXE+hqZsMzbd7Yxmx5VTJjZTE06KKiIvUiQHe+w6iWx6OMzp5AvvHRYthPBm9WZ9HaQ3
-         eysHTBCuabELRxnBPUwc/voVKA+FVDO5TF2zBD8Vj8x+JdV8Aso8ZoAoRsA07BE2uxYh
-         zvqKXXFOa5DiqI8/G1tdpKKmpAVGz/8RHhBbnJ2sQW+05MzkqADVLsR3qGRmP2yBZzPz
-         DLHy4U+rDB/Ou+AD70UYuLc/4YAWm2UpYr2c59+dQ+8q7LRjYC5BwEMIjs6r/UWzZCM5
-         fL5g==
+        bh=EnmmDyggAPflRAaQCTg3wppfJzBgN0JGaB14tjos9c0=;
+        b=Q+TmW/roG4k+tejpfFry3lutYo8+nsqkPocgK+U9Ez5mH9ey5+jTNs4GjWy3NlRN0k
+         UlNrZvX6PNXX1dNwxmplhDKfYU+L1H1nQ4w2765jkRpdJdzzzCNQkWPZ9MOhKyA26n2V
+         lhcSlSUFU7yE0PVB01quV9BN2ilxUOg2blO0qNqJehQB2KgpIrBiGdHxzL/r2tBFnMi/
+         MZny2ap41FAbE7IaCnJZTwNB3QEQ7wQ38fa8NmiOa2sd2yJfJxXpbLkKqn+H1i1gyIi8
+         uwyg9axR1h+J8UmOPdYsLa0KNB4iBXD6OYJpChmOwKAqz47HDdRCwuMHK9h3XIRqXNZW
+         3TNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=NO3WLs2vlBKiTCA7DRRz2cdPr87od0vVxyebRQ/JakY=;
-        b=YUJltuGXNG27hLFltLRMmKuRdoonx1SxJSserwFEPr7Y8IimS9hf5bqY6rEj9Cuzn8
-         2HsojwRJYCN9BZ4Sy3M+xa2DC1pMuS95qIiwHGYsyQkyaL6v5I0Tj+6qNaoXRrGVVNCC
-         dessdvWK3FU1pBd7eAZzEAP8ZtTBggBzvRlKe6d4DdZdgIlQbQKyqcZ/FX1FBOiEa7Pm
-         aCGggeebP6Vn7yvnssr83mBu8L4NJX69rgl2x8I1a+5dcdnoNyQVde8dRiRtQoS2tWoj
-         +Rj5wnVn0oI416QJVk05OlzabIZM4vkuDvm4LyxhQC4w+DztWpUlTUvHMtV7ggRVW5Jn
-         2ZWA==
-X-Gm-Message-State: AOAM530jnnoQ+lmJ4uMSZgNBPx66ZpEZHmIgf1IckLqDyhdUvkyIcVQJ
-        HPKd8ZA3PmfLxC84FwZ79zQEtAenShKm9A==
-X-Google-Smtp-Source: ABdhPJwfcaCYU4OYAne4TbFTL8+80cuww4d05IMpb+sAobc+HNYDfnEuWSXybld8Ezbi8ZjwEU4QvA==
-X-Received: by 2002:a05:6638:f11:: with SMTP id h17mr5233398jas.67.1616515135123;
-        Tue, 23 Mar 2021 08:58:55 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id n7sm9895823ile.12.2021.03.23.08.58.54
+        bh=EnmmDyggAPflRAaQCTg3wppfJzBgN0JGaB14tjos9c0=;
+        b=cTsGANrYoRDeaIqlrqR+RdkPTsmhBtwb7MzMzQpcmz5mRI9GnGjY9jNaJKHwsdg8wW
+         82GoKIhkeTcnySNIOECO6emq1MjYrmUHELvpisy9uy9HYLELtF8ApnLQttIAxhQTE3/M
+         WAou+CKgU7Lahb3tTVPeKFue8pYB2Muq0uIrw9O+hOZlBZYJGBNZZ2wgBHEUTe2Tv2YG
+         sNci8SitUDivIRf54VHN3U4QeMiHyiiW2NmYrLT/tpNNIbz/jY/MN+kTAwbJdSd8+/ax
+         gASSstqviY77xCUiDJydvrQQP6jHJgLwr6oPFFoPI/MP1whOfWO9+PA5dDZen1s3Uwof
+         oGsg==
+X-Gm-Message-State: AOAM533dGw4r8a+c9OOfJsuJ003J0yaOO05cqpw9DtFvB7eiGenJ3Qft
+        6w6h/9yXtPBi0n27k4oaJijKeg==
+X-Google-Smtp-Source: ABdhPJxNCgPMDHZiGsXzDevWQJr0r951c/0Rvmbk8hQ+TO2TIhuPA8AFqJo1qAkmK4vk0bzTHeloNA==
+X-Received: by 2002:a1c:541a:: with SMTP id i26mr3888198wmb.75.1616515197459;
+        Tue, 23 Mar 2021 08:59:57 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:91e2:6a05:a4ac:7d0a? ([2a01:e34:ed2f:f020:91e2:6a05:a4ac:7d0a])
+        by smtp.googlemail.com with ESMTPSA id c8sm25845957wrd.55.2021.03.23.08.59.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 08:58:54 -0700 (PDT)
-Subject: Re: [PATCH] block: clear GD_NEED_PART_SCAN later in bdev_disk_changed
-To:     chris.chiu@canonical.com, viro@zeniv.linux.org.uk, hch@lst.de
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323085219.24428-1-chris.chiu@canonical.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0ec65a30-741d-9f22-e90b-1f72f68b4346@kernel.dk>
-Date:   Tue, 23 Mar 2021 09:58:54 -0600
+        Tue, 23 Mar 2021 08:59:56 -0700 (PDT)
+Subject: Re: [PATCH] powercap/drivers/dtpm: Add dtpm devfreq with energy model
+ support
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     cwchoi00@gmail.com, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org
+References: <20210319162836.9364-1-daniel.lezcano@linaro.org>
+ <9a9931f4-ece5-4fe9-5f88-871a2e759200@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <030ccf82-cc25-7287-7409-d33a2dbd2cee@linaro.org>
+Date:   Tue, 23 Mar 2021 16:59:55 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210323085219.24428-1-chris.chiu@canonical.com>
+In-Reply-To: <9a9931f4-ece5-4fe9-5f88-871a2e759200@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 2:52 AM, chris.chiu@canonical.com wrote:
-> From: Chris Chiu <chris.chiu@canonical.com>
+On 23/03/2021 16:56, Lukasz Luba wrote:
+> Hi Daniel,
 > 
-> The GD_NEED_PART_SCAN is set by bdev_check_media_change to initiate
-> a partition scan while removing a block device. It should be cleared
-> after blk_drop_paritions because blk_drop_paritions could return
-> -EBUSY and then the consequence __blkdev_get has no chance to do
-> delete_partition if GD_NEED_PART_SCAN already cleared.
+> On 3/19/21 4:28 PM, Daniel Lezcano wrote:
+>> Currently the dtpm supports the CPUs via cpufreq and the energy
+>> model. This change provides the same for the device which supports
+>> devfreq.
+>>
+>> Each device supporting devfreq and having an energy model can register
+>> themselves in the list of supported devices.
+>>
+>> The concept is the same as the cpufreq dtpm support: the QoS is used
+>> to aggregate the requests and the energy model gives the value of the
+>> instantaneous power consumption ponderated by the load of the device.
+>>
 > 
-> It causes some problems on some card readers. Ex. Realtek card
-> reader 0bda:0328 and 0bda:0158. The device node of the partition
-> will not disappear after the memory card removed. Thus the user
-> applications can not update the device mapping correctly.
+> 
+> I've just started the review, but I have a blocking question:
+> 
+> Why there is no unregister function (like 'dtmp_unregister_devfreq')?
+> Do you consider any devfreq drivers to be modules?
+> 
+> The code looks like an API that it's going to be called directly in
+> e.g. GPU driver in it's probe function. In that case probably the
+> module unloading should call dtmp unregister.
+> 
+> Could you explain this to me please? So I can continue the review.
 
-Applied, thanks.
+Just forgot the unregister function :)
+
 
 -- 
-Jens Axboe
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
