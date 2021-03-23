@@ -2,131 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15B3345C76
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0599345C7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhCWLIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:08:53 -0400
-Received: from mga06.intel.com ([134.134.136.31]:4766 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhCWLIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:08:49 -0400
-IronPort-SDR: C0P2P18Yt+0wrq1OmDwdFTTF34bZVIZPQTm//7GnYvYyuW0UjWrC5cRZV7NeMB7bPFBj2aN2QN
- kbfHjjqT7Rag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="251809068"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="251809068"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:08:49 -0700
-IronPort-SDR: lbaINAHh1CRWNiOOuf/ZQzF5Y+Xkbthj3gVNoPusQ5T0hjDgqNl/TzlYV3XpFqsX+XjGgDSDxS
- EG/6Zt8NDv/w==
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="413347877"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:08:44 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lOets-00Ezjz-6J; Tue, 23 Mar 2021 13:08:40 +0200
-Date:   Tue, 23 Mar 2021 13:08:40 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        id S230429AbhCWLJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:09:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58628 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230434AbhCWLJG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:09:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616497745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jH64CwItD7+IDNu5T9rDTh1QqhWJhGHEtaUsuBHfOjI=;
+        b=AoOChTAvynLD9JXQT2I6KsAUa8GfEE+vcqFeII8mPjdT+wvHNsqJ0LHY/WRibcqs2U4NmG
+        CJr7h8n8hIKSq9SODXro1Rti86rzKh75nPEBzRZ4PnUMSkpURvMVUqE0PX6iakzAc4fKDp
+        dBivVdkswlITxivF1wF4r0SfL9cCVcM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-XYjXjMkUNaOx1Y9hR_U8xA-1; Tue, 23 Mar 2021 07:09:01 -0400
+X-MC-Unique: XYjXjMkUNaOx1Y9hR_U8xA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D7881009466;
+        Tue, 23 Mar 2021 11:08:59 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 38A1F5D9F0;
+        Tue, 23 Mar 2021 11:08:52 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 12:08:51 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Chuck Lever III <chuck.lever@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
-        Oscar Salvador <osalvador@suse.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH v1 2/3] kernel/resource: make walk_mem_res() find all
- busy IORESOURCE_MEM resources
-Message-ID: <YFnMOK6VuIBsoKWr@smile.fi.intel.com>
-References: <20210322160200.19633-1-david@redhat.com>
- <20210322160200.19633-3-david@redhat.com>
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        brouer@redhat.com
+Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
+Message-ID: <20210323120851.18d430cf@carbon>
+In-Reply-To: <20210322205827.GJ3697@techsingularity.net>
+References: <20210322091845.16437-1-mgorman@techsingularity.net>
+        <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
+        <20210322194948.GI3697@techsingularity.net>
+        <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
+        <20210322205827.GJ3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322160200.19633-3-david@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 05:01:59PM +0100, David Hildenbrand wrote:
-> It used to be true that we can have system RAM only on the first level
-> in the resourc tree. However, this is no longer holds for driver-managed
-> system RAM (i.e., dax/kmem and virtio-mem).
-> 
-> The function walk_mem_res() only consideres the first level and is
-> used in arch/x86/mm/ioremap.c:__ioremap_check_mem() only. We currently
-> fail to identify System RAM added by dax/kmem and virtio-mem as
-> "IORES_MAP_SYSTEM_RAM", for example, allowing for remapping of such
-> "normal RAM" in __ioremap_caller().
+On Mon, 22 Mar 2021 20:58:27 +0000
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-Here I dunno, but consider to add Fixes tag if it fixes known bad behaviour.
+> On Mon, Mar 22, 2021 at 08:32:54PM +0000, Chuck Lever III wrote:
+> > >> It is returning some confusing (to me) results. I'd like
+> > >> to get these resolved before posting any benchmark
+> > >> results.
+> > >> 
+> > >> 1. When it has visited every array element, it returns the
+> > >> same value as was passed in @nr_pages. That's the N + 1th
+> > >> array element, which shouldn't be touched. Should the
+> > >> allocator return nr_pages - 1 in the fully successful case?
+> > >> Or should the documentation describe the return value as
+> > >> "the number of elements visited" ?
+> > >>   
+> > > 
+> > > I phrased it as "the known number of populated elements in the
+> > > page_array".  
+> > 
+> > The comment you added states:
+> > 
+> > + * For lists, nr_pages is the number of pages that should be allocated.
+> > + *
+> > + * For arrays, only NULL elements are populated with pages and nr_pages
+> > + * is the maximum number of pages that will be stored in the array.
+> > + *
+> > + * Returns the number of pages added to the page_list or the index of the
+> > + * last known populated element of page_array.
+> > 
+> >   
+> > > I did not want to write it as "the number of valid elements
+> > > in the array" because that is not necessarily the case if an array is
+> > > passed in with holes in the middle. I'm open to any suggestions on how
+> > > the __alloc_pages_bulk description can be improved.  
+> > 
+> > The comments states that, for the array case, a /count/ of
+> > pages is passed in, and an /index/ is returned. If you want
+> > to return the same type for lists and arrays, it should be
+> > documented as a count in both cases, to match @nr_pages.
+> > Consumers will want to compare @nr_pages with the return
+> > value to see if they need to call again.
+> >   
+> 
+> Then I'll just say it's the known count of pages in the array. That
+> might still be less than the number of requested pages if holes are
+> encountered.
+> 
+> > > The definition of the return value as-is makes sense for either a list
+> > > or an array. Returning "nr_pages - 1" suits an array because it's the
+> > > last valid index but it makes less sense when returning a list.
+> > >   
+> > >> 2. Frequently the allocator returns a number smaller than
+> > >> the total number of elements. As you may recall, sunrpc
+> > >> will delay a bit (via a call to schedule_timeout) then call
+> > >> again. This is supposed to be a rare event, and the delay
+> > >> is substantial. But with the array-based API, a not-fully-
+> > >> successful allocator call seems to happen more than half
+> > >> the time. Is that expected? I'm calling with GFP_KERNEL,
+> > >> seems like the allocator should be trying harder.
+> > >>   
+> > > 
+> > > It's not expected that the array implementation would be worse *unless*
+> > > you are passing in arrays with holes in the middle. Otherwise, the success
+> > > rate should be similar.  
+> > 
+> > Essentially, sunrpc will always pass an array with a hole.
+> > Each RPC consumes the first N elements in the rq_pages array.
+> > Sometimes N == ARRAY_SIZE(rq_pages). AFAIK sunrpc will not
+> > pass in an array with more than one hole. Typically:
+> > 
+> > .....PPPP
+> > 
+> > My results show that, because svc_alloc_arg() ends up calling
+> > __alloc_pages_bulk() twice in this case, it ends up being
+> > twice as expensive as the list case, on average, for the same
+> > workload.
+> >   
+> 
+> Ok, so in this case the caller knows that holes are always at the
+> start. If the API returns an index that is a valid index and populated,
+> it can check the next index and if it is valid then the whole array
+> must be populated.
+> 
+> Right now, the implementation checks for populated elements at the *start*
+> because it is required for calling prep_new_page starting at the correct
+> index and the API cannot make assumptions about the location of the hole.
+> 
+> The patch below would check the rest of the array but note that it's
+> slower for the API to do this check because it has to check every element
+> while the sunrpc user could check one element. Let me know if a) this
+> hunk helps and b) is desired behaviour.
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index c83d38dfe936..4bf20650e5f5 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5107,6 +5107,9 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	} else {
+>  		while (prep_index < nr_populated)
+>  			prep_new_page(page_array[prep_index++], 0, gfp, 0);
+> +
+> +		while (nr_populated < nr_pages && page_array[nr_populated])
+> +			nr_populated++;
+>  	}
+>  
+>  	return nr_populated;
 
-> Let's find all busy IORESOURCE_MEM resources, making the function
-> behave similar to walk_system_ram_res().
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Cc: Signed-off-by: David Hildenbrand <david@redhat.com>
-> Cc: Dave Young <dyoung@redhat.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Vivek Goyal <vgoyal@redhat.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Keith Busch <keith.busch@intel.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Qian Cai <cai@lca.pw>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: x86@kernel.org
-> Cc: kexec@lists.infradead.org
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  kernel/resource.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/resource.c b/kernel/resource.c
-> index 4efd6e912279..16e0c7e8ed24 100644
-> --- a/kernel/resource.c
-> +++ b/kernel/resource.c
-> @@ -470,7 +470,7 @@ int walk_mem_res(u64 start, u64 end, void *arg,
->  {
->  	unsigned long flags = IORESOURCE_MEM | IORESOURCE_BUSY;
->  
-> -	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, true,
-> +	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
->  				     arg, func);
->  }
->  
-> -- 
-> 2.29.2
-> 
+I do know that I suggested moving prep_new_page() out of the
+IRQ-disabled loop, but maybe was a bad idea, for several reasons.
+
+All prep_new_page does is to write into struct page, unless some
+debugging stuff (like kasan) is enabled. This cache-line is hot as
+LRU-list update just wrote into this cache-line.  As the bulk size goes
+up, as Matthew pointed out, this cache-line might be pushed into
+L2-cache, and then need to be accessed again when prep_new_page() is
+called.
+
+Another observation is that moving prep_new_page() into loop reduced
+function size with 253 bytes (which affect I-cache).
+
+   ./scripts/bloat-o-meter mm/page_alloc.o-prep_new_page-outside mm/page_alloc.o-prep_new_page-inside
+    add/remove: 18/18 grow/shrink: 0/1 up/down: 144/-397 (-253)
+    Function                                     old     new   delta
+    __alloc_pages_bulk                          1965    1712    -253
+    Total: Before=60799, After=60546, chg -0.42%
+
+Maybe it is better to keep prep_new_page() inside the loop.  This also
+allows list vs array variant to share the call.  And it should simplify
+the array variant code.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+[PATCH] mm: move prep_new_page inside IRQ disabled loop
+
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+
+./scripts/bloat-o-meter mm/page_alloc.o-prep_new_page-outside mm/page_alloc.o-prep_new_page-inside
+add/remove: 18/18 grow/shrink: 0/1 up/down: 144/-397 (-253)
+Function                                     old     new   delta
+__alloc_pages_bulk                          1965    1712    -253
+Total: Before=60799, After=60546, chg -0.42%
+
+
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ mm/page_alloc.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 88a5c1ce5b87..b4ff09b320bc 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5096,11 +5096,13 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		else
+ 			page_array[nr_populated] = page;
+ 		nr_populated++;
++		prep_new_page(page, 0, gfp, 0);
+ 	}
+ 
+ 	local_irq_restore(flags);
+ 
+ 	/* Prep pages with IRQs enabled. */
++/*
+ 	if (page_list) {
+ 		list_for_each_entry(page, page_list, lru)
+ 			prep_new_page(page, 0, gfp, 0);
+@@ -5108,7 +5110,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		while (prep_index < nr_populated)
+ 			prep_new_page(page_array[prep_index++], 0, gfp, 0);
+ 	}
+-
++*/
+ 	return nr_populated;
+ 
+ failed_irq:
 
 
