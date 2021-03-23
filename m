@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADD63462E0
+	by mail.lfdr.de (Postfix) with ESMTP id A6DF83462E1
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhCWPaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhCWP3i (ORCPT
+        id S232828AbhCWPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:30:06 -0400
+Received: from mail-1.ca.inter.net ([208.85.220.69]:57012 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232308AbhCWP3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 11:29:38 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26344C061574;
-        Tue, 23 Mar 2021 08:29:37 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id ha17so10256293pjb.2;
-        Tue, 23 Mar 2021 08:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=skQJo7MFGgmnSo8ig8lPhB8pTWoCTUJAqnXBWPhSpAs=;
-        b=HejT71TZaEVQ4rbqbfdkOB5W+UFXe5H3Amt+qHUjD7XjrgaoQqqPseJ0P7ctrORJJc
-         jIOxitI06MZ+3YH92eNoH5A8uiUTkWnhay6T5I+QSOmUSgJKrzC5PwZt6Uv0I5hTXcAo
-         OLz2cCyz8yYny/CeApBRmvT71t9w25mTU2o474DimCb1zvKIxdXybBYvBE8lK2+6yeKV
-         uTv+UtivTU/j+JqNbBqd3XZ9ET37HQfjuehFvwm4HSdNUL1dIxP1mV1TS2vlSO7xC9LU
-         SowjoieOhiKNqqYM8n6Q/dVGgfu9/NOB5ntntliaYnz4GcwWmkD02z+/WtY2Es/CeMsG
-         x8Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=skQJo7MFGgmnSo8ig8lPhB8pTWoCTUJAqnXBWPhSpAs=;
-        b=HqQjXN3RQY/JEUDfErwi11+8d+Ww7LkqKI9X8eoyPCqBnUkESaJ/XIPnoBWuUfAo5i
-         cf0CeIYlhT7Hn6NsPKfBN0c5N1KzEbPLb+ErR8RaxoRmDRZ/fEYi7am0rNpQzSUIUKKg
-         hQTLd7HOMYbMJAQi7DfcEYNpJm2FhVw76aw7CK+GR1wvrgAUHF88U3JQinItvZ2gNCQC
-         jWeNrZUw81uHLIRacZhaJHylZPCNkm8poL6Kgclus0DRXQta2CHhMeYj6yQ5KaV9V4mn
-         nb6VOW2aweBJEZ1Mt9ckpGZJXwwj4+IADsJkrpy3+evWD1IZltaLEpziLeUdM/CM2Emg
-         t0bA==
-X-Gm-Message-State: AOAM532V4HUwcNhu5N9aTCkTkEYjN26FoC6BA48n/Oon9wkMigvGsNB1
-        oKb+75SunCWPpdTVnjhl+sE=
-X-Google-Smtp-Source: ABdhPJyyMTLjFAiP4MOHUNIC5r805KiTRnrKoJ7XHRzoiuG95vGWi4mCWVRa6B6pqhsVeDxAdcjFCw==
-X-Received: by 2002:a17:90a:a789:: with SMTP id f9mr5205233pjq.192.1616513376588;
-        Tue, 23 Mar 2021 08:29:36 -0700 (PDT)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id fs9sm2980913pjb.40.2021.03.23.08.29.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 08:29:36 -0700 (PDT)
-Subject: Re: [PATCH] PM: devfreq: Couple of typo fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, cw00.choi@samsung.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-References: <20210318112025.22755-1-unixbhaskar@gmail.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <4879531c-ffee-6359-db23-820670f5fe8f@gmail.com>
-Date:   Wed, 24 Mar 2021 00:29:32 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 342E82EA319;
+        Tue, 23 Mar 2021 11:29:35 -0400 (EDT)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id DuPAF25aiZY6; Tue, 23 Mar 2021 11:11:45 -0400 (EDT)
+Received: from [192.168.48.23] (host-45-58-219-4.dyn.295.ca [45.58.219.4])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 339422EA3B3;
+        Tue, 23 Mar 2021 11:29:34 -0400 (EDT)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [scsi_debug] 20b58d1e6b: blktests.block.001.fail
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, mcgrof@kernel.org, hare@suse.de
+References: <20210323132620.GA23032@xsang-OptiPlex-9020>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <d771d5a1-d411-fb34-1c72-81d16e0588d4@interlog.com>
+Date:   Tue, 23 Mar 2021 11:29:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210318112025.22755-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323132620.GA23032@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 3. 18. 오후 8:20, Bhaskar Chowdhury wrote:
+On 2021-03-23 9:26 a.m., kernel test robot wrote:
 > 
-> s/stoping/stopping/
-> s/opeations/operations/
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 20b58d1e6b9cda142cd142a0a2f94c0d04b0a5a0 ("[RFC] scsi_debug: add hosts initialization --> worker")
+> url: https://github.com/0day-ci/linux/commits/Douglas-Gilbert/scsi_debug-add-hosts-initialization-worker/20210319-230817
+> base: https://git.kernel.org/cgit/linux/kernel/git/jejb/scsi.git for-next
+> 
+> in testcase: blktests
+> version: blktests-x86_64-a210761-1_20210124
+> with following parameters:
+> 
+> 	disk: 1SSD
+> 	test: block-group-00
+> 	ucode: 0xe2
+> 
+> 
+> 
+> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+
+This RFC was proposed for Luis Chamberlain to consider for this report:
+    https://bugzilla.kernel.org/show_bug.cgi?id=212337
+
+Luis predicted that this change would trip up some blktests which is exactly 
+what has happened here. The question here is whether it is reasonable (i.e.
+a correct simulation of what real hardware does) to assume that as soon as
+the loading of the scsi_debug is complete, that _all_ LUNs (devices) specified
+in its parameters are ready for media access?
+
+If yes then this RFC can be dropped or relegated to only occur when a driver
+parameter is set to a non-default value.
+
+If no then those blktest scripts need to be fixed to reflect that after a
+HBA is loaded, all the targets and LUNs connected to it do _not_ immediately
+become available.
+
+Doug Gilbert
+
+
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 2021-03-21 02:40:23 sed "s:^:block/:" /lkp/benchmarks/blktests/tests/block-group-00
+> 2021-03-21 02:40:23 ./check block/001
+> block/001 (stress device hotplugging)
+> block/001 (stress device hotplugging)                        [failed]
+>      runtime  ...  30.370s
+>      --- tests/block/001.out	2021-01-24 06:04:08.000000000 +0000
+>      +++ /lkp/benchmarks/blktests/results/nodev/block/001.out.bad	2021-03-21 02:40:53.652003261 +0000
+>      @@ -1,4 +1,7 @@
+>       Running block/001
+>       Stressing sd
+>      +ls: cannot access '/sys/class/scsi_device/4:0:0:0/device/block': No such file or directory
+>      +ls: cannot access '/sys/class/scsi_device/5:0:0:0/device/block': No such file or directory
+>       Stressing sr
+>      +ls: cannot access '/sys/class/scsi_device/4:0:0:0/device/block': No such file or directory
+>       Test complete
+> 
+> 
+> 
+> To reproduce:
+> 
+>          git clone https://github.com/intel/lkp-tests.git
+>          cd lkp-tests
+>          bin/lkp install                job.yaml  # job file is attached in this email
+>          bin/lkp split-job --compatible job.yaml
+>          bin/lkp run                    compatible-job.yaml
+> 
+> 
+> 
 > ---
->   drivers/devfreq/devfreq-event.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
 > 
-> diff --git a/drivers/devfreq/devfreq-event.c b/drivers/devfreq/devfreq-event.c
-> index 6765c03334bc..2f841d7d9d8d 100644
-> --- a/drivers/devfreq/devfreq-event.c
-> +++ b/drivers/devfreq/devfreq-event.c
-> @@ -155,7 +155,7 @@ EXPORT_SYMBOL_GPL(devfreq_event_set_event);
->    * @edata	: the calculated data of devfreq-event device
->    *
->    * Note that this function get the calculated event data from devfreq-event dev
-> - * after stoping the progress of whole sequence of devfreq-event dev.
-> + * after stopping the progress of whole sequence of devfreq-event dev.
->    */
->   int devfreq_event_get_event(struct devfreq_event_dev *edev,
->   			    struct devfreq_event_data *edata)
-> @@ -184,7 +184,7 @@ int devfreq_event_get_event(struct devfreq_event_dev *edev,
->   EXPORT_SYMBOL_GPL(devfreq_event_get_event);
-> 
->   /**
-> - * devfreq_event_reset_event() - Reset all opeations of devfreq-event dev.
-> + * devfreq_event_reset_event() - Reset all operations of devfreq-event dev.
->    * @edev	: the devfreq-event device
->    *
->    * Note that this function stop all operations of devfreq-event dev and reset
-> --
-> 2.26.2
+> Thanks,
+> Oliver Sang
 > 
 
-Thanks for fixup. I think that you can squash this patch with
-patch[1] as you sent.
-[1] [PATCH] PM/devfreq: event: A typo fix
-
-And please use the following patch title
--PM / devfreq: event: Fix typos
-
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
