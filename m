@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57E3345C91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506E0345C99
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhCWLPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhCWLOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:14:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14915C061574;
-        Tue, 23 Mar 2021 04:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y84vyVtzN2lJMPwpRJEXd+7sY33jMaB9TI4VW5KpThg=; b=dbK6qh0oPN5dwcqBP4Lotym+K9
-        Dq7fBGlbxPIi0u+BDfP00Sdg5tGCo2fI8Y2rSVuJvC+POqPpL2hlE/dMoMrYk7XTOXBa+gh8BED9N
-        KmBI5DBFkms8lTdcUUfSf/MUxo4I0c2wgeTIbQ8ikTpv0ci3u5TRavf2MU7fzAYETLyTxNBhwcKJ1
-        udsNEo60MGTKOlAySosXIqHxOXaeibaTCdaQI0S49LSX6UdRPknjShmT7RSn9oBG3Cxj9uG7d2boz
-        BCvCfPi3S9AVqPgLWlqAuZQ22M5tiYUzDgyuaHbwCD5zz5yUzD8lmgwg9VyA81lVVl/K0yOYof5NS
-        UFmFud4Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOeyI-009xbs-43; Tue, 23 Mar 2021 11:13:34 +0000
-Date:   Tue, 23 Mar 2021 11:13:14 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Message-ID: <20210323111314.GB1719932@casper.infradead.org>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
- <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
- <20210322194948.GI3697@techsingularity.net>
- <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
+        id S230377AbhCWLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:15:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:44132 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230358AbhCWLP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:15:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3C3F1042;
+        Tue, 23 Mar 2021 04:15:28 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D3CE3F719;
+        Tue, 23 Mar 2021 04:15:27 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 11:15:24 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        robh+dt@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
+        gustavo.pimentel@synopsys.com, minghuan.Lian@nxp.com,
+        mingkai.hu@nxp.com, roy.zang@nxp.com
+Subject: Re: [PATCH 0/7] PCI: layerscape: Add power management support
+Message-ID: <20210323111524.GD29286@e121166-lin.cambridge.arm.com>
+References: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
+In-Reply-To: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 08:32:54PM +0000, Chuck Lever III wrote:
-> > It's not expected that the array implementation would be worse *unless*
-> > you are passing in arrays with holes in the middle. Otherwise, the success
-> > rate should be similar.
+On Mon, Sep 07, 2020 at 01:37:54PM +0800, Zhiqiang Hou wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 > 
-> Essentially, sunrpc will always pass an array with a hole.
-> Each RPC consumes the first N elements in the rq_pages array.
-> Sometimes N == ARRAY_SIZE(rq_pages). AFAIK sunrpc will not
-> pass in an array with more than one hole. Typically:
+> This patch series is to add PCIe power management support for NXP
+> Layerscape platfroms.
 > 
-> .....PPPP
+> Hou Zhiqiang (7):
+>   PCI: dwc: Fix a bug of the case dw_pci->ops is NULL
+>   PCI: layerscape: Change to use the DWC common link-up check function
+>   dt-bindings: pci: layerscape-pci: Add a optional property big-endian
+>   arm64: dts: layerscape: Add big-endian property for PCIe nodes
+>   dt-bindings: pci: layerscape-pci: Update the description of SCFG
+>     property
+>   dts: arm64: ls1043a: Add SCFG phandle for PCIe nodes
+>   PCI: layerscape: Add power management support
 > 
-> My results show that, because svc_alloc_arg() ends up calling
-> __alloc_pages_bulk() twice in this case, it ends up being
-> twice as expensive as the list case, on average, for the same
-> workload.
+>  .../bindings/pci/layerscape-pci.txt           |   6 +-
+>  .../arm64/boot/dts/freescale/fsl-ls1012a.dtsi |   1 +
+>  .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi |   6 +
+>  .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi |   3 +
+>  drivers/pci/controller/dwc/pci-layerscape.c   | 473 ++++++++++++++----
+>  drivers/pci/controller/dwc/pcie-designware.c  |  12 +-
+>  drivers/pci/controller/dwc/pcie-designware.h  |   1 +
+>  7 files changed, 388 insertions(+), 114 deletions(-)
 
-Can you call memmove() to shift all the pointers down to be the
-first N elements?  That prevents creating a situation where we have
+I don't know which patches are still applicable, I will mark this
+series as superseded since you will have to rebase it anyway - please
+let me know what's the plan.
 
-PPPPPPPP (consume 6)
-......PP (try to allocate 6, only 4 available)
-PPPP..PP
-
-instead, you'd do:
-
-PPPPPPPP (consume 6)
-PP...... (try to allocate 6, only 4 available)
-PPPPPP..
-
-Alternatively, you could consume from the tail of the array instead of
-the head.  Some CPUs aren't as effective about backwards walks as they
-are for forwards walks, but let's keep the pressure on CPU manufacturers
-to make better CPUs.
-
+Thanks,
+Lorenzo
