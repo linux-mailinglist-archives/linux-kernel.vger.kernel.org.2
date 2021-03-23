@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80695345A74
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DC6345A78
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCWJKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        id S229904AbhCWJLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhCWJKl (ORCPT
+        with ESMTP id S229665AbhCWJKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:10:41 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB1B0C061574;
-        Tue, 23 Mar 2021 02:10:38 -0700 (PDT)
+        Tue, 23 Mar 2021 05:10:55 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC04C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:10:55 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id h25so11033748pgm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=SxpT8+r6VhSmoaP5YXjxLlmFt78njlhiwRf1
-        vPTZgU0=; b=R2ziuB+aPNmtwjILQqOI1oaZFgSJq6CR5lj5R80I+6n5ZlJ0jB04
-        LUlf+sYvccmFrJw9K4emLJRJlfKVgJX+B+JTJNkfDzcvfXPlUliIRyPlGZBjVKW6
-        /1jHBAemC4qUqbmYbspIuIGZNFOq0+ozXfgXbZJ9pIyc7WwjPQJhEk4=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Tue, 23 Mar
- 2021 17:10:33 +0800 (GMT+08:00)
-X-Originating-IP: [154.17.2.230]
-Date:   Tue, 23 Mar 2021 17:10:33 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Greg KH" <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] usb: Add data checks in usbtmc_disconnect
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <YFmV51MPhKu/Kq6p@kroah.com>
-References: <20210323034717.12818-1-lyl2019@mail.ustc.edu.cn>
- <YFmV51MPhKu/Kq6p@kroah.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WbW5E3Qe4WZYEnKi/sCmjQ1D+Tk7jZ1l2FTPgjhfZMQ=;
+        b=yo8DL/aCSBDBcC0tqsQubEuqRWy6eLT5ir9zRrGsKjmyULNbNnccMqMnD7jmadxDw3
+         BGBok2NgqzzaR3uNkDmIajtKjfw1xjOqIJ/YLBW7GZNZbbv5CvEI9cgeue+5MtK4BpKN
+         S1arzGTW1r4QJhbOQlc9o3b2oa2Lw+Ahw1ZqH5D2F0AMxncx0PgX2TScKhHBj8o47wKQ
+         dADPkn6khGV+qRPCxXNv3qWXWtC0UTJPjxleX2xzunTLpcwnYPyR7WxEqEmzwO/kCH97
+         BvOa35YvQG7GVC9RhR+xBt2MsYZYMEWcBUIATnocN31bsvzJxFJWzKx+r42IA62GTkkc
+         BzvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WbW5E3Qe4WZYEnKi/sCmjQ1D+Tk7jZ1l2FTPgjhfZMQ=;
+        b=SB5ds5vWEFiy2ss+Pfv9rqQjIOmhjVWERhStBgZvLzr2Eo9LjpPgg7Ig96L78lHADc
+         in5QXMtM24UpY140TfYEL9vaunxSVSiW/EROteu3d2Sklfk0z7sHvfW/aqKgoOeD9n4O
+         SurhfENXcnu3LI9iyt3MiaunGd7/5zrD0QquZN803q7hYxVcnPW4XRwsSWjBWxOHhKh1
+         OrqtcQKUgCy7L2pgawuv2vr/3ZlczpgVAyTWHpVQrxipTWnUTlVb91ktSPgO2cYDdmlE
+         Vztuj8+QH0dpsoKO4FMbov52+xyByeYtll9xL7IxA0q0OSAfMYUAMk1LLc57PNqKL0UG
+         GWWg==
+X-Gm-Message-State: AOAM5300rEIorPnTUv0RvtkFOLhf2WfJ11XPuCteK/8mIYBL+zsuu6+k
+        JzF5afcwE9zlKAJKOxollNeF5jvR3hDvZcrwn7mRtxZTUUFvXBIHro0=
+X-Google-Smtp-Source: ABdhPJxIS20E4tfWyNlD9+niQr2Ru+nuZgsxwL8HvALaLQyatNmIeXyoZrtnqaDhRUCxdvIm1IRm+HpRgaUET82BHa4=
+X-Received: by 2002:a63:ee4b:: with SMTP id n11mr3235216pgk.265.1616490654726;
+ Tue, 23 Mar 2021 02:10:54 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <6ef4586e.d9aa.1785e599942.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygDn7k6KsFlgdT8gAA--.3W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoJBlQhn5V26wACsk
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+References: <20210308120555.252524-1-adrien.grassein@gmail.com> <20210308120555.252524-3-adrien.grassein@gmail.com>
+In-Reply-To: <20210308120555.252524-3-adrien.grassein@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 23 Mar 2021 10:10:43 +0100
+Message-ID: <CAG3jFytoE9hWvq2e2Caqn4qP_RuEOnm4r9VQ85ffbAcguSLf+w@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkdyZWcgS0giIDxn
-cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTIzIDE1
-OjE2OjU1ICjmmJ/mnJ/kuowpDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5QG1h
-aWwudXN0Yy5lZHUuY24+DQo+IOaKhOmAgTogbGludXgtdXNiQHZnZXIua2VybmVsLm9yZywgbGlu
-dXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiDkuLvpopg6IFJlOiBbUEFUQ0hdIHVzYjogQWRk
-IGRhdGEgY2hlY2tzIGluIHVzYnRtY19kaXNjb25uZWN0DQo+IA0KPiBPbiBNb24sIE1hciAyMiwg
-MjAyMSBhdCAwODo0NzoxN1BNIC0wNzAwLCBMdiBZdW5sb25nIHdyb3RlOg0KPiA+IEluIHVzYnRt
-Y19kaXNjb25uZWN0LCBkYXRhIGlzIGdvdCBmcm9tIGludGYgd2l0aCB0aGUNCj4gPiBpbml0aWFs
-IHJlZmVyZW5jZS4gVGhlcmUgaXMgbm8gcmVmY291bnQgaW5jIG9wZXJhdGlvbg0KPiA+IGJlZm9y
-ZSB1c2JtY19mcmVlX2ludChkYXRhKS4gSW4gdXNibWNfZnJlZV9pbnQoZGF0YSksDQo+ID4gdGhl
-IGRhdGEgbWF5IGJlIGZyZWVkLg0KPiA+IA0KPiA+IEJ1dCBsYXRlciBpbiB1c2J0bWNfZGlzY29u
-bmVjdCwgdGhlcmUgaXMgYW5vdGhlciBwdXQNCj4gPiBmdW5jdGlvbiBvZiBkYXRhLiBJIHRoaW5r
-IGl0IGlzIGJldHRlciB0byBhZGQgbmVjZXNzYXJ5DQo+ID4gY2hlY2tzIHRvIGF2b2lkIHRoZSBk
-YXRhIGJlaW5nIHB1dCB0d2ljZS4gSXQgY291bGQgY2F1c2UNCj4gPiBlcnJvcnMgaW4gcmFjZS4N
-Cj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBMdiBZdW5sb25nIDxseWwyMDE5QG1haWwudXN0Yy5l
-ZHUuY24+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvdXNiL2NsYXNzL3VzYnRtYy5jIHwgNCArKyst
-DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4g
-PiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvY2xhc3MvdXNidG1jLmMgYi9kcml2ZXJz
-L3VzYi9jbGFzcy91c2J0bWMuYw0KPiA+IGluZGV4IDc0ZDVhOWM1MjM4YS4uZTA0MzhjYjQ2Mzg2
-IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdXNiL2NsYXNzL3VzYnRtYy5jDQo+ID4gKysrIGIv
-ZHJpdmVycy91c2IvY2xhc3MvdXNidG1jLmMNCj4gPiBAQCAtMjQ5NCw3ICsyNDk0LDkgQEAgc3Rh
-dGljIHZvaWQgdXNidG1jX2Rpc2Nvbm5lY3Qoc3RydWN0IHVzYl9pbnRlcmZhY2UgKmludGYpDQo+
-ID4gIAl9DQo+ID4gIAltdXRleF91bmxvY2soJmRhdGEtPmlvX211dGV4KTsNCj4gPiAgCXVzYnRt
-Y19mcmVlX2ludChkYXRhKTsNCj4gPiAtCWtyZWZfcHV0KCZkYXRhLT5rcmVmLCB1c2J0bWNfZGVs
-ZXRlKTsNCj4gPiArDQo+ID4gKwlpZiAoZGF0YS0+aWluX2VwX3ByZXNlbnQgJiYgZGF0YS0+aWlu
-X3VyYikNCj4gPiArCQlrcmVmX3B1dCgmZGF0YS0+a3JlZiwgdXNidG1jX2RlbGV0ZSk7DQo+IA0K
-PiBXaGF0IHByb3RlY3RzIHRoZSBkYXRhIGZyb20gY2hhbmdpbmcgcmlnaHQgYWZ0ZXIgdGhlIGNo
-ZWNrIGFuZCByaWdodA0KPiBiZWZvcmUgdGhlIGtyZWZfcHV0KCkgY2FsbD8NCj4gDQo+IGtyZWZz
-IG5lZWQgYSBsb2NrIHNvbWV3aGVyZSB0byBwcm90ZWN0IGZyb20gcmFjZXMgbGlrZSB0aGlzLCBw
-bGVhc2UgZml4DQo+IHRoYXQgbG9naWMgaW5zdGVhZC4NCj4gDQo+IHRoYW5rcywNCj4gDQo+IGdy
-ZWcgay1oDQoNClRoYW5rcyBmb3IgeW91ciByZW1pbmRlci4gSSB0aGluayB0aGVyZSBpcyBzb21l
-dGhpbmcgd3Jvbmcgd2l0aCBteSBwYXRjaC4NCg0KVGhlIGNoZWNrIGNvbmRpdGlvbiBiZWZvcmUg
-a3JlZl9wdXQoKSBhZGRlZCBpcyBiZWNhdXNlIHRoZSBkYXRhIHdpbGwgbm90IGJlDQpmcmVlZCAg
-b25seSB3aGVuIChkYXRhLT5paW5fZXBfcHJlc2VudCAmJiBkYXRhLT5paW5fdXJiKSBpcyB0cnVl
-IGluIA0KdXNidG1jX2ZyZWVfaW50KGRhdGEpLiBCdXQgaSBpZ25vcmVkIHRoYXQgdGhlIGRhdGEg
-bWF5IGJlIGFscmVhZHkgYmUgZnJlZWQNCmluIHVzYnRtY19mcmVlX2ludCgpLg0KDQpJIHdpbGwg
-c3VibWl0IGEgUEFUQ0ggdjIgbGF0ZXIuIFRoYW5rcy4NCg==
+Hey Adrien,
+
+Sorry about the slow reply, but I just received the documentation from
+the vendor. So let's dig in to the HPD issue.
+
+> +static enum drm_connector_status lt8912_check_cable_status(struct lt8912 *lt)
+> +{
+> +       int ret;
+> +       unsigned int reg_val;
+> +
+> +       ret = regmap_read(lt->regmap[I2C_MAIN], 0xC1, &reg_val);
+> +       if (ret)
+> +               return connector_status_unknown;
+> +
+> +       if (reg_val & BIT(7))
+> +               return connector_status_connected;
+
+Register 0xc0 & BIT(7) - HPD signal after debounce
+Register 0xc0 & BIT(6) - HPD signal for TX HPD pad
+
+> +
+> +static int lt8912_probe(struct i2c_client *client,
+> +        const struct i2c_device_id *id)
+> +{
+> +       static struct lt8912 *lt;
+> +       int ret = 0;
+> +       struct device *dev = &client->dev;
+> +
+> +       lt = devm_kzalloc(dev, sizeof(struct lt8912), GFP_KERNEL);
+> +       if (!lt)
+> +               return -ENOMEM;
+> +
+> +       lt->dev = dev;
+> +       lt->i2c_client[0] = client;
+> +       lt->cable_status = connector_status_unknown;
+> +       lt->workq = create_workqueue("lt8912_workq");
+
+Looking at [1] and maybe even better [2], I think this polling
+approach is the wrong way to go. And with access to documentation, I
+think we should be able to sort this out.
+
+Using the irq driver approach requires the interrupt pin to be
+configured. Pin 63 of the lt8912b is the IRQ output pin.
+
+In order to trigger interrupts based on it, the dt-binding would need
+to be updated[3][4] as well as whichever DTS you're using.
+
+
+[1] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bridge/analogix/anx7625.c#L1751
+
+[2] https://github.com/torvalds/linux/blob/v5.11/drivers/gpu/drm/bridge/lontium-lt9611.c#L1160
+
+[3] https://github.com/torvalds/linux/blob/v5.11/Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml#L27
+
+[4] https://github.com/torvalds/linux/blob/v5.11/Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml#L144
