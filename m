@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C9D345B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B48345B36
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhCWJol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:44:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55562 "EHLO mail.kernel.org"
+        id S230103AbhCWJpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:45:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:42940 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhCWJoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:44:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6AC7619BD;
-        Tue, 23 Mar 2021 09:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616492663;
-        bh=64tJTSxHuc6tooAyIwYiJx5eFO4pEzXDxnqkEmHH570=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w/nSeRcNJHWrBA6xMlnlPTIHvIbDU4dgBEXP6fAJC3WKmoJl3+wNfl3Xu5JvUAhKD
-         5/lC3WfxhODSPPLsMkh+K8NaCBC4VwM13g2qO/cf2bkMIFmchB2wqjb6uQa0stvlKr
-         kG4NLo/b+ft1wE5WB/3wa9MYk583808aTNKf3Urk=
-Date:   Tue, 23 Mar 2021 10:44:20 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: Add a lock when freeing data in usbtmc_disconnect
-Message-ID: <YFm4dJcflEB6Sdwa@kroah.com>
-References: <20210323092854.18911-1-lyl2019@mail.ustc.edu.cn>
+        id S230139AbhCWJoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 05:44:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 632F31042;
+        Tue, 23 Mar 2021 02:44:44 -0700 (PDT)
+Received: from [10.57.55.187] (unknown [10.57.55.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCB8E3F718;
+        Tue, 23 Mar 2021 02:44:42 -0700 (PDT)
+Subject: Re: [PATCH v4 05/19] kvm: arm64: Disable guest access to trace filter
+ controls
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com,
+        leo.yan@linaro.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
+ <20210225193543.2920532-6-suzuki.poulose@arm.com>
+ <cbe4ef17-38f9-c555-d838-796be752d4a3@arm.com>
+ <8cb6eced29d9749d88af6f6d2f649019@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <59682421-a985-ec71-3ade-09c17aa58b5a@arm.com>
+Date:   Tue, 23 Mar 2021 09:44:41 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323092854.18911-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <8cb6eced29d9749d88af6f6d2f649019@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:28:54AM -0700, Lv Yunlong wrote:
-> In usbtmc_disconnect, data is got from intf with the initial reference.
-> There is no refcount inc operation before usbmc_free_int(data). In
-> usbmc_free_int(data), the data may be freed.
+On 23/03/2021 09:16, Marc Zyngier wrote:
+> Hi Suzuki,
 > 
-> But later in usbtmc_disconnect, there is another put function of data.
-> It could cause errors in race.
+> On 2021-03-22 22:24, Suzuki K Poulose wrote:
+>> Hi Marc,
+>>
+>> On 25/02/2021 19:35, Suzuki K Poulose wrote:
+>>> Disable guest access to the Trace Filter control registers.
+>>> We do not advertise the Trace filter feature to the guest
+>>> (ID_AA64DFR0_EL1: TRACE_FILT is cleared) already, but the guest
+>>> can still access the TRFCR_EL1 unless we trap it.
+>>>
+>>> This will also make sure that the guest cannot fiddle with
+>>> the filtering controls set by a nvhe host.
+>>>
+>>> Cc: Marc Zyngier <maz@kernel.org>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>
+>> We have already have the v8.4 self hosted tracing support in 5.12-rcX.
+>> Do you think you can pick this up for this 5.12 ?
 > 
-> My patch adds a lock to protect kref from changing in race.
-> 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/usb/class/usbtmc.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/usb/class/usbtmc.c b/drivers/usb/class/usbtmc.c
-> index 74d5a9c5238a..44f1fcabbb1e 100644
-> --- a/drivers/usb/class/usbtmc.c
-> +++ b/drivers/usb/class/usbtmc.c
-> @@ -2493,8 +2493,13 @@ static void usbtmc_disconnect(struct usb_interface *intf)
->  		usb_scuttle_anchored_urbs(&file_data->in_anchor);
->  	}
->  	mutex_unlock(&data->io_mutex);
-> +
-> +	spinlock_t *dev_lock = &data->dev_lock;
-> +
-> +	spin_lock_irq(dev_lock);
->  	usbtmc_free_int(data);
->  	kref_put(&data->kref, usbtmc_delete);
-> +	spin_unlock_irq(dev_lock);
->  }
->  
->  static void usbtmc_draw_down(struct usbtmc_file_data *file_data)
-> -- 
-> 2.25.1
+> Sure, no problem. Shall I pick patch #3 at the same time?
 
-You obviously did not even build this patch, let alone test it :(
+Yes please.
 
-Please do not waste maintainer's time by not doing the proper steps when
-submitting patches.
-
-thanks,
-
-greg k-h
+Thanks !
+Suzuki
