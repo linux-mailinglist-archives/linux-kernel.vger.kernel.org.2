@@ -2,127 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1F83469C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C5B3469C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhCWUYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:24:44 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54414 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232991AbhCWUYQ (ORCPT
+        id S233281AbhCWUZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231351AbhCWUZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:24:16 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2B6FF20B5680;
-        Tue, 23 Mar 2021 13:24:15 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2B6FF20B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616531055;
-        bh=cEj00evtMTrgg3cKg1V64dkb0xvskevU8Gc0vpIf5qA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HwhD4YSRjga0r3WY+zbJ7G0I+vkoRxpCZw1ynuhNCYao8TxXDoPgBhSD9yJrriCgq
-         k68Yyk6c3xER5L3nNjCmKKCHMkIQbpwFhj+dsR/ITJ6JY6DLmMPJ6lIc3VeqZrHMuq
-         BgqDaVK0CSsVVGJYKqH0ewDhW3rnQg4ySju9jwhc=
-Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a stack
- trace unreliable
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323105118.GE95840@C02TD0UTHF1T.local>
- <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
- <20210323133611.GB98545@C02TD0UTHF1T.local>
- <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
- <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
- <20210323145734.GD98545@C02TD0UTHF1T.local>
- <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
- <a38e4966-9b0d-3e51-80bd-acc36d8bee9b@linux.microsoft.com>
- <20210323170236.GF98545@C02TD0UTHF1T.local>
- <bc450f09-1881-9a9c-bfbc-5bb31c01d8ce@linux.microsoft.com>
- <20210323183053.GH98545@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <8aa50127-3f00-818d-d58c-4b3ff7235c74@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 15:24:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 23 Mar 2021 16:25:09 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6731C061574;
+        Tue, 23 Mar 2021 13:25:08 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id 61so22124834wrm.12;
+        Tue, 23 Mar 2021 13:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hpQIupl/4ZgMIIo21s+VA9T0g3/i/FRFR9NBBUr/caU=;
+        b=GhOPe826TdL3CN0Vv5EV675609NVftrBz0q8eFfWhIuwnn+Vlpsb6KZRTjri7cIMx2
+         ZBCOfDi/D8eyqnHvr9SBWVQ9qLsUn0rV4Gw9LqUrPy+pVB5loR6Q9/5/tW0LTcYsxhJ8
+         JQ4oI6awShy5ViYt2ObvrvgME6dwllck0ACL29iMMbwRmvmmAqE9Awn0/5VfiJfg22g8
+         jKiNarCbiehpWgi9S70eY8iM9LvIW5dk/P1bQWgIAL2INAYhEzHo5gKsMXDqJoPJg1sW
+         VwGdiFO/tpJLFbAzoaXxfVr/hmdqpM9WncRo7hKVgeRH9TIuyQvT+TwvQREfHhb1x4Ts
+         pgnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hpQIupl/4ZgMIIo21s+VA9T0g3/i/FRFR9NBBUr/caU=;
+        b=hLLrkx/dV1WV3YlTcs0Cn9O48j+ai8fvlCruTXPLK2jExM7NddZ6qVNh7e+Vm4NVzA
+         nKXk6DsKVUcnXdygHLs7jhHce2YzIQ+G42FkpfDbkNrbhV5NxkeMebFZQhKK/ULwqVzn
+         zdCjGnvEj/NRw6bGfdvxT4/dg1ugdXVpoUbaNxdIxjoFt8Fjj9j7MvSZRqK7kvDxlgM+
+         OVz8VwRyi433Vz6eq167YFbL9HdlcV9rwlo/PQQVj6xXsvxcvDo1smC9AmKbSJZ0T/Cl
+         ZK352Qagqa+uSxmFt+SDNcpJ/mYiUOlRLj8xzsSw03BY69rOFAZP4mOQG7A4u9H8HVM9
+         qyrA==
+X-Gm-Message-State: AOAM533bO9Gt7vnKzILiCN7kiBVmDhCMNVNEarfRnXzgO8O5bsSfvrFJ
+        8q717VQHKRRMpErma4PrC9c=
+X-Google-Smtp-Source: ABdhPJw+frJBPI+TNsYIWcXfmPUoEdRI1sYaIZjXIJO0MZUrHTCCFnor8QhzOcmPlvha+Fd9qe7Gpw==
+X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr5790373wry.48.1616531107541;
+        Tue, 23 Mar 2021 13:25:07 -0700 (PDT)
+Received: from luca020400-laptop-arch.lan ([2001:b07:5d33:19f:ea1f:2342:ea78:219a])
+        by smtp.googlemail.com with ESMTPSA id u2sm10938wmm.5.2021.03.23.13.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 13:25:07 -0700 (PDT)
+From:   Luca Stefani <luca.stefani.ge1@gmail.com>
+Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] platform/x86: asus-wmi: Add param to turn fn-lock mode on by default
+Date:   Tue, 23 Mar 2021 21:25:05 +0100
+Message-Id: <20210323202505.141496-1-luca.stefani.ge1@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210323183053.GH98545@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* On recent ZenBooks the fn-lock is disabled
+  by default on boot while running Windows.
 
+* Add a module param ( fnlock_default ) that allows
+  changing the default at probe time
 
-On 3/23/21 1:30 PM, Mark Rutland wrote:
-> On Tue, Mar 23, 2021 at 12:23:34PM -0500, Madhavan T. Venkataraman wrote:
->> On 3/23/21 12:02 PM, Mark Rutland wrote:
-> 
-> [...]
-> 
->> I think that I did a bad job of explaining what I wanted to do. It is not
->> for any additional protection at all.
->>
->> So, let us say we create a field in the task structure:
->>
->> 	u64		unreliable_stack;
->>
->> Whenever an EL1 exception is entered or FTRACE is entered and pt_regs get
->> set up and pt_regs->stackframe gets chained, increment unreliable_stack.
->> On exiting the above, decrement unreliable_stack.
->>
->> In arch_stack_walk_reliable(), simply do this check upfront:
->>
->> 	if (task->unreliable_stack)
->> 		return -EINVAL;
->>
->> This way, the function does not even bother unwinding the stack to find
->> exception frames or checking for different return addresses or anything.
->> We also don't have to worry about code being reorganized, functions
->> being renamed, etc. It also may help in debugging to know if a task is
->> experiencing an exception and the level of nesting, etc.
-> 
-> As in my other reply, since this is an optimization that is not
-> necessary for functional correctness, I would prefer to avoid this for
-> now. We can reconsider that in future if we encounter performance
-> problems.
-> 
-> Even with this there will be cases where we have to identify
-> non-unwindable functions explicitly (e.g. the patchable-function-entry
-> trampolines, where the real return address is in x9), and I'd prefer
-> that we use one mechanism consistently.
-> 
-> I suspect that in the future we'll need to unwind across exception
-> boundaries using metadata, and we can treat the non-unwindable metadata
-> in the same way.
-> 
-> [...]
-> 
->>> 3. Figure out exception boundary handling. I'm currently working to
->>>    simplify the entry assembly down to a uniform set of stubs, and I'd
->>>    prefer to get that sorted before we teach the unwinder about
->>>    exception boundaries, as it'll be significantly simpler to reason
->>>    about and won't end up clashing with the rework.
->>
->> So, here is where I still have a question. Is it necessary for the unwinder
->> to know the exception boundaries? Is it not enough if it knows if there are
->> exceptions present? For instance, using something like num_special_frames
->> I suggested above?
-> 
-> I agree that it would be legitimate to bail out early if we knew there
-> was going to be an exception somewhere in the trace. Regardless, I think
-> it's simpler overall to identify non-unwindability during the trace, and
-> doing that during the trace aligns more closely with the structure that
-> we'll need to permit unwinding across these boundaries in future, so I'd
-> prefer we do that rather than trying to optimize for early returns
-> today.
-> 
+Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
+---
+ drivers/platform/x86/asus-wmi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-OK. Fair enough.
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 9ca15f724343..f3ed72f01462 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -47,6 +47,9 @@ MODULE_AUTHOR("Corentin Chary <corentin.chary@gmail.com>, "
+ MODULE_DESCRIPTION("Asus Generic WMI Driver");
+ MODULE_LICENSE("GPL");
+ 
++static bool fnlock_default = false;
++module_param(fnlock_default, bool, 0444);
++
+ #define to_asus_wmi_driver(pdrv)					\
+ 	(container_of((pdrv), struct asus_wmi_driver, platform_driver))
+ 
+@@ -2673,7 +2676,7 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT, 2, NULL);
+ 
+ 	if (asus_wmi_has_fnlock_key(asus)) {
+-		asus->fnlock_locked = true;
++		asus->fnlock_locked = fnlock_default;
+ 		asus_wmi_fnlock_update(asus);
+ 	}
+ 
+-- 
+2.31.0
 
-Thanks.
-
-Madhavan
