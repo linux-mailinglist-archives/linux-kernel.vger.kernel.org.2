@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EEE345EA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C737345EAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhCWM4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:56:30 -0400
-Received: from muru.com ([72.249.23.125]:46038 "EHLO muru.com"
+        id S231472AbhCWM4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231328AbhCWM4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:56:06 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 2E32380E5;
-        Tue, 23 Mar 2021 12:57:01 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 14:56:02 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, linux-omap@vger.kernel.org
-Subject: Re: [PATCHv2 01/38] ARM: dts: motorola-cpcap-mapphone: Prepare for
- dtbs_check parsing
-Message-ID: <YFnlYmXt66EKxPAC@atomide.com>
-References: <20210317134904.80737-1-sebastian.reichel@collabora.com>
- <20210317134904.80737-2-sebastian.reichel@collabora.com>
- <YFISPyIMCbp6WcAr@atomide.com>
- <20210323125123.b63euv4vi6whahow@earth.universe>
+        id S231424AbhCWM4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:56:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AE9F60C3E;
+        Tue, 23 Mar 2021 12:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616504175;
+        bh=aqKRpulSPCrh/zMHeH6x9tZrAsAvxFVCeqlmNTkK6XU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kpgeUNTpkeKgQ5LtZe9cwXIrCX4EBUhQe0ntE9chwd7cZ1CAV5ThoOgemX8vzdUwf
+         1/AXCrmc+yGTQUcLOj32vOcYxffBmNrw3NEqwHtDWMc4qMS1S78enwBVOFmL4bDx8N
+         ZDkqn9dFKXXaD/TD3NNoV5iqA0eQBIrdBqlzHSijpro5YZi8AZVY5d0gG6l/o5Sifd
+         USNEIPvKeMesLNsZoZtlpeq8IwjZKBQFR0jlDFhzxyqg6wm4+dU6zJBfbwIdQ/aK8z
+         igZlUpx+wlTakVB8uCg/pv3WuY9FX7rGOweXS655PbI8f1kD8wpCrlg/3Jd0isn+DU
+         IFLZ//L0s3+pg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Bin Luo <luobin9@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] hinic: avoid gcc -Wrestrict warning
+Date:   Tue, 23 Mar 2021 13:56:05 +0100
+Message-Id: <20210323125611.1905563-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323125123.b63euv4vi6whahow@earth.universe>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Sebastian Reichel <sebastian.reichel@collabora.com> [210323 12:52]:
-> Hi Tony,
-> 
-> On Wed, Mar 17, 2021 at 04:29:19PM +0200, Tony Lindgren wrote:
-> > * Sebastian Reichel <sebastian.reichel@collabora.com> [210317 13:50]:
-> > > '<&gpio1 parameters &gpio2 parameters>' and '<&gpio1 parameters>,
-> > > <&gpio2 parameters>' result in the same DTB, but second format has
-> > > better source code readability. Also 'dtbs_check' currently uses
-> > > this format to determine the amount of items specified, so using
-> > > this syntax is needed to successfully verify the devicetree source
-> > > against a DT schema format.
-> > 
-> > Looks good to me:
-> > 
-> > Acked-by: Tony Lindgren <tony@atomide.com>
-> 
-> Please take this patch via your tree. I will take the other ones
-> through the power-supply tree.
+From: Arnd Bergmann <arnd@arndb.de>
 
-OK will do.
+With extra warnings enabled, gcc complains that snprintf should not
+take the same buffer as source and destination:
 
-Thanks,
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c: In function 'hinic_set_settings_to_hw':
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:480:9: error: 'snprintf' argument 4 overlaps destination object 'set_link_str' [-Werror=restrict]
+  480 |   err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  481 |           "%sspeed %d ", set_link_str, speed);
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:464:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+  464 |  char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
 
-Tony
+Rewrite this to remember the offset of the previous printf output
+instead.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/huawei/hinic/hinic_ethtool.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+index c340d9acba80..74aefc8fc4d8 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+@@ -464,7 +464,7 @@ static int hinic_set_settings_to_hw(struct hinic_dev *nic_dev,
+ 	char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
+ 	struct net_device *netdev = nic_dev->netdev;
+ 	enum nic_speed_level speed_level = 0;
+-	int err;
++	int err, off;
+ 
+ 	err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN, "%s",
+ 		       (set_settings & HILINK_LINK_SET_AUTONEG) ?
+@@ -475,10 +475,11 @@ static int hinic_set_settings_to_hw(struct hinic_dev *nic_dev,
+ 		return -EFAULT;
+ 	}
+ 
++	off = err;
+ 	if (set_settings & HILINK_LINK_SET_SPEED) {
+ 		speed_level = hinic_ethtool_to_hw_speed_level(speed);
+-		err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
+-			       "%sspeed %d ", set_link_str, speed);
++		err = snprintf(set_link_str + off, SET_LINK_STR_MAX_LEN - off,
++			       "speed %d ", speed);
+ 		if (err <= 0 || err >= SET_LINK_STR_MAX_LEN) {
+ 			netif_err(nic_dev, drv, netdev, "Failed to snprintf link speed, function return(%d) and dest_len(%d)\n",
+ 				  err, SET_LINK_STR_MAX_LEN);
+-- 
+2.29.2
+
