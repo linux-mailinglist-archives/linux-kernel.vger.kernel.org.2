@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0FC34675A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66E534675E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhCWSOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41602 "EHLO
+        id S231372AbhCWSPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbhCWSOT (ORCPT
+        with ESMTP id S231539AbhCWSOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:14:19 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA69C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:14:18 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id b5so9894769vsl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:14:18 -0700 (PDT)
+        Tue, 23 Mar 2021 14:14:32 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F234CC061574;
+        Tue, 23 Mar 2021 11:14:30 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id 61so21746105wrm.12;
+        Tue, 23 Mar 2021 11:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xTzROt3itpnrti9j03LZlWtci24fIc0v/ID50osegOI=;
-        b=G9LSManCEm0ynRFxL0KfpbSwtGY42D+BJO4aqZzpdazH47X+7OW3AeHQu+vt1dxlqs
-         kwCKfidzEMs/NtW9YLoiTyqbHNBfbS4Yi7HlukT7486VJk65AVQBWpIz6rLwBLEpoRZz
-         WV1AQnUw5w5TdbQC7GVTCoww2Jfxqaun1PhzG506nw5O9sb6Bw8k8y9H6uwbl53s/EnQ
-         Jwm5E7scoO1KiMcv+Kxg2BxJn4sjd/waOuiDsgUuCggMxVQYtv8dM5HPBSgNOKe5E0a4
-         09TrE34zYUlHs3NO0pShHjk8Fu6ej5luUqS70hK5ZU4YMoOyHcI3lT/nTVz4ZDkRohVP
-         awjg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GbZwWLO0faxizLlS0pXkd1V339UXzvG9Fjo6U6vn6Os=;
+        b=Sfk5P279OI/pPHXLqgtMXrT6powvmwN6JmE5PSEApOadabisNP5IVlZQcJgBSv+dwI
+         TmgCkpJVV75udTNNRZjCOy9dl6wbnw6anXomtpxTFKzLORtpMvZvFoFMn5G5VtWi8IQV
+         /t9bI8KPuSC/gw3OjINDpaxlkBKYf4iPld24xMeL6wzqN65y98IEHvFofmqDeOq443eT
+         XDWg71n8tQnSlnSLumMWASQzFLCi4XrOcufaushgFYAjsHsaBzv32o8MufCOupoBzAmc
+         MnkMfYtHE2V3JlAVPrmnXcSi1oer0NOZxdmS3VkIPDJ1Q3pCwSGmPNGT99VlpTbsQCxR
+         3J2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xTzROt3itpnrti9j03LZlWtci24fIc0v/ID50osegOI=;
-        b=VENHVCc28Pa4HIYSHtezG22nA0roI8/ykzNbGQCETT0m+ItL9t1Eb07EhK8Ve1ZxP5
-         7jgC4xmVK2QvmHtbDeo8orCJaVijw2KxNI86WMz1Dvbk4nqJeIjtVCFX4RZNjMd7Oxb0
-         7eFXW61SeVqU8VaL059T0usT5IFDoar7/x8Ve6lyaUp9frHO9UgOp+e8ZlL14e1msQlT
-         9kAKFZYQGB6/negroeBXjxSVsWq+msPSt91G3aGNbNqdaJNRDlbIfteLJ5dPLyOEW0v0
-         2PV/EPzSy2MN9z/x4MrJlbxqKvt4VHAdtoIeM81QAwjptNrwCojYRHp49+Av3DV8DXdH
-         8XgQ==
-X-Gm-Message-State: AOAM530fcZdlFAzevYXMejYTSgyzjQqhgZN5aafxmw04nTZsedHT1PSt
-        0aO/u9UpqLEm1UsNS7QzSdLRqrDwwrcxjal+nIvNmw==
-X-Google-Smtp-Source: ABdhPJxQfxePiAdqx2wIwj6cBcYftbaRTO90H9j82jX3SXWm+vInqDNP1WYjNB0ajdqoiCxSC2u3vyD9/cPX/2nCIDU=
-X-Received: by 2002:a67:641:: with SMTP id 62mr4620421vsg.23.1616523257117;
- Tue, 23 Mar 2021 11:14:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GbZwWLO0faxizLlS0pXkd1V339UXzvG9Fjo6U6vn6Os=;
+        b=M6i4p0Yr+jtKePQ7IbYuYeoZaWfy96vwCEGBzWSJW6y3XsR1EfVDPkmLSuHrxI751j
+         9SBpHdqolhBbfA1RS3AszImK+4PVrsDzOLirwtgGW9Eo0HU2KMMe1tVGK0WR3f854/zG
+         Zmkbw7V6z2/CTkCgjKrEqQU3OHkWTRBTIGh4vIKwoSUJLFE1msMj1S25oQsEe17UetL6
+         Ym5hyPwp6iXWnZoLKa0e+Iq59XP5zf43NN7Wf4WVpMdMY00ofqmD/WbufWDELsbukyp8
+         z4oaIM4oYIRenC632OPeM4SIlfqfg1ID8/zbtcZn+gEg9A+mkbnKi1DEypF+gBnv9IoY
+         l+AQ==
+X-Gm-Message-State: AOAM533XiC2IqHf6Z30TPXyKbQ+dXfFFL/VKzgx+fer812lnvQTRgy8F
+        Mx9F8wzOqTJvmOwU4j7TMi0=
+X-Google-Smtp-Source: ABdhPJy8YxTzXv70Rx/RXpuiBZyu4/JukCqPPoa/KiVMfInWD559h7X/+rMUmDf2A1kViF0dxaVpxQ==
+X-Received: by 2002:a5d:640b:: with SMTP id z11mr5162914wru.327.1616523269575;
+        Tue, 23 Mar 2021 11:14:29 -0700 (PDT)
+Received: from adgra-XPS-15-9570.home (2a01cb0008bd2700f54ecdc9d152bb4f.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:f54e:cdc9:d152:bb4f])
+        by smtp.gmail.com with ESMTPSA id 21sm3484734wme.6.2021.03.23.11.14.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 11:14:29 -0700 (PDT)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robert.foss@linaro.org, airlied@linux.ie, daniel@ffwll.ch,
+        a.hajda@samsung.com, robh+dt@kernel.org, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v8 0/2] Add support of Lontium lt8912 MIPI to HDMI bridge
+Date:   Tue, 23 Mar 2021 19:14:21 +0100
+Message-Id: <20210323181423.657926-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210322234438.502582-1-seanjc@google.com> <CABCJKudMQ9CP1zhvywTf-_=PY5zmeviURR+=PqsMn_bqa_MV-g@mail.gmail.com>
- <YFoZBY1SqilWAmx4@google.com>
-In-Reply-To: <YFoZBY1SqilWAmx4@google.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 23 Mar 2021 11:14:05 -0700
-Message-ID: <CABCJKucYHQ893LS1iCHXivPS05RMDN2BpDFou306jOEbWnt1Dg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Merge module sections if and only if
- CONFIG_LTO_CLANG is enabled
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 9:36 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Mar 23, 2021, Sami Tolvanen wrote:
-> > On Mon, Mar 22, 2021 at 4:44 PM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > Merge module sections only when using Clang LTO.  With gcc-10, merging
-> > > sections does not appear to update the symbol tables for the module,
-> > > e.g. 'readelf -s' shows the value that a symbol would have had, if
-> > > sections were not merged.
-> >
-> > I'm fine with limiting this to LTO only, but it would be helpful to
-> > understand which sections are actually getting merged here.
->
-> It doesn't appear to matter which sections get merged, the tables only show the
-> correct data if there is no merging whatsoever, e.g. allowing merging for any
-> one of the four types (.bss, .data, .rodata and .text) results in breakage.
-> AFAICT, merging any sections causes the layout to change and throw off the
-> symbol tables.
+Hi,
+this patch set adds the support of the Lontium lt8912 MIPI to HDMI
+bridge in the kernel.
 
-Thanks for the clarification. I can reproduce this issue with gcc +
-bfd if any of the sections are merged, but gcc + lld produces valid
-symbol tables.
+It's only support the video part, not the audio part yet
+since I don't have the datasheet of this component.
+I get the current i2c configuration from Digi and
+Boundary drivers.
+Developed using the DB_DSIHD board from BoundaryDevices.
 
-Perhaps someone more familiar with bfd can comment on whether this is
-a bug or a feature, and if there's a flag we can pass to bfd that
-would fix the issue. In the meanwhile, this patch looks like a
-reasonable workaround to me.
+Update in v2
+  - Use standard data-lanes instead of a custom prop;
+  - Use hdmi-connector node.
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
+Update in v3
+  - Fix indentation;
+  - Implement missing bridge functions;
+  - Add some comments.
 
-Sami
+Update in v4
+  - Fix bridge ops;
+  - Fix i2c error detection.
+
+Update in v5
+  - Fix lt8912 name (lt8912b instead of lt8912);
+  - Implement HPD via a workaround. In fact I don't have the datasheet
+    of this component yet so I can't say if the configuration of the
+registers is correct or if I have an HW issue on my board. So, I choose
+to implement a fake version of HPD using a workqueue and polling the
+status regularly.
+
+Update in v6
+  - Fix a warning found by "kernel test robot"
+
+Update in v7
+  - Fix HPD logic (via an HW emulation);
+  - HPD from chip is still not working.
+
+Update in v8
+  - Remove HPD logic (will be added later when HW bug qill be fixed).
+
+Thanks,
+
+Adrien Grassein (2):
+  dt-bindings: display: bridge: Add documentation for LT8912B
+  drm/bridge: Introduce LT8912B DSI to HDMI bridge
+
+ .../display/bridge/lontium,lt8912b.yaml       | 102 +++
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/bridge/Kconfig                |  14 +
+ drivers/gpu/drm/bridge/Makefile               |   1 +
+ drivers/gpu/drm/bridge/lontium-lt8912b.c      | 765 ++++++++++++++++++
+ 5 files changed, 888 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
+ create mode 100644 drivers/gpu/drm/bridge/lontium-lt8912b.c
+
+-- 
+2.25.1
+
