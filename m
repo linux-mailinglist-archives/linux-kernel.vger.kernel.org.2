@@ -2,92 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700C73469B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D303469B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233302AbhCWURO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:17:14 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:38497 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbhCWUQy (ORCPT
+        id S233222AbhCWUTR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Mar 2021 16:19:17 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54200 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231293AbhCWUSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:16:54 -0400
-Received: by mail-io1-f42.google.com with SMTP id e8so19104834iok.5;
-        Tue, 23 Mar 2021 13:16:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=D9YiSRrs2fw2afTTENd+WaQd259uaLT3vYO3ElQUi/o=;
-        b=CO3s8OO5CtktsyREBpaneUIqmKQ3gTML2mTN2JjQtvlbnyT8Iwje10XIrlUzKlbJzE
-         VuuezY2eKtFLN8ePMALEHNcXek+i2owOvcsmbyb4ePL+ND93P5E/eRi0R0+BjKrTv4bw
-         Y7ZHmv9D699CJ+4nyBx77rgB9HwnhWZZ2IEmTmhHca/ZdTuf2aaoHs/RAdcuUi5L9pTT
-         Clb6IzZDL9WOYzrJ1G+VY7cqcfIs8uw3doK7GYIoh5TGlo+jPWvx8ibVNFyMkGLPb/N8
-         P5aiZhWzooFnUZzTN6Xq2A5SLArOO9rkWhUyLjEgNDoBvwBzSAiKv5BYd3qx3r6eU5jc
-         eJzg==
-X-Gm-Message-State: AOAM5308HGEfpoba3xOOFePvCR5ShKsnwzXeG2TRfSSW9A4SZ2YMOxow
-        3wvOkYb/niRaPDaptsAkHA==
-X-Google-Smtp-Source: ABdhPJzYfWvKVsiIzkecMWnD+0zHO4VuZZq2JJwNcfzKfx/OWaPuu2kWkkJaoJm/v/G2sBf3SkCcqA==
-X-Received: by 2002:a05:6638:2209:: with SMTP id l9mr6114752jas.13.1616530613847;
-        Tue, 23 Mar 2021 13:16:53 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id g14sm9384335ioc.38.2021.03.23.13.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 13:16:53 -0700 (PDT)
-Received: (nullmailer pid 1244767 invoked by uid 1000);
-        Tue, 23 Mar 2021 20:16:47 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Elaine Zhang <zhangqing@rock-chips.com>
-Cc:     tony.xie@rock-chips.com, huangtao@rock-chips.com, heiko@sntech.de,
-        linux-kernel@vger.kernel.org, finley.xiao@rock-chips.com,
-        kever.yang@rock-chips.com, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, cl@rock-chips.com,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210323082410.22818-3-zhangqing@rock-chips.com>
-References: <20210323082410.22818-1-zhangqing@rock-chips.com> <20210323082410.22818-3-zhangqing@rock-chips.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: Convert the rockchip power_domain to YAML and extend
-Date:   Tue, 23 Mar 2021 14:16:47 -0600
-Message-Id: <1616530607.412616.1244766.nullmailer@robh.at.kernel.org>
+        Tue, 23 Mar 2021 16:18:47 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 988EC1F40FE7
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, smcv@collabora.com,
+        kernel@collabora.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Rosenberg <drosen@google.com>
+Subject: Re: [RFC PATCH 2/4] mm: shmem: Support case-insensitive file name
+ lookups
+Organization: Collabora
+References: <20210323195941.69720-1-andrealmeid@collabora.com>
+        <20210323195941.69720-3-andrealmeid@collabora.com>
+Date:   Tue, 23 Mar 2021 16:18:43 -0400
+In-Reply-To: <20210323195941.69720-3-andrealmeid@collabora.com>
+ (=?utf-8?Q?=22Andr=C3=A9?=
+        Almeida"'s message of "Tue, 23 Mar 2021 16:59:39 -0300")
+Message-ID: <877dlxd3oc.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 16:24:09 +0800, Elaine Zhang wrote:
-> This converts the rockchip power domain family bindings to YAML schema,
-> and add binding documentation for the power domains found on Rockchip
-> RK3568 SoCs.
-> 
-> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-> ---
->  .../bindings/soc/rockchip/power_domain.txt    | 136 ---------
->  .../rockchip/rockchip,power-controller.yaml   | 259 ++++++++++++++++++
->  2 files changed, 259 insertions(+), 136 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
->  create mode 100644 Documentation/devicetree/bindings/soc/rockchip/rockchip,power-controller.yaml
-> 
+André Almeida <andrealmeid@collabora.com> writes:
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> This patch implements the support for case-insensitive file name lookups
+> in tmpfs, based on the encoding passed in the mount options.
 
-yamllint warnings/errors:
+Thanks for doing this.
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/soc/rockchip/rockchip,power-controller.example.dts:19:18: fatal error: dt-bindings/clock/rk3568-cru.h: No such file or directory
-   19 |         #include <dt-bindings/clock/rk3568-cru.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/soc/rockchip/rockchip,power-controller.example.dt.yaml] Error 1
-make: *** [Makefile:1380: dt_binding_check] Error 2
+>  
+> +#ifdef CONFIG_UNICODE
+> +static const struct dentry_operations casefold_dentry_ops = {
+> +	.d_hash = generic_ci_d_hash,
+> +	.d_compare = generic_ci_d_compare,
+> +};
+> +#endif
 
-See https://patchwork.ozlabs.org/patch/1457096
+Why not reuse struct generic_ci_dentry_ops ?
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+> +
+>  /*
+>   * shmem_file_setup pre-accounts the whole fixed size of a VM object,
+>   * for shared memory and for shared anonymous (/dev/zero) mappings
+> @@ -2859,8 +2869,18 @@ shmem_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+>  	struct inode *inode;
+>  	int error = -ENOSPC;
+>  
+> +#ifdef CONFIG_UNICODE
+> +	struct super_block *sb = dir->i_sb;
+> +
+> +	if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
+> +	    sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+> +		return -EINVAL;
+> +#endif
+> +
+>  	inode = shmem_get_inode(dir->i_sb, dir, mode, dev, VM_NORESERVE);
+>  	if (inode) {
+> +		inode->i_flags |= dir->i_flags;
+> +
+>  		error = simple_acl_create(dir, inode);
+>  		if (error)
+>  			goto out_iput;
+> @@ -2870,6 +2890,9 @@ shmem_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+>  		if (error && error != -EOPNOTSUPP)
+>  			goto out_iput;
+>  
+> +		if (IS_CASEFOLDED(dir))
+> +			d_add(dentry, NULL);
+> +
+>  		error = 0;
+>  		dir->i_size += BOGO_DIRENT_SIZE;
+>  		dir->i_ctime = dir->i_mtime = current_time(dir);
+> @@ -2925,6 +2948,19 @@ static int shmem_create(struct user_namespace *mnt_userns, struct inode *dir,
+>  	return shmem_mknod(&init_user_ns, dir, dentry, mode | S_IFREG, 0);
+>  }
+>  
+> +static struct dentry *shmem_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+> +{
+> +	if (dentry->d_name.len > NAME_MAX)
+> +		return ERR_PTR(-ENAMETOOLONG);
+> +
+> +	if (IS_CASEFOLDED(dir))
+> +		return NULL;
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+I think this deserves a comment explaining why it is necessary.
 
-pip3 install dtschema --upgrade
+> +
+> +	d_add(dentry, NULL);
+> +
+> +	return NULL;
+> +}
+> +
+>  /*
+>   * Link a file..
+>   */
+> @@ -2946,6 +2982,9 @@ static int shmem_link(struct dentry *old_dentry, struct inode *dir, struct dentr
+>  			goto out;
+>  	}
+>  
+> +	if (IS_CASEFOLDED(dir))
+> +		d_add(dentry, NULL);
+> +
+>  	dir->i_size += BOGO_DIRENT_SIZE;
+>  	inode->i_ctime = dir->i_ctime = dir->i_mtime = current_time(inode);
+>  	inc_nlink(inode);
+> @@ -2967,6 +3006,10 @@ static int shmem_unlink(struct inode *dir, struct dentry *dentry)
+>  	inode->i_ctime = dir->i_ctime = dir->i_mtime = current_time(inode);
+>  	drop_nlink(inode);
+>  	dput(dentry);	/* Undo the count from "create" - this does all the work */
+> +
+> +	if (IS_CASEFOLDED(dir))
+> +		d_invalidate(dentry);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -3128,6 +3171,8 @@ static int shmem_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+>  	}
+>  	dir->i_size += BOGO_DIRENT_SIZE;
+>  	dir->i_ctime = dir->i_mtime = current_time(dir);
+> +	if (IS_CASEFOLDED(dir))
+> +		d_add(dentry, NULL);
+>  	d_instantiate(dentry, inode);
+>  	dget(dentry);
+>  	return 0;
+> @@ -3364,6 +3409,8 @@ enum shmem_param {
+>  	Opt_uid,
+>  	Opt_inode32,
+>  	Opt_inode64,
+> +	Opt_casefold,
+> +	Opt_cf_strict,
+>  };
+>  
+>  static const struct constant_table shmem_param_enums_huge[] = {
+> @@ -3385,6 +3432,8 @@ const struct fs_parameter_spec shmem_fs_parameters[] = {
+>  	fsparam_u32   ("uid",		Opt_uid),
+>  	fsparam_flag  ("inode32",	Opt_inode32),
+>  	fsparam_flag  ("inode64",	Opt_inode64),
+> +	fsparam_string("casefold",	Opt_casefold),
+> +	fsparam_flag  ("cf_strict",	Opt_cf_strict),
+>  	{}
+>  };
+>  
+> @@ -3392,9 +3441,11 @@ static int shmem_parse_one(struct fs_context *fc, struct fs_parameter *param)
+>  {
+>  	struct shmem_options *ctx = fc->fs_private;
+>  	struct fs_parse_result result;
+> +	struct unicode_map *encoding;
+>  	unsigned long long size;
+> +	char version[10];
+>  	char *rest;
+> -	int opt;
+> +	int opt, ret;
+>  
+>  	opt = fs_parse(fc, shmem_fs_parameters, param, &result);
+>  	if (opt < 0)
+> @@ -3468,6 +3519,23 @@ static int shmem_parse_one(struct fs_context *fc, struct fs_parameter *param)
+>  		ctx->full_inums = true;
+>  		ctx->seen |= SHMEM_SEEN_INUMS;
+>  		break;
+> +	case Opt_casefold:
+> +		if (strncmp(param->string, "utf8-", 5))
+> +			return invalfc(fc, "Only utf8 encondings are supported");
+> +		ret = strscpy(version, param->string + 5, sizeof(version));
 
-Please check and re-submit.
+Ugh.  Now we are doing two strscpy for the parse api (in unicode_load).
+Can change the unicode_load api to reuse it?
 
+thanks,
+
+-- 
+Gabriel Krisman Bertazi
