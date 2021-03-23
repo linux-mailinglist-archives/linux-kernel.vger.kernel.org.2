@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475B3345773
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C851345778
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCWFoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:44:30 -0400
-Received: from ozlabs.org ([203.11.71.1]:56463 "EHLO ozlabs.org"
+        id S229884AbhCWFpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:45:02 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:64508 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhCWFoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:44:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4Kzy1njmz9sRR;
-        Tue, 23 Mar 2021 16:43:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616478238;
-        bh=4XSqXJHq676yg7vz+Mv3J0OrOTjiRBEhu3rc8JNtR2Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eQvZvWRU83Bb2bf8sgGs4SXY5HHve0UgWj0u5wVY5lJiVF91zOB1HVlP1YrTx7dVX
-         M0k7mMm0IVTPiPrECfjjIes3QH8oW9LEjYV5nNXBtBxC0pKEW694JSVLgFIGcO7ynb
-         E581PiAkzGdaiPQBprw70BlpZFVk7I7A+sEl9vJpgKqZ8t+r1oP2pDOshrnIe2UGvW
-         h+ZkZCfAdhJjy6CPOq+7UxHSo0TWm1CwjaHOa1O4EbecBOiE+1pbjipD6cCw+Xo/6j
-         /mqaVeMaqhnNd6IB3GuVhogHWRHDukvy2De/Wznl6WHYZz6qj2uGPX66V5sR926h0+
-         QwVOeNWG0tBqw==
-Date:   Tue, 23 Mar 2021 16:43:56 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <20210323164356.2cbcfef4@canb.auug.org.au>
+        id S229898AbhCWFoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 01:44:37 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F4L0g1BgSz9ty3k;
+        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id xbkvXfPDcdXX; Tue, 23 Mar 2021 06:44:35 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F4L0g02wbz9ty3M;
+        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B43258B7AE;
+        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id C10NKDQba7Ie; Tue, 23 Mar 2021 06:44:35 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3AFE38B75F;
+        Tue, 23 Mar 2021 06:44:35 +0100 (CET)
+Subject: Re: [PATCH] tools: testing: Remove duplicate include of sched.h
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+References: <20210323033413.284420-1-wanjiabing@vivo.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <218e9c09-e245-9565-a233-a210c49ae590@csgroup.eu>
+Date:   Tue, 23 Mar 2021 06:44:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mcM0RLUF/e667ZLvDTPqlKD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210323033413.284420-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mcM0RLUF/e667ZLvDTPqlKD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the sound-asoc tree, today's linux-next build (powerpc
-allyesconfig) produced this warning:
+Le 23/03/2021 à 04:34, Wan Jiabing a écrit :
+> sched.h has been included at line 33.
+> So we remove the duplicate one at line 36.
 
-sound/soc/amd/acp-da7219-max98357a.c:684:28: warning: 'cz_rt5682_card' defi=
-ned but not used [-Wunused-variable]
-  684 | static struct snd_soc_card cz_rt5682_card =3D {
-      |                            ^~~~~~~~~~~~~~
-sound/soc/amd/acp-da7219-max98357a.c:671:28: warning: 'cz_card' defined but=
- not used [-Wunused-variable]
-  671 | static struct snd_soc_card cz_card =3D {
-      |                            ^~~~~~~
+Can you please send a single patch for all files in tools/testing/selftests/powerpc/
 
-Introduced by commit
+Thanks
+Christophe
 
-  7e71b48f9e27 ("ASoC: amd: Add support for RT5682 codec in machine driver")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mcM0RLUF/e667ZLvDTPqlKD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBZgBwACgkQAVBC80lX
-0Gz/QAgAjtXR0UV/+opQex46UaY5tJbeIiJyfP9/4Fi7QsPV/ZSyWUU0beIhRWa/
-pvAe+UL59tnCYkotHAfLxFdlOUjqUCN+xSeE0UkvZhM36+OMhNekZ7Bh43jRqzrN
-QM6DSfqbQU9S9WaqJ02gRW0HrgoTvejKwKz+P9JCI/tH9yEoDPLgl0loryrW+Nzt
-8tnGsVqWfV7lo6KNYbFDirU5mYtcuiSn6co8V5WyKSp+S9S2zd6ZQWHtxbWf6LZ8
-LrsmJRgImUa7x+mjdXGFTkRf6O296mlBm2gnqz1MkRsT/TtoAVCrFMZy6Ma9wvDY
-rHwrFWqkw+o5LhRYmqrjd3Ygd734Wg==
-=FVr6
------END PGP SIGNATURE-----
-
---Sig_/mcM0RLUF/e667ZLvDTPqlKD--
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>   tools/testing/selftests/powerpc/mm/tlbie_test.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/powerpc/mm/tlbie_test.c b/tools/testing/selftests/powerpc/mm/tlbie_test.c
+> index f85a0938ab25..48344a74b212 100644
+> --- a/tools/testing/selftests/powerpc/mm/tlbie_test.c
+> +++ b/tools/testing/selftests/powerpc/mm/tlbie_test.c
+> @@ -33,7 +33,6 @@
+>   #include <sched.h>
+>   #include <time.h>
+>   #include <stdarg.h>
+> -#include <sched.h>
+>   #include <pthread.h>
+>   #include <signal.h>
+>   #include <sys/prctl.h>
+> 
