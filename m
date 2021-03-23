@@ -2,47 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF18B345EED
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A830345EF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhCWNGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:06:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43252 "EHLO mail.kernel.org"
+        id S231424AbhCWNHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:07:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231373AbhCWNFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:05:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D5E8619B6;
-        Tue, 23 Mar 2021 13:05:52 +0000 (UTC)
+        id S231378AbhCWNG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:06:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92650619B8;
+        Tue, 23 Mar 2021 13:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616504755;
-        bh=LElXukqBYdsmTv2ghODVkHwAAvlW3HFLLVGUeIbz0OA=;
+        s=k20201202; t=1616504788;
+        bh=nHsI2yRsnlVWb7LJ1HGMAd8oNGGFrOXBNqHTpw+yeh0=;
         h=From:To:Cc:Subject:Date:From;
-        b=sXjI8RlqjbU1oQkovu2toiAAKvGF09MicfaIGV9KdrzoOBNGDfaX4rOLl3/lwhBs6
-         r1zfIZXObRqW2n9r1Z1c6kymwz3x/+NwLIPTbWdk1Jfoxu6A2eqxwcGHBHPiHygIfu
-         agCLOTf4Q4zuJlTVal8rYO3E9aeVVCx17MWH6d26QMjBiPUMi0Zxc1bfAo3cLv4yhV
-         4qGVwB7Qv0KVzLNLtsk46ehVDlQ9A9IPZBq3u8t/engD007SKu3f8c2Z7oBINnHQ0u
-         9jPfjcsb7aauRsuAYKBb4uJcqhHUaSs8mkOgG1CTmLDLi86XBZ8TV9eYPBSCAnQqCR
-         acNGOM+BBihyg==
+        b=ttQ8/bBIyw9q7Rs2lZmLgh2/Dpu8T6fDft6s3fnYBHlYjFUUlM0M6jrDsOP+Ij4Zq
+         kDe3LlzwHoWoREhIVUxCeI5SpMHkahOZ+EaMtpbzJDD3L2ESJGhAJzyD4AB/0CpZm1
+         QwUYG8SN3+JPqg//hv+PU/mSTI9TwXDf1p80AsOFj6/aLZxBSVMwB+w2U7vIXUFhV7
+         I2hzXl1FQ57pe/6fxBwCYqiu21+51u+BMhchxdU/l0XDBQfLZmQMai4r0tZw1RJVFp
+         Iu9mivAWSZa9+1dNGwWyr2xqDi3da6ljPiJTFUZXsXNjeLKnvn0Q4k/CaG7v6EaNAa
+         0SAQaKxQ8eDHw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Joe Perches <joe@perches.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liu Ying <victor.liu@nxp.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/imx: fix out of bounds array access warning
-Date:   Tue, 23 Mar 2021 14:05:43 +0100
-Message-Id: <20210323130550.2289487-1-arnd@kernel.org>
+        Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Kevin Locke <kevin@kevinlocke.name>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        David Pedersen <limero1337@gmail.com>,
+        Rajat Jain <rajatja@google.com>,
+        Chris Chiu <chiu@endlessos.org>, Jiri Kosina <jkosina@suse.cz>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: i8042 - fix Pegatron C15B ID entry
+Date:   Tue, 23 Mar 2021 14:06:13 +0100
+Message-Id: <20210323130623.2302402-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -52,51 +47,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When CONFIG_OF is disabled, building with 'make W=1' produces warnings
-about out of bounds array access:
+The Zenbook Flip entry that was added overwrites a previous one
+because of a typo:
 
-drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
-drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
+In file included from drivers/input/serio/i8042.h:23,
+                 from drivers/input/serio/i8042.c:131:
+drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
+  591 |                 .matches = {
+      |                            ^
+drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
 
-Add an error check before the index is used, which helps with the
-warning, as well as any possible other error condition that may be
-triggered at runtime.
+Add the missing separator between the two.
 
+Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/imx/imx-ldb.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/input/serio/i8042-x86ia64io.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-index dbfe39e2f7f6..1210360cec8a 100644
---- a/drivers/gpu/drm/imx/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/imx-ldb.c
-@@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
- 	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
- 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
- 
-+	if (mux < 0) {
-+		dev_warn(ldb->dev,
-+			 "%s: invalid mux\n", __func__);
-+		return;
-+	}
-+
- 	drm_panel_prepare(imx_ldb_ch->panel);
- 
- 	if (dual) {
-@@ -255,6 +261,12 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
- 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
- 	u32 bus_format = imx_ldb_ch->bus_format;
- 
-+	if (mux < 0) {
-+		dev_warn(ldb->dev,
-+			 "%s: invalid mux\n", __func__);
-+		return;
-+	}
-+
- 	if (mode->clock > 170000) {
- 		dev_warn(ldb->dev,
- 			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
+diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
+index 9119e12a5778..a5a003553646 100644
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -588,6 +588,7 @@ static const struct dmi_system_id i8042_dmi_noselftest_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
+ 		},
++	}, {
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
 -- 
 2.29.2
 
