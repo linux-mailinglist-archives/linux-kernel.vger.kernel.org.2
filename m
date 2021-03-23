@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E216A34576B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EF6345770
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhCWFmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:42:16 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:1156 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhCWFl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:41:59 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F4Kxc6YH5z9v0Ck;
-        Tue, 23 Mar 2021 06:41:56 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id t1PddXMWBVjS; Tue, 23 Mar 2021 06:41:56 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F4Kxc438nz9v0Cj;
-        Tue, 23 Mar 2021 06:41:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0F9858B7AE;
-        Tue, 23 Mar 2021 06:41:57 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 6PHfTCxDZ_5z; Tue, 23 Mar 2021 06:41:56 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6006B8B75F;
-        Tue, 23 Mar 2021 06:41:56 +0100 (CET)
-Subject: Re: [PATCH] arch: powerpc: Remove duplicate include of interrupt.h
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        zhouchuangao <zhouchuangao@vivo.com>
-Cc:     kael_w@yeah.net, Qiang Zhao <qiang.zhao@nxp.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-kernel@vger.kernel.org, Michal Suchanek <msuchanek@suse.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>
-References: <20210323024126.237840-1-wanjiabing@vivo.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <e38279c5-3284-1693-ec34-4e537bd49c1e@csgroup.eu>
-Date:   Tue, 23 Mar 2021 06:41:49 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229504AbhCWFn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCWFn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 01:43:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620A7C061574;
+        Mon, 22 Mar 2021 22:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=KU5tJjg0JkuPFohvQIbZMhamjxuQWm3WSB+8Cf+PVgw=; b=hwej8jG8xcsaUz+VLPheFpyu8t
+        yw0tCRxTW1CDjWyKg6kJFfM1wvVPktK7PavQCFZsEGen2RPLO1lAxCEwdIvw+XgwCY9YqoapyI++a
+        9bqf5yq2iVZma/pBQll5IgbTSMLd+K9lFIiGRFbWbI9EYEHwO1TTCxSSqHLN1sIloxgIKGk2OPmMZ
+        NX7UfniSj+t1V2yF/6TryFQ/HxsKRUYqxOd9CH37EBqEN9dk5Ha7EpgGQF/1YGd4fhNX6J/WAjz3C
+        nabFdxjIZ8q3tqxxrJCrfPYS5L8mjVoxTRNmm7xLM3cwYjnd4ZooD1YwyRJ7hYeZ3p3Dhasb38Tp/
+        k/1ccuSA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOZpS-009bxj-Lh; Tue, 23 Mar 2021 05:43:49 +0000
+Subject: Re: [PATCH] octeontx2-af: cn10k: Few mundane typos fixed
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
+        hkelam@marvell.com, sbhatta@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210323042800.923096-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8af05747-c7c8-a0f5-cf9b-ea2326a9ceb7@infradead.org>
+Date:   Mon, 22 Mar 2021 22:43:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210323024126.237840-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323042800.923096-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 23/03/2021 à 03:41, Wan Jiabing a écrit :
-> asm/interrupt.h has been included at line 12. According to
-> alphabetic order,we remove the duplicate one at line 10.
-
-Could you please cook a single patch for all files in arch/powerpc/
-
-Thanks
-Christophe
-
+On 3/22/21 9:28 PM, Bhaskar Chowdhury wrote:
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> s/preceeds/precedes/  .....two different places
+> s/rsponse/response/
+> s/cetain/certain/
+> s/precison/precision/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->   arch/powerpc/kernel/interrupt.c | 1 -
->   1 file changed, 1 deletion(-)
+>  drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-> index c475a229a42a..11d456896772 100644
-> --- a/arch/powerpc/kernel/interrupt.c
-> +++ b/arch/powerpc/kernel/interrupt.c
-> @@ -7,7 +7,6 @@
->   #include <asm/asm-prototypes.h>
->   #include <asm/kup.h>
->   #include <asm/cputime.h>
-> -#include <asm/interrupt.h>
->   #include <asm/hw_irq.h>
->   #include <asm/interrupt.h>
->   #include <asm/kprobes.h>
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> index ea456099b33c..14a184c3f6a4 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+
+> @@ -277,7 +277,7 @@ struct msg_req {
+>  	struct mbox_msghdr hdr;
+>  };
 > 
+> -/* Generic rsponse msg used a ack or response for those mbox
+> +/* Generic response msg used a ack or response for those mbox>   * messages which doesn't have a specific rsp msg format.
+>   */
+
+Nak, negative. ETOOMANYERRORS.
+How about:
+
+ /* Generic response msg used an ack or response for those mbox
+  * messages which don't have a specific rsp msg format.
+  */
+
+
+The other changes look good.
+
+-- 
+~Randy
+
