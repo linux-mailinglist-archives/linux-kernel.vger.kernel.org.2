@@ -2,61 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DBE346165
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8581834616A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhCWOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:23:16 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:44251 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232129AbhCWOXF (ORCPT
+        id S232231AbhCWOYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:24:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34545 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232037AbhCWOY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:23:05 -0400
-Received: by mail-io1-f69.google.com with SMTP id e11so1987316ioh.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:23:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=2CgcKrHeCWGBs2yP0zbh1B1ArVXrjGOfPGKUarVfunQ=;
-        b=VHv+5oz88PyrcOfuLLiRXQK7CY9cR81ekCslTWhkkh0Z9LwBt+vPFTCSu+hssaDMfv
-         rzgYgaGLM9RR4Yf1AoBqwWkDyVowQ+F46sKE8LLMOPgsyF9u7dSiIggJFV1OD2P6cVvI
-         cWQ2V3lnmHfP5gccv6miKwGraWr9qpxlcLj1R5/kQB4haVePrgHsSQKlkC2nltYYlz01
-         m914bfarbxk1/F8ri30cYq4fEC6FYWumeT3aD/ID5ffTGfPPCROp+GSr3wMzTwiuUBus
-         51rxukw59sLZ/mt8SuWX3aNYyqxQIfcWvLhi9Fh/o/QhN9MYVri1q+AZ6JmoCpib2iV5
-         GpIg==
-X-Gm-Message-State: AOAM532zQaQngJy+4X4O5cKHMSumi2gLrNlpzTOCfrT13x0DNX/tzrhJ
-        +qLaaQcI9jUocjGoafFwZhitfoUg+qDoWMO0nNgBPWv0YNaX
-X-Google-Smtp-Source: ABdhPJzgwzFP6+3QtkQvdgHTxAvfMkCaGRBXU5kycZm2+e6m/Rd9tLH2IWwqzc64Az8TvaRN7DDSTSnNIy8qnY2e68q1xXxjnlh2
+        Tue, 23 Mar 2021 10:24:26 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lOhxF-0000jQ-Pj; Tue, 23 Mar 2021 14:24:21 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Mirela Rabulea <mirela.rabulea@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] media: imx-jpeg: Pass the v4l2_jpeg_header header argument by reference
+Date:   Tue, 23 Mar 2021 14:24:21 +0000
+Message-Id: <20210323142421.348695-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c21:: with SMTP id m1mr5184931ilh.204.1616509384532;
- Tue, 23 Mar 2021 07:23:04 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 07:23:04 -0700
-In-Reply-To: <08603c70-64df-5dcc-f5c7-1646056af74b@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a427e805be34eb03@google.com>
-Subject: Re: [syzbot] WARNING in io_wq_put
-From:   syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Colin Ian King <colin.king@canonical.com>
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Currently the header argument is being passed by value, so a copy of 256
+byte structure on the stack is potentially occurring. Fix this by passing
+by reference to avoid any large stack copies.
 
-Reported-and-tested-by: syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com
+Addresses-Coverity: ("Big parameter passed by value")
+Fixes: 2db16c6ed72c ("media: imx-jpeg: Add V4L2 driver for i.MX8 JPEG Encoder/Decoder")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/media/platform/imx-jpeg/mxc-jpeg.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Tested on:
+diff --git a/drivers/media/platform/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
+index adb1715c75d7..f13a8efc35ad 100644
+--- a/drivers/media/platform/imx-jpeg/mxc-jpeg.c
++++ b/drivers/media/platform/imx-jpeg/mxc-jpeg.c
+@@ -1114,21 +1114,21 @@ static int mxc_jpeg_valid_comp_id(struct device *dev,
+ }
+ 
+ static u32 mxc_jpeg_get_image_format(struct device *dev,
+-				     const struct v4l2_jpeg_header header)
++				     const struct v4l2_jpeg_header *header)
+ {
+ 	int i;
+ 	u32 fourcc = 0;
+ 
+ 	for (i = 0; i < MXC_JPEG_NUM_FORMATS; i++)
+-		if (mxc_formats[i].subsampling == header.frame.subsampling &&
+-		    mxc_formats[i].nc == header.frame.num_components) {
++		if (mxc_formats[i].subsampling == header->frame.subsampling &&
++		    mxc_formats[i].nc == header->frame.num_components) {
+ 			fourcc = mxc_formats[i].fourcc;
+ 			break;
+ 		}
+ 	if (fourcc == 0) {
+ 		dev_err(dev, "Could not identify image format nc=%d, subsampling=%d\n",
+-			header.frame.num_components,
+-			header.frame.subsampling);
++			header->frame.num_components,
++			header->frame.subsampling);
+ 		return fourcc;
+ 	}
+ 	/*
+@@ -1137,7 +1137,7 @@ static u32 mxc_jpeg_get_image_format(struct device *dev,
+ 	 * ITU-T T.872 chapter 6.5.3 APP14 marker segment for colour encoding
+ 	 */
+ 	if (fourcc == V4L2_PIX_FMT_YUV24 || fourcc == V4L2_PIX_FMT_RGB24) {
+-		if (header.app14_tf == V4L2_JPEG_APP14_TF_CMYK_RGB)
++		if (header->app14_tf == V4L2_JPEG_APP14_TF_CMYK_RGB)
+ 			fourcc = V4L2_PIX_FMT_RGB24;
+ 		else
+ 			fourcc = V4L2_PIX_FMT_YUV24;
+@@ -1258,7 +1258,7 @@ static int mxc_jpeg_parse(struct mxc_jpeg_ctx *ctx,
+ 	if (!mxc_jpeg_valid_comp_id(dev, psof, psos))
+ 		dev_warn(dev, "JPEG component ids should be 0-3 or 1-4");
+ 
+-	fourcc = mxc_jpeg_get_image_format(dev, header);
++	fourcc = mxc_jpeg_get_image_format(dev, &header);
+ 	if (fourcc == 0)
+ 		return -EINVAL;
+ 
+-- 
+2.30.2
 
-commit:         c95a47c2 io-wq: eliminate the need for a manager thread
-git tree:       git://git.kernel.dk/linux-block wq-no-manager
-kernel config:  https://syzkaller.appspot.com/x/.config?x=175bf2d0517d3b04
-dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
-compiler:       Debian clang version 11.0.1-2
-
-Note: testing is done by a robot and is best-effort only.
