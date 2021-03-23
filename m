@@ -2,83 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3828F345FB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3AF345FB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhCWNag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
+        id S231465AbhCWNbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhCWNaL (ORCPT
+        with ESMTP id S231247AbhCWNbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:30:11 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7056DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=pGWpm+WB3Vg671czxou6SRrOuPgVTllUUjQ5wW0XDIY=; b=f58mUhhF/qAQqij8j0teM/Nme
-        pOQH4AkaX50UpZeF9hu8EJI4bnuTM3N6r5NGYdyYAzvweSdbETGA+HFcTlK1trrPELb9cSOVyplt1
-        +rZvhzqNYmIkLLIwlJ0Ew9TQZzNERrxVc+AKo0ZYnllUWDpbLPcGjN+VT7djASfmmUMnhrjbLpPXY
-        ftmK7pRWaDfzD+iylv8tBqKphoI6qSuJEpwUINAScokczMOjq4hb5wArwN4OP38/mvac40zdOHRIW
-        KpiPQiFBGnO44XXWKwjE9geXuv5N7n+wRZgzJW65QlqpFirtjFVncy+8KMdym0ZvVPaN2Jk0OWsVK
-        K/WPz5RKQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51626)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lOh6k-0007ly-7c; Tue, 23 Mar 2021 13:30:06 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lOh6j-0004Bx-In; Tue, 23 Mar 2021 13:30:05 +0000
-Date:   Tue, 23 Mar 2021 13:30:05 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ARM: delay: avoid clang -Wtautological-constant warning
-Message-ID: <20210323133005.GC1463@shell.armlinux.org.uk>
-References: <20210323132031.2858996-1-arnd@kernel.org>
+        Tue, 23 Mar 2021 09:31:05 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988FBC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:30:53 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id b7so27125124ejv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 06:30:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MDPG8p5N4UdjXCdq+avfFbXU3o20BK4EHu8tEMTA+n8=;
+        b=fRJiLdxnFUFHfKYtfDXCQ1Jqc8UN0FtE6hUB8TbJAE10MatNb+f4MbY22cHILEpw6u
+         Z6O1tUyHVrHtax+Vn1hpyJD99+gAvCvSm4/+NcvzztES/ga/5h3W6QEltBRh6BT0gkuv
+         r4vpRXf4MapBEjVnfIv4dLhOSufZCNPK5X61u6b5oUfg0DP0BtWhBg66tE98A/r6I+24
+         4Mu9o5Us+VezF/foRIj6raFh0wWoqa3wjnDpbj2s5RgEcZNAS0B2KNbQNmGN7b8nYUHa
+         NRPotLOOzn99gxTCcJWatTXTWwJNnXiI426SYlZt5bFGSfeNYEvTH4LpHsHHUsOYBval
+         gpvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MDPG8p5N4UdjXCdq+avfFbXU3o20BK4EHu8tEMTA+n8=;
+        b=TNb7UgCTPX/C+kSAd7+TpUIDPsNl6sNYy1Uuadvn7pdKopzZdr3sxh8hybpcDwLXBN
+         N4PdXXeRiwEWvi479o2DqkNbdA3uCx6MVg5AxXL+MYbRdllvQUvo5jvm7zaFs+HLp/LA
+         hFBuJgmomonuJSc1g5C6zowCBK3x/1qTP9FLxfgJfy6/vNa2i53kTRcZSupY/kuMwwkL
+         bP1BdXMzsdN8O6craP9SJw9V5/K/QIvhTth0dhwDL3ccsB2N9y8tCB/RIiNkBefIGSYp
+         AgaVzYsCJvXNp74T2lijBsPlrpdF8HslgTnvFuJkkEbc9yCb+nrSD/Xtedzu5RL1CYo3
+         0bsw==
+X-Gm-Message-State: AOAM532hJdTlbW9JMY0e9Xhb2sPjanXYgb13YexgvGQ7b+aAMEqu04J4
+        upW8N9m8lvTS2mP7AlXRtc1ulihwTp7D38TVeWDE0A==
+X-Google-Smtp-Source: ABdhPJxdYLsLDACHsLswRTuiUt4NDuSSm6YMvQdUUXZhASd7w6Z97Wt9RjPYSse39yqsFZUS9sulekOO83b7HRXhLJo=
+X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr4853619ejb.503.1616506252192;
+ Tue, 23 Mar 2021 06:30:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323132031.2858996-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20210322121919.202392464@linuxfoundation.org>
+In-Reply-To: <20210322121919.202392464@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 23 Mar 2021 19:00:39 +0530
+Message-ID: <CA+G9fYuuOHGm0EijoGeQ0npRMBDZeG56x0GMpzKmZditiRPqsA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/14] 4.4.263-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:20:23PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Passing an 8-bit constant into delay() triggers a warning when building
-> with 'make W=1' using clang:
-> 
-> drivers/clk/actions/owl-pll.c:182:2: error: result of comparison of constant 2000 with expression of type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->         udelay(pll_hw->delay);
->         ^~~~~~~~~~~~~~~~~~~~~
-> arch/arm/include/asm/delay.h:84:9: note: expanded from macro 'udelay'
->           ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :              \
->            ~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
-> arch/arm/mach-omap2/wd_timer.c:89:3: error: result of comparison of constant 2000 with expression of type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->                 udelay(oh->class->sysc->srst_udelay);
->                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Shut up the warning by adding a cast to a 64-bit number. A cast to 'int'
-> would usually be sufficient, but would fail to cause a link-time error
-> for large 64-bit constants.
+On Mon, 22 Mar 2021 at 18:24, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.263 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 24 Mar 2021 12:19:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.263-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-What effect (if any) does this have on code generation when the argument
-is not constant?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.263-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 769f344ebed2d7d9adc324015195b8c3fda886da
+git describe: v4.4.262-15-g769f344ebed2
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.262-15-g769f344ebed2
+
+No regressions (compared to build v4.4.262)
+
+No fixes (compared to build v4.4.262)
+
+
+Ran 36066 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* network-basic-tests
+* ltp-cap_bounds-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* kvm-unit-tests
+* ltp-open-posix-tests
+* perf
+* v4l2-compliance
+* install-android-platform-tools-r2600
+* kselftest-kvm
+* kselftest-vm
+* fwts
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.263-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.263-rc1-hikey-20210322-970
+git commit: cdbe5973893696eb29efb23b75953efd2f7edf4d
+git describe: 4.4.263-rc1-hikey-20210322-970
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.263-rc1-hikey-20210322-970
+
+No regressions (compared to 4.4.263-rc1-hikey-20210319-968)
+
+No fixes (compared to 4.4.263-rc1-hikey-20210319-968)
+
+Ran 1863 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
