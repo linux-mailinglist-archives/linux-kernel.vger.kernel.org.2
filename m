@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E174346132
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E80E346129
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbhCWOQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S232009AbhCWOPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232105AbhCWOPa (ORCPT
+        with ESMTP id S232155AbhCWOPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:15:30 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC46DC061574;
-        Tue, 23 Mar 2021 07:15:29 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id h10so23590516edt.13;
-        Tue, 23 Mar 2021 07:15:29 -0700 (PDT)
+        Tue, 23 Mar 2021 10:15:12 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8B4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:15:00 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id l13so14953825qtu.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KIib56X/7jLsOZcTZP1ltIUNXuXCqixlOs7iGx7lL3g=;
-        b=Qqs1OXy4jF4mqYpg/nTLcCwPZVr1oFJ/Bq/9rQ+0Ibhd4Gqi2bbRSRA0FR1nZNVWnr
-         5+2y2kc4P0gXxTCezKgOO2nq4yiSYkFOkFO9E7qgVtVIB+z7UeoTrTiOVMYBGHxkETkz
-         e7dLwcF0oetqq+X1LITBqY60KTkvffim4FpBwfmwrsBaPHscgDTVBFs/Otj6X4vXCSMN
-         j2DtHzMM6EBNdITtqsKkZStkQS6K/8sk92iRPM0gbH97rEK8J2grhuFlqhzde4e8dt8T
-         Ml+QhDrt2sYgIUOhpoIAte6sMNFM+GPe5IuHN4USYXsAfytNTK2JDyjyJdhAO4ZUg8HT
-         OokA==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8meLTlZiRn44+DNLKrLTAm0jlzGdfeXlOKDf3nF1S5M=;
+        b=n+CyHXpCvNqgjqFQCw1Ureb1Am9mXfUzWPryDTmL9fn8N185+8k0ujfQ90CxHy+7gw
+         UuBUGTldeK/8XlUoY9uQctm+OnklBCyJkoRD5xytOFFWWh0e311QC6oG4Hm5YIOK20Fp
+         1u8Wa6FaiMd6Y1rqA7D3tAQurFqw+XEnoo9Ok=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KIib56X/7jLsOZcTZP1ltIUNXuXCqixlOs7iGx7lL3g=;
-        b=XiF/g6MNEAmZz3ua6fDg42o3XGor9YDB+MW9rKt3JZH8qWvSEvlnbYJTGk4b+QuotD
-         bnDVYyFR+bJy+LEa0norA2dzxnKI3bJKHl17aVNV+ydKcpzirgrsWux0ztuWOmv+KUXn
-         kbIRB3u9I+aFG0JOzM2Ai4ky22EXenKvBINQzXREafSUPXiyiHaPvkBUhmi6tTmZ581N
-         BlAvtvMR0KpOYAOSoWHfz+JJZmpzmwv7Y152nzliCNXutoxC7UGhpKzYV2mwajcQVoCW
-         vltf3XfGNcgdQaLZVNygTZ6MTGeoBgp7fOOxhozHn8XT+ujh1peyMJk+rIIRTtTBJoYq
-         Z8Xw==
-X-Gm-Message-State: AOAM532HJ0/m8wRpjRRk24dyNKfbSOKY7+IDA0dkWJQslRqtM9utuQcZ
-        Gy7So8vBTUdUL7QaOsJYJaoiJebvBJih9Gng
-X-Google-Smtp-Source: ABdhPJydwZylWjTpCsRopRQGQVhAUpVA0AsjCftXq2VPCPBXvIGOg+9D4sbAi0t9j+uTbDQ9a5ZIGA==
-X-Received: by 2002:a05:6402:3075:: with SMTP id bs21mr4850193edb.274.1616508928570;
-        Tue, 23 Mar 2021 07:15:28 -0700 (PDT)
-Received: from localhost.localdomain ([176.88.28.231])
-        by smtp.gmail.com with ESMTPSA id f3sm11297789ejd.42.2021.03.23.07.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 07:15:28 -0700 (PDT)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     rjw@rjwysocki.net
-Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
-        julianbraha@gmail.com,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH v2] PM: Kconfig: fix unmet dependency for PM_SLEEP_SMP
-Date:   Tue, 23 Mar 2021 17:14:06 +0300
-Message-Id: <20210323141405.55115-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8meLTlZiRn44+DNLKrLTAm0jlzGdfeXlOKDf3nF1S5M=;
+        b=D+TOwQ0rtm32/Pf2L8fKWA9jaAEmkiHuGVJuYuodJxfZOrKdyVkWz06e4vrH4eOyY9
+         4m4s2z4HHnQOCnMEKY8I1lunxxTH6HqNFqrki/mmYfUfS1RxtrA0Q2Hs4xk7JFPhhMRr
+         500Dsee7kCEzs9hJZUdyh+WbmBl7gOS6KciJmM8lS4Wi+kZL8cdArX2Xt2x3Yqsttu1k
+         Z5AI3/heHQtTVSZU0Dt8spDZS6e0wRWvbfKqhN41XESALpzgm5b9BYJMkzFf7VUfvT5E
+         DIvC4i+TZJNtOk/2cLESDmWqC7vLoDxw83JClsvoeRh0Rs/0Q7dlOQNXE9oYXBwKl1vu
+         dmbw==
+X-Gm-Message-State: AOAM530hrdOqV/UIfs9BLUvXLym1E2J6WBWkMPedOHCD4wL20sH5uDjw
+        +21xhDs8yltKtiXGHhm0XOC85qeqqV/rGE13MVdyhg==
+X-Google-Smtp-Source: ABdhPJxLLCxlwvhUtL+3J+uDzjutd5tJWRqZy+adGA0su0wQFjLXycNlNjHEqpTnreoLpM52ToOL+31/uFkoXSn7XwI=
+X-Received: by 2002:ac8:7f53:: with SMTP id g19mr4492681qtk.249.1616508900014;
+ Tue, 23 Mar 2021 07:15:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210213095724.3411058-1-daniel@0x0f.com> <20210215112409.1a755bf0@xps13>
+ <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
+ <20210215121653.4edd86c4@xps13> <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
+ <20210322193213.18520b9a@xps13> <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
+ <20210323113233.3523d66b@xps13> <CAFr9PX=KMZuzp61Hq=2WdHyEzE=6J7HEPWZxPs7FEqiH-G8wFw@mail.gmail.com>
+ <20210323150603.6b942a60@xps13>
+In-Reply-To: <20210323150603.6b942a60@xps13>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Tue, 23 Mar 2021 23:14:48 +0900
+Message-ID: <CAFr9PXnxvacKOf=n+Gt16BHdjwL2cUqr9ZD=A=YeSftYFYrKEA@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PM_SLEEP_SMP is enabled and HOTPLUG_CPU is disabled, it results in
-the following Kbuild warning:
+Hi Miquel,
 
-WARNING: unmet direct dependencies detected for HOTPLUG_CPU
-  Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
-  Selected by [y]:
-  - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=n] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
+On Tue, 23 Mar 2021 at 23:06, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >
+> > # nandbiterrs -i /dev/mtd1
+> > incremental biterrors test
+> > Successfully corrected 0 bit errors per subpage
+> > Inserted biterror @ 0/5
+> > Read reported 4 corrected bit errors
+> > ECC failure, invalid data despite read success
+>
+> This is not a valid behavior. There is something wrong with the way ECC
+> status is read/retrieved. The read should indeed report 4 corrected bit
+> errors, but then the data should be valid. Here it means that the
+> introduced error appears corrected but in fact is not.
+>
+> We need to understand what status are available and write the
+> appropriate vendor code.
 
-The reason is that PM_SLEEP_SMP selects HOTPLUG_CPU without depending on
-or selecting HOTPLUG_CPU's dependencies.
+Ok. Glad we checked then :).
+Before sending again I will recheck how the ECC status is read and fix that up.
 
-Let PM_SLEEP_SMP depend on HOTPLUG_CPU's dependencies to avoid Kbuild issues.
+Thanks,
 
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
-v1->v2:
-* Keep selecting HOTPLUG_CPU by PM_SLEEP_SMP as it needs to be selected
-automatically, let PM_SLEEP_SMP depend on missing dependencies instead.
----
- kernel/power/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-index 6bfe3ead10ad..0c4aa403e04a 100644
---- a/kernel/power/Kconfig
-+++ b/kernel/power/Kconfig
-@@ -125,6 +125,7 @@ config PM_SLEEP_SMP
- 	depends on SMP
- 	depends on ARCH_SUSPEND_POSSIBLE || ARCH_HIBERNATION_POSSIBLE
- 	depends on PM_SLEEP
-+	depends on PPC_PSERIES || PPC_PMAC || PPC_POWERNV || FSL_SOC_BOOKE
- 	select HOTPLUG_CPU
- 
- config PM_SLEEP_SMP_NONZERO_CPU
--- 
-2.25.1
-
+Daniel
