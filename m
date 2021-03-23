@@ -2,158 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B7A345C15
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD20B345C18
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhCWKlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhCWKlf (ORCPT
+        id S230280AbhCWKma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:42:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57201 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230299AbhCWKmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:41:35 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0085EC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:41:34 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso4820158ooq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qaMgAdM2KItPrKUMCZHabW9a3SL1RYlGywDdCoOttJE=;
-        b=HaI/Ls3Xxp4PiIqn7YsRY6f0Wr7X/xAaryHq0Ns2IEfD0GdSCR+4ITbGkbJT9UXXsT
-         kY1r5QTmgtILT6A0Ne1jGw3AadSpClsCy4ta4xdHyx2yexqhxsoCMXKNWtx9NgShVWAc
-         ogQ4n8oSLpEG3tsagpYf3fWuTd8Pe7N0n404eqU0dqGgqUyHjWK3hr+cPkggOYqfoRXn
-         A2vbwFHHLtsODjLZuiJ86pZ4uGIMzZUmInN6SWqsIKZQZCPlxb69hD4CP4aZg27rtAgK
-         YccAtquOslR1+Z6W9VmOh5EyQ6Km8qzQean7EpYrWGCBLstwapCRvahHJkFGzTcoPFM7
-         ZEpQ==
+        Tue, 23 Mar 2021 06:42:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616496132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gNbDvqmHSmOS17Uw36LiU1hQfbOR+Uaf4HP1sWsQm8M=;
+        b=Z+VfKyDyoitbzWpf5uRe45uq4WUqbWwxfbizTwhQ6V5LJPagpeTZH2ssa66JCmID2mRANE
+        go2QZs+t9ew/OFV5OwZD9PdWQTAYMgc81Fwqs6xsJRPDVf4qO9P4c6PNcp9hdOqNAqVzEp
+        mPiSwbYubPhcaipgzz9bVdtg9sm4EF0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-2uzuLfsCPYS7yX-nLIk14A-1; Tue, 23 Mar 2021 06:42:09 -0400
+X-MC-Unique: 2uzuLfsCPYS7yX-nLIk14A-1
+Received: by mail-ej1-f72.google.com with SMTP id au15so870169ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:42:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qaMgAdM2KItPrKUMCZHabW9a3SL1RYlGywDdCoOttJE=;
-        b=BBYNG2nU9koDEtc36CFhL/eb8zBwd1E4vMK9iBkgMfAYItKGr04OG+ybxswZg8ZO29
-         GM2FJMZLaMA20egrNpFXaHBkhCdyjeHOp9MIbfnYQc42e8WlhHClQskq9qgbsvQAJuaP
-         qrfdrl4i/7PqVXUDvuVIRItGpkg+RNbhq/OhQW6nMUiY2zQtxC6asjU1lcz5pUtvPa8q
-         cLXO0Ukpe0E4dFw2t5Wes9xNzsrc0AOTTbOki0Mjv1joCXpDE3kfhgM3V2xSVy5HRvHm
-         d9U0vhdPEQiHlMQAu1fvbtQRq6PRJyAsHByxEy6RFR5TptK89KroY3zMLBjj1y7vK7Ok
-         PBvA==
-X-Gm-Message-State: AOAM532NpXy8WhwHv2UuEMhVsUKkZlMXSdxrWgasMp6fVrG3W7V9iitg
-        ShfhtWgS+w1fCQoBUp5MHn6LxpGjY1aWuiUUv7hpoA==
-X-Google-Smtp-Source: ABdhPJx9cOfUC85pOdYrj8gQKReOta+wufUAU0wiHMXFo141kFatu3HmQkubYd5iSEuvXln2c4xjLNLCd7IZj2+2Fec=
-X-Received: by 2002:a05:6820:273:: with SMTP id c19mr3310170ooe.54.1616496093820;
- Tue, 23 Mar 2021 03:41:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=gNbDvqmHSmOS17Uw36LiU1hQfbOR+Uaf4HP1sWsQm8M=;
+        b=VdgfdiiSAi4oGmPwlG7RcMaJGPpWr1mKQ0a4JZ1E0I0WNa99al6QdXjs+IKJeO1K3N
+         lycwdBKINdNMXrtQhaP7Fis6J1eHIDV39juA3lDVxUi69O+7IJPjdRwCsFguPL9QijwA
+         NPC5XyIRXqqvwcRY8evRnNv7DedDzHpZof0N8oaysSBioQJhSMXwy32LDbuUGXrTeaLE
+         fNvCQPaD3XpEewEbVcA+4lO1cjFHNMIR3L9LGn/vWkakVqz7J2yHR+LVvLBum/ZiR6Uc
+         0RpRpfR9ii/4QOiA68n06YUmd0ydG1QYRDcKSdbw1wkOJjcmthyOw5PqvssmR0zs2Udy
+         rchw==
+X-Gm-Message-State: AOAM531GKQ0fUi5xFjMEa/Ool9t3N/auSpTIOdjQLe5ZbmxbFdYrO+eA
+        maRoP4yN1zcDMJw9hTjlXjNa4sJnCNTfORVnPytQT31IzWiJE48KO0CPHGyIKM+zW6TaivXuhsY
+        KYFOCDCH8hVifkXdeeIMP1JegGbBJ0Niuln5b/K/iYU5ovnscH0fLRvPy1acjfpavUF6QCny8qI
+        GM
+X-Received: by 2002:a17:906:c058:: with SMTP id bm24mr4259402ejb.335.1616496128739;
+        Tue, 23 Mar 2021 03:42:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHfV1x3tHtVhnWgVqKlxX+gGynmicskM/QyDg69WoGaur0WMcJJEOYrnEMKEzPFcvqr3TD/g==
+X-Received: by 2002:a17:906:c058:: with SMTP id bm24mr4259380ejb.335.1616496128521;
+        Tue, 23 Mar 2021 03:42:08 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id g21sm10903399ejd.6.2021.03.23.03.42.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 03:42:07 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: kvm: make hardware_disable_test less verbose
+In-Reply-To: <20210323100311.zq3yzru4heg4zomu@kamzik.brq.redhat.com>
+References: <20210323085303.1347449-1-vkuznets@redhat.com>
+ <20210323100311.zq3yzru4heg4zomu@kamzik.brq.redhat.com>
+Date:   Tue, 23 Mar 2021 11:42:07 +0100
+Message-ID: <875z1iyww0.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210310104139.679618-1-elver@google.com> <20210310104139.679618-9-elver@google.com>
- <YFiamKX+xYH2HJ4E@elver.google.com> <YFjI5qU0z3Q7J/jF@hirez.programming.kicks-ass.net>
- <YFm6aakSRlF2nWtu@elver.google.com> <YFnDo7dczjDzLP68@hirez.programming.kicks-ass.net>
-In-Reply-To: <YFnDo7dczjDzLP68@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 23 Mar 2021 11:41:22 +0100
-Message-ID: <CANpmjNO1mRBFBQ6Rij-6ojVPKkaB6JLHD2WOVxhQeqxsqit2-Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 8/8] selftests/perf: Add kselftest for remove_on_exec
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 at 11:32, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Mar 23, 2021 at 10:52:41AM +0100, Marco Elver wrote:
->
-> > with efs->func==__perf_event_enable. I believe it's sufficient to add
-> >
-> >       mutex_lock(&parent_event->child_mutex);
-> >       list_del_init(&event->child_list);
-> >       mutex_unlock(&parent_event->child_mutex);
-> >
-> > right before removing from context. With the version I have now (below
-> > for completeness), extended torture with the above test results in no
-> > more warnings and the test also passes.
-> >
->
-> > +     list_for_each_entry_safe(event, next, &ctx->event_list, event_entry) {
-> > +             struct perf_event *parent_event = event->parent;
-> > +
-> > +             if (!event->attr.remove_on_exec)
-> >                       continue;
-> >
-> > +             if (!is_kernel_event(event))
-> > +                     perf_remove_from_owner(event);
-> >
-> > +             modified = true;
-> > +
-> > +             if (parent_event) {
-> >                       /*
-> > +                      * Remove event from parent, to avoid race where the
-> > +                      * parent concurrently iterates through its children to
-> > +                      * enable, disable, or otherwise modify an event.
-> >                        */
-> > +                     mutex_lock(&parent_event->child_mutex);
-> > +                     list_del_init(&event->child_list);
-> > +                     mutex_unlock(&parent_event->child_mutex);
-> >               }
->
->                 ^^^ this, right?
->
-> But that's something perf_event_exit_event() alread does. So then you're
-> worried about the order of things.
+Andrew Jones <drjones@redhat.com> writes:
 
-Correct. We somehow need to prohibit the parent from doing an
-event_function_call() while we potentially deactivate the context with
-perf_remove_from_context().
+> On Tue, Mar 23, 2021 at 09:53:03AM +0100, Vitaly Kuznetsov wrote:
+>> hardware_disable_test produces 512 snippets like
+>> ...
+>>  main: [511] waiting semaphore
+>>  run_test: [511] start vcpus
+>>  run_test: [511] all threads launched
+>>  main: [511] waiting 368us
+>>  main: [511] killing child
+>> 
+>> and this doesn't have much value, let's just drop these fprintf().
+>> Restoring them for debugging purposes shouldn't be too hard.
+>
+> Changing them to pr_debug() allows you to keep them and restore
+> with -DDEBUG
 
-> > +
-> > +             perf_remove_from_context(event, !!event->parent * DETACH_GROUP);
-> > +             perf_event_exit_event(event, ctx, current, true);
-> >       }
->
-> perf_event_release_kernel() first does perf_remove_from_context() and
-> then clears the child_list, and that makes sense because if we're there,
-> there's no external access anymore, the filedesc is gone and nobody will
-> be iterating child_list anymore.
->
-> perf_event_exit_task_context() and perf_event_exit_event() OTOH seem to
-> rely on ctx->task == TOMBSTONE to sabotage event_function_call() such
-> that if anybody is iterating the child_list, it'll NOP out.
->
-> But here we don't have neither, and thus need to worry about the order
-> vs child_list iteration.
->
-> I suppose we should stick sync_child_event() in there as well.
->
-> And at that point there's very little value in still using
-> perf_event_exit_event()... let me see if there's something to be done
-> about that.
+Ah, missed that we have this for selftests! v2 is coming.
 
-I don't mind dropping use of perf_event_exit_event() and open coding
-all of this. That would also avoid modifying perf_event_exit_event().
+-- 
+Vitaly
 
-But I leave it to you what you think is nicest.
-
-Thanks,
--- Marco
