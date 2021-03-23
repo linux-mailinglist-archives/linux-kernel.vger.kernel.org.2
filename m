@@ -2,76 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEC134620E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E049C346217
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhCWO4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:56:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:47636 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232308AbhCWO40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:56:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB83BD6E;
-        Tue, 23 Mar 2021 07:56:25 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.6.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C2B6D3F718;
-        Tue, 23 Mar 2021 07:56:23 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rjw@rjwysocki.net, rafael@kernel.org
-Cc:     ionela.voinescu@arm.com, Dietmar.Eggemann@arm.com,
-        lukasz.luba@arm.com, gregkh@linuxfoundation.org
-Subject: [PATCH] PM / EM: postpone creating the debugfs dir till fs_initcall
-Date:   Tue, 23 Mar 2021 14:56:08 +0000
-Message-Id: <20210323145608.29832-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S232501AbhCWO5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232387AbhCWO4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:56:35 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464BDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:56:33 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id n6-20020a4ac7060000b02901b50acc169fso4992958ooq.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=crpOCZ60DCBuwt1S72UL7ppFvHjUGvqZ5yR3kG9lxbs=;
+        b=cJmfOsPzE0P+Wx3J0VF/8JzInsyP2vvvZHUaXxyOFUTwyQhErBHfFdqxeVhtfRxLtp
+         KMFCT3xSwNLSEYPBwkqsQMNVTRMsmhPsEYNwVVjSMGquedqLS0XoORy+Hy+LgNA7rrl5
+         YB/ESJgMuvnXmnHBZRHeKvWWNQezitrBqm3jv3pm9xvOVDi/7RXun3+C8VZzf3Vh6vXG
+         G9KCi34XuLlYmtY4Xp175rYgMgvRfWVJqfKsENAwjqlWjQcw/dmDZblJTTS4JPp0DbRT
+         8MZHJVwjOvJqqzoCfiaLQOwZKF0pD8zpZ6rMwTKUIGskmx48uaTGQ335Uw2JQCMI0Dub
+         YC6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=crpOCZ60DCBuwt1S72UL7ppFvHjUGvqZ5yR3kG9lxbs=;
+        b=CDCqOgQwA53622IdKXP0nO4nbRiypfxv70/1skty0yZxejDZVdfTOhPEzJkSu9CQaY
+         rfhVetdXrkJYLl8z11xODKDaiieLKOgAR2Td1OiWzw/q8pQpHRrnhDvfwj6Pm4nJ+zQA
+         uLqE/vNNK+XGIHVMfy6Hf9wI5iQLOvYrsfcFuy9AI9yJE9WlPK8Rh40m/B9TehETDmjx
+         vQaryqxZqalcUOO7aUj0sZpZiGUj17FvRUf448kmiZQ+dVl3EAn9LWoxp9cwNpUBvvDe
+         Sy8MW6q/sNIj5evWhz3Yi+VVboaPVC3mso+Of/lBEKIH+hYoc/Tn3v9kWh4FVcokNQzQ
+         vpOw==
+X-Gm-Message-State: AOAM533sQih0xmT20SfHsej3auw3GSuJjG2VExXfAT6bH7COdnidJb7R
+        h+YysaMWSwDRGWViYL6dTs5Wq0s+mQbhTnq8Anw=
+X-Google-Smtp-Source: ABdhPJwsS0Ns78tBQ4XT+o+/pWDRy5/lp8mEUAqGjAojHIJrRlkFOZFCff7Z1ABu8VsKGnlP3jut/sphye0ris9Ei80=
+X-Received: by 2002:a4a:7615:: with SMTP id t21mr4120473ooc.72.1616511392713;
+ Tue, 23 Mar 2021 07:56:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <1616315298-109091-1-git-send-email-jinsdb@126.com>
+In-Reply-To: <1616315298-109091-1-git-send-email-jinsdb@126.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 23 Mar 2021 10:56:21 -0400
+Message-ID: <CADnq5_OLBjUbwxUptPk17XMHarThXj7GDYkgYZOPcd_GOJH1XQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdkfd: Fix cat debugfs hang_hws file causes system
+ crash bug
+To:     Qu Huang <jinsdb@126.com>
+Cc:     "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The debugfs directory '/sys/kernel/debug/energy_model' is needed before
-the Energy Model registration can happen. With the recent change in
-debugfs subsystem it's not allowed to create this directory at early stage
-(core_initcall). Thus creating this directory would fail.
-Postpone the creation of the EM debug dir to later stage: fs_initcall.
-It should be safe since all clients: CPUFreq drivers, Devfreq drivers will
-be initialized in later stages.
-The custom debug log below prints the time of creation the EM debug dir at
-fs_initcall and successful registration of EMs at later stages.
+Applied.  Thanks!
 
-[    1.505717] energy_model: creating rootdir
-[    3.698307] cpu cpu0: EM: created perf domain
-[    3.709022] cpu cpu1: EM: created perf domain
+Alex
 
-fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
-Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
-Hi Rafael,
-
-Please take this patch into your PM v5.12 fixes. The change described in
-the patch above landed in v5.12-rc1. Some of our EAS/EM tests are failing.
-
-Regards,
-Lukasz
-
- kernel/power/energy_model.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index 1358fa4abfa8..0f4530b3a8cd 100644
---- a/kernel/power/energy_model.c
-+++ b/kernel/power/energy_model.c
-@@ -98,7 +98,7 @@ static int __init em_debug_init(void)
- 
- 	return 0;
- }
--core_initcall(em_debug_init);
-+fs_initcall(em_debug_init);
- #else /* CONFIG_DEBUG_FS */
- static void em_debug_create_pd(struct device *dev) {}
- static void em_debug_remove_pd(struct device *dev) {}
--- 
-2.17.1
-
+On Sun, Mar 21, 2021 at 5:33 AM Qu Huang <jinsdb@126.com> wrote:
+>
+> Here is the system crash log:
+> [ 1272.884438] BUG: unable to handle kernel NULL pointer dereference at
+> (null)
+> [ 1272.884444] IP: [<          (null)>]           (null)
+> [ 1272.884447] PGD 825b09067 PUD 8267c8067 PMD 0
+> [ 1272.884452] Oops: 0010 [#1] SMP
+> [ 1272.884509] CPU: 13 PID: 3485 Comm: cat Kdump: loaded Tainted: G
+> [ 1272.884515] task: ffff9a38dbd4d140 ti: ffff9a37cd3b8000 task.ti:
+> ffff9a37cd3b8000
+> [ 1272.884517] RIP: 0010:[<0000000000000000>]  [<          (null)>]
+> (null)
+> [ 1272.884520] RSP: 0018:ffff9a37cd3bbe68  EFLAGS: 00010203
+> [ 1272.884522] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
+> 0000000000014d5f
+> [ 1272.884524] RDX: fffffffffffffff4 RSI: 0000000000000001 RDI:
+> ffff9a38aca4d200
+> [ 1272.884526] RBP: ffff9a37cd3bbed0 R08: ffff9a38dcd5f1a0 R09:
+> ffff9a31ffc07300
+> [ 1272.884527] R10: ffff9a31ffc07300 R11: ffffffffaddd5e9d R12:
+> ffff9a38b4e0fb00
+> [ 1272.884529] R13: 0000000000000001 R14: ffff9a37cd3bbf18 R15:
+> ffff9a38aca4d200
+> [ 1272.884532] FS:  00007feccaa67740(0000) GS:ffff9a38dcd40000(0000)
+> knlGS:0000000000000000
+> [ 1272.884534] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1272.884536] CR2: 0000000000000000 CR3: 00000008267c0000 CR4:
+> 00000000003407e0
+> [ 1272.884537] Call Trace:
+> [ 1272.884544]  [<ffffffffade68940>] ? seq_read+0x130/0x440
+> [ 1272.884548]  [<ffffffffade40f8f>] vfs_read+0x9f/0x170
+> [ 1272.884552]  [<ffffffffade41e4f>] SyS_read+0x7f/0xf0
+> [ 1272.884557]  [<ffffffffae374ddb>] system_call_fastpath+0x22/0x27
+> [ 1272.884558] Code:  Bad RIP value.
+> [ 1272.884562] RIP  [<          (null)>]           (null)
+> [ 1272.884564]  RSP <ffff9a37cd3bbe68>
+> [ 1272.884566] CR2: 0000000000000000
+>
+> Signed-off-by: Qu Huang <jinsdb@126.com>
+> ---
+>  drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
+> index 511712c..673d5e3 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
+> @@ -33,6 +33,11 @@ static int kfd_debugfs_open(struct inode *inode, struct file *file)
+>
+>         return single_open(file, show, NULL);
+>  }
+> +static int kfd_debugfs_hang_hws_read(struct seq_file *m, void *data)
+> +{
+> +       seq_printf(m, "echo gpu_id > hang_hws\n");
+> +       return 0;
+> +}
+>
+>  static ssize_t kfd_debugfs_hang_hws_write(struct file *file,
+>         const char __user *user_buf, size_t size, loff_t *ppos)
+> @@ -94,7 +99,7 @@ void kfd_debugfs_init(void)
+>         debugfs_create_file("rls", S_IFREG | 0444, debugfs_root,
+>                             kfd_debugfs_rls_by_device, &kfd_debugfs_fops);
+>         debugfs_create_file("hang_hws", S_IFREG | 0200, debugfs_root,
+> -                           NULL, &kfd_debugfs_hang_hws_fops);
+> +                           kfd_debugfs_hang_hws_read, &kfd_debugfs_hang_hws_fops);
+>  }
+>
+>  void kfd_debugfs_fini(void)
+> --
+> 1.8.3.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
