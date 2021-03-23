@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DD73465EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622803465F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhCWRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:06:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229946AbhCWRGZ (ORCPT
+        id S230046AbhCWRHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:07:13 -0400
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:36940 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230012AbhCWRG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:06:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616519184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fjHx4YqqWT4jRpiy21F/4VchU5onhpYM5ZCEE4eX3QA=;
-        b=NZPQ/moMw131oh6GfgyD0XFofmVelNmmizhyH6nP2YccW1Th36ZUvsv7XubYLouy3Rp+8N
-        2Rxi/p3geW3cJtNRi8FwZtf2/Gi9125t7x/VvzXHgZUJzPqY+J+nyhlRsHDa+Raen3Rh0Y
-        UU3tO0BmjgSKqW03CtXtelqq9o21Nqc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-aPYmHkMtNKqDclpJkyQdJw-1; Tue, 23 Mar 2021 13:06:22 -0400
-X-MC-Unique: aPYmHkMtNKqDclpJkyQdJw-1
-Received: by mail-wr1-f70.google.com with SMTP id h21so1363912wrc.19
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:06:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fjHx4YqqWT4jRpiy21F/4VchU5onhpYM5ZCEE4eX3QA=;
-        b=IzRa2wJuM/Jx35WH0GM9nYqi8x+qB7FrVJwIBfmCq8U+k43ZdibLw37spjaW0Ptdsd
-         Y9jT1p58xec0ZKr77bk82/mXhWWB+KKTmXtELm7CZEoLxMAsV3/48Esf6Y6bzw5FWiwz
-         5da5Y5bXovoI1h0uyT1VdzD5N1WqNeSN6COyeYXfdqlRBVzCuS1X5Z9GY2k7YKT2401w
-         TWsgfyNjUOcagJpv2xKzcXu9U3obJV7qBOqhxklM8L1bfNJdhvCNnqEijejky9E1Yq/M
-         K9YE6/qkDtUgmPP/uGikQn4tnzWcWolxa2msMv8a0Y7b0lyUVcOH1jJIWqk/bvqPnEt7
-         Ob5A==
-X-Gm-Message-State: AOAM532DcKUIGzTKKYQ8L6m8jAwy1Fz/g/nPpO+g6ZG6vUk9rZqENadY
-        iaQ+ijSRxi3wymNapzk8dz+jX8Xs0iX+BwRuhIQS9qHTR4uA3A0ZtwJw6iFeCmDoCZ1goNkf9hW
-        QoLtJM8aNKRqlm2FMG79hZWnf
-X-Received: by 2002:a05:600c:4410:: with SMTP id u16mr4229750wmn.174.1616519181650;
-        Tue, 23 Mar 2021 10:06:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyotb4LNeNf75U1fuOq54/VPcBZtHl/Lh33p5sPHaEyqCaTmUbKH7AZxpPK8zNuZdZ8ptethg==
-X-Received: by 2002:a05:600c:4410:: with SMTP id u16mr4229733wmn.174.1616519181478;
-        Tue, 23 Mar 2021 10:06:21 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u2sm24717945wrp.12.2021.03.23.10.06.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 10:06:20 -0700 (PDT)
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Kai Huang <kai.huang@intel.com>,
-        kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-References: <YFjoZQwB7e3oQW8l@google.com> <20210322191540.GH6481@zn.tnic>
- <YFjx3vixDURClgcb@google.com> <20210322210645.GI6481@zn.tnic>
- <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
- <20210322223726.GJ6481@zn.tnic>
- <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
- <YFoNCvBYS2lIYjjc@google.com> <20210323160604.GB4729@zn.tnic>
- <41dd6e78-5fe4-259e-cd0b-209de452a760@redhat.com>
- <YFofNRLPGpEWoKtH@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5d5eacef-b43b-529f-1425-0ec27b60e6ad@redhat.com>
-Date:   Tue, 23 Mar 2021 18:06:19 +0100
+        Tue, 23 Mar 2021 13:06:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id EF5CD3FF00;
+        Tue, 23 Mar 2021 18:06:57 +0100 (CET)
+Authentication-Results: ste-pvt-msa2.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=OIPzPWVW;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
+        dkim=pass (1024-bit key) header.d=shipmail.org
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 4vXE_RuP9_af; Tue, 23 Mar 2021 18:06:57 +0100 (CET)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 58FE63FEFF;
+        Tue, 23 Mar 2021 18:06:56 +0100 (CET)
+Received: from [192.168.0.209] (unknown [192.198.151.43])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id 7C82636062E;
+        Tue, 23 Mar 2021 18:06:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1616519216; bh=9C1/LIiOMgsGwjfQyFQT7VzzQnBpGQRxEf4hDMfEMQI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OIPzPWVW/hOP84Aexusd08oV1ihkh2Q54GfQNCXWiaAmRUTIhMp6sprBTnzrN7WOq
+         U8mSrmSG9//Y9cwdRAkmFH0vAilzHWB9jL1OrKJ+oM59wTCCCbWCgbsnko/zZACsSM
+         dgSvTW/IU3jgcflSVkFOj8Iq++820R6HVr1m/+ws=
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+ <YFnST5VLcEgv9q+s@phenom.ffwll.local>
+ <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
+ <20210323163715.GJ2356281@nvidia.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <5824b731-ca6a-92fd-e314-d986b6a7b101@shipmail.org>
+Date:   Tue, 23 Mar 2021 18:06:53 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YFofNRLPGpEWoKtH@google.com>
+In-Reply-To: <20210323163715.GJ2356281@nvidia.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/21 18:02, Sean Christopherson wrote:
->> That's important, but it's even more important *to developers* that the
->> commit message spells out why this would be a kernel bug more often than
->> not.  I for one do not understand it, and I suspect I'm not alone.
->> 
->> Maybe (optimistically) once we see that explanation we decide that the
->> documentation is not important.  Sean, Kai, can you explain it?
+
+On 3/23/21 5:37 PM, Jason Gunthorpe wrote:
+> On Tue, Mar 23, 2021 at 05:34:51PM +0100, Thomas Hellström (Intel) wrote:
 >
-> Thought of a good analogy that can be used for the changelog and/or docs:
-> 
-> This is effectively a kernel use-after-free of EPC, and due to the way SGX works,
-> the bug is detected at freeing.  Rather than add the page back to the pool of
-> available EPC, the kernel intentionally leaks the page to avoid additional
-> errors in the future.
-> 
-> Does that help?
+>>>> @@ -210,6 +211,20 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
+>>>>    	if ((pfn & (fault_page_size - 1)) != 0)
+>>>>    		goto out_fallback;
+>>>> +	/*
+>>>> +	 * Huge entries must be special, that is marking them as devmap
+>>>> +	 * with no backing device map range. If there is a backing
+>>>> +	 * range, Don't insert a huge entry.
+>>>> +	 * If this check turns out to be too much of a performance hit,
+>>>> +	 * we can instead have drivers indicate whether they may have
+>>>> +	 * backing device map ranges and if not, skip this lookup.
+>>>> +	 */
+>>> I think we can do this statically:
+>>> - if it's system memory we know there's no devmap for it, and we do the
+>>>     trick to block gup_fast
+>> Yes, that should work.
+>>> - if it's iomem, we know gup_fast wont work anyway if don't set PFN_DEV,
+>>>     so might as well not do that
+>> I think gup_fast will unfortunately mistake a huge iomem page for an
+>> ordinary page and try to access a non-existant struct page for it, unless we
+>> do the devmap trick.
+>>
+>> And the lookup would then be for the rare case where a driver would have
+>> already registered a dev_pagemap for an iomem area which may also be mapped
+>> through TTM (like the patch from Felix a couple of weeks ago). If a driver
+>> can promise not to do that, then we can safely remove the lookup.
+> Isn't the devmap PTE flag arch optional? Does this fall back to not
+> using huge pages on arches that don't support it?
 
-Very much, and for me this also settles the question of documentation. 
-Borislav or Kai, can you add it to the commit message?
+Good point. No, currently it's only conditioned on transhuge page support.
+Need to condition it on also devmap support.
 
-Paolo
+>
+> Also, I feel like this code to install "pte_special" huge pages does
+> not belong in the drm subsystem..
 
+I could add helpers in huge_memory.c:
+
+vmf_insert_pfn_pmd_prot_special() and
+vmf_insert_pfn_pud_prot_special()
+
+/Thomas
+
+>
+> Jason
