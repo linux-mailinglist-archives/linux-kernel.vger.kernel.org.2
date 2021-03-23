@@ -2,253 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC2B346AC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C87346AD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbhCWVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:05:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35576 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhCWVFk (ORCPT
+        id S233494AbhCWVLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233433AbhCWVLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:05:40 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616533539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=fYk6NWNOXMGdec5MjB5DlA2zmraER7Ss4x0az26Lu2E=;
-        b=0c1YD0XBHdVdUQyKA/QhTFibTjRduqdWW0Vx8arUp1eVUtkHfm/3NMJ9WQCDpCgrI1Ilrg
-        hWjzg+756lsl1BWmk73ZUbn/xpwa7vh+Q/SRwhwr9hjfRNz1xHM0sIwz0tmha5u8JGZ4nU
-        xDMMJBnkIJUGt0M84heC/kEsc1wR3oDECwB9TA7ZlcmlDS61DpKINqTRAxPfKvdiNrlumh
-        RTzGInzgXzDKhe6sIF3kC54c8QBgqnREwXh0isffyCevaeYqVhnt33EluBIqWuKA2Tj9rX
-        DzT9VPQPSPSn1t+wDYOVoQLY8QL4Cykak0kR+39Z9m5Rxv3yS5Bu/2hY4aHOlg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616533539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=fYk6NWNOXMGdec5MjB5DlA2zmraER7Ss4x0az26Lu2E=;
-        b=F/E4tGIqwNhG7bMcny4thx+mGdAuEeW4O2JuUeloRQ5Cc/ptMIucWonvoDv6t8KF07XDZn
-        3uegkB0Og9GLgfDQ==
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [patch V5 2/2] signal: Allow tasks to cache one sigqueue struct
-In-Reply-To: <87o8f9r7ug.fsf@nanos.tec.linutronix.de>
-Date:   Tue, 23 Mar 2021 22:05:39 +0100
-Message-ID: <87sg4lbmxo.fsf@nanos.tec.linutronix.de>
+        Tue, 23 Mar 2021 17:11:18 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016F2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:11:17 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id m7so13018893pgj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:11:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CLIOhCRms8tpJ/sHpF45FW6i8w9LAGKp/drQPJzwM74=;
+        b=b379C8IjnEtT9XjLYWVbqa3a7tYRZ+8EjPiTrqLlwwVBHTQK7I3P+XvFOi/XKneRgx
+         4AVVDxN9IDV/ZOyPVU9kKsucpqBZcDJjXYv1W4lN7yyeM9o7gMQAJFQQ2THh073XKjva
+         7bqbhWRCKXQuXB6BMOz3RwgUi8X0xcnhUCqafI+1/Y2ChkuX4Ski2lSrBGuTPjwCqwXe
+         PMqjOVzr5F7Yqpb3r5ouO8zUUF8mq80IKBUXgAEM+M63kJyPizBpxtYYV8zQd8fHuHMK
+         +rVvK5fjwIZd0EtYLJwzSW91vFvfRdxTX0INMYmKwUoVGCMdeduMlpkkZoEaeqor9kTZ
+         evLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CLIOhCRms8tpJ/sHpF45FW6i8w9LAGKp/drQPJzwM74=;
+        b=eTIZucgmaWJmFP+eA8vteB7XFk5wv2OUbybcTxS4hc3oBKrtcgmMVX3UTlVSppTuQv
+         dmG6/meuAgXiQTDpqxmiq17BeH62NNIQFQt/S87K+dYWQwSei/xKLrcrH6vHDorWA0ie
+         aaADiKasnIKMtpcJ4AYDJNwTgXFEReYFHewItH4hJcjRPkg0hsDkVKhttciHR6Pf+vbf
+         7pfUHfel3yT2Le43VVWpeAZ8OLroK6iwOcabVcCtqTnnzDymJTqPosKfdoeVPTsb9cvT
+         l8FMotzq05acfZb9jmk9iXBn4gv0MrpZEDLFQ2/Pp3bFasQDwkwr3/IKwBC0GGBCAuFr
+         2uDA==
+X-Gm-Message-State: AOAM533X5U0YCUlwrboaMHjLEFiQ9MaDbZajI4EfU11Z716wNj364ovG
+        gJSCcvrKPDxFbWfCo1FIOqw=
+X-Google-Smtp-Source: ABdhPJzqdN84423qKzDEVMMzkVrrCjeBTYKM0+hQe8eyob6r/r5rqxq3ktgngDVVuUnXYBXcwHh4Ng==
+X-Received: by 2002:a17:902:ac94:b029:e6:de3d:3cb7 with SMTP id h20-20020a170902ac94b02900e6de3d3cb7mr279748plr.23.1616533877209;
+        Tue, 23 Mar 2021 14:11:17 -0700 (PDT)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id 190sm106058pgh.61.2021.03.23.14.11.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 14:11:16 -0700 (PDT)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     Nadav Amit <namit@vmware.com>, Jiajun Cao <caojiajun@vmware.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu/amd: page-specific invalidations for more than one page
+Date:   Tue, 23 Mar 2021 14:06:19 -0700
+Message-Id: <20210323210619.513069-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The idea for this originates from the real time tree to make signal
-delivery for realtime applications more efficient. In quite some of these
-application scenarios a control tasks signals workers to start their
-computations. There is usually only one signal per worker on flight.  This
-works nicely as long as the kmem cache allocations do not hit the slow path
-and cause latencies.
+From: Nadav Amit <namit@vmware.com>
 
-To cure this an optimistic caching was introduced (limited to RT tasks)
-which allows a task to cache a single sigqueue in a pointer in task_struct
-instead of handing it back to the kmem cache after consuming a signal. When
-the next signal is sent to the task then the cached sigqueue is used
-instead of allocating a new one. This solved the problem for this set of
-application scenarios nicely.
+Currently, IOMMU invalidations and device-IOTLB invalidations using
+AMD IOMMU fall back to full address-space invalidation if more than a
+single page need to be flushed.
 
-The task cache is not preallocated so the first signal sent to a task goes
-always to the cache allocator. The cached sigqueue stays around until the
-task exits and is freed when task::sighand is dropped.
+Full flushes are especially inefficient when the IOMMU is virtualized by
+a hypervisor, since it requires the hypervisor to synchronize the entire
+address-space.
 
-After posting this solution for mainline the discussion came up whether
-this would be useful in general and should not be limited to realtime
-tasks: https://lore.kernel.org/r/m11rcu7nbr.fsf@fess.ebiederm.org
+AMD IOMMUs allow to provide a mask to perform page-specific
+invalidations for multiple pages that match the address. The mask is
+encoded as part of the address, and the first zero bit in the address
+(in bits [51:12]) indicates the mask size.
 
-One concern leading to the original limitation was to avoid a large amount
-of pointlessly cached sigqueues in alive tasks. The other concern was
-vs. RLIMIT_SIGPENDING as these cached sigqueues are not accounted for.
+Use this hardware feature to perform selective IOMMU and IOTLB flushes.
+Combine the logic between both for better code reuse.
 
-The accounting problem is real, but on the other hand slightly academic.
-After gathering some statistics it turned out that after boot of a regular
-distro install there are less than 10 sigqueues cached in ~1500 tasks.
+The IOMMU invalidations passed a smoke-test. The device IOTLB
+invalidations are untested.
 
-In case of a 'mass fork and fire signal to child' scenario the extra 80
-bytes of memory per task are well in the noise of the overall memory
-consumption of the fork bomb.
-
-If this should be limited then this would need an extra counter in struct
-user, more atomic instructions and a seperate rlimit. Yet another tunable
-which is mostly unused.
-
-The caching is actually used. After boot and a full kernel compile on a
-64CPU machine with make -j128 the number of 'allocations' looks like this:
-
-  From slab: 	   23996
-  From task cache: 52223
-
-I.e. it reduces the number of slab cache operations by ~68%.
-
-A typical pattern there is:
-
-<...>-58490 __sigqueue_alloc:  for 58488 from slab ffff8881132df460
-<...>-58488 __sigqueue_free:   cache ffff8881132df460
-<...>-58488 __sigqueue_alloc:  for 1149 from cache ffff8881103dc550
-  bash-1149 exit_task_sighand: free ffff8881132df460
-  bash-1149 __sigqueue_free:   cache ffff8881103dc550
-
-The interesting sequence is that the exiting task 58488 grabs the sigqueue
-from bash's task cache to signal exit and bash sticks it back into it's own
-cache. Lather, rinse and repeat.
-
-The caching is probably not noticable for the general use case, but the
-benefit for latency sensitive applications is clear. While kmem caches are
-usually just serving from the fast path the slab merging (default) can
-depending on the usage pattern of the merged slabs cause occasional slow
-path allocations.
-
-The time spared per cached entry is a few micro seconds per signal which is
-not relevant for e.g. a kernel build, but for signal heavy workloads it's
-measurable.
-
-As there is no real downside of this caching mechanism making it
-unconditionally available is preferred over more conditional code or new
-magic tunables.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Jiajun Cao <caojiajun@vmware.com>
+Cc: iommu@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
-V5: Self reaping was only mostly correct. Don't try to be smart and
-    make it simple _and_ correct (Oleg)
+ drivers/iommu/amd/iommu.c | 76 +++++++++++++++++++++------------------
+ 1 file changed, 42 insertions(+), 34 deletions(-)
 
-V4: Handle the self reaping case correctly (Oleg)
-
-V3: Use READ/WRITE_ONCE() for the cache operations and add commentry
-    for it.
-
-V2: Remove the realtime task restriction and get rid of the cmpxchg()
-    (Eric, Oleg)
-    Add more information to the changelog.
----
- include/linux/sched.h  |    1 +
- include/linux/signal.h |    1 +
- kernel/exit.c          |    1 +
- kernel/fork.c          |    1 +
- kernel/signal.c        |   44 ++++++++++++++++++++++++++++++++++++++++++--
- 5 files changed, 46 insertions(+), 2 deletions(-)
-
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -984,6 +984,7 @@ struct task_struct {
- 	/* Signal handlers: */
- 	struct signal_struct		*signal;
- 	struct sighand_struct __rcu		*sighand;
-+	struct sigqueue			*sigqueue_cache;
- 	sigset_t			blocked;
- 	sigset_t			real_blocked;
- 	/* Restored if set_restore_sigmask() was used: */
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -265,6 +265,7 @@ static inline void init_sigpending(struc
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 9256f84f5ebf..5f2dc3d7f2dc 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -927,33 +927,58 @@ static void build_inv_dte(struct iommu_cmd *cmd, u16 devid)
+ 	CMD_SET_TYPE(cmd, CMD_INV_DEV_ENTRY);
  }
  
- extern void flush_sigqueue(struct sigpending *queue);
-+extern void exit_task_sigqueue_cache(struct task_struct *tsk);
- 
- /* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
- static inline int valid_signal(unsigned long sig)
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -162,6 +162,7 @@ static void __exit_signal(struct task_st
- 		flush_sigqueue(&sig->shared_pending);
- 		tty_kref_put(tty);
- 	}
-+	exit_task_sigqueue_cache(tsk);
- }
- 
- static void delayed_put_task_struct(struct rcu_head *rhp)
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2003,6 +2003,7 @@ static __latent_entropy struct task_stru
- 	spin_lock_init(&p->alloc_lock);
- 
- 	init_sigpending(&p->pending);
-+	p->sigqueue_cache = NULL;
- 
- 	p->utime = p->stime = p->gtime = 0;
- #ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -434,7 +434,16 @@ static struct sigqueue *
- 	rcu_read_unlock();
- 
- 	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
--		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-+		/*
-+		 * Preallocation does not hold sighand::siglock so it can't
-+		 * use the cache. The lockless caching requires that only
-+		 * one consumer and only one producer run at a time.
-+		 */
-+		q = READ_ONCE(t->sigqueue_cache);
-+		if (!q || sigqueue_flags)
-+			q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
-+		else
-+			WRITE_ONCE(t->sigqueue_cache, NULL);
- 	} else {
- 		print_dropped_signal(sig);
- 	}
-@@ -451,13 +460,44 @@ static struct sigqueue *
- 	return q;
- }
- 
-+void exit_task_sigqueue_cache(struct task_struct *tsk)
-+{
-+	/* Race free because @tsk is mopped up */
-+	struct sigqueue *q = tsk->sigqueue_cache;
-+
-+	if (q) {
-+		tsk->sigqueue_cache = NULL;
-+		/*
-+		 * Hand it back to the cache as the task might
-+		 * be self reaping which would leak the object.
-+		 */
-+		 kmem_cache_free(sigqueue_cachep, q);
-+	}
-+}
-+
-+static void sigqueue_cache_or_free(struct sigqueue *q)
-+{
-+	/*
-+	 * Cache one sigqueue per task. This pairs with the consumer side
-+	 * in __sigqueue_alloc() and needs READ/WRITE_ONCE() to prevent the
-+	 * compiler from store tearing and to tell KCSAN that the data race
-+	 * is intentional when run without holding current->sighand->siglock,
-+	 * which is fine as current obviously cannot run __sigqueue_free()
-+	 * concurrently.
-+	 */
-+	if (!READ_ONCE(current->sigqueue_cache))
-+		WRITE_ONCE(current->sigqueue_cache, q);
-+	else
-+		kmem_cache_free(sigqueue_cachep, q);
-+}
-+
- static void __sigqueue_free(struct sigqueue *q)
+-static void build_inv_iommu_pages(struct iommu_cmd *cmd, u64 address,
+-				  size_t size, u16 domid, int pde)
++/*
++ * Builds an invalidation address which is suitable for one page or multiple
++ * pages. Sets the size bit (S) as needed is more than one page is flushed.
++ */
++static inline u64 build_inv_address(u64 address, size_t size)
  {
- 	if (q->flags & SIGQUEUE_PREALLOC)
- 		return;
- 	if (atomic_dec_and_test(&q->user->sigpending))
- 		free_uid(q->user);
--	kmem_cache_free(sigqueue_cachep, q);
-+	sigqueue_cache_or_free(q);
+-	u64 pages;
+-	bool s;
++	u64 pages, end, msb_diff;
+ 
+ 	pages = iommu_num_pages(address, size, PAGE_SIZE);
+-	s     = false;
+ 
+-	if (pages > 1) {
++	if (pages == 1)
++		return address & PAGE_MASK;
++
++	end = address + size - 1;
++
++	/*
++	 * msb_diff would hold the index of the most significant bit that
++	 * flipped between the start and end.
++	 */
++	msb_diff = fls64(end ^ address) - 1;
++
++	/*
++	 * Bits 63:52 are sign extended. If for some reason bit 51 is different
++	 * between the start and the end, invalidate everything.
++	 */
++	if (unlikely(msb_diff > 51)) {
++		address = CMD_INV_IOMMU_ALL_PAGES_ADDRESS;
++	} else {
+ 		/*
+-		 * If we have to flush more than one page, flush all
+-		 * TLB entries for this domain
++		 * The msb-bit must be clear on the address. Just set all the
++		 * lower bits.
+ 		 */
+-		address = CMD_INV_IOMMU_ALL_PAGES_ADDRESS;
+-		s = true;
++		address |= 1ull << (msb_diff - 1);
+ 	}
+ 
++	/* Clear bits 11:0 */
+ 	address &= PAGE_MASK;
+ 
++	/* Set the size bit - we flush more than one 4kb page */
++	return address | CMD_INV_IOMMU_PAGES_SIZE_MASK;
++}
++
++static void build_inv_iommu_pages(struct iommu_cmd *cmd, u64 address,
++				  size_t size, u16 domid, int pde)
++{
++	u64 inv_address = build_inv_address(address, size);
++
+ 	memset(cmd, 0, sizeof(*cmd));
+ 	cmd->data[1] |= domid;
+-	cmd->data[2]  = lower_32_bits(address);
+-	cmd->data[3]  = upper_32_bits(address);
++	cmd->data[2]  = lower_32_bits(inv_address);
++	cmd->data[3]  = upper_32_bits(inv_address);
+ 	CMD_SET_TYPE(cmd, CMD_INV_IOMMU_PAGES);
+-	if (s) /* size bit - we flush more than one 4kb page */
+-		cmd->data[2] |= CMD_INV_IOMMU_PAGES_SIZE_MASK;
+ 	if (pde) /* PDE bit - we want to flush everything, not only the PTEs */
+ 		cmd->data[2] |= CMD_INV_IOMMU_PAGES_PDE_MASK;
+ }
+@@ -961,32 +986,15 @@ static void build_inv_iommu_pages(struct iommu_cmd *cmd, u64 address,
+ static void build_inv_iotlb_pages(struct iommu_cmd *cmd, u16 devid, int qdep,
+ 				  u64 address, size_t size)
+ {
+-	u64 pages;
+-	bool s;
+-
+-	pages = iommu_num_pages(address, size, PAGE_SIZE);
+-	s     = false;
+-
+-	if (pages > 1) {
+-		/*
+-		 * If we have to flush more than one page, flush all
+-		 * TLB entries for this domain
+-		 */
+-		address = CMD_INV_IOMMU_ALL_PAGES_ADDRESS;
+-		s = true;
+-	}
+-
+-	address &= PAGE_MASK;
++	u64 inv_address = build_inv_address(address, size);
+ 
+ 	memset(cmd, 0, sizeof(*cmd));
+ 	cmd->data[0]  = devid;
+ 	cmd->data[0] |= (qdep & 0xff) << 24;
+ 	cmd->data[1]  = devid;
+-	cmd->data[2]  = lower_32_bits(address);
+-	cmd->data[3]  = upper_32_bits(address);
++	cmd->data[2]  = lower_32_bits(inv_address);
++	cmd->data[3]  = upper_32_bits(inv_address);
+ 	CMD_SET_TYPE(cmd, CMD_INV_IOTLB_PAGES);
+-	if (s)
+-		cmd->data[2] |= CMD_INV_IOMMU_PAGES_SIZE_MASK;
  }
  
- void flush_sigqueue(struct sigpending *queue)
+ static void build_inv_iommu_pasid(struct iommu_cmd *cmd, u16 domid, u32 pasid,
+-- 
+2.25.1
+
