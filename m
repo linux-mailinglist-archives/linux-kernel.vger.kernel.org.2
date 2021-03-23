@@ -2,85 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4079345391
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA12134538A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhCWAEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:04:11 -0400
-Received: from mail2.candelatech.com ([208.74.158.173]:42522 "EHLO
-        mail3.candelatech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhCWADd (ORCPT
+        id S230458AbhCWABh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhCWABN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:03:33 -0400
-X-Greylist: delayed 321 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Mar 2021 20:03:33 EDT
-Received: from [192.168.254.6] (unknown [50.34.172.155])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail3.candelatech.com (Postfix) with ESMTPSA id 8796B13C2B0;
-        Mon, 22 Mar 2021 16:58:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 8796B13C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
-        s=default; t=1616457487;
-        bh=F2kPVH+YIfx7glKDCME0BM3ell9Hw27xQXR6vGdxgdY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=fOOBW2PSG4xEkmwBzm4IzgVLucWvw5nQhuliy60WR4uzgwp46Ej5sJenIgPKdJFoI
-         nqcjvzVwnFr167lW3hlRvHMC8K9unVjPKCHFngHMF7b2SRcJptMBn+knKl6evs/5cb
-         /z8wCxp6sjXfWdZ9a62yd8DMR3C1yPt8lmJItto0=
-Subject: Re: [RFC 2/7] ath10k: Add support to process rx packet in thread
-To:     Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Rajkumar Manoharan <rmanohar@codeaurora.org>,
-        Rakesh Pillai <pillair@codeaurora.org>
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        dianders@chromium.org, evgreen@chromium.org
-References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
- <1595351666-28193-3-git-send-email-pillair@codeaurora.org>
- <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
- <d79ae05e-e75a-de2f-f2e3-bc73637e1501@nbd.name>
- <04d7301d5ad7555a0377c7df530ad8522fc00f77.camel@sipsolutions.net>
- <1f2726ff-8ba9-5278-0ec6-b80be475ea98@nbd.name>
-From:   Ben Greear <greearb@candelatech.com>
-Organization: Candela Technologies
-Message-ID: <06a4f84b-a0d4-3f90-40bb-f02f365460ec@candelatech.com>
-Date:   Mon, 22 Mar 2021 16:57:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 22 Mar 2021 20:01:13 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32743C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:01:13 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4E9D4A52;
+        Tue, 23 Mar 2021 01:01:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616457665;
+        bh=1WW6qwvVbYFjhgbp6peXSl7i0rOj0DjQbdTkGNk0wLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e0PgscoQxX7AP56OjLdJAIgeK60VwZSRdJPpvuOO9i8cZuz5E54BGmqYVnhU/XNMr
+         4t5hc3mu/wuhHPqn1yncJUUnq1+tFGygD6pYMAVIt6POXSym7hREqkL7tLRmYtJvwL
+         exR9BU4NtvLv4Hb66LGE+SNmC6HoedzOEws5ElqI=
+Date:   Tue, 23 Mar 2021 02:00:23 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>
+Subject: Re: [PATCH v2 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
+Message-ID: <YFkvl9tzP5Nj54C4@pendragon.ideasonboard.com>
+References: <20201030011738.2028313-1-swboyd@chromium.org>
+ <20201101173741.GA1293305@ravnborg.org>
+ <160436612483.884498.883110130131457033@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <1f2726ff-8ba9-5278-0ec6-b80be475ea98@nbd.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <160436612483.884498.883110130131457033@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/20 6:00 AM, Felix Fietkau wrote:
-> On 2020-07-22 14:55, Johannes Berg wrote:
->> On Wed, 2020-07-22 at 14:27 +0200, Felix Fietkau wrote:
->>
->>> I'm considering testing a different approach (with mt76 initially):
->>> - Add a mac80211 rx function that puts processed skbs into a list
->>> instead of handing them to the network stack directly.
->>
->> Would this be *after* all the mac80211 processing, i.e. in place of the
->> rx-up-to-stack?
-> Yes, it would run all the rx handlers normally and then put the
-> resulting skbs into a list instead of calling netif_receive_skb or
-> napi_gro_frags.
+Hi Stephen,
 
-Whatever came of this?  I realized I'm running Felix's patch since his mt76
-driver needs it.  Any chance it will go upstream?
-
-Thanks,
-Ben
-
+On Mon, Nov 02, 2020 at 05:15:24PM -0800, Stephen Boyd wrote:
+> Quoting Sam Ravnborg (2020-11-01 09:37:41)
+> > Hi Stephen.
+> > 
+> > On Thu, Oct 29, 2020 at 06:17:34PM -0700, Stephen Boyd wrote:
+> > > This patch series cleans up the DDC code a little bit so that
+> > > it is more efficient time wise and supports grabbing the EDID
+> > > of the eDP panel over the aux channel. I timed this on a board
+> > > I have on my desk and it takes about 20ms to grab the EDID out
+> > > of the panel and make sure it is valid.
+> > > 
+> > > The first two patches seem less controversial so I stuck them at
+> > > the beginning. The third patch does the EDID reading and caches
+> > > it so we don't have to keep grabbing it over and over again. And
+> > > finally the last patch updates the reply field so that short
+> > > reads and nacks over the channel are reflected properly instead of
+> > > treating them as some sort of error that can't be discerned.
+> > > 
+> > > Stephen Boyd (4):
+> > >   drm/bridge: ti-sn65dsi86: Combine register accesses in
+> > >     ti_sn_aux_transfer()
+> > >   drm/bridge: ti-sn65dsi86: Make polling a busy loop
+> > >   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
+> > >   drm/bridge: ti-sn65dsi86: Update reply on aux failures
+> > 
+> > Series looks good. You can add my a-b on the full series.
+> > Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> > 
+> > I can apply after Douglas have had a look at the patches he did not r-b
+> > yet.
+> > 
+> > Any chance we can convince you to prepare this bridge driver for use in
+> > a chained bridge setup where the connector is created by the display
+> > driver and uses drm_bridge_funcs?
+> > 
+> > First step wuld be to introduce the use of a panel_bridge.
+> > Then add get_edid to drm_bridge_funcs and maybe more helpers.
+> > 
+> > Then natural final step would be to move connector creation to the
+> > display driver - see how other uses drm_bridge_connector_init() to do so
+> > - it is relatively simple.
+> > 
+> > Should be doable - and reach out if you need some help.
 > 
-> - Felix
-> 
+> I started to look at this and got stuck at ti_sn_bridge_get_bpp(). Where
+> can I get the details of the bpc for the downstream bridge or panel? Is
+> there some function that can tell this bridge what the bpc is for the
+> attached connector?
 
+I've posted a patch series to convert to DRM_BRIDGE_ATTACH_NO_CONNECTOR
+yesterday (and have CC'ed you), but I've overlooked this particular
+problem :-S
+
+You can't get the connector in the .enable() operation, but you can get
+it in .atomic_enable(), with
+drm_atomic_get_new_connector_for_encoder(). This being said, it's
+probably not the right option.
+
+What matters here isn't the bpc for the connector, but the format
+expected by the next bridge in the chain. drm_bridge_funcs has two
+operations, .atomic_get_output_bus_fmts() and
+.atomic_get_input_bus_fmts(), to negotiate that format along a chain of
+bridges. The panel bridge driver (drivers/gpu/drm/bridge/panel.c)
+doesn't implement those operations, and neither does
+display-connector.c, so that may be what we should start with.
+
+> I see that td_mode_valid() in
+> drivers/gpu/drm/bridge/tc358775.c stores away the bpc from the incoming
+> drm_display_info pointer but I'm not sure that is correct because can't
+> that be called for various and not necessarily the one we're using?
+
+You're right, .mode_valid() shouldn't do that.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Regards,
+
+Laurent Pinchart
