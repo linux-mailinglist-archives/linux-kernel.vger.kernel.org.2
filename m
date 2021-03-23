@@ -2,126 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7050E34645E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37102346463
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhCWQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbhCWQFI (ORCPT
+        id S233064AbhCWQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:06:02 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:36268 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232930AbhCWQFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:05:08 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23A0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:08 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id e8so18234728iok.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=V2RrZIiiAXDjTWwS4GJM76K1p957k6O4aOC5f66VrG0=;
-        b=c9fONZ0pVanfBBnYSOpJiaySOx5hI94+NqD6CkppLs8GUQkeQhLzL0o3ReQ2IvDwJr
-         UZdPTqwjNh470mOQMHJW4y/avc/ojoI41u/icb2EMeqhwmKKZaB6hDtS0DODD+qHRfaC
-         WPciC6+yYWvSGsTj/ScLgLfSn94/6VvGLg+gY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=V2RrZIiiAXDjTWwS4GJM76K1p957k6O4aOC5f66VrG0=;
-        b=VvBWc5LQ0BrY5F4L8CHdy5YweZHcH/wwg11yY9ZsIeGxkDtzRaGACX1bvCEr42+dds
-         wE4k/hBsAL7sSq79tbf7i5B9darZQVeRk3GCBf2DWV0EdtmhCN4HO2rD7uZC073M5lnV
-         3wEkKaC1vT2BwD7J3Y18/tTccTizELvyDDIWKiOOTtcT0SlCSHF76nYh0L3260ifnd4n
-         8Jm3k2SkkozYPJKPkrrnW2HYaKYvyxbdS9lT3aEsEKp3j41sJF4l2tTeKnRzOzp/YE4Z
-         OyKpa6cDjjru/Px/u/Fj5jgBDcnf8lIqB5nP82G+ZXhTEW66S6OpckEt3e7CeGS1wRTi
-         iRYQ==
-X-Gm-Message-State: AOAM530qh0azvMWiKVWTIiCd2pDPfkm8LHHGTNsLn4dxdO7yl+3JoYm5
-        BTsEQC72OVA1V3rjRKlISsMWMpU8rKVJGA==
-X-Google-Smtp-Source: ABdhPJzTi/8OjSyhjSMnl0De0aNc2QFh78p3P4V4BD6fmbtcgPsiQbBxrx3DssgIDqWb/R3PUaKY2Q==
-X-Received: by 2002:a6b:7f4d:: with SMTP id m13mr4895975ioq.134.1616515507923;
-        Tue, 23 Mar 2021 09:05:07 -0700 (PDT)
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com. [209.85.166.45])
-        by smtp.gmail.com with ESMTPSA id k11sm2036082iok.1.2021.03.23.09.05.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 09:05:07 -0700 (PDT)
-Received: by mail-io1-f45.google.com with SMTP id k25so6111573iob.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:05:06 -0700 (PDT)
-X-Received: by 2002:a05:6602:26c6:: with SMTP id g6mr4919501ioo.150.1616515506402;
- Tue, 23 Mar 2021 09:05:06 -0700 (PDT)
+        Tue, 23 Mar 2021 12:05:49 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12NG5Voo061626;
+        Tue, 23 Mar 2021 11:05:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616515531;
+        bh=K4fwQJg6ForgmFFqDP5hpVwKkfU//raomS14z9sDVDs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=VlQNUlC4T4qbziL3cqSwVR78bDxHopSDUHyYWbLHoCL6RZs5quyDFcNsruukGC8ZX
+         KW7AUDqVb3XSpway/2V1EhOyU7U21vLleVZBzndJMXU3LFYNdV/gEPnrWHXLYpXi6h
+         BzIEuJ4s6zlKALTt8XkhdyKV/o34zjLcS3HJL3J4=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12NG5VdQ049384
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Mar 2021 11:05:31 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
+ Mar 2021 11:05:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 23 Mar 2021 11:05:09 -0500
+Received: from [10.250.232.230] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12NG55P4089384;
+        Tue, 23 Mar 2021 11:05:06 -0500
+Subject: Re: [PATCH RESEND] PCI: dwc: Fix MSI not work after resume
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+CC:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+References: <20210323151250.GA576016@bjorn-Precision-5520>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <310d1d4b-a4b5-37c6-6f59-c822acbe9b19@ti.com>
+Date:   Tue, 23 Mar 2021 21:34:58 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210319055342.127308-1-senozhatsky@chromium.org> <20210319055342.127308-4-senozhatsky@chromium.org>
-In-Reply-To: <20210319055342.127308-4-senozhatsky@chromium.org>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Tue, 23 Mar 2021 17:04:55 +0100
-X-Gmail-Original-Message-ID: <CANiDSCseJdKuPSZFDvc8VGp=PDqGEN42ZsLVGgkwhAz5hhVCQQ@mail.gmail.com>
-Message-ID: <CANiDSCseJdKuPSZFDvc8VGp=PDqGEN42ZsLVGgkwhAz5hhVCQQ@mail.gmail.com>
-Subject: Re: [PATCHv3 3/6] media: v4l UAPI: add ROI auto-controls flags
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210323151250.GA576016@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey
+Hi,
 
-On Fri, Mar 19, 2021 at 6:53 AM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> UVC 1.5 defines the following Region Of Interest auto controls:
->
-> D0: Auto Exposure
-> D1: Auto Iris
-> D2: Auto White Balance
-> D3: Auto Focus
-> D4: Auto Face Detect
-> D5: Auto Detect and Track
-> D6: Image Stabilization
-> D7: Higher Quality
-> D8 =E2=80=93 D15: Reserved, set to zero
->
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  include/uapi/linux/v4l2-common.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-c=
-ommon.h
-> index 3651ebb8cb23..34f1c262d6aa 100644
-> --- a/include/uapi/linux/v4l2-common.h
-> +++ b/include/uapi/linux/v4l2-common.h
-> @@ -92,6 +92,16 @@
->  #define V4L2_SEL_FLAG_LE               (1 << 1)
->  #define V4L2_SEL_FLAG_KEEP_CONFIG      (1 << 2)
->
+On 23/03/21 8:42 pm, Bjorn Helgaas wrote:
+> [-cc Dilip (mail to him bounced)]
+> 
+> On Tue, Mar 23, 2021 at 11:01:15AM +0800, Jisheng Zhang wrote:
+>> On Mon, 22 Mar 2021 20:24:41 -0500 Bjorn Helgaas wrote:
+>>>
+>>> [+cc Kishon, Richard, Lucas, Dilip]
+>>>
+>>> On Mon, Mar 01, 2021 at 11:10:31AM +0800, Jisheng Zhang wrote:
+>>>> After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
+>>>> MSI stops working after resume. Because dw_pcie_host_init() is only
+>>>> called once during probe. To fix this issue, we move dw_pcie_msi_init()
+>>>> to dw_pcie_setup_rc().  
+>>>
+>>> This patch looks fine, but I don't think the commit log tells the
+>>> whole story.
+>>>
+>>> Prior to 59fbab1ae40e, it looks like the only dwc-based drivers with
+>>> resume functions were dra7xx, imx6, intel-gw, and tegra [1].
+>>>
+>>> Only tegra called dw_pcie_msi_init() in the resume path, and I do
+>>> think 59fbab1ae40e broke MSI after resume because it removed the
+>>> dw_pcie_msi_init() call from tegra_pcie_enable_msi_interrupts().
+>>>
+>>> I'm not convinced this patch fixes it reliably, though.  The call
+>>> chain looks like this:
+>>>
+>>>   tegra_pcie_dw_resume_noirq
+>>>     tegra_pcie_dw_start_link
+>>>       if (dw_pcie_wait_for_link(pci))
+>>>         dw_pcie_setup_rc
+>>>
+>>> dw_pcie_wait_for_link() returns 0 if the link is up, so we only call
+>>> dw_pcie_setup_rc() in the case where the link *didn't* come up.  If
+>>> the link comes up nicely without retry, we won't call
+>>> dw_pcie_setup_rc() and hence won't call dw_pcie_msi_init().
+>>
+>> The v1 version patch was sent before commit 275e88b06a (PCI: tegra: Fix host
+>> link initialization"). At that time, the resume path looks like this:
+>>
+>> tegra_pcie_dw_resume_noirq
+>>   tegra_pcie_dw_host_init
+>>     tegra_pcie_prepare_host
+>>       dw_pcie_setup_rc
+>>
+>> so after patch, dw_pcie_msi_init() will be called. But now it seems that
+>> the tegra version needs one more fix for the resume.
+>>
+>> So could I sent a new patch to update the commit-msg a bit?
+> 
+> This patch only touches the dwc core, and the commit log says
+> generically that it fixes MSI after resume, so one could assume that
+> it applies to all dwc-based drivers.  But I don't think it's that
+> simple, so I'd like to know *which* drivers are fixed and which
+> commits are related.  I don't see how 59fbab1ae40e breaks anything
+> except tegra.
+> 
+>>> Since then, exynos added a resume function.  My guess is MSI never
+>>> worked after resume for dra7xx, exynos, imx6, and intel-gw because
+>>> they don't call dw_pcie_msi_init() in their resume functions.
+>>>
+>>> This patch looks like it should fix MSI after resume for exynos, imx6,
+>>> and intel-gw because they *do* call dw_pcie_setup_rc() from their
+>>> resume functions [2], and after this patch, dw_pcie_msi_init() will be
+>>> called from there.
+>>>
+>>> I suspect MSI after resume still doesn't work on dra7xx.
+>>
+>> I checked the dra7xx history, I'm afraid that the resume never works
+>> from the beginning if the host lost power during suspend, I guess the
+>> platform never power off the host but only the phy?
 
-Are you sure that you do not want to start with 1<<3, there might be
-some hardware that support LE/SE
-> +/* ROI auto-controls flags */
-> +#define V4L2_SEL_FLAG_ROI_AUTO_EXPOSURE                (1 << 0)
-> +#define V4L2_SEL_FLAG_ROI_AUTO_IRIS                    (1 << 1)
-> +#define V4L2_SEL_FLAG_ROI_AUTO_WHITE_BALANCE           (1 << 2)
-> +#define V4L2_SEL_FLAG_ROI_AUTO_FOCUS                   (1 << 3)
-> +#define V4L2_SEL_FLAG_ROI_AUTO_FACE_DETECT             (1 << 4)
-> +#define V4L2_SEL_FLAG_ROI_AUTO_DETECT_AND_TRACK        (1 << 5)
-> +#define V4L2_SEL_FLAG_ROI_AUTO_IMAGE_STABILIXATION     (1 << 6)
-> +#define V4L2_SEL_FLAG_ROI_AUTO_HIGHER_QUALITY          (1 << 7)
-> +
->  struct v4l2_edid {
->         __u32 pad;
->         __u32 start_block;
-> --
-> 2.31.0.rc2.261.g7f71774620-goog
->
+Suspend on dra7xx disabled clocks and powered off phy (at-least while
+suspend/resume hooks were merged) and resume enabled clocks and phy.
+However suspend/resume is broken in dra7xx system and is not validated.
+I'll send a patch to remove the suspend/resume hooks in dra7xx.
 
+Thanks
+Kishon
 
---=20
-Ricardo Ribalda
+> 
+> Sounds like that would make sense.
+> 
+>>> [1] git grep -A20 -e "static.*resume_noirq" 59fbab1ae40e^:drivers/pci/controller/dwc
+>>> [2] git grep -A20 -e "static.*resume_noirq" drivers/pci/controller/dwc
+>>>
+>>>> Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
+>>>> Reviewed-by: Rob Herring <robh@kernel.org>
+>>>> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+>>>> ---
+>>>> Since v1:
+>>>>  - collect Reviewed-by tag
+>>>>
+>>>>  drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
+>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>>> index 7e55b2b66182..e6c274f4485c 100644
+>>>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+>>>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>>> @@ -400,7 +400,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>>>>       }
+>>>>
+>>>>       dw_pcie_setup_rc(pp);
+>>>> -     dw_pcie_msi_init(pp);
+>>>>
+>>>>       if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
+>>>>               ret = pci->ops->start_link(pci);
+>>>> @@ -551,6 +550,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+>>>>               }
+>>>>       }
+>>>>
+>>>> +     dw_pcie_msi_init(pp);
+>>>> +
+>>>>       /* Setup RC BARs */
+>>>>       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
+>>>>       dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
+>>>> --
+>>>> 2.30.1
+>>>>  
+>>
