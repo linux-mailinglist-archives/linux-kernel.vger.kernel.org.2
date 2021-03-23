@@ -2,102 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125B534668D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAE434668F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhCWRkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhCWRkM (ORCPT
+        id S230346AbhCWRky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:40:54 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40934 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhCWRkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:40:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE02BC061574;
-        Tue, 23 Mar 2021 10:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=sxvcc6n+zZC/nKYBO0R7ql8qMgyWOPTuTiacyZX4jN4=; b=lcQ0Rs+gLRtuRTK/T3cqcmJ7Gq
-        EbGh5DNF3EJ4b/roKNg6oCEYVOdKEH7gjYRKWkmh0QVCSXQTDQck98VZ0G7gocirzRv7ZejVnBNhM
-        maIrL0+PH2wNL8AhnN0DiIyai+IK4yO28vwDopf8wj5m5Q4D+X54JuEgNb0kZMLBP9tJI7H0/7HF9
-        hhQNS8OvjU9TajzS8h6lv58//RwyECuJurgqqFoI6HqyESg7+0X9HfOl+5tNg/vbDILEjkgXyEkpW
-        jcgU9joqskwGvnu6QQ9m7Nb4KXipErg6utRRF3aXfQRWMuWesCtEC//BHkb80CyFgu5G0WlqVNg1+
-        1++4TOEw==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOl0a-00ALv4-O9; Tue, 23 Mar 2021 17:40:02 +0000
-Subject: Re: [PATCH] drivers/media/pci/bt8xx/bttv-cards: fix typos
-To:     Xiaofeng Cao <cxfcosmos@gmail.com>, mchehab@kernel.org
-Cc:     hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
-References: <20210323122546.16262-1-caoxiaofeng@yulong.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b297b819-8837-cfa0-0a62-d40958697bb2@infradead.org>
-Date:   Tue, 23 Mar 2021 10:39:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 13:40:33 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12NHeOWo030169;
+        Tue, 23 Mar 2021 12:40:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616521224;
+        bh=+cFdjSOqih+qi9CCBMvuw/LbRsZ2xPljKLLjT21Dg5s=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=teBPDk7x6r4I/ELayaCMWfjR+jGbjWR9uLpBCPa6RPrADhAhPppLw71SGD4y5ga/3
+         PnqCcdG76fNLGCwc8yiyXlkOez8asC4rDkFFyzqLUyvSzUIOmHvBkwJ4MNGF7aGe3+
+         AoeyDMh+zyhsx6fJ3shP3Vatf32OdG3GCI9e+AH8=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12NHeOPu091269
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Mar 2021 12:40:24 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
+ Mar 2021 12:40:24 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 23 Mar 2021 12:40:24 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12NHeNOA016637;
+        Tue, 23 Mar 2021 12:40:24 -0500
+Date:   Tue, 23 Mar 2021 23:10:23 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Michael Walle <michael@walle.cc>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add initial sysfs support
+Message-ID: <20210323174021.2tqfi6bbzofonjjh@ti.com>
+References: <20210323143144.12730-1-michael@walle.cc>
+ <20210323143144.12730-3-michael@walle.cc>
 MIME-Version: 1.0
-In-Reply-To: <20210323122546.16262-1-caoxiaofeng@yulong.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210323143144.12730-3-michael@walle.cc>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Please see a few comments below.
+On 23/03/21 03:31PM, Michael Walle wrote:
+> Add support to show the name and JEDEC identifier as well as to dump the
+> SFDP table. Not all flashes list their SFDP table contents in their
+> datasheet. So having that is useful. It might also be helpful in bug
+> reports from users.
 
-On 3/23/21 5:25 AM, Xiaofeng Cao wrote:
-> change 'vodeo'     to 'video'
-> change 'nevery'    to 'never'
-> change 'is'        to 'it'
-> change 'connevted' to 'connected'
-> change 'swichers'  to 'switchers'
-> change 'strucure'  to 'structure'
-> change 'unblanced' to 'unbalanced'
-> change 'fonctionality' to 'functionality'
+Acked-by: Pratyush Yadav <p.yadav@ti.com>
+
 > 
-> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 > ---
->  drivers/media/pci/bt8xx/bttv-cards.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+>  drivers/mtd/spi-nor/Makefile |  2 +-
+>  drivers/mtd/spi-nor/core.c   |  5 +++
+>  drivers/mtd/spi-nor/core.h   |  3 ++
+>  drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 95 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mtd/spi-nor/sysfs.c
 > 
-> diff --git a/drivers/media/pci/bt8xx/bttv-cards.c b/drivers/media/pci/bt8xx/bttv-cards.c
-> index ca20b806e82d..9a07e1094978 100644
-> --- a/drivers/media/pci/bt8xx/bttv-cards.c
-> +++ b/drivers/media/pci/bt8xx/bttv-cards.c
-
-> @@ -2506,7 +2506,7 @@ struct tvcard bttv_tvcards[] = {
->  	     one external BNC composite input (mux 2)
->  	     three internal composite inputs (unknown muxes)
->  	     an 18-bit stereo A/D (CS5331A), which has:
-> -	       one external stereo unblanced (RCA) audio connection
-> +	       one external stereo unbalanced(RCA) audio connection
-
-Please leave a space between unbalanced and (RCA).
-
->  	       one (or 3?) internal stereo balanced (XLR) audio connection
->  	       input is selected via gpio to a 14052B mux
->  		 (mask=0x300, unbal=0x000, bal=0x100, ??=0x200,0x300)
-
-> @@ -4580,7 +4580,7 @@ static void xguard_muxsel(struct bttv *btv, unsigned int input)
+> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> index 653923896205..aff308f75987 100644
+> --- a/drivers/mtd/spi-nor/Makefile
+> +++ b/drivers/mtd/spi-nor/Makefile
+> @@ -1,6 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> -spi-nor-objs			:= core.o sfdp.o
+> +spi-nor-objs			:= core.o sfdp.o sysfs.o
+>  spi-nor-objs			+= atmel.o
+>  spi-nor-objs			+= catalyst.o
+>  spi-nor-objs			+= eon.o
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index fbc34158a883..02523ddac612 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3708,6 +3708,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = spi_nor_sysfs_create(nor);
+> +	if (ret)
+> +		return ret;
+> +
+>  	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
+>  				   data ? data->nr_parts : 0);
 >  }
->  static void picolo_tetra_init(struct bttv *btv)
->  {
-> -	/*This is the video input redirection fonctionality : I DID NOT USED IT. */
-> +	/*This is the video input redirection functionality : I DID NOT USED IT. */
-
-	                                                      I DID NOT USE IT. *
-
->  	btwrite (0x08<<16,BT848_GPIO_DATA);/*GPIO[19] [==> 4053 B+C] set to 1 */
->  	btwrite (0x04<<16,BT848_GPIO_DATA);/*GPIO[18] [==> 4053 A]  set to 1*/
+> @@ -3717,6 +3721,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
+>  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+>  
+>  	spi_nor_restore(nor);
+> +	spi_nor_sysfs_remove(nor);
+>  
+>  	/* Clean up MTD stuff. */
+>  	return mtd_device_unregister(&nor->mtd);
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 08d2469837da..599035200a03 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -486,4 +486,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+>  	return mtd->priv;
 >  }
+>  
+> +int spi_nor_sysfs_create(struct spi_nor *nor);
+> +void spi_nor_sysfs_remove(struct spi_nor *nor);
+> +
+>  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
+> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+> new file mode 100644
+> index 000000000000..c62cc4d6bce6
+> --- /dev/null
+> +++ b/drivers/mtd/spi-nor/sysfs.c
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/mtd/spi-nor.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/spi/spi-mem.h>
+> +#include <linux/sysfs.h>
+> +
+> +#include "core.h"
+> +
+> +static ssize_t name_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	struct spi_device *spi = to_spi_device(dev);
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +
+> +	return sysfs_emit(buf, "%s\n", nor->info->name);
+> +}
+> +static DEVICE_ATTR_RO(name);
+> +
+> +static ssize_t jedec_id_show(struct device *dev,
+> +			     struct device_attribute *attr, char *buf)
+> +{
+> +	struct spi_device *spi = to_spi_device(dev);
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +
+> +	return sysfs_emit(buf, "%*phN\n", nor->info->id_len, nor->info->id);
+> +}
+> +static DEVICE_ATTR_RO(jedec_id);
+> +
+> +static struct attribute *spi_nor_sysfs_entries[] = {
+> +	&dev_attr_name.attr,
+> +	&dev_attr_jedec_id.attr,
+> +	NULL
+> +};
+> +
+> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
+> +			 struct bin_attribute *bin_attr, char *buf,
+> +			 loff_t off, size_t count)
+> +{
+> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +	struct sfdp *sfdp = nor->sfdp;
+> +	size_t sfdp_size = sfdp->num_dwords * sizeof(*sfdp->dwords);
+> +
+> +	return memory_read_from_buffer(buf, count, &off, nor->sfdp->dwords,
+> +				       sfdp_size);
+> +}
+> +static BIN_ATTR_RO(sfdp, 0);
+> +
+> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
+> +	&bin_attr_sfdp,
+> +	NULL
+> +};
+> +
+> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
+> +					    struct bin_attribute *attr, int n)
+> +{
+> +	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
+> +	struct spi_mem *spimem = spi_get_drvdata(spi);
+> +	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+> +
+> +	if (attr == &bin_attr_sfdp && !nor->sfdp)
+> +		return 0;
+> +
+> +	return 0444;
+> +}
+> +
+> +static struct attribute_group spi_nor_sysfs_attr_group = {
+> +	.name		= NULL,
+> +	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
+> +	.attrs		= spi_nor_sysfs_entries,
+> +	.bin_attrs	= spi_nor_sysfs_bin_entries,
+> +};
+> +
+> +int spi_nor_sysfs_create(struct spi_nor *nor)
+> +{
+> +	return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
+> +}
+> +
+> +void spi_nor_sysfs_remove(struct spi_nor *nor)
+> +{
+> +	sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
+> +}
+> -- 
+> 2.20.1
+> 
 
-
-thanks.
 -- 
-~Randy
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
