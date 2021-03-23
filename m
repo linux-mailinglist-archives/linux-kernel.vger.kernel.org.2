@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72A134620D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEC134620E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhCWO4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:56:38 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:28595 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbhCWO4I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:56:08 -0400
-Date:   Tue, 23 Mar 2021 14:55:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1616511366;
-        bh=3NRozS2wOOZPBp/nd2ffJeNKOkJoGxFqjmK3/rgwHsE=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=mmOZVuk3oPVzaD9EvHDE4CxXQHMuaF1QDi4xT+FyF3wX+M0OZQFuEgQZ1i4zrrJUX
-         KizYXC9Qv1/QY1OoJ5ce2DtMg9vUnO7JtVZdkjuJcYI749LCGwcKRYKEJijrNqArr6
-         hMf/HkbjIy8FoEzO4pvO5feO7Dd/0UZ/dXZjRh/DHQlEDLjeQ6K/O7Igelpbr5GiKB
-         fY2OZv/6LOhKhVq0QDRGsBukxtQEWwMKjwaRTYkINtCdTmVaFHaYf0NwcqgwlQDclL
-         hTFga4Nn3SFUUsTFmjn1rfrzvSfNXSmZsXk8UNubE0cP6i0MaiAdmwa5ruj5jFDtxL
-         ZFmyxZ4HVCupw==
-To:     Jonathan Corbet <corbet@lwn.net>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trivial@kernel.org,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] Documentation: gpio: chip should be plural
-Message-ID: <20210323145509.139393-1-hello@bryanbrattlof.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+        id S232459AbhCWO4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:56:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:47636 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232308AbhCWO40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:56:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB83BD6E;
+        Tue, 23 Mar 2021 07:56:25 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.6.111])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C2B6D3F718;
+        Tue, 23 Mar 2021 07:56:23 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rjw@rjwysocki.net, rafael@kernel.org
+Cc:     ionela.voinescu@arm.com, Dietmar.Eggemann@arm.com,
+        lukasz.luba@arm.com, gregkh@linuxfoundation.org
+Subject: [PATCH] PM / EM: postpone creating the debugfs dir till fs_initcall
+Date:   Tue, 23 Mar 2021 14:56:08 +0000
+Message-Id: <20210323145608.29832-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+The debugfs directory '/sys/kernel/debug/energy_model' is needed before
+the Energy Model registration can happen. With the recent change in
+debugfs subsystem it's not allowed to create this directory at early stage
+(core_initcall). Thus creating this directory would fail.
+Postpone the creation of the EM debug dir to later stage: fs_initcall.
+It should be safe since all clients: CPUFreq drivers, Devfreq drivers will
+be initialized in later stages.
+The custom debug log below prints the time of creation the EM debug dir at
+fs_initcall and successful registration of EMs at later stages.
+
+[    1.505717] energy_model: creating rootdir
+[    3.698307] cpu cpu0: EM: created perf domain
+[    3.709022] cpu cpu1: EM: created perf domain
+
+fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
+Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- Documentation/driver-api/gpio/intro.rst | 2 +-
+Hi Rafael,
+
+Please take this patch into your PM v5.12 fixes. The change described in
+the patch above landed in v5.12-rc1. Some of our EAS/EM tests are failing.
+
+Regards,
+Lukasz
+
+ kernel/power/energy_model.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/gpio/intro.rst b/Documentation/driver=
--api/gpio/intro.rst
-index 94dd7185e76e..2e924fb5b3d5 100644
---- a/Documentation/driver-api/gpio/intro.rst
-+++ b/Documentation/driver-api/gpio/intro.rst
-@@ -27,7 +27,7 @@ What is a GPIO?
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
- A "General Purpose Input/Output" (GPIO) is a flexible software-controlled
--digital signal. They are provided from many kinds of chip, and are familia=
-r
-+digital signal. They are provided from many kinds of chips, and are famili=
-ar
- to Linux developers working with embedded and custom hardware. Each GPIO
- represents a bit connected to a particular pin, or "ball" on Ball Grid Arr=
-ay
- (BGA) packages. Board schematics show which external hardware connects to
---=20
-2.27.0
-
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index 1358fa4abfa8..0f4530b3a8cd 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -98,7 +98,7 @@ static int __init em_debug_init(void)
+ 
+ 	return 0;
+ }
+-core_initcall(em_debug_init);
++fs_initcall(em_debug_init);
+ #else /* CONFIG_DEBUG_FS */
+ static void em_debug_create_pd(struct device *dev) {}
+ static void em_debug_remove_pd(struct device *dev) {}
+-- 
+2.17.1
 
