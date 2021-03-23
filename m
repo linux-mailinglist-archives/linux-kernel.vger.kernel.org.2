@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E2C345909
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9126334590C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhCWHq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCWHqO (ORCPT
+        id S229675AbhCWHr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:47:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14011 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229658AbhCWHrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:46:14 -0400
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A79C061574;
-        Tue, 23 Mar 2021 00:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=O18FJ1N2ZnMBsuKWvbeujuurm5C2kQ1VBxSCMJvGcZY=; b=cWPKqUjpsMjCIpmkK6qCc5RlZ9
-        BUO/fZSsBt5FneHlsDo3pLwn/HMORTIIWKHOnhzQP9rJU1dAqvzO/oX7owDaZDbGlu8APesldHFlg
-        6daNHdlLmQufWP8Vcj8XAbgpdQhQ/ckKqplvta8DeHh+9uO8vCb15iGT2dwsu2VYSDK4=;
-Received: from p4ff13c8d.dip0.t-ipconnect.de ([79.241.60.141] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1lObjl-0002Ce-18; Tue, 23 Mar 2021 08:46:01 +0100
-Subject: Re: [RFC 2/7] ath10k: Add support to process rx packet in thread
-To:     Ben Greear <greearb@candelatech.com>,
-        Brian Norris <briannorris@chromium.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Rajkumar Manoharan <rmanohar@codeaurora.org>,
-        Rakesh Pillai <pillair@codeaurora.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
- <1595351666-28193-3-git-send-email-pillair@codeaurora.org>
- <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
- <d79ae05e-e75a-de2f-f2e3-bc73637e1501@nbd.name>
- <04d7301d5ad7555a0377c7df530ad8522fc00f77.camel@sipsolutions.net>
- <1f2726ff-8ba9-5278-0ec6-b80be475ea98@nbd.name>
- <06a4f84b-a0d4-3f90-40bb-f02f365460ec@candelatech.com>
- <CA+ASDXOotYHmtqOvSwBES6_95bnbAbEu6F7gQ5TjacJWUKdaPw@mail.gmail.com>
- <47d8be60-14ce-0223-bdf3-c34dc2451945@candelatech.com>
-From:   Felix Fietkau <nbd@nbd.name>
-Message-ID: <633feaed-7f34-15d3-1899-81eb1d6ae14f@nbd.name>
-Date:   Tue, 23 Mar 2021 08:45:59 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Tue, 23 Mar 2021 03:47:14 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4Ngt3qSGzrWks;
+        Tue, 23 Mar 2021 15:45:14 +0800 (CST)
+Received: from [10.174.178.113] (10.174.178.113) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 15:47:06 +0800
+Subject: Re: md/dm-mpath: check whether all pgpaths have same uuid in
+ multipath_ctr()
+To:     Mike Snitzer <snitzer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>
+CC:     <agk@redhat.com>, <dm-devel@redhat.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        linfeilong <linfeilong@huawei.com>,
+        "wubo (T)" <wubo40@huawei.com>
+References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
+ <20210322081155.GE1946905@infradead.org> <20210322142207.GB30698@redhat.com>
+From:   lixiaokeng <lixiaokeng@huawei.com>
+Message-ID: <a46013db-8143-7b41-95a8-182439b385f2@huawei.com>
+Date:   Tue, 23 Mar 2021 15:47:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <47d8be60-14ce-0223-bdf3-c34dc2451945@candelatech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210322142207.GB30698@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.113]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021-03-23 04:01, Ben Greear wrote:
-> On 3/22/21 6:20 PM, Brian Norris wrote:
->> On Mon, Mar 22, 2021 at 4:58 PM Ben Greear <greearb@candelatech.com> wrote:
->>> On 7/22/20 6:00 AM, Felix Fietkau wrote:
->>>> On 2020-07-22 14:55, Johannes Berg wrote:
->>>>> On Wed, 2020-07-22 at 14:27 +0200, Felix Fietkau wrote:
->>>>>
->>>>>> I'm considering testing a different approach (with mt76 initially):
->>>>>> - Add a mac80211 rx function that puts processed skbs into a list
->>>>>> instead of handing them to the network stack directly.
->>>>>
->>>>> Would this be *after* all the mac80211 processing, i.e. in place of the
->>>>> rx-up-to-stack?
->>>> Yes, it would run all the rx handlers normally and then put the
->>>> resulting skbs into a list instead of calling netif_receive_skb or
->>>> napi_gro_frags.
->>>
->>> Whatever came of this?  I realized I'm running Felix's patch since his mt76
->>> driver needs it.  Any chance it will go upstream?
->> 
->> If you're asking about $subject (moving NAPI/RX to a thread), this
->> landed upstream recently:
->> http://git.kernel.org/linus/adbb4fb028452b1b0488a1a7b66ab856cdf20715
->> 
->> It needs a bit of coaxing to work on a WiFi driver (including: WiFi
->> drivers tend to have a different netdev for NAPI than they expose to
->> /sys/class/net/), but it's there.
->> 
->> I'm not sure if people had something else in mind in the stuff you're
->> quoting though.
-> 
-> No, I got it confused with something Felix did:
-> 
-> https://github.com/greearb/mt76/blob/master/patches/0001-net-add-support-for-threaded-NAPI-polling.patch
-> 
-> Maybe the NAPI/RX to a thread thing superceded Felix's patch?
-Yes, it did and it's in linux-next already.
-I sent the following change to make mt76 use it:
-https://github.com/nbd168/wireless/commit/1d4ff31437e5aaa999bd7a
 
-- Felix
+On 2021/3/22 22:22, Mike Snitzer wrote:
+> On Mon, Mar 22 2021 at  4:11am -0400,
+> Christoph Hellwig <hch@infradead.org> wrote:
+> 
+>> On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
+>>> From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+>>>
+>>> When we make IO stress test on multipath device, there will
+>>> be a metadata err because of wrong path. In the test, we
+>>> concurrent execute 'iscsi device login|logout' and
+>>> 'multipath -r' command with IO stress on multipath device.
+>>> In some case, systemd-udevd may have not time to process
+>>> uevents of iscsi device logout|login, and then 'multipath -r'
+>>> command triggers multipathd daemon calls ioctl to load table
+>>> with incorrect old device info from systemd-udevd.
+>>> Then, one iscsi path may be incorrectly attached to another
+>>> multipath which has different uuid. Finally, the metadata err
+>>> occurs when umounting filesystem to down write metadata on
+>>> the iscsi device which is actually not owned by the multipath
+>>> device.
+>>>
+>>> So we need to check whether all pgpaths of one multipath have
+>>> the same uuid, if not, we should throw a error.
+>>>
+>>> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+>>> Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
+>>> Signed-off-by: linfeilong <linfeilong@huawei.com>
+>>> Signed-off-by: Wubo <wubo40@huawei.com>
+>>> ---
+>>>  drivers/md/dm-mpath.c   | 52 +++++++++++++++++++++++++++++++++++++++++
+>>>  drivers/scsi/scsi_lib.c |  1 +
+>>>  2 files changed, 53 insertions(+)
+>>>
+>>> diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
+>>> index bced42f082b0..f0b995784b53 100644
+>>> --- a/drivers/md/dm-mpath.c
+>>> +++ b/drivers/md/dm-mpath.c
+>>> @@ -24,6 +24,7 @@
+>>>  #include <linux/workqueue.h>
+>>>  #include <linux/delay.h>
+>>>  #include <scsi/scsi_dh.h>
+>>> +#include <linux/dm-ioctl.h>
+>>>  #include <linux/atomic.h>
+>>>  #include <linux/blk-mq.h>
+>>>
+>>> @@ -1169,6 +1170,45 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
+>>>  	return r;
+>>>  }
+>>>
+>>> +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
+>>> +#define MPATH_UUID_PREFIX_LEN 7
+>>> +static int check_pg_uuid(struct priority_group *pg, char *md_uuid)
+>>> +{
+>>> +	char pgpath_uuid[DM_UUID_LEN] = {0};
+>>> +	struct request_queue *q;
+>>> +	struct pgpath *pgpath;
+>>> +	struct scsi_device *sdev;
+>>> +	ssize_t count;
+>>> +	int r = 0;
+>>> +
+>>> +	list_for_each_entry(pgpath, &pg->pgpaths, list) {
+>>> +		q = bdev_get_queue(pgpath->path.dev->bdev);
+>>> +		sdev = scsi_device_from_queue(q);
+>>
+>> Common dm-multipath code should never poke into scsi internals.  This
+>> is something for the device handler to check.  It probably also won't
+>> work for all older devices.
+> 
+> Definitely.
+> 
+> But that aside, userspace (multipathd) _should_ be able to do extra
+> validation, _before_ pushing down a new table to the kernel, rather than
+> forcing the kernel to do it.
+> 
+
+Martin (committer of multipath-tools) said that:
+"Don't get me wrong, I don't argue against tough testing. But we should
+be aware that there are always time intervals during which multipathd's
+picture of the present devices is different from what the kernel sees."
+
+It is difficult to solve this in multipathd.
+
+Regards,
+Lixiaokeng
