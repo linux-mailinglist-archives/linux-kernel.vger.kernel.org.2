@@ -2,104 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8054334589F
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7B134589C
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhCWHZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
+        id S230163AbhCWHZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbhCWHZh (ORCPT
+        with ESMTP id S230060AbhCWHZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:25:37 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59199C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:25:37 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x26so13366146pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:25:37 -0700 (PDT)
+        Tue, 23 Mar 2021 03:25:43 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098AEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:25:43 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso11758551pji.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 00:25:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tUyNdn8QB3VLpF2CNzu3DTFDZsp8jl7Ah1JuY2OPmzs=;
-        b=CWLjVZFE9xAJxOxeTBt0QIkiayq4Xi3X+wbnAWNsP8TbQSfBbBOxgrdpE9JEpicgzV
-         +ZQTiZPyovON6d3U8nuP/TCaN+B3RyNPn5uIY8TyPnkcR0ithscMU4W30G4lmlPY/MEB
-         ckEfG1GhpuSp0va2L36yYNq70wXJyNp5Yax7KqSA0lsbXJptmHU0aXj4Pw5qLHZljtCm
-         s1Q6IANNXL6a/EBIQuMDpQ748NPd5gm7zOzlIYCutkjlHuMdXJtbmAF8TqZlfjwWJoxK
-         Lg034SYDP2BQXnZ9NAHMAldu10JZepS5bT6vc5q737V7n/Od+hq1g4/w/OEVtoEueELD
-         cHXQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=UKDB4tP1o/qAJ5iZQYJec7JsyNelKTQdItmX1ycjyQk=;
+        b=ZETG82JILVxDJCi3qiI1q0/LQNcWe9kN64W1uB852/RlDMI5Yh6PhOnBgKohVs1Xhq
+         b2j43WJ1y0Gj/KQt3KYF3WXHWu9xefZzPtfdm40QocAiaK4lE24hDSjYV219L8YJWjol
+         dupj1bUlLOxCnPRBRReCjJHZS8pgOjJ51nnXI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tUyNdn8QB3VLpF2CNzu3DTFDZsp8jl7Ah1JuY2OPmzs=;
-        b=G31SNVPVcEzt3RII6ImJiYYw1q1LDEcKK9V34G1GQ53Jwd6/AE4QGC0Ol/3jiy9pc3
-         ZJE6vHcrIT95XTteJwDrXgxMG5kb14Cu/NS+4cSQcfymuHmZnc+NWIu99H9wWcTD/VUp
-         ou+gu81jbw/e/qkJ1qDQcYuxu2pbZm7YkNp1wKSRs7ywmfBMcTcIHG0Exi19auo5Kent
-         Y6RDizDUZnigjX3JkaAb5OMtKlWyv2Fd+8MdF7aLTe+iH976ftZARkqeDWB4o8ugj64X
-         T2JRJ6SviySyFnAhkAtNjdVGJnQuwtqfHq1MPlaIJKNR5hHyC8NXLIwA/XsotvANSRhd
-         MP+g==
-X-Gm-Message-State: AOAM530mNpsjJRSRvad1ck73Kk3UR550KyVF3i97HUXscom/tcuGwK93
-        51XvloN6JXRJK/QRuBd96BYr8EEeOReSHg==
-X-Google-Smtp-Source: ABdhPJyY527OWHFAv5imJde5wjfyVkz8FZ5/mN5T5mlK4UfF9vzUmzCl8Mwr/Kd8mtv3xzCIZZlabg==
-X-Received: by 2002:a17:902:b7c5:b029:e6:1a9f:5f55 with SMTP id v5-20020a170902b7c5b02900e61a9f5f55mr3854418plz.57.1616484336894;
-        Tue, 23 Mar 2021 00:25:36 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id j20sm1523915pjn.27.2021.03.23.00.25.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Mar 2021 00:25:36 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 12:55:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: drivers/opp/of.c:959:12: warning: stack frame size of 1056 bytes
- in function '_of_add_table_indexed'
-Message-ID: <20210323072534.sif6hfei4zx5tzn3@vireshk-i7>
-References: <202103231522.N0bCxZ97-lkp@intel.com>
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=UKDB4tP1o/qAJ5iZQYJec7JsyNelKTQdItmX1ycjyQk=;
+        b=Q7Bs7ZgpmCjBwkklcaym5KSPkvpJJGyGeeBjFm8zUyaL0GdMwVeB9dQricJWzwTgyN
+         nH8ha8/+BCjVT0YcxUlhcuP9QJoxBw49aOZBp4Ley+ATNgkJE1xnKHCTi8pnOgH/aehi
+         3g/MQqURKniJQVB+90H1DHKl/p9vzvFKKYhMWT1HZ/nQrfmcrw/5ddxPhl1C8sIoyf+/
+         TuK4sBW88XF3eG4iC/GS3ifQCLJVPa1EDbyD65YmVbBlVk6Szk7GveJJCqaLB4ctiggt
+         Ae8ALAni14YPJJ+OQKWBJyGvKrVmUVr7fGBBHw2ZQ4P/Kbw1Q9BHpkQhOxv/3haJugH7
+         Sk+Q==
+X-Gm-Message-State: AOAM533qTvIzIwMkk3YZYcfXqbAu2fADw32uo6nrp7UfyL8DJjRljsxt
+        Z4q+d4yzwmy+XHIxsW5OsHGGPA==
+X-Google-Smtp-Source: ABdhPJyPgeACfzPrxFvaTFzN2uVCCvcZfR0JEVYNsM780SwaiY1fnBGhInJl6nD7HjGAyflWidV26A==
+X-Received: by 2002:a17:90a:c902:: with SMTP id v2mr3287152pjt.144.1616484342636;
+        Tue, 23 Mar 2021 00:25:42 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:e90d:d453:87ae:2e10])
+        by smtp.gmail.com with ESMTPSA id z1sm15806362pfn.127.2021.03.23.00.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 00:25:41 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103231522.N0bCxZ97-lkp@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YFkvl9tzP5Nj54C4@pendragon.ideasonboard.com>
+References: <20201030011738.2028313-1-swboyd@chromium.org> <20201101173741.GA1293305@ravnborg.org> <160436612483.884498.883110130131457033@swboyd.mtv.corp.google.com> <YFkvl9tzP5Nj54C4@pendragon.ideasonboard.com>
+Subject: Re: [PATCH v2 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Date:   Tue, 23 Mar 2021 00:25:40 -0700
+Message-ID: <161648434035.3012082.16414745959476755420@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-03-21, 15:23, kernel test robot wrote:
-> Hi Viresh,
-> 
-> FYI, the error/warning still remains.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   84196390620ac0e5070ae36af84c137c6216a7dc
-> commit: 406e47652161d4f0d9bc4cd6237b36c51497ec75 opp: Create _of_add_table_indexed() to reduce code duplication
-> date:   7 weeks ago
-> config: powerpc64-randconfig-r023-20210323 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 14696baaf4c43fe53f738bc292bbe169eed93d5d)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install powerpc64 cross compiling tool for clang build
->         # apt-get install binutils-powerpc64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=406e47652161d4f0d9bc4cd6237b36c51497ec75
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 406e47652161d4f0d9bc4cd6237b36c51497ec75
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> drivers/opp/of.c:959:12: warning: stack frame size of 1056 bytes in function '_of_add_table_indexed' [-Wframe-larger-than=]
->    static int _of_add_table_indexed(struct device *dev, int index)
->               ^
->    1 warning generated.
+Quoting Laurent Pinchart (2021-03-22 17:00:23)
+> Hi Stephen,
+>=20
+> On Mon, Nov 02, 2020 at 05:15:24PM -0800, Stephen Boyd wrote:
+> > Quoting Sam Ravnborg (2020-11-01 09:37:41)
+> > > Hi Stephen.
+> > >=20
+> > > On Thu, Oct 29, 2020 at 06:17:34PM -0700, Stephen Boyd wrote:
+> > > > This patch series cleans up the DDC code a little bit so that
+> > > > it is more efficient time wise and supports grabbing the EDID
+> > > > of the eDP panel over the aux channel. I timed this on a board
+> > > > I have on my desk and it takes about 20ms to grab the EDID out
+> > > > of the panel and make sure it is valid.
+> > > >=20
+> > > > The first two patches seem less controversial so I stuck them at
+> > > > the beginning. The third patch does the EDID reading and caches
+> > > > it so we don't have to keep grabbing it over and over again. And
+> > > > finally the last patch updates the reply field so that short
+> > > > reads and nacks over the channel are reflected properly instead of
+> > > > treating them as some sort of error that can't be discerned.
+> > > >=20
+> > > > Stephen Boyd (4):
+> > > >   drm/bridge: ti-sn65dsi86: Combine register accesses in
+> > > >     ti_sn_aux_transfer()
+> > > >   drm/bridge: ti-sn65dsi86: Make polling a busy loop
+> > > >   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
+> > > >   drm/bridge: ti-sn65dsi86: Update reply on aux failures
+> > >=20
+> > > Series looks good. You can add my a-b on the full series.
+> > > Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> > >=20
+> > > I can apply after Douglas have had a look at the patches he did not r=
+-b
+> > > yet.
+> > >=20
+> > > Any chance we can convince you to prepare this bridge driver for use =
+in
+> > > a chained bridge setup where the connector is created by the display
+> > > driver and uses drm_bridge_funcs?
+> > >=20
+> > > First step wuld be to introduce the use of a panel_bridge.
+> > > Then add get_edid to drm_bridge_funcs and maybe more helpers.
+> > >=20
+> > > Then natural final step would be to move connector creation to the
+> > > display driver - see how other uses drm_bridge_connector_init() to do=
+ so
+> > > - it is relatively simple.
+> > >=20
+> > > Should be doable - and reach out if you need some help.
+> >=20
+> > I started to look at this and got stuck at ti_sn_bridge_get_bpp(). Where
+> > can I get the details of the bpc for the downstream bridge or panel? Is
+> > there some function that can tell this bridge what the bpc is for the
+> > attached connector?
+>=20
+> I've posted a patch series to convert to DRM_BRIDGE_ATTACH_NO_CONNECTOR
+> yesterday (and have CC'ed you), but I've overlooked this particular
+> problem :-S
 
-I have reported this on 1st march as well. Looks to be false positive.
+!
 
--- 
-viresh
+>=20
+> You can't get the connector in the .enable() operation, but you can get
+> it in .atomic_enable(), with
+> drm_atomic_get_new_connector_for_encoder(). This being said, it's
+> probably not the right option.
+>=20
+> What matters here isn't the bpc for the connector, but the format
+> expected by the next bridge in the chain. drm_bridge_funcs has two
+> operations, .atomic_get_output_bus_fmts() and
+> .atomic_get_input_bus_fmts(), to negotiate that format along a chain of
+> bridges. The panel bridge driver (drivers/gpu/drm/bridge/panel.c)
+> doesn't implement those operations, and neither does
+> display-connector.c, so that may be what we should start with.
+
+Ok, makes sense. I'd gladly test things out if you come up with some
+solution here.
