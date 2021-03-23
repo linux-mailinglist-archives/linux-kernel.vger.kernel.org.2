@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B41346544
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 778B1346545
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233281AbhCWQez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:34:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233268AbhCWQel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:34:41 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C38561993;
-        Tue, 23 Mar 2021 16:34:41 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lOjzL-003LZr-1d; Tue, 23 Mar 2021 16:34:39 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     leo.yan@linaro.org, catalin.marinas@arm.com,
-        Linu Cherian <lcherian@marvell.com>,
-        Will Deacon <will@kernel.org>, coresight@lists.linaro.org,
-        Peter Zilstra <peterz@infradead.org>,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v5 00/19] coresight: Add support for ETE and TRBE
-Date:   Tue, 23 Mar 2021 16:34:36 +0000
-Message-Id: <161651726490.2050093.5536833570808361940.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210323120647.454211-1-suzuki.poulose@arm.com>
-References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+        id S233313AbhCWQe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233271AbhCWQey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:34:54 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C770CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:34:53 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lOjzY-0004l1-9D; Tue, 23 Mar 2021 17:34:52 +0100
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>
+Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <f0f43b30-3dfb-c2a0-7f69-6e5488f871cd@nxp.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <8b72335f-6ecd-3683-af82-ab5ca96d9528@pengutronix.de>
+Date:   Tue, 23 Mar 2021 17:34:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <f0f43b30-3dfb-c2a0-7f69-6e5488f871cd@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com, leo.yan@linaro.org, catalin.marinas@arm.com, lcherian@marvell.com, will@kernel.org, coresight@lists.linaro.org, peterz@infradead.org, anshuman.khandual@arm.com, mike.leach@linaro.org, mathieu.poirier@linaro.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 12:06:28 +0000, Suzuki K Poulose wrote:
-> This series enables future IP trace features Embedded Trace Extension
-> (ETE) and Trace Buffer Extension (TRBE). This series applies on
-> v5.12-rc4 + some patches queued. A standalone tree is also available here [0].
-> The queued patches (almost there) are included in this posting for
-> the sake of constructing a tree from the posting.
-> 
-> ETE is the PE (CPU) trace unit for CPUs, implementing future
-> architecture extensions. ETE overlaps with the ETMv4 architecture, with
-> additions to support the newer architecture features and some restrictions
-> on the supported features w.r.t ETMv4. The ETE support is added by extending
-> the ETMv4 driver to recognise the ETE and handle the features as exposed by
-> the TRCIDRx registers. ETE only supports system instructions access from the
-> host CPU. The ETE could be integrated with a TRBE (see below), or with
-> the legacy CoreSight trace bus (e.g, ETRs). Thus the ETE follows same
-> firmware description as the ETMs and requires a node per instance.
-> 
-> [...]
+Hello Horia,
 
-Applied to fixes, thanks!
+On 21.03.21 21:01, Horia Geantă wrote:
+> On 3/16/2021 7:02 PM, Ahmad Fatoum wrote:
+>> This patch series builds on top of Sumit's rework to have the CAAM as yet another
+>> trusted key backend.
+>>
+> Shouldn't the description under TRUSTED_KEYS (in security/keys/Kconfig)
+> be updated to reflect the availability of multiple backends?
 
-[01/19] kvm: arm64: Hide system instruction access to Trace registers
-        commit: 4af0afe252a2701732c317585f7c3ef6596b8f3d
+This is indeed no longer correct. It also depends on TCG_TPM, which AFAIU
+is not really needed for the new TEE backend.
 
-Cheers,
+@Sumit, can you confirm?
 
-	M.
 -- 
-Without deviation from the norm, progress is not possible.
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
