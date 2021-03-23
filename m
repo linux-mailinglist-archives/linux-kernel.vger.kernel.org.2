@@ -2,97 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816653468AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784A83468A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhCWTOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233298AbhCWTNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:13:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74E9C061574;
-        Tue, 23 Mar 2021 12:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5Z0WR90dUR0c8O+Ghca91EEE7yMOJD4p7F63jROsdls=; b=icwXA+ar6ra1hlZuLW8OIAW/xA
-        Al6ajurXvvGV5WRst3/GGWSzOnrYZVZxCEGKJJIfB+dSF6BTOK/h2cq2ZNrN63RLBMDS5SJa0lyVa
-        70IUsot7vahFotNehhva+olPZZvTW9kdHQV2eow5ow70SvWHCFw7jccUWSR9DWW/w1nAn8yp722if
-        SzWGyP9sID4+6Mok1PhDAgaltHLzi8Jvq+1z5zDDb2jSWHgepVc2LUd8+iDOevZ2mlJjixvigzj9t
-        Ks7n+MJKAtADgkGQe5lMRhd6cGrCLUdiDzYHRWAnjAC6lseavVVdsAMGIgXEA4bQumWAfNpZFKNbw
-        TprxQfoQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOmRj-00ARsu-4J; Tue, 23 Mar 2021 19:12:20 +0000
-Date:   Tue, 23 Mar 2021 19:12:07 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Zhou Guanghui <zhouguanghui1@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
- cache lookup
-Message-ID: <20210323191207.GJ1719932@casper.infradead.org>
-References: <20210319071547.60973-1-hannes@cmpxchg.org>
- <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
- <YFo7SOni0s0TbXUm@cmpxchg.org>
+        id S233256AbhCWTNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:13:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233072AbhCWTMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:12:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 514AC619B3;
+        Tue, 23 Mar 2021 19:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616526773;
+        bh=S0QuPCT0DzeEFf2Q94Zxu8BVMBFrKjxRW0STuenHCtY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nN0AvQCLCA0A6Lf7zEkbiS9cvnidB1GRfft8tBDV1U9z6b+2sqQPeTXDuNmc+SnmW
+         e3PsR93rOMEhmcQ993SRKy2vOP7zguZdwrVtM/PQyzenDALUCsOKhMmA7hw3tj9qrn
+         Y+CtBrZyMHs2g1PVv8aMN7CCtQs/pl1I8GIVpyro=
+Date:   Tue, 23 Mar 2021 20:12:51 +0100
+From:   'Greg KH' <gregkh@linuxfoundation.org>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     arndb@arndb.de, linux-kernel@vger.kernel.org,
+        brandon_chuang@edge-core.com, wally_wang@accton.com,
+        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
+        xinxliu@microsoft.com
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YFo9s/Qyrfk4FG6z@kroah.com>
+References: <20210215193821.3345-1-don@thebollingers.org>
+ <YFn3ahkF4w/IClaw@kroah.com>
+ <008d01d72014$7b113900$7133ab00$@thebollingers.org>
+ <YFo6mZqOaY+2zApa@kroah.com>
+ <009501d72017$eb30a790$c191f6b0$@thebollingers.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFo7SOni0s0TbXUm@cmpxchg.org>
+In-Reply-To: <009501d72017$eb30a790$c191f6b0$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 03:02:32PM -0400, Johannes Weiner wrote:
-> >From f6f062a3ec46f4fb083dcf6792fde9723f18cfc5 Mon Sep 17 00:00:00 2001
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> Date: Fri, 19 Mar 2021 02:17:00 -0400
-> Subject: [PATCH] mm: page_alloc: fix allocation imbalances from speculative
->  cache lookup
+On Tue, Mar 23, 2021 at 12:08:32PM -0700, Don Bollinger wrote:
+> On Tue, Mar 23, 2021 at 12:00AM -0700, Greg KH wrote:
+> > On Tue, Mar 23, 2021 at 11:43:55AM -0700, Don Bollinger wrote:
+> > > On Tue, Mar 23, 2021 at 7:12AM-0700, Greg KH wrote:
+> > > > On Mon, Feb 15, 2021 at 11:38:21AM -0800, Don Bollinger wrote:
+> > > > > optoe is an i2c based driver that supports read/write access to
+> > > > > all the pages (tables) of MSA standard SFP and similar devices
+> > > > > (conforming to the SFF-8472 spec), MSA standard QSFP and similar
+> > > > > devices (conforming to the SFF-8636 spec) and CMIS and similar
+> > > > > devices (conforming to the Common Management Interface
+> > Specfication).
+> > > >
+> > >
+> > > I promise not to engage in a drawn out email exchange over this, but I
+> > > would like to appeal your decision, just once...
 > 
-> When the freeing of a higher-order page block (non-compound) races
-> with a speculative page cache lookup, __free_pages() needs to leave
-> the first order-0 page in the chunk to the lookup but free the buddy
-> pages that the lookup doesn't know about separately.
+> Thanks for your response.  As promised, I'm done.
 > 
-> There are currently two problems with it:
-> 
-> 1. It checks PageHead() to see whether we're dealing with a compound
->    page after put_page_testzero(). But the speculative lookup could
->    have freed the page after our put and cleared PageHead, in which
->    case we would double free the tail pages.
-> 
->    To fix this, test PageHead before the put and cache the result for
->    afterwards.
-> 
-> 2. If such a higher-order page is charged to a memcg (e.g. !vmap
->    kernel stack)), only the first page of the block has page->memcg
->    set. That means we'll uncharge only one order-0 page from the
->    entire block, and leak the remainder.
-> 
->    To fix this, add a split_page_memcg() before it starts freeing tail
->    pages, to ensure they all have page->memcg set up.
-> 
-> While at it, also update the comments a bit to clarify what exactly is
-> happening to the page during that race.
-> 
-> Fixes: e320d3012d25 mm/page_alloc.c: fix freeing non-compound pages
-> Reported-by: Hugh Dickins <hughd@google.com>
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: <stable@vger.kernel.org> # 5.10+
+> Is there a correct protocol for withdrawing a patch, or does it just get
+> abandoned?  Still trying to be a good citizen.
 
-This version makes me happy.
+Patches just get abandonded, nothing special to do here, we have mailing
+lists littered with them :)
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+thanks,
 
-Thanks for fixing my buggy fix.
+greg k-h
