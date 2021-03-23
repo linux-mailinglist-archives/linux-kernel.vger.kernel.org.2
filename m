@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A3B345F8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0796345F99
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhCWNVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:21:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47352 "EHLO mail.kernel.org"
+        id S231301AbhCWN0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:26:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39668 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231375AbhCWNUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:20:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3407D619BD;
-        Tue, 23 Mar 2021 13:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616505634;
-        bh=nPwiWO5rWIEWx3azZjgsrJ8G5mHv0HQF/NHZR+FmaMs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=U1gkt9hdcmVySja+r/DRV8vG2QEd2/YLya3UDgQSUcEU8+clxHUftMfgo0B/g05L4
-         t6DwK4bykTWThKrW9Z/LupBgn6nVgNcZcqzYkucPYJN6NNMCPHHobqt3Mc/t4p4bxe
-         n9hsWvg1POWu5jNa6a8/h1c4KudZmyJ8wTOQG/ofFuo/UmR5Gihz9XLht4eG1tYMa4
-         Gj/js8835MQcKnGp0RrdAHDzTc5XUVgqxzPK9OioHiAdIRDSWtZ2tMDVycV0sKjQ7D
-         VAyZEApXKbVv4QjFblwrQcKdafB0Q8yKnzW+qahjc156DGPe//BJ/dYcDcvcrtSWtb
-         yTObbUhzp9oXA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] ARM: delay: avoid clang -Wtautological-constant warning
-Date:   Tue, 23 Mar 2021 14:20:23 +0100
-Message-Id: <20210323132031.2858996-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S229884AbhCWNZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:25:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8444AACBF;
+        Tue, 23 Mar 2021 13:25:48 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 43C7CDA7AE; Tue, 23 Mar 2021 14:23:43 +0100 (CET)
+Date:   Tue, 23 Mar 2021 14:23:43 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: zoned: fix uninitialized max_chunk_size
+Message-ID: <20210323132343.GF7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Arnd Bergmann <arnd@kernel.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210323124624.1494552-1-arnd@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323124624.1494552-1-arnd@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Mar 23, 2021 at 01:46:19PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The ctl->max_chunk_size member might be used uninitialized
+> when none of the three conditions for initializing it in
+> init_alloc_chunk_ctl_policy_zoned() are true:
+> 
+> In function ‘init_alloc_chunk_ctl_policy_zoned’,
+>     inlined from ‘init_alloc_chunk_ctl’ at fs/btrfs/volumes.c:5023:3,
+>     inlined from ‘btrfs_alloc_chunk’ at fs/btrfs/volumes.c:5340:2:
+> include/linux/compiler-gcc.h:48:45: error: ‘ctl.max_chunk_size’ may be used uninitialized [-Werror=maybe-uninitialized]
+>  4998 |         ctl->max_chunk_size = min(limit, ctl->max_chunk_size);
+>       |                               ^~~
+> fs/btrfs/volumes.c: In function ‘btrfs_alloc_chunk’:
+> fs/btrfs/volumes.c:5316:32: note: ‘ctl’ declared here
+>  5316 |         struct alloc_chunk_ctl ctl;
+>       |                                ^~~
+> 
+> Initialize it to UINT_MAX and rely on the min() expression to limit
+> it.
+> 
+> Fixes: 1cd6121f2a38 ("btrfs: zoned: implement zoned chunk allocator")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Note that the -Wmaybe-unintialized warning is globally disabled
+> by default. For some reason I got this warning anyway when building
+> this specific file with gcc-11.
 
-Passing an 8-bit constant into delay() triggers a warning when building
-with 'make W=1' using clang:
+The warning catches a theoretical case but this would not happen in
+pracitce.  There are three bits to check and that covers all valid
+options, but there should be a final else {} like is in
+init_alloc_chunk_ctl_policy_regular that does not let the function
+continue as that would mean there are worse problems.
 
-drivers/clk/actions/owl-pll.c:182:2: error: result of comparison of constant 2000 with expression of type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        udelay(pll_hw->delay);
-        ^~~~~~~~~~~~~~~~~~~~~
-arch/arm/include/asm/delay.h:84:9: note: expanded from macro 'udelay'
-          ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :              \
-           ~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
-arch/arm/mach-omap2/wd_timer.c:89:3: error: result of comparison of constant 2000 with expression of type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-                udelay(oh->class->sysc->srst_udelay);
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+btrfs_alloc_chunk
+  init_alloc_chunk_ctl
+    init_alloc_chunk_ctl_policy_zoned
 
-Shut up the warning by adding a cast to a 64-bit number. A cast to 'int'
-would usually be sufficient, but would fail to cause a link-time error
-for large 64-bit constants.
+and btrfs_alloc_chunk validates the ctl->flags against
+BTRFS_BLOCK_GROUP_TYPE_MASK, which is exactly the tree branches.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm/include/asm/delay.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+>  fs/btrfs/volumes.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index bc3b33efddc5..b42b423b6a10 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -4980,6 +4980,7 @@ static void init_alloc_chunk_ctl_policy_zoned(
+>  	u64 type = ctl->type;
+>  
+>  	ctl->max_stripe_size = zone_size;
+> +	ctl->max_chunk_size = UINT_MAX;
 
-diff --git a/arch/arm/include/asm/delay.h b/arch/arm/include/asm/delay.h
-index 4f80b72372b4..1bb6417a3a83 100644
---- a/arch/arm/include/asm/delay.h
-+++ b/arch/arm/include/asm/delay.h
-@@ -81,7 +81,7 @@ extern void __bad_udelay(void);
- 
- #define udelay(n)							\
- 	(__builtin_constant_p(n) ?					\
--	  ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :		\
-+	  ((u64)(n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :		\
- 			__const_udelay((n) * UDELAY_MULT)) :		\
- 	  __udelay(n))
- 
--- 
-2.29.2
+This would allow the min() work but otherwise is not an expected to
+happen at all.
 
+>  	if (type & BTRFS_BLOCK_GROUP_DATA) {
+>  		ctl->max_chunk_size = round_down(BTRFS_MAX_DATA_CHUNK_SIZE,
+>  						 zone_size);
+> -- 
+> 2.29.2
