@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1F7345C24
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AA8345C28
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhCWKoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:44:39 -0400
-Received: from outbound-smtp07.blacknight.com ([46.22.139.12]:46231 "EHLO
-        outbound-smtp07.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230356AbhCWKoZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:44:25 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp07.blacknight.com (Postfix) with ESMTPS id 8FBC71C4153
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:44:23 +0000 (GMT)
-Received: (qmail 30040 invoked from network); 23 Mar 2021 10:44:23 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Mar 2021 10:44:23 -0000
-Date:   Tue, 23 Mar 2021 10:44:21 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Message-ID: <20210323104421.GK3697@techsingularity.net>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210322091845.16437-1-mgorman@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230297AbhCWKqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:46:13 -0400
+Received: from mail.thorsis.com ([92.198.35.195]:40847 "EHLO mail.thorsis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230228AbhCWKqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:46:05 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.thorsis.com (Postfix) with ESMTP id DB1845E8;
+        Tue, 23 Mar 2021 11:46:02 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id W5N2qbRT1jL0; Tue, 23 Mar 2021 11:46:02 +0100 (CET)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+        id 2EDCF1FAB; Tue, 23 Mar 2021 11:46:02 +0100 (CET)
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.2
+Date:   Tue, 23 Mar 2021 11:45:55 +0100 (CET)
+From:   Alexander Dahl <ada@thorsis.com>
+To:     nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Message-ID: <1732882030.11903.1616496356027@seven.thorsis.com>
+In-Reply-To: <20210217113808.21804-1-nicolas.ferre@microchip.com>
+References: <20210217113808.21804-1-nicolas.ferre@microchip.com>
+Subject: Re: [PATCH] ARM: dts: at91-sama5d27_som1: fix phy address to 7
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Originating-Client: open-xchange-appsuite
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:18:42AM +0000, Mel Gorman wrote:
-> This series is based on top of Matthew Wilcox's series "Rationalise
-> __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
-> test and are not using Andrew's tree as a baseline, I suggest using the
-> following git tree
+Hei hei,
+
+I could not get ethernet to work on SAMA5D27-SOM1-EK1 with kernels v5.10 and v5.11 built by a recent ptxdist based DistroKit BSP, while it used to work with an older v4.19 kernel. Just applying this patch to the tree made ethernet working again, thus:
+
+Tested-by: Alexander Dahl <ada@thorsis.com>
+
+Not sure why it worked with that older kernel, though.
+
+I added Ahmad to Cc, he added board support to DistroKit for that board, and might want to know. And I added the devicetree list to Cc, I wondered why the patch was not there and get_maintainers.pl proposed it.
+
+Thanks for fixing this and greetings
+Alex
+
+> nicolas.ferre@microchip.com hat am 17.02.2021 12:38 geschrieben:
 > 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v5r9
+>  
+> From: Claudiu Beznea <claudiu.beznea@microchip.com>
 > 
-
-Jesper and Chuck, would you mind rebasing on top of the following branch
-please? 
-
-git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r2
-
-The interface is the same so the rebase should be trivial.
-
-Jesper, I'm hoping you see no differences in performance but it's best
-to check.
-
-For Chuck, this version will check for holes and scan the remainder of
-the array to see if nr_pages are allocated before returning. If the holes
-in the array are always at the start (which it should be for sunrpc)
-then it should still be a single IRQ disable/enable. Specifically, each
-contiguous hole in the array will disable/enable IRQs once. I prototyped
-NFS array support and it had a 100% success rate with no sleeps running
-dbench over the network with no memory pressure but that's a basic test
-on a 10G switch.
-
-The basic patch I used to convert sunrpc from using lists to an array
-for testing is as follows;
-
-diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-index 922118968986..0ce33c1742d9 100644
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@ -642,12 +642,10 @@ static void svc_check_conn_limits(struct svc_serv *serv)
- static int svc_alloc_arg(struct svc_rqst *rqstp)
- {
- 	struct svc_serv *serv = rqstp->rq_server;
--	unsigned long needed;
- 	struct xdr_buf *arg;
--	struct page *page;
- 	LIST_HEAD(list);
- 	int pages;
--	int i;
-+	int i = 0;
- 
- 	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
- 	if (pages > RPCSVC_MAXPAGES) {
-@@ -657,29 +655,15 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
- 		pages = RPCSVC_MAXPAGES;
- 	}
- 
--	for (needed = 0, i = 0; i < pages ; i++) {
--		if (!rqstp->rq_pages[i])
--			needed++;
--	}
--	i = 0;
--	while (needed) {
--		needed -= alloc_pages_bulk(GFP_KERNEL, needed, &list);
--		for (; i < pages; i++) {
--			if (rqstp->rq_pages[i])
--				continue;
--			page = list_first_entry_or_null(&list, struct page, lru);
--			if (likely(page)) {
--				list_del(&page->lru);
--				rqstp->rq_pages[i] = page;
--				continue;
--			}
-+	while (i < pages) {
-+		i = alloc_pages_bulk_array(GFP_KERNEL, pages, &rqstp->rq_pages[0]);
-+		if (i < pages) {
- 			set_current_state(TASK_INTERRUPTIBLE);
- 			if (signalled() || kthread_should_stop()) {
- 				set_current_state(TASK_RUNNING);
- 				return -EINTR;
- 			}
- 			schedule_timeout(msecs_to_jiffies(500));
--			break;
- 		}
- 	}
- 	rqstp->rq_page_end = &rqstp->rq_pages[pages];
-
--- 
-Mel Gorman
-SUSE Labs
+> Fix the phy address to 7 for Ethernet PHY on SAMA5D27 SOM1. No
+> connection established if phy address 0 is used.
+> 
+> The board uses the 24 pins version of the KSZ8081RNA part, KSZ8081RNA
+> pin 16 REFCLK as PHYAD bit [2] has weak internal pull-down.  But at
+> reset, connected to PD09 of the MPU it's connected with an internal
+> pull-up forming PHYAD[2:0] = 7.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Fixes: 2f61929eb10a ("ARM: dts: at91: at91-sama5d27_som1: fix PHY ID")
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Cc: <stable@vger.kernel.org> # 4.14+
+> ---
+>  arch/arm/boot/dts/at91-sama5d27_som1.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
+> index 1b1163858b1d..e3251f3e3eaa 100644
+> --- a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
+> +++ b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
+> @@ -84,8 +84,8 @@ macb0: ethernet@f8008000 {
+>  				pinctrl-0 = <&pinctrl_macb0_default>;
+>  				phy-mode = "rmii";
+>  
+> -				ethernet-phy@0 {
+> -					reg = <0x0>;
+> +				ethernet-phy@7 {
+> +					reg = <0x7>;
+>  					interrupt-parent = <&pioA>;
+>  					interrupts = <PIN_PD31 IRQ_TYPE_LEVEL_LOW>;
+>  					pinctrl-names = "default";
+> -- 
+> 2.30.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
