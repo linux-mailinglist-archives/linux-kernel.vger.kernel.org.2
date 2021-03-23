@@ -2,532 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2AA346715
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CD9346706
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhCWSA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:00:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230486AbhCWSAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:00:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B652619AE;
-        Tue, 23 Mar 2021 18:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616522400;
-        bh=8Pb54tkkxPe7I663SvwZQupMtTC0d3KHdBfdJyaCtmQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GaHBEOUza5laht2omVRMQilgr3Uhi3CfPceDukOr6uPp5uxNL/GwVF46Zdsr6Cayz
-         djzC1Jep2dhCctuin5JADyvvFX/Pqq5XbL0MVZucUy0yUqcnutY/j4HD//ZzoTpblr
-         9wkIi03sRzlH3EBTxMUK3HEWlwBvGxQ+Ne7HkgEiEE7UzSpzoSs3gGHf3hiQqOxD0u
-         53iCrxGHZpms7J74m6Yb/jtwIKfo2tpnr8y5NTvgocqdxlKYVw+4scOueE3+U4jQfb
-         zFonAobX7luLW4sUu9mFoyGZ0xqXUBj+1imDrk4XIQgLxwZrkz88f4ptMWjcs0l14k
-         JhKFNlDDmIvxg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BEBF440647; Tue, 23 Mar 2021 14:59:57 -0300 (-03)
-Date:   Tue, 23 Mar 2021 14:59:57 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: Re: [PATCH] perf tools: Fix various typos in comments
-Message-ID: <YFosnQJEhsRwEMS3@kernel.org>
-References: <20210321113734.GA248990@gmail.com>
- <20210323161010.GB61903@gmail.com>
+        id S231493AbhCWR5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:57:48 -0400
+Received: from mail-bn8nam11on2054.outbound.protection.outlook.com ([40.107.236.54]:52193
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231626AbhCWR5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:57:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fgto3Q4McVu6W+co8e+wHZ1ILkzu8X50gjgjSimP8tfdAmE8DSsDQe5HSRc/6driZfsTHRwExGrkWfcX+1dStCt26JBqdlsj7LGYmBNGFsZDJREUpWmD7xjUZp+vni2FuNqJQnSs2ofsXzZqrj6nHbrH6wX2igeFk0Hh6YLOyuvZOdGJXCjCZ8kkvEzhrawRSDayb7+DzzFsqOx9EulvxxUo0jXs+5BNjML/ocYGtrCtUcufkKuRy/S/SiJ2Zu9lduHK9pfLPn4OwQd+2jErBmj82pYnmsKkqOpuagRaH9dJoALPVFkr4hNRl0QXcaJeicMzCZEB9tJauI85cya8Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g/rikkWTSZx2A+z5G3jQdFLECzs9f/BjwmKOhaXFBRA=;
+ b=HTIkGDEafCypRpOko2haXBIPxjM+3yrPjJyiIa6R1U20ObK7/M8wufmyuLe4Sk4bFvpSqss4LMODO7arRJL2Ep/x5RVEvjQ0UAUwGW42xvsi9acaIIvk7lXm96itjLxhOZ55Fmrn/WgF5Sqb0WSH02xQJ96+DawaLHzkPcrvVP0TX+3oQefzoWAPnKG44vJeLWPS1G6DG7CXLi0eYFOuRj83t2fSsKckcNGbic2f8UT3FD+pGHILw1Sl3EqmFa98kzFoWKaDfxyUcIb2hfOCP0rM2b3Gl9Nc1c3zL4iGtVjv87JytFXGsNdgsaHp0lDKBfXu7ETsellw5D2P7hmiiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g/rikkWTSZx2A+z5G3jQdFLECzs9f/BjwmKOhaXFBRA=;
+ b=Ts/D573dhgcR0SWV+Te+RHBnZY+n5pMoPYBj2a42nU6EQVmA+wdnStEThtYqjB5kE4qT4G6mQbz6LsAwvrM29OWUXgE/lCNRwrVgAZok35t0h5L+zVtP1O7hrF+Ns0WVK6upBgzJxQCorKxTTPdmC4nSwzqBCWJgabHkRiT5PVPxKUUmQSKu5g4pbKh22eyJ6Md/9WYb9A4BGqJSOYwwws9b/hgLv1IPs+OD0WDeLEtZt8i7ysNGwLt/44T28VQammkdFrjE+foq22B+b80CF9EogpOh1KXleGOuYMHjxrU8e712FyXw69EyM53r4Fkach+6Vq1OKn2uYsBSbLh8XQ==
+Received: from MWHPR17CA0067.namprd17.prod.outlook.com (2603:10b6:300:93::29)
+ by BL1PR12MB5287.namprd12.prod.outlook.com (2603:10b6:208:317::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
+ 2021 17:57:29 +0000
+Received: from CO1NAM11FT047.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:93:cafe::b2) by MWHPR17CA0067.outlook.office365.com
+ (2603:10b6:300:93::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
+ Transport; Tue, 23 Mar 2021 17:57:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT047.mail.protection.outlook.com (10.13.174.132) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 17:57:29 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 23 Mar
+ 2021 17:57:28 +0000
+Received: from [172.17.173.69] (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2 via Frontend
+ Transport; Tue, 23 Mar 2021 17:57:27 +0000
+Subject: Re: GTE - The hardware timestamping engine
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Kent Gibson <warthog618@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Richard Cochran" <richardcochran@gmail.com>
+References: <4c46726d-fa35-1a95-4295-bca37c8b6fe3@nvidia.com>
+ <CACRpkdbmqww6UQ8CFYo=+bCtVYBJwjMxVixc4vS6D3B+dUHScw@mail.gmail.com>
+ <20210322060047.GA226745@sol>
+ <d48fa7b5-8c17-c3d7-10a9-a9811c410a39@nvidia.com>
+ <CACRpkdbkmwuAJzD-CpWKqmL3_n1xkvv_2M_DsNs+ZquiaRkKgA@mail.gmail.com>
+From:   Dipen Patel <dipenp@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <378e2d1b-9b38-605b-c20f-fbfeefb07c6d@nvidia.com>
+Date:   Tue, 23 Mar 2021 11:01:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323161010.GB61903@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CACRpkdbkmwuAJzD-CpWKqmL3_n1xkvv_2M_DsNs+ZquiaRkKgA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 01886351-f6e1-4842-9772-08d8ee25201b
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5287:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB52875C28900B87B3A5FCA5ABAE649@BL1PR12MB5287.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CDhSTkrQiNyIlytrCI0f5IMvv3u1SzPMtMrccTA++ICZE0VhD38tRHFQB3mSCqju9nyls4uoHKBJOQlMH1mmrQDVod/udzeVa6yGdBUg4Z1wQxCMuaLFWhVTMimcbyp3VsZ1W8l/IF8kvtPAjhxvMaJyIoIZNVvEvsTPHmLUSIdzK7XApaXYMHexKuT98vRD1r5VrTstUS7Blb/3j6QLB8kle2KyWsgXVCuLsc/TLJ9S/bQGy6fbzg1fh5FNBzBG3Bm6WEnJZtiZYOg772FZgraOF8Yfw37KJOSsjsu/n4hhAJXGDj9RQMQvwGlcSp/Y8TnpMwVwoUO+jOvqP714D3ZAH5WScmGYy0QpLHwBuWvHglF/jeMBZp3WSTB2IrivpdsWUtDmHGM/HJRSNyxULYDga98Ho+8FE6MC9TpEK0dzhvmqBZ+8yRPMWezlJ+3a1whLOaKnf4WT/ViuM5e3Bu5asECamc03U5SsmMN0pokgn4rd3C84hO767VYaDCGYv72ZaZBVzJ2pXKoF6iGLj6vsrkrOzdZVE7L9mXE5NK9oRz2G5xYyYF/TCjcnODcTHy1GNLqQ/I7JKdH/pbqgNjIOxI9OxQCnjaLMzJeTn7Viqij6LNGo1AwGvz0hJQn49unNsBnm/Tc57BEtLQOOTfKzPL6GjLjZKDxCCb5AVOq8/v+oSyeZ1TmwUDUmvkUg
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39850400004)(396003)(136003)(376002)(46966006)(36840700001)(8936002)(6666004)(7636003)(36906005)(4326008)(7416002)(6916009)(8676002)(336012)(31686004)(36756003)(26005)(54906003)(186003)(2616005)(316002)(36860700001)(70586007)(82310400003)(426003)(5660300002)(70206006)(2906002)(47076005)(86362001)(356005)(16576012)(31696002)(53546011)(82740400003)(478600001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 17:57:29.1705
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01886351-f6e1-4842-9772-08d8ee25201b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT047.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5287
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Mar 23, 2021 at 05:10:10PM +0100, Ingo Molnar escreveu:
+
+
+On 3/23/21 2:08 AM, Linus Walleij wrote:
+> On Mon, Mar 22, 2021 at 9:17 PM Dipen Patel <dipenp@nvidia.com> wrote:
 > 
-> Here's the delta between -v1 and -v2, in case you already have -v1 or 
-> want to review the changes only:
-
-I had not pushed out it, so I just replaced v1 with v2, thanks.
-
-- Arnaldo
- 
-> ---
->  tools/perf/arch/arm64/util/machine.c                   |  8 ++++----
->  tools/perf/examples/bpf/augmented_raw_syscalls.c       |  4 ++--
->  tools/perf/pmu-events/arch/powerpc/power8/metrics.json | 12 ++++++------
->  tools/perf/pmu-events/arch/powerpc/power9/metrics.json |  2 +-
->  tools/perf/pmu-events/jevents.c                        |  2 +-
->  tools/perf/tests/bp_signal.c                           |  2 +-
->  tools/perf/tests/parse-events.c                        |  2 +-
->  tools/perf/util/bpf-loader.c                           |  2 +-
->  tools/perf/util/config.c                               |  2 +-
->  tools/perf/util/cs-etm.h                               |  3 ++-
->  tools/perf/util/demangle-java.c                        |  2 +-
->  tools/perf/util/dso.h                                  |  2 +-
->  tools/perf/util/evsel.c                                |  2 +-
->  tools/perf/util/header.c                               | 16 ++++++++--------
->  tools/perf/util/intel-pt.c                             |  2 +-
->  tools/perf/util/machine.c                              |  2 +-
->  tools/perf/util/map.h                                  |  4 ++--
->  tools/perf/util/parse-events.c                         |  4 ++--
->  tools/perf/util/pmu.c                                  |  2 +-
->  tools/perf/util/probe-finder.c                         |  2 +-
->  tools/perf/util/scripting-engines/trace-event-python.c |  2 +-
->  tools/perf/util/session.c                              |  2 +-
->  tools/perf/util/strbuf.h                               |  2 +-
->  tools/perf/util/strfilter.h                            |  4 ++--
->  24 files changed, 44 insertions(+), 43 deletions(-)
+>> My follow-up concerns on both Linus's and Kent's feedback:
+>>
+>> 1.  Please correct me if I am wrong, lineevent in the gpiolib* is only
+>>     serves the userspace clients.
+>> 1.a What about kernel drivers wanting to use this feature for monitoring its
+>>     GPIO lines, see gyroscope example somewhere below. In that regards,
+>>     lineevent implementation is not sufficient.
+>> 1.b Are you also implying to extend lineevent implementation to kernel
+>>     drivers?
 > 
-> diff --git a/tools/perf/arch/arm64/util/machine.c b/tools/perf/arch/arm64/util/machine.c
-> index 40c5e0b5bda8..acdf8dc1189b 100644
-> --- a/tools/perf/arch/arm64/util/machine.c
-> +++ b/tools/perf/arch/arm64/util/machine.c
-> @@ -1,4 +1,4 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +/ SPDX-License-Identifier: GPL-2.0
->  
->  #include <inttypes.h>
->  #include <stdio.h>
-> @@ -6,11 +6,11 @@
->  #include "debug.h"
->  #include "symbol.h"
->  
-> -/* On arm64, kernel text segment start at high memory address,
-> +/* On arm64, kernel text segment starts at high memory address,
->   * for example 0xffff 0000 8xxx xxxx. Modules start at a low memory
-> - * address, like 0xffff 0000 00ax xxxx. When only samll amount of
-> + * address, like 0xffff 0000 00ax xxxx. When only small amount of
->   * memory is used by modules, gap between end of module's text segment
-> - * and start of kernel text segment may be reach 2G.
-> + * and start of kernel text segment may reach 2G.
->   * Therefore do not fill this gap and do not assign it to the kernel dso map.
->   */
->  
-> diff --git a/tools/perf/examples/bpf/augmented_raw_syscalls.c b/tools/perf/examples/bpf/augmented_raw_syscalls.c
-> index b80437971d80..a262dcd020f4 100644
-> --- a/tools/perf/examples/bpf/augmented_raw_syscalls.c
-> +++ b/tools/perf/examples/bpf/augmented_raw_syscalls.c
-> @@ -262,7 +262,7 @@ int sys_enter(struct syscall_enter_args *args)
->  	/*
->  	 * Jump to syscall specific augmenter, even if the default one,
->  	 * "!raw_syscalls:unaugmented" that will just return 1 to return the
-> -	 * unagmented tracepoint payload.
-> +	 * unaugmented tracepoint payload.
->  	 */
->  	bpf_tail_call(args, &syscalls_sys_enter, augmented_args->args.syscall_nr);
->  
-> @@ -282,7 +282,7 @@ int sys_exit(struct syscall_exit_args *args)
->  	/*
->  	 * Jump to syscall specific return augmenter, even if the default one,
->  	 * "!raw_syscalls:unaugmented" that will just return 1 to return the
-> -	 * unagmented tracepoint payload.
-> +	 * unaugmented tracepoint payload.
->  	 */
->  	bpf_tail_call(args, &syscalls_sys_exit, exit_args.syscall_nr);
->  	/*
-> diff --git a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
-> index fc4aa6c2ddc9..4e25525b7da6 100644
-> --- a/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
-> +++ b/tools/perf/pmu-events/arch/powerpc/power8/metrics.json
-> @@ -885,37 +885,37 @@
->          "MetricName": "flush_rate_percent"
->      },
->      {
-> -        "BriefDescription": "GCT slot utilization (11 to 14) as a % of cycles this thread had atleast 1 slot valid",
-> +        "BriefDescription": "GCT slot utilization (11 to 14) as a % of cycles this thread had at least 1 slot valid",
->          "MetricExpr": "PM_GCT_UTIL_11_14_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
->          "MetricGroup": "general",
->          "MetricName": "gct_util_11to14_slots_percent"
->      },
->      {
-> -        "BriefDescription": "GCT slot utilization (15 to 17) as a % of cycles this thread had atleast 1 slot valid",
-> +        "BriefDescription": "GCT slot utilization (15 to 17) as a % of cycles this thread had at least 1 slot valid",
->          "MetricExpr": "PM_GCT_UTIL_15_17_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
->          "MetricGroup": "general",
->          "MetricName": "gct_util_15to17_slots_percent"
->      },
->      {
-> -        "BriefDescription": "GCT slot utilization 18+ as a % of cycles this thread had atleast 1 slot valid",
-> +        "BriefDescription": "GCT slot utilization 18+ as a % of cycles this thread had at least 1 slot valid",
->          "MetricExpr": "PM_GCT_UTIL_18_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
->          "MetricGroup": "general",
->          "MetricName": "gct_util_18plus_slots_percent"
->      },
->      {
-> -        "BriefDescription": "GCT slot utilization (1 to 2) as a % of cycles this thread had atleast 1 slot valid",
-> +        "BriefDescription": "GCT slot utilization (1 to 2) as a % of cycles this thread had at least 1 slot valid",
->          "MetricExpr": "PM_GCT_UTIL_1_2_ENTRIES /  ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
->          "MetricGroup": "general",
->          "MetricName": "gct_util_1to2_slots_percent"
->      },
->      {
-> -        "BriefDescription": "GCT slot utilization (3 to 6) as a % of cycles this thread had atleast 1 slot valid",
-> +        "BriefDescription": "GCT slot utilization (3 to 6) as a % of cycles this thread had at least 1 slot valid",
->          "MetricExpr": "PM_GCT_UTIL_3_6_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
->          "MetricGroup": "general",
->          "MetricName": "gct_util_3to6_slots_percent"
->      },
->      {
-> -        "BriefDescription": "GCT slot utilization (7 to 10) as a % of cycles this thread had atleast 1 slot valid",
-> +        "BriefDescription": "GCT slot utilization (7 to 10) as a % of cycles this thread had at least 1 slot valid",
->          "MetricExpr": "PM_GCT_UTIL_7_10_ENTRIES / ( PM_RUN_CYC - PM_GCT_NOSLOT_CYC) * 100",
->          "MetricGroup": "general",
->          "MetricName": "gct_util_7to10_slots_percent"
-> diff --git a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> index f8784c608479..9eadef7f0677 100644
-> --- a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> +++ b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> @@ -1823,7 +1823,7 @@
->          "MetricName": "custom_secs"
->      },
->      {
-> -        "BriefDescription": "Percentage Cycles atleast one instruction dispatched",
-> +        "BriefDescription": "Percentage Cycles at least one instruction dispatched",
->          "MetricExpr": "PM_1PLUS_PPC_DISP / PM_CYC * 100",
->          "MetricName": "cycles_atleast_one_inst_dispatched_percent"
->      },
-> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> index e1f3f5c8c550..33aa3c885eaf 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -1149,7 +1149,7 @@ static int process_one_file(const char *fpath, const struct stat *sb,
->  	 * and directory tree could result in build failure due to table
->  	 * names not being found.
->  	 *
-> -	 * Atleast for now, be strict with processing JSON file names.
-> +	 * At least for now, be strict with processing JSON file names.
->  	 * i.e. if JSON file name cannot be mapped to C-style table name,
->  	 * fail.
->  	 */
-> diff --git a/tools/perf/tests/bp_signal.c b/tools/perf/tests/bp_signal.c
-> index ded580f8f657..ef37353636d8 100644
-> --- a/tools/perf/tests/bp_signal.c
-> +++ b/tools/perf/tests/bp_signal.c
-> @@ -229,7 +229,7 @@ int test__bp_signal(struct test *test __maybe_unused, int subtest __maybe_unused
->  	 *   the wrong RF EFLAG management
->  	 *
->  	 * - we never trigger the sig_handler breakpoint due
-> -	 *   to the rong RF EFLAG management
-> +	 *   to the wrong RF EFLAG management
->  	 *
->  	 */
->  
-> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-> index a7f6661e6112..026c54743311 100644
-> --- a/tools/perf/tests/parse-events.c
-> +++ b/tools/perf/tests/parse-events.c
-> @@ -20,7 +20,7 @@
->  
->  #if defined(__s390x__)
->  /* Return true if kvm module is available and loaded. Test this
-> - * and retun success when trace point kvm_s390_create_vm
-> + * and return success when trace point kvm_s390_create_vm
->   * exists. Otherwise this test always fails.
->   */
->  static bool kvm_s390_create_vm_valid(void)
-> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> index 9087f1bffd3d..fbb3c4057c30 100644
-> --- a/tools/perf/util/bpf-loader.c
-> +++ b/tools/perf/util/bpf-loader.c
-> @@ -671,7 +671,7 @@ int bpf__probe(struct bpf_object *obj)
->  		 * After probing, let's consider prologue, which
->  		 * adds program fetcher to BPF programs.
->  		 *
-> -		 * hook_load_preprocessorr() hooks pre-processor
-> +		 * hook_load_preprocessor() hooks pre-processor
->  		 * to bpf_program, let it generate prologue
->  		 * dynamically during loading.
->  		 */
-> diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-> index 6984c77068a3..2daeaa9a4a24 100644
-> --- a/tools/perf/util/config.c
-> +++ b/tools/perf/util/config.c
-> @@ -699,7 +699,7 @@ static int collect_config(const char *var, const char *value,
->  	/* perf_config_set can contain both user and system config items.
->  	 * So we should know where each value is from.
->  	 * The classification would be needed when a particular config file
-> -	 * is overwrited by setting feature i.e. set_config().
-> +	 * is overwritten by setting feature i.e. set_config().
->  	 */
->  	if (strcmp(config_file_name, perf_etc_perfconfig()) == 0) {
->  		section->from_system_config = true;
-> diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
-> index cc3c9e11a8e3..0045457fb96a 100644
-> --- a/tools/perf/util/cs-etm.h
-> +++ b/tools/perf/util/cs-etm.h
-> @@ -12,7 +12,8 @@
->  
->  struct perf_session;
->  
-> -/* Versionning header in case things need tro change in the future.  That way
-> +/*
-> + * Versioning header in case things need to change in the future.  That way
->   * decoding of old snapshot is still possible.
->   */
->  enum {
-> diff --git a/tools/perf/util/demangle-java.c b/tools/perf/util/demangle-java.c
-> index 090d9face27a..ddf33d58bcd3 100644
-> --- a/tools/perf/util/demangle-java.c
-> +++ b/tools/perf/util/demangle-java.c
-> @@ -164,7 +164,7 @@ java_demangle_sym(const char *str, int flags)
->  	if (!str)
->  		return NULL;
->  
-> -	/* find start of retunr type */
-> +	/* find start of return type */
->  	p = strrchr(str, ')');
->  	if (!p)
->  		return NULL;
-> diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-> index cd2fe64a3c5d..52e7101c5609 100644
-> --- a/tools/perf/util/dso.h
-> +++ b/tools/perf/util/dso.h
-> @@ -216,7 +216,7 @@ struct dso {
->  
->  /* dso__for_each_symbol - iterate over the symbols of given type
->   *
-> - * @dso: the 'struct dso *' in which symbols itereated
-> + * @dso: the 'struct dso *' in which symbols are iterated
->   * @pos: the 'struct symbol *' to use as a loop cursor
->   * @n: the 'struct rb_node *' to use as a temporary storage
->   */
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index b072ee5d5008..2d2614eeaa20 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2275,7 +2275,7 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
->  		/*
->  		 * Undo swap of u64, then swap on individual u32s,
->  		 * get the size of the raw area and undo all of the
-> -		 * swap. The pevent interface handles endianity by
-> +		 * swap. The pevent interface handles endianness by
->  		 * itself.
->  		 */
->  		if (swapped) {
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 4572aa981db5..aa1e42518d37 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -127,7 +127,7 @@ static int __do_write_buf(struct feat_fd *ff,  const void *buf, size_t size)
->  	return 0;
->  }
->  
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  int do_write(struct feat_fd *ff, const void *buf, size_t size)
->  {
->  	if (!ff->buf)
-> @@ -135,7 +135,7 @@ int do_write(struct feat_fd *ff, const void *buf, size_t size)
->  	return __do_write_buf(ff, buf, size);
->  }
->  
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
->  {
->  	u64 *p = (u64 *) set;
-> @@ -154,7 +154,7 @@ static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
->  	return 0;
->  }
->  
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  int write_padded(struct feat_fd *ff, const void *bf,
->  		 size_t count, size_t count_aligned)
->  {
-> @@ -170,7 +170,7 @@ int write_padded(struct feat_fd *ff, const void *bf,
->  #define string_size(str)						\
->  	(PERF_ALIGN((strlen(str) + 1), NAME_ALIGN) + sizeof(u32))
->  
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  static int do_write_string(struct feat_fd *ff, const char *str)
->  {
->  	u32 len, olen;
-> @@ -266,7 +266,7 @@ static char *do_read_string(struct feat_fd *ff)
->  	return NULL;
->  }
->  
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  static int do_read_bitmap(struct feat_fd *ff, unsigned long **pset, u64 *psize)
->  {
->  	unsigned long *set;
-> @@ -2874,7 +2874,7 @@ static int process_bpf_prog_info(struct feat_fd *ff, void *data __maybe_unused)
->  	int err = -1;
->  
->  	if (ff->ph->needs_swap) {
-> -		pr_warning("interpreting bpf_prog_info from systems with endianity is not yet supported\n");
-> +		pr_warning("interpreting bpf_prog_info from systems with endianness is not yet supported\n");
->  		return 0;
->  	}
->  
-> @@ -2942,7 +2942,7 @@ static int process_bpf_btf(struct feat_fd *ff, void *data __maybe_unused)
->  	int err = -1;
->  
->  	if (ff->ph->needs_swap) {
-> -		pr_warning("interpreting btf from systems with endianity is not yet supported\n");
-> +		pr_warning("interpreting btf from systems with endianness is not yet supported\n");
->  		return 0;
->  	}
->  
-> @@ -3481,7 +3481,7 @@ static const size_t attr_pipe_abi_sizes[] = {
->  };
->  
->  /*
-> - * In the legacy pipe format, there is an implicit assumption that endiannesss
-> + * In the legacy pipe format, there is an implicit assumption that endianness
->   * between host recording the samples, and host parsing the samples is the
->   * same. This is not always the case given that the pipe output may always be
->   * redirected into a file and analyzed on a different machine with possibly a
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index f6e28ac231b7..8658d42ce57a 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -3569,7 +3569,7 @@ int intel_pt_process_auxtrace_info(union perf_event *event,
->  	/*
->  	 * Since this thread will not be kept in any rbtree not in a
->  	 * list, initialize its list node so that at thread__put() the
-> -	 * current thread lifetime assuption is kept and we don't segfault
-> +	 * current thread lifetime assumption is kept and we don't segfault
->  	 * at list_del_init().
->  	 */
->  	INIT_LIST_HEAD(&pt->unknown_thread->node);
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 0450032b4a3e..4abe630e9f67 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -2518,7 +2518,7 @@ static bool has_stitched_lbr(struct thread *thread,
->  
->  	/*
->  	 * Check if there are identical LBRs between two samples.
-> -	 * Identicall LBRs must have same from, to and flags values. Also,
-> +	 * Identical LBRs must have same from, to and flags values. Also,
->  	 * they have to be saved in the same LBR registers (same physical
->  	 * index).
->  	 *
-> diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
-> index 9f32825c98d8..d32f5b28c1fb 100644
-> --- a/tools/perf/util/map.h
-> +++ b/tools/perf/util/map.h
-> @@ -75,7 +75,7 @@ struct thread;
->  
->  /* map__for_each_symbol - iterate over the symbols in the given map
->   *
-> - * @map: the 'struct map *' in which symbols itereated
-> + * @map: the 'struct map *' in which symbols are iterated
->   * @pos: the 'struct symbol *' to use as a loop cursor
->   * @n: the 'struct rb_node *' to use as a temporary storage
->   * Note: caller must ensure map->dso is not NULL (map is loaded).
-> @@ -86,7 +86,7 @@ struct thread;
->  /* map__for_each_symbol_with_name - iterate over the symbols in the given map
->   *                                  that have the given name
->   *
-> - * @map: the 'struct map *' in which symbols itereated
-> + * @map: the 'struct map *' in which symbols are iterated
->   * @sym_name: the symbol name
->   * @pos: the 'struct symbol *' to use as a loop cursor
->   */
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index ff7b17543879..9ecb45bea948 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1182,10 +1182,10 @@ do {									   \
->  	}
->  
->  	/*
-> -	 * Check term availbility after basic checking so
-> +	 * Check term availability after basic checking so
->  	 * PARSE_EVENTS__TERM_TYPE_USER can be found and filtered.
->  	 *
-> -	 * If check availbility at the entry of this function,
-> +	 * If check availability at the entry of this function,
->  	 * user will see "'<sysfs term>' is not usable in 'perf stat'"
->  	 * if an invalid config term is provided for legacy events
->  	 * (for example, instructions/badterm/...), which is confusing.
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 6ffc6bb20de6..88da5cf6aee8 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1069,7 +1069,7 @@ int perf_pmu__format_type(struct list_head *formats, const char *name)
->  
->  /*
->   * Sets value based on the format definition (format parameter)
-> - * and unformated value (value parameter).
-> + * and unformatted value (value parameter).
->   */
->  static void pmu_format_value(unsigned long *format, __u64 value, __u64 *v,
->  			     bool zero)
-> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-> index 954c63570181..866f2d514d72 100644
-> --- a/tools/perf/util/probe-finder.c
-> +++ b/tools/perf/util/probe-finder.c
-> @@ -498,7 +498,7 @@ static int convert_variable_fields(Dwarf_Die *vr_die, const char *varname,
->  			       " nor array.\n", varname);
->  			return -EINVAL;
->  		}
-> -		/* While prcessing unnamed field, we don't care about this */
-> +		/* While processing unnamed field, we don't care about this */
->  		if (field->ref && dwarf_diename(vr_die)) {
->  			pr_err("Semantic error: %s must be referred by '.'\n",
->  			       field->name);
-> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> index c83c2c6564e0..4e4aa4c97ac5 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-> @@ -1531,7 +1531,7 @@ static void set_table_handlers(struct tables *tables)
->  		 * Attempt to use the call path root from the call return
->  		 * processor, if the call return processor is in use. Otherwise,
->  		 * we allocate a new call path root. This prevents exporting
-> -		 * duplicate call path ids when both are in use simultaniously.
-> +		 * duplicate call path ids when both are in use simultaneously.
->  		 */
->  		if (tables->dbe.crp)
->  			tables->dbe.cpr = tables->dbe.crp->cpr;
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index f5becf67c350..9a8808507bd9 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1584,7 +1584,7 @@ static s64 perf_session__process_user_event(struct perf_session *session,
->  		return tool->event_update(tool, event, &session->evlist);
->  	case PERF_RECORD_HEADER_EVENT_TYPE:
->  		/*
-> -		 * Depreceated, but we need to handle it for sake
-> +		 * Deprecated, but we need to handle it for sake
->  		 * of old data files create in pipe mode.
->  		 */
->  		return 0;
-> diff --git a/tools/perf/util/strbuf.h b/tools/perf/util/strbuf.h
-> index ea94d8628980..be94d7046fa0 100644
-> --- a/tools/perf/util/strbuf.h
-> +++ b/tools/perf/util/strbuf.h
-> @@ -12,7 +12,7 @@
->   *    build complex strings/buffers whose final size isn't easily known.
->   *
->   *    It is NOT legal to copy the ->buf pointer away.
-> - *    `strbuf_detach' is the operation that detachs a buffer from its shell
-> + *    `strbuf_detach' is the operation that detaches a buffer from its shell
->   *    while keeping the shell valid wrt its invariants.
->   *
->   * 2. the ->buf member is a byte array that has at least ->len + 1 bytes
-> diff --git a/tools/perf/util/strfilter.h b/tools/perf/util/strfilter.h
-> index e0c25a40f796..c05aca9ca582 100644
-> --- a/tools/perf/util/strfilter.h
-> +++ b/tools/perf/util/strfilter.h
-> @@ -8,8 +8,8 @@
->  
->  /* A node of string filter */
->  struct strfilter_node {
-> -	struct strfilter_node *l;	/* Tree left branche (for &,|) */
-> -	struct strfilter_node *r;	/* Tree right branche (for !,&,|) */
-> +	struct strfilter_node *l;	/* Tree left branch (for &,|) */
-> +	struct strfilter_node *r;	/* Tree right branch (for !,&,|) */
->  	const char *p;		/* Operator or rule */
->  };
->  
+> I was talking about lineevent because you mentioned things like
+> motors and robotics, and those things are traditionally not run in
+> kernelspace because they are not generic hardware that fit in the
+> kernel subsystems.
+> 
+> Normally industrial automatic control tasks are run in a userspace
+> thread with some realtime priority.
+> 
+I mentioned those two use cases as illustration purpose as GTE is not just
+restricted to robotics and vehicles. I agree that those applications run
+mostly from userspace with RT priority but there most certainly some
+kernel drivers they interact and it may want to use GTE, for example,
+BMI088 devices mostly used in drones and robotics, it could be extended to
+use GTE for its GPIO hw timestamping, GPIO is used to indicate data ready.
 
--- 
+> As Kent says, in-kernel events are exclusively using IRQ as
+> mechanism, and should be modeled as IRQs. Then the question
+> is how you join the timestamp with the IRQ. GPIO chips are
+> just some kind of irqchip in this regard, we reuse the irqchip
+> infrastructure in the kernel for all GPIO drivers that generate
+> "events" in response to state transitions on digital lines.
+> 
+>>>> And certainly you will also want to use this timestamp for
+>>>> IIO devices? If it is just GPIOs and IRQs today, it will be
+>>>> gyroscopes and accelerometers tomorrow, am I right?
+>>>>
+>>
+>> Gyroscope, accelerometers or any IIO are built on top of i2c/spi and/or GPIOs.
+>> So they are covered as long as they serve as client to GTE framework, For
+>> example, if gyroscope uses GPIO as an interrupt to indicate frame
+>> ready, GTE could timestamp that GPIO as well any IRQs like i2c transaction
+>> complete IRQ. To this to happen, gycroscope then register itself with
+>> GTE framework and enable required signals that it interfaces/interested with.
+> 
+> I think there are IIO devices that provide their own
+> hardware timestamp and as such they might want to use that,
+> so the mechanism need to be generic enough that a certain
+> hardware timestamp can be selected sooner or later.
+> But let's not overcomplicate things for now.
+> 
 
-- Arnaldo
+I agree, above BMI088 has its own timestamping engine. I have to look into
+that aspect for bringing its TS engine into GTE framework as one of the possible
+off-chip provides besides in-chip GTEs. We can defer that part for later. Thanks
+for pointing that out.
+
+> Yours,
+> Linus Walleij
+> 
