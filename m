@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283D7345CC4
+	by mail.lfdr.de (Postfix) with ESMTP id E6085345CC6
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhCWLZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbhCWLZU (ORCPT
+        id S231136AbhCWL0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:26:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20799 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231134AbhCWLZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:25:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56486C061574;
-        Tue, 23 Mar 2021 04:25:19 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 11:25:14 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616498715;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 23 Mar 2021 07:25:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616498745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/vK4WN04PkUTWxXvZnuNhvdYsXH2PU2ekGlCOBoEtgs=;
-        b=iM6SC+v8YUYgv0VQa21EQF83kEdJ+1bsMMeHlJzcPTmvfPpAGVat9eamKwrIcOyMexTG9L
-        /yBAC6ZKHPUThhrpJyEZv9EXDpEGCUhJZCUd2Z9bkmVmIJ4qtxdV71fSqkyIjDjiszKxne
-        uZXUd9ByzAqs7LWvN9S16AZ2WIS3F9M79lQLmpOKVrxHrNetiV9wIULG8G3mT0h5wyGdJD
-        kGPO5T4VBxbSadqsrDAEpHUfBSJzquNTKe5xOMY5FTj9G7pdXmEUt8oL3YIOxtWVE8dwc9
-        S9M+qQJ9TXXW5Y6GRVCIKeA5ecGY0uqVwdjr+2lyVFRUwFulPYj0mrVwGNkdAQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616498715;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/vK4WN04PkUTWxXvZnuNhvdYsXH2PU2ekGlCOBoEtgs=;
-        b=BkoqVRwmyh6T51wN56VsvytzmLvPj4LR+4eyOoK+rED9eFmOF5T6SBHjdLU+EUVvpow6Lx
-        az7MH0CKxmDrhuCw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/mutex: Fix non debug version of
- mutex_lock_io_nested()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <878s6fshii.fsf@nanos.tec.linutronix.de>
-References: <878s6fshii.fsf@nanos.tec.linutronix.de>
+        bh=b4th3W1WuDCglHfKhIGbTRrg+iSR4HR4i9tFQs60ItI=;
+        b=RKLVriP3MGRTjVCDLz/X+qPXNSPftgjgMfQeHtG3We1JDOZmtchLZjMV4S4VoSiiGUcdBA
+        VcD72TUcg/RLBp2JaIQskl+uqOWbWrwdJAWsdz84CLc/JD0Km+mF3VIGLAEzaw+WQ/3SWC
+        Wkuv4ZVPctYUZQvCpCDJ0dmoYR8oJkM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-U3Yo1Md9M7GloIpZ9fJkiQ-1; Tue, 23 Mar 2021 07:25:41 -0400
+X-MC-Unique: U3Yo1Md9M7GloIpZ9fJkiQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB20880006E;
+        Tue, 23 Mar 2021 11:25:38 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63509179B3;
+        Tue, 23 Mar 2021 11:25:28 +0000 (UTC)
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
+        Oscar Salvador <osalvador@suse.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        kexec@lists.infradead.org
+References: <20210322160200.19633-1-david@redhat.com>
+ <20210322160200.19633-2-david@redhat.com>
+ <YFnLyJF4u5HVXcc2@smile.fi.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v1 1/3] kernel/resource: make walk_system_ram_res() find
+ all busy IORESOURCE_SYSTEM_RAM resources
+Message-ID: <73a96145-848d-66ea-4d45-fb759003d1de@redhat.com>
+Date:   Tue, 23 Mar 2021 12:25:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Message-ID: <161649871428.398.9633106540793047465.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YFnLyJF4u5HVXcc2@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On 23.03.21 12:06, Andy Shevchenko wrote:
+> On Mon, Mar 22, 2021 at 05:01:58PM +0100, David Hildenbrand wrote:
+>> It used to be true that we can have busy system RAM only on the first level
+>> in the resourc tree. However, this is no longer holds for driver-managed
+>> system RAM (i.e., added via dax/kmem and virtio-mem), which gets added on
+>> lower levels.
+>>
+>> We have two users of walk_system_ram_res(), which currently only
+>> consideres the first level:
+>> a) kernel/kexec_file.c:kexec_walk_resources() -- We properly skip
+>>     IORESOURCE_SYSRAM_DRIVER_MANAGED resources via
+>>     locate_mem_hole_callback(), so even after this change, we won't be
+>>     placing kexec images onto dax/kmem and virtio-mem added memory. No
+>>     change.
+>> b) arch/x86/kernel/crash.c:fill_up_crash_elf_data() -- we're currently
+>>     not adding relevant ranges to the crash elf info, resulting in them
+>>     not getting dumped via kdump.
+>>
+>> This change fixes loading a crashkernel via kexec_file_load() and including
+> 
+> "...fixes..." effectively means to me that Fixes tag should be provided.
 
-Commit-ID:     291da9d4a9eb3a1cb0610b7f4480f5b52b1825e7
-Gitweb:        https://git.kernel.org/tip/291da9d4a9eb3a1cb0610b7f4480f5b52b1825e7
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 22 Mar 2021 09:46:13 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 23 Mar 2021 12:20:23 +01:00
+We can certainly add, although it doesn't really affect the running 
+kernel, but only crashdumps taken in the kdump kernel:
 
-locking/mutex: Fix non debug version of mutex_lock_io_nested()
+Fixes: ebf71552bb0e ("virtio-mem: Add parent resource for all added 
+"System RAM"")
+Fixes: c221c0b0308f ("device-dax: "Hotplug" persistent memory for use 
+like normal RAM")
 
-If CONFIG_DEBUG_LOCK_ALLOC=n then mutex_lock_io_nested() maps to
-mutex_lock() which is clearly wrong because mutex_lock() lacks the
-io_schedule_prepare()/finish() invocations.
+Thanks
 
-Map it to mutex_lock_io().
+-- 
+Thanks,
 
-Fixes: f21860bac05b ("locking/mutex, sched/wait: Fix the mutex_lock_io_nested() define")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/878s6fshii.fsf@nanos.tec.linutronix.de
----
- include/linux/mutex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+David / dhildenb
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 0cd631a..515cff7 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -185,7 +185,7 @@ extern void mutex_lock_io(struct mutex *lock);
- # define mutex_lock_interruptible_nested(lock, subclass) mutex_lock_interruptible(lock)
- # define mutex_lock_killable_nested(lock, subclass) mutex_lock_killable(lock)
- # define mutex_lock_nest_lock(lock, nest_lock) mutex_lock(lock)
--# define mutex_lock_io_nested(lock, subclass) mutex_lock(lock)
-+# define mutex_lock_io_nested(lock, subclass) mutex_lock_io(lock)
- #endif
- 
- /*
