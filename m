@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DA534594E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82CF345955
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhCWIJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:09:01 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:60046 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCWII4 (ORCPT
+        id S229504AbhCWIMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:12:22 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:49111 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229448AbhCWILs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:08:56 -0400
-Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
-        by sparta.prtnl (Postfix) with ESMTP id 9B75244A022C;
-        Tue, 23 Mar 2021 09:08:54 +0100 (CET)
-MIME-Version: 1.0
-Date:   Tue, 23 Mar 2021 09:08:54 +0100
-From:   robin <robin@protonic.nl>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/17] auxdisplay: ht16k33: Remove unneeded error check in
- keypad probe()
-Reply-To: robin@protonic.nl
-In-Reply-To: <20210322144848.1065067-11-geert@linux-m68k.org>
-References: <20210322144848.1065067-1-geert@linux-m68k.org>
- <20210322144848.1065067-11-geert@linux-m68k.org>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <ae8bed58af4c760316a464ccb406b0a4@protonic.nl>
-X-Sender: robin@protonic.nl
-Organization: Protonic Holland
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+        Tue, 23 Mar 2021 04:11:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UT2qUJD_1616487100;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UT2qUJD_1616487100)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Mar 2021 16:11:46 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     bskeggs@redhat.com
+Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] drm/nouveau/mc: make tu102_mc_intr_mask and tu102_mc_intr_rearm static
+Date:   Tue, 23 Mar 2021 16:11:24 +0800
+Message-Id: <1616487084-104391-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-22 15:48, Geert Uytterhoeven wrote:
-> There is no need to check the return code of input_register_device(),
-> just propagate it to the caller.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  drivers/auxdisplay/ht16k33.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/auxdisplay/ht16k33.c 
-> b/drivers/auxdisplay/ht16k33.c
-> index 6d39f12054618fa5..13d18f218b4d196e 100644
-> --- a/drivers/auxdisplay/ht16k33.c
-> +++ b/drivers/auxdisplay/ht16k33.c
-> @@ -378,11 +378,7 @@ static int ht16k33_keypad_probe(struct i2c_client 
-> *client,
-> 
->  	ht16k33_keypad_stop(keypad->dev);
-> 
-> -	err = input_register_device(keypad->dev);
-> -	if (err)
-> -		return err;
-> -
-> -	return 0;
-> +	return input_register_device(keypad->dev);
->  }
-> 
->  static int ht16k33_probe(struct i2c_client *client,
+Fix the following sparse warning:
 
-Acked-by: Robin van der Gracht <robin@protonic.nl>
+drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c:74:1: warning: symbol
+'tu102_mc_intr_mask' was not declared. Should it be static?
+
+drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c:62:1: warning: symbol
+'tu102_mc_intr_rearm' was not declared. Should it be static?
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+Changes in v2:
+  -Modified the commit message.
+
+ drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
+index 58db83e..7cf659cc 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mc/tu102.c
+@@ -58,7 +58,7 @@ struct tu102_mc {
+ 	spin_unlock_irqrestore(&mc->lock, flags);
+ }
+ 
+-void
++static void
+ tu102_mc_intr_rearm(struct nvkm_mc *base)
+ {
+ 	struct tu102_mc *mc = tu102_mc(base);
+@@ -70,7 +70,7 @@ struct tu102_mc {
+ 	spin_unlock_irqrestore(&mc->lock, flags);
+ }
+ 
+-void
++static void
+ tu102_mc_intr_mask(struct nvkm_mc *base, u32 mask, u32 intr)
+ {
+ 	struct tu102_mc *mc = tu102_mc(base);
+-- 
+1.8.3.1
+
