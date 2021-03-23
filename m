@@ -2,66 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B1E346D5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AF7346D67
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbhCWWjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:39:39 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:37432 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbhCWWjS (ORCPT
+        id S233908AbhCWWke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234045AbhCWWkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:39:18 -0400
-Received: by mail-io1-f50.google.com with SMTP id b10so19459404iot.4;
-        Tue, 23 Mar 2021 15:39:18 -0700 (PDT)
+        Tue, 23 Mar 2021 18:40:03 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFEAC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:40:02 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id z15so18798960oic.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2K8tLkChb+506zF+z/6B3jJAVVp0oMTr1r3/3aTgbn4=;
+        b=Pe81cQ60l5HI2BEwB08JrmJgjyYI5GsI3IG5+NoNvN7VxFUlwWmEy8vXEIyGwtmzwW
+         PMhpc0Uoys2+0YlJncs+JwzktMZ4f7sMDoja0mnZeF9Av0u9MAKIbVp6r2SqjdHhCwl4
+         91CyfWajYrMgrHW+aut9mDhFzzUElhDwht9/MjUcojOa+L+0nxzHZiE2W5ucqb5Cm/G+
+         0kn9cLuHDDhFx2cfgZs538uCneOninzEY03vpioj/99K2O9tZk5aEH1w8TsBOYitABPk
+         NEKvMo6kq01IAKkKBlZAOaNYMcnXQJyDKKPo5l1L5qhGIO8xwAtsCn3VcYlm69I5+d+w
+         DZaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S92WaoQmPcxmAxIBLnQoheVRsS9Rb8meP+pvXtKihFw=;
-        b=tr8W71FfZBXECa+5YZ7DM49zB6GJ6bp2aWCH5Ynj/pWox5KaJRPOVsDHDfGGNOpQeg
-         a5kEn+7kPFua6WrWJVfZQurznr0EdQmdlndHpiN869BBf2oceZK9rHoz0DL2gABeWG5J
-         XXWDKiiPMrAR4ADY1shTnetZ4+/v8K+vafkwB5i+mLxrD1ZSUjxcmpq4HdGPHdTVrL8B
-         0zTR68eBc+CGl4xV8YUoEOgwXTNVG0aiaH0nG5UhhYJqUE56xQsoJ/z7LfghQivjhPnz
-         608vzKzOrneHrsePFYHVKJIieMcRBzZl/d2t+rzms+AhGeh8kmEnaiSw6oM03DlCO5Oe
-         9x3Q==
-X-Gm-Message-State: AOAM533qHZiWHF1M0kr27TGRpoImuUNeW7VyUHOiv+SwoezIn1JHDDz2
-        RzJzo7zLMqsM+9VR/ECzLmMpXs/N4g==
-X-Google-Smtp-Source: ABdhPJzTz0RHCP/mlQKkbAuY9d/5ECm9T25BeyKEAEbjrgPyMttp0VO7FfegK4lvMEUjTSVv9LNoJA==
-X-Received: by 2002:a02:9349:: with SMTP id e9mr230097jah.75.1616539157851;
-        Tue, 23 Mar 2021 15:39:17 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id s7sm118635ioj.16.2021.03.23.15.39.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 15:39:17 -0700 (PDT)
-Received: (nullmailer pid 1477490 invoked by uid 1000);
-        Tue, 23 Mar 2021 22:39:14 -0000
-Date:   Tue, 23 Mar 2021 16:39:14 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-imx@nxp.com, alistair23@gmail.com,
-        linux-arm-kernel@lists.infradead.org, olof@lixom.net,
-        shawnguo@kernel.org, arnd@arndb.de, festevam@gmail.com,
-        kernel@pengutronix.de, robh+dt@kernel.org, s.hauer@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] dt-bindings: arm: fsl: Add the reMarkable 2 e-Ink
- tablet
-Message-ID: <20210323223914.GA1477434@robh.at.kernel.org>
-References: <20210322130928.132-1-alistair@alistair23.me>
- <20210322130928.132-2-alistair@alistair23.me>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2K8tLkChb+506zF+z/6B3jJAVVp0oMTr1r3/3aTgbn4=;
+        b=SK64Iwt7an81w53Sn6xBa3K7xwzJiTScHiXaXiHtjcwu7XqCUVpcrWjbL6r1RA6BUO
+         fFnNxfCpsxtXDhch7snksKRz9UngL2rTRFtT+Cy4gTyIMwZ3BAcPJSfRAJPZbtEGL9dJ
+         Ef+eolRj6AZtNyqp/E9Wa/jc01Cue+WX9JpjhB3PstW9ZTGEi91sNoNb4Nn0GlE/7Pze
+         Hg0koLIEbEl9Hu34/lWoNmqTt9Ps/aURDOy8WDk/JXQi2Cp6SBMkfgliDRzPG30/qs/K
+         j7xFp4H0r1Wi3M5jB+U6lgrEvWvRFIo82zCDrTRSUNnGzS4fOtMf5f1Frl6AYz4OKYi1
+         Bpnw==
+X-Gm-Message-State: AOAM533mGxjljN+mIoOVim3iNI29UGBVA3QGeEWnsJaeQc/Fhv0Oty2t
+        1QJodni4bEV1uQjosmnc4tE5eyUKpUdobvj7t5qhcw==
+X-Google-Smtp-Source: ABdhPJzKT7oZFNSdPkzKR6RwxWfh1Wycs7N3YoemOpk0yIsAn2ibj4rUZ4fk7mjWToK526aRsi+/tUqJdhVxceAbusw=
+X-Received: by 2002:aca:c683:: with SMTP id w125mr263549oif.43.1616539201756;
+ Tue, 23 Mar 2021 15:40:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322130928.132-2-alistair@alistair23.me>
+References: <20210223023125.2265845-1-jiancai@google.com> <20210223023542.2287529-1-jiancai@google.com>
+ <CACRpkdYC3iDD23SESM0j2=f56kr6ByKeedDQvkGwXbUC0br0fw@mail.gmail.com>
+ <CA+SOCL+M5YfhygG=ogqvqp7y40v+32RiteGr=53THzwvdGugyA@mail.gmail.com>
+ <CACRpkdYrqy78EfB_+UY0QtA0v0tD+_+O09Pod8-1Vd-p-VyMWA@mail.gmail.com>
+ <CA+SOCLLo2MdxCH3gFONHsKdvmGGm2vZuML9QdQfWuX2--qFEOA@mail.gmail.com> <CACRpkdbF43_CjSFNu_4FUCEqOB8CebrpXJpkzeW8TnPpRELBtg@mail.gmail.com>
+In-Reply-To: <CACRpkdbF43_CjSFNu_4FUCEqOB8CebrpXJpkzeW8TnPpRELBtg@mail.gmail.com>
+From:   Jian Cai <jiancai@google.com>
+Date:   Tue, 23 Mar 2021 15:39:50 -0700
+Message-ID: <CA+SOCLJTSHs9CZc+h0bWz=k5UUp5zLSLFwLyVGdr1v7O3VUOew@mail.gmail.com>
+Subject: Re: [PATCH v5] ARM: Implement SLS mitigation
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        James Morse <james.morse@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 09:09:26 -0400, Alistair Francis wrote:
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Thanks for the suggestion. I've sent an inquiry to the author of
+-mharden-sls* in GCC and hopefully that would shed some more light. We
+do get warnings for oraphon sections when using lld. The other linkers
+do not seem to provide such warnings, although the boot failure also
+does not seem to happen with them.
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Mon, Mar 22, 2021 at 4:45 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Wed, Mar 10, 2021 at 5:43 AM Jian Cai <jiancai@google.com> wrote:
+> > On Sat, Mar 6, 2021 at 4:25 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > On Fri, Mar 5, 2021 at 12:23 AM Jian Cai <jiancai@google.com> wrote:
+> > > > On Wed, Mar 3, 2021 at 7:04 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> > > > I think gcc also has these options.
+> > > > https://gcc.gnu.org/onlinedocs/gcc/AArch64-Options.html
+> > >
+> > > And how does that work with this part of your patch:
+> > >
+> > > +#define SLS_TEXT                                       \
+> > > +       ALIGN_FUNCTION();                              \
+> > > +       *(.text.__llvm_slsblr_thunk_*)
+> > >
+> > > This does not look compiler agnostic?
+> >
+> > You are right, GCC does generate different oraphan section names. I
+> > will address it in the next version of the patch. Also it seems only
+> > arm64 gcc supports -mharden-sls=* at this moment, arm32 gcc does not
+> > support it yet. I don't know if there is any plan to implement it for
+> > 32-bit gcc, but should we patch arm32 linker script preemptively,
+> > assuming the sections will be named with the same pattern like how
+> > clang does so the kernel would not fail to boot when the flag is
+> > implemented?
+>
+> I think the best thing is to have something like this:
+> Implement a macro such as this in
+> include/linux/compiler-clang.h
+>
+> #define SLS_TEXT_SECTION *(.text.__llvm_slsblr_thunk_*)
+>
+> then the corresponding in include/linux/compiler-gcc.h
+> but here also add a
+>
+> #define SLS_TEXT_SECTION #error "no compiler support"
+>
+> if the compiler version does not have this.
+>
+> I don't know the exact best approach sadly, as the patch
+> looks now it seems a bit fragile, I wonder if you get linker
+> warnings when this section is unused?
+>
+> Yours,
+> Linus Walleij
