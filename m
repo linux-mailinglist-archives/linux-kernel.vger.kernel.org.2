@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E393456E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB94A3456ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 05:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhCWEhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 00:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        id S229548AbhCWEmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 00:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhCWEhQ (ORCPT
+        with ESMTP id S229437AbhCWEms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 00:37:16 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FBFC061574;
-        Mon, 22 Mar 2021 21:37:16 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id t16so9837801qvr.12;
-        Mon, 22 Mar 2021 21:37:16 -0700 (PDT)
+        Tue, 23 Mar 2021 00:42:48 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC317C061574;
+        Mon, 22 Mar 2021 21:42:47 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u9so24916981ejj.7;
+        Mon, 22 Mar 2021 21:42:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eUZjvbWhG8mpAJ9oWPfDqQmrZ+U1xI4KjNvkjd4vAQ8=;
-        b=LjdCpKKQcTWep3Uudz5wlBa4XTvLfZ99MIgawJQyuE3xD8KrfRmvaVMfwmiNlrQenB
-         7j9rvPpNAQPrLiCuwJUqwfN3dU5V7qNt2YW0MJqYZyIDlyEo+Nm4xGKKszbjsTRqUhQ7
-         3YIMZvI9nHlCrRo/2H4IvdCyhu8Kj8ckJIqkoPVDlGYTZp/PxzR3ykXB6NDTSQfYylfS
-         P+TFubmv9memx5a7kTxk365NOxpl2fGn0XVHADzY5x+1NgnuD06GWLnkyH5aKC5sdjzH
-         kv7Q3kpIuCTV+n0E4IKFLv3SGcWPFGRKq5UQvV9nZ/VKHdE1SMHkF0AVQZ+4/3BKe4K8
-         wYmw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UVoLGy/DVv4s3pk1Yx0FAlEBZbJ1Lb3xlELXdAaEJ4o=;
+        b=oS6j9qlosT6UYmptAOm2kR79KEtyJGQHD0LiZ30pp5+HtiH4HN+Ogf5pW8zil3Uzo/
+         CGAus0vUSy78xgNyrDWGM7DxpakafPg7xBt7Dxk4xwp0OpNkhsxTsJQtxaRQ/+KkMl55
+         De3Qpry+UT/n8i8mOLROa7HH4kZfSMhoSB4YVr9deZT/nQ6DhpuAe9B4IYxWMxa5AA4b
+         co+PRn0/Ac2OaUlKbLo38pJG/rOLZrV53PgZZN/IBgPgUpIwKbjUsAHbBoQEckPHh8oN
+         AiBf8GELpAZifndYswSqR1EUeu5DSUfOl23Lznuvth34AAdjtB5Kt0ckguLn05g8Gpfu
+         zaZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eUZjvbWhG8mpAJ9oWPfDqQmrZ+U1xI4KjNvkjd4vAQ8=;
-        b=gIDsorxrBq0BEMOuzBytX68CAg0j3p6gPfCtG6Zcm6U/XQp1nUS5rH2NGDxHrWW4O+
-         hqVzWYgGawjw6ZPh2xI09JTPLS/m5PSG94+1BtcGI4BfJYshevaArXtL6MZ42mwkMXwL
-         4uZAVie1u8IvTlery1QbkMBfbpvnD2iVvzC31ozMSOtkjTQirVAv/+RvlnsO/hG7X+/K
-         QCEsIRu0y+g/z3ooRu0FtdcJSwh0zlkzCmW/+GdePmefhA/U8AD+nJvZViQQ/DOALNA3
-         /AvJ1IHeG9XBroc8C9vzK0bBnHgVikPXpAMnaLam9HhSRJG5wb/slaT8cI5pjlPKNUNR
-         hXHQ==
-X-Gm-Message-State: AOAM532QuLViheX1/Y5iMoyMOC2CaocJVkP5KLqnQFHSS1yvaBI0gvzw
-        VC5g+YCcI9Eo+MLMj4tx/q4=
-X-Google-Smtp-Source: ABdhPJzpn/qLE7mquJkm8VyguR63pGY+0OA+1ULU+mdB5ZlBroS9tRh9kZb3B44sjkBcdw4ZujIyxQ==
-X-Received: by 2002:ad4:584d:: with SMTP id de13mr3046957qvb.17.1616474235825;
-        Mon, 22 Mar 2021 21:37:15 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.54.208])
-        by smtp.gmail.com with ESMTPSA id b1sm12790054qkk.117.2021.03.22.21.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 21:37:15 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     aspriel@gmail.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, chi-hsien.lin@infineon.com,
-        wright.feng@infineon.com, chung-hsien.hsu@infineon.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        unixbhaskar@gmail.com, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] brcmfmac: A typo fix
-Date:   Tue, 23 Mar 2021 10:06:57 +0530
-Message-Id: <20210323043657.1466296-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UVoLGy/DVv4s3pk1Yx0FAlEBZbJ1Lb3xlELXdAaEJ4o=;
+        b=p3ViGSju4n42trR6NebxSo6Rp1bjwpP7c8GZL2er16HJ5zrI45B9EDSEYSkzya+jUd
+         agvFn8OhG01vzldJ0APmT39MyHe7NmgwUUrXmxilaij41o/Y9pdOr2+QCKX6+veCHyJ6
+         i2GIFzYarY9aOLfgsm+29bwIRy8qUXepWeWJ+8SJBAD+QoV+rAkPidPhRA04EsZzgwMU
+         ZmY7N78ce/660LZ1isjsYRACGRvB0E09r21mAJqSjURh1Hl9xJ513ay64z+6BzToTusl
+         kcwep9UbrfHYJdH7IJBFfaCCEtFMESc+YpsBOYCt3G2bcpJlwLUc5O10ryEL5aMXDMzW
+         4lsw==
+X-Gm-Message-State: AOAM531hncL/Nfr6GxGdPGfYh60VWu0RcRBo2XakwNh0ldxwY+PTWHG4
+        QHvWE79OPgYNvAmQsuayNfwjX+QFFsti5al1zQ==
+X-Google-Smtp-Source: ABdhPJzCBJImaAQzKd14Mn+lFtSInQcKqNqdsSb9+PGoZ7nJa047HAGSUuqmEnHvRXC1oWR34cswPMvlgZnlnDjW4Fg=
+X-Received: by 2002:a17:906:f210:: with SMTP id gt16mr3013315ejb.206.1616474566427;
+ Mon, 22 Mar 2021 21:42:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210323023726.28343-1-lihaiwei.kernel@gmail.com> <CALMp9eST+qAnXLpzPpORn6piVMNi3xY=P0KmP-cKixtCNAOH9Q@mail.gmail.com>
+In-Reply-To: <CALMp9eST+qAnXLpzPpORn6piVMNi3xY=P0KmP-cKixtCNAOH9Q@mail.gmail.com>
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+Date:   Tue, 23 Mar 2021 12:42:11 +0800
+Message-ID: <CAB5KdOb+rwsP0Pf_=_OmQYq94+V0FjqWB0uOA4V1MdUpPd7Rtg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: VMX: Check the corresponding bits according to the
+ intel sdm
+To:     Jim Mattson <jmattson@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Haiwei Li <lihaiwei@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 11:16 AM Jim Mattson <jmattson@google.com> wrote:
+>
+> On Mon, Mar 22, 2021 at 7:37 PM <lihaiwei.kernel@gmail.com> wrote:
+> >
+> > From: Haiwei Li <lihaiwei@tencent.com>
+> >
+> > According to IA-32 SDM Vol.3D "A.1 BASIC VMX INFORMATION", two inspections
+> > are missing.
+> > * Bit 31 is always 0. Earlier versions of this manual specified that the
+> > VMCS revision identifier was a 32-bit field in bits 31:0 of this MSR. For
+> > all processors produced prior to this change, bit 31 of this MSR was read
+> > as 0.
+>
+> For all *Intel* processors produced prior to this change, bit 31 of
+> this MSR may have been 0. However, a conforming hypervisor may have
+> selected a full 32-bit VMCS revision identifier with the high bit set
+> for nested VMX. Furthermore, there are other vendors, such as VIA,
+> which have implemented the VMX extensions, and they, too, may have
+> selected a full 32-bit VMCS revision identifier with the high bit set.
+> Intel should know better than to change the documentation after the
+> horse is out of the barn.
 
-s/revsion/revision/
+Got it, thanks.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> What, exactly, is the value you are adding with this check?
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.h
-index ee273e3bb101..e000ef78928c 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.h
-@@ -28,7 +28,7 @@ struct brcmf_usbdev {
- 	int ntxq, nrxq, rxsize;
- 	u32 bus_mtu;
- 	int devid;
--	int chiprev; /* chip revsion number */
-+	int chiprev; /* chip revision number */
- };
+I did this just to match the sdm.
 
- /* IO Request Block (IRB) */
 --
-2.31.0
-
+Haiwei Li
