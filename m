@@ -2,241 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7A5346856
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95DD346867
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhCWTAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:00:55 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:32734 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbhCWTAd (ORCPT
+        id S232700AbhCWTDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232836AbhCWTCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:00:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1616526002; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=sa8+XXYk5fzpeUUGFgweLdaV5pcMYhkGYfEwI/zc7wDOas4hiXMM6xMnoqtvZbePo6
-    +Dy1b9xT8IyIAEpOnTSyX9GLapGf9sijR2GIgBLdMoBF3wgaZup2KdQ/XjGsURZOJU3t
-    X0EdaVtkdRPHt/c83vc77Jo+cF/R57rZci1fGls9JeSVdhFYwSVxqiqzsNVZcIQb2s2e
-    4/T5ZpHwLezlfcr1agJ2GGDhkrn0MdGyHWETjvMM4kBUghWdk1kyDFPoIKASRR+ndybv
-    +ZpMArFG+8vcNfzLFJbba+TJGqM3zfpbdIsn2osKO4s64ZNHrRmNxKgFi96XjiXIkelf
-    d3dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616526002;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=H+iy5Xnl/Ax+UX6kbotNvo5bA7mOOjr9W7ty17zBvZQ=;
-    b=EZozfeRXENsDISDAT3MMefboraw5mIovsCNJJdgFKAASDbdH7SfDPoRag5exVI6qyM
-    K8dThl4GSXH3504HbTBSskM+uI7EGzSSwt7EirPDtfJe30R7keiBx048O9IAwAUh3diL
-    x9ulglWQrjn/vF9jh6lEsCri8Jq9GMvLqt9OFFX1JzfPVwTQyNSwaNfhLMO95gXb0iNy
-    caBb0Ugbyt3fXOIDF2h64TfULuKnoge1LywgUXQ610yK1C1tuSK8lzGUCUTxvuKfs8tO
-    5+QMNgVBLNftiNqTssLAShUTIMYEiZRujFVgAI/pD+y3yENaXKOeg0uRy8d2ReKApJ8V
-    91kQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616526002;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=H+iy5Xnl/Ax+UX6kbotNvo5bA7mOOjr9W7ty17zBvZQ=;
-    b=CyaOCEtVZevFZ0h36g2aN34KtjvlOcqyLG3JI73Lmo04HiM/6LAKqu6AvVeQzvJsnz
-    eWVWcEoR4TwCiHmuozKCuGhGjFELnDxRLzyFOHbCBHZ43b4OW1BG0UfKk/cipnv8keQN
-    GX03lPw3KlAicfmxpmIq72kBt/tKqwmFldX+Gk4AJrSmUrSydasg8n2cOfKf7JiqBaQM
-    xiNVdK15MVP3thQkVZoPIHOcGrXNlmJRgjfck7kWmLqZrEzq7sq+9UDig9fd7/2jdwEk
-    5wf8aML3MGmpZq5N5x8ehFXZ+7pX4CaP1qlj9v8YfAKARkoGVa5uXnLzrx4kMQxond5H
-    60JA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3HMbEWKN9eVTNI="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-    by smtp.strato.de (RZmta 47.21.0 DYNA|AUTH)
-    with ESMTPSA id R01debx2NJ00Gnc
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 23 Mar 2021 20:00:00 +0100 (CET)
-Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
- call to '__compiletime_assert_536' declared with attribute error:
- BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
- canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Patrick Menschel <menschel.p@posteo.de>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
-References: <202103210435.I0fiBGAC-lkp@intel.com>
- <dad98ebd-77a4-3305-e681-278cabe38793@hartkopp.net>
- <7f4f7e1c-194b-a903-d474-e3b742556a55@intel.com>
- <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
- <b10903ca-c424-b305-d981-fe0004500190@intel.com>
- <20210323073437.yo63wreqnubbeqby@pengutronix.de>
- <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
- <a5599800-53f4-c53f-abcc-e166ea9028b9@rasmusvillemoes.dk>
- <080d9e5c-fe1f-4a64-2938-8ca6d8a98d78@hartkopp.net>
- <0a8e8e95-c1a2-ede6-9f87-1ab7a0a155e3@rasmusvillemoes.dk>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <212c8bc3-89f9-9c33-ed1b-b50ac04e7532@hartkopp.net>
-Date:   Tue, 23 Mar 2021 19:59:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 15:02:35 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1B4C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:02:34 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id 94so15804222qtc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2NS3knvOsVC8w40oRTuJAV1fjp7aGSVyD5f77gkqujA=;
+        b=yS6el+/OtIxurlpnOwHVJYnrbwKbkyYBMbMsL18oFonhgYPFzfpGanTtP6YNhIyUkf
+         TEyNkeOkiDtVts7mqCYfAvg/Lg1EFX8JWMt7cPbFGO1hJH0owEWpRiNRK/S1wPWE36wh
+         YmB0lud4tB4a6GgMDoQKYXdYjDxHDRhg0dMRIlyhbq36/lJ9LlZxuSk0h3h0v4ahykeZ
+         yLwUdUlLL0sNwxT4MTWZwfAuV26ZsmKLPmRTM51g3XNTXtWgJyDHpNlqScOO6W4kvfTx
+         xSJBP0N7kswDxh5FtjlrBso8m9S/JBCbqQd92QMlA6GKxAyd3aCIUmuPh7aKwCZeMrE4
+         INDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2NS3knvOsVC8w40oRTuJAV1fjp7aGSVyD5f77gkqujA=;
+        b=n9x5anfAOwK0fZnTboDjv68/qSlT3Q+4h4Kji7EOdkBA+QA16hiz95S/HVLW+XXy9H
+         VNG/vcRFYBnfzruxo9dqQXLt/cE200NSI/NIrGnwwYuPxpSJXTeG7+ewD/9FG7aoNHoS
+         8s6m6a1SChAR0o4q3U7su5YPW4jW/DyzCCN5gJCTzqzTBV4dA2OmF39OkmmStygBNSxR
+         rYCnnZ7Sf6CXRZToIs80U2O8XI9AV7Un18HKXRmtTlPanqA92lTr/kQEu/KssL0pxOj4
+         u1Hf1MOJF5ooAyI67GXovcSxWDMuoQ+w0AOPIfINTfnMS44ojhjti28zrOb974riBp0a
+         2eWg==
+X-Gm-Message-State: AOAM530KILCzNLNS03U3HFaRcRGek1FX48ObuaQiL0b96OJe4PGVCP26
+        dmD50qnR3fi3dbu6f9BqMrMKmQ==
+X-Google-Smtp-Source: ABdhPJzbiv3C1ZFr8v4W3JsU+Bf67Fc2zDpcWziC0UPGRKKj/5tbdoYGOS23mNhCfgvAssY9RkmMBg==
+X-Received: by 2002:ac8:7215:: with SMTP id a21mr5870301qtp.199.1616526153240;
+        Tue, 23 Mar 2021 12:02:33 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id q2sm14075452qkq.59.2021.03.23.12.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 12:02:32 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:02:32 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+Message-ID: <YFo7SOni0s0TbXUm@cmpxchg.org>
+References: <20210319071547.60973-1-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
 MIME-Version: 1.0
-In-Reply-To: <0a8e8e95-c1a2-ede6-9f87-1ab7a0a155e3@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 19, 2021 at 06:52:58PM -0700, Hugh Dickins wrote:
+> On Fri, 19 Mar 2021, Johannes Weiner wrote:
+> 
+> > When the freeing of a higher-order page block (non-compound) races
+> > with a speculative page cache lookup, __free_pages() needs to leave
+> > the first order-0 page in the chunk to the lookup but free the buddy
+> > pages that the lookup doesn't know about separately.
+> > 
+> > However, if such a higher-order page is charged to a memcg (e.g. !vmap
+> > kernel stack)), only the first page of the block has page->memcg
+> > set. That means we'll uncharge only one order-0 page from the entire
+> > block, and leak the remainder.
+> > 
+> > Add a split_page_memcg() to __free_pages() right before it starts
+> > taking the higher-order page apart and freeing its individual
+> > constituent pages. This ensures all of them will have the memcg
+> > linkage set up for correct uncharging. Also update the comments a bit
+> > to clarify what exactly is happening to the page during that race.
+> > 
+> > This bug is old and has its roots in the speculative page cache patch
+> > and adding cgroup accounting of kernel pages. There are no known user
+> > reports. A backport to stable is therefor not warranted.
+> > 
+> > Reported-by: Matthew Wilcox <willy@infradead.org>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> Acked-by: Hugh Dickins <hughd@google.com>
+> 
+> to the split_page_memcg() addition etc, but a doubt just hit me on the
+> original e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages"):
+> see comment below.
+> 
+> > ---
+> >  mm/page_alloc.c | 33 +++++++++++++++++++++++++++------
+> >  1 file changed, 27 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index c53fe4fa10bf..f4bd56656402 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
+> >   * the allocation, so it is easy to leak memory.  Freeing more memory
+> >   * than was allocated will probably emit a warning.
+> >   *
+> > - * If the last reference to this page is speculative, it will be released
+> > - * by put_page() which only frees the first page of a non-compound
+> > - * allocation.  To prevent the remaining pages from being leaked, we free
+> > - * the subsequent pages here.  If you want to use the page's reference
+> > + * This function isn't a put_page(). Don't let the put_page_testzero()
+> > + * fool you, it's only to deal with speculative cache references. It
+> > + * WILL free pages directly. If you want to use the page's reference
+> >   * count to decide when to free the allocation, you should allocate a
+> >   * compound page, and use put_page() instead of __free_pages().
+> >   *
+> > @@ -5124,11 +5123,33 @@ static inline void free_the_page(struct page *page, unsigned int order)
+> >   */
+> >  void __free_pages(struct page *page, unsigned int order)
+> >  {
+> > -	if (put_page_testzero(page))
+> > +	/*
+> > +	 * Drop the base reference from __alloc_pages and free. In
+> > +	 * case there is an outstanding speculative reference, from
+> > +	 * e.g. the page cache, it will put and free the page later.
+> > +	 */
+> > +	if (likely(put_page_testzero(page))) {
+> >  		free_the_page(page, order);
+> > -	else if (!PageHead(page))
+> > +		return;
+> > +	}
+> > +
+> > +	/*
+> > +	 * The speculative reference will put and free the page.
+> > +	 *
+> > +	 * However, if the speculation was into a higher-order page
+> > +	 * chunk that isn't marked compound, the other side will know
+> > +	 * nothing about our buddy pages and only free the order-0
+> > +	 * page at the start of our chunk! We must split off and free
+> > +	 * the buddy pages here.
+> > +	 *
+> > +	 * The buddy pages aren't individually refcounted, so they
+> > +	 * can't have any pending speculative references themselves.
+> > +	 */
+> > +	if (!PageHead(page) && order > 0) {
+> 
+> The put_page_testzero() has released our reference to the first
+> subpage of page: it's now under the control of the racing speculative
+> lookup.  So it seems to me unsafe to be checking PageHead(page) here:
+> if it was actually a compound page, PageHead might already be cleared
+> by now, and we doubly free its tail pages below?  I think we need to
+> use a "bool compound = PageHead(page)" on entry to __free_pages().
 
+That's a good point.
 
-On 23.03.21 15:00, Rasmus Villemoes wrote:
-> On 23/03/2021 13.49, Oliver Hartkopp wrote:
->>
->>
->> On 23.03.21 12:36, Rasmus Villemoes wrote:
->>>
->>> and more directly from the horse's mouth:
->>>
->>> https://developer.arm.com/documentation/dui0067/d/arm-compiler-reference/c-and-c---implementation-details/structures--unions--enumerations--and-bitfields
->>>
->>>
->>> Field alignment
->>>
->>>       Structures are arranged with the first-named component at the lowest
->>> address. Fields are aligned as follows:
->>>
->>>           A field with a char type is aligned to the next available byte.
->>>
->>>           A field with a short type is aligned to the next even-addressed
->>> byte.
->>>
->>>           Bitfield alignment depends on how the bitfield is declared. See
->>> Bitfields in packed structures for more information.
->>>
->>>           All other types are aligned on word boundaries.
->>>
->>> That anonymous union falls into the "All other types" bullet.
->>>
->>> __packed is the documented and standard way to overrule the
->>> compiler's/ABI's layout decisions.
->>
->> So why is there a difference between
->>
->> gcc version 10.2.0
->>
->> and
->>
->> gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-> 
-> I'm guessing there's no difference between those (in this respect), but
-> they are invoked differently.
-> 
->> Would this mean that either STRUCTURE_SIZE_BOUNDARY or the command line
->> option -mstructure_size_boundary=<n>
->>
->> are set differently?
-> 
-> Yes, though very likely -mstructure_size_boundary is not set explicitly
-> but via some other option.
-> 
-> gcc has a rather helpful but almost unknown feature that one can
-> actually query for lots of different parameters and their
-> default/current values. So on my Ubuntu system (20.04, gcc 9.3), for
-> example, if I do
-> 
-> $ arm-linux-gnueabihf-gcc -O2 -Q --help=target | grep struct
->    -mstructure-size-boundary=            8
-> 
-> So that would seem to say that the union should work as expected.
-> However, when I actually try to compile with the .config that kbuild
-> reports failing, I do see that BUILD_BUG_ON triggering.
-> 
-> So let us inspect the actual command line used to build some other
-> random .o file in net/can; look at net/can/.bcm.o.cmd
-> 
-> cmd_net/can/bcm.o := arm-linux-gnueabihf-gcc -Wp,-MMD,net/can/.bcm.o.d
-> -nostdinc -isystem /usr/lib/gcc-cross/arm-linux-gnueabihf/9/include
-> -I./arch/arm/include -I./arch/arm/include/generated  -I./include
-> -I./arch/arm/include/uapi -I./arch/arm/include/generated/uapi
-> -I./include/uapi -I./include/generated/uapi -include
-> ./include/linux/compiler-version.h -include ./include/linux/kconfig.h
-> -include ./include/linux/compiler_types.h -D__KERNEL__ -mlittle-endian
-> -I./arch/arm/mach-footbridge/include -fmacro-prefix-map=./= -Wall
-> -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing
-> -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration
-> -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu89
-> -fno-dwarf2-cfi-asm -mno-unaligned-access -fno-omit-frame-pointer -mapcs
-> -mno-sched-prolog -fno-ipa-sra -mabi=apcs-gnu -mno-thumb-interwork -marm
-> -Wa,-mno-warn-deprecated -D__LINUX_ARM_ARCH__=4 -march=armv4
-> -mtune=strongarm110 -msoft-float -Uarm -fno-delete-null-pointer-checks
-> -Wno-frame-address -Wno-format-truncation -Wno-format-overflow
-> -Wno-address-of-packed-member -O2 --param=allow-store-data-races=0
-> -Wframe-larger-than=1024 -fno-stack-protector
-> -Wno-unused-but-set-variable -Wimplicit-fallthrough
-> -Wno-unused-const-variable -fno-omit-frame-pointer
-> -fno-optimize-sibling-calls -fno-inline-functions-called-once
-> -Wdeclaration-after-statement -Wvla -Wno-pointer-sign
-> -Wno-stringop-truncation -Wno-array-bounds -Wno-stringop-overflow
-> -Wno-restrict -Wno-maybe-uninitialized -fno-strict-overflow
-> -fno-stack-check -fconserve-stack -Werror=date-time
-> -Werror=incompatible-pointer-types -Werror=designated-init
-> -Wno-packed-not-aligned    -fsanitize-coverage=trace-pc
-> -DKBUILD_MODFILE='"net/can/can-bcm"' -DKBUILD_BASENAME='"bcm"'
-> -DKBUILD_MODNAME='"can_bcm"' -D__KBUILD_MODNAME=kmod_can_bcm -c -o
-> net/can/bcm.o net/can/bcm.c
-> 
-> Lots of gunk. But just to see if one of those options have affected the
-> -mstructure-size-boundary= value, just take that whole command line and
-> throw in -Q --help=target at the end, and we get
-> 
->    -mstructure-size-boundary=            32
-> 
-> So let us guess that it's the ABI choice -mabi=apcs-gnu
-> 
-> $ arm-linux-gnueabihf-gcc -O2 -msoft-float -mabi=apcs-gnu -Q
-> --help=target | grep struct
->    -mstructure-size-boundary=            32
-> 
-> Bingo. (-msoft-float is also included just as in the real command line
-> because gcc barfs otherwise).
+> And would it be wrong to fix that too in this patch?
 
-Thanks for all the comprehensive explanations!
+All aboard the mm-page_alloc-fix-stuff.patch!
 
-> Now what CONFIG_* knobs are responsible for putting -mabi=apcs-gnu in
-> CFLAGS is left as an exercise for the reader. Regardless, it is not a
-> bug in the compiler. The error is the assumption that this language
-> 
-> "Aggregates and Unions
-> 
-> Structures and unions assume the alignment of their most strictly
-> aligned component.
+No, I think it's fine to sqash them and treat it as a supplement to
+Matthew's original patch (although technically it didn't make the
+memcg leak any worse).
 
-(parse error in sentence)
+> Though it ought then to be backported to 5.10 stable.
 
-> Each member is assigned to the lowest available offset with the appropriate
-> alignment. The size of any object is always a multiple of the object‘s
-> alignment."
-> 
-> from the x86-64 ABI applies on all other architectures/ABIs.
-> 
->> I'm not a compiler expert but this does not seem to be consistent.
->>
->> Especially as we only have byte sizes (inside and outside of the union)
->> and "A field with a char type is aligned to the next available byte."
-> 
-> Yes, and that's exactly what you got before the anon union was introduced.
+Sounds good. It depends on split_page_memcg(), but that patch is
+straight-forward enough to backport as well.
 
-Before(!) the union there is nothing to pad.
+---
 
->> The union is indeed aligned to the word boundary - but the following
->> byte is not aligned to the next available byte.
-> 
-> Yes it is, because the union occupies 4 bytes. The first byte is shared
-> by the two char members, the remaining three bytes are padding.
+From f6f062a3ec46f4fb083dcf6792fde9723f18cfc5 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Fri, 19 Mar 2021 02:17:00 -0400
+Subject: [PATCH] mm: page_alloc: fix allocation imbalances from speculative
+ cache lookup
 
-But why is the union 4 bytes long here and adds a padding of three bytes 
-at the end? IMO this is an error.
+When the freeing of a higher-order page block (non-compound) races
+with a speculative page cache lookup, __free_pages() needs to leave
+the first order-0 page in the chunk to the lookup but free the buddy
+pages that the lookup doesn't know about separately.
 
-Thanks for your patience,
-Oliver
+There are currently two problems with it:
+
+1. It checks PageHead() to see whether we're dealing with a compound
+   page after put_page_testzero(). But the speculative lookup could
+   have freed the page after our put and cleared PageHead, in which
+   case we would double free the tail pages.
+
+   To fix this, test PageHead before the put and cache the result for
+   afterwards.
+
+2. If such a higher-order page is charged to a memcg (e.g. !vmap
+   kernel stack)), only the first page of the block has page->memcg
+   set. That means we'll uncharge only one order-0 page from the
+   entire block, and leak the remainder.
+
+   To fix this, add a split_page_memcg() before it starts freeing tail
+   pages, to ensure they all have page->memcg set up.
+
+While at it, also update the comments a bit to clarify what exactly is
+happening to the page during that race.
+
+Fixes: e320d3012d25 mm/page_alloc.c: fix freeing non-compound pages
+Reported-by: Hugh Dickins <hughd@google.com>
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: <stable@vger.kernel.org> # 5.10+
+---
+ mm/page_alloc.c | 41 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 35 insertions(+), 6 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c53fe4fa10bf..8aab1e87fa3c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
+  * the allocation, so it is easy to leak memory.  Freeing more memory
+  * than was allocated will probably emit a warning.
+  *
+- * If the last reference to this page is speculative, it will be released
+- * by put_page() which only frees the first page of a non-compound
+- * allocation.  To prevent the remaining pages from being leaked, we free
+- * the subsequent pages here.  If you want to use the page's reference
++ * This function isn't a put_page(). Don't let the put_page_testzero()
++ * fool you, it's only to deal with speculative cache references. It
++ * WILL free pages directly. If you want to use the page's reference
+  * count to decide when to free the allocation, you should allocate a
+  * compound page, and use put_page() instead of __free_pages().
+  *
+@@ -5124,11 +5123,41 @@ static inline void free_the_page(struct page *page, unsigned int order)
+  */
+ void __free_pages(struct page *page, unsigned int order)
+ {
+-	if (put_page_testzero(page))
++	bool compound = PageHead(page);
++
++	/*
++	 * Drop the base reference from __alloc_pages and free. In
++	 * case there is an outstanding speculative reference, from
++	 * e.g. the page cache, it will put and free the page later.
++	 */
++	if (likely(put_page_testzero(page))) {
+ 		free_the_page(page, order);
+-	else if (!PageHead(page))
++		return;
++	}
++
++	/*
++	 * Ok, the speculative reference will put and free the page.
++	 *
++	 * - If this was an order-0 page, we're done.
++	 *
++	 * - If the page was compound, the other side will free the
++	 *   entire page and we're done here as well. Just note that
++	 *   freeing clears PG_head, so it can only be read reliably
++	 *   before the put_page_testzero().
++	 *
++	 * - If the page was of higher order but NOT marked compound,
++	 *   the other side will know nothing about our buddy pages
++	 *   and only free the order-0 page at the start of our block.
++	 *   We must split off and free the buddy pages here.
++	 *
++	 *   The buddy pages aren't individually refcounted, so they
++	 *   can't have any pending speculative references themselves.
++	 */
++	if (order > 0 && !compound) {
++		split_page_memcg(page, 1 << order);
+ 		while (order-- > 0)
+ 			free_the_page(page + (1 << order), order);
++	}
+ }
+ EXPORT_SYMBOL(__free_pages);
+ 
+-- 
+2.31.0
+
