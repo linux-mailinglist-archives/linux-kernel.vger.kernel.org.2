@@ -2,270 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C313457F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8FF3457FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhCWGs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:48:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229897AbhCWGsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:48:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64E2661992;
-        Tue, 23 Mar 2021 06:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616482130;
-        bh=Yr2HhyT5BBzbgia3YyQX5M1bKzv4UKeQb96izwivo7w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mHXtiABOwhSmlC5LVCLUA5lwWrBa/npNQMpyVi4jEleJP0onfDbrB604VOfBybbp6
-         Q6+J307kj7swEwK1kluMhDAsVTGmwK0SQ/9oXgxErCQIxgSCpsd6JI6Y9/DgIXvNHa
-         SAqhDFC4y0i2EmOuAazXe6O1E57m891T/mnZYMxRtZBMCffONWnYwo7RukQJwpklWP
-         +mJGCR6os79rj8JrNARfBeCl4m6QMqd8eYL/pz2Q3GfMFvIL3vnM7hs9cM0KBwq9Yh
-         /80dKRk4cd38E1xBx+LjYSyAjU/Lbl2cJB1eRoY76v+lh0wdnuAlhVVYOiEE/XR6Ku
-         7yuaE0UFhT0Pg==
-Date:   Tue, 23 Mar 2021 12:18:46 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
-Message-ID: <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink>
-References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
+        id S229943AbhCWGuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbhCWGtd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:49:33 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83978C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 23:49:28 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id w10so654129wmk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 23:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=pditvg/nc0NLp+p2M+bo/XsGI8wzVr1z5D5T5xN+BK0=;
+        b=pD3GJ4+4okoHKwwo6ruL+u4wUBi7/p22gschG4mFHjG+1UHklTrafFGqEVUAEAV1VL
+         HSBAfqGpmArEQJwg1bipPS3fR8+FxmB+QK++3coIYvZkZVSTkZ/ZKvnp0NhfFlynMaTx
+         Lia8SWM8MPDsNxI7IG2J0WyrYJEUFn1eCV+pd5ALQq7A3hBVb/P//I9mv75CoavPoM2r
+         Yrpc5b0vghqmZobcKVN+b7t7zIKD0YKt85YiGO3SVFyL5WMDojbT6YOwjyhnWz56fBZS
+         fOqJ/W5XlWlrFullfwfmE3HZfMcgguY1+D4IChzQAot7rgQv/SYUpxkdwtNNG+YLaTY2
+         PB0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=pditvg/nc0NLp+p2M+bo/XsGI8wzVr1z5D5T5xN+BK0=;
+        b=ePoBFsiLwXM7KIO7wyHuruf8qoATR/x8ciKnZXruvdviB/Fs5kv2z7Wy5q53/PtAbQ
+         ea6yvE7+qnvT/+aiFCBUNqMZPzOFvKXRPWGbcZ7NjJX8FvM+9vjA47oJalPlzw6ThmkK
+         jejeOvSXXVIvMvVzJj+uvlpKfIpJDuA/Ls4NYbAWtWkEu2zITuqjfOpIwF9cJi/2N7Dm
+         vmgXV/q6OpJThanRaxxR/Ol2A4PtUVqsBM3nNvt46ry0G1cTxFtnMVgU2WPMd6cvaCuH
+         1qG6iazNJGju+2mbdfIdHj8nxG+0gAuu4kVuaz9Ap9S5/JEdfFPTUQh6AZZJ2AAuzTkM
+         Ci2Q==
+X-Gm-Message-State: AOAM530/2yBYsHcmN5SaCIbL4bJX+cF2PArJaUAi/tCO0nS3xL0b3PZ/
+        PHWtqWXlQPOwG9xhAV9CTlFVwGU3/6Qb
+X-Google-Smtp-Source: ABdhPJwCEn8gixp+xlt4DyGdnlAg3sme9Kew9fjXQeafOZX+ZOjfUZ+ilzQTeEfnQMi47mt+wi/Q5YfHX7Rp
+X-Received: from dvyukov-desk.muc.corp.google.com ([2a00:79e0:15:13:d80d:9d4d:16e4:a16c])
+ (user=dvyukov job=sendgmr) by 2002:a05:600c:49aa:: with SMTP id
+ h42mr1828173wmp.49.1616482166965; Mon, 22 Mar 2021 23:49:26 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 07:49:23 +0100
+Message-Id: <20210323064923.2098711-1-dvyukov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2] net: make unregister netdev warning timeout configurable
+From:   Dmitry Vyukov <dvyukov@google.com>
+To:     davem@davemloft.net, edumazet@google.com, leon@kernel.org
+Cc:     Dmitry Vyukov <dvyukov@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-03-21, 08:43, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> Now that the auxiliary_bus exists, there's no reason to use platform
-> devices as children of a PCI device any longer.
-> 
-> This patch refactors the code by extending a basic auxiliary device
-> with Intel link-specific structures that need to be passed between
-> controller and link levels. This refactoring is much cleaner with no
-> need for cross-pointers between device and link structures.
-> 
-> Note that the auxiliary bus API has separate init and add steps, which
-> requires more attention in the error unwinding paths. The main loop
-> needs to deal with kfree() and auxiliary_device_uninit() for the
-> current iteration before jumping to the common label which releases
-> everything allocated in prior iterations.
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> ---
->  drivers/soundwire/Kconfig           |   1 +
->  drivers/soundwire/intel.c           |  52 ++++----
->  drivers/soundwire/intel.h           |  14 +-
->  drivers/soundwire/intel_init.c      | 190 +++++++++++++++++++---------
->  include/linux/soundwire/sdw_intel.h |   6 +-
->  5 files changed, 175 insertions(+), 88 deletions(-)
-> 
-> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-> index 016e74230bb7..2b7795233282 100644
-> --- a/drivers/soundwire/Kconfig
-> +++ b/drivers/soundwire/Kconfig
-> @@ -25,6 +25,7 @@ config SOUNDWIRE_INTEL
->  	tristate "Intel SoundWire Master driver"
->  	select SOUNDWIRE_CADENCE
->  	select SOUNDWIRE_GENERIC_ALLOCATION
-> +	select AUXILIARY_BUS
->  	depends on ACPI && SND_SOC
->  	help
->  	  SoundWire Intel Master driver.
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index d2254ee2fee2..039a101982c9 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -11,7 +11,7 @@
->  #include <linux/module.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
-> -#include <linux/platform_device.h>
-> +#include <linux/auxiliary_bus.h>
->  #include <sound/pcm_params.h>
->  #include <linux/pm_runtime.h>
->  #include <sound/soc.h>
-> @@ -1331,9 +1331,10 @@ static int intel_init(struct sdw_intel *sdw)
->  /*
->   * probe and init
->   */
-> -static int intel_master_probe(struct platform_device *pdev)
-> +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
->  {
-> -	struct device *dev = &pdev->dev;
-> +	struct device *dev = &auxdev->dev;
-> +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
+netdev_wait_allrefs() issues a warning if refcount does not drop to 0
+after 10 seconds. While 10 second wait generally should not happen
+under normal workload in normal environment, it seems to fire falsely
+very often during fuzzing and/or in qemu emulation (~10x slower).
+At least it's not possible to understand if it's really a false
+positive or not. Automated testing generally bumps all timeouts
+to very high values to avoid flake failures.
+Add net.core.netdev_unregister_timeout_secs sysctl to make
+the timeout configurable for automated testing systems.
+Lowering the timeout may also be useful for e.g. manual bisection.
+The default value matches the current behavior.
 
-Do we need another abstractions for resources here, why not aux dev
-creation set the resources required and we skip this step...
+Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
->  	struct sdw_intel *sdw;
->  	struct sdw_cdns *cdns;
->  	struct sdw_bus *bus;
-> @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
->  	cdns = &sdw->cdns;
->  	bus = &cdns->bus;
->  
-> -	sdw->instance = pdev->id;
-> -	sdw->link_res = dev_get_platdata(dev);
-> +	sdw->instance = auxdev->id;
+---
+Changes since v1:
+ - use sysctl instead of a config
+---
+ Documentation/admin-guide/sysctl/net.rst | 11 +++++++++++
+ include/linux/netdevice.h                |  1 +
+ net/core/dev.c                           |  6 +++++-
+ net/core/sysctl_net_core.c               | 10 ++++++++++
+ 4 files changed, 27 insertions(+), 1 deletion(-)
 
-so auxdev has id and still we pass id as argument :( Not sure if folks
-can fix this now
+diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
+index f2ab8a5b6a4b8..2090bfc69aa50 100644
+--- a/Documentation/admin-guide/sysctl/net.rst
++++ b/Documentation/admin-guide/sysctl/net.rst
+@@ -311,6 +311,17 @@ permit to distribute the load on several cpus.
+ If set to 1 (default), timestamps are sampled as soon as possible, before
+ queueing.
+ 
++netdev_unregister_timeout_secs
++------------------------------
++
++Unregister network device timeout in seconds.
++This option controls the timeout (in seconds) used to issue a warning while
++waiting for a network device refcount to drop to 0 during device
++unregistration. A lower value may be useful during bisection to detect
++a leaked reference faster. A larger value may be useful to prevent false
++warnings on slow/loaded systems.
++Default value is 10, minimum 0, maximum 3600.
++
+ optmem_max
+ ----------
+ 
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 87a5d186faff4..179c5693f5119 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -4611,6 +4611,7 @@ void dev_get_tstats64(struct net_device *dev, struct rtnl_link_stats64 *s);
+ 
+ extern int		netdev_max_backlog;
+ extern int		netdev_tstamp_prequeue;
++extern int		netdev_unregister_timeout_secs;
+ extern int		weight_p;
+ extern int		dev_weight_rx_bias;
+ extern int		dev_weight_tx_bias;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 0f72ff5d34ba0..7accbd4a3bec1 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10344,6 +10344,8 @@ int netdev_refcnt_read(const struct net_device *dev)
+ }
+ EXPORT_SYMBOL(netdev_refcnt_read);
+ 
++int netdev_unregister_timeout_secs __read_mostly = 10;
++
+ #define WAIT_REFS_MIN_MSECS 1
+ #define WAIT_REFS_MAX_MSECS 250
+ /**
+@@ -10405,7 +10407,9 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 
+ 		refcnt = netdev_refcnt_read(dev);
+ 
+-		if (refcnt && time_after(jiffies, warning_time + 10 * HZ)) {
++		if (refcnt &&
++		    time_after(jiffies, warning_time +
++			       netdev_unregister_timeout_secs * HZ)) {
+ 			pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
+ 				 dev->name, refcnt);
+ 			warning_time = jiffies;
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index 4567de519603b..d84c8a1b280e2 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -24,6 +24,7 @@
+ 
+ static int two = 2;
+ static int three = 3;
++static int int_3600 = 3600;
+ static int min_sndbuf = SOCK_MIN_SNDBUF;
+ static int min_rcvbuf = SOCK_MIN_RCVBUF;
+ static int max_skb_frags = MAX_SKB_FRAGS;
+@@ -570,6 +571,15 @@ static struct ctl_table net_core_table[] = {
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= SYSCTL_ONE,
+ 	},
++	{
++		.procname	= "netdev_unregister_timeout_secs",
++		.data		= &netdev_unregister_timeout_secs,
++		.maxlen		= sizeof(unsigned int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ZERO,
++		.extra2		= &int_3600,
++	},
+ 	{ }
+ };
+ 
 
-> +	sdw->link_res = &ldev->link_res;
->  	cdns->dev = dev;
->  	cdns->registers = sdw->link_res->registers;
->  	cdns->instance = sdw->instance;
->  	cdns->msg_count = 0;
->  
-> -	bus->link_id = pdev->id;
-> +	bus->link_id = auxdev->id;
->  
->  	sdw_cdns_probe(cdns);
->  
-> @@ -1386,10 +1387,10 @@ static int intel_master_probe(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -int intel_master_startup(struct platform_device *pdev)
-> +int intel_link_startup(struct auxiliary_device *auxdev)
->  {
->  	struct sdw_cdns_stream_config config;
-> -	struct device *dev = &pdev->dev;
-> +	struct device *dev = &auxdev->dev;
->  	struct sdw_cdns *cdns = dev_get_drvdata(dev);
->  	struct sdw_intel *sdw = cdns_to_intel(cdns);
->  	struct sdw_bus *bus = &cdns->bus;
-> @@ -1526,9 +1527,9 @@ int intel_master_startup(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static int intel_master_remove(struct platform_device *pdev)
-> +static void intel_link_remove(struct auxiliary_device *auxdev)
->  {
-> -	struct device *dev = &pdev->dev;
-> +	struct device *dev = &auxdev->dev;
->  	struct sdw_cdns *cdns = dev_get_drvdata(dev);
->  	struct sdw_intel *sdw = cdns_to_intel(cdns);
->  	struct sdw_bus *bus = &cdns->bus;
-> @@ -1544,19 +1545,17 @@ static int intel_master_remove(struct platform_device *pdev)
->  		snd_soc_unregister_component(dev);
->  	}
->  	sdw_bus_master_delete(bus);
-> -
-> -	return 0;
->  }
->  
-> -int intel_master_process_wakeen_event(struct platform_device *pdev)
-> +int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
->  {
-> -	struct device *dev = &pdev->dev;
-> +	struct device *dev = &auxdev->dev;
->  	struct sdw_intel *sdw;
->  	struct sdw_bus *bus;
->  	void __iomem *shim;
->  	u16 wake_sts;
->  
-> -	sdw = platform_get_drvdata(pdev);
-> +	sdw = dev_get_drvdata(dev);
-
-No auxdev_get_drvdata() ?
-
->  	bus = &sdw->cdns.bus;
->  
->  	if (bus->prop.hw_disabled) {
-> @@ -1978,17 +1977,22 @@ static const struct dev_pm_ops intel_pm = {
->  	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
->  };
->  
-> -static struct platform_driver sdw_intel_drv = {
-> -	.probe = intel_master_probe,
-> -	.remove = intel_master_remove,
-> +static const struct auxiliary_device_id intel_link_id_table[] = {
-> +	{ .name = "soundwire_intel.link" },
-
-Curious why name with .link..?
-
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(auxiliary, intel_link_id_table);
-> +
-> +static struct auxiliary_driver sdw_intel_drv = {
-> +	.probe = intel_link_probe,
-> +	.remove = intel_link_remove,
->  	.driver = {
-> -		.name = "intel-sdw",
-> +		/* auxiliary_driver_register() sets .name to be the modname */
->  		.pm = &intel_pm,
-> -	}
-> +	},
-> +	.id_table = intel_link_id_table
->  };
-> -
-> -module_platform_driver(sdw_intel_drv);
-> +module_auxiliary_driver(sdw_intel_drv);
->  
->  MODULE_LICENSE("Dual BSD/GPL");
-> -MODULE_ALIAS("platform:intel-sdw");
-> -MODULE_DESCRIPTION("Intel Soundwire Master Driver");
-> +MODULE_DESCRIPTION("Intel Soundwire Link Driver");
-> diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-> index 06bac8ba14e9..0b47b148da3f 100644
-> --- a/drivers/soundwire/intel.h
-> +++ b/drivers/soundwire/intel.h
-> @@ -7,7 +7,6 @@
->  /**
->   * struct sdw_intel_link_res - Soundwire Intel link resource structure,
->   * typically populated by the controller driver.
-> - * @pdev: platform_device
->   * @mmio_base: mmio base of SoundWire registers
->   * @registers: Link IO registers base
->   * @shim: Audio shim pointer
-> @@ -23,7 +22,6 @@
->   * @list: used to walk-through all masters exposed by the same controller
->   */
->  struct sdw_intel_link_res {
-> -	struct platform_device *pdev;
->  	void __iomem *mmio_base; /* not strictly needed, useful for debug */
->  	void __iomem *registers;
->  	void __iomem *shim;
-> @@ -48,7 +46,15 @@ struct sdw_intel {
->  #endif
->  };
->  
-> -int intel_master_startup(struct platform_device *pdev);
-> -int intel_master_process_wakeen_event(struct platform_device *pdev);
-> +int intel_link_startup(struct auxiliary_device *auxdev);
-> +int intel_link_process_wakeen_event(struct auxiliary_device *auxdev);
-> +
-> +struct sdw_intel_link_dev {
-> +	struct auxiliary_device auxdev;
-> +	struct sdw_intel_link_res link_res;
-> +};
-
-I was hoping that with auxdev we can get rid of this init layer, can
-that still be done?
-
-The auxdev is created by Intel controller, so it sets up resources. I am
-not really happy that we need to continue having this layer.. can we add
-something is auxdev core to handle these situations.
-
-What I would like to see the end result is that sdw driver for Intel
-controller here is a simple auxdev device and no additional custom setup
-layer required... which implies that this handling should be moved into
-auxdev or Intel code setting up auxdev...
-
+base-commit: e0c755a45f6fb6e81e3a62a94db0400ef0cdc046
 -- 
-~Vinod
+2.31.0.291.g576ba9dcdaf-goog
+
