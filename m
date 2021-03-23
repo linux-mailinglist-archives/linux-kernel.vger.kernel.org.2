@@ -2,96 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F46346DBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 00:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC76346DBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 00:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbhCWXLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 19:11:25 -0400
-Received: from dcvr.yhbt.net ([64.71.152.64]:51962 "EHLO dcvr.yhbt.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234246AbhCWXLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 19:11:06 -0400
-Received: from localhost (dcvr.yhbt.net [127.0.0.1])
-        by dcvr.yhbt.net (Postfix) with ESMTP id 59C7D1F9FC;
-        Tue, 23 Mar 2021 23:11:06 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 23:11:06 +0000
-From:   Eric Wong <e@80x24.org>
-To:     workflows@vger.kernel.org
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thorsten Leemhuis <linux@leemhuis.info>,
-        ksummit-discuss@lists.linuxfoundation.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
- focussed on issues/bugs and regressions
-Message-ID: <20210323231106.GA7165@dcvr>
-References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
- <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
- <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
- <20210323122025.77888b49@gandalf.local.home>
- <72f1c67bc8ad21bb1e5a7d77b88e2c3e50065e3b.camel@HansenPartnership.com>
- <20210323214317.t3igv3nan4lfolgr@chatter.i7.local>
+        id S234257AbhCWXMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 19:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234252AbhCWXMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 19:12:03 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AE6C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 16:12:03 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id j26so19528287iog.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 16:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0CTkCP7eh5JThTr8jIH1qDmyEvNCPXGfv16BaMHqRms=;
+        b=G+HRAoEBftiZViB1W9yjFGzhCO8zCpuDbTwdqm/XGLcphKdTuhO8hpKuEGztPMNjH4
+         BK78t12o0bz41KzLUGsF1JKgf6FIBd52ul0eqkkWTCrn/L2EpLbi+i1+Bz3XCdJDfQ7y
+         tpFup7b1C+lZDCytyJMp9k7yDIH8uhiU213e0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0CTkCP7eh5JThTr8jIH1qDmyEvNCPXGfv16BaMHqRms=;
+        b=sFk5BDkNvfW8ClYOBTstIel8sv+5wUDteAVCxjbnWr2Pws5ohoKid3k/yu+zeyg52W
+         0ayxNuQwwr8gicTLa+BDsYnDl2I02RbCFzFUsNAbTQH5lHG9w5PNH85HESuPq4xns5I4
+         EBhhicYwr0Rbd8ZEIlE44se17w4uK4RCJJYdbAu+8S9MT7uXNYHcr4owp/43+zOr6AFu
+         r1UQDrlUJcu2eqs2OCe2PhPOflwFwAR+hYFFYqoevseCwNQYnq96bRARifxnue/KLr/B
+         ZGu3iPKJcRKbr5T7d1I56v3DtqEPjr4h+E3kzJLGnK2Zd6BAu/rlf9NJlqkgGkppP/4W
+         4A9g==
+X-Gm-Message-State: AOAM530nI094X3EQCfdLdAj7EYg/QuoAC6kIfHabiCRAniDqwMN4+aVa
+        uW7fS1JV3Xsyt9akdHVGUKqzQ1S9EUANCw==
+X-Google-Smtp-Source: ABdhPJz29DEstIzTa436eSM6a5JP0poV2ojeMgXtNVbPWeIgpc9a04FJlN+PpIQoOlkjEKxHHOFEVQ==
+X-Received: by 2002:a05:6638:144e:: with SMTP id l14mr343367jad.76.1616541122241;
+        Tue, 23 Mar 2021 16:12:02 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id r3sm151608ilq.42.2021.03.23.16.12.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 16:12:01 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] usbip: tools: add options and examples in man page
+ related to device mode
+To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Antonio Borneo <borneo.antonio@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <YFnlUaF2njDjIhfM@Sun>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <1a2c79b7-1cc0-9ddd-f2ec-fa7b222113ec@linuxfoundation.org>
+Date:   Tue, 23 Mar 2021 17:12:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210323214317.t3igv3nan4lfolgr@chatter.i7.local>
+In-Reply-To: <YFnlUaF2njDjIhfM@Sun>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konstantin Ryabitsev <konstantin@linuxfoundation.org> wrote:
-> On Tue, Mar 23, 2021 at 09:30:33AM -0700, James Bottomley wrote:
-> > > I think the bulk of user issues are going to be regressions. Although
-> > > you may be in a better position to know for sure, but at least for
-> > > me, wearing my "user" hat, the thing that gets me the most is
-> > > upgrading to a new kernel and suddenly something that use to work no
-> > > longer does. And that is the definition of a regression. My test
-> > > boxes still run old distros (one is running fedora 13). These are the
-> > > boxes that catch the most issues, and if they do, they are pretty
-> > > much guaranteed to be a regression.
-> > > 
-> > > I like the "linux-regressions" mailing list idea.
-> > 
-> > Can't we use the fancy features of public inbox to get the best of both
-> > worlds?  Have the bug list (or even a collection of lists) but make the
-> > linux-regressions one a virtual list keying off an imap flag which a
-> > group of people control.  That way anything that is flagged as a
-> > regression appears in that public inbox.  I assume the search can be
-> > quite wide so we could flag a regression on any list indexed by lore?
-
-The lei (local email interface) data model will have "labels"(*)
-and developers will be able to publish mail with it via static
-HTML/Atom/JSON feed via cronjob and whatnot.
-
-> There's a number of ways we can accomplish this, sure.
+On 3/23/21 6:55 AM, Hongren Zheng (Zenithal) wrote:
+> The commit e0546fd8b748 ("usbip: tools: Start using VUDC backend in
+> usbip tools") implemented device mode for user space tools, however the
+> corresponding options are not documented in man page.
 > 
-> However, this functionality is not in production yet, and I'm not sure which
-> upcoming public-inbox features we'll be implementing as a public
-> lore.kernel.org service,
+> This commit documents the options and provides examples on device mode.
+> 
+> Signed-off-by: Hongren Zheng <i@zenithal.me>
+> ---
+>   tools/usb/usbip/doc/usbip.8  | 25 +++++++++++++++++++++++++
+>   tools/usb/usbip/doc/usbipd.8 | 22 ++++++++++++++++++++++
+>   2 files changed, 47 insertions(+)
+> 
+> PATCH v2:
+>      Add signed-off-by line
+> 
+> PATCH v3:
+>      Move patch changelog after the marker line
+>      Remove nickname in signed-off-by line
+> 
+> PATCH v4:
+>      Use commit short hash and message instead of long hash only when
+>        referring to commit in the kernel
+> 
 
-> which ones we'll only offer to kernel.org account holders,
+Thank you for the patch. Please see comments below:
 
-lei could offer read-write JMAP support; either as a CGI tied
-to Unix user accounts or some virtual user system.  Some fixes
-I'm currently making to speed up the test suite will also make
-it more suitable for a largish virtual user system.
+> diff --git a/tools/usb/usbip/doc/usbip.8 b/tools/usb/usbip/doc/usbip.8
+> index a15d20063b98..385b0eda8746 100644
+> --- a/tools/usb/usbip/doc/usbip.8
+> +++ b/tools/usb/usbip/doc/usbip.8
+> @@ -49,6 +49,13 @@ then exit.
+>   Attach a remote USB device.
+>   .PP
+>   
+> +.HP
+> +\fBattach\fR \-\-remote=<\fIhost\fR> \-\-device=<\fdev_id\fR>
+> +.IP
+> +Attach a remote USB gadget.
+> +Only used when the remote usbipd is in device mode.
+> +.PP
+> +
+>   .HP
+>   \fBdetach\fR \-\-port=<\fIport\fR>
+>   .IP
 
-> and which ones should really be running locally by developers
-> themselves.
+This is a bit confusing. Please add a separate section for
+Attach a remote USB gadget complete with attach and detach
+instructions.
 
-lei will be MY dream mail/git tool that fills in the gaps
-left by other tools; I hope it can make others happy, too :)
+> @@ -73,6 +80,14 @@ Stop exporting a device so it can be used by a local driver.
+>   List USB devices exported by a remote host.
+>   .PP
+>   
+> +.HP
+> +\fBlist\fR \-\-device
+> +.IP
+> +List USB gadgets of local usbip-vudc.
+> +Only used when the local usbipd is in device mode.
+> +This can not list usbip-vudc USB gadgets of the remote device mode usbipd.
+> +.PP
+> +
+>   .HP
+>   \fBlist\fR \-\-local
+>   .IP
+> @@ -93,5 +108,15 @@ List local USB devices.
+>       client:# usbip detach --port=0
+>           - Detach the usb device.
+>   
+> +The following example shows the use of device mode
+> +
+> +    server:# usbip list --device
+> +        - Note this is the server side
+> +
+> +    client:# modprobe vhci-hcd
+> +
+> +    client:# usbip attach --remote=server --device=usbip-vudc.0
+> +        - Connect the remote USB gadget
+> +
+>   .SH "SEE ALSO"
+>   \fBusbipd\fP\fB(8)\fB\fP
+> diff --git a/tools/usb/usbip/doc/usbipd.8 b/tools/usb/usbip/doc/usbipd.8
+> index fb62a756893b..53c8d5792de6 100644
+> --- a/tools/usb/usbip/doc/usbipd.8
+> +++ b/tools/usb/usbip/doc/usbipd.8
+> @@ -29,6 +29,12 @@ Bind to IPv4. Default is both.
+>   Bind to IPv6. Default is both.
+>   .PP
+>   
+> +.HP
+> +\fB\-e\fR, \fB\-\-device\fR
+> +.IP
+> +Run in device mode. Rather than drive an attached device, create a virtual UDC to bind gadgets to.
+> +.PP
+> +
+>   .HP
+>   \fB\-D\fR, \fB\-\-daemon\fR
+>   .IP
+> @@ -86,6 +92,22 @@ USB/IP client can connect and use exported devices.
+>           - A usb device 1-2 is now exportable to other hosts!
+>           - Use 'usbip unbind --busid=1-2' when you want to shutdown exporting and use the device locally.
+>   
+> +The following example shows the use of device mode
+> +
+> +    server:# modprobe usbip-vudc
+> +        - Use /sys/class/udc/ interface
+> +        - usbip-host is independent of this module.
+> +
+> +    server:# usbipd -e -D
+> +        - Start usbip daemon in device mode.
+> +
+> +    server:# modprobe g_mass_storage file=/tmp/tmp.img
+> +        - Bind a gadget to usbip-vudc
+> +        - in this example, a mass storage gadget is bound
+> +
+> +    server:# usbip list --device
+> +        - Note this is the server side
+> +
+>   .SH "SEE ALSO"
+>   \fBusbip\fP\fB(8)\fB\fP
+>   
+> 
 
-> So, I don't want to say either yes or no to this one for the fear of
-> over-promising. I guess this is why I'm not in sales. :)
+thanks,
+-- Shuah
 
-Heh, same here.  Once I start using lei to handle all of my mail
-and there's a data-loss bug, I could conceivably never know
-about it because the bug reports would be lost... :x
-
-
-[1] "labels" are "mailboxes" in JMAP-speak; and lei's per-user data
-    model will be tied to JMAP.  "keywords" are Maildir/IMAP-system
-    flags (seen/flagged/answered/...).  JMAP doesn't allow arbitrary
-    keywords, but does allow arbitrary labels.
