@@ -2,101 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0443462D9
+	by mail.lfdr.de (Postfix) with ESMTP id 5983B3462DA
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhCWP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:29:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11272 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232816AbhCWP2c (ORCPT
+        id S232854AbhCWP3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232829AbhCWP2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:28:32 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NFGQtq158809;
-        Tue, 23 Mar 2021 11:27:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=HEgPNmOQ2fGg+4o6ggG+TNuvsojvFlxy9dBHlBe6Svc=;
- b=j6Axg86BIT6TdVpK3dBy599D+sEsSqA4nMaJjCiiop2oShxkrUfHnnN/Xd3h/Swxo7aa
- 5NKOVTNS1xlKE0pRfPk80TITeQTTiyDX19Dnq2BY0H3i2iy8EC2JnSL5ccfLWBgv394m
- ab5x/brQxo90AIXLxqy2cFVgak4tCpENma9XCPf+ub+FBQ1D7d2OKK2ItTEFC/J6xGI2
- 1xzVmwJQR9UAg+rnRwKM2mZ5SzMiZk7aJ6Yj+jPpon/fTZk3u/DB6Vfmq8jCRG2CeNxl
- jpZEhKAeKLRcD3BG+t2CpzLz6jFlUKn0Cj93iuW7UNljsWf/qS7i2lfaigmROHE9DZ5Q MA== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37fjth8dmw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 11:27:59 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NFLY4H007748;
-        Tue, 23 Mar 2021 15:27:57 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 37d99xhtu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 15:27:57 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NFRs1e30146828
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 15:27:54 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B779A52052;
-        Tue, 23 Mar 2021 15:27:54 +0000 (GMT)
-Received: from [9.199.34.65] (unknown [9.199.34.65])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 280B65205A;
-        Tue, 23 Mar 2021 15:27:52 +0000 (GMT)
-Subject: Re: [PATCH v3 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
-Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Message-ID: <7f9d5477-b156-e084-9412-307dd67149b1@linux.ibm.com>
-Date:   Tue, 23 Mar 2021 20:57:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 23 Mar 2021 11:28:38 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD73C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:28:37 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id k25so17376393oic.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=01Q0ruAgwKc8bAW5HMlMo1t4e9rGUfQVWgyknJBWak4=;
+        b=ndyIP0EF5slZHT/EPhtD9l29v93CuNkMZVCq1YivvRM6ECxcEP1W6Qc9nLpIDquJTq
+         lzlGq78DbYGyEDaaRW6xAXVhSxZK5gdoDxBuMJ3oSO2c0e82uvuMiNwklJCb/6IZuKhC
+         Pn+yUT4/oQ8e2Rqr84cn639o6cOXkpuy0dvI09YAAZVM+dLQNVnfphn1gRH4zY6muTkG
+         YsC6/HoH4p1RiPeGgE2XDbEwZ7F4j+FzCPy9209PqxZmW6h/UVcHL7Z03fV/6UO7Q5vt
+         ScnbP351X1ng5WKdWKsLs2sQg3ufQi83/o+80NqweNBlX2TZqVkH2moXLdUDSc4C2NmG
+         +qdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=01Q0ruAgwKc8bAW5HMlMo1t4e9rGUfQVWgyknJBWak4=;
+        b=b8JTa1FtWXdt+9siT5UHIEkiCh/RJS0AReg5VwpuoZulhQZxfuxe+ftM8Nq40yItzJ
+         Bb1GWkJiqFk+c05KYpderst1H/goeiREy3eKiEBEM+jfU31iCnTjjsi1AQMVS+fNUcPm
+         4QP/hwWFbg4hIpDlfudTxH2NJPS3WFTbLLfwneovqpnkX/sbtIGWE88t52D8VZLK9SIL
+         1Kx2J39fK2iowhb4XeWZtThvBB2LXWBytfGQOr5/ADxmQz6m1PlQcv8Mb9LCGdDueUhs
+         oHLeIZt1pE27jpNZ4kvxSMUCFPdKiNkHTs7O/Zocd+LyrBgfP9qt3HxlDoSMAGB80Udc
+         a+ng==
+X-Gm-Message-State: AOAM532sOaXeJlXwz9VaETFXFG7hQX0ch3Fku8fzrKiVkU/2Q8Mj56ff
+        wmB4JIPxyLfxToS0/QsS4H5Ei6Vc2qKKtg==
+X-Google-Smtp-Source: ABdhPJyPSuUhTF8WRdKSbqhk3M1FQHZsj6X0tA6ZudKa6D1aTxYFFjqClxhvKGJfXUEDmJmK3wCLKQ==
+X-Received: by 2002:aca:4dd3:: with SMTP id a202mr3736583oib.13.1616513317083;
+        Tue, 23 Mar 2021 08:28:37 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h12sm814409ote.75.2021.03.23.08.28.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 08:28:36 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 10:28:34 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Nitin Rawat <nitirawa@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, adrian.hunter@intel.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] scsi: ufs-qcom: configure VCC voltage level in
+ vendor file
+Message-ID: <20210323152834.GH5254@yoga>
+References: <1616363857-26760-1-git-send-email-nitirawa@codeaurora.org>
+ <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 spamscore=0 clxscore=1011 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616363857-26760-4-git-send-email-nitirawa@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun 21 Mar 16:57 CDT 2021, Nitin Rawat wrote:
 
-
-On 3/19/21 7:22 AM, Shiyang Ruan wrote:
-> From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+> As a part of vops handler, VCC voltage is updated
+> as per the ufs device probed after reading the device
+> descriptor. We follow below steps to configure voltage
+> level.
 > 
-> This patchset is attempt to add CoW support for fsdax, and take XFS,
-> which has both reflink and fsdax feature, as an example.
-
-
-Thanks for the patchset. I have tried reviewing the series from logical
-correctness and to some extent functional correctness.
-Since I am not well versed with the core functionality of COW operation,
-so I may have requested for some clarifications where I could not get
-the code 100% on what it is doing.
-
-
+> 1. Set the device to SLEEP state.
+> 2. Disable the Vcc Regulator.
+> 3. Set the vcc voltage according to the device type and reenable
+>    the regulator.
+> 4. Set the device mode back to ACTIVE.
 > 
-> (Rebased on v5.11)
-> ==
-> 
-Thanks. Yes, I see some conflicts when tried to apply on latest kernel.
 
--ritesh
+When we discussed this a while back this was described as a requirement
+from the device specification, you only operate on objects "owned" by
+ufshcd and you invoke ufshcd operations to perform the actions.
+
+So why is this a ufs-qcom patch and not something in ufshcd?
+
+Regards,
+Bjorn
+
+> Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
+> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufs-qcom.c | 51 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index f97d7b0..ca35f5c 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -21,6 +21,17 @@
+>  #define UFS_QCOM_DEFAULT_DBG_PRINT_EN	\
+>  	(UFS_QCOM_DBG_PRINT_REGS_EN | UFS_QCOM_DBG_PRINT_TEST_BUS_EN)
+> 
+> +#define	ANDROID_BOOT_DEV_MAX	30
+> +static char android_boot_dev[ANDROID_BOOT_DEV_MAX];
+> +
+> +/* Min and Max VCC voltage values for ufs 2.x and
+> + * ufs 3.x devices
+> + */
+> +#define UFS_3X_VREG_VCC_MIN_UV	2540000 /* uV */
+> +#define UFS_3X_VREG_VCC_MAX_UV	2700000 /* uV */
+> +#define UFS_2X_VREG_VCC_MIN_UV	2950000 /* uV */
+> +#define UFS_2X_VREG_VCC_MAX_UV	2960000 /* uV */
+> +
+>  enum {
+>  	TSTBUS_UAWM,
+>  	TSTBUS_UARM,
+> @@ -1293,6 +1304,45 @@ static void ufs_qcom_print_hw_debug_reg_all(struct ufs_hba *hba,
+>  	print_fn(hba, reg, 9, "UFS_DBG_RD_REG_TMRLUT ", priv);
+>  }
+> 
+> +  /**
+> +   * ufs_qcom_setup_vcc_regulators - Update VCC voltage
+> +   * @hba: host controller instance
+> +   * Update VCC voltage based on UFS device(ufs 2.x or
+> +   * ufs 3.x probed)
+> +   */
+> +static int ufs_qcom_setup_vcc_regulators(struct ufs_hba *hba)
+> +{
+> +	struct ufs_dev_info *dev_info = &hba->dev_info;
+> +	struct ufs_vreg *vreg = hba->vreg_info.vcc;
+> +	int ret;
+> +
+> +	/* Put the device in sleep before lowering VCC level */
+> +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_SLEEP_PWR_MODE);
+> +
+> +	/* Switch off VCC before switching it ON at 2.5v or 2.96v */
+> +	ret = ufshcd_disable_vreg(hba->dev, vreg);
+> +
+> +	/* add ~2ms delay before renabling VCC at lower voltage */
+> +	usleep_range(2000, 2100);
+> +
+> +	/* set VCC min and max voltage according to ufs device type */
+> +	if (dev_info->wspecversion >= 0x300) {
+> +		vreg->min_uV = UFS_3X_VREG_VCC_MIN_UV;
+> +		vreg->max_uV = UFS_3X_VREG_VCC_MAX_UV;
+> +	}
+> +
+> +	else {
+> +		vreg->min_uV = UFS_2X_VREG_VCC_MIN_UV;
+> +		vreg->max_uV = UFS_2X_VREG_VCC_MAX_UV;
+> +	}
+> +
+> +	ret = ufshcd_enable_vreg(hba->dev, vreg);
+> +
+> +	/* Bring the device in active now */
+> +	ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
+> +	return ret;
+> +}
+> +
+>  static void ufs_qcom_enable_test_bus(struct ufs_qcom_host *host)
+>  {
+>  	if (host->dbg_print_en & UFS_QCOM_DBG_PRINT_TEST_BUS_EN) {
+> @@ -1490,6 +1540,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
+>  	.device_reset		= ufs_qcom_device_reset,
+>  	.config_scaling_param = ufs_qcom_config_scaling_param,
+>  	.program_key		= ufs_qcom_ice_program_key,
+> +	.setup_vcc_regulators	= ufs_qcom_setup_vcc_regulators,
+>  };
+> 
+>  /**
+> --
+> 2.7.4
+> 
