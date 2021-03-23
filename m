@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D353461F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFC4346200
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232529AbhCWOx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        id S232455AbhCWOyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbhCWOwy (ORCPT
+        with ESMTP id S232487AbhCWOyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:52:54 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A94C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:52:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PxxQd2ZsPGCsw7fnjYXdR2/2SQeRMXFxuYQjc6sjQYU=; b=jDoHwzB/RBJmc7iCZU9tlo6evO
-        GNkqAijJYx4DkOnvz1TNHDHnuwd3egbSYoUq6u8JztDI8F4u2a5kMAclQYb3zjeNCp9LhGagfa7dF
-        d0Jlc1JbAruc93ppiJp5oGxwI3LU4lcowPfnd38XK7B9bW23dycWSnlpIUSr3cNjf2HaTmRi4lQUs
-        jta6u0ib4XQ5DGE8cVw4Mg7aWmHyEy2s5XD+wT/8oPWG0eHQm1DcmdkdZk7NIGBEdw/KI0RYaJ7R7
-        MTughG/J+vubg8sB/Hcu1Ob8ELiKqVUHtO2yb69EvBhgf8KlT5G8ajg0B/9VJphr+vMx9iZQupOTC
-        ZvXfWaBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOiOc-00FCVZ-CL; Tue, 23 Mar 2021 14:52:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 55CA530377D;
-        Tue, 23 Mar 2021 15:52:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2D34C2360188E; Tue, 23 Mar 2021 15:52:37 +0100 (CET)
-Date:   Tue, 23 Mar 2021 15:52:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     x86@kernel.org, rostedt@goodmis.org, jpoimboe@redhat.com,
-        jbaron@akamai.com, ardb@kernel.org, sumit.garg@linaro.org,
-        oliver.sang@intel.com, jarkko@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: treat exit sections the same as init sections
- when !CONFIG_MODULE_UNLOAD
-Message-ID: <YFoAtV58k+1zgH50@hirez.programming.kicks-ass.net>
-References: <20210323142756.11443-1-jeyu@kernel.org>
+        Tue, 23 Mar 2021 10:54:16 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F51C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:54:15 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id k25so17254292oic.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sqO+jSrm0OppF98WnNtbBizJ/AmSJJZtjDp1PeL64CQ=;
+        b=lECKv0UrcLQRcL/CWnYZC5ZbC1utLv04pVQzf4q/FZG2ZP1Rz6xUiYT8yGZkjQUOuT
+         H79ecVCh/8bZgVVZBPemIpYcaVgy7CgkXp6CI7c2Gr+4ZeCbQapBT+v8L8cfVEOwvmgF
+         /LeNjeRmLy/JDaAcApWC2TZdob9oRuywIoAzarb++L6j8sY31t/0bzxJ6y290d7ZdKIG
+         wafxS/6P79XsPXjGygQCRD5ZwGtzGLJIeq80Ajf3UNzL/ZUHZxUcKfrbHEuQQnDk7WFm
+         4YgR/wGgyBPYSze++2RlsAb2Nc8UkERCIVr8QGrkRLPPFy1vfH6VHf401uwCNLB58ihz
+         2kYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sqO+jSrm0OppF98WnNtbBizJ/AmSJJZtjDp1PeL64CQ=;
+        b=hxn2n2zwQagv6EKh8FECuGFgDpSqG3JLWcry9Q98/Sd7vA9qj2M0Yxj4Dh7Vv9/vyY
+         Ihur5/Ro8E2zY71voHfToPAzM68dA2wSCXK27j6cm40tg6K+nWyeNEHvm6IwVkF2klok
+         9wxQEC2WWbK+ouLR+osDQOk1irqwj0P4vRWb+WIpSUnANL7iq6oUziUj+kBLzIGET1G4
+         SclGiKOtUtl23XkAGK50zuK5MQ6xkagHK2pku9MhZsfbC3/luGlM1/dYot0TrvMb0aAE
+         p3O3pb7aNQ1nx+AntDJYvVDApu7wopsRzaQwIrG/2VuPc3xhhclL1UY5h3v+6c4lvSGo
+         PfRA==
+X-Gm-Message-State: AOAM532iDblnfwXgb9MTONWdWE3cmjMhap+RQIO+9r6+XiD4aVhMPuYR
+        0HuXm/ht/bMHIXp4/pT0mnlmw/n3i0YkjAkjQVbU0xeT
+X-Google-Smtp-Source: ABdhPJzAHVGutNlnEG3vBoUnGvxbXvag8NZpLFKrCNCUli/nAQCNzsxC4UaxFPFRj7s/aXJsiEJLOdEO7hJ+ZZX3714=
+X-Received: by 2002:aca:4284:: with SMTP id p126mr3637059oia.123.1616511255417;
+ Tue, 23 Mar 2021 07:54:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323142756.11443-1-jeyu@kernel.org>
+References: <20210320183642.10886-1-unixbhaskar@gmail.com> <5cb1810-152-7ec3-ffd2-4a6fd1d6c01c@bombadil.infradead.org>
+In-Reply-To: <5cb1810-152-7ec3-ffd2-4a6fd1d6c01c@bombadil.infradead.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 23 Mar 2021 10:54:04 -0400
+Message-ID: <CADnq5_NOytHHjEt3FS3CoCgPzsoMVQJ1-Dord_=YzaTHWSY-KQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/atomic: Couple of typo fixes
+To:     Randy Dunlap <rdunlap@bombadil.infradead.org>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 03:27:56PM +0100, Jessica Yu wrote:
-> Dynamic code patching (alternatives, jump_label and static_call) can
-> have sites in __exit code, even if __exit is never executed. Therefore
-> __exit must be present at runtime, at least for as long as __init code
-> is.
-> 
-> Additionally, for jump_label and static_call, the __exit sites must also
-> identify as within_module_init(), such that the infrastructure is aware
-> to never touch them after module init -- alternatives are only ran once
-> at init and hence don't have this particular constraint.
-> 
-> By making __exit identify as __init for !MODULE_UNLOAD, the above is
-> satisfied.
-> 
-> So the section ordering should look like the following when
-> !CONFIG_MODULE_UNLOAD, with the .exit sections moved to the init region of
-> the module.
-> 
-> Core section allocation order:
->  	.text
->  	.rodata
->  	__ksymtab_gpl
->  	__ksymtab_strings
->  	.note.* sections
->  	.bss
->  	.data
->  	.gnu.linkonce.this_module
->  Init section allocation order:
->  	.init.text
->  	.exit.text
->  	.symtab
->  	.strtab
-> 
-> [jeyu: thanks to Peter Zijlstra for most of the changelog]
-> 
-> Link: https://lore.kernel.org/lkml/YFiuphGw0RKehWsQ@gunter/
-> Signed-off-by: Jessica Yu <jeyu@kernel.org>
+Applied.  Thanks!
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Alex
 
-> ---
-> 
-> Do you want to take this patch with the other static_call patches? Or
-> should I take this through modules-next?
-
-Take it through modules-next, I haven't seen an actual report on this
-and it's been broken forever afaict. I only found it by accident while
-chasing this other problem.
+On Sat, Mar 20, 2021 at 3:10 PM Randy Dunlap
+<rdunlap@bombadil.infradead.org> wrote:
+>
+>
+>
+> On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
+>
+> >
+> > s/seralization/serialization/
+> > s/parallism/parallelism/
+> >
+> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+>
+>
+> > ---
+> > drivers/gpu/drm/drm_atomic.c | 4 ++--
+> > 1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
+> > index dda60051854b..e1e4500aaca4 100644
+> > --- a/drivers/gpu/drm/drm_atomic.c
+> > +++ b/drivers/gpu/drm/drm_atomic.c
+> > @@ -1148,7 +1148,7 @@ EXPORT_SYMBOL(drm_atomic_add_encoder_bridges);
+> >  * This function walks the current configuration and adds all connectors
+> >  * currently using @crtc to the atomic configuration @state. Note that this
+> >  * function must acquire the connection mutex. This can potentially cause
+> > - * unneeded seralization if the update is just for the planes on one CRTC. Hence
+> > + * unneeded serialization if the update is just for the planes on one CRTC. Hence
+> >  * drivers and helpers should only call this when really needed (e.g. when a
+> >  * full modeset needs to happen due to some change).
+> >  *
+> > @@ -1213,7 +1213,7 @@ EXPORT_SYMBOL(drm_atomic_add_affected_connectors);
+> >  *
+> >  * Since acquiring a plane state will always also acquire the w/w mutex of the
+> >  * current CRTC for that plane (if there is any) adding all the plane states for
+> > - * a CRTC will not reduce parallism of atomic updates.
+> > + * a CRTC will not reduce parallelism of atomic updates.
+> >  *
+> >  * Returns:
+> >  * 0 on success or can fail with -EDEADLK or -ENOMEM. When the error is EDEADLK
+> > --
+> > 2.26.2
+> >
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
