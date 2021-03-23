@@ -2,118 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622803465F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D7E346602
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhCWRHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:07:13 -0400
-Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:36940 "EHLO
-        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhCWRG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:06:59 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id EF5CD3FF00;
-        Tue, 23 Mar 2021 18:06:57 +0100 (CET)
-Authentication-Results: ste-pvt-msa2.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=OIPzPWVW;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
-        dkim=pass (1024-bit key) header.d=shipmail.org
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4vXE_RuP9_af; Tue, 23 Mar 2021 18:06:57 +0100 (CET)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 58FE63FEFF;
-        Tue, 23 Mar 2021 18:06:56 +0100 (CET)
-Received: from [192.168.0.209] (unknown [192.198.151.43])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 7C82636062E;
-        Tue, 23 Mar 2021 18:06:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1616519216; bh=9C1/LIiOMgsGwjfQyFQT7VzzQnBpGQRxEf4hDMfEMQI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=OIPzPWVW/hOP84Aexusd08oV1ihkh2Q54GfQNCXWiaAmRUTIhMp6sprBTnzrN7WOq
-         U8mSrmSG9//Y9cwdRAkmFH0vAilzHWB9jL1OrKJ+oM59wTCCCbWCgbsnko/zZACsSM
-         dgSvTW/IU3jgcflSVkFOj8Iq++820R6HVr1m/+ws=
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-2-thomas_os@shipmail.org>
- <YFnST5VLcEgv9q+s@phenom.ffwll.local>
- <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
- <20210323163715.GJ2356281@nvidia.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <5824b731-ca6a-92fd-e314-d986b6a7b101@shipmail.org>
-Date:   Tue, 23 Mar 2021 18:06:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229868AbhCWRJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:09:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:49400 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229730AbhCWRJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:09:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 228B51042;
+        Tue, 23 Mar 2021 10:09:30 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 103A53F718;
+        Tue, 23 Mar 2021 10:09:27 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 17:09:25 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
+ stack trace unreliable
+Message-ID: <20210323170925.GG98545@C02TD0UTHF1T.local>
+References: <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+ <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+ <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+ <20210323145734.GD98545@C02TD0UTHF1T.local>
+ <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
+ <20210323164801.GE98545@C02TD0UTHF1T.local>
+ <bfc4dbbd-f69b-1a41-c16a-0c5cd0080f90@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210323163715.GJ2356281@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bfc4dbbd-f69b-1a41-c16a-0c5cd0080f90@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 11:53:04AM -0500, Madhavan T. Venkataraman wrote:
+> On 3/23/21 11:48 AM, Mark Rutland wrote:
+> > On Tue, Mar 23, 2021 at 10:26:50AM -0500, Madhavan T. Venkataraman wrote:
+> >> So, my next question is - can we define a practical limit for the
+> >> nesting so that any nesting beyond that is fatal? The reason I ask is
+> >> - if there is a max, then we can allocate an array of stack frames out
+> >> of band for the special frames so they are not part of the stack and
+> >> will not likely get corrupted.
 
-On 3/23/21 5:37 PM, Jason Gunthorpe wrote:
-> On Tue, Mar 23, 2021 at 05:34:51PM +0100, Thomas Hellström (Intel) wrote:
->
->>>> @@ -210,6 +211,20 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
->>>>    	if ((pfn & (fault_page_size - 1)) != 0)
->>>>    		goto out_fallback;
->>>> +	/*
->>>> +	 * Huge entries must be special, that is marking them as devmap
->>>> +	 * with no backing device map range. If there is a backing
->>>> +	 * range, Don't insert a huge entry.
->>>> +	 * If this check turns out to be too much of a performance hit,
->>>> +	 * we can instead have drivers indicate whether they may have
->>>> +	 * backing device map ranges and if not, skip this lookup.
->>>> +	 */
->>> I think we can do this statically:
->>> - if it's system memory we know there's no devmap for it, and we do the
->>>     trick to block gup_fast
->> Yes, that should work.
->>> - if it's iomem, we know gup_fast wont work anyway if don't set PFN_DEV,
->>>     so might as well not do that
->> I think gup_fast will unfortunately mistake a huge iomem page for an
->> ordinary page and try to access a non-existant struct page for it, unless we
->> do the devmap trick.
->>
->> And the lookup would then be for the rare case where a driver would have
->> already registered a dev_pagemap for an iomem area which may also be mapped
->> through TTM (like the patch from Felix a couple of weeks ago). If a driver
->> can promise not to do that, then we can safely remove the lookup.
-> Isn't the devmap PTE flag arch optional? Does this fall back to not
-> using huge pages on arches that don't support it?
+> >> Also, we don't have to do any special detection. If the number of out
+> >> of band frames used is one or more then we have exceptions and the
+> >> stack trace is unreliable.
+> > 
+> > What is expected to protect against?
+> 
+> It is not a protection thing. I just wanted a reliable way to tell that there
+> is an exception without having to unwind the stack up to the exception frame.
+> That is all.
 
-Good point. No, currently it's only conditioned on transhuge page support.
-Need to condition it on also devmap support.
+I see.
 
->
-> Also, I feel like this code to install "pte_special" huge pages does
-> not belong in the drm subsystem..
+Given that's an optimization, we can consider doing something like that
+that after we have the functional bits in place, where we'll be in a
+position to see whether this is even a measureable concern in practice.
 
-I could add helpers in huge_memory.c:
+I suspect that longer-term we'll end up trying to use metadata to unwind
+across exception boundaries, since it's possible to get blocked within
+those for long periods (e.g. for a uaccess fault), and the larger scale
+optimization for patching is to not block the patch.
 
-vmf_insert_pfn_pmd_prot_special() and
-vmf_insert_pfn_pud_prot_special()
-
-/Thomas
-
->
-> Jason
+Thanks,
+Mark.
