@@ -2,159 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBDF346074
+	by mail.lfdr.de (Postfix) with ESMTP id 61C65346073
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhCWN4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:56:50 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:37554 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbhCWN42 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231683AbhCWN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:56:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231548AbhCWN42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 09:56:28 -0400
-Received: by mail-lj1-f175.google.com with SMTP id r20so25744028ljk.4;
-        Tue, 23 Mar 2021 06:56:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YkgDIkTmim/5O1glQvMKfNSxF6ObBNcULBvb2FB6ZQQ=;
-        b=bJFEAz74eKHvKE2ulO63o7LNI8KJZk/auj0Gl+MmNsuhy9/YEDeRnC4i93gpz9+8lf
-         4jUdc3W18bMJk2GsfTOXwG/ZxY4kZGQix1kdMzOih7ga8vEwKiBFJXZPyBHEwBfaMQSv
-         bqs4C0goMBqJ5VWFJLYWqQNHrDjfW+cSmyU11zKjjc2KBDg7m40ulRz1K5DKH+PsFrkV
-         06eMIL1J3hBU6gPkYfxARI4orX1ny3LOy/w/gHwpmp71MvFOulLQUkIZYCYkUnLSD0Hi
-         HDG0vULZ0boG4Q9uVwRGI42pjVI2Hqmm4FMgg+3p0nVVwIFHGTXff07jzTOhbTHGhD6N
-         FB5g==
-X-Gm-Message-State: AOAM531SiPiZRRIa5aOeMUcj6PrGQeotjO5lN8wQapbfKqmr6/ZPRBhb
-        mTVk/kCj5YEzB+SL0oo/y+k=
-X-Google-Smtp-Source: ABdhPJyq5feOEictEeFvfmt8qtd4uPXsGM6InICgywJruZvfoOZLCjpQIM+ajmYsqEt7lv77ngAV4g==
-X-Received: by 2002:a2e:9310:: with SMTP id e16mr3265214ljh.226.1616507785244;
-        Tue, 23 Mar 2021 06:56:25 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id u11sm1863085lfm.78.2021.03.23.06.56.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 06:56:24 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 15:56:17 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v3 1/8] workqueue: Add resource managed version of delayed
- work init
-Message-ID: <51769ea4668198deb798fe47fcfb5f5288d61586.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B19C6199F;
+        Tue, 23 Mar 2021 13:56:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616507787;
+        bh=8lKy2kI8+VRpgd7UaH5wsraNigVbnf5gjlgvvdBwnBE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ctFllR8M5ADN0PQZGilMeRK2vxtz2PfkIZU/rB+oJPFpyrze0z1jirtPfRojTZe7E
+         K01johJh0sVT0XKGOnU64IktnMSgnZxXU6wiax1/38dRhg6j9LaGsV+yG++7q64tUw
+         14WWIO+Jldbd+pHJ1SwnvFwRfEx1aqP6ADIeycO+RrYseD/Nv8OHdh3TwN/IupPFoU
+         6kRJOLAcnAsFBY5rNa4gFBXu70qInd+nqc7T2yaYnRG2tfJyzRgngYsW6zq4D/UxLY
+         AWmdUbpOuu3HFsgdh5IOBweu2byr8HoJbL/Yv5vkutu2kCphIuxIcoWwgifginyA+H
+         kpnt6hN17p83g==
+Subject: Re: [PATCH] f2fs: fix to align to section for fallocate() on pinned
+ file
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>
+References: <20210305095601.96591-1-yuchao0@huawei.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <d9c118eb-45b3-7f35-70bd-cb016957e6e8@kernel.org>
+Date:   Tue, 23 Mar 2021 21:56:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210305095601.96591-1-yuchao0@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few drivers which need a delayed work-queue must cancel work at driver
-detach. Some of those implement remove() solely for this purpose. Help
-drivers to avoid unnecessary remove and error-branch implementation by
-adding managed verision of delayed work initialization. This will also
-help drivers to avoid mixing manual and devm based unwinding when other
-resources are handled by devm.
+On 2021/3/5 17:56, Chao Yu wrote:
+> Now, fallocate() on a pinned file only allocates blocks which aligns
+> to segment rather than section, so GC may try to migrate pinned file's
+> block, and after several times of failure, pinned file's block could
+> be migrated to other place, however user won't be aware of such
+> condition, and then old obsolete block address may be readed/written
+> incorrectly.
+> 
+> To avoid such condition, let's try to allocate pinned file's blocks
+> with section alignment.
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Jaegeuk,
+
+Could you please check and apply below diff into original patch?
+
 ---
-Changelog from RFCv2:
- - RFC dropped. No functional changes.
+  fs/f2fs/file.c | 10 +++++-----
+  1 file changed, 5 insertions(+), 5 deletions(-)
 
- include/linux/devm-helpers.h | 53 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
- create mode 100644 include/linux/devm-helpers.h
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 236f3f69681a..24fa68fdcaa0 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -1648,13 +1648,13 @@ static int expand_inode_data(struct inode *inode, loff_t offset,
+  		return 0;
 
-diff --git a/include/linux/devm-helpers.h b/include/linux/devm-helpers.h
-new file mode 100644
-index 000000000000..f64e0c9f3763
---- /dev/null
-+++ b/include/linux/devm-helpers.h
-@@ -0,0 +1,53 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __LINUX_DEVM_HELPERS_H
-+#define __LINUX_DEVM_HELPERS_H
-+
-+/*
-+ * Functions which do automatically cancel operations or release resources upon
-+ * driver detach.
-+ *
-+ * These should be helpful to avoid mixing the manual and devm-based resource
-+ * management which can be source of annoying, rarely occurring,
-+ * hard-to-reproduce bugs.
-+ *
-+ * Please take into account that devm based cancellation may be performed some
-+ * time after the remove() is ran.
-+ *
-+ * Thus mixing devm and manual resource management can easily cause problems
-+ * when unwinding operations with dependencies. IRQ scheduling a work in a queue
-+ * is typical example where IRQs are often devm-managed and WQs are manually
-+ * cleaned at remove(). If IRQs are not manually freed at remove() (and this is
-+ * often the case when we use devm for IRQs) we have a period of time after
-+ * remove() - and before devm managed IRQs are freed - where new IRQ may fire
-+ * and schedule a work item which won't be cancelled because remove() was
-+ * already ran.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/workqueue.h>
-+
-+static inline void devm_delayed_work_drop(void *res)
-+{
-+	cancel_delayed_work_sync(res);
-+}
-+
-+/**
-+ * devm_delayed_work_autocancel - Resource-managed work allocation
-+ * @dev: Device which lifetime work is bound to
-+ * @pdata: work to be cancelled when driver is detached
-+ *
-+ * Initialize work which is automatically cancelled when driver is detached.
-+ * A few drivers need delayed work which must be cancelled before driver
-+ * is detached to avoid accessing removed resources.
-+ * devm_delayed_work_autocancel() can be used to omit the explicit
-+ * cancelleation when driver is detached.
-+ */
-+static inline int devm_delayed_work_autocancel(struct device *dev,
-+					       struct delayed_work *w,
-+					       work_func_t worker)
-+{
-+	INIT_DELAYED_WORK(w, worker);
-+	return devm_add_action(dev, devm_delayed_work_drop, w);
-+}
-+
-+#endif
+  	if (f2fs_is_pinned_file(inode)) {
+-		block_t len = (map.m_len >> sbi->log_blocks_per_seg) <<
+-					sbi->log_blocks_per_seg;
++		block_t sec_blks = BLKS_PER_SEC(sbi);
++		block_t len = rounddown(map.m_len, sec_blks);
+
+-		if (map.m_len % sbi->blocks_per_seg)
+-			len += sbi->blocks_per_seg;
++		if (map.m_len % sec_blks)
++			len += sec_blks;
+
+-		map.m_len = sbi->blocks_per_seg;
++		map.m_len = sec_blks;
+  next_alloc:
+  		if (has_not_enough_free_secs(sbi, 0,
+  			GET_SEC_FROM_SEG(sbi, overprovision_segments(sbi)))) {
 -- 
-2.25.4
+2.22.1
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
