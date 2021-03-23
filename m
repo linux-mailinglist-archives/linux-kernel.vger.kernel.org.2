@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CECE234687D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9251334687E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhCWTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233013AbhCWTFJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:05:09 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F90FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:05:08 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id g25so11704063wmh.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zfTKyuyptfdK7Fjb1pdXihHAu9GKw1GPuZw+980nY/8=;
-        b=iPKbGcVHzbVWxIhpBUXt727J3UEhP5SCCdIPcpdGuFZ5kOyS46/S4FJ6ZNlnaFFIUr
-         gBlL5AybNZ7l6iIaIrvyeEU0tzH+xZa6I8CpjnoqtQS0rdpRTMONW9kBCEXXOwux0HMd
-         HiZREmba6uMPpmhqKrbCJtafuPjADlX0nwFQDKRPtHd3/s0f6T+trHg6NgciXlLpj6Kb
-         52f/Tt+8nj5XTysA3UJeJw2qkixBkuV6Ap5jbMsQF3nV0GWALtj0CgTj7waHCtQmOF8+
-         A7AOVudgATxxVA9/AsyK0SWPiVLvINW2DtDFEFEomGqlff9VqzoDZBSPjMEWvXJdDBGy
-         uiIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zfTKyuyptfdK7Fjb1pdXihHAu9GKw1GPuZw+980nY/8=;
-        b=FRQvryx7fLBerq4Le3TgCb0/3D5GrqBU8nekdEHghX66At7JmiV09M3gB8XKaHfUzV
-         jr0LCvSOs1y6+4bIp67nL7SfHHDRID530aZkwq9E7axMscPPbPcCUpOl3dtMoELC/xM+
-         rblIN+JymTiM5l6Td3BBj8jLtiZNT0VtOqIcPtfAEcbo0JVEBI5dVi+dNpslSGjlvLs8
-         iYk0TQdrxLKjpNOPg0+sRLL2hgl4Rdm9symrEjteVss8utFs+DnAL/wAufqOKc6oEH3N
-         W7J6Eg9DZjFvl3QRSnuCiQIFIBLirtfhZd6crLPkBrUE1UivUzKQpvz+KAb2bP9NJgUk
-         C/Pw==
-X-Gm-Message-State: AOAM5337T4232Pt6rE5WDZF2PaAY0C+41Nlx1JlCSEVIYjl8V+wej1W+
-        RNvYpZOj6+VUW3/kB8V7+YU=
-X-Google-Smtp-Source: ABdhPJwYRrRK6MbY08/6eajJTLh8jyOSH2/AUx6MVUzlpVGF//KLP6MAt+fCt1bU2Ravfvi/OrVTZA==
-X-Received: by 2002:a1c:43c6:: with SMTP id q189mr4732349wma.80.1616526307452;
-        Tue, 23 Mar 2021 12:05:07 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id w6sm23880473wrl.49.2021.03.23.12.05.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 12:05:07 -0700 (PDT)
-Subject: Re: [PATCH v5 2/3] Revert "mremap: don't allow MREMAP_DONTUNMAP on
- special_mappings and aio"
-To:     Brian Geffon <bgeffon@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Dmitry Safonov <dima@arista.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>
-References: <20210303175235.3308220-1-bgeffon@google.com>
- <20210323182520.2712101-1-bgeffon@google.com>
- <20210323182520.2712101-2-bgeffon@google.com>
-From:   Dmitry Safonov <0x7f454c46@gmail.com>
-Message-ID: <558d3b1d-b783-5368-8600-40568c434dcf@gmail.com>
-Date:   Tue, 23 Mar 2021 19:05:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233127AbhCWTFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:05:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232374AbhCWTFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:05:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA89761574;
+        Tue, 23 Mar 2021 19:05:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616526324;
+        bh=Uhy2P2EqVs/4M/q2S01XoB6cn9gDfHkYiGACVvIbusE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mTr0sTAzSkrSLcwhAjnKCCQaPQzzLFBQUMFxKJQAb40E4SfN8+nKjBv5257LzLA0t
+         M4lBUIWn7DgAHg1i49Lt8Of9rIURHKjGIhMdiJRNRGLtLPFGy+5d1pTCv84OFY5cGl
+         cpeJ6aDsWwGlrok8NX6LjcrsFVjtt76f+p5D453Q=
+Date:   Tue, 23 Mar 2021 20:05:21 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Subject: Re: [PATCH] scripts: stable: add script to validate backports
+Message-ID: <YFo78StZ6Tq82hHJ@kroah.com>
+References: <20210316213136.1866983-1-ndesaulniers@google.com>
+ <YFnyHaVyvgYl/qWg@kroah.com>
+ <CAKwvOd=9HwLcTD8GaMsbEWiTPfZ+fj=vgFOefqBxDYkFiv_6YQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210323182520.2712101-2-bgeffon@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=9HwLcTD8GaMsbEWiTPfZ+fj=vgFOefqBxDYkFiv_6YQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 6:25 PM, Brian Geffon wrote:
-> This reverts commit cd544fd1dc9293c6702fab6effa63dac1cc67e99.
+On Tue, Mar 23, 2021 at 11:52:26AM -0700, Nick Desaulniers wrote:
+> On Tue, Mar 23, 2021 at 6:56 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Mar 16, 2021 at 02:31:33PM -0700, Nick Desaulniers wrote:
+> > > A common recurring mistake made when backporting patches to stable is
+> > > forgetting to check for additional commits tagged with `Fixes:`. This
+> > > script validates that local commits have a `commit <sha40> upstream.`
+> > > line in their commit message, and whether any additional `Fixes:` shas
+> > > exist in the `master` branch but were not included. It can not know
+> > > about fixes yet to be discovered, or fixes sent to the mailing list but
+> > > not yet in mainline.
+> > >
+> > > To save time, it avoids checking all of `master`, stopping early once
+> > > we've reached the commit time of the earliest backport. It takes 0.5s to
+> > > validate 2 patches to linux-5.4.y when master is v5.12-rc3 and 5s to
+> > > validate 27 patches to linux-4.19.y. It does not recheck dependencies of
+> > > found fixes; the user is expected to run this script to a fixed point.
+> > > It depnds on pygit2 python library for working with git, which can be
+> > > installed via:
+> > > $ pip3 install pygit2
+> > >
+> > > It's expected to be run from a stable tree with commits applied.  For
+> > > example, consider 3cce9d44321e which is a fix for f77ac2e378be. Let's
+> > > say I cherry picked f77ac2e378be into linux-5.4.y but forgot
+> > > 3cce9d44321e (true story). If I ran:
+> > >
+> > > $ ./scripts/stable/check_backports.py
+> > > Checking 1 local commits for additional Fixes: in master
+> > > Please consider backporting 3cce9d44321e as a fix for f77ac2e378be
+> >
+> > While interesting, I don't use a git tree for the stable queue, so this
+> > doesn't really fit into my workflow, sorry.
 > 
-> As discussed in [1] this commit was a no-op because the mapping type was
-> checked in vma_to_resize before move_vma is ever called. This meant that
-> vm_ops->mremap() would never be called on such mappings. Furthermore,
-> we've since expanded support of MREMAP_DONTUNMAP to non-anonymous
-> mappings, and these special mappings are still protected by the existing
-> check of !VM_DONTEXPAND and !VM_PFNMAP which will result in a -EINVAL.
-> 
-> 1. https://lkml.org/lkml/2020/12/28/2340
-> 
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
+> Well, what is your workflow?
 
-Reviewed-by: Dmitry Safonov <0x7f454c46@gmail.com>
+Look at the stable-queue.git tree.  It's a set of quilt-managed patches
+on top of a solid base (i.e. the last released kernel version.).
 
-Thanks,
-Dmitry
+The only time git gets involved is when we do a -rc release or when we
+do a "real" release, and then we use 'git quiltimport' on the whole
+stack.
+
+Here's a script that I use (much too slow, I know), for checking this
+type of thing and I try to remember to run it before every cycle of -rc
+releases:
+	https://github.com/gregkh/commit_tree/blob/master/find_fixes_in_queue
+
+It's a hack, and picks up more things than is really needed, but I would
+rather it error on that side than the other.
+
+thanks,
+
+greg k-h
