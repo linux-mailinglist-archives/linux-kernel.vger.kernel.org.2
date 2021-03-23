@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406243457CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9993457D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhCWG3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:29:46 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46092 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCWG3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:29:33 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12N6TOcF102486;
-        Tue, 23 Mar 2021 01:29:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616480964;
-        bh=sUo6zOb86QRv/BWcOTr9noe3RI1fgCJxzPswTPoFg6o=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=VRwToIipljqW6aHfYvaSSYDep0Jk0cQaw08nRQNooRM+PwWznNXsGVLiOjEeXZ/v1
-         28mqnZWfwvEWBJfMf1kmYfNCh1heH+ccEd8jqFTBK4q5ux+J/gppzJpPKC9DzdPDNH
-         W5wHD4zYGS+oHHI+mPl+rQmDMg3l9d4qXqsIqzmY=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12N6TOWM130951
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Mar 2021 01:29:24 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 23
- Mar 2021 01:29:24 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 23 Mar 2021 01:29:24 -0500
-Received: from [10.250.232.216] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12N6TJeO038866;
-        Tue, 23 Mar 2021 01:29:20 -0500
-Subject: Re: [PATCH v7 3/3] arm64: dts: ti: k3-j7200: Add support for higher
- speed modes and update delay select values for MMCSD subsystems
-To:     Aswath Govindraju <a-govindraju@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210322131206.24887-1-a-govindraju@ti.com>
- <20210322131206.24887-4-a-govindraju@ti.com>
- <20210322153547.d5hkqydpe372rpwg@manicure>
- <bff2481a-31a1-788b-2c80-dbf876b7a6ae@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <599d06e5-2b8f-011f-cf8d-3ccf34ee37b1@ti.com>
-Date:   Tue, 23 Mar 2021 11:59:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229464AbhCWGcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:32:25 -0400
+Received: from muru.com ([72.249.23.125]:45888 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhCWGbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:31:55 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 09CE1804C;
+        Tue, 23 Mar 2021 06:32:49 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 08:31:51 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Keerthy <j-keerthy@ti.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Tero Kristo <kristo@kernel.org>
+Subject: Re: [PATCH 1/2] clocksource/drivers/timer-ti-dm: Prepare to handle
+ dra7 timer wrap issue
+Message-ID: <YFmLV2S6Rb7IAkBd@atomide.com>
+References: <20210304073737.15810-1-tony@atomide.com>
+ <20210304073737.15810-2-tony@atomide.com>
+ <556d55af-0b30-8751-6aef-2e1bb9db1a76@linaro.org>
+ <YFjG5IsHExuaixN9@atomide.com>
+ <5c3c2447-3f8c-160c-8761-e43c1b4ebbf9@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <bff2481a-31a1-788b-2c80-dbf876b7a6ae@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c3c2447-3f8c-160c-8761-e43c1b4ebbf9@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aswath,
+* Daniel Lezcano <daniel.lezcano@linaro.org> [210322 18:24]:
+> On 22/03/2021 17:33, Tony Lindgren wrote:
+> > Hi,
+> > 
+> > * Daniel Lezcano <daniel.lezcano@linaro.org> [210322 15:56]:
+> >> On 04/03/2021 08:37, Tony Lindgren wrote:
+> >>> There is a timer wrap issue on dra7 for the ARM architected timer.
+> >>> In a typical clock configuration the timer fails to wrap after 388 days.
+> >>>
+> >>> To work around the issue, we need to use timer-ti-dm timers instead.
+> >>>
+> >>> Let's prepare for adding support for percpu timers by adding a common
+> >>> dmtimer_clkevt_init_common() and call it from dmtimer_clockevent_init().
+> >>> This patch makes no intentional functional changes.
+> >>>
+> >>> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> >>> ---
+> >>
+> >> [ ... ]
+> >>
+> >>> @@ -575,33 +574,60 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
+> >>>  	 */
+> >>>  	writel_relaxed(OMAP_TIMER_CTRL_POSTED, t->base + t->ifctrl);
+> >>>  
+> >>> +	if (dev->cpumask == cpu_possible_mask)
+> >>> +		irqflags = IRQF_TIMER;
+> >>> +	else
+> >>> +		irqflags = IRQF_TIMER | IRQF_NOBALANCING;
+> >>
+> >> Can you explain the reasoning behind the test above ?
+> > 
+> > In the per cpu case we assign one dmtimer per cpu, and we want the
+> > interrupt handling on the assigned CPU. In the per cpu case we have
+> > the cpu specified with dev->cpumask unlike for the normal clockevent
+> > case.
+> > 
+> > In the per cpu dmtimer case the interrupt line is not wired per cpu
+> > though, so I don't think we want to add IRQF_PERCPU here.
+> 
+> If it is per cpu, then the parameter will be cpumask_of(cpu). If there
+> is one cpu, no balancing can happen and then the IRQF_NOBALANCING is not
+> needed, neither this test and the irqflags, right?
 
-On 23/03/21 10:54 am, Aswath Govindraju wrote:
-> Hi Nishanth,
-> 
-> On 22/03/21 9:05 pm, Nishanth Menon wrote:
->> On 18:42-20210322, Aswath Govindraju wrote:
->>> The following speed modes are now supported in J7200 SoC,
->>> - HS200 and HS400 modes at 1.8 V card voltage, in MMCSD0 subsystem [1].
->>> - UHS-I speed modes in MMCSD1 subsystem [1].
->>>
->>> Add support for UHS-I modes by adding voltage regulator device tree nodes
->>> and corresponding pinmux details, to power cycle and voltage switch cards.
->>> Set respective tags in sdhci0 and remove no-1-8-v tag from sdhci1
->>> device tree nodes.
->>>
->>> Also update the delay values for various speed modes supported, based on
->>> the revised january 2021 J7200 datasheet[2].
->>>
->>> [1] - section 12.3.6.1.1 MMCSD Features, in
->>>       https://www.ti.com/lit/ug/spruiu1a/spruiu1a.pdf,
->>>       (SPRUIU1A – JULY 2020 – REVISED JANUARY 2021)
->>>
->>> [2] - https://www.ti.com/lit/ds/symlink/dra821u.pdf,
->>>       (SPRSP57B – APRIL 2020 – REVISED JANUARY 2021)
->>>
->>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->>> ---
->>>  .../dts/ti/k3-j7200-common-proc-board.dts     | 42 +++++++++++++++++++
->>>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 14 ++++++-
->>>  2 files changed, 54 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->>> index b493f939b09a..de8c06bdc825 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->>> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
->>> @@ -16,6 +16,29 @@
->>>  		stdout-path = "serial2:115200n8";
->>>  		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
->>>  	};
->>> +
->>> +	vdd_mmc1: fixedregulator-sd {
->>> +		compatible = "regulator-fixed";
->>> +		regulator-name = "vdd_mmc1";
->>> +		regulator-min-microvolt = <3300000>;
->>> +		regulator-max-microvolt = <3300000>;
->>> +		regulator-boot-on;
->>> +		enable-active-high;
->>> +		gpios = <&exp2 2 GPIO_ACTIVE_HIGH>;
->>
->> is that gpio ?
-> 
-> Yes, that is correct. I'll correct it in the respin
-> 
->> I'd encourage to use vin-supply as well.
-> 
-> Will add this in respin.
-> 
->>
->>> +	};
->>> +
->>> +	vdd_sd_dv: gpio-regulator-vdd-sd-dv {
->> 	What does this drive? TLV71033 ?
-> 
-> Yes, this node models the TLV71033 voltage regulator that switches the
-> MMC IO signal voltage level between 3.3V and 1.8V.
+Oh yeah you're right, none of that is needed. For the percpu case we
+already have irq_force_affinity() in omap_dmtimer_starting_cpu(). I'll
+update and send out v2 of these two patches.
 
-Nope. Unlike J721e SOM which uses TLV71033 for switching voltage, J7200
-SOM directly uses GPIO input to PMIC to control the output voltage. So
-this should model the gpio input to PMIC.
+Thanks,
 
-Thanks
-Kishon
+Tony
