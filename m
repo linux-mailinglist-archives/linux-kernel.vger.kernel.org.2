@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3575345798
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAE034579B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhCWF5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:57:10 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48567 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhCWF4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:56:55 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4LGs61vJz9sSC;
-        Tue, 23 Mar 2021 16:56:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616479014;
-        bh=MNdKWp0AB0OYZp87SKqT0Q8Gf0KbvrqQYyQNe+LSX5Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gUqY6mkVdLeLDn/gl8QqOjnfBkI1fm94OSNyUHb6VQPvYltnQyrAl2Vw6Qv7scErf
-         aK6SpytP7YRYEmcWWiB8hSLLrokJBOYybRduhgilWaI/o6tmfY0JgigKtEKans24CS
-         GWiJ9JNaNlOIJYBo842VS0rVWGxwytp/6ez/eezDIT7WlOq+ty5RrQbuat5MmYxPOd
-         bQD7tiMeJO7Qxlpv2MQrEpdm09IG6BsVTKEt+YJTXgtJ+lVFGkUpDWQESlqRWtQ9Mb
-         RMPKl01Sz4pmvH8loFIx7gZLgWTAgqrnbg/cRuKuAJsyREM1HiHdwM6WEaZ63uw8mL
-         De/uTwHGijs/g==
-Date:   Tue, 23 Mar 2021 16:56:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the v4l-dvb tree
-Message-ID: <20210323165652.447e12ad@canb.auug.org.au>
+        id S229866AbhCWF6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:58:16 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59937 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229904AbhCWF6K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 01:58:10 -0400
+X-UUID: 130c39ac86e84e91b16636f38ebe63a4-20210323
+X-UUID: 130c39ac86e84e91b16636f38ebe63a4-20210323
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 375069684; Tue, 23 Mar 2021 13:58:09 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 23 Mar 2021 13:58:07 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 23 Mar 2021 13:58:06 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
+Subject: [PATCH 1/2] iommu/mediatek-v1: Alloc building as module
+Date:   Tue, 23 Mar 2021 13:58:00 +0800
+Message-ID: <20210323055801.16885-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/JsdfzyE0X+4upFylzdXcyDZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/JsdfzyE0X+4upFylzdXcyDZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patch only adds support for building the IOMMU-v1 driver as module.
+Correspondingly switch the config to tristate.
 
-Hi all,
+Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+---
+rebase on v5.12-rc2.
+---
+ drivers/iommu/Kconfig        | 2 +-
+ drivers/iommu/mtk_iommu_v1.c | 9 ++++-----
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-After merging the v4l-dvb tree, today's linux-next build (htmldocs)
-produced this warning:
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index 192ef8f61310..bc93da48bed0 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -364,7 +364,7 @@ config MTK_IOMMU
+ 	  If unsure, say N here.
+ 
+ config MTK_IOMMU_V1
+-	bool "MTK IOMMU Version 1 (M4U gen1) Support"
++	tristate "MediaTek IOMMU Version 1 (M4U gen1) Support"
+ 	depends on ARM
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	select ARM_DMA_USE_IOMMU
+diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
+index 82ddfe9170d4..71370037083a 100644
+--- a/drivers/iommu/mtk_iommu_v1.c
++++ b/drivers/iommu/mtk_iommu_v1.c
+@@ -20,6 +20,7 @@
+ #include <linux/iommu.h>
+ #include <linux/iopoll.h>
+ #include <linux/list.h>
++#include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <linux/of_iommu.h>
+ #include <linux/of_irq.h>
+@@ -691,9 +692,7 @@ static struct platform_driver mtk_iommu_driver = {
+ 		.pm = &mtk_iommu_pm_ops,
+ 	}
+ };
++module_platform_driver(mtk_iommu_driver);
+ 
+-static int __init m4u_init(void)
+-{
+-	return platform_driver_register(&mtk_iommu_driver);
+-}
+-subsys_initcall(m4u_init);
++MODULE_DESCRIPTION("IOMMU API for MediaTek M4U v1 implementations");
++MODULE_LICENSE("GPL v2");
+-- 
+2.18.0
 
-Documentation/driver-api/media/camera-sensor.rst:147: WARNING: Error in "c:=
-function" directive:
-1 argument(s) required, 0 supplied.
-
-.. c:function::
-
-        int pm_runtime_get_if_in_use(struct device *dev);
-
-Introduced by commit
-
-  c0e3bcb25390 ("media: camera-sensor.rst: fix a doc build warning")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/JsdfzyE0X+4upFylzdXcyDZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBZgyUACgkQAVBC80lX
-0Gweggf/W0puABECDP/GY5C2EfCXaI30caamfctOubL76CP+jmicQRZYe0iZTGbx
-v9qGmPW9m4QFtcFH7VbjN/GGJsOz+TtOSxT1fQpqisVYWLpUvYq1q+Lv08nYUzAW
-B6b/Ez8ZHhIBBOM3GvVKQBi+VtIunV5Ti2bEQlLfQLgcOYuDzVBOsIraF7oR3D0t
-dMcqdyTl4/I7jQK8cbZjdeJmLWJfzByXe5QFf6GcVznwAsdlN8BoRFO8znojBCmZ
-ARF083fFD5jEKdCmnl3/luUJnA8xB3KuyWKli7OFyliU8JxplLEKoDpUXfdm2dHA
-qVbyRqZGCsGsIXKuSVJPvVtaNt7nrQ==
-=DBWo
------END PGP SIGNATURE-----
-
---Sig_/JsdfzyE0X+4upFylzdXcyDZ--
