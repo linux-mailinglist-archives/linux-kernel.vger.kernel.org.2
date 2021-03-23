@@ -2,106 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3879346620
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98241346623
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhCWRQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        id S230134AbhCWRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhCWRQm (ORCPT
+        with ESMTP id S229904AbhCWRSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:16:42 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7E7C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:16:42 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id ha17so10394661pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:16:42 -0700 (PDT)
+        Tue, 23 Mar 2021 13:18:02 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470FCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:18:02 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a7so28367897ejs.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BW5ADJ+bowjKJAIcC8Or2wh2BR2bwjdresRzdjKOAkg=;
-        b=fNQXQltOXQTQJMOUBmrPh5EfoS1rGVWrLUxFZ6nFynpA1G9tFwTMmFtmQHx4gLuZwf
-         vQkC+UiD9bCMikl6zH39kb3fZDgiWx0HUZK3MmPHNhxod2DbUxEbGcpn6wNwgptiKiQY
-         dYOOOmNNsBLe/mUMcV7VYVKI/fT99mvrUvLx+GKwISYT+6iU8tzz3tgE5Sqw/htCx+eW
-         zeJyT+hUsEJ6EnJSf77nUP3SuTlYxozqUnjkfnPdTpTT1Revzpal4QShdxpv9bcxd3oN
-         eEHvNZzaYWwJ3HP2ZZ+OLMzKvZmLlbiwTvfBqVo7m6tR2oghWkZ8qkdr4BFQrzfz7O+R
-         uHyQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sIksllOwwOhhczn6psOt0I0GoHXhkwJmcDYhamv8gKE=;
+        b=vSZ2XfjPA7Q0x7nDslI0TUHCfgjE8OzQMOyiNBobfPbkI7lBvvFArrtxoeDIweJhPl
+         8JHZOJTEfIN6cYo/3ONtzOz9XyV/C/Vyrb/R6bUfDuZWuDjZWUOsg+XY8wQfiHn8anFp
+         NM496MAMALYcNbbsrGFVgyFgWqCos84G/R0MK46SuowtveMtrjpGirzN8vpR9zQIVz/l
+         ej7DRfCobng5+6YzAzAgL1CJOA3zSyREUFYJ/+gUv/Yyr2wZgUmeVGLPyJuWTN/V3T1A
+         NrnV3ziZIMZSj47PoXTFhNY0ghO/BugGK9eIjMuUeDl5riC1yWLStB+wjJtX01YDeeRk
+         dkUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BW5ADJ+bowjKJAIcC8Or2wh2BR2bwjdresRzdjKOAkg=;
-        b=maMsXIGJwgYoCTJ2ASIqfPzlxRLS78Qqmd0ohNE0/AN1x+QCRFBJ0DsuoQka4gxYjX
-         xnerAAcnVUKMKEfCY99O2guJPaWABWJomO9zqdJ61AwmINikru2P9q+fpHp/D1mkwisJ
-         8gGWxSJ+OH9IpMSU2ta9tr1hcSFx8ObsIhxJXsOeakj0hIjaG2laF2KnIDUI9ejVjgKR
-         lLLDiUnEzORUOvyohF28yMNwiaT39mBVBd8LW9CK2kCEU/cDfG7lao+MqYlhkaQ4mgHd
-         iMDsiELbhN7a09KXjJA5YCo1gUjXWUi4KnCZ4CCmaYwLpzvkOUN5lz35oG3KXnf6qUfd
-         jdTw==
-X-Gm-Message-State: AOAM531v4YY+BbdJ3wGG3G2hgFh4u93amIlPaFfsefa1XPKQtziUrkxA
-        u+/sBBI4bTcexkrnJkOnllgmWw==
-X-Google-Smtp-Source: ABdhPJzT3THas/wgdKylXMKwWDFYARFa2UYxugyIkQRopChDKtopuHEeTbMBRgkFeJmgcVXBVMiWEg==
-X-Received: by 2002:a17:90a:ad87:: with SMTP id s7mr5703868pjq.20.1616519801668;
-        Tue, 23 Mar 2021 10:16:41 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id k127sm18247070pfd.63.2021.03.23.10.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 10:16:41 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 17:16:37 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Kai Huang <kai.huang@intel.com>,
-        kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <YFoiddwNHPGd5OIP@google.com>
-References: <YFjx3vixDURClgcb@google.com>
- <20210322210645.GI6481@zn.tnic>
- <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
- <20210322223726.GJ6481@zn.tnic>
- <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
- <YFoNCvBYS2lIYjjc@google.com>
- <20210323160604.GB4729@zn.tnic>
- <41dd6e78-5fe4-259e-cd0b-209de452a760@redhat.com>
- <YFofNRLPGpEWoKtH@google.com>
- <5d5eacef-b43b-529f-1425-0ec27b60e6ad@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sIksllOwwOhhczn6psOt0I0GoHXhkwJmcDYhamv8gKE=;
+        b=N5HWRa6lhgAAQKLzZul5Gw8i07D7+550xVZkb+JJESYHxRW9MkOrHsJW+8I1j8hevS
+         Ngpf6JIomAiIDPqvzazhRa9lFOGfxOHZ2E//tWXSxYWdpGQV8Zv8RnCOlzxTZBOmMus9
+         ZZgyHu9aeglA99Fe62g/8h1Pl2QKrtTPuBHc5hji/oy+2Ml6bG3eF4ctkHpE8yTAuTGh
+         FX7jOCKvQ2ljcgmq752VYA3vhgw7GCscbeu1P2hyWOyc7MOJTRnYgpCjAv5085onlWrY
+         WY0ymF2yXY6OPPENny4kUwfPvettAPlYq7P4d+EDckqQnKExETII3Y+d65kwDNj42+VC
+         1Wjg==
+X-Gm-Message-State: AOAM531+7wwGyn0LhL/mqyRWzs1aCt8x4QQ9HNcXUi2dozvGlR7M5pQi
+        9BzTxm6kEFjzBWchNsIARdIz/NEfidXesxFIfkQ=
+X-Google-Smtp-Source: ABdhPJwU2t5vL8Vrp8UxhxH5Rh72ecVZHaOXV1n09OFWS/tmbQifotHY4rvMhWKy6CC87aCytJUDsCpsRi6eSvqyKx0=
+X-Received: by 2002:a17:906:a51:: with SMTP id x17mr5954970ejf.25.1616519881066;
+ Tue, 23 Mar 2021 10:18:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d5eacef-b43b-529f-1425-0ec27b60e6ad@redhat.com>
+References: <20210323135405.65059-1-linmiaohe@huawei.com> <20210323135405.65059-6-linmiaohe@huawei.com>
+In-Reply-To: <20210323135405.65059-6-linmiaohe@huawei.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 23 Mar 2021 10:17:48 -0700
+Message-ID: <CAHbLzkoSsPWSdyZQBR03NbU8i3AG_DTL4P-efYULvuYmWzyYbg@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] mm/migrate.c: fix potential deadlock in NUMA
+ balancing shared exec THP case
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021, Paolo Bonzini wrote:
-> On 23/03/21 18:02, Sean Christopherson wrote:
-> > > That's important, but it's even more important *to developers* that the
-> > > commit message spells out why this would be a kernel bug more often than
-> > > not.  I for one do not understand it, and I suspect I'm not alone.
-> > > 
-> > > Maybe (optimistically) once we see that explanation we decide that the
-> > > documentation is not important.  Sean, Kai, can you explain it?
-> > 
-> > Thought of a good analogy that can be used for the changelog and/or docs:
-> > 
-> > This is effectively a kernel use-after-free of EPC, and due to the way SGX works,
-> > the bug is detected at freeing.  Rather than add the page back to the pool of
-> > available EPC, the kernel intentionally leaks the page to avoid additional
-> > errors in the future.
-> > 
-> > Does that help?
-> 
-> Very much, and for me this also settles the question of documentation.
-> Borislav or Kai, can you add it to the commit message?
+On Tue, Mar 23, 2021 at 6:55 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> Since commit c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA
+> balancing"), the NUMA balancing would skip shared exec transhuge page.
+> But this enhancement is not suitable for transhuge page. Because it's
+> required that page_mapcount() must be 1 due to no migration pte dance
+> is done here. On the other hand, the shared exec transhuge page will
+> leave the migrate_misplaced_page() with pte entry untouched and page
+> locked. Thus pagefault for NUMA will be triggered again and deadlock
+> occurs when we start waiting for the page lock held by ourselves.
 
-One last thought.  This error/WARN doesn't guarantee that a conflict hasn't
-already occurred, e.g. the EPC page was prematurely put back on the list and
-already handed out to a second enclave.  In that case there will undoubtedly be
-a slew of WARNs/errors leading up to this one, I just wanted to clarify that
-intentionally leaking the page doesn't magically cure _all_ use-after-free or
-double-use bugs.
+Thanks for catching this. By relooking the code I think the other
+important reason for removing this is
+migrate_misplaced_transhuge_page() actually can't see shared exec file
+THP at all since page_lock_anon_vma_read() is called before and if
+page is not anonymous page it will just restore the PMD without
+migrating anything.
+
+The pages for private mapped file vma may be anonymous pages due to
+COW but they can't be THP so it won't trigger THP numa fault at all. I
+think this is why no bug was reported. I overlooked this in the first
+place.
+
+Your fix is correct, and please add the above justification to your commit log.
+
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+
+>
+> Fixes: c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA balancing")
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/migrate.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 5357a8527ca2..68bfa1625898 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2192,9 +2192,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+>         int page_lru = page_is_file_lru(page);
+>         unsigned long start = address & HPAGE_PMD_MASK;
+>
+> -       if (is_shared_exec_page(vma, page))
+> -               goto out;
+> -
+>         new_page = alloc_pages_node(node,
+>                 (GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
+>                 HPAGE_PMD_ORDER);
+> @@ -2306,7 +2303,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+>
+>  out_unlock:
+>         unlock_page(page);
+> -out:
+>         put_page(page);
+>         return 0;
+>  }
+> --
+> 2.19.1
+>
