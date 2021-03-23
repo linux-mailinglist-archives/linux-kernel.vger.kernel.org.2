@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4690345B9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDA4345B9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhCWKDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:03:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39390 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230229AbhCWKDW (ORCPT
+        id S230255AbhCWKEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:04:20 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38454 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhCWKEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:03:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616493801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wm3O/lpF1+tIY2IiTrkeUjVDWrV+bOW0fwV/zM0q+HU=;
-        b=Ogxei5cRd8mGO3rUoSRiHdfslU90FPHR9rFBn0DHVyFifWBjIjlwoWrD1V3Gg5lVsyp+l8
-        V14J+RShD8P9C7SwwDl335TvISh+bq3mmUhDmzevaBriqOwerKDdUuPXrQXniFcq9oeDgW
-        08XTwkG+Mpx8Hn8ahz98fD42Q+/hkDc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-76-1LPvS3qCPeO7cszNpDixwQ-1; Tue, 23 Mar 2021 06:03:18 -0400
-X-MC-Unique: 1LPvS3qCPeO7cszNpDixwQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4952F881287;
-        Tue, 23 Mar 2021 10:03:16 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.194.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26C1160C0F;
-        Tue, 23 Mar 2021 10:03:13 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 11:03:11 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: kvm: make hardware_disable_test less verbose
-Message-ID: <20210323100311.zq3yzru4heg4zomu@kamzik.brq.redhat.com>
-References: <20210323085303.1347449-1-vkuznets@redhat.com>
+        Tue, 23 Mar 2021 06:04:00 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C58E71C0B81; Tue, 23 Mar 2021 11:03:57 +0100 (CET)
+Date:   Tue, 23 Mar 2021 11:03:56 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Tom Tromey <tom@tromey.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Subject: Re: [PATCH 00/11] pragma once: treewide conversion
+Message-ID: <20210323100356.GA20449@amd>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+ <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
+ <YDvwVlG/fqVxVYlQ@localhost.localdomain>
+ <CAHk-=wi54DEScexxpMrO+Q2Nag_Tup+Y5YBHc_9_xGLeRfP8pA@mail.gmail.com>
+ <877dmo10m3.fsf@tromey.com>
+ <CAHk-=wi13+FLcRo4zmnRUmmY=AAns-Yd5NR_mVdcAd6ZrPq2fA@mail.gmail.com>
+ <4835ec1d2ecc40b285596288a0df4f47@AcuMS.aculab.com>
+ <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Q68bSM7Ycu6FN28Q"
 Content-Disposition: inline
-In-Reply-To: <20210323085303.1347449-1-vkuznets@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CAHk-=wh8PptzH-=ak1D7C5Zp6EJ8eurYqVqGdQauupAFaNuG4g@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 09:53:03AM +0100, Vitaly Kuznetsov wrote:
-> hardware_disable_test produces 512 snippets like
-> ...
->  main: [511] waiting semaphore
->  run_test: [511] start vcpus
->  run_test: [511] all threads launched
->  main: [511] waiting 368us
->  main: [511] killing child
-> 
-> and this doesn't have much value, let's just drop these fprintf().
-> Restoring them for debugging purposes shouldn't be too hard.
 
-Changing them to pr_debug() allows you to keep them and restore
-with -DDEBUG
+--Q68bSM7Ycu6FN28Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-drew
+Hi!
 
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  tools/testing/selftests/kvm/hardware_disable_test.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/hardware_disable_test.c b/tools/testing/selftests/kvm/hardware_disable_test.c
-> index 2f2eeb8a1d86..d6d4517c4a8a 100644
-> --- a/tools/testing/selftests/kvm/hardware_disable_test.c
-> +++ b/tools/testing/selftests/kvm/hardware_disable_test.c
-> @@ -108,7 +108,6 @@ static void run_test(uint32_t run)
->  	kvm_vm_elf_load(vm, program_invocation_name, 0, 0);
->  	vm_create_irqchip(vm);
->  
-> -	fprintf(stderr, "%s: [%d] start vcpus\n", __func__, run);
->  	for (i = 0; i < VCPU_NUM; ++i) {
->  		vm_vcpu_add_default(vm, i, guest_code);
->  		payloads[i].vm = vm;
-> @@ -124,7 +123,6 @@ static void run_test(uint32_t run)
->  			check_set_affinity(throw_away, &cpu_set);
->  		}
->  	}
-> -	fprintf(stderr, "%s: [%d] all threads launched\n", __func__, run);
->  	sem_post(sem);
->  	for (i = 0; i < VCPU_NUM; ++i)
->  		check_join(threads[i], &b);
-> @@ -147,16 +145,13 @@ int main(int argc, char **argv)
->  		if (pid == 0)
->  			run_test(i); /* This function always exits */
->  
-> -		fprintf(stderr, "%s: [%d] waiting semaphore\n", __func__, i);
->  		sem_wait(sem);
->  		r = (rand() % DELAY_US_MAX) + 1;
-> -		fprintf(stderr, "%s: [%d] waiting %dus\n", __func__, i, r);
->  		usleep(r);
->  		r = waitpid(pid, &s, WNOHANG);
->  		TEST_ASSERT(r != pid,
->  			    "%s: [%d] child exited unexpectedly status: [%d]",
->  			    __func__, i, s);
-> -		fprintf(stderr, "%s: [%d] killing child\n", __func__, i);
->  		kill(pid, SIGKILL);
->  	}
->  
-> -- 
-> 2.30.2
-> 
+> > >  (a) the traditional include guard optimization HAS NO HIDDEN SEMANTIC
+> > > MEANING. It's a pure optimization that doesn't actually change
+> > > anything else. If you don't do the optimization, absolutely nothing
+> > > changes.
+> >
+> > And if the parser is well written the optimisation is probably
+> > irrelevant compared to the compile time.
+>=20
+> That's actually surprisingly not even remotely true.
+>=20
+> People always think that the optimization phases of a compiler are the
+> expensive ones. And yes, there are certain optimizations that can be
+> *really* expensive, and people just don't even do them because they
+> are _so_ expensive and are exponential in time.
 
+Well, linux kernel can be compiled in two _seconds_ if you take
+compiler optimized for fast parsing... and quick code generation.
+
+See "SUSE Labs Conference 2018 - Compiling the Linux kernel in a
+second (give or take)" on youtube.
+
+So yes, gcc's frontend may be slow, but that does not mean job can not
+be done quickly by suitable compiler.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--Q68bSM7Ycu6FN28Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBZvQwACgkQMOfwapXb+vLR0ACfatm3DVUfTM8cgSE0Pni4q3eV
+rVUAn1gfH3rymd+a8lNl/5Rdelsy0u78
+=qraN
+-----END PGP SIGNATURE-----
+
+--Q68bSM7Ycu6FN28Q--
