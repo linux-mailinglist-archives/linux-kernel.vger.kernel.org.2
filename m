@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9993457D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE4D3457D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbhCWGcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:32:25 -0400
-Received: from muru.com ([72.249.23.125]:45888 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhCWGbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:31:55 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 09CE1804C;
-        Tue, 23 Mar 2021 06:32:49 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:31:51 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Keerthy <j-keerthy@ti.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Tero Kristo <kristo@kernel.org>
-Subject: Re: [PATCH 1/2] clocksource/drivers/timer-ti-dm: Prepare to handle
- dra7 timer wrap issue
-Message-ID: <YFmLV2S6Rb7IAkBd@atomide.com>
-References: <20210304073737.15810-1-tony@atomide.com>
- <20210304073737.15810-2-tony@atomide.com>
- <556d55af-0b30-8751-6aef-2e1bb9db1a76@linaro.org>
- <YFjG5IsHExuaixN9@atomide.com>
- <5c3c2447-3f8c-160c-8761-e43c1b4ebbf9@linaro.org>
+        id S229904AbhCWGdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:33:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14063 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhCWGdX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:33:23 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4M1z2lVvzNqTS;
+        Tue, 23 Mar 2021 14:30:47 +0800 (CST)
+Received: from [10.174.178.163] (10.174.178.163) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 14:33:14 +0800
+Subject: Re: [PATCH] mm: process_vm_access: Remove duplicate include of
+ compat.h
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <kael_w@yeah.net>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210323032322.262579-1-wanjiabing@vivo.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <a96d8bf1-292f-a239-fc31-1022c7c4a296@huawei.com>
+Date:   Tue, 23 Mar 2021 14:33:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c3c2447-3f8c-160c-8761-e43c1b4ebbf9@linaro.org>
+In-Reply-To: <20210323032322.262579-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.163]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Daniel Lezcano <daniel.lezcano@linaro.org> [210322 18:24]:
-> On 22/03/2021 17:33, Tony Lindgren wrote:
-> > Hi,
-> > 
-> > * Daniel Lezcano <daniel.lezcano@linaro.org> [210322 15:56]:
-> >> On 04/03/2021 08:37, Tony Lindgren wrote:
-> >>> There is a timer wrap issue on dra7 for the ARM architected timer.
-> >>> In a typical clock configuration the timer fails to wrap after 388 days.
-> >>>
-> >>> To work around the issue, we need to use timer-ti-dm timers instead.
-> >>>
-> >>> Let's prepare for adding support for percpu timers by adding a common
-> >>> dmtimer_clkevt_init_common() and call it from dmtimer_clockevent_init().
-> >>> This patch makes no intentional functional changes.
-> >>>
-> >>> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> >>> ---
-> >>
-> >> [ ... ]
-> >>
-> >>> @@ -575,33 +574,60 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
-> >>>  	 */
-> >>>  	writel_relaxed(OMAP_TIMER_CTRL_POSTED, t->base + t->ifctrl);
-> >>>  
-> >>> +	if (dev->cpumask == cpu_possible_mask)
-> >>> +		irqflags = IRQF_TIMER;
-> >>> +	else
-> >>> +		irqflags = IRQF_TIMER | IRQF_NOBALANCING;
-> >>
-> >> Can you explain the reasoning behind the test above ?
-> > 
-> > In the per cpu case we assign one dmtimer per cpu, and we want the
-> > interrupt handling on the assigned CPU. In the per cpu case we have
-> > the cpu specified with dev->cpumask unlike for the normal clockevent
-> > case.
-> > 
-> > In the per cpu dmtimer case the interrupt line is not wired per cpu
-> > though, so I don't think we want to add IRQF_PERCPU here.
+On 2021/3/23 11:23, Wan Jiabing wrote:
+> linux/compat.h has been included at line 8.So we remove 
+> the duplicate one at line 12.
 > 
-> If it is per cpu, then the parameter will be cpumask_of(cpu). If there
-> is one cpu, no balancing can happen and then the IRQF_NOBALANCING is not
-> needed, neither this test and the irqflags, right?
 
-Oh yeah you're right, none of that is needed. For the percpu case we
-already have irq_force_affinity() in omap_dmtimer_starting_cpu(). I'll
-update and send out v2 of these two patches.
+line 12 one is added via eb351d75ce1e ("mm/process_vm_access.c: include compat.h") to fix the build error:
+ mm/process_vm_access.c:277:5: error: implicit declaration of function 'in_compat_syscall'; did you mean 'in_ia32_syscall'? [-Werror=implicit-function-declaration]
 
-Thanks,
+There might be something wrong.
 
-Tony
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  mm/process_vm_access.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
+> index f5fee9cf90f8..4bcc11958089 100644
+> --- a/mm/process_vm_access.c
+> +++ b/mm/process_vm_access.c
+> @@ -9,7 +9,6 @@
+>  #include <linux/mm.h>
+>  #include <linux/uio.h>
+>  #include <linux/sched.h>
+> -#include <linux/compat.h>
+>  #include <linux/sched/mm.h>
+>  #include <linux/highmem.h>
+>  #include <linux/ptrace.h>
+> 
+
