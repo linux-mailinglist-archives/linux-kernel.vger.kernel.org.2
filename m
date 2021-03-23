@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0DE346517
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0ED34651C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbhCWQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:27:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233117AbhCWQ1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:27:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10AC261477;
-        Tue, 23 Mar 2021 16:27:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616516870;
-        bh=jdgaujTZa4YTW3pAKo+Bn89DEHg3n7EiLFOxCUbR6lg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h4tmDF26uCjRSu0Ex3pUvFEydYGXVbZ/vA+Y5lSbk9NxsurbG5ieY09DytyCveQ1j
-         wco4Y58ZSVp7VnyyCt3wZAVRFLns/BwJkOgx/WkpHf4k7MTpvPocSn8Y1hlYc8r1bB
-         O5dDMapZ7+V9ycKnrieorBsgwLHXlNnskKy/dGobRMfvDtwbXKrg2IdRr46Q5a0L9y
-         Tu2FzuR+oyaYmmUutMMRV5tMtraK6iu4HkVOpFsBVdkZVxRgVLhBVBX+G5s0Fatwk1
-         OS8paI9Dn/ndy/qC9/B+ApLwrVK9otVb23/AGq9HskHghCOubG7s4nnfDWL/G0ZWOI
-         2vlCV5ePdIusg==
-Received: by pali.im (Postfix)
-        id A9BB392C; Tue, 23 Mar 2021 17:27:47 +0100 (CET)
-Date:   Tue, 23 Mar 2021 17:27:47 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     alex.williamson@redhat.com, helgaas@kernel.org,
-        lorenzo.pieralisi@arm.com, kabel@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        raphael.norwitz@nutanix.com
-Subject: Re: How long should be PCIe card in Warm Reset state?
-Message-ID: <20210323162747.tscfovntsy7uk5bk@pali>
-References: <20210310110535.zh4pnn4vpmvzwl5q@pali>
- <20210323161941.gim6msj3ruu3flnf@archlinux>
+        id S233309AbhCWQ2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233298AbhCWQ2N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:28:13 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DBDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:28:11 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id k8so18300078iop.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UZQuQN+Y/Ln5Rqog6y/XuFlmircqKTHpGhsY1hXDlr8=;
+        b=eDO9wyI04ngUdU4BR8Y3W2FAnFEO5oflQNs09vAXNIZhoCh9dTx4aaHXdMIYBH0Oh8
+         uc/UESMI/Z+g+irH6E40Htfp2p8zAswssVgTY6fSJo3mDj8fU9OdbaUBJajkHpAv1VIr
+         3dGUVkhgqbtxibuLPOTmlW9L7Ec4Y9OwIWhIH5pFNXMMgxysZoai50ci/RYuIRIfNBtS
+         TAgqEc0WmUE2Zmwtp3/lGCoYj2z/HFs38AGsHt5psvqvPIbAN93CiFdxwaegR+/PJtdN
+         uXv4ZWjZC+PpK/0szjiZjPkQUcglOIgEo47FsdIuWcrK984a540b0CU+XIbS9e32YelC
+         Ctqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UZQuQN+Y/Ln5Rqog6y/XuFlmircqKTHpGhsY1hXDlr8=;
+        b=tJ2q03p2uYFJCypblOGLXEFFbfVM5W8URcREHzBMC4trgEDvEvrlS2SVvzEskAB1oB
+         MdCg0iaqqpzORpIymZa1OEHTwqQW2CV2xwrVxtS2RZvkr7J5IDWOHT7Y+CLBEKk/15wX
+         lvFXBVgTzUs5HOWOrL2vqINAElxG6vPaPuvuY6aMFa5v5vwcgMMd0ivweQ2Ho/5c21a6
+         zCNQ66mZmLN9XTLOrlTjvIFq9NUfYj7nt4vq6hSQSCyoG/ferNPckfczU+FeNoDeO99o
+         ZTZX7thsF3CRkOIzOeXZTLT9EUm3TMoOqFAjuO7cuyznxly3Dq9k9hQMLhYHpn95Ohph
+         uVbg==
+X-Gm-Message-State: AOAM53315JFrYfjbsmhcZMxpI2g5ZULhbW224IifevmLoeiEFD/Lj5Zv
+        oMXwjk00HpqI5vJYhelQPxKbKmk+KK0erg==
+X-Google-Smtp-Source: ABdhPJxIB+FYjEsQXrnfmY1mc2AaqL+WNmFYjgoU+OScb8vpa1uJVcFAs1RmgLZMnLfU5DBGClTs4w==
+X-Received: by 2002:a5d:89d9:: with SMTP id a25mr5011258iot.69.1616516891090;
+        Tue, 23 Mar 2021 09:28:11 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id s18sm9827634ilt.9.2021.03.23.09.28.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 09:28:10 -0700 (PDT)
+Subject: Re: [PATCH] xsysace: Remove SYSACE driver
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>, devicetree@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <ee1fe969905f641f5f97d812ee0cac44c12fe0f6.1604919578.git.michal.simek@xilinx.com>
+ <20210323000436.qm5rkiplwt5x5ttk@offworld>
+ <6948510c-dc7e-d74a-62e3-e42be14cff16@kernel.dk>
+ <9c4911e6-92dc-0a0f-2f81-7d23e268144f@xilinx.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <66a774e3-f068-984e-e69f-b55667a494cf@kernel.dk>
+Date:   Tue, 23 Mar 2021 10:28:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <9c4911e6-92dc-0a0f-2f81-7d23e268144f@xilinx.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210323161941.gim6msj3ruu3flnf@archlinux>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 23 March 2021 21:49:41 Amey Narkhede wrote:
-> On 21/03/10 12:05PM, Pali Rohár wrote:
-> > Hello!
-> >
-> > I would like to open a question about PCIe Warm Reset. Warm Reset of
-> > PCIe card is triggered by asserting PERST# signal and in most cases
-> > PERST# signal is controlled by GPIO.
-> >
-> > Basically every native Linux PCIe controller driver is doing this Warm
-> > Reset of connected PCIe card during native driver initialization
-> > procedure.
-> >
-> > And now the important question is: How long should be PCIe card in Warm
-> > Reset state? After which timeout can be PERST# signal de-asserted by
-> > Linux controller driver?
-> >
-> > Lorenzo and Rob already expressed concerns [1] [2] that this Warm Reset
-> > timeout should not be driver specific and I agree with them.
-> >
-> > I have done investigation which timeout is using which native PCIe
-> > driver [3] and basically every driver is using different timeout.
-> >
-> > I have tried to find timeouts in PCIe specifications, I was not able to
-> > understand and deduce correct timeout value for Warm Reset from PCIe
-> > specifications. What I have found is written in my email [4].
-> >
-> > Alex (as a "reset expert"), could you look at this issue?
-> >
-> > Or is there somebody else who understand PCIe specifications and PCIe
-> > diagrams to figure out what is the minimal timeout for de-asserting
-> > PERST# signal?
-> >
-> > There are still some issues with WiFi cards (e.g. Compex one) which
-> > sometimes do not appear on PCIe bus. And based on these "reset timeout
-> > differences" in Linux PCIe controller drivers, I suspect that it is not
-> > (only) the problems in WiFi cards but also in Linux PCIe controller
-> > drivers. In my email [3] I have written that I figured out that WLE1216
-> > card needs to be in Warm Reset state for at least 10ms, otherwise card
-> > is not detected.
-> >
-> > [1] - https://lore.kernel.org/linux-pci/20200513115940.fiemtnxfqcyqo6ik@pali/
-> > [2] - https://lore.kernel.org/linux-pci/20200507212002.GA32182@bogus/
-> > [3] - https://lore.kernel.org/linux-pci/20200424092546.25p3hdtkehohe3xw@pali/
-> > [4] - https://lore.kernel.org/linux-pci/20200430082245.xblvb7xeamm4e336@pali/
+On 3/23/21 10:25 AM, Michal Simek wrote:
 > 
-> I somehow got my hands on PCIe Gen4 spec. It says on page no 555-
-> "When PERST# is provided to a component or adapter, this signal must be
-> used by the component or adapter as Fundamental Reset.
-> When PERST# is not provided to a component or adapter, Fundamental Reset is
-> generated autonomously by the component or adapter, and the details of how
-> this is done are outside the scope of this document."
-> Not sure what component/adapter means in this context.
 > 
-> Then below it says-
-> "In some cases, it may be possible for the Fundamental Reset mechanism
-> to be triggered  by hardware without the removal and re-application of
-> power to the component.  This is called a warm reset. This document does
-> not specify a means for generating a warm reset."
+> On 3/23/21 5:23 PM, Jens Axboe wrote:
+>> On 3/22/21 6:04 PM, Davidlohr Bueso wrote:
+>>> Hi,
+>>>
+>>> On Mon, 09 Nov 2020, Michal Simek wrote:
+>>>
+>>>> Sysace IP is no longer used on Xilinx PowerPC 405/440 and Microblaze
+>>>> systems. The driver is not regularly tested and very likely not working for
+>>>> quite a long time that's why remove it.
+>>>
+>>> Is there a reason this patch was never merged? can the driver be
+>>> removed? I ran into this as a potential tasklet user that can be
+>>> replaced/removed.
+>>
+>> I'd be happy to merge it for 5.13.
+>>
 > 
-> Thanks,
-> Amey
+> Can you just take this version? Or do you want me to send it again?
 
-Hello Amey, PCIe Base document does not specify how to control PERST#
-signal and how to issue Warm Reset. But it is documented in PCIe CEM,
-Mini PCIe CEM and M.2 CEM documents (maybe in some other PCIe docs too).
+Minor edits needed for fuzz, but I've applied this version.
 
-It is needed look into more documents, "merge them in head" and then
-deduce final meaning...
+-- 
+Jens Axboe
+
