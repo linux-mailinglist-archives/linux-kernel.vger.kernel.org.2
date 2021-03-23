@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBC53468BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 455CB3468BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhCWTP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:15:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233300AbhCWTPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:15:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1FD9619D5;
-        Tue, 23 Mar 2021 19:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616526923;
-        bh=vz1/BwgKsE4QbkxEXRmEGYxQ6lPFuYc202DcZfmWPD8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rQFSHnitQ6+kpGJZuvHSKEGBHFXMX+wwPTFR7qY5UowNPpwAoZNZEy1w0auxbFQV6
-         Waok3+0GibjFa/ysyW3jB6MjhXPl33LPeK2B19lgGhljJFV8L75EYoe+cxy68shxb4
-         D+LtRkf8M3g7UN18j2Gh8Ae5N0nIpDlNjN6X3bQaNRtzJiuMIHoz6VMLIxzDUwVNsu
-         Vx+Dmphj3hlUYjc1I9wtyKZ4JnEcJWm65DDMSFvKbDX/Gfszc6YR30Aglh8ABw2BnY
-         Iny/3S32BZFCHZt8nDApWM8V0aMvTFQjp1AQP2rMWwQ0+9joX8xOvYgpye+oCzHfSu
-         2U6gRYJZKMWxw==
-Received: by mail-ed1-f51.google.com with SMTP id b16so24788293eds.7;
-        Tue, 23 Mar 2021 12:15:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530AQh6dGQ2eqUZ/5Khzj17Dw9hMufAfyZ45pfDw/h+2Q3pwHHqj
-        ZJFnKvV8Bfud63CE9lqmcthqdNJMaCO839VC8w==
-X-Google-Smtp-Source: ABdhPJyQUqDZQDlvFKjPPDtTkz4sNMlGLVxwHNqzDZOmCnzfXNGTmq/LBSdLt5mLoL79k61b8WRMes6qPDOkgy4P01Y=
-X-Received: by 2002:a05:6402:2d0:: with SMTP id b16mr6214654edx.194.1616526921538;
- Tue, 23 Mar 2021 12:15:21 -0700 (PDT)
+        id S233279AbhCWTP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:15:26 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:53692 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233286AbhCWTPN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:15:13 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 7B8F31F44AB6
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, ebiggers@google.com, drosen@google.com,
+        ebiggers@kernel.org, yuchao0@huawei.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v3 4/5] fs: unicode: Rename utf8-core file to unicode-core
+Organization: Collabora
+References: <20210323183201.812944-1-shreeya.patel@collabora.com>
+        <20210323183201.812944-5-shreeya.patel@collabora.com>
+Date:   Tue, 23 Mar 2021 15:15:09 -0400
+In-Reply-To: <20210323183201.812944-5-shreeya.patel@collabora.com> (Shreeya
+        Patel's message of "Wed, 24 Mar 2021 00:02:00 +0530")
+Message-ID: <87k0pxd6ma.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210323163634.877511-1-robh@kernel.org> <20210323163634.877511-2-robh@kernel.org>
-In-Reply-To: <20210323163634.877511-2-robh@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 23 Mar 2021 13:15:08 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLFj3tUUeEeKoZx=P3AHE4Tu1TzuA-tqK4+qD=4J6c=8Q@mail.gmail.com>
-Message-ID: <CAL_JsqLFj3tUUeEeKoZx=P3AHE4Tu1TzuA-tqK4+qD=4J6c=8Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: Move port/ports properties out of audio-graph-port.yaml
-To:     Mark Brown <broonie@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:36 AM Rob Herring <robh@kernel.org> wrote:
+Shreeya Patel <shreeya.patel@collabora.com> writes:
+
+> Rename the file name from utf8-core to unicode-core for transformation of
+> utf8-core file into the unicode subsystem layer file and also for better
+> understanding.
 >
-> Users of the audio-graph-port schema need to define how many ports
-> and what each port is, so they need to define 'ports' and/or 'port'
-> anyways. Let's drop 'ports' and 'port' from the schema and adjust users
-> to reference audio-graph-port.yaml from a port property.
->
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Cc: Lubomir Rintel <lkundrak@v3.sk>
-> Cc: Sameer Pujar <spujar@nvidia.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-tegra@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+
+Acked-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+
+Thanks,
+
 > ---
+>  fs/unicode/Makefile                        | 2 +-
+>  fs/unicode/{utf8-core.c => unicode-core.c} | 0
+>  2 files changed, 1 insertion(+), 1 deletion(-)
+>  rename fs/unicode/{utf8-core.c => unicode-core.c} (100%)
+>
+> diff --git a/fs/unicode/Makefile b/fs/unicode/Makefile
+> index b88aecc86..fbf9a629e 100644
+> --- a/fs/unicode/Makefile
+> +++ b/fs/unicode/Makefile
+> @@ -3,7 +3,7 @@
+>  obj-$(CONFIG_UNICODE) += unicode.o
+>  obj-$(CONFIG_UNICODE_NORMALIZATION_SELFTEST) += utf8-selftest.o
+>  
+> -unicode-y := utf8-norm.o utf8-core.o
+> +unicode-y := utf8-norm.o unicode-core.o
+>  
+>  $(obj)/utf8-norm.o: $(obj)/utf8data.h
+>  
+> diff --git a/fs/unicode/utf8-core.c b/fs/unicode/unicode-core.c
+> similarity index 100%
+> rename from fs/unicode/utf8-core.c
+> rename to fs/unicode/unicode-core.c
 
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> index 31f3e51974bb..e568d6c7dddd 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> @@ -17,9 +17,6 @@ maintainers:
->    - Jon Hunter <jonathanh@nvidia.com>
->    - Sameer Pujar <spujar@nvidia.com>
->
-> -allOf:
-> -  - $ref: audio-graph-port.yaml#
-> -
->  properties:
->    $nodename:
->      pattern: "^ahub@[0-9a-f]*$"
-> @@ -60,12 +57,18 @@ properties:
->    ranges: true
->
->    ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
->      description: |
->        Contains list of ACIF (Audio CIF) port nodes for AHUB (Audio Hub).
->        These are connected to ACIF interfaces of AHUB clients. Thus the
->        number of port nodes depend on the number of clients that AHUB may
->        have depending on the SoC revision.
->
-> +    patternProperties:
-> +      '^port@[0-9]':
-> +        $ref: audio-graph-port.yaml#
-> +        unevaluatedProperties: false
-> +
->  required:
->    - compatible
->    - reg
-> @@ -77,7 +80,7 @@ required:
->    - "#size-cells"
->    - ranges
->
-> -unevaluatedProperties: false
-> +additionalProperties: false
-
-Adding this results in schema errors in the example, so a prerequisite
-patch is needed.
-
-Rob
+-- 
+Gabriel Krisman Bertazi
