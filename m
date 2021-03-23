@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589003461DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B86403461DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhCWOvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhCWOu6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:50:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104E2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Pg7wqWo9GbGyOf6ruKFdy0o/AhXiWPevvjIgX9aMZf4=; b=ECz38tvMKB5jtTDsSG2TZ/iR2v
-        +YHeOFi889aUNPnP08xwsJZS8LKD+dR5yg1LCArXpzruad/ZYA7t/0k9HYGd04oQgK0fAc9zcR71D
-        IQ86W0ZLvaga6M3DWpuEUkSTzUpVcTLq7U5ntKV8z84ymeYLTLjtKDyKYrHiBKL0WJ1uHo2y+9gbw
-        iGHQTGV6kiOYLjkXrXJy9QpJippuGE+YR0KUhHOsYuDVgM9YaYOcYrHaIazZVSiNeu6/YhAS3eJJD
-        kIhWB1yKmy8fPjmniwrD5E4HLyTQNe4lmK36ex2ell6IeuGkk1Xk44xMcGqyw+UqymfAB2mHfrNcS
-        0gXL9mQw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOiLr-00ABYJ-SM; Tue, 23 Mar 2021 14:49:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 136A13003E1;
-        Tue, 23 Mar 2021 15:49:46 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EF8292360188E; Tue, 23 Mar 2021 15:49:45 +0100 (CET)
-Date:   Tue, 23 Mar 2021 15:49:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v2] sched/fair: reduce long-tail newly idle balance cost
-Message-ID: <YFoACa0+cGBDxWSF@hirez.programming.kicks-ass.net>
-References: <1614154549-116078-1-git-send-email-aubrey.li@intel.com>
- <74f65436-09f2-a4f0-345f-8887b11a51bf@linux.intel.com>
- <CAKfTPtCauiWo1yf90XnHK0HKZhS=dPVuJQ6C5gFSLF5_QA-OwA@mail.gmail.com>
+        id S232332AbhCWOvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232283AbhCWOv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:51:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A837661983;
+        Tue, 23 Mar 2021 14:51:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616511087;
+        bh=hgxdo4ZUUEitXDWs4Mlm83kBINAI4vjmbUS8R5zTyqM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dpkg1HfJVEeaaDXnvy5P0QTofpqOzmmn+SKtNcOu2q3IhyXJwQeuYGE67ash+xPIQ
+         F2y6BUnNTPHMx2lKgxOhZp4jHt4kjeTOLU0+3Fg1R7nhf0tdwAOIW6IXpArC90p+yY
+         IJjQ6k3C7boc8ebEQnNqMLvgV4L9YQEUALU2By0e3GSty8Po/2cDJu7Nmh16qV+HQZ
+         TyU8ox0nbEJovwHDkfE1+LIvayUVp8IJi4DUUA98ZL+m4v7SqMtSQ4Hali2r4EhHds
+         ungF7YHvoHMVHuuErZziga+H2O4R31eqQGDSd8XLaQ7DGOgfUlqcmqWii42A4KNG4s
+         kG2GTIRddU7uA==
+Received: by pali.im (Postfix)
+        id 2283192C; Tue, 23 Mar 2021 15:51:25 +0100 (CET)
+Date:   Tue, 23 Mar 2021 15:51:24 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+Subject: Re: [v8,3/7] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+Message-ID: <20210323145124.6myowqcjga5ro2pn@pali>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+ <20210224061132.26526-4-jianjun.wang@mediatek.com>
+ <20210311123844.qzl264ungtk7b6xz@pali>
+ <1615621394.25662.70.camel@mhfsdcap03>
+ <20210318000211.ykjsfavfc7suu2sb@pali>
+ <1616046487.31760.16.camel@mhfsdcap03>
+ <20210319185341.nyxmo7nwii5fzsxc@pali>
+ <1616463094.25961.8.camel@mhfsdcap03>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtCauiWo1yf90XnHK0HKZhS=dPVuJQ6C5gFSLF5_QA-OwA@mail.gmail.com>
+In-Reply-To: <1616463094.25961.8.camel@mhfsdcap03>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:44:57PM +0100, Vincent Guittot wrote:
-> Hi Aurey,
-> 
-> On Tue, 16 Mar 2021 at 05:27, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
-> >
-> > On 2021/2/24 16:15, Aubrey Li wrote:
-> > > A long-tail load balance cost is observed on the newly idle path,
-> > > this is caused by a race window between the first nr_running check
-> > > of the busiest runqueue and its nr_running recheck in detach_tasks.
-> > >
-> > > Before the busiest runqueue is locked, the tasks on the busiest
-> > > runqueue could be pulled by other CPUs and nr_running of the busiest
-> > > runqueu becomes 1 or even 0 if the running task becomes idle, this
-> > > causes detach_tasks breaks with LBF_ALL_PINNED flag set, and triggers
-> > > load_balance redo at the same sched_domain level.
-> > >
-> > > In order to find the new busiest sched_group and CPU, load balance will
-> > > recompute and update the various load statistics, which eventually leads
-> > > to the long-tail load balance cost.
-> > >
-> > > This patch clears LBF_ALL_PINNED flag for this race condition, and hence
-> > > reduces the long-tail cost of newly idle balance.
-> >
-> > Ping...
-> 
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+On Tuesday 23 March 2021 09:31:34 Jianjun Wang wrote:
+> One more question, is there any chance that we can put this linkup flow
+> to a more "standard" way, such as drivers provides the ops of the PERST#
+> pin and let the framework to decide how to start a link training, or we
+> just use macro to replace this timeout value in the future?
 
-Thanks!
+This is something about which I was thinking that could be useful for
+pci-aardvark.c driver. But I was not sure if some other driver can
+benefit from such "framework". But now I see that your driver is another
+candidate which can benefit from it.
+
+Currently there is no such "framework" in kernel and the hardest part
+would be to design it.
+
+Having this API would allow kernel to implement and export PCIe Warm
+Reset (which is done via PERST# signal) and easily extend Amey's reset
+patches to export also Warm Reset via sysfs.
+
+But to implement this framework and using it for reset we first need to
+answer questions which I have sent in email:
+https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+
+Bjorn, Alex: any opinion about PERST#?
+
+Also see Enrico's email, where confirmed that there are platforms which
+shares one PERST# signal for more endpoint cards:
+https://lore.kernel.org/linux-pci/1da0fa2c-8056-9ae8-6ce4-ab645317772d@metux.net/
