@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CBF346593
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D68D3465A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbhCWQnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:43:02 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31003 "EHLO mga18.intel.com"
+        id S233299AbhCWQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:48:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:49154 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233224AbhCWQmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:42:35 -0400
-IronPort-SDR: w3tSc0/ErQxoEhk8UQu+KQ4J/sklvlBPnYc9vkNI+9wszcQc50oU7fLDQF/fP8rQygZtkMaEVx
- do3oqMJ+d1Jw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="178081796"
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="178081796"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 09:42:35 -0700
-IronPort-SDR: 2mACqbPw8a6SJ9PSHWd+QyBnkPlurmQQ9aedR+9Ev/lsbTjVsRy5dPD9U693riaeP5jeekb07G
- CV3P8kFID/dQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="415070639"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP; 23 Mar 2021 09:42:34 -0700
-Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
-        by linux.intel.com (Postfix) with ESMTP id DA1F758069F;
-        Tue, 23 Mar 2021 09:42:31 -0700 (PDT)
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net-next 2/2] net: phy: marvell10g: Add PHY loopback support
-Date:   Wed, 24 Mar 2021 00:46:41 +0800
-Message-Id: <20210323164641.26059-3-vee.khee.wong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210323164641.26059-1-vee.khee.wong@linux.intel.com>
-References: <20210323164641.26059-1-vee.khee.wong@linux.intel.com>
+        id S233216AbhCWQsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:48:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1B27D6E;
+        Tue, 23 Mar 2021 09:48:06 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B7063F718;
+        Tue, 23 Mar 2021 09:48:04 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 16:48:01 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
+ stack trace unreliable
+Message-ID: <20210323164801.GE98545@C02TD0UTHF1T.local>
+References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
+ <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+ <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+ <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+ <20210323145734.GD98545@C02TD0UTHF1T.local>
+ <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for PHY loopback for Marvell 88x2110 and Marvell 88x3310.
+On Tue, Mar 23, 2021 at 10:26:50AM -0500, Madhavan T. Venkataraman wrote:
+> On 3/23/21 9:57 AM, Mark Rutland wrote:
+> Thanks for explaining the nesting. It is now clear to me.
 
-This allow user to perform PHY loopback test using ethtool selftest.
+No problem!
 
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
----
- drivers/net/phy/marvell10g.c | 2 ++
- 1 file changed, 2 insertions(+)
+> So, my next question is - can we define a practical limit for the
+> nesting so that any nesting beyond that is fatal? The reason I ask is
+> - if there is a max, then we can allocate an array of stack frames out
+> of band for the special frames so they are not part of the stack and
+> will not likely get corrupted.
 
-diff --git a/drivers/net/phy/marvell10g.c b/drivers/net/phy/marvell10g.c
-index b1bb9b8e1e4e..74b64e52ffa2 100644
---- a/drivers/net/phy/marvell10g.c
-+++ b/drivers/net/phy/marvell10g.c
-@@ -781,6 +781,7 @@ static struct phy_driver mv3310_drivers[] = {
- 		.get_tunable	= mv3310_get_tunable,
- 		.set_tunable	= mv3310_set_tunable,
- 		.remove		= mv3310_remove,
-+		.set_loopback	= genphy_c45_loopback,
- 	},
- 	{
- 		.phy_id		= MARVELL_PHY_ID_88E2110,
-@@ -796,6 +797,7 @@ static struct phy_driver mv3310_drivers[] = {
- 		.get_tunable	= mv3310_get_tunable,
- 		.set_tunable	= mv3310_set_tunable,
- 		.remove		= mv3310_remove,
-+		.set_loopback	= genphy_c45_loopback,
- 	},
- };
- 
--- 
-2.25.1
+I suspect we can't define such a fatal limit without introducing a local
+DoS vector on some otherwise legitimate workload, and I fear this will
+further complicate the entry/exit logic, so I'd prefer to avoid
+introducing a new limit.
 
+What exactly do you mean by a "special frame", and why do those need
+additional protection over regular frame records?
+
+> Also, we don't have to do any special detection. If the number of out
+> of band frames used is one or more then we have exceptions and the
+> stack trace is unreliable.
+
+What is expected to protect against?
+
+Thanks,
+Mark.
