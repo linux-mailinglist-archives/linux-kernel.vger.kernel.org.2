@@ -2,361 +2,491 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A949134694D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CA3346952
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhCWTvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S231326AbhCWTvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhCWTu5 (ORCPT
+        with ESMTP id S230048AbhCWTvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:50:57 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64173C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:50:56 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id y5so15429726pfn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MhDwk/3XjbatWSWSk6OVuCgRfbT68ZT4CcEbmpJK2Y8=;
-        b=LBxnInfPfplYuSvzx6z7MJkdq5uUf1fJfAY9hGHXMMrbqI5IQHtVVoBs0v84OUyWGU
-         saw9VpwDebmTdotovh7E8VcHBR0SkmmX62CHsER1LmWAtGq3yqNnn/4nnWeEuPAXuNFf
-         gEkaqOsLfVNxewqA4HE3+UGNyKNVCHD2WSHUsQboWWs3Yq9KURTgb04qE/whoU9fvXNx
-         uWeqXRNt8WLXaG10ZMQNgX0O5g1X9TxzDDKKjouK3htONCSEqLgEBEQWxKA/pWMIJmLd
-         zVLnCeec+vYCeuv9jUS2X3aSv5bnMoxnYO46TGmyGC/dVD3poDLdIeGrCnGojd0DIOf0
-         TP1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=MhDwk/3XjbatWSWSk6OVuCgRfbT68ZT4CcEbmpJK2Y8=;
-        b=c6aVv8fBTZT787dq90XzK6fzTMO3CU6xMfzrNytAa/qPYhox/5QQL9QFonS8tsYMko
-         5M93ngHbmhtRdD7qsCYmVP69onjkEfmK3NAMD6V1iNh6ZgZWpEiut7LK/XBngblO1GAk
-         81XkJkWi38Va9O+shLaWdPZBuex5O5SBHlYGZy33uAbrzw5Esg1YqvycXAzEm7rOr9HT
-         q6l9Ni0rHEKDSvsveZJ7GM5d2QX29ljPhbgO+0Ll7jyur6/0xxHH1sMLuzt7LxLDjKr0
-         DjBHh+EP1saoGvPUrRzmVuWdxik/eVN38p0X22PABpD04mS3oNves2ZYEhQcQAs6i4+m
-         RkQg==
-X-Gm-Message-State: AOAM5334qrjYIbLUZuEu5DLYdCgRueXnCUIUMnVe+wJk7UdCUmwyIPyY
-        Qh8mjW9821HDjNfEjK+JZ4Q=
-X-Google-Smtp-Source: ABdhPJx9tg1/Gdg1JOt8ceJm5FUG+pEYjbpkR7xA3ILSySG4ysrkGXKUiz847nsqEp+dsXzfvtnajg==
-X-Received: by 2002:a05:6a00:2292:b029:1ff:bcb8:91f9 with SMTP id f18-20020a056a002292b02901ffbcb891f9mr6578511pfe.63.1616529055728;
-        Tue, 23 Mar 2021 12:50:55 -0700 (PDT)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id 35sm41547pgr.14.2021.03.23.12.50.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 12:50:54 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
-        jhubbard@nvidia.com, willy@infradead.org, digetx@gmail.com,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH v5] mm: cma: support sysfs
-Date:   Tue, 23 Mar 2021 12:50:50 -0700
-Message-Id: <20210323195050.2577017-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        Tue, 23 Mar 2021 15:51:50 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5C6C061574;
+        Tue, 23 Mar 2021 12:51:49 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id C63491F44AC1
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, ebiggers@google.com, drosen@google.com,
+        ebiggers@kernel.org, yuchao0@huawei.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v3 5/5] fs: unicode: Add utf8 module and a unicode layer
+Organization: Collabora
+References: <20210323183201.812944-1-shreeya.patel@collabora.com>
+        <20210323183201.812944-6-shreeya.patel@collabora.com>
+Date:   Tue, 23 Mar 2021 15:51:44 -0400
+In-Reply-To: <20210323183201.812944-6-shreeya.patel@collabora.com> (Shreeya
+        Patel's message of "Wed, 24 Mar 2021 00:02:01 +0530")
+Message-ID: <87eeg5d4xb.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since CMA is getting used more widely, it's more important to
-keep monitoring CMA statistics for system health since it's
-directly related to user experience.
+Shreeya Patel <shreeya.patel@collabora.com> writes:
 
-This patch introduces sysfs statistics for CMA, in order to provide
-some basic monitoring of the CMA allocator.
+> utf8data.h_shipped has a large database table which is an auto-generated
+> decodification trie for the unicode normalization functions.
+> It is not necessary to load this large table in the kernel if no
+> file system is using it, hence make UTF-8 encoding loadable by converting
+> it into a module.
+> Modify the file called unicode-core which will act as a layer for
+> unicode subsystem. It will load the UTF-8 module and access it's functions
+> whenever any filesystem that needs unicode is mounted.
+> Also, indirect calls using function pointers are easily exploitable by
+> speculative execution attacks, hence use static_call() in unicode.h and
+> unicode-core.c files inorder to prevent these attacks by making direct
+> calls and also to improve the performance of function pointers.
+>
 
- * the number of CMA page successful allocations
- * the number of CMA page allocation failures
+This static call mechanism is indeed really interesting.  Thanks for
+doing it.  A few comments inline
 
-These two values allow the user to calcuate the allocation
-failure rate for each CMA area.
+> ---
+>
+> Changes in v3
+>   - Correct the conditions to prevent NULL pointer dereference while
+>     accessing functions via utf8_ops variable.
+>   - Add spinlock to avoid race conditions that could occur if the module
+>     is deregistered after checking utf8_ops and before doing the
+>     try_module_get() in the following if condition
+>     if (!utf8_ops || !try_module_get(utf8_ops->owner)
+>   - Use static_call() for preventing speculative execution attacks.
+>   - WARN_ON in case utf8_ops is NULL in unicode_unload().
+>   - Rename module file from utf8mod to unicode-utf8.
+>
+> Changes in v2
+>   - Remove the duplicate file utf8-core.c
+>   - Make the wrapper functions inline.
+>   - Remove msleep and use try_module_get() and module_put()
+>     for ensuring that module is loaded correctly and also
+>     doesn't get unloaded while in use.
+>
+>  fs/unicode/Kconfig        |  11 +-
+>  fs/unicode/Makefile       |   5 +-
+>  fs/unicode/unicode-core.c | 268 +++++++++++++-------------------------
+>  fs/unicode/unicode-utf8.c | 255 ++++++++++++++++++++++++++++++++++++
+>  include/linux/unicode.h   |  99 ++++++++++++--
+>  5 files changed, 441 insertions(+), 197 deletions(-)
+>  create mode 100644 fs/unicode/unicode-utf8.c
+>
+> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+> index 2c27b9a5c..2961b0206 100644
+> --- a/fs/unicode/Kconfig
+> +++ b/fs/unicode/Kconfig
+> @@ -8,7 +8,16 @@ config UNICODE
+>  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
+>  	  support.
+>  
+> +# UTF-8 encoding can be compiled as a module using UNICODE_UTF8 option.
+> +# Having UTF-8 encoding as a module will avoid carrying large
+> +# database table present in utf8data.h_shipped into the kernel
+> +# by being able to load it only when it is required by the filesystem.
+> +config UNICODE_UTF8
+> +	tristate "UTF-8 module"
+> +	depends on UNICODE
+> +	default m
+> +
+>  config UNICODE_NORMALIZATION_SELFTEST
+>  	tristate "Test UTF-8 normalization support"
+> -	depends on UNICODE
+> +	depends on UNICODE_UTF8
+>  	default n
+> --- a/fs/unicode/Makefile
+> +++ b/fs/unicode/Makefile
+> @@ -1,11 +1,14 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  obj-$(CONFIG_UNICODE) += unicode.o
+> +obj-$(CONFIG_UNICODE_UTF8) += utf8.o
+>  obj-$(CONFIG_UNICODE_NORMALIZATION_SELFTEST) += utf8-selftest.o
+>  
+> -unicode-y := utf8-norm.o unicode-core.o
+> +unicode-y := unicode-core.o
+> +utf8-y := unicode-utf8.o utf8-norm.o
+>  
+>  $(obj)/utf8-norm.o: $(obj)/utf8data.h
+> +$(obj)/unicode-utf8.o: $(obj)/utf8-norm.o
+>  
+>  # In the normal build, the checked-in utf8data.h is just shipped.
+>  #
+> --- a/fs/unicode/unicode-core.c
+> +++ b/fs/unicode/unicode-core.c
+> @@ -1,238 +1,144 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+> -#include <linux/string.h>
+>  #include <linux/slab.h>
+> -#include <linux/parser.h>
+>  #include <linux/errno.h>
+>  #include <linux/unicode.h>
+> -#include <linux/stringhash.h>
+> +#include <linux/spinlock.h>
+>  
+> -#include "utf8n.h"
+> +DEFINE_SPINLOCK(utf8ops_lock);
+>  
+> -int unicode_validate(const struct unicode_map *um, const struct qstr *str)
+> -{
+> -	const struct utf8data *data = utf8nfdi(um->version);
+> -
+> -	if (utf8nlen(data, str->name, str->len) < 0)
+> -		return -1;
+> -	return 0;
+> -}
+> +struct unicode_ops *utf8_ops;
+> +EXPORT_SYMBOL(utf8_ops);
+> +
+> +int _utf8_validate(const struct unicode_map *um, const struct qstr *str)
+> +{
+> +	return 0;
+> +}
+> -EXPORT_SYMBOL(unicode_validate);
 
-e.g.)
-  /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
-  /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
-  /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
+I think that any calls to the default static calls should return errors
+instead of succeeding without doing anything.
 
-The cma_stat was intentionally allocated by dynamic allocation
-to harmonize with kobject lifetime management.
-https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
+In fact, are the default calls really necessary?  If someone gets here,
+there is a bug elsewhere, so WARN_ON and maybe -EIO.  
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
-From v4 - https://lore.kernel.org/linux-mm/20210309062333.3216138-1-minchan@kernel.org/
- * fix corruption - digetx@
+int unicode_validate_default_static_call(...)
+{
+   WARN_ON(1);
+   return -EIO;
+}
 
-From v3 - https://lore.kernel.org/linux-mm/20210303205053.2906924-1-minchan@kernel.org/
- * fix ZERO_OR_NULL_PTR - kernel test robot
- * remove prefix cma - david@
- * resolve conflict with vmstat cma in mmotm - akpm@
- * rename stat name with success|fail
+Or just have a NULL default, as I mentioned below, if that is possible.
 
-From v2 - https://lore.kernel.org/linux-mm/20210208180142.2765456-1-minchan@kernel.org/
- * sysfs doc and description modification - jhubbard
+Eric?
 
-From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
- * fix sysfs build and refactoring - willy
- * rename and drop some attributes - jhubbard
+> -int unicode_strncmp(const struct unicode_map *um,
+> -		    const struct qstr *s1, const struct qstr *s2)
+> -{
+> -	const struct utf8data *data = utf8nfdi(um->version);
+> -	struct utf8cursor cur1, cur2;
+> -	int c1, c2;
+> -
+> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
+> -		return -EINVAL;
+> -
+> -	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
+> -		return -EINVAL;
+> -
+> -	do {
+> -		c1 = utf8byte(&cur1);
+> -		c2 = utf8byte(&cur2);
+> -
+> -		if (c1 < 0 || c2 < 0)
+> -			return -EINVAL;
+> -		if (c1 != c2)
+> -			return 1;
+> -	} while (c1);
+> -
+> -	return 0;
+> -}
+> +int _utf8_strncmp(const struct unicode_map *um, const struct qstr *s1,
+> +		  const struct qstr *s2)
+> +{
+> +	return 0;
+> +}
+> -EXPORT_SYMBOL(unicode_strncmp);
+>  
+> -int unicode_strncasecmp(const struct unicode_map *um,
+> -			const struct qstr *s1, const struct qstr *s2)
+> -{
+> -	const struct utf8data *data = utf8nfdicf(um->version);
+> -	struct utf8cursor cur1, cur2;
+> -	int c1, c2;
+> -
+> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
+> -		return -EINVAL;
+> -
+> -	if (utf8ncursor(&cur2, data, s2->name, s2->len) < 0)
+> -		return -EINVAL;
+> -
+> -	do {
+> -		c1 = utf8byte(&cur1);
+> -		c2 = utf8byte(&cur2);
+> -
+> -		if (c1 < 0 || c2 < 0)
+> -			return -EINVAL;
+> -		if (c1 != c2)
+> -			return 1;
+> -	} while (c1);
+> -
+> -	return 0;
+> -}
+> +int _utf8_strncasecmp(const struct unicode_map *um, const struct qstr *s1,
+> +		      const struct qstr *s2)
+> +{
+> +	return 0;
+> +}
+> -EXPORT_SYMBOL(unicode_strncasecmp);
+>  
+> -/* String cf is expected to be a valid UTF-8 casefolded
+> - * string.
+> - */
+> -int unicode_strncasecmp_folded(const struct unicode_map *um,
+> -			       const struct qstr *cf,
+> -			       const struct qstr *s1)
+> -{
+> -	const struct utf8data *data = utf8nfdicf(um->version);
+> -	struct utf8cursor cur1;
+> -	int c1, c2;
+> -	int i = 0;
+> -
+> -	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
+> -		return -EINVAL;
+> -
+> -	do {
+> -		c1 = utf8byte(&cur1);
+> -		c2 = cf->name[i++];
+> -		if (c1 < 0)
+> -			return -EINVAL;
+> -		if (c1 != c2)
+> -			return 1;
+> -	} while (c1);
+> -
+> -	return 0;
+> -}
+> +int _utf8_strncasecmp_folded(const struct unicode_map *um,
+> +			     const struct qstr *cf, const struct qstr *s1)
+> +{
+> +	return 0;
+> +}
+> -EXPORT_SYMBOL(unicode_strncasecmp_folded);
+>  
+> -int unicode_casefold(const struct unicode_map *um, const struct qstr *str,
+> -		     unsigned char *dest, size_t dlen)
+> -{
+> -	const struct utf8data *data = utf8nfdicf(um->version);
+> -	struct utf8cursor cur;
+> -	size_t nlen = 0;
+> -
+> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
+> -		return -EINVAL;
+> -
+> -	for (nlen = 0; nlen < dlen; nlen++) {
+> -		int c = utf8byte(&cur);
+> -
+> -		dest[nlen] = c;
+> -		if (!c)
+> -			return nlen;
+> -		if (c == -1)
+> -			break;
+> -	}
+> -	return -EINVAL;
+> -}
+> +int _utf8_normalize(const struct unicode_map *um, const struct qstr *str,
+> +		    unsigned char *dest, size_t dlen)
+> +{
+> +	return 0;
+> +}
+> -EXPORT_SYMBOL(unicode_casefold);
+>  
+> -int unicode_casefold_hash(const struct unicode_map *um, const void *salt,
+> -			  struct qstr *str)
+> -{
+> -	const struct utf8data *data = utf8nfdicf(um->version);
+> -	struct utf8cursor cur;
+> -	int c;
+> -	unsigned long hash = init_name_hash(salt);
+> -
+> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
+> -		return -EINVAL;
+> -
+> -	while ((c = utf8byte(&cur))) {
+> -		if (c < 0)
+> -			return -EINVAL;
+> -		hash = partial_name_hash((unsigned char)c, hash);
+> -	}
+> -	str->hash = end_name_hash(hash);
+> -	return 0;
+> -}
+> +int _utf8_casefold(const struct unicode_map *um, const struct qstr *str,
+> +		   unsigned char *dest, size_t dlen)
+> +{
+> +	return 0;
+> +}
+> -EXPORT_SYMBOL(unicode_casefold_hash);
+>  
+> -int unicode_normalize(const struct unicode_map *um, const struct qstr *str,
+> -		      unsigned char *dest, size_t dlen)
+> -{
+> -	const struct utf8data *data = utf8nfdi(um->version);
+> -	struct utf8cursor cur;
+> -	ssize_t nlen = 0;
+> -
+> -	if (utf8ncursor(&cur, data, str->name, str->len) < 0)
+> -		return -EINVAL;
+> -
+> -	for (nlen = 0; nlen < dlen; nlen++) {
+> -		int c = utf8byte(&cur);
+> -
+> -		dest[nlen] = c;
+> -		if (!c)
+> -			return nlen;
+> -		if (c == -1)
+> -			break;
+> -	}
+> -	return -EINVAL;
+> -}
+> +int _utf8_casefold_hash(const struct unicode_map *um, const void *salt,
+> +			struct qstr *str)
+> +{
+> +	return 0;
+> +}
+> +
+> +struct unicode_map *_utf8_load(const char *version)
+> +{
+> +	return NULL;
+> +}
+> -EXPORT_SYMBOL(unicode_normalize);
+>  
+> -static int unicode_parse_version(const char *version, unsigned int *maj,
+> -				 unsigned int *min, unsigned int *rev)
+> -{
+> -	substring_t args[3];
+> -	char version_string[12];
+> -	static const struct match_token token[] = {
+> -		{1, "%d.%d.%d"},
+> -		{0, NULL}
+> -	};
+> -
+> -	int ret = strscpy(version_string, version, sizeof(version_string));
+> -
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	if (match_token(version_string, token, args) != 1)
+> -		return -EINVAL;
+> -
+> -	if (match_int(&args[0], maj) || match_int(&args[1], min) ||
+> -	    match_int(&args[2], rev))
+> -		return -EINVAL;
+> -
+> -	return 0;
+> -}
+> +void _utf8_unload(struct unicode_map *um)
+> +{
+> +	return;
+> +}
+> +
+> +DEFINE_STATIC_CALL(utf8_validate, _utf8_validate);
+> +DEFINE_STATIC_CALL(utf8_strncmp, _utf8_strncmp);
+> +DEFINE_STATIC_CALL(utf8_strncasecmp, _utf8_strncasecmp);
+> +DEFINE_STATIC_CALL(utf8_strncasecmp_folded, _utf8_strncasecmp_folded);
+> +DEFINE_STATIC_CALL(utf8_normalize, _utf8_normalize);
+> +DEFINE_STATIC_CALL(utf8_casefold, _utf8_casefold);
+> +DEFINE_STATIC_CALL(utf8_casefold_hash, _utf8_casefold_hash);
+> +DEFINE_STATIC_CALL(utf8_load, _utf8_load);
+> +DEFINE_STATIC_CALL_NULL(utf8_unload, _utf8_unload);
+> +EXPORT_STATIC_CALL(utf8_strncmp);
+> +EXPORT_STATIC_CALL(utf8_strncasecmp);
+> +EXPORT_STATIC_CALL(utf8_strncasecmp_folded);
 
+I'm having a hard time understanding why some use
+DEFINE_STATIC_CALL_NULL, while other use DEFINE_STATIC_CALL.  This new
+static call API is new to me :).  None of this can be called if the
+module is not loaded anyway, so perhaps the default function can just be
+NULL, per the documentation of include/linux/static_call.h?
 
- Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
- mm/Kconfig                                    |   7 ++
- mm/Makefile                                   |   1 +
- mm/cma.c                                      |   7 +-
- mm/cma.h                                      |  21 ++++
- mm/cma_sysfs.c                                | 107 ++++++++++++++++++
- 6 files changed, 166 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
- create mode 100644 mm/cma_sysfs.c
+Anyway, Aren't utf8_{validate,casefold,normalize} missing the
+equivalent EXPORT_STATIC_CALL?
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-new file mode 100644
-index 000000000000..02b2bb60c296
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-@@ -0,0 +1,25 @@
-+What:		/sys/kernel/mm/cma/
-+Date:		Feb 2021
-+Contact:	Minchan Kim <minchan@kernel.org>
-+Description:
-+		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
-+		heap name (also sometimes called CMA areas).
-+
-+		Each CMA heap subdirectory (that is, each
-+		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
-+		following items:
-+
-+			alloc_pages_success
-+			alloc_pages_fail
-+
-+What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
-+Date:		Feb 2021
-+Contact:	Minchan Kim <minchan@kernel.org>
-+Description:
-+		the number of pages CMA API succeeded to allocate
-+
-+What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
-+Date:		Feb 2021
-+Contact:	Minchan Kim <minchan@kernel.org>
-+Description:
-+		the number of pages CMA API failed to allocate
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 24c045b24b95..febb7e8e24de 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -513,6 +513,13 @@ config CMA_DEBUGFS
- 	help
- 	  Turns on the DebugFS interface for CMA.
- 
-+config CMA_SYSFS
-+	bool "CMA information through sysfs interface"
-+	depends on CMA && SYSFS
-+	help
-+	  This option exposes some sysfs attributes to get information
-+	  from CMA.
-+
- config CMA_AREAS
- 	int "Maximum count of the CMA areas"
- 	depends on CMA
-diff --git a/mm/Makefile b/mm/Makefile
-index 72227b24a616..56968b23ed7a 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
- obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
- obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
- obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
-+obj-$(CONFIG_CMA_SYSFS) += cma_sysfs.o
- obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
- obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
- obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
-diff --git a/mm/cma.c b/mm/cma.c
-index 908f04775686..ac050359faae 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -507,10 +507,13 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- 
- 	pr_debug("%s(): returned %p\n", __func__, page);
- out:
--	if (page)
-+	if (page) {
- 		count_vm_event(CMA_ALLOC_SUCCESS);
--	else
-+		cma_sysfs_alloc_pages_count(cma, count);
-+	} else {
- 		count_vm_event(CMA_ALLOC_FAIL);
-+		cma_sysfs_fail_pages_count(cma, count);
-+	}
- 
- 	return page;
- }
-diff --git a/mm/cma.h b/mm/cma.h
-index 42ae082cb067..f3258791ac58 100644
---- a/mm/cma.h
-+++ b/mm/cma.h
-@@ -3,6 +3,12 @@
- #define __MM_CMA_H__
- 
- #include <linux/debugfs.h>
-+#include <linux/kobject.h>
-+
-+struct cma_kobject {
-+	struct cma *cma;
-+	struct kobject kobj;
-+};
- 
- struct cma {
- 	unsigned long   base_pfn;
-@@ -16,6 +22,14 @@ struct cma {
- 	struct debugfs_u32_array dfs_bitmap;
- #endif
- 	char name[CMA_MAX_NAME];
-+#ifdef CONFIG_CMA_SYSFS
-+	/* the number of CMA page successful allocations */
-+	atomic64_t nr_pages_succeeded;
-+	/* the number of CMA page allocation failures */
-+	atomic64_t nr_pages_failed;
-+	/* kobject requires dynamic objecjt */
-+	struct cma_kobject *kobj;
-+#endif
- };
- 
- extern struct cma cma_areas[MAX_CMA_AREAS];
-@@ -26,4 +40,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
- 	return cma->count >> cma->order_per_bit;
- }
- 
-+#ifdef CONFIG_CMA_SYSFS
-+void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count);
-+void cma_sysfs_fail_pages_count(struct cma *cma, size_t count);
-+#else
-+static inline void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count) {};
-+static inline void cma_sysfs_fail_pages_count(struct cma *cma, size_t count) {};
-+#endif
- #endif
-diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-new file mode 100644
-index 000000000000..6813635cef41
---- /dev/null
-+++ b/mm/cma_sysfs.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * CMA SysFS Interface
-+ *
-+ * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
-+ */
-+
-+#include <linux/cma.h>
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+
-+#include "cma.h"
-+
-+void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
-+{
-+	atomic64_add(count, &cma->nr_pages_succeeded);
-+}
-+
-+void cma_sysfs_fail_pages_count(struct cma *cma, size_t count)
-+{
-+	atomic64_add(count, &cma->nr_pages_failed);
-+}
-+
-+#define CMA_ATTR_RO(_name) \
-+	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
-+
-+static ssize_t alloc_pages_success_show(struct kobject *kobj,
-+					struct kobj_attribute *attr, char *buf)
-+{
-+	struct cma_kobject *cma_kobj = container_of(kobj,
-+						    struct cma_kobject, kobj);
-+	struct cma *cma = cma_kobj->cma;
-+
-+	return sysfs_emit(buf, "%llu\n",
-+			  atomic64_read(&cma->nr_pages_succeeded));
-+}
-+CMA_ATTR_RO(alloc_pages_success);
-+
-+static ssize_t alloc_pages_fail_show(struct kobject *kobj,
-+				     struct kobj_attribute *attr, char *buf)
-+{
-+	struct cma_kobject *cma_kobj = container_of(kobj,
-+						    struct cma_kobject, kobj);
-+	struct cma *cma = cma_kobj->cma;
-+
-+	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_failed));
-+}
-+CMA_ATTR_RO(alloc_pages_fail);
-+
-+static void cma_kobj_release(struct kobject *kobj)
-+{
-+	struct cma_kobject *cma_kobj =
-+		container_of(kobj, struct cma_kobject, kobj);
-+	struct cma *cma = cma_kobj->cma;
-+
-+	kfree(cma_kobj);
-+	cma->kobj = NULL;
-+}
-+
-+static struct attribute *cma_attrs[] = {
-+	&alloc_pages_success_attr.attr,
-+	&alloc_pages_fail_attr.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(cma);
-+
-+static struct kobject *cma_kobj_root;
-+
-+static struct kobj_type cma_ktype = {
-+	.release = cma_kobj_release,
-+	.sysfs_ops = &kobj_sysfs_ops,
-+	.default_groups = cma_groups
-+};
-+
-+static int __init cma_sysfs_init(void)
-+{
-+	int i = 0;
-+	struct cma *cma;
-+
-+	cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
-+	if (!cma_kobj_root)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < cma_area_count; i++) {
-+		struct cma_kobject *kobj;
-+
-+		cma = &cma_areas[i];
-+		kobj = kzalloc(sizeof(struct cma_kobject), GFP_KERNEL);
-+		if (!kobj)
-+			goto out;
-+
-+		kobj->cma = cma;
-+		cma->kobj = kobj;
-+		if (kobject_init_and_add(&cma->kobj->kobj, &cma_ktype,
-+					 cma_kobj_root, "%s", cma->name)) {
-+			kobject_put(&cma->kobj->kobj);
-+			goto out;
-+		}
-+	}
-+
-+	return 0;
-+out:
-+	kobject_put(cma_kobj_root);
-+
-+	return -ENOMEM;
-+}
-+subsys_initcall(cma_sysfs_init);
+> +
+> +static int unicode_load_module(void)
+> +{
+> +	int ret = request_module("utf8");
+> +
+> +	if (ret) {
+> +		pr_err("Failed to load UTF-8 module\n");
+> +		return ret;
+> +	}
+> +	return 0;
+> +}
+>  
+>  struct unicode_map *unicode_load(const char *version)
+> -{
+> -	struct unicode_map *um = NULL;
+> -	int unicode_version;
+> -
+> -	if (version) {
+> -		unsigned int maj, min, rev;
+> -
+> -		if (unicode_parse_version(version, &maj, &min, &rev) < 0)
+> -			return ERR_PTR(-EINVAL);
+> -
+> -		if (!utf8version_is_supported(maj, min, rev))
+> -			return ERR_PTR(-EINVAL);
+> -
+> -		unicode_version = UNICODE_AGE(maj, min, rev);
+> -	} else {
+> -		unicode_version = utf8version_latest();
+> -		printk(KERN_WARNING"UTF-8 version not specified. "
+> -		       "Assuming latest supported version (%d.%d.%d).",
+> -		       (unicode_version >> 16) & 0xff,
+> -		       (unicode_version >> 8) & 0xff,
+> -		       (unicode_version & 0xff));
+> -	}
+> -
+> -	um = kzalloc(sizeof(struct unicode_map), GFP_KERNEL);
+> -	if (!um)
+> -		return ERR_PTR(-ENOMEM);
+> -
+> -	um->charset = "UTF-8";
+> -	um->version = unicode_version;
+> -
+> -	return um;
+> -}
+> +{
+> +	int ret = unicode_load_module();
+> +
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +
+> +	spin_lock(&utf8ops_lock);
+> +	if (!utf8_ops || !try_module_get(utf8_ops->owner)) {
+> +		spin_unlock(&utf8ops_lock);
+> +		return ERR_PTR(-ENODEV);
+> +	} else {
+> +		spin_unlock(&utf8ops_lock);
+> +		return static_call(utf8_load)(version);
+> +	}
+> +}
+>  EXPORT_SYMBOL(unicode_load);
+>  
+>  void unicode_unload(struct unicode_map *um)
+>  {
+> -	kfree(um);
+> +	if (WARN_ON(!utf8_ops))
+> +		return;
+> +
+> +	module_put(utf8_ops->owner);
+> +	static_call(utf8_unload)(um);
+
+The module reference drop should happen after utf8_unload to prevent
+calling utf8_unload after it is removed if you race with module removal.
+
 -- 
-2.31.0.291.g576ba9dcdaf-goog
-
+Gabriel Krisman Bertazi
