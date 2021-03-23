@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE206346124
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E174346132
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhCWONI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:13:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232210AbhCWONA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:13:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09AE7619A9;
-        Tue, 23 Mar 2021 14:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616508780;
-        bh=jKQf4rc43XmSfVAPjyFxLr/Xr4+DIDxPH4T8RixyZ14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tI3hL+dLKo90oYgd6XTZ1bxfZN5PHzY6zQsrcCyZSZ7xLt0cdmYrfvkQXyY4eERW8
-         NtbHxulop8Z1GjMLnmRqmnlHH34JNRV2ogEd0JXR+AFhaXBYA6CglV7OQ4CwihYhQD
-         INcNfScIqi6yPPfZqPwTRvqafSvhPxqIMDeCNMT8=
-Date:   Tue, 23 Mar 2021 15:12:58 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Don Bollinger <don@thebollingers.org>
-Cc:     arndb@arndb.de, linux-kernel@vger.kernel.org,
-        brandon_chuang@edge-core.com, wally_wang@accton.com,
-        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
-        xinxliu@microsoft.com
-Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
- EEPROMS
-Message-ID: <YFn3ahkF4w/IClaw@kroah.com>
-References: <20210215193821.3345-1-don@thebollingers.org>
+        id S232265AbhCWOQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232105AbhCWOPa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:15:30 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC46DC061574;
+        Tue, 23 Mar 2021 07:15:29 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id h10so23590516edt.13;
+        Tue, 23 Mar 2021 07:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KIib56X/7jLsOZcTZP1ltIUNXuXCqixlOs7iGx7lL3g=;
+        b=Qqs1OXy4jF4mqYpg/nTLcCwPZVr1oFJ/Bq/9rQ+0Ibhd4Gqi2bbRSRA0FR1nZNVWnr
+         5+2y2kc4P0gXxTCezKgOO2nq4yiSYkFOkFO9E7qgVtVIB+z7UeoTrTiOVMYBGHxkETkz
+         e7dLwcF0oetqq+X1LITBqY60KTkvffim4FpBwfmwrsBaPHscgDTVBFs/Otj6X4vXCSMN
+         j2DtHzMM6EBNdITtqsKkZStkQS6K/8sk92iRPM0gbH97rEK8J2grhuFlqhzde4e8dt8T
+         Ml+QhDrt2sYgIUOhpoIAte6sMNFM+GPe5IuHN4USYXsAfytNTK2JDyjyJdhAO4ZUg8HT
+         OokA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KIib56X/7jLsOZcTZP1ltIUNXuXCqixlOs7iGx7lL3g=;
+        b=XiF/g6MNEAmZz3ua6fDg42o3XGor9YDB+MW9rKt3JZH8qWvSEvlnbYJTGk4b+QuotD
+         bnDVYyFR+bJy+LEa0norA2dzxnKI3bJKHl17aVNV+ydKcpzirgrsWux0ztuWOmv+KUXn
+         kbIRB3u9I+aFG0JOzM2Ai4ky22EXenKvBINQzXREafSUPXiyiHaPvkBUhmi6tTmZ581N
+         BlAvtvMR0KpOYAOSoWHfz+JJZmpzmwv7Y152nzliCNXutoxC7UGhpKzYV2mwajcQVoCW
+         vltf3XfGNcgdQaLZVNygTZ6MTGeoBgp7fOOxhozHn8XT+ujh1peyMJk+rIIRTtTBJoYq
+         Z8Xw==
+X-Gm-Message-State: AOAM532HJ0/m8wRpjRRk24dyNKfbSOKY7+IDA0dkWJQslRqtM9utuQcZ
+        Gy7So8vBTUdUL7QaOsJYJaoiJebvBJih9Gng
+X-Google-Smtp-Source: ABdhPJydwZylWjTpCsRopRQGQVhAUpVA0AsjCftXq2VPCPBXvIGOg+9D4sbAi0t9j+uTbDQ9a5ZIGA==
+X-Received: by 2002:a05:6402:3075:: with SMTP id bs21mr4850193edb.274.1616508928570;
+        Tue, 23 Mar 2021 07:15:28 -0700 (PDT)
+Received: from localhost.localdomain ([176.88.28.231])
+        by smtp.gmail.com with ESMTPSA id f3sm11297789ejd.42.2021.03.23.07.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 07:15:28 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     rjw@rjwysocki.net
+Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        julianbraha@gmail.com,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH v2] PM: Kconfig: fix unmet dependency for PM_SLEEP_SMP
+Date:   Tue, 23 Mar 2021 17:14:06 +0300
+Message-Id: <20210323141405.55115-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215193821.3345-1-don@thebollingers.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:38:21AM -0800, Don Bollinger wrote:
-> optoe is an i2c based driver that supports read/write access to all
-> the pages (tables) of MSA standard SFP and similar devices (conforming
-> to the SFF-8472 spec), MSA standard QSFP and similar devices (conforming
-> to the SFF-8636 spec) and CMIS and similar devices (conforming to the
-> Common Management Interface Specfication).
+When PM_SLEEP_SMP is enabled and HOTPLUG_CPU is disabled, it results in
+the following Kbuild warning:
 
-Given this thread, I think that using the SFP interface/api in the
-kernel already seems like the best idea forward.
+WARNING: unmet direct dependencies detected for HOTPLUG_CPU
+  Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
+  Selected by [y]:
+  - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=n] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
 
-That being said, your api here is whack, and I couldn't accept it
-anyway.
+The reason is that PM_SLEEP_SMP selects HOTPLUG_CPU without depending on
+or selecting HOTPLUG_CPU's dependencies.
 
-Not for the least being it's not even documented in Documentation/ABI/
-like all sysfs files have to be :)
+Let PM_SLEEP_SMP depend on HOTPLUG_CPU's dependencies to avoid Kbuild issues.
 
-And it feels like you are abusing sysfs for things it was not ment for,
-you might want to look into configfs?
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+v1->v2:
+* Keep selecting HOTPLUG_CPU by PM_SLEEP_SMP as it needs to be selected
+automatically, let PM_SLEEP_SMP depend on missing dependencies instead.
+---
+ kernel/power/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-But really, these are networking devices, so they should be controllable
-using the standard networking apis, not one-off sysfs files.  Moving to
-the Linux-standard tools is a good thing, and will work out better in
-the end instead of having to encode lots of device-specific state in
-userspace like this "raw" api seems to require.
+diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+index 6bfe3ead10ad..0c4aa403e04a 100644
+--- a/kernel/power/Kconfig
++++ b/kernel/power/Kconfig
+@@ -125,6 +125,7 @@ config PM_SLEEP_SMP
+ 	depends on SMP
+ 	depends on ARCH_SUSPEND_POSSIBLE || ARCH_HIBERNATION_POSSIBLE
+ 	depends on PM_SLEEP
++	depends on PPC_PSERIES || PPC_PMAC || PPC_POWERNV || FSL_SOC_BOOKE
+ 	select HOTPLUG_CPU
+ 
+ config PM_SLEEP_SMP_NONZERO_CPU
+-- 
+2.25.1
 
-thanks,
-
-greg k-h
