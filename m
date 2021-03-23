@@ -2,306 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297B9346CE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249A5346CF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhCWW1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:27:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47361 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234133AbhCWWX0 (ORCPT
+        id S233928AbhCWW20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:28:26 -0400
+Received: from mail-io1-f46.google.com ([209.85.166.46]:40945 "EHLO
+        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234562AbhCWWZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:23:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616538205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JzyDRjNln59tYvqxcGyAAjCd5GRakMWrJZ3j1Fuw07M=;
-        b=StKfILYrrLEpOAP9HvCTm5iZw6CldeVYQedyOUadi7Ban5oDFLoeV+EX/obylMSjemwlxJ
-        BckL6SahnrQspMZ+oq+fM29az5oGpIMuHflqr+eEGy/yaosViukkNRzB0WXdoHpywXxwnj
-        aN1KUpwgWf7bWPf9QEEYxb7zYzXXUfE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-wdCXXR0NNYm7LB0fSsBiqw-1; Tue, 23 Mar 2021 18:23:23 -0400
-X-MC-Unique: wdCXXR0NNYm7LB0fSsBiqw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 548001853022;
-        Tue, 23 Mar 2021 22:23:20 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B65596087C;
-        Tue, 23 Mar 2021 22:23:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v5 28/28] afs: Use the fscache_write_begin() helper
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 22:23:12 +0000
-Message-ID: <161653819291.2770958.406013201547420544.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-References: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 23 Mar 2021 18:25:31 -0400
+Received: by mail-io1-f46.google.com with SMTP id n21so19444625ioa.7;
+        Tue, 23 Mar 2021 15:25:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3UEZQQ7RMfbKq29KOMPJ7OFjYy/c2+8w9Uu+gz84dH8=;
+        b=obaLNuUXXklhP05nBcpYoFjpXyrXDCTWOdy748jPO4aYqJBRzfqRDbQ0jjRzOv7Y1k
+         Ttk5sZ8FcikQ4ULXqcS4fD8fF159nAvnsejhnsOFrLC/Ietr7dBBG0NDnYRhLBGfWY5w
+         rfIXckOIsk4JSxnNy7EGyYdf0Mt0mv7F0GS0HSHdGbKx+8vzUvOSQ/srX/hwuEH2gesK
+         azJ1nNcW9YcwO4XWfNlZU5mQyFELV9DeAouDRnKJCwNpif8kMf0TficjwGTvhUFAB6Qa
+         ijw+no6ME1NYzHaCkoTKzl/3qAyP3ORhlYRk9LHpQyncJgZKhjEuyBlV7NzvyOY4u2gX
+         XZSg==
+X-Gm-Message-State: AOAM530S01lfOYybBUWji+z2pBclVeBCLYeCl2JQypni+aLEf2X9FxEy
+        0CnpgTDzAMGo6MYWiq832b0tJ4v4kA==
+X-Google-Smtp-Source: ABdhPJzpye4yZ6ZA9N5nsZvxWBnNkcfhmSyb65SVrlQxKOct2In09TM3vWFyao/ESlTp5Mg6ePVyDQ==
+X-Received: by 2002:a05:6602:737:: with SMTP id g23mr253177iox.130.1616538328686;
+        Tue, 23 Mar 2021 15:25:28 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q12sm101849ilm.63.2021.03.23.15.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 15:25:28 -0700 (PDT)
+Received: (nullmailer pid 1454318 invoked by uid 1000);
+        Tue, 23 Mar 2021 22:25:25 -0000
+Date:   Tue, 23 Mar 2021 16:25:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 17/22] dt-bindings: add BCM63268 pincontroller binding
+ documentation
+Message-ID: <20210323222525.GA1449625@robh.at.kernel.org>
+References: <20210317143803.26127-1-noltari@gmail.com>
+ <20210317143803.26127-18-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210317143803.26127-18-noltari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make AFS use the new fscache_write_begin() helper to do the pre-reading
-required before the write.  If successful, the helper returns with the
-required page filled in and locked.  It may read more than just one page,
-expanding the read to meet cache granularity requirements as necessary.
+On Wed, Mar 17, 2021 at 03:37:58PM +0100, Álvaro Fernández Rojas wrote:
+> Add binding documentation for the pincontrol core found in the BCM63268
+> family SoCs.
+> 
+> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com></jonas.gorski>
 
-Note: A more advanced version of this could be made that does
-generic_perform_write() for a whole cache granule.  This would make it
-easier to avoid doing the download/read for the data to be overwritten.
+checkpatch.pl highlights an error here.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/160588546422.3465195.1546354372589291098.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161539563244.286939.16537296241609909980.stgit@warthog.procyon.org.uk/ # v4
----
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> ---
+>  v8: add changes suggested by Rob Herring
+>  v7: add changes suggested by Rob Herring
+>  v6: add changes suggested by Rob Herring
+>  v5: change Documentation to dt-bindings in commit title
+>  v4: no changes
+>  v3: add new gpio node
+>  v2: remove interrupts
+> 
+>  .../pinctrl/brcm,bcm63268-pinctrl.yaml        | 166 ++++++++++++++++++
+>  1 file changed, 166 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm63268-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/brcm,bcm63268-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/brcm,bcm63268-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..1acd6ef38c5f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/brcm,bcm63268-pinctrl.yaml
+> @@ -0,0 +1,166 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/brcm,bcm63268-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Broadcom BCM63268 pin controller
+> +
+> +maintainers:
+> +  - Álvaro Fernández Rojas <noltari@gmail.com>
+> +  - Jonas Gorski <jonas.gorski@gmail.com>
+> +
+> +description:
+> +  Bindings for Broadcom's BCM63268 memory-mapped pin controller.
+> +
+> +properties:
+> +  compatible:
+> +    const: brcm,bcm63268-pinctrl
+> +
+> +  reg:
+> +    maxItems: 3
+> +
+> +patternProperties:
+> +  '-pins$':
+> +    type: object
+> +    $ref: pinmux-node.yaml#
+> +
+> +    properties:
+> +      function:
+> +        $ref: "pinmux-node.yaml#/properties/function"
 
- fs/afs/file.c     |   19 +++++++++
- fs/afs/internal.h |    1 
- fs/afs/write.c    |  108 ++++++-----------------------------------------------
- 3 files changed, 31 insertions(+), 97 deletions(-)
+Drop this. The previous $ref already does the same thing.
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 99bb4649a306..cf2b664a68a5 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -334,6 +334,13 @@ static void afs_init_rreq(struct netfs_read_request *rreq, struct file *file)
- 	rreq->netfs_priv = key_get(afs_file_key(file));
- }
- 
-+static bool afs_is_cache_enabled(struct inode *inode)
-+{
-+	struct fscache_cookie *cookie = afs_vnode_cache(AFS_FS_I(inode));
-+
-+	return fscache_cookie_enabled(cookie) && !hlist_empty(&cookie->backing_objects);
-+}
-+
- static int afs_begin_cache_operation(struct netfs_read_request *rreq)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(rreq->inode);
-@@ -341,14 +348,24 @@ static int afs_begin_cache_operation(struct netfs_read_request *rreq)
- 	return fscache_begin_read_operation(rreq, afs_vnode_cache(vnode));
- }
- 
-+static int afs_check_write_begin(struct file *file, loff_t pos, unsigned len,
-+				 struct page *page, void **_fsdata)
-+{
-+	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
-+
-+	return test_bit(AFS_VNODE_DELETED, &vnode->flags) ? -ESTALE : 0;
-+}
-+
- static void afs_priv_cleanup(struct address_space *mapping, void *netfs_priv)
- {
- 	key_put(netfs_priv);
- }
- 
--static const struct netfs_read_request_ops afs_req_ops = {
-+const struct netfs_read_request_ops afs_req_ops = {
- 	.init_rreq		= afs_init_rreq,
-+	.is_cache_enabled	= afs_is_cache_enabled,
- 	.begin_cache_operation	= afs_begin_cache_operation,
-+	.check_write_begin	= afs_check_write_begin,
- 	.issue_op		= afs_req_issue_op,
- 	.cleanup		= afs_priv_cleanup,
- };
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 96b33d2e3116..9f4040724318 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1045,6 +1045,7 @@ extern void afs_dynroot_depopulate(struct super_block *);
- extern const struct address_space_operations afs_fs_aops;
- extern const struct inode_operations afs_file_inode_operations;
- extern const struct file_operations afs_file_operations;
-+extern const struct netfs_read_request_ops afs_req_ops;
- 
- extern int afs_cache_wb_key(struct afs_vnode *, struct afs_file *);
- extern void afs_put_wb_key(struct afs_wb_key *);
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index f55b48e2db29..f0f0496f1a7b 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -11,6 +11,8 @@
- #include <linux/pagemap.h>
- #include <linux/writeback.h>
- #include <linux/pagevec.h>
-+#include <linux/netfs.h>
-+#include <linux/fscache.h>
- #include "internal.h"
- 
- /*
-@@ -22,68 +24,6 @@ int afs_set_page_dirty(struct page *page)
- 	return __set_page_dirty_nobuffers(page);
- }
- 
--/*
-- * Handle completion of a read operation to fill a page.
-- */
--static void afs_fill_hole(struct afs_read *req)
--{
--	if (iov_iter_count(req->iter) > 0)
--		/* The read was short - clear the excess buffer. */
--		iov_iter_zero(iov_iter_count(req->iter), req->iter);
--}
--
--/*
-- * partly or wholly fill a page that's under preparation for writing
-- */
--static int afs_fill_page(struct file *file,
--			 loff_t pos, unsigned int len, struct page *page)
--{
--	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
--	struct afs_read *req;
--	size_t p;
--	void *data;
--	int ret;
--
--	_enter(",,%llu", (unsigned long long)pos);
--
--	if (pos >= vnode->vfs_inode.i_size) {
--		p = pos & ~PAGE_MASK;
--		ASSERTCMP(p + len, <=, PAGE_SIZE);
--		data = kmap(page);
--		memset(data + p, 0, len);
--		kunmap(page);
--		return 0;
--	}
--
--	req = kzalloc(sizeof(struct afs_read), GFP_KERNEL);
--	if (!req)
--		return -ENOMEM;
--
--	refcount_set(&req->usage, 1);
--	req->vnode	= vnode;
--	req->done	= afs_fill_hole;
--	req->key	= key_get(afs_file_key(file));
--	req->pos	= pos;
--	req->len	= len;
--	req->nr_pages	= 1;
--	req->iter	= &req->def_iter;
--	iov_iter_xarray(&req->def_iter, READ, &file->f_mapping->i_pages, pos, len);
--
--	ret = afs_fetch_data(vnode, req);
--	afs_put_read(req);
--	if (ret < 0) {
--		if (ret == -ENOENT) {
--			_debug("got NOENT from server"
--			       " - marking file deleted and stale");
--			set_bit(AFS_VNODE_DELETED, &vnode->flags);
--			ret = -ESTALE;
--		}
--	}
--
--	_leave(" = %d", ret);
--	return ret;
--}
--
- /*
-  * prepare to perform part of a write to a page
-  */
-@@ -102,24 +42,14 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	_enter("{%llx:%llu},%llx,%x",
- 	       vnode->fid.vid, vnode->fid.vnode, pos, len);
- 
--	page = grab_cache_page_write_begin(mapping, pos / PAGE_SIZE, flags);
--	if (!page)
--		return -ENOMEM;
--
--	if (!PageUptodate(page) && len != PAGE_SIZE) {
--		ret = afs_fill_page(file, pos & PAGE_MASK, PAGE_SIZE, page);
--		if (ret < 0) {
--			unlock_page(page);
--			put_page(page);
--			_leave(" = %d [prep]", ret);
--			return ret;
--		}
--		SetPageUptodate(page);
--	}
--
--#ifdef CONFIG_AFS_FSCACHE
--	wait_on_page_fscache(page);
--#endif
-+	/* Prefetch area to be written into the cache if we're caching this
-+	 * file.  We need to do this before we get a lock on the page in case
-+	 * there's more than one writer competing for the same cache block.
-+	 */
-+	ret = netfs_write_begin(file, mapping, pos, len, flags, &page, fsdata,
-+				&afs_req_ops, NULL);
-+	if (ret < 0)
-+		return ret;
- 
- 	index = page->index;
- 	from = pos - index * PAGE_SIZE;
-@@ -184,7 +114,6 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 	unsigned int f, from = pos & (thp_size(page) - 1);
- 	unsigned int t, to = from + copied;
- 	loff_t i_size, maybe_i_size;
--	int ret = 0;
- 
- 	_enter("{%llx:%llu},{%lx}",
- 	       vnode->fid.vid, vnode->fid.vnode, page->index);
-@@ -203,19 +132,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 		write_sequnlock(&vnode->cb_lock);
- 	}
- 
--	if (!PageUptodate(page)) {
--		if (copied < len) {
--			/* Try and load any missing data from the server.  The
--			 * unmarshalling routine will take care of clearing any
--			 * bits that are beyond the EOF.
--			 */
--			ret = afs_fill_page(file, pos + copied,
--					    len - copied, page);
--			if (ret < 0)
--				goto out;
--		}
--		SetPageUptodate(page);
--	}
-+	ASSERT(PageUptodate(page));
- 
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
-@@ -236,12 +153,11 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 
- 	if (set_page_dirty(page))
- 		_debug("dirtied %lx", page->index);
--	ret = copied;
- 
- out:
- 	unlock_page(page);
- 	put_page(page);
--	return ret;
-+	return copied;
- }
- 
- /*
+> +        enum: [ serial_led_clk, serial_led_data, hsspi_cs4, hsspi_cs5,
+> +                hsspi_cs6, hsspi_cs7, adsl_spi_miso, adsl_spi_mosi,
+> +                vreq_clk, pcie_clkreq_b, robosw_led_clk, robosw_led_data,
+> +                nand, gpio35_alt, dectpd, vdsl_phy_override_0,
+> +                vdsl_phy_override_1, vdsl_phy_override_2,
+> +                vdsl_phy_override_3, dsl_gpio8, dsl_gpio9 ]
+> +
+> +      pins:
+> +        $ref: "pinmux-node.yaml#/properties/pins"
 
+And this.
 
+Same applies to the other pinctrl bindings.
+
+> +        enum: [ gpio0, gpio1, gpio16, gpio17, gpio8, gpio9, gpio18, gpio19,
+> +                gpio22, gpio23, gpio30, gpio31, nand_grp, gpio35
+> +                dectpd_grp, vdsl_phy_override_0_grp,
+> +                vdsl_phy_override_1_grp, vdsl_phy_override_2_grp,
+> +                vdsl_phy_override_3_grp, dsl_gpio8, dsl_gpio9 ]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pinctrl@10 {
+> +      compatible = "brcm,bcm63268-pinctrl";
+> +      reg = <0x10 0x4>, <0x18 0x8>, <0x38 0x4>;
+> +
+> +      pinctrl_serial_led: serial_led-pins {
+> +        pinctrl_serial_led_clk: serial_led_clk-pins {
+> +          function = "serial_led_clk";
+> +          pins = "gpio0";
+> +        };
+> +
+> +        pinctrl_serial_led_data: serial_led_data-pins {
+> +          function = "serial_led_data";
+> +          pins = "gpio1";
+> +        };
+> +      };
+> +
+> +      pinctrl_hsspi_cs4: hsspi_cs4-pins {
+> +        function = "hsspi_cs4";
+> +        pins = "gpio16";
+> +      };
+> +
+> +      pinctrl_hsspi_cs5: hsspi_cs5-pins {
+> +        function = "hsspi_cs5";
+> +        pins = "gpio17";
+> +      };
+> +
+> +      pinctrl_hsspi_cs6: hsspi_cs6-pins {
+> +        function = "hsspi_cs6";
+> +        pins = "gpio8";
+> +      };
+> +
+> +      pinctrl_hsspi_cs7: hsspi_cs7-pins {
+> +        function = "hsspi_cs7";
+> +        pins = "gpio9";
+> +      };
+> +
+> +      pinctrl_adsl_spi: adsl_spi-pins {
+> +        pinctrl_adsl_spi_miso: adsl_spi_miso-pins {
+> +          function = "adsl_spi_miso";
+> +          pins = "gpio18";
+> +        };
+> +
+> +        pinctrl_adsl_spi_mosi: adsl_spi_mosi-pins {
+> +          function = "adsl_spi_mosi";
+> +          pins = "gpio19";
+> +        };
+> +      };
+> +
+> +      pinctrl_vreq_clk: vreq_clk-pins {
+> +        function = "vreq_clk";
+> +        pins = "gpio22";
+> +      };
+> +
+> +      pinctrl_pcie_clkreq_b: pcie_clkreq_b-pins {
+> +        function = "pcie_clkreq_b";
+> +        pins = "gpio23";
+> +      };
+> +
+> +      pinctrl_robosw_led_clk: robosw_led_clk-pins {
+> +        function = "robosw_led_clk";
+> +        pins = "gpio30";
+> +      };
+> +
+> +      pinctrl_robosw_led_data: robosw_led_data-pins {
+> +        function = "robosw_led_data";
+> +        pins = "gpio31";
+> +      };
+> +
+> +      pinctrl_nand: nand-pins {
+> +        function = "nand";
+> +        group = "nand_grp";
+> +      };
+> +
+> +      pinctrl_gpio35_alt: gpio35_alt-pins {
+> +        function = "gpio35_alt";
+> +        pin = "gpio35";
+> +      };
+> +
+> +      pinctrl_dectpd: dectpd-pins {
+> +        function = "dectpd";
+> +        group = "dectpd_grp";
+> +      };
+> +
+> +      pinctrl_vdsl_phy_override_0: vdsl_phy_override_0-pins {
+> +        function = "vdsl_phy_override_0";
+> +        group = "vdsl_phy_override_0_grp";
+> +      };
+> +
+> +      pinctrl_vdsl_phy_override_1: vdsl_phy_override_1-pins {
+> +        function = "vdsl_phy_override_1";
+> +        group = "vdsl_phy_override_1_grp";
+> +      };
+> +
+> +      pinctrl_vdsl_phy_override_2: vdsl_phy_override_2-pins {
+> +        function = "vdsl_phy_override_2";
+> +        group = "vdsl_phy_override_2_grp";
+> +      };
+> +
+> +      pinctrl_vdsl_phy_override_3: vdsl_phy_override_3-pins {
+> +        function = "vdsl_phy_override_3";
+> +        group = "vdsl_phy_override_3_grp";
+> +      };
+> +
+> +      pinctrl_dsl_gpio8: dsl_gpio8-pins {
+> +        function = "dsl_gpio8";
+> +        group = "dsl_gpio8";
+> +      };
+> +
+> +      pinctrl_dsl_gpio9: dsl_gpio9-pins {
+> +        function = "dsl_gpio9";
+> +        group = "dsl_gpio9";
+> +      };
+> +    };
+> -- 
+> 2.20.1
+> 
