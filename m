@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D80B3461F8
+	by mail.lfdr.de (Postfix) with ESMTP id 02AFC3461F7
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhCWOxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
+        id S232439AbhCWOxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbhCWOvn (ORCPT
+        with ESMTP id S232381AbhCWOvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:51:43 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886DBC0613D8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:51:42 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id c17so18379706ilj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:51:42 -0700 (PDT)
+        Tue, 23 Mar 2021 10:51:44 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1D9C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:51:43 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id k25so5837753iob.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:51:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=urnf0slLMOPXg7nga5dabZHaUvtoQMaa3zOQvFLPfpg=;
-        b=pfdUAefHTU48e5RsyI0UEot4pGuYp3/Kjriu7AGl/84y+Q8gwbMTFs7Ii+0fzyu1na
-         x2fk6H0UJj/eSixj+rpfeRRRjXKbXFE/MsGI2cXNIqNpGktqAozO6FfsqHjwVwJUILyZ
-         GSYWTz/X2jz//fdZFgsxPWmrdcU3FmF3VUn3aWI9XuuteiOPmtsQwpA/5rQBuNkvZ7+T
-         CV0RZb9/0zl3UrjC94v3at64nYulTNFCKdzPtpNzJ9RXl8yzDqTiPBw6+XHInH1waEqm
-         ZgMoJHTJb/NeRvMV6lrgy1gQnYLAlslMO6cwgOLmP1Tjarlh1NtFXTamUBzUtSPNVsDE
-         p54Q==
+        bh=mz7860lZzk6VZ253Yqzghlj/rfYbeBGQaKOgyWdMwc4=;
+        b=pCVav1dzOO0huV0bd1PsGoJE/DJC6UFegHK7QKjr3rUIrdA+Y5CRr6vHP1XiflCGQE
+         5vRhrPYQiGd7vM6N3VMV9PQNgf+bAeUMk2cR/0EfdkdWou/uZ0Gm+gd1JApbKO0g1zPM
+         xA+luQnMdkiSgtbxdTdw5QHqtgodWE6GDs3VtFTcgVfC7CanQPSP9KGqKlQ8K4gCueMP
+         /3NCLpRgUjbmsfT91tcUhQkAZRX5gypDGEsTCD2cbVxQga30FqefH/5C6lI6fQtEsMLL
+         F87OAM7iL3d9sGot1ZAm6H3UHQuCFd8cfPcBye+PKrHMjuhVxmfnvmUBwG2n4Jjuym3X
+         c5+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=urnf0slLMOPXg7nga5dabZHaUvtoQMaa3zOQvFLPfpg=;
-        b=YztcwgklBNTjmHibpkvd0roejKw8zurNV/z88VpF8kCoySxA9eBy0KRGjOqWR4wm/6
-         DBdJoLBVIf9OqFDPIovBV6L0+Xinuwf2N+B4TU/z38KDoG13NxPg4Roh2RszYbeTySFN
-         /ag19G7/o+JwanEdWvb3B++3j/E9hodVr9V9+PZYnRKptvtpY+MjWKI22SCjPv9PPupU
-         R6DUaZa/wLe7dUyVjSiCQhwitdckRBuxjgPEYrwPJDPl1kuW6Il6Ae4X3IeGZQkm9l4B
-         WF7Dn0QdOQwFFOfeQ2T1DmIgpDMEqK2y/61XiY3ugOCF3axiEB/cM5X5+dHacf0La9Zl
-         ywMw==
-X-Gm-Message-State: AOAM531mhYK9rOmZ49ie0Fiet0+dnjZxXI4rx9xxO+AZ+tl/aXhNg/H9
-        K+ilvCBivcAEIA9f6hhjIcy3Lg==
-X-Google-Smtp-Source: ABdhPJx5IpgaoIDQgTKR/80zskZFPXeu0K27Ryw76Opbl+jAdilTF/0v3HMlUptpmwwhgeDkZVj3Eg==
-X-Received: by 2002:a92:611:: with SMTP id x17mr5313351ilg.261.1616511101981;
-        Tue, 23 Mar 2021 07:51:41 -0700 (PDT)
+        bh=mz7860lZzk6VZ253Yqzghlj/rfYbeBGQaKOgyWdMwc4=;
+        b=Uw13n17lzgQcHV8OIYGh6iZpKPdJWOhMu+B3LFI6cyaNPvOQ/hxVEpr5MBuR5sGr0D
+         PjFWsV93csHaf9s0IxAoyJHKWr/hJBXA2kiEIlDENRq86CBwUCA+sLxw7LVHpdoH1dRk
+         50aygzN9JmghhsfYwrSepFemWMxqRO/IFBEYk/ezmNHOGSkqgPJVxKG2GEP7XYhyWcAC
+         wgTnzgB1G8CdP4he/th5F6Of/SDux9DevwHfDPwiCfe9xFbfqx4VKY4jK4bSF886qhxx
+         SDH8GE7kGhS7PGoi9CrlYOWgj/bO+6s6InUtDCSR3+rK+VP0oHckSNct3qskjRpNxt2P
+         xzDg==
+X-Gm-Message-State: AOAM531AZSkj2o7dNM9j9Xs1L8xVIQGBX+TYsrDvb0wJcPOgmPqiA+FT
+        OJoGrQvUMAKtQW5RuaLAHk7xSQ==
+X-Google-Smtp-Source: ABdhPJwUbb2CkRxod9K93XDPC5V1Y0v85DqJTTPBlEnh0g5xnBWcFxt0/Dwpw49O8INdS8+yLpIpJg==
+X-Received: by 2002:a02:9985:: with SMTP id a5mr4785921jal.122.1616511102767;
+        Tue, 23 Mar 2021 07:51:42 -0700 (PDT)
 Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o13sm8961147iob.17.2021.03.23.07.51.41
+        by smtp.gmail.com with ESMTPSA id o13sm8961147iob.17.2021.03.23.07.51.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 07:51:41 -0700 (PDT)
+        Tue, 23 Mar 2021 07:51:42 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/6] net: ipa: limit local processing context address
-Date:   Tue, 23 Mar 2021 09:51:30 -0500
-Message-Id: <20210323145132.2291316-5-elder@linaro.org>
+Subject: [PATCH net-next 5/6] net: ipa: move ipa_aggr_granularity_val()
+Date:   Tue, 23 Mar 2021 09:51:31 -0500
+Message-Id: <20210323145132.2291316-6-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210323145132.2291316-1-elder@linaro.org>
 References: <20210323145132.2291316-1-elder@linaro.org>
@@ -65,71 +65,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all of the bits of the LOCAL_PKT_PROC_CNTXT register are valid.
-Until IPA v4.5, there are 17 valid bits (though the bottom three
-must be zero).  Starting with IPA v4.5, 18 bits are valid.
-
-Introduce proc_cntxt_base_addr_encoded() to encode the base address
-for use in the register using only the valid bits.
-
-Shorten the name of the register (omit "_BASE") to avoid the need to
-wrap the line in the one place it's used.
+We only use ipa_aggr_granularity_val() inside "ipa_main.c", so it
+doesn't really need to be defined in a header file.  It makes some
+sense to be grouped with the register definitions, but it is unlike
+the other inline functions now defined in "ipa_reg.h".  So move it
+into "ipa_main.c" where it's used.  TIMER_FREQUENCY is used only
+by that function, so move that definition as well.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_mem.c |  6 ++++--
- drivers/net/ipa/ipa_reg.h | 14 ++++++++++++--
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ drivers/net/ipa/ipa_main.c | 15 +++++++++++++++
+ drivers/net/ipa/ipa_reg.h  | 12 ------------
+ 2 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-index f25029b9ec857..32907dde5dc6a 100644
---- a/drivers/net/ipa/ipa_mem.c
-+++ b/drivers/net/ipa/ipa_mem.c
-@@ -61,6 +61,7 @@ int ipa_mem_setup(struct ipa *ipa)
- 	struct gsi_trans *trans;
- 	u32 offset;
- 	u16 size;
-+	u32 val;
- 
- 	/* Get a transaction to define the header memory region and to zero
- 	 * the processing context and modem memory regions.
-@@ -89,8 +90,9 @@ int ipa_mem_setup(struct ipa *ipa)
- 	gsi_trans_commit_wait(trans);
- 
- 	/* Tell the hardware where the processing context area is located */
--	iowrite32(ipa->mem_offset + ipa->mem[IPA_MEM_MODEM_PROC_CTX].offset,
--		  ipa->reg_virt + IPA_REG_LOCAL_PKT_PROC_CNTXT_BASE_OFFSET);
-+	offset = ipa->mem_offset + ipa->mem[IPA_MEM_MODEM_PROC_CTX].offset;
-+	val = proc_cntxt_base_addr_encoded(ipa->version, offset);
-+	iowrite32(val, ipa->reg_virt + IPA_REG_LOCAL_PKT_PROC_CNTXT_OFFSET);
- 
- 	return 0;
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 62d82d48aed69..ba1bfc30210a3 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -287,6 +287,21 @@ ipa_hardware_config_qsb(struct ipa *ipa, const struct ipa_data *data)
+ 	iowrite32(val, ipa->reg_virt + IPA_REG_QSB_MAX_READS_OFFSET);
  }
+ 
++/* The internal inactivity timer clock is used for the aggregation timer */
++#define TIMER_FREQUENCY	32000		/* 32 KHz inactivity timer clock */
++
++/* Compute the value to use in the COUNTER_CFG register AGGR_GRANULARITY
++ * field to represent the given number of microseconds.  The value is one
++ * less than the number of timer ticks in the requested period.  0 is not
++ * a valid granularity value.
++ */
++static u32 ipa_aggr_granularity_val(u32 usec)
++{
++	/* assert(usec != 0); */
++
++	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
++}
++
+ /* IPA uses unified Qtime starting at IPA v4.5, implementing various
+  * timestamps and timers independent of the IPA core clock rate.  The
+  * Qtimer is based on a 56-bit timestamp incremented at each tick of
 diff --git a/drivers/net/ipa/ipa_reg.h b/drivers/net/ipa/ipa_reg.h
-index bba088e80cd1e..cbfef27bbcf2c 100644
+index cbfef27bbcf2c..86fe2978e8102 100644
 --- a/drivers/net/ipa/ipa_reg.h
 +++ b/drivers/net/ipa/ipa_reg.h
-@@ -217,8 +217,18 @@ static inline u32 ipa_reg_bcr_val(enum ipa_version version)
- 	return 0x00000000;
- }
+@@ -237,18 +237,6 @@ static inline u32 proc_cntxt_base_addr_encoded(enum ipa_version version,
+ #define IPA_REG_COUNTER_CFG_OFFSET			0x000001f0
+ #define AGGR_GRANULARITY_FMASK			GENMASK(8, 4)
  
--/* The value of the next register must be a multiple of 8 */
--#define IPA_REG_LOCAL_PKT_PROC_CNTXT_BASE_OFFSET	0x000001e8
-+/* The value of the next register must be a multiple of 8 (bottom 3 bits 0) */
-+#define IPA_REG_LOCAL_PKT_PROC_CNTXT_OFFSET		0x000001e8
-+
-+/* Encoded value for LOCAL_PKT_PROC_CNTXT register BASE_ADDR field */
-+static inline u32 proc_cntxt_base_addr_encoded(enum ipa_version version,
-+					       u32 addr)
-+{
-+	if (version < IPA_VERSION_4_5)
-+		return u32_encode_bits(addr, GENMASK(16, 0));
-+
-+	return u32_encode_bits(addr, GENMASK(17, 0));
-+}
- 
- /* ipa->available defines the valid bits in the AGGR_FORCE_CLOSE register */
- #define IPA_REG_AGGR_FORCE_CLOSE_OFFSET			0x000001ec
+-/* The internal inactivity timer clock is used for the aggregation timer */
+-#define TIMER_FREQUENCY	32000		/* 32 KHz inactivity timer clock */
+-
+-/* Compute the value to use in the AGGR_GRANULARITY field representing the
+- * given number of microseconds.  The value is one less than the number of
+- * timer ticks in the requested period.  0 not a valid granularity value.
+- */
+-static inline u32 ipa_aggr_granularity_val(u32 usec)
+-{
+-	return DIV_ROUND_CLOSEST(usec * TIMER_FREQUENCY, USEC_PER_SEC) - 1;
+-}
+-
+ /* The next register is not present for IPA v4.5 */
+ #define IPA_REG_TX_CFG_OFFSET				0x000001fc
+ /* The first three fields are present for IPA v3.5.1 only */
 -- 
 2.27.0
 
