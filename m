@@ -2,266 +2,610 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8638B3453E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7707F34540B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhCWAas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:30:48 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62314 "EHLO mga17.intel.com"
+        id S230368AbhCWAo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:44:26 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8650 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230417AbhCWAaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:30:11 -0400
-IronPort-SDR: 7qVA7TJT0KGMbOYuYOkFFnhFjocQEhnjiyzdBbNVcyZDMy6qdhLbHoRnhfOD6c6bjKHxHmtXd7
- PHgg9TGvuXFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="170337930"
+        id S229537AbhCWAnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:43:42 -0400
+IronPort-SDR: LLmrUN0Lk8h4Mp65tPlZhUYHStwkHTg0eRPyUmRKy5alea6NEzxlwmkqtM8GNS8JGRzBifXIvu
+ BpRZ+SyVrb+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="187059759"
 X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="170337930"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 17:30:10 -0700
-IronPort-SDR: I5wkFm/ZlWsgV0lLkajk1eVIA72pp23foF21QaR1Cr9gjIIu7IbWpAFTYUiGKTCH2FEQfL2TS7
- ukmYiyZwwGDQ==
-X-ExtLoop1: 1
+   d="scan'208";a="187059759"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 17:43:41 -0700
+IronPort-SDR: XFym6FtbM3Bosl/a9AkBpySQFikEkzTzftzqLRofiMlDEl8DdNgUe0OF9PPeJ0KCnTAtRohkdQ
+ sBL3gOM77o+w==
 X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="374029466"
-Received: from local-michael-cet-test.sh.intel.com (HELO localhost) ([10.239.159.166])
-  by orsmga003.jf.intel.com with ESMTP; 22 Mar 2021 17:30:08 -0700
-Date:   Tue, 23 Mar 2021 08:43:05 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        vkuznets@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] KVM: nVMX: Sync L2 guest CET states between L1/L2
-Message-ID: <20210323004305.GA3647@local-michael-cet-test.sh.intel.com>
-References: <20210315071841.7045-1-weijiang.yang@intel.com>
- <20210315071841.7045-2-weijiang.yang@intel.com>
- <YE+PF1zfkZTTgwxn@google.com>
- <20210316090347.GA13548@local-michael-cet-test.sh.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316090347.GA13548@local-michael-cet-test.sh.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+   d="scan'208";a="607533582"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 17:43:38 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: [PATCH] soundwire: intel: move to auxiliary bus
+Date:   Tue, 23 Mar 2021 08:43:25 +0800
+Message-Id: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 05:03:47PM +0800, Yang Weijiang wrote:
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Hi, Sean,
-Could you respond my below rely? I'm not sure how to proceed, thanks!
+Now that the auxiliary_bus exists, there's no reason to use platform
+devices as children of a PCI device any longer.
 
-> On Mon, Mar 15, 2021 at 09:45:11AM -0700, Sean Christopherson wrote:
-> > On Mon, Mar 15, 2021, Yang Weijiang wrote:
-> > > These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
-> > > read/write them and after they're changed. If CET guest entry-load bit is not
-> > > set by L1 guest, migrate them to L2 manaully.
-> > > 
-> > > Opportunistically remove one blank line and add minor fix for MPX.
-> > > 
-> > > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> > > ---
-> > >  arch/x86/kvm/cpuid.c      |  1 -
-> > >  arch/x86/kvm/vmx/nested.c | 35 +++++++++++++++++++++++++++++++++--
-> > >  arch/x86/kvm/vmx/vmx.h    |  3 +++
-> > >  3 files changed, 36 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > > index d191de769093..8692f53b8cd0 100644
-> > > --- a/arch/x86/kvm/cpuid.c
-> > > +++ b/arch/x86/kvm/cpuid.c
-> > > @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
-> > >  		}
-> > >  		vcpu->arch.guest_supported_xss =
-> > >  			(((u64)best->edx << 32) | best->ecx) & supported_xss;
-> > > -
-> > 
-> > Spurious whitespace deletion.
-> 
-> Yes, Opportunistically did it as said in commit log :-D
-> 
-> > 
-> > >  	} else {
-> > >  		vcpu->arch.guest_supported_xss = 0;
-> > >  	}
-> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > > index 9728efd529a1..57ecd8225568 100644
-> > > --- a/arch/x86/kvm/vmx/nested.c
-> > > +++ b/arch/x86/kvm/vmx/nested.c
-> > > @@ -2516,6 +2516,13 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
-> > >  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
-> > >  
-> > >  	set_cr4_guest_host_mask(vmx);
-> > > +
-> > > +	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
-> > > +	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> > > +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
-> > > +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
-> > > +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
-> > > +	}
-> > >  }
-> > >  
-> > >  /*
-> > > @@ -2556,6 +2563,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
-> > >  	if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
-> > >  	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
-> > >  		vmcs_write64(GUEST_BNDCFGS, vmx->nested.vmcs01_guest_bndcfgs);
-> > > +
-> > > +	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
-> > > +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE))) {
-> > 
-> > Not your code per se, since this pattern comes from BNDCFGS and DEBUGCTL, but I
-> > don't see how loading vmcs01 state in this combo is correct:
-> > 
-> >     a. kvm_xxx_supported()              == 1
-> >     b. nested_run_pending               == false
-> >     c. vm_entry_controls.load_xxx_state == true
-> > 
-> > nested_vmx_enter_non_root_mode() only snapshots vmcs01 if 
-> > vm_entry_controls.load_xxx_state == false, which means the above combo is
-> > loading stale values (or more likely, zeros).
-> > 
-> > I _think_ nested_vmx_enter_non_root_mode() just needs to snapshot vmcs01 if
-> > nested_run_pending=false.  For migration, if userspace restores MSRs after
-> > KVM_SET_NESTED_STATE, then what's done here is likely irrelevant.  If userspace
-> > restores MSRs before nested state, then vmcs01 will hold the desired value since
-> > setting MSRs would have written the value into vmcs01.
-> 
-> Then the code nested_vmx_enter_non_root_mode() would look like:
-> 
-> if (kvm_cet_supported() && !vmx->nested.nested_run_pending &&
->     !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> 	...
->     }
-> 
-> I have another concern now, if vm_entry_controls.load_cet_state == false, and L1
-> updated vmcs fields, so the latest states are in vmcs12, but they cannot
-> be synced to vmcs02 because in prepare_vmcs02_rare():
-> 
-> if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
->     (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> 	...
->     }
-> 
-> so L2 got stale status. IMO, L1 guest sets vm_entry_controls.load_cet_state == false
-> should be rare case. We can even igore this case :-)
-> 
-> > 
-> > I suspect no one has reported this issue because guests simply don't use MPX,
-> > and up until the recent LBR stuff, KVM effectively zeroed out DEBUGCTL for the
-> > guest.
-> > 
-> So for MPX and DEBUGCTL, is it worth some separate fix patch?
-> 
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index 45622e9c4449..4184ff601120 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -3298,10 +3298,11 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
-> >         if (likely(!evaluate_pending_interrupts) && kvm_vcpu_apicv_active(vcpu))
-> >                 evaluate_pending_interrupts |= vmx_has_apicv_interrupt(vcpu);
-> > 
-> > -       if (!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
-> > +       if (!vmx->nested.nested_run_pending ||
-> > +           !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
-> >                 vmx->nested.vmcs01_debugctl = vmcs_read64(GUEST_IA32_DEBUGCTL);
-> > -       if (kvm_mpx_supported() &&
-> > -               !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
-> > +       if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
-> > +           !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
-> >                 vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> > 
-> >         /*
-> > 
-> > 
-> > Side topic, all of this code is broken for SMM emulation.  SMI+RSM don't do a
-> > full VM-Exit -> VM-Entry; the CPU forcefully exits non-root, but most state that
-> > is loaded from the VMCS is left untouched.  It's the SMI handler's responsibility
-> > to not enable features, e.g. to not set CR4.CET.  For sane use cases, this
-> > probably doesn't matter as vmcs12 will be configured to context switch state,
-> > but if L1 is doing anything out of the ordinary, SMI+RSM will corrupt state.
-> > 
-> > E.g. if L1 enables MPX in the guest, does not intercept L2 writes to BNDCFGS,
-> > and does not load BNDCFGS on VM-Entry, then SMI+RSM would corrupt BNDCFGS since
-> > the SMI "exit" would clear BNDCFGS, and the RSM "entry" would load zero.  This
-> > is 100% contrived, and probably doesn't impact real world use cases, but it
-> > still bugs me :-)
-> 
-> Exactly, should it be fixed by separate patch or leave it as is?
-> 
-> > 
-> > > +		vmcs_writel(GUEST_SSP, vmx->nested.vmcs01_guest_ssp);
-> > > +		vmcs_writel(GUEST_S_CET, vmx->nested.vmcs01_guest_s_cet);
-> > > +		vmcs_writel(GUEST_INTR_SSP_TABLE,
-> > > +			    vmx->nested.vmcs01_guest_ssp_tbl);
-> > > +	}
-> > > +
-> > >  	vmx_set_rflags(vcpu, vmcs12->guest_rflags);
-> > >  
-> > >  	/* EXCEPTION_BITMAP and CR0_GUEST_HOST_MASK should basically be the
-> > > @@ -3373,8 +3389,14 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
-> > >  	if (!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
-> > >  		vmx->nested.vmcs01_debugctl = vmcs_read64(GUEST_IA32_DEBUGCTL);
-> > >  	if (kvm_mpx_supported() &&
-> > > -		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
-> > > +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
-> > >  		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> > > +	if (kvm_cet_supported() &&
-> > > +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
-> > > +		vmx->nested.vmcs01_guest_ssp = vmcs_readl(GUEST_SSP);
-> > > +		vmx->nested.vmcs01_guest_s_cet = vmcs_readl(GUEST_S_CET);
-> > > +		vmx->nested.vmcs01_guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> > > +	}
-> > >  
-> > >  	/*
-> > >  	 * Overwrite vmcs01.GUEST_CR3 with L1's CR3 if EPT is disabled *and*
-> > > @@ -4001,6 +4023,9 @@ static bool is_vmcs12_ext_field(unsigned long field)
-> > >  	case GUEST_IDTR_BASE:
-> > >  	case GUEST_PENDING_DBG_EXCEPTIONS:
-> > >  	case GUEST_BNDCFGS:
-> > > +	case GUEST_SSP:
-> > > +	case GUEST_INTR_SSP_TABLE:
-> > > +	case GUEST_S_CET:
-> > >  		return true;
-> > >  	default:
-> > >  		break;
-> > > @@ -4050,8 +4075,14 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
-> > >  	vmcs12->guest_idtr_base = vmcs_readl(GUEST_IDTR_BASE);
-> > >  	vmcs12->guest_pending_dbg_exceptions =
-> > >  		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
-> > > -	if (kvm_mpx_supported())
-> > > +	if (kvm_mpx_supported() && guest_cpuid_has(vcpu, X86_FEATURE_MPX))
-> > 
-> > Adding the CPUID check for MPX definitely needs to be a separate commit.
-> 
-> Sure, will fix them by separate patch. Thanks for review!
-> 
-> > 
-> > >  		vmcs12->guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
-> > > +	if (kvm_cet_supported() && (guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
-> > > +	    guest_cpuid_has(vcpu, X86_FEATURE_IBT))) {
-> > > +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
-> > > +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
-> > > +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> > > +	}
-> > >  
-> > >  	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = false;
-> > >  }
-> > > diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> > > index 9d3a557949ac..36dc4fdb0909 100644
-> > > --- a/arch/x86/kvm/vmx/vmx.h
-> > > +++ b/arch/x86/kvm/vmx/vmx.h
-> > > @@ -155,6 +155,9 @@ struct nested_vmx {
-> > >  	/* to migrate it to L2 if VM_ENTRY_LOAD_DEBUG_CONTROLS is off */
-> > >  	u64 vmcs01_debugctl;
-> > >  	u64 vmcs01_guest_bndcfgs;
-> > > +	u64 vmcs01_guest_ssp;
-> > > +	u64 vmcs01_guest_s_cet;
-> > > +	u64 vmcs01_guest_ssp_tbl;
-> > >  
-> > >  	/* to migrate it to L1 if L2 writes to L1's CR8 directly */
-> > >  	int l1_tpr_threshold;
-> > > -- 
-> > > 2.26.2
-> > > 
+This patch refactors the code by extending a basic auxiliary device
+with Intel link-specific structures that need to be passed between
+controller and link levels. This refactoring is much cleaner with no
+need for cross-pointers between device and link structures.
+
+Note that the auxiliary bus API has separate init and add steps, which
+requires more attention in the error unwinding paths. The main loop
+needs to deal with kfree() and auxiliary_device_uninit() for the
+current iteration before jumping to the common label which releases
+everything allocated in prior iterations.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/Kconfig           |   1 +
+ drivers/soundwire/intel.c           |  52 ++++----
+ drivers/soundwire/intel.h           |  14 +-
+ drivers/soundwire/intel_init.c      | 190 +++++++++++++++++++---------
+ include/linux/soundwire/sdw_intel.h |   6 +-
+ 5 files changed, 175 insertions(+), 88 deletions(-)
+
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index 016e74230bb7..2b7795233282 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -25,6 +25,7 @@ config SOUNDWIRE_INTEL
+ 	tristate "Intel SoundWire Master driver"
+ 	select SOUNDWIRE_CADENCE
+ 	select SOUNDWIRE_GENERIC_ALLOCATION
++	select AUXILIARY_BUS
+ 	depends on ACPI && SND_SOC
+ 	help
+ 	  SoundWire Intel Master driver.
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index d2254ee2fee2..039a101982c9 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -11,7 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+-#include <linux/platform_device.h>
++#include <linux/auxiliary_bus.h>
+ #include <sound/pcm_params.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/soc.h>
+@@ -1331,9 +1331,10 @@ static int intel_init(struct sdw_intel *sdw)
+ /*
+  * probe and init
+  */
+-static int intel_master_probe(struct platform_device *pdev)
++static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
+ {
+-	struct device *dev = &pdev->dev;
++	struct device *dev = &auxdev->dev;
++	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
+ 	struct sdw_intel *sdw;
+ 	struct sdw_cdns *cdns;
+ 	struct sdw_bus *bus;
+@@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
+ 	cdns = &sdw->cdns;
+ 	bus = &cdns->bus;
+ 
+-	sdw->instance = pdev->id;
+-	sdw->link_res = dev_get_platdata(dev);
++	sdw->instance = auxdev->id;
++	sdw->link_res = &ldev->link_res;
+ 	cdns->dev = dev;
+ 	cdns->registers = sdw->link_res->registers;
+ 	cdns->instance = sdw->instance;
+ 	cdns->msg_count = 0;
+ 
+-	bus->link_id = pdev->id;
++	bus->link_id = auxdev->id;
+ 
+ 	sdw_cdns_probe(cdns);
+ 
+@@ -1386,10 +1387,10 @@ static int intel_master_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-int intel_master_startup(struct platform_device *pdev)
++int intel_link_startup(struct auxiliary_device *auxdev)
+ {
+ 	struct sdw_cdns_stream_config config;
+-	struct device *dev = &pdev->dev;
++	struct device *dev = &auxdev->dev;
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+ 	struct sdw_bus *bus = &cdns->bus;
+@@ -1526,9 +1527,9 @@ int intel_master_startup(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int intel_master_remove(struct platform_device *pdev)
++static void intel_link_remove(struct auxiliary_device *auxdev)
+ {
+-	struct device *dev = &pdev->dev;
++	struct device *dev = &auxdev->dev;
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+ 	struct sdw_bus *bus = &cdns->bus;
+@@ -1544,19 +1545,17 @@ static int intel_master_remove(struct platform_device *pdev)
+ 		snd_soc_unregister_component(dev);
+ 	}
+ 	sdw_bus_master_delete(bus);
+-
+-	return 0;
+ }
+ 
+-int intel_master_process_wakeen_event(struct platform_device *pdev)
++int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
+ {
+-	struct device *dev = &pdev->dev;
++	struct device *dev = &auxdev->dev;
+ 	struct sdw_intel *sdw;
+ 	struct sdw_bus *bus;
+ 	void __iomem *shim;
+ 	u16 wake_sts;
+ 
+-	sdw = platform_get_drvdata(pdev);
++	sdw = dev_get_drvdata(dev);
+ 	bus = &sdw->cdns.bus;
+ 
+ 	if (bus->prop.hw_disabled) {
+@@ -1978,17 +1977,22 @@ static const struct dev_pm_ops intel_pm = {
+ 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
+ };
+ 
+-static struct platform_driver sdw_intel_drv = {
+-	.probe = intel_master_probe,
+-	.remove = intel_master_remove,
++static const struct auxiliary_device_id intel_link_id_table[] = {
++	{ .name = "soundwire_intel.link" },
++	{},
++};
++MODULE_DEVICE_TABLE(auxiliary, intel_link_id_table);
++
++static struct auxiliary_driver sdw_intel_drv = {
++	.probe = intel_link_probe,
++	.remove = intel_link_remove,
+ 	.driver = {
+-		.name = "intel-sdw",
++		/* auxiliary_driver_register() sets .name to be the modname */
+ 		.pm = &intel_pm,
+-	}
++	},
++	.id_table = intel_link_id_table
+ };
+-
+-module_platform_driver(sdw_intel_drv);
++module_auxiliary_driver(sdw_intel_drv);
+ 
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_ALIAS("platform:intel-sdw");
+-MODULE_DESCRIPTION("Intel Soundwire Master Driver");
++MODULE_DESCRIPTION("Intel Soundwire Link Driver");
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+index 06bac8ba14e9..0b47b148da3f 100644
+--- a/drivers/soundwire/intel.h
++++ b/drivers/soundwire/intel.h
+@@ -7,7 +7,6 @@
+ /**
+  * struct sdw_intel_link_res - Soundwire Intel link resource structure,
+  * typically populated by the controller driver.
+- * @pdev: platform_device
+  * @mmio_base: mmio base of SoundWire registers
+  * @registers: Link IO registers base
+  * @shim: Audio shim pointer
+@@ -23,7 +22,6 @@
+  * @list: used to walk-through all masters exposed by the same controller
+  */
+ struct sdw_intel_link_res {
+-	struct platform_device *pdev;
+ 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
+ 	void __iomem *registers;
+ 	void __iomem *shim;
+@@ -48,7 +46,15 @@ struct sdw_intel {
+ #endif
+ };
+ 
+-int intel_master_startup(struct platform_device *pdev);
+-int intel_master_process_wakeen_event(struct platform_device *pdev);
++int intel_link_startup(struct auxiliary_device *auxdev);
++int intel_link_process_wakeen_event(struct auxiliary_device *auxdev);
++
++struct sdw_intel_link_dev {
++	struct auxiliary_device auxdev;
++	struct sdw_intel_link_res link_res;
++};
++
++#define auxiliary_dev_to_sdw_intel_link_dev(auxiliary_dev) \
++	container_of(auxiliary_dev, struct sdw_intel_link_dev, auxdev)
+ 
+ #endif /* __SDW_INTEL_LOCAL_H */
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index 05b726cdfebc..3cb74060ccae 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -12,7 +12,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+-#include <linux/platform_device.h>
++#include <linux/auxiliary_bus.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/soundwire/sdw_intel.h>
+ #include "cadence_master.h"
+@@ -24,28 +24,65 @@
+ #define SDW_LINK_BASE		0x30000
+ #define SDW_LINK_SIZE		0x10000
+ 
++static void intel_link_auxdev_release(struct device *dev)
++{
++	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
++	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
++
++	kfree(ldev);
++}
++
++static int intel_link_dev_init(struct sdw_intel_link_dev *ldev,
++			       struct device *parent,
++			       struct fwnode_handle *fwnode,
++			       const char *name,
++			       int link_id)
++{
++	struct auxiliary_device *auxdev;
++	int ret;
++
++	auxdev = &ldev->auxdev;
++	auxdev->name = name;
++	auxdev->dev.parent = parent;
++	auxdev->dev.fwnode = fwnode;
++	auxdev->dev.release = intel_link_auxdev_release;
++
++	/* we don't use an IDA since we already have a link ID */
++	auxdev->id = link_id;
++
++	ret = auxiliary_device_init(auxdev);
++	if (ret < 0)
++		dev_err(parent, "failed to initialize link dev %s link_id %d\n",
++			name, link_id);
++
++	return ret;
++}
++
++static void intel_link_dev_unregister(struct sdw_intel_link_dev *ldev)
++{
++	auxiliary_device_delete(&ldev->auxdev);
++	auxiliary_device_uninit(&ldev->auxdev);
++}
++
+ static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
+ {
+-	struct sdw_intel_link_res *link = ctx->links;
++	struct sdw_intel_link_dev *ldev;
+ 	u32 link_mask;
+ 	int i;
+ 
+-	if (!link)
+-		return 0;
+-
+ 	link_mask = ctx->link_mask;
+ 
+-	for (i = 0; i < ctx->count; i++, link++) {
++	for (i = 0; i < ctx->count; i++) {
+ 		if (!(link_mask & BIT(i)))
+ 			continue;
+ 
+-		if (link->pdev) {
+-			pm_runtime_disable(&link->pdev->dev);
+-			platform_device_unregister(link->pdev);
+-		}
++		ldev = ctx->ldev[i];
+ 
+-		if (!link->clock_stop_quirks)
+-			pm_runtime_put_noidle(link->dev);
++		pm_runtime_disable(&ldev->auxdev.dev);
++		intel_link_dev_unregister(ldev);
++
++		if (!ldev->link_res.clock_stop_quirks)
++			pm_runtime_put_noidle(ldev->link_res.dev);
+ 	}
+ 
+ 	return 0;
+@@ -91,9 +128,8 @@ EXPORT_SYMBOL_NS(sdw_intel_thread, SOUNDWIRE_INTEL_INIT);
+ static struct sdw_intel_ctx
+ *sdw_intel_probe_controller(struct sdw_intel_res *res)
+ {
+-	struct platform_device_info pdevinfo;
+-	struct platform_device *pdev;
+ 	struct sdw_intel_link_res *link;
++	struct sdw_intel_link_dev *ldev;
+ 	struct sdw_intel_ctx *ctx;
+ 	struct acpi_device *adev;
+ 	struct sdw_slave *slave;
+@@ -103,6 +139,7 @@ static struct sdw_intel_ctx
+ 	int num_slaves = 0;
+ 	int count;
+ 	int i;
++	int ret;
+ 
+ 	if (!res)
+ 		return NULL;
+@@ -116,35 +153,72 @@ static struct sdw_intel_ctx
+ 	count = res->count;
+ 	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
+ 
+-	ctx = devm_kzalloc(&adev->dev, sizeof(*ctx), GFP_KERNEL);
++	/*
++	 * we need to alloc/free memory manually and can't use devm:
++	 * this routine may be called from a workqueue, and not from
++	 * the parent .probe.
++	 * If devm_ was used, the memory might never be freed on errors.
++	 */
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return NULL;
+ 
+ 	ctx->count = count;
+-	ctx->links = devm_kcalloc(&adev->dev, ctx->count,
+-				  sizeof(*ctx->links), GFP_KERNEL);
+-	if (!ctx->links)
++
++	/*
++	 * allocate the array of pointers. The link-specific data is allocated
++	 * as part of the first loop below and released with the auxiliary_device_uninit().
++	 * If some links are disabled, the link pointer will remain NULL. Given that the
++	 * number of links is small, this is simpler than using a list to keep track of links.
++	 */
++	ctx->ldev = kcalloc(ctx->count, sizeof(*ctx->ldev), GFP_KERNEL);
++	if (!ctx->ldev) {
++		kfree(ctx);
+ 		return NULL;
++	}
+ 
+-	ctx->count = count;
+ 	ctx->mmio_base = res->mmio_base;
+ 	ctx->link_mask = res->link_mask;
+ 	ctx->handle = res->handle;
+ 	mutex_init(&ctx->shim_lock);
+ 
+-	link = ctx->links;
+ 	link_mask = ctx->link_mask;
+ 
+ 	INIT_LIST_HEAD(&ctx->link_list);
+ 
+-	/* Create SDW Master devices */
+-	for (i = 0; i < count; i++, link++) {
+-		if (!(link_mask & BIT(i))) {
+-			dev_dbg(&adev->dev,
+-				"Link %d masked, will not be enabled\n", i);
++	for (i = 0; i < count; i++) {
++		if (!(link_mask & BIT(i)))
+ 			continue;
++
++		/* Alloc and init devices */
++		ldev = kzalloc(sizeof(*ldev), GFP_KERNEL);
++		if (!ldev)
++			goto err;
++
++		/*
++		 * keep a handle on the allocated memory, to be used in all other functions.
++		 * Since the same pattern is used to skip links that are not enabled, there is
++		 * not need to check if ctx->ldev[i] is NULL later on.
++		 */
++		ctx->ldev[i] = ldev;
++
++		ret = intel_link_dev_init(ldev,
++					  res->parent,
++					  acpi_fwnode_handle(adev),
++					  "link", /* prefixed by core with "soundwire_intel." */
++					  i);
++		if (ret < 0) {
++			/*
++			 * We need to free the memory allocated in the current iteration
++			 */
++			kfree(ldev);
++
++			goto err;
+ 		}
+ 
++		link = &ldev->link_res;
++
++		/* now set link information */
+ 		link->mmio_base = res->mmio_base;
+ 		link->registers = res->mmio_base + SDW_LINK_BASE
+ 			+ (SDW_LINK_SIZE * i);
+@@ -159,24 +233,16 @@ static struct sdw_intel_ctx
+ 		link->shim_mask = &ctx->shim_mask;
+ 		link->link_mask = link_mask;
+ 
+-		memset(&pdevinfo, 0, sizeof(pdevinfo));
+-
+-		pdevinfo.parent = res->parent;
+-		pdevinfo.name = "intel-sdw";
+-		pdevinfo.id = i;
+-		pdevinfo.fwnode = acpi_fwnode_handle(adev);
+-		pdevinfo.data = link;
+-		pdevinfo.size_data = sizeof(*link);
+-
+-		pdev = platform_device_register_full(&pdevinfo);
+-		if (IS_ERR(pdev)) {
+-			dev_err(&adev->dev,
+-				"platform device creation failed: %ld\n",
+-				PTR_ERR(pdev));
++		ret = auxiliary_device_add(&ldev->auxdev);
++		if (ret < 0) {
++			dev_err(&adev->dev, "failed to add link dev %s link_id %d\n",
++				ldev->auxdev.name, i);
++			/* ldev will be freed with the put_device() and .release sequence */
++			auxiliary_device_uninit(&ldev->auxdev);
+ 			goto err;
+ 		}
+-		link->pdev = pdev;
+-		link->cdns = platform_get_drvdata(pdev);
++
++		link->cdns = dev_get_drvdata(&ldev->auxdev.dev);
+ 
+ 		list_add_tail(&link->list, &ctx->link_list);
+ 		bus = &link->cdns->bus;
+@@ -185,8 +251,7 @@ static struct sdw_intel_ctx
+ 			num_slaves++;
+ 	}
+ 
+-	ctx->ids = devm_kcalloc(&adev->dev, num_slaves,
+-				sizeof(*ctx->ids), GFP_KERNEL);
++	ctx->ids = kcalloc(num_slaves, sizeof(*ctx->ids), GFP_KERNEL);
+ 	if (!ctx->ids)
+ 		goto err;
+ 
+@@ -204,8 +269,14 @@ static struct sdw_intel_ctx
+ 	return ctx;
+ 
+ err:
+-	ctx->count = i;
+-	sdw_intel_cleanup(ctx);
++	while (i--) {
++		if (!(link_mask & BIT(i)))
++			continue;
++		ldev = ctx->ldev[i];
++		intel_link_dev_unregister(ldev);
++	}
++	kfree(ctx->ldev);
++	kfree(ctx);
+ 	return NULL;
+ }
+ 
+@@ -213,7 +284,7 @@ static int
+ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
+ {
+ 	struct acpi_device *adev;
+-	struct sdw_intel_link_res *link;
++	struct sdw_intel_link_dev *ldev;
+ 	u32 caps;
+ 	u32 link_mask;
+ 	int i;
+@@ -232,27 +303,28 @@ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (!ctx->links)
++	if (!ctx->ldev)
+ 		return -EINVAL;
+ 
+-	link = ctx->links;
+ 	link_mask = ctx->link_mask;
+ 
+ 	/* Startup SDW Master devices */
+-	for (i = 0; i < ctx->count; i++, link++) {
++	for (i = 0; i < ctx->count; i++) {
+ 		if (!(link_mask & BIT(i)))
+ 			continue;
+ 
+-		intel_master_startup(link->pdev);
++		ldev = ctx->ldev[i];
+ 
+-		if (!link->clock_stop_quirks) {
++		intel_link_startup(&ldev->auxdev);
++
++		if (!ldev->link_res.clock_stop_quirks) {
+ 			/*
+ 			 * we need to prevent the parent PCI device
+ 			 * from entering pm_runtime suspend, so that
+ 			 * power rails to the SoundWire IP are not
+ 			 * turned off.
+ 			 */
+-			pm_runtime_get_noresume(link->dev);
++			pm_runtime_get_noresume(ldev->link_res.dev);
+ 		}
+ 	}
+ 
+@@ -297,27 +369,31 @@ EXPORT_SYMBOL_NS(sdw_intel_startup, SOUNDWIRE_INTEL_INIT);
+ void sdw_intel_exit(struct sdw_intel_ctx *ctx)
+ {
+ 	sdw_intel_cleanup(ctx);
++	kfree(ctx->ids);
++	kfree(ctx->ldev);
++	kfree(ctx);
+ }
+ EXPORT_SYMBOL_NS(sdw_intel_exit, SOUNDWIRE_INTEL_INIT);
+ 
+ void sdw_intel_process_wakeen_event(struct sdw_intel_ctx *ctx)
+ {
+-	struct sdw_intel_link_res *link;
++	struct sdw_intel_link_dev *ldev;
+ 	u32 link_mask;
+ 	int i;
+ 
+-	if (!ctx->links)
++	if (!ctx->ldev)
+ 		return;
+ 
+-	link = ctx->links;
+ 	link_mask = ctx->link_mask;
+ 
+ 	/* Startup SDW Master devices */
+-	for (i = 0; i < ctx->count; i++, link++) {
++	for (i = 0; i < ctx->count; i++) {
+ 		if (!(link_mask & BIT(i)))
+ 			continue;
+ 
+-		intel_master_process_wakeen_event(link->pdev);
++		ldev = ctx->ldev[i];
++
++		intel_link_process_wakeen_event(&ldev->auxdev);
+ 	}
+ }
+ EXPORT_SYMBOL_NS(sdw_intel_process_wakeen_event, SOUNDWIRE_INTEL_INIT);
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 3a5446ac014a..1ebea7764011 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -58,7 +58,7 @@ struct sdw_intel_acpi_info {
+ 	u32 link_mask;
+ };
+ 
+-struct sdw_intel_link_res;
++struct sdw_intel_link_dev;
+ 
+ /* Intel clock-stop/pm_runtime quirk definitions */
+ 
+@@ -109,7 +109,7 @@ struct sdw_intel_slave_id {
+  * Controller
+  * @num_slaves: total number of devices exposed across all enabled links
+  * @handle: ACPI parent handle
+- * @links: information for each link (controller-specific and kept
++ * @ldev: information for each link (controller-specific and kept
+  * opaque here)
+  * @ids: array of slave_id, representing Slaves exposed across all enabled
+  * links
+@@ -123,7 +123,7 @@ struct sdw_intel_ctx {
+ 	u32 link_mask;
+ 	int num_slaves;
+ 	acpi_handle handle;
+-	struct sdw_intel_link_res *links;
++	struct sdw_intel_link_dev **ldev;
+ 	struct sdw_intel_slave_id *ids;
+ 	struct list_head link_list;
+ 	struct mutex shim_lock; /* lock for access to shared SHIM registers */
+-- 
+2.17.1
+
