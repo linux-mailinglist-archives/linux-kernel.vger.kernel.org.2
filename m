@@ -2,161 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE18A34690C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742D134691A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhCWT3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:29:03 -0400
-Received: from mail-eopbgr1290057.outbound.protection.outlook.com ([40.107.129.57]:10752
-        "EHLO KOR01-SL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230142AbhCWT2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:28:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NVecg14KC7QBOUm6rwPBHWA57PE93D6NpI0j0eCUqlCGYaH0SHQhVpcZglLLTjIi4L2YqiptsFMXupyhGLeqSJ3CzEjhzJhL2eTff5xevpmjVVemKydRP0yG+HC5EspKi1Ie40AolLLAPblY08JYez7myE4ohA5fnO7IO+P0VP+tNP0u+mO7c0uZ8M3ChxJvegHa1UbjoKMvC1g79lWkmcrl22hTAn2nNJIVvGcx4565u5ynnHoeCjW65v2XL+TaOwSCpcBBS0fqSiUml8qx3Y8o9JodTykmSqA5jz9fVUxlkiqaG23vn2yA7wnK5Ei/Z1wNM6cv2Pbc7LGAic9+1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2pi13U3MuwyUJYVuuUZoPF8SV22CMoayE8jHUOdx9/o=;
- b=RtDh1A/YvVZsdz8HhDEzbkUbYVcV6pV8q1poPbUnh7ZR+9FgA4EcoG5nYYQZ/CliJiOzI0vSZmQ3r8Hlw+GqQD/1LQIB6hxNbT0IswGiVWeuYb6K0Vpodb7uv4nSQB0r5gfRSFLFKvS4TMNxjbVkyL0mqnrtWBhSm+IVzVfjOSyEBTt7iB42SH593eFi5meE4WAZY101wm3GnidaN766GHDguw10oJ5fi0UI2UWISW0jRdQvMV0fJV+L8ns9sGVd5pQHAtHG5qRyWvGhGUMvAs/qzqH4PsyY6YXEHR9iiIQ12MKpUyWMZfOPb9j93a7Tyb5P0VGTns4pVzoIEbQfjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cortina-access.com; dmarc=pass action=none
- header.from=cortina-access.com; dkim=pass header.d=cortina-access.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=CortinaAccess.onmicrosoft.com; s=selector2-CortinaAccess-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2pi13U3MuwyUJYVuuUZoPF8SV22CMoayE8jHUOdx9/o=;
- b=DXszqm8813hGc09Wpyoo9mTw9oLobtGvOoWLwn3ODKpdacv/fD6k2n2tD4vwN3jheopDhV/DweHnnAZWJT31DVxku6/CNnR4Sv+6Sc2s9lvE6KInfBQv1JchCkHXdvgmHuvrpD8D0Q4uIt4+kQuY7x6ej2xANYvvKMktTLtdI9w=
-Received: from PS2PR01MB2504.apcprd01.prod.exchangelabs.com
- (2603:1096:300:3e::11) by PS2PR01MB2311.apcprd01.prod.exchangelabs.com
- (2603:1096:300:3c::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
- 2021 19:28:51 +0000
-Received: from PS2PR01MB2504.apcprd01.prod.exchangelabs.com
- ([fe80::7937:3bdb:b574:e31e]) by PS2PR01MB2504.apcprd01.prod.exchangelabs.com
- ([fe80::7937:3bdb:b574:e31e%6]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
- 19:28:51 +0000
-From:   Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        Jason Li <jason.li@cortina-access.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH 1/3] tty: serial: Add UART driver for Cortina-Access
- platform
-Thread-Topic: [PATCH 1/3] tty: serial: Add UART driver for Cortina-Access
- platform
-Thread-Index: AQHXH8YY8JGd0lZ2t0+mKnLpM4QhKKqR9fQA
-Date:   Tue, 23 Mar 2021 19:28:51 +0000
-Message-ID: <04208957-55F9-47E8-A20A-4DEB2A35040E@cortina-access.com>
-References: <1613702532-5096-1-git-send-email-alex.nemirovsky@cortina-access.com>
- <YFmzax3pWFNtFbn9@kroah.com>
-In-Reply-To: <YFmzax3pWFNtFbn9@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=cortina-access.com;
-x-originating-ip: [70.58.207.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 706d783d-b75e-4daa-e327-08d8ee31e3b3
-x-ms-traffictypediagnostic: PS2PR01MB2311:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PS2PR01MB2311ECA363E3812648CF86A2CB649@PS2PR01MB2311.apcprd01.prod.exchangelabs.com>
-x-ld-processed: 0694623c-6669-497c-89c3-3a32a9934313,ExtAddr
-x-ms-oob-tlc-oobclassifiers: OLM:962;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JLaYFz8aWic/NdDfTYzyUY0pEBC3ufMp2+L4cTiRuADZXkDz49pxGmAj/gDW1ADWIxLMG5My8QJJpjALD46sp19hXQqxv31w48ZnFY5Kehb9Z3kgjssTyKbmQZ4IkM+EasWJI6WTnABCfSvMbfpiKU1W2o60Ly3ne4J/tjIf20lfgIOo9S1M/YhySV/1GYKexjMvhDfj/ci018qD8DXB9Jr8sbjDJnRHNTAMz1rkEFYCCegAZCwqV8RAmANpnDFbUShPcBFrWDeMJx4KXQLH+ENQHNxK0ltK8RmR70veDRT1MinVUDOOs7WzwWizVroAq6wqLkZ3NTq1UwJuKznVoZv+DljFDpU+u2DObFwG7bsG89LTwAEfd/RO63WOAYElZNPjRyu7XVLwIdzOWwoTBiNb5KACz6fi7DbElxBSiu9HpKmkfFSrvSnPDL2ycOiLwnCp3ig03iIxj8subF3r7xscoap6DwcowgHp/D/JXn4Awh75Rf2xj0fLOD366ZdXNCiYBdZl1r1IuWNWEtD1W3x5zMDXpZwnm8n/pJTOX07KLTBeTAZf/CGkzw4bklXP+4O3131QAP/w2x6qjuuiPklcg/45L9qD805GFvvUAsKewZoivMW2bxpBqEWY/DJ3V0TvQQena8/52LrdrtJPSyujvpXjCT000tmC963RdQw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2PR01MB2504.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(346002)(39840400004)(53546011)(6506007)(36756003)(6916009)(86362001)(2906002)(71200400001)(54906003)(478600001)(316002)(5660300002)(83380400001)(6512007)(186003)(33656002)(6486002)(8676002)(4326008)(38100700001)(2616005)(66446008)(66476007)(64756008)(66556008)(76116006)(26005)(66946007)(91956017)(8936002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?lyOwRVDwy+q4QRyIE7tZSiM5XVqhxPELz2HTcMUQd1qJbu9aUG1XCXgB1W+c?=
- =?us-ascii?Q?ohbM93+E2CjJBQHPKGtj/Ay3tNstL9y2mSOZ4jW7w7WXEHkgq+V/+I2FSaUf?=
- =?us-ascii?Q?zlGCunyCjMvXcWbj6dDVYBrD3WdryvwIWo4Axp/kSYuQhWEloKkKWdUEP+BI?=
- =?us-ascii?Q?G/18sbQULGbnhExbBjQSlGTAe3SXzj7WV1o69I84Y+miTyb8EONr+f0xwD0s?=
- =?us-ascii?Q?pnCGovxugjU84CrVpfD48xniOUsNOfXWpXOzicVagilbYXG05olr55Bj3M8t?=
- =?us-ascii?Q?AfcNNz0jl3utQBbd7H6kftMtfMUHcVXdRE3O+k21spGSpAC2oMJMktYOZkA4?=
- =?us-ascii?Q?0a2MNudptQo5o8pzqxhSh/QzZeTsXDmbUMwG/QJbPTMfD2dHq1xuKOSQ4Ooi?=
- =?us-ascii?Q?hmiWNvryeh9xKWHvg0FLhm4jot4HXBIfvVFALUm42gDT29fHf59ZxfKn+Ssh?=
- =?us-ascii?Q?VFlHd9JKiA4a/NDzbaqZoh5whOfIEBtEBRQqdYhflCHARyxI/4WfQvBF3BHJ?=
- =?us-ascii?Q?41EF64t1V8INjsamKjm5lWfKojZI9QIjEVzN74N0OVgClLhOxYzCAXEp1p57?=
- =?us-ascii?Q?0mVMauajy0m55YtyYVFuEmcRVTGG4jA//MkoVXmzhrBB164A/2MPlWQbQQa2?=
- =?us-ascii?Q?kN/ZXvkLXEXOV22qmirGnrDjsiGx4Zf3qpQQHt8OJkFW59TY6ySu/xRgVXmW?=
- =?us-ascii?Q?9Heztq3OU7p2EPFEll3owlm93TI08TBMkJ2xEXRFIhv6abFr4XGhdtiN/FB2?=
- =?us-ascii?Q?YEcOxs9mD4n79ijo9GzqmMltPtMlLFDE7nGFaY0CdrsfFKqageBuRprQJzOF?=
- =?us-ascii?Q?fh+DksPiaPS9R/c64sNaDQzpKneq5/g6lhodL8E/9Uye/4YBelWb5h4SD5sd?=
- =?us-ascii?Q?4GUKNkzZTucjBT2v1FfoHvkCv8b9vO6C7r+zbze7RMieWyhnLrAGQQs9NbPB?=
- =?us-ascii?Q?60ZM/CkJXLMezvoITgKDD+HK6U8dm9yc9z+253hBHwOtu4ccPEYLF4SAdZw8?=
- =?us-ascii?Q?K+iSejgl0p/gBKJ82SYTtfwIoNInVPvXN5P3DcNuj7ADKxlcLivwRmEt/gVH?=
- =?us-ascii?Q?WaZPJwAh7b+lwREnlXm3qnVR7jkiDLAPtsyWz2QlzxonVrxKwdlrxrCD2gmq?=
- =?us-ascii?Q?LKlAtT0OMqFVSwui5fAOPPRjwRNUH2x83y7mTDoXMg8GDWHVPn76IkCGPRA/?=
- =?us-ascii?Q?LL0StgOW1Lu54Kfw4X6DSiCZrH14Tb0/Y4LT2Z2PPx6OT/E0CsxBRTQ89KCd?=
- =?us-ascii?Q?jcHsmN7JxkOEByqSg+bPssMS+3xjCv1ion8X+XgM7pfisRoRuvkwBT/Jog5g?=
- =?us-ascii?Q?whqGE1relHB5uDqBHU/im0Df?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <AEA84E4F1E7D2C43834F2666BD90C22D@apcprd01.prod.exchangelabs.com>
-Content-Transfer-Encoding: quoted-printable
+        id S230203AbhCWTaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:30:07 -0400
+Received: from smtp-bc0f.mail.infomaniak.ch ([45.157.188.15]:39161 "EHLO
+        smtp-bc0f.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230138AbhCWT3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 15:29:34 -0400
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F4hJX0tWDzMqFPM;
+        Tue, 23 Mar 2021 20:29:32 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F4hJT4XNSzlh8TL;
+        Tue, 23 Mar 2021 20:29:29 +0100 (CET)
+Subject: Re: [PATCH v30 07/12] landlock: Support filesystem access-control
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-8-mic@digikod.net> <202103191148.6E819426D@keescook>
+ <f705f7e8-3ee3-bae9-c283-174fab41629a@digikod.net>
+Message-ID: <79d96c0a-9254-63aa-6f0b-2c0fce370c29@digikod.net>
+Date:   Tue, 23 Mar 2021 20:30:03 +0100
+User-Agent: 
 MIME-Version: 1.0
-X-OriginatorOrg: CORTINA-ACCESS.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PS2PR01MB2504.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 706d783d-b75e-4daa-e327-08d8ee31e3b3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 19:28:51.1789
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0694623c-6669-497c-89c3-3a32a9934313
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rflL0fZu7IL7+bb2LdzbAJjdaSe+TfitPM7dXRM9UxFlKfkVS0w5uwm8IylkL91UgzLnPJCcV6wpIAHX1ze/NgY1e558ct5/vA5bFvsSTdrGZVgtC8oLhT4DUsMruM4X
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PS2PR01MB2311
+In-Reply-To: <f705f7e8-3ee3-bae9-c283-174fab41629a@digikod.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 19/03/2021 20:19, Mickaël Salaün wrote:
+> 
+> On 19/03/2021 19:57, Kees Cook wrote:
+>> On Tue, Mar 16, 2021 at 09:42:47PM +0100, Mickaël Salaün wrote:
+>>> From: Mickaël Salaün <mic@linux.microsoft.com>
+>>>
+>>> Using Landlock objects and ruleset, it is possible to tag inodes
+>>> according to a process's domain.  To enable an unprivileged process to
+>>> express a file hierarchy, it first needs to open a directory (or a file)
+>>> and pass this file descriptor to the kernel through
+>>> landlock_add_rule(2).  When checking if a file access request is
+>>> allowed, we walk from the requested dentry to the real root, following
+>>> the different mount layers.  The access to each "tagged" inodes are
+>>> collected according to their rule layer level, and ANDed to create
+>>> access to the requested file hierarchy.  This makes possible to identify
+>>> a lot of files without tagging every inodes nor modifying the
+>>> filesystem, while still following the view and understanding the user
+>>> has from the filesystem.
+>>>
+>>> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
+>>> keep the same struct inodes for the same inodes whereas these inodes are
+>>> in use.
+>>>
+>>> This commit adds a minimal set of supported filesystem access-control
+>>> which doesn't enable to restrict all file-related actions.  This is the
+>>> result of multiple discussions to minimize the code of Landlock to ease
+>>> review.  Thanks to the Landlock design, extending this access-control
+>>> without breaking user space will not be a problem.  Moreover, seccomp
+>>> filters can be used to restrict the use of syscall families which may
+>>> not be currently handled by Landlock.
+>>>
+>>> Cc: Al Viro <viro@zeniv.linux.org.uk>
+>>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>> Cc: James Morris <jmorris@namei.org>
+>>> Cc: Jann Horn <jannh@google.com>
+>>> Cc: Jeff Dike <jdike@addtoit.com>
+>>> Cc: Kees Cook <keescook@chromium.org>
+>>> Cc: Richard Weinberger <richard@nod.at>
+>>> Cc: Serge E. Hallyn <serge@hallyn.com>
+>>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+>>> Link: https://lore.kernel.org/r/20210316204252.427806-8-mic@digikod.net
+>>> [...]
+>>> +	spin_lock(&sb->s_inode_list_lock);
+>>> +	list_for_each_entry(inode, &sb->s_inodes, i_sb_list) {
+>>> +		struct landlock_object *object;
+>>> +
+>>> +		/* Only handles referenced inodes. */
+>>> +		if (!atomic_read(&inode->i_count))
+>>> +			continue;
+>>> +
+>>> +		/*
+>>> +		 * Checks I_FREEING and I_WILL_FREE  to protect against a race
+>>> +		 * condition when release_inode() just called iput(), which
+>>> +		 * could lead to a NULL dereference of inode->security or a
+>>> +		 * second call to iput() for the same Landlock object.  Also
+>>> +		 * checks I_NEW because such inode cannot be tied to an object.
+>>> +		 */
+>>> +		spin_lock(&inode->i_lock);
+>>> +		if (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW)) {
+>>> +			spin_unlock(&inode->i_lock);
+>>> +			continue;
+>>> +		}
+>>
+>> This (and elsewhere here) seems like a lot of inode internals getting
+>> exposed. Can any of this be repurposed into helpers? I see this test
+>> scattered around the kernel a fair bit:
+>>
+>> $ git grep I_FREEING | grep I_WILL_FREE | grep I_NEW | wc -l
+>> 9
+> 
+> Dealing with the filesystem is complex. Some helpers could probably be
+> added, but with a series dedicated to the filesystem. I can work on that
+> once this series is merged.
+> 
+>>
+>>> +static inline u32 get_mode_access(const umode_t mode)
+>>> +{
+>>> +	switch (mode & S_IFMT) {
+>>> +	case S_IFLNK:
+>>> +		return LANDLOCK_ACCESS_FS_MAKE_SYM;
+>>> +	case 0:
+>>> +		/* A zero mode translates to S_IFREG. */
+>>> +	case S_IFREG:
+>>> +		return LANDLOCK_ACCESS_FS_MAKE_REG;
+>>> +	case S_IFDIR:
+>>> +		return LANDLOCK_ACCESS_FS_MAKE_DIR;
+>>> +	case S_IFCHR:
+>>> +		return LANDLOCK_ACCESS_FS_MAKE_CHAR;
+>>> +	case S_IFBLK:
+>>> +		return LANDLOCK_ACCESS_FS_MAKE_BLOCK;
+>>> +	case S_IFIFO:
+>>> +		return LANDLOCK_ACCESS_FS_MAKE_FIFO;
+>>> +	case S_IFSOCK:
+>>> +		return LANDLOCK_ACCESS_FS_MAKE_SOCK;
+>>> +	default:
+>>> +		WARN_ON_ONCE(1);
+>>> +		return 0;
+>>> +	}
+>>
+>> I'm assuming this won't be reachable from userspace.
+> 
+> It should not, only a bogus kernel code could.
+> 
+>>
+>>> [...]
+>>> index a5d6ef334991..f8e8e980454c 100644
+>>> --- a/security/landlock/setup.c
+>>> +++ b/security/landlock/setup.c
+>>> @@ -11,17 +11,24 @@
+>>>  
+>>>  #include "common.h"
+>>>  #include "cred.h"
+>>> +#include "fs.h"
+>>>  #include "ptrace.h"
+>>>  #include "setup.h"
+>>>  
+>>> +bool landlock_initialized __lsm_ro_after_init = false;
+>>> +
+>>>  struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
+>>>  	.lbs_cred = sizeof(struct landlock_cred_security),
+>>> +	.lbs_inode = sizeof(struct landlock_inode_security),
+>>> +	.lbs_superblock = sizeof(struct landlock_superblock_security),
+>>>  };
+>>>  
+>>>  static int __init landlock_init(void)
+>>>  {
+>>>  	landlock_add_cred_hooks();
+>>>  	landlock_add_ptrace_hooks();
+>>> +	landlock_add_fs_hooks();
+>>> +	landlock_initialized = true;
+>>
+>> I think this landlock_initialized is logically separate from the optional
+>> DEFINE_LSM "enabled" variable, but I thought I'd double check. :)
+> 
+> An LSM can be marked as enabled (at boot) but not yet initialized.
+> 
+>>
+>> It seems like it's used here to avoid releasing superblocks before
+>> landlock_init() is called? What is the scenario where that happens?
+> 
+> It is a condition for LSM hooks, syscalls and superblock management.
+> 
+>>
+>>>  	pr_info("Up and running.\n");
+>>>  	return 0;
+>>>  }
+>>> diff --git a/security/landlock/setup.h b/security/landlock/setup.h
+>>> index 9fdbf33fcc33..1daffab1ab4b 100644
+>>> --- a/security/landlock/setup.h
+>>> +++ b/security/landlock/setup.h
+>>> @@ -11,6 +11,8 @@
+>>>  
+>>>  #include <linux/lsm_hooks.h>
+>>>  
+>>> +extern bool landlock_initialized;
+>>> +
+>>>  extern struct lsm_blob_sizes landlock_blob_sizes;
+>>>  
+>>>  #endif /* _SECURITY_LANDLOCK_SETUP_H */
+>>> -- 
+>>> 2.30.2
+>>>
+>>
+>> The locking and inode semantics are pretty complex, but since, again,
+>> it's got significant test and syzkaller coverage, it looks good to me.
+>>
+>> With the inode helper cleanup:
 
-> On Mar 23, 2021, at 2:22 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.o=
-rg> wrote:
->=20
-> On Thu, Feb 18, 2021 at 06:42:09PM -0800, Alex Nemirovsky wrote:
->> From: Jason Li <jason.li@cortina-access.com>
->>=20
->> This driver supports Cortina Access UART IP integrated
->> in most all CAXXXX line of SoCs. Earlycom is also supported
->>=20
->> Signed-off-by: Jason Li <jason.li@cortina-access.com>
->> Reviewed-by: Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
->> ---
->> MAINTAINERS                                |   5 +
->> drivers/tty/serial/Kconfig                 |  19 +
->> drivers/tty/serial/Makefile                |   1 +
->> drivers/tty/serial/serial_cortina-access.c | 798 +++++++++++++++++++++++=
-++++++
->> include/uapi/linux/serial_core.h           |   3 +
->> 5 files changed, 826 insertions(+)
->> create mode 100644 drivers/tty/serial/serial_cortina-access.c
->>=20
->> Change log
->>  drivers/tty/serial/serial_cortina-access.c
->>   v3:
->>    - Remove usage of uintptr_t. Change to pointer to driver's private
->>      structure instead.
->=20
-> Is this really a "v3"?  The subject lines do not show that, so I'm
-> totally confused as to what to review and what has been reviewed here.
->=20
-> Please fix this up and submit a "v4" so we know what is going on :)
+I think the inode helper would have to be in a separate patch focused on
+fs/ (like all matches of your greps, except Landlock). Are you OK if I
+send a patch for that once Landlock is merged?
 
-Could you recommend a method or a tool to update the commit subject id with=
- a version prefix?
-Currently we are doing a git format-patch and the subject line is automatic=
-ally created without a=20
-version number. Do you just go in manual and edit the resulting patch conte=
-nts file or do you use a=20
-tool to assist in this?
->=20
-> thanks,
->=20
-> greg k-h
 
+>>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>>
