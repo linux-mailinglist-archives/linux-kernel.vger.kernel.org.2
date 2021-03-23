@@ -2,585 +2,419 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F7934698B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C53934698F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 21:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232529AbhCWUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 16:04:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48571 "EHLO
+        id S232952AbhCWUFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 16:05:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33471 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230242AbhCWUEH (ORCPT
+        by vger.kernel.org with ESMTP id S233272AbhCWUFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:04:07 -0400
+        Tue, 23 Mar 2021 16:05:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616529846;
+        s=mimecast20190719; t=1616529924;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6NLsErYkJ3mGX0rZlxbJrBLu04F3VS9lfrAieb5y/SI=;
-        b=MYIcpL5bvSm71ENkU3KaYfwj7MgRECvGJ7SC+91xhdH1bPWK+KZoCgVQ4jhYE1ty7rayXQ
-        0fiZstgA5f0qFjmcrtw/YGHvwHnaLUsFxEGnHojnZSd529XVNR6lyKy4GinHKlGWLhyCqt
-        Acr0mGpb4I+Fmrl/irU/I7RmMl+tUjE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-XMsdMc3nPOiBHjj67TKqPw-1; Tue, 23 Mar 2021 16:04:00 -0400
-X-MC-Unique: XMsdMc3nPOiBHjj67TKqPw-1
-Received: by mail-ed1-f72.google.com with SMTP id t27so1506329edi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 13:03:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6NLsErYkJ3mGX0rZlxbJrBLu04F3VS9lfrAieb5y/SI=;
-        b=TBJmvCmJAERGxC3TXIXnYGnxfoJI9Bda/QJirxkeqpP8GUrCqG0QnP4RWKEklvQFrO
-         9w12TY+z6wA8NLYgc2BVOsnJxlwaNBQoXeppUNI50BGmYcLH9LZ2XhTVMFTspvz9xwz8
-         B9g26QlCFwcBqWsFzcR0SIukY+S41qGlC6Yv63x15CSxjvWES/zIU7EZRzR40NuMP0Nm
-         TvI0sVu4h7shrPHvZMv5cB14Sd+y2ORkaofuXuC2FcrzQfHDNRywSiuvpTmbMIyffrxD
-         bFanB748vKsKGdCoV/YtfJ5LxgmBl9qksi0d7r514nigOka91CrUstw9AydMWK0GTfJ6
-         Ha4g==
-X-Gm-Message-State: AOAM5303NR+vwi8R/lvqbkycmfDiOuPFhJuOwnlDxNHI9xaqcTm5xkCn
-        hyhEYkfoUrbqYlMLqBjWmAE1SZzuWnQlLpNVeBeYgNKrKoMZRKKO5oIhnWrfCfiZB2SDFaHdus8
-        8TGkol4Jt7Lg6Uvc0ioPl61sf
-X-Received: by 2002:a50:fe81:: with SMTP id d1mr6410105edt.308.1616529838862;
-        Tue, 23 Mar 2021 13:03:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNSEhgRw+e+Vifu/7FYUx1mDnCXgxc/zFhxlJA0Ct2AHOz3vRHnjFN0zRi4DEc94iAXm4JJA==
-X-Received: by 2002:a50:fe81:: with SMTP id d1mr6410079edt.308.1616529838567;
-        Tue, 23 Mar 2021 13:03:58 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id f16sm3340617ejb.3.2021.03.23.13.03.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 13:03:58 -0700 (PDT)
-Subject: Re: [V2,1/1] platform/x86: add support for Advantech software defined
- button
-To:     "YingChieh, Ho" <andrea.cs97g@nctu.edu.tw>
-Cc:     platform-driver-x86@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Andrea Ho <andrea.ho@advantech.com.tw>
-References: <CAGBRx8NKMqYxz=PWHnHQoxP4f9J4faooMt82DwUAKT8oWYH34w@mail.gmail.com>
- <283c9df1-9911-d0bd-7db5-2349927c21d1@redhat.com>
- <CAFysUkREZtoMj7YgiRBGryjWNLTaKoUaZVFSB7jQV7j-o3CGLw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <fb9b4615-ecd9-d394-82d4-a1b9661be8f6@redhat.com>
-Date:   Tue, 23 Mar 2021 21:03:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RDUHhSls8PhOZQFGsQcGjV+nNMxL2uwFZEqE6L8LWWk=;
+        b=gh+5YGid/6bKJJN6TTVRj4P9C8B1OCfNmEK5AkbfsGVKsU92C5PfMs3VWO2wVK//D8GEDD
+        x3eV/HGC/Eu4qyjrzahCw6UYkBQKfJ/mi8tRswscY56cf/IXuSDMNxVqzwUhi5nNUa3mZ1
+        W68slceNPzkl4cNGCugbbmpnah1Xhcs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-79x2L4CrN66ZUs9uhP1mug-1; Tue, 23 Mar 2021 16:05:20 -0400
+X-MC-Unique: 79x2L4CrN66ZUs9uhP1mug-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C32A107ACCA;
+        Tue, 23 Mar 2021 20:05:18 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E100B2B3C7;
+        Tue, 23 Mar 2021 20:04:57 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: [PATCH v3] audit: log nftables configuration change events once per table
+Date:   Tue, 23 Mar 2021 16:04:28 -0400
+Message-Id: <3d15fa1f0c54335f9258d90ea0d11050e780ba70.1616529248.git.rgb@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFysUkREZtoMj7YgiRBGryjWNLTaKoUaZVFSB7jQV7j-o3CGLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Reduce logging of nftables events to a level similar to iptables.
+Restore the table field to list the table, adding the generation.
 
-On 3/19/21 5:00 AM, YingChieh, Ho wrote:
-> Hi Hans,
-> 
-> Thank you for your kindly review.
-> As a beginner in driver coding, I got gains much from your suggestions.
+Indicate the op as the most significant operation in the event.
 
-I'm glad to hear that my reviews are helping you.
+A couple of sample events:
 
-> Path v3 is ready at patchwork.^^
+type=PROCTITLE msg=audit(2021-03-18 09:30:49.801:143) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+type=SYSCALL msg=audit(2021-03-18 09:30:49.801:143) : arch=x86_64 syscall=sendmsg success=yes exit=172 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=roo
+t sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv6 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv4 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=inet entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
 
-Thank you, I'll try to take a look at it soon.
+type=PROCTITLE msg=audit(2021-03-18 09:30:49.839:144) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+type=SYSCALL msg=audit(2021-03-18 09:30:49.839:144) : arch=x86_64 syscall=sendmsg success=yes exit=22792 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=r
+oot sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv6 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv4 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=inet entries=165 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
 
-Regards,
+The issue was originally documented in
+https://github.com/linux-audit/audit-kernel/issues/124
 
-Hans
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+---
+Changelog:
+v3:
+- fix function braces, reduce parameter scope
+- pre-allocate nft_audit_data per table in step 1, bail on ENOMEM
 
+v2:
+- convert NFT ops to array indicies in nft2audit_op[]
+- use linux lists
+- use functions for each of collection and logging of audit data
+---
+ include/linux/audit.h         |  28 ++++++
+ net/netfilter/nf_tables_api.c | 160 ++++++++++++++++------------------
+ 2 files changed, 105 insertions(+), 83 deletions(-)
 
-> 
-> Hans de Goede <hdegoede@redhat.com> 於 2021年3月19日 週五 上午12:21寫道：
->>
->> Hi,
->>
->> On 3/12/21 9:11 AM, YingChieh Ho wrote:
->>> From: "Andrea.Ho" <Andrea.Ho@advantech.com.tw>
->>>
->>> Advantech sw_button is a ACPI event trigger button.
->>>
->>> With this driver, we can report KEY_EVENT on the
->>> Advantech Tabletop Network Appliances products and it has been
->>> tested in FWA1112VC.
->>>
->>> Add the software define button support to report EV_REP key_event
->>> (KEY_PROG1) by pressing button that cloud be get on user
->>> interface and trigger the customized actions.
->>>
->>> Signed-off-by: Andrea.Ho <Andrea.Ho@advantech.com.tw>
->>>
->>> v2:
->>>         - change evdev key-code from BTN_TRIGGER_HAPPY to KEY_PROG1
->>>         - to rewrite the driver to be a regular platform_driver
->>>         - use specific names instead of generic names,
->>>           "Software Button" to "Advantech Software Button",
->>>           "button" to "adv_swbutton"
->>>         - remove unused defines or use-once defines, ACPI_BUTTON_FILE_INFO,
->>>           ACPI_BUTTON_FILE_STATE, ACPI_BUTTON_TYPE_UNKNOWN, ACPI_SWBTN_NAME
->>
->> Thank you this version is much better, I have various review remarks below.
->>
->> Please send a v3 with those fixed.
->>
->>
->>> ---
->>>  MAINTAINERS                         |   5 +
->>>  drivers/platform/x86/Kconfig        |  11 ++
->>>  drivers/platform/x86/Makefile       |   3 +
->>>  drivers/platform/x86/adv_swbutton.c | 192 ++++++++++++++++++++++++++++
->>>  4 files changed, 211 insertions(+)
->>>  create mode 100644 drivers/platform/x86/adv_swbutton.c
->>>
->>> diff --git a/MAINTAINERS b/MAINTAINERS
->>> index 68f21d46614c..e35c48e411b7 100644
->>> --- a/MAINTAINERS
->>> +++ b/MAINTAINERS
->>> @@ -562,6 +562,11 @@ S: Maintained
->>>  F:     Documentation/scsi/advansys.rst
->>>  F:     drivers/scsi/advansys.c
->>>
->>> +ADVANTECH SWBTN DRIVER
->>> +M:     Andrea Ho <Andrea.Ho@advantech.com.tw>
->>> +S:     Maintained
->>> +F:     drivers/platform/x86/adv_swbutton.c
->>> +
->>>  ADXL34X THREE-AXIS DIGITAL ACCELEROMETER DRIVER (ADXL345/ADXL346)
->>>  M:     Michael Hennerich <michael.hennerich@analog.com>
->>>  S:     Supported
->>> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
->>> index 0581a54cf562..b1340135c5e9 100644
->>> --- a/drivers/platform/x86/Kconfig
->>> +++ b/drivers/platform/x86/Kconfig
->>> @@ -180,6 +180,17 @@ config ACER_WMI
->>>           If you have an ACPI-WMI compatible Acer/ Wistron laptop, say Y or M
->>>           here.
->>
->> This is supposed to be indented by a space (from the diff format) and then
->> a tab + 2 spaces, but in your patch this is now indented by 10 spaces.
->>
->> In general your entire patch has all tabs replaced by spaces, I guess that
->> your mail-client or editor is mangling things. Please do the following:
->>
->> 1. Check your patch for checkpatch errors:
->>
->> git format-patch HEAD~
->> scripts/checkpatch.pl 0001-platform...patch
->>
->> And fix all reported issues, both whitespace issues and others.
->>
->> 2. Send the next version of the patch like this:
->>
->> git format-patch -v3 HEAD~
->> git send-email v3-0001-platform...patch
->>
->> Do NOT edit the v3-0001-platform...patch file between these 2 steps.
->>
->>
->>> +config ADV_SWBUTTON
->>> +    tristate "Advantech ACPI Software Button Driver"
->>
->> You are using indent steps of 4 spaces here, that should be a tab
->>> +    depends on ACPI
->>> +    help
->>> +      Say Y here to enable support for Advantech software defined
->>> +      button feature. More information can be fount at
->>> +      <http://www.advantech.com.tw/products/>
->>
->> And a tab and 2 spaces for the help text.
->>
->>> +
->>> +      To compile this driver as a module, choose M here. The module will
->>> +      be called adv_swbutton.
->>> +
->>>  config APPLE_GMUX
->>>         tristate "Apple Gmux Driver"
->>>         depends on ACPI && PCI
->>> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
->>> index 2b85852a1a87..76a321fc58ba 100644
->>> --- a/drivers/platform/x86/Makefile
->>> +++ b/drivers/platform/x86/Makefile
->>> @@ -22,6 +22,9 @@ obj-$(CONFIG_ACERHDF)         += acerhdf.o
->>>  obj-$(CONFIG_ACER_WIRELESS)    += acer-wireless.o
->>>  obj-$(CONFIG_ACER_WMI)         += acer-wmi.o
->>>
->>> +# Advantech
->>> +obj-$(CONFIG_ADV_SWBUTTON)  += adv_swbutton.o
->>> +
->>
->> The indent before the += should use tabs not spaces.
->>
->>>  # Apple
->>>  obj-$(CONFIG_APPLE_GMUX)       += apple-gmux.o
->>>
->>> diff --git a/drivers/platform/x86/adv_swbutton.c
->>> b/drivers/platform/x86/adv_swbutton.c
->>> new file mode 100644
->>> index 000000000000..f4387220e8a0
->>> --- /dev/null
->>> +++ b/drivers/platform/x86/adv_swbutton.c
->>> @@ -0,0 +1,192 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + *  adv_swbutton.c - Software Button Interface Driver.
->>> + *
->>> + *  (C) Copyright 2020 Advantech Corporation, Inc
->>> + *
->>> + */
->>> +#include <linux/kernel.h>
->>> +#include <linux/module.h>
->>> +#include <linux/init.h>
->>> +#include <linux/version.h>
->>> +#include <linux/types.h>
->>> +#include <linux/proc_fs.h>
->>> +#include <linux/input.h>
->>> +#include <linux/slab.h>
->>> +#include <linux/acpi.h>
->>> +#include <linux/platform_device.h>
->>> +#include <acpi/button.h>
->>> +#include <acpi/acpi_drivers.h>
->>
->> Please drop the following unused defines:
->>
->> #include <linux/init.h>
->> #include <linux/version.h>
->> #include <linux/types.h>
->> #include <linux/proc_fs.h>
->> #include <linux/slab.h>
->> #include <acpi/button.h>
->> #include <acpi/acpi_drivers.h>
->>
->> And sort the remaining includes alphabetically.
->>
->>> +
->>> +#define MODULE_NAME                         "adv_swbutton"
->>
->> Please drop this define, instead just set the .driver.name part of the platform_driver struct directly to "adv_swbutton".
->>
->>> +
->>> +#define ACPI_BUTTON_HID_SWBTN               "AHC0310"
->>> +#define ACPI_BUTTON_TYPE_SOFTWARE           0x07
->>
->> Please drop the ACPI_BUTTON_TYPE_SOFTWARE define.
->>
->>> +
->>> +#define ACPI_BUTTON_NOTIFY_SWBTN_RELEASE    0x86
->>> +#define ACPI_BUTTON_NOTIFY_SWBTN_PRESSED    0x85
->>> +
->>> +#define SOFTWARE_BUTTON                     KEY_PROG1
->>
->> Please drop this unnecessary define and just use KEY_PROG1 directly.
->>
->>> +
->>> +#define _COMPONENT                          ACPI_BUTTON_COMPONENT
->>> +
->>> +struct acpi_button {
->>
->> Please give this struct-type a different name, e.g. use:
->>
->> struct adv_swbutton {
->>
->>> +       unsigned int type;
->>
->> And drop the type here, it is always set to ACPI_BUTTON_TYPE_SOFTWARE, so it has no function.
->>
->>> +       struct input_dev *input;
->>> +       char phys[32];
->>> +       bool pressed;
->>
->> Also please drop the pressed bool, see below.
->>
->>
->>> +};
->>> +
->>> +/*-------------------------------------------------------------------------
->>> + *                               Driver Interface
->>> + *--------------------------------------------------------------------------
->>> + */
->>> +static void acpi_button_notify(acpi_handle handle, u32 event, void *context)
->>> +{
->>> +       struct acpi_device *device = context;
->>> +
->>> +       struct acpi_button *button = dev_get_drvdata(&device->dev);
->>
->> You must not call dev_set_drvdata on the acpi_device since you are not binding
->> to the acpi_device, you are binding to the platform_device, so set the drv_data
->> there and please don't touch the acpi_device.
->>
->>> +       struct input_dev *input;
->>> +
->>> +       int keycode, BTN_KEYCODE = SOFTWARE_BUTTON;
->>
->> Please drop these 3 variables, they are not necessary.
->>
->>> +
->>> +       switch (event) {
->>> +       case ACPI_BUTTON_NOTIFY_SWBTN_RELEASE:
->>> +               input = button->input;
->>
->> Just use button->input below instead of having this unnecessary
->> helper variable.
->>
->>> +
->>> +               if (!button->pressed)
->>> +                       return;
->>
->> This is not necessary, the input core takes care of not sending
->> events when the state does not change.
->>
->>> +
->>> +               keycode = test_bit(BTN_KEYCODE, input->keybit) ?
->>> +                               BTN_KEYCODE : KEY_UNKNOWN;
->>
->> No idea why you are doing this, but it is not necessary,
->> also it is wrong, you should be using KEY_PROG1 here.
->>
->>> +
->>> +               button->pressed = false;
->>
->> Keeping track of the pressed state is not necessary.
->>
->>> +
->>> +               input_report_key(input, keycode, 0);
->>> +               input_sync(input);
->>
->> Basically this entire case can be simplified to:
->>
->>        case ACPI_BUTTON_NOTIFY_SWBTN_RELEASE:
->>                input_report_key(button->input, KEY_PROG1, 0);
->>                input_sync(button->input);
->>                break;
->>
->>
->>> +       break;
->>
->> This break is indented wrong.
->>
->>> +       case ACPI_BUTTON_NOTIFY_SWBTN_PRESSED:
->>> +               input = button->input;
->>> +               button->pressed = true;
->>> +
->>> +               keycode = test_bit(BTN_KEYCODE, input->keybit) ?
->>> +                           BTN_KEYCODE : KEY_UNKNOWN;
->>> +
->>> +               input_report_key(input, keycode, 1);
->>> +               input_sync(input);
->>> +       break;
->>
->> And the same as above here, this can be simplified to:
->>
->>        case ACPI_BUTTON_NOTIFY_SWBTN_PRESSED:
->>                input_report_key(button->input, KEY_PROG1, 1);
->>                input_sync(button->input);
->>                break;
->>
->>
->>> +       default:
->>> +               ACPI_DEBUG_PRINT((ACPI_DB_INFO,
->>> +                                 "Unsupported event [0x%x]\n", event));
->>
->> Please don't use ACPI_DEBUG_PRINTF outside of drivers/acpi, instead
->> use:
->>
->>                   dev_dbg(&platform_device->dev, ...);
->>
->>> +       break;
->>
->> There is no need for a break at the end of a switch-case
->>
->>> +       }
->>> +}
->>> +
->>> +static int acpi_button_probe(struct platform_device *device)
->>> +{
->>> +       struct acpi_device *acpi_device;
->>> +       struct acpi_button *button;
->>> +       struct input_dev *input;
->>> +       acpi_status status;
->>> +
->>> +       int error;
->>> +
->>> +       acpi_device = ACPI_COMPANION(&device->dev);
->>> +       if (!acpi_device) {
->>> +               dev_err(&device->dev, "ACPI companion is missing\n");
->>> +               return -ENOMEM;
->>> +       }
->>> +
->>> +       status = acpi_install_notify_handler(acpi_device->handle,
->>> +                                            ACPI_DEVICE_NOTIFY,
->>> +                                            acpi_button_notify,
->>> +                                            acpi_device);
->>> +       if (ACPI_FAILURE(status)) {
->>> +               dev_err(&device->dev, "Error installing notify handler\n");
->>> +               error = -ENODEV;
->>> +       }
->>
->> This needs to be done at the end of probe, if the notifier now runs, before
->> you have called dev_set_drvdata(), you will have a NULL pointer deref,
->> and even if the dev_set_drvdata() then the notifier may run before you have
->> set button->input = input and you still have a NULL pointer deref.
->>
->> So first setup everything and only then call acpi_install_notify_handler().
->>
->>> +
->>> +       button = devm_kzalloc(&acpi_device->dev, sizeof(*button), GFP_KERNEL);
->>> +       if (!button)
->>> +               return -ENOMEM;
->>> +
->>> +       dev_set_drvdata(&acpi_device->dev, button);
->>
->> Call this on the platform_device, so:
->>
->>        dev_set_drvdata(&device->dev, button);
->>
->> Also see above.
->>
->>> +
->>> +       input = devm_input_allocate_device(&acpi_device->dev);
->>> +       if (!input) {
->>> +               error =  -ENOMEM;
->>> +               goto err_free_mem;
->>
->> There is no need for the goto err_free_mem here (see below), so this
->> can be simplified to just:
->>
->>       input = devm_input_allocate_device(&acpi_device->dev);
->>       if (!input)
->>                return -ENOMEM;
->>
->>> +       }
->>> +
->>> +       button->input = input;
->>> +       button->type = ACPI_BUTTON_TYPE_SOFTWARE;
->>> +       button->pressed = false;
->>
->> Drop the setting of type/pressed, see above.
->>
->>
->>> +
->>> +       snprintf(button->phys, sizeof(button->phys),
->>> "%s/button/input0", ACPI_BUTTON_HID_SWBTN);
->>> +
->>> +       input->name = "Advantech Software Button";
->>> +       input->phys = button->phys;
->>> +       input->id.bustype = BUS_HOST;
->>> +       input->id.product = button->type;
->>
->> Don't set product to some semi-random value. Just leave it at 0.
->>
->>> +       input->dev.parent = &acpi_device->dev;
->>
->> This should be:
->>
->>         input->dev.parent = &device->dev;
->>
->>> +
->>> +       switch (button->type) {
->>> +       case ACPI_BUTTON_TYPE_SOFTWARE:
->>> +               set_bit(EV_KEY, input->evbit);
->>> +               set_bit(EV_REP, input->evbit);
->>> +
->>> +               input_set_capability(input, EV_KEY, SOFTWARE_BUTTON);
->>> +       break;
->>> +       }
->>
->> button->type always equals ACPI_BUTTON_TYPE_SOFTWARE, so you can drop the whole
->> switch-case here and input_set_capability(input, EV_KEY, ...) already does:
->> set_bit(EV_KEY, input->evbit);, so this entire block can be simplified to just:
->>
->>           set_bit(EV_REP, input->evbit);
->>           input_set_capability(input, EV_KEY, KEY_PROG1);
->>
->>
->>> +
->>> +       input_set_drvdata(input, acpi_device);
->>
->> You are never using the drvdata associated with the input_dev, so
->> this can be dropped. Also please don't use acpi_device for this/
->>
->>> +       error = input_register_device(input);
->>> +       if (error)
->>> +               return error;
->>> +
->>> +       device_init_wakeup(&acpi_device->dev, true);
->>
->> Don't use acpi_device, instead do:
->>
->>           device_init_wakeup(&device->dev, true);
->>
->>
->>
->>
->>> +
->>> +       return 0;
->>> +
->>> +err_free_mem:
->>> +       devm_kfree(&device->dev, button);
->>
->> devm_kzalloced mem will automatically be free-ed when the probe function
->> returns with an error, or when the driver is unbound (removed) so there
->> is no need to call devm_kfree() here.
->>
->>> +       return error;
->>> +}
->>> +
->>> +static int acpi_button_remove(struct platform_device *device)
->>> +{
->>> +       struct acpi_device *acpi_device = ACPI_COMPANION(&device->dev);
->>> +       struct acpi_button *button = dev_get_drvdata(&acpi_device->dev);
->>> +
->>> +       acpi_remove_notify_handler(acpi_device->handle, ACPI_DEVICE_NOTIFY,
->>> +                                  acpi_button_notify);
->>> +
->>> +       input_unregister_device(button->input);
->>> +       devm_kfree(&acpi_device->dev, button);
->>
->> The input_unregister_device() and devm_kfree() will be done automatically
->> when the remove function exits, so you can drop these 2 calls.
->>
->>> +
->>> +       return 0;
->>> +}
->>> +
->>> +static const struct acpi_device_id button_device_ids[] = {
->>> +       {ACPI_BUTTON_HID_SWBTN, 0},
->>> +       {"", 0},
->>> +};
->>> +
->>> +MODULE_DEVICE_TABLE(acpi, button_device_ids);
->>> +
->>> +static struct platform_driver acpi_button_driver = {
->>> +       .driver = {
->>> +               .name = MODULE_NAME,
->>> +               .acpi_match_table = button_device_ids,
->>> +       },
->>> +       .probe = acpi_button_probe,
->>> +       .remove = acpi_button_remove,
->>> +};
->>> +
->>> +module_platform_driver(acpi_button_driver);
->>> +
->>
->> This is not an ACPI driver, please drop the ACPI_MODULE_NAME() call.
->>
->>> +ACPI_MODULE_NAME(MODULE_NAME);
->>> +
->>> +MODULE_AUTHOR("Andrea Ho");
->>> +MODULE_DESCRIPTION("Advantech ACPI SW Button Driver");
->>> +MODULE_LICENSE("GPL v2");
->>> --
->>> 2.17.1
->>>
->>
->> Regards,
->>
->> Hans
->>
-> 
+diff --git a/include/linux/audit.h b/include/linux/audit.h
+index 82b7c1116a85..5fafcf4c13de 100644
+--- a/include/linux/audit.h
++++ b/include/linux/audit.h
+@@ -118,6 +118,34 @@ enum audit_nfcfgop {
+ 	AUDIT_NFT_OP_INVALID,
+ };
+ 
++static const u8 nft2audit_op[NFT_MSG_MAX] = { // enum nf_tables_msg_types
++	[NFT_MSG_NEWTABLE]	= AUDIT_NFT_OP_TABLE_REGISTER,
++	[NFT_MSG_GETTABLE]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_DELTABLE]	= AUDIT_NFT_OP_TABLE_UNREGISTER,
++	[NFT_MSG_NEWCHAIN]	= AUDIT_NFT_OP_CHAIN_REGISTER,
++	[NFT_MSG_GETCHAIN]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_DELCHAIN]	= AUDIT_NFT_OP_CHAIN_UNREGISTER,
++	[NFT_MSG_NEWRULE]	= AUDIT_NFT_OP_RULE_REGISTER,
++	[NFT_MSG_GETRULE]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_DELRULE]	= AUDIT_NFT_OP_RULE_UNREGISTER,
++	[NFT_MSG_NEWSET]	= AUDIT_NFT_OP_SET_REGISTER,
++	[NFT_MSG_GETSET]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_DELSET]	= AUDIT_NFT_OP_SET_UNREGISTER,
++	[NFT_MSG_NEWSETELEM]	= AUDIT_NFT_OP_SETELEM_REGISTER,
++	[NFT_MSG_GETSETELEM]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_DELSETELEM]	= AUDIT_NFT_OP_SETELEM_UNREGISTER,
++	[NFT_MSG_NEWGEN]	= AUDIT_NFT_OP_GEN_REGISTER,
++	[NFT_MSG_GETGEN]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_TRACE]		= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_NEWOBJ]	= AUDIT_NFT_OP_OBJ_REGISTER,
++	[NFT_MSG_GETOBJ]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_DELOBJ]	= AUDIT_NFT_OP_OBJ_UNREGISTER,
++	[NFT_MSG_GETOBJ_RESET]	= AUDIT_NFT_OP_OBJ_RESET,
++	[NFT_MSG_NEWFLOWTABLE]	= AUDIT_NFT_OP_FLOWTABLE_REGISTER,
++	[NFT_MSG_GETFLOWTABLE]	= AUDIT_NFT_OP_INVALID,
++	[NFT_MSG_DELFLOWTABLE]	= AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
++};
++
+ extern int is_audit_feature_set(int which);
+ 
+ extern int __init audit_register_class(int class, unsigned *list);
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index c1eb5cdb3033..e48554a5c14e 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -66,6 +66,13 @@ static const struct rhashtable_params nft_objname_ht_params = {
+ 	.automatic_shrinking	= true,
+ };
+ 
++struct nft_audit_data {
++	struct nft_table *table;
++	int entries;
++	int op;
++	struct list_head list;
++};
++
+ static void nft_validate_state_update(struct net *net, u8 new_validate_state)
+ {
+ 	switch (net->nft.validate_state) {
+@@ -717,17 +724,6 @@ static void nf_tables_table_notify(const struct nft_ctx *ctx, int event)
+ {
+ 	struct sk_buff *skb;
+ 	int err;
+-	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
+-			      ctx->table->name, ctx->table->handle);
+-
+-	audit_log_nfcfg(buf,
+-			ctx->family,
+-			ctx->table->use,
+-			event == NFT_MSG_NEWTABLE ?
+-				AUDIT_NFT_OP_TABLE_REGISTER :
+-				AUDIT_NFT_OP_TABLE_UNREGISTER,
+-			GFP_KERNEL);
+-	kfree(buf);
+ 
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -1491,18 +1487,6 @@ static void nf_tables_chain_notify(const struct nft_ctx *ctx, int event)
+ {
+ 	struct sk_buff *skb;
+ 	int err;
+-	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
+-			      ctx->table->name, ctx->table->handle,
+-			      ctx->chain->name, ctx->chain->handle);
+-
+-	audit_log_nfcfg(buf,
+-			ctx->family,
+-			ctx->chain->use,
+-			event == NFT_MSG_NEWCHAIN ?
+-				AUDIT_NFT_OP_CHAIN_REGISTER :
+-				AUDIT_NFT_OP_CHAIN_UNREGISTER,
+-			GFP_KERNEL);
+-	kfree(buf);
+ 
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -2855,18 +2839,6 @@ static void nf_tables_rule_notify(const struct nft_ctx *ctx,
+ {
+ 	struct sk_buff *skb;
+ 	int err;
+-	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
+-			      ctx->table->name, ctx->table->handle,
+-			      ctx->chain->name, ctx->chain->handle);
+-
+-	audit_log_nfcfg(buf,
+-			ctx->family,
+-			rule->handle,
+-			event == NFT_MSG_NEWRULE ?
+-				AUDIT_NFT_OP_RULE_REGISTER :
+-				AUDIT_NFT_OP_RULE_UNREGISTER,
+-			GFP_KERNEL);
+-	kfree(buf);
+ 
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -3901,18 +3873,6 @@ static void nf_tables_set_notify(const struct nft_ctx *ctx,
+ 	struct sk_buff *skb;
+ 	u32 portid = ctx->portid;
+ 	int err;
+-	char *buf = kasprintf(gfp_flags, "%s:%llu;%s:%llu",
+-			      ctx->table->name, ctx->table->handle,
+-			      set->name, set->handle);
+-
+-	audit_log_nfcfg(buf,
+-			ctx->family,
+-			set->field_count,
+-			event == NFT_MSG_NEWSET ?
+-				AUDIT_NFT_OP_SET_REGISTER :
+-				AUDIT_NFT_OP_SET_UNREGISTER,
+-			gfp_flags);
+-	kfree(buf);
+ 
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -5097,18 +5057,6 @@ static void nf_tables_setelem_notify(const struct nft_ctx *ctx,
+ 	u32 portid = ctx->portid;
+ 	struct sk_buff *skb;
+ 	int err;
+-	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
+-			      ctx->table->name, ctx->table->handle,
+-			      set->name, set->handle);
+-
+-	audit_log_nfcfg(buf,
+-			ctx->family,
+-			set->handle,
+-			event == NFT_MSG_NEWSETELEM ?
+-				AUDIT_NFT_OP_SETELEM_REGISTER :
+-				AUDIT_NFT_OP_SETELEM_UNREGISTER,
+-			GFP_KERNEL);
+-	kfree(buf);
+ 
+ 	if (!ctx->report && !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
+ 		return;
+@@ -6310,12 +6258,11 @@ static int nf_tables_dump_obj(struct sk_buff *skb, struct netlink_callback *cb)
+ 			    filter->type != NFT_OBJECT_UNSPEC &&
+ 			    obj->ops->type->type != filter->type)
+ 				goto cont;
+-
+ 			if (reset) {
+ 				char *buf = kasprintf(GFP_ATOMIC,
+-						      "%s:%llu;?:0",
++						      "%s:%u",
+ 						      table->name,
+-						      table->handle);
++						      net->nft.base_seq);
+ 
+ 				audit_log_nfcfg(buf,
+ 						family,
+@@ -6436,8 +6383,8 @@ static int nf_tables_getobj(struct net *net, struct sock *nlsk,
+ 		reset = true;
+ 
+ 	if (reset) {
+-		char *buf = kasprintf(GFP_ATOMIC, "%s:%llu;?:0",
+-				      table->name, table->handle);
++		char *buf = kasprintf(GFP_ATOMIC, "%s:%u",
++				      table->name, net->nft.base_seq);
+ 
+ 		audit_log_nfcfg(buf,
+ 				family,
+@@ -6525,15 +6472,15 @@ void nft_obj_notify(struct net *net, const struct nft_table *table,
+ {
+ 	struct sk_buff *skb;
+ 	int err;
+-	char *buf = kasprintf(gfp, "%s:%llu;?:0",
+-			      table->name, table->handle);
++	char *buf = kasprintf(gfp, "%s:%u",
++			      table->name, net->nft.base_seq);
+ 
+ 	audit_log_nfcfg(buf,
+ 			family,
+ 			obj->handle,
+ 			event == NFT_MSG_NEWOBJ ?
+-				AUDIT_NFT_OP_OBJ_REGISTER :
+-				AUDIT_NFT_OP_OBJ_UNREGISTER,
++				 AUDIT_NFT_OP_OBJ_REGISTER :
++				 AUDIT_NFT_OP_OBJ_UNREGISTER,
+ 			gfp);
+ 	kfree(buf);
+ 
+@@ -7333,18 +7280,6 @@ static void nf_tables_flowtable_notify(struct nft_ctx *ctx,
+ {
+ 	struct sk_buff *skb;
+ 	int err;
+-	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;%s:%llu",
+-			      flowtable->table->name, flowtable->table->handle,
+-			      flowtable->name, flowtable->handle);
+-
+-	audit_log_nfcfg(buf,
+-			ctx->family,
+-			flowtable->hooknum,
+-			event == NFT_MSG_NEWFLOWTABLE ?
+-				AUDIT_NFT_OP_FLOWTABLE_REGISTER :
+-				AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
+-			GFP_KERNEL);
+-	kfree(buf);
+ 
+ 	if (!ctx->report &&
+ 	    !nfnetlink_has_listeners(ctx->net, NFNLGRP_NFTABLES))
+@@ -7465,9 +7400,6 @@ static void nf_tables_gen_notify(struct net *net, struct sk_buff *skb,
+ 	struct sk_buff *skb2;
+ 	int err;
+ 
+-	audit_log_nfcfg("?:0;?:0", 0, net->nft.base_seq,
+-			AUDIT_NFT_OP_GEN_REGISTER, GFP_KERNEL);
+-
+ 	if (!nlmsg_report(nlh) &&
+ 	    !nfnetlink_has_listeners(net, NFNLGRP_NFTABLES))
+ 		return;
+@@ -8006,12 +7938,65 @@ static void nft_commit_notify(struct net *net, u32 portid)
+ 	WARN_ON_ONCE(!list_empty(&net->nft.notify_list));
+ }
+ 
++int nf_tables_commit_audit_alloc(struct list_head *adl,
++				 struct nft_table *table)
++{
++	struct nft_audit_data *adp;
++
++	list_for_each_entry(adp, adl, list) {
++		if (adp->table == table)
++			return 0;
++	}
++	adp = kzalloc(sizeof(*adp), GFP_KERNEL);
++	if (!adp)
++		return -ENOMEM;
++	adp->table = table;
++	INIT_LIST_HEAD(&adp->list);
++	list_add(&adp->list, adl);
++	return 0;
++}
++
++void nf_tables_commit_audit_collect(struct list_head *adl,
++				    struct nft_table *table, u32 op)
++{
++	struct nft_audit_data *adp;
++
++	list_for_each_entry(adp, adl, list) {
++		if (adp->table == table)
++			goto found;
++	}
++	WARN_ONCE("table=%s not expected in commit list", table->name);
++	return;
++found:
++	adp->entries++;
++	if (!adp->op || adp->op > op)
++		adp->op = op;
++}
++
++#define AUNFTABLENAMELEN (NFT_TABLE_MAXNAMELEN + 22)
++
++void nf_tables_commit_audit_log(struct list_head *adl, u32 generation)
++{
++	struct nft_audit_data *adp, *adn;
++	char aubuf[AUNFTABLENAMELEN];
++
++	list_for_each_entry_safe(adp, adn, adl, list) {
++		snprintf(aubuf, AUNFTABLENAMELEN, "%s:%u", adp->table->name,
++			 generation);
++		audit_log_nfcfg(aubuf, adp->table->family, adp->entries,
++				nft2audit_op[adp->op], GFP_KERNEL);
++		list_del(&adp->list);
++		kfree(adp);
++	}
++}
++
+ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ {
+ 	struct nft_trans *trans, *next;
+ 	struct nft_trans_elem *te;
+ 	struct nft_chain *chain;
+ 	struct nft_table *table;
++	LIST_HEAD(adl);
+ 	int err;
+ 
+ 	if (list_empty(&net->nft.commit_list)) {
+@@ -8031,6 +8016,11 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 	list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
+ 		int ret;
+ 
++		ret = nf_tables_commit_audit_alloc(&adl, trans->ctx.table);
++		if (ret) {
++			nf_tables_commit_chain_prepare_cancel(net);
++			return ret;
++		}
+ 		if (trans->msg_type == NFT_MSG_NEWRULE ||
+ 		    trans->msg_type == NFT_MSG_DELRULE) {
+ 			chain = trans->ctx.chain;
+@@ -8206,12 +8196,16 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 			}
+ 			break;
+ 		}
++		nf_tables_commit_audit_collect(&adl, trans->ctx.table,
++					       trans->msg_type);
+ 	}
+ 
+ 	nft_commit_notify(net, NETLINK_CB(skb).portid);
+ 	nf_tables_gen_notify(net, skb, NFT_MSG_NEWGEN);
+ 	nf_tables_commit_release(net);
+ 
++	nf_tables_commit_audit_log(&adl, net->nft.base_seq);
++
+ 	return 0;
+ }
+ 
+-- 
+2.27.0
 
