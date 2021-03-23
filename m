@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BDB3462CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E2E3462CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhCWP1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
+        id S232771AbhCWP14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbhCWP1J (ORCPT
+        with ESMTP id S232805AbhCWP1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:27:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAB5C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:27:08 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lOivz-0005Dl-A4; Tue, 23 Mar 2021 16:27:07 +0100
-Subject: Re: [PATCH v2 2/2] driver core: add helper for deferred probe reason
- setting
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, kernel@pengutronix.de,
-        andy.shevchenko@gmail.com, linux-kernel@vger.kernel.org
-References: <20210319110459.19966-1-a.fatoum@pengutronix.de>
- <20210319110459.19966-2-a.fatoum@pengutronix.de> <YFn2Kffl0F8yeclC@kroah.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <6d1b5540-0541-114b-a73c-018d7fc9b403@pengutronix.de>
-Date:   Tue, 23 Mar 2021 16:27:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 23 Mar 2021 11:27:23 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64A5C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:27:22 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r17so12064046pgi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+q4ajk+mvriJOj6DX/n/ZppGdC7koRzzrZpC32hPb3Q=;
+        b=umzKhAGs1TMWIaaMArXgz4HWGd/SlOHR91fZHJqErP1IZAqWCknAXyfkhvQwxr+CFG
+         uUeWBmfrmfypfND2jZZwXWZ8VfRDj2gbxvZB9hz52yWYdB+Brv5QUT8jUwm9erPKgGzy
+         RZ76bM+1XpE5J6QARiRt1AtJCh4fyTZF9d6mVMqB94sIPYX6eGMHmq/xQYIKkMAjKNZK
+         GnZX3oUX+Md3fAWSpfkoLrxkBiVpxvumEWTeSo0QxPFknlF3BMG7S7zOZngEoBSRPhvK
+         WN2/jLF3Mi0LI6LMU0sFpi5NLhV6Yk/hIlnQKaULLT2i5BRYgORqCT84wMbigyKf4J8R
+         50wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+q4ajk+mvriJOj6DX/n/ZppGdC7koRzzrZpC32hPb3Q=;
+        b=lGQQK617I2O1CXWljKzeYJBpN7fRzyjVaN/AcDcaU9tRBB+6porb24E0FDSCyA9G9M
+         q1kAzBw7ngkHjjqLrOkn7igBud6+LJCehFTn705EvA2nBFr8TZ0vXSEX0yiMKgw7YKvH
+         fr0r6o0C1+ruVxv12/b3apDamXqkm41PDtKEO2QEFj/odREgw/14jlCa+3f54PAGZoRp
+         BIpNOObWYswRTWF8wfv79OFVEJG3fT74L6d/O0fjYxskKJXnEET8r6dznciWNgfG+qr3
+         ZYvPvtpb2l3aemUwKWmhBCUfmINDh6vm8Zn073+WNlKnUmlVUbnYLsA6xKevV8msxm53
+         +ezg==
+X-Gm-Message-State: AOAM532vst9CpLEwAjNFew8hkqcX+Of+pKcx6jLakb5DGtbEf2Bmdqqq
+        lYYYGwcYg5V+AXWzMF4zCbahh3Sadm7B9C4QPzFo8A==
+X-Google-Smtp-Source: ABdhPJx2bftmnq7RHCX1El68uj6CuWJqbapCMo07V7M2E2AXoSLaInK7xzowbUr30s36j58NS2yVvPTVFaZebu6Z4cs=
+X-Received: by 2002:aa7:980a:0:b029:20c:5402:5de9 with SMTP id
+ e10-20020aa7980a0000b029020c54025de9mr5130024pfl.18.1616513242364; Tue, 23
+ Mar 2021 08:27:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YFn2Kffl0F8yeclC@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210308120555.252524-1-adrien.grassein@gmail.com>
+ <20210308120555.252524-3-adrien.grassein@gmail.com> <CAG3jFytoE9hWvq2e2Caqn4qP_RuEOnm4r9VQ85ffbAcguSLf+w@mail.gmail.com>
+ <CABkfQAGvPy3DzXQnDJqm1q_rOLWR7BQTXb8z05iML3s3Mc8LJw@mail.gmail.com>
+ <CAG3jFytmJSjvWp0Bu7MaJ7EVuJov8gbs6cguatoOtTJpXTGVLA@mail.gmail.com>
+ <CABkfQAGcSsQ74FtvAK4_awHRXswgBrThKww_xhpmTzordZ5X8w@mail.gmail.com>
+ <CAG3jFyvQt=Bv2_Hi8UdOhgznp1gVZwAw8gZv6FnLwHJV4WD6Kw@mail.gmail.com>
+ <CABkfQAGS24AM90veQhGA+=V4S50y7JwzqLMspMaEFptcYpmdMQ@mail.gmail.com> <CAG3jFytY26tdktwE+iorKjM1EDsdAFxo9MBhxsJHoCNLSRsM_g@mail.gmail.com>
+In-Reply-To: <CAG3jFytY26tdktwE+iorKjM1EDsdAFxo9MBhxsJHoCNLSRsM_g@mail.gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 23 Mar 2021 16:27:11 +0100
+Message-ID: <CAG3jFyvMpO9YNCB=qZgHovU9=zT0s1S3jNoeYoj0YkpQAjh5Rg@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Alright, I think the best way forward is to remove the polled HPD support.
+Don't forget to update flags and function pointers.
 
-On 23.03.21 15:07, Greg Kroah-Hartman wrote:
-> On Fri, Mar 19, 2021 at 12:04:58PM +0100, Ahmad Fatoum wrote:
->> We now have three places within the same file doing the same operation
->> of freeing this pointer and setting it anew. A helper make this
->> arguably easier to read, so add one.
->>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->> v1 -> v2:
->>  - no change
->> ---
->>  drivers/base/dd.c | 17 +++++++++++------
->>  1 file changed, 11 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
->> index e2cf3b29123e..4201baa1cc13 100644
->> --- a/drivers/base/dd.c
->> +++ b/drivers/base/dd.c
->> @@ -69,6 +69,12 @@ static char async_probe_drv_names[ASYNC_DRV_NAMES_MAX_LEN];
->>   */
->>  static bool defer_all_probes;
->>  
->> +static void __device_set_deferred_probe_reason(const struct device *dev, char *reason)
->> +{
->> +	kfree(dev->p->deferred_probe_reason);
->> +	dev->p->deferred_probe_reason = reason;
->> +}
->> +
->>  /*
->>   * deferred_probe_work_func() - Retry probing devices in the active list.
->>   */
->> @@ -97,8 +103,7 @@ static void deferred_probe_work_func(struct work_struct *work)
->>  
->>  		get_device(dev);
->>  
->> -		kfree(dev->p->deferred_probe_reason);
->> -		dev->p->deferred_probe_reason = NULL;
->> +		__device_set_deferred_probe_reason(dev, NULL);
->>  
->>  		/*
->>  		 * Drop the mutex while probing each device; the probe path may
->> @@ -140,8 +145,7 @@ void driver_deferred_probe_del(struct device *dev)
->>  	if (!list_empty(&dev->p->deferred_probe)) {
->>  		dev_dbg(dev, "Removed from deferred list\n");
->>  		list_del_init(&dev->p->deferred_probe);
->> -		kfree(dev->p->deferred_probe_reason);
->> -		dev->p->deferred_probe_reason = NULL;
->> +		__device_set_deferred_probe_reason(dev, NULL);
->>  	}
->>  	mutex_unlock(&deferred_probe_mutex);
->>  }
->> @@ -220,11 +224,12 @@ void device_unblock_probing(void)
->>  void device_set_deferred_probe_reason(const struct device *dev, struct va_format *vaf)
->>  {
->>  	const char *drv = dev_driver_string(dev);
->> +	char *reason;
->>  
->>  	mutex_lock(&deferred_probe_mutex);
->>  
->> -	kfree(dev->p->deferred_probe_reason);
->> -	dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
->> +	reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
-> 
-> No error checking?
+With that, feel free to add my r-b.
 
-There wasn't any before and I think silent failure to set the defer reason
-is completely adequate behavior.
-
-Cheers,
-Ahmad
-
-> 
-> :(
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
