@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DF5346630
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10D346657
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhCWRVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:21:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230100AbhCWRUx (ORCPT
+        id S230189AbhCWR3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhCWR3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:20:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616520052;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YAyFL6IZIY2oqC27uvurT02K8tPhgIqI61UB1ihbE4M=;
-        b=bmvsaTO8VonyT8q5u2lCZ9VkC9vu9S2L9WdPE/fRMu72+nJhE5Pe5u4CATdD6mTEVMMtUf
-        6DPIKrMomuhAlGZ9tEhDsGjF3MRbTLLAJ0WIwnzhci7Kev2+Z9qie/YCxoiT8A9vH46HaP
-        FW4qq9gay/R77c17FxdAp/YeQ1kskg0=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-Tx5cGBvlPfatWGCD8DgrtA-1; Tue, 23 Mar 2021 13:20:51 -0400
-X-MC-Unique: Tx5cGBvlPfatWGCD8DgrtA-1
-Received: by mail-qk1-f198.google.com with SMTP id 130so2485553qkm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:20:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=YAyFL6IZIY2oqC27uvurT02K8tPhgIqI61UB1ihbE4M=;
-        b=YKszAKuudnV1GguRFwkNPVWzQ8uNYDcJvjAvl+XcOFxFb6qMTxZnbtjSU0rztIMaNX
-         SkOESnUwUNfUxVIGTpAWwye/8cLbm5vu1EzQTR0DLfCdWL+c3Wmkw/CWCTO257E+JlHe
-         qIRa23SMH/zinyxesMvsp1uXyrrYjTOqm4OfifkLY2FZIUTP6hv78+Azt9KzINrhgf8j
-         r+Ow8bxO/AcSLEx1COtHG8qORRosqVOfl+BERaCjJFgZOTXVvxuKdy2Z+NakMwCGk2FD
-         4TLS53ql8rHq5oylDq0e5DnVpmGiJ/P/07k+Zh8WK6xDAVTAGbxQec0ZMIjxvcdswLT+
-         9Ptg==
-X-Gm-Message-State: AOAM531oKHs/A6/MwGo/tU1/7AteLouK9dJnHHUFRBK0lNSojCMwvZfq
-        +w1YzfEJOib80UpZ4q6Vn1uOWvQDtWQ0+BEk/B4LsfQyGpoI10pKXkVXaUsDchw//rJL+FeRynG
-        5czTbYInmhXTvgNQXxaVQ7cNV
-X-Received: by 2002:ac8:7b3a:: with SMTP id l26mr5459629qtu.150.1616520049924;
-        Tue, 23 Mar 2021 10:20:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztYTHgeNEkdPAMioM0BwWW+Vm6mK0rE7umTqs7yzRlDH9oowzpWEj8LVq6M8gu2Op7eNL4Aw==
-X-Received: by 2002:ac8:7b3a:: with SMTP id l26mr5459610qtu.150.1616520049760;
-        Tue, 23 Mar 2021 10:20:49 -0700 (PDT)
-Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id x14sm13757985qkx.112.2021.03.23.10.20.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 10:20:49 -0700 (PDT)
-Message-ID: <fa6903109e07ba8d3f1d5374d1785e3d8df10ebb.camel@redhat.com>
-Subject: Re: [PATCH] drivers: gpu: priv.h is included twice
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Wan Jiabing <wanjiabing@vivo.com>, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Date:   Tue, 23 Mar 2021 13:20:48 -0400
-In-Reply-To: <20210322124513.130470-1-wanjiabing@vivo.com>
-References: <20210322124513.130470-1-wanjiabing@vivo.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Tue, 23 Mar 2021 13:29:04 -0400
+X-Greylist: delayed 452 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 23 Mar 2021 10:29:03 PDT
+Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E0DC061574;
+        Tue, 23 Mar 2021 10:29:03 -0700 (PDT)
+Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
+        by postout1.mail.lrz.de (Postfix) with ESMTP id 4F4dSk6Vvkzyhj;
+        Tue, 23 Mar 2021 18:21:26 +0100 (CET)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+        reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :x-mailer:organization:references:in-reply-to:message-id:subject
+        :subject:from:from:date:date:received:received; s=postout; t=
+        1616520086; bh=O6Gw2Sv4QuWxqHo644fu+3aSadGr5z7e6RC1L5LXMJY=; b=n
+        r5V4TSpx7hiHbpcuRcqTaPOL6z3o7litlJSyowtecgGgUtE5mbITz0fJqiEddrUt
+        t1FIuO4My3Gu9+A9hWcDKIMP+7PAPR1/hSHtoTBFO+Ud1Z9hcsWtgeP9YvNW9S7y
+        56UCMjfmBerlcFtZSXoh2g4qFffhKo3SgINWDmpXcTmusOlvFzPCa03A8WGZIDqD
+        zA2gMP0HO4L9liS2rv2niopGdPxRtz+xAWbgh8yCC0ZD5W3d2/dp51+/63FcOEzC
+        UrkKJa5urfwDuAPcJC0uXRLRwDe2JuCbrcjVCBRQySC7LEyTbctXk/OzKA2AUHpQ
+        dlLMvHpvHhTGgmos1Oxjg==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
+X-Spam-Flag: NO
+X-Spam-Score: -2.875
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.875 tagged_above=-999 required=5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
+        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
+        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
+        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
+        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
+        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
+        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
+        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
+        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
+        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
+        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
+        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
+        LRZ_MSGID_AN_AN=0.001, LRZ_URL_HTTP_SINGLE=0.001,
+        LRZ_URL_PLAIN_SINGLE=0.001] autolearn=no autolearn_force=no
+Received: from postout1.mail.lrz.de ([127.0.0.1])
+        by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id MJQLGXTNRglT; Tue, 23 Mar 2021 18:21:26 +0100 (CET)
+Received: from yaviniv.e18.physik.tu-muenchen.de (yaviniv.e18.physik.tu-muenchen.de [10.152.72.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by postout1.mail.lrz.de (Postfix) with ESMTPSA id 4F4dSh4gr2zyhX;
+        Tue, 23 Mar 2021 18:21:24 +0100 (CET)
+Date:   Tue, 23 Mar 2021 18:21:23 +0100
+From:   Andrei Rabusov <a.rabusov@tum.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/156] 5.10.26-rc2 review
+Message-ID: <20210323182123.3ce89282@yaviniv.e18.physik.tu-muenchen.de>
+In-Reply-To: <20210322151845.637893645@linuxfoundation.org>
+References: <20210322151845.637893645@linuxfoundation.org>
+Organization: TUM E18
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Lyude Paul <lyude@redhat.com>
+On Mon, 22 Mar 2021 16:19:10 +0100
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-On Mon, 2021-03-22 at 20:45 +0800, Wan Jiabing wrote:
-> priv.h has been included at line 22, so remove
-> the duplicate include at line 24.
+> This is the start of the stable review cycle for the 5.10.26 release.
+> There are 156 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied,
+> please let me know.
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c | 2 --
->  1 file changed, 2 deletions(-)
+> Responses should be made by Wed, 24 Mar 2021 15:18:19 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
-> b/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
-> index c39e797dc7c9..09524168431c 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
-> @@ -20,8 +20,6 @@
->   * OTHER DEALINGS IN THE SOFTWARE.
->   */
->  #include "priv.h"
-> -
-> -#include "priv.h"
->  #include <core/firmware.h>
->  
->  static void *
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.26-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> linux-5.10.y and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
--- 
-Sincerely,
-   Lyude Paul (she/her)
-   Software Engineer at Red Hat
-   
-Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
-asked me a question, are waiting for a review/merge on a patch, etc. and I
-haven't responded in a while, please feel free to send me another email to check
-on my status. I don't bite!
+Tested on i686 (ThinkPad R50p) with gcc 10.2 (slackware-current)
+
+I spotted no problems with this rc.
+
+Tested-by: Andrei Rabusov <a.rabusov@tum.de>
 
