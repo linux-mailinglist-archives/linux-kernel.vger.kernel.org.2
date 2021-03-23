@@ -2,85 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA52345D84
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C4B345D8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhCWL6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:58:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57274 "EHLO mail.kernel.org"
+        id S230189AbhCWMA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:00:29 -0400
+Received: from mga05.intel.com ([192.55.52.43]:11746 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhCWL6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:58:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07BE26191A;
-        Tue, 23 Mar 2021 11:58:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616500726;
-        bh=Qx2dRVMJSoSWHEiu78M1VLfpaeZ8A6p8qVkoPZlsck8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qRJZeOYSCt3yRyYIRfcFxNFZTtD3wftIgc9qdVlffOAxpITLQEjsY8b2HeDQyhgyD
-         06ZS2LD8CbXiOrJGCnuckcKzTenE/AnHHyXcz5MTl/ERnNtuhqkw4DXwgISXk7rLNH
-         odaHihERo5ppZyL1xQIpk3Sbr4aMLkxUYXKMA++Q=
-Date:   Tue, 23 Mar 2021 12:58:44 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1 1/6] usb: gadget: pch_udc: Drop unneeded cpu_to_le32()
- call
-Message-ID: <YFnX9H+JeK1SVKuY@kroah.com>
-References: <20210322211149.6658-1-andriy.shevchenko@linux.intel.com>
+        id S229675AbhCWMAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:00:01 -0400
+IronPort-SDR: 6tls7Hk4xUMo42BQaJ3Ur7KRJddiZgerKRLMTuHDK/6bv7gdK3oMtEfXh0Y/WcZXEAdexQqbUf
+ aQRXg8TFRXAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="275560376"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="275560376"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 05:00:00 -0700
+IronPort-SDR: OA4YQoABQfOVxnNdIPozb/XFA8ZfQkKG8E35SM9W+Gwo2ui0rrBiCcDynEKYp42hMicryaewwU
+ qR3Bgmuk2okg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="381330780"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 23 Mar 2021 04:59:59 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lOfhW-0000Zj-Qk; Tue, 23 Mar 2021 11:59:58 +0000
+Date:   Tue, 23 Mar 2021 19:59:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ e14cfb3bdd0f82147d09e9f46bedda6302f28ee1
+Message-ID: <6059d80b.NvKjmDiWafLU5qrD%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210322211149.6658-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:11:44PM +0200, Andy Shevchenko wrote:
-> Either way ~0 will be in the correct byte order,
-> hence drop unneeded cpu_to_le32() call. Moreover,
-> it makes sparse happy, otherwise it complains:
-> 
-> pch_udc.c:1813:27: warning: incorrect type in assignment (different base types)
-> pch_udc.c:1813:27:    expected unsigned int [usertype] dataptr
-> pch_udc.c:1813:27:    got restricted __le32 [usertype]
-> 
-> Fixes: f646cf94520e ("USB device driver of Topcliff PCH")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/usb/gadget/udc/pch_udc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
-> index a3c1fc924268..2e2dca391007 100644
-> --- a/drivers/usb/gadget/udc/pch_udc.c
-> +++ b/drivers/usb/gadget/udc/pch_udc.c
-> @@ -1756,7 +1756,7 @@ static struct usb_request *pch_udc_alloc_request(struct usb_ep *usbep,
->  	}
->  	/* prevent from using desc. - set HOST BUSY */
->  	dma_desc->status |= PCH_UDC_BS_HST_BSY;
-> -	dma_desc->dataptr = cpu_to_le32(DMA_ADDR_INVALID);
-> +	dma_desc->dataptr = DMA_ADDR_INVALID;
->  	req->td_data = dma_desc;
->  	req->td_data_last = dma_desc;
->  	req->chain_len = 1;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: e14cfb3bdd0f82147d09e9f46bedda6302f28ee1  x86/boot/compressed: Avoid gcc-11 -Wstringop-overread warning
 
-With this series applied, I get the following build warning:
+elapsed time: 721m
 
-drivers/usb/gadget/udc/pch_udc.c: In function ‘pch_udc_alloc_request’:
-drivers/usb/gadget/udc/pch_udc.c:208:26: warning: conversion from ‘long long unsigned int’ to ‘u32’ {aka ‘unsigned int’} changes value from ‘18446744073709551615’ to ‘4294967295’ [-Woverflow]
-  208 | #define DMA_ADDR_INVALID (~(dma_addr_t)0)
-      |                          ^
-drivers/usb/gadget/udc/pch_udc.c:1813:22: note: in expansion of macro ‘DMA_ADDR_INVALID’
- 1813 |  dma_desc->dataptr = DMA_ADDR_INVALID;
-      |                      ^~~~~~~~~~~~~~~~
+configs tested: 79
+configs skipped: 66
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Please fix up and resend a new version of this series.
+gcc tested configs:
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+powerpc                     powernv_defconfig
+sh                           se7712_defconfig
+arm                         lubbock_defconfig
+sparc64                          alldefconfig
+powerpc                      ppc44x_defconfig
+mips                      maltaaprp_defconfig
+mips                           ip28_defconfig
+arm                             mxs_defconfig
+riscv                            alldefconfig
+powerpc                      katmai_defconfig
+sh                        edosk7705_defconfig
+powerpc                 mpc836x_rdk_defconfig
+openrisc                         alldefconfig
+m68k                       m5249evb_defconfig
+mips                        maltaup_defconfig
+arm                           omap1_defconfig
+i386                                defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                 linkstation_defconfig
+powerpc                     rainier_defconfig
+arm                          pxa168_defconfig
+arm                          collie_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+mips                             allyesconfig
+mips                             allmodconfig
+x86_64               randconfig-a002-20210323
+x86_64               randconfig-a003-20210323
+x86_64               randconfig-a006-20210323
+x86_64               randconfig-a001-20210323
+x86_64               randconfig-a004-20210323
+x86_64               randconfig-a005-20210323
+i386                 randconfig-a004-20210322
+i386                 randconfig-a003-20210322
+i386                 randconfig-a001-20210322
+i386                 randconfig-a002-20210322
+i386                 randconfig-a006-20210322
+i386                 randconfig-a005-20210322
+i386                 randconfig-a014-20210322
+i386                 randconfig-a011-20210322
+i386                 randconfig-a015-20210322
+i386                 randconfig-a016-20210322
+i386                 randconfig-a012-20210322
+i386                 randconfig-a013-20210322
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-thanks,
+clang tested configs:
+x86_64               randconfig-a012-20210323
+x86_64               randconfig-a015-20210323
+x86_64               randconfig-a013-20210323
+x86_64               randconfig-a014-20210323
+x86_64               randconfig-a011-20210323
+x86_64               randconfig-a016-20210323
+x86_64               randconfig-a002-20210322
+x86_64               randconfig-a003-20210322
+x86_64               randconfig-a001-20210322
+x86_64               randconfig-a006-20210322
+x86_64               randconfig-a004-20210322
+x86_64               randconfig-a005-20210322
 
-greg k-h
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
