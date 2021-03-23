@@ -2,112 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BBB346841
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B939346851
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhCWS6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbhCWS6l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:58:41 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BA6C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:58:41 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id ha17so10523456pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 11:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sZPnokhwrLELvYiKvr0IXzHRf2ZL9JIzsfn9eBfejP0=;
-        b=AbWSFTjb8YbVpKSkOWWpPRmmcqA16ekARGUz0wF6fzFfNAy7kKYTcuXqU4SFTPVa2o
-         veThEiDu4DwYuZvNp1bPCSMsJGAjBclA7fOV3rTu2RlVTubtfuD80nC+82ZnWmwKuvEM
-         26As6j4KpnQG0N5JqaOYKlZbaeaUKDE9oJXgScFO4T9YzZVRvNZtUQuYEFrP6FQJuSRd
-         YH7D1h6D9qqZu1/tDM6qulKPK5kJOa8FrWiqVMUw/TIk6YZE5FyiJ2Vd1Pz95JFM0KKn
-         RKo89vwVn/dux8VqDahEOkhZsWVyv/QpvhgSvH5QSqEv/f+kP9BmKnq0f31wSw5aRED4
-         npLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sZPnokhwrLELvYiKvr0IXzHRf2ZL9JIzsfn9eBfejP0=;
-        b=WhQQ6DZkZg32Hgpriv9WtvI9NgInFPfsK3SNJG53cC1An8MtNSUBcVnNxIxO12vNWf
-         oQYTy80nTMiYI0LhGIxE19JD8elhj2dA3Nda0HFaoITDUCF/0TbZl4/cy1gsQRS8FgCf
-         /PlAyHpJ8v/1etQin3iIC6yFMe+je1Y8p4cGJDuHwKJUjgurb0VXorOItVyAHzi6iLME
-         aY2cp/zXKHyIIyYG1Udk7M+DRj+DdQ4Qf4X1HuRuafd+U0EucKyLlw7/2RlMtPtyJCIX
-         ZzDnRnlNxjL8r2D2qM3xaUVS/dcykSkQ+IYPV2rFsl3Xf2KeC79OwzQweUcUkxzsnpqw
-         arvQ==
-X-Gm-Message-State: AOAM533UmDojEroARPWNj6Pc+3hK9p5OeSOoIoi4G1pGmEmySBQz2eG4
-        qPxJfmPpGYR7SzKT2m1zaNywBw==
-X-Google-Smtp-Source: ABdhPJwwoJKG05xyj+e7XoIlCIM42m6SrEUZ2ssxALYnsYY5oAN3Xg85NuzmORtAqiuJ9DzXU5l35g==
-X-Received: by 2002:a17:90a:f28e:: with SMTP id fs14mr5792402pjb.100.1616525920994;
-        Tue, 23 Mar 2021 11:58:40 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h2sm17262472pfq.139.2021.03.23.11.58.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 11:58:40 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 18:58:36 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] KVM: x86/mmu: Ensure TLBs are flushed when yielding
- during NX zapping
-Message-ID: <YFo6XFmEob2pszSr@google.com>
-References: <20210319232006.3468382-1-seanjc@google.com>
- <20210319232006.3468382-3-seanjc@google.com>
- <CANgfPd_6d+SvJ-rQxP6k5nRmCsRFyUAJ93B0dE3NtpmdPR78wg@mail.gmail.com>
- <YFkzIAVOeWS32fdX@google.com>
- <CANgfPd8ti7Wa3YnPxgVsEiUzhOzraEcKoLyXUW9E=Wjz4L-oNA@mail.gmail.com>
+        id S232783AbhCWS7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232218AbhCWS7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 14:59:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D5316198C;
+        Tue, 23 Mar 2021 18:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616525980;
+        bh=Duv575Zk2fTDzZ5FhMTZ+jsLUhp6fxAmjWAn2on9og0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OZ/vVwaC6AeiZVeYoMjs1Prn/8QLQfHpSc3OzhtyeYxk4LQKQqeoDXE8Po0cx/Gqb
+         ZnaBqUObJQMf9PnPZOgUq09/iPh1reiUOGjANf4u7tR1wZuCpt2anL7afgqbRfpBRz
+         +UomaJ98qCORnzPuLzGICx5Mw/KrD+zDShSW2cZ8=
+Date:   Tue, 23 Mar 2021 19:59:37 +0100
+From:   'Greg KH' <gregkh@linuxfoundation.org>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     arndb@arndb.de, linux-kernel@vger.kernel.org,
+        brandon_chuang@edge-core.com, wally_wang@accton.com,
+        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
+        xinxliu@microsoft.com
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YFo6mZqOaY+2zApa@kroah.com>
+References: <20210215193821.3345-1-don@thebollingers.org>
+ <YFn3ahkF4w/IClaw@kroah.com>
+ <008d01d72014$7b113900$7133ab00$@thebollingers.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANgfPd8ti7Wa3YnPxgVsEiUzhOzraEcKoLyXUW9E=Wjz4L-oNA@mail.gmail.com>
+In-Reply-To: <008d01d72014$7b113900$7133ab00$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021, Ben Gardon wrote:
-> On Mon, Mar 22, 2021 at 5:15 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Mon, Mar 22, 2021, Ben Gardon wrote:
-> > > It could be fixed by forbidding kvm_tdp_mmu_zap_gfn_range from
-> > > yielding. Since we should only need to zap one SPTE, the yield should
-> > > not be needed within the kvm_tdp_mmu_zap_gfn_range call. To ensure
-> > > that only one SPTE is zapped we would have to specify the root though.
-> > > Otherwise we could end up zapping all the entries for the same GFN
-> > > range under an unrelated root.
-> >
-> > Hmm, I originally did exactly that, but changed my mind because this zaps far
-> > more than 1 SPTE.  This is zapping a SP that could be huge, but is not, which
-> > means it's guaranteed to have a non-zero number of child SPTEs.  The worst case
-> > scenario is that SP is a PUD (potential 1gb page) and the leafs are 4k SPTEs.
+On Tue, Mar 23, 2021 at 11:43:55AM -0700, Don Bollinger wrote:
+> On Tue, Mar 23, 2021 at 7:12AM-0700, Greg KH wrote: 
+> > On Mon, Feb 15, 2021 at 11:38:21AM -0800, Don Bollinger wrote:
+> > > optoe is an i2c based driver that supports read/write access to all
+> > > the pages (tables) of MSA standard SFP and similar devices (conforming
+> > > to the SFF-8472 spec), MSA standard QSFP and similar devices
+> > > (conforming to the SFF-8636 spec) and CMIS and similar devices
+> > > (conforming to the Common Management Interface Specfication).
+> > 
 > 
-> It's true that there are potentially 512^2 child sptes, but the code
-> to clear those after the single PUD spte is cleared doesn't yield
-> anyway. If the TDP MMU is only  operating with one root (as we would
-> expect in most cases), there should only be one chance for it to
-> yield.
+> I promise not to engage in a drawn out email exchange over this, but I would
+> like to appeal your decision, just once...
+> 
+> > Given this thread, I think that using the SFP interface/api in the kernel
+> > already seems like the best idea forward.
+> > 
+> > That being said, your api here is whack, and I couldn't accept it anyway.
+> 
+> I don't understand.  I don't mean you are wrong, I literally don't
+> understand what is whack about it.  The interface is provided by nvmem.  I
+> modeled the calls on at24.  The layout of the data provided by the driver is
+> exactly the same layout that ethtool provides (device, offset, length).
+> Mapping i2c address, page and offset is exactly what ethtool provides.  So,
+> which part of this is whack?
 
-Ah, right, I was thinking all the iterative flows yielded.  Disallowing
-kvm_tdp_mmu_zap_gfn_range() from yielding in this case does seem like the best
-fix.  Any objection to me sending v2 with that?
+It's sysfs.  Does nvmem use sysfs for device discovery and enablement?
 
-> I've considered how we could allow the recursive changed spte handlers
-> to yield, but it gets complicated quite fast because the caller needs
-> to know if it yielded and reset the TDP iterator to the root, and
-> there are some cases (mmu notifiers + vCPU path) where yielding is not
-> desirable.
+nvmem is just a "raw" maping of hardware (memory) to userspace.
 
-Urgh, yeah, seems like we'd quickly end up with a mess resembling the legacy MMU
-iterators.
+You have a "real" device here that you are trying to also map to
+userspace, but when you just expose the "raw" registers (i.e. memory) to
+userspace, you are forcing userspace to handle all of the device
+differences, instead of the kernel.
 
-> >
-> > But, I didn't consider the interplay between invalid_list and the TDP MMU
-> > yielding.  Hrm.
+That's fine, for some things, but for anything with a standard, that's
+not ok, that's what a kernel is for.
+
+In other words, you could do what you want today probably with a UIO
+driver, just get the kernel out of the way and do it all in userspace.
+But that's not a viable or suportable api in the long-run for any
+standard hardware type.
+
+> > Not for the least being it's not even documented in Documentation/ABI/
+> like
+> > all sysfs files have to be :)
+> 
+> This could obviously be fixed.  I wasn't aware of this directory.  Now that
+> you've pointed it out, I see that nvmem is actually documented there, which
+> is the API I am using.  I document that optoe uses the nvmem interface, and
+> the mapping of paged memory to linear memory in my patch in
+> Documentation/misc-devices/optoe.rst.  If you think it would be useful, I
+> could provide similar information in Documentation/ABI/stable.
+
+Again, nvmem in sysfs is just a dump of the hardware memory.  That
+should not be how to control a switch device.
+
+> > And it feels like you are abusing sysfs for things it was not ment for,
+> you
+> > might want to look into configfs?
+> 
+> I'm using nvmem, which in turn uses sysfs, just like at24.  Why should optoe
+> be different?  I would think it is actually better to use the same API (and
+> code) as at24, and NOT to put it in a different place.
+
+at24 too is just an eeprom behind an i2c bus.  Accessing it for simple
+things is fine for userspace, but not for a standard device type.
+
+The networking developers have said that they feel the kernel should
+properly control devices like this, with a standard api.  And I agree
+with them (note, I'm biased, I like standard APIs, heck, I've even
+written specs for them...)  Doing "raw" hardware accesses is great fun
+for things like one-off devices (I have Linux running in a keyboard for
+something like that, also as my doorbell), but doing this for a "real"
+set of devices is not ok.
+
+Again, it's the difference between the UIO interface and a real ethernet
+driver in the kernel.  You could just say "all PCI network devices
+should use the UIO interface and put the hardware-specific logic in
+userspace", but that's not what we (i.e. the Linux kernel developers)
+feel is the proper way to handle the abstraction of device types.
+
+Again, we are kernel developers, we like nice hardware abstractions.
+Bonus is that it lets new hardware companies create new devices and no
+userspace modifications are needed!  I think history is on our side
+here :)
+
+> > But really, these are networking devices, so they should be controllable
+> using
+> > the standard networking apis, not one-off sysfs files.  Moving to the
+> Linux-
+> > standard tools is a good thing, and will work out better in the end
+> instead of
+> > having to encode lots of device-specific state in userspace like this
+> "raw" api
+> > seems to require.
+> 
+> This is the real issue.  It turns out, on these switches, there are two
+> kinds of networking.  Linux kernel networking handles one port, of 1Gb (or
+> less), which functions as a management port.  This is typically used for
+> console access.  It is configured and managed as an ordinary network port,
+> with a kernel network driver and the usual networking utilities.  'ip addr'
+> will show this port as well as loopback ports.  The linux kernel has no
+> visibility to the switch networking ports.  'ip addr' will not show any of
+> the switch networking ports.
+> 
+> The switch functions, switching at 25Tb/s, are completely invisible to the
+> linux kernel.  The switch ASIC is managed by a device driver provided by the
+> ASIC vendor.  That driver is driven by management code from the ASIC vendor
+> and a host of network applications.  Multiple vendors compete to provide the
+> best, most innovative, most secure, easiest...  network capabilities on top
+> of this architecture.  NONE of them use a kernel network driver, or the
+> layers of control or management that the linux kernel offers.  On these
+> systems, if you ask ethtool to provide EEPROM data, you get 'function not
+> implemented'.
+> 
+> On these systems, SFP/QSFP/CMIS devices are actually not 'networking
+> devices' from a Linux kernel perspective.  They are GPIO targets and EEPROM
+> memory.  Switch networking just needs the kernel to toggle the GPIO lines
+> and read/write the EEPROM.  optoe is just trying to read/write the EEPROM.
+
+That sounds like hell.  Let's create a proper api for everyone to use,
+and NOT provide raw access to random device eeproms (i.e. memory).  I
+thought that is what switchdev was for.  If it is somehow lacking, I'm
+sure that patches are gladly accepted.
+
+Heck, I did a review of the switchdev api and code a long time ago in
+response to some companies complaining of just this thing.  Sad to see
+they never took my advice of "send patches to get your hardware
+supported in that api", and persisted in wanting "raw memory" access
+instead.
+
+> One last note...  The networking folks need a better SFP/QSFP/CMIS EEPROM
+> driver to access more pages, and to support the new CMIS standard.
+
+Great, work on that!
+
+But raw eeprom/nvram/ram access is not that api.
+
+Again, UIO vs. "struct net_device".  Think of it that way.
+
+thanks,
+
+greg k-h
