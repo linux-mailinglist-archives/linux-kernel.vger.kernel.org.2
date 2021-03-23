@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B3B345C0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B7A345C15
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 11:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhCWKkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 06:40:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36406 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhCWKkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 06:40:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616496032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j6VJBOqPp1IrCTH90OFeWiL35R+bOlqcNiPTvvstMhI=;
-        b=T5gkMXkqrikPtYfoXNhJpidht574S/HQwGQ1absbWzeZSegz3kLGfQHCP6DdMf6DSxRdF4
-        U6qaSp6nrENLxnFzbGj5VEoCQ2qn7Xs+mzvJnoL5kZFQjOcjihj1lCPUmktRd2EzShQ0VA
-        yKbrRyCAxHIhRMpNs45qpmOPwo5wjao=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EA070AC3E;
-        Tue, 23 Mar 2021 10:40:31 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 11:40:31 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/5] acpi,memhotplug: Enable MHP_MEMMAP_ON_MEMORY when
- supported
-Message-ID: <YFnFnwC/6bxpFkGi@dhcp22.suse.cz>
-References: <20210319092635.6214-1-osalvador@suse.de>
- <20210319092635.6214-3-osalvador@suse.de>
+        id S230260AbhCWKlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 06:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhCWKlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 06:41:35 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0085EC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:41:34 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso4820158ooq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 03:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qaMgAdM2KItPrKUMCZHabW9a3SL1RYlGywDdCoOttJE=;
+        b=HaI/Ls3Xxp4PiIqn7YsRY6f0Wr7X/xAaryHq0Ns2IEfD0GdSCR+4ITbGkbJT9UXXsT
+         kY1r5QTmgtILT6A0Ne1jGw3AadSpClsCy4ta4xdHyx2yexqhxsoCMXKNWtx9NgShVWAc
+         ogQ4n8oSLpEG3tsagpYf3fWuTd8Pe7N0n404eqU0dqGgqUyHjWK3hr+cPkggOYqfoRXn
+         A2vbwFHHLtsODjLZuiJ86pZ4uGIMzZUmInN6SWqsIKZQZCPlxb69hD4CP4aZg27rtAgK
+         YccAtquOslR1+Z6W9VmOh5EyQ6Km8qzQean7EpYrWGCBLstwapCRvahHJkFGzTcoPFM7
+         ZEpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qaMgAdM2KItPrKUMCZHabW9a3SL1RYlGywDdCoOttJE=;
+        b=BBYNG2nU9koDEtc36CFhL/eb8zBwd1E4vMK9iBkgMfAYItKGr04OG+ybxswZg8ZO29
+         GM2FJMZLaMA20egrNpFXaHBkhCdyjeHOp9MIbfnYQc42e8WlhHClQskq9qgbsvQAJuaP
+         qrfdrl4i/7PqVXUDvuVIRItGpkg+RNbhq/OhQW6nMUiY2zQtxC6asjU1lcz5pUtvPa8q
+         cLXO0Ukpe0E4dFw2t5Wes9xNzsrc0AOTTbOki0Mjv1joCXpDE3kfhgM3V2xSVy5HRvHm
+         d9U0vhdPEQiHlMQAu1fvbtQRq6PRJyAsHByxEy6RFR5TptK89KroY3zMLBjj1y7vK7Ok
+         PBvA==
+X-Gm-Message-State: AOAM532NpXy8WhwHv2UuEMhVsUKkZlMXSdxrWgasMp6fVrG3W7V9iitg
+        ShfhtWgS+w1fCQoBUp5MHn6LxpGjY1aWuiUUv7hpoA==
+X-Google-Smtp-Source: ABdhPJx9cOfUC85pOdYrj8gQKReOta+wufUAU0wiHMXFo141kFatu3HmQkubYd5iSEuvXln2c4xjLNLCd7IZj2+2Fec=
+X-Received: by 2002:a05:6820:273:: with SMTP id c19mr3310170ooe.54.1616496093820;
+ Tue, 23 Mar 2021 03:41:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319092635.6214-3-osalvador@suse.de>
+References: <20210310104139.679618-1-elver@google.com> <20210310104139.679618-9-elver@google.com>
+ <YFiamKX+xYH2HJ4E@elver.google.com> <YFjI5qU0z3Q7J/jF@hirez.programming.kicks-ass.net>
+ <YFm6aakSRlF2nWtu@elver.google.com> <YFnDo7dczjDzLP68@hirez.programming.kicks-ass.net>
+In-Reply-To: <YFnDo7dczjDzLP68@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 23 Mar 2021 11:41:22 +0100
+Message-ID: <CANpmjNO1mRBFBQ6Rij-6ojVPKkaB6JLHD2WOVxhQeqxsqit2-Q@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 8/8] selftests/perf: Add kselftest for remove_on_exec
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-03-21 10:26:32, Oscar Salvador wrote:
-> Let the caller check whether it can pass MHP_MEMMAP_ON_MEMORY by
-> checking mhp_supports_memmap_on_memory().
-> MHP_MEMMAP_ON_MEMORY can only be set in case
-> ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE is enabled, the architecture supports
-> altmap, and the range to be added spans a single memory block.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
+On Tue, 23 Mar 2021 at 11:32, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Mar 23, 2021 at 10:52:41AM +0100, Marco Elver wrote:
+>
+> > with efs->func==__perf_event_enable. I believe it's sufficient to add
+> >
+> >       mutex_lock(&parent_event->child_mutex);
+> >       list_del_init(&event->child_list);
+> >       mutex_unlock(&parent_event->child_mutex);
+> >
+> > right before removing from context. With the version I have now (below
+> > for completeness), extended torture with the above test results in no
+> > more warnings and the test also passes.
+> >
+>
+> > +     list_for_each_entry_safe(event, next, &ctx->event_list, event_entry) {
+> > +             struct perf_event *parent_event = event->parent;
+> > +
+> > +             if (!event->attr.remove_on_exec)
+> >                       continue;
+> >
+> > +             if (!is_kernel_event(event))
+> > +                     perf_remove_from_owner(event);
+> >
+> > +             modified = true;
+> > +
+> > +             if (parent_event) {
+> >                       /*
+> > +                      * Remove event from parent, to avoid race where the
+> > +                      * parent concurrently iterates through its children to
+> > +                      * enable, disable, or otherwise modify an event.
+> >                        */
+> > +                     mutex_lock(&parent_event->child_mutex);
+> > +                     list_del_init(&event->child_list);
+> > +                     mutex_unlock(&parent_event->child_mutex);
+> >               }
+>
+>                 ^^^ this, right?
+>
+> But that's something perf_event_exit_event() alread does. So then you're
+> worried about the order of things.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Correct. We somehow need to prohibit the parent from doing an
+event_function_call() while we potentially deactivate the context with
+perf_remove_from_context().
 
-> ---
->  drivers/acpi/acpi_memhotplug.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
-> index b02fd51e5589..8cc195c4c861 100644
-> --- a/drivers/acpi/acpi_memhotplug.c
-> +++ b/drivers/acpi/acpi_memhotplug.c
-> @@ -171,6 +171,7 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
->  	acpi_handle handle = mem_device->device->handle;
->  	int result, num_enabled = 0;
->  	struct acpi_memory_info *info;
-> +	mhp_t mhp_flags = MHP_NONE;
->  	int node;
->  
->  	node = acpi_get_node(handle);
-> @@ -194,8 +195,10 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
->  		if (node < 0)
->  			node = memory_add_physaddr_to_nid(info->start_addr);
->  
-> +		if (mhp_supports_memmap_on_memory(info->length))
-> +			mhp_flags |= MHP_MEMMAP_ON_MEMORY;
->  		result = __add_memory(node, info->start_addr, info->length,
-> -				      MHP_NONE);
-> +				      mhp_flags);
->  
->  		/*
->  		 * If the memory block has been used by the kernel, add_memory()
-> -- 
-> 2.16.3
+> > +
+> > +             perf_remove_from_context(event, !!event->parent * DETACH_GROUP);
+> > +             perf_event_exit_event(event, ctx, current, true);
+> >       }
+>
+> perf_event_release_kernel() first does perf_remove_from_context() and
+> then clears the child_list, and that makes sense because if we're there,
+> there's no external access anymore, the filedesc is gone and nobody will
+> be iterating child_list anymore.
+>
+> perf_event_exit_task_context() and perf_event_exit_event() OTOH seem to
+> rely on ctx->task == TOMBSTONE to sabotage event_function_call() such
+> that if anybody is iterating the child_list, it'll NOP out.
+>
+> But here we don't have neither, and thus need to worry about the order
+> vs child_list iteration.
+>
+> I suppose we should stick sync_child_event() in there as well.
+>
+> And at that point there's very little value in still using
+> perf_event_exit_event()... let me see if there's something to be done
+> about that.
 
--- 
-Michal Hocko
-SUSE Labs
+I don't mind dropping use of perf_event_exit_event() and open coding
+all of this. That would also avoid modifying perf_event_exit_event().
+
+But I leave it to you what you think is nicest.
+
+Thanks,
+-- Marco
