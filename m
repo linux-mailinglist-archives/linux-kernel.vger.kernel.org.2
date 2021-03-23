@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C8E3460A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140663460A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbhCWN61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:58:27 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:38428 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbhCWN5s (ORCPT
+        id S232010AbhCWN6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:58:53 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:45848 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232013AbhCWN6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:57:48 -0400
-Received: by mail-lj1-f175.google.com with SMTP id s17so25737881ljc.5;
-        Tue, 23 Mar 2021 06:57:47 -0700 (PDT)
+        Tue, 23 Mar 2021 09:58:04 -0400
+Received: by mail-lj1-f173.google.com with SMTP id z8so25669750ljm.12;
+        Tue, 23 Mar 2021 06:58:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=luVl7HTqGqd54Q4Vnh/OjrJi/jL+nPdpxWT2c/YxpeA=;
-        b=oMqiCOMalv4Ca1RhEaOKRDlTt+tNBD0o7NyF0JvgmONG1tuK14HjlKJgGEmVL/igbF
-         +uF22q1KnISrNAP0wFo/JYzWWVUAzChUifbCxGKbLYZW3rzh6vp1c6ZKqXbYSYNWfYua
-         jBbl4X/YiIFgQYEJRldYZIvB0Hq8HBnlN1yWDelFBzLpgs/4FhNCvHwNm6R9iHVzGgN/
-         4hEVKcwzMK/EY5zv4z6Zs9OvilTbz5WEa4+as7x6KU+/mB6silA4yAo/hPQWSYUx3/sH
-         CHgcowz8mzeLOTjPcIvAdu87Ci3M/okEmLfWe6SmLxCnlMAjZRO3bVhS0jTQW1iC04sc
-         ZmwA==
-X-Gm-Message-State: AOAM532bDnEffdddjb7lAZlEJJZtnoUxejXCp/+dxoLY0H26P8k4YQkz
-        JNTvgDQHrZOv4ZgGXiYsvLo=
-X-Google-Smtp-Source: ABdhPJzQsfZwkKOcBxJyLzAaplw07f1qQr0vZn0+33F072vuRY3u8TdYgtanskjOMFeZc629hOQyTA==
-X-Received: by 2002:a2e:300d:: with SMTP id w13mr3374905ljw.199.1616507867231;
-        Tue, 23 Mar 2021 06:57:47 -0700 (PDT)
+        bh=/6WzQFitEwYWDahij8Y3EcNs37zbsvyMuY+B/0bN+oE=;
+        b=RbndTCBG03s0EqaurpWjNtyY1a+8Y7uC73JL61UQ7jwur57nksjSraj757PQbkMbTp
+         A7MiURlUcTRhv4qdK+B3SWmIb8c8L7X3PXRyOBE3dGbH8lokeQ+Nn/H3Rw5YUnIKVLAe
+         JtPE+YvOk7GLsSyQDA5TOQlhfhL6AIM5dBbbKmWgcsWWL77cHFpNEhWl9ikYv4kPoRv/
+         vondeWB70bFoosy3ZW464EH9TNA48ukLDuHXd5Vde+juMH7VOVO5lLwa3hil+rzHejhj
+         NdeBRq1eVDJYujUG5jNmjuwauzeo/HCsPN7KOWxsDqkYTEFKA5JLiE1KEMdLLnkBMj0u
+         /bMA==
+X-Gm-Message-State: AOAM530GzXIb0oRYQ0FQ06D+5jQD17X0ks37iRr3USHnQEokWhWP5k9r
+        ZsiVVWwwWTlSoySgRB2GIA4gXg64p5I=
+X-Google-Smtp-Source: ABdhPJzJsiKUSfDRM+cv7lqIgmOiLcEnEMg0KYJBWC5y6RiQb0GbiuJHmwGsIHQutXxkveQg2HkYLA==
+X-Received: by 2002:a2e:9d14:: with SMTP id t20mr3298200lji.76.1616507882002;
+        Tue, 23 Mar 2021 06:58:02 -0700 (PDT)
 Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id w12sm2343656ljm.50.2021.03.23.06.57.46
+        by smtp.gmail.com with ESMTPSA id f23sm1452896lfc.25.2021.03.23.06.58.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 06:57:46 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 15:57:41 +0200
+        Tue, 23 Mar 2021 06:58:01 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:57:56 +0200
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Matti Vaittinen <mazziesaccount@gmail.com>
 Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH v3 5/8] platform/x86: gpd pocket fan: Clean-up by using
- managed work init
-Message-ID: <aa25a6781ba016772b045cd6e630da8c559a665d.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+        linux-pm@vger.kernel.org
+Subject: [PATCH v3 6/8] power: supply: Clean-up few drivers by using managed
+ work init
+Message-ID: <e5b1b0380cdd1aa066c9ac6d7a8b1a86ba1ddbbe.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -62,69 +63,220 @@ to use devm_delayed_work_autocancel() instead.
 This change is compile-tested only. All testing is appreciated.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
 Changelog from RFCv2:
  - RFC dropped. No functional changes.
 
- drivers/platform/x86/gpd-pocket-fan.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+ drivers/power/supply/axp20x_usb_power.c      | 15 +++++----------
+ drivers/power/supply/bq24735-charger.c       | 18 ++++++------------
+ drivers/power/supply/ltc2941-battery-gauge.c | 20 +++++++-------------
+ drivers/power/supply/sbs-battery.c           | 16 +++++-----------
+ 4 files changed, 23 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/platform/x86/gpd-pocket-fan.c b/drivers/platform/x86/gpd-pocket-fan.c
-index 5b516e4c2bfb..7a20f68ae206 100644
---- a/drivers/platform/x86/gpd-pocket-fan.c
-+++ b/drivers/platform/x86/gpd-pocket-fan.c
-@@ -6,6 +6,7 @@
-  */
+diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
+index 8933ae26c3d6..4259709e3491 100644
+--- a/drivers/power/supply/axp20x_usb_power.c
++++ b/drivers/power/supply/axp20x_usb_power.c
+@@ -8,6 +8,7 @@
  
- #include <linux/acpi.h>
+ #include <linux/bitops.h>
+ #include <linux/device.h>
 +#include <linux/devm-helpers.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-@@ -124,7 +125,7 @@ static void gpd_pocket_fan_force_update(struct gpd_pocket_fan_data *fan)
- static int gpd_pocket_fan_probe(struct platform_device *pdev)
- {
- 	struct gpd_pocket_fan_data *fan;
--	int i;
-+	int i, ret;
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+@@ -646,21 +647,16 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
- 	for (i = 0; i < ARRAY_SIZE(temp_limits); i++) {
- 		if (temp_limits[i] < 20000 || temp_limits[i] > 90000) {
-@@ -152,7 +153,10 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	fan->dev = &pdev->dev;
--	INIT_DELAYED_WORK(&fan->work, gpd_pocket_fan_worker);
-+	ret = devm_delayed_work_autocancel(&pdev->dev, &fan->work,
-+					   gpd_pocket_fan_worker);
++	ret = devm_delayed_work_autocancel(&pdev->dev, &power->vbus_detect,
++					   axp20x_usb_power_poll_vbus);
 +	if (ret)
 +		return ret;
+ 	if (axp20x_usb_vbus_needs_polling(power))
+ 		queue_delayed_work(system_power_efficient_wq, &power->vbus_detect, 0);
  
- 	/* Note this returns a "weak" reference which we don't need to free */
- 	fan->dts0 = thermal_zone_get_zone_by_name("soc_dts0");
-@@ -177,14 +181,6 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
  	return 0;
  }
  
--static int gpd_pocket_fan_remove(struct platform_device *pdev)
+-static int axp20x_usb_power_remove(struct platform_device *pdev)
 -{
--	struct gpd_pocket_fan_data *fan = platform_get_drvdata(pdev);
+-	struct axp20x_usb_power *power = platform_get_drvdata(pdev);
 -
--	cancel_delayed_work_sync(&fan->work);
+-	cancel_delayed_work_sync(&power->vbus_detect);
+-
 -	return 0;
 -}
 -
- #ifdef CONFIG_PM_SLEEP
- static int gpd_pocket_fan_suspend(struct device *dev)
- {
-@@ -215,7 +211,6 @@ MODULE_DEVICE_TABLE(acpi, gpd_pocket_fan_acpi_match);
+ static const struct of_device_id axp20x_usb_power_match[] = {
+ 	{
+ 		.compatible = "x-powers,axp202-usb-power-supply",
+@@ -680,7 +676,6 @@ MODULE_DEVICE_TABLE(of, axp20x_usb_power_match);
  
- static struct platform_driver gpd_pocket_fan_driver = {
- 	.probe	= gpd_pocket_fan_probe,
--	.remove	= gpd_pocket_fan_remove,
- 	.driver	= {
- 		.name			= "gpd_pocket_fan",
- 		.acpi_match_table	= gpd_pocket_fan_acpi_match,
+ static struct platform_driver axp20x_usb_power_driver = {
+ 	.probe = axp20x_usb_power_probe,
+-	.remove = axp20x_usb_power_remove,
+ 	.driver = {
+ 		.name		= DRVNAME,
+ 		.of_match_table	= axp20x_usb_power_match,
+diff --git a/drivers/power/supply/bq24735-charger.c b/drivers/power/supply/bq24735-charger.c
+index ab2f4bf8f603..b5d619db79f6 100644
+--- a/drivers/power/supply/bq24735-charger.c
++++ b/drivers/power/supply/bq24735-charger.c
+@@ -17,6 +17,7 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  */
+ 
++#include <linux/devm-helpers.h>
+ #include <linux/err.h>
+ #include <linux/i2c.h>
+ #include <linux/init.h>
+@@ -473,7 +474,11 @@ static int bq24735_charger_probe(struct i2c_client *client,
+ 		if (!charger->poll_interval)
+ 			return 0;
+ 
+-		INIT_DELAYED_WORK(&charger->poll, bq24735_poll);
++		ret = devm_delayed_work_autocancel(&client->dev, &charger->poll,
++						   bq24735_poll);
++		if (ret)
++			return ret;
++
+ 		schedule_delayed_work(&charger->poll,
+ 				      msecs_to_jiffies(charger->poll_interval));
+ 	}
+@@ -481,16 +486,6 @@ static int bq24735_charger_probe(struct i2c_client *client,
+ 	return 0;
+ }
+ 
+-static int bq24735_charger_remove(struct i2c_client *client)
+-{
+-	struct bq24735 *charger = i2c_get_clientdata(client);
+-
+-	if (charger->poll_interval)
+-		cancel_delayed_work_sync(&charger->poll);
+-
+-	return 0;
+-}
+-
+ static const struct i2c_device_id bq24735_charger_id[] = {
+ 	{ "bq24735-charger", 0 },
+ 	{}
+@@ -509,7 +504,6 @@ static struct i2c_driver bq24735_charger_driver = {
+ 		.of_match_table = bq24735_match_ids,
+ 	},
+ 	.probe = bq24735_charger_probe,
+-	.remove = bq24735_charger_remove,
+ 	.id_table = bq24735_charger_id,
+ };
+ 
+diff --git a/drivers/power/supply/ltc2941-battery-gauge.c b/drivers/power/supply/ltc2941-battery-gauge.c
+index 10cd617516ec..09f3e78af4e0 100644
+--- a/drivers/power/supply/ltc2941-battery-gauge.c
++++ b/drivers/power/supply/ltc2941-battery-gauge.c
+@@ -8,6 +8,7 @@
+  * Author: Auryn Verwegen
+  * Author: Mike Looijmans
+  */
++#include <linux/devm-helpers.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+@@ -445,15 +446,6 @@ static enum power_supply_property ltc294x_properties[] = {
+ 	POWER_SUPPLY_PROP_CURRENT_NOW,
+ };
+ 
+-static int ltc294x_i2c_remove(struct i2c_client *client)
+-{
+-	struct ltc294x_info *info = i2c_get_clientdata(client);
+-
+-	cancel_delayed_work_sync(&info->work);
+-	power_supply_unregister(info->supply);
+-	return 0;
+-}
+-
+ static int ltc294x_i2c_probe(struct i2c_client *client,
+ 	const struct i2c_device_id *id)
+ {
+@@ -547,7 +539,10 @@ static int ltc294x_i2c_probe(struct i2c_client *client,
+ 
+ 	psy_cfg.drv_data = info;
+ 
+-	INIT_DELAYED_WORK(&info->work, ltc294x_work);
++	ret = devm_delayed_work_autocancel(&client->dev, &info->work,
++					   ltc294x_work);
++	if (ret)
++		return ret;
+ 
+ 	ret = ltc294x_reset(info, prescaler_exp);
+ 	if (ret < 0) {
+@@ -555,8 +550,8 @@ static int ltc294x_i2c_probe(struct i2c_client *client,
+ 		return ret;
+ 	}
+ 
+-	info->supply = power_supply_register(&client->dev, &info->supply_desc,
+-					     &psy_cfg);
++	info->supply = devm_power_supply_register(&client->dev,
++						  &info->supply_desc, &psy_cfg);
+ 	if (IS_ERR(info->supply)) {
+ 		dev_err(&client->dev, "failed to register ltc2941\n");
+ 		return PTR_ERR(info->supply);
+@@ -655,7 +650,6 @@ static struct i2c_driver ltc294x_driver = {
+ 		.pm	= LTC294X_PM_OPS,
+ 	},
+ 	.probe		= ltc294x_i2c_probe,
+-	.remove		= ltc294x_i2c_remove,
+ 	.shutdown	= ltc294x_i2c_shutdown,
+ 	.id_table	= ltc294x_i2c_id,
+ };
+diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
+index b6a538ebb378..70ea404b2a36 100644
+--- a/drivers/power/supply/sbs-battery.c
++++ b/drivers/power/supply/sbs-battery.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/bits.h>
+ #include <linux/delay.h>
++#include <linux/devm-helpers.h>
+ #include <linux/err.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+@@ -1165,7 +1166,10 @@ static int sbs_probe(struct i2c_client *client)
+ 		}
+ 	}
+ 
+-	INIT_DELAYED_WORK(&chip->work, sbs_delayed_work);
++	rc = devm_delayed_work_autocancel(&client->dev, &chip->work,
++					  sbs_delayed_work);
++	if (rc)
++		return rc;
+ 
+ 	chip->power_supply = devm_power_supply_register(&client->dev, sbs_desc,
+ 						   &psy_cfg);
+@@ -1185,15 +1189,6 @@ static int sbs_probe(struct i2c_client *client)
+ 	return rc;
+ }
+ 
+-static int sbs_remove(struct i2c_client *client)
+-{
+-	struct sbs_info *chip = i2c_get_clientdata(client);
+-
+-	cancel_delayed_work_sync(&chip->work);
+-
+-	return 0;
+-}
+-
+ #if defined CONFIG_PM_SLEEP
+ 
+ static int sbs_suspend(struct device *dev)
+@@ -1248,7 +1243,6 @@ MODULE_DEVICE_TABLE(of, sbs_dt_ids);
+ 
+ static struct i2c_driver sbs_battery_driver = {
+ 	.probe_new	= sbs_probe,
+-	.remove		= sbs_remove,
+ 	.alert		= sbs_alert,
+ 	.id_table	= sbs_id,
+ 	.driver = {
 -- 
 2.25.4
 
