@@ -2,128 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE8C345EB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88902345ED7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhCWM5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:57:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231475AbhCWM52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:57:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79F01619B9;
-        Tue, 23 Mar 2021 12:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616504247;
-        bh=KFyvKHQFlrz0ttTR9uhddPSigUqRv7aIt+l1vkmpXBk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KzngoMGoICqflWzvgtnmxdzBD0Ik6qmeV1Q45PSqrJA6jkO921Zxc7XC6RmKlaiN3
-         TuPEyhyZeFH6pAyRnaJF2z4lK/rxYrtvCX5+OvSipM7Vz8n8LpbLC9mxsz0V/GZCnp
-         j+Mc+g2p5CJnnC7/cePlpS3ocrOwuPWpwty3rKbi0vMkfldKx0D7ebgLB4HVe5dFWO
-         4MW4Oy2odfU4BX7f4qM05/ENEJ2HKODbPaY8VJ5VhcTbq+zv7uFALV3I09Dj4rlCMm
-         8yUdJt3zfdUuCHjvShh1F5v+wHjuo4Wjo38tpSvIRMvjWgcHTXQk0pHWjmk2bG19Xb
-         +OCkh9F580gtQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Luciano Coelho <coelho@ti.com>, Arik Nemtsov <arik@wizery.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] wlcore: fix overlapping snprintf arguments in debugfs
-Date:   Tue, 23 Mar 2021 13:57:14 +0100
-Message-Id: <20210323125723.1961432-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231425AbhCWNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:00:41 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14850 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231296AbhCWNAE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:00:04 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4Wcn4fwYz92NZ;
+        Tue, 23 Mar 2021 20:58:01 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 20:59:52 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, Xiaofei Tan <tanxiaofei@huawei.com>
+Subject: [PATCH] ACPI: AC: fix some errors and warnings reported by checkpatch.pl
+Date:   Tue, 23 Mar 2021 20:57:27 +0800
+Message-ID: <1616504247-48744-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Fix some errors and warnings reported by checkpatch.pl, including
+following five types:
+ERROR: "foo * bar" should be "foo *bar"
+ERROR: code indent should use tabs where possible
+WARNING: Block comments use a trailing */ on a separate line
+WARNING: braces {} are not necessary for single statement blocks
+WARNING: void function return statements are not generally useful
 
-gcc complains about undefined behavior in calling snprintf()
-with the same buffer as input and output:
-
-drivers/net/wireless/ti/wl18xx/debugfs.c: In function 'diversity_num_of_packets_per_ant_read':
-drivers/net/wireless/ti/wl18xx/../wlcore/debugfs.h:86:3: error: 'snprintf' argument 4 overlaps destination object 'buf' [-Werror=restrict]
-   86 |   snprintf(buf, sizeof(buf), "%s[%d] = %d\n",  \
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   87 |     buf, i, stats->sub.name[i]);   \
-      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ti/wl18xx/debugfs.c:24:2: note: in expansion of macro 'DEBUGFS_FWSTATS_FILE_ARRAY'
-   24 |  DEBUGFS_FWSTATS_FILE_ARRAY(a, b, c, wl18xx_acx_statistics)
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/ti/wl18xx/debugfs.c:159:1: note: in expansion of macro 'WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY'
-  159 | WL18XX_DEBUGFS_FWSTATS_FILE_ARRAY(diversity, num_of_packets_per_ant,
-
-There are probably other ways of handling the debugfs file, without
-using on-stack buffers, but a simple workaround here is to remember the
-current position in the buffer and just keep printing in there.
-
-Fixes: bcca1bbdd412 ("wlcore: add debugfs macro to help print fw statistics arrays")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
 ---
- drivers/net/wireless/ti/wlcore/boot.c    | 13 ++++++++-----
- drivers/net/wireless/ti/wlcore/debugfs.h |  7 ++++---
- 2 files changed, 12 insertions(+), 8 deletions(-)
+ drivers/acpi/ac.c | 32 +++++++++++++-------------------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/wireless/ti/wlcore/boot.c b/drivers/net/wireless/ti/wlcore/boot.c
-index e14d88e558f0..85abd0a2d1c9 100644
---- a/drivers/net/wireless/ti/wlcore/boot.c
-+++ b/drivers/net/wireless/ti/wlcore/boot.c
-@@ -72,6 +72,7 @@ static int wlcore_validate_fw_ver(struct wl1271 *wl)
- 	unsigned int *min_ver = (wl->fw_type == WL12XX_FW_TYPE_MULTI) ?
- 		wl->min_mr_fw_ver : wl->min_sr_fw_ver;
- 	char min_fw_str[32] = "";
-+	int off = 0;
- 	int i;
+diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
+index b86ee6e..07987854 100644
+--- a/drivers/acpi/ac.c
++++ b/drivers/acpi/ac.c
+@@ -78,17 +78,16 @@ static struct acpi_driver acpi_ac_driver = {
+ struct acpi_ac {
+ 	struct power_supply *charger;
+ 	struct power_supply_desc charger_desc;
+-	struct acpi_device * device;
++	struct acpi_device *device;
+ 	unsigned long long state;
+ 	struct notifier_block battery_nb;
+ };
  
- 	/* the chip must be exactly equal */
-@@ -105,13 +106,15 @@ static int wlcore_validate_fw_ver(struct wl1271 *wl)
+ #define to_acpi_ac(x) power_supply_get_drvdata(x)
+ 
+-/* --------------------------------------------------------------------------
+-                               AC Adapter Management
+-   -------------------------------------------------------------------------- */
+-
++/*
++ * AC Adapter Management
++ */
+ static int acpi_ac_get_state(struct acpi_ac *ac)
+ {
+ 	acpi_status status = AE_OK;
+@@ -109,9 +108,9 @@ static int acpi_ac_get_state(struct acpi_ac *ac)
  	return 0;
+ }
  
- fail:
--	for (i = 0; i < NUM_FW_VER; i++)
-+	for (i = 0; i < NUM_FW_VER && off < sizeof(min_fw_str); i++)
- 		if (min_ver[i] == WLCORE_FW_VER_IGNORE)
--			snprintf(min_fw_str, sizeof(min_fw_str),
--				  "%s*.", min_fw_str);
-+			off += snprintf(min_fw_str + off,
-+					sizeof(min_fw_str) - off,
-+					"*.");
- 		else
--			snprintf(min_fw_str, sizeof(min_fw_str),
--				  "%s%u.", min_fw_str, min_ver[i]);
-+			off += snprintf(min_fw_str + off,
-+					sizeof(min_fw_str) - off,
-+					"%u.", min_ver[i]);
+-/* --------------------------------------------------------------------------
+-                            sysfs I/F
+-   -------------------------------------------------------------------------- */
++/*
++ * sysfs I/F
++ */
+ static int get_ac_property(struct power_supply *psy,
+ 			   enum power_supply_property psp,
+ 			   union power_supply_propval *val)
+@@ -138,10 +137,9 @@ static enum power_supply_property ac_props[] = {
+ 	POWER_SUPPLY_PROP_ONLINE,
+ };
  
- 	wl1271_error("Your WiFi FW version (%u.%u.%u.%u.%u) is invalid.\n"
- 		     "Please use at least FW %s\n"
-diff --git a/drivers/net/wireless/ti/wlcore/debugfs.h b/drivers/net/wireless/ti/wlcore/debugfs.h
-index b143293e694f..715edfa5f89f 100644
---- a/drivers/net/wireless/ti/wlcore/debugfs.h
-+++ b/drivers/net/wireless/ti/wlcore/debugfs.h
-@@ -78,13 +78,14 @@ static ssize_t sub## _ ##name## _read(struct file *file,		\
- 	struct wl1271 *wl = file->private_data;				\
- 	struct struct_type *stats = wl->stats.fw_stats;			\
- 	char buf[DEBUGFS_FORMAT_BUFFER_SIZE] = "";			\
-+	int pos = 0;							\
- 	int i;								\
- 									\
- 	wl1271_debugfs_update_stats(wl);				\
- 									\
--	for (i = 0; i < len; i++)					\
--		snprintf(buf, sizeof(buf), "%s[%d] = %d\n",		\
--			 buf, i, stats->sub.name[i]);			\
-+	for (i = 0; i < len && pos < sizeof(buf); i++)			\
-+		pos += snprintf(buf + pos, sizeof(buf),			\
-+			 "[%d] = %d\n", i, stats->sub.name[i]);		\
- 									\
- 	return wl1271_format_buffer(userbuf, count, ppos, "%s", buf);	\
- }									\
+-/* --------------------------------------------------------------------------
+-                                   Driver Model
+-   -------------------------------------------------------------------------- */
+-
++/*
++ * Driver Model
++ */
+ static void acpi_ac_notify(struct acpi_device *device, u32 event)
+ {
+ 	struct acpi_ac *ac = acpi_driver_data(device);
+@@ -174,8 +172,6 @@ static void acpi_ac_notify(struct acpi_device *device, u32 event)
+ 		acpi_notifier_call_chain(device, event, (u32) ac->state);
+ 		kobject_uevent(&ac->charger->dev.kobj, KOBJ_CHANGE);
+ 	}
+-
+-	return;
+ }
+ 
+ static int acpi_ac_battery_notify(struct notifier_block *nb,
+@@ -282,9 +278,8 @@ static int acpi_ac_add(struct acpi_device *device)
+ 	ac->battery_nb.notifier_call = acpi_ac_battery_notify;
+ 	register_acpi_notifier(&ac->battery_nb);
+ end:
+-	if (result) {
++	if (result)
+ 		kfree(ac);
+-	}
+ 
+ 	return result;
+ }
+@@ -293,7 +288,7 @@ static int acpi_ac_add(struct acpi_device *device)
+ static int acpi_ac_resume(struct device *dev)
+ {
+ 	struct acpi_ac *ac;
+-	unsigned old_state;
++	unsigned int old_state;
+ 
+ 	if (!dev)
+ 		return -EINVAL;
+@@ -352,9 +347,8 @@ static int __init acpi_ac_init(void)
+ 	}
+ 
+ 	result = acpi_bus_register_driver(&acpi_ac_driver);
+-	if (result < 0) {
++	if (result < 0)
+ 		return -ENODEV;
+-	}
+ 
+ 	return 0;
+ }
 -- 
-2.29.2
+2.8.1
 
