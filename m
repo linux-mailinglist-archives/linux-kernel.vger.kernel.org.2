@@ -2,166 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EED13460DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6003460D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhCWOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        id S231700AbhCWOBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhCWOBe (ORCPT
+        with ESMTP id S231506AbhCWOBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:01:34 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59A9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:01:33 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id g5so6708060uan.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:01:33 -0700 (PDT)
+        Tue, 23 Mar 2021 10:01:24 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A637C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:01:23 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id d10so11433290ils.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:01:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EFM8vj54tYKb1Jf8bEnuuvv/LY9C1ofZG/2jctBPMnI=;
-        b=zqmUyKoJFPC8TdMrKTiIDMwIaUgF9x15Z+0hCvB4ZRJFRt86l737p/WyEUPJYTATkP
-         g8NN5+n4vYOXnyjS50D/et/YnT7b5vq4Netv/bp1hgbau1DWDUnlXsIdXClA6mdRwPEb
-         JAgSB9/am/t5ifJw0YMb/8jIM+WHoY6/KTi9hwfhW+J+mO7e7OY0Nr2vb42L7uRPoOz+
-         3A9K0jkts+XWogYM8oWCO2U4h3kXwsvZwkF2fnTV6uJAQfIo7zIoGMuanyJpcq+Bhh9w
-         BJ0b7YiOqQl8Zn0AJy2wCie7GTrMIJERWIQodppGLzdwNcsO1faV0tEtC/5+IPQuDgF+
-         y2cw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=4jXS728C1rKE4dEUAzBNtLxbTiVcRrY24zDvINGA1RE=;
+        b=mH0WAT4lop+jpXzMvjL8tsLENP2+qfkPCLccibqBPdl6f6ScaeC2x9UriK3gkHsoKg
+         6kAskBo2kkIPPgTGDU4lptjNDfsSTHGaVOleBTxNtR+qp6/dHSwXeZUfh0hxkpEqsPGt
+         J1URoqp3Rzriwri45TBBIZjz2zq8MDLxY2TbCVBrLbcFbciKSeWJzIe7DgRrzuUhpj4e
+         4qzuAK57r2wLgSoDDpRHpYRsKiJoYP5Zwko/05nIa7lniUu0EniFjbUlAEeh+71AF2nL
+         pKIfpmMnCtbfkFfyHcxS418YymoRh1ZWlW3DL/oQFW1r1uJ+DWrjYK9zHf7RA/ELlSy/
+         ZVxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EFM8vj54tYKb1Jf8bEnuuvv/LY9C1ofZG/2jctBPMnI=;
-        b=RVYy6hRDqq42pkRGjeTYyF0qUV0vWOLdnnaanXVuCTIBgHqCuZd1zUZibrpuIr8VMp
-         sOczu3GN6ZqIrwJBrjAqsJoNKS/Of9xwQQ59Rq8NZmsvn5VquwRJ13pjnNu8cdQLrNrx
-         5cE5mzCCazew5CQEw6Us7rfnweUyYtKLGakvPIOqCv49zy8+a4rREObdhT2juHDRR5ij
-         DKODPwiQ+A9SXL+zxjNLlZp7zh1GZUWptqTo+tB6OsKd9Gr980HzzM5XiKT2zRsU4Dbe
-         X2l32cLWtGesOEAX5YIKGEFnG2ezUR2BnnPCcVMW3Sp0usbxIuBg0mzvzZmUcH6kxlZz
-         N7+A==
-X-Gm-Message-State: AOAM531HLMEJH+PgAbhHG9VPSwdTHEMr/YNjYhb/7nwyP6Li9wSK+Z5R
-        7Dl7Ne0QvEGeF0SIj1bAsFATl73aDVtRxt7nmFZO3w==
-X-Google-Smtp-Source: ABdhPJxJAHbpX2/GRwhTQQeCW9lCgzMQUr9j/i2dfLh16Z4eXb8X6W27BLfYs5/5U0eQBdvrp+jI+sIJSFo5rHkdYrI=
-X-Received: by 2002:ab0:7a68:: with SMTP id c8mr3397238uat.104.1616508093043;
- Tue, 23 Mar 2021 07:01:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4jXS728C1rKE4dEUAzBNtLxbTiVcRrY24zDvINGA1RE=;
+        b=TILuO5gbBAF6FJ2Tx+bxBB0Ng1zKPY/j12q+KeU5s4FKKDQw7bIxX/k4JmJziMEp1z
+         9rIsD+0/1T9rAcXgCdepX5PN18tRZzMbyBtTqo1EiinFlKNM89XNSCH0CCU9dn+r5n5d
+         c2a52UwER9WgtUKnjZp1q1kLEJmLhhwvShmG1u08ohp69T9BkirXkwrUYSayo8wK+8lk
+         GDMabhv5LF65BfiOkrd45mCqxYsrYQgcaDaxe9/Bjf4Pe+EjULtG1LVz8KuFQoPjLXRm
+         11pK3JwhMoXDgEMeQnboo2Y49JeC5lD9e+e66tsWjOVeuiZP0cnl/jKVwv6FisJtaXaH
+         V3cQ==
+X-Gm-Message-State: AOAM533iGL4QV6+of2WyeY2L1tSKWp0zxSQKcg5JRVyRj4NxEDpBV/33
+        Z2w5HeP67ujtIXJ2HpYaPbhJ/d2jvTSW1w==
+X-Google-Smtp-Source: ABdhPJz/NtZ/A9Zi9tDINHTVyG7FoW1P0Ex1ew0Z7v1KfgoJ8RGjXrqhx421Qej4iVCSWjrd10yR8Q==
+X-Received: by 2002:a92:cac2:: with SMTP id m2mr4785878ilq.33.1616508082841;
+        Tue, 23 Mar 2021 07:01:22 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id b9sm9363031iof.54.2021.03.23.07.01.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 07:01:22 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in io_wq_put
+To:     syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000007a49c105be013f72@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <08603c70-64df-5dcc-f5c7-1646056af74b@kernel.dk>
+Date:   Tue, 23 Mar 2021 08:01:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210320045720.11872-1-chgokhl@gmail.com> <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
- <CAMjpFAW0D12vxNSYLcwSWxf-zB+toT5cmiQ8mtUUE+nzWMJZ3g@mail.gmail.com>
-In-Reply-To: <CAMjpFAW0D12vxNSYLcwSWxf-zB+toT5cmiQ8mtUUE+nzWMJZ3g@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 23 Mar 2021 15:00:56 +0100
-Message-ID: <CAPDyKFqqRY3rj9zzzDvPTCO68abfQ+G-siAJVgdPuESUwko28A@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
-To:     chgokhl@163.com
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kehuanlin@fishsemi.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0000000000007a49c105be013f72@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 at 11:49, hieagle <chgokhl@gmail.com> wrote:
->
-> We encounter a resume issue in our device sometimes. The mmc device's
-> parent list is
-> mmc0:0001->mmc_host mmc0->fa630000.mmc->soc in our soc. We found in the b=
-low
-> case with mmc0->power.disable_depth=3D0 the mmc_runtime_resume will be sk=
-ipped,
-> which cause subsequent mmc command fail.
->
-> mmc_get_card(mmc0:0001)->pm_runtime_get_sync->rpm_resume(mmc0:0001)->rpm_=
-resume(mmc0)
-> The rpm_resume(mmc0) return -ENOSYS due to no callback and
-> mmc0->power.runtime_status
-> keep RPM_SUSPENDED. This lead to rpm_resume(mmc0:0001) return -EBUSY and =
-skip
-> rpm_callback which call mmc_runtime_resume, the mmc is still in
-> suspended and the
-> subsequent mmc command fail.
->
-> [  198.856157] Call trace:
-> [  198.858917] [<ffffff800808bd9c>] dump_backtrace+0x0/0x1cc
-> [  198.864966] [<ffffff800808bf7c>] show_stack+0x14/0x1c
-> [  198.870627] [<ffffff8008400e88>] dump_stack+0xa8/0xe0
-> [  198.876288] [<ffffff800854d38c>] rpm_resume+0x850/0x938
-> [  198.882141] [<ffffff800854cd8c>] rpm_resume+0x250/0x938
-> [  198.887994] [<ffffff800854d4c4>] __pm_runtime_resume+0x50/0x74
-> [  198.894530] [<ffffff80087b9e64>] mmc_get_card+0x3c/0xb8
-> [  198.900388] [<ffffff80087cd2e0>] mmc_blk_issue_rq+0x2b0/0x4d8
-> [  198.906824] [<ffffff80087cd5e4>] mmc_queue_thread+0xdc/0x198
-> [  198.913165] [<ffffff80080d4b2c>] kthread+0xec/0x100
-> [  198.918632] [<ffffff8008083890>] ret_from_fork+0x10/0x40
-> [  198.924582] mmc0  callback           (null)
-> [  198.935837] mmcblk mmc0:0001: __pm_runtime_resume ret -16
->
-> Mark mmc_host device with pm_runtime_no_callbacks will solve the issue.
-> Thanks.
-> Huanlin Ke
+On 3/20/21 6:44 PM, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    1c273e10 Merge tag 'zonefs-5.12-rc4' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13853506d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c51293a9ca630f6d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
+> compiler:       Debian clang version 11.0.1-2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ec259ed00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13acfa62d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com
 
-Thanks for sharing more details! I have to admit, that this sounds
-quite weird to me. I wonder if this is a problem that deserves to be
-fixed in the runtime PM core....
+#syz test: git://git.kernel.dk/linux-block wq-no-manager
 
-Let me have a closer look a get back to you again. Please be patient
-though, I have a busy week in front of me.
+-- 
+Jens Axboe
 
-Kind regards
-Uffe
-
->
-> Ulf Hansson <ulf.hansson@linaro.org> =E4=BA=8E2021=E5=B9=B43=E6=9C=8822=
-=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=886:26=E5=86=99=E9=81=93=EF=BC=
-=9A
-> >
-> > On Sat, 20 Mar 2021 at 05:57, kehuanlin <chgokhl@gmail.com> wrote:
-> > >
-> > > The rpm_resume() will call parent's resume callback recursively.
-> > > Since mmc_host has no its own pm_runtime callbacks, the mmc devices
-> > > may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
-> > > device with pm_runtime_no_callbacks can fix the issue.
-> >
-> > Can you please elaborate more on this? What do you mean by "sometimes"?
-> >
-> > More precisely, how do you trigger the rpm_callback() for mmc class
-> > device to return -ENOSYS?
-> >
-> > Don't get me wrong, the patch is fine, but I want to understand if it
-> > actually solves a problem for you - or that it's better considered as
-> > an optimization?
-> >
-> > Kind regards
-> > Uffe
-> >
-> > >
-> > > Signed-off-by: kehuanlin <chgokhl@gmail.com>
-> > > ---
-> > >  drivers/mmc/core/host.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> > > index 9b89a91b6b47..177bebd9a6c4 100644
-> > > --- a/drivers/mmc/core/host.c
-> > > +++ b/drivers/mmc/core/host.c
-> > > @@ -15,6 +15,7 @@
-> > >  #include <linux/of.h>
-> > >  #include <linux/of_gpio.h>
-> > >  #include <linux/pagemap.h>
-> > > +#include <linux/pm_runtime.h>
-> > >  #include <linux/pm_wakeup.h>
-> > >  #include <linux/export.h>
-> > >  #include <linux/leds.h>
-> > > @@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct=
- device *dev)
-> > >         host->class_dev.class =3D &mmc_host_class;
-> > >         device_initialize(&host->class_dev);
-> > >         device_enable_async_suspend(&host->class_dev);
-> > > +       pm_runtime_no_callbacks(&host->class_dev);
-> > >
-> > >         if (mmc_gpio_alloc(host)) {
-> > >                 put_device(&host->class_dev);
-> > > --
-> > > 2.30.0
-> > >
