@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF27345ACF
+	by mail.lfdr.de (Postfix) with ESMTP id C8D87345AD0
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhCWJ2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCWJ2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:28:16 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3D5C061574;
-        Tue, 23 Mar 2021 02:28:16 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id j2so9642491ybj.8;
-        Tue, 23 Mar 2021 02:28:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f4H0kivupb5TYJXKdAmaaH+GD+IJXaN+JMsocYW2kUY=;
-        b=AxBxRUewNli2rtiqdcgNkpOd+pj8a2oITIWefNfkca6ZYPTtwwTmBmKVcOKFe13KqZ
-         ZuIDbVfVL4pJUDxV5QjNL6KvhMLtlBht2TePRIY7S5dS2Po9vnraHBlQZ2XaltGI99m7
-         urPrGOEBunDQ/Sr4kvNXX7sUN/UQw7ui0Exhjk1ognJGA+tiPLEW2HNovceUOduaWf35
-         k9P2pnTwv1LNt5RuLneWbJC9u31Vi4Pd6t8yQfn2K8glQe7/0J6i1WhZZyfOjzffF6sb
-         WCAPMml3GzOtm75j6hh2fhDKbN0OO9agtSbo4CKVliFnD6vKdfSRLbGbakdGJWDZ8mfZ
-         Lgpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f4H0kivupb5TYJXKdAmaaH+GD+IJXaN+JMsocYW2kUY=;
-        b=HQvzzJIuAduFTeWUt+X6GsFeYhGBw/e87LnFcvxyJTH7j95BUoS1NBba6qTbmxtYC4
-         CSISViT1Wh8xXovTbXUbYyuK2wufX+QfkvCudIAjgHfasTxcBCISrLDlJ6itB8kWjWmU
-         sHAiDkNKxbeACkVE7A3rp+V4jLcdMnVBvyw/b7LTS6AjIDmhRO2bJrv/ML+HLZSLuIfC
-         ZCVT6BqVf3lN9ASIlZLYx4e050WeJhEJH4vhmpvrAc1Xjvgq+aT0U/AfbVnswjuvZhc5
-         k70unsc4Lui1yg8/ZiVwMs0lCI2GDVSfxNeksFHN9HbK2GEyE4MetlKiSRXYfaj50Xsq
-         dThA==
-X-Gm-Message-State: AOAM530DPLQFCw8fL5hK8leYLRMvnpLDyWq7DcNbCBF+092W0OGXSetE
-        1+uARZZDN5FKDAE0ZGCjFq+BnV1mvX9u2ZhOJJfot1yepbc=
-X-Google-Smtp-Source: ABdhPJyWHwFyJOKdqJHyKNGZydCjCeUAiyLOFA9kYL9VdL40ys7b34QihOEAVOnXFFnisHuJUZ7kMdTs33/WqrLFeYA=
-X-Received: by 2002:a25:e748:: with SMTP id e69mr3784250ybh.93.1616491695744;
- Tue, 23 Mar 2021 02:28:15 -0700 (PDT)
+        id S230018AbhCWJ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:28:38 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1761 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229728AbhCWJ2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 05:28:32 -0400
+IronPort-SDR: 89Nhr/qKAMRxpK7A2KctE3fFwTjytkPYCH347I4ocVhVNRRxYT0VC3YkztvahGhrL/6ZEypRCB
+ WzJ4w+HJqN7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="275540469"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="275540469"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 02:28:32 -0700
+IronPort-SDR: zUzoIO+8x9t1jUO2KUMLx4QsGUIQE5vj3QLqY6Q1v3OlO8ZrJ6kCZIkfPvmmw9kUfIdZqEdIPM
+ ZuvGNpKGIrNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="513676832"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 23 Mar 2021 02:28:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 23 Mar 2021 11:28:27 +0200
+Date:   Tue, 23 Mar 2021 11:28:27 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: Intel: Handle device properties with software node
+ API
+Message-ID: <YFm0u9k/DNy5URsR@kuha.fi.intel.com>
+References: <20210322110638.2681-1-heikki.krogerus@linux.intel.com>
+ <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
 MIME-Version: 1.0
-References: <20210323032624.1039422-1-mpe@ellerman.id.au> <20210323032624.1039422-4-mpe@ellerman.id.au>
-In-Reply-To: <20210323032624.1039422-4-mpe@ellerman.id.au>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 23 Mar 2021 10:28:04 +0100
-Message-ID: <CANiq72=E3WrNzRG90R4c_uG-oMRpdmN+G=ddeQhhLofh2ajEkg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] powerpc/rust: Add target.json for ppc64le
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     rust-for-linux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 4:27 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> ppc64le only for now. We'll eventually need to come up with some way to
-> change the target.json that's used based on more than just $(ARCH).
+On Mon, Mar 22, 2021 at 10:02:40AM -0500, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 3/22/21 6:06 AM, Heikki Krogerus wrote:
+> > The function device_add_properties() is going to be removed.
+> > Replacing it with software node API equivalents.
+> > 
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > ---
+> > Hi,
+> > 
+> > This patch depends on a fix from mainline, available in v5.12-rc4:
+> > 
+> > 	2a92c90f2ecc ("software node: Fix device_add_software_node()")
+> > 
+> > Cheers,
+> > ---
+> >   sound/soc/intel/boards/bytcht_es8316.c      |  2 +-
+> >   sound/soc/intel/boards/bytcr_rt5640.c       |  2 +-
+> >   sound/soc/intel/boards/bytcr_rt5651.c       |  2 +-
+> >   sound/soc/intel/boards/sof_sdw_rt711.c      | 20 +++++++++++++++-----
+> >   sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 20 +++++++++++++++-----
+> >   5 files changed, 33 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+> > index 06df2d46d910b..4a9817a95928c 100644
+> > --- a/sound/soc/intel/boards/bytcht_es8316.c
+> > +++ b/sound/soc/intel/boards/bytcht_es8316.c
+> > @@ -544,7 +544,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+> >   		props[cnt++] = PROPERTY_ENTRY_BOOL("everest,jack-detect-inverted");
+> >   	if (cnt) {
+> > -		ret = device_add_properties(codec_dev, props);
+> > +		ret = device_create_managed_software_node(codec_dev, props, NULL);
+> 
+> I don't think this is correct. This is using the codec_dev device, but this
+> property is created in the machine driver - different device. I think the
+> proper fix is to remove the property in the machine driver .remove()
+> callback, as done below for the SoundWire case, and not to rely on devm_
+> with the wrong device.
+> 
+> there was a thread between July and October on this in
+> https://github.com/thesofproject/linux/pull/2306/
+> 
+> It seems that we need to restart this work.
+> 
+> Heikki, do you mind if I take your patches (keeping you as the author) and
+> rework+test them with the SOF tree + CI ?
 
-Indeed, it is one reason I didn't tackle e.g. x86 32-bit, because I
-wanted to figure out how to do the whole `target.json` cleanly (i.e.
-likely have a script generate them on the fly), so I thought it was
-better to wait post-RFC.
+OK by me (though, I'm not sure about the author part after that).
 
-Cheers,
-Miguel
+
+thanks,
+
+-- 
+heikki
