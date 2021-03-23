@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F6C346689
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125B534668D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhCWRiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:38:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230186AbhCWRiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:38:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D029F600EF;
-        Tue, 23 Mar 2021 17:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616521082;
-        bh=F8W4NhZSrISx6ND4EZ52T2q3feCQu7g+dSt4VWdnFkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s/MhSNCq6nEFI3xMlKc6ZhM5SMX3gycIH9MsrTdNYKOZaMsOqzMGTJtWHDd4NaqRm
-         sJeq8HkIinumdgBwWi+U4ku3DJAuJi/IHMWieUYW7Yb7FUsJ9FRgNx5Xjlp2Rj1cJv
-         SCWJDKPBjRWCWpsKLzp+QX7mLZjPatrRqI4FJhmMBS+65iJ+35805rfiHsfmdEwJMc
-         EY33fvIAa6yQfD11WXIwkzbnX15/9X/sahR+f6ig78AR8f7XO2GWrh7J52LVDiDPgF
-         ePQ9bvkJx5Kwkuv277lKSw0OBtbybM2VQ8bxTqPTPYPRPXhpXCdp9fZX+pl01vbYTG
-         6/QMW10xrfQPw==
-Date:   Tue, 23 Mar 2021 17:37:55 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 7/8] regulator: qcom_spmi-regulator: Clean-up by using
- managed work init
-Message-ID: <20210323173755.GC5490@sirena.org.uk>
-References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
- <3bd35bb43257f4bf5b99f75d207ed5e1e08d1d38.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+        id S230173AbhCWRkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhCWRkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:40:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE02BC061574;
+        Tue, 23 Mar 2021 10:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=sxvcc6n+zZC/nKYBO0R7ql8qMgyWOPTuTiacyZX4jN4=; b=lcQ0Rs+gLRtuRTK/T3cqcmJ7Gq
+        EbGh5DNF3EJ4b/roKNg6oCEYVOdKEH7gjYRKWkmh0QVCSXQTDQck98VZ0G7gocirzRv7ZejVnBNhM
+        maIrL0+PH2wNL8AhnN0DiIyai+IK4yO28vwDopf8wj5m5Q4D+X54JuEgNb0kZMLBP9tJI7H0/7HF9
+        hhQNS8OvjU9TajzS8h6lv58//RwyECuJurgqqFoI6HqyESg7+0X9HfOl+5tNg/vbDILEjkgXyEkpW
+        jcgU9joqskwGvnu6QQ9m7Nb4KXipErg6utRRF3aXfQRWMuWesCtEC//BHkb80CyFgu5G0WlqVNg1+
+        1++4TOEw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOl0a-00ALv4-O9; Tue, 23 Mar 2021 17:40:02 +0000
+Subject: Re: [PATCH] drivers/media/pci/bt8xx/bttv-cards: fix typos
+To:     Xiaofeng Cao <cxfcosmos@gmail.com>, mchehab@kernel.org
+Cc:     hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
+References: <20210323122546.16262-1-caoxiaofeng@yulong.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b297b819-8837-cfa0-0a62-d40958697bb2@infradead.org>
+Date:   Tue, 23 Mar 2021 10:39:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vEao7xgI/oilGqZ+"
-Content-Disposition: inline
-In-Reply-To: <3bd35bb43257f4bf5b99f75d207ed5e1e08d1d38.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-X-Cookie: Formatted to fit your screen.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210323122546.16262-1-caoxiaofeng@yulong.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+Please see a few comments below.
 
---vEao7xgI/oilGqZ+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 3/23/21 5:25 AM, Xiaofeng Cao wrote:
+> change 'vodeo'     to 'video'
+> change 'nevery'    to 'never'
+> change 'is'        to 'it'
+> change 'connevted' to 'connected'
+> change 'swichers'  to 'switchers'
+> change 'strucure'  to 'structure'
+> change 'unblanced' to 'unbalanced'
+> change 'fonctionality' to 'functionality'
+> 
+> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> ---
+>  drivers/media/pci/bt8xx/bttv-cards.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/pci/bt8xx/bttv-cards.c b/drivers/media/pci/bt8xx/bttv-cards.c
+> index ca20b806e82d..9a07e1094978 100644
+> --- a/drivers/media/pci/bt8xx/bttv-cards.c
+> +++ b/drivers/media/pci/bt8xx/bttv-cards.c
 
-On Tue, Mar 23, 2021 at 03:58:11PM +0200, Matti Vaittinen wrote:
-> Few drivers implement remove call-back only for ensuring a delayed
-> work gets cancelled prior driver removal. Clean-up these by switching
-> to use devm_delayed_work_autocancel() instead.
+> @@ -2506,7 +2506,7 @@ struct tvcard bttv_tvcards[] = {
+>  	     one external BNC composite input (mux 2)
+>  	     three internal composite inputs (unknown muxes)
+>  	     an 18-bit stereo A/D (CS5331A), which has:
+> -	       one external stereo unblanced (RCA) audio connection
+> +	       one external stereo unbalanced(RCA) audio connection
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Please leave a space between unbalanced and (RCA).
 
---vEao7xgI/oilGqZ+
-Content-Type: application/pgp-signature; name="signature.asc"
+>  	       one (or 3?) internal stereo balanced (XLR) audio connection
+>  	       input is selected via gpio to a 14052B mux
+>  		 (mask=0x300, unbal=0x000, bal=0x100, ??=0x200,0x300)
 
------BEGIN PGP SIGNATURE-----
+> @@ -4580,7 +4580,7 @@ static void xguard_muxsel(struct bttv *btv, unsigned int input)
+>  }
+>  static void picolo_tetra_init(struct bttv *btv)
+>  {
+> -	/*This is the video input redirection fonctionality : I DID NOT USED IT. */
+> +	/*This is the video input redirection functionality : I DID NOT USED IT. */
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBaJ3IACgkQJNaLcl1U
-h9AsRQf+MwBWHCDMYU8mOBhM4L4uPfYY11l3mKT/pDWxZRI6lbivQivpbwflLTPr
-oj/gA4mh5shj9T5M+fIx6dj3EvTG55a+KMEFXzkLnF0FIu1uLxDeTbICztP3CSLy
-SJ72Ho2MjUBS9c2lHllkMrXqpciu7ORQ7g/rAdCC34yLOy+zXx6kEtd3OM/B6DeV
-TvJhTRmvoeq9KvGS99dMMwsiDp5WO6OA+n6NGfHthiP9D186MJxrXC04VAEZEdJ0
-4Lqgsjtx6frKSo/ZmQydf/Is5L0LjxZ/IjdZBQ1pVKsuGkBX6k+w6rxUuEGuXeWJ
-rFz90+X6SEH7Nz6X/cwPjvqPcpj1yA==
-=0pAj
------END PGP SIGNATURE-----
+	                                                      I DID NOT USE IT. *
 
---vEao7xgI/oilGqZ+--
+>  	btwrite (0x08<<16,BT848_GPIO_DATA);/*GPIO[19] [==> 4053 B+C] set to 1 */
+>  	btwrite (0x04<<16,BT848_GPIO_DATA);/*GPIO[18] [==> 4053 A]  set to 1*/
+>  }
+
+
+thanks.
+-- 
+~Randy
+
