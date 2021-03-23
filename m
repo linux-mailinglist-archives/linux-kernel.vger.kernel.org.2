@@ -2,92 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1EF346699
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B10E34669C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhCWRoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:44:44 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33980 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhCWRoL (ORCPT
+        id S230450AbhCWRop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230356AbhCWRoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:44:11 -0400
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 25EA020B5687;
-        Tue, 23 Mar 2021 10:44:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 25EA020B5687
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616521451;
-        bh=G7iciegtRvKppYPYJPauE2IorhaqFayxqE/yzKwzn88=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kDTg5d9RTPxy1Mfp4rWpK1Q4IdRB+dl+unYwdT0itz0xewY5lRAay+WgiuRWVF0CQ
-         Z4zrbZIkWTITwZ93Rus+zk7Zc0hrhdjyhQU1X06d2fJl64Q08ZWg7vX2YEk+dNy/vq
-         Rny9xfKOcPG8kJfdWD+MBhjWLvMSQQ/GgIjmtYHY=
-Received: by mail-pg1-f170.google.com with SMTP id i22so925013pgl.4;
-        Tue, 23 Mar 2021 10:44:11 -0700 (PDT)
-X-Gm-Message-State: AOAM532dDF9bkHRqb7lULm0hCTVi8i024ru6s4M92k+aTdw6SIHBgzNx
-        tAkMJrM329UCwQk/dusHJAIu2M+ibxzTIdFBG6Q=
-X-Google-Smtp-Source: ABdhPJyoxMVW+rRjABv+KDN/Kbo5Gw98D4A5VsOkK8yQv98ZRKj6D9fQY4srWZEiM4ohAm6aeEwxZ6ewoj61y0h7m5E=
-X-Received: by 2002:a17:902:e80a:b029:e6:c4c4:1f05 with SMTP id
- u10-20020a170902e80ab02900e6c4c41f05mr7002419plg.33.1616521450618; Tue, 23
- Mar 2021 10:44:10 -0700 (PDT)
+        Tue, 23 Mar 2021 13:44:30 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BA8C061574;
+        Tue, 23 Mar 2021 10:44:29 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id s21so10430050pjq.1;
+        Tue, 23 Mar 2021 10:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=uTTW2Bp8A8zw/GLQbpb96vNlplssbvzgvQZq5e4cEAY=;
+        b=c5O6Oc4EH3/8pLm+5/KHLgeSeW6qcQliABWb8y1S6RHJFsEXmQOWFAcdfM9npIePNk
+         4HaJmT4/o+WYPr0U9HgFXvfyqVjBwUQGW5gQoc2p7NfRK12wXpaycAa5xQ3mcQyUSCdC
+         Pp40gw/8kNJ3EziFrqN8g/2Mgjw4DsodJrMCBdncyF0Yrs85dkiCZK4xats8P9mNtUKR
+         CW6BK60kM/b4mEMncV43e29W9Oj8xiXLt5hSEsG+EK9pDd08NzqmZzwc0TlIUom5noqg
+         29lxcDytnpJnxn2IFW8ZfF6aZERTgg5mldCPjNUQgpSkc6l2lAVbpccTRZWD+j8+DF4F
+         LtdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=uTTW2Bp8A8zw/GLQbpb96vNlplssbvzgvQZq5e4cEAY=;
+        b=awkamsRhnSBKpdmJX2vFkd1eP3M/nmTgRMQ08y3EWMGXPWvt/68BmCxiVdgIf1pRPR
+         4cNqGN9xE7Pu8RSbG6TNyHXZ15cPQ/URosdqHQWNMpuA0uV3f5NMqBcWaKJpjG+5SEgh
+         dNW074FqvDlfR11Di8FnT0OsTbgMyJKySyHfv+qw1mQvKN58aLO5h3sHYswqNh6cGK0+
+         +hkN+laglgV7/ouEDMHxsnYa1noapvpICLFrYGiobrgwtcp7PH58Anu4EZWoB2ZsHH5O
+         MHkvm87nEV30JjsT6tCn/f2px9r99U/JOuNCBM4kXfpKoTQ/68QgVjvLl4WXCwsi9fnj
+         T1yA==
+X-Gm-Message-State: AOAM530D3Lc6te9m8d4WLEJutDLIxu5oWHnhTrzJcyCvZnnWhv4tTuho
+        wBFkjLMmfBlCVaAONpzH2ok=
+X-Google-Smtp-Source: ABdhPJwaSQJ4DZTqsHRbneBAAHdjShNRlLJ3igGyapleUAzvZkrihLUUvF5E3is1aoVScNNm/PuoeA==
+X-Received: by 2002:a17:90a:4d81:: with SMTP id m1mr5553008pjh.143.1616521469036;
+        Tue, 23 Mar 2021 10:44:29 -0700 (PDT)
+Received: from localhost ([61.12.83.162])
+        by smtp.gmail.com with ESMTPSA id d19sm3201209pjs.55.2021.03.23.10.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 10:44:28 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 23:14:19 +0530
+From:   Sai Kalyaan Palla <saikalyaan63@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sai Kalyaan Palla <saikalyaan63@gmail.com>,
+        Gaurav Singh <gaurav1086@gmail.com>,
+        Vadim Fedorenko <vfedorenko@novek.ru>,
+        Andrew Lunn <andrew@lunn.ch>,
+        David Laight <David.Laight@ACULAB.COM>,
+        linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bkkarthik@pesu.pes.edu
+Subject: [PATCH] net: decnet: Fixed multiple Coding Style issues
+Message-ID: <20210323174419.f53s5x26pvjqt57k@ubuntu>
 MIME-Version: 1.0
-References: <20210315200242.67355-1-mcroce@linux.microsoft.com>
- <20210315200242.67355-2-mcroce@linux.microsoft.com> <7358d5ae-afd6-f0d9-5535-b1d7ecfbd785@linux.alibaba.com>
-In-Reply-To: <7358d5ae-afd6-f0d9-5535-b1d7ecfbd785@linux.alibaba.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 18:43:34 +0100
-X-Gmail-Original-Message-ID: <CAFnufp2E8ky_q10R5=zXsU+2ca53yQ=W+XOtKAq-c654xHCoEA@mail.gmail.com>
-Message-ID: <CAFnufp2E8ky_q10R5=zXsU+2ca53yQ=W+XOtKAq-c654xHCoEA@mail.gmail.com>
-Subject: Re: [PATCH -next 1/5] block: add disk sequence number
-To:     JeffleXu <jefflexu@linux.alibaba.com>
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Javier_Gonz=C3=A1lez?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 2:44 AM JeffleXu <jefflexu@linux.alibaba.com> wrote:
->
-> On 3/16/21 4:02 AM, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> >
-> > Add a sequence number to the disk devices. This number is put in the
-> > uevent so userspace can correlate events when a driver reuses a device,
-> > like the loop one.
->
-> Hi, I'm quite interested in this 'seqnum'. Actually I'm also planing to
-> add support for some sort of 'seqnum' when supporting IO polling for dm
-> devices, so that every time dm device changes its dm table, the seqnum
-> will be increased.
->
+    Made changes to coding style as suggested by checkpatch.pl
+    changes are of the type:
+            space required before the open parenthesis '('
+            space required after that ','
 
-Interesting, thanks!
+Signed-off-by: Sai Kalyaan Palla <saikalyaan63@gmail.com>
+---
+ net/decnet/dn_route.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-> As for your patch, @diskseq is declared as one static variable in
-> inc_diskseq(). Then I doubt if all callers of inc_diskseq() will share
-> *one* counting when inc_diskseq() is compiled as the separate call entry
-> rather than inlined.
->
+diff --git a/net/decnet/dn_route.c b/net/decnet/dn_route.c
+index 940755cdecc9..3e3242577440 100644
+--- a/net/decnet/dn_route.c
++++ b/net/decnet/dn_route.c
+@@ -92,7 +92,7 @@ struct dn_rt_hash_bucket {
+ extern struct neigh_table dn_neigh_table;
+ 
+ 
+-static unsigned char dn_hiord_addr[6] = {0xAA,0x00,0x04,0x00,0x00,0x00};
++static unsigned char dn_hiord_addr[6] = {0xAA, 0x00, 0x04, 0x00, 0x00, 0x00};
+ 
+ static const int dn_rt_min_delay = 2 * HZ;
+ static const int dn_rt_max_delay = 10 * HZ;
+@@ -362,7 +362,7 @@ static void dn_run_flush(struct timer_list *unused)
+ 		if (!rt)
+ 			goto nothing_to_declare;
+ 
+-		for(; rt; rt = next) {
++		for (; rt; rt = next) {
+ 			next = rcu_dereference_raw(rt->dn_next);
+ 			RCU_INIT_POINTER(rt->dn_next, NULL);
+ 			dst_dev_put(&rt->dst);
+@@ -902,7 +902,7 @@ static inline int dn_match_addr(__le16 addr1, __le16 addr2)
+ {
+ 	__u16 tmp = le16_to_cpu(addr1) ^ le16_to_cpu(addr2);
+ 	int match = 16;
+-	while(tmp) {
++	while (tmp) {
+ 		tmp >>= 1;
+ 		match--;
+ 	}
+@@ -1388,7 +1388,7 @@ static int dn_route_input_slow(struct sk_buff *skb)
+ 		fld.saddr = src_map;
+ 	}
+ 
+-	switch(res.type) {
++	switch (res.type) {
+ 	case RTN_UNICAST:
+ 		/*
+ 		 * Forwarding check here, we only check for forwarding
+@@ -1531,7 +1531,7 @@ static int dn_route_input(struct sk_buff *skb)
+ 		return 0;
+ 
+ 	rcu_read_lock();
+-	for(rt = rcu_dereference(dn_rt_hash_table[hash].chain); rt != NULL;
++	for (rt = rcu_dereference(dn_rt_hash_table[hash].chain); rt != NULL;
+ 	    rt = rcu_dereference(rt->dn_next)) {
+ 		if ((rt->fld.saddr == cb->src) &&
+ 		    (rt->fld.daddr == cb->dst) &&
+@@ -1744,13 +1744,13 @@ int dn_cache_dump(struct sk_buff *skb, struct netlink_callback *cb)
+ 
+ 	s_h = cb->args[0];
+ 	s_idx = idx = cb->args[1];
+-	for(h = 0; h <= dn_rt_hash_mask; h++) {
++	for (h = 0; h <= dn_rt_hash_mask; h++) {
+ 		if (h < s_h)
+ 			continue;
+ 		if (h > s_h)
+ 			s_idx = 0;
+ 		rcu_read_lock_bh();
+-		for(rt = rcu_dereference_bh(dn_rt_hash_table[h].chain), idx = 0;
++		for (rt = rcu_dereference_bh(dn_rt_hash_table[h].chain), idx = 0;
+ 			rt;
+ 			rt = rcu_dereference_bh(rt->dn_next), idx++) {
+ 			if (idx < s_idx)
+@@ -1784,7 +1784,7 @@ static struct dn_route *dn_rt_cache_get_first(struct seq_file *seq)
+ 	struct dn_route *rt = NULL;
+ 	struct dn_rt_cache_iter_state *s = seq->private;
+ 
+-	for(s->bucket = dn_rt_hash_mask; s->bucket >= 0; --s->bucket) {
++	for (s->bucket = dn_rt_hash_mask; s->bucket >= 0; --s->bucket) {
+ 		rcu_read_lock_bh();
+ 		rt = rcu_dereference_bh(dn_rt_hash_table[s->bucket].chain);
+ 		if (rt)
+@@ -1814,7 +1814,7 @@ static void *dn_rt_cache_seq_start(struct seq_file *seq, loff_t *pos)
+ 	struct dn_route *rt = dn_rt_cache_get_first(seq);
+ 
+ 	if (rt) {
+-		while(*pos && (rt = dn_rt_cache_get_next(seq, rt)))
++		while (*pos && (rt = dn_rt_cache_get_next(seq, rt)))
+ 			--*pos;
+ 	}
+ 	return *pos ? NULL : rt;
+@@ -1869,21 +1869,21 @@ void __init dn_route_init(void)
+ 
+ 	goal = totalram_pages() >> (26 - PAGE_SHIFT);
+ 
+-	for(order = 0; (1UL << order) < goal; order++)
++	for (order = 0; (1UL << order) < goal; order++)
+ 		/* NOTHING */;
+ 
+ 	/*
+ 	 * Only want 1024 entries max, since the table is very, very unlikely
+ 	 * to be larger than that.
+ 	 */
+-	while(order && ((((1UL << order) * PAGE_SIZE) /
++	while (order && ((((1UL << order) * PAGE_SIZE) /
+ 				sizeof(struct dn_rt_hash_bucket)) >= 2048))
+ 		order--;
+ 
+ 	do {
+ 		dn_rt_hash_mask = (1UL << order) * PAGE_SIZE /
+ 			sizeof(struct dn_rt_hash_bucket);
+-		while(dn_rt_hash_mask & (dn_rt_hash_mask - 1))
++		while (dn_rt_hash_mask & (dn_rt_hash_mask - 1))
+ 			dn_rt_hash_mask--;
+ 		dn_rt_hash_table = (struct dn_rt_hash_bucket *)
+ 			__get_free_pages(GFP_ATOMIC, order);
+@@ -1898,7 +1898,7 @@ void __init dn_route_init(void)
+ 		(long)(dn_rt_hash_mask*sizeof(struct dn_rt_hash_bucket))/1024);
+ 
+ 	dn_rt_hash_mask--;
+-	for(i = 0; i <= dn_rt_hash_mask; i++) {
++	for (i = 0; i <= dn_rt_hash_mask; i++) {
+ 		spin_lock_init(&dn_rt_hash_table[i].lock);
+ 		dn_rt_hash_table[i].chain = NULL;
+ 	}
+-- 
+2.25.1
 
-That would be true if the static declaration was in the .h, but being
-in genhd.c it goes in vmlinux once.
-Maybe you get confused by the inc_diskseq prototype in the header
-file, but the function body is in the .c
-
-Regards,
-
-
-
---
-per aspera ad upstream
