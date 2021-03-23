@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FC9345766
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5942C345769
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 06:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhCWFkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 01:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbhCWFkA (ORCPT
+        id S229868AbhCWFkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 01:40:42 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:44474 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhCWFkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 01:40:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7871AC061574;
-        Mon, 22 Mar 2021 22:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=icJplTGGxz2G/Khqfbp5NSjgVDQ3QMHoDvs8dUu35/g=; b=fzQXiMuSOQgfzL4PpG40ZAiYUh
-        zuPqXC4LOZPPPhb/A3eC+mM1ElYgrDZxxSHAmdLm1nrK4WUAw06hbj4hqdpeFAlU0haOdvCQ/GQ5J
-        +8pNeqc8K5/ToeZspfzrb4+REnirY5IuXSl4XS/C2icNm8hSe5dhCQQ/ZgkrdqRgkv0FeVyPANKuB
-        pWfUfqcK9podU0vfb2I22NmTUULj3xTKjxtt23dAyZyWqA+GJIsZVelcxuUr/9EN4z8Dl3kIHW6mT
-        OWlrPGiC3wlrsc9J/HLLKux6S7byIPZ3/PTBLJZZ7Ybk5ZkPPu5lAFVZQV+qu01fHUkfZT8wLGAkq
-        mmQgO6ag==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOZlX-009bhI-9F; Tue, 23 Mar 2021 05:39:50 +0000
-Subject: Re: [PATCH] perf tools: Trivial spelling fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, irogers@google.com,
-        kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20210323044605.1788192-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <dc1cde42-f0a6-8f1a-1353-9e767ae3cd31@infradead.org>
-Date:   Mon, 22 Mar 2021 22:39:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 01:40:16 -0400
+Received: by mail-io1-f71.google.com with SMTP id e11so1091210ioh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 22:40:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=8UIJBBCFx9G0AZ6QPsyJ2f+Jnb2J4vHizufHfr/0rys=;
+        b=JGo7Mnhi3+qyKoEMfXYFW9RWQjH8DFSkUOl4NJNKnnFi3utInuAaPcOhahxTl3+KzF
+         XPrCVFTwgl+mTHA6JRfy9IAIdWIF4WCrNr1CN5TDTbkmy8eMSPhzIEt197Mja82ZfRis
+         rB09HOUHKjT4yQxs5AIqGP5t4Ool+UxLdl8pnSYl0QghNnAnxD+hTy9pxxaxRXZZzLSP
+         o9U7whOdZHohAe3bcbJ75IoTPspbRp/UPZA494wQ4RUdDsx0/K+yfAHZ2XZZSyLTt7I0
+         lDLsStU6FmgZoVwES7LJmMGflNdWtCUHXoZSRcRHXwqaVwwfhE40taEiObf4T7qAfg+T
+         WDYg==
+X-Gm-Message-State: AOAM533rlEDc6wdO/AR1RmDEQ5P0T7fGl/+XnC/z0Z1ZRaz+nUEA6MtU
+        LpNzkvX2WOzrQ8+sdo4I4sujP+66K7ZPXT45+dbLvc0dIGj9
+X-Google-Smtp-Source: ABdhPJywzjL2S5675jBi+LjUShhiMQm7FNQYgD96vO6uxEMlOimdM9ZcZ5MgYdoqaCNTTcck/jPUQlNts8o3Nona6u5GfutE1+LY
 MIME-Version: 1.0
-In-Reply-To: <20210323044605.1788192-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:802:: with SMTP id u2mr3172526ilm.298.1616478015540;
+ Mon, 22 Mar 2021 22:40:15 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 22:40:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e754b705be2d9d69@google.com>
+Subject: [syzbot] WARNING in io_sq_thread_park
+From:   syzbot <syzbot+e3a3f84f5cecf61f0583@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/22/21 9:46 PM, Bhaskar Chowdhury wrote:
-> 
-> s/succeded/succeeded/ ........five different places
-> s/revsions/revisions/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Hello,
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+syzbot found the following issue on:
 
-> ---
->  tools/perf/util/header.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 20effdff76ce..97a0eeb6d2ab 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -127,7 +127,7 @@ static int __do_write_buf(struct feat_fd *ff,  const void *buf, size_t size)
->  	return 0;
->  }
-> 
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  int do_write(struct feat_fd *ff, const void *buf, size_t size)
->  {
->  	if (!ff->buf)
-> @@ -135,7 +135,7 @@ int do_write(struct feat_fd *ff, const void *buf, size_t size)
->  	return __do_write_buf(ff, buf, size);
->  }
-> 
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
->  {
->  	u64 *p = (u64 *) set;
-> @@ -154,7 +154,7 @@ static int do_write_bitmap(struct feat_fd *ff, unsigned long *set, u64 size)
->  	return 0;
->  }
-> 
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  int write_padded(struct feat_fd *ff, const void *bf,
->  		 size_t count, size_t count_aligned)
->  {
-> @@ -170,7 +170,7 @@ int write_padded(struct feat_fd *ff, const void *bf,
->  #define string_size(str)						\
->  	(PERF_ALIGN((strlen(str) + 1), NAME_ALIGN) + sizeof(u32))
-> 
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  static int do_write_string(struct feat_fd *ff, const char *str)
->  {
->  	u32 len, olen;
-> @@ -266,7 +266,7 @@ static char *do_read_string(struct feat_fd *ff)
->  	return NULL;
->  }
-> 
-> -/* Return: 0 if succeded, -ERR if failed. */
-> +/* Return: 0 if succeeded, -ERR if failed. */
->  static int do_read_bitmap(struct feat_fd *ff, unsigned long **pset, u64 *psize)
->  {
->  	unsigned long *set;
-> @@ -3485,7 +3485,7 @@ static const size_t attr_pipe_abi_sizes[] = {
->   * between host recording the samples, and host parsing the samples is the
->   * same. This is not always the case given that the pipe output may always be
->   * redirected into a file and analyzed on a different machine with possibly a
-> - * different endianness and perf_event ABI revsions in the perf tool itself.
-> + * different endianness and perf_event ABI revisions in the perf tool itself.
->   */
->  static int try_all_pipe_abis(uint64_t hdr_sz, struct perf_header *ph)
->  {
-> --
+HEAD commit:    84196390 Merge tag 'selinux-pr-20210322' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=152a6ad6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3a3f84f5cecf61f0583
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e3a3f84f5cecf61f0583@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 27907 at fs/io_uring.c:7147 io_sq_thread_park+0xb5/0xd0 fs/io_uring.c:7147
+Modules linked in:
+CPU: 1 PID: 27907 Comm: iou-sqp-27905 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_sq_thread_park+0xb5/0xd0 fs/io_uring.c:7147
+Code: 3c 02 00 75 29 48 8b ab a8 00 00 00 48 85 ed 74 0d e8 df a3 99 ff 48 89 ef e8 f7 49 75 ff 5b 5d e9 d0 a3 99 ff e8 cb a3 99 ff <0f> 0b eb 85 48 89 ef e8 bf 36 dd ff eb cd 48 89 ef e8 b5 36 dd ff
+RSP: 0018:ffffc90001bff9e8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802489a000 RCX: 0000000000000000
+RDX: ffff88808e7e0000 RSI: ffffffff81da4a65 RDI: ffff88802489a000
+RBP: ffff88802489a0a8 R08: 0000000000000001 R09: ffff88806a7420c7
+R10: ffffed100d4e8418 R11: 0000000000000000 R12: ffff88806a742590
+R13: ffff88806a742458 R14: 1ffff9200037ff42 R15: ffff88806a7424b8
+FS:  00007f63505a8700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000540198 CR3: 0000000024531000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 000000000111062a
+Call Trace:
+ io_ring_ctx_wait_and_kill+0x214/0x700 fs/io_uring.c:8619
+ io_uring_release+0x3e/0x50 fs/io_uring.c:8646
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ io_run_task_work fs/io_uring.c:2238 [inline]
+ io_run_task_work fs/io_uring.c:2228 [inline]
+ io_uring_try_cancel_requests+0x8ec/0xc60 fs/io_uring.c:8770
+ io_uring_cancel_sqpoll+0x1cf/0x290 fs/io_uring.c:8974
+ io_sqpoll_cancel_cb+0x87/0xb0 fs/io_uring.c:8907
+ io_run_task_work_head+0x58/0xb0 fs/io_uring.c:1961
+ io_sq_thread+0x3e2/0x18d0 fs/io_uring.c:6763
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
 
--- 
-~Randy
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
