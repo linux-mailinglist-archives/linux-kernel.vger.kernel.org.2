@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0031345B1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA32D345B15
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhCWJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:40:57 -0400
-Received: from mga06.intel.com ([134.134.136.31]:63227 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhCWJkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:40:23 -0400
-IronPort-SDR: /JjHMBYucD1XrWhgzWxmAT5uTqRFLBtymehBuYg9UCqF946v19XPYV34+uSR6+NR+4trMClW9T
- oM9vy4gFSfuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="251797116"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="251797116"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 02:40:23 -0700
-IronPort-SDR: 7IYSh1KkvPQ38lizWBCrcSuM9u9zT+QMo90n/tY864He9kzN3KI1W4/HyTy7CvKw9Ny0wlGHOi
- NiA69FzBbE3g==
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="414905499"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 02:40:22 -0700
-Subject: Re: drivers/opp/of.c:959:12: warning: stack frame size of 1056 bytes
- in function '_of_add_table_indexed'
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org
-References: <202103231522.N0bCxZ97-lkp@intel.com>
- <20210323072534.sif6hfei4zx5tzn3@vireshk-i7>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <38b9dd6b-c118-a46c-e5c2-ae2a5f871f57@intel.com>
-Date:   Tue, 23 Mar 2021 17:39:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S229500AbhCWJkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCWJkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 05:40:00 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDEDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:40:00 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id dm8so22684917edb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VM6J50cuO11tHNrSpVMEPhTlVh0nXJYB1QWh6jX41x8=;
+        b=ljIX33yEr+y8O/Km4ORjc6mpfKAzTKw7E0cIYwNv9D4+CTk92/dWTK8pNVyby0TD92
+         r/WgLLXu2D/bfmC+KhRAZAGh9C/rGvicFTh6UwBCdlMnsO2rcHMxZ9S6N+lXOjh18o4J
+         3uqKQ0ovd60NWl5nQ01pHI/PQMEMvBBmS6LT19KDWAabdB9J3Gs4TEue6ob5HiAUrQ/R
+         QNrc/NfLdBo3cFk2gKJQTVpLW6QevvR3UFJWOCRwB5Bbe1rG1amFtjn2+Ws2aJkjCrku
+         AC62Rh3GXbClZekjs+wTrd8c3oGZt8jSw4VuJmySUHRloEcPrz/fFcQK5gImMkR2ZtuD
+         B27w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VM6J50cuO11tHNrSpVMEPhTlVh0nXJYB1QWh6jX41x8=;
+        b=G/AoMSl8tZr3hz22MBcbakDpI+9exwr5FfCxtoMhNNRi9323rvMZJR3piEoIikn9gl
+         5jeXQIpaqaFEEwB1TyQu29f3kugBUa3NEJRkI0GEAzGD/y5cwkxtsF8aHCZ4+s9Nura5
+         u1SiXQkIod9fZ2XWhSkpiOAIyoPFFI1JYhY4EPi/5tBvQctIsK2J1pSeneETAQIF26Q2
+         R2JZdRz8kssRcPsLmCNH3Y0HzOCfRN6ruJM+3gJwwX6O/qsX0i1mFx0QeG0Oodol3fsS
+         D8wcWywd1E8c1QmQWwogauy6q65JU7AkmuZcXTFL1BKZyOa0kkug9DgnTXSXoSDxK1/W
+         I7Ww==
+X-Gm-Message-State: AOAM530ICeOw/9go1VmM7UffYz4dZ331gnIsDinRDwHyuDkt30mjg9Ob
+        7ztpDBbfk6vyUpZYqA/YZfKqRV8rRAmTYw==
+X-Google-Smtp-Source: ABdhPJxdvGM+6tcJUBAoHYZn+tISoI8Z3WDYAZL4H8IT3tFDossgdWDbo06ey4bSGaw1krADL34Q8g==
+X-Received: by 2002:a05:6402:2058:: with SMTP id bc24mr3723646edb.243.1616492399245;
+        Tue, 23 Mar 2021 02:39:59 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id lx6sm10905544ejb.64.2021.03.23.02.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 02:39:58 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:39:56 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     vilhelm.gray@gmail.com, alexandre.torgue@foss.st.com,
+        mcoquelin.stm32@gmail.com, olivier.moysan@foss.st.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] mfd: stm32-timers: avoid clearing auto reload register
+Message-ID: <20210323093956.GS2916463@dell>
+References: <1614793895-10504-1-git-send-email-fabrice.gasnier@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <20210323072534.sif6hfei4zx5tzn3@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1614793895-10504-1-git-send-email-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 03 Mar 2021, Fabrice Gasnier wrote:
 
+> The ARR register is cleared unconditionally upon probing, after the maximum
+> value has been read. This initial condition is rather not intuitive, when
+> considering the counter child driver. It rather expects the maximum value
+> by default:
+> - The counter interface shows a zero value by default for 'ceiling'
+>   attribute.
+> - Enabling the counter without any prior configuration makes it doesn't
+>   count.
+> 
+> The reset value of ARR register is the maximum. So Choice here
+> is to backup it, and restore it then, instead of clearing its value.
+> It also fixes the initial condition seen by the counter driver.
+> 
+> Fixes: d0f949e220fd ("mfd: Add STM32 Timers driver")
+> 
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> ---
+>  drivers/mfd/stm32-timers.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 
-On 3/23/21 3:25 PM, Viresh Kumar wrote:
-> On 23-03-21, 15:23, kernel test robot wrote:
->> Hi Viresh,
->>
->> FYI, the error/warning still remains.
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   84196390620ac0e5070ae36af84c137c6216a7dc
->> commit: 406e47652161d4f0d9bc4cd6237b36c51497ec75 opp: Create _of_add_table_indexed() to reduce code duplication
->> date:   7 weeks ago
->> config: powerpc64-randconfig-r023-20210323 (attached as .config)
->> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 14696baaf4c43fe53f738bc292bbe169eed93d5d)
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # install powerpc64 cross compiling tool for clang build
->>          # apt-get install binutils-powerpc64-linux-gnu
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=406e47652161d4f0d9bc4cd6237b36c51497ec75
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout 406e47652161d4f0d9bc4cd6237b36c51497ec75
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All warnings (new ones prefixed by >>):
->>
->>>> drivers/opp/of.c:959:12: warning: stack frame size of 1056 bytes in function '_of_add_table_indexed' [-Wframe-larger-than=]
->>     static int _of_add_table_indexed(struct device *dev, int index)
->>                ^
->>     1 warning generated.
-> I have reported this on 1st march as well. Looks to be false positive.
->
+Applied, thanks.
 
-Hi Viresh,
-
-Thanks for the feedback, we'll stop the bot sending such report again.
-
-Best Regards,
-Rong Chen
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
