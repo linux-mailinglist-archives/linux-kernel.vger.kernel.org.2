@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBD3346154
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAA3346155
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhCWOTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhCWOSx (ORCPT
+        id S232018AbhCWOTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:19:38 -0400
+Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:52234 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231718AbhCWOTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:18:53 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D101AC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:18:52 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id k25so17129378oic.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ytJvpAsy7oFoxUq3vApvk64rCGUzRxHQsHvMZr4O6zg=;
-        b=xH51TtUu8fD1ohLBic2PN0z1rb80qrGVGQs/1HMcUax4wknb1+RUKU0dLa96ch4afu
-         vZCLoSx/Hoa7tm6WjrJjZABhl7aOdKORSPiZbl3cIt1hzHNLI7FMis8od+L1acb8UAoF
-         FvEBLs4os1BcrTwOgwtNOA/s/JnarW5/ifzCosc2gxglTxy2AL4dMsGXMbVlI2DKIQ42
-         aKeDBCNfmhNeTYYFFW55lYY2lKlkfWJdNHE0hk4pPfyDPos+rMyc21IbvmAN2HCM+fMv
-         1RvKi9wavE/NWdhSgEjdsHRAzxt+xtLAOkBB7uFMtKrv8rNglXvmsgUn0p3AkfHe5AVY
-         QXNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ytJvpAsy7oFoxUq3vApvk64rCGUzRxHQsHvMZr4O6zg=;
-        b=sOmEwEwzLOaqOAKX5b4ok60W/fu+QQ+dY2BuYYofAFRx7u4JagrSo2SHqnyZPp2frS
-         yZV7iWZpY1qjuB0xKOW++4FMsUarE5XNGt25TKFjkj3Zv9xcPAl6TyCT7vGbsDhlpZ3J
-         0SlmRj0hxkVijxX7Mikiq86IUZFki6eAi4r0gSqzSyVVWpv5Dy3nSAGn2wlKeD0FOH5X
-         S9Wt6EVT898Ih0oOy32prKNOrTUAGqtQ6+T5D178J/TFGKIqWD4KycnAv2AuZmzjy0wT
-         8c14ig1y5UKQ5V34sXvhRRCJU88z3Ds7K/0ozsgJ9O4P+v+eUAU3XlIaDWjsxOKRdfmn
-         4Xhg==
-X-Gm-Message-State: AOAM531r04xmOxOuE5KYQkhbE/PFiYxIJWpFIud0+4nRQgvjlNc2sxDA
-        Xc4Yk7IYT3vhwSxS3swjCoFTlQ==
-X-Google-Smtp-Source: ABdhPJxyZ7MoYj/u8BVSgC0Gu8pWVUgKtLipkxfd8h159j9s13hNKvYLRZbanWyv00Qy2/9tgHe1Xg==
-X-Received: by 2002:aca:d442:: with SMTP id l63mr3536830oig.49.1616509132104;
-        Tue, 23 Mar 2021 07:18:52 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t2sm3708079ool.18.2021.03.23.07.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 07:18:51 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:18:49 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jeevan Shriram <jshriram@codeaurora.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] pinctrl: qcom: fix unintentional string concatenation
-Message-ID: <20210323141849.GG5254@yoga>
-References: <20210323131728.2702789-1-arnd@kernel.org>
+        Tue, 23 Mar 2021 10:19:06 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 5CD28180931AA;
+        Tue, 23 Mar 2021 14:19:04 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2901:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3871:3872:3874:4321:5007:6119:6742:7576:7652:7903:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12295:12296:12297:12438:12679:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:21660:21966:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: glove95_5b1863d27772
+X-Filterd-Recvd-Size: 2732
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 23 Mar 2021 14:19:01 +0000 (UTC)
+Message-ID: <7ef41d771af88f84b650ff83771cd59eb745634f.camel@perches.com>
+Subject: Re: [PATCH] drm/imx: fix out of bounds array access warning
+From:   Joe Perches <joe@perches.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Liu Ying <victor.liu@nxp.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Tue, 23 Mar 2021 07:19:00 -0700
+In-Reply-To: <20210323130550.2289487-1-arnd@kernel.org>
+References: <20210323130550.2289487-1-arnd@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323131728.2702789-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23 Mar 08:17 CDT 2021, Arnd Bergmann wrote:
-
+On Tue, 2021-03-23 at 14:05 +0100, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> clang is clearly correct to point out a typo in a silly
-> array of strings:
+> When CONFIG_OF is disabled, building with 'make W=1' produces warnings
+> about out of bounds array access:
 > 
-> drivers/pinctrl/qcom/pinctrl-sdx55.c:426:61: error: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-concatenation]
->         "gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
->                                                                    ^
-> Add the missing comma that must have accidentally been removed.
-
-That's certainly a useful warning! Thanks Arnd.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
+> drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
+> drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
 > 
-> Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/pinctrl/qcom/pinctrl-sdx55.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Add an error check before the index is used, which helps with the
+> warning, as well as any possible other error condition that may be
+> triggered at runtime.
+[]
+> diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
+[]
+> @@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
+>  	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
+>  	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
 > 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sdx55.c b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> index 2b5b0e2b03ad..5aaf57b40407 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> @@ -423,7 +423,7 @@ static const char * const gpio_groups[] = {
->  
->  static const char * const qdss_stm_groups[] = {
->  	"gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gpio6", "gpio7", "gpio12", "gpio13",
-> -	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
-> +	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21", "gpio22",
->  	"gpio23", "gpio44", "gpio45", "gpio52", "gpio53", "gpio56", "gpio57", "gpio61", "gpio62",
->  	"gpio63", "gpio64", "gpio65", "gpio66",
->  };
-> -- 
-> 2.29.2
-> 
+> +	if (mux < 0) {
+> +		dev_warn(ldb->dev,
+> +			 "%s: invalid mux\n", __func__);
+
+trivia:
+
+Any real reason to make this 2 lines?  It fits nicely in 80 chars.  Maybe:
+
+		dev_warn(ldb->dev, "%s: invalid mux: %d\n", __func__, mux);
+
+or maybe:
+
+		dev_warn(ldb->dev, "%s: invalid mux: %pe\n",
+			 __func__, ERR_PTR(mux));
+
+> @@ -255,6 +261,12 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
+[]
+> +	if (mux < 0) {
+> +		dev_warn(ldb->dev,
+> +			 "%s: invalid mux\n", __func__);
+
+etc...
+
+
