@@ -2,66 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208CC3467FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10016346801
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhCWSoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:44:06 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:41459 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbhCWSnw (ORCPT
+        id S232230AbhCWSoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:44:11 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:38065 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232276AbhCWSnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:43:52 -0400
-Received: from [100.102.24.121] (ip-109-40-128-185.web.vodafone.de [109.40.128.185])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id C799622234;
-        Tue, 23 Mar 2021 19:43:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1616525030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nPoOEuwU9+tWbJsFhoeDobxLxpp6c1ZbdIs3ALLogA4=;
-        b=GcG6hOQWuusgG4uW58n59WZyLGPYfGuJdwtAif44qwpEunGfaDGj0lObmSfATcCZbY7Blk
-        EV5RpUc9nkIgny+A1phkBux6ZzB7KYYd22Xk4BKC11xHfqsscJarTTDzteuY47Y8N9HN9K
-        VUXfom/Qs0t9hX90FfPoaye9N1bbXHY=
-Date:   Tue, 23 Mar 2021 19:43:47 +0100
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210323173715.gyozhzbjyfv5osuc@ti.com>
-References: <20210323143144.12730-1-michael@walle.cc> <20210323143144.12730-2-michael@walle.cc> <20210323173715.gyozhzbjyfv5osuc@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
-To:     Pratyush Yadav <p.yadav@ti.com>
-CC:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-From:   Michael Walle <michael@walle.cc>
-Message-ID: <C88FBBF6-4F5C-43A1-951E-332AEE9E3B3A@walle.cc>
+        Tue, 23 Mar 2021 14:43:53 -0400
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 23 Mar 2021 11:43:53 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 23 Mar 2021 11:43:53 -0700
+Received: by gurus-linux.localdomain (Postfix, from userid 383780)
+        id 751DB1A0E; Tue, 23 Mar 2021 11:43:52 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [PATCH v4 0/2] Add support for Qualcomm MFD PMIC register layout
+Date:   Tue, 23 Mar 2021 11:43:49 -0700
+Message-Id: <cover.1616488322.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 23=2E M=C3=A4rz 2021 18:37:17 MEZ schrieb Pratyush Yadav <p=2Eyadav@ti=
-=2Ecom>:
->On 23/03/21 03:31PM, Michael Walle wrote:
->> Due to possible mode switching to 8D-8D-8D, it might not be possible
->to
->> read the SFDP after the initial probe=2E To be able to dump the SFDP
->via
->> sysfs afterwards, make a complete copy of it=2E
->>=20
->> Signed-off-by: Michael Walle <michael@walle=2Ecc>
->
->Reviewed-by: Pratyush Yadav <p=2Eyadav@ti=2Ecom>
+Changes from v3:
+- Implemented the scheme proposed in my response to Mark in [4].
+- Dropped the RFC tag from this patch series as this series has been tested on
+  target with a client driver utilizing these changes.
 
-thanks for reviewing!
+Changes from v2:
+- Split up framework changes patch for better comprehension.
+- Dropped PM8008 driver example and converted it into example code in cover
+  letter and commit text.
+- Added more info in cover letter and commit message as per v2 feedback.
 
--michael
+This is a follow-up as promised [1] to the earlier attempts [2] [3] to upstream
+the driver that has been hitherto used to handle IRQs for Qualcomm's PMICs that
+have multiple on-board peripherals when they are interfaced over the I2C
+interface.
+
+This series is a rewrite of that driver while making use of the regmap-irq
+framework, which needs some modifications to handle the register layout of
+Qualcomm's PMICs. This is an RFC because I would like to get feedback on my
+general approach before submitting as a patch per se.
+
+Qualcomm's MFD chips have a top level interrupt status register and sub-irqs
+(peripherals).  When a bit in the main status register goes high, it means that
+the peripheral corresponding to that bit has an unserviced interrupt. If the
+bit is not set, this means that the corresponding peripheral does not.
+
+The differences between Qualcomm's register layout and what the regmap-irq
+framework assumes are best described with an example:
+
+Suppose that there are three peripherals onboard an MFD chip: MISC, TEMP_ALARM
+and GPIO01. Each of these peripherals has the following IRQ configuration
+registers: mask, type and ack. There is a top level interrupt status register
+and per-peripheral status registers as well (not shown below).
+
+The regmap-irq framework expects all similar registers to be at a fixed stride
+from each other, for each peripheral, as below (with stride = 1). 
+
+	/* All mask registers together */
+	MISC_INT_MASK		0x1011
+	TEMP_ALARM_INT_MASK	0x1012
+	GPIO01_INT_MASK		0x1013
+	
+	/* All type registers together */
+	MISC_INT_TYPE		0x2011
+	TEMP_ALARM_INT_TYPE	0x2012
+	GPIO01_INT_TYPE		0x2013
+	
+	/* All ack registers together */
+	MISC_INT_ACK		0x3011
+	TEMP_ALARM_INT_ACK	0x3012
+	GPIO01_INT_ACK		0x3013
+
+In contrast, QCOM's registers are laid out as follows:
+
+	/* All of MISC peripheral's registers together */
+	MISC_INT_MASK		0x1011
+	MISC_INT_TYPE		0x1012
+	MISC_INT_ACK		0x1013
+
+	/* All of TEMP_ALARM peripheral's registers together */
+	TEMP_ALARM_INT_MASK	0x2011
+	TEMP_ALARM_INT_TYPE	0x2012
+	TEMP_ALARM_INT_ACK	0x2013
+	
+	/* All of GPIO01 peripheral's registers together */
+	GPIO01_INT_MASK		0x3011
+	GPIO01_INT_TYPE		0x3012
+	GPIO01_INT_ACK		0x3013
+
+As is evident, the different IRQ configuration registers are just (0x11, 0x12,
+0x13) with offsets of (0x1000, 0x2000 and 0x3000) respectively in QCOM's case.
+If the *_base registers fed to the struct regmap_irq_chip could be set to the
+first peripheral (MISC in this example), then through the sub_reg_offsets
+mechanism, we could add the offsets _to_ the *_base register values to get at
+the configuration registers for each peripheral.
+
+Hopefully this will help when reviewing the changes in this series.
+
+[1] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
+[2] https://lore.kernel.org/lkml/cover.1588037638.git.gurus@codeaurora.org/
+[3] https://lore.kernel.org/lkml/cover.1588115326.git.gurus@codeaurora.org/
+[4] https://lore.kernel.org/lkml/20210315203336.GA8977@codeaurora.org/
+
+Guru Das Srinagesh (2):
+  regmap-irq: Introduce virtual regs to handle more config regs
+  regmap-irq: Add driver callback to configure virtual regs
+
+ drivers/base/regmap/regmap-irq.c | 43 +++++++++++++++++++++++++++++++++++++++-
+ include/linux/regmap.h           |  9 +++++++++
+ 2 files changed, 51 insertions(+), 1 deletion(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
