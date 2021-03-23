@@ -2,174 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C7A346C4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3D4346C4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhCWWVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:21:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31322 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233985AbhCWWTQ (ORCPT
+        id S234159AbhCWWVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233931AbhCWWTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:19:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616537955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u10f6m68wj1IT012S8kFBCF+80WgNRA2rBPk1Qb/XNA=;
-        b=SJIUP28GKuxGmLxDrC+zmM9ngkmos84H77TKcrzT1L1d3b2FggmeMWHZOhkJrnamzkbn0C
-        GIdjEPcNCOUPe7hPp2P8qcbXH9Je/lZBZDGW6YF90VHDhltcUGQc7vs0Lm9FDlRtHeMdAW
-        g9s/WzXFnPh/zr8Wy7pyvDmQ2vXofL0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-eTw9cYKeO5-IMLdrcNt2YA-1; Tue, 23 Mar 2021 18:19:11 -0400
-X-MC-Unique: eTw9cYKeO5-IMLdrcNt2YA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1828981425A;
-        Tue, 23 Mar 2021 22:19:09 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D27D60BE5;
-        Tue, 23 Mar 2021 22:18:59 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v5 08/28] netfs,
- mm: Add set/end/wait_on_page_fscache() aliases
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Mar 2021 22:18:58 +0000
-Message-ID: <161653793873.2770958.12157243390965814502.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-References: <161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 23 Mar 2021 18:19:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018F2C061764;
+        Tue, 23 Mar 2021 15:19:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=BH8l4rhqM3j+tO6C1MABX7MjnINoZWw3fSlsoKWejbk=; b=CKCciv/I0u+Qfnd5B1gRD0tTiW
+        TIpbeMTbmRB3cySGrns8wOsyxr5bd4CffbtAc69cJZONuueAlFSzz6USI8syCBPltEd0jZr8uwYvu
+        zDdghVKxUqvJYqOX3/+wU+2pCqioS4dg3rUAzd7jljOpf1kD/c5OWGt0FbGf8W/NcXmbgWmJ+MyZo
+        OSHQOXSeq6iWKdMLs9hkIhhLHH+6C/+pkLAQ1NRXuSY+ZmIe9iWqPzD+ppAQM/ZQn9bFKpanZQO6N
+        eIrQlN4XWqEXamYdCRb70VO/l078T7uFcybq+y+4sTWkTjCadsNbmZoPQYvdBfd+kr4TzwV8zuGei
+        2z3X+EvQ==;
+Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOpMi-00Fq9a-KZ; Tue, 23 Mar 2021 22:19:09 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH] linux/gpio/driver.h: some edits for clarity
+Date:   Tue, 23 Mar 2021 15:19:05 -0700
+Message-Id: <20210323221905.19529-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add set/end/wait_on_page_fscache() as aliases of
-set/end/wait_page_private_2().  These allow a page to marked with
-PG_fscache, the flag to be removed and waiters woken and waiting for the
-flag to be cleared.  A ref on the page is also taken and dropped.
+Fix a few typos and some punctuation.
+Also, change CONFIG_OF to CONFIG_OF_GPIO in one comment.
 
-[Linus suggested putting the fscache-themed functions into the
- caching-specific headers rather than pagemap.h[1]]
-
-Changes:
-v5:
-- Mirror the changes to the core routines[2].
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Linus Torvalds <torvalds@linux-foundation.org>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-mm@kvack.org
-cc: linux-cachefs@redhat.com
-cc: linux-afs@lists.infradead.org
-cc: linux-nfs@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: v9fs-developer@lists.sourceforge.net
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/1330473.1612974547@warthog.procyon.org.uk/
-Link: https://lore.kernel.org/r/CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com/ [1]
-Link: https://lore.kernel.org/r/161340393568.1303470.4997526899111310530.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539536093.286939.5076448803512118764.stgit@warthog.procyon.org.uk/ # v4
-Link: https://lore.kernel.org/r/2499407.1616505440@warthog.procyon.org.uk/ [2]
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: linux-gpio@vger.kernel.org
 ---
+ include/linux/gpio/driver.h |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
- include/linux/netfs.h |   57 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
-
-diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index cc1102040488..8479d63406f7 100644
---- a/include/linux/netfs.h
-+++ b/include/linux/netfs.h
-@@ -26,4 +26,61 @@
- #define TestSetPageFsCache(page)	TestSetPagePrivate2((page))
- #define TestClearPageFsCache(page)	TestClearPagePrivate2((page))
+--- linux-next-20210323.orig/include/linux/gpio/driver.h
++++ linux-next-20210323/include/linux/gpio/driver.h
+@@ -227,7 +227,7 @@ struct gpio_irq_chip {
+ 	/**
+ 	 * @valid_mask:
+ 	 *
+-	 * If not %NULL holds bitmask of GPIOs which are valid to be included
++	 * If not %NULL, holds bitmask of GPIOs which are valid to be included
+ 	 * in IRQ domain of the chip.
+ 	 */
+ 	unsigned long *valid_mask;
+@@ -346,7 +346,7 @@ struct gpio_irq_chip {
+  *	output.
+  *
+  * A gpio_chip can help platforms abstract various sources of GPIOs so
+- * they can all be accessed through a common programing interface.
++ * they can all be accessed through a common programming interface.
+  * Example sources would be SOC controllers, FPGAs, multifunction
+  * chips, dedicated GPIO expanders, and so on.
+  *
+@@ -435,15 +435,15 @@ struct gpio_chip {
+ 	/**
+ 	 * @valid_mask:
+ 	 *
+-	 * If not %NULL holds bitmask of GPIOs which are valid to be used
++	 * If not %NULL, holds bitmask of GPIOs which are valid to be used
+ 	 * from the chip.
+ 	 */
+ 	unsigned long *valid_mask;
  
-+/**
-+ * set_page_fscache - Set PG_fscache on a page and take a ref
-+ * @page: The page.
-+ *
-+ * Set the PG_fscache (PG_private_2) flag on a page and take the reference
-+ * needed for the VM to handle its lifetime correctly.  This sets the flag and
-+ * takes the reference unconditionally, so care must be taken not to set the
-+ * flag again if it's already set.
-+ */
-+static inline void set_page_fscache(struct page *page)
-+{
-+	set_page_private_2(page);
-+}
-+
-+/**
-+ * end_page_fscache - Clear PG_fscache and release any waiters
-+ * @page: The page
-+ *
-+ * Clear the PG_fscache (PG_private_2) bit on a page and wake up any sleepers
-+ * waiting for this.  The page ref held for PG_private_2 being set is released.
-+ *
-+ * This is, for example, used when a netfs page is being written to a local
-+ * disk cache, thereby allowing writes to the cache for the same page to be
-+ * serialised.
-+ */
-+static inline void end_page_fscache(struct page *page)
-+{
-+	end_page_private_2(page);
-+}
-+
-+/**
-+ * wait_on_page_fscache - Wait for PG_fscache to be cleared on a page
-+ * @page: The page to wait on
-+ *
-+ * Wait for PG_fscache (aka PG_private_2) to be cleared on a page.
-+ */
-+static inline void wait_on_page_fscache(struct page *page)
-+{
-+	wait_on_page_private_2(page);
-+}
-+
-+/**
-+ * wait_on_page_fscache_killable - Wait for PG_fscache to be cleared on a page
-+ * @page: The page to wait on
-+ *
-+ * Wait for PG_fscache (aka PG_private_2) to be cleared on a page or until a
-+ * fatal signal is received by the calling task.
-+ *
-+ * Return:
-+ * - 0 if successful.
-+ * - -EINTR if a fatal signal was encountered.
-+ */
-+static inline int wait_on_page_fscache_killable(struct page *page)
-+{
-+	return wait_on_page_private_2_killable(page);
-+}
-+
- #endif /* _LINUX_NETFS_H */
-
-
+ #if defined(CONFIG_OF_GPIO)
+ 	/*
+-	 * If CONFIG_OF is enabled, then all GPIO controllers described in the
+-	 * device tree automatically may have an OF translation
++	 * If CONFIG_OF_GPIO is enabled, then all GPIO controllers described in
++	 * the device tree automatically may have an OF translation
+ 	 */
+ 
+ 	/**
+@@ -508,7 +508,7 @@ extern int gpiochip_add_data_with_key(st
+  * for GPIOs will fail rudely.
+  *
+  * gpiochip_add_data() must only be called after gpiolib initialization,
+- * ie after core_initcall().
++ * i.e. after core_initcall().
+  *
+  * If gc->base is negative, this requests dynamic assignment of
+  * a range of valid GPIOs.
