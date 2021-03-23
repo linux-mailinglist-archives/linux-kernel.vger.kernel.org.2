@@ -2,124 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BCE3461C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234033461C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhCWOqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232305AbhCWOpn (ORCPT
+        id S232386AbhCWOq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:46:28 -0400
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:38997 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232354AbhCWOps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:45:43 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A660FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:45:43 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id z15so17254618oic.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ot2VgT3jS1mJCKLMJwUsvVHjYoW0mNerejw5COyXqTQ=;
-        b=EFm7H+qo+cSFqvwSwjlazg8pGbQ8pMT2IKzgMKHkP0J6vL9fj6dV975WB6xO0CvlaS
-         vHD41m+HrRdVjXBf3BM794Jh0Jilxdbw+3chbj0ImAfrw+QBNmAed96dvYT+AI+UnB16
-         61dp8tvaR/C4RP0k0A2QPwgt7Ds/Y/5HLD7r0doY84uFZWNHNLawtd5bziC8cBLVYqzG
-         sv81bsudTnTpV9d/zVqbE+V9vU69jMCxPWU6sHfFC4QjMULQR/lQzzOiKcb25KI/8MgK
-         HW6y3HQyZgslBWaD+h+QTjoC657TTk4FN/Ay0S9ppVUGX3OhQvaYkHAlTWFt6rANAp/i
-         208A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ot2VgT3jS1mJCKLMJwUsvVHjYoW0mNerejw5COyXqTQ=;
-        b=GcxEgs8OywLnBje1xwV1xEqwC5TmpzfyUOAD0+1RDKbVWhcyrD8D5xsUKd3l90UGNF
-         FFUhqM1DHAUee+xYDONUmBBZ9Bc+bjoCgcrhSPHsq6U5KgF2COt66mtaGF/rjZArkH6c
-         nbAiZEY6QiBzo9NkmQpKVxi40fSTzDgLPAoOzopX6j97N1G6DV32WaaVExzaFNpZISGZ
-         Q+UF+sSR0+ewT+3E2RMOsGqCV/8VuFTIIrjGkaKjIGnlWyD4zy9m5yTMQE6iBXRiLcys
-         /+8zkYs/kxujVxAmA+KdqGBccTZVq6F975JdBxdUxYKx3RMz0iQUBVC/V2tU1Gyldx02
-         0xCA==
-X-Gm-Message-State: AOAM533HvQEMA42arUSToTekTkM80irjSKykbw26pBvs1IjovIwnTda2
-        rdHh69ZzTpkLSWTTL7jLgyn5Zl4ivoXpAJ7U7tE=
-X-Google-Smtp-Source: ABdhPJwMSL/FjLLqaSjPX0XwgrVcownXwcjvWEdZfgbYV4mn6WnQoBpWSRX+78RnOomObI0IhxFr2gWFQbeWc05L10g=
-X-Received: by 2002:aca:af10:: with SMTP id y16mr3576679oie.120.1616510743152;
- Tue, 23 Mar 2021 07:45:43 -0700 (PDT)
+        Tue, 23 Mar 2021 10:45:48 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 49F511C3F54
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:45:43 +0000 (GMT)
+Received: (qmail 30414 invoked from network); 23 Mar 2021 14:45:43 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Mar 2021 14:45:43 -0000
+Date:   Tue, 23 Mar 2021 14:45:41 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Chuck Lever III <chuck.lever@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
+Message-ID: <20210323144541.GL3697@techsingularity.net>
+References: <20210322091845.16437-1-mgorman@techsingularity.net>
+ <C1DEE677-47B2-4B12-BA70-6E29F0D199D9@oracle.com>
+ <20210322194948.GI3697@techsingularity.net>
+ <0E0B33DE-9413-4849-8E78-06B0CDF2D503@oracle.com>
+ <20210322205827.GJ3697@techsingularity.net>
+ <20210323120851.18d430cf@carbon>
 MIME-Version: 1.0
-References: <20210321151907.367586-1-ztong0001@gmail.com> <259c234f-ca6a-7f9a-8df1-69055f2fc1b6@amd.com>
-In-Reply-To: <259c234f-ca6a-7f9a-8df1-69055f2fc1b6@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 23 Mar 2021 10:45:31 -0400
-Message-ID: <CADnq5_Njn4SxzhLOc6rUwFv1b0AsSmP7-KWONBuxiGMaQ-FpLg@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/radeon: don't evict if not initialized
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Tong Zhang <ztong0001@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210323120851.18d430cf@carbon>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Tue, Mar 23, 2021 at 12:08:51PM +0100, Jesper Dangaard Brouer wrote:
+> > > <SNIP>
+> > > My results show that, because svc_alloc_arg() ends up calling
+> > > __alloc_pages_bulk() twice in this case, it ends up being
+> > > twice as expensive as the list case, on average, for the same
+> > > workload.
+> > >   
+> > 
+> > Ok, so in this case the caller knows that holes are always at the
+> > start. If the API returns an index that is a valid index and populated,
+> > it can check the next index and if it is valid then the whole array
+> > must be populated.
+> > 
+> > <SNIP>
+> 
+> I do know that I suggested moving prep_new_page() out of the
+> IRQ-disabled loop, but maybe was a bad idea, for several reasons.
+> 
+> All prep_new_page does is to write into struct page, unless some
+> debugging stuff (like kasan) is enabled. This cache-line is hot as
+> LRU-list update just wrote into this cache-line.  As the bulk size goes
+> up, as Matthew pointed out, this cache-line might be pushed into
+> L2-cache, and then need to be accessed again when prep_new_page() is
+> called.
+> 
+> Another observation is that moving prep_new_page() into loop reduced
+> function size with 253 bytes (which affect I-cache).
+> 
+>    ./scripts/bloat-o-meter mm/page_alloc.o-prep_new_page-outside mm/page_alloc.o-prep_new_page-inside
+>     add/remove: 18/18 grow/shrink: 0/1 up/down: 144/-397 (-253)
+>     Function                                     old     new   delta
+>     __alloc_pages_bulk                          1965    1712    -253
+>     Total: Before=60799, After=60546, chg -0.42%
+> 
+> Maybe it is better to keep prep_new_page() inside the loop.  This also
+> allows list vs array variant to share the call.  And it should simplify
+> the array variant code.
+> 
 
-Alex
+I agree. I did not like the level of complexity it incurred for arrays
+or the fact it required that a list to be empty when alloc_pages_bulk()
+is called. I thought the concern for calling prep_new_page() with IRQs
+disabled was a little overblown but did not feel strongly enough to push
+back on it hard given that we've had problems with IRQs being disabled
+for long periods before. At worst, at some point in the future we'll have
+to cap the number of pages that can be requested or enable/disable IRQs
+every X pages.
 
-On Mon, Mar 22, 2021 at 3:40 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 21.03.21 um 16:19 schrieb Tong Zhang:
-> > TTM_PL_VRAM may not initialized at all when calling
-> > radeon_bo_evict_vram(). We need to check before doing eviction.
-> >
-> > [    2.160837] BUG: kernel NULL pointer dereference, address: 000000000=
-0000020
-> > [    2.161212] #PF: supervisor read access in kernel mode
-> > [    2.161490] #PF: error_code(0x0000) - not-present page
-> > [    2.161767] PGD 0 P4D 0
-> > [    2.163088] RIP: 0010:ttm_resource_manager_evict_all+0x70/0x1c0 [ttm=
-]
-> > [    2.168506] Call Trace:
-> > [    2.168641]  radeon_bo_evict_vram+0x1c/0x20 [radeon]
-> > [    2.168936]  radeon_device_fini+0x28/0xf9 [radeon]
-> > [    2.169224]  radeon_driver_unload_kms+0x44/0xa0 [radeon]
-> > [    2.169534]  radeon_driver_load_kms+0x174/0x210 [radeon]
-> > [    2.169843]  drm_dev_register+0xd9/0x1c0 [drm]
-> > [    2.170104]  radeon_pci_probe+0x117/0x1a0 [radeon]
-> >
-> > Suggested-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-> > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> > v2: coding style fix
-> >
-> >   drivers/gpu/drm/radeon/radeon_object.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_object.c b/drivers/gpu/drm/r=
-adeon/radeon_object.c
-> > index 9b81786782de..499ce55e34cc 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_object.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_object.c
-> > @@ -384,6 +384,8 @@ int radeon_bo_evict_vram(struct radeon_device *rdev=
-)
-> >       }
-> >   #endif
-> >       man =3D ttm_manager_type(bdev, TTM_PL_VRAM);
-> > +     if (!man)
-> > +             return 0;
-> >       return ttm_resource_manager_evict_all(bdev, man);
-> >   }
-> >
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+New candidate
+
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r4
+
+Interface is still the same so a rebase should be trivial. Diff between
+v6r2 and v6r4 is as follows. I like the diffstat if nothing else :P
+
+
+ mm/page_alloc.c | 54 +++++++++++++-----------------------------------------
+ 1 file changed, 13 insertions(+), 41 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 547a84f11310..be1e33a4df39 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4999,25 +4999,20 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	struct alloc_context ac;
+ 	gfp_t alloc_gfp;
+ 	unsigned int alloc_flags;
+-	int nr_populated = 0, prep_index = 0;
+-	bool hole = false;
++	int nr_populated = 0;
+ 
+ 	if (WARN_ON_ONCE(nr_pages <= 0))
+ 		return 0;
+ 
+-	if (WARN_ON_ONCE(page_list && !list_empty(page_list)))
+-		return 0;
+-
+-	/* Skip populated array elements. */
+-	if (page_array) {
+-		while (nr_populated < nr_pages && page_array[nr_populated])
+-			nr_populated++;
+-		if (nr_populated == nr_pages)
+-			return nr_populated;
+-		prep_index = nr_populated;
+-	}
++	/*
++	 * Skip populated array elements to determine if any pages need
++	 * to be allocated before disabling IRQs.
++	 */
++	while (page_array && page_array[nr_populated] && nr_populated < nr_pages)
++		nr_populated++;
+ 
+-	if (nr_pages == 1)
++	/* Use the single page allocator for one page. */
++	if (nr_pages - nr_populated == 1)
+ 		goto failed;
+ 
+ 	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+@@ -5056,22 +5051,17 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	if (!zone)
+ 		goto failed;
+ 
+-retry_hole:
+ 	/* Attempt the batch allocation */
+ 	local_irq_save(flags);
+ 	pcp = &this_cpu_ptr(zone->pageset)->pcp;
+ 	pcp_list = &pcp->lists[ac.migratetype];
+ 
+ 	while (nr_populated < nr_pages) {
+-		/*
+-		 * Stop allocating if the next index has a populated
+-		 * page or the page will be prepared a second time when
+-		 * IRQs are enabled.
+-		 */
++
++		/* Skip existing pages */
+ 		if (page_array && page_array[nr_populated]) {
+-			hole = true;
+ 			nr_populated++;
+-			break;
++			continue;
+ 		}
+ 
+ 		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
+@@ -5092,6 +5082,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		__count_zid_vm_events(PGALLOC, zone_idx(zone), 1);
+ 		zone_statistics(ac.preferred_zoneref->zone, zone);
+ 
++		prep_new_page(page, 0, gfp, 0);
+ 		if (page_list)
+ 			list_add(&page->lru, page_list);
+ 		else
+@@ -5101,25 +5092,6 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 
+ 	local_irq_restore(flags);
+ 
+-	/* Prep pages with IRQs enabled. */
+-	if (page_list) {
+-		list_for_each_entry(page, page_list, lru)
+-			prep_new_page(page, 0, gfp, 0);
+-	} else {
+-		while (prep_index < nr_populated)
+-			prep_new_page(page_array[prep_index++], 0, gfp, 0);
+-
+-		/*
+-		 * If the array is sparse, check whether the array is
+-		 * now fully populated. Continue allocations if
+-		 * necessary.
+-		 */
+-		while (nr_populated < nr_pages && page_array[nr_populated])
+-			nr_populated++;
+-		if (hole && nr_populated < nr_pages)
+-			goto retry_hole;
+-	}
+-
+ 	return nr_populated;
+ 
+ failed_irq:
+
+-- 
+Mel Gorman
+SUSE Labs
