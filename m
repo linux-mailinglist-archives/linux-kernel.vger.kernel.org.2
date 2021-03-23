@@ -2,130 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C773459D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B140F3459DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCWIfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:35:43 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37920 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229972AbhCWIfe (ORCPT
+        id S230047AbhCWIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhCWIgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:35:34 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UT38Cws_1616488528;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT38Cws_1616488528)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 23 Mar 2021 16:35:29 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Tue, 23 Mar 2021 04:36:36 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFE2C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:36:35 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id y6so22477438eds.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 01:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=f/MW/BemQ7oviNUfk5rw4aPJnsP1RW/2LEki39GacAs=;
+        b=fZcQmN4fiRh9DYTGxVh5vDvBACbVQQ5MSRBYb9xRO++y050pr6MI8DjQzDhrRT+Nlo
+         4x34B5H0SlRuD7RgdHqxAHFbnw1hbDX5ORMpbH7q7HXsFrt6Cd7mnjSzQY60lBscgNaE
+         TJhLnc4Cf92bKNKIqJIfHvVxfapYGP+Q84hT/U6UMiHWju+UEoQ+FwCQbmRZnh2KQtd6
+         AERLKok/Ajs6uTvJJUk8/ptVm+4H2/vhpgkjuhqA7ceDqHSOVZAx3AsexbXKB9mF8/z+
+         hDX+4BSjpaCRzk42KeFVaOtCLU/kPFQOPz+i/ggEvAPxz+NOZaXx9fmL7GPIbQQ8Vabr
+         fUOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=f/MW/BemQ7oviNUfk5rw4aPJnsP1RW/2LEki39GacAs=;
+        b=R1Kx1/Wjs3godALNnumD/Gi2a/wWnnZSJIVMup0c8TUoJrThRDZWz5ZcFGu2jGurhZ
+         /35xJaM8hVXQCZfXf8AJhYv5jvZpx49afmz2bvQyyc1VQQfa0YK9ovrPW2M5uMppiZ4Y
+         W70ong7raun20qmx1Lo16XIZ/zztbRz72PpQJsXuDiYQrUrf3+Pa0Q8AWAev8d4TumeP
+         BcL4tGctYfDGYaMd7ipqO29fpvk2zEu0YraYJrCPWAXxmJiwjoa9G7Sn/cAmSYo6SAIH
+         Ljz+iaFDltoDUzeN498Jal9chX0M5pTrZNUZKU2fDR6pjAOq/Pr3a4TYTlEPYPEcoWns
+         5/oQ==
+X-Gm-Message-State: AOAM531ObYiQIqQk/0IbbBSCzruRriL8/uwuM0SjVNDALx7XqciNtXlE
+        1NcBhK4mC4SGgU7AwQ/8V+VRPA==
+X-Google-Smtp-Source: ABdhPJy0VDsYYV6quQqQy47nXqKIcFzgIaUTMhBb+JTD5y8MEuu0ls0eRqKZFg2j5m7GAeMn3o4Vyg==
+X-Received: by 2002:a05:6402:d4:: with SMTP id i20mr3509321edu.147.1616488594058;
+        Tue, 23 Mar 2021 01:36:34 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id u16sm12990701edq.4.2021.03.23.01.36.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 01:36:33 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 08:36:31 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colin Cross <ccross@android.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
+        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Josh Cartwright <joshc@codeaurora.org>,
         Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
-Date:   Tue, 23 Mar 2021 16:35:28 +0800
-Message-Id: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        netdev <netdev@vger.kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH v2 00/10] Rid W=1 warnings from OF
+Message-ID: <20210323083631.GE2916463@dell>
+References: <20210318104036.3175910-1-lee.jones@linaro.org>
+ <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel module signature supports the option to use the SM3
-secure hash (OSCCA GM/T 0004-2012 SM3).
+On Mon, 22 Mar 2021, Rob Herring wrote:
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- Documentation/admin-guide/module-signing.rst | 5 +++--
- crypto/asymmetric_keys/pkcs7_parser.c        | 7 +++++++
- init/Kconfig                                 | 5 +++++
- 3 files changed, 15 insertions(+), 2 deletions(-)
+> On Thu, Mar 18, 2021 at 4:40 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> >
+> > v2:
+> >  - Provided some descriptions to exported functions
+> >
+> > Lee Jones (10):
+> >   of: device: Fix function name in header and provide missing
+> >     descriptions
+> >   of: dynamic: Fix incorrect parameter name and provide missing
+> >     descriptions
+> >   of: platform: Demote kernel-doc abuse
+> >   of: base: Fix some formatting issues and provide missing descriptions
+> >   of: property: Provide missing member description and remove excess
+> >     param
+> >   of: address: Provide descriptions for 'of_address_to_resource's params
+> >   of: fdt: Demote kernel-doc abuses and fix function naming
+> >   of: of_net: Provide function name and param description
+> >   of: overlay: Fix function name disparity
+> >   of: of_reserved_mem: Demote kernel-doc abuses
+> >
+> >  drivers/of/address.c         |  3 +++
+> >  drivers/of/base.c            | 16 +++++++++++-----
+> >  drivers/of/device.c          |  7 ++++++-
+> >  drivers/of/dynamic.c         |  4 +++-
+> >  drivers/of/fdt.c             | 23 ++++++++++++-----------
+> >  drivers/of/of_net.c          |  3 +++
+> >  drivers/of/of_reserved_mem.c |  6 +++---
+> >  drivers/of/overlay.c         |  2 +-
+> >  drivers/of/platform.c        |  2 +-
+> >  drivers/of/property.c        |  2 +-
+> >  10 files changed, 44 insertions(+), 24 deletions(-)
+> 
+> I still see some warnings (note this is with DT files added to doc
+> build). Can you send follow-up patches:
+> 
+> ../include/linux/of.h:1193: warning: Function parameter or member
+> 'output' not described in 'of_property_read_string_index'
+> ../include/linux/of.h:1193: warning: Excess function parameter
+> 'out_string' description in 'of_property_read_string_index'
+> ../include/linux/of.h:1461: warning: cannot understand function
+> prototype: 'enum of_overlay_notify_action '
+> ../drivers/of/base.c:1781: warning: Excess function parameter 'prob'
+> description in '__of_add_property'
+> ../drivers/of/base.c:1804: warning: Excess function parameter 'prob'
+> description in 'of_add_property'
+> ../drivers/of/base.c:1855: warning: Function parameter or member
+> 'prop' not described in 'of_remove_property'
+> ../drivers/of/base.c:1855: warning: Excess function parameter 'prob'
+> description in 'of_remove_property'
 
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index 7d7c7c8a545c..8d8980808b5b 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -30,8 +30,8 @@ This facility uses X.509 ITU-T standard certificates to encode the public keys
- involved.  The signatures are not themselves encoded in any industrial standard
- type.  The facility currently only supports the RSA public key encryption
- standard (though it is pluggable and permits others to be used).  The possible
--hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, and
--SHA-512 (the algorithm is selected by data in the signature).
-+hash algorithms that can be used are SHA-1, SHA-224, SHA-256, SHA-384, SHA-512,
-+and SM3 (the algorithm is selected by data in the signature).
- 
- 
- ==========================
-@@ -86,6 +86,7 @@ This has a number of options available:
- 	``CONFIG_MODULE_SIG_SHA256``	:menuselection:`Sign modules with SHA-256`
- 	``CONFIG_MODULE_SIG_SHA384``	:menuselection:`Sign modules with SHA-384`
- 	``CONFIG_MODULE_SIG_SHA512``	:menuselection:`Sign modules with SHA-512`
-+	``CONFIG_MODULE_SIG_SM3``	:menuselection:`Sign modules with SM3`
-         =============================== ==========================================
- 
-      The algorithm selected here will also be built into the kernel (rather
-diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-index 967329e0a07b..6cf6c4552c11 100644
---- a/crypto/asymmetric_keys/pkcs7_parser.c
-+++ b/crypto/asymmetric_keys/pkcs7_parser.c
-@@ -248,6 +248,9 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
- 	case OID_sha224:
- 		ctx->sinfo->sig->hash_algo = "sha224";
- 		break;
-+	case OID_sm3:
-+		ctx->sinfo->sig->hash_algo = "sm3";
-+		break;
- 	default:
- 		printk("Unsupported digest algo: %u\n", ctx->last_oid);
- 		return -ENOPKG;
-@@ -269,6 +272,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
- 		ctx->sinfo->sig->pkey_algo = "rsa";
- 		ctx->sinfo->sig->encoding = "pkcs1";
- 		break;
-+	case OID_SM2_with_SM3:
-+		ctx->sinfo->sig->pkey_algo = "sm2";
-+		ctx->sinfo->sig->encoding = "raw";
-+		break;
- 	default:
- 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
- 		return -ENOPKG;
-diff --git a/init/Kconfig b/init/Kconfig
-index 5f5c776ef192..fed9236078e4 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2202,6 +2202,10 @@ config MODULE_SIG_SHA512
- 	bool "Sign modules with SHA-512"
- 	select CRYPTO_SHA512
- 
-+config MODULE_SIG_SM3
-+	bool "Sign modules with SM3"
-+	select CRYPTO_SM3
-+
- endchoice
- 
- config MODULE_SIG_HASH
-@@ -2212,6 +2216,7 @@ config MODULE_SIG_HASH
- 	default "sha256" if MODULE_SIG_SHA256
- 	default "sha384" if MODULE_SIG_SHA384
- 	default "sha512" if MODULE_SIG_SHA512
-+	default "sm3" if MODULE_SIG_SM3
- 
- config MODULE_COMPRESS
- 	bool "Compress modules on installation"
+You don't want much do you! ;)
+
+Sure, I plan to clean up all of the kernel with subsequent patches.
+
+> BTW, there some more which I guess W=1 doesn't find:
+> 
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:906: WARNING: Block quote ends without a blank
+> line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1465: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1469: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1473: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1517: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1521: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1526: WARNING: Unexpected indentation.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1528: WARNING: Block quote ends without a blank
+> line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1529: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1533: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> ../drivers/of/base.c:1705: WARNING: Definition list ends without a
+> blank line; unexpected unindent.
+> /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:49:
+> ../drivers/of/overlay.c:1183: WARNING: Inline emphasis start-string
+> without end-string.
+
+What command did you use to find these?
+
 -- 
-2.19.1.3.ge56e4f7
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
