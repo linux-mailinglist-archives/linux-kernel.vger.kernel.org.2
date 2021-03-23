@@ -2,125 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3678B345A7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1D4345A81
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhCWJMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhCWJLj (ORCPT
+        id S230001AbhCWJNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:13:05 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:60632 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhCWJMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:11:39 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17736C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:11:39 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id s2so14396834qtx.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TD1jWUXH5hue+PJvMMdqj/dwcVhvU6Zy0rXQBMLL5pk=;
-        b=PyNvyTsRuDrcC0p8/dDgxQSeSWEiom7Bdj3QkFYrgrniJ2SeFB158sv9eKFCLOU/RH
-         rtdMm5mEns1vga1P6ktdUkAUu3WmtuB4N/xiQs6ErVWx3xMLaak5PpuZNBd3r3fH50f5
-         HqYLz8T6KzkIy2+s83HuiiHnetpYg8kfqE6WULawqTS3GVMShJJ7WRTUShvQJRZAqJEF
-         AWJUVUxCVs0wI+Nht/34buJUWWmcgWNkf4KImPrQuAu72GkEI1LSZuTkHlbnBBOejN9X
-         t1+7jbKtq55k/qG+9StfJldrYHm9vw0AI5c24C9e5pT3BTp8u/KOAMKsphBuE9N6vBiN
-         tHmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=TD1jWUXH5hue+PJvMMdqj/dwcVhvU6Zy0rXQBMLL5pk=;
-        b=BeVFvZTt0Tzyy3bU0nxHPxm3YEXgw3xppM0oMnkzZ2ckElUY7cfJuMY7ve7u1ZMgBa
-         bOKfaW86Sr5oIjoMWq6xRf9rDgwH2yU1YlSsrj4XNIsEMt1Sj6gAHW7q9hY/qnIqEPJh
-         sLJR9JJcgajx9zuobt9d22M4JFG489WFiKINX/PpVoLC5K1rw04aWi69jAlin+VNhDEv
-         wCsaPl9b8+LTW26HZR3DM4pjPUi57b+sH+xrHCFGs11kgcdD8iWoYwIu+/azcOEE3Ktq
-         gUZ62SpnaslBVjpkg7mDPTnlTwlch+ogD6RmhzgfN2Ho2TgLhD7pbgNFGx2/3OxbJq3l
-         +/Uw==
-X-Gm-Message-State: AOAM533T11nFmzfSmw3ytL+y8SKsXAnUWbYAyH2GT/DMdcjKIpfIK01F
-        abfCd3zs60xmPVn6CmFtH6Lwjk2qiRBNNnQh
-X-Google-Smtp-Source: ABdhPJwUdDdpzM+G/sYPcFc7ckQIb7IDjRaZ1N5ALmvbdDCmi7fSfisF5EdAjMHLtrWTI1+R6dpd5g==
-X-Received: by 2002:ac8:702:: with SMTP id g2mr3516727qth.215.1616490698377;
-        Tue, 23 Mar 2021 02:11:38 -0700 (PDT)
-Received: from ArchLinux ([143.244.44.229])
-        by smtp.gmail.com with ESMTPSA id u11sm10225800qta.91.2021.03.23.02.11.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 02:11:37 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 14:41:24 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     ross.schm.dev@gmail.com, yanaijie@huawei.com,
-        matthew.v.deangelis@gmail.com, amarjargal16@gmail.com,
-        izabela.bakollari@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: Trivial typo fix
-Message-ID: <YFmwvBcwN4ZpNAVX@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, ross.schm.dev@gmail.com,
-        yanaijie@huawei.com, matthew.v.deangelis@gmail.com,
-        amarjargal16@gmail.com, izabela.bakollari@gmail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210323010835.4061779-1-unixbhaskar@gmail.com>
- <YFmvWzGZ0hHJbx6d@kroah.com>
+        Tue, 23 Mar 2021 05:12:52 -0400
+Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
+        by sparta.prtnl (Postfix) with ESMTP id 8F1CE44A022C;
+        Tue, 23 Mar 2021 10:12:50 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="STznAHK0HTkLK/SI"
-Content-Disposition: inline
-In-Reply-To: <YFmvWzGZ0hHJbx6d@kroah.com>
+Date:   Tue, 23 Mar 2021 10:12:50 +0100
+From:   robin <robin@protonic.nl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/17] dt-bindings: auxdisplay: ht16k33: Document Adafruit
+ segment displays
+Reply-To: robin@protonic.nl
+In-Reply-To: <20210322144848.1065067-3-geert@linux-m68k.org>
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-3-geert@linux-m68k.org>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <fb42abb0e79a57e2aab123468d95ff7e@protonic.nl>
+X-Sender: robin@protonic.nl
+Organization: Protonic Holland
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-22 15:48, Geert Uytterhoeven wrote:
+> The Holtek HT16K33 LED controller is not only used for driving
+> dot-matrix displays, but also for driving segment displays.
+> 
+> Document compatible values for the Adafruit 7-segment[1] and
+> 14-segment[2] FeatherWing expansion boards with red displays.  
+> According
+> to the schematics, all other Adafruit 7-segment and 14-segment display
+> backpack and FeatherWing expansion boards (including bare boards and
+> boards fitted with displays) are compatible with these two boards.
+> Add a "color" property to support the different color variants.
+> 
+> [1] https://www.adafruit.com/product/3108
+> [2] https://www.adafruit.com/product/3130
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> Alternatives I considered:
+>   1. Document the attached display type in a child node.
+>      I.e. specify segment type, number of characters, and wiring.
+>      Especially the latter would become really complex, due to the 
+> sheer
+>      amount of possible wiring combinations.
+>      Using this method, you also loose the ability to just connect a
+>      display to an i2c bus, and instantiate the device from sysfs,
+>      without using DT:
+> 
+> 	echo adafruit,3130 0x70 > /sys/class/i2c/i2c-adapter/.../new_device
+> 
+>   2. Do not use the "color" property, but document all Adafruit
+>      7-segment and 14-segment display backpack and FeatherWing 
+> expansion
+>      boards.
+>      This would lead to a myriad of compatible values:
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,878      # 0.56" 4-Digit 7-Segment Display Backpack 
+> (Red)
+> 	      - adafruit,879      # 0.56" 4-Digit 7-Segment Display Backpack 
+> (Yellow)
+> 	      - adafruit,880      # 0.56" 4-Digit 7-Segment Display Backpack 
+> (Green)
+> 	      - adafruit,881      # 0.56" 4-Digit 7-Segment Display Backpack 
+> (Blue)
+> 	      - adafruit,1002     # 0.56" 4-Digit 7-Segment Display Backpack 
+> (White)
+> 	  - const: adafruit,877   # 0.56" 4-Digit 7-Segment Backpack
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,1268     # 1.2" 4-Digit 7-Segment Display Backpack 
+> (Green)
+> 	      - adafruit,1269     # 1.2" 4-Digit 7-Segment Display Backpack 
+> (Yellow)
+> 	      - adafruit,1270     # 1.2" 4-Digit 7-Segment Display Backpack 
+> (Red)
+> 	  - const: adafruit,1271  # 1.2" 4-Digit 7-Segment Backpack
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,1911     # 0.54" Quad Alphanumeric Display Backpack 
+> (Red)
+> 	      - adafruit,1912     # 0.54" Quad Alphanumeric Display Backpack 
+> (Blue)
+> 	      - adafruit,2157     # 0.54" Quad Alphanumeric Display Backpack 
+> (White)
+> 	      - adafruit,2158     # 0.54" Quad Alphanumeric Display Backpack 
+> (Yellow)
+> 	      - adafruit,2159     # 0.54" Quad Alphanumeric Display Backpack
+> (Yellow-Green)
+> 	      - adafruit,2160     # 0.54" Quad Alphanumeric Display Backpack 
+> (Green)
+> 	  - const: adafruit,1910  # 0.54" Quad 14-segment Alphanumeric 
+> Backpack
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,3106     # 0.56" 4-Digit 7-Segment FeatherWing 
+> Display (Blue)
+> 	      - adafruit,3107     # 0.56" 4-Digit 7-Segment FeatherWing 
+> Display (Green)
+> 	      - adafruit,3108     # 0.56" 4-Digit 7-Segment FeatherWing 
+> Display (Red)
+> 	      - adafruit,3109     # 0.56" 4-Digit 7-Segment FeatherWing 
+> Display (White)
+> 	      - adafruit,3110     # 0.56" 4-Digit 7-Segment FeatherWing
+> Display (Yellow)
+> 	  - const: adafruit,3088  # 0.56" 4-Digit 7-Segment FeatherWing
+> 	  - const: holtek,ht16k33
+> 
+>       - items:
+> 	  - enum:
+> 	      - adafruit,3127     # 0.54" Quad Alphanumeric FeatherWing 
+> Display (White)
+> 	      - adafruit,3128     # 0.54" Quad Alphanumeric FeatherWing 
+> Display (Blue)
+> 	      - adafruit,3129     # 0.54" Quad Alphanumeric FeatherWing 
+> Display (Green)
+> 	      - adafruit,3130     # 0.54" Quad Alphanumeric FeatherWing 
+> Display (Red)
+> 	      - adafruit,3131     # 0.54" Quad Alphanumeric FeatherWing
+> Display (Yellow)
+> 	      - adafruit,3132     # 0.54" Quad Alphanumeric FeatherWing
+> Display (Yellow-Green)
+> 	  - const: adafruit,3089  # 0.54" Quad 14-segment Alphanumeric 
+> FeatherWing
+> 	  - const: holtek,ht16k33
+> ---
+>  .../bindings/auxdisplay/holtek,ht16k33.yaml   | 22 ++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git
+> a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+> b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+> index 64ffff460026040f..4380a5177a67d2e2 100644
+> --- a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+> +++ b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+> @@ -14,14 +14,23 @@ allOf:
+> 
+>  properties:
+>    compatible:
+> -    const: holtek,ht16k33
+> +    oneOf:
+> +      - items:
+> +          - const: adafruit,3108  # 0.56" 4-Digit 7-Segment
+> FeatherWing Display (Red)
+> +          - const: holtek,ht16k33
+> +
+> +      - items:
+> +          - const: adafruit,3130  # 0.54" Quad Alphanumeric
+> FeatherWing Display (Red)
+> +          - const: holtek,ht16k33
+> +
+> +      - const: holtek,ht16k33     # Generic 16*8 LED controller with
+> dot-matrix display
+> 
+>    reg:
+>      maxItems: 1
+> 
+>    refresh-rate-hz:
+>      maxItems: 1
+> -    description: Display update interval in Hertz
+> +    description: Display update interval in Hertz for dot-matrix 
+> displays
 
---STznAHK0HTkLK/SI
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+The above should be included in patch 16
 
-On 10:05 Tue 23 Mar 2021, Greg KH wrote:
->On Tue, Mar 23, 2021 at 06:38:35AM +0530, Bhaskar Chowdhury wrote:
->>
->> s/netowrk/network/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  drivers/staging/rtl8723bs/core/rtw_mlme.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
->> index 2c9425e2a1e9..3888d3984ec0 100644
->> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
->> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
->> @@ -599,7 +599,7 @@ void rtw_update_scanned_network(struct adapter *adapter, struct wlan_bssid_ex *t
->>  		}
->>
->>  		if (rtw_roam_flags(adapter)) {
->> -			/* TODO: don't  select netowrk in the same ess as oldest if it's new enough*/
->> +			/* TODO: don't  select network in the same ess as oldest if it's new enough*/
->
->Any reason you did not remove the two spaces at the same time?
->
-It skips my attention.Apologies.
+> 
+>    interrupts:
+>      maxItems: 1
+> @@ -41,10 +50,17 @@ properties:
+>      default: 16
+>      description: Initial brightness level
+> 
+> +  color: true
+> +    description:
+> +      Color of the display.  Use one of the LED_COLOR_ID_* prefixed 
+> definitions
+> +      from the header include/dt-bindings/leds/common.h.  The default 
+> is red.
+> +    minimum: 0
+> +    maximum: 9
+> +    default: 1
+> +
 
->thanks,
->
->greg k-h
+The above should be included in patch 17
 
---STznAHK0HTkLK/SI
-Content-Type: application/pgp-signature; name="signature.asc"
+>  required:
+>    - compatible
+>    - reg
+> -  - refresh-rate-hz
 
------BEGIN PGP SIGNATURE-----
+'refresh-rate-hz' is still a required property for the dot-matrix / 
+fbdev setup.
+If it can no longer be listed here than maybe its nice to mention that 
+it's required
+somewhere else (in it's description?).
+Rob?
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBZsLAACgkQsjqdtxFL
-KRVlRAf9GKDqoB9Kc68xSjPR5JTQbf5bfB4sKYZuZ6xQtO+gJQ+8nuzTJcmltity
-tGIPR4gVk7jOQi6Y+NfzxlX2k4eeeAPHRFjjtKy+92Upt0wh74AJ74nQBf3f4X33
-4EevSmLmQ+umxHFZjh8C4kj520u4l76a2j+xrIfDEjk4hiXtlLsoIiN56Jn6n8x4
-BwHSMq1KScJ9U+qIro0CoPgVPkP2cXZpl6P/NqG5qW4n3/UJGEGljkhFMfYDzmA4
-pssHL3e4wum6OUTkzh3i5p6ufjCs4M8wPXYIpobpMS4NebsbFZMRqLTYtpOv85OR
-dsWmJdq5o+TYYhSGeDSxFQh/StC+Cg==
-=wJra
------END PGP SIGNATURE-----
+Groetjes / Kind regards,
 
---STznAHK0HTkLK/SI--
+Robin van der Gracht
