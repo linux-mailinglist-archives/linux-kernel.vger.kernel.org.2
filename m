@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9C43465E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3D13465EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhCWRFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:05:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:49324 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229669AbhCWRF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:05:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 809361042;
-        Tue, 23 Mar 2021 10:05:29 -0700 (PDT)
-Received: from [10.57.55.187] (unknown [10.57.55.187])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B24123F718;
-        Tue, 23 Mar 2021 10:05:27 -0700 (PDT)
-Subject: Re: (subset) [PATCH v5 00/19] coresight: Add support for ETE and TRBE
-To:     Marc Zyngier <maz@kernel.org>, linux-arm-kernel@lists.infradead.org
-Cc:     leo.yan@linaro.org, catalin.marinas@arm.com,
-        Linu Cherian <lcherian@marvell.com>,
-        Will Deacon <will@kernel.org>, coresight@lists.linaro.org,
-        Peter Zilstra <peterz@infradead.org>,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, linux-kernel@vger.kernel.org
-References: <20210323120647.454211-1-suzuki.poulose@arm.com>
- <161651726490.2050093.5536833570808361940.b4-ty@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <bd50ab75-19eb-1957-942a-f045e3df8a51@arm.com>
-Date:   Tue, 23 Mar 2021 17:05:26 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S229923AbhCWRGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:06:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23249 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229897AbhCWRGO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:06:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616519174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KtNdINBUH3O71CX9nL3/PvcG1x/na61kKw2iN7V6Vns=;
+        b=DjPoibZqdfglFRrZD7BqC1Ak1sdPXSBQ6ZnjhLkpVZSpBe9lYOt/VpdgFNiNchWohTLsbI
+        KN6s7bU3j24vuKrh+mUiVG69tT70cVnAkcZ43n7SSYUD5v3oMeEW7gus12H1sogqSzzBPF
+        3xUyR2IPafzuQ7sQ15YyDcbObl4OdXU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-3ne10P5-NzOURwCarP9VdA-1; Tue, 23 Mar 2021 13:06:11 -0400
+X-MC-Unique: 3ne10P5-NzOURwCarP9VdA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E479C180FCA7;
+        Tue, 23 Mar 2021 17:06:08 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA96919C45;
+        Tue, 23 Mar 2021 17:06:02 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 18:06:01 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>, brouer@redhat.com
+Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
+Message-ID: <20210323180601.7f8746a8@carbon>
+In-Reply-To: <20210323160814.62a248fb@carbon>
+References: <20210322091845.16437-1-mgorman@techsingularity.net>
+        <20210323104421.GK3697@techsingularity.net>
+        <20210323160814.62a248fb@carbon>
 MIME-Version: 1.0
-In-Reply-To: <161651726490.2050093.5536833570808361940.b4-ty@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/2021 16:34, Marc Zyngier wrote:
-> On Tue, 23 Mar 2021 12:06:28 +0000, Suzuki K Poulose wrote:
->> This series enables future IP trace features Embedded Trace Extension
->> (ETE) and Trace Buffer Extension (TRBE). This series applies on
->> v5.12-rc4 + some patches queued. A standalone tree is also available here [0].
->> The queued patches (almost there) are included in this posting for
->> the sake of constructing a tree from the posting.
->>
->> ETE is the PE (CPU) trace unit for CPUs, implementing future
->> architecture extensions. ETE overlaps with the ETMv4 architecture, with
->> additions to support the newer architecture features and some restrictions
->> on the supported features w.r.t ETMv4. The ETE support is added by extending
->> the ETMv4 driver to recognise the ETE and handle the features as exposed by
->> the TRCIDRx registers. ETE only supports system instructions access from the
->> host CPU. The ETE could be integrated with a TRBE (see below), or with
->> the legacy CoreSight trace bus (e.g, ETRs). Thus the ETE follows same
->> firmware description as the ETMs and requires a node per instance.
->>
->> [...]
-> 
-> Applied to fixes, thanks!
-> 
-> [01/19] kvm: arm64: Hide system instruction access to Trace registers
->          commit: 4af0afe252a2701732c317585f7c3ef6596b8f3d
-> 
+On Tue, 23 Mar 2021 16:08:14 +0100
+Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 
-Thanks Marc !
+> On Tue, 23 Mar 2021 10:44:21 +0000
+> Mel Gorman <mgorman@techsingularity.net> wrote:
+> 
+> > On Mon, Mar 22, 2021 at 09:18:42AM +0000, Mel Gorman wrote:  
+> > > This series is based on top of Matthew Wilcox's series "Rationalise
+> > > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
+> > > test and are not using Andrew's tree as a baseline, I suggest using the
+> > > following git tree
+> > > 
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v5r9
+> > >     
+
+I've pushed my benchmarks notes for this branch mm-bulk-rebase-v5r9:
+
+ [1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org#test-on-mel-git-tree-mm-bulk-rebase-v5r9
+
+> > Jesper and Chuck, would you mind rebasing on top of the following branch
+> > please? 
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r2
+
+I've rebase on mm-bulk-rebase-v6r4 tomorrow.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
