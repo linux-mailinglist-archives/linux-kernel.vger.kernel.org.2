@@ -2,73 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB51346B9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B07346BAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhCWWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:03:19 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48489 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233504AbhCWWCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:02:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4ljJ5HdMz9sTD;
-        Wed, 24 Mar 2021 09:02:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616536964;
-        bh=Oa/KJdsPgcOZqeNnWZkHi6YvrCuGbwjz4me2+pP6Vsg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=U6GiFAZ5+0R2G76Hf4sVGy4ElWvy0dDQE34yX4QSO2EXFfGT4VwRJsM9ffQoO+c/w
-         1ZZ2IGQT7JTdXLK4hjM09JStauM75m7we09NR/Wmila6r7113SWWzU6I20nKJTI44l
-         gPFLjxWQq57vyna3eN2gnMuffIkCFRY7wBXD8T0aVf8qBwIBO7QdlxsUNxUmmz3WXI
-         ZNnMu+Kq0KE3ie8MOKuWXGO0dTUCYyTpUZD0rawrAfd4yPJec1jC6cuJiHDap26A/k
-         Ii0RpwjSPhF0eSpO/TLHCA3QF5gdp6ylZvIe5X5oYD6WKZNw17S2rVrFrIArYsMZRp
-         ogiqcjX5DNLiQ==
-Date:   Wed, 24 Mar 2021 09:02:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Adam Ford <aford173@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: bad topic branch merged into the clk-imx tree
-Message-ID: <20210324090243.6523cf32@canb.auug.org.au>
+        id S233749AbhCWWFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233750AbhCWWFH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 18:05:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D06C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:05:06 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616537105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AXf5WUmojrg88+CJmOpOyboq0UbIXmFs5CbuNmtgNGM=;
+        b=hlDrqnffsH3YFWvkyzwcJvfqjVxXO7w9BayVKHnnHrjMHyyv2h8/+jWuVNcR2JbYZxweGL
+        q4cZ/0r3aUzypmIFuZMq1BM9YSFVROKyxZH87kudtolJ6Tj1eiDIzhgv2iK5nG8C1DFZkB
+        dQ7TYf0YgOzjtBgNPJavI4HgTcx2pB0H/gADmy6SxdONIqcZIYIT34pRP3qUA8NB6wUjOx
+        E680dU9ocWEod8c6jc2j0e04qnSPYYLVuUYEULK41AUBgLgIWQNlK9daSe2dTocADXeLfs
+        DZzD6JBZ2rPJxo/dx7R+oJdEZjfA8bxSj4Dqmi5zpDHNaRZMEQaPgDwAoKen/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616537105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AXf5WUmojrg88+CJmOpOyboq0UbIXmFs5CbuNmtgNGM=;
+        b=jFydoT97EXiTFw8wuYXZAGfJ9l2zCXgYG9PurUJ9fjZfwsnB/fsOfv9kOdlHvQm3jeQKU4
+        8XQG2aC/lE6QoPCQ==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch 12/14] locking/rtmutex: Consolidate the fast/slowpath invocation
+In-Reply-To: <20210323213708.699640478@linutronix.de>
+References: <20210323213019.217008708@linutronix.de> <20210323213708.699640478@linutronix.de>
+Date:   Tue, 23 Mar 2021 23:05:04 +0100
+Message-ID: <87mtutbk6n.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RR7nAqagxbxUUK_HzVgjUQv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RR7nAqagxbxUUK_HzVgjUQv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Mar 23 2021 at 22:30, Thomas Gleixner wrote:
 
-Hi all,
-
-Please try to avoid merging branches based on v5.12-rc1-dontuse - ask
-the branch owner to rebase onto (at least) v5.12-rc2.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/RR7nAqagxbxUUK_HzVgjUQv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBaZYMACgkQAVBC80lX
-0Gy1Lwf+OM8QTFznPeUuA1Z3K7y6aJ0PVvdnHEMiC9ZS9opqg4qT84jXkWq7geEY
-ROiiQh0Y0detT2AS9WUecke4RvsE1lAIA7VB1LSWp7Oq+Vp9vegNbh78kMA30fqM
-5JmB7JIltbbVDdHjY181IvnbOVIpsSG/1bkDeXBioeAA/k6aEBpjfhct1jdbwxsp
-YlR1XzaoNLbXvh9y2tmhKyNGMHOz1Dz5RQC+9szNSvd+PKjQ7uoBeM2i7h4Kt8s0
-NnWF9L7w/ytrUNcm6AlBAF/8RzbnRLQy6MrKSTvdkWAlfkoBopv/54Xq6bicOWaB
-acYOkDbqNvUpQlA3HGdI6OWxnafT0Q==
-=w1z+
------END PGP SIGNATURE-----
-
---Sig_/RR7nAqagxbxUUK_HzVgjUQv--
+Ignore this one. I shot myself in the foot....
