@@ -2,236 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73273457F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C313457F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhCWGrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:47:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:25100 "EHLO m43-7.mailgun.net"
+        id S229972AbhCWGs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:48:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhCWGrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:47:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616482069; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=GQDRjKMzMn2+736kUV4uRKS35DZD8tV3wfgPO5h+uR0=;
- b=PK/fxXHYCdZ2nJkOtrFophorAmle7anC8bdSMKbC4cl6EKfyHttyW6kvJeebPld++YBz3+9g
- 9au4EQLCFFMu7kYfKGUYRVuAxVTTsca2ko8/omSlsB0ayzK7jZJQhgG/wP3W6TtfXmYlVdS9
- wfyBSapBxwAKlFA3rAQ6oygxhs4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60598f072b0e10a0bac653bd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Mar 2021 06:47:35
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3F706C433C6; Tue, 23 Mar 2021 06:47:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10FB9C433CA;
-        Tue, 23 Mar 2021 06:47:32 +0000 (UTC)
+        id S229897AbhCWGsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:48:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64E2661992;
+        Tue, 23 Mar 2021 06:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616482130;
+        bh=Yr2HhyT5BBzbgia3YyQX5M1bKzv4UKeQb96izwivo7w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mHXtiABOwhSmlC5LVCLUA5lwWrBa/npNQMpyVi4jEleJP0onfDbrB604VOfBybbp6
+         Q6+J307kj7swEwK1kluMhDAsVTGmwK0SQ/9oXgxErCQIxgSCpsd6JI6Y9/DgIXvNHa
+         SAqhDFC4y0i2EmOuAazXe6O1E57m891T/mnZYMxRtZBMCffONWnYwo7RukQJwpklWP
+         +mJGCR6os79rj8JrNARfBeCl4m6QMqd8eYL/pz2Q3GfMFvIL3vnM7hs9cM0KBwq9Yh
+         /80dKRk4cd38E1xBx+LjYSyAjU/Lbl2cJB1eRoY76v+lh0wdnuAlhVVYOiEE/XR6Ku
+         7yuaE0UFhT0Pg==
+Date:   Tue, 23 Mar 2021 12:18:46 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
+Message-ID: <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink>
+References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 23 Mar 2021 14:47:32 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     daejun7.park@samsung.com
-Cc:     Bean Huo <huobean@gmail.com>, Greg KH <gregkh@linuxfoundation.org>,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, asutoshd@codeaurora.org,
-        stanley.chu@mediatek.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
-In-Reply-To: <20210323063726epcms2p28aadb16bb96943ade1d2b288bb634811@epcms2p2>
-References: <f224bea78cf235ee94823528f07e28a6@codeaurora.org>
- <1df7bb51dc481c3141cdcf85105d3a5b@codeaurora.org>
- <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
- <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
- <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
- <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
- <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
- <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
- <20210323061922epcms2p739666492ebb458d70deab026d074caf4@epcms2p7>
- <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p2>
- <20210323063726epcms2p28aadb16bb96943ade1d2b288bb634811@epcms2p2>
-Message-ID: <a9017bbb57618c5560b21c1cdadb4f80@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-23 14:37, Daejun Park wrote:
->> On 2021-03-23 14:19, Daejun Park wrote:
->>>> On 2021-03-23 13:37, Daejun Park wrote:
->>>>>> On 2021-03-23 12:22, Can Guo wrote:
->>>>>>> On 2021-03-22 17:11, Bean Huo wrote:
->>>>>>>> On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
->>>>>>>>> +       switch (rsp_field->hpb_op) {
->>>>>>>>> 
->>>>>>>>> +       case HPB_RSP_REQ_REGION_UPDATE:
->>>>>>>>> 
->>>>>>>>> +               if (data_seg_len != DEV_DATA_SEG_LEN)
->>>>>>>>> 
->>>>>>>>> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->>>>>>>>> 
->>>>>>>>> +                                "%s: data seg length is not
->>>>>>>>> same.\n",
->>>>>>>>> 
->>>>>>>>> +                                __func__);
->>>>>>>>> 
->>>>>>>>> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
->>>>>>>>> 
->>>>>>>>> +               break;
->>>>>>>>> 
->>>>>>>>> +       case HPB_RSP_DEV_RESET:
->>>>>>>>> 
->>>>>>>>> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->>>>>>>>> 
->>>>>>>>> +                        "UFS device lost HPB information 
->>>>>>>>> during
->>>>>>>>> PM.\n");
->>>>>>>>> 
->>>>>>>>> +               break;
->>>>>>>> 
->>>>>>>> Hi Deajun,
->>>>>>>> This series looks good to me. Just here I have one question. You
->>>>>>>> didn't
->>>>>>>> handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS,
->>>>>>>> how
->>>>>>>> to
->>>>>>>> handle HPB_RSP_DEV_RESET from the host side? Do you think we 
->>>>>>>> shoud
->>>>>>>> reset host side HPB entry as well or what else?
->>>>>>>> 
->>>>>>>> 
->>>>>>>> Bean
->>>>>>> 
->>>>>>> Same question here - I am still collecting feedbacks from flash
->>>>>>> vendors
->>>>>>> about
->>>>>>> what is recommanded host behavior on reception of HPB Op code 
->>>>>>> 0x2,
->>>>>>> since it
->>>>>>> is not cleared defined in HPB2.0 specs.
->>>>>>> 
->>>>>>> Can Guo.
->>>>>> 
->>>>>> I think the question should be asked in the HPB2.0 patch, since in
->>>>>> HPB1.0 device
->>>>>> control mode, a HPB reset in device side does not impact anything 
->>>>>> in
->>>>>> host side -
->>>>>> host is not writing back any HPB entries to device anyways and HPB
->>>>>> Read
->>>>>> cmd with
->>>>>> invalid HPB entries shall be treated as normal Read(10) cmd 
->>>>>> without
->>>>>> any
->>>>>> problems.
->>>>> 
->>>>> Yes, UFS device will process read command even the HPB entries are
->>>>> valid or
->>>>> not. So it is warning about read performance drop by dev reset.
->>>> 
->>>> Yeah, but still I am 100% sure about what should host do in case of
->>>> HPB2.0
->>>> when it receives HPB Op code 0x2, I am waiting for feedbacks.
->>> 
->>> I think the host has two choices when it receives 0x2.
->>> One is nothing on host.
->>> The other is discarding all HPB entries in the host.
->>> 
->>> In the JEDEC HPB spec, it as follows:
->>> When the device is powered off by the host, the device may restore 
->>> L2P
->>> map
->>> data upon power up or build from the host’s HPB READ command.
->>> 
->>> If some UFS builds L2P map data from the host's HPB READ commands, we
->>> don't
->>> have to discard HPB entries in the host.
->>> 
->>> So I thinks there is nothing to do when it receives 0x2.
->> 
->> But in HPB2.0, if we do nothing to active regions in host side, host 
->> can
->> write
->> HPB entries (which host thinks valid, but actually invalid in device
->> side since
->> reset happened) back to device through HPB Write Buffer cmds (BUFFER 
->> ID
->> = 0x2).
->> My question is that are all UFSs OK with this?
+On 23-03-21, 08:43, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> Yes, it must be OK.
+> Now that the auxiliary_bus exists, there's no reason to use platform
+> devices as children of a PCI device any longer.
 > 
-> Please refer the following the HPB 2.0 spec:
+> This patch refactors the code by extending a basic auxiliary device
+> with Intel link-specific structures that need to be passed between
+> controller and link levels. This refactoring is much cleaner with no
+> need for cross-pointers between device and link structures.
 > 
-> If the HPB Entries sent by HPB WRITE BUFFER are removed by the device,
-> for example, because they are not consumed for a long enough period of 
-> time,
-> then the HPB READ command for the removed HPB entries shall be handled 
-> as a
-> normal READ command.
+> Note that the auxiliary bus API has separate init and add steps, which
+> requires more attention in the error unwinding paths. The main loop
+> needs to deal with kfree() and auxiliary_device_uninit() for the
+> current iteration before jumping to the common label which releases
+> everything allocated in prior iterations.
 > 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
+>  drivers/soundwire/Kconfig           |   1 +
+>  drivers/soundwire/intel.c           |  52 ++++----
+>  drivers/soundwire/intel.h           |  14 +-
+>  drivers/soundwire/intel_init.c      | 190 +++++++++++++++++++---------
+>  include/linux/soundwire/sdw_intel.h |   6 +-
+>  5 files changed, 175 insertions(+), 88 deletions(-)
+> 
+> diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+> index 016e74230bb7..2b7795233282 100644
+> --- a/drivers/soundwire/Kconfig
+> +++ b/drivers/soundwire/Kconfig
+> @@ -25,6 +25,7 @@ config SOUNDWIRE_INTEL
+>  	tristate "Intel SoundWire Master driver"
+>  	select SOUNDWIRE_CADENCE
+>  	select SOUNDWIRE_GENERIC_ALLOCATION
+> +	select AUXILIARY_BUS
+>  	depends on ACPI && SND_SOC
+>  	help
+>  	  SoundWire Intel Master driver.
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index d2254ee2fee2..039a101982c9 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -11,7 +11,7 @@
+>  #include <linux/module.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+> -#include <linux/platform_device.h>
+> +#include <linux/auxiliary_bus.h>
+>  #include <sound/pcm_params.h>
+>  #include <linux/pm_runtime.h>
+>  #include <sound/soc.h>
+> @@ -1331,9 +1331,10 @@ static int intel_init(struct sdw_intel *sdw)
+>  /*
+>   * probe and init
+>   */
+> -static int intel_master_probe(struct platform_device *pdev)
+> +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
+>  {
+> -	struct device *dev = &pdev->dev;
+> +	struct device *dev = &auxdev->dev;
+> +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
 
-No, it is talking about the subsequent HPB READ cmd sent after a HPB 
-WRITE BUFFER cmd,
-but not the HPB WRITE BUFFER cmd itself...
+Do we need another abstractions for resources here, why not aux dev
+creation set the resources required and we skip this step...
 
-Thanks,
-Can Guo.
+>  	struct sdw_intel *sdw;
+>  	struct sdw_cdns *cdns;
+>  	struct sdw_bus *bus;
+> @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
+>  	cdns = &sdw->cdns;
+>  	bus = &cdns->bus;
+>  
+> -	sdw->instance = pdev->id;
+> -	sdw->link_res = dev_get_platdata(dev);
+> +	sdw->instance = auxdev->id;
 
-> Thanks,
-> Daejun
-> 
->> Thanks,
->> Can Guo.
->> 
->>> 
->>> Thanks,
->>> Daejun
->>> 
->>>> Thanks,
->>>> Can Guo.
->>>> 
->>>>> 
->>>>> Thanks,
->>>>> Daejun
->>>>> 
->>>>>> Please correct me if I am wrong.
->>>>> 
->>>>> 
->>>>> 
->>>>>> Thanks,
->>>>>> Can Guo.
->>>>>> 
->>>>>> 
->>>>>> 
->>>> 
->>>> 
->>>> 
->> 
->> 
->> 
+so auxdev has id and still we pass id as argument :( Not sure if folks
+can fix this now
+
+> +	sdw->link_res = &ldev->link_res;
+>  	cdns->dev = dev;
+>  	cdns->registers = sdw->link_res->registers;
+>  	cdns->instance = sdw->instance;
+>  	cdns->msg_count = 0;
+>  
+> -	bus->link_id = pdev->id;
+> +	bus->link_id = auxdev->id;
+>  
+>  	sdw_cdns_probe(cdns);
+>  
+> @@ -1386,10 +1387,10 @@ static int intel_master_probe(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -int intel_master_startup(struct platform_device *pdev)
+> +int intel_link_startup(struct auxiliary_device *auxdev)
+>  {
+>  	struct sdw_cdns_stream_config config;
+> -	struct device *dev = &pdev->dev;
+> +	struct device *dev = &auxdev->dev;
+>  	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+>  	struct sdw_intel *sdw = cdns_to_intel(cdns);
+>  	struct sdw_bus *bus = &cdns->bus;
+> @@ -1526,9 +1527,9 @@ int intel_master_startup(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static int intel_master_remove(struct platform_device *pdev)
+> +static void intel_link_remove(struct auxiliary_device *auxdev)
+>  {
+> -	struct device *dev = &pdev->dev;
+> +	struct device *dev = &auxdev->dev;
+>  	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+>  	struct sdw_intel *sdw = cdns_to_intel(cdns);
+>  	struct sdw_bus *bus = &cdns->bus;
+> @@ -1544,19 +1545,17 @@ static int intel_master_remove(struct platform_device *pdev)
+>  		snd_soc_unregister_component(dev);
+>  	}
+>  	sdw_bus_master_delete(bus);
+> -
+> -	return 0;
+>  }
+>  
+> -int intel_master_process_wakeen_event(struct platform_device *pdev)
+> +int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
+>  {
+> -	struct device *dev = &pdev->dev;
+> +	struct device *dev = &auxdev->dev;
+>  	struct sdw_intel *sdw;
+>  	struct sdw_bus *bus;
+>  	void __iomem *shim;
+>  	u16 wake_sts;
+>  
+> -	sdw = platform_get_drvdata(pdev);
+> +	sdw = dev_get_drvdata(dev);
+
+No auxdev_get_drvdata() ?
+
+>  	bus = &sdw->cdns.bus;
+>  
+>  	if (bus->prop.hw_disabled) {
+> @@ -1978,17 +1977,22 @@ static const struct dev_pm_ops intel_pm = {
+>  	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
+>  };
+>  
+> -static struct platform_driver sdw_intel_drv = {
+> -	.probe = intel_master_probe,
+> -	.remove = intel_master_remove,
+> +static const struct auxiliary_device_id intel_link_id_table[] = {
+> +	{ .name = "soundwire_intel.link" },
+
+Curious why name with .link..?
+
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(auxiliary, intel_link_id_table);
+> +
+> +static struct auxiliary_driver sdw_intel_drv = {
+> +	.probe = intel_link_probe,
+> +	.remove = intel_link_remove,
+>  	.driver = {
+> -		.name = "intel-sdw",
+> +		/* auxiliary_driver_register() sets .name to be the modname */
+>  		.pm = &intel_pm,
+> -	}
+> +	},
+> +	.id_table = intel_link_id_table
+>  };
+> -
+> -module_platform_driver(sdw_intel_drv);
+> +module_auxiliary_driver(sdw_intel_drv);
+>  
+>  MODULE_LICENSE("Dual BSD/GPL");
+> -MODULE_ALIAS("platform:intel-sdw");
+> -MODULE_DESCRIPTION("Intel Soundwire Master Driver");
+> +MODULE_DESCRIPTION("Intel Soundwire Link Driver");
+> diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+> index 06bac8ba14e9..0b47b148da3f 100644
+> --- a/drivers/soundwire/intel.h
+> +++ b/drivers/soundwire/intel.h
+> @@ -7,7 +7,6 @@
+>  /**
+>   * struct sdw_intel_link_res - Soundwire Intel link resource structure,
+>   * typically populated by the controller driver.
+> - * @pdev: platform_device
+>   * @mmio_base: mmio base of SoundWire registers
+>   * @registers: Link IO registers base
+>   * @shim: Audio shim pointer
+> @@ -23,7 +22,6 @@
+>   * @list: used to walk-through all masters exposed by the same controller
+>   */
+>  struct sdw_intel_link_res {
+> -	struct platform_device *pdev;
+>  	void __iomem *mmio_base; /* not strictly needed, useful for debug */
+>  	void __iomem *registers;
+>  	void __iomem *shim;
+> @@ -48,7 +46,15 @@ struct sdw_intel {
+>  #endif
+>  };
+>  
+> -int intel_master_startup(struct platform_device *pdev);
+> -int intel_master_process_wakeen_event(struct platform_device *pdev);
+> +int intel_link_startup(struct auxiliary_device *auxdev);
+> +int intel_link_process_wakeen_event(struct auxiliary_device *auxdev);
+> +
+> +struct sdw_intel_link_dev {
+> +	struct auxiliary_device auxdev;
+> +	struct sdw_intel_link_res link_res;
+> +};
+
+I was hoping that with auxdev we can get rid of this init layer, can
+that still be done?
+
+The auxdev is created by Intel controller, so it sets up resources. I am
+not really happy that we need to continue having this layer.. can we add
+something is auxdev core to handle these situations.
+
+What I would like to see the end result is that sdw driver for Intel
+controller here is a simple auxdev device and no additional custom setup
+layer required... which implies that this handling should be moved into
+auxdev or Intel code setting up auxdev...
+
+-- 
+~Vinod
