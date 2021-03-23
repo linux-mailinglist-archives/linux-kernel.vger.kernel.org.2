@@ -2,132 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393A83459A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFE13459AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 09:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCWI0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 04:26:54 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:57276 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhCWI0c (ORCPT
+        id S229590AbhCWI15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 04:27:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25496 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229500AbhCWI1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 04:26:32 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210323082629epoutp010004d890e923d660e033edd698021487~u60Mhp6yA0525905259epoutp016
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:26:29 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210323082629epoutp010004d890e923d660e033edd698021487~u60Mhp6yA0525905259epoutp016
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616487989;
-        bh=Xo+jhCC10ChDIi0mr5wVxZzV9wpTjQjBsX6MB+xpKNU=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=HLpIjDblADnOSXWP5KtamFr35Hah45y8PtmBCmd6QPRiB0y0U/7Wsq5uS7ev3mUYA
-         nkyLgiMpSN3pecUJ3yHOEtnmYKg0Rm9YtFhPH4HOHPzZAQGkzf0piPjwlsBZISpQJU
-         Ecxxe7CiOUwTtrhaXY4SF9wV8sw8YvFdNIPNsCJs=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210323082629epcas1p1d3ea0b1172c6f8257e9ee9a7d4c5ecb8~u60MDlQh72945029450epcas1p1n;
-        Tue, 23 Mar 2021 08:26:29 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4F4PbR3147z4x9Q9; Tue, 23 Mar
-        2021 08:26:27 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        88.DD.63458.336A9506; Tue, 23 Mar 2021 17:26:27 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210323082626epcas1p2209ccbad05c79eea78ef3b0fc54c3690~u60J17y3n3014630146epcas1p2y;
-        Tue, 23 Mar 2021 08:26:26 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210323082626epsmtrp2ff6e25ab5642fad36ba3f68cd5880af2~u60J1LsCh2453724537epsmtrp2g;
-        Tue, 23 Mar 2021 08:26:26 +0000 (GMT)
-X-AuditID: b6c32a36-6dfff7000000f7e2-8e-6059a6332204
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        32.CD.08745.236A9506; Tue, 23 Mar 2021 17:26:26 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210323082626epsmtip2263af203b844a0ffb24901375eec488b~u60Joltr12321823218epsmtip2N;
-        Tue, 23 Mar 2021 08:26:26 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        "'Hyeongseok Kim'" <hyeongseok@gmail.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <016101d71edf$8542b240$8fc816c0$@samsung.com>
-Subject: RE: [PATCH v3] exfat: speed up iterate/lookup by fixing start point
- of traversing cluster chain
-Date:   Tue, 23 Mar 2021 17:26:26 +0900
-Message-ID: <010601d71fbe$37b62450$a7226cf0$@samsung.com>
+        Tue, 23 Mar 2021 04:27:46 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12N84K52024266;
+        Tue, 23 Mar 2021 04:27:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=LUgqbQvwR+sfvIaSMzft1kWLvPHosRvGCoObmhMnUQI=;
+ b=qFGu+AfuXUtFzCsz3Byw9cxakJDw09yyFf7HfvGRn6NiouNUxMVdqcJ0bVCLDdW7Uux/
+ QNDUKrloYEVyBN/zasCuBi999pHHPIv6rhrToZFHZOSBLtERt6tKefKsaboI322W/Ufq
+ QIMsHeidwaqIxh66mgYlC7BJWumgs5BlNhy4avIZmkSS3tVyNqiH8VmjCJ81KfjX4X1n
+ c0cZrl2QtegzfOBWxMuyecu7W/kx2NtB8wLooM2gd17vCH3gKp/i6V1+VhdBkURSCsDz
+ aQ9+nahI39S3qax8rllWWoeGOk62KgTddqiBZoQFufzAivWVvN9bFakYFNuILAErwvFX EQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37dxjwk124-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 04:27:43 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12N85ZGS029957;
+        Tue, 23 Mar 2021 04:27:43 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37dxjwk111-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 04:27:42 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12N8RLdn001885;
+        Tue, 23 Mar 2021 08:27:40 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 37d9a61mrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 08:27:40 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12N8RJAX36372978
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 08:27:20 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BBBCBA405B;
+        Tue, 23 Mar 2021 08:27:37 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7700DA405C;
+        Tue, 23 Mar 2021 08:27:36 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.165.64])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 23 Mar 2021 08:27:36 +0000 (GMT)
+Date:   Tue, 23 Mar 2021 10:27:34 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 1/4] userfaultfd.2: Add UFFD_FEATURE_THREAD_ID docs
+Message-ID: <YFmmdklW9wvs4ep3@linux.ibm.com>
+References: <20210322220848.52162-1-peterx@redhat.com>
+ <20210322220848.52162-2-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFCCaC8jPi/61EWNQoXs0UvpNzAUAIaXSUoAZfvdIOrndYpwA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDKsWRmVeSWpSXmKPExsWy7bCmnq7xssgEg5M3xCz+TvzEZLFn70kW
-        i8u75rBZbPl3hNWBxWPnrLvsHn1bVjF6fN4kF8AclWOTkZqYklqkkJqXnJ+SmZduq+QdHO8c
-        b2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA7RNSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKr
-        lFqQklNgaFCgV5yYW1yal66XnJ9rZWhgYGQKVJmQk3Fqo2zBJPaKvqP9LA2MZ1i7GDk5JARM
-        JNavP8zcxcjFISSwg1Giu2UiI4TziVGibfFnsCohgc+MEh82hMJ0HGv5CFW0i1Hi4uUr7BDO
-        S0aJWzffg3WwCehK/Puznw3EFhGIkti77B0TiM0s4CzRefE0WA2ngJXE7+Pb2EFsYYEsifU7
-        O8DiLAKqElMeTwXr5RWwlHh17yk7hC0ocXLmExaIOfIS29/OYYa4SEHi59NlQL0cQLucJFZd
-        1YEoEZGY3dkG9pqEwFt2iX/3HjFC1LtIvH8zA+p/YYlXx7ewQ9hSEp/f7WUDmSMhUC3xcT/U
-        +A5GiRffbSFsY4mb6zeArWIW0JRYv0sfIqwosfP3XEaItXwS7772sEJM4ZXoaBOCKFGV6Lt0
-        mAnClpboav/APoFRaRaSv2Yh+WsWkgdmISxbwMiyilEstaA4Nz212LDACDmmNzGCk6GW2Q7G
-        SW8/6B1iZOJgPMQowcGsJMLbEh6RIMSbklhZlVqUH19UmpNafIjRFBjSE5mlRJPzgek4ryTe
-        0NTI2NjYwsTM3MzUWEmcN9HgQbyQQHpiSWp2ampBahFMHxMHp1QDU2OJ+5ZTdmlHK39MtN3X
-        06Nk/vnTceV5JeInFKXudCtvjotLUk7b3u/AyP/hjn4qZ0kha3nasdTIt5rsNR9Ol935Vrvm
-        jxHre3FJNeXJK5Z8P878a8ay52oTHZZMr7700PS+dkDW/0fNKbftwu/NCQ19o+5RF9AqwFR4
-        PElZo6H2iKFW5/1bhkKJKqvmX3kg95zz9KQ7vodOnhdPKHdexlO6in3Hk7eHFJov6C9zO620
-        3F9bJMpzSr3cjFsPV/3JcpSrEd7hy5TUbc1556uoeulusa8fJ7xtzs1bLpLDkfdEIXrH++0v
-        ahTmThJ0ys64cyi8fCrD1U9nzz20YLgmteXPZ+aCwj7GQPmGtDm7lFiKMxINtZiLihMBYV3e
-        Ag8EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsWy7bCSvK7RssgEg7MtRhZ/J35istiz9ySL
-        xeVdc9gstvw7wurA4rFz1l12j74tqxg9Pm+SC2CO4rJJSc3JLEst0rdL4Mo4tVG2YBJ7Rd/R
-        fpYGxjOsXYycHBICJhLHWj4ydjFycQgJ7GCUWHHhGAtEQlri2IkzzF2MHEC2sMThw8UQNc8Z
-        JS7/u8AMUsMmoCvx789+NhBbRCBK4tzxM2A2s4CrRNuLI6wQDTsZJRq2QiQ4Bawkfh/fxg5i
-        CwtkSNzZ/hbsChYBVYkpj6eC1fAKWEq8uveUHcIWlDg58wkLxFBtid6HrYwQtrzE9rdzmCEO
-        VZD4+XQZK8ihIgJOEquu6kCUiEjM7mxjnsAoPAvJpFlIJs1CMmkWkpYFjCyrGCVTC4pz03OL
-        DQuM8lLL9YoTc4tL89L1kvNzNzGCI0NLawfjnlUf9A4xMnEwHmKU4GBWEuFtCY9IEOJNSays
-        Si3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNTqoFprbx44Hsnu8NPP53v
-        TCqaJ5Ow+Bb/Y+azBqqZOlU9zTVTezb5LWhcy5y4qiSquNldVnh+MM96nybNroSeeQ8Xzbfc
-        0CLfcPkTLwtvolBuxuPFqpOCijniVhlsZgj4wiC/zl1CfW5+YHz6vtaySrUPncKB3yTFHrHJ
-        stwqM7u2qidE4KGITdyuhzfaDxaeD/PVTJ31ozMq7vYRV27TMJ/7J20WBV8RXFiRPplTb8NZ
-        xo5b/1/uc5SfX6gTL6Zc+6C7zcgwsLV+8o/7Das2H9X9Jyv3Z56GZIKRlKOdhtUB55cLo6Qz
-        e5sZuFglTHMOmQleLG1mdmBkrZqXl/L8+BvZkPPam+MC86NKZuUosRRnJBpqMRcVJwIArwgT
-        bfsCAAA=
-X-CMS-MailID: 20210323082626epcas1p2209ccbad05c79eea78ef3b0fc54c3690
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210322035356epcas1p35cf4d476030f5ebaf6357c5761355605
-References: <CGME20210322035356epcas1p35cf4d476030f5ebaf6357c5761355605@epcas1p3.samsung.com>
-        <20210322035336.81050-1-hyeongseok@gmail.com>
-        <016101d71edf$8542b240$8fc816c0$@samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322220848.52162-2-peterx@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_02:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103230057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > When directory iterate and lookup is called, there's a buggy rewinding
-> > of start point for traversing cluster chain to the parent directory
-> > entry's first cluster. This caused repeated cluster chain traversing
-> > from the first entry of the parent directory that would show worse
-> > performance if huge amounts of files exist under the parent directory.
-> > Fix not to rewind, make continue from currently referenced cluster and
-> > dir entry.
-> >
-> > Tested with 50,000 files under single directory / 256GB sdcard, with
-> > command "time ls -l > /dev/null",
-> > Before :     0m08.69s real     0m00.27s user     0m05.91s system
-> > After  :     0m07.01s real     0m00.25s user     0m04.34s system
-> >
-> > Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+On Mon, Mar 22, 2021 at 06:08:45PM -0400, Peter Xu wrote:
+> UFFD_FEATURE_THREAD_ID is supported since Linux 4.14.
 > 
-> Looks good.
-> Thanks for your contribution.
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  man2/userfaultfd.2 | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
-Applied. Thanks!
+> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+> index e7dc9f813..555e37409 100644
+> --- a/man2/userfaultfd.2
+> +++ b/man2/userfaultfd.2
+> @@ -77,6 +77,13 @@ When the last file descriptor referring to a userfaultfd object is closed,
+>  all memory ranges that were registered with the object are unregistered
+>  and unread events are flushed.
+>  .\"
+> +.PP
+> +Since Linux 4.14, userfaultfd page fault message can selectively embed faulting
+> +thread ID information into the fault message.
+> +One needs to enable this feature explicitly using the
+> +.BR UFFD_FEATURE_THREAD_ID
+> +feature bit when initializing the userfaultfd context.
+> +By default, thread ID reporting is diabled.
 
+				     ^ disabled :)
+>  .SS Usage
+>  The userfaultfd mechanism is designed to allow a thread in a multithreaded
+>  program to perform user-space paging for the other threads in the process.
+> @@ -229,6 +236,9 @@ struct uffd_msg {
+>          struct {
+>              __u64 flags;    /* Flags describing fault */
+>              __u64 address;  /* Faulting address */
+> +            union {
+> +                __u32 ptid; /* Thread ID of the fault */
+> +            } feat;
+>          } pagefault;
+> 
+>          struct {            /* Since Linux 4.11 */
+> @@ -358,6 +368,9 @@ otherwise it is a read fault.
+>  .\" UFFD_PAGEFAULT_FLAG_WP is not yet supported.
+>  .RE
+>  .TP
+> +.I pagefault.feat.pid
+> +The thread ID that triggered the page fault.
+> +.TP
+>  .I fork.ufd
+>  The file descriptor associated with the userfault object
+>  created for the child created by
+> -- 
+> 2.26.2
+> 
+
+-- 
+Sincerely yours,
+Mike.
