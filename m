@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAE23455B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F213455BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhCWCvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 22:51:12 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14426 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhCWCuc (ORCPT
+        id S230047AbhCWCvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 22:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhCWCv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:50:32 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F4G5y1fLmzkcpC;
-        Tue, 23 Mar 2021 10:48:54 +0800 (CST)
-Received: from vm-Yoda-Ubuntu1804.huawei.com (10.67.174.59) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Mar 2021 10:50:20 +0800
-From:   Xu Yihang <xuyihang@huawei.com>
-To:     <kys@microsoft.com>, <haiyangz@microsoft.com>,
-        <sthemmin@microsoft.com>, <wei.liu@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>
-CC:     <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <xuyihang@huawei.com>, <johnny.chenyi@huawei.com>
-Subject: [PATCH -next] x86: Fix unused variable 'hi'
-Date:   Tue, 23 Mar 2021 10:50:13 +0800
-Message-ID: <20210323025013.191533-1-xuyihang@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210318074607.124663-1-xuyihang@huawei.com>
-References: <20210318074607.124663-1-xuyihang@huawei.com>
+        Mon, 22 Mar 2021 22:51:28 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFD5C061574;
+        Mon, 22 Mar 2021 19:51:28 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id 7so12968405qka.7;
+        Mon, 22 Mar 2021 19:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UWr8b6NVfNVSJB4y0TRipb+mBEkENqc20wn57/NFQ9Y=;
+        b=aKRkX0bOJss5xZb4KASYkiVKal5zi1VIB4o8hIiMbI8u3GI1l6xzwTVK1qAQcuSkCd
+         vofeoGyuScbFKl85vlgd/tYDZKgNSZLzcmN59HqNSEIh0gs4LBcFqK/4uhr/BUyvfsYm
+         zjSIT9abXlqPTFbUdd/qjDwhKhv22yXGfcW5Cwv5wxMQy0De7tiiN6tHMPz/+GVgt2Ut
+         KeV2U/N6/H7X1BZPPUbHT662Tksf+GTqBoooeDMqNFo3XoYRhSN2jVe/G7osyJFr89QB
+         5H1yP+l6tdu23PEvC8+5fIM2g/BhPR3vHWqeGZWbLekvTexsI8MEuXRl7oTnhqX3aXOZ
+         KyAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UWr8b6NVfNVSJB4y0TRipb+mBEkENqc20wn57/NFQ9Y=;
+        b=M2ebDKetCWifRW2VZLVLghsEUIUSEFou/smxDgT9IKyKWoYKg/mwYZE7G61WjUPnQB
+         YW0ywz9+k6RCbZGbpgTcEbUQ3I3LvnWGDmprAGeiPzRXaOCm8Ux02f4580QEXQPXUxtZ
+         6eKGRveKo/PutuqN2J9y5yB4Pim1Vrz3WYLcnXKEHvqdflAoxLTfqL+FnOan51Ky1mN8
+         IoMtIRxAwmcaCHbHSnOsK6vqHzXrNBI+KH/myTxfc6hDZRVmCXfXyzOBjwVxkzW+ol5R
+         lariAIhttZUd16rQjAT526VNHRoyw+1IifKT9j562dHdjOhU/FhltW1uU/yLnkU7ivmk
+         6vRg==
+X-Gm-Message-State: AOAM533uRsutFjhM8sjZaKbbV+OBckDgjerlPnRUPlZRCc4AzP1AxV1Z
+        dqP2WlMvlaaQ4k207WufDfU=
+X-Google-Smtp-Source: ABdhPJwfxZXvAuR8ORJL5ck+l5CXF3iwnwgTLK+4AVw70Xdh9Ng6Y8kQzjLU8WBVD7JEFSCJqpTPfg==
+X-Received: by 2002:a37:dcb:: with SMTP id 194mr3530832qkn.4.1616467887437;
+        Mon, 22 Mar 2021 19:51:27 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id h13sm292265qtn.26.2021.03.22.19.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 19:51:26 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Pedro Tammela <pctammela@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/2] add support for batched ops in LPM trie
+Date:   Mon, 22 Mar 2021 23:50:52 -0300
+Message-Id: <20210323025058.315763-1-pctammela@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.59]
-X-CFilter-Loop: Reflected
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
-arch/x86/hyperv/hv_apic.c:58:15: warning: variable ‘hi’ set but not used [-Wunused-but-set-variable]
+The patch itself is straightforward thanks to the infrastructure that is
+already in-place.
 
-Compiled with CONFIG_HYPERV enabled:
-make allmodconfig ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
-make W=1 arch/x86/hyperv/hv_apic.o ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+The tests follows the other '*_map_batch_ops' tests with minor tweaks.
 
-HV_X64_MSR_EOI stores on bit 31:0 and HV_X64_MSR_TPR stores in bit 7:0, which means higher
-32 bits are not really used, therefore  potentially cast to void in order to silent this warning.
+v1 -> v2:
+Fixes for checkpatch warnings
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xu Yihang <xuyihang@huawei.com>
----
- arch/x86/hyperv/hv_apic.c | 2 ++
- 1 file changed, 2 insertions(+)
+Pedro Tammela (2):
+  bpf: add support for batched operations in LPM trie maps
+  bpf: selftests: add tests for batched ops in LPM trie maps
 
-diff --git a/arch/x86/hyperv/hv_apic.c b/arch/x86/hyperv/hv_apic.c
-index 284e73661a18..a8b639498033 100644
---- a/arch/x86/hyperv/hv_apic.c
-+++ b/arch/x86/hyperv/hv_apic.c
-@@ -60,9 +60,11 @@ static u32 hv_apic_read(u32 reg)
- 	switch (reg) {
- 	case APIC_EOI:
- 		rdmsr(HV_X64_MSR_EOI, reg_val, hi);
-+		(void) hi;
- 		return reg_val;
- 	case APIC_TASKPRI:
- 		rdmsr(HV_X64_MSR_TPR, reg_val, hi);
-+		(void) hi;
- 		return reg_val;
- 
- 	default:
+ kernel/bpf/lpm_trie.c                         |   3 +
+ .../map_tests/lpm_trie_map_batch_ops.c (new)  | 158 ++++++++++++++++++
+ 2 files changed, 161 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
+
 -- 
-2.17.1
+2.25.1
 
