@@ -2,206 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB30346532
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EF7346536
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbhCWQaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:30:10 -0400
-Received: from outbound-smtp57.blacknight.com ([46.22.136.241]:48177 "EHLO
-        outbound-smtp57.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233150AbhCWQ3w (ORCPT
+        id S233369AbhCWQan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:30:43 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:36856 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233342AbhCWQaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:29:52 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp57.blacknight.com (Postfix) with ESMTPS id 2060DFACCD
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 16:29:51 +0000 (GMT)
-Received: (qmail 4407 invoked from network); 23 Mar 2021 16:29:50 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Mar 2021 16:29:50 -0000
-Date:   Tue, 23 Mar 2021 16:29:49 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/3 v5] Introduce a bulk order-0 page allocator
-Message-ID: <20210323162949.GM3697@techsingularity.net>
-References: <20210322091845.16437-1-mgorman@techsingularity.net>
- <20210323104421.GK3697@techsingularity.net>
- <20210323160814.62a248fb@carbon>
+        Tue, 23 Mar 2021 12:30:35 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id EA9091280510;
+        Tue, 23 Mar 2021 09:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1616517034;
+        bh=7yFG5lL2+BNpd1ONVR4hyeUFNcZHrwq0RYV98R5DXcY=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=LUacreyrugyWSFUJrW1JxkrINrQLIwKlzgLk0TErBBgxkIB/iQoDhT7ZGBGrvGOqZ
+         n5DVIoL66VnDp7HnKHSiZ03dKPpv/DEoLASMVbYLui5SDViVC554+538qIb6laFUMm
+         auCC/PZgZlglg7nMWv4CNwFu32HBSVqcdL70PVYo=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1EIiGR9pV7zf; Tue, 23 Mar 2021 09:30:34 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 720E4128050C;
+        Tue, 23 Mar 2021 09:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1616517034;
+        bh=7yFG5lL2+BNpd1ONVR4hyeUFNcZHrwq0RYV98R5DXcY=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=LUacreyrugyWSFUJrW1JxkrINrQLIwKlzgLk0TErBBgxkIB/iQoDhT7ZGBGrvGOqZ
+         n5DVIoL66VnDp7HnKHSiZ03dKPpv/DEoLASMVbYLui5SDViVC554+538qIb6laFUMm
+         auCC/PZgZlglg7nMWv4CNwFu32HBSVqcdL70PVYo=
+Message-ID: <72f1c67bc8ad21bb1e5a7d77b88e2c3e50065e3b.camel@HansenPartnership.com>
+Subject: Re: [Ksummit-discuss] RFC: create mailing list "linux-issues"
+ focussed on issues/bugs and regressions
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        workflows@vger.kernel.org,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Date:   Tue, 23 Mar 2021 09:30:33 -0700
+In-Reply-To: <20210323122025.77888b49@gandalf.local.home>
+References: <613fe50d-fc9c-6282-f1f3-34653acb2ee9@leemhuis.info>
+         <CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com>
+         <62b60247-7838-a624-706e-b1a54785b2a5@leemhuis.info>
+         <20210323122025.77888b49@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210323160814.62a248fb@carbon>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:08:14PM +0100, Jesper Dangaard Brouer wrote:
-> On Tue, 23 Mar 2021 10:44:21 +0000
-> Mel Gorman <mgorman@techsingularity.net> wrote:
+On Tue, 2021-03-23 at 12:20 -0400, Steven Rostedt wrote:
+> On Mon, 22 Mar 2021 20:25:15 +0100
+> Thorsten Leemhuis <linux@leemhuis.info> wrote:
 > 
-> > On Mon, Mar 22, 2021 at 09:18:42AM +0000, Mel Gorman wrote:
-> > > This series is based on top of Matthew Wilcox's series "Rationalise
-> > > __alloc_pages wrapper" and does not apply to 5.12-rc2. If you want to
-> > > test and are not using Andrew's tree as a baseline, I suggest using the
-> > > following git tree
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v5r9
-> > >   
-> > 
-> > Jesper and Chuck, would you mind rebasing on top of the following branch
-> > please? 
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-bulk-rebase-v6r2
-> > 
-> > The interface is the same so the rebase should be trivial.
-> > 
-> > Jesper, I'm hoping you see no differences in performance but it's best
-> > to check.
+> > I agree to the last point and yeah, maybe regressions are the more
+> > important problem we should work on – at least from the perspective
+> > of kernel development.  But from the users perspective (and
+> > reporting-issues.rst is written for that perspective) it feel a bit
+> > unsatisfying to not have a solution to query for existing report,
+> > regressions or not. Hmmmm...
 > 
-> I will rebase and check again.
+> I think the bulk of user issues are going to be regressions. Although
+> you may be in a better position to know for sure, but at least for
+> me, wearing my "user" hat, the thing that gets me the most is
+> upgrading to a new kernel and suddenly something that use to work no
+> longer does. And that is the definition of a regression. My test
+> boxes still run old distros (one is running fedora 13). These are the
+> boxes that catch the most issues, and if they do, they are pretty
+> much guaranteed to be a regression.
 > 
-> The current performance tests that I'm running, I observe that the
-> compiler layout the code in unfortunate ways, which cause I-cache
-> performance issues.  I wonder if you could integrate below patch with
-> your patchset? (just squash it)
-> 
+> I like the "linux-regressions" mailing list idea.
 
-Yes but I'll keep it as a separate patch that is modified slightly.
-Otherwise it might get "fixed" as likely/unlikely has been used
-inappropriately in the past. If there is pushback, I'll squash them
-together.
+Can't we use the fancy features of public inbox to get the best of both
+worlds?  Have the bug list (or even a collection of lists) but make the
+linux-regressions one a virtual list keying off an imap flag which a
+group of people control.  That way anything that is flagged as a
+regression appears in that public inbox.  I assume the search can be
+quite wide so we could flag a regression on any list indexed by lore?
 
-> From: Jesper Dangaard Brouer <brouer@redhat.com>
-> 
-> Looking at perf-report and ASM-code for __alloc_pages_bulk() then the code
-> activated is suboptimal. The compiler guess wrong and place unlikely code in
-> the beginning. Due to the use of WARN_ON_ONCE() macro the UD2 asm
-> instruction is added to the code, which confuse the I-cache prefetcher in
-> the CPU
-> 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  mm/page_alloc.c |   10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index f60f51a97a7b..88a5c1ce5b87 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5003,10 +5003,10 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	unsigned int alloc_flags;
->  	int nr_populated = 0, prep_index = 0;
->  
-> -	if (WARN_ON_ONCE(nr_pages <= 0))
-> +	if (unlikely(nr_pages <= 0))
->  		return 0;
->  
+James
 
-Ok, I can make this change. It was a defensive check for the new callers
-in case insane values were being passed in. 
 
-> -	if (WARN_ON_ONCE(page_list && !list_empty(page_list)))
-> +	if (unlikely(page_list && !list_empty(page_list)))
->  		return 0;
->  
->  	/* Skip populated array elements. */
-
-FWIW, this check is now gone. The list only had to be empty if
-prep_new_page was deferred until IRQs were enabled to avoid accidentally
-calling prep_new_page() on a page that was already on the list when
-alloc_pages_bulk was called.
-
-> @@ -5018,7 +5018,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  		prep_index = nr_populated;
->  	}
->  
-> -	if (nr_pages == 1)
-> +	if (unlikely(nr_pages == 1))
->  		goto failed;
->  
->  	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-
-I'm dropping this because nr_pages == 1 is common for the sunrpc user.
-
-> @@ -5054,7 +5054,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	 * If there are no allowed local zones that meets the watermarks then
->  	 * try to allocate a single page and reclaim if necessary.
->  	 */
-> -	if (!zone)
-> +	if (unlikely(!zone))
->  		goto failed;
->  
->  	/* Attempt the batch allocation */
-
-Ok.
-
-> @@ -5075,7 +5075,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  
->  		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
->  								pcp, pcp_list);
-> -		if (!page) {
-> +		if (unlikely(!page)) {
->  			/* Try and get at least one page */
->  			if (!nr_populated)
->  				goto failed_irq;
-
-Hmmm, ok. It depends on memory pressure but I agree !page is unlikely.
-
-Current version applied is
-
---8<--
-mm/page_alloc: optimize code layout for __alloc_pages_bulk
-
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-
-Looking at perf-report and ASM-code for __alloc_pages_bulk() it is clear
-that the code activated is suboptimal. The compiler guesses wrong and
-places unlikely code at the beginning. Due to the use of WARN_ON_ONCE()
-macro the UD2 asm instruction is added to the code, which confuse the
-I-cache prefetcher in the CPU.
-
-[mgorman: Minor changes and rebasing]
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index be1e33a4df39..1ec18121268b 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5001,7 +5001,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	unsigned int alloc_flags;
- 	int nr_populated = 0;
- 
--	if (WARN_ON_ONCE(nr_pages <= 0))
-+	if (unlikely(nr_pages <= 0))
- 		return 0;
- 
- 	/*
-@@ -5048,7 +5048,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 	 * If there are no allowed local zones that meets the watermarks then
- 	 * try to allocate a single page and reclaim if necessary.
- 	 */
--	if (!zone)
-+	if (unlikely(!zone))
- 		goto failed;
- 
- 	/* Attempt the batch allocation */
-@@ -5066,7 +5066,7 @@ int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 
- 		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
--		if (!page) {
-+		if (unlikely(!page)) {
- 			/* Try and get at least one page */
- 			if (!nr_populated)
- 				goto failed_irq;
