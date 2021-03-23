@@ -2,63 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E9834584F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E677345921
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCWHJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:09:07 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14428 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbhCWHI7 (ORCPT
+        id S229576AbhCWH5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:57:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229452AbhCWH53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:08:59 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F4Mr90rhDzkc0L;
-        Tue, 23 Mar 2021 15:07:21 +0800 (CST)
-Received: from hulk-robot-4.huawei.com (10.175.124.27) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Mar 2021 15:08:46 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
-        <mike.leach@linaro.org>, <leo.yan@linaro.org>,
-        <alexander.shishkin@linux.intel.com>, <coresight@lists.linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] coresight: etm-perf: Mark format_attr_contextid with static keyword
-Date:   Tue, 23 Mar 2021 07:54:52 +0000
-Message-ID: <20210323075452.38920-1-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 23 Mar 2021 03:57:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616486248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kcaHKFzhUNTLsAjpw1+KhOEgoZVwV6InNV5gxPVBjyI=;
+        b=MUfTqaO83aYu+hjtQsFgMKNpGaxel7D+KSQeDEsf4F3a/QCig6Hq27jZD8G+wx1kAHIsca
+        81TjNFl+4wFvtuCp6ZSz7yP3jaDCBdprDjnlt7Z6A/ryL9wx1B6l6JeS7YYj2PzU+9rkSF
+        LrnwWUFPS2duzGh3el5SGxJ7Hf6OMNc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-UUGRC1eVN0qqDt5fzuScAQ-1; Tue, 23 Mar 2021 03:57:24 -0400
+X-MC-Unique: UUGRC1eVN0qqDt5fzuScAQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F37EB87A83F;
+        Tue, 23 Mar 2021 07:57:21 +0000 (UTC)
+Received: from localhost (ovpn-13-5.pek2.redhat.com [10.72.13.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5BDDB66A05;
+        Tue, 23 Mar 2021 07:57:18 +0000 (UTC)
+Date:   Tue, 23 Mar 2021 15:57:15 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
+Subject: Re: [PATCH] include: linux: Remove duplicate include of pgtable.h
+Message-ID: <20210323075715.GA13786@MiWiFi-R3L-srv>
+References: <20210323031352.258587-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323031352.258587-1-wanjiabing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+On 03/23/21 at 11:13am, Wan Jiabing wrote:
+> linux/pgtable.h has been included at line 11 with annotation.
+> So we remove the duplicate one at line 8.
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-drivers/hwtracing/coresight/coresight-etm-perf.c:61:25: warning: symbol
-'format_attr_contextid' was not declared. Should it be static?
+Thanks for your posting. But this resend is still not good. I have
+pasted the suggested log, wondering why you just ignore it and send v2
+without updating, and also not marking this is v2. Please read
+Documentation/process/submitting-patches.rst before you post next time.
+Anyway, I have ack-ed Tian Tao's patch since his patch log is good
+enough.
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/hwtracing/coresight/coresight-etm-perf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
+Baoquan
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 0f603b4094f2..bdbb77334329 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -58,7 +58,7 @@ static ssize_t format_attr_contextid_show(struct device *dev,
- 	return sprintf(page, "config:%d\n", pid_fmt);
- }
- 
--struct device_attribute format_attr_contextid =
-+static struct device_attribute format_attr_contextid =
- 	__ATTR(contextid, 0444, format_attr_contextid_show, NULL);
- 
- static struct attribute *etm_config_formats_attr[] = {
--- 
-2.17.1
+> ---
+>  include/linux/crash_dump.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
+> index a5192b718dbe..be79a45d7aa3 100644
+> --- a/include/linux/crash_dump.h
+> +++ b/include/linux/crash_dump.h
+> @@ -5,7 +5,6 @@
+>  #include <linux/kexec.h>
+>  #include <linux/proc_fs.h>
+>  #include <linux/elf.h>
+> -#include <linux/pgtable.h>
+>  #include <uapi/linux/vmcore.h>
+>  
+>  #include <linux/pgtable.h> /* for pgprot_t */
+> -- 
+> 2.25.1
+> 
 
