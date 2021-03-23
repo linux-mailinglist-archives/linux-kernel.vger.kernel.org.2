@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1CC346317
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD53934631B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbhCWPiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhCWPhj (ORCPT
+        id S232877AbhCWPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:39:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34016 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233002AbhCWPio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:37:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80683C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:37:39 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1lOj63-0006Fu-SA; Tue, 23 Mar 2021 16:37:31 +0100
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1lOj62-0006Yk-5P; Tue, 23 Mar 2021 16:37:30 +0100
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     kernel@pengutronix.de, Andrzej Hajda <a.hajda@samsung.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] driver core: add helper for deferred probe reason setting
-Date:   Tue, 23 Mar 2021 16:37:13 +0100
-Message-Id: <20210323153714.25120-2-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210323153714.25120-1-a.fatoum@pengutronix.de>
-References: <20210323153714.25120-1-a.fatoum@pengutronix.de>
+        Tue, 23 Mar 2021 11:38:44 -0400
+Date:   Tue, 23 Mar 2021 15:38:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616513923;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P8xwilMXz7AKKY64cPLxMUQ/aMptcJkwWwUCAgM8fDo=;
+        b=Ab6AmUH8z/UOcmflYsMNwFt/S0UmRunL83HsLLQZ/r1aOUm3LveVs2zW+sl1neg3jbnHYF
+        PXW4hyr9MssrycHe4D6BOtFRvmk1yzPSfKR5tFs7ZC9Qx0+AQPNO520zpW6/BWI/f9tGKX
+        A74QnvmaLArQwst5Rs4okWNvRo7/GKwG+uCxD7Dd9zR91npRyXvCM8ryokX/75m7Y6YKNL
+        d4jnBDh7qvaVTw5OeeswnARwhmMWd+5j/AHrHYVCnZ6xU2jSNkFxDujJoPbKHoHFsim/5v
+        2hNFxt/v4IDrbn+YH62cb31or69rQLf/UGVUD4vQA7h+iWCYvkst3wOjHbh3Mw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616513923;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P8xwilMXz7AKKY64cPLxMUQ/aMptcJkwWwUCAgM8fDo=;
+        b=5hRVJqQa2l90WZXgUX/4uhAowlC+UkyFnfVyqrT8V3zwz4TkVo6GQzQUotBioE6wqQ1shR
+        eNaHxCrIOhbWvVDA==
+From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/build: Turn off -fcf-protection for realmode targets
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210323124846.1584944-1-arnd@kernel.org>
+References: <20210323124846.1584944-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Message-ID: <161651392283.398.2424033132680458201.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We now have three places within the same file doing the same operation
-of freeing this pointer and setting it anew. A helper makes this
-arguably easier to read, so add one.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Commit-ID:     9fcb51c14da2953de585c5c6e50697b8a6e91a7b
+Gitweb:        https://git.kernel.org/tip/9fcb51c14da2953de585c5c6e50697b8a6e=
+91a7b
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Tue, 23 Mar 2021 13:48:36 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 23 Mar 2021 16:36:01 +01:00
+
+x86/build: Turn off -fcf-protection for realmode targets
+
+The new Ubuntu GCC packages turn on -fcf-protection globally,
+which causes a build failure in the x86 realmode code:
+
+  cc1: error: =E2=80=98-fcf-protection=E2=80=99 is not compatible with this t=
+arget
+
+Turn it off explicitly on compilers that understand this option.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210323124846.1584944-1-arnd@kernel.org
 ---
-v2 -> v3:
- - fixed typo in commit message (Andy)
- - collected Andy's and Andrzej's Reviewed-by
-v1 -> v2:
- - no change
----
- drivers/base/dd.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ arch/x86/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index e2cf3b29123e..4201baa1cc13 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -69,6 +69,12 @@ static char async_probe_drv_names[ASYNC_DRV_NAMES_MAX_LEN];
-  */
- static bool defer_all_probes;
- 
-+static void __device_set_deferred_probe_reason(const struct device *dev, char *reason)
-+{
-+	kfree(dev->p->deferred_probe_reason);
-+	dev->p->deferred_probe_reason = reason;
-+}
-+
- /*
-  * deferred_probe_work_func() - Retry probing devices in the active list.
-  */
-@@ -97,8 +103,7 @@ static void deferred_probe_work_func(struct work_struct *work)
- 
- 		get_device(dev);
- 
--		kfree(dev->p->deferred_probe_reason);
--		dev->p->deferred_probe_reason = NULL;
-+		__device_set_deferred_probe_reason(dev, NULL);
- 
- 		/*
- 		 * Drop the mutex while probing each device; the probe path may
-@@ -140,8 +145,7 @@ void driver_deferred_probe_del(struct device *dev)
- 	if (!list_empty(&dev->p->deferred_probe)) {
- 		dev_dbg(dev, "Removed from deferred list\n");
- 		list_del_init(&dev->p->deferred_probe);
--		kfree(dev->p->deferred_probe_reason);
--		dev->p->deferred_probe_reason = NULL;
-+		__device_set_deferred_probe_reason(dev, NULL);
- 	}
- 	mutex_unlock(&deferred_probe_mutex);
- }
-@@ -220,11 +224,12 @@ void device_unblock_probing(void)
- void device_set_deferred_probe_reason(const struct device *dev, struct va_format *vaf)
- {
- 	const char *drv = dev_driver_string(dev);
-+	char *reason;
- 
- 	mutex_lock(&deferred_probe_mutex);
- 
--	kfree(dev->p->deferred_probe_reason);
--	dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
-+	reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
-+	__device_set_deferred_probe_reason(dev, reason);
- 
- 	mutex_unlock(&deferred_probe_mutex);
- }
--- 
-2.29.2
-
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 2d6d5a2..9a85eae 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -27,7 +27,7 @@ endif
+ REALMODE_CFLAGS	:=3D -m16 -g -Os -DDISABLE_BRANCH_PROFILING \
+ 		   -Wall -Wstrict-prototypes -march=3Di386 -mregparm=3D3 \
+ 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
+-		   -mno-mmx -mno-sse
++		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=3Dnone)
+=20
+ REALMODE_CFLAGS +=3D -ffreestanding
+ REALMODE_CFLAGS +=3D -fno-stack-protector
