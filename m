@@ -2,83 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B698A34642D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7316F34642F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 16:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhCWP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 11:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        id S233044AbhCWP7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 11:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233002AbhCWP6f (ORCPT
+        with ESMTP id S233005AbhCWP6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:58:35 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70173C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:34 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id s21so10289783pjq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:34 -0700 (PDT)
+        Tue, 23 Mar 2021 11:58:45 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE30C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:45 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id 61so21278485wrm.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 08:58:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SfxnQOiV9YtUhVcKaF5V6wU86bSU5bXDZAmmBqiZiO8=;
-        b=D2p4/PesPSG1mrdD2nErlUzlOKRxAMLs38va47MURkQJ3SOMFZbuEkzyFsjKDX2iM7
-         yde2KQI8/GySy+QNOtg7Iz1d6WHS7tI2OioCyUjGWqSQSwVt/Ma6lrDSYf6l1Oa6yRzU
-         /slcrq3CdMoGOQ4CLBvJetxj1Y74nYhrujy55EkCjhJb4yZvd89I0146G9rnusoWWoIH
-         hnN7EHoTxyldjH13iWmmpgFRNfWDvdrCZAiEDhIMLHWlP389Yuy1tPUTFLTHkoAFbeB8
-         wdJ/FafA/R7UE8H7dhUhdXNbRooxP66soJoScEQkMX5vvdmnqIPFjONVRH0rGuKwOsAq
-         JxUw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=cyK9GwZbrXgU/Gi6qb7KmMrpgs6Gz19VbNc5ko69Bxg=;
+        b=QvHJQk94nhdpZIpLpS8pC7Tlh0fNSviZlXkMnUDJKnNPuSmdT6Q+5JXnCTk/6GI3x/
+         vgmZ6p64/5ZcKERKyFRdvkxyoLLKOl1ZRnvEUNfdOACvF02pdG+9o4e3lCAEN478L50/
+         YQ8o+/ZOBCMbihsgK+Kk2CHOV6Tzff9UI6A/vYu9iA23C2CdEBbuyhjXmMk9Q7vYLzD/
+         Yv3O/dqNSVLC3aVA4AYGW6Xg89krtqa3y0DAVsDPHVY81I5JxbHeizOlDIYe3CkUWPZx
+         kTHQaUiZifKwn4OiJW/QSzkWIIJwEh8BFeVvares8RwnCT+ZVc/KDbWpy32VLn2vrwM4
+         FAlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SfxnQOiV9YtUhVcKaF5V6wU86bSU5bXDZAmmBqiZiO8=;
-        b=p1WoiWZNmMNf0VGFFJPV0g1iFo65ZZ5IFZuXgs3xJMbXfE09d3s08dM0fr07rDEP/l
-         Wz0tdIWZSTcu7PRBeMSWiux0sEtV44U5bji4StVMjusTWgnONvhgL5ROjpStZsl0XkcC
-         s9pVifxP2khvLuTIL22teawOh1+pteSSKfJsMzjjW7rVbHsYiM30vAHM3wy8I6bxlD5L
-         +ROwL9t+fYm/9NkYrV1kt9++fGXEYMJ6fim03EGkLGQEVhBH85UEEv7NmH47Uu4NBhbg
-         PGoVvw6/ahXmVdUxmI/By2appbwm3A5NCzolhu8HE8BdJGgYd1kgR4VTAcPtdUQY3wyG
-         Wdtw==
-X-Gm-Message-State: AOAM533cV9qvrE1unOA4pdfYS3wM1NQhacsAZniAt8f+/cQbLWcOoQcD
-        UMfMwnrtEBqfRyZgSOFey9T9Rw==
-X-Google-Smtp-Source: ABdhPJx9v0kCbb15YUoBdgkPPfFrpgXF7gY9i57WrbCLPcQvRfVEROeZggyWBWyXluSfOwN0ZG+dwg==
-X-Received: by 2002:a17:90a:1502:: with SMTP id l2mr5004874pja.149.1616515113748;
-        Tue, 23 Mar 2021 08:58:33 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s28sm17894559pfd.155.2021.03.23.08.58.32
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cyK9GwZbrXgU/Gi6qb7KmMrpgs6Gz19VbNc5ko69Bxg=;
+        b=qgn0z91OozJW3GNw6KkhwBW8AOiTMH8DtkpqKTbp+tRAc6Sh1JOeAY7w+qCbS7FBPP
+         xeeCkpASL3TRLiL5O7qBmMGXuBV9eKduIM/aBg4AHsibncYv+cvZpqd8o1wuUxkpUTvr
+         ItUbtl21m1PrX+DfV065SWe2YH9zB1nLhfKuJAmwCKOqVJt4nTQ9b1AOhipMFSZbK4IA
+         ga8V57MRMMbMHEurZfK0phRM3SOKv5V7BV4QsXSlMWRTlTxSNMO8w/qkMWPar9X7W6Mg
+         Egy796wKSAEAN0xnvpY/TPuGSqA1488Rvm4LNUjkMD4pQBMn32H8fY8UI5Azqd1xbqAL
+         A65Q==
+X-Gm-Message-State: AOAM53244hju0rRvfq7sq4PJbx/aenVgBxMUveA+fHggZ0CKytyjXK8o
+        uHmX0ht++33S0+2bIqzLpPXiPQ==
+X-Google-Smtp-Source: ABdhPJz8cnWW2wVZ8muoCssomvubYn8mNfgOqi/4zhknz6k8122Olf0TUYv2Djj79RY0e51HmPKViA==
+X-Received: by 2002:adf:dc91:: with SMTP id r17mr4692370wrj.293.1616515124001;
+        Tue, 23 Mar 2021 08:58:44 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:4cfd:1405:ab5d:85f8])
+        by smtp.gmail.com with ESMTPSA id t20sm3076962wmi.15.2021.03.23.08.58.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 08:58:33 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 15:58:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v5 00/10] KVM: selftests: some improvement and a new
- test for kvm page table
-Message-ID: <YFoQJQ5OYEx3BD3Y@google.com>
-References: <20210323135231.24948-1-wangyanan55@huawei.com>
+        Tue, 23 Mar 2021 08:58:43 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 16:58:37 +0100
+From:   Marco Elver <elver@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
+        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
+        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
+        mascasa@google.com, pcc@google.com, irogers@google.com,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC v2 8/8] selftests/perf: Add kselftest for
+ remove_on_exec
+Message-ID: <YFoQLfsZXPn9zuT4@elver.google.com>
+References: <20210310104139.679618-1-elver@google.com>
+ <20210310104139.679618-9-elver@google.com>
+ <YFiamKX+xYH2HJ4E@elver.google.com>
+ <YFjI5qU0z3Q7J/jF@hirez.programming.kicks-ass.net>
+ <YFm6aakSRlF2nWtu@elver.google.com>
+ <YFnDo7dczjDzLP68@hirez.programming.kicks-ass.net>
+ <YFn/I3aKF+TOjGcl@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323135231.24948-1-wangyanan55@huawei.com>
+In-Reply-To: <YFn/I3aKF+TOjGcl@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021, Yanan Wang wrote:
-> Hi,
-> This v5 series can mainly include two parts.
-> Based on kvm queue branch: https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=queue
+On Tue, Mar 23, 2021 at 03:45PM +0100, Peter Zijlstra wrote:
+> On Tue, Mar 23, 2021 at 11:32:03AM +0100, Peter Zijlstra wrote:
+> > And at that point there's very little value in still using
+> > perf_event_exit_event()... let me see if there's something to be done
+> > about that.
+> 
+> I ended up with something like the below. Which then simplifies
+> remove_on_exec() to:
+> 
+[...]
+> 
+> Very lightly tested with that {1..1000} thing.
+> 
+> ---
+> 
+> Subject: perf: Rework perf_event_exit_event()
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Tue Mar 23 15:16:06 CET 2021
+> 
+> Make perf_event_exit_event() more robust, such that we can use it from
+> other contexts. Specifically the up and coming remove_on_exec.
+> 
+> For this to work we need to address a few issues. Remove_on_exec will
+> not destroy the entire context, so we cannot rely on TASK_TOMBSTONE to
+> disable event_function_call() and we thus have to use
+> perf_remove_from_context().
+> 
+> When using perf_remove_from_context(), there's two races to consider.
+> The first is against close(), where we can have concurrent tear-down
+> of the event. The second is against child_list iteration, which should
+> not find a half baked event.
+> 
+> To address this, teach perf_remove_from_context() to special case
+> !ctx->is_active and about DETACH_CHILD.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Given the number of Reviewed-by tags, I'm pretty sure you can drop the "RFC" :-)
+Very nice, thanks! It seems to all hold up to testing as well.
+
+Unless you already have this on some branch somewhere, I'll prepend it
+to the series for now. I'll test some more and try to get v3 out
+tomorrow.
+
+Thanks,
+-- Marco
