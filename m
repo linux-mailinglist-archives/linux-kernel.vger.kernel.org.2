@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41129346078
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 185FA346030
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 14:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhCWN5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 09:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231741AbhCWN4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:56:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 774A061994;
-        Tue, 23 Mar 2021 13:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616507806;
-        bh=V3M2Dwm+0tFY5g4Ivpe5s7ILfl+D4bolXtaNcX5eTA0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=le8IZ6Ol3RW2ZmuZSIUdM8NL+6nfJVyv2ZMvELYIG49JOKkcwJ0PpPaj8wgOPsFaF
-         6OEfzLI4pNQzlLIKPM53437m8DB3Ke3B7PGcI+9FPo5amtLHnncbJDMlIq8OmWOg7M
-         fsj+nvD3pHpGZRGzqJvqQAQtJAJwLH4jhcRFHfwI=
-Date:   Tue, 23 Mar 2021 14:50:21 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] scripts: stable: add script to validate backports
-Message-ID: <YFnyHaVyvgYl/qWg@kroah.com>
-References: <20210316213136.1866983-1-ndesaulniers@google.com>
+        id S230378AbhCWNwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 09:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhCWNwI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 09:52:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B58C061574;
+        Tue, 23 Mar 2021 06:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BH51iSUzyg9KZ7syxnXQS3KRs906Uf9wJkKS6a1BsxQ=; b=angZPyAg1GkZnw395mQ1H2hSyZ
+        8FOuwPttbyu8A1w79GjNbJ2Ieum4ZYQv23Oe3ZuJALNa7bX50chua3/7bvzuk2g4H8GOUuRC6/PQM
+        Hq5J51thoR+VeXDXKg67FA4Pp9G5lzX1rTN9EnLPIxEtzEC9ankHhUyPM0E8SxgpjkNXcMH1Yz4Tt
+        DDw3C28/GiSWV2VPdA5FotyoAThZeYb6ZrknqHo9PTiqk61ys+mhrvVoFqtF28H8htXQUl2cco69T
+        loCYl4Ngxp2H7mit+LkiOZ0FHezZ4vUaS/YRmBAzfLodBDRcJm+pu8DFMhBrYUhI5bzW/qIwD/IRL
+        XBhU3HsQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOhRE-00A7tp-Gh; Tue, 23 Mar 2021 13:51:19 +0000
+Date:   Tue, 23 Mar 2021 13:51:16 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/28] mm: Add an unlock function for
+ PG_private_2/PG_fscache
+Message-ID: <20210323135116.GF1719932@casper.infradead.org>
+References: <1885296.1616410586@warthog.procyon.org.uk>
+ <20210321105309.GG3420@casper.infradead.org>
+ <161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk>
+ <161539528910.286939.1252328699383291173.stgit@warthog.procyon.org.uk>
+ <2499407.1616505440@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210316213136.1866983-1-ndesaulniers@google.com>
+In-Reply-To: <2499407.1616505440@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 02:31:33PM -0700, Nick Desaulniers wrote:
-> A common recurring mistake made when backporting patches to stable is
-> forgetting to check for additional commits tagged with `Fixes:`. This
-> script validates that local commits have a `commit <sha40> upstream.`
-> line in their commit message, and whether any additional `Fixes:` shas
-> exist in the `master` branch but were not included. It can not know
-> about fixes yet to be discovered, or fixes sent to the mailing list but
-> not yet in mainline.
-> 
-> To save time, it avoids checking all of `master`, stopping early once
-> we've reached the commit time of the earliest backport. It takes 0.5s to
-> validate 2 patches to linux-5.4.y when master is v5.12-rc3 and 5s to
-> validate 27 patches to linux-4.19.y. It does not recheck dependencies of
-> found fixes; the user is expected to run this script to a fixed point.
-> It depnds on pygit2 python library for working with git, which can be
-> installed via:
-> $ pip3 install pygit2
-> 
-> It's expected to be run from a stable tree with commits applied.  For
-> example, consider 3cce9d44321e which is a fix for f77ac2e378be. Let's
-> say I cherry picked f77ac2e378be into linux-5.4.y but forgot
-> 3cce9d44321e (true story). If I ran:
-> 
-> $ ./scripts/stable/check_backports.py
-> Checking 1 local commits for additional Fixes: in master
-> Please consider backporting 3cce9d44321e as a fix for f77ac2e378be
+On Tue, Mar 23, 2021 at 01:17:20PM +0000, David Howells wrote:
+> +++ b/fs/afs/write.c
+> @@ -846,7 +846,7 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+>  	 */
+>  #ifdef CONFIG_AFS_FSCACHE
+>  	if (PageFsCache(page) &&
+> -	    wait_on_page_bit_killable(page, PG_fscache) < 0)
+> +	    wait_on_page_fscache_killable(page) < 0)
+>  		return VM_FAULT_RETRY;
+>  #endif
+>  
+> @@ -861,7 +861,8 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
+>  	 * details the portion of the page we need to write back and we might
+>  	 * need to redirty the page if there's a problem.
+>  	 */
+> -	wait_on_page_writeback(page);
+> +	if (wait_on_page_writeback_killable(page) < 0)
+> +		return VM_FAULT_RETRY | VM_FAULT_LOCKED;
 
-While interesting, I don't use a git tree for the stable queue, so this
-doesn't really fit into my workflow, sorry.
+You forgot to unlock the page.  Also, if you're waiting killably here,
+do you need to wait before you get the page lock?  Ditto for waiting on
+fscache -- do you want to do that before or after you get the page lock?
 
-And we do have other "stable tree helper" scripts in the
-stable-queue.git repo, perhaps that's a better place for this than the
-main kernel repo?
+Also, I never quite understood why you needed to wait for fscache
+writes to finish before allowing the page to be dirtied.  Is this a
+wait_for_stable_page() kind of situation, where the cache might be
+calculating a checksum on it?  Because as far as I can tell, once the
+page is dirty in RAM, the contents of the on-disk cache are irrelevant ...
+unless they're part of a RAID 5 checksum kind of situation.
 
-thanks,
-
-greg k-h
+I didn't spot any other problems ...
