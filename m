@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0966A34657F
+	by mail.lfdr.de (Postfix) with ESMTP id CFE9B346581
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhCWQkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:40:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41764 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233126AbhCWQkY (ORCPT
+        id S233332AbhCWQkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233268AbhCWQkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:40:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616517624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5BWe9jizGou9Z7iIZPltb/vzhcc5F+JZOIptQ1l0XQc=;
-        b=JgHAVWZUDSDVH76OG6TLRhyh9rOLmNiN2YLQH0QxFylzMbmtxNtk5TCE/C1xMlqxEShnkO
-        XesmBHbWTH8QvWsH86sDPLvAixkaLqBi0Gpq2Tplqpe6DEAFJTCIRbsf9Ihb4vHtyAaRYK
-        2oKpFzoQeEsgWenzUCrK7cxWkq/n85M=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-9eguR09DPXitp6ZzakBMdA-1; Tue, 23 Mar 2021 12:40:22 -0400
-X-MC-Unique: 9eguR09DPXitp6ZzakBMdA-1
-Received: by mail-wr1-f70.google.com with SMTP id t14so1351664wrx.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:40:22 -0700 (PDT)
+        Tue, 23 Mar 2021 12:40:40 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2492C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:40:28 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id z9so18701304ilb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 09:40:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Iw5CPLlTcGucRxEu7vlzfvI+RatbIeTpMhtRqIEzc3g=;
+        b=XeWlpbtwG7WfTuQUp7SZmDJSOwsohY1N9qLcBgXcqWgJ+GIwuvfzmv+u2zpdaOzpGN
+         H4Huggo0IplQmkVZQ0je4OFfvE3pgy02g2USgkVnDUuSlF89axZfEAJrpqiV5R9kCxen
+         5VSPDh3jC9tUJYnnr16CrGyNTd3zE6xKlSipFHStAqrtArxsKmYdRxFBun94Gr1xquHv
+         jLyEQCyvm7wutJNqsGwOogtH2Uh5+JzTUNBqDFdO4MtCBRsaVhYld5hFdJAXd0H7ihQB
+         6AGFy/hXlN0XSiyxH3fthMMg8PfJoWQvhVZ6kkuGMw1wYg80NAFtYTZr5Ee0TfIy1Nu/
+         irhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=5BWe9jizGou9Z7iIZPltb/vzhcc5F+JZOIptQ1l0XQc=;
-        b=DzXjWN2qfwSBF/WWQf+fuOlDk5kBszfpxwF0RqOgynhYfxU3OcJy8LgELTz9p7OqhZ
-         bONCgwtgrl3XUZgpsVwPLopeMWtz+/2BGJGrWHtScZVy910ngjpSqsNBfngPhdlA/mq7
-         0gpTTSAyELrIv70FpfyjX2wB6B0FfsQHO8dKy+i4iNpeklqdVwSS8jGNA4KY9cctUdQ3
-         CJ1D1NZMCTqSbjr379z4vSTX2c4wyCFbg439Erk9W+803YKubteSc26zu/uVWxffUUyI
-         0I8GJFlY3l/1Lqz6FQyH9zSVffhvJ8a5yO17DGB9F90b4yd1cdCIGGFJMmMCJvAqEb3q
-         SZAg==
-X-Gm-Message-State: AOAM531xnA+2c8fRNVWGPmAJrld+xf+EE6oxeW6ZC66waFbAJXs0C3pg
-        VRcdbT60AHONdlk4bCWlAwBt7O3uxC7UTa6kOEhOn2exXXQK25YT0AQEgWMB/GXfd7KQiV3zzNB
-        n2CxD0B0z+rz+qqHC44S6+g0B
-X-Received: by 2002:a05:600c:3514:: with SMTP id h20mr4212917wmq.45.1616517621100;
-        Tue, 23 Mar 2021 09:40:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgV8GAIHS3AZ2N+inHsbLx96rBH1y6Aiui1UHTThEyadz05ZOLO7nAbQtNg5qeojn2V0JkcA==
-X-Received: by 2002:a05:600c:3514:: with SMTP id h20mr4212895wmq.45.1616517620917;
-        Tue, 23 Mar 2021 09:40:20 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k4sm30869920wrd.9.2021.03.23.09.40.19
+        bh=Iw5CPLlTcGucRxEu7vlzfvI+RatbIeTpMhtRqIEzc3g=;
+        b=VH2wR1CZ/8FNUhCVjIjVdsT6XR7Paw4JJLWzYVqWxc00TrNEBloF18NQqCJBfdFxNt
+         n8mTwAboKLk64gzqw7pk/dKOm6lr13ZlojPDzNbwyLYPFpVPCulMK5L4FRT4CyqhxRwr
+         DmHw/q0kaZ8hsnkgtLSAeARL0BKV3LFxa90KSteWqZwandjRMdeAf+W3FWd0QW97HGa6
+         ZL4o6vkepcpCUGWS4uKcI05o4f6YF8/TzIxlRzCPLibtxN6PU9ABcQ7rSEKEcekaffUE
+         EQcsCa2jFJRhJHfZyK4NaB/j1blHz341O9QekVyhV51cLl+6m1Jeh+WwmPrPaqcS7mzk
+         lNMQ==
+X-Gm-Message-State: AOAM531igO5mwWx6A63qwicNJ4EHm/2I6Vwr4MCAMEbGpOyRCuc5mDaZ
+        nd6BhHNrBGyv9IZYuXFY/yQnmCksShTIug==
+X-Google-Smtp-Source: ABdhPJzCr77dVHWyAc4qjt5c40JPw0/DpGt+ZZ6j6DqfBUTusQj/f9exqT1TWBsUpPlogIl6004RUw==
+X-Received: by 2002:a05:6e02:13d4:: with SMTP id v20mr5423377ilj.1.1616517625651;
+        Tue, 23 Mar 2021 09:40:25 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id d1sm2797866ils.49.2021.03.23.09.40.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 09:40:20 -0700 (PDT)
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-References: <cover.1616136307.git.kai.huang@intel.com>
- <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
- <20210322181646.GG6481@zn.tnic> <YFjoZQwB7e3oQW8l@google.com>
- <a2e01d7b-255d-bf64-f258-f3b7f211fc2a@redhat.com>
- <20210323094336.ab622e64594a79d54f55e3d7@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <0918025f-736e-de4a-832e-b4b6d903eba2@redhat.com>
-Date:   Tue, 23 Mar 2021 17:40:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 23 Mar 2021 09:40:23 -0700 (PDT)
+Subject: Re: [PATCH v2] block: recalculate segment count for multi-segment
+ discards correctly
+To:     David Jeffery <djeffery@redhat.com>, linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20210211143807.GA115624@redhat>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c04bac6b-8375-ba5f-53f4-ee737ad33743@kernel.dk>
+Date:   Tue, 23 Mar 2021 10:40:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210323094336.ab622e64594a79d54f55e3d7@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210211143807.GA115624@redhat>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/03/21 21:43, Kai Huang wrote:
->> That was my recollection as well from previous threads but, to be fair
->> to Boris, the commit message is a lot more scary (and, which is what
->> triggers me, puts the blame on KVM).  It just says "KVM does not track
->> how guest pages are used, which means that SGX virtualization use of
->> EREMOVE might fail".
->
-> I don't see the commit msg being scary.  EREMOVE might fail but virtual EPC code
-> can handle that.  This is the reason to break out EREMOVE from original
-> sgx_free_epc_page(), so virtual EPC code can have its own logic of handling
-> EREMOVE failure.
+On 2/11/21 7:38 AM, David Jeffery wrote:
+> When a stacked block device inserts a request into another block device
+> using blk_insert_cloned_request, the request's nr_phys_segments field gets
+> recalculated by a call to blk_recalc_rq_segments in
+> blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
+> handle multi-segment discards. For disk types which can handle
+> multi-segment discards like nvme, this results in discard requests which
+> claim a single segment when it should report several, triggering a warning
+> in nvme and causing nvme to fail the discard from the invalid state.
+> 
+>  WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
+>  ...
+>  nvme_setup_cmd+0x217/0x270 [nvme_core]
+>  nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
+>  __blk_mq_try_issue_directly+0xe7/0x1b0
+>  blk_mq_request_issue_directly+0x41/0x70
+>  ? blk_account_io_start+0x40/0x50
+>  dm_mq_queue_rq+0x200/0x3e0
+>  blk_mq_dispatch_rq_list+0x10a/0x7d0
+>  ? __sbitmap_queue_get+0x25/0x90
+>  ? elv_rb_del+0x1f/0x30
+>  ? deadline_remove_request+0x55/0xb0
+>  ? dd_dispatch_request+0x181/0x210
+>  __blk_mq_do_dispatch_sched+0x144/0x290
+>  ? bio_attempt_discard_merge+0x134/0x1f0
+>  __blk_mq_sched_dispatch_requests+0x129/0x180
+>  blk_mq_sched_dispatch_requests+0x30/0x60
+>  __blk_mq_run_hw_queue+0x47/0xe0
+>  __blk_mq_delay_run_hw_queue+0x15b/0x170
+>  blk_mq_sched_insert_requests+0x68/0xe0
+>  blk_mq_flush_plug_list+0xf0/0x170
+>  blk_finish_plug+0x36/0x50
+>  xlog_cil_committed+0x19f/0x290 [xfs]
+>  xlog_cil_process_committed+0x57/0x80 [xfs]
+>  xlog_state_do_callback+0x1e0/0x2a0 [xfs]
+>  xlog_ioend_work+0x2f/0x80 [xfs]
+>  process_one_work+0x1b6/0x350
+>  worker_thread+0x53/0x3e0
+>  ? process_one_work+0x350/0x350
+>  kthread+0x11b/0x140
+>  ? __kthread_bind_mask+0x60/0x60
+>  ret_from_fork+0x22/0x30
+> 
+> This patch fixes blk_recalc_rq_segments to be aware of devices which can
+> have multi-segment discards. It calculates the correct discard segment
+> count by counting the number of bio as each discard bio is considered its
+> own segment.
 
-I should explain what I mean by scary.
+Applied, thanks.
 
-What you wrote above, "EREMOVE might fail but virtual EPC code can 
-handle that" sounds fine.  But it doesn't say the failure mode, so it's 
-hiding information.
-
-What I would like to have, "EREMOVE might fail and will be leaked, but 
-virtual EPC code will not crash and in any case there are much worse 
-problems waiting to happen" is fine.  (It's even better with an 
-explanation of the problems).
-
-Your message however was in the middle: "EREMOVE might fail, virtual EPC 
-code will not crash but the page will be leaked".  It gives the failure 
-mode but not how the problem arises, and it is this combination that 
-results in something scary-sounding.
-
-Paolo
+-- 
+Jens Axboe
 
