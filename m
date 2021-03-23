@@ -2,69 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506E0345C99
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3DD345C9A
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhCWLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:15:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:44132 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230358AbhCWLP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:15:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3C3F1042;
-        Tue, 23 Mar 2021 04:15:28 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D3CE3F719;
-        Tue, 23 Mar 2021 04:15:27 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 11:15:24 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bhelgaas@google.com,
-        robh+dt@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
-        gustavo.pimentel@synopsys.com, minghuan.Lian@nxp.com,
-        mingkai.hu@nxp.com, roy.zang@nxp.com
-Subject: Re: [PATCH 0/7] PCI: layerscape: Add power management support
-Message-ID: <20210323111524.GD29286@e121166-lin.cambridge.arm.com>
-References: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
+        id S230473AbhCWLP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:15:58 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49190 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhCWLPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:15:43 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 58D151F45448
+Received: by earth.universe (Postfix, from userid 1000)
+        id C027B3C0C96; Tue, 23 Mar 2021 12:15:39 +0100 (CET)
+Date:   Tue, 23 Mar 2021 12:15:39 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     tomba@kernel.org, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm/omap: dsi: Add missing IRQF_ONESHOT
+Message-ID: <20210323111539.5wi3ldwfvxvzmio7@earth.universe>
+References: <1616492093-68237-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pg4zoiacfcv4n37f"
 Content-Disposition: inline
-In-Reply-To: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1616492093-68237-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:37:54PM +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> 
-> This patch series is to add PCIe power management support for NXP
-> Layerscape platfroms.
-> 
-> Hou Zhiqiang (7):
->   PCI: dwc: Fix a bug of the case dw_pci->ops is NULL
->   PCI: layerscape: Change to use the DWC common link-up check function
->   dt-bindings: pci: layerscape-pci: Add a optional property big-endian
->   arm64: dts: layerscape: Add big-endian property for PCIe nodes
->   dt-bindings: pci: layerscape-pci: Update the description of SCFG
->     property
->   dts: arm64: ls1043a: Add SCFG phandle for PCIe nodes
->   PCI: layerscape: Add power management support
-> 
->  .../bindings/pci/layerscape-pci.txt           |   6 +-
->  .../arm64/boot/dts/freescale/fsl-ls1012a.dtsi |   1 +
->  .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi |   6 +
->  .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi |   3 +
->  drivers/pci/controller/dwc/pci-layerscape.c   | 473 ++++++++++++++----
->  drivers/pci/controller/dwc/pcie-designware.c  |  12 +-
->  drivers/pci/controller/dwc/pcie-designware.h  |   1 +
->  7 files changed, 388 insertions(+), 114 deletions(-)
 
-I don't know which patches are still applicable, I will mark this
-series as superseded since you will have to rebase it anyway - please
-let me know what's the plan.
+--pg4zoiacfcv4n37f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Lorenzo
+Hi,
+
+On Tue, Mar 23, 2021 at 05:34:53PM +0800, Yang Li wrote:
+> fixed the following coccicheck:
+> ./drivers/gpu/drm/omapdrm/dss/dsi.c:4329:7-27: ERROR: Threaded IRQ with
+> no primary handler requested without IRQF_ONESHOT
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+Also maybe add this, so that it is properly backported. OTOH old code did
+not have IRQF_ONESHOT either.
+
+Fixes: 4c1b935fea54 ("drm/omap: dsi: move TE GPIO handling into core")
+
+-- Sebastian
+
+> Change in v2:
+> -Modify the fourth parameter, not the first
+>=20
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/=
+dss/dsi.c
+> index b31d750..5f1722b 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -4327,7 +4327,8 @@ static int omap_dsi_register_te_irq(struct dsi_data=
+ *dsi,
+>  	irq_set_status_flags(te_irq, IRQ_NOAUTOEN);
+> =20
+>  	err =3D request_threaded_irq(te_irq, NULL, omap_dsi_te_irq_handler,
+> -				   IRQF_TRIGGER_RISING, "TE", dsi);
+> +				   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+> +				   "TE", dsi);
+>  	if (err) {
+>  		dev_err(dsi->dev, "request irq failed with %d\n", err);
+>  		gpiod_put(dsi->te_gpio);
+> --=20
+> 1.8.3.1
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+--pg4zoiacfcv4n37f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBZzdEACgkQ2O7X88g7
++prDmw//d020afWCghl0znptvXYhWJzyInpZFHBBOXUucLTHrVuptZ1GzfMQmesk
+bR/tCHuC1nd55Ge6TETmN+RgYhgnjM7mu9ENOkog6A8157HVsO6jwo0XUkwbl4Qh
+vH7qJ+ffhFJ8zsi+jLy7ooh0ki3YhK8lYduv/takXBXgF2GJ0N9TPlyBu71q/caD
+4uw6y/1WiuhvZ5Fx+7L5kEKxWJTNAoCQkuaAqsDTFGqrspui+rPkZkwTqdAjda6y
+YT/1P14r6Cl4S4IVFun3I2oPWpemHqTtQ05wFIEIHdOPn1e/ptVrQUhLL9INELeq
+qjg1SbvSM4kVbaW7mA6wQf3U2G49z8ATDPhqS0DRuAiMTSGjObEIPk99fxR93QSH
+hzd4GQu7iYnsxsjp5MYRp5cZb56hcWr+GTrT1kP/1Wygg2dphm3MxZGvVg/8/One
+hgxWativFSE2pqkGbftn7CaHTOjQYUU6dwwVmxJuVN+VAQEKiGpOEWNaxXE257Rc
+X69lIYE2AJsvhqrxruU6zp6VGMupAc/tFzjh8Fp3HUwYvFVNYq2Xoy/VDESC6DhZ
+lYRexXR0H5vt5HKtYylSh8aE4xUc9iR50a0X8dLsZOEuV+jXBLe7RJtVgxg/dJt9
+zgdZLy2DW01v4kaSM0a53xYbjoRXaw08PMduMq4U7Wb9zBbtLx4=
+=329T
+-----END PGP SIGNATURE-----
+
+--pg4zoiacfcv4n37f--
