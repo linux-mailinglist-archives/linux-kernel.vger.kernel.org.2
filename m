@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA12134538A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDF134538C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhCWABh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhCWABN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:01:13 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32743C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 17:01:13 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4E9D4A52;
-        Tue, 23 Mar 2021 01:01:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616457665;
-        bh=1WW6qwvVbYFjhgbp6peXSl7i0rOj0DjQbdTkGNk0wLA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e0PgscoQxX7AP56OjLdJAIgeK60VwZSRdJPpvuOO9i8cZuz5E54BGmqYVnhU/XNMr
-         4t5hc3mu/wuhHPqn1yncJUUnq1+tFGygD6pYMAVIt6POXSym7hREqkL7tLRmYtJvwL
-         exR9BU4NtvLv4Hb66LGE+SNmC6HoedzOEws5ElqI=
-Date:   Tue, 23 Mar 2021 02:00:23 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>
-Subject: Re: [PATCH v2 0/4] drm/bridge: ti-sn65dsi86: Support EDID reading
-Message-ID: <YFkvl9tzP5Nj54C4@pendragon.ideasonboard.com>
-References: <20201030011738.2028313-1-swboyd@chromium.org>
- <20201101173741.GA1293305@ravnborg.org>
- <160436612483.884498.883110130131457033@swboyd.mtv.corp.google.com>
+        id S230494AbhCWADB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:03:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46546 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229537AbhCWACl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:02:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3C969ADF1;
+        Tue, 23 Mar 2021 00:02:40 +0000 (UTC)
+To:     David Rientjes <rientjes@google.com>
+Cc:     kernel test robot <oliver.sang@intel.com>, glittao@gmail.com,
+        0day robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, shuah@kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20210317083612.GD22345@xsang-OptiPlex-9020>
+ <a389a8fb-2043-3b13-5180-e1f87e4d4a66@suse.cz>
+ <a3f6261b-22b-89f1-ec24-7516f0fa1d4c@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [selftests] e48d82b67a:
+ BUG_TestSlub_RZ_alloc(Not_tainted):Redzone_overwritten
+Message-ID: <7789b386-bddd-37ba-fccd-370f1340e698@suse.cz>
+Date:   Tue, 23 Mar 2021 01:02:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <a3f6261b-22b-89f1-ec24-7516f0fa1d4c@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <160436612483.884498.883110130131457033@swboyd.mtv.corp.google.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On Mon, Nov 02, 2020 at 05:15:24PM -0800, Stephen Boyd wrote:
-> Quoting Sam Ravnborg (2020-11-01 09:37:41)
-> > Hi Stephen.
-> > 
-> > On Thu, Oct 29, 2020 at 06:17:34PM -0700, Stephen Boyd wrote:
-> > > This patch series cleans up the DDC code a little bit so that
-> > > it is more efficient time wise and supports grabbing the EDID
-> > > of the eDP panel over the aux channel. I timed this on a board
-> > > I have on my desk and it takes about 20ms to grab the EDID out
-> > > of the panel and make sure it is valid.
-> > > 
-> > > The first two patches seem less controversial so I stuck them at
-> > > the beginning. The third patch does the EDID reading and caches
-> > > it so we don't have to keep grabbing it over and over again. And
-> > > finally the last patch updates the reply field so that short
-> > > reads and nacks over the channel are reflected properly instead of
-> > > treating them as some sort of error that can't be discerned.
-> > > 
-> > > Stephen Boyd (4):
-> > >   drm/bridge: ti-sn65dsi86: Combine register accesses in
-> > >     ti_sn_aux_transfer()
-> > >   drm/bridge: ti-sn65dsi86: Make polling a busy loop
-> > >   drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
-> > >   drm/bridge: ti-sn65dsi86: Update reply on aux failures
-> > 
-> > Series looks good. You can add my a-b on the full series.
-> > Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> > 
-> > I can apply after Douglas have had a look at the patches he did not r-b
-> > yet.
-> > 
-> > Any chance we can convince you to prepare this bridge driver for use in
-> > a chained bridge setup where the connector is created by the display
-> > driver and uses drm_bridge_funcs?
-> > 
-> > First step wuld be to introduce the use of a panel_bridge.
-> > Then add get_edid to drm_bridge_funcs and maybe more helpers.
-> > 
-> > Then natural final step would be to move connector creation to the
-> > display driver - see how other uses drm_bridge_connector_init() to do so
-> > - it is relatively simple.
-> > 
-> > Should be doable - and reach out if you need some help.
+On 3/17/21 7:53 PM, David Rientjes wrote:
+> On Wed, 17 Mar 2021, Vlastimil Babka wrote:
+>> > 
+>> > [   22.154049] random: get_random_u32 called from __kmem_cache_create+0x23/0x3e0 with crng_init=0 
+>> > [   22.154070] random: get_random_u32 called from cache_random_seq_create+0x7c/0x140 with crng_init=0 
+>> > [   22.154167] random: get_random_u32 called from allocate_slab+0x155/0x5e0 with crng_init=0 
+>> > [   22.154690] test_slub: 1. kmem_cache: Clobber Redzone 0x12->0x(ptrval)
+>> > [   22.164499] =============================================================================
+>> > [   22.166629] BUG TestSlub_RZ_alloc (Not tainted): Redzone overwritten
+>> > [   22.168179] -----------------------------------------------------------------------------
+>> > [   22.168179]
+>> > [   22.168372] Disabling lock debugging due to kernel taint
+>> > [   22.168372] INFO: 0x(ptrval)-0x(ptrval) @offset=1064. First byte 0x12 instead of 0xcc
+>> > [   22.168372] INFO: Allocated in resiliency_test+0x47/0x1be age=3 cpu=0 pid=1 
+>> > [   22.168372] __slab_alloc+0x57/0x80 
+>> > [   22.168372] kmem_cache_alloc (kbuild/src/consumer/mm/slub.c:2871 kbuild/src/consumer/mm/slub.c:2915 kbuild/src/consumer/mm/slub.c:2920) 
+>> > [   22.168372] resiliency_test (kbuild/src/consumer/lib/test_slub.c:34 kbuild/src/consumer/lib/test_slub.c:107) 
+>> > [   22.168372] test_slub_init (kbuild/src/consumer/lib/test_slub.c:124) 
+>> > [   22.168372] do_one_initcall (kbuild/src/consumer/init/main.c:1226) 
+>> > [   22.168372] kernel_init_freeable (kbuild/src/consumer/init/main.c:1298 kbuild/src/consumer/init/main.c:1315 kbuild/src/consumer/init/main.c:1335 kbuild/src/consumer/init/main.c:1537) 
+>> > [   22.168372] kernel_init (kbuild/src/consumer/init/main.c:1426) 
+>> > [   22.168372] ret_from_fork (kbuild/src/consumer/arch/x86/entry/entry_32.S:856) 
+>> > [   22.168372] INFO: Slab 0x(ptrval) objects=16 used=1 fp=0x(ptrval) flags=0x40000201
+>> > [   22.168372] INFO: Object 0x(ptrval) @offset=1000 fp=0x(ptrval)
+>> > [   22.168372]
+>> > [   22.168372] Redzone (ptrval): cc cc cc cc cc cc cc cc                          ........
+>> > [   22.168372] Object (ptrval): 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+>> > [   22.168372] Object (ptrval): 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b a5  kkkkkkkkkkkkkkk.
+>> > [   22.168372] Redzone (ptrval): 12 cc cc cc                                      ....
+>> > [   22.168372] Padding (ptrval): 5a 5a 5a 5a 5a 5a 5a 5a                          ZZZZZZZZ
+>> > [   22.168372] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B             5.12.0-rc2-00001-ge48d82b67a2b #1
+>> > [   22.168372] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+>> > [   22.168372] Call Trace:
+>> > [   22.168372] dump_stack (kbuild/src/consumer/lib/dump_stack.c:122) 
+>> > [   22.168372] print_trailer (kbuild/src/consumer/mm/slub.c:737) 
+>> > [   22.168372] check_bytes_and_report.cold (kbuild/src/consumer/mm/slub.c:807) 
+>> > [   22.168372] check_object (kbuild/src/consumer/mm/slub.c:914) 
+>> > [   22.168372] validate_slab (kbuild/src/consumer/mm/slub.c:4635) 
+>> 
+>> Hm but in this case the output means the tested functionality (slub debugging)
+>> is working as intended. So what can we do? Indicate/teach somehow to the bot
+>> that this is OK? Does kselftest have some support for this? Or silence the
+>> validation output for testing purposes? (I would prefer not to)
+>> 
 > 
-> I started to look at this and got stuck at ti_sn_bridge_get_bpp(). Where
-> can I get the details of the bpc for the downstream bridge or panel? Is
-> there some function that can tell this bridge what the bpc is for the
-> attached connector?
+> Unless you're familiar with everything that CONFIG_TEST_SLUB does, maybe 
+> this could be inferred as an actual issue that the test has uncovered that 
+> is unexpected?
+> 
+> I don't have a good way of silencing the check_bytes_and_report() output 
+> other than a big hammer: implement {disable,enable}_slub_warnings() that 
+> the resiliency test could call into before triggering these checks.
 
-I've posted a patch series to convert to DRM_BRIDGE_ATTACH_NO_CONNECTOR
-yesterday (and have CC'ed you), but I've overlooked this particular
-problem :-S
+So Oliver has implemented this, but now I got a different idea that should be
+much cleaner IMHO. We could add a per-cache flag SLAB_SILENT_ERRORS (similar to
+SLAB_RED_ZONE etc) instead of a global bool. The test would just create the
+caches with this flag.
+The flag should be added to the SLAB_NEVER_MERGE, SLAB_DEBUG_FLAGS,
+SLAB_FLAGS_PERMITTED macros as well.
 
-You can't get the connector in the .enable() operation, but you can get
-it in .atomic_enable(), with
-drm_atomic_get_new_connector_for_encoder(). This being said, it's
-probably not the right option.
+A similar suggestion is that adding the errors counter parameter to all
+validate_slab_cache() and relevant functions is tedious - there are more that
+had to be modified like this than initially expected.
+Instead the error counter can be added to SLUB's struct kmem_cache definition,
+incremented by the various checks and the tests can look at that after validation.
 
-What matters here isn't the bpc for the connector, but the format
-expected by the next bridge in the chain. drm_bridge_funcs has two
-operations, .atomic_get_output_bus_fmts() and
-.atomic_get_input_bus_fmts(), to negotiate that format along a chain of
-bridges. The panel bridge driver (drivers/gpu/drm/bridge/panel.c)
-doesn't implement those operations, and neither does
-display-connector.c, so that may be what we should start with.
-
-> I see that td_mode_valid() in
-> drivers/gpu/drm/bridge/tc358775.c stores away the bpc from the incoming
-> drm_display_info pointer but I'm not sure that is correct because can't
-> that be called for various and not necessarily the one we're using?
-
-You're right, .mode_valid() shouldn't do that.
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks,
+Vlastimil
