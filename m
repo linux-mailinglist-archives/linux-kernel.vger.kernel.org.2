@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DE0346B5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7222346B5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233688AbhCWVuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233615AbhCWVuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:50:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959CFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mYwu2RtzgZKNU9NGCGzqzPwajfLHA9RJT8xFKj9ft30=; b=hGs40wJkP4sjmJs6jHLMVtmpaP
-        467+h70F6SkcwaImgB6TNqmKJrQu42ZfHLzwKwG47x0mluF/NH0Up/DZclQCgIBg4z/icSmi22Rdi
-        3q3e1rqRGTDwAg7U0WWgJZNw8xrBNu3JNrC0XMtQYYeU7qEenc8i6zt16N8JrC1CaXlbrQJNxe0xS
-        kZnzOqqedPxFSHLArCWfkCMA4G+0HcfpBy7VDe/n/s6ggzn/OTPjn3KYYh1HXqee0tzjpZiNhtJXL
-        8XtmSDkWHqmdgr8eqkO/LJK+/MpogGGYjT7J50b+cUFxliIOpoPk5SjAvpMmApW1+fXmr7oIhzf6J
-        EjDkCldA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOou8-00AZjj-3I; Tue, 23 Mar 2021 21:49:39 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 376279864F6; Tue, 23 Mar 2021 22:49:35 +0100 (CET)
-Date:   Tue, 23 Mar 2021 22:49:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v4 RESEND 4/5] perf/x86/lbr: Skip checking for the
- existence of LBR_TOS for Arch LBR
-Message-ID: <20210323214935.GF4746@worktop.programming.kicks-ass.net>
-References: <20210322060635.821531-1-like.xu@linux.intel.com>
- <20210322060635.821531-5-like.xu@linux.intel.com>
+        id S233701AbhCWVvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:51:08 -0400
+Received: from ozlabs.org ([203.11.71.1]:56667 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233615AbhCWVuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:50:46 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4lRS6VNmz9sRR;
+        Wed, 24 Mar 2021 08:50:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616536245;
+        bh=c61pfXLmWJTf0ctGErFZHrL0Afa8HLD3Ghzi9o3YKEs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=F6srtMYh0W0jVclmBtT77f2G1yc/sdMMlQj4/iVkHNaCUMicnnhC/dLW+NVoGNIUG
+         zV3gFk2KTjUd8iXzOq1Iu9rZtn9YrlmzM+19zMQFDgUXqA4Mlvd1c3wHaRh43+YgZp
+         ytr4taaHpkjvHsRqkuL+QJ9Af8+JSaq9bS2dmGiyiYdrzGVPcPvOLyTT54ehFMJyGp
+         Y3KjJz5d2f7CneDRmsBqhlbZbFSJPYgQ31giAbW8TXfPbkPCryA4ZPzPU9crKsybnI
+         +eSH8UaosXdR9dKHWRz9wUVctCd3OfMOnYYKh8YL8IDlEGytxearkY09TYh4zeQZ++
+         fhUzqvayQMR/A==
+Date:   Wed, 24 Mar 2021 08:50:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the kvms390 tree
+Message-ID: <20210324085043.5b36d9ef@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322060635.821531-5-like.xu@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/ru8J3speU9URCQ6E8SX8spg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 02:06:34PM +0800, Like Xu wrote:
-> The Architecture LBR does not have MSR_LBR_TOS (0x000001c9). KVM will
-> generate #GP for this MSR access, thereby preventing the initialization
-> of the guest LBR.
-> 
-> Fixes: 47125db27e47 ("perf/x86/intel/lbr: Support Architectural LBR")
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> ---
->  arch/x86/events/intel/core.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index 382dd3994463..7f6d748421f2 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -5740,7 +5740,8 @@ __init int intel_pmu_init(void)
->  	 * Check all LBR MSR here.
->  	 * Disable LBR access if any LBR MSRs can not be accessed.
->  	 */
-> -	if (x86_pmu.lbr_nr && !check_msr(x86_pmu.lbr_tos, 0x3UL))
-> +	if (x86_pmu.lbr_nr && !boot_cpu_has(X86_FEATURE_ARCH_LBR) &&
-> +	    !check_msr(x86_pmu.lbr_tos, 0x3UL))
->  		x86_pmu.lbr_nr = 0;
+--Sig_/ru8J3speU9URCQ6E8SX8spg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-But when ARCH_LBR we don't set lbr_tos, so we check MSR 0x000, not 0x1c9.
+Hi all,
 
-Do we want check_msr() to ignore msr==0 ?
-Additionally, do we want a check for lbr_info ?
+In commit
 
->  	for (i = 0; i < x86_pmu.lbr_nr; i++) {
->  		if (!(check_msr(x86_pmu.lbr_from + i, 0xffffUL) &&
-> -- 
-> 2.29.2
-> 
+  0a4ec47cc7b5 ("KVM: s390: VSIE: fix MVPG handling for prefixing and MSO")
+
+Fixes tag
+
+  Fixes: 223ea46de9e79 ("s390/kvm: VSIE: correctly handle MVPG when in VSIE=
+")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 20eff2c93a2d ("KVM: s390: VSIE: correctly handle MVPG when in VSIE")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ru8J3speU9URCQ6E8SX8spg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBaYrMACgkQAVBC80lX
+0GwAPggAi8E3Fjkz2fE6PQarHEUBVCbquw7Mu+YCUE/mDx0/n/C3rBkT3pzgcgAt
+lvVWPrKNTcb0FGBJsHWXfmJzkOI6qqshO+V6sAt8K+qeZs+OCXpWUheCyLYdnKqt
+Qkf+lDRNaS+NPoLGdHpCbW+6tVuPyTf2ycSotB9zzsnc4aYiyLPRi/qT/tLSbOqv
+zVIag4lf9NYchHL1KjYmZvVJRn+jABFGnzbjGLmvQHG+4wVapCMN3UrBmasCvNTE
+aP3ozzhv3wIa5COO24KemNhkheXBEoNFXlinYHEpQpwSwCFel8mq/xRwQwS0sdXs
+ViLs+lRhuNy3xH0OaS79po4QCdI4aQ==
+=Ws/A
+-----END PGP SIGNATURE-----
+
+--Sig_/ru8J3speU9URCQ6E8SX8spg--
