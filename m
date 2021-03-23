@@ -2,186 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300EF34660C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE76934660B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCWRME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:12:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229890AbhCWRLv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229993AbhCWRMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229871AbhCWRLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 13:11:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616519511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CKHlmcAcFrOM8c13z+gPq/cfF8DQ2S4kR6iZLDzuW8w=;
-        b=BzlWdVnZsaDD2BtCJ2ruOfVTGl9PVH0R9gqK5ASQgc/1pRGQ/5rKddAObq0zndwTTd/cSH
-        dJuP02Hr5bANdD0s1dPQU7yJ3nRRuUcFZ4mZ1rnWW/iqjQL5RoqEWU8FnM+CxI1AsDJbvD
-        cg45Ezxa3oiTcNsbIzCJyyPa6wrwuUw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-sR3Ur4hPO2qR45qt9qq_hw-1; Tue, 23 Mar 2021 13:11:47 -0400
-X-MC-Unique: sR3Ur4hPO2qR45qt9qq_hw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A67B05F9E1;
-        Tue, 23 Mar 2021 17:11:45 +0000 (UTC)
-Received: from ovpn-112-207.phx2.redhat.com (ovpn-112-207.phx2.redhat.com [10.3.112.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EB045C232;
-        Tue, 23 Mar 2021 17:11:30 +0000 (UTC)
-Message-ID: <5612cd9e298488ea9277f8d99ce0fd35240bdc53.camel@redhat.com>
-Subject: Re: md/dm-mpath: check whether all pgpaths have same uuid in
- multipath_ctr()
-From:   "Ewan D. Milne" <emilne@redhat.com>
-To:     lixiaokeng <lixiaokeng@huawei.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Cc:     agk@redhat.com, dm-devel@redhat.com,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linfeilong <linfeilong@huawei.com>,
-        "wubo (T)" <wubo40@huawei.com>
-Date:   Tue, 23 Mar 2021 13:11:30 -0400
-In-Reply-To: <a46013db-8143-7b41-95a8-182439b385f2@huawei.com>
-References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
-         <20210322081155.GE1946905@infradead.org>
-         <20210322142207.GB30698@redhat.com>
-         <a46013db-8143-7b41-95a8-182439b385f2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 388FB619B2;
+        Tue, 23 Mar 2021 17:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616519510;
+        bh=vr8Zrjh5X8xKchIvhLrqFt7VBZxgn+vtnETIR7vBu2o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OZ5IJVZX5kslDQlfbmlFovIs1FysrmFkgfD0GjdD1FyqGSUxcfOcHduOww83SN19d
+         tP7a+zclqVpvzH1sejQ2t0DiJBkDUtPQsDJXKBRjlGN+nlScv0l2GoVU2Lrvr61aAX
+         YUXCzR08JC/zEZ1B5nXPjSgESZ0Z5FcHoFbh0vCLN28SM4tA2yAsR/TrLkAaBMdmt5
+         CZzxrcKfw9AzhWTCb3I6bujmvrSW4RFKJ/8qrmz/kZYsfGt3sSJ9UsGn8aqtTSoWPM
+         4mm4d3lNqbsByW0nXMH197QwgEGgLkwgHI34Sm1wdMJ7wRelvgLx2P1rCRIKwHAWia
+         nrVe0AGVF3maA==
+Date:   Tue, 23 Mar 2021 17:11:43 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, j.neuschaefer@gmx.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mfd: ntxec: Support for EC in Tolino Shine 2 HD
+Message-ID: <20210323171143.GA5490@sirena.org.uk>
+References: <20210308212952.20774-1-andreas@kemnade.info>
+ <20210310094821.GB701493@dell>
+ <20210311184033.GJ4962@sirena.org.uk>
+ <20210322145925.GY2916463@dell>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
+Content-Disposition: inline
+In-Reply-To: <20210322145925.GY2916463@dell>
+X-Cookie: Formatted to fit your screen.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-03-23 at 15:47 +0800, lixiaokeng wrote:
-> 
-> On 2021/3/22 22:22, Mike Snitzer wrote:
-> > On Mon, Mar 22 2021 at  4:11am -0400,
-> > Christoph Hellwig <hch@infradead.org> wrote:
-> > 
-> > > On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
-> > > > From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> > > > 
-> > > > When we make IO stress test on multipath device, there will
-> > > > be a metadata err because of wrong path. In the test, we
-> > > > concurrent execute 'iscsi device login|logout' and
-> > > > 'multipath -r' command with IO stress on multipath device.
-> > > > In some case, systemd-udevd may have not time to process
-> > > > uevents of iscsi device logout|login, and then 'multipath -r'
-> > > > command triggers multipathd daemon calls ioctl to load table
-> > > > with incorrect old device info from systemd-udevd.
-> > > > Then, one iscsi path may be incorrectly attached to another
-> > > > multipath which has different uuid. Finally, the metadata err
-> > > > occurs when umounting filesystem to down write metadata on
-> > > > the iscsi device which is actually not owned by the multipath
-> > > > device.
-> > > > 
-> > > > So we need to check whether all pgpaths of one multipath have
-> > > > the same uuid, if not, we should throw a error.
-> > > > 
-> > > > Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> > > > Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
-> > > > Signed-off-by: linfeilong <linfeilong@huawei.com>
-> > > > Signed-off-by: Wubo <wubo40@huawei.com>
-> > > > ---
-> > > >  drivers/md/dm-mpath.c   | 52
-> > > > +++++++++++++++++++++++++++++++++++++++++
-> > > >  drivers/scsi/scsi_lib.c |  1 +
-> > > >  2 files changed, 53 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
-> > > > index bced42f082b0..f0b995784b53 100644
-> > > > --- a/drivers/md/dm-mpath.c
-> > > > +++ b/drivers/md/dm-mpath.c
-> > > > @@ -24,6 +24,7 @@
-> > > >  #include <linux/workqueue.h>
-> > > >  #include <linux/delay.h>
-> > > >  #include <scsi/scsi_dh.h>
-> > > > +#include <linux/dm-ioctl.h>
-> > > >  #include <linux/atomic.h>
-> > > >  #include <linux/blk-mq.h>
-> > > > 
-> > > > @@ -1169,6 +1170,45 @@ static int parse_features(struct
-> > > > dm_arg_set *as, struct multipath *m)
-> > > >  	return r;
-> > > >  }
-> > > > 
-> > > > +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
-> > > > +#define MPATH_UUID_PREFIX_LEN 7
-> > > > +static int check_pg_uuid(struct priority_group *pg, char
-> > > > *md_uuid)
-> > > > +{
-> > > > +	char pgpath_uuid[DM_UUID_LEN] = {0};
-> > > > +	struct request_queue *q;
-> > > > +	struct pgpath *pgpath;
-> > > > +	struct scsi_device *sdev;
-> > > > +	ssize_t count;
-> > > > +	int r = 0;
-> > > > +
-> > > > +	list_for_each_entry(pgpath, &pg->pgpaths, list) {
-> > > > +		q = bdev_get_queue(pgpath->path.dev->bdev);
-> > > > +		sdev = scsi_device_from_queue(q);
-> > > 
-> > > Common dm-multipath code should never poke into scsi
-> > > internals.  This
-> > > is something for the device handler to check.  It probably also
-> > > won't
-> > > work for all older devices.
-> > 
-> > Definitely.
-> > 
-> > But that aside, userspace (multipathd) _should_ be able to do extra
-> > validation, _before_ pushing down a new table to the kernel, rather
-> > than
-> > forcing the kernel to do it.
-> > 
-> 
-> Martin (committer of multipath-tools) said that:
-> "Don't get me wrong, I don't argue against tough testing. But we
-> should
-> be aware that there are always time intervals during which
-> multipathd's
-> picture of the present devices is different from what the kernel
-> sees."
-> 
-> It is difficult to solve this in multipathd.
-> 
-> Regards,
-> Lixiaokeng
-> 
 
-I think the patch is no good.  There are plenty of devices that don't
-support VPD page 83h:
+--ikeVEW9yuYc//A+q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
-{
-        u8 cur_id_type = 0xff;
-        u8 cur_id_size = 0;
-        unsigned char *d, *cur_id_str;
-        unsigned char __rcu *vpd_pg83;
-        int id_size = -EINVAL;
+On Mon, Mar 22, 2021 at 02:59:25PM +0000, Lee Jones wrote:
+> On Thu, 11 Mar 2021, Mark Brown wrote:
 
-        rcu_read_lock();
-        vpd_pg83 = rcu_dereference(sdev->vpd_pg83);
-        if (!vpd_pg83) {
-                rcu_read_unlock();
-                return -ENXIO;
-        }
+> > If there were more users it'd be better to have this in the core so that
+> > problems we can detect like cache stuff if that's used but if it's just
+> > one broken device it's probably not worth it, this seems like something
+> > you'd have to try to end up with and which is going to cause timeout
+> > problems with a lot of I2C controllers which would tank performance
+> > enough that people would notice.
 
-and the DM layer should not be looking at the properties of the
-underlying devices in this way anyway.  It should be pushed down
-to the table.
+> So Yoda, is this to go into the core, or stay where it is?
 
--Ewan
+Well, nobody's sent me any patches.
 
+--ikeVEW9yuYc//A+q
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBaIU4ACgkQJNaLcl1U
+h9CjwAf+NZzm161+2bC+R2lD9YmHIZP0voMbxPIDObcvA19R5x3auQz6/c2SeJhA
+GxjJ6FEm+wPXd68oWh3rajhX/NyOJmDsRNWzyD3JgXARZhMsbmDzIraCCw4bTfRy
+PANtOawJ+Yz5D2YcF9whuc1IdnmqXZX64UfXj2uVhgehM9vzVjVooRlFKorZaQbe
+lmmhhYRh1i8UoDNoY1fdnMm0SoQAMG8qbVCPKYT/otw1JLNsZFXQfXK7nuspvSVQ
+Ke0dbCMfFNYyfDx2NZFn4yTIKNjHL4g467J5FkdJMPzNHa8XUIcDtBdFkko/T6Wh
+euR8DRoerw3PxG/MVlIhwZY3oTCJpw==
+=r+UB
+-----END PGP SIGNATURE-----
+
+--ikeVEW9yuYc//A+q--
