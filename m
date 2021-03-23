@@ -2,67 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24197345CDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10C7345CEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhCWLaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:30:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20109 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231129AbhCWLaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:30:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616499001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uA3R361pj1QpU9aKb+hlh9fO5r7oAvCIeL7X+xnjfCM=;
-        b=d6/259xAH5gaQagvGI6rTihzM1i00qw3ngsLYn612ze6pmw29UY+4+6pjfjVOlO8TZJvb7
-        w13NkoJjawavhbEDRKjWuQ1qvFmMrz/FdmwrtBH+wPXizrpqUKYL9pgZhoNYzWENtLkEJ0
-        B5Xz7BT4HVLAy4IM2Upb3AjSmE9GERs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-snVUSe3fMK-MgT2m7OMedQ-1; Tue, 23 Mar 2021 07:29:58 -0400
-X-MC-Unique: snVUSe3fMK-MgT2m7OMedQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1B4E190B2A1;
-        Tue, 23 Mar 2021 11:29:56 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C717A6E706;
-        Tue, 23 Mar 2021 11:29:52 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210320054104.1300774-4-willy@infradead.org>
-References: <20210320054104.1300774-4-willy@infradead.org> <20210320054104.1300774-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Subject: Re: [PATCH v5 03/27] afs: Use wait_on_page_writeback_killable
+        id S230513AbhCWLb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:31:27 -0400
+Received: from mga05.intel.com ([192.55.52.43]:9808 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231187AbhCWLaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:30:55 -0400
+IronPort-SDR: UOJeXPMmC3nBMD1W8WBqlz51EcWWn6of/dIc26wlU5TJc+runSjwm/9jR7JYfnEldAkZNsHVku
+ ZuR+ZC826X5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="275556685"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="275556685"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 04:30:55 -0700
+IronPort-SDR: QvZhzyH6Z3/G7YCAY3Gy4jGzZooYiiQT+kfFOQ/S8vZZLPElob5okx7sw5FaGJa7v2NMWooDDl
+ 3uLR/ZH/+/Mw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
+   d="scan'208";a="441639764"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Mar 2021 04:30:54 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lOfFN-0000Yp-Mp; Tue, 23 Mar 2021 11:30:53 +0000
+Date:   Tue, 23 Mar 2021 19:30:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/core] BUILD SUCCESS
+ 4bf07f6562a01a488877e05267808da7147f44a5
+Message-ID: <6059d163.MqdH9UxFbk8th5WK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2443201.1616498991.1@warthog.procyon.org.uk>
-Date:   Tue, 23 Mar 2021 11:29:51 +0000
-Message-ID: <2443202.1616498991@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+branch HEAD: 4bf07f6562a01a488877e05267808da7147f44a5  timekeeping, clocksource: Fix various typos in comments
 
-> Open-coding this function meant it missed out on the recent bugfix
+elapsed time: 723m
 
-Would that be:
+configs tested: 122
+configs skipped: 3
 
-	c2407cf7d22d0c0d94cf20342b3b8f06f1d904e7
-	mm: make wait_on_page_writeback() wait for multiple pending writebacks
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-David
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+powerpc                     powernv_defconfig
+sh                           se7712_defconfig
+arm                         lubbock_defconfig
+sparc64                          alldefconfig
+powerpc                      ppc44x_defconfig
+mips                      maltaaprp_defconfig
+mips                           ip28_defconfig
+arm                             mxs_defconfig
+riscv                            alldefconfig
+powerpc                      katmai_defconfig
+sh                        edosk7705_defconfig
+sh                                  defconfig
+mips                  decstation_64_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc836x_rdk_defconfig
+openrisc                         alldefconfig
+m68k                       m5249evb_defconfig
+mips                        maltaup_defconfig
+arm                           omap1_defconfig
+i386                                defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                 linkstation_defconfig
+powerpc                     rainier_defconfig
+arm                          pxa168_defconfig
+arm                          collie_defconfig
+arm                          moxart_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                         wii_defconfig
+mips                        bcm47xx_defconfig
+arc                              alldefconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210323
+x86_64               randconfig-a003-20210323
+x86_64               randconfig-a006-20210323
+x86_64               randconfig-a001-20210323
+x86_64               randconfig-a004-20210323
+x86_64               randconfig-a005-20210323
+i386                 randconfig-a003-20210323
+i386                 randconfig-a004-20210323
+i386                 randconfig-a001-20210323
+i386                 randconfig-a002-20210323
+i386                 randconfig-a006-20210323
+i386                 randconfig-a005-20210323
+i386                 randconfig-a004-20210322
+i386                 randconfig-a003-20210322
+i386                 randconfig-a001-20210322
+i386                 randconfig-a002-20210322
+i386                 randconfig-a006-20210322
+i386                 randconfig-a005-20210322
+x86_64               randconfig-a012-20210322
+x86_64               randconfig-a015-20210322
+x86_64               randconfig-a013-20210322
+x86_64               randconfig-a014-20210322
+x86_64               randconfig-a016-20210322
+x86_64               randconfig-a011-20210322
+i386                 randconfig-a014-20210322
+i386                 randconfig-a011-20210322
+i386                 randconfig-a015-20210322
+i386                 randconfig-a016-20210322
+i386                 randconfig-a012-20210322
+i386                 randconfig-a013-20210322
+i386                 randconfig-a014-20210323
+i386                 randconfig-a011-20210323
+i386                 randconfig-a015-20210323
+i386                 randconfig-a016-20210323
+i386                 randconfig-a012-20210323
+i386                 randconfig-a013-20210323
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a002-20210322
+x86_64               randconfig-a003-20210322
+x86_64               randconfig-a001-20210322
+x86_64               randconfig-a006-20210322
+x86_64               randconfig-a004-20210322
+x86_64               randconfig-a005-20210322
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
