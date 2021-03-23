@@ -2,202 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6634A345CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A05B345CBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 12:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhCWLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 07:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        id S230428AbhCWLYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 07:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhCWLXZ (ORCPT
+        with ESMTP id S230358AbhCWLYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 07:23:25 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BCDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:23:24 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id o10so26062664lfb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:23:24 -0700 (PDT)
+        Tue, 23 Mar 2021 07:24:00 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64BDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:23:59 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id jy13so26439244ejc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 04:23:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RYTjPvWFcjPgHsuLD2UPqNJxJUB5dJepCRH2DSuBWrs=;
-        b=oWuQf0hZMadFkr2Kau971XhJd5Q9R6LiR3YaYldxRJ0G5ej9G+amPtBvBf1DpVU/RH
-         w+HG05Os+4ncTr0uiOaVCizxqV0V5mxd7nBWoEfj9gs84EZCUX7EoeiKxE0qVJWoobe+
-         E+G7WdFvCBV2SDxfLDF+BWKhlGnxjLtrWN8uqCll1CIvjthmad8xGyG+4k7nlss6TXji
-         +1VMq11SpoVPygU+SEFwueHq18uBbx/h9c1dFyKYJnUeEHysLW8djxvO+1g4In7YfKVz
-         SGztJZEFomyK8hO87FO1ynlwuBKzdpG9fscEOzEwIgs33mcluARYfQmevbBJfdqYZCGQ
-         fm0w==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w2mw+IKy+QrhKxllQ8y4LIdko3rj7rSdl88PKxiyefM=;
+        b=X0TTrJdmjHuSIk+LOr9SUK5uEbvkSjTc1JpNAFLcEMYV0JhCw+8mxPepc7UrqlOqHx
+         iIgKvVwrXB2/BySvG4LwQ9lbBab/13690lXM9h12dVy7kJHa8S0kvBKX7pYJ/hZqfcZv
+         5txEpj9Xu1rRgl874PtpLYbqVTIUyBNO7WtlCBEjUuCweOu/G8omPMYWkEaHINlRqxxn
+         hM/APujpCNeXpI/++joSZafQyGPQutdZU558cNvKDO03kkGOa+B0tkaiBEWgcKuonhX8
+         28I12IlVdu8Pfo7Y4RYkEg7Yrbwm3dzF2hDniLaiSGfANmq9InznLzfzIyem5ehwY3hX
+         SGjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RYTjPvWFcjPgHsuLD2UPqNJxJUB5dJepCRH2DSuBWrs=;
-        b=qHjAeI5IiHjebE9SBz5LvugsA8Mtnn7dn/cBp1wz9yzV9B+oeXGxWino0yBwPhzAyL
-         tSfuafu0Cvho5OvYpxPeFEaHBNw0ioldh/hGjRw2rVSAbmAqEEiggU5UIQwV6PoxKk+W
-         /ijxetHGvgYlVFYK5PRECuOs5YMpwqMMpap6HdpW6dvoe9H0ZvzcbASz2kIpw0/7vyzL
-         iMtZL4twaGibWxAbAnf2i58r2fiMNj8o0oFJKCtZD3cnx0PxcbOMmWszaJmUOebtBuDw
-         0D/RWof074vzEMbOZsEPyp8vKHNIGdpMuy8nczenoSzCAO14BusixBcOiHqmCbvxV4mq
-         VRPw==
-X-Gm-Message-State: AOAM5315epbah+Ll/QEnTsZGQebgHWU5u+TUgqmnGIVU02K12/6ZP5ig
-        96TjtIeOEOf9paDeb9dvSeSt4ifA1HCidx7YJ2Y=
-X-Google-Smtp-Source: ABdhPJyYHzqHJtvEz9RprJQZR8T9e+Wo58F9KWU7aBBnu288eO4NufdYclmJRxvklYIqJ6au627bCBj2uycZuNfaKGI=
-X-Received: by 2002:a19:4881:: with SMTP id v123mr2376583lfa.276.1616498602634;
- Tue, 23 Mar 2021 04:23:22 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=w2mw+IKy+QrhKxllQ8y4LIdko3rj7rSdl88PKxiyefM=;
+        b=P2iJhecxP29dj+8S2GIRcT5NVtFvzsoXYXewjOEdX8D4SqBXZOGDaZmuilohYm5/Vv
+         bBUOG3O7tAouP+0HM5Q8YxacBxzIVbYN27vYF9tVfRmWRBmKs1t3IEsM1e7js5wjgp5t
+         fwEi35znLivdTQa0XI4VL9AAVayV0tfH1RfvGbUKKl8YvoyGax2MaWyXlTQXuRIMwFct
+         dHOLf/FCoC7h1Mxjc70YVvLGb4f2Jwu2k9fRaOIUD1tbcJ/Ls5kIUCjU5owHt3/jbFw8
+         P3e7BKXl0qFC3xTQxF7h1F+Dvtpjw1cQY/f5zuI+J3Nio+4xY1L6knqI7kmaGzdieIF5
+         3Kww==
+X-Gm-Message-State: AOAM531sSHUAqRM+rwHFykL1brO0PjoLPq1xl3GYOe7oxl30gHhWYCxy
+        eaFJ1bezdZMD/NNQDHDzjUw=
+X-Google-Smtp-Source: ABdhPJy7Ks+XyG8kYY3wAddgRtTyFGomWJfgnpGMbZ7iUi13YceTbgSfbahwTSjSyxL4wdZUgNYajA==
+X-Received: by 2002:a17:906:81c9:: with SMTP id e9mr4364420ejx.456.1616498638748;
+        Tue, 23 Mar 2021 04:23:58 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id mc10sm10837835ejb.56.2021.03.23.04.23.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 04:23:58 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 23 Mar 2021 12:23:56 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH] locking/mutex: Remove repeated declaration
+Message-ID: <20210323112356.GC3939639@gmail.com>
+References: <1616461774-18644-1-git-send-email-zhangshaokun@hisilicon.com>
 MIME-Version: 1.0
-References: <1615985460-112867-1-git-send-email-zhaoqianligood@gmail.com>
- <20210317143805.GA5610@redhat.com> <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
- <20210318180450.GA9977@redhat.com> <CAPx_LQENxx0y5mFJjwRT2qMSLt7pbAmF30=eE-QduEwRVJEJ0Q@mail.gmail.com>
- <20210319163225.GB19971@redhat.com> <CAPx_LQGLYx8gKJSkCx9hTyPPbCbU=GJL31TPb3s6zxro522U0Q@mail.gmail.com>
- <20210322163705.GD20390@redhat.com> <CAPx_LQG_5ushJkyymSsYq8FafRj7XOA217JwCyHASEqq0wyMOQ@mail.gmail.com>
- <20210323090035.GA25159@redhat.com>
-In-Reply-To: <20210323090035.GA25159@redhat.com>
-From:   qianli zhao <zhaoqianligood@gmail.com>
-Date:   Tue, 23 Mar 2021 19:23:11 +0800
-Message-ID: <CAPx_LQH0Qx7R9vNb3FHgO7V8uJ9AAh0j_TZV-VnyBF7Ys_7FTQ@mail.gmail.com>
-Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     christian@brauner.io, axboe@kernel.dk,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616461774-18644-1-git-send-email-zhangshaokun@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,Oleg
 
-> You certainly don't understand me :/
+* Shaokun Zhang <zhangshaokun@hisilicon.com> wrote:
 
-> Please read my email you quoted below. I didn't mean the current logic.
-> I meant the logic after your patch which moves atomic_dec_and_test() and
-> panic() before exit_signals().
+> Commit 0cd39f4600ed ("locking/seqlock, headers: Untangle the spaghetti monster")
+> introduces 'struct ww_acquire_ctx' again, remove the repeated declaration.
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+> ---
+>  include/linux/mutex.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> index 0cd631a19727..d80c0e22c822 100644
+> --- a/include/linux/mutex.h
+> +++ b/include/linux/mutex.h
+> @@ -20,8 +20,6 @@
+>  #include <linux/osq_lock.h>
+>  #include <linux/debug_locks.h>
+>  
+> -struct ww_acquire_ctx;
+> -
+>  /*
+>   * Simple, straightforward mutexes with strict semantics:
+>   *
 
-Sorry, I think I see what you mean now.
+Please also group the pre-declarations together, that's the canonical 
+pattern we use in headers.
 
-You mean that after apply my patch,SIGNAL_GROUP_EXIT no longer needs
-to be tested or avoid zap_pid_ns_processes()->BUG().
-Yes,your consideration is correct.
-But,my patch has another purpose,protect some key variables(such
-as:task->mm,task->nsproxy,etc) to recover init coredump from
-fulldump,if sub-threads finish do_exit(),these variables of sub-task
-will be lost,and we cannot parse the coredump of the init process
-through the tool normally such as "gcore".
+I.e. have something like this at the top:
 
+  struct ww_class;
+  struct ww_acquire_ctx;
 
-Oleg Nesterov <oleg@redhat.com> =E4=BA=8E2021=E5=B9=B43=E6=9C=8823=E6=97=A5=
-=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=885:00=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 03/23, qianli zhao wrote:
-> >
-> > Hi,Oleg
-> >
-> > > No, there is at least one alive init thread. If they all have exited,=
- we have
-> > > the thread which calls panic() above.
-> >
-> > By current logic, setting PF_EXITING(exit_signals()) is before the
-> > panic(),
->
-> You certainly don't understand me :/
->
-> Please read my email you quoted below. I didn't mean the current logic.
-> I meant the logic after your patch which moves atomic_dec_and_test() and
-> panic() before exit_signals().
->
-> Oleg.
->
-> > find_alive_thread() determines the PF_EXITING of all child
-> > threads, the panic thread's PF_EXITING has been set before panic(),so
-> > find_alive_thread() thinks this thread also dead, resulting in
-> > find_alive_thread returning NULL.It is possible to trigger a
-> > zap_pid_ns_processes()->BUG() in this case.
-> > =3D=3D=3D=3D=3D=3D=3D=3D
-> > exit_signals(tsk);  /* sets PF_EXITING */
-> > ...
-> > group_dead =3D atomic_dec_and_test(&tsk->signal->live);
-> > if (group_dead) {
-> > if (unlikely(is_global_init(tsk)))
-> > panic("Attempted to kill init!
-> > exitcode=3D0x%08x\n",-------------------->//PF_EXITING has been set
-> > tsk->signal->group_exit_code ?: (int)code);
-> >
-> > =3D=3D=3D=3D=3D=3D=3D
-> >
-> > > Why do you think so? It can affect _any_ code which runs under
-> > > "if (group_dead)". Again, I don't see anything wrong, but I didn't ev=
-en
-> > > try to audit these code paths.
-> >
-> > Yes,all places where checked the "signal->live" may be affected,but
-> > even before my changes, each program that checks "signal->live" may
-> > get different state(group_dead or not), depending on the timing of the
-> > caller,this situation will not change after my change.
-> > After my patch,"signal->live--" and other variable are set in a
-> > different order(such as signal->live and PF_EXITING),this can cause
-> > abnormalities in the logic associated with these two variables,that is
-> > my thinking.
-> > Of course, check all the "signal->live--" path is definitely
-> > necessary,it's just the case above that we need more attention.
-> >
-> > Thanks
-> >
-> > Oleg Nesterov <oleg@redhat.com> =E4=BA=8E2021=E5=B9=B43=E6=9C=8823=E6=
-=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=8812:37=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > Hi,
-> > >
-> > > It seems that we don't understand each other.
-> > >
-> > > If we move atomic_dec_and_test(signal->live) and do
-> > >
-> > >         if (group_dead && is_global_init)
-> > >                 panic(...);
-> > >
-> > >
-> > > before setting PF_EXITING like your patch does, then zap_pid_ns_proce=
-sses()
-> > > simply won't be called.
-> > >
-> > > Because:
-> > >
-> > > On 03/21, qianli zhao wrote:
-> > > >
-> > > > Hi,Oleg
-> > > >
-> > > > > How? Perhaps I missed something again, but I don't think this is =
-possible.
-> > > >
-> > > > > zap_pid_ns_processes() simply won't be called, find_child_reaper(=
-) will
-> > > > > see the !PF_EXITING thread which calls panic().
-> > > >
-> > > > > So I think this should be documented somehow, at least in the cha=
-ngelog.
-> > > >
-> > > > This problem occurs when both two init threads enter the do_exit,
-> > > > One of the init thread is syscall sys_exit_group,and set SIGNAL_GRO=
-UP_EXIT
-> > > > The other init thread perform ret_to_user()->get_signal() and found
-> > > > SIGNAL_GROUP_EXIT is set,then do_group_exit()->do_exit(),since ther=
-e
-> > > > are no alive init threads it finally goes to
-> > > > zap_pid_ns_processes()
-> > >
-> > > No, there is at least one alive init thread. If they all have exited,=
- we have
-> > > the thread which calls panic() above.
-> > >
-> > > > and BUG().
-> > >
-> > > so we don't need the SIGNAL_GROUP_EXIT check to avoid this BUG().
-> > >
-> > > What have I missed?
-> > >
-> > > Oleg.
-> > >
-> >
->
+Thanks,
+
+	Ingo
