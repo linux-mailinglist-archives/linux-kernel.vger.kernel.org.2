@@ -2,336 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA781345A9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD83D345AA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhCWJSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        id S229961AbhCWJS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhCWJSE (ORCPT
+        with ESMTP id S229893AbhCWJSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:18:04 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59006C061574;
-        Tue, 23 Mar 2021 02:18:04 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id n11so11044976pgm.12;
-        Tue, 23 Mar 2021 02:18:04 -0700 (PDT)
+        Tue, 23 Mar 2021 05:18:45 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5259DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:18:45 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id g15so13670662pfq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a1nvqAVkgaDQFydcSUnCRXIK8c0AoRKCmFEGXTN9RvU=;
-        b=imMX+Bt4obmiMjQ1pw0rUa4CBgpfqjndlPSFB8JzWTlI3sM+qTgZKUbIx2fblMZQMR
-         gLcsjhyVW4jPgVJ7d7Se/R4Lkea5A1MqIX3/h/PSz+MNF/NaUQvP9r6HS0A/G3TdjZ8d
-         HHNYyOm6LJ/W0a4zJh1ytxTc1pcey4rc6XxzkJzaZEORkiRnkkKM73iHEYV0kIl3XGwm
-         alLh7Lztb8ETaoSq/NNBbPtTc12QVGIxr2mTHFO9T19wQ+CgQglNBMgVlFTuRz5STTPb
-         SPAuH7xd4Wqw4qq08BOCzb8GXlctZ1V83641bUDazRR7HVhMQh6YMFEqfGO/F49dDaY0
-         cDdQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xDCwCUUxzBpfzU2QfVzbi3ez4QiU5v+G+EIOhfhoUmI=;
+        b=x0SCR2mTDOG7KxFGyZOvpO8NlmPNBhPRfAiaBhGPX/wvNn/wFDSj2R/9a55hK5WehX
+         7wmvuzm74DMiFhnlgirKZ6dVUdFkht/wK6ACSdjyaFOgmGer2bO78MDbpVYDdF8Pvcd4
+         HEEA17zTSTgc9y/ePJnbYOzKrKwXHpJSmNC4tlS1ZGOhl2F32uSJNebMwb6EVN0pVcDR
+         vHamBU3so8bCKHRbCpabTo1taoFgbEAemwbXQpdVy+LBOvXhjW/p25RADJ74RvPqs5PP
+         WjpHhp7DUtBU5rDqXbEHE1FV0XFopcbZUZXSsI8rgxK8AJ5HfpizmuyHx5UfHf3HqVBZ
+         /GPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a1nvqAVkgaDQFydcSUnCRXIK8c0AoRKCmFEGXTN9RvU=;
-        b=GN/x+ExEjpV30m1Vx3In8jCrWwQ/ymPKT0aUmW8j+E/2qEpj/CySdnftBkAYQjLzz1
-         PPFom//GkAkaDluh0jCzM7jdL3XElSElMHZ/UtNspDajmQLvF2k0YI3Fboe97pJPTGMU
-         dZUWL6jUzw4qptpEvMbo89+iooqS3Bu34q8DHOhAzkBEMaJ1voGzGA/U5G88yPeejd5w
-         4vcsWl0BT01pucZQxqR23npE7suZPL0a2JJ8t1kUL0vlRAsLv3RGF2RFEwukwdm86Wuh
-         akxyhQaYqiHAIZ9QFH0ikNnySB2HvhX8JVZa78vN60Gs02Uk179zEMNDDAFAONheRzN3
-         iGIw==
-X-Gm-Message-State: AOAM531EBO46gnyoF0zfI8FiDrYd4OeEtb065yMtZcHsfCSvHzqZPvR6
-        dG7KOXuTbWyYYJ/fxlLBMsk=
-X-Google-Smtp-Source: ABdhPJypx1elQysu+4xRWNCydKD+DVTWMysYHRBHuvK19CoYX5iNseo29KB2p+23FI68f1U1eSeFBA==
-X-Received: by 2002:a17:902:ecc4:b029:e6:1a9f:3397 with SMTP id a4-20020a170902ecc4b02900e61a9f3397mr4484729plh.9.1616491083851;
-        Tue, 23 Mar 2021 02:18:03 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id z8sm1925768pjr.57.2021.03.23.02.17.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 02:18:02 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 18:17:55 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        patrick.havelange@essensium.com, alexandre.belloni@bootlin.com,
-        mcoquelin.stm32@gmail.com, linux-kernel@vger.kernel.org,
-        o.rempel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel@pengutronix.de, syednwaris@gmail.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, alexandre.torgue@foss.st.com
-Subject: Re: [Linux-stm32] [PATCH v10 22/33] counter: Internalize sysfs
- interface code
-Message-ID: <YFmyQ4bnsS1lrm27@shinobu>
-References: <cover.1616150619.git.vilhelm.gray@gmail.com>
- <51becb2e067a4d2ee7bd99beb007831022fc4b29.1616150619.git.vilhelm.gray@gmail.com>
- <4cef2478-4093-fdef-2ae5-c27d0e8e1ccd@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xDCwCUUxzBpfzU2QfVzbi3ez4QiU5v+G+EIOhfhoUmI=;
+        b=QzW/EzHln544owSsVnlLkVdwow9y+36+0RddXiz+y1JeR/lBit5L+X1Rf0+vODgX4n
+         3DxOvtrYzgaQssMIW7zFrXLzqkmh8okIGEGuqhY/tXWTr4i9Gfgrr/4+bHJRyJoVRy11
+         9emlvhmM7dM+wq80N6X5YB0vvGwIrpFc9fiUo2WFKAfV+5johfaLcSoiDgA1LiXtL2xJ
+         TqbTb6cvhdmtOnl5eu7FnqDFbmTC747StiwmQTNWSun2zco7LZ5D2xQRM9WuEL6IwMVV
+         WLIRkWFu0Xcn1JrHI9tnqRYVJH87QiXaGSlL+AhGX+3lgm9BaEPxOIxltmRVZi2RBZLD
+         NM6g==
+X-Gm-Message-State: AOAM531F6+shp8TG6ZU37oxMFmAM0ARxEhrXMTUDxgCzCpEZyXNRdbPE
+        PRR5UaU3jwOfsDSbNyUvrRt0/3TCxotwGqYrfHQ4Zw==
+X-Google-Smtp-Source: ABdhPJwNmPHu0MSNSBhFZpOQrh4mGXzhKqt04e+oeK/NoF14Tc+HyGjUDCeU0H73O+55f/VN5jANMBlanQPrXXCDFlk=
+X-Received: by 2002:a65:6645:: with SMTP id z5mr3129824pgv.273.1616491124932;
+ Tue, 23 Mar 2021 02:18:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cqRhoqShv7pK17zI"
-Content-Disposition: inline
-In-Reply-To: <4cef2478-4093-fdef-2ae5-c27d0e8e1ccd@foss.st.com>
+References: <20210319163821.20704-1-songmuchun@bytedance.com>
+ <20210319163821.20704-2-songmuchun@bytedance.com> <YFitwmmLFA24cofE@cmpxchg.org>
+In-Reply-To: <YFitwmmLFA24cofE@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 23 Mar 2021 17:18:08 +0800
+Message-ID: <CAMZfGtVQPonuhQOWq2D_tZyLGuBQ2auY=SF3vPJXN=iTnp8_1Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 1/7] mm: memcontrol: slab: fix obtain a
+ reference to a freeing memcg
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 10:46 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Sat, Mar 20, 2021 at 12:38:14AM +0800, Muchun Song wrote:
+> > The rcu_read_lock/unlock only can guarantee that the memcg will not be
+> > freed, but it cannot guarantee the success of css_get (which is in the
+> > refill_stock when cached memcg changed) to memcg.
+> >
+> >   rcu_read_lock()
+> >   memcg = obj_cgroup_memcg(old)
+> >   __memcg_kmem_uncharge(memcg)
+> >       refill_stock(memcg)
+> >           if (stock->cached != memcg)
+> >               // css_get can change the ref counter from 0 back to 1.
+> >               css_get(&memcg->css)
+> >   rcu_read_unlock()
+> >
+> > This fix is very like the commit:
+> >
+> >   eefbfa7fd678 ("mm: memcg/slab: fix use after free in obj_cgroup_charge")
+> >
+> > Fix this by holding a reference to the memcg which is passed to the
+> > __memcg_kmem_uncharge() before calling __memcg_kmem_uncharge().
+> >
+> > Fixes: 3de7d4f25a74 ("mm: memcg/slab: optimize objcg stock draining")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> Good catch! Did you trigger the WARN_ON() in
+> percpu_ref_kill_and_confirm() during testing?
 
---cqRhoqShv7pK17zI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No. The race window is very small, it should be difficult to trigger.
+When I reviewed the code here, I suddenly realized that there
+might be a problem here. Very coincidental.
 
-On Mon, Mar 22, 2021 at 05:44:01PM +0100, Fabrice Gasnier wrote:
-> On 3/19/21 12:00 PM, William Breathitt Gray wrote:
-> >  static const struct atmel_tcb_config tcb_rm9200_config =3D {
-> > diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm3=
-2-lptimer-cnt.c
-> > index 13656957c45f..aef78a4217b5 100644
-> > --- a/drivers/counter/stm32-lptimer-cnt.c
-> > +++ b/drivers/counter/stm32-lptimer-cnt.c
-> > @@ -17,6 +17,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/pinctrl/consumer.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/types.h>
-> > =20
-> >  struct stm32_lptim_cnt {
-> >  	struct counter_device counter;
-> > @@ -130,32 +131,46 @@ static int stm32_lptim_setup(struct stm32_lptim_c=
-nt *priv, int enable)
-> >   * +---------+----------+----------+---------+----------+---------+
-> >   */
-> >  enum stm32_lptim_cnt_function {
-> > -	STM32_LPTIM_COUNTER_INCREASE,
-> > -	STM32_LPTIM_ENCODER_BOTH_EDGE,
-> > +	STM32_LPTIM_COUNTER_INCREASE =3D COUNTER_FUNCTION_INCREASE,
-> > +	STM32_LPTIM_ENCODER_BOTH_EDGE =3D COUNTER_FUNCTION_QUADRATURE_X4,
->=20
-> Hi William,
->=20
-> I'm wondering if this enum is still necessary. I noticed the enum is
-> removed from the 104-quad-8 driver.
-
-Hi Fabrice,
-
-This enum is no longer necessary. I wanted to leave it up to the
-maintainers to decide whether to remove any particular enum (or to do
-any other sort of code cleanup), so that is why I didn't remove it here.
-
-> >  };
-> > =20
-> >  static const enum counter_function stm32_lptim_cnt_functions[] =3D {
-> > -	[STM32_LPTIM_COUNTER_INCREASE] =3D COUNTER_FUNCTION_INCREASE,
-> > -	[STM32_LPTIM_ENCODER_BOTH_EDGE] =3D COUNTER_FUNCTION_QUADRATURE_X4,
-> > +	STM32_LPTIM_COUNTER_INCREASE,
-> > +	STM32_LPTIM_ENCODER_BOTH_EDGE,
-> >  };
-> > =20
-> >  enum stm32_lptim_synapse_action {
-> > +	/* Index must match with stm32_lptim_cnt_polarity[] (priv->polarity) =
-*/
->=20
-> Arf... I forgot to update this comment in earlier commit:
-> d8ac6b4 counter: stm32-lptimer-cnt: remove iio counter abi
->=20
-> "stm32_lptim_cnt_polarity" doesn't exist anymore. So, this comment can
-> be updated. This should match the priv->polarity, as it's used to write
-> the "CKPOL" bits (e.g. 0x0 for rising, 0x1 falling, 0x2 both).
->=20
-> Or do you wish I send a separate patch ?
-
-This is just a simple comment fix so I think it's best to send it as its
-own patch to the mailing list.
-
-> >  	STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE,
-> >  	STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE,
-> >  	STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES,
-> >  	STM32_LPTIM_SYNAPSE_ACTION_NONE,
-> >  };
-> > =20
-> > -static const enum counter_synapse_action stm32_lptim_cnt_synapse_actio=
-ns[] =3D {
-> > -	/* Index must match with stm32_lptim_cnt_polarity[] (priv->polarity) =
-*/
-> > +static const enum stm32_lptim_synapse_action stm32_lptim_c2l_actions_m=
-ap[] =3D {
-> > +	[COUNTER_SYNAPSE_ACTION_RISING_EDGE] =3D STM32_LPTIM_SYNAPSE_ACTION_R=
-ISING_EDGE,
-> > +	[COUNTER_SYNAPSE_ACTION_FALLING_EDGE] =3D STM32_LPTIM_SYNAPSE_ACTION_=
-FALLING_EDGE,
-> > +	[COUNTER_SYNAPSE_ACTION_BOTH_EDGES] =3D STM32_LPTIM_SYNAPSE_ACTION_BO=
-TH_EDGES,
-> > +	[COUNTER_SYNAPSE_ACTION_NONE] =3D STM32_LPTIM_SYNAPSE_ACTION_NONE,
-> > +};
-> > +
-> > +static const enum counter_synapse_action stm32_lptim_l2c_actions_map[]=
- =3D {
-> >  	[STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE] =3D COUNTER_SYNAPSE_ACTION_R=
-ISING_EDGE,
-> >  	[STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE] =3D COUNTER_SYNAPSE_ACTION_=
-FALLING_EDGE,
-> >  	[STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES] =3D COUNTER_SYNAPSE_ACTION_BO=
-TH_EDGES,
-> >  	[STM32_LPTIM_SYNAPSE_ACTION_NONE] =3D COUNTER_SYNAPSE_ACTION_NONE,
-> >  };
-> > =20
-> > +static const enum counter_synapse_action stm32_lptim_cnt_synapse_actio=
-ns[] =3D {
-> > +	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> > +	COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
-> > +	COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
-> > +	COUNTER_SYNAPSE_ACTION_NONE,
-> > +};
-> > +
->=20
-> I'm getting confused with the two table entries, and the two enums that
-> are very similar. Could it be simplified ?
->=20
-> I'm thinking of something more straight-forward... in fact only one
-> array should be enough, to convert from synapse action to CKPOL value
-> before it's written to register in stm32_lptim_setup() routine.
-> This should be easier now that the iio part has been removed.
-
-Yes, this might just be a hold over from when we had to handle the
-legacy IIO Counter code. But now that it is gone, this could probably be
-simplified down to a single array then. If you have any idea of how to
-achieve that, please do.
-
-> > @@ -333,43 +333,39 @@ static int stm32_lptim_cnt_action_get(struct coun=
-ter_device *counter,
-> >  	}
-> >  }
-> > =20
-> > -static int stm32_lptim_cnt_action_set(struct counter_device *counter,
-> > -				      struct counter_count *count,
-> > -				      struct counter_synapse *synapse,
-> > -				      size_t action)
-> > +static int stm32_lptim_cnt_action_write(struct counter_device *counter,
-> > +					struct counter_count *count,
-> > +					struct counter_synapse *synapse,
-> > +					enum counter_synapse_action action)
-> >  {
-> >  	struct stm32_lptim_cnt *const priv =3D counter->priv;
-> > -	size_t function;
-> > +	enum counter_function function;
-> >  	int err;
-> > =20
-> >  	if (stm32_lptim_is_enabled(priv))
-> >  		return -EBUSY;
-> > =20
-> > -	err =3D stm32_lptim_cnt_function_get(counter, count, &function);
-> > +	err =3D stm32_lptim_cnt_function_read(counter, count, &function);
-> >  	if (err)
-> >  		return err;
-> > =20
-> >  	/* only set polarity when in counter mode (on input 1) */
-> > -	if (function =3D=3D STM32_LPTIM_COUNTER_INCREASE
-> > -	    && synapse->signal->id =3D=3D count->synapses[0].signal->id) {
-> > -		switch (action) {
-> > -		case STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE:
-> > -		case STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE:
-> > -		case STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES:
-> > -			priv->polarity =3D action;
-> > -			return 0;
-> > -		}
-> > -	}
-> > +	if ((enum stm32_lptim_cnt_function)function !=3D STM32_LPTIM_COUNTER_=
-INCREASE
->=20
-> Could COUNTER_FUNCTION_INCREASE be used directly here, to avoid casting ?
-
-Sure, you can remove the stm32_lptim_cnt_function enum from this driver
-and just use COUNTER_FUNCTION_INCREASE here.
-
-> > +	    || synapse->signal->id !=3D count->synapses[0].signal->id
-> > +	    || action =3D=3D COUNTER_SYNAPSE_ACTION_NONE)
-> > +		return -EINVAL;
-> > =20
-> > -	return -EINVAL;
-> > +	priv->polarity =3D stm32_lptim_c2l_actions_map[action];
-> > +
-> > +	return 0;
-> >  }
-> > =20
-> >  static const struct counter_ops stm32_lptim_cnt_ops =3D {
-> >  	.count_read =3D stm32_lptim_cnt_read,
-> > -	.function_get =3D stm32_lptim_cnt_function_get,
-> > -	.function_set =3D stm32_lptim_cnt_function_set,
-> > -	.action_get =3D stm32_lptim_cnt_action_get,
-> > -	.action_set =3D stm32_lptim_cnt_action_set,
-> > +	.function_read =3D stm32_lptim_cnt_function_read,
-> > +	.function_write =3D stm32_lptim_cnt_function_write,
-> > +	.action_read =3D stm32_lptim_cnt_action_read,
-> > +	.action_write =3D stm32_lptim_cnt_action_write,
-> >  };
-> > =20
-> >  static struct counter_signal stm32_lptim_cnt_signals[] =3D {
-> > diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-=
-timer-cnt.c
-> > index 3fb0debd7425..c690b76e5dab 100644
-> > --- a/drivers/counter/stm32-timer-cnt.c
-> > +++ b/drivers/counter/stm32-timer-cnt.c
-> > @@ -13,6 +13,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/pinctrl/consumer.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/types.h>
-> > =20
-> >  #define TIM_CCMR_CCXS	(BIT(8) | BIT(0))
-> >  #define TIM_CCMR_MASK	(TIM_CCMR_CC1S | TIM_CCMR_CC2S | \
-> > @@ -44,21 +45,21 @@ struct stm32_timer_cnt {
-> >   * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
-> >   */
-> >  enum stm32_count_function {
-> > +	STM32_COUNT_SLAVE_MODE_DISABLED =3D COUNTER_FUNCTION_INCREASE,
-> > +	STM32_COUNT_ENCODER_MODE_1 =3D COUNTER_FUNCTION_QUADRATURE_X2_A,
-> > +	STM32_COUNT_ENCODER_MODE_2 =3D COUNTER_FUNCTION_QUADRATURE_X2_B,
-> > +	STM32_COUNT_ENCODER_MODE_3 =3D COUNTER_FUNCTION_QUADRATURE_X4,
-> > +};
-> > +
->=20
-> Same as for the LPTIM driver above, I noticed the enum is removed from
-> the 104-quad-8 driver.
->=20
-> I'm fine both ways... I just feel like this could be more consistent
-> later in the function read/write routines to report enum from the
-> counter_function definition (e.g. like COUNTER_FUNCTION_QUADRATURE_X4
-> instead of STM32_COUNT_ENCODER_MODE_3).
->=20
-> Thanks,
-> Fabrice
-
-Yes, this enum is just used to alias those constants. If you think the
-code will be clearer by using the COUNTER_FUNCTION_* constants directly,
-then please do so.
-
-I don't know whether this v10 revision of the patchset will be merged
-or if we'll need a v11. So send your updates for stm32-lptimer-cnt.c and
-stm32-timer-cnt.c to me directly and I'll squash them with this patch if
-we do have a v11; otherwise you can submit them separately to the
-mailing list if this v10 is merged afterall.
-
-Thanks,
-
-William Breathitt Gray
-
---cqRhoqShv7pK17zI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmBZsjgACgkQhvpINdm7
-VJJZDw/9H+TCABTs1cLpAbmLd2sUEyLjaI19qQOiJ8LJYXNIPuzkmYon1Aro9t6O
-CV7Gb1zvpXorE+fCByANz8PXKS/IroXuGA/VVlIJzX3BVEk9rkYO+QPxJR7V7dtq
-zQyLdHKpEBpoLhVgteJBXAGjQKiKw5uEP+3KZczRqAE5KFoTsZCAXjHflcb7Awci
-yEjlnoIOpEVcFJf00cnjUAYx+bBRFHM3pHINag2p/Tb5rihKOJWtcxoviXM0Y00Q
-bedD8D0/DkjLuRRXmrhpExTEKoLiK5FZfN+uveb/wAqrUw7Vslr17MOS396rr7Fb
-DybH6m089JALYJdfRBTD3om1SYfNWvvoauC13FnS4+vuFmwGKkH2KX2bscRzRdZI
-EGZytTeTN01MkvyFuon/SP2GxqsBrjJ/0s5n1erwQqSssKK15tWVw9/224ImS7b5
-lwAICzePbaBKHiZ6FhXvqj7i97Gbb0BCNWlutr/ynHI+Hsf9VTbBmjvs5upUosJV
-0V4I3Q7lOgfJZGTODcRjilZOYxEhT7R43dhH78Ou+wbxUwetdiYc1gWwTQvYKEqP
-e1PKk8Wsk+qPz6l9cDXeaigO+mvMNRwdtWFVJmKb9erPN+O+vFiSxeX3maZadJYL
-GFbSV3VYrt65t0MrPP5rm3iY5RMxrh5k21QuxikruVVFw9LWRcQ=
-=axoY
------END PGP SIGNATURE-----
-
---cqRhoqShv7pK17zI--
+Thanks.
