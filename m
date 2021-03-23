@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E727B345E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D907345E5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 13:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhCWMlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 08:41:10 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:51466 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhCWMkx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:40:53 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4C00420B5680;
-        Tue, 23 Mar 2021 05:40:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4C00420B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616503250;
-        bh=fyO5OQ1MPXrJo3wHhJyQvWPjoGtn/RSEVDvabSJsv1k=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=eiXkMmyle2ssvKgeEoUiPU29JsoyuIylPUXLLhxvpY3DsrgqhiH49PZPnjyEGHbtt
-         suPb+C2C9SInJGPRNnxQYiliZnWzcazkH3c+xb8Bud67JLzr6z7DnIh3rLFjFLJruy
-         KPPCyciXJhEjcj9KMlIHIsuyIcgzUlTYZrmUj2Kw=
-Subject: Re: [RFC PATCH v2 3/8] arm64: Terminate the stack trace at TASK_FRAME
- and EL0_FRAME
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>, jpoimboe@redhat.com,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <5997dfe8d261a3a543667b83c902883c1e4bd270>
- <20210315165800.5948-1-madvenka@linux.microsoft.com>
- <20210315165800.5948-4-madvenka@linux.microsoft.com>
- <20210318182607.GO5469@sirena.org.uk>
- <fd5763e4-b649-683b-3038-7f221eed68a9@linux.microsoft.com>
- <20210323103644.GC95840@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <0f36fe36-c435-f12a-661b-7075f899e4fb@linux.microsoft.com>
-Date:   Tue, 23 Mar 2021 07:40:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231311AbhCWMlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 08:41:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231309AbhCWMlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 08:41:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7790600CC;
+        Tue, 23 Mar 2021 12:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616503277;
+        bh=472SlIvDxZ+AwgZzUK/wefpcRSeIob0JLIzRiCW/rPk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Tz0RmbNAz5hhzDcgOnrNBLJaOWXLkq3jkVK9w6VKsju9Fkb3to3orHRK3B2Zkduj8
+         1lJt2kcT+6fSxPk1+17itpCpHSr+QeT5nS9n5Jd4YdasDS9InYZv5F1cwIHgWotYO4
+         XrwQBMMHnJf76+02qFSepzZz4MubLFYddgeD9mZ8WErb412nhZPqqF4XzZLl2WNcQ7
+         nt9HVB2fCThvfuzgiiakObsNor2L7gJ6jHLEC9YtxnUsLyvK68kmIEkecoxBTpCQ6o
+         VcOMP69gF8LWyD9/hztYaEGy2M9pTbUJMtuMBG/VJK1qNT6zJ1Jr4ba2RnAJsylGuJ
+         V1A5aJywwtKhA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kbuild@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] kasan: fix hwasan build for gcc
+Date:   Tue, 23 Mar 2021 13:41:04 +0100
+Message-Id: <20210323124112.1229772-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210323103644.GC95840@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+gcc-11 adds support for -fsanitize=kernel-hwaddress, so it becomes
+possible to enable CONFIG_KASAN_SW_TAGS.
 
-On 3/23/21 5:36 AM, Mark Rutland wrote:
-> On Thu, Mar 18, 2021 at 03:29:19PM -0500, Madhavan T. Venkataraman wrote:
->>
->>
->> On 3/18/21 1:26 PM, Mark Brown wrote:
->>> On Mon, Mar 15, 2021 at 11:57:55AM -0500, madvenka@linux.microsoft.com wrote:
->>>
->>>> +	/* Terminal record, nothing to unwind */
->>>> +	if (fp == (unsigned long) regs->stackframe) {
->>>> +		if (regs->frame_type == TASK_FRAME ||
->>>> +		    regs->frame_type == EL0_FRAME)
->>>> +			return -ENOENT;
->>>>  		return -EINVAL;
->>>> +	}
->>>
->>> This is conflating the reliable stacktrace checks (which your series
->>> will later flag up with frame->reliable) with verifying that we found
->>> the bottom of the stack by looking for this terminal stack frame record.
->>> For the purposes of determining if the unwinder got to the bottom of the
->>> stack we don't care what stack type we're looking at, we just care if it
->>> managed to walk to this defined final record.  
->>>
->>> At the minute nothing except reliable stack trace has any intention of
->>> checking the specific return code but it's clearer to be consistent.
->>>
->>
->> So, you are saying that the type check is redundant. OK. I will remove it
->> and just return -ENOENT on reaching the final record.
-> 
-> Yes please; and please fold that into the same patch that adds the final
-> records.
-> 
+Unfortunately this fails to build at the moment, because the
+corresponding command line arguments use llvm specific syntax.
 
-Will do.
+Change it to use the cc-param macro instead, which works on both
+clang and gcc.
 
-Thanks.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ scripts/Makefile.kasan | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Madhavan
+diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
+index 1e000cc2e7b4..0a2789783d1b 100644
+--- a/scripts/Makefile.kasan
++++ b/scripts/Makefile.kasan
+@@ -36,14 +36,14 @@ endif # CONFIG_KASAN_GENERIC
+ ifdef CONFIG_KASAN_SW_TAGS
+ 
+ ifdef CONFIG_KASAN_INLINE
+-    instrumentation_flags := -mllvm -hwasan-mapping-offset=$(KASAN_SHADOW_OFFSET)
++    instrumentation_flags := $(call cc-param,hwasan-mapping-offset=$(KASAN_SHADOW_OFFSET))
+ else
+-    instrumentation_flags := -mllvm -hwasan-instrument-with-calls=1
++    instrumentation_flags := $(call cc-param,hwasan-instrument-with-calls=1)
+ endif
+ 
+ CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
+-		-mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
+-		-mllvm -hwasan-use-short-granules=0 \
++		$(call cc-param,hwasan-instrument-stack=$(CONFIG_KASAN_STACK)) \
++		$(call cc-param,hwasan-use-short-granules=0) \
+ 		$(instrumentation_flags)
+ 
+ endif # CONFIG_KASAN_SW_TAGS
+-- 
+2.29.2
+
