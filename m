@@ -2,59 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F82734553C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2776B345548
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 03:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhCWCDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 22:03:01 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:38533 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229467AbhCWCCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:02:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UT0bCyD_1616464951;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UT0bCyD_1616464951)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 23 Mar 2021 10:02:40 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     mchehab@kernel.org
-Cc:     sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] media: staging: media: Remove redundant NULL check
-Date:   Tue, 23 Mar 2021 10:02:30 +0800
-Message-Id: <1616464950-61009-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230048AbhCWCGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 22:06:49 -0400
+Received: from m12-15.163.com ([220.181.12.15]:45580 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhCWCGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 22:06:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=9sdXz
+        0tALfOI2leZ5ji9YmZOodSU6t+mAa6CveDIcYk=; b=IJJZSNCn5QbMR9AP184LE
+        9t3LBbpp3jekTwuqPrkLIfR80KhmFdQD/bRNdWQsQ1MpYay/fgSGAiopjE+ojkWa
+        qhSK6Ms4nHsZncadFl3baS7bKPdNsG6UMjIiClc0toP19etOmdYUwPc4KBXZ45aG
+        TzDBxI2wsCBhJ0sQFjQmT8=
+Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
+        by smtp11 (Coremail) with SMTP id D8CowACHjgrNTFlg9J8_GA--.21S2;
+        Tue, 23 Mar 2021 10:05:15 +0800 (CST)
+From:   zuoqilin1@163.com
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
+Subject: [PATCH] net/smc: Simplify the return expression
+Date:   Tue, 23 Mar 2021 10:05:09 +0800
+Message-Id: <20210323020509.1499-1-zuoqilin1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowACHjgrNTFlg9J8_GA--.21S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF1xWF1UGFWrJFyrJrykuFg_yoWDKFXEk3
+        48Xrs2gFyUZ3Z3ArWftrsIyryfGFsFqw40qFs7ta98Jr45XrWrArn8GFnxC34rCws5JF9F
+        gr4ftFWIy34UCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUezuWPUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/xtbBRRteiVPAKqAISQAAsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+From: zuoqilin <zuoqilin@yulong.com>
 
-./drivers/staging/media/atomisp/pci/atomisp_cmd.c:4269:2-8: WARNING:
-NULL check before some freeing functions is not needed.
+Simplify the return expression of smc_ism_signal_shutdown().
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
 ---
- drivers/staging/media/atomisp/pci/atomisp_cmd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/smc/smc_ism.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-index 592ea99..d818eaa 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-@@ -4626,8 +4626,7 @@ int atomisp_fixed_pattern(struct atomisp_sub_device *asd, int flag,
- err:
- 	if (ret && res)
- 		ia_css_frame_free(res);
--	if (tmp_buf)
--		vfree(tmp_buf);
-+	vfree(tmp_buf);
- 	if (ret == 0)
- 		*result = res;
- 	return ret;
+diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
+index 9c6e958..c3558cc 100644
+--- a/net/smc/smc_ism.c
++++ b/net/smc/smc_ism.c
+@@ -344,7 +344,6 @@ static void smcd_handle_sw_event(struct smc_ism_event_work *wrk)
+ 
+ int smc_ism_signal_shutdown(struct smc_link_group *lgr)
+ {
+-	int rc;
+ 	union smcd_sw_event_info ev_info;
+ 
+ 	if (lgr->peer_shutdown)
+@@ -353,11 +352,10 @@ int smc_ism_signal_shutdown(struct smc_link_group *lgr)
+ 	memcpy(ev_info.uid, lgr->id, SMC_LGR_ID_SIZE);
+ 	ev_info.vlan_id = lgr->vlan_id;
+ 	ev_info.code = ISM_EVENT_REQUEST;
+-	rc = lgr->smcd->ops->signal_event(lgr->smcd, lgr->peer_gid,
++	return lgr->smcd->ops->signal_event(lgr->smcd, lgr->peer_gid,
+ 					  ISM_EVENT_REQUEST_IR,
+ 					  ISM_EVENT_CODE_SHUTDOWN,
+ 					  ev_info.info);
+-	return rc;
+ }
+ 
+ /* worker for SMC-D events */
 -- 
-1.8.3.1
+1.9.1
+
 
