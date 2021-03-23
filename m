@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFD4346D6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91261346D72
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234177AbhCWWli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:41:38 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:38414 "EHLO
-        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234187AbhCWWlN (ORCPT
+        id S234056AbhCWWnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:43:15 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:46007 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233781AbhCWWmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:41:13 -0400
-Received: by mail-il1-f170.google.com with SMTP id d10so12890308ils.5;
-        Tue, 23 Mar 2021 15:41:12 -0700 (PDT)
+        Tue, 23 Mar 2021 18:42:54 -0400
+Received: by mail-il1-f182.google.com with SMTP id v3so19673152ilj.12;
+        Tue, 23 Mar 2021 15:42:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7df4nauXHTGTZT/QJ+gJGVtaRr9NLAYHJhOGISyVl1w=;
-        b=aa8ZlRoS7ht48bJzmnrEhJh2Ge+MMxhkQDzY+k9rSUFDMEHkywpyM6WXt5acogcmP7
-         cMlTOE/bDryDd+9NwhBQFkX+dQ9i6u9ONmZRMaHZXNHgLBOonkXbweTfI3Dw2medUgpQ
-         sExZVsBytgcsdAcQIULU3FjQVAQfk1jSz4/jHcDtvXTLM3mSZgF49S8YHW3AXqp3pKvn
-         k7YvynDIF5fEuAW6zB6V8+BQx2/C0fpFX7FSEt+xjFa4U5aok2ZLMZ8mZr+IwXWV/vdo
-         yBYS2FfLFln7+YKHIdKB5VKliRkztuDThrWWaJGoI57h5wm7sjLZT/bikqxqGsgXH6GA
-         KvSA==
-X-Gm-Message-State: AOAM533RWZdoCX1ZzrgswXACvQEg3aJOBt6CvRmp60vLyl3zbQ49QVrt
-        tp9c0gbUiDtZ+4JZ/wIaVQ==
-X-Google-Smtp-Source: ABdhPJwap2AFfRW5hUk2I99RYL7djHzmVl5STHZK1Eo20/kBMDeZkP8kTbIGN47BIKF3M1LeFkLlOg==
-X-Received: by 2002:a92:d58e:: with SMTP id a14mr344563iln.61.1616539272551;
-        Tue, 23 Mar 2021 15:41:12 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KVmKCSdOdE0heS6y/Cbbfc/TApG4WjUWKfbAhWrSGbs=;
+        b=KGcOVs114XCQYsJZpd2UiCd4AurFCr2q63UHwgj7cUsm+YFzYXqSE+9esjcR8njHsm
+         GSWtKmUnVacNjhkM05W/uRjZ9t6hX2uscomDoRSfSUMd8dRke5KIzKMyRKoYfThOTrtZ
+         /KRQ76jbykRmR2U06FFeDhyiZ6N18tpjc4B6EysGWOMT16ME2Ooqfl9IdmjsxHdXCgeo
+         gZ7/X5zfvJYtVWupIPnRtQUg2WQPmNOdA4HJWsh3iVvPd39xdLpPmnlGKfbz01dvoEMx
+         Uhb5JfXx4CsfnICd4vsy9y0YKgt9jWw9t2L+06S4E/KZJ3uvh7987mrs/UCNSvqKOBPB
+         KuDg==
+X-Gm-Message-State: AOAM533+T9vqNAycDV9xx18VZI+AUZxvM0VpenZodXzEcq4zVNIkI4eT
+        +1juWOkYvxm6PsI3w8Tb6Q==
+X-Google-Smtp-Source: ABdhPJwBk7tZXg9j0xfN8xEAYZDHN4Zew5Ma8PpLvYQTNKrWQj5/xQRmwUlUtQCNdhtaFJhzACwpBw==
+X-Received: by 2002:a92:b00d:: with SMTP id x13mr391816ilh.128.1616539373579;
+        Tue, 23 Mar 2021 15:42:53 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l14sm131647ilc.33.2021.03.23.15.41.10
+        by smtp.gmail.com with ESMTPSA id s9sm110713iob.33.2021.03.23.15.42.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 15:41:11 -0700 (PDT)
-Received: (nullmailer pid 1480679 invoked by uid 1000);
-        Tue, 23 Mar 2021 22:41:09 -0000
-Date:   Tue, 23 Mar 2021 16:41:09 -0600
+        Tue, 23 Mar 2021 15:42:52 -0700 (PDT)
+Received: (nullmailer pid 1483403 invoked by uid 1000);
+        Tue, 23 Mar 2021 22:42:49 -0000
+Date:   Tue, 23 Mar 2021 16:42:49 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Qing Zhang <zhangqing@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org,
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        linux-mmc@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
         linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH v5 6/7] dt-bindings: interrupt-controller: Add
- Loongson-2K1000 LIOINTC
-Message-ID: <20210323224109.GA1480622@robh.at.kernel.org>
-References: <20210315075004.15465-1-zhangqing@loongson.cn>
- <20210315075004.15465-7-zhangqing@loongson.cn>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        devel@driverdev.osuosl.org, netdev@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v5 02/24] dt-bindings: introduce silabs,wfx.yaml
+Message-ID: <20210323224249.GA1483296@robh.at.kernel.org>
+References: <20210315132501.441681-1-Jerome.Pouiller@silabs.com>
+ <20210315132501.441681-3-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210315075004.15465-7-zhangqing@loongson.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210315132501.441681-3-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Mar 2021 15:50:03 +0800, Qing Zhang wrote:
-> Add liointc-2.0 properties support, so update the maxItems and
-> condition description.
+On Mon, 15 Mar 2021 14:24:39 +0100, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > 
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> Tested-by: Ming Wang <wangming01@loongson.cn>
+> Prepare the inclusion of the wfx driver in the kernel.
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > ---
-> 
-> v4-v5:
-> - Add reg condition description
-> 
->  .../loongson,liointc.yaml                     | 36 ++++++++++++++++---
->  1 file changed, 32 insertions(+), 4 deletions(-)
+>  .../bindings/net/wireless/silabs,wfx.yaml     | 133 ++++++++++++++++++
+>  1 file changed, 133 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
