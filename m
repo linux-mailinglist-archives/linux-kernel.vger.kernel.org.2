@@ -2,240 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3CE34686C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF872346875
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbhCWTEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
+        id S232979AbhCWTFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232978AbhCWTEg (ORCPT
+        with ESMTP id S232970AbhCWTEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:04:36 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35CCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:04:35 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id u10so19119329ilb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:04:35 -0700 (PDT)
+        Tue, 23 Mar 2021 15:04:40 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CC3C061763;
+        Tue, 23 Mar 2021 12:04:39 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so12601348pjq.5;
+        Tue, 23 Mar 2021 12:04:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o99hGRoYvVR79FDdobQlJcPIWJf5+SkiNU6VLZRrYBM=;
-        b=HYR7+dKJHgKZBTMux3CFxX3E+EcCQPurYR2skbb9VgeSLu9X0ek3/amHJQWaPS8K7U
-         2dK6dt4s5MD7JoWyJYj8TvigUwIsb7kqsWEbquUwR1rul+n0H6UtD+CVZKFvtRFlAooI
-         oxt4zX6fNO3EG4EElil3Ts01ghPWbi6emZ4iSqOUG99Dq4qeJ8xb0F2bRlRXlENCnQXS
-         /UBk7ho0Njn6GBjZqDQhDPT+xwbcGr9Yci6j7cPi4AtRhk7FXqPBE75E1Uwpbllbv+v5
-         /8/ui2jey3HRhJvWXq7zloNSnlSDkIhvLPz5KB8NOtwSA5JEL6sGCVIMwuE/Devsl3kJ
-         tAFA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mOoV6NglxaO34D7E/LEb/wD+88EOY1QvctA0zUc+clA=;
+        b=Jyo+0+4mxPVgA/fM4574ACwHQi23psRIg5eNX8N8Y5lVRf/Wz+uDT77vINBVF65bnW
+         2D4ZpJC1oAwAtLPL5cYkL+C4/FH20kNR+Xwey6Otrt/EIUfO/rYzPUeVSzC4hlAYwxSL
+         UDuPN/eL8uI87UNlDu+JLwikoKZ4Vr8AWNgx5sMde9BgCmuNcgzMDwSn1mUtyaOjrh1x
+         KKUGjhrIB9u/T+MeTEybjrILwNPv7NaFtNjSGgiodHjX7zvZSmfoTqRRZOJrACipjRcr
+         Z/2P3EZvvRyDQZtk3c87dyhJmi4b6885Jr5pBh6q8me/QhTxUpvT4Bs8Duo4Wsko6+RA
+         JyOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o99hGRoYvVR79FDdobQlJcPIWJf5+SkiNU6VLZRrYBM=;
-        b=qdi5Fv9EXe4gefPfuiXTwzqGJ+oBfbR+26ia8joQawUio27X4Q+rmsBw+dd1iaVZqq
-         Kc04XPsl0qYqfAXoooMp4OxbyXdffXczJXOPGGQTO3wGarTOJuXFgoORIcuecwm87sjO
-         c3tx87RuQ6mGvdazV2OmnwtLVfW00fuCyqcCJ/pW1QpX0+wE3nzZw5DEjUMip0KNmUuH
-         xU9BbQQnSgDAnlmNc9/UfgZebPIC3QDHO7g7mgWQcS5S4ZGrqI9tqrtNtzu2RpTE1xz3
-         AkzoL5IuPQiwMqh2Ct2MNO/Q8YQIHmbpwEmLe4EGQvAmHNIUy8xlyviPOwRWf699vlmd
-         SuXg==
-X-Gm-Message-State: AOAM533aXJ4ZApbutOgxEaNsG1FIWaRPnALu/ZLlwHJ+WeFHJ/Vd4xIZ
-        8ZcrRwKVrbgdTRMQ6P4qh0GuTlP3sF/dLD2kNQh/o3lt53z8ijkZ
-X-Google-Smtp-Source: ABdhPJxYNLxwRIYqv8/zeV+uJu4WVhxWW0by+i/Ac7OSmaMfdj4MMsLkMzkN5YlROZxvRidsK9kXiQ0XoENPfPyYd2E=
-X-Received: by 2002:a05:6e02:148b:: with SMTP id n11mr6277042ilk.6.1616526275211;
- Tue, 23 Mar 2021 12:04:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mOoV6NglxaO34D7E/LEb/wD+88EOY1QvctA0zUc+clA=;
+        b=rH2jjPO/WWZZfzDYwkpZJvCgPG1hip5zgO/fHdar90yRqtjN23GeGO9fbQ/WqCwlkC
+         mjK8pSPoeLNKVbeAm/Lb++NQRaU7A6NckXgRo5/4xA4pnaKBzD4+9we8ZbFY9nkiOcPr
+         HA5W88MyAusC+I51+GqEljcR8oCBg+RdUz3L6ARXecZPhXF1W5C3czvIw+1tukyzI1I/
+         LauL+2o+ZiK/Eku6qu+R+0y/tNaUnuWuo1Ua0BjXvNI4jlWJxWqx98WguPt4RT9fJr8K
+         NzZRCO7wTa8sGYgVbabTVRG5haq/2QiM/iWC2lHJ2tREyWVs2Yp5TW2Wm3qdnVgZ9e1S
+         7q/g==
+X-Gm-Message-State: AOAM532uAb4OVL2fUKfaDajrP1Lxyx51ognTxdp/rmylpQ4Q2ixBlYxk
+        hKSH67WDlfRVORrA7AuChv0=
+X-Google-Smtp-Source: ABdhPJxHbzgizGpkWqcw90BCMdfjJ0GIQGZFlAJ1gbQECc981kaAiP3H52DMoXq1CYIphhFtCEKA8w==
+X-Received: by 2002:a17:90a:c207:: with SMTP id e7mr5761602pjt.188.1616526278573;
+        Tue, 23 Mar 2021 12:04:38 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
+        by smtp.gmail.com with ESMTPSA id j2sm16067633pgh.39.2021.03.23.12.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 12:04:37 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 12:04:34 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: ensure timely release of driver-allocated resources
+Message-ID: <YFo7wkq037P2Dosz@google.com>
+References: <YFf2RD931nq3RudJ@google.com>
+ <20210322123707.GB4681@sirena.org.uk>
+ <YFjyJycuAXdTX42D@google.com>
+ <20210323173606.GB5490@sirena.org.uk>
 MIME-Version: 1.0
-References: <20210323143144.12730-1-michael@walle.cc> <20210323143144.12730-3-michael@walle.cc>
-In-Reply-To: <20210323143144.12730-3-michael@walle.cc>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Tue, 23 Mar 2021 20:04:24 +0100
-Message-ID: <CAEyMn7YsEK_HawpQKMJMn_pqAmC3Qied1PUE5J0yS48VLyYkig@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add initial sysfs support
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323173606.GB5490@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On Tue, Mar 23, 2021 at 05:36:06PM +0000, Mark Brown wrote:
+> On Mon, Mar 22, 2021 at 12:38:15PM -0700, Dmitry Torokhov wrote:
+> > On Mon, Mar 22, 2021 at 12:37:07PM +0000, Mark Brown wrote:
+> 
+> > > This feels like it might make sense to push up to the driver core level
+> > > then rather than doing in individual buses?
+> 
+> > That is exactly the issue: we can't. Driver core already releases all
+> > resources when a device is being unbound but that happens after bus
+> > "remove" code is executed and therefore is too late. The device might
+> > already be powered down, but various devm release() callbacks will be
+> > trying to access it.
+> 
+> Can you provide a concrete example of something that is causing problems
+> here?  If something is trying to access the device after remove() has
+> run that sounds like it's abusing devres somehow.  It sounded from your
+> commit log like this was something to do with the amount of time it took
+> the driver core to action the frees rather than an ordering issue.
 
-Am Di., 23. M=C3=A4rz 2021 um 15:34 Uhr schrieb Michael Walle <michael@wall=
-e.cc>:
->
-> Add support to show the name and JEDEC identifier as well as to dump the
-> SFDP table. Not all flashes list their SFDP table contents in their
-> datasheet. So having that is useful. It might also be helpful in bug
-> reports from users.
->
-> Signed-off-by: Michael Walle <michael@walle.cc>
+No it is ordering issue. I do not have a proven real-life example for
+SPI, but we do have one for I2C:
 
-Tested-by: Heiko Thiery <heiko.thiery@gmail.com>
+https://lore.kernel.org/linux-devicetree/20210305041236.3489-7-jeff@labundy.com/
 
-> ---
->  drivers/mtd/spi-nor/Makefile |  2 +-
->  drivers/mtd/spi-nor/core.c   |  5 +++
->  drivers/mtd/spi-nor/core.h   |  3 ++
->  drivers/mtd/spi-nor/sysfs.c  | 86 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 95 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/spi-nor/sysfs.c
->
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 653923896205..aff308f75987 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->
-> -spi-nor-objs                   :=3D core.o sfdp.o
-> +spi-nor-objs                   :=3D core.o sfdp.o sysfs.o
->  spi-nor-objs                   +=3D atmel.o
->  spi-nor-objs                   +=3D catalyst.o
->  spi-nor-objs                   +=3D eon.o
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index fbc34158a883..02523ddac612 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3708,6 +3708,10 @@ static int spi_nor_probe(struct spi_mem *spimem)
->         if (ret)
->                 return ret;
->
-> +       ret =3D spi_nor_sysfs_create(nor);
-> +       if (ret)
-> +               return ret;
-> +
->         return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->                                    data ? data->nr_parts : 0);
->  }
-> @@ -3717,6 +3721,7 @@ static int spi_nor_remove(struct spi_mem *spimem)
->         struct spi_nor *nor =3D spi_mem_get_drvdata(spimem);
->
->         spi_nor_restore(nor);
-> +       spi_nor_sysfs_remove(nor);
->
->         /* Clean up MTD stuff. */
->         return mtd_device_unregister(&nor->mtd);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 08d2469837da..599035200a03 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -486,4 +486,7 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(=
-struct mtd_info *mtd)
->         return mtd->priv;
->  }
->
-> +int spi_nor_sysfs_create(struct spi_nor *nor);
-> +void spi_nor_sysfs_remove(struct spi_nor *nor);
-> +
->  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> new file mode 100644
-> index 000000000000..c62cc4d6bce6
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/spi/spi-mem.h>
-> +#include <linux/sysfs.h>
-> +
-> +#include "core.h"
-> +
-> +static ssize_t name_show(struct device *dev,
-> +                        struct device_attribute *attr, char *buf)
-> +{
-> +       struct spi_device *spi =3D to_spi_device(dev);
-> +       struct spi_mem *spimem =3D spi_get_drvdata(spi);
-> +       struct spi_nor *nor =3D spi_mem_get_drvdata(spimem);
-> +
-> +       return sysfs_emit(buf, "%s\n", nor->info->name);
-> +}
-> +static DEVICE_ATTR_RO(name);
-> +
-> +static ssize_t jedec_id_show(struct device *dev,
-> +                            struct device_attribute *attr, char *buf)
-> +{
-> +       struct spi_device *spi =3D to_spi_device(dev);
-> +       struct spi_mem *spimem =3D spi_get_drvdata(spi);
-> +       struct spi_nor *nor =3D spi_mem_get_drvdata(spimem);
-> +
-> +       return sysfs_emit(buf, "%*phN\n", nor->info->id_len, nor->info->i=
-d);
-> +}
-> +static DEVICE_ATTR_RO(jedec_id);
-> +
-> +static struct attribute *spi_nor_sysfs_entries[] =3D {
-> +       &dev_attr_name.attr,
-> +       &dev_attr_jedec_id.attr,
-> +       NULL
-> +};
-> +
-> +static ssize_t sfdp_read(struct file *filp, struct kobject *kobj,
-> +                        struct bin_attribute *bin_attr, char *buf,
-> +                        loff_t off, size_t count)
-> +{
-> +       struct spi_device *spi =3D to_spi_device(kobj_to_dev(kobj));
-> +       struct spi_mem *spimem =3D spi_get_drvdata(spi);
-> +       struct spi_nor *nor =3D spi_mem_get_drvdata(spimem);
-> +       struct sfdp *sfdp =3D nor->sfdp;
-> +       size_t sfdp_size =3D sfdp->num_dwords * sizeof(*sfdp->dwords);
-> +
-> +       return memory_read_from_buffer(buf, count, &off, nor->sfdp->dword=
-s,
-> +                                      sfdp_size);
-> +}
-> +static BIN_ATTR_RO(sfdp, 0);
-> +
-> +static struct bin_attribute *spi_nor_sysfs_bin_entries[] =3D {
-> +       &bin_attr_sfdp,
-> +       NULL
-> +};
-> +
-> +static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-> +                                           struct bin_attribute *attr, i=
-nt n)
-> +{
-> +       struct spi_device *spi =3D to_spi_device(kobj_to_dev(kobj));
-> +       struct spi_mem *spimem =3D spi_get_drvdata(spi);
-> +       struct spi_nor *nor =3D spi_mem_get_drvdata(spimem);
-> +
-> +       if (attr =3D=3D &bin_attr_sfdp && !nor->sfdp)
-> +               return 0;
-> +
-> +       return 0444;
-> +}
-> +
-> +static struct attribute_group spi_nor_sysfs_attr_group =3D {
-> +       .name           =3D NULL,
-> +       .is_bin_visible =3D spi_nor_sysfs_is_bin_visible,
-> +       .attrs          =3D spi_nor_sysfs_entries,
-> +       .bin_attrs      =3D spi_nor_sysfs_bin_entries,
-> +};
-> +
-> +int spi_nor_sysfs_create(struct spi_nor *nor)
-> +{
-> +       return sysfs_create_group(&nor->dev->kobj, &spi_nor_sysfs_attr_gr=
-oup);
-> +}
-> +
-> +void spi_nor_sysfs_remove(struct spi_nor *nor)
-> +{
-> +       sysfs_remove_group(&nor->dev->kobj, &spi_nor_sysfs_attr_group);
-> +}
-> --
-> 2.20.1
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+However, if we consider fairly typical SPI driver, such as
+drivers/input/touchscreen/ad7877.c, you can see that it uses devm in its
+probe() and because all resources are managed, it does not define
+remove() at all.
 
-Thank you!
+So during proble we have:
+
+<driver core allocations>
+SPI: dev_pm_domain_attach
+AD7877: devm_kzalloc driver structure
+AD7877: devm allocation of input device
+AD7877: devm custom action to disable the chip on removal
+AD7877: devm IRQ request
+AD7877: devm sysfs attribute group
+AD7877: devm input registration
+<additional devm driver core allocations?>
+
+And on remove:
+
+SPI: dev_pm_domain_detach !!!!!!
+<deallocate additional devm driver core allocations?>
+AD7877: devm input unregistration
+AD7877: devm sysfs attribute group removal
+AD7877: devm freeing IRQ
+AD7877: devm disable the chip
+AD7877: devm freeing of input device
+AD7877: devm free driver structure
+<deallocate driver core allocations>
+
+Note how dev_pm_domain_detach() jumped ahead of everything, and
+strictly speaking past this point we can no longer guarantee that we can
+access the chip and disable it.
+
+> 
+> > devm only works when you do not mix manual resources with managed ones,
+> > and when bus code allocates resources themselves (attaching a device to
+> > a power domain can be viewed as resource acquisition) we violate this
+> > principle. We could, of course, to make SPI bus' probe() use
+> > devm_add_action_or_reset() to work in removal of the device from the
+> > power domain into the stream of devm resources, but that still requires
+> > changes at bus code, and I believe will complicate matters if we need to
+> > extend SPI bus code to allocate more resources in probe(). So I opted
+> > for opening a devm group to separate resources allocated before and
+> > after probe() to be able to release them in the right order.
+> 
+> Sure, these are standard issues that people create with excessive use of
+
+devm is a fact of life and we need to live with it. I am unconvinced if
+it solved more issues that it brought in, but it is something that
+driver authors like to use and are pushed towards.
+
+> devm but the device's remove() callback is surely already a concern by
+> itself here?
+
+In the example above there is not one, but even if it exists, it is
+called first, so in some limited cases you could have non-managed
+resources allocated very last and released first in remove(), and then
+have devm release the rest. However driver's remove() is not issue here,
+it is bus' non-trivial remove.
+
+Thanks.
+
+-- 
+Dmitry
