@@ -2,155 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF872346875
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4DF346873
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhCWTFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        id S232540AbhCWTFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232970AbhCWTEk (ORCPT
+        with ESMTP id S232953AbhCWTEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:04:40 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CC3C061763;
-        Tue, 23 Mar 2021 12:04:39 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so12601348pjq.5;
-        Tue, 23 Mar 2021 12:04:39 -0700 (PDT)
+        Tue, 23 Mar 2021 15:04:38 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ED4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:04:37 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id a132-20020a1c668a0000b029010f141fe7c2so11414300wmc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 12:04:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mOoV6NglxaO34D7E/LEb/wD+88EOY1QvctA0zUc+clA=;
-        b=Jyo+0+4mxPVgA/fM4574ACwHQi23psRIg5eNX8N8Y5lVRf/Wz+uDT77vINBVF65bnW
-         2D4ZpJC1oAwAtLPL5cYkL+C4/FH20kNR+Xwey6Otrt/EIUfO/rYzPUeVSzC4hlAYwxSL
-         UDuPN/eL8uI87UNlDu+JLwikoKZ4Vr8AWNgx5sMde9BgCmuNcgzMDwSn1mUtyaOjrh1x
-         KKUGjhrIB9u/T+MeTEybjrILwNPv7NaFtNjSGgiodHjX7zvZSmfoTqRRZOJrACipjRcr
-         Z/2P3EZvvRyDQZtk3c87dyhJmi4b6885Jr5pBh6q8me/QhTxUpvT4Bs8Duo4Wsko6+RA
-         JyOw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RbFpbq45kpggLm6Psx0owbwRXsYpSfJN7JgeqcP2Mu4=;
+        b=UZKiqbd5+BBdc0NgTu+GUe/wC4bea0GtvB29FWI7Spj3k/dxu8QOO3dVhiIyeJMucF
+         vQC8feWgvEa9X3J7SMPxAwT6My2YOBhRcWaJ0yiBDG71JxnDD8Hh53nv/GPFX/N/VLv7
+         jORi2aeofPCaEkYJT5x4PdkHS3eG0kBUdwfk5RqPLfGQpfiCQiZa2Uq12ZERjfBBu3Ty
+         vThjutiV4MKI4efT85EHcLjz4bik64raZ063NTEN9k6h+7RnPiZukFM19+mXRKd7jNeL
+         /ouBOF8Jqyovbt2ep53M/NOUW90gwGnJSod16lrWiQl16cT319HWHdSPDoCueq4hLT5P
+         hb1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mOoV6NglxaO34D7E/LEb/wD+88EOY1QvctA0zUc+clA=;
-        b=rH2jjPO/WWZZfzDYwkpZJvCgPG1hip5zgO/fHdar90yRqtjN23GeGO9fbQ/WqCwlkC
-         mjK8pSPoeLNKVbeAm/Lb++NQRaU7A6NckXgRo5/4xA4pnaKBzD4+9we8ZbFY9nkiOcPr
-         HA5W88MyAusC+I51+GqEljcR8oCBg+RdUz3L6ARXecZPhXF1W5C3czvIw+1tukyzI1I/
-         LauL+2o+ZiK/Eku6qu+R+0y/tNaUnuWuo1Ua0BjXvNI4jlWJxWqx98WguPt4RT9fJr8K
-         NzZRCO7wTa8sGYgVbabTVRG5haq/2QiM/iWC2lHJ2tREyWVs2Yp5TW2Wm3qdnVgZ9e1S
-         7q/g==
-X-Gm-Message-State: AOAM532uAb4OVL2fUKfaDajrP1Lxyx51ognTxdp/rmylpQ4Q2ixBlYxk
-        hKSH67WDlfRVORrA7AuChv0=
-X-Google-Smtp-Source: ABdhPJxHbzgizGpkWqcw90BCMdfjJ0GIQGZFlAJ1gbQECc981kaAiP3H52DMoXq1CYIphhFtCEKA8w==
-X-Received: by 2002:a17:90a:c207:: with SMTP id e7mr5761602pjt.188.1616526278573;
-        Tue, 23 Mar 2021 12:04:38 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
-        by smtp.gmail.com with ESMTPSA id j2sm16067633pgh.39.2021.03.23.12.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 12:04:37 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 12:04:34 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: ensure timely release of driver-allocated resources
-Message-ID: <YFo7wkq037P2Dosz@google.com>
-References: <YFf2RD931nq3RudJ@google.com>
- <20210322123707.GB4681@sirena.org.uk>
- <YFjyJycuAXdTX42D@google.com>
- <20210323173606.GB5490@sirena.org.uk>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RbFpbq45kpggLm6Psx0owbwRXsYpSfJN7JgeqcP2Mu4=;
+        b=oyU+uhuRWsBb5GTIkUYEDaQIqSG125YDmTVR4q0r2ulAesBwe+WrtnB/2SdluGhbTh
+         BGV0QiTdtLZEJgLKeYdRAN04BJlrcsb/KwIkjxvTDVlrOsUVXT5Z3/pFpJWF9v2ahpwU
+         2TJ/Sdz1uz5uoQsKcWz84Qi/p09o7+d9GegLwjT3GTDDTICqYtMq4bQ0Scqj5YUyR0zs
+         OFLC3oiFBMes28OPjeSJK56NbcTcB1hTvrNggJUzKv/QnsA7yHZODoXQyoI2FGYaC9Rh
+         ApZlX6ZEedw3empu6C9ZU+l74+WwvNB4z++QmPh0+wf5sHaKwvCUaE0US+t6csqD/q4C
+         Tjlw==
+X-Gm-Message-State: AOAM530RO08pKpXuegHdFSoDeAoj4oyawqZFlzP2Is0IaQHWEL16zirf
+        8boUbfPaI34pISu8BxZKt4w=
+X-Google-Smtp-Source: ABdhPJxwi/mZg8TzTxJs26AM44HgpG1L47R7B6VUOtQ3vitadRNoKha3GN9uDw+lEk5ZSiOX+t9e+w==
+X-Received: by 2002:a1c:23c2:: with SMTP id j185mr4663665wmj.54.1616526276276;
+        Tue, 23 Mar 2021 12:04:36 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id l9sm3194098wmq.2.2021.03.23.12.04.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 12:04:35 -0700 (PDT)
+Subject: Re: [PATCH v5 1/3] mm: Extend MREMAP_DONTUNMAP to non-anonymous
+ mappings
+To:     Brian Geffon <bgeffon@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>
+References: <20210303175235.3308220-1-bgeffon@google.com>
+ <20210323182520.2712101-1-bgeffon@google.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Message-ID: <fef17cb0-ae0a-db3f-e847-3febd318a81a@gmail.com>
+Date:   Tue, 23 Mar 2021 19:04:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323173606.GB5490@sirena.org.uk>
+In-Reply-To: <20210323182520.2712101-1-bgeffon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 05:36:06PM +0000, Mark Brown wrote:
-> On Mon, Mar 22, 2021 at 12:38:15PM -0700, Dmitry Torokhov wrote:
-> > On Mon, Mar 22, 2021 at 12:37:07PM +0000, Mark Brown wrote:
+On 3/23/21 6:25 PM, Brian Geffon wrote:
+> Currently MREMAP_DONTUNMAP only accepts private anonymous mappings.
+> This restriction was placed initially for simplicity and not because
+> there exists a technical reason to do so.
 > 
-> > > This feels like it might make sense to push up to the driver core level
-> > > then rather than doing in individual buses?
+> This change will widen the support to include any mappings which are not
+> VM_DONTEXPAND or VM_PFNMAP. The primary use case is to support
+> MREMAP_DONTUNMAP on mappings which may have been created from a memfd.
+> This change will result in mremap(MREMAP_DONTUNMAP) returning -EINVAL
+> if VM_DONTEXPAND or VM_PFNMAP mappings are specified.
 > 
-> > That is exactly the issue: we can't. Driver core already releases all
-> > resources when a device is being unbound but that happens after bus
-> > "remove" code is executed and therefore is too late. The device might
-> > already be powered down, but various devm release() callbacks will be
-> > trying to access it.
-> 
-> Can you provide a concrete example of something that is causing problems
-> here?  If something is trying to access the device after remove() has
-> run that sounds like it's abusing devres somehow.  It sounded from your
-> commit log like this was something to do with the amount of time it took
-> the driver core to action the frees rather than an ordering issue.
+> Lokesh Gidra who works on the Android JVM, provided an explanation of how
+> such a feature will improve Android JVM garbage collection:
+> "Android is developing a new garbage collector (GC), based on userfaultfd.
+> The garbage collector will use userfaultfd (uffd) on the java heap during
+> compaction. On accessing any uncompacted page, the application threads will
+> find it missing, at which point the thread will create the compacted page
+> and then use UFFDIO_COPY ioctl to get it mapped and then resume execution.
+> Before starting this compaction, in a stop-the-world pause the heap will be
+> mremap(MREMAP_DONTUNMAP) so that the java heap is ready to receive
+> UFFD_EVENT_PAGEFAULT events after resuming execution.
 
-No it is ordering issue. I do not have a proven real-life example for
-SPI, but we do have one for I2C:
-
-https://lore.kernel.org/linux-devicetree/20210305041236.3489-7-jeff@labundy.com/
-
-However, if we consider fairly typical SPI driver, such as
-drivers/input/touchscreen/ad7877.c, you can see that it uses devm in its
-probe() and because all resources are managed, it does not define
-remove() at all.
-
-So during proble we have:
-
-<driver core allocations>
-SPI: dev_pm_domain_attach
-AD7877: devm_kzalloc driver structure
-AD7877: devm allocation of input device
-AD7877: devm custom action to disable the chip on removal
-AD7877: devm IRQ request
-AD7877: devm sysfs attribute group
-AD7877: devm input registration
-<additional devm driver core allocations?>
-
-And on remove:
-
-SPI: dev_pm_domain_detach !!!!!!
-<deallocate additional devm driver core allocations?>
-AD7877: devm input unregistration
-AD7877: devm sysfs attribute group removal
-AD7877: devm freeing IRQ
-AD7877: devm disable the chip
-AD7877: devm freeing of input device
-AD7877: devm free driver structure
-<deallocate driver core allocations>
-
-Note how dev_pm_domain_detach() jumped ahead of everything, and
-strictly speaking past this point we can no longer guarantee that we can
-access the chip and disable it.
+Pretty interesting idea :-)
 
 > 
-> > devm only works when you do not mix manual resources with managed ones,
-> > and when bus code allocates resources themselves (attaching a device to
-> > a power domain can be viewed as resource acquisition) we violate this
-> > principle. We could, of course, to make SPI bus' probe() use
-> > devm_add_action_or_reset() to work in removal of the device from the
-> > power domain into the stream of devm resources, but that still requires
-> > changes at bus code, and I believe will complicate matters if we need to
-> > extend SPI bus code to allocate more resources in probe(). So I opted
-> > for opening a devm group to separate resources allocated before and
-> > after probe() to be able to release them in the right order.
+> To speedup mremap operations, pagetable movement was optimized by moving
+> PUD entries instead of PTE entries [1]. It was necessary as mremap of even
+> modest sized memory ranges also took several milliseconds, and stopping the
+> application for that long isn't acceptable in response-time sensitive
+> cases.
 > 
-> Sure, these are standard issues that people create with excessive use of
+> With UFFDIO_CONTINUE feature [2], it will be even more efficient to
+> implement this GC, particularly the 'non-moveable' portions of the heap.
+> It will also help in reducing the need to copy (UFFDIO_COPY) the pages.
+> However, for this to work, the java heap has to be on a 'shared' vma.
+> Currently MREMAP_DONTUNMAP only supports private anonymous mappings, this
+> patch will enable using UFFDIO_CONTINUE for the new userfaultfd-based heap
+> compaction."
+> 
+> [1] https://lore.kernel.org/linux-mm/20201215030730.NC3CU98e4%25akpm@linux-foundation.org/
+> [2] https://lore.kernel.org/linux-mm/20210302000133.272579-1-axelrasmussen@google.com/
+> 
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Tested-by: Lokesh Gidra <lokeshgidra@google.com>
 
-devm is a fact of life and we need to live with it. I am unconvinced if
-it solved more issues that it brought in, but it is something that
-driver authors like to use and are pushed towards.
+Reviewed-by: Dmitry Safonov <0x7f454c46@gmail.com>
 
-> devm but the device's remove() callback is surely already a concern by
-> itself here?
-
-In the example above there is not one, but even if it exists, it is
-called first, so in some limited cases you could have non-managed
-resources allocated very last and released first in remove(), and then
-have devm release the rest. However driver's remove() is not issue here,
-it is bus' non-trivial remove.
-
-Thanks.
-
--- 
+Thanks,
 Dmitry
