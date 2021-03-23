@@ -2,126 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D502346906
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8890346900
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 20:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCWT2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 15:28:37 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:48616 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhCWT2N (ORCPT
+        id S232742AbhCWT16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 15:27:58 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:43440 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232231AbhCWT1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 15:28:13 -0400
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 23 Mar 2021 12:28:12 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 23 Mar 2021 12:28:10 -0700
-X-QCInternal: smtphost
-Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 24 Mar 2021 00:57:48 +0530
-Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
-        id 5E4043823; Wed, 24 Mar 2021 00:57:47 +0530 (IST)
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
-Date:   Wed, 24 Mar 2021 00:57:32 +0530
-Message-Id: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 23 Mar 2021 15:27:41 -0400
+Received: from mac-pro.holtmann.net (p4fefce19.dip0.t-ipconnect.de [79.239.206.25])
+        by mail.holtmann.org (Postfix) with ESMTPSA id A724ECECE9;
+        Tue, 23 Mar 2021 20:35:18 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v1] Bluetooth: Return whether a connection is outbound
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210323115459.v1.1.I3f19b22d6eaaa182123e373a9fa1fa85105aba07@changeid>
+Date:   Tue, 23 Mar 2021 20:27:39 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <3CE31319-DA8C-409E-852B-30C03D0C3174@holtmann.org>
+References: <20210323115459.v1.1.I3f19b22d6eaaa182123e373a9fa1fa85105aba07@changeid>
+To:     Yu Liu <yudiliu@google.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a shutdown callback to USB DWC core driver to ensure that
-it is properly shutdown in reboot/shutdown path. This is required
-where SMMU address translation is enabled like on SC7180
-SoC and few others. If the hardware is still accessing memory after
-SMMU translation is disabled as part of SMMU shutdown callback in
-system reboot or shutdown path, then IOVAs(I/O virtual address)
-which it was using will go on the bus as the physical addresses which
-might result in unknown crashes (NoC/interconnect errors).
+Hi Yu,
 
-Previously this was added in dwc3 qcom glue driver.
-https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
-But observed kernel panic as glue driver shutdown getting called after
-iommu shutdown. As we are adding iommu nodes in dwc core node
-in device tree adding shutdown callback in core driver seems correct.
+> When an MGMT_EV_DEVICE_CONNECTED event is reported back to the user
+> space we will set the flags to tell if the established connection is
+> outbound or not. This is useful for the user space to log better metrics
+> and error messages.
+> 
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Reviewed-by: Alain Michaud <alainm@chromium.org>
+> 
+> Signed-off-by: Yu Liu <yudiliu@google.com>
+> ---
+> 
+> Changes in v1:
+> - Initial change
 
-Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
----
- drivers/usb/dwc3/core.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+please send a patch to describe the API change in doc/mgmt-api.txt first.
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 94fdbe5..777b2b5 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1634,11 +1634,9 @@ static int dwc3_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int dwc3_remove(struct platform_device *pdev)
-+static void __dwc3_teardown(struct dwc3 *dwc)
- {
--	struct dwc3	*dwc = platform_get_drvdata(pdev);
--
--	pm_runtime_get_sync(&pdev->dev);
-+	pm_runtime_get_sync(dwc->dev);
- 
- 	dwc3_debugfs_exit(dwc);
- 	dwc3_core_exit_mode(dwc);
-@@ -1646,19 +1644,32 @@ static int dwc3_remove(struct platform_device *pdev)
- 	dwc3_core_exit(dwc);
- 	dwc3_ulpi_exit(dwc);
- 
--	pm_runtime_disable(&pdev->dev);
--	pm_runtime_put_noidle(&pdev->dev);
--	pm_runtime_set_suspended(&pdev->dev);
-+	pm_runtime_disable(dwc->dev);
-+	pm_runtime_put_noidle(dwc->dev);
-+	pm_runtime_set_suspended(dwc->dev);
- 
- 	dwc3_free_event_buffers(dwc);
- 	dwc3_free_scratch_buffers(dwc);
- 
- 	if (dwc->usb_psy)
- 		power_supply_put(dwc->usb_psy);
-+}
-+
-+static int dwc3_remove(struct platform_device *pdev)
-+{
-+	struct dwc3	*dwc = platform_get_drvdata(pdev);
-+
-+	__dwc3_teardown(dwc);
- 
- 	return 0;
- }
- 
-+static void dwc3_shutdown(struct platform_device *pdev)
-+{
-+	struct dwc3	*dwc = platform_get_drvdata(pdev);
-+
-+	__dwc3_teardown(dwc);
-+}
- #ifdef CONFIG_PM
- static int dwc3_core_init_for_resume(struct dwc3 *dwc)
- {
-@@ -1976,6 +1987,7 @@ MODULE_DEVICE_TABLE(acpi, dwc3_acpi_match);
- static struct platform_driver dwc3_driver = {
- 	.probe		= dwc3_probe,
- 	.remove		= dwc3_remove,
-+	.shutdown   = dwc3_shutdown,
- 	.driver		= {
- 		.name	= "dwc3",
- 		.of_match_table	= of_match_ptr(of_dwc3_match),
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Regards
+
+Marcel
 
