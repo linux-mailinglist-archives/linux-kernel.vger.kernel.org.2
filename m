@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91966345B1C
+	by mail.lfdr.de (Postfix) with ESMTP id 46936345B1B
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 10:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhCWJlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 05:41:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230011AbhCWJkv (ORCPT
+        id S230145AbhCWJk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 05:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229995AbhCWJkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 05:40:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616492449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=088M8b3j5m89GVK9P+jIPgtOdQ+Cx6zwybuJwCbvRt4=;
-        b=Dzjq25STuJxN6FJuVKJ6uqKmiNAR5VRung37rRSocO2UhlFlBdgwGsD3oRkpmpnvn8Fqbx
-        rZ5ll+5vtRUDWL6p3MWaI6t6JujTLOeBZRHL+r08JIir9v7omgztQ6Ym3TA0mqJDhG7Jzr
-        pUsevV9yBHcq03TT3avpIVn4vdtdDXk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-zqiZPOvkMqiRdtrS1BNldA-1; Tue, 23 Mar 2021 05:40:45 -0400
-X-MC-Unique: zqiZPOvkMqiRdtrS1BNldA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D818D83DD22;
-        Tue, 23 Mar 2021 09:40:42 +0000 (UTC)
-Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C20152A335;
-        Tue, 23 Mar 2021 09:40:34 +0000 (UTC)
-Subject: Re: [PATCH v1 1/3] kernel/resource: make walk_system_ram_res() find
- all busy IORESOURCE_SYSTEM_RAM resources
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
-        Oscar Salvador <osalvador@suse.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        kexec@lists.infradead.org
-References: <20210322160200.19633-1-david@redhat.com>
- <20210322160200.19633-2-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <e4a088e3-fc26-cb59-8af8-a746932b108c@redhat.com>
-Date:   Tue, 23 Mar 2021 10:40:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 23 Mar 2021 05:40:47 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9575DC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:40:46 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id ce10so25969705ejb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 02:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zXs5SbjReTCcPNHIOjgz/S/VxQjjjOm2F5VH26PFX/A=;
+        b=vj5G9pjhGIJnSvkO3MxGjzGfY8QUgcgIr8he+j8CuGbyyEfP5EQNfrmrCqoMO2CZZR
+         bdckdLSvsCoLrRu48EzAHYo4oxQAXRsUdNra/JouZ1qUvhf0uMbOSV9a8F/maOBLtAGe
+         RV8MmfA3GtVVlaVinDJ3S/lzsL0qE8O+YupeIpqcYG0BGXJHE1Cmp6/9QWlQ43zL/NC1
+         yqNdlWiaSh5Wv3ibiPp3WlVe3b07LVjSxW+cyyrOQWmSgGZNcN5r0izAQP2icBVact0v
+         03lDSR3Wp+6bfpj+WhlvsvC7QM5dX/IjE1uKpWf59cRSsmbH828i6f8T/ahuVCQ1UXlk
+         uGJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zXs5SbjReTCcPNHIOjgz/S/VxQjjjOm2F5VH26PFX/A=;
+        b=mCbCO5OhpWxx/Xcz6I4P0qC+6UMm35k6qbEsXFJ6/NKoWJGE0QB9T/c4oIS89mcMwO
+         RrkJ160Lpwp/g0RRS9WxJGa3nXPEpWiD6HhAWycGufj2v8LdvQLT497fT06n5wrXjhRd
+         R2hM1bsrrXMa0U/p3q2YOrspjI4mMxxQ0xiSnLEYxjwDF4QA+G5XVQJU/kxWav0/SLw6
+         T4y9SSfyFjlJoJqfhJOLvTfHFgKs3CoL0BCgtcQT0872TlCLy50SbzWnS8yLIgOqv364
+         zHp8fRkgllcO2Pyu7Z2DEtWq/lJeNT6WFaEt1yeo4xMx8rGdfkVs8ELI9+rRhwfdEE8G
+         yaFQ==
+X-Gm-Message-State: AOAM531ndSA5NJqiJ82W7eh8u2M6LxVb7Kc5sSdcadow7DgOqfWYbQQt
+        lF6OvzaSF/qt9zH+GU0yFtUgjg==
+X-Google-Smtp-Source: ABdhPJwpBn5eyAJHqJLdU0Wab+Ro1IIWRDZ1hGuA1iPJeA/Fp0ww4Ebsg8Pw9LsY5dn4holDmh/FWw==
+X-Received: by 2002:a17:906:53d7:: with SMTP id p23mr4111539ejo.140.1616492445327;
+        Tue, 23 Mar 2021 02:40:45 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id 90sm12948482edf.31.2021.03.23.02.40.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 02:40:44 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 09:40:41 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Kiran Gunda <kgunda@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
+        daniel.thompson@linaro.org, jacek.anaszewski@gmail.com,
+        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH V5 2/2] backlight: qcom-wled: Correct the sync_toggle
+ sequence
+Message-ID: <20210323094041.GT2916463@dell>
+References: <1616071180-24493-1-git-send-email-kgunda@codeaurora.org>
+ <1616071180-24493-3-git-send-email-kgunda@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210322160200.19633-2-david@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1616071180-24493-3-git-send-email-kgunda@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.03.21 17:01, David Hildenbrand wrote:
-> It used to be true that we can have busy system RAM only on the first level
-> in the resourc tree. However, this is no longer holds for driver-managed
-> system RAM (i.e., added via dax/kmem and virtio-mem), which gets added on
-> lower levels.
-> 
-> We have two users of walk_system_ram_res(), which currently only
-> consideres the first level:
-> a) kernel/kexec_file.c:kexec_walk_resources() -- We properly skip
->     IORESOURCE_SYSRAM_DRIVER_MANAGED resources via
->     locate_mem_hole_callback(), so even after this change, we won't be
->     placing kexec images onto dax/kmem and virtio-mem added memory. No
->     change.
-> b) arch/x86/kernel/crash.c:fill_up_crash_elf_data() -- we're currently
->     not adding relevant ranges to the crash elf info, resulting in them
->     not getting dumped via kdump.
-> 
-> This change fixes loading a crashkernel via kexec_file_load() and including
-> dax/kmem and virtio-mem added System RAM in the crashdump on x86-64. Note
-> that e.g,, arm64 relies on memblock data and, therefore, always considers
-> all added System RAM already.
-> 
-> Let's find all busy IORESOURCE_SYSTEM_RAM resources, making the function
-> behave like walk_system_ram_range().
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Cc: Signed-off-by: David Hildenbrand <david@redhat.com>
+On Thu, 18 Mar 2021, Kiran Gunda wrote:
 
-^ My copy-paste action when creating the cc list slipped in a duplicate 
-  SO in all 3 patches. I can resend if desired.
+> As per the current implementation, after FSC (Full Scale Current)
+> and brightness update the sync bits are set-then-cleared.
+> But, the FSC and brightness sync takes place when the sync bits are
+> set (e.g. on a rising edge). So the hardware team recommends a
+> clear-then-set approach in order to guarantee such a transition
+> regardless of the previous register state.
+> 
+> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> ---
+>  drivers/video/backlight/qcom-wled.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+
+Applied, thanks.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
