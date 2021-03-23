@@ -2,133 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8236346605
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB866346607
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhCWRKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:10:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229961AbhCWRKS (ORCPT
+        id S229822AbhCWRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhCWRKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:10:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616519418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ma9ajmhwh1SCxUznhp2byKu31F3pHY/+bCvUhMUuvis=;
-        b=UmIevhuF7uZY2P9SVAT1XL6ei2ajYwtZUkdkTWjNdqjiVCFvwG9u/OLWqFQoAUmirqxRhL
-        8x+is+yD76BSSg4RIA3/p8l0pemKhGeyWG33+OLpmRGcKT6gsgR09i0aMv00XsRF1YfpBj
-        kGs4Ya0P04tSTZWQfqd/J9RACOM5Umo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-F_ZRsSf7MHy393ojVjJn3Q-1; Tue, 23 Mar 2021 13:10:14 -0400
-X-MC-Unique: F_ZRsSf7MHy393ojVjJn3Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 279EF180FCA9;
-        Tue, 23 Mar 2021 17:10:12 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-103.rdu2.redhat.com [10.10.116.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DFCD5C1C5;
-        Tue, 23 Mar 2021 17:10:04 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 9A3B1220BCF; Tue, 23 Mar 2021 13:10:03 -0400 (EDT)
-Date:   Tue, 23 Mar 2021 13:10:03 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     stefanha@redhat.com, miklos@szeredi.hu,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fuse: Fix a potential double free in virtio_fs_get_tree
-Message-ID: <20210323171003.GC483930@redhat.com>
-References: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
+        Tue, 23 Mar 2021 13:10:19 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B0CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:10:18 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id d10so12024332ils.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=nl7QaIos4KVB6wLD0CE4Fe3WB0mMHl24sYGz8H8gaAE=;
+        b=Qh8RLG2/qYMPKJTZKqZJ6HOBgm//heQscHSAXDjVn8vG6tp1ZPCh+Ge/6Iq8z7rH78
+         A74nTu9wLskgNP4YNSqRUGVAIUlDD9ChcRDLLklwaZP5d5gkNrUFtS/Nb1H8fgfZ15yX
+         6B+IiqN4V3HmDuq1HuPqZ+GzGrBDkp8Cj/+uQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language;
+        bh=nl7QaIos4KVB6wLD0CE4Fe3WB0mMHl24sYGz8H8gaAE=;
+        b=lyMPaQJ10UbDskDr4rwfWlEs+XL4QL4qEmeU5nXRny5/e5RzxAQzcO/sgKQCQNMVLe
+         eoda/bIBDWa1avzS+3R0P3SW9uf7lwmaR3hBVegiHpaFocXQ5bUAe7Id/SvlPACLRgGO
+         RQcjwnboeF+Heq0M9IAjTpDBQYCHuLQ4THj429n2Hzvk9g/K4Ze21rK9BVsdOE7Vr7TG
+         BxfGLnOB9zy2jp4NkopV2K3gfH5VxmbrxyP2UsWMEgOi4k2K5CplDeN+AanIGDsmDZRL
+         mbvsKfLCLWYNQSHzgbCzYTJwcYFicscCmJr6iKMaisUICX/sZ4UReu/ni9YDIc2ZLZla
+         wCCA==
+X-Gm-Message-State: AOAM5320PghnvnatGzO6bD/r2OmvDYiR3dRhn9JS/PwproVrLDRJRbOb
+        oHzemwx75TmDnEOMypVhNiOUxA==
+X-Google-Smtp-Source: ABdhPJz+oJMhX7q0O0fiu6m6Y9fiJBZzQtZ0uxeBctDr7oCjj8KnB2tkCVoj2a28N9rI/FLhMXuPeg==
+X-Received: by 2002:a05:6e02:ee3:: with SMTP id j3mr5858838ilk.85.1616519418458;
+        Tue, 23 Mar 2021 10:10:18 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h2sm9304504ioj.30.2021.03.23.10.10.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 10:10:17 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] KUnit fixes update for Linux 5.12-rc5
+Message-ID: <13097e8e-2877-b63d-cd44-6393c1744a66@linuxfoundation.org>
+Date:   Tue, 23 Mar 2021 11:10:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323051831.13575-1-lyl2019@mail.ustc.edu.cn>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/mixed;
+ boundary="------------4118C60156499C14911455A1"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:18:31PM -0700, Lv Yunlong wrote:
-> In virtio_fs_get_tree, fm is allocated by kzalloc() and
-> assigned to fsc->s_fs_info by fsc->s_fs_info=fm statement.
-> If the kzalloc() failed, it will goto err directly, so that
-> fsc->s_fs_info must be non-NULL and fm will be freed.
+This is a multi-part message in MIME format.
+--------------4118C60156499C14911455A1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-sget_fc() will either consume fsc->s_fs_info in case a new super
-block is allocated and set fsc->s_fs_info. In that case we don't
-free fc or fm.
+Hi Linus,
 
-Or, sget_fc() will return with fsc->s_fs_info set in case we already
-found a super block. In that case we need to free fc and fm.
+Please pull the following KUnit fixes update for Linux 5.12-rc5.
 
-In case of error from sget_fc(), fc/fm need to be freed first and
-then error needs to be returned to caller.
+This KUnit update for Linux 5.12-rc5 consists of two fixes to kunit
+tool from David Gow.
 
-        if (IS_ERR(sb))
-                return PTR_ERR(sb);
+diff is attached.
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
+tags/linux-kselftest-kunit-fixes-5.12-rc5.1
+
+for you to fetch changes up to 7fd53f41f771d250eb08db08650940f017e37c26:
+
+   kunit: tool: Disable PAGE_POISONING under --alltests (2021-03-11 
+14:37:37 -0700)
+
+----------------------------------------------------------------
+linux-kselftest-kunit-fixes-5.12-rc5.1
+
+This KUnit update for Linux 5.12-rc5 consists of two fixes to kunit
+tool from David Gow.
+
+----------------------------------------------------------------
+David Gow (2):
+       kunit: tool: Fix a python tuple typing error
+       kunit: tool: Disable PAGE_POISONING under --alltests
+
+  tools/testing/kunit/configs/broken_on_uml.config | 2 ++
+  tools/testing/kunit/kunit_config.py              | 2 +-
+  2 files changed, 3 insertions(+), 1 deletion(-)
+
+----------------------------------------------------------------
 
 
-If we allocated a new super block in sget_fc(), then next step is
-to initialize it.
+--------------4118C60156499C14911455A1
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-kselftest-kunit-fixes-5.12-rc5.1.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="linux-kselftest-kunit-fixes-5.12-rc5.1.diff"
 
-        if (!sb->s_root) {
-                err = virtio_fs_fill_super(sb, fsc);
-	}
+diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
+index a7f0603d33f6..690870043ac0 100644
+--- a/tools/testing/kunit/configs/broken_on_uml.config
++++ b/tools/testing/kunit/configs/broken_on_uml.config
+@@ -40,3 +40,5 @@
+ # CONFIG_RESET_BRCMSTB_RESCAL is not set
+ # CONFIG_RESET_INTEL_GW is not set
+ # CONFIG_ADI_AXI_ADC is not set
++# CONFIG_DEBUG_PAGEALLOC is not set
++# CONFIG_PAGE_POISONING is not set
+diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
+index 0b550cbd667d..1e2683dcc0e7 100644
+--- a/tools/testing/kunit/kunit_config.py
++++ b/tools/testing/kunit/kunit_config.py
+@@ -13,7 +13,7 @@ from typing import List, Set
+ CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_(\w+) is not set$'
+ CONFIG_PATTERN = r'^CONFIG_(\w+)=(\S+|".*")$'
+ 
+-KconfigEntryBase = collections.namedtuple('KconfigEntry', ['name', 'value'])
++KconfigEntryBase = collections.namedtuple('KconfigEntryBase', ['name', 'value'])
+ 
+ class KconfigEntry(KconfigEntryBase):
+ 
 
-If we run into errors here, then fc/fm need to be freed.
-
-So current code looks fine to me.
-
-Vivek
-
-> 
-> But later fm is freed again when virtio_fs_fill_super() fialed.
-> I think the statement if (fsc->s_fs_info) {kfree(fm);} is
-> misplaced.
-> 
-> My patch puts this statement in the correct palce to avoid
-> double free.
-> 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  fs/fuse/virtio_fs.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 8868ac31a3c0..727cf436828f 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -1437,10 +1437,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
->  
->  	fsc->s_fs_info = fm;
->  	sb = sget_fc(fsc, virtio_fs_test_super, set_anon_super_fc);
-> -	if (fsc->s_fs_info) {
-> -		fuse_conn_put(fc);
-> -		kfree(fm);
-> -	}
-> +
->  	if (IS_ERR(sb))
->  		return PTR_ERR(sb);
->  
-> @@ -1457,6 +1454,11 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
->  		sb->s_flags |= SB_ACTIVE;
->  	}
->  
-> +	if (fsc->s_fs_info) {
-> +		fuse_conn_put(fc);
-> +		kfree(fm);
-> +	}
-> +
->  	WARN_ON(fsc->root);
->  	fsc->root = dget(sb->s_root);
->  	return 0;
-> -- 
-> 2.25.1
-> 
-> 
-
+--------------4118C60156499C14911455A1--
