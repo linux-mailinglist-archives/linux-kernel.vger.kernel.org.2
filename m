@@ -2,197 +2,504 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B8A34580D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9446134580E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 07:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCWGzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 02:55:25 -0400
-Received: from mail-vi1eur05on2055.outbound.protection.outlook.com ([40.107.21.55]:40896
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229464AbhCWGy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:54:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cu3YMHa/RqYkbVsxZDTdjxeLbPLg7W3drWVwiYRD3GfntOOzP0b9ZMvzGcz+nmZML3lh3jiI9FBpLtbGLFLjB3bgLksJlhrIcxu9RqMHXrFRy54TFmCFV25c8YO++VLfuoQzRwvPKnHQqJV7NK7BoU+ucOFd2Uo6w1kyJGN42f+b6hgVMBCpPDM7ZSJdmhIUO9Z16qyKuPH6DnOWg/ImhOuv6VnH7kfUwwraTDq6vjdM5baezFOOHv6rzEEiZPQpPrUSJv4oWvkwPvcToNlZ4+wRSX8j1jCeBHLdCOoPIdbvg0xgQf/lJXwRB50FnsJhJyWYcNSXSC4/foL86/pZZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dm1Pt8iP4auWm5Q+9eo7kYIRngWgX+L6dlLOBKhjltA=;
- b=BttrUxGkZn2+pEi9/lcwIoj8WXvVdX7Fj3fRl4PqXT4me3jOx1tIhP2MA8Ie8a3lUWWLd8JUHxHLr50Fd05hh6doBs8GlnghCPdNlghMZrdc8X5+getX+yd+8wnSoTqzApbN5T8Pqpw4FNaow274T5MrhsrKaxXkidvTr2vB/on7UWmtAHQwQt8IcwBCYQlSvT0WYIKMFlJVOuDjCGPZCQ5PcF4P2iKIFkyOrN9q+Vpi57NUVGODsNFv4bou5v6GSNsbu3FijjAvbIllxQU3UMw0KTbhmDxZgcQiq7/WRrenT7oFVC3u07Zb7GnhFJnkvQVXe7K1x1Rtb4OnhrziqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dm1Pt8iP4auWm5Q+9eo7kYIRngWgX+L6dlLOBKhjltA=;
- b=WLaW+p4VJnrTfNLzecT72V8+DF6Na2wRRYpIF1qyz3dIvPGUW7rzuIGke9j1DUMWuGzGqQfhNWCGwLblZXdi7d3BG7z4sqEfbV5eqHD8XWxyk7VQe4DiR+HyGBSXy4q+Enn5Hwwwaj/NLj5nvHCbQMweotp/qKIMBOS9rHoc03U=
-Received: from VI1PR04MB5853.eurprd04.prod.outlook.com (2603:10a6:803:e3::25)
- by VI1PR04MB4815.eurprd04.prod.outlook.com (2603:10a6:803:5d::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.23; Tue, 23 Mar
- 2021 06:54:54 +0000
-Received: from VI1PR04MB5853.eurprd04.prod.outlook.com
- ([fe80::8116:97ef:2fd7:251f]) by VI1PR04MB5853.eurprd04.prod.outlook.com
- ([fe80::8116:97ef:2fd7:251f%7]) with mapi id 15.20.3955.027; Tue, 23 Mar 2021
- 06:54:53 +0000
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kw@linux.com" <kw@linux.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "stefan@agner.ch" <stefan@agner.ch>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
-CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: RE:  Re: Re: [PATCH 1/3] dt-bindings: imx6q-pcie: specify the imx8mq
- pcie phy voltage
-Thread-Topic: Re: Re: [PATCH 1/3] dt-bindings: imx6q-pcie: specify the imx8mq
- pcie phy voltage
-Thread-Index: AdcfrmiW5KSF09udSaqJ1pNU91d3Xg==
-Date:   Tue, 23 Mar 2021 06:54:53 +0000
-Message-ID: <VI1PR04MB585305B11C67D1F24A5D050C8C649@VI1PR04MB5853.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d5f789ad-1447-4bd7-acc1-08d8edc89011
-x-ms-traffictypediagnostic: VI1PR04MB4815:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB4815D5A90BD4D30C67A0E1DD8C649@VI1PR04MB4815.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kHWWvMIl7vTUb13TEXIApHRpcfu8vmLlrZEF3eHqrCqhCxfSEYA8ogsOm7LfuYX655hxe3hk6Iyf7MFNPSf2Am2kqkxExs9wXpYaGT3zchdRHHWSj21ubpLf2xgy3yZwKt2sA7yzRuWNS/kreXZOqFAa96qxXL5zfbmo1I7YvuEg3sSas5sbS0XlvTGC2gLNgzD3Y8K1C/JYiu7VWAc8i0VG3nsLZl/mpcSHGCcgyiVky/7xy2BU1I22ziW0If4J0zIllyx9ONp6eafgGsWeGXOfOE7ASS0BO3308YUEmY8IwOZKGTnag5FnxjImkuz8FY5sJQST4W8acPIj6dTNUAn9cwQQoiY1j9yFn3gRrST692nuldQMPgj43TXdgmo0TqbX6UBaXduvt37gOPU2ehetMas7gC2PyOjWvKrejQifsrS7ZUgWnkGr02FJoJ+/S4jgRKwD4Aai4igZtp4FOZ5kc9djuEKo8Fze4uSorCE7MkzFqgUOjpV7zytrnBopyrenoAtoeG5flR2eUvkoer4zm2cvPdF5/k5GwrGI2jO0L1iwv4kAFJ5hyASZsSusWH0MgHVwSToQkctgu9Ui7j2X0EMtAKN9gpERpRTbD+kDOZluVO227EI50Gy1wbi3AFS/Nm9YYZqisBhxpKOZpwr+4n/GkbopYq99goQUPY0dCi+zur6axlwpIUnkSFJJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5853.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(396003)(346002)(136003)(38100700001)(86362001)(66556008)(478600001)(64756008)(66446008)(6506007)(53546011)(110136005)(8936002)(55016002)(66476007)(54906003)(316002)(26005)(2906002)(66946007)(7696005)(33656002)(8676002)(4326008)(71200400001)(7416002)(9686003)(76116006)(186003)(52536014)(83380400001)(5660300002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?WTRXbW9MM1M2bVhyMWJ5dHhtTGJBeGFmVWtubmxUbFBsU29qeU44T2lsbGYy?=
- =?utf-8?B?dEErZmhYVE9ac0FZQU4zbEduampnR2FKWkJBOUZjM3FCMUlUN1diYVJZNXc4?=
- =?utf-8?B?eWZkalE5U2RsYWdvdUtnZzVxdlQwK1pLdHRjaE1MMnpKSW85Smw2d3BETmJz?=
- =?utf-8?B?UXRLQldwN04rbXVUd0l3aW0zNThUS3c4YWRTNG5EY0FYQmxqMHczbndwdGJm?=
- =?utf-8?B?TG41Zm8vN21Za3dHRTQ2Yk1UTmFzK3B5bEIrTVozUkp0MjE0Z0x4TXFmOE56?=
- =?utf-8?B?MnVVZ3V0TGhlYnBNZEFkTHkzR1M4V1YvV3k3dExORWFDdHdaS3lFQTNJeXJw?=
- =?utf-8?B?Vm40RFl3aDFBOXJsQ1VudlcrdENBdmRTa0VESDZJbDBjaVlkcGc5UTBqMFU3?=
- =?utf-8?B?b0RHMnBSMUcwRTMwblRGblpqUGVxOVdsM0VyYVcwZnJDamFrYkZieGFOZVlh?=
- =?utf-8?B?Mkg0ZGx4R3ExOVNYTWthV0tRcFkySVhoVzRmS0dLK3Y5bmZFM0ZIdTBPcElo?=
- =?utf-8?B?S0MvK2VWMVpqcTdSUWRNVklEWTlCVXBzMTgwaHNmM1FuLzkwc3VudDJFR1k3?=
- =?utf-8?B?b0g5a1J5cGxmWkJHelRCNDI2eDZhdWt6MllUYngxYjJlZlk4c2w2bkJ3UEhh?=
- =?utf-8?B?MGdzdFo3SmxXeEVKTDlXQzcwcHFiZ2ZFaDRzTXZxM0llaktEZVNBMTEwUDdw?=
- =?utf-8?B?eTRnbngzVUFyaDg1RGRWb2ExOVVqc0JTVWN4b0ZXWHp5T0l4Rm1yUU0yQURC?=
- =?utf-8?B?ZklLeVhkTHVYWVhQUURsNjdNajMxZ2tBWGlWS2d2aHorUnNVYVVwMlU3VlRi?=
- =?utf-8?B?SnMxQ2xXSW9QenJoaGY1R0ltKzJCS1l6cTJCbVNqQVkxRlVyTWFGUlZpUE54?=
- =?utf-8?B?SVRydGNaWHNvZkhVc1hYR0QveHIwUE1VM2tOaUovUmdYbS8wc0h4Vm1Xa05l?=
- =?utf-8?B?VTEvR0dIT2UyWC9YY0ZQS0hKaG5OUW9wWGNXdjZQVUhDWldSZ093YXlxYXpy?=
- =?utf-8?B?OUVORDgvclIwL0poSWYrcUhLTXRxK20vd0I4V2xRSHVOVnh3c3poeXdBcTdL?=
- =?utf-8?B?L1hoK0lvdnJHY2N1dVdQMUVaK0FCUG11OHRkUHY5TTdqdkRIU0Y0T09Qa2xF?=
- =?utf-8?B?WUFRaVhQSzFZSDdFTytQRHRzQTNSd3BEV3lPaVc0VXV4SE84WWw1ZFFtZTky?=
- =?utf-8?B?OHBmSXQ1bklYT2ZSenQyalNjRmV4d2RyU2N6a01weGFSN1V5cVN4RlhxSXlw?=
- =?utf-8?B?NEIwMzdoYzZzY1djeWtSL0lObG5oQ1BETi9VZFVFUEdUWXlBVnR6RjY0cnNj?=
- =?utf-8?B?cFRtbmJrSXdnNFFjQ3BjUnlJZDJHV0JNTkhFM3NKS0Jqdnl4U05DL3BlRE5M?=
- =?utf-8?B?YWR6UjBCZysvUlgxWU8xenFDTWVab1RUUlozTy9TZHpZczdQaHc1OTNZZXRR?=
- =?utf-8?B?M3R6aEZKdlVEWnhaOWlqWlRCYndGNHhEN3BXV0VQTDFxUWpMOHZJWGFPK0tL?=
- =?utf-8?B?MHRBYnhZQU9ER004WlZueXpnaWNaa0tCOEpHRTY1K1V6YXVSUjRhMk9DaFEy?=
- =?utf-8?B?WTJHNlJOVUNTNmlJbDk1dCttNGhUMGxCd09Bb1l0UkN3TXFVaUpnNVdXWXkv?=
- =?utf-8?B?bnQ5UFpwZ1l1MHd3ZnB2MklJdENiWmFzYytDRUFmck05Y2ppVjNmdGZyZzg5?=
- =?utf-8?B?aFdGV1FjMDR4ZTNwQW5OQ080U3B1UlNtVlF1L0E0QWhZTVlLNE9LK0xicXls?=
- =?utf-8?Q?O2v7RnDhZRMsVfDIGWIMDoKzRb047SsvdF2YosI?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229897AbhCWG4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 02:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229670AbhCWG4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:56:00 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E2DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 23:55:59 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id gb6so9671210pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Mar 2021 23:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nF7PUNZK/folKhbo8gRtk8Yy4P2z3iRaZO2F0ys3gHU=;
+        b=yLXd8LKP6eS8O2H/LKUHJBz5OL8boiFeFDUwwOlpbtvBIsw1K067pE8awd3zvugUYX
+         pq6UbZNHeB+l0wcoBuNJh/0xwomIdAhh9qnGg8+ORZmHyW/pNQL9wQ4PTFeJpLuLjQ+0
+         L+TR6SbncTqLXdurP/Q4l9N75QGv1lh8b3xEyCT4CjML2VhfpANx3+KGoQgiVMGC2rZz
+         Vw8gTR/mDvVzMP/u/WJmg5wp8LhUsdYU8XTQayrEXU+JPLJNittlr9xQnD6dk5apSiA2
+         AkDywbDF5tltNzeATB8aG1hhxGGx64+/c5Ry7Kc371z0Y/yXs30HoRuq9B/B3MG0DJz7
+         +UaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nF7PUNZK/folKhbo8gRtk8Yy4P2z3iRaZO2F0ys3gHU=;
+        b=fR786Tkp8Yt7X18CwIQ/sEI5rgwKR32km12Jq7Q+cAvScysZAYW7vQSqoLrrspCkNJ
+         oIMJ2EC211DPNXD+3RyhJTD5JjqF0p9/t6u99iMBP/EpxDE4ngDmcXEeGrwVSCLwTI9a
+         Jcj4Z5KdsnoxtBFX3YeklMof3VzRHW6y8m3MZ+A71CiLfLVmIz2op9A0lqPkJ7tHJpCG
+         RP84AZ6OeKDHlkDEIqVzkskzuyrU/IaBKWQmE6SwE/ZdkWRsHb0X51dfdZqIBpkwCEJT
+         lOjThPToekmW7KYp//ePgi2RWJ9PLi75JIrS1slpghNbTENEjS3FuraTIUNsX31hsjsm
+         IlFw==
+X-Gm-Message-State: AOAM530ewUPEPm5o3LJAvzFzkFAOp9W0JXx/7y5C9bkBVNCjaig5gvyp
+        kfTI1mx5QmazY4mWa/bACZ+usg==
+X-Google-Smtp-Source: ABdhPJwWPevxH8yqFEmEy5ybsH1aTRYZoxfLgFDxHx5BXJOwX0szbkpVvzViYSHJOrtWlwwS7BHGhg==
+X-Received: by 2002:a17:90a:6be4:: with SMTP id w91mr3324511pjj.68.1616482559118;
+        Mon, 22 Mar 2021 23:55:59 -0700 (PDT)
+Received: from localhost.localdomain ([110.226.37.103])
+        by smtp.gmail.com with ESMTPSA id s184sm5881671pgb.63.2021.03.22.23.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 23:55:58 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     daniel.thompson@linaro.org, jason.wessel@windriver.com,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v2] kdb: Get rid of custom debug heap allocator
+Date:   Tue, 23 Mar 2021 12:25:19 +0530
+Message-Id: <20210323065519.821062-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5853.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5f789ad-1447-4bd7-acc1-08d8edc89011
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2021 06:54:53.5676
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: V/JECxMH8e3+lyew889G9tUH1JmzxqjzrtFYByIywdmrHRKm61+qaj2pDkJQ+vlLtFPDuHXZIO5OATc/omn4Zg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4815
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMdWNhcyBTdGFjaCA8bC5zdGFj
-aEBwZW5ndXRyb25peC5kZT4NCj4gU2VudDogTW9uZGF5LCBNYXJjaCAyMiwgMjAyMSA4OjE1IFBN
-DQo+IFRvOiBSaWNoYXJkIFpodSA8aG9uZ3hpbmcuemh1QG54cC5jb20+OyBhbmRyZXcuc21pcm5v
-dkBnbWFpbC5jb207DQo+IHNoYXduZ3VvQGtlcm5lbC5vcmc7IGt3QGxpbnV4LmNvbTsgYmhlbGdh
-YXNAZ29vZ2xlLmNvbTsNCj4gc3RlZmFuQGFnbmVyLmNoOyBsb3JlbnpvLnBpZXJhbGlzaUBhcm0u
-Y29tDQo+IENjOiBsaW51eC1wY2lAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXggPGxpbnV4
-LWlteEBueHAuY29tPjsNCj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBs
-aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiBrZXJuZWxAcGVuZ3V0cm9uaXguZGUNCj4g
-U3ViamVjdDogW0VYVF0gUmU6IFJlOiBbUEFUQ0ggMS8zXSBkdC1iaW5kaW5nczogaW14NnEtcGNp
-ZTogc3BlY2lmeSB0aGUNCj4gaW14OG1xIHBjaWUgcGh5IHZvbHRhZ2UNCj4gSGkgUmljaGFyZCwN
-Cj4gDQo+IEFtIE1vbnRhZywgZGVtIDIyLjAzLjIwMjEgdW0gMDk6MDYgKzAwMDAgc2NocmllYiBS
-aWNoYXJkIFpodToNCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9t
-OiBMdWNhcyBTdGFjaCA8bC5zdGFjaEBwZW5ndXRyb25peC5kZT4NCj4gPiA+IFNlbnQ6IEZyaWRh
-eSwgTWFyY2ggMTksIDIwMjEgNTo0OSBQTQ0KPiA+ID4gVG86IFJpY2hhcmQgWmh1IDxob25neGlu
-Zy56aHVAbnhwLmNvbT47IGFuZHJldy5zbWlybm92QGdtYWlsLmNvbTsNCj4gPiA+IHNoYXduZ3Vv
-QGtlcm5lbC5vcmc7IGt3QGxpbnV4LmNvbTsgYmhlbGdhYXNAZ29vZ2xlLmNvbTsNCj4gPiA+IHN0
-ZWZhbkBhZ25lci5jaDsgbG9yZW56by5waWVyYWxpc2lAYXJtLmNvbQ0KPiA+ID4gQ2M6IGxpbnV4
-LXBjaUB2Z2VyLmtlcm5lbC5vcmc7IGRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+Ow0K
-PiA+ID4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnOw0KPiA+ID4ga2VybmVsQHBlbmd1dHJvbml4LmRlDQo+ID4gPiBTdWJq
-ZWN0OiBSZTogW1BBVENIIDEvM10gZHQtYmluZGluZ3M6IGlteDZxLXBjaWU6IHNwZWNpZnkgdGhl
-DQo+ID4gPiBpbXg4bXEgcGNpZSBwaHkgdm9sdGFnZSBBbSBGcmVpdGFnLCBkZW0gMTkuMDMuMjAy
-MSB1bSAxNjoyNCArMDgwMA0KPiA+ID4gc2NocmllYiBSaWNoYXJkIFpodToNCj4gPiA+ID4gQm90
-aCAxLjh2IGFuZCAzLjN2IHBvd2VyIHN1cHBsaWVzIGNhbiBiZSBmZWVkZWQgdG8gaS5NWDhNUSBQ
-Q0llDQo+ID4gPiA+IFBIWS4NCj4gPiA+ID4gSW4gZGVmYXVsdCwgdGhlIFBDSUVfVlBIIHZvbHRh
-Z2UgaXMgc3VnZ2VzdGVkIHRvIGJlIDEuOHYgcmVmZXIgdG8NCj4gPiA+ID4gZGF0YSBzaGVldC4g
-V2hlbiBQQ0lFX1ZQSCBpcyBzdXBwbGllZCBieSAzLjN2IGluIHRoZSBIVyBzY2hlbWF0aWMNCj4g
-PiA+ID4gZGVzaWduLCB0aGUgVlJFR19CWVBBU1MgYml0cyBvZiBHUFIgcmVnaXN0ZXJzIHNob3Vs
-ZCBiZSBjbGVhcmVkDQo+ID4gPiA+IGZyb20gZGVmYXVsdCB2YWx1ZSAxYicxIHRvIDFiJzAuDQo+
-ID4gPiA+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgWmh1IDxob25neGluZy56aHVA
-bnhwLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvcGNpL2ZzbCxpbXg2cS1wY2llLnR4dCB8IDQNCj4gPiA+ID4gKysrKw0KPiA+ID4g
-PiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPg0KPiA+ID4gPiBkaWZm
-IC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9mc2wsaW14NnEt
-DQo+ID4gPiA+IHBjaWUudHh0DQo+ID4gPiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3BjaS9mc2wsaW14NnEtcGNpZS50eHQNCj4gPiA+ID4gaW5kZXggZGU0YjJiYWY5MWU4
-Li4yM2VmYmFkOWU4MDQgMTAwNjQ0DQo+ID4gPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9wY2kvZnNsLGlteDZxLXBjaWUudHh0DQo+ID4gPiA+ICsrKyBiL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvZnNsLGlteDZxLXBjaWUudHh0DQo+ID4g
-PiA+IEBAIC01OSw2ICs1OSwxMCBAQCBBZGRpdGlvbmFsIHJlcXVpcmVkIHByb3BlcnRpZXMgZm9y
-IGlteDdkLXBjaWUNCj4gPiA+ID4gYW5kDQo+ID4gPiBpbXg4bXEtcGNpZToNCj4gPiA+ID4gIEFk
-ZGl0aW9uYWwgcmVxdWlyZWQgcHJvcGVydGllcyBmb3IgaW14OG1xLXBjaWU6DQo+ID4gPiA+ICAt
-IGNsb2NrLW5hbWVzOiBNdXN0IGluY2x1ZGUgdGhlIGZvbGxvd2luZyBhZGRpdGlvbmFsIGVudHJp
-ZXM6DQo+ID4gPiA+ICAgICAgIC0gInBjaWVfYXV4Ig0KPiA+ID4gPiArLSBwY2llLXZwaC0zdjM6
-IElmIHByZXNlbnQgdGhlbiBQQ0lFX1ZQSCBpcyBmZWVkZWQgYnkgMy4zdiBpbg0KPiA+ID4gPiB0
-aGUgSFcNCj4gPiA+ID4gKyAgc2NoZW1hdGljIGRlc2lnbi4gVGhlIFBDSUVfVlBIIGlzIHN1Z2dl
-c3RlZCB0byBiZSAxLjh2IHJlZmVyDQo+ID4gPiA+IHRvIHRoZQ0KPiA+ID4gPiArICBkYXRhIHNo
-ZWV0LiBJZiB0aGUgUENJRV9WUEggaXMgc3VwcGxpZWQgYnkgMy4zViwgdGhlDQo+ID4gPiA+IFZS
-RUdfQllQQVNTDQo+ID4gPiA+ICsgIHNob3VsZCBiZSBjbGVhcmVkIHRvIHplcm8gYWNjb3JkaW5n
-bHkuDQo+ID4gPg0KPiA+ID4gVWhtLCBuby4gUGxlYXNlIGRvbid0IGFkZCBib29sZWFuIERUIHBy
-b3BlcnRpZXMgZm9yIHJhbmRvbSBwYXJ0cyBvZg0KPiA+ID4gdGhlIGJvYXJkIGRlc2lnbi4NCj4g
-PiA+DQo+ID4gPiBJZiB3ZSBuZWVkIHRvIGtub3cgdGhlIHZvbHRhZ2Ugb2YgUENJRV9WUEgsIHdl
-IHNob3VsZCByZWFsbHkgYWRkIHRoZQ0KPiA+ID4gVlBIIHJlZ3VsYXRvciBhcyBhIHN1cHBseSB0
-byB0aGUgUENJZSBjb250cm9sbGVyIG5vZGUsIHRoZW4gd29yayBvdXQNCj4gPiA+IHRoZSB2b2x0
-YWdlIHRoZSB1c3VhbCB3YXkgYnkgdXNpbmcgdGhlIExpbnV4IHJlZ3VsYXRvciBBUEkuDQo+ID4g
-Pg0KPiA+IFtSaWNoYXJkIFpodV0gSGkgTHVjYXM6DQo+ID4gVGhhbmtzIGZvciB5b3VyIGNvbW1l
-bnRzLiBTaW5jZSB0aGUgdmdlbjVfcmVnIGlzIHVzZWQgdG8gcG93ZXIgdXAgUENJZQ0KPiA+IFBI
-WSBvbiBpLk1YOE1RIEVWSyBib2FyZCwgIGFuZCBpdCdzIHNldCB0byBiZSAicmVndWxhdG9yLWFs
-d2F5cy1vbjsiLg0KPiA+IERpZCBvbmx5IHRoZSByZWd1bGF0b3JfZ2V0X3ZvbHRhZ2Ugb3IgY29t
-YmluZWQgd2l0aA0KPiA+IHJlZ3VsYXRvcl9lbmFibGUvcmVndWxhdG9yX2Rpc2FibGUgY2FuIGJl
-IHVzZWQgaW4gdGhlIGRyaXZlcj8NCj4gDQo+IFRoZSByZWd1bGF0b3IgQVBJIGRvZXNuJ3QgY2Fy
-ZSwgeW91IGNhbiBjYWxsIGVuYWJsZS9kaXNhYmxlIGluIHRoZSBkcml2ZXIgYXMNCj4gbm9ybWFs
-LiBJZiB0aGUgcmVndWxhdG9yIGlzIG1hcmtlZCBhcyBhbHdheXMtb24gaXQgd2lsbCBqdXN0IHN0
-YXkgZW5hYmxlZCBldmVuIGlmDQo+IHRoZSB1c2UtY291bnQgZHJvcHMgdG8gMC4NCj4gDQo+IFRo
-ZSBvdGhlciBxdWVzdGlvbiBob3dldmVyIGlzIGlmIGl0J3MgZXZlbiBhbGxvd2VkIGJ5IHRoZSBT
-b0MgZGVzaWduIHRvIGRpc2FibGUNCj4gdGhpcyBzdXBwbHkgb3V0c2lkZSBvZiBkZWVwIHBvd2Vy
-IGRvd24uIEEgcXVpY2sgbG9vayBpbnRvIHRoZSByZWZlcmVuY2UNCj4gbWFudWFsIGFuZCBkYXRh
-c2hlZXQgZGlkbid0IHlpZWxkIGFueSBpbmZvcm1hdGlvbiBhYm91dCB0aGlzLg0KW1JpY2hhcmQg
-Wmh1XSBIaSBMdWNhczogWWVzIGl0IGlzLiBUaGUgUENJZSBQSFkgcG93ZXIgZG93biBtYW5pcHVs
-YXRpb25zIGFyZSBub3QNCiBkZXNjcmliZWQgaW4gdGhlIFJNIGRvY3VtZW50Lg0KSG93IGFib3V0
-IHRvIGdldCB2b2x0YWdlIGhlcmUgb25seSBjdXJyZW50bHksIGFuZCB0aGUgcmVndWxhdG9yIGVu
-YWJsZS9kaXNhYmxlIG9wZXJhdGlvbnMNCndvdWxkIGJlIGFkZGVkIGZ1cnRoZXIgaWYgdGhlc2Ug
-ZW5hYmxlL2Rpc2FibGUgb3BlcmF0aW9ucyBhcmUgcG9zc2libGUgYW5kIHJlcXVpcmVkIGxhdGVy
-Pw0KDQpCZXN0IFJlZ2FyZHMNClJpY2hhcmQNCj4gDQo+IFJlZ2FyZHMsDQo+IEx1Y2FzDQoNCg==
+Currently the only user for debug heap is kdbnearsym() which can be
+modified to rather use statically allocated buffer for symbol name as
+per it's current usage. So do that and hence remove custom debug heap
+allocator.
+
+Note that this change puts a restriction on kdbnearsym() callers to
+carefully use shared namebuf such that a caller should consume the symbol
+returned immediately prior to another call to fetch a different symbol.
+
+This change has been tested using kgdbtest on arm64 which doesn't show
+any regressions.
+
+Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+---
+
+Changes in v2:
+- Use single static buffer for symbol name in kdbnearsym() instead of
+  per caller buffers allocated on stack.
+
+ kernel/debug/kdb/kdb_debugger.c |   1 -
+ kernel/debug/kdb/kdb_private.h  |   5 -
+ kernel/debug/kdb/kdb_support.c  | 318 ++------------------------------
+ 3 files changed, 15 insertions(+), 309 deletions(-)
+
+diff --git a/kernel/debug/kdb/kdb_debugger.c b/kernel/debug/kdb/kdb_debugger.c
+index 0220afda3200..e91fc3e4edd5 100644
+--- a/kernel/debug/kdb/kdb_debugger.c
++++ b/kernel/debug/kdb/kdb_debugger.c
+@@ -140,7 +140,6 @@ int kdb_stub(struct kgdb_state *ks)
+ 	 */
+ 	kdb_common_deinit_state();
+ 	KDB_STATE_CLEAR(PAGER);
+-	kdbnearsym_cleanup();
+ 	if (error == KDB_CMD_KGDB) {
+ 		if (KDB_STATE(DOING_KGDB))
+ 			KDB_STATE_CLEAR(DOING_KGDB);
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index b857a84de3b5..ec91d7e02334 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -109,7 +109,6 @@ extern int kdbgetaddrarg(int, const char **, int*, unsigned long *,
+ 			 long *, char **);
+ extern int kdbgetsymval(const char *, kdb_symtab_t *);
+ extern int kdbnearsym(unsigned long, kdb_symtab_t *);
+-extern void kdbnearsym_cleanup(void);
+ extern char *kdb_strdup(const char *str, gfp_t type);
+ extern void kdb_symbol_print(unsigned long, const kdb_symtab_t *, unsigned int);
+ 
+@@ -233,10 +232,6 @@ extern struct task_struct *kdb_curr_task(int);
+ 
+ #define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
+ 
+-extern void *debug_kmalloc(size_t size, gfp_t flags);
+-extern void debug_kfree(void *);
+-extern void debug_kusage(void);
+-
+ extern struct task_struct *kdb_current_task;
+ extern struct pt_regs *kdb_current_regs;
+ 
+diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+index b59aad1f0b55..e131d74abb8d 100644
+--- a/kernel/debug/kdb/kdb_support.c
++++ b/kernel/debug/kdb/kdb_support.c
+@@ -57,35 +57,26 @@ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
+ }
+ EXPORT_SYMBOL(kdbgetsymval);
+ 
+-static char *kdb_name_table[100];	/* arbitrary size */
+-
+ /*
+- * kdbnearsym -	Return the name of the symbol with the nearest address
+- *	less than 'addr'.
++ * kdbnearsym() - Return the name of the symbol with the nearest address
++ *                less than @addr.
++ * @addr: Address to check for near symbol
++ * @symtab: Structure to receive results
+  *
+- * Parameters:
+- *	addr	Address to check for symbol near
+- *	symtab  Structure to receive results
+- * Returns:
+- *	0	No sections contain this address, symtab zero filled
+- *	1	Address mapped to module/symbol/section, data in symtab
+- * Remarks:
+- *	2.6 kallsyms has a "feature" where it unpacks the name into a
+- *	string.  If that string is reused before the caller expects it
+- *	then the caller sees its string change without warning.  To
+- *	avoid cluttering up the main kdb code with lots of kdb_strdup,
+- *	tests and kfree calls, kdbnearsym maintains an LRU list of the
+- *	last few unique strings.  The list is sized large enough to
+- *	hold active strings, no kdb caller of kdbnearsym makes more
+- *	than ~20 later calls before using a saved value.
++ * Note here that only single statically allocated namebuf is used for every
++ * symbol, so the caller should consume it immediately prior to another call
++ * to fetch a different symbol.
++ *
++ * Return:
++ * * 0 - No sections contain this address, symtab zero filled
++ * * 1 - Address mapped to module/symbol/section, data in symtab
+  */
+ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ {
+ 	int ret = 0;
+ 	unsigned long symbolsize = 0;
+ 	unsigned long offset = 0;
+-#define knt1_size 128		/* must be >= kallsyms table size */
+-	char *knt1 = NULL;
++	static char namebuf[KSYM_NAME_LEN];
+ 
+ 	if (KDB_DEBUG(AR))
+ 		kdb_printf("kdbnearsym: addr=0x%lx, symtab=%px\n", addr, symtab);
+@@ -93,14 +84,9 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ 
+ 	if (addr < 4096)
+ 		goto out;
+-	knt1 = debug_kmalloc(knt1_size, GFP_ATOMIC);
+-	if (!knt1) {
+-		kdb_printf("kdbnearsym: addr=0x%lx cannot kmalloc knt1\n",
+-			   addr);
+-		goto out;
+-	}
++
+ 	symtab->sym_name = kallsyms_lookup(addr, &symbolsize , &offset,
+-				(char **)(&symtab->mod_name), knt1);
++				(char **)(&symtab->mod_name), namebuf);
+ 	if (offset > 8*1024*1024) {
+ 		symtab->sym_name = NULL;
+ 		addr = offset = symbolsize = 0;
+@@ -109,42 +95,6 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ 	symtab->sym_end = symtab->sym_start + symbolsize;
+ 	ret = symtab->sym_name != NULL && *(symtab->sym_name) != '\0';
+ 
+-	if (ret) {
+-		int i;
+-		/* Another 2.6 kallsyms "feature".  Sometimes the sym_name is
+-		 * set but the buffer passed into kallsyms_lookup is not used,
+-		 * so it contains garbage.  The caller has to work out which
+-		 * buffer needs to be saved.
+-		 *
+-		 * What was Rusty smoking when he wrote that code?
+-		 */
+-		if (symtab->sym_name != knt1) {
+-			strncpy(knt1, symtab->sym_name, knt1_size);
+-			knt1[knt1_size-1] = '\0';
+-		}
+-		for (i = 0; i < ARRAY_SIZE(kdb_name_table); ++i) {
+-			if (kdb_name_table[i] &&
+-			    strcmp(kdb_name_table[i], knt1) == 0)
+-				break;
+-		}
+-		if (i >= ARRAY_SIZE(kdb_name_table)) {
+-			debug_kfree(kdb_name_table[0]);
+-			memmove(kdb_name_table, kdb_name_table+1,
+-			       sizeof(kdb_name_table[0]) *
+-			       (ARRAY_SIZE(kdb_name_table)-1));
+-		} else {
+-			debug_kfree(knt1);
+-			knt1 = kdb_name_table[i];
+-			memmove(kdb_name_table+i, kdb_name_table+i+1,
+-			       sizeof(kdb_name_table[0]) *
+-			       (ARRAY_SIZE(kdb_name_table)-i-1));
+-		}
+-		i = ARRAY_SIZE(kdb_name_table) - 1;
+-		kdb_name_table[i] = knt1;
+-		symtab->sym_name = kdb_name_table[i];
+-		knt1 = NULL;
+-	}
+-
+ 	if (symtab->mod_name == NULL)
+ 		symtab->mod_name = "kernel";
+ 	if (KDB_DEBUG(AR))
+@@ -152,23 +102,10 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ 		   "symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
+ 		   symtab->sym_start, symtab->mod_name, symtab->sym_name,
+ 		   symtab->sym_name);
+-
+ out:
+-	debug_kfree(knt1);
+ 	return ret;
+ }
+ 
+-void kdbnearsym_cleanup(void)
+-{
+-	int i;
+-	for (i = 0; i < ARRAY_SIZE(kdb_name_table); ++i) {
+-		if (kdb_name_table[i]) {
+-			debug_kfree(kdb_name_table[i]);
+-			kdb_name_table[i] = NULL;
+-		}
+-	}
+-}
+-
+ static char ks_namebuf[KSYM_NAME_LEN+1], ks_namebuf_prev[KSYM_NAME_LEN+1];
+ 
+ /*
+@@ -259,6 +196,7 @@ void kdb_symbol_print(unsigned long addr, const kdb_symtab_t *symtab_p,
+ 		      unsigned int punc)
+ {
+ 	kdb_symtab_t symtab, *symtab_p2;
++
+ 	if (symtab_p) {
+ 		symtab_p2 = (kdb_symtab_t *)symtab_p;
+ 	} else {
+@@ -665,232 +603,6 @@ unsigned long kdb_task_state(const struct task_struct *p, unsigned long mask)
+ 	return (mask & kdb_task_state_string(state)) != 0;
+ }
+ 
+-/* Last ditch allocator for debugging, so we can still debug even when
+- * the GFP_ATOMIC pool has been exhausted.  The algorithms are tuned
+- * for space usage, not for speed.  One smallish memory pool, the free
+- * chain is always in ascending address order to allow coalescing,
+- * allocations are done in brute force best fit.
+- */
+-
+-struct debug_alloc_header {
+-	u32 next;	/* offset of next header from start of pool */
+-	u32 size;
+-	void *caller;
+-};
+-
+-/* The memory returned by this allocator must be aligned, which means
+- * so must the header size.  Do not assume that sizeof(struct
+- * debug_alloc_header) is a multiple of the alignment, explicitly
+- * calculate the overhead of this header, including the alignment.
+- * The rest of this code must not use sizeof() on any header or
+- * pointer to a header.
+- */
+-#define dah_align 8
+-#define dah_overhead ALIGN(sizeof(struct debug_alloc_header), dah_align)
+-
+-static u64 debug_alloc_pool_aligned[256*1024/dah_align];	/* 256K pool */
+-static char *debug_alloc_pool = (char *)debug_alloc_pool_aligned;
+-static u32 dah_first, dah_first_call = 1, dah_used, dah_used_max;
+-
+-/* Locking is awkward.  The debug code is called from all contexts,
+- * including non maskable interrupts.  A normal spinlock is not safe
+- * in NMI context.  Try to get the debug allocator lock, if it cannot
+- * be obtained after a second then give up.  If the lock could not be
+- * previously obtained on this cpu then only try once.
+- *
+- * sparse has no annotation for "this function _sometimes_ acquires a
+- * lock", so fudge the acquire/release notation.
+- */
+-static DEFINE_SPINLOCK(dap_lock);
+-static int get_dap_lock(void)
+-	__acquires(dap_lock)
+-{
+-	static int dap_locked = -1;
+-	int count;
+-	if (dap_locked == smp_processor_id())
+-		count = 1;
+-	else
+-		count = 1000;
+-	while (1) {
+-		if (spin_trylock(&dap_lock)) {
+-			dap_locked = -1;
+-			return 1;
+-		}
+-		if (!count--)
+-			break;
+-		udelay(1000);
+-	}
+-	dap_locked = smp_processor_id();
+-	__acquire(dap_lock);
+-	return 0;
+-}
+-
+-void *debug_kmalloc(size_t size, gfp_t flags)
+-{
+-	unsigned int rem, h_offset;
+-	struct debug_alloc_header *best, *bestprev, *prev, *h;
+-	void *p = NULL;
+-	if (!get_dap_lock()) {
+-		__release(dap_lock);	/* we never actually got it */
+-		return NULL;
+-	}
+-	h = (struct debug_alloc_header *)(debug_alloc_pool + dah_first);
+-	if (dah_first_call) {
+-		h->size = sizeof(debug_alloc_pool_aligned) - dah_overhead;
+-		dah_first_call = 0;
+-	}
+-	size = ALIGN(size, dah_align);
+-	prev = best = bestprev = NULL;
+-	while (1) {
+-		if (h->size >= size && (!best || h->size < best->size)) {
+-			best = h;
+-			bestprev = prev;
+-			if (h->size == size)
+-				break;
+-		}
+-		if (!h->next)
+-			break;
+-		prev = h;
+-		h = (struct debug_alloc_header *)(debug_alloc_pool + h->next);
+-	}
+-	if (!best)
+-		goto out;
+-	rem = best->size - size;
+-	/* The pool must always contain at least one header */
+-	if (best->next == 0 && bestprev == NULL && rem < dah_overhead)
+-		goto out;
+-	if (rem >= dah_overhead) {
+-		best->size = size;
+-		h_offset = ((char *)best - debug_alloc_pool) +
+-			   dah_overhead + best->size;
+-		h = (struct debug_alloc_header *)(debug_alloc_pool + h_offset);
+-		h->size = rem - dah_overhead;
+-		h->next = best->next;
+-	} else
+-		h_offset = best->next;
+-	best->caller = __builtin_return_address(0);
+-	dah_used += best->size;
+-	dah_used_max = max(dah_used, dah_used_max);
+-	if (bestprev)
+-		bestprev->next = h_offset;
+-	else
+-		dah_first = h_offset;
+-	p = (char *)best + dah_overhead;
+-	memset(p, POISON_INUSE, best->size - 1);
+-	*((char *)p + best->size - 1) = POISON_END;
+-out:
+-	spin_unlock(&dap_lock);
+-	return p;
+-}
+-
+-void debug_kfree(void *p)
+-{
+-	struct debug_alloc_header *h;
+-	unsigned int h_offset;
+-	if (!p)
+-		return;
+-	if ((char *)p < debug_alloc_pool ||
+-	    (char *)p >= debug_alloc_pool + sizeof(debug_alloc_pool_aligned)) {
+-		kfree(p);
+-		return;
+-	}
+-	if (!get_dap_lock()) {
+-		__release(dap_lock);	/* we never actually got it */
+-		return;		/* memory leak, cannot be helped */
+-	}
+-	h = (struct debug_alloc_header *)((char *)p - dah_overhead);
+-	memset(p, POISON_FREE, h->size - 1);
+-	*((char *)p + h->size - 1) = POISON_END;
+-	h->caller = NULL;
+-	dah_used -= h->size;
+-	h_offset = (char *)h - debug_alloc_pool;
+-	if (h_offset < dah_first) {
+-		h->next = dah_first;
+-		dah_first = h_offset;
+-	} else {
+-		struct debug_alloc_header *prev;
+-		unsigned int prev_offset;
+-		prev = (struct debug_alloc_header *)(debug_alloc_pool +
+-						     dah_first);
+-		while (1) {
+-			if (!prev->next || prev->next > h_offset)
+-				break;
+-			prev = (struct debug_alloc_header *)
+-				(debug_alloc_pool + prev->next);
+-		}
+-		prev_offset = (char *)prev - debug_alloc_pool;
+-		if (prev_offset + dah_overhead + prev->size == h_offset) {
+-			prev->size += dah_overhead + h->size;
+-			memset(h, POISON_FREE, dah_overhead - 1);
+-			*((char *)h + dah_overhead - 1) = POISON_END;
+-			h = prev;
+-			h_offset = prev_offset;
+-		} else {
+-			h->next = prev->next;
+-			prev->next = h_offset;
+-		}
+-	}
+-	if (h_offset + dah_overhead + h->size == h->next) {
+-		struct debug_alloc_header *next;
+-		next = (struct debug_alloc_header *)
+-			(debug_alloc_pool + h->next);
+-		h->size += dah_overhead + next->size;
+-		h->next = next->next;
+-		memset(next, POISON_FREE, dah_overhead - 1);
+-		*((char *)next + dah_overhead - 1) = POISON_END;
+-	}
+-	spin_unlock(&dap_lock);
+-}
+-
+-void debug_kusage(void)
+-{
+-	struct debug_alloc_header *h_free, *h_used;
+-#ifdef	CONFIG_IA64
+-	/* FIXME: using dah for ia64 unwind always results in a memory leak.
+-	 * Fix that memory leak first, then set debug_kusage_one_time = 1 for
+-	 * all architectures.
+-	 */
+-	static int debug_kusage_one_time;
+-#else
+-	static int debug_kusage_one_time = 1;
+-#endif
+-	if (!get_dap_lock()) {
+-		__release(dap_lock);	/* we never actually got it */
+-		return;
+-	}
+-	h_free = (struct debug_alloc_header *)(debug_alloc_pool + dah_first);
+-	if (dah_first == 0 &&
+-	    (h_free->size == sizeof(debug_alloc_pool_aligned) - dah_overhead ||
+-	     dah_first_call))
+-		goto out;
+-	if (!debug_kusage_one_time)
+-		goto out;
+-	debug_kusage_one_time = 0;
+-	kdb_printf("%s: debug_kmalloc memory leak dah_first %d\n",
+-		   __func__, dah_first);
+-	if (dah_first) {
+-		h_used = (struct debug_alloc_header *)debug_alloc_pool;
+-		kdb_printf("%s: h_used %px size %d\n", __func__, h_used,
+-			   h_used->size);
+-	}
+-	do {
+-		h_used = (struct debug_alloc_header *)
+-			  ((char *)h_free + dah_overhead + h_free->size);
+-		kdb_printf("%s: h_used %px size %d caller %px\n",
+-			   __func__, h_used, h_used->size, h_used->caller);
+-		h_free = (struct debug_alloc_header *)
+-			  (debug_alloc_pool + h_free->next);
+-	} while (h_free->next);
+-	h_used = (struct debug_alloc_header *)
+-		  ((char *)h_free + dah_overhead + h_free->size);
+-	if ((char *)h_used - debug_alloc_pool !=
+-	    sizeof(debug_alloc_pool_aligned))
+-		kdb_printf("%s: h_used %px size %d caller %px\n",
+-			   __func__, h_used, h_used->size, h_used->caller);
+-out:
+-	spin_unlock(&dap_lock);
+-}
+-
+ /* Maintain a small stack of kdb_flags to allow recursion without disturbing
+  * the global kdb state.
+  */
+-- 
+2.25.1
+
