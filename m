@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB8C345448
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E28345451
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 01:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhCWAzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Mar 2021 20:55:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231453AbhCWAzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:55:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB68619AD;
-        Tue, 23 Mar 2021 00:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616460931;
-        bh=eL7GjnIfETK0w55hHwx5UGeZDCUlzEv98Et4KDmZU3A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VflmfzXyjLWA9YO8Uh+V1TLVEHavGiiydb8pIWRlVTheDiKZSurbn3/qprgbEigPO
-         qbgMYmUecidjzoK5m9zlh+Xmg4Mj50ESFEZGQ1tfwnwgTyddg5PQ2Xb5lRbpChqDBr
-         Um1znQc2/EIcZNDDLsa2w67M8RPK8aVCZY9GW5+gy2/QLPUOBUbNIVyAWqghNcG1wv
-         qsdCIPSVeWBYxt27By+dx9tLJtu50a5Dx2I82c2mXu5dzerom72pU0e+Ef6dfuB1vA
-         VHI5COlNLSmxiz+yQgqm8KmrFwWWnXfFf/QQ+I0ChpW/p4OufyQu0iob5hCvFxDyJQ
-         UOxxNYbifYzsQ==
-Date:   Mon, 22 Mar 2021 17:55:29 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andrey Ryabinin <arbn@yandex-team.ru>
-Cc:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] keys: Allow disabling read permissions for key possessor
-Message-ID: <YFk8gb/M4AOGDO7Y@gmail.com>
-References: <20210322095726.14939-1-arbn@yandex-team.ru>
+        id S231376AbhCWA5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Mar 2021 20:57:48 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14842 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhCWA5g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:57:36 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4CbD1Ql6z92k2;
+        Tue, 23 Mar 2021 08:55:36 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Mar 2021 08:57:30 +0800
+Subject: Re: [PATCH 5.10 000/156] 5.10.26-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210322151845.637893645@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <f01cda5a-f25c-69d2-87d0-20fe0aaf3359@huawei.com>
+Date:   Tue, 23 Mar 2021 08:57:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322095726.14939-1-arbn@yandex-team.ru>
+In-Reply-To: <20210322151845.637893645@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 12:57:26PM +0300, Andrey Ryabinin wrote:
-> keyctl_read_key() has a strange code which allows possessor to read
-> key's payload regardless of READ permission status:
-> 
-> $ keyctl add user test test @u
-> 196773443
-> $ keyctl print 196773443
-> test
-> $ keyctl describe 196773443
-> 196773443: alswrv-----v------------  1000  1000 user: test
-> $ keyctl rdescribe 196773443
-> user;1000;1000;3f010000;test
-> $ keyctl setperm 196773443 0x3d010000
-> $ keyctl describe 196773443
-> 196773443: alsw-v-----v------------  1000  1000 user: test
-> $ keyctl  print 196773443
-> test
-> 
-> The last keyctl print should fail with -EACCESS instead of success.
-> Fix this by removing weird possessor checks.
-> 
-> Signed-off-by: Andrey Ryabinin <arbn@yandex-team.ru>
-> ---
-> 
->  - This was noticed by code review. It seems like a bug to me,
->  but if I'm wrong and current behavior is correct, I think we need
->  at least better comment here.
->    
-> 
->  security/keys/keyctl.c | 15 +--------------
->  1 file changed, 1 insertion(+), 14 deletions(-)
-> 
-> diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-> index 96a92a645216d..2ec021c7adc12 100644
-> --- a/security/keys/keyctl.c
-> +++ b/security/keys/keyctl.c
-> @@ -845,22 +845,9 @@ long keyctl_read_key(key_serial_t keyid, char __user *buffer, size_t buflen)
->  
->  	/* see if we can read it directly */
->  	ret = key_permission(key_ref, KEY_NEED_READ);
-> -	if (ret == 0)
-> -		goto can_read_key;
-> -	if (ret != -EACCES)
-> +	if (ret != 0)
->  		goto key_put_out;
->  
-> -	/* we can't; see if it's searchable from this process's keyrings
-> -	 * - we automatically take account of the fact that it may be
-> -	 *   dangling off an instantiation key
-> -	 */
-> -	if (!is_key_possessed(key_ref)) {
-> -		ret = -EACCES;
-> -		goto key_put_out;
-> -	}
-> -
 
-This might be intentional, given the comment above the function:
 
- * The key must either grant the caller Read permission, or it must grant the
- * caller Search permission when searched for from the process keyrings.
+On 2021/3/22 23:19, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.26 release.
+> There are 156 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 24 Mar 2021 15:18:19 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.26-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-The 'is_key_possessed()' check is implementing the second part, right?
+Tested on x86 for 5.10.26-rc2,
 
-Maybe check if this shows up in the documentation and tests too.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.26-rc2
+Commit: deabac90f919203307e6eee2606366bdb19bbe93
+Compiler: gcc version 7.3.0 (GCC)
 
-- Eric
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4721
+passed: 4721
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
+
