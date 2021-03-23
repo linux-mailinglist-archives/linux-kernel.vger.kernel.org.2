@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14377346B22
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2EB346B21
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhCWVdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
+        id S233558AbhCWVdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbhCWVd2 (ORCPT
+        with ESMTP id S233464AbhCWVdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:33:28 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E038AC061574;
-        Tue, 23 Mar 2021 14:33:27 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id j3so25167390edp.11;
-        Tue, 23 Mar 2021 14:33:27 -0700 (PDT)
+        Tue, 23 Mar 2021 17:33:20 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64259C061574;
+        Tue, 23 Mar 2021 14:33:20 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so69153pjb.4;
+        Tue, 23 Mar 2021 14:33:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vNqTp+4J55pn8UtxCWhZI9WKQ5OJTgrthkxSNaaR9fk=;
-        b=Z1X62JgaNMMBhLZQ4QlhpGE30R7oq8YUDzrEMEzTRD0vNkPaAU0FqGpgvMQr3SNw4N
-         TQ2lURRF9XEcvjjsQtWoYsO7GtMMtlQB/pagSghOAntjFN+62FySADdKePG/SaNFdkTw
-         jjRiQNIFaAgrove9trejAd+bh2AI53ZwBbeUGI+rGNQUgiUDhrqm/52yIa8mSOHbRADc
-         /Hl8zXqJYmy5UllL/i5DfDsUENesGkIKUATnioFFGXBBjUtDvmeZiEaQGPAi+S8F39FF
-         81WLl9okrNOK9J9KAS05Up2FL0aVT//x6QW9B21AIw6AHfDL9xjBkEvHP9LtW5QOQSL8
-         tjEw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rvofdCHxCvwcpYzvV4ThQ9tW1dE3FsuCFAAVo7LtDxM=;
+        b=CYE5Y74+IrbPB/cTc6+L56Vy+Ekl+fDZFsbbZoRzAnOlZqrEN0yKSPBOPvyXkbDAe0
+         +8us0jjucSN47EYClPH/uiUv30T3a5Cyl0Tc6UeJonPQ3H2mPIux6xKgXtqA2OxV6uYp
+         2lR7wAL7c5EL3vBSTPMstroVDDNgoGHdi8ciieUwUyAip3Vvm8xKGHaYEaUXjJtVrx1M
+         eiPDns+Lq0xEP2Auub0CDI/2o2+VhRNT3ZGdYfjuqCeZiZe1y+2XQz9eyeHItj8UWYIv
+         LIMu4LzMasinFqedjA4YeelKIOUCKrQYElu2+v9nstxHSGxkVlPE5htLNvwpkbVWWt1o
+         tTQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vNqTp+4J55pn8UtxCWhZI9WKQ5OJTgrthkxSNaaR9fk=;
-        b=Idhul5mgPNGugbuXEskcPzt4awMsqs1sWibu2ZM9egxvHw+ugPwHFHyBp4XznH4hQl
-         gue+Sj5yjFsa6/XgHN6ifi4KCiiREol+zss4C8tG8k9Veu8rSIoytvL/nHi6WUgCN6SN
-         TgJP5Glvd++SIogMw15lQDLn6Kh27k8V0r1qm9NI4J8Ax3TrCyGGCahCHxkZGRSNph5g
-         xtbDqTQVoW8BRfea0AQbF/Y+djKzxbM3IwZuITM0CXpTrDkhJFoO13745S+H7f0Jafqv
-         /0RCMBPdn9Cl5DsBJoYGMPaOmUelRvt1bcuePKSmM/AqRKv5ve5s5oeEY5s1wN7DQ6Mx
-         /lUA==
-X-Gm-Message-State: AOAM532X12oxo46TZUDZeEVvR1jrYZLPIvwvfn5eaaYwZBFPHbnnRPCK
-        DrPGcASCoToHNsgVdrMnJ4tyrMRGBENx3leD4L64HacQJdQ=
-X-Google-Smtp-Source: ABdhPJxogLUC0j2kqIXnvE9ADeLdHe/dekVrvsjIiVez5mN8mdmstjeRi/0IbcBN4Amm2vqsw9nN/TGoA02CccJ8wno=
-X-Received: by 2002:aa7:c957:: with SMTP id h23mr6431368edt.301.1616535206608;
- Tue, 23 Mar 2021 14:33:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rvofdCHxCvwcpYzvV4ThQ9tW1dE3FsuCFAAVo7LtDxM=;
+        b=iUfB+D2wch70lDRaqhpMHW06/tuWzrgxTBMyEtRB/OR5/sooyJrsu4ixSNOi/G3Ich
+         EvPGlvkqa/VxhcjOckXQUMROGPOTpkf8IYYs391OXQNK2JQcsIwDNGcF2BNIbbGCGTPe
+         sQ8HxToj59ER70CrV7hM7mVaZBk1XMdFJx16wB7LpMwLjqASgQz5ZVGFFqg/a7EQCV4w
+         j0y6trAILM35eP/1wdkhul+lhiTStLRTjNLmW1XMAz9oFul8gfpBQKaqav1ayAmZPfzt
+         ZmrToyjS/6WNOWIvd/GFQNpSrMFz6ppqvMEt1RG0EOo+FpRM59D5h2birBkzIE0ZHoWA
+         GFLg==
+X-Gm-Message-State: AOAM532jyUGpMfZHUlb2mZa2ZC08hVoiSkwhhbSLWfC4hrAx/5YZvWuC
+        cldcqaZ4NVzU1TV00QFK6p0=
+X-Google-Smtp-Source: ABdhPJzC8MdPuZyVJWBSBwuBn2QuI4/2SVsbk5rJ/eD1SB43Lj2syZ/pGEWCNfAsqc9W/P5EzuWVww==
+X-Received: by 2002:a17:90a:7045:: with SMTP id f63mr122836pjk.35.1616535199921;
+        Tue, 23 Mar 2021 14:33:19 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
+        by smtp.gmail.com with ESMTPSA id w18sm137046pjh.19.2021.03.23.14.33.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 14:33:18 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 14:33:16 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     od@zcrc.me, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] input: gpio-keys: Remove extra call to input_sync
+Message-ID: <YFpenIFWHQXy8+Cd@google.com>
+References: <20210307222240.380583-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20210315083459.359773-1-narmstrong@baylibre.com> <20210315083459.359773-2-narmstrong@baylibre.com>
-In-Reply-To: <20210315083459.359773-2-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 23 Mar 2021 22:33:15 +0100
-Message-ID: <CAFBinCA1WhtWLEfJ-QyBbZpsY75r=su6uzyWamY6nHOQ+HYvAw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: serial: amlogic, meson-uart: add
- amlogic, uart-fifosize property
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210307222240.380583-1-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Hi Neil,
+On Sun, Mar 07, 2021 at 10:22:38PM +0000, Paul Cercueil wrote:
+> The input_sync() function is already called after the loop in
+> gpio_keys_report_state(), so it does not need to be called after each
+> iteration within gpio_keys_gpio_report_event().
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-On Mon, Mar 15, 2021 at 9:37 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> On most of the Amlogic SoCs, the first UART controller in the "Everything-Else"
-> power domain has 128bytes of RX & TX FIFO, so add an optional property to describe
-do we still need wrapping of long lines in commit messages?
-if so I think the line above is too long
+Applied, thank you.
 
-> a different FIFO size from the other ports (64bytes).
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-
-one additional note below
-
-> ---
->  .../devicetree/bindings/serial/amlogic,meson-uart.yaml      | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> index 75ebc9952a99..e0a742112783 100644
-> --- a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> @@ -55,6 +55,12 @@ properties:
->        - const: pclk
->        - const: baud
->
-> +
-> +  amlogic,uart-fifosize:
-> +    description: The fifo size supported by the UART channel.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [64, 128]
-I personally think this is generic enough to be described as fifo-size
-(as it's done in Documentation/devicetree/bindings/serial/8250.yaml)
-let's wait and hear what Rob thinks
-
-
-Best regards,
-Martin
+-- 
+Dmitry
