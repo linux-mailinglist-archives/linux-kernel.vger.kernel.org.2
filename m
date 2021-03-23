@@ -2,89 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4123458CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE59C34587A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 08:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhCWHel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 03:34:41 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:38636 "EHLO inva020.nxp.com"
+        id S230094AbhCWHUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 03:20:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhCWHd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 03:33:58 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 114F61A1D04;
-        Tue, 23 Mar 2021 08:33:55 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 50E221A1D09;
-        Tue, 23 Mar 2021 08:33:50 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8376A402AC;
-        Tue, 23 Mar 2021 08:33:44 +0100 (CET)
-From:   Dong Aisheng <aisheng.dong@nxp.com>
-To:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     dongas86@gmail.com, kernel@pengutronix.de, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, abel.vesa@nxp.com,
-        Dong Aisheng <aisheng.dong@nxp.com>
-Subject: [PATCH V2 RESEND 3/4] PM / devfreq: bail out early if no freq changes in devfreq_set_target
-Date:   Tue, 23 Mar 2021 15:20:10 +0800
-Message-Id: <1616484011-26702-4-git-send-email-aisheng.dong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616484011-26702-1-git-send-email-aisheng.dong@nxp.com>
-References: <1616484011-26702-1-git-send-email-aisheng.dong@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S229963AbhCWHUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 03:20:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86713619AB;
+        Tue, 23 Mar 2021 07:20:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616484014;
+        bh=xf/FJRT3op6/DF9iLA9eJZ5X6gvMzU0dp2gmxrew8Zw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0SLi843WFB3SJZg1fnvsZ7anQHXNe+tpuxQ/BMjEaOPoHHmBW0dcKdyzsuaC4pXqd
+         luEzlgoRzJAgbshLSsQLvskuorTzaTRNSSeoCreTX+NTibG6CB12inl1cjD8JTYh4U
+         yEgwJXtSt6KmGoREjyW3ICqqpWHnu+jo3mYDW3Us=
+Date:   Tue, 23 Mar 2021 08:20:11 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Isaku Yamahata <isaku.yamahata@intel.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org, brijesh.singh@amd.com,
+        tglx@linutronix.de, bp@alien8.de, isaku.yamahata@gmail.com,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] X86: __set_clr_pte_enc() miscalculates physical address
+Message-ID: <YFmWq1uuvCiiBhBb@kroah.com>
+References: <81abbae1657053eccc535c16151f63cd049dcb97.1616098294.git.isaku.yamahata@intel.com>
+ <0d99865a-30d5-9857-1a53-cc26ada6608c@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d99865a-30d5-9857-1a53-cc26ada6608c@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's unnecessary to set the same freq again and run notifier calls.
+On Mon, Mar 22, 2021 at 04:02:11PM -0500, Tom Lendacky wrote:
+> On 3/18/21 3:26 PM, Isaku Yamahata wrote:
+> > __set_clr_pte_enc() miscalculates physical address to operate.
+> > pfn is in unit of PG_LEVEL_4K, not PGL_LEVEL_{2M, 1G}.
+> > Shift size to get physical address should be PAGE_SHIFT,
+> > not page_level_shift().
+> > 
+> > Fixes: dfaaec9033b8 ("x86: Add support for changing memory encryption attribute in early boot")
+> > Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
----
- drivers/devfreq/devfreq.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+<formletter>
 
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index 85927bd7ee76..a6ee91dd17bd 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -352,13 +352,16 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
- {
- 	struct devfreq_freqs freqs;
- 	unsigned long cur_freq;
--	int err = 0;
-+	int err;
- 
- 	if (devfreq->profile->get_cur_freq)
- 		devfreq->profile->get_cur_freq(devfreq->dev.parent, &cur_freq);
- 	else
- 		cur_freq = devfreq->previous_freq;
- 
-+	if (new_freq == cur_freq)
-+		return 0;
-+
- 	freqs.old = cur_freq;
- 	freqs.new = new_freq;
- 	devfreq_notify_transition(devfreq, &freqs, DEVFREQ_PRECHANGE);
-@@ -375,7 +378,7 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
- 	 * and DEVFREQ_POSTCHANGE because for showing the correct frequency
- 	 * change order of between devfreq device and passive devfreq device.
- 	 */
--	if (trace_devfreq_frequency_enabled() && new_freq != cur_freq)
-+	if (trace_devfreq_frequency_enabled())
- 		trace_devfreq_frequency(devfreq, new_freq, cur_freq);
- 
- 	freqs.new = new_freq;
-@@ -390,7 +393,7 @@ static int devfreq_set_target(struct devfreq *devfreq, unsigned long new_freq,
- 	if (devfreq->suspend_freq)
- 		devfreq->resume_freq = new_freq;
- 
--	return err;
-+	return 0;
- }
- 
- /**
--- 
-2.25.1
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
+</formletter>
