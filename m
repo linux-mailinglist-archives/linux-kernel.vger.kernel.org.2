@@ -2,62 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7281F346D68
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFD4346D6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbhCWWkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbhCWWkR (ORCPT
+        id S234177AbhCWWli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:41:38 -0400
+Received: from mail-il1-f170.google.com ([209.85.166.170]:38414 "EHLO
+        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234187AbhCWWlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:40:17 -0400
-Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B1AC061574;
-        Tue, 23 Mar 2021 15:40:17 -0700 (PDT)
-Received: by sf.home (Postfix, from userid 1000)
-        id 57C695A22061; Tue, 23 Mar 2021 22:40:10 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        linux-ia64@vger.kernel.org
-Subject: [PATCH] ia64: drop unused IA64_FW_EMU ifdef
-Date:   Tue, 23 Mar 2021 22:40:09 +0000
-Message-Id: <20210323224009.240625-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.0
+        Tue, 23 Mar 2021 18:41:13 -0400
+Received: by mail-il1-f170.google.com with SMTP id d10so12890308ils.5;
+        Tue, 23 Mar 2021 15:41:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7df4nauXHTGTZT/QJ+gJGVtaRr9NLAYHJhOGISyVl1w=;
+        b=aa8ZlRoS7ht48bJzmnrEhJh2Ge+MMxhkQDzY+k9rSUFDMEHkywpyM6WXt5acogcmP7
+         cMlTOE/bDryDd+9NwhBQFkX+dQ9i6u9ONmZRMaHZXNHgLBOonkXbweTfI3Dw2medUgpQ
+         sExZVsBytgcsdAcQIULU3FjQVAQfk1jSz4/jHcDtvXTLM3mSZgF49S8YHW3AXqp3pKvn
+         k7YvynDIF5fEuAW6zB6V8+BQx2/C0fpFX7FSEt+xjFa4U5aok2ZLMZ8mZr+IwXWV/vdo
+         yBYS2FfLFln7+YKHIdKB5VKliRkztuDThrWWaJGoI57h5wm7sjLZT/bikqxqGsgXH6GA
+         KvSA==
+X-Gm-Message-State: AOAM533RWZdoCX1ZzrgswXACvQEg3aJOBt6CvRmp60vLyl3zbQ49QVrt
+        tp9c0gbUiDtZ+4JZ/wIaVQ==
+X-Google-Smtp-Source: ABdhPJwap2AFfRW5hUk2I99RYL7djHzmVl5STHZK1Eo20/kBMDeZkP8kTbIGN47BIKF3M1LeFkLlOg==
+X-Received: by 2002:a92:d58e:: with SMTP id a14mr344563iln.61.1616539272551;
+        Tue, 23 Mar 2021 15:41:12 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id l14sm131647ilc.33.2021.03.23.15.41.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 15:41:11 -0700 (PDT)
+Received: (nullmailer pid 1480679 invoked by uid 1000);
+        Tue, 23 Mar 2021 22:41:09 -0000
+Date:   Tue, 23 Mar 2021 16:41:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH v5 6/7] dt-bindings: interrupt-controller: Add
+ Loongson-2K1000 LIOINTC
+Message-ID: <20210323224109.GA1480622@robh.at.kernel.org>
+References: <20210315075004.15465-1-zhangqing@loongson.cn>
+ <20210315075004.15465-7-zhangqing@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315075004.15465-7-zhangqing@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a remnant of deleted hpsim emulation target
-removed in fc5bad037 ("ia64: remove the hpsim platform").
+On Mon, 15 Mar 2021 15:50:03 +0800, Qing Zhang wrote:
+> Add liointc-2.0 properties support, so update the maxItems and
+> condition description.
+> 
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> Tested-by: Ming Wang <wangming01@loongson.cn>
+> ---
+> 
+> v4-v5:
+> - Add reg condition description
+> 
+>  .../loongson,liointc.yaml                     | 36 ++++++++++++++++---
+>  1 file changed, 32 insertions(+), 4 deletions(-)
+> 
 
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-ia64@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- arch/ia64/kernel/head.S | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/arch/ia64/kernel/head.S b/arch/ia64/kernel/head.S
-index 646a22c25edf..9cd0a2cce36e 100644
---- a/arch/ia64/kernel/head.S
-+++ b/arch/ia64/kernel/head.S
-@@ -405,11 +405,6 @@ start_ap:
- 
- 	// This is executed by the bootstrap processor (bsp) only:
- 
--#ifdef CONFIG_IA64_FW_EMU
--	// initialize PAL & SAL emulator:
--	br.call.sptk.many rp=sys_fw_init
--.ret1:
--#endif
- 	br.call.sptk.many rp=start_kernel
- .ret2:	addl r3=@ltoff(halt_msg),gp
- 	;;
--- 
-2.31.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
