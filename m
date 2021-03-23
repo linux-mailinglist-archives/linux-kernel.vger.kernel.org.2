@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6B6346B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C302346B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 23:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbhCWWA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 18:00:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233752AbhCWWAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:00:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 52EFF619D1;
-        Tue, 23 Mar 2021 22:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616536810;
-        bh=UqdmPjzkBMkGpEoz/xGIJUyvpKm2m45avXdl9Jp2vSk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mlwSNPAUJTFuPsY7PValXn+yvPkCN+0HkTqdOan4G6j/twKRFiGdf5GCSzc/u+wHG
-         iaZtKMazQPYDLzYtCRbVAWxhTkSMb4GoMzQEAJVXkro1knq6FYIH0uIA9fGrebNQBr
-         rMd0/p43xIAx2Lb65SisDaP/c81+eeb5YyUzuU97ZVYmkBi2n60qei7bAkqvCgHvEr
-         Nf9PkyhXkQZOSYnW3Td3NHwsYKwojfw4gu3EpDk/uo4PHh1SvDg3eS89ZVDxpyjuns
-         773or6irkjcEgtXyfleCBOhbVqVmrwYILVwdTEqpocghstUUqk69Wa9Y3MpJatzD29
-         ixEZEyAgjaDvw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 429CB60A0E;
-        Tue, 23 Mar 2021 22:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233659AbhCWWBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 18:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233769AbhCWWBV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 18:01:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CF9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 15:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=ssQLO61WHzovjKdnPCoQmV/RGBUr6XLqwV8AQTum3tk=; b=Kcj1d5rLpAV7WflXzEaGjSTP+G
+        d2J5YGat7mhoq73KQEBTp3/FSD2FSZ2q0ObEXdF07h1i4JWGCxRHOsQCJi9/+X+vurzmx2EI1xBgb
+        /eqxBFXYjohMRhrTcBPwPwvHKM1T7/z3IDcB5a+bf8uYbtyCUh0FmR04W/9XARi7VNZxGQZIpdHGJ
+        pe4GN3IlhX28Ci9qbKM3ZWDqPn3jKEt23XOXaHWiZP/Dzu0/MHe/SpiqXHOlfJ/awELtSVV13Z9N+
+        J7QHMdw4qTc6/KMKn092+atTxpkf86H33+gpNQdd4JQxVFnewZYbTQTmOX6k4Bx5JuHFOqY7v2WsD
+        DyZN7dQA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOp5Q-00FohT-6E; Tue, 23 Mar 2021 22:01:17 +0000
+Subject: Re: [PATCH] macintosh: A typo fix
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20210323204652.23059-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d01060e9-8986-c23b-71d3-ada645500186@infradead.org>
+Date:   Tue, 23 Mar 2021 15:01:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 net-next 00/11] Better support for sandwiched LAGs with
- bridge and DSA
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161653681026.23298.16920654325980262719.git-patchwork-notify@kernel.org>
-Date:   Tue, 23 Mar 2021 22:00:10 +0000
-References: <20210322235152.268695-1-olteanv@gmail.com>
-In-Reply-To: <20210322235152.268695-1-olteanv@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        tobias@waldekranz.com, claudiu.manoil@nxp.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        roopa@nvidia.com, nikolay@nvidia.com, jiri@resnulli.us,
-        idosch@idosch.org, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, ivecera@redhat.com,
-        linux-omap@vger.kernel.org, vladimir.oltean@nxp.com
+In-Reply-To: <20210323204652.23059-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 23 Mar 2021 01:51:41 +0200 you wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On 3/23/21 1:46 PM, Bhaskar Chowdhury wrote:
 > 
-> Changes in v4:
-> - Added missing EXPORT_SYMBOL_GPL
-> - Using READ_ONCE(fdb->dst)
-> - Split patches into (a) adding the bridge helpers (b) making DSA use them
-> - br_mdb_replay went back to the v1 approach where it allocated memory
->   in atomic context
-> - Created a br_switchdev_mdb_populate which reduces some of the code
->   duplication
-> - Fixed the error message in dsa_port_clear_brport_flags
-> - Replaced "dsa_port_vlan_filtering(dp, br, extack)" with
->   "dsa_port_vlan_filtering(dp, br_vlan_enabled(br), extack)" (duh)
-> - Added review tags (sorry if I missed any)
+> s/coment/comment/
 > 
-> [...]
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Here is the summary with links:
-  - [v4,net-next,01/11] net: bridge: add helper for retrieving the current bridge port STP state
-    https://git.kernel.org/netdev/net-next/c/c0e715bbd50e
-  - [v4,net-next,02/11] net: bridge: add helper to retrieve the current ageing time
-    https://git.kernel.org/netdev/net-next/c/f1d42ea10056
-  - [v4,net-next,03/11] net: bridge: add helper to replay port and host-joined mdb entries
-    https://git.kernel.org/netdev/net-next/c/4f2673b3a2b6
-  - [v4,net-next,04/11] net: bridge: add helper to replay port and local fdb entries
-    https://git.kernel.org/netdev/net-next/c/04846f903b53
-  - [v4,net-next,05/11] net: bridge: add helper to replay VLANs installed on port
-    https://git.kernel.org/netdev/net-next/c/22f67cdfae6a
-  - [v4,net-next,06/11] net: dsa: call dsa_port_bridge_join when joining a LAG that is already in a bridge
-    https://git.kernel.org/netdev/net-next/c/185c9a760a61
-  - [v4,net-next,07/11] net: dsa: pass extack to dsa_port_{bridge,lag}_join
-    https://git.kernel.org/netdev/net-next/c/2afc526ab342
-  - [v4,net-next,08/11] net: dsa: inherit the actual bridge port flags at join time
-    https://git.kernel.org/netdev/net-next/c/5961d6a12c13
-  - [v4,net-next,09/11] net: dsa: sync up switchdev objects and port attributes when joining the bridge
-    https://git.kernel.org/netdev/net-next/c/010e269f91be
-  - [v4,net-next,10/11] net: ocelot: call ocelot_netdevice_bridge_join when joining a bridged LAG
-    https://git.kernel.org/netdev/net-next/c/81ef35e7619a
-  - [v4,net-next,11/11] net: ocelot: replay switchdev events when joining bridge
-    https://git.kernel.org/netdev/net-next/c/e4bd44e89dcf
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> ---
+>  drivers/macintosh/windfarm_smu_controls.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/macintosh/windfarm_smu_controls.c b/drivers/macintosh/windfarm_smu_controls.c
+> index 79cb1ad09bfd..75966052819a 100644
+> --- a/drivers/macintosh/windfarm_smu_controls.c
+> +++ b/drivers/macintosh/windfarm_smu_controls.c
+> @@ -94,7 +94,7 @@ static int smu_set_fan(int pwm, u8 id, u16 value)
+>  		return rc;
+>  	wait_for_completion(&comp);
+> 
+> -	/* Handle fallback (see coment above) */
+> +	/* Handle fallback (see comment above) */
+>  	if (cmd.status != 0 && smu_supports_new_fans_ops) {
+>  		printk(KERN_WARNING "windfarm: SMU failed new fan command "
+>  		       "falling back to old method\n");
+> --
 
+
+-- 
+~Randy
 
