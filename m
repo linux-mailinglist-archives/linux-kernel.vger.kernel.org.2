@@ -2,174 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80D234672A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A397A346739
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 19:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhCWSGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 14:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230461AbhCWSGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:06:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDCF46192B;
-        Tue, 23 Mar 2021 18:06:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616522794;
-        bh=HlggJbtjjnl4gQvUpEErh5CAiwc0vAFXcF44xeAs6Bs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ejMFqIsWGOyIOpCnuVC2LW3X6uvGY+6XjlVlM9WG4E9aPOSPmC/11IYmAoyoomB+x
-         yGyWy+hfj44TDt/DT88eNROYgWywl+k9I2KfxrDbnWG7IIrwdV+0XEJOwUEUc8xSdP
-         +js5qr8vlCDTE7xUYHuXzB1k5yfRsHFqhAelm2J0O8wFX3Fv+xZWBeSt69d6Dfxwgg
-         ItRSbT9OjklihFREnuObjQwTNJu1h3J6lgSxOzRW+j0fntLMUBzBJTuMU+rQLNnQy8
-         kMHh0p33TNPI5DRK3H88flJ+9h+rmZMmfDv5myaBpOUKehjpI7D5accqVOfErjTCxY
-         ZWNNCqwwNZEew==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C308940647; Tue, 23 Mar 2021 15:06:32 -0300 (-03)
-Date:   Tue, 23 Mar 2021 15:06:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Thomas Richter <tmricht@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: Re: [PATCH] perf test: Fix perf test 42
-Message-ID: <YFouKGT7oS1T/oMS@kernel.org>
-References: <20210322125339.1384351-1-tmricht@linux.ibm.com>
+        id S231511AbhCWSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 14:08:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8152 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231206AbhCWSIE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 14:08:04 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NI5RMu111568;
+        Tue, 23 Mar 2021 14:07:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=odnY6h4coq5urn2CzhCmZB0m7u2bx8U3SIbESLNrZHY=;
+ b=rPhhJ/cw3twDW6aAEbsHiIs0DmmbFXQV4Cc8im/7PPbKiPnl9n3kV8I3K+g9FJy8UqMd
+ CYd0gBDTdbJ2Gw1U4V7qnUVhWYDHuHiuVS/RYYEw1ama0VoPZltjPhUzeTm/eNKVQsD3
+ kRy8ChD/IOoX8cu92zuq0XPateWtdfGv/9GRGRctmJnfhGlhu2fwMzSJAy+eEav4zp6s
+ XzypMbC06UtYHSlP8KtiHdck3hexTDBs7onedG2QKbsM7DCb34tvNVVjaKDNjv278xqr
+ ewSlnkjLHctWkQhicrgrCt6cUPydjU+NxXee+98KQ+q4uhXXZsV5zIC6KS9n2nrPgjb4 0A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fm6ut8tr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 14:07:32 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NI6tUB119695;
+        Tue, 23 Mar 2021 14:07:32 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fm6ut8s9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 14:07:32 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NI3m6k003991;
+        Tue, 23 Mar 2021 18:07:29 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 37d9bpsvhw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 18:07:29 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NI7QRc41222406
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 18:07:26 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 91417AE045;
+        Tue, 23 Mar 2021 18:07:26 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41294AE04D;
+        Tue, 23 Mar 2021 18:07:21 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.72.148])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Mar 2021 18:07:20 +0000 (GMT)
+Message-ID: <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Horia =?UTF-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>
+Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Date:   Tue, 23 Mar 2021 14:07:20 -0400
+In-Reply-To: <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+         <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+         <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
+         <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322125339.1384351-1-tmricht@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_09:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 impostorscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103230133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Mar 22, 2021 at 01:53:39PM +0100, Thomas Richter escreveu:
-> For some time now the perf test 42: BPF filter returns an error
-> on bpf relocation subtest, at least on x86 and s390. This is caused by
+On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
+> Hello Horia,
 > 
-> commit d859900c4c56 ("bpf, libbpf: support global data/bss/rodata sections")
+> On 21.03.21 21:48, Horia Geantă wrote:
+> > On 3/16/2021 7:02 PM, Ahmad Fatoum wrote:
+> > [...]
+> >> +struct trusted_key_ops caam_trusted_key_ops = {
+> >> +	.migratable = 0, /* non-migratable */
+> >> +	.init = trusted_caam_init,
+> >> +	.seal = trusted_caam_seal,
+> >> +	.unseal = trusted_caam_unseal,
+> >> +	.exit = trusted_caam_exit,
+> >> +};
+> > caam has random number generation capabilities, so it's worth using that
+> > by implementing .get_random.
 > 
-> which introduces support for global variables in eBPF programs. At least
-> for global variables defined static.
+> If the CAAM HWRNG is already seeding the kernel RNG, why not use the kernel's?
 > 
-> Perf test 42 checks that the eBPF relocation fails when the eBPF program
-> contains a global variable. It returns OK when the eBPF program
-> could not be loaded and FAILED otherwise.
-> 
-> With above commit the test logic for the eBPF relocation need to change:
-> 1. The function prepare_bpf() now always succeeds, the eBPF program
->    compiled without errors and returns a valid object pointer instead of
->    NULL.
-> 2. There is no kprobe named sys_write, it now named ksys_write.
-> 3. The function do_test() now returns TEST_FAIL because function
->    parse_events_load_bpf_obj() can not execute the eBPF program. The
->    eBPF verifier complains on an invalid map pointer:
->       libbpf: load bpf program failed: Permission denied
->       libbpf: -- BEGIN DUMP LOG ---
->       libbpf:
->       0: (b7) r1 = 0
->       1: (63) *(u32 *)(r10 -4) = r1
->       last_idx 1 first_idx 0
->       regs=2 stack=0 before 0: (b7) r1 = 0
->       2: (63) *(u32 *)(r10 -8) = r1
->       3: (bf) r2 = r10
->       4: (07) r2 += -4
->       5: (bf) r3 = r10
->       6: (07) r3 += -8
->       7: (18) r1 = 0x380006ce000
->       9: (b7) r4 = 0
->       10: (85) call bpf_map_update_elem#2
->       R1 type=map_value expected=map_ptr
-> 
-> Fix this by added logic to handle the kernel verifier return code:
-> 1. Add function myksys_write() to cope with successful compile.
-> 2. Use kprobe ksys_write
-> 3. Handle eBPF verifier error.
-> 
-> Output after:
->  42: BPF filter                          :
->  42.1: Basic BPF filtering               : Ok
->  42.2: BPF pinning                       : Ok
->  42.3: BPF prologue generation           : Ok
->  42.4: BPF relocation checker            : Failed
->  #
-> 
-> Output after:
->  # ./perf test -F 42
->  42: BPF filter                          :
->  42.1: Basic BPF filtering               : Ok
->  42.2: BPF pinning                       : Ok
->  42.3: BPF prologue generation           : Ok
->  42.4: BPF relocation checker            : Ok
->  #
-> 
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->  tools/perf/tests/bpf-script-test-relocation.c |  4 ++--
->  tools/perf/tests/bpf.c                        | 11 +++++++++++
->  2 files changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/tests/bpf-script-test-relocation.c b/tools/perf/tests/bpf-script-test-relocation.c
-> index 74006e4b2d24..f8f8176ad4d1 100644
-> --- a/tools/perf/tests/bpf-script-test-relocation.c
-> +++ b/tools/perf/tests/bpf-script-test-relocation.c
-> @@ -34,8 +34,8 @@ struct bpf_map_def SEC("maps") my_table = {
->  
->  int this_is_a_global_val;
->  
-> -SEC("func=sys_write")
-> -int bpf_func__sys_write(void *ctx)
-> +SEC("func=ksys_write")
-> +int bpf_func__ksys_write(void *ctx)
->  {
->  	int key = 0;
->  	int value = 0;
-> diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-> index f57e075b0ed2..d60ef9472d3d 100644
-> --- a/tools/perf/tests/bpf.c
-> +++ b/tools/perf/tests/bpf.c
-> @@ -59,6 +59,11 @@ static int llseek_loop(void)
->  
->  #endif
->  
-> +static int myksys_write(void)
-> +{
-> +	return 0;
-> +}
-> +
->  static struct {
->  	enum test_llvm__testcase prog_id;
->  	const char *desc;
-> @@ -105,6 +110,7 @@ static struct {
->  		.name		  = "[bpf_relocation_test]",
->  		.msg_compile_fail = "fix 'perf test LLVM' first",
->  		.msg_load_fail	  = "libbpf error when dealing with relocation",
-> +		.target_func	  = &myksys_write,
->  	},
->  };
->  
-> @@ -258,6 +264,11 @@ static int __test__bpf(int idx)
->  		ret = do_test(obj,
->  			      bpf_testcase_table[idx].target_func,
->  			      bpf_testcase_table[idx].expect_result);
-> +		if (bpf_testcase_table[idx].prog_id == LLVM_TESTCASE_BPF_RELOCATION
-> +		    && ret == TEST_FAIL) {
-> +			ret = TEST_OK;
-> +			goto out;
-> +		}
+> Makes for less code duplication IMO.
 
-At this point, if it doesn't matter if it fails or succeeds, just drop
-this test case?
+Using kernel RNG, in general, for trusted keys has been discussed
+before.   Please refer to Dave Safford's detailed explanation for not
+using it [1].
 
-- Arnaldo
+thanks,
 
->  		if (ret != TEST_OK)
->  			goto out;
->  		if (bpf_testcase_table[idx].pin) {
-> -- 
-> 2.30.2
-> 
+Mimi
 
--- 
+[1] 
+https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A3C035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
+ 
 
-- Arnaldo
