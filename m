@@ -2,122 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A673460EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36D03460F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 15:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhCWOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 10:04:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58801 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231866AbhCWOEY (ORCPT
+        id S232031AbhCWOFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 10:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231655AbhCWOEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:04:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616508262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vxsGWWqSMrKfNxVOuIK22nNbCbQd+8H7DiNIZtQneS8=;
-        b=UwUGSazaUXaBJlzDMIJsdBDkfjEaCV8VIOAuH4ccHE4GSPsDIszTsAyA2yaxZfwPr3TA3T
-        7QWDSJZz1YJYzpG5yZc86DzDkn3OFsMz6iIUx2DzF62HIIxwsMbcKDdSIDw2D2bCEe/HSt
-        dMZaeHBsXRJWLACXdpSSBp5awGhOJc8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-eSjqDlG7Nwy-6LahJk0MOg-1; Tue, 23 Mar 2021 10:04:21 -0400
-X-MC-Unique: eSjqDlG7Nwy-6LahJk0MOg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A66B388AF0E;
-        Tue, 23 Mar 2021 14:03:55 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.194.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 13F8C5D6D7;
-        Tue, 23 Mar 2021 14:03:44 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 15:03:41 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH v5 02/10] tools headers: Add a macro to get HUGETLB
- page sizes for mmap
-Message-ID: <20210323140341.nkikwolwzpu6ectp@kamzik.brq.redhat.com>
-References: <20210323135231.24948-1-wangyanan55@huawei.com>
- <20210323135231.24948-3-wangyanan55@huawei.com>
+        Tue, 23 Mar 2021 10:04:44 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809E9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:04:43 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id e8so17788789iok.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 07:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L613jJK9Y9MQSdkmRsnN4WosDeNaUdNOetkIDZY3lwI=;
+        b=TiXZSfZU+6IfreDxKNDluvs38HvdeLiu1w7Rt9B0Ei66N4AcTqmKNTO3CZPl2MdWiB
+         HDFa5JomF9wLQMqxFaCoKpWzcVzrWgKE9nFd8r+7soWhjK9q3Xk5b8QJI9z2cD8jtpul
+         8pXir6584gdCxBTDwe8wACMwUGT/lN46pnBY0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L613jJK9Y9MQSdkmRsnN4WosDeNaUdNOetkIDZY3lwI=;
+        b=eAsR8uu3cgl/eybeIi20i1/OwL2P9oZy8D8j8iE+l42da78TNqRWDFi9gwVmBEmM4b
+         RbHIBtYTU2PT/Jp9Keb8R/RoXOBlqI1I5SihCWpIC5UtsJmUZobHozRkIad9Vqz7foI4
+         4cXgnqsJakOQhs6t0nTycJdySvcCeORip4dQmsraFExDwXY+NHI/FHmTQb6HK/Sm1gBT
+         DbJX/m8638meFUAmaaBhQvpstxTTq1gaNV6iqrv5qXPobg9wqUIJO7VWLC0VenME50G1
+         Mt+8y6Lx6CdRJmOlrwyuzK8GfMbcp42YIk5ENCLtYr8nB51jECHFOgE3q0HJfBFYfBL7
+         T4YA==
+X-Gm-Message-State: AOAM533Jqn9REp0sQylA1KKjM3bM2l8OMJvrKpmAUpcldnn7bqA3SVcw
+        PXyUsXcyU89ysBOsXJL/xwJbo0AnU900LgPP3+RmJHGhznnN/Q==
+X-Google-Smtp-Source: ABdhPJyHTz7xVPnY35PY5HzF/5/wSWhn1Yy5a8g5gQc/37Oy5qWnOzDyDGJ05pemYSkLGXafDr2TTl9PIp9txA4jfMw=
+X-Received: by 2002:a02:cb48:: with SMTP id k8mr4656643jap.52.1616508282929;
+ Tue, 23 Mar 2021 07:04:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323135231.24948-3-wangyanan55@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-3-revest@chromium.org>
+ <20210323032137.yv23z25zjz45prvy@ast-mbp>
+In-Reply-To: <20210323032137.yv23z25zjz45prvy@ast-mbp>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 23 Mar 2021 15:04:31 +0100
+Message-ID: <CABRcYmLPCVxuC7fYSygMQfNj5L5Ji=k3b8o88fxLxgOV_uYoNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf: Add a bpf_snprintf helper
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 4:21 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 11:02:08PM +0100, Florent Revest wrote:
+> >
+> > +struct bpf_snprintf_buf {
+> > +     char buf[MAX_SNPRINTF_MEMCPY][MAX_SNPRINTF_STR_LEN];
+> > +};
+> > +static DEFINE_PER_CPU(struct bpf_snprintf_buf, bpf_snprintf_buf);
+> > +static DEFINE_PER_CPU(int, bpf_snprintf_buf_used);
+> > +
+> > +BPF_CALL_5(bpf_snprintf, char *, out, u32, out_size, char *, fmt, u64 *, args,
+> > +        u32, args_len)
+> > +{
+> > +     int err, i, buf_used, copy_size, fmt_cnt = 0, memcpy_cnt = 0;
+> > +     u64 params[MAX_SNPRINTF_VARARGS];
+> > +     struct bpf_snprintf_buf *bufs;
+> > +
+> > +     buf_used = this_cpu_inc_return(bpf_snprintf_buf_used);
+> > +     if (WARN_ON_ONCE(buf_used > 1)) {
+>
+> this can trigger only if the helper itself gets preempted and
+> another bpf prog will run on the same cpu and will call into this helper
+> again, right?
+> If so, how about adding preempt_disable here to avoid this case?
 
-$SUBJECT says "tools headers", but this is actually changing
-a UAPI header and then copying the change to tools.
+Ah, neat, that sounds like a good idea indeed. This was really just
+cargo-culted from bpf_seq_printf but as part of my grand unification
+attempt for the various printf-like helpers, I can try to make it use
+preempt_disable as well yes.
 
-Thanks,
-drew
+> It won't prevent the case where kprobe is inside snprintf core,
+> so the counter is still needed, but it wouldn't trigger by accident.
 
-On Tue, Mar 23, 2021 at 09:52:23PM +0800, Yanan Wang wrote:
-> We know that if a system supports multiple hugetlb page sizes,
-> the desired hugetlb page size can be specified in bits [26:31]
-> of the flag arguments. The value in these 6 bits will be the
-> shift of each hugetlb page size.
-> 
-> So add a macro to get the page size shift and then calculate the
-> corresponding hugetlb page size, using flag x.
-> 
-> Cc: Ben Gardon <bgardon@google.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> Reviewed-by: Ben Gardon <bgardon@google.com>
-> ---
->  include/uapi/linux/mman.h       | 2 ++
->  tools/include/uapi/linux/mman.h | 2 ++
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/include/uapi/linux/mman.h b/include/uapi/linux/mman.h
-> index f55bc680b5b0..d72df73b182d 100644
-> --- a/include/uapi/linux/mman.h
-> +++ b/include/uapi/linux/mman.h
-> @@ -41,4 +41,6 @@
->  #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
->  #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
->  
-> +#define MAP_HUGE_PAGE_SIZE(x) (1ULL << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
-> +
->  #endif /* _UAPI_LINUX_MMAN_H */
-> diff --git a/tools/include/uapi/linux/mman.h b/tools/include/uapi/linux/mman.h
-> index f55bc680b5b0..d72df73b182d 100644
-> --- a/tools/include/uapi/linux/mman.h
-> +++ b/tools/include/uapi/linux/mman.h
-> @@ -41,4 +41,6 @@
->  #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
->  #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
->  
-> +#define MAP_HUGE_PAGE_SIZE(x) (1ULL << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
-> +
->  #endif /* _UAPI_LINUX_MMAN_H */
-> -- 
-> 2.19.1
-> 
+Good point, I will keep it around then.
 
+> Also since bufs are not used always, how about grabbing the
+> buffers only when %p or %s are seen in fmt?
+> After snprintf() is done it would conditionally do:
+> if (bufs_were_used) {
+>    this_cpu_dec(bpf_snprintf_buf_used);
+>    preempt_enable();
+> }
+> This way simple bpf_snprintf won't ever hit EBUSY.
+
+Absolutely, it would be nice. :)
+
+> > +             err = -EBUSY;
+> > +             goto out;
+> > +     }
+> > +
+> > +     bufs = this_cpu_ptr(&bpf_snprintf_buf);
+> > +
+> > +     /*
+> > +      * The verifier has already done most of the heavy-work for us in
+> > +      * check_bpf_snprintf_call. We know that fmt is well formatted and that
+> > +      * args_len is valid. The only task left is to convert some of the
+> > +      * arguments. For the %s and %pi* specifiers, we need to read buffers
+> > +      * from a kernel address during the helper call.
+> > +      */
+> > +     for (i = 0; fmt[i] != '\0'; i++) {
+> > +             if (fmt[i] != '%')
+> > +                     continue;
+> > +
+> > +             if (fmt[i + 1] == '%') {
+> > +                     i++;
+> > +                     continue;
+> > +             }
+> > +
+> > +             /* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
+> > +             i++;
+> > +
+> > +             /* skip optional "[0 +-][num]" width formating field */
+> > +             while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
+> > +                    fmt[i] == ' ')
+> > +                     i++;
+> > +             if (fmt[i] >= '1' && fmt[i] <= '9') {
+> > +                     i++;
+> > +                     while (fmt[i] >= '0' && fmt[i] <= '9')
+> > +                             i++;
+> > +             }
+> > +
+> > +             if (fmt[i] == 's') {
+> > +                     void *unsafe_ptr = (void *)(long)args[fmt_cnt];
+> > +
+> > +                     err = strncpy_from_kernel_nofault(bufs->buf[memcpy_cnt],
+> > +                                                       unsafe_ptr,
+> > +                                                       MAX_SNPRINTF_STR_LEN);
+> > +                     if (err < 0)
+> > +                             bufs->buf[memcpy_cnt][0] = '\0';
+> > +                     params[fmt_cnt] = (u64)(long)bufs->buf[memcpy_cnt];
+>
+> how about:
+> char buf[512]; instead?
+> instead of memcpy_cnt++ remember how many bytes of the buf were used and
+> copy next arg after that.
+> The scratch space would be used more efficiently.
+> The helper would potentially return ENOSPC if the first string printed via %s
+> consumed most of the 512 space and the second string doesn't fit.
+> But the verifier-time if (memcpy_cnt >= MAX_SNPRINTF_MEMCPY) can be removed.
+> Ten small %s will work fine.
+
+Cool! That is also a good idea :)
+
+> We can allocate a page per-cpu when this helper is used by prog and free
+> that page when all progs with bpf_snprintf are unloaded.
+> But extra complexity is probably not worth it. I would start with 512 per-cpu.
+> It's going to be enough for most users.
+
+Yes, let's maybe keep that for later. I think there is already enough
+complexity going into the printf-like helpers unification patch.
+
+> Overall looks great. Cannot wait for v2 :)
+
+Ahah wait until you see that patch! :D
