@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0121A3465D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB6F3465DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 18:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhCWRCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 13:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhCWRB5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 13:01:57 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B81C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:01:57 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id z6-20020a1c4c060000b029010f13694ba2so11231043wmf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 10:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=395prUbwI/IfV0JoklEZBoBsZBXXiAGcosueqqFVoGU=;
-        b=arSFjkI8NS7BWO4Mgnjs45V4EHoKoaHEFT+Vn0Mt1dc0Cve0UVTM+xcz99Opm49sum
-         jYDvL90nVd6IuLycEBXgiS4BpG4ID3m0AdMpm39ufsAD53leRfmLLnuCI4MNtIcgBOx1
-         ZC+ezpnTrBn+2B6/lGnWfHNquOrHQn4gW8xH6cUqt99UlRpqMxegq0UlRIh07feJreVn
-         Db2wk5w6HF8c2xmzl8j5lOdHThGGFJIC9oWMDRwWEe4jV2XiDYwCaL3wTbA5DINqzp12
-         sJvg2cht5mNj4rTdET7L+rneAwsvBIw+eOqR1PmrcOnKZb4MOCN4n7IPh0MMhqmOqDcM
-         vTPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=395prUbwI/IfV0JoklEZBoBsZBXXiAGcosueqqFVoGU=;
-        b=DP4C1NB5zTLpiMaPBweo+mQddVsK2fCnElXD5qvj2FOStNVBhKml1e0rHsQ0wvhEsf
-         DFzEAYjPPCwxfle5axMvQRW516QUPO6k40lM8aru9+NKMHxtjQ2IZGpvNSAaRlEEZHNO
-         u/WNQHHMNIm1gdb7f99LCMf8OxG35TqeWtJdesnP8QKtcH5vmvqBw27Z1fcfohVxXcp8
-         VC9CYy6D8luCdwyQAoNJ2smmm/pHmEgDcMWUDJzvIHpkglXnB7kx+nzC6GRWEjEhvVmH
-         2m2Whg1hzIvfLMUpnL6QaOu59WTpgQ5u0EGv7CF8EKT7QapASi8LPp3OXNYjMQ0Kmv+r
-         Rg1Q==
-X-Gm-Message-State: AOAM530LHS3+6CC0/ze6DJoAnCwp1ryi7NUGz7Jg0c0sBu6VY66TrMuM
-        RFJRt007SCcucf46P2D4L/fOfw==
-X-Google-Smtp-Source: ABdhPJx0uBaBT5ldzR0t8kGnPj2ob5qwxU3qGJOi/Hspvntaz8KIFl6ssBCW4bmZ2j/L3yKzj2W1bQ==
-X-Received: by 2002:a1c:2683:: with SMTP id m125mr4257280wmm.178.1616518915892;
-        Tue, 23 Mar 2021 10:01:55 -0700 (PDT)
-Received: from enceladus (ppp-94-64-113-158.home.otenet.gr. [94.64.113.158])
-        by smtp.gmail.com with ESMTPSA id q15sm24087968wrr.58.2021.03.23.10.01.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 10:01:55 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 19:01:52 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH net-next 0/6] page_pool: recycle buffers
-Message-ID: <YFofANKiR3tD9zgm@enceladus>
-References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
- <20210323154112.131110-1-alobakin@pm.me>
- <YFoNoohTULmcpeCr@enceladus>
- <20210323170447.78d65d05@carbon>
- <YFoTBm0mJ4GyuHb6@enceladus>
- <CAFnufp1K+t76n9shfOZB_scV7myUWCTXbB+yf5sr-8ORYQxCEQ@mail.gmail.com>
- <20210323165523.187134-1-alobakin@pm.me>
+        id S229994AbhCWRCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 13:02:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:49276 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229933AbhCWRCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 13:02:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD8771042;
+        Tue, 23 Mar 2021 10:02:41 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.24.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F1013F718;
+        Tue, 23 Mar 2021 10:02:39 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 17:02:36 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/8] arm64: Detect an FTRACE frame and mark a
+ stack trace unreliable
+Message-ID: <20210323170236.GF98545@C02TD0UTHF1T.local>
+References: <20210315165800.5948-1-madvenka@linux.microsoft.com>
+ <20210315165800.5948-6-madvenka@linux.microsoft.com>
+ <20210323105118.GE95840@C02TD0UTHF1T.local>
+ <2167f3c5-e7d0-40c8-99e3-ae89ceb2d60e@linux.microsoft.com>
+ <20210323133611.GB98545@C02TD0UTHF1T.local>
+ <ccd5ee66-6444-fac9-4c7b-b3bdabf1b149@linux.microsoft.com>
+ <f9e21fe1-e646-bb36-c711-94cbbc60af8a@linux.microsoft.com>
+ <20210323145734.GD98545@C02TD0UTHF1T.local>
+ <a21e701d-dbcb-c48d-4ba6-774cfcfe1543@linux.microsoft.com>
+ <a38e4966-9b0d-3e51-80bd-acc36d8bee9b@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323165523.187134-1-alobakin@pm.me>
+In-Reply-To: <a38e4966-9b0d-3e51-80bd-acc36d8bee9b@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:55:31PM +0000, Alexander Lobakin wrote:
-> > > > > >
+On Tue, Mar 23, 2021 at 11:20:44AM -0500, Madhavan T. Venkataraman wrote:
+> On 3/23/21 10:26 AM, Madhavan T. Venkataraman wrote:
+> > On 3/23/21 9:57 AM, Mark Rutland wrote:
+> >> On Tue, Mar 23, 2021 at 09:15:36AM -0500, Madhavan T. Venkataraman wrote:
+> > So, my next question is - can we define a practical limit for the
+> > nesting so that any nesting beyond that is fatal? The reason I ask
+> > is - if there is a max, then we can allocate an array of stack
+> > frames out of band for the special frames so they are not part of
+> > the stack and will not likely get corrupted.
+> > 
+> > Also, we don't have to do any special detection. If the number of
+> > out of band frames used is one or more then we have exceptions and
+> > the stack trace is unreliable.
+> 
+> Alternatively, if we can just increment a counter in the task
+> structure when an exception is entered and decrement it when an
+> exception returns, that counter will tell us that the stack trace is
+> unreliable.
 
-[...]
+As I noted earlier, we must treat *any* EL1 exception boundary needs to
+be treated as unreliable for unwinding, and per my other comments w.r.t.
+corrupting the call chain I don't think we need additional protection on
+exception boundaries specifically.
 
-> > > > >
-> > > > > Thanks for the testing!
-> > > > > Any chance you can get a perf measurement on this?
-> > > >
-> > > > I guess you mean perf-report (--stdio) output, right?
-> > > >
-> > >
-> > > Yea,
-> > > As hinted below, I am just trying to figure out if on Alexander's platform the
-> > > cost of syncing, is bigger that free-allocate. I remember one armv7 were that
-> > > was the case.
-> > >
-> > > > > Is DMA syncing taking a substantial amount of your cpu usage?
-> > > >
-> > > > (+1 this is an important question)
+> Is this feasible?
 > 
-> Sure, I'll drop perf tools to my test env and share the results,
-> maybe tomorrow or in a few days.
-> From what I know for sure about MIPS and my platform,
-> post-Rx synching (dma_sync_single_for_cpu()) is a no-op, and
-> pre-Rx (dma_sync_single_for_device() etc.) is a bit expensive.
-> I always have sane page_pool->pp.max_len value (smth about 1668
-> for MTU of 1500) to minimize the overhead.
-> 
-> By the word, IIRC, all machines shipped with mvpp2 have hardware
-> cache coherency units and don't suffer from sync routines at all.
-> That may be the reason why mvpp2 wins the most from this series.
+> I think I have enough for v3 at this point. If you think that the
+> counter idea is OK, I can implement it in v3. Once you confirm, I will
+> start working on v3.
 
-Yep exactly. It's also the reason why you explicitly have to opt-in using the
-recycling (by marking the skb for it), instead of hiding the feature in the
-page pool internals 
+Currently, I don't see a compelling reason to need this, and would
+prefer to avoid it.
 
-Cheers
-/Ilias
+More generally, could we please break this work into smaller steps? I
+reckon we can break this down into the following chunks:
 
-> 
-> > > > > >
-> > > > > > [0] https://lore.kernel.org/netdev/20210323153550.130385-1-alobakin@pm.me
-> > > > > >
-> > > >
-> >
-> > That would be the same as for mvneta:
-> >
-> > Overhead  Shared Object     Symbol
-> >   24.10%  [kernel]          [k] __pi___inval_dcache_area
-> >   23.02%  [mvneta]          [k] mvneta_rx_swbm
-> >    7.19%  [kernel]          [k] kmem_cache_alloc
-> >
-> > Anyway, I tried to use the recycling *and* napi_build_skb on mvpp2,
-> > and I get lower packet rate than recycling alone.
-> > I don't know why, we should investigate it.
-> 
-> mvpp2 driver doesn't use napi_consume_skb() on its Tx completion path.
-> As a result, NAPI percpu caches get refilled only through
-> kmem_cache_alloc_bulk(), and most of skbuff_head recycling
-> doesn't work.
-> 
-> > Regards,
-> > --
-> > per aspera ad upstream
-> 
-> Oh, I love that one!
-> 
-> Al
-> 
+1. Add the explicit final frame and associated handling. I suspect that
+   this is complicated enough on its own to be an independent series,
+   and it's something that we can merge without all the bits and pieces
+   necessary for truly reliable stacktracing.
+
+2. Figure out how we must handle kprobes and ftrace. That probably means
+   rejecting unwinds from specific places, but we might also want to
+   adjust the trampolines if that makes this easier.
+
+3. Figure out exception boundary handling. I'm currently working to
+   simplify the entry assembly down to a uniform set of stubs, and I'd
+   prefer to get that sorted before we teach the unwinder about
+   exception boundaries, as it'll be significantly simpler to reason
+   about and won't end up clashing with the rework.
+
+Thanks,
+Mark.
