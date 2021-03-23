@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC4D34652A
+	by mail.lfdr.de (Postfix) with ESMTP id BB71A34652C
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 17:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhCWQ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 12:29:47 -0400
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:36462 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233315AbhCWQ3J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:29:09 -0400
-Received: by mail-pg1-f169.google.com with SMTP id h25so12246834pgm.3;
-        Tue, 23 Mar 2021 09:29:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zIDd4j28bpLl4CYYPpUQGrIRe9FEAgjqoCPE+GYsmWU=;
-        b=qyg4gsVA1mV2EyIdQjm5xy3tNyDwvvqqRZ+u3INXcn+vqAe8HQrG3gBreT4ReQlllt
-         9KXdGJhe76jMMxDR7O6hXzvtx6YLPz+pZoEiwiaFCgQwswduTsQp60Fd9Ym4L11tqpBQ
-         CkWA6/5/f8kqgA7LaqjzKJkjomMb+6Bi1XyAkM3Zcfv0kRGidlkPJRRIN0V/tZ2VnQEd
-         fOkVn11r1//N/lfJFOvdQndvjlxiCfzgtffGarGs9sTjGtocjNUR3aDuWm58d/Rhntq2
-         PwSSwcONStnLDFntiCSMhuFGBdswpl6dnobL/iIUF4iDShsfjWc0u+a932cz4q09ppIX
-         TCtQ==
-X-Gm-Message-State: AOAM532pu4WQPZhv3Nf0/cUk7UytWX02MNNt8yBlBCSSjqI+gsJvaPKC
-        GuZGnrzu7pv3tO0n8LpX0svQOA9Kd+s=
-X-Google-Smtp-Source: ABdhPJyutH36s8BgKaQwxghjDrkD20vuVw9tt+qF0iq1cR0oP5oaQIJhN/jSd0ddT0BzueXQtqBAVQ==
-X-Received: by 2002:a63:e416:: with SMTP id a22mr4954444pgi.128.1616516948125;
-        Tue, 23 Mar 2021 09:29:08 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:817a:e98d:7315:e25f? ([2601:647:4000:d7:817a:e98d:7315:e25f])
-        by smtp.gmail.com with ESMTPSA id p7sm15395400pgj.2.2021.03.23.09.29.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 09:29:07 -0700 (PDT)
-Subject: Re: __scsi_remove_device: fix comments minor error
-To:     Du Dengke <pinganddu90@gmail.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <CAKHP1duT_jQ6pA7WnHPiYvoQvu1vVmAgUDp1kjhnngRufgijgA@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <d779d951-7799-e347-2889-f6a40b2ca7df@acm.org>
-Date:   Tue, 23 Mar 2021 09:29:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233365AbhCWQ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 12:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233150AbhCWQ33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:29:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29788619C2;
+        Tue, 23 Mar 2021 16:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616516969;
+        bh=eBf5ODrXs5Umg1VKVxuL6E8KDcWzaxXh5BAlofVjego=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HSkLjJzufs2M4dIEMmihAx4MLRTCKvxVqtN7nlT3TJxvxetMHBfXpPO2TDDWTuO5a
+         emGA8qldAJqd7NCt2Muyc/n56SPJ1mFSU3pwcmz8mIecAqiLVSysFtMvbsXONge5A7
+         hN67pbJvKHXhf/QB9kp2B12h8nFASvktHbg5vXJvJyXsN299iC8/L1a1McAuvWHntu
+         a6EnixRlsVuwQjBXSBbebVK73hka+zrx9qgC+yGZOcsvuBejtHKWMXMHViGwE44YtL
+         xkPpbeRzLuXE1CdNGU2ZIQ/G2fGuXsJNCmNpgbVnOt3G2w0aZ9NR1nb7TQmFhEn2bf
+         pZJ9smoljdrVA==
+Received: by mail-ot1-f42.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so19750748otb.7;
+        Tue, 23 Mar 2021 09:29:29 -0700 (PDT)
+X-Gm-Message-State: AOAM531fHtKhQegqTvo0zLJo3s4u8RvZpXCh+bykYRTTBLAXIW/rSSli
+        g+KNKuF0H7nEWebml6FTakMjswNb76Qd2XRc9LI=
+X-Google-Smtp-Source: ABdhPJyGmYV3gwAkwIj5JeoP0CPxLSK13pX3mpJFYr0hyF5iRe9TRcgDcCnYaTzVSamWmYnBs/iZGKeO9dgpyV3eF48=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr5085231otq.305.1616516968456;
+ Tue, 23 Mar 2021 09:29:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKHP1duT_jQ6pA7WnHPiYvoQvu1vVmAgUDp1kjhnngRufgijgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210323125233.1743957-1-arnd@kernel.org> <CA+FuTSdZSmBe0UfdmAiE3HxK2wFhEbEktP=xDT8qY9WL+++Cig@mail.gmail.com>
+In-Reply-To: <CA+FuTSdZSmBe0UfdmAiE3HxK2wFhEbEktP=xDT8qY9WL+++Cig@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 23 Mar 2021 17:29:12 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2r+wjJH3NsHf8XDBRhkbyc_HAbNtizO3L-Us+8_JC2bw@mail.gmail.com>
+Message-ID: <CAK8P3a2r+wjJH3NsHf8XDBRhkbyc_HAbNtizO3L-Us+8_JC2bw@mail.gmail.com>
+Subject: Re: [RFC net] net: skbuff: fix stack variable out of bounds access
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 12:24 AM, Du Dengke wrote:
->     When I read scsi kernel code, I found a spell error in
-> __scsi_remove_device function comments. Patch was made in attach file.
+On Tue, Mar 23, 2021 at 3:42 PM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> On Tue, Mar 23, 2021 at 8:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >>
+> A similar fix already landed in 5.12-rc3: commit b228c9b05876 ("net:
+> expand textsearch ts_state to fit skb_seq_state"). That fix landed in
+> 5.12-rc3.
 
-Please include patches in the email body instead of sending these as an
-attachment. Please also make yourself familiar with git send-email if
-you are not yet familiar with it.
+Ah nice, even the same BUILD_BUG_ON() ;-)
 
-Thanks,
+Too bad it had to be found through runtime testing when it could have been
+found by the compiler warning.
 
-Bart.
+       Arnd
