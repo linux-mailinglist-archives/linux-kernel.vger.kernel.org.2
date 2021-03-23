@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB54346B18
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7988346B38
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Mar 2021 22:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhCWVab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 17:30:31 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:58597 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbhCWVaA (ORCPT
+        id S233684AbhCWVj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 17:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233504AbhCWVjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:30:00 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 68732E0002;
-        Tue, 23 Mar 2021 21:29:58 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 22:29:58 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudius Heine <ch@denx.de>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        johannes hahn <johannes-hahn@siemens.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        werner zeh <werner.zeh@siemens.com>,
-        henning schild <henning.schild@siemens.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        martin mantel <martin.mantel@siemens.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v5] rtc: rx6110: add ACPI bindings to I2C
-Message-ID: <YFpd1hkyJcDZ9jVb@piout.net>
-References: <20210317075228.683184-1-ch@denx.de>
- <CAHp75VdRFqK6Tp+dFCHb_6ZBR32mNRLgyRKaMky43aoj1MOjcw@mail.gmail.com>
- <3215fc7e-ae1d-4e51-51d0-24ff386419bd@denx.de>
+        Tue, 23 Mar 2021 17:39:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF8DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 14:39:41 -0700 (PDT)
+Message-Id: <20210323213019.217008708@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616535580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/KkAsdY9ZK9gBU/srei55hPc2gmHrRAtoBjGfeDELZs=;
+        b=kZCl53IA0jOtDZxpvGHI206T1v2sGSXhVWs54IPkszNK/EuNuzW9E/x90Bzx/XiAqiVhxf
+        G786HvWotvAC4/xDx+ZEhJRm8qDKrXYs8kK7OWLn6PFEH0PcKivQ+hrPa0JTttGlBYnJ6w
+        Bz5yON7pK/fjjfKq+On8mWdPMd8YWMt9ZzofGS72aJNnv5ZX60fovVTHaHvpF3+6OWImaQ
+        S67xkbqF7vK+gBxq98nTrcNCUHX2HJh8dcqeuGG87JHDDSL65O169jA+kgqDQo9q5IEH6n
+        YkUzHImw7g0W0x32n3e1CnSPyx3sG/9AJJVNEaU1IZWchVWi77EjsrtZO7LI/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616535580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/KkAsdY9ZK9gBU/srei55hPc2gmHrRAtoBjGfeDELZs=;
+        b=0N2X7Q/m6vIr6+4dUFpoR3P9TZ8jujnQCrtGFiXrmQH7kxbQvOW9sHkczHJDFfcmM2C0CM
+        ScGKZ3mewMgZEGAg==
+Date:   Tue, 23 Mar 2021 22:30:19 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [patch 00/14] locking/rtmutex: Spring cleaning
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3215fc7e-ae1d-4e51-51d0-24ff386419bd@denx.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/03/2021 10:32:39+0100, Claudius Heine wrote:
-> Hi Andy,
-> 
-> On 2021-03-17 10:28, Andy Shevchenko wrote:
-> > On Wed, Mar 17, 2021 at 9:56 AM Claudius Heine <ch@denx.de> wrote:
-> > > 
-> > > From: Johannes Hahn <johannes-hahn@siemens.com>
-> > > 
-> > > This allows the RX6110 driver to be automatically assigned to the right
-> > > device on the I2C bus.
-> > 
-> > Thanks for an update!
-> > 
-> > > Signed-off-by: Johannes Hahn <johannes-hahn@siemens.com>
-> > > Co-developed-by: Claudius Heine <ch@denx.de>
-> > > Signed-off-by: Claudius Heine <ch@denx.de>
-> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > This is usually for patches that do fix found problems, here it's a
-> > completely new item and the report was done in the middle of the
-> > development. That said, you may give credit to LKP by just mentioning
-> > it in the comments section (after the cutter '---' line). I'll leave
-> > this to Alexandre and Alessandro to decide if you need a resend or
-> > they may remove it when applying. (In my opinion resend is not needed
-> > right now)
-> Ok. Thanks a lot for your reviews and patience!
-> 
-
-I removed it when applying. Thanks for the work and the reviews!
-
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+V2hpbGUgd29ya2luZyBvbiB0aGUgcnRtdXRleCByZWxhdGVkIFJUIGJpdHMgd2Ugbm90aWNlZCBx
+dWl0ZSBzb21lCmluY29uc2lzdGVuY2llcyBhbmQgYml0cm90IGluIHRoZSBydG11dGV4IGNvZGUu
+CgpNb3AgaXQgdXAuCgpUaGFua3MsCgoJdGdseAotLS0KIGIvaW5jbHVkZS9saW51eC9ydG11dGV4
+LmggICAgICAgICB8ICAgMzUgLS0tCiBiL2tlcm5lbC9sb2NraW5nL01ha2VmaWxlICAgICAgICAg
+fCAgICAyIAogYi9rZXJuZWwvbG9ja2luZy9ydG11dGV4LmMgICAgICAgIHwgIDM3OSArKysrKysr
+KysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogYi9rZXJuZWwvbG9ja2luZy9ydG11dGV4
+X2NvbW1vbi5oIHwgICA5OCArKysrLS0tLS0KIGtlcm5lbC9sb2NraW5nL3J0bXV0ZXgtZGVidWcu
+YyAgICB8ICAxODIgLS0tLS0tLS0tLS0tLS0tLS0tCiBrZXJuZWwvbG9ja2luZy9ydG11dGV4LWRl
+YnVnLmggICAgfCAgIDM3IC0tLQoga2VybmVsL2xvY2tpbmcvcnRtdXRleC5oICAgICAgICAgIHwg
+ICAzNSAtLS0KIDcgZmlsZXMgY2hhbmdlZCwgMTg0IGluc2VydGlvbnMoKyksIDU4NCBkZWxldGlv
+bnMoLSkKCgo=
