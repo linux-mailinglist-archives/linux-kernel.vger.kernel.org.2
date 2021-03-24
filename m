@@ -2,161 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6759234801B
+	by mail.lfdr.de (Postfix) with ESMTP id B2ECA34801C
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237181AbhCXSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:12:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237398AbhCXSMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237426AbhCXSM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:12:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58190 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237397AbhCXSMS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Mar 2021 14:12:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3F2E61A24;
-        Wed, 24 Mar 2021 18:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616609537;
-        bh=MgoXkuObURmUvWuUKdbb9OKYxXjUYO+tnI1HEsW+seM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SNZOeiggKvkMd+AmGZyu+AydOXj83oW7ynub4lSjobGEDAnsD4JxGyit4ES49Whfn
-         5cXGZJghwajWlTjP3zlctOgas7fnf3F3un2ilMpJ/P2q6GMlHdr6ee00HjzDJmoluZ
-         dHQqSr8W02oQUOk2/2fyxniJDNik2LrlSoGDiBIZ14EAiPBC823Hg3Xd31LOZ/r2pd
-         JF9jdN36strHOO2F5uVdPNeFJk2Jc56insBYw3zAl8h/30SYdCIBZcyKJseZ0cZ1CR
-         s1zSjGNVmWnJNd2rVhYpT2B2+0SkopHJmG49IP6kxbQERGweAlxHfPIHBjMMSn0G3p
-         aD6VdTjdhpG0w==
-Date:   Wed, 24 Mar 2021 18:12:10 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFT PATCH v3 08/27] asm-generic/io.h:  Add a non-posted variant
- of ioremap()
-Message-ID: <20210324181210.GB13181@willie-the-truck>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-9-marcan@marcan.st>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616609537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KFO6lxfSXo+H+A/7Sv08tqh+O1ib64xN6C+hvg30WuM=;
+        b=FTGaPvIZFutlXIy96umX4Q/5qT5ewTp5zSZFUJcCiOR7rmLeTSdn6eX3OvI7+MB93m3B8k
+        bq9FCV2Kew6IJ//h12z2GwSkiqgAOcWcPDcdyzciZvNdTRqH2aDVmZFsBiJMsBiFa0yckn
+        UslaKWJ+LWHTQMg9srT1bYPvKGDq4H0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-0hJATpJuPfeudphdNHlWWQ-1; Wed, 24 Mar 2021 14:12:15 -0400
+X-MC-Unique: 0hJATpJuPfeudphdNHlWWQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00DD61853024;
+        Wed, 24 Mar 2021 18:12:14 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.218])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DF96E10023AF;
+        Wed, 24 Mar 2021 18:12:11 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 24 Mar 2021 19:12:13 +0100 (CET)
+Date:   Wed, 24 Mar 2021 19:12:10 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     qianli zhao <zhaoqianligood@gmail.com>
+Cc:     christian@brauner.io, axboe@kernel.dk,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-kernel@vger.kernel.org, Qianli Zhao <zhaoqianli@xiaomi.com>
+Subject: Re: [PATCH V3] exit: trigger panic when global init has exited
+Message-ID: <20210324181209.GB13021@redhat.com>
+References: <20210317143805.GA5610@redhat.com>
+ <CAPx_LQG=tj+kM14wS79tLPJbVjC+79OFDgfv6zai_sJ74CGeug@mail.gmail.com>
+ <20210318180450.GA9977@redhat.com>
+ <CAPx_LQENxx0y5mFJjwRT2qMSLt7pbAmF30=eE-QduEwRVJEJ0Q@mail.gmail.com>
+ <20210319163225.GB19971@redhat.com>
+ <CAPx_LQGLYx8gKJSkCx9hTyPPbCbU=GJL31TPb3s6zxro522U0Q@mail.gmail.com>
+ <20210322163705.GD20390@redhat.com>
+ <CAPx_LQG_5ushJkyymSsYq8FafRj7XOA217JwCyHASEqq0wyMOQ@mail.gmail.com>
+ <20210323090035.GA25159@redhat.com>
+ <CAPx_LQH0Qx7R9vNb3FHgO7V8uJ9AAh0j_TZV-VnyBF7Ys_7FTQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304213902.83903-9-marcan@marcan.st>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAPx_LQH0Qx7R9vNb3FHgO7V8uJ9AAh0j_TZV-VnyBF7Ys_7FTQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 06:38:43AM +0900, Hector Martin wrote:
-> ARM64 currently defaults to posted MMIO (nGnRnE), but some devices
-> require the use of non-posted MMIO (nGnRE). Introduce a new ioremap()
-> variant to handle this case. ioremap_np() is aliased to ioremap() by
-> default on arches that do not implement this variant.
-> 
-> sparc64 is the only architecture that needs to be touched directly,
-> because it includes neither of the generic io.h or iomap.h headers.
-> 
-> This adds the IORESOURCE_MEM_NONPOSTED flag, which maps to this
-> variant and marks a given resource as requiring non-posted mappings.
-> This is implemented in the resource system because it is a SoC-level
-> requirement, so existing drivers do not need special-case code to pick
-> this ioremap variant.
-> 
-> Then this is implemented in devres by introducing devm_ioremap_np(),
-> and making devm_ioremap_resource() automatically select this variant
-> when the resource has the IORESOURCE_MEM_NONPOSTED flag set.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  .../driver-api/driver-model/devres.rst        |  1 +
->  arch/sparc/include/asm/io_64.h                |  4 ++++
->  include/asm-generic/io.h                      | 22 ++++++++++++++++++-
->  include/asm-generic/iomap.h                   |  9 ++++++++
->  include/linux/io.h                            |  2 ++
->  include/linux/ioport.h                        |  1 +
->  lib/devres.c                                  | 22 +++++++++++++++++++
->  7 files changed, 60 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-> index cd8b6e657b94..2f45877a539d 100644
-> --- a/Documentation/driver-api/driver-model/devres.rst
-> +++ b/Documentation/driver-api/driver-model/devres.rst
-> @@ -309,6 +309,7 @@ IOMAP
->    devm_ioremap()
->    devm_ioremap_uc()
->    devm_ioremap_wc()
-> +  devm_ioremap_np()
->    devm_ioremap_resource() : checks resource, requests memory region, ioremaps
->    devm_ioremap_resource_wc()
->    devm_platform_ioremap_resource() : calls devm_ioremap_resource() for platform device
-> diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
-> index 9bb27e5c22f1..9fbfc9574432 100644
-> --- a/arch/sparc/include/asm/io_64.h
-> +++ b/arch/sparc/include/asm/io_64.h
-> @@ -409,6 +409,10 @@ static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
->  #define ioremap_uc(X,Y)			ioremap((X),(Y))
->  #define ioremap_wc(X,Y)			ioremap((X),(Y))
->  #define ioremap_wt(X,Y)			ioremap((X),(Y))
-> +static inline void __iomem *ioremap_np(unsigned long offset, unsigned long size)
-> +{
-> +	return NULL;
-> +}
->  
->  static inline void iounmap(volatile void __iomem *addr)
->  {
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index c6af40ce03be..082e0c96db6e 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-> @@ -942,7 +942,9 @@ static inline void *phys_to_virt(unsigned long address)
->   *
->   * ioremap_wc() and ioremap_wt() can provide more relaxed caching attributes
->   * for specific drivers if the architecture choses to implement them.  If they
-> - * are not implemented we fall back to plain ioremap.
-> + * are not implemented we fall back to plain ioremap. Conversely, ioremap_np()
-> + * can provide stricter non-posted write semantics if the architecture
-> + * implements them.
->   */
->  #ifndef CONFIG_MMU
->  #ifndef ioremap
-> @@ -993,6 +995,24 @@ static inline void __iomem *ioremap_uc(phys_addr_t offset, size_t size)
->  {
->  	return NULL;
->  }
-> +
-> +/*
-> + * ioremap_np needs an explicit architecture implementation, as it
-> + * requests stronger semantics than regular ioremap(). Portable drivers
-> + * should instead use one of the higher-level abstractions, like
-> + * devm_ioremap_resource(), to choose the correct variant for any given
-> + * device and bus. Portable drivers with a good reason to want non-posted
-> + * write semantics should always provide an ioremap() fallback in case
-> + * ioremap_np() is not available.
-> + */
-> +#ifndef ioremap_np
-> +#define ioremap_np ioremap_np
-> +static inline void __iomem *ioremap_np(phys_addr_t offset, size_t size)
-> +{
-> +	return NULL;
-> +}
-> +#endif
+Hi,
 
-Can we implement the generic pci_remap_cfgspace() in terms of ioremap_np()
-if it is supported by the architecture? That way, we could avoid defining
-both on arm64.
+On 03/23, qianli zhao wrote:
+>
+> Hi,Oleg
+>
+> > You certainly don't understand me :/
+>
+> > Please read my email you quoted below. I didn't mean the current logic.
+> > I meant the logic after your patch which moves atomic_dec_and_test() and
+> > panic() before exit_signals().
+>
+> Sorry, I think I see what you mean now.
+>
+> You mean that after apply my patch,SIGNAL_GROUP_EXIT no longer needs
+> to be tested or avoid zap_pid_ns_processes()->BUG().
+> Yes,your consideration is correct.
 
-Will
+OK, great
+
+> But,my patch has another purpose,protect some key variables(such
+> as:task->mm,task->nsproxy,etc) to recover init coredump from
+> fulldump,if sub-threads finish do_exit(),
+
+Yes I know.
+
+But the purpose of this SIGNAL_GROUP_EXIT check is not clear and not
+documented. That is why I said it should be documented at least in the
+changelog.
+
+Oleg.
+
