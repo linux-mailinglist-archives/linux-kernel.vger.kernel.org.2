@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812773474B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B746D3474B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbhCXJbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:31:24 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:39240 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234914AbhCXJbR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:31:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UT9xWcp_1616578271;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT9xWcp_1616578271)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 24 Mar 2021 17:31:12 +0800
-Subject: Re: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
- <CAMj1kXE5x82SZUvo9=hjjE=Z9QrzggzfvBHbjaaGExRfQ8PDxw@mail.gmail.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <5777cfde-dbfd-bc25-3936-2e964b8e85be@linux.alibaba.com>
-Date:   Wed, 24 Mar 2021 17:31:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S235083AbhCXJca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:32:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236243AbhCXJcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:32:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4031A61A07;
+        Wed, 24 Mar 2021 09:32:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616578326;
+        bh=H1ZA9F/FjCNa3FF4dTmgJwcqG8AEiMqEkQhzmBz7a8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QwL4d+3Wp7SsbuLFveFYAjv5S6bMwP+MMxtAZE+O8WrTjvo9tiYOj1q/1zl/7Hgb4
+         nsdlMwcfqIGDCGHrC7UTfAAnn1nDzT7M1n/jQ2ETy/tV+s7pYNj4/QEhuDeMvJFRE5
+         u/js21ec3KEmAW6QncrDxz4VtlyZ2CEFyIaW5k9Hu/GONfIJMBQHlsX4R7VzU4ZdB5
+         zwSpYWIXAwL6LYoIc2x6KW4EceFDHueLO6edEmYdLrhmsCLNwbzLu8yVUCPDqA/idF
+         SO87JOPUEhj5u+I4q/5/ZgUg45GhLCtj2t5F/zf62WC4iG4yRKkoGrQJuSV6ze7fxS
+         QpH0tWFNgiolA==
+Date:   Wed, 24 Mar 2021 11:32:03 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     davem@davemloft.net, edumazet@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: make unregister netdev warning timeout
+ configurable
+Message-ID: <YFsHEwkqCq91ngwn@unreal>
+References: <20210323064923.2098711-1-dvyukov@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXE5x82SZUvo9=hjjE=Z9QrzggzfvBHbjaaGExRfQ8PDxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323064923.2098711-1-dvyukov@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Mar 23, 2021 at 07:49:23AM +0100, Dmitry Vyukov wrote:
+> netdev_wait_allrefs() issues a warning if refcount does not drop to 0
+> after 10 seconds. While 10 second wait generally should not happen
+> under normal workload in normal environment, it seems to fire falsely
+> very often during fuzzing and/or in qemu emulation (~10x slower).
+> At least it's not possible to understand if it's really a false
+> positive or not. Automated testing generally bumps all timeouts
+> to very high values to avoid flake failures.
+> Add net.core.netdev_unregister_timeout_secs sysctl to make
+> the timeout configurable for automated testing systems.
+> Lowering the timeout may also be useful for e.g. manual bisection.
+> The default value matches the current behavior.
+> 
+> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> ---
+> Changes since v1:
+>  - use sysctl instead of a config
+> ---
+>  Documentation/admin-guide/sysctl/net.rst | 11 +++++++++++
+>  include/linux/netdevice.h                |  1 +
+>  net/core/dev.c                           |  6 +++++-
+>  net/core/sysctl_net_core.c               | 10 ++++++++++
+>  4 files changed, 27 insertions(+), 1 deletion(-)
+> 
 
-On 3/24/21 6:14 AM, Ard Biesheuvel wrote:
-> On Tue, 23 Mar 2021 at 09:36, Tianjia Zhang
-> <tianjia.zhang@linux.alibaba.com> wrote:
->>
->> The kernel module signature supports the option to use the SM3
->> secure hash (OSCCA GM/T 0004-2012 SM3).
->>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> 
-> A secure hash is not the same as a signature. Looking at the patch,
-> the asymmetric algorithm that is used to sign the SM3 digest is SM2,
-> is that correct? How does one create such signed modules?
-> 
-> In any case, please provide more context in the commit log on how this
-> is intended to be used.
-> 
-> 
-
-Sorry for the trouble you have caused. You are right. SM2 and SM3 always 
-appear in pairs. The former is used for signatures and the latter is 
-used for hashing algorithms. I will add this information in the next 
-version. It seems This is more appropriate to split into two patches.
-
-Best regards,
-Tianjia
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
