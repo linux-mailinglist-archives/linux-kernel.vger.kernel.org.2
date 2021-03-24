@@ -2,138 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21335346EF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07451346EFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhCXBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:41:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231533AbhCXBlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:41:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C5DB61924;
-        Wed, 24 Mar 2021 01:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616550064;
-        bh=7qdFAip3g0QPQnuuZWhxuGHkLs3MS3jK3ZpCgzjAhdo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ObkzGBgeRRpSZtnyjrrgUHn2yLhmWsu2MR/K8xVpcRzslS1I9FfIMfnLKJUdM3iq7
-         NihPrwLWnWQENzQYrzSD7ZPji6cMYAq5qtL9Oo/to3TQ2D93+8hgp/AseE7Ck+7k06
-         wWFfYTua5EkLtZNUcoZle6Y85B0CGhUFJAeHpGFQZd+dt1kkB7GAOc6ahY806OK9Gy
-         69CyPKwqmBMG6KNFRzZNbcHWgM5EsrjdvPuNVE+QhAeghgdtzT9D8QMFDc5EngeFTE
-         kIzlMRpSEfGhXrxmLbpNjo0OD/NJ4XPz6uhlTcz1Ve+q3cwAF5CiygK18GjodKLP/e
-         GBJOIdFCKEA0A==
-Date:   Wed, 24 Mar 2021 10:40:58 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v4 10/12] x86/kprobes: Push a fake return address
- at kretprobe_trampoline
-Message-Id: <20210324104058.7c06aaeb0408e24db6ba46f8@kernel.org>
-In-Reply-To: <20210323223007.GG4746@worktop.programming.kicks-ass.net>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
-        <161639530062.895304.16962383429668412873.stgit@devnote2>
-        <20210323223007.GG4746@worktop.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231622AbhCXBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhCXBoj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 21:44:39 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BEFC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:44:38 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id u8so352863qtq.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ptioshG+2dIFNP/OQB4kxeiMvcEgTk3PcQJ8b1Wlui4=;
+        b=jxs+sx48jY9q1YOqNTS5XanF/iwJIMQahFq2kPojEMaYK2PVxwqZlQhUeIqPn6uX+C
+         uPd3UPHLHesuU6uyioUWJWdwhVeHFDdNbab/L6NbQbZorUVtrC3fGAW7AT2gyb7OeFF7
+         a0pJXJsE5K78tzkjvzGrY5tGpnGP2QWLYAEbR9MO+xUg4OnhYuwlkpGuUHnGxvW1Xf0F
+         Njq7V77lwVapKjMUz+PdZmbY7AiY+4DrD8v2Rb6cChRjFlqPzU5BBy9+ZnZ9lA8qYlrO
+         PtHItO/31nOvGJcKnCH54eqozZTWHuW9qz/dphkZ1DkvgZtYK1gVdV9FZoNYRgphoLvR
+         4RWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ptioshG+2dIFNP/OQB4kxeiMvcEgTk3PcQJ8b1Wlui4=;
+        b=d1puZEwhYpDOhRvv51zO1KvOoalZFRXGjxUDNBW4ijSr4uitCpEH0P2jsvEZPltkp7
+         iOd26eIrR/jUiMoE7g3gobrbkSkhA+u4+uWDO71/Yqe6c44JgBCBJKspdA/jwRIcXT5H
+         A0NLK7ck0tgd9wtw5L6fQ/88xIAlN2fkdpomsI7Jw9U5/WMwHs4+GK/jaVdOBcWfRWpi
+         5/zwtqoMTfM3GR7tbkI3p8YofbSCom5+IqgYGbgfpWIrSI2M9VHW+qcN4J+dXoLtj+TG
+         K7Ka18JNaY5B7sopnBC3RsmIj8Tx3p4iELzUPeU5tXdLvvH/klKhast1gMDsqWxK7wvT
+         8Xuw==
+X-Gm-Message-State: AOAM533CLNPwCavS5FS2be5XzgMHGtYX+nuZased4+EV3embR35dQRnF
+        O7GsKyjcyWrOmTNqf0sLRmBDVROBUg1/I1YS4OE=
+X-Google-Smtp-Source: ABdhPJxKcSdyS8HdLo4YR2hVKK5rxuhzXy8eprlF7YHHz/jSjMiCSwpeP9ucbyty5m4+XA51q4tdpxfvnQwtNvV9v2w=
+X-Received: by 2002:a05:622a:454:: with SMTP id o20mr1067602qtx.292.1616550277946;
+ Tue, 23 Mar 2021 18:44:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <1615341642-3797-1-git-send-email-shengjiu.wang@nxp.com> <20210310132404.GB4746@sirena.org.uk>
+In-Reply-To: <20210310132404.GB4746@sirena.org.uk>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 24 Mar 2021 09:44:26 +0800
+Message-ID: <CAA+D8ANXcyJ+GrEqTNuoNJ4wGCQfqjRkhcevt-eXSrNj_V128w@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] ASoC: wm8960: Remove bitclk relax condition in wm8960_configure_sysclk
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        patches@opensource.cirrus.com, gustavoars@kernel.org,
+        Takashi Iwai <tiwai@suse.com>, daniel.baluta@nxp.com,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 23:30:07 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+Hi Mark
 
-> On Mon, Mar 22, 2021 at 03:41:40PM +0900, Masami Hiramatsu wrote:
-> >  	".global kretprobe_trampoline\n"
-> >  	".type kretprobe_trampoline, @function\n"
-> >  	"kretprobe_trampoline:\n"
-> >  #ifdef CONFIG_X86_64
-> 
-> So what happens if we get an NMI here? That is, after the RET but before
-> the push? Then our IP points into the trampoline but we've not done that
-> push yet.
+On Wed, Mar 10, 2021 at 9:26 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, Mar 10, 2021 at 10:00:42AM +0800, Shengjiu Wang wrote:
+>
+> > changes in resend v2
+> > - Add acked-by Charles
+>
+> Please don't resend for acks, it just makes for more noise.
 
-Not only NMI, but also interrupts can happen. There is no cli/sti here.
+ok, but could you please review this patch?
 
-Anyway, thanks for pointing!
-I think in UNWIND_HINT_TYPE_REGS and UNWIND_HINT_TYPE_REGS_PARTIAL cases
-ORC unwinder also has to check the state->ip and if it is kretprobe_trampoline,
-it should be recovered.
-What about this?
-
-diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
-index 332aa6174b10..36d3971c0a2c 100644
---- a/arch/x86/include/asm/unwind.h
-+++ b/arch/x86/include/asm/unwind.h
-@@ -101,6 +101,15 @@ void unwind_module_init(struct module *mod, void *orc_ip, size_t orc_ip_size,
- 			void *orc, size_t orc_size) {}
- #endif
- 
-+static inline
-+unsigned long unwind_recover_kretprobe(struct unwind_state *state,
-+				       unsigned long addr, unsigned long *addr_p)
-+{
-+	return is_kretprobe_trampoline(addr) ?
-+		kretprobe_find_ret_addr(state->task, addr_p, &state->kr_cur) :
-+		addr;
-+}
-+
- /* Recover the return address modified by instrumentation (e.g. kretprobe) */
- static inline
- unsigned long unwind_recover_ret_addr(struct unwind_state *state,
-@@ -110,10 +119,7 @@ unsigned long unwind_recover_ret_addr(struct unwind_state *state,
- 
- 	ret = ftrace_graph_ret_addr(state->task, &state->graph_idx,
- 				    addr, addr_p);
--	if (is_kretprobe_trampoline(ret))
--		ret = kretprobe_find_ret_addr(state->task, addr_p,
--					      &state->kr_cur);
--	return ret;
-+	return unwind_recover_kretprobe(state, ret, addr_p);
- }
- 
- /*
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 839a0698342a..cb59aeca6a4a 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -549,7 +549,15 @@ bool unwind_next_frame(struct unwind_state *state)
- 					 (void *)orig_ip);
- 			goto err;
- 		}
--
-+		/*
-+		 * There is a small chance to interrupt at the entry of
-+		 * kretprobe_trampoline where the ORC info doesn't exist.
-+		 * That point is right after the RET to kretprobe_trampoline
-+		 * which was modified return address. So the @addr_p must
-+		 * be right before the regs->sp.
-+		 */
-+		state->ip = unwind_recover_kretprobe(state, state->ip,
-+					state->sp - sizeof(unsigned long));
- 		state->regs = (struct pt_regs *)sp;
- 		state->prev_regs = NULL;
- 		state->full_regs = true;
-@@ -562,6 +570,9 @@ bool unwind_next_frame(struct unwind_state *state)
- 					 (void *)orig_ip);
- 			goto err;
- 		}
-+		/* See UNWIND_HINT_TYPE_REGS case comment. */
-+		state->ip = unwind_recover_kretprobe(state, state->ip,
-+					state->sp - sizeof(unsigned long));
- 
- 		if (state->full_regs)
- 			state->prev_regs = state->regs;
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Best regards
+wang shengjiu
