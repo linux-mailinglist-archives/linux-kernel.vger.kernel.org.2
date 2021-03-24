@@ -2,177 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BD2348297
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D391E34829A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238154AbhCXUIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:08:40 -0400
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:23965 "EHLO
-        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238133AbhCXUIH (ORCPT
+        id S238166AbhCXUJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:09:15 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:49945 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238158AbhCXUI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:08:07 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 880A241C23;
-        Wed, 24 Mar 2021 21:08:00 +0100 (CET)
-Authentication-Results: ste-pvt-msa1.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=P+s2NS8J;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id mMze0gdUSJgY; Wed, 24 Mar 2021 21:07:59 +0100 (CET)
-Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 5FEB83F660;
-        Wed, 24 Mar 2021 21:07:56 +0100 (CET)
-Received: from [10.249.254.166] (unknown [192.198.151.44])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 689EC36062E;
-        Wed, 24 Mar 2021 21:07:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1616616476; bh=3qCxYoZfXVcIr6IpgNofra0wmJqpRFAzpDo4oMeG2n4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=P+s2NS8JR6bgZjWtEWtrP50nVsF5NTzm85ecSAvPaeaV2HAmU4h5YlAYuj/1/OfJN
-         yMZPRJgOAIMozwhOd8Mc3SWg9rvlQuobgmFUAtCRsC0FE7IV+Yux+l6tIBgP8OoGKG
-         I8WBTZW8AxL5/8afqsZTd1D4Ip814CDQSFBKgSrE=
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
- <20210323163715.GJ2356281@nvidia.com>
- <5824b731-ca6a-92fd-e314-d986b6a7b101@shipmail.org>
- <YFsM23t2niJwhpM/@phenom.ffwll.local> <20210324122430.GW2356281@nvidia.com>
- <e12e2c49-afaf-dbac-b18c-272c93c83e06@shipmail.org>
- <20210324124127.GY2356281@nvidia.com>
- <6c9acb90-8e91-d8af-7abd-e762d9a901aa@shipmail.org>
- <20210324134833.GE2356281@nvidia.com>
- <0b984f96-00fb-5410-bb16-02e12b2cc024@shipmail.org>
- <20210324163812.GJ2356281@nvidia.com>
- <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
-Date:   Wed, 24 Mar 2021 21:07:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 24 Mar 2021 16:08:57 -0400
+Received: from mail-oo1-f49.google.com ([209.85.161.49]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MrPVJ-1m2uPY1NxP-00oX6h; Wed, 24 Mar 2021 21:08:55 +0100
+Received: by mail-oo1-f49.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so6130827ook.2;
+        Wed, 24 Mar 2021 13:08:55 -0700 (PDT)
+X-Gm-Message-State: AOAM531oqSU9AkTn+Wkrjyizeb+UsjzJj7DyMRNM93BHbYDMu+QBKBUV
+        KDvvji6MSCA7cMyNl4AYxBakOrLX+07Mz68qA/A=
+X-Google-Smtp-Source: ABdhPJybTxidmqfUgZw7W8iZwqTPZdKNPoMY0wKBfMJ7hCptmQ98ROSV9GMgRQY6K8Yt9kjE9ik3niJWJDsWSHTT3bQ=
+X-Received: by 2002:a4a:304a:: with SMTP id z10mr4221190ooz.26.1616616533996;
+ Wed, 24 Mar 2021 13:08:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210322104343.948660-1-arnd@kernel.org> <20210322104343.948660-5-arnd@kernel.org>
+In-Reply-To: <20210322104343.948660-5-arnd@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 24 Mar 2021 21:08:38 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2K-r9ERQxo-UiKpn-MLTu6ORM8FSooh1vXOtrQoU9kzQ@mail.gmail.com>
+Message-ID: <CAK8P3a2K-r9ERQxo-UiKpn-MLTu6ORM8FSooh1vXOtrQoU9kzQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 5/5] vxge: avoid -Wemtpy-body warnings
+To:     Networking <netdev@vger.kernel.org>, Jon Mason <jdmason@kudzu.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:fijI6r4YMqbAe5M2kVyLTB6NqcK5h28eQt8SXSkYoJnuGFZqnDH
+ 4bdZ1UUUptABeCEOHZGh5py8JpkpPM2RP5NBHp6DQww0crfyMEZe3nx6QEk8RUfV3AYcEAA
+ 2LQlwmRGIWnXEFaUq6ky+Dv7jnsVp0xsgy5bt1omidvTJrQAm2odgMe+bsXdbMxECELqyoS
+ qCYexD8ji5YR3YIAdFxiA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vvtep7z6KLw=:ewumsrakVQjAmz3xOBLYH0
+ Y77ofFhvY04rszMboXnmGntYA4pv0DM+XCHKH0M+ET2hwb3lB0zdJT1NfMpJsj2JIErzGYyLt
+ DlmNvCa5C2jvpFbswg+R2rc2YDSIEj2PqaEybLNMRZjGBhjRALyJV6xBsNsI8+3NkRfmuwweI
+ q/pBWfutZfamnjsCmvKHMhjYe/1gUNibaRsShDA7s+ryJO+18jplyEGZbQ1wzto2bcfQhcURs
+ lEzqhJFu1BlqhfEeMJS1Bef9Vq3XAkgv13TZBTejcL+oeuWLJJ881XR9/Mi9ysNEWz42Hll8p
+ +am6K9R18edg0/k2qcNbMITQ7BmcVI4dflqomIiNRGiXlguCLt52B5TiWi2/+yu8nf75LwaRC
+ aH9yioTKvMqlfTv4Hyysc2CoCiLfS3vg+2wlBKxtdnypsDxkyCGkzNasvjjBFx1Ll0uWw1c4g
+ az6z4aziMW1TMBMXvB5HuJvZmpQ2AYY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 3/24/21 7:31 PM, Christian König wrote:
+On Mon, Mar 22, 2021 at 11:43 AM Arnd Bergmann <arnd@kernel.org> wrote:
 >
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> Am 24.03.21 um 17:38 schrieb Jason Gunthorpe:
->> On Wed, Mar 24, 2021 at 04:50:14PM +0100, Thomas Hellström (Intel) 
->> wrote:
->>> On 3/24/21 2:48 PM, Jason Gunthorpe wrote:
->>>> On Wed, Mar 24, 2021 at 02:35:38PM +0100, Thomas Hellström (Intel) 
->>>> wrote:
->>>>
->>>>>> In an ideal world the creation/destruction of page table levels 
->>>>>> would
->>>>>> by dynamic at this point, like THP.
->>>>> Hmm, but I'm not sure what problem we're trying to solve by 
->>>>> changing the
->>>>> interface in this way?
->>>> We are trying to make a sensible driver API to deal with huge pages.
->>>>> Currently if the core vm requests a huge pud, we give it one, and 
->>>>> if we
->>>>> can't or don't want to (because of dirty-tracking, for example, 
->>>>> which is
->>>>> always done on 4K page-level) we just return VM_FAULT_FALLBACK, 
->>>>> and the
->>>>> fault is retried at a lower level.
->>>> Well, my thought would be to move the pte related stuff into
->>>> vmf_insert_range instead of recursing back via VM_FAULT_FALLBACK.
->>>>
->>>> I don't know if the locking works out, but it feels cleaner that the
->>>> driver tells the vmf how big a page it can stuff in, not the vm
->>>> telling the driver to stuff in a certain size page which it might not
->>>> want to do.
->>>>
->>>> Some devices want to work on a in-between page size like 64k so they
->>>> can't form 2M pages but they can stuff 64k of 4K pages in a batch on
->>>> every fault.
->>> Hmm, yes, but we would in that case be limited anyway to insert ranges
->>> smaller than and equal to the fault size to avoid extensive and 
->>> possibly
->>> unnecessary checks for contigous memory.
->> Why? The insert function is walking the page tables, it just updates
->> things as they are. It learns the arragement for free while doing the
->> walk.
->>
->> The device has to always provide consistent data, if it overlaps into
->> pages that are already populated that is fine so long as it isn't
->> changing their addresses.
->>
->>> And then if we can't support the full fault size, we'd need to
->>> either presume a size and alignment of the next level or search for
->>> contigous memory in both directions around the fault address,
->>> perhaps unnecessarily as well.
->> You don't really need to care about levels, the device should be
->> faulting in the largest memory regions it can within its efficiency.
->>
->> If it works on 4M pages then it should be faulting 4M pages. The page
->> size of the underlying CPU doesn't really matter much other than some
->> tuning to impact how the device's allocator works.
-
-Yes, but then we'd be adding a lot of complexity into this function that 
-is already provided by the current interface for DAX, for little or no 
-gain, at least in the drm/ttm setting. Please think of the following 
-situation: You get a fault, you do an extensive time-consuming scan of 
-your VRAM buffer object into which the fault goes and determine you can 
-fault 1GB. Now you hand it to vmf_insert_range() and because the 
-user-space address is misaligned, or already partly populated because of 
-a previous eviction, you can only fault single pages, and you end up 
-faulting a full GB of single pages perhaps for a one-time small update.
-
-On top of this, unless we want to do the walk trying increasingly 
-smaller sizes of vmf_insert_xxx(), we'd have to use 
-apply_to_page_range() and teach it about transhuge page table entries, 
-because pagewalk.c can't be used (It can't populate page tables). That 
-also means apply_to_page_range() needs to be complicated with page table 
-locks since transhuge pages aren't stable and can be zapped and 
-refaulted under us while we do the walk.
-
-On top of this, the user-space address allocator needs to know how large 
-gpu pages are aligned in buffer objects to have a reasonable chance of 
-aligning with CPU huge page boundaries which is a requirement to be able 
-to insert a huge CPU page table entry, so the driver would basically 
-need the drm helper that can do this alignment anyway.
-
-All this makes me think we should settle for the current interface for 
-now, and if someone feels like refining it, I'm fine with that.  After 
-all, this isn't a strange drm/ttm invention, it's a pre-existing 
-interface that we reuse.
-
+> There are a few warnings about empty debug macros in this driver:
 >
-> I agree with Jason here.
+> drivers/net/ethernet/neterion/vxge/vxge-main.c: In function 'vxge_probe':
+> drivers/net/ethernet/neterion/vxge/vxge-main.c:4480:76: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>  4480 |                                 "Failed in enabling SRIOV mode: %d\n", ret);
 >
-> We get the best efficiency when we look at the what the GPU driver 
-> provides and make sure that we handle one GPU page at once instead of 
-> looking to much into what the CPU is doing with it's page tables.
+> Change them to proper 'do { } while (0)' expressions to make the
+> code a little more robust and avoid the warnings.
 >
-> At least one AMD GPUs the GPU page size can be anything between 4KiB 
-> and 2GiB and if we will in a 2GiB chunk at once this can in theory be 
-> handled by just two giant page table entries on the CPU side.
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Yes, but I fail to see why, with the current code, we can't do this 
-(save the refcounting bug)?
+Please disregard this patch, I was accidentally building without -Wformat and
+failed to notice that this introduces a regression. I'll send a new
+version after
+more testing.
 
-/Thomas
-
+       Arnd
