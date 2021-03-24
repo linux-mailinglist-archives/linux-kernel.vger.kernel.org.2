@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332893479C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4287C3479D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhCXNkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234574AbhCXNkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:40:14 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4825C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:40:13 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id g15so18003244qkl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hwcrb+R8W88bZvooxgh81cxu5j6eJ4bBtC8MKzp11Lk=;
-        b=UZPLEc8VplRig4xeP8uR50MXKKWqbJ6C7Hyg2rW0k1SoDt+4mkVYaVbTlRUnq4Gbfw
-         QK8+rjBNQrxjQ7dF9EQhX23gUukrM32mDzLqLtn/h7cb1XblU79OMLHWmH0AQXvIdXVG
-         3umVs75ypKpBDOh0oWcI/Wqd5KSeFoi2rFH/KgX4c6GnD0AZtCVTtF1o62PfQ5adZ5/J
-         u7ZmVwnsFkj1w6OQaE7qXCY1lvKfEXflZts6InB9BTdhVcbHZiKc3oK2gc2t+yLIPaY7
-         If4S1glaEp02xf1+aIyzN/a6O8KelFzjHEXMB1wk/NAFGqHBFhzDuYspuWJ+/hxOvtLn
-         BK7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hwcrb+R8W88bZvooxgh81cxu5j6eJ4bBtC8MKzp11Lk=;
-        b=oqbaRLS2REtjReB13oGWvPR/mYwdnWacJcX65Cc9yTn8QIM5JhVdyFtCMNH3iYlZdo
-         fRCIW5pryxQI/1iaQANy+v27Jdng2OH6kyZdPLGhuBq+5Gu67bd96hdSJi1WxL7EoZV1
-         HaRRLdncSQuW4XwF4N41JKw3+MPKxz9AIpBskq20p7sjcyjfg2BZc0+Nz2bWyLcFgEbN
-         It+DnTyxXES9DOUNddFy8yY8A1GLvNBnrIPbUgU+nhS8G0I6NlYMYY7p0cR+g2b0yQzq
-         cLqUDtEZAPBpcRVBt37frpbAhG57FakB5PLB9wGLMze7JKHNzE9Vwfi9KrVr5s6kIoSt
-         GaEw==
-X-Gm-Message-State: AOAM532Dg67ablqxvn5Us74PE84+YrHMA+9j6w7vt5U9q+bEY1xEvMTT
-        bitu/Q5Is484JUA2WoEZq3Y=
-X-Google-Smtp-Source: ABdhPJxnSkdLKA7Y58yK/hobhyt2PIcgOrxlo49U02IhLbGPfR92M3P/9vbknqb2FLj1ZeA+/vkBNQ==
-X-Received: by 2002:a05:620a:24cc:: with SMTP id m12mr3124767qkn.496.1616593212990;
-        Wed, 24 Mar 2021 06:40:12 -0700 (PDT)
-Received: from Slackware.localdomain ([156.146.36.138])
-        by smtp.gmail.com with ESMTPSA id a20sm1691731qkg.61.2021.03.24.06.40.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 06:40:12 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dwmw@amazon.co.uk, luto@kernel.org,
-        dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] x86/apic: Rudimentary typo fixes
-Date:   Wed, 24 Mar 2021 19:11:49 +0530
-Message-Id: <20210324134149.30445-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        id S235448AbhCXNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234574AbhCXNnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:43:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1F0619D3;
+        Wed, 24 Mar 2021 13:43:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616593402;
+        bh=MPmffnqKet7GibAYfcAT0zGmqL6ykoNK5Vgadj8rBEU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c8s9kISPwKESwNkKfNNuk+ZAgCh6b9krH72tFqb0KOLos12GWAN6SNXdmQJGYpAjp
+         CjPhxvpVuFZcYyqQkFsWj1h4WHRcdSo9KgQR/cvLfRGeGXVa3X/guVRgOC1slfQM3C
+         FGm7VAWslEveGhilOphGs8fgMfq8VUPA8BHYcJDs/LB6sWD8BB7gfyT8r26Hmliliw
+         E8Qs/K5sgoepoB9FVEk+KVHqSIey4x6h+g1rtpTgD6YgDvlYHWp3oCR74Rw1cSFkF9
+         bWaeHJwJxkBEeXpixC3qPKOAesvoPzlau7fTZM/2csCnUY71fMa6ZtxasaDs7wZiQL
+         E/NWKG3zkBY0Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 64A5D40647; Wed, 24 Mar 2021 10:43:20 -0300 (-03)
+Date:   Wed, 24 Mar 2021 10:43:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>, Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, X86 ML <x86@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v3 04/21] x86/insn: Add an insn_decode() API
+Message-ID: <YFtB+Dir1lWjL2gi@kernel.org>
+References: <20210304174237.31945-1-bp@alien8.de>
+ <20210304174237.31945-5-bp@alien8.de>
+ <CAP-5=fU2D_kmdaLFL7Azm31Czdfdze6EpKg7=uZ+ohbNnb7ssQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fU2D_kmdaLFL7Azm31Czdfdze6EpKg7=uZ+ohbNnb7ssQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Tue, Mar 16, 2021 at 06:14:54PM -0700, Ian Rogers escreveu:
+> On Thu, Mar 4, 2021 at 9:56 AM Borislav Petkov <bp@alien8.de> wrote:
+> > From: Borislav Petkov <bp@suse.de>
+> >
+> > Users of the instruction decoder should use this to decode instruction
+> > bytes. For that, have insn*() helpers return an int value to denote
+> > success/failure. When there's an error fetching the next insn byte and
+> > the insn falls short, return -ENODATA to denote that.
+> >
+> > While at it, make insn_get_opcode() more stricter as to whether what has
+> > seen so far is a valid insn and if not.
+> >
+> > Copy linux/kconfig.h for the tools-version of the decoder so that it can
+> > use IS_ENABLED().
+> >
+> > Also, cast the INSN_MODE_KERN dummy define value to (enum insn_mode)
+> > for tools use of the decoder because perf tool builds with -Werror and
+> > errors out with -Werror=sign-compare otherwise.
+> >
+> > Signed-off-by: Borislav Petkov <bp@suse.de>
+> > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-s/preferrable/preferable/
-s/serivced/serviced/
-s/distributon/distribution/
+> > +++ b/tools/arch/x86/lib/insn.c
+> > @@ -11,10 +11,13 @@
+> >  #else
+> >  #include <string.h>
+> >  #endif
+> > -#include "../include/asm/inat.h" /* __ignore_sync_check__ */
+> > -#include "../include/asm/insn.h" /* __ignore_sync_check__ */
+> > +#include <asm/inat.h> /*__ignore_sync_check__ */
+> > +#include <asm/insn.h> /* __ignore_sync_check__ */
+> 
+> Hi, this change is breaking non-x86 builds of perf for me in
+> tip.git/master. The reason being that non-x86 builds compile the
+> intel-pt-decoder, which includes this file, but don't have their
+> include paths set to find tools/arch/x86. I think we want to keep the
+> relative paths.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/x86/kernel/apic/apic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Borislav, was this addressed? Ian?
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index bda4f2a36868..e26ee6e67f47 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -619,7 +619,7 @@ static void setup_APIC_timer(void)
-
- 	if (this_cpu_has(X86_FEATURE_ARAT)) {
- 		lapic_clockevent.features &= ~CLOCK_EVT_FEAT_C3STOP;
--		/* Make LAPIC timer preferrable over percpu HPET */
-+		/* Make LAPIC timer preferable over percpu HPET */
- 		lapic_clockevent.rating = 150;
- 	}
-
-@@ -1532,7 +1532,7 @@ static bool apic_check_and_ack(union apic_ir *irr, union apic_ir *isr)
-  * Most probably by now the CPU has serviced that pending interrupt and it
-  * might not have done the ack_APIC_irq() because it thought, interrupt
-  * came from i8259 as ExtInt. LAPIC did not get EOI so it does not clear
-- * the ISR bit and cpu thinks it has already serivced the interrupt. Hence
-+ * the ISR bit and cpu thinks it has already serviced the interrupt. Hence
-  * a vector might get locked. It was noticed for timer irq (vector
-  * 0x31). Issue an extra EOI to clear ISR.
-  *
-@@ -1657,7 +1657,7 @@ static void setup_local_APIC(void)
- 	 */
- 	/*
- 	 * Actually disabling the focus CPU check just makes the hang less
--	 * frequent as it makes the interrupt distributon model be more
-+	 * frequent as it makes the interrupt distribution model be more
- 	 * like LRU than MRU (the short-term load is more even across CPUs).
- 	 */
-
---
-2.30.1
-
+- Arnaldo
