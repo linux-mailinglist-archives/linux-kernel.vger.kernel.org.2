@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45AAE347ABD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 472C2347ABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236305AbhCXObs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:31:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43281 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236217AbhCXObM (ORCPT
+        id S236339AbhCXOcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:32:23 -0400
+Received: from smtprelay0227.hostedemail.com ([216.40.44.227]:47958 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236330AbhCXOcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:31:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616596269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+jtHaYpG/XZInPp8hHHKOOdzU2YSMvIuIW7BEJkipo8=;
-        b=KqHRh/Wf0nk6pudXDypiBEZdt2ZySsNSFvB0+AwMW8iM9l8er6jJchvGa+bZCd0Y4XgpGB
-        YOgogUzZbiMSn1adlCNR5db37w7xTrG+n7Dan2O8Y3fIKmyi8mh+o+hy1BEkak80RzOvXO
-        CPKR/pfnFsYMdXU0gbmkwypkjF3r3PU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-StgQD8mhM_Gsnd5QZIXHCw-1; Wed, 24 Mar 2021 10:31:07 -0400
-X-MC-Unique: StgQD8mhM_Gsnd5QZIXHCw-1
-Received: by mail-wr1-f69.google.com with SMTP id p15so1146838wre.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:31:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+jtHaYpG/XZInPp8hHHKOOdzU2YSMvIuIW7BEJkipo8=;
-        b=SvNA+sx2WYoDfCvDGcG6Borlld4ftXITD7JoOrBkTY4qf5Yf+YJ8vc+ct7V6MY4z5I
-         ozEVXzgjPjQlkklNk8Lur2mY04M9HM06CfUWMq5CnTPqirapRYAUV4NoHGrobJeN+VCK
-         fJo55SsH1d3FNJni44lsg3y2c5nPTdrDbhoHV5Uche1AROWtnHfvnPSvB3osyai85dcI
-         wa+1Uo63KGrB1a19+1Sa+2Cornp2RhtxK4xn7OsP8RxmNHMTFVg2imuT7JPqnDilgK1p
-         2DjusZbeS8npLdPYWznLv+OZKSS++1lanMnZWiIqKQdp13CaB7INCjfpefU4FepUe/NC
-         SSOQ==
-X-Gm-Message-State: AOAM5318nd6qUqdbThl1YM8Y+jBPSYFyATWlLipwt3il7y5tN43uFD/k
-        1pxzmBW3mLZD3jXfe3AfY4254pS0ihsVQMylByOCB5szV23Xt969LnTQCdt6Lh5nqOKz5NCLgXd
-        rg9+/EN4m5Mk4dczIyQyV7F4l
-X-Received: by 2002:a5d:68cd:: with SMTP id p13mr3977875wrw.247.1616596266460;
-        Wed, 24 Mar 2021 07:31:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIf+VryoTPSfwti+YSTkQ2E1C0/b6Xuw3ivYfNPK4a9PF7c1OO41KjvaTv9A51GLRMrRGgKA==
-X-Received: by 2002:a5d:68cd:: with SMTP id p13mr3977856wrw.247.1616596266249;
-        Wed, 24 Mar 2021 07:31:06 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u8sm3366640wrr.42.2021.03.24.07.31.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 07:31:05 -0700 (PDT)
-Subject: Re: [PATCH 3/3] mm: unexport follow_pfn
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
- <20210316153303.3216674-4-daniel.vetter@ffwll.ch>
- <20210324125211.GA2356281@nvidia.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b1a46866-cbc7-4e7f-0e17-79fee57b32a0@redhat.com>
-Date:   Wed, 24 Mar 2021 15:31:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 24 Mar 2021 10:32:02 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 32F09182244EB;
+        Wed, 24 Mar 2021 14:32:01 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:6120:7576:7652:7901:7903:8603:10004:10400:11026:11232:11473:11657:11658:11783:11914:12043:12048:12297:12438:12555:12683:12740:12895:13439:13894:14181:14659:14721:21080:21433:21451:21627:21660:21972:21990:30046:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: hill42_1e033b52777b
+X-Filterd-Recvd-Size: 4973
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 24 Mar 2021 14:31:59 +0000 (UTC)
+Message-ID: <382fd12d804ac8e2693f92cf649c4f038f9c022e.camel@perches.com>
+Subject: Re: [PATCH] amdgpu: fix gcc -Wrestrict warning
+From:   Joe Perches <joe@perches.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Huang Rui <ray.huang@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Wed, 24 Mar 2021 07:31:58 -0700
+In-Reply-To: <20210323130430.2250052-1-arnd@kernel.org>
+References: <20210323130430.2250052-1-arnd@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210324125211.GA2356281@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/21 13:52, Jason Gunthorpe wrote:
-> I think this is the right thing to do.
+On Tue, 2021-03-23 at 14:04 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Alex is working on fixing VFIO and while kvm is still racy using
-> follow pte, I think they are working on it too?
+> gcc warns about an sprintf() that uses the same buffer as source
+> and destination, which is undefined behavior in C99:
+> 
+> drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c: In function 'amdgpu_securedisplay_debugfs_write':
+> drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:141:6: error: 'sprintf' argument 3 overlaps destination object 'i2c_output' [-Werror=restrict]
+>   141 |      sprintf(i2c_output, "%s 0x%X", i2c_output,
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   142 |       securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+>       |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c:97:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+>    97 |  char i2c_output[256];
+>       |       ^~~~~~~~~~
+> 
+> Rewrite it to remember the current offset into the buffer instead.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> index 834440ab9ff7..69d7f6bff5d4 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> @@ -136,9 +136,10 @@ static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __u
+>  		ret = psp_securedisplay_invoke(psp, TA_SECUREDISPLAY_COMMAND__SEND_ROI_CRC);
+>  		if (!ret) {
+>  			if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS) {
+> +				int pos = 0;
+>  				memset(i2c_output,  0, sizeof(i2c_output));
+>  				for (i = 0; i < TA_SECUREDISPLAY_I2C_BUFFER_SIZE; i++)
+> -					sprintf(i2c_output, "%s 0x%X", i2c_output,
+> +					pos += sprintf(i2c_output + pos, " 0x%X",
+>  						securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+>  				dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is :%s\n", i2c_output);
 
-Yeah, or at least we have a plan.
+Perhaps use a hex output like:
 
-Paolo
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+index 9cf856c94f94..25bb34c72d20 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+@@ -97,13 +97,12 @@ static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __u
+ 	uint32_t op;
+ 	int i;
+ 	char str[64];
+-	char i2c_output[256];
+ 	int ret;
+ 
+ 	if (*pos || size > sizeof(str) - 1)
+ 		return -EINVAL;
+ 
+-	memset(str,  0, sizeof(str));
++	memset(str, 0, sizeof(str));
+ 	ret = copy_from_user(str, buf, size);
+ 	if (ret)
+ 		return -EFAULT;
+@@ -139,11 +138,9 @@ static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __u
+ 		ret = psp_securedisplay_invoke(psp, TA_SECUREDISPLAY_COMMAND__SEND_ROI_CRC);
+ 		if (!ret) {
+ 			if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS) {
+-				memset(i2c_output,  0, sizeof(i2c_output));
+-				for (i = 0; i < TA_SECUREDISPLAY_I2C_BUFFER_SIZE; i++)
+-					sprintf(i2c_output, "%s 0x%X", i2c_output,
+-						securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+-				dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is :%s\n", i2c_output);
++				dev_info(adev->dev, "SECUREDISPLAY: I2C buffer output is: %*ph\n",
++					 (int)TA_SECUREDISPLAY_I2C_BUFFER_SIZE,
++					 securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf);
+ 			} else {
+ 				psp_securedisplay_parse_resp_status(psp, securedisplay_cmd->status);
+ 			}
+
 
