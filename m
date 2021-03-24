@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E12A347B74
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A51347B99
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236414AbhCXPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:00:56 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:50450 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235911AbhCXPA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:00:26 -0400
-Received: from zn.tnic (p200300ec2f0a08002d870c266ff9a9b0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:800:2d87:c26:6ff9:a9b0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E792D1EC0242;
-        Wed, 24 Mar 2021 16:00:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616598007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uhe8YqLCtLYleSlX4ajdqL397sj8jPLc14UqZ/u8OVo=;
-        b=TZvkYtqs4wjx1SKxLsbHUOO9g5YCCJzzAV8/f8vQCTB6vOK5OuTueIrtRUPeihrsKfyKRt
-        cL8U6XzU0XIvB13BJhGp3iN2SHL5JKOdpdAU7NvVLMLO5Jq0rU7AMSCqEmHndL0SULd+Dq
-        CeBlRD25W1CcuzIRV6oLodXJLLOwblU=
-Date:   Wed, 24 Mar 2021 16:00:04 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Youquan Song <youquan.song@intel.com>
-Subject: Re: [PATCH] x86/mce: Add Skylake quirk for patrol scrub reported
- errors
-Message-ID: <20210324150004.GG5010@zn.tnic>
-References: <20210322223710.307123-1-tony.luck@intel.com>
+        id S236450AbhCXPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236430AbhCXPDY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:03:24 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1115DC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:03:24 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 32so8684977pgm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FItyqxViIAmB8amy4A5vlzdR20mnIAmC2uA+KNkY1Gg=;
+        b=Jq0HmIdidI3kiESpgQ+BC0vj3o2mde7P42Kiw+pHEnQOKhGpfCRFTJoME2bvKapawN
+         WP3pLEgKYrF2sAzB+mmJAvjsOcdvNMbmGjx4Ocrubfo7asrx5cIXJ1m44gnw6MYYZHgK
+         0vPgZFKLr1mCyHexFNM0oCV2bvsUhTT+mT/NMt3q5LtQENk6Hm94IGJAFp7BLPtqtSKB
+         1dGEmDy8q2ksos80WZ2TTqJ+5mZr8kzVPJpPj/qqa615R5yJzuxPxd1NwgYsyc12UK1J
+         LMI1FbMgNxiKkj/uloEBxOXsYX4tWQuP+aOM4rAIvmWEz9JYOW+bQIIz0RAOegSdVi8t
+         SaIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FItyqxViIAmB8amy4A5vlzdR20mnIAmC2uA+KNkY1Gg=;
+        b=J8ESuUYnEXxfnqlMEzLxPktcgC7WqwPMaZYK4IqeIiO8ZShXzt4nnVZ0LmlAUlTQkB
+         8FRhGgVw1PCzI+DnPIFlVx0nfGBHnmO6hbw+yHdhA8PV3I9RJIrBGlE648ZWMHO0pPHM
+         AlW63QD+j+c1eG6nrzZSEv4nLKGdWb+6+dQbIAMZRGt0y07JUmslEAh10qk+G5wTxksC
+         VTCD8qtGDpV7pyanEwGTbp5Bw4KtcnVERpT9lCMv17nDgpLpFnWaLbYYXQZf/ov24EvC
+         eNxKNeIkTkA2UgGKHO0xC1G43jj2aLVCmWf59Wkyp+Ut+zQbvRCCOrBmMLMG98VRJXfN
+         FGig==
+X-Gm-Message-State: AOAM532bGdtFFOLVAQvdIotgvl8g66HajDZKR7FMUXGppZhhRSGf/hPl
+        6qDcE8psQ+UHmrs8z8XqQBk=
+X-Google-Smtp-Source: ABdhPJwFpEAvfqb+Zf7dyN0fn8XR4KvnxGeNssHrQoAba19JdnU4KnnFx00vSGIC4VzlJ00m72fkzw==
+X-Received: by 2002:a62:683:0:b029:1ec:c88c:8ea2 with SMTP id 125-20020a6206830000b02901ecc88c8ea2mr3309240pfg.27.1616598203601;
+        Wed, 24 Mar 2021 08:03:23 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id f2sm2916749pfq.129.2021.03.24.08.03.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 08:03:23 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] riscv: Do not invoke early_init_dt_verify() twice
+Date:   Wed, 24 Mar 2021 23:03:12 +0800
+Message-Id: <20210324150312.20535-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210322223710.307123-1-tony.luck@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:37:10PM -0700, Tony Luck wrote:
-> From: Youquan Song <youquan.song@intel.com>
-> 
-> Skylake has a mode where the system administrator can use a BIOS setup
-> option to request that the memory controller report uncorrected errors
-> found by the patrol scrubber as corrected.  This results in them being
-> signalled using CMCI, which is less disruptive than a machine check.
-> 
-> Add a quirk to detect that a "corrected" error is actually a downgraded
-> uncorrected error with model specific checks for the "MSCOD" signature in
-> MCi_STATUS and that the error was reported from a memory controller bank.
-> 
-> Adjust the severity to MCE_AO_SEVERITY so that Linux will try to take
-> the affected page offline.
-> 
-> [Tony: Wordsmith commit comment]
-> 
-> Signed-off-by: Youquan Song <youquan.song@intel.com>
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> 
-> ---
-> Repost ... looks like this got lost somewhere.
+In the setup_arch() of riscv, function early_init_dt_verify() has
+been done by parse_dtb(). So no need to call it again. Just directly
+invoke unflatten_device_tree().
 
-Yeah, into
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ arch/riscv/kernel/setup.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-fd258dc4442c ("x86/mce: Add Skylake quirk for patrol scrub reported errors")
-
-:-)
-
+diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+index f8f15332caa2..2a3d487e1710 100644
+--- a/arch/riscv/kernel/setup.c
++++ b/arch/riscv/kernel/setup.c
+@@ -255,10 +255,7 @@ void __init setup_arch(char **cmdline_p)
+ #if IS_ENABLED(CONFIG_BUILTIN_DTB)
+ 	unflatten_and_copy_device_tree();
+ #else
+-	if (early_init_dt_verify(__va(dtb_early_pa)))
+-		unflatten_device_tree();
+-	else
+-		pr_err("No DTB found in kernel mappings\n");
++	unflatten_device_tree();
+ #endif
+ 	misc_mem_init();
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
