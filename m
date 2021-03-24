@@ -2,137 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F113483A1
+	by mail.lfdr.de (Postfix) with ESMTP id 7D05B3483A2
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238340AbhCXV2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233716AbhCXV1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:27:45 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C3CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:27:44 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id e7so66210edu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:27:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qg+uRN1UVz59bXG8ixTxLJaA4rnDyKRg9P1HWdnjvz8=;
-        b=imlEBMenzGIyx7jNh1TSp0GkwYJn3xsLEdndnorUwCqqRGh1tYECPHFLjjETSoZyuv
-         s96amsaGRhRnwtS2FAyBn0CCiLkOmGJPHTqkW2S1/MhhXfVUa1m4oWnzdtypFMBSnVx9
-         DAVVDh7KdgasdUXwd6zMs+zngrQXyGJaVsvi4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qg+uRN1UVz59bXG8ixTxLJaA4rnDyKRg9P1HWdnjvz8=;
-        b=Ta5/0vG8zanAZ52y78RX1119zPddRc2kxB2Yw3q7iWPtrwRdoNtD/C47nteHgW/Bwj
-         ZOnH1VgpAHP75T45Jb89ujDwZVmmfWDnU/4ovCTFrKPCOVNnQ/tM0Gg41F4T5DYqeU4o
-         JzJop/aT1MIPB/IS/cSWltNQo9s4ieQwgBl7imSnEQju8mKLxv34QX1DTa2DlC+CQP0j
-         QA+xe6eTWPX0ie3Dg1Q8YaFSgxZ02+2Ow4tkekMxEVTSc6Uwryxx2qdQen4LsCwx7VM2
-         oJUzUUJzPwYh8pmLAqIeAFe/3pSScokgqld7YBZhhxuv4flBNfVarmzDBVN4Ooqh+hfH
-         Kg9Q==
-X-Gm-Message-State: AOAM531VbQ8j26bYy0i+bxiYPQSj14n1+9N4RwPBqY5/oi7dPN+/Zu1B
-        P71Js4DQm6nYn5WV9u3UdHB0prLh2hPUexYN
-X-Google-Smtp-Source: ABdhPJydurQNiOX5WZNDFwgpZCNlbC9JenKEOl9tX6thmCOoc/W3yRk0Ks8Wt8bVZZKA03IvAA+Aag==
-X-Received: by 2002:a05:6402:51cd:: with SMTP id r13mr5693993edd.116.1616621263348;
-        Wed, 24 Mar 2021 14:27:43 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id s20sm1717716edu.93.2021.03.24.14.27.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 14:27:42 -0700 (PDT)
-Subject: Re: [RFC patch] vsprintf: Allow %pe to print non PTR_ERR %pe uses as
- decimal
-To:     Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liu Ying <victor.liu@nxp.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210324121832.3714570-1-arnd@kernel.org>
- <e1310273dcc577f3a772380ada7b6cc1906d680b.camel@perches.com>
- <CAK8P3a0JyoAtTYTi+M_mJ3_KtUJ6NeJB=FNWhzezqcXMac++mQ@mail.gmail.com>
- <810d36184b9fa2880d3ba7738a8f182e27f5107b.camel@perches.com>
- <3252fd83141aa9e0e6001acee1dd98e87c676b9a.camel@perches.com>
- <9feab1e8-4dee-6b79-03f7-7b9f0cb24f6e@rasmusvillemoes.dk>
- <d184069de43135a9c9e5f031447faf98ab3f437d.camel@perches.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <3d66137e-7842-2764-456f-7cc9e54a6d2e@rasmusvillemoes.dk>
-Date:   Wed, 24 Mar 2021 22:27:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S238350AbhCXV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:28:19 -0400
+Received: from mga06.intel.com ([134.134.136.31]:35577 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233849AbhCXV2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 17:28:04 -0400
+IronPort-SDR: AIynuTeax0lSDR4QNNDrAwjv5zKQly0i/YD/y0BUrNCul06y1zxVSONEJ2DYy4nAgY8oUOJjJV
+ biZiQbh9rRyw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="252146191"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="252146191"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:28:01 -0700
+IronPort-SDR: WfPWxzgv6hRguRTx0Lc0se0H/IbC6vbec18pdDFxd4+6q0LrD3loM5RVaRgzQbGak0sV9tw53y
+ 2EfXrYrBhmaA==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="442424773"
+Received: from aksagira-mobl2.amr.corp.intel.com ([10.209.125.174])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:27:54 -0700
+Message-ID: <c0121400eea96626cdd212ad95f296a024356289.camel@linux.intel.com>
+Subject: Re: [PATCH 00/25] Rid W=1 warnings from HID
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Anssi Hannula <anssi.hannula@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bruno =?ISO-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Daniel Drubin <daniel.drubin@intel.com>,
+        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, Lopez Casado <nlopezcasad@logitech.com>,
+        "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>,
+        Masaki Ota <masaki.ota@jp.alps.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        message to <vojtech@ucw.cz>,
+        Michael Haboustak <mike-@cinci.rr.com>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
+        Vojtech Pavlik <vojtech@suse.cz>,
+        Zhang Lixu <lixu.zhang@intel.com>
+Date:   Wed, 24 Mar 2021 14:27:54 -0700
+In-Reply-To: <20210324173404.66340-1-lee.jones@linaro.org>
+References: <20210324173404.66340-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <d184069de43135a9c9e5f031447faf98ab3f437d.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 20.24, Joe Perches wrote:
-> On Wed, 2021-03-24 at 18:33 +0100, Rasmus Villemoes wrote:
->> On 24/03/2021 18.20, Joe Perches wrote:
->>
->>>
->>> Maybe it's better to output non PTR_ERR %pe uses as decimal so this
->>> sort of code would work.
->>
->> No, because that would leak the pointer value when somebody has
->> accidentally passed a real kernel pointer to %pe.
-> 
-> I think it's not really an issue.
-> 
-> _All_ code that uses %p<foo> extensions need inspection anyway.
-
-There are now a bunch of sanity checks in place that catch e.g. an
-ERR_PTR passed to an extension that would derefence the pointer;
-enforcing that only ERR_PTRs are passed to %pe (or falling back to %p)
-is another of those safeguards.
-
-> It's already possible to intentionally 'leak' the ptr value
-> by using %pe, -ptr so I think that's not really an issue.
+On Wed, 2021-03-24 at 17:33 +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 > 
 
-Huh, what? I assume -ptr is shorthand for (void*)-(unsigned long)ptr.
-How would that leak the value if ptr is an ordinary kernel pointer?
-That's not an ERR_PTR unless (unsigned long)ptr is < 4095 or so.
+For changes in  drivers/hid/intel-ish-hid folder
 
-If you want to print the pointer value just do %px. No need for silly
-games. What I'm talking about is preventing _un_intentionally leaking a
-valid kernel pointer value. So no, a non-ERR_PTR passed to %pe is not
-going to be printed as-is, not in decimal or hexadecimal or roman numerals.
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
->> If the code wants a cute -EFOO string explaining what's wrong, what
->> about "%pe", ERR_PTR(mux < 0 : mux : -ERANGE)? Or two separate error
->> messages
->>
->> if (mux < 0)
->>   ...
->> else if (mux >= ARRAY_SIZE())
->>   ...
+> Lee Jones (25):
+>   HID: intel-ish-hid: Remove unused variable 'err'
+>   HID: ishtp-hid-client: Move variable to where it's actually used
+>   HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
+>   HID: intel-ish: Supply some missing param descriptions
+>   HID: intel-ish: Fix a naming disparity and a formatting error
+>   HID: usbhid: Repair a formatting issue in a struct description
+>   HID: intel-ish-hid: Fix a little doc-rot
+>   HID: usbhid: hid-pidff: Demote a couple kernel-doc abuses
+>   HID: hid-alps: Correct struct misnaming
+>   HID: intel-ish-hid: Fix potential copy/paste error
+>   HID: hid-core: Fix incorrect function name in header
+>   HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name
+> in
+>     header
+>   HID: ishtp-hid-client: Fix incorrect function name
+> report_bad_packet()
+>   HID: hid-kye: Fix incorrect function name for kye_tablet_enable()
+>   HID: hid-picolcd_core: Remove unused variable 'ret'
+>   HID: hid-logitech-hidpp: Fix conformant kernel-doc header and
+> demote
+>     abuses
+>   HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
+>   HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
+>   HID: hid-uclogic-params: Ensure function names are present and
+> correct
+>     in kernel-doc headers
+>   HID: hid-sensor-custom: Remove unused variable 'ret'
+>   HID: wacom_sys: Demote kernel-doc abuse
+>   HID: hid-sensor-hub: Remove unused struct member 'quirks'
+>   HID: hid-sensor-hub: Move 'hsdev' description to correct struct
+>     definition
+>   HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting
+> issues
+>   HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler
+> warning
 > 
-> Multiple tests, more unnecessary code, multiple format strings, etc...
+>  drivers/hid/hid-alps.c                       |  2 +-
+>  drivers/hid/hid-core.c                       |  2 +-
+>  drivers/hid/hid-kye.c                        |  2 +-
+>  drivers/hid/hid-logitech-hidpp.c             |  7 +--
+>  drivers/hid/hid-picolcd_core.c               |  5 +--
+>  drivers/hid/hid-sensor-custom.c              |  5 +--
+>  drivers/hid/hid-sensor-hub.c                 |  4 +-
+>  drivers/hid/hid-thrustmaster.c               | 24 +++++------
+>  drivers/hid/hid-uclogic-params.c             |  8 ++--
+>  drivers/hid/hid-uclogic-rdesc.c              |  2 +-
+>  drivers/hid/intel-ish-hid/ipc/ipc.c          |  2 +-
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c      |  3 +-
+>  drivers/hid/intel-ish-hid/ishtp-fw-loader.c  | 45 ++++++++++------
+> ----
+>  drivers/hid/intel-ish-hid/ishtp-hid-client.c | 11 +++--
+>  drivers/hid/intel-ish-hid/ishtp-hid.c        |  2 +-
+>  drivers/hid/intel-ish-hid/ishtp-hid.h        |  9 +---
+>  drivers/hid/intel-ish-hid/ishtp/bus.c        |  9 +++-
+>  drivers/hid/intel-ish-hid/ishtp/client.c     |  5 +--
+>  drivers/hid/intel-ish-hid/ishtp/hbm.c        |  4 +-
+>  drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h  |  4 +-
+>  drivers/hid/usbhid/hid-pidff.c               |  4 +-
+>  drivers/hid/usbhid/usbkbd.c                  |  2 +-
+>  drivers/hid/wacom_sys.c                      |  2 +-
+>  include/linux/intel-ish-client-if.h          |  8 +++-
+>  24 files changed, 90 insertions(+), 81 deletions(-)
+> 
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Anssi Hannula <anssi.hannula@gmail.com>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: "Bruno Prémont" <bonbons@linux-vserver.org>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: Daniel Drubin <daniel.drubin@intel.com>
+> Cc: Dario Pagani <dario.pagani.146+linuxk@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Cc: Kim Kuparinen <kimi.h.kuparinen@gmail.com>
+> Cc: "Krzysztof Wilczyński" <kw@linux.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-usb@vger.kernel.org
+> Cc: Lopez Casado <nlopezcasad@logitech.com>
+> Cc: "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>
+> Cc: Masaki Ota <masaki.ota@jp.alps.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: message to <vojtech@ucw.cz>
+> Cc: Michael Haboustak <mike-@cinci.rr.com>
+> Cc: Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Uwe Kleine-König" <uwe@kleine-koenig.org>
+> Cc: Vojtech Pavlik <vojtech@suse.cz>
+> Cc: Zhang Lixu <lixu.zhang@intel.com>
 
-Agreed, I'm not really advocating for the latter; the former suggestion
-is IMO a pretty concise way of providing useful information in dmesg.
-
-Rasmus
