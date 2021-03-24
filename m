@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB43348471
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFCE34847D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbhCXWS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:18:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49422 "EHLO mail.kernel.org"
+        id S238777AbhCXWUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:20:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232286AbhCXWSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 885E9619BB;
-        Wed, 24 Mar 2021 22:18:41 +0000 (UTC)
+        id S232248AbhCXWUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 18:20:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3954F61A1B;
+        Wed, 24 Mar 2021 22:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616624322;
-        bh=iA6i6r2UQHk+W1NdA/U5j6cKVWYnHcV6RQbV8Dze9/o=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YBwF5E4dK4We9Y28Is1bG5pTcGrlIn0/ahGBonIFARyh8YWrcnXvjag3u3rJH8wrC
-         dOK1YKd97xrLRWRxXgUN3T7qt+j5G1qKqS0MbOZKgMOytN3HmWP5HQNpE8F1QD0v43
-         5z8RJVuDNolFKH0ye/fnROak4HyngjNmvwfOwA7rIetSY8r7q8BmDux+9lbhRMQ4Y/
-         2D6vLqY3Gm558oPtnD8cZOZdjAPY63yERJY3f56ffK5GmSchAMQHjEexhLLy3/jEiS
-         9BxV8k1q8ZN3tUJbCTCrAyYW3zMjp8viDVhmlh/NmTcC/6fGVtG6QXSeBCSvMt+I2j
-         elTuHkEUkg8Fg==
-Message-ID: <ec77b59eefe91545d9aa74d3a19f931a0a23ad8e.camel@kernel.org>
-Subject: Re: [PATCH][next] net/mlx5: Fix spelling mistakes in mlx5_core_info
- message
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Colin King <colin.king@canonical.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 15:18:40 -0700
-In-Reply-To: <20210315123004.9957-1-colin.king@canonical.com>
-References: <20210315123004.9957-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        s=k20201202; t=1616624409;
+        bh=ZKZgnfkdMke28qJ4ulpvPwNeGxnCHXX92AuHDbvYGag=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=r2tDJioEAL97ugx+QZbc/LgvDIEzf37ohmr5IatQbzaF8xiGv7miUDONzFqIamIxF
+         ZJsUEaMtLSIwlGnr526M2OkdCqVEjChf1PxrLVHuYyuKOEFBKzImLUBwSz/X7h4uLf
+         6Cfa7jiaYlPjNVXduXRhQ9ZD4Z7Go/rf6BgD3REGoASWaZW+aLrjUaJXcAxUgd+djh
+         ECcQTOAFpxx9olkIXB2QN92gQhRJcPuQbU+ootLSsyVXyErZKaOGuAlbOSqt4SZIFH
+         /06H5KAn/fXW+GNzze3auM4hc5nlyCYaQVEl+WuGYsNMTMUebif/Y4aTrE2oZRSNwC
+         10A1uw4tq6wXw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2802960A0E;
+        Wed, 24 Mar 2021 22:20:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] octeontx2: fix -Wnonnull warning
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161662440915.20293.15686935184502381902.git-patchwork-notify@kernel.org>
+Date:   Wed, 24 Mar 2021 22:20:09 +0000
+References: <20210323125337.1783611-1-arnd@kernel.org>
+In-Reply-To: <20210323125337.1783611-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, arnd@arndb.de,
+        cjacob@marvell.com, zyta@marvell.com, colin.king@canonical.com,
+        rsaladi2@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-15 at 12:30 +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There are two spelling mistakes in a mlx5_core_info message. Fix
-> them.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/health.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> index a0a851640804..9ff163c5bcde 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> @@ -340,7 +340,7 @@ static int mlx5_health_try_recover(struct
-> mlx5_core_dev *dev)
->                 return -EIO;
->         }
->  
-> -       mlx5_core_info(dev, "health revovery succeded\n");
-> +       mlx5_core_info(dev, "health recovery succeeded\n");
->         return 0;
->  }
->  
+Hello:
 
-Applied to net-next-mlx5, sorry for the delay.
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 23 Mar 2021 13:53:29 +0100 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When compile testing this driver on a platform on which probe() is
+> known to fail at compile time, gcc warns about the cgx_lmactype_string[]
+> array being uninitialized:
+> 
+> In function 'strncpy',
+>     inlined from 'link_status_user_format' at /git/arm-soc/drivers/net/ethernet/marvell/octeontx2/af/cgx.c:838:2,
+>     inlined from 'cgx_link_change_handler' at /git/arm-soc/drivers/net/ethernet/marvell/octeontx2/af/cgx.c:853:2:
+> include/linux/fortify-string.h:27:30: error: argument 2 null where non-null expected [-Werror=nonnull]
+>    27 | #define __underlying_strncpy __builtin_strncpy
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] octeontx2: fix -Wnonnull warning
+    https://git.kernel.org/netdev/net-next/c/b7fbc88692e6
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
