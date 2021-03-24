@@ -2,161 +2,674 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D5D34741C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4596E347423
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234420AbhCXJE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:04:58 -0400
-Received: from mail-eopbgr80133.outbound.protection.outlook.com ([40.107.8.133]:37541
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234223AbhCXJEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:04:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a8+e6fB8esugyOdNbtVmYIADubuyNZ/8pDrp3Z2S1VBR7OdT0UyCZv/FdakVPVqeekPkmf/7lkO5Nmw7xmCDcyS+PdIW4om0CAYsOqY6RiYoIeSOJNatzT1ZZX7w11FOQzU2rsjdc/+LluNgQmZNe+g68f8srofc4GMKPmBGTFPy8oz8NEuecjJc4Knfd3/CqHHk1TTG2wAbV/m50qfstmzqoLA9m+h9iFXIM0bBrv8Zbvox8lOFOpuJ/qRzbt7nI++pFvxR+TczIMt21lB9FZHrVZoIqaHB1QMXvRuez9lv9hyq2ridRqKbiY7SbNEYcuwXpXLjmSWMkDyTNp6hkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9I2kraGF1cHJrDzaE34S0NBjKlCDeo+UwtLJbeRTpmc=;
- b=EO4tICptvD4xnUtijOD6fixH6lbk96r+P5YkKgw8OAB9ivw7b9vulAf9PCdmeb8l6hQ/WugVmBMoQ0FkiFP/L/EZD6QNM/uQC58G14alSar4XVLaxTWB/DP4kHcWdSdIXUdRy9BRoXHfUb++nLlH7Crlg9I+/UtREde0AZ2y62YJZjfVWu/0CoNEaxKNQ4NWnhbicWO8YbiQC3/ALI2KRlWJCvRFC9WLD2zgXyVDrwS9rcSWvv1Grc9UIO9M3KuyNY++nRvUIKsPViuTclmAX6/BzQ81VaiJkttodEGeg/A6cL1gE0sa4KnxCaSLWT/X5kYBMK58QEjQxooQzcEmhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9I2kraGF1cHJrDzaE34S0NBjKlCDeo+UwtLJbeRTpmc=;
- b=DI2vUAakKDbfACpC0EkDt5wZXeUeH8Jc0Cs/QDSub/rp+ZN3w02slHDvIaJUv+liGT7PCHQY3jI+PpmWNHC+SqaC7i2gyYH+nW4sAprakCU1CDGGf7TtbO9rIdQjho47Py1wUwtDs1hiVlFU+jHInmFBHlUAkxlCeAoLyvWDZIE=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM0PR07MB4468.eurprd07.prod.outlook.com (2603:10a6:208:7a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.9; Wed, 24 Mar
- 2021 09:04:51 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::7c49:66bd:9795:1a3f]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::7c49:66bd:9795:1a3f%3]) with mapi id 15.20.3977.024; Wed, 24 Mar 2021
- 09:04:51 +0000
-Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S234468AbhCXJII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:08:08 -0400
+Received: from mga12.intel.com ([192.55.52.136]:12330 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234385AbhCXJH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:07:56 -0400
+IronPort-SDR: bjQfBgf3PdyMTGiJ11oKq0O9BGNztJQbwqe3TEUFhJmNWF+uulWGG8psfUoJ0ENcSLuUXeStBT
+ mG7WJZFRI75w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="170003325"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="170003325"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 02:07:55 -0700
+IronPort-SDR: dXLjVWrd48yAiHD0aI1bzk3D1H47KhheniaIWUsu3DwOAAMRCN6dhVySypqXnNSChim/TZTik8
+ XyoWVGag8K4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="442127862"
+Received: from mismail5-ilbpg0.png.intel.com ([10.88.229.82])
+  by fmsmga002.fm.intel.com with ESMTP; 24 Mar 2021 02:07:50 -0700
+From:   mohammad.athari.ismail@intel.com
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, Chuah@vger.kernel.org,
+        Kim Tatt <kim.tatt.chuah@intel.com>,
+        Fugang Duan <fugang.duan@nxp.com>
+Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>, vee.khee.wong@intel.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-References: <3eecf51d-b189-9e8b-f19d-a49d0764aae5@nokia.com>
- <05608bc8-f44d-5f91-15ab-af00c59b53e6@gmail.com>
- <e726be33-bc03-0515-f430-c5a34ebc3619@nokia.com>
- <20210312172401.36awjh4hmj4cs6ot@e107158-lin.cambridge.arm.com>
- <134e1a2c-daac-7b00-c170-bcca434d08df@gmail.com>
- <20210314220217.4mexdide7sqjfved@e107158-lin>
- <20210321190611.d6a3hbqabts3qq5v@e107158-lin>
- <20210322110106.2bed3d50@gandalf.local.home>
- <20210322163248.id7qplbk6och6kuw@e107158-lin>
- <504d72ec-70a6-7e50-dbbb-16d693ce6150@nokia.com>
- <20210323222230.2d63hdcxq6strbug@e107158-lin>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <25056e99-dfd1-645b-39fc-14f47085a7fe@nokia.com>
-Date:   Wed, 24 Mar 2021 10:04:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <20210323222230.2d63hdcxq6strbug@e107158-lin>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.166]
-X-ClientProxiedBy: CH0PR04CA0021.namprd04.prod.outlook.com
- (2603:10b6:610:76::26) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.166) by CH0PR04CA0021.namprd04.prod.outlook.com (2603:10b6:610:76::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Wed, 24 Mar 2021 09:04:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9ebabdb0-b756-4f84-0aa7-08d8eea3e201
-X-MS-TrafficTypeDiagnostic: AM0PR07MB4468:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB446868D477A949EA4525D1DE88639@AM0PR07MB4468.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rvv+aYUC3pVQlaUpXlnNVmKZjNHA9l+smA0hpqx+neZNamA5QFTHQa7tFTrTmNlzCHQNQQpyBM1wXIwCapdPFRsJPay6fqYIrxOA/rqn9Y6XX1Cl+a1sYPsm0bpVW8sPLhCgw0g+58h8wi5ES4oZTXHgYxJJL9+LnDUCqu19LX9TKlE9YaKBTS3Tx7VIHma74CSYXiyUYVzxX3JNZbcucXqW5W2UfQGh6mLlETYyGMvj4nE7eZ2guoleMm1hM7zH5uWK5G1ykQ8ktwn87ARY29tDM9nW5Mwk8M7eh6AWVmTXg6Psd3vuwJREZqqdVJja7NW9wBOUFgqWClZ6xuL+0P0XzzLU/BSTehRnscrtr9h0DxSo+wnzN7auvE/15Oiol1OhVfje8IOAfLvnnacmsz8+a/KTo1uvOD4XtIA0qnQRgREUa0MPrS9RLl7AXzSoAwdx8VAtXgkv4IwaK6i3Dk81myZbt8UeGmqJKrKpfb5h6xj3SSGKhPmfzwSanOWl7t37dXWt/O+coOs13/n0ijP/f8KvHUY3ZKlRGgxGq3royPVHPzqQUCQ6NNcFauh5SXBWJ4wZoBl0UpuxOcm3+A9T+Gnl5mTYey9yayaxbVAPBTqsGGu4zvUdpfDtxrzR7EvBKZoIJpmiFiYSJlXdZwIIYYfPwTHeFvvZqJycGoY+hlh65teuE8L1D9aKD/fl3VjvJbBqsNv7Fcj5YhvMkjjk1FrDlJTfJ6vrQ4+Uy7U=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(366004)(396003)(31696002)(66946007)(2906002)(6486002)(186003)(478600001)(316002)(31686004)(6666004)(66556008)(956004)(16526019)(2616005)(66476007)(54906003)(83380400001)(86362001)(38100700001)(8936002)(26005)(6916009)(4326008)(5660300002)(8676002)(52116002)(44832011)(6506007)(53546011)(36756003)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R2RGSHJ1b05haUVQQUNWTmE2S0hpWjdYdDFTNUhmUlZOblBaVFR3czNMc2pO?=
- =?utf-8?B?bFV6d2hzcnFSd21tTzZaQnY0RStMRmRmd2xVL1BhZElmaG8rSmRXbFJRUXIx?=
- =?utf-8?B?S25JSEJHN0tJNmMvbWRCdjJRZ0ZLMkxEV0JKNzkvYjlTNWNzdEg1MjQwNHdX?=
- =?utf-8?B?dkVKa1RJNnJLOUxwd1I5SCtKakN6N3BUQ2xUK0VYZmU0bTJFZ1Fqd3BUNmd2?=
- =?utf-8?B?SWxwVitHMzZxQzdxWlRodFhTSVpyUzZJN0tjdWYzNFhkVm5CRTFxZTU0Lzk0?=
- =?utf-8?B?RGZGeU1iTmhpcTFUNFhJRE5oUHdnVkNvV1B1OEFMWEwyU1drK3pMK1ZVU0F6?=
- =?utf-8?B?ZEdqY2IrbzdTNUlzK2xYOXVVeVNYWElBczZGdFM0U3pOWjE3ZUtJbTRYQWkw?=
- =?utf-8?B?OUNYVlgyeDVHU3NEd3NkMFlEZmlzWWZubkljRURkWERETzNmcnM1RmxIUTlm?=
- =?utf-8?B?U1FtNVBSaEorQ0RmVUR4cEtUeTAvWjE3N2pQb0dtQWx0U0Z0NE15cFpXb1Nu?=
- =?utf-8?B?eGhIRjA2d1YzSGxPeTd6akdNNWJ0Mk9HTi93dVdvTnVORk5oZjVmbklKL09D?=
- =?utf-8?B?QW5kWExQMFlXcTRiRXMwNnRiUmJaOE52cHN3T1gwMzZyUndrWWFjVjlYVlZJ?=
- =?utf-8?B?UGlZQm5uMFdDd0I3TFNHR3A0SUhsRXRPQk40NUM4cGxlaFg5dFZiZGkvV3c1?=
- =?utf-8?B?N2k1Yy8rajF6dDJDY3VJaTZFeWFoU0FxV1E0SmNqV1pCMGExUkN3NXB2VVJr?=
- =?utf-8?B?YjZZdkZqeCt3WFJJWm1xYWlnaFBuMU90bm54RjI3OXFRbkxBck9QWHJmbnRm?=
- =?utf-8?B?U0g4dDZXRk10YWdxS054Y3BYclFaaG5qYUVzK3RsUDFRcVZEQVk3RVJhMFpC?=
- =?utf-8?B?RTdKd3NBYlBpZnBpK0tZRVJoSzVNMkFELzEyVUJiMUxncTN4K3FDVEdtN2Jj?=
- =?utf-8?B?NmRCM2xjK1liUlFLZGZ3dy8wTFJCbGJ4YzEvRStwN1RSQ3VNbTM2ZmZnaUZM?=
- =?utf-8?B?d1RXOWJaSWVadUNjb0JUaG9TNU94UDcyT1pEejlMdTVVZitUUEdCd245dXdu?=
- =?utf-8?B?VTk0OWFWZHZLamdCbFVaRWh0Lzh1RUtaKzgrYUhtTW84bTlQbVd0VmlxOWtC?=
- =?utf-8?B?RWxTNDM5WnI0N2V6MWxvZFpHWWVkNHh3SldFRmx0cnlUUjR1dDNaYzBsRHVH?=
- =?utf-8?B?dHhqR1lhS1pya0VXaEp1S0tBUStmc2JUcHg1cTJJUlVxSFNJaVVpWDhDQjA4?=
- =?utf-8?B?ZzZ1VXB1YklnaXI2NmJYK09QakFxclpxVXVOdStMMlM5Y2p0K1N1RnZrcEE0?=
- =?utf-8?B?QmRDbU1QMkZHS1JUbnhnM1pQVnRlRkRoY3g5S1pTbU9zNGdoMWpUcHBzOFhH?=
- =?utf-8?B?djBpNXE3YTBja3FQQmRpdW1wQURJelV3QUg3R1R4S010M3BrVm5seHVZRlVv?=
- =?utf-8?B?enRoOHp1K0hESGlaT3VjeWpCNk9mMzl2cmhHdjNDTHRHVTV6SzR0bXNLdUV5?=
- =?utf-8?B?bC8yLzhha0Q4eGZ4bk81V1lFaVk5VEFlNEVGdkRiZDJuUWdPMDR2TzFwczJ5?=
- =?utf-8?B?MGRlbmt5QTN4Q1lkN0tvRVhHQ3RVVUMxRGZMVkQySkJlQ20vSFcyNVNXR1JW?=
- =?utf-8?B?ckphWGM2WXVzV1FIZ3hiZXVZNXN3NnhFMVkyeVVmbGR3UGthS3VNVSsycElJ?=
- =?utf-8?B?bHhydjk3cm5PYVM4dlJ5cXNRZkxkRmJqc1FLTWQrRXZGTDNnSERBSjVtM3hF?=
- =?utf-8?Q?pg9YvOAWGDlfAQuX2/m3ILLLiqeApJtFvoC7gbW?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ebabdb0-b756-4f84-0aa7-08d8eea3e201
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 09:04:51.3865
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IwUkNfX0YX4ue9Mx+io0ssem+QFZsVVLlYjFYFOdtUMYWp3P95mdi8jlkNjgESioez7hL0aFkgkZ9qG9P/hzhkRkN8LNBbEXe9XEehTz2Bk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4468
+        mohammad.athari.ismail@intel.com
+Subject: [PATCH net-next] net: stmmac: support FPE link partner hand-shaking procedure
+Date:   Wed, 24 Mar 2021 17:07:42 +0800
+Message-Id: <20210324090742.3413-1-mohammad.athari.ismail@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
+From: Ong Boon Leong <boon.leong.ong@intel.com>
 
-On 23/03/2021 23:22, Qais Yousef wrote:
->>> Yes you're right. I was a bit optimistic on CONFIG_DYNAMIC_FTRACE will imply
->>> CONFIG_ARM_MODULE_PLTS is enabled too.
->>>
->>> It only has an impact on reducing ifdefery when calling
->>>
->>> 	ftrace_call_replace_mod(rec->arch.mod, ...)
->>>
->>> Should be easy to wrap rec->arch.mod with its own accessor that will return
->>> NULL if !CONFIG_ARM_MODULE_PLTS or just ifdef the functions.
->>>
->>> Up to Alexander to pick what he prefers :-)
->> well, I of course prefer v7 as-is, because this review is running longer than two
->> years and I actually hope these patches to be finally merged at some point.
->> But you are welcome to optimize them with follow up patches :)
-> I appreciate that and thanks a lot for your effort. My attempt to review and
-> test here is to help in getting this merged.
-> 
-> FWIW my main concern is about duplicating the range check in
-> ftrace_call_replace() and using magic values that already exist in
-> __arm_gen_branch_{arm, thumb2}() and better remain encapsulated there.
+In order to discover whether remote station supports frame preemption,
+local station sends verify mPacket and expects response mPacket in
+return from the remote station.
 
-could you please check the negative limits? I have an opinion, my limits are
-correct. I could add extra parameter to arm_gen_branch_link(), but for this
-I first need to fix its negative limits, which, I believe, well... Approximate :)
+So, we add the functions to send and handle event when verify mPacket
+and response mPacket are exchanged between the networked stations.
 
+The mechanism to handle different FPE states between local and remote
+station (link partner) is implemented using workqueue which starts a
+task each time there is some sign of verify & response mPacket exchange
+as check in FPE IRQ event. The task retries couple of times to try to
+spot the states that both stations are ready to enter FPE ON. This allows
+different end points to enable FPE at different time and verify-response
+mPacket can happen asynchronously. Ultimately, the task will only turn
+FPE ON when local station have both exchange response in both directions.
+
+Thanks to Voon Weifeng for implementing the core functions for detecting
+FPE events and send mPacket and phylink related change.
+
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Co-developed-by: Voon Weifeng <weifeng.voon@intel.com>
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Co-developed-by: Tan Tee Min <tee.min.tan@intel.com>
+Signed-off-by: Tan Tee Min <tee.min.tan@intel.com>
+Co-developed-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/common.h  |   7 +
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |   8 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac5.c  |  49 +++++
+ drivers/net/ethernet/stmicro/stmmac/dwmac5.h  |  11 ++
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |   7 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   7 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 183 ++++++++++++++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_tc.c   |  39 +++-
+ include/linux/stmmac.h                        |  27 +++
+ 9 files changed, 331 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index 1c0c60bdf854..4511945df802 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -315,6 +315,13 @@ enum dma_irq_status {
+ #define	CORE_IRQ_RX_PATH_IN_LPI_MODE	(1 << 2)
+ #define	CORE_IRQ_RX_PATH_EXIT_LPI_MODE	(1 << 3)
+ 
++/* FPE defines */
++#define FPE_EVENT_UNKNOWN		0
++#define FPE_EVENT_TRSP			BIT(0)
++#define FPE_EVENT_TVER			BIT(1)
++#define FPE_EVENT_RRSP			BIT(2)
++#define FPE_EVENT_RVER			BIT(3)
++
+ #define CORE_IRQ_MTL_RX_OVERFLOW	BIT(8)
+ 
+ /* Physical Coding Sublayer */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+index 29f765a246a0..95864f014ffa 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -53,6 +53,10 @@ static void dwmac4_core_init(struct mac_device_info *hw,
+ 	if (hw->pcs)
+ 		value |= GMAC_PCS_IRQ_DEFAULT;
+ 
++	/* Enable FPE interrupt */
++	if ((GMAC_HW_FEAT_FPESEL & readl(ioaddr + GMAC_HW_FEATURE3)) >> 26)
++		value |= GMAC_INT_FPE_EN;
++
+ 	writel(value, ioaddr + GMAC_INT_EN);
+ }
+ 
+@@ -1245,6 +1249,8 @@ const struct stmmac_ops dwmac410_ops = {
+ 	.config_l4_filter = dwmac4_config_l4_filter,
+ 	.est_configure = dwmac5_est_configure,
+ 	.fpe_configure = dwmac5_fpe_configure,
++	.fpe_send_mpacket = dwmac5_fpe_send_mpacket,
++	.fpe_irq_status = dwmac5_fpe_irq_status,
+ 	.add_hw_vlan_rx_fltr = dwmac4_add_hw_vlan_rx_fltr,
+ 	.del_hw_vlan_rx_fltr = dwmac4_del_hw_vlan_rx_fltr,
+ 	.restore_hw_vlan_rx_fltr = dwmac4_restore_hw_vlan_rx_fltr,
+@@ -1294,6 +1300,8 @@ const struct stmmac_ops dwmac510_ops = {
+ 	.config_l4_filter = dwmac4_config_l4_filter,
+ 	.est_configure = dwmac5_est_configure,
+ 	.fpe_configure = dwmac5_fpe_configure,
++	.fpe_send_mpacket = dwmac5_fpe_send_mpacket,
++	.fpe_irq_status = dwmac5_fpe_irq_status,
+ 	.add_hw_vlan_rx_fltr = dwmac4_add_hw_vlan_rx_fltr,
+ 	.del_hw_vlan_rx_fltr = dwmac4_del_hw_vlan_rx_fltr,
+ 	.restore_hw_vlan_rx_fltr = dwmac4_restore_hw_vlan_rx_fltr,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
+index 0ae85f8adf67..5b010ebfede9 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac5.c
+@@ -707,3 +707,52 @@ void dwmac5_fpe_configure(void __iomem *ioaddr, u32 num_txq, u32 num_rxq,
+ 	value |= EFPE;
+ 	writel(value, ioaddr + MAC_FPE_CTRL_STS);
+ }
++
++int dwmac5_fpe_irq_status(void __iomem *ioaddr, struct net_device *dev)
++{
++	u32 value;
++	int status;
++
++	status = FPE_EVENT_UNKNOWN;
++
++	value = readl(ioaddr + MAC_FPE_CTRL_STS);
++
++	if (value & TRSP) {
++		status |= FPE_EVENT_TRSP;
++		netdev_info(dev, "FPE: Respond mPacket is transmitted\n");
++	}
++
++	if (value & TVER) {
++		status |= FPE_EVENT_TVER;
++		netdev_info(dev, "FPE: Verify mPacket is transmitted\n");
++	}
++
++	if (value & RRSP) {
++		status |= FPE_EVENT_RRSP;
++		netdev_info(dev, "FPE: Respond mPacket is received\n");
++	}
++
++	if (value & RVER) {
++		status |= FPE_EVENT_RVER;
++		netdev_info(dev, "FPE: Verify mPacket is received\n");
++	}
++
++	return status;
++}
++
++void dwmac5_fpe_send_mpacket(void __iomem *ioaddr, enum stmmac_mpacket_type type)
++{
++	u32 value;
++
++	value = readl(ioaddr + MAC_FPE_CTRL_STS);
++
++	if (type == MPACKET_VERIFY) {
++		value &= ~SRSP;
++		value |= SVER;
++	} else {
++		value &= ~SVER;
++		value |= SRSP;
++	}
++
++	writel(value, ioaddr + MAC_FPE_CTRL_STS);
++}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac5.h b/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
+index 709bbfc9ae61..ff555d8b0cdf 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac5.h
+@@ -12,6 +12,12 @@
+ #define TMOUTEN				BIT(0)
+ 
+ #define MAC_FPE_CTRL_STS		0x00000234
++#define TRSP				BIT(19)
++#define TVER				BIT(18)
++#define RRSP				BIT(17)
++#define RVER				BIT(16)
++#define SRSP				BIT(2)
++#define SVER				BIT(1)
+ #define EFPE				BIT(0)
+ 
+ #define MAC_PPS_CONTROL			0x00000b70
+@@ -128,6 +134,8 @@
+ #define GMAC_RXQCTRL_VFFQ_SHIFT		17
+ #define GMAC_RXQCTRL_VFFQE		BIT(16)
+ 
++#define GMAC_INT_FPE_EN			BIT(17)
++
+ int dwmac5_safety_feat_config(void __iomem *ioaddr, unsigned int asp);
+ int dwmac5_safety_feat_irq_status(struct net_device *ndev,
+ 		void __iomem *ioaddr, unsigned int asp,
+@@ -145,5 +153,8 @@ void dwmac5_est_irq_status(void __iomem *ioaddr, struct net_device *dev,
+ 			   struct stmmac_extra_stats *x, u32 txqcnt);
+ void dwmac5_fpe_configure(void __iomem *ioaddr, u32 num_txq, u32 num_rxq,
+ 			  bool enable);
++void dwmac5_fpe_send_mpacket(void __iomem *ioaddr,
++			     enum stmmac_mpacket_type type);
++int dwmac5_fpe_irq_status(void __iomem *ioaddr, struct net_device *dev);
+ 
+ #endif /* __DWMAC5_H__ */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index 692541c7b419..38cfc2cae129 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -397,6 +397,9 @@ struct stmmac_ops {
+ 			       struct stmmac_extra_stats *x, u32 txqcnt);
+ 	void (*fpe_configure)(void __iomem *ioaddr, u32 num_txq, u32 num_rxq,
+ 			      bool enable);
++	void (*fpe_send_mpacket)(void __iomem *ioaddr,
++				 enum stmmac_mpacket_type type);
++	int (*fpe_irq_status)(void __iomem *ioaddr, struct net_device *dev);
+ };
+ 
+ #define stmmac_core_init(__priv, __args...) \
+@@ -497,6 +500,10 @@ struct stmmac_ops {
+ 	stmmac_do_void_callback(__priv, mac, est_irq_status, __args)
+ #define stmmac_fpe_configure(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, mac, fpe_configure, __args)
++#define stmmac_fpe_send_mpacket(__priv, __args...) \
++	stmmac_do_void_callback(__priv, mac, fpe_send_mpacket, __args)
++#define stmmac_fpe_irq_status(__priv, __args...) \
++	stmmac_do_callback(__priv, mac, fpe_irq_status, __args)
+ 
+ /* PTP and HW Timer helpers */
+ struct stmmac_hwtimestamp {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+index 375c503d2df8..4faad331a4ca 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+@@ -234,6 +234,12 @@ struct stmmac_priv {
+ 	struct workqueue_struct *wq;
+ 	struct work_struct service_task;
+ 
++	/* Workqueue for handling FPE hand-shaking */
++	unsigned long fpe_task_state;
++	struct workqueue_struct *fpe_wq;
++	struct work_struct fpe_task;
++	char wq_name[IFNAMSIZ + 4];
++
+ 	/* TC Handling */
+ 	unsigned int tc_entries_max;
+ 	unsigned int tc_off_max;
+@@ -273,6 +279,7 @@ bool stmmac_eee_init(struct stmmac_priv *priv);
+ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt);
+ int stmmac_reinit_ringparam(struct net_device *dev, u32 rx_size, u32 tx_size);
+ int stmmac_bus_clks_config(struct stmmac_priv *priv, bool enabled);
++void stmmac_fpe_handshake(struct stmmac_priv *priv, bool enable);
+ 
+ #if IS_ENABLED(CONFIG_STMMAC_SELFTESTS)
+ void stmmac_selftest_run(struct net_device *dev,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 8d7015d3a537..170296820af0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -971,6 +971,21 @@ static void stmmac_mac_an_restart(struct phylink_config *config)
+ 	/* Not Supported */
+ }
+ 
++static void stmmac_fpe_link_state_handle(struct stmmac_priv *priv, bool is_up)
++{
++	struct stmmac_fpe_cfg *fpe_cfg = priv->plat->fpe_cfg;
++	enum stmmac_fpe_state *lo_state = &fpe_cfg->lo_fpe_state;
++	enum stmmac_fpe_state *lp_state = &fpe_cfg->lp_fpe_state;
++	bool *hs_enable = &fpe_cfg->hs_enable;
++
++	if (is_up && *hs_enable) {
++		stmmac_fpe_send_mpacket(priv, priv->ioaddr, MPACKET_VERIFY);
++	} else {
++		*lo_state = FPE_EVENT_UNKNOWN;
++		*lp_state = FPE_EVENT_UNKNOWN;
++	}
++}
++
+ static void stmmac_mac_link_down(struct phylink_config *config,
+ 				 unsigned int mode, phy_interface_t interface)
+ {
+@@ -981,6 +996,8 @@ static void stmmac_mac_link_down(struct phylink_config *config,
+ 	priv->tx_lpi_enabled = false;
+ 	stmmac_eee_init(priv);
+ 	stmmac_set_eee_pls(priv, priv->hw, false);
++
++	stmmac_fpe_link_state_handle(priv, false);
+ }
+ 
+ static void stmmac_mac_link_up(struct phylink_config *config,
+@@ -1079,6 +1096,8 @@ static void stmmac_mac_link_up(struct phylink_config *config,
+ 		priv->tx_lpi_enabled = priv->eee_enabled;
+ 		stmmac_set_eee_pls(priv, priv->hw, true);
+ 	}
++
++	stmmac_fpe_link_state_handle(priv, true);
+ }
+ 
+ static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
+@@ -2793,6 +2812,26 @@ static void stmmac_safety_feat_configuration(struct stmmac_priv *priv)
+ 	}
+ }
+ 
++static int stmmac_fpe_start_wq(struct stmmac_priv *priv)
++{
++	char *name;
++
++	clear_bit(__FPE_TASK_SCHED, &priv->fpe_task_state);
++
++	name = priv->wq_name;
++	sprintf(name, "%s-fpe", priv->dev->name);
++
++	priv->fpe_wq = create_singlethread_workqueue(name);
++	if (!priv->fpe_wq) {
++		netdev_err(priv->dev, "%s: Failed to create workqueue\n", name);
++
++		return -ENOMEM;
++	}
++	netdev_info(priv->dev, "FPE workqueue start");
++
++	return 0;
++}
++
+ /**
+  * stmmac_hw_setup - setup mac in a usable state.
+  *  @dev : pointer to the device structure.
+@@ -2929,6 +2968,13 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
+ 	/* Start the ball rolling... */
+ 	stmmac_start_all_dma(priv);
+ 
++	if (priv->dma_cap.fpesel) {
++		stmmac_fpe_start_wq(priv);
++
++		if (priv->plat->fpe_cfg->enable)
++			stmmac_fpe_handshake(priv, true);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -3090,6 +3136,16 @@ static int stmmac_open(struct net_device *dev)
+ 	return ret;
+ }
+ 
++static void stmmac_fpe_stop_wq(struct stmmac_priv *priv)
++{
++	set_bit(__FPE_REMOVING, &priv->fpe_task_state);
++
++	if (priv->fpe_wq)
++		destroy_workqueue(priv->fpe_wq);
++
++	netdev_info(priv->dev, "FPE workqueue stop");
++}
++
+ /**
+  *  stmmac_release - close entry point of the driver
+  *  @dev : device pointer.
+@@ -3139,6 +3195,9 @@ static int stmmac_release(struct net_device *dev)
+ 
+ 	pm_runtime_put(priv->device);
+ 
++	if (priv->dma_cap.fpesel)
++		stmmac_fpe_stop_wq(priv);
++
+ 	return 0;
+ }
+ 
+@@ -4280,6 +4339,48 @@ static int stmmac_set_features(struct net_device *netdev,
+ 	return 0;
+ }
+ 
++static void stmmac_fpe_event_status(struct stmmac_priv *priv, int status)
++{
++	struct stmmac_fpe_cfg *fpe_cfg = priv->plat->fpe_cfg;
++	enum stmmac_fpe_state *lo_state = &fpe_cfg->lo_fpe_state;
++	enum stmmac_fpe_state *lp_state = &fpe_cfg->lp_fpe_state;
++	bool *hs_enable = &fpe_cfg->hs_enable;
++
++	if (status == FPE_EVENT_UNKNOWN || !*hs_enable)
++		return;
++
++	/* If LP has sent verify mPacket, LP is FPE capable */
++	if ((status & FPE_EVENT_RVER) == FPE_EVENT_RVER) {
++		if (*lp_state < FPE_STATE_CAPABLE)
++			*lp_state = FPE_STATE_CAPABLE;
++
++		/* If user has requested FPE enable, quickly response */
++		if (*hs_enable)
++			stmmac_fpe_send_mpacket(priv, priv->ioaddr,
++						MPACKET_RESPONSE);
++	}
++
++	/* If Local has sent verify mPacket, Local is FPE capable */
++	if ((status & FPE_EVENT_TVER) == FPE_EVENT_TVER) {
++		if (*lo_state < FPE_STATE_CAPABLE)
++			*lo_state = FPE_STATE_CAPABLE;
++	}
++
++	/* If LP has sent response mPacket, LP is entering FPE ON */
++	if ((status & FPE_EVENT_RRSP) == FPE_EVENT_RRSP)
++		*lp_state = FPE_STATE_ENTERING_ON;
++
++	/* If Local has sent response mPacket, Local is entering FPE ON */
++	if ((status & FPE_EVENT_TRSP) == FPE_EVENT_TRSP)
++		*lo_state = FPE_STATE_ENTERING_ON;
++
++	if (!test_bit(__FPE_REMOVING, &priv->fpe_task_state) &&
++	    !test_and_set_bit(__FPE_TASK_SCHED, &priv->fpe_task_state) &&
++	    priv->fpe_wq) {
++		queue_work(priv->fpe_wq, &priv->fpe_task);
++	}
++}
++
+ /**
+  *  stmmac_interrupt - main ISR
+  *  @irq: interrupt number.
+@@ -4318,6 +4419,13 @@ static irqreturn_t stmmac_interrupt(int irq, void *dev_id)
+ 		stmmac_est_irq_status(priv, priv->ioaddr, priv->dev,
+ 				      &priv->xstats, tx_cnt);
+ 
++	if (priv->dma_cap.fpesel) {
++		int status = stmmac_fpe_irq_status(priv, priv->ioaddr,
++						   priv->dev);
++
++		stmmac_fpe_event_status(priv, status);
++	}
++
+ 	/* To handle GMAC own interrupts */
+ 	if ((priv->plat->has_gmac) || xmac) {
+ 		int status = stmmac_host_irq_status(priv, priv->hw, &priv->xstats);
+@@ -5065,6 +5173,68 @@ int stmmac_reinit_ringparam(struct net_device *dev, u32 rx_size, u32 tx_size)
+ 	return ret;
+ }
+ 
++#define SEND_VERIFY_MPAKCET_FMT "Send Verify mPacket lo_state=%d lp_state=%d\n"
++static void stmmac_fpe_lp_task(struct work_struct *work)
++{
++	struct stmmac_priv *priv = container_of(work, struct stmmac_priv,
++						fpe_task);
++	struct stmmac_fpe_cfg *fpe_cfg = priv->plat->fpe_cfg;
++	enum stmmac_fpe_state *lo_state = &fpe_cfg->lo_fpe_state;
++	enum stmmac_fpe_state *lp_state = &fpe_cfg->lp_fpe_state;
++	bool *hs_enable = &fpe_cfg->hs_enable;
++	bool *enable = &fpe_cfg->enable;
++	int retries = 20;
++
++	while (retries-- > 0) {
++		/* Bail out immediately if FPE handshake is OFF */
++		if (*lo_state == FPE_STATE_OFF || !*hs_enable)
++			break;
++
++		if (*lo_state == FPE_STATE_ENTERING_ON &&
++		    *lp_state == FPE_STATE_ENTERING_ON) {
++			stmmac_fpe_configure(priv, priv->ioaddr,
++					     priv->plat->tx_queues_to_use,
++					     priv->plat->rx_queues_to_use,
++					     *enable);
++
++			netdev_info(priv->dev, "configured FPE\n");
++
++			*lo_state = FPE_STATE_ON;
++			*lp_state = FPE_STATE_ON;
++			netdev_info(priv->dev, "!!! BOTH FPE stations ON\n");
++			break;
++		}
++
++		if ((*lo_state == FPE_STATE_CAPABLE ||
++		     *lo_state == FPE_STATE_ENTERING_ON) &&
++		     *lp_state != FPE_STATE_ON) {
++			netdev_info(priv->dev, SEND_VERIFY_MPAKCET_FMT,
++				    *lo_state, *lp_state);
++			stmmac_fpe_send_mpacket(priv, priv->ioaddr,
++						MPACKET_VERIFY);
++		}
++		/* Sleep then retry */
++		msleep(500);
++	}
++
++	clear_bit(__FPE_TASK_SCHED, &priv->fpe_task_state);
++}
++
++void stmmac_fpe_handshake(struct stmmac_priv *priv, bool enable)
++{
++	if (priv->plat->fpe_cfg->hs_enable != enable) {
++		if (enable) {
++			stmmac_fpe_send_mpacket(priv, priv->ioaddr,
++						MPACKET_VERIFY);
++		} else {
++			priv->plat->fpe_cfg->lo_fpe_state = FPE_STATE_OFF;
++			priv->plat->fpe_cfg->lp_fpe_state = FPE_STATE_OFF;
++		}
++
++		priv->plat->fpe_cfg->hs_enable = enable;
++	}
++}
++
+ /**
+  * stmmac_dvr_probe
+  * @device: device pointer
+@@ -5122,6 +5292,9 @@ int stmmac_dvr_probe(struct device *device,
+ 
+ 	INIT_WORK(&priv->service_task, stmmac_service_task);
+ 
++	/* Initialize Link Partner FPE workqueue */
++	INIT_WORK(&priv->fpe_task, stmmac_fpe_lp_task);
++
+ 	/* Override with kernel parameters if supplied XXX CRS XXX
+ 	 * this needs to have multiple instances
+ 	 */
+@@ -5435,8 +5608,18 @@ int stmmac_suspend(struct device *dev)
+ 		if (ret)
+ 			return ret;
+ 	}
++
+ 	mutex_unlock(&priv->lock);
+ 
++	if (priv->dma_cap.fpesel) {
++		/* Disable FPE */
++		stmmac_fpe_configure(priv, priv->ioaddr,
++				     priv->plat->tx_queues_to_use,
++				     priv->plat->rx_queues_to_use, false);
++
++		stmmac_fpe_handshake(priv, false);
++	}
++
+ 	priv->speed = SPEED_UNKNOWN;
+ 	return 0;
+ }
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index b80cb2985b39..1d84ee359808 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -297,6 +297,17 @@ static int tc_init(struct stmmac_priv *priv)
+ 
+ 	dev_info(priv->device, "Enabling HW TC (entries=%d, max_off=%d)\n",
+ 			priv->tc_entries_max, priv->tc_off_max);
++
++	if (!priv->plat->fpe_cfg) {
++		priv->plat->fpe_cfg = devm_kzalloc(priv->device,
++						   sizeof(*priv->plat->fpe_cfg),
++						   GFP_KERNEL);
++		if (!priv->plat->fpe_cfg)
++			return -ENOMEM;
++	} else {
++		memset(priv->plat->fpe_cfg, 0, sizeof(*priv->plat->fpe_cfg));
++	}
++
+ 	return 0;
+ }
+ 
+@@ -829,13 +840,10 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 	if (fpe && !priv->dma_cap.fpesel)
+ 		return -EOPNOTSUPP;
+ 
+-	ret = stmmac_fpe_configure(priv, priv->ioaddr,
+-				   priv->plat->tx_queues_to_use,
+-				   priv->plat->rx_queues_to_use, fpe);
+-	if (ret && fpe) {
+-		netdev_err(priv->dev, "failed to enable Frame Preemption\n");
+-		return ret;
+-	}
++	/* Actual FPE register configuration will be done after FPE handshake
++	 * is success.
++	 */
++	priv->plat->fpe_cfg->enable = fpe;
+ 
+ 	ret = stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
+ 				   priv->plat->clk_ptp_rate);
+@@ -845,12 +853,29 @@ static int tc_setup_taprio(struct stmmac_priv *priv,
+ 	}
+ 
+ 	netdev_info(priv->dev, "configured EST\n");
++
++	if (fpe) {
++		stmmac_fpe_handshake(priv, true);
++		netdev_info(priv->dev, "start FPE handshake\n");
++	}
++
+ 	return 0;
+ 
+ disable:
+ 	priv->plat->est->enable = false;
+ 	stmmac_est_configure(priv, priv->ioaddr, priv->plat->est,
+ 			     priv->plat->clk_ptp_rate);
++
++	priv->plat->fpe_cfg->enable = false;
++	stmmac_fpe_configure(priv, priv->ioaddr,
++			     priv->plat->tx_queues_to_use,
++			     priv->plat->rx_queues_to_use,
++			     false);
++	netdev_info(priv->dev, "disabled FPE\n");
++
++	stmmac_fpe_handshake(priv, false);
++	netdev_info(priv->dev, "stop FPE handshake\n");
++
+ 	return ret;
+ }
+ 
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 10abc80b601e..072f269b1618 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -144,6 +144,32 @@ struct stmmac_txq_cfg {
+ 	int tbs_en;
+ };
+ 
++/* FPE link state */
++enum stmmac_fpe_state {
++	FPE_STATE_OFF = 0,
++	FPE_STATE_CAPABLE = 1,
++	FPE_STATE_ENTERING_ON = 2,
++	FPE_STATE_ON = 3,
++};
++
++/* FPE link-partner hand-shaking mPacket type */
++enum stmmac_mpacket_type {
++	MPACKET_VERIFY = 0,
++	MPACKET_RESPONSE = 1,
++};
++
++enum stmmac_fpe_task_state_t {
++	__FPE_REMOVING,
++	__FPE_TASK_SCHED,
++};
++
++struct stmmac_fpe_cfg {
++	bool enable;				/* FPE enable */
++	bool hs_enable;				/* FPE handshake enable */
++	enum stmmac_fpe_state lp_fpe_state;	/* Link Partner FPE state */
++	enum stmmac_fpe_state lo_fpe_state;	/* Local station FPE state */
++};
++
+ struct plat_stmmacenet_data {
+ 	int bus_id;
+ 	int phy_addr;
+@@ -155,6 +181,7 @@ struct plat_stmmacenet_data {
+ 	struct device_node *mdio_node;
+ 	struct stmmac_dma_cfg *dma_cfg;
+ 	struct stmmac_est *est;
++	struct stmmac_fpe_cfg *fpe_cfg;
+ 	int clk_csr;
+ 	int has_gmac;
+ 	int enh_desc;
 -- 
-Best regards,
-Alexander Sverdlin.
+2.17.1
+
