@@ -2,148 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90962347943
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252EC347948
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhCXNHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhCXNH2 (ORCPT
+        id S234426AbhCXNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:11:39 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52052 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233465AbhCXNLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:07:28 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F82EC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:07:26 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id e14so14537166ejz.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:07:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=mV7IF4Zf53y3TdQylW1wrk3T3Y+1mcruUAtedXNvuTI=;
-        b=Z7qLIADCJ3buoLJiKDQpTX9oXPKCCJqZCjOn1TDuz5YfpiI+4DDOZHOGE5Y5KNpG3r
-         hZQsQZwIDf4BhYNItTSEcjX6BXZgYbGk8BiAlAgwiN5nH/ST3LTyxpfxFcJVoH/HFwu/
-         cn7QkEGd7kjUhkomL3QDNnbxnzp28+xpekbj48IuLFKXliZPD+nLiGtRad6KK+nfltiu
-         6Nrjb18I3HsS1hyVtGSXvp9EJuhvwKVOH7+YSVz6F+TJWpl2OEvBdyn3r4GQEIkdaNzL
-         sxlWgH+wnk/tR+8NuwOXaDHy2nCrOaEjBeN1NqMAvbtCL0fQysHBulq2yJWFKlIkxv7R
-         keMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mV7IF4Zf53y3TdQylW1wrk3T3Y+1mcruUAtedXNvuTI=;
-        b=DqnmGf3fKz1lxCbzOJUlmcmRjSJpZUN13/ZHioGCVhWFf535owmyfV4FvSzdaBHOod
-         oYR7HP5nOy8LOUIgG/LCSslYvs8YlMzSRtFWi6AcWU/fIoc9xltddTi5rgqRlrDarNZE
-         ktfbyGvpXLvkX2VttRRsRmhAVwS9lsFnnS0ehv3kalwdY5UFQkoG4QLad73IftWOGaxg
-         u713Xf7g26r/Min/uWbn8mqRcA1No1nMuxQF9JkmPVmI1r1AYF5BmdkZcQkF5Fxtl1Mf
-         JjypL5adCtiQjLQ0iHKYueldveKIbX46i42/o2JYD7OsY+HOh+xeuNOS2FwYXlSIx4GR
-         Gbhw==
-X-Gm-Message-State: AOAM533T+1Powx9Q602cotphyNdLB9wANdLvke/wGKaqUnL6dqyfz4so
-        iBo5PWzspi2k2j4jDznFl+GT+pQtr/0EWQ==
-X-Google-Smtp-Source: ABdhPJzrW9cXQCieJ9MyQWQ7DZcrzdK+g6LtX0IsZ3L48tXT1h32dboZmoAC5necVFGWa7VYA8NJug==
-X-Received: by 2002:a17:906:cb18:: with SMTP id lk24mr3485521ejb.70.1616591245249;
-        Wed, 24 Mar 2021 06:07:25 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id c20sm913675eja.22.2021.03.24.06.07.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 06:07:24 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 13:07:23 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
-Message-ID: <20210324130723.GN2916463@dell>
-References: <20210323123433.45371-1-andriy.shevchenko@linux.intel.com>
- <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
- <20210324102931.GH2916463@dell>
- <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
- <20210324104729.GL2916463@dell>
- <YFsgf9J+hQjfrZCb@smile.fi.intel.com>
- <20210324115033.GM2916463@dell>
- <YFsv6DijMMiv3D10@smile.fi.intel.com>
+        Wed, 24 Mar 2021 09:11:24 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12ODABc0097128;
+        Wed, 24 Mar 2021 08:10:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616591411;
+        bh=kCE6XAbW93A1ZaxfNylsnT3LZBbsR3uZFEg2DAupuiQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=PNT87nHoIszwHHhCJsVls+hYtHnedvbr+v68KrQupcnBP0Z6qz6L4FBsL7RSHgldb
+         nqgXHMsIRrc6FPWy9Iw1uGRL5CR+v2d4SwH7RIADsuJJZa+SSHjHt6HBzSZwNJDIMb
+         QOdfjgKkNsnartg3Rryo3mBpTSOk458UU85FLQhM=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12ODABMm115818
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Mar 2021 08:10:11 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 24
+ Mar 2021 08:10:10 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 24 Mar 2021 08:10:11 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12ODAAiZ018945;
+        Wed, 24 Mar 2021 08:10:11 -0500
+Date:   Wed, 24 Mar 2021 08:10:10 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Roger Lu <roger.lu@mediatek.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: Re: [PATCH v13 1/7] dt-bindings: soc: mediatek: add mtk svs
+ dt-bindings
+Message-ID: <20210324131010.zgkyhmgcedax3w3s@undaunted>
+References: <20210323135657.2701-1-roger.lu@mediatek.com>
+ <20210323135657.2701-2-roger.lu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFsv6DijMMiv3D10@smile.fi.intel.com>
+In-Reply-To: <20210323135657.2701-2-roger.lu@mediatek.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-
-> On Wed, Mar 24, 2021 at 11:50:33AM +0000, Lee Jones wrote:
-> > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-> > 
-> > > On Wed, Mar 24, 2021 at 10:47:29AM +0000, Lee Jones wrote:
-> > > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-> > > > > On Wed, Mar 24, 2021 at 10:29:31AM +0000, Lee Jones wrote:
-> > > > > > On Tue, 23 Mar 2021, Andy Shevchenko wrote:
-> > > 
-> > > ...
-> > > 
-> > > > Also, past acceptance does not guarantee ideal/correct usage.
-> > > 
-> > > In this case it's hardly can be misused. But I heard you.
-> > > 
-> > > ...
-> > > 
-> > > > > The semantic is min-max range and having two defines (*) here for these seems
-> > > > > to me as an utter overkill.
-> > > > > 
-> > > > > Of course, if you insist I may do it.
-> > > > > 
-> > > > > *) since value is the same, we might have one definition, but it will be even
-> > > > >    more confusion to have it as a min and max at the same time.
-> > > > 
-> > > > It's just tricky to decypher for people who do not know the API, which
-> > > > is most people, myself included.  For APIs like usleep_range() et al.,
-> > > > obviously this makes no sense at all.
-> > > 
-> > > Seem like you are insisting. Okay, I will define them. What do you prefer one
-> > > or two definitions?
-> > 
-> > Actually I'm not.  I'm just trying to get my head around where the
-> > data comes from and what the values actually mean.
-> > 
-> > > ...
-> > > 
-> > > > What defines a vector?
-> > > 
-> > > The combination is solely of the driver-hardware. Driver explicitly tells that
-> > > how many vectors it may consume (taking into account the range asked) and API
-> > > returns amount given or an error.
-> > 
-> > So, where does the information actually come from?
-> > 
-> > Information that comes from a datasheet is usually defined.
-> > 
-> > Information that comes from the F/W is usually read and popped into a
-> > variable.
+On 21:56-20210323, Roger Lu wrote:
+> Document the binding for enabling mtk svs on MediaTek SoC.
 > 
-> It's a two way road:
-> a) driver states that it needs only 1 vector and it's enough to it
-> b) hardware must provide at least 1 vector to be served by this driver.
+> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+> ---
+>  .../bindings/soc/mediatek/mtk-svs.yaml        | 81 +++++++++++++++++++
+>  1 file changed, 81 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
 > 
-> Look again into grepped output. Most of drivers that define it as an variable
-> may dynamically adapt to the different amount of IRQ vectors. When it's static,
-> usually drivers just hard code those values.
-> 
-> I'm really don't see a point to define them _in this driver_.
+> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> new file mode 100644
+> index 000000000000..0d8d12f927de
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
+> @@ -0,0 +1,81 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/mediatek/mtk-svs.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek Smart Voltage Scaling (SVS) Device Tree Bindings
+> +
+> +maintainers:
+> +  - Roger Lu <roger.lu@mediatek.com>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+> +  - Kevin Hilman <khilman@kernel.org>
+> +  - Nishanth Menon <nm@ti.com>
 
-That's fine.  I just felt like I had to ask.
-
-Would you consider a comment that lets people unfamiliar with the API
-what the values mean?
-
-Something to the tune of:
-
-  "This driver requests 1 (and only 1) IRQ vector"
+Please drop me off the list. I would'nt know what to do with SVS :)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
