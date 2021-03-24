@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390AC347FCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE3D347FD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbhCXRuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:50:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52727 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237197AbhCXRuS (ORCPT
+        id S237334AbhCXRwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237290AbhCXRwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:50:18 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lP7e4-0004zH-LD; Wed, 24 Mar 2021 17:50:16 +0000
-Subject: Re: [PATCH] x86/kprobes: Remove dead code
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        dan.carpenter@oracle.com
-References: <20210324173641.GA404706@LEGION>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <5fcd5b04-0fab-3672-c5d2-6e8f73f93bbc@canonical.com>
-Date:   Wed, 24 Mar 2021 17:50:16 +0000
+        Wed, 24 Mar 2021 13:52:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148F8C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=cWD1YkAT602Bo4ovvV2QDn6jkJrROrkUMXV1Y4u1zvo=; b=rafG6BzZ8GeOVQwTMWlD9nvQjW
+        S3i5Xkk1WjYAT74bBSg5+zjx5LgImQVIdrIfRhqNKLlTOfmgXn6Rh+rnxhrpJ8S4cQL767+IUPrGn
+        +NojTCgFP5waIB35XQf30goq9Psg5AuDtucB+Ue8w9b40pE++dOGozNlgpYpd9SQki+8jJSmuDz1x
+        DwJskEuaZAsW0O7qwzWGpRbH4PUTHjQZztGCssPkr5QP3XRy986b2BiGNwBuRRJ4VSxXwVzwPc2dQ
+        1SLhlvabLE40l4ky1kbQIhLc/x4Vfu0ZlQ2/OjJmRnIQfhvZgvUYXGvaFIo3Ez9uTl6BeD8ADU2sO
+        F1agfxAw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lP7ex-00Beb1-Cw; Wed, 24 Mar 2021 17:51:29 +0000
+Subject: Re: [PATCH] ALSA: pcm: A typo fix
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, perex@perex.cz,
+        tiwai@suse.com, broonie@kernel.org, mirq-linux@rere.qmqm.pl,
+        lars@metafoo.de, joe@perches.com, huawei@kernel.org,
+        viro@zeniv.linux.org.uk, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20210324065612.31362-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6d2e91a2-a013-c9b1-8725-1715253d0646@infradead.org>
+Date:   Wed, 24 Mar 2021 10:51:07 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210324173641.GA404706@LEGION>
+In-Reply-To: <20210324065612.31362-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -41,32 +49,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 17:36, Muhammad Usama Anjum wrote:
-> The condition in switch statement `opcode & 0xf0` cannot evaluate to
-> 0xff. So this case statement will never execute. Remove it.
+On 3/23/21 11:56 PM, Bhaskar Chowdhury wrote:
 > 
-> Fixes: 6256e668b7 ("x86/kprobes: Use int3 instead of debug trap for single-step")
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> s/unconditonally/unconditionally/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->  arch/x86/kernel/kprobes/core.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  sound/core/pcm_native.c | 80 ++++++++++++++++++++---------------------
+>  1 file changed, 40 insertions(+), 40 deletions(-)
 > 
-> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> index 89d9f26785c7..3b7bcc077020 100644
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -177,9 +177,6 @@ int can_boost(struct insn *insn, void *addr)
->  	case 0xf0:
->  		/* clear and set flags are boostable */
->  		return (opcode == 0xf5 || (0xf7 < opcode && opcode < 0xfe));
-> -	case 0xff:
-> -		/* indirect jmp is boostable */
-> -		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
->  	default:
->  		/* CS override prefix and call are not boostable */
->  		return (opcode != 0x2e && opcode != 0x9a);
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index 17a85f4815d5..9884961bca7d 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
 > 
+> -	return 0; /* unconditonally stop all substreams */
+> +	return 0; /* unconditionally stop all substreams */
+>  }
+> 
+> --
 
-The 0xff case was added with some form of intention to be executed so I
-suspect removing it is not an appropriate fix.
+Please fix line 1472 (in linux-next) while you are touching this file:
+
+ * Return: Zero if succesful, or a negative error code.
+
+
+-- 
+~Randy
 
