@@ -2,189 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BFC34701E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5817C347021
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235020AbhCXD2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:28:25 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14858 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234934AbhCXD2N (ORCPT
+        id S235033AbhCXD30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235045AbhCXD3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:28:13 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4ttW0Gl3z93Cx;
-        Wed, 24 Mar 2021 11:26:11 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
- 2021 11:28:09 +0800
-Subject: Re: [PATCH RFC] f2fs: fix to avoid selecting full segment w/ {AT,}SSR
- allocator
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20210220094052.64905-1-yuchao0@huawei.com>
- <YFOLNGo+/8sKQ7si@google.com>
- <ec5cda53-d3f4-450c-7567-7bfc68e224f9@huawei.com>
- <YFpy26JZRpZASB7R@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <0a2a17af-8719-6865-554a-f339f367485e@huawei.com>
-Date:   Wed, 24 Mar 2021 11:28:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 23 Mar 2021 23:29:05 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4A0C061763;
+        Tue, 23 Mar 2021 20:29:05 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id h25so13715353pgm.3;
+        Tue, 23 Mar 2021 20:29:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GoTQD0Cplvh8amn0DEisJMbNROOwhI2HVGKzSSOpwOI=;
+        b=gk/2ADrjI9nDy0gKkDATv99r680d+ehtjYYg/xXN+5JkiPkY1bB1CND2SJf3Vc4BJ6
+         Vr6TP0QYr5D1k9MZKGq6SrG1lqx13hiLUy2/yqRnek5UbAtFUJwkTMWB8azv5EputTUp
+         UfXKIKTE0RNfSp1KBQNZqUx9FR/Aj5YyQnzxe+3pHPNDCbcEOcmJJAsVA7VO3xTktLG/
+         Cv4hRdjXsrO1MKktiH4AkuBpBbkEsDLZGAg7MutYDdb3PAYSnyPDN7/RtbxaZ3mkIUvc
+         +AmbhTR96NXHuHrm57tYcRPrloVnr31LOisyjhTPEOvlwOb3b5PacPQQ6QUVtH9MEzGD
+         cXRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GoTQD0Cplvh8amn0DEisJMbNROOwhI2HVGKzSSOpwOI=;
+        b=aA9e7dy9JWBVoCswAMBO2uJpzshuKkSlf3vm1gXLhTLOQpFV10tjNXyTbsNsTDq8QS
+         6eXMpHFWz8TRK+z/mCyqjtvHtWEkgo8p6Bf5gYkaIi3I/9lI/6ZA4IYB2Di4S3UtLFR6
+         gulWmT0+0wqVYECkIMIAR6f7W/2ZChVa+fnduA/k2AtaKADXYppbfIgNPxrRASCvpN5M
+         bvMjPsxJEOcum4qTNcq1eqTk/iNGCKe4xpRDEyTyf6oYLYoPW2HsGrwHwvcgEjlIruRX
+         APCB5wWL8iSOEX3GfM103mFHd2cP/ztNShO7bywN/MX+63dzvUjcojsafTM2fgv57fMR
+         Njkw==
+X-Gm-Message-State: AOAM530RkzLTGpIDKu0gRoXMoZ3b/mcm/m8abpOoffpJiAlySyKyr4xc
+        pUJAtyQnbwYbjid/An+R5qMq96zfZPehDg==
+X-Google-Smtp-Source: ABdhPJzCmWs+QQjY/moEs291q6quo3+ZoaLdCI3/Xn0QkjfDjAddfP5nY3mpcrglLC613qaDaJGs3w==
+X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id g136-20020a62528e0000b02901f5c5eea487mr1192160pfb.7.1616556544829;
+        Tue, 23 Mar 2021 20:29:04 -0700 (PDT)
+Received: from DESKTOP-4V60UBS.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id 202sm552861pfu.46.2021.03.23.20.29.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 20:29:04 -0700 (PDT)
+From:   Xiaofeng Cao <cxfcosmos@gmail.com>
+X-Google-Original-From: Xiaofeng Cao <caoxiaofeng@yulong.com>
+To:     mchehab@kernel.org
+Cc:     Julia.Lawall@inria.fr, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
+Subject: [PATCH v2] drivers/media/pci/bt8xx/bttv-cards: fix typos
+Date:   Wed, 24 Mar 2021 11:29:06 +0800
+Message-Id: <20210324032906.17094-1-caoxiaofeng@yulong.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YFpy26JZRpZASB7R@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/24 6:59, Jaegeuk Kim wrote:
-> On 03/19, Chao Yu wrote:
->> On 2021/3/19 1:17, Jaegeuk Kim wrote:
->>> On 02/20, Chao Yu wrote:
->>>> In cp disabling mode, there could be a condition
->>>> - target segment has 128 ckpt valid blocks
->>>> - GC migrates 128 valid blocks to other segment (segment is still in
->>>> dirty list)
->>>> - GC migrates 384 blocks to target segment (segment has 128 cp_vblocks
->>>> and 384 vblocks)
->>>> - If GC selects target segment via {AT,}SSR allocator, however there is
->>>> no free space in targe segment.
->>>>
->>>> Fixes: 4354994f097d ("f2fs: checkpoint disabling")
->>>> Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
->>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>> ---
->>>>    fs/f2fs/f2fs.h    |  1 +
->>>>    fs/f2fs/gc.c      | 17 +++++++++++++----
->>>>    fs/f2fs/segment.c | 20 ++++++++++++++++++++
->>>>    3 files changed, 34 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>> index ed7807103c8e..9c753eff0814 100644
->>>> --- a/fs/f2fs/f2fs.h
->>>> +++ b/fs/f2fs/f2fs.h
->>>> @@ -3376,6 +3376,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi);
->>>>    int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
->>>>    void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
->>>>    int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
->>>> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
->>>>    void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
->>>>    void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
->>>>    void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
->>>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->>>> index 86ba8ed0b8a7..a1d8062cdace 100644
->>>> --- a/fs/f2fs/gc.c
->>>> +++ b/fs/f2fs/gc.c
->>>> @@ -392,10 +392,6 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
->>>>    		if (p->gc_mode == GC_AT &&
->>>>    			get_valid_blocks(sbi, segno, true) == 0)
->>>>    			return;
->>>> -
->>>> -		if (p->alloc_mode == AT_SSR &&
->>>> -			get_seg_entry(sbi, segno)->ckpt_valid_blocks == 0)
->>>> -			return;
->>>>    	}
->>>>    	for (i = 0; i < sbi->segs_per_sec; i++)
->>>> @@ -736,6 +732,19 @@ static int get_victim_by_default(struct f2fs_sb_info *sbi,
->>>>    		if (gc_type == BG_GC && test_bit(secno, dirty_i->victim_secmap))
->>>>    			goto next;
->>>> +		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
->>>> +			/*
->>>> +			 * to avoid selecting candidate which has below valid
->>>> +			 * block distribution:
->>>> +			 * partial blocks are valid and all left ones are valid
->>>> +			 * in previous checkpoint.
->>>> +			 */
->>>> +			if (p.alloc_mode == SSR || p.alloc_mode == AT_SSR) {
->>>> +				if (!segment_has_free_slot(sbi, segno))
->>>> +					goto next;
->>>
->>> Do we need to change this to check free_slot instead of get_ckpt_valid_blocks()?
->>
->> Jaegeuk,
->>
->> LFS was assigned only for GC case, in this case we are trying to select source
->> section, rather than target segment for SSR/AT_SSR case, so we don't need to
->> check free_slot.
->>
->> - f2fs_gc
->>   - __get_victim
->>    - get_victim(sbi, victim, gc_type, NO_CHECK_TYPE, LFS, 0);
->>
->>>
->>>    732                 if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED) &&
->>>    733                                         get_ckpt_valid_blocks(sbi, segno) &&
->>>    734                                         p.alloc_mode == LFS))
->>
->> BTW, in LFS mode, GC wants to find source section rather than segment, so we
->> should change to check valid ckpt blocks in every segment of targe section here?
-> 
-> Alright. I refactored a bit on this patch with new one. Could you please take a look?
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=00152bd7cabd69b4615ebead823ff23887b0e0f7
+change 'vodeo'     to 'video'
+change 'nevery'    to 'never'
+change 'is'        to 'it'
+change 'connevted' to 'connected'
+change 'swichers'  to 'switchers'
+change 'strucure'  to 'structure'
+change 'unblanced' to 'unbalanced'
+change 'fonctionality' to 'functionality'
 
-I see, newly added comment looks good to me.
+Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+---
+v2: resume space and change 'USED' to 'USE'
+ drivers/media/pci/bt8xx/bttv-cards.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-One more concern is commit title and commit message is out-of-update,
-I've revised it in v2:
+diff --git a/drivers/media/pci/bt8xx/bttv-cards.c b/drivers/media/pci/bt8xx/bttv-cards.c
+index ca20b806e82d..c2b5ab287dd7 100644
+--- a/drivers/media/pci/bt8xx/bttv-cards.c
++++ b/drivers/media/pci/bt8xx/bttv-cards.c
+@@ -2011,7 +2011,7 @@ struct tvcard bttv_tvcards[] = {
+ 		/* .audio_inputs= 0, */
+ 		.svhs           = 9,
+ 		.gpiomask       = 0x00,
+-		.gpiomask2      = 0x03, /* used for external vodeo mux */
++		.gpiomask2      = 0x03, /* used for external video mux */
+ 		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 0),
+ 		.muxsel_hook	= phytec_muxsel,
+ 		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
+@@ -2025,7 +2025,7 @@ struct tvcard bttv_tvcards[] = {
+ 		/* .audio_inputs= 0, */
+ 		.svhs           = 9,
+ 		.gpiomask       = 0x00,
+-		.gpiomask2      = 0x03, /* used for external vodeo mux */
++		.gpiomask2      = 0x03, /* used for external video mux */
+ 		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 1),
+ 		.muxsel_hook	= phytec_muxsel,
+ 		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
+@@ -2180,8 +2180,8 @@ struct tvcard bttv_tvcards[] = {
+ 	[BTTV_BOARD_PICOLO_TETRA_CHIP] = {
+ 		/*Eric DEBIEF <debief@telemsa.com>*/
+ 		/*EURESYS Picolo Tetra : 4 Conexant Fusion 878A, no audio, video input set with analog multiplexers GPIO controlled*/
+-		/* adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration strucure, and #define BTTV_BOARD_PICOLO_TETRA_CHIP*/
+-		/*0x79 in bttv.h*/
++		/*adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration*/
++		/*structure and #define BTTV_BOARD_PICOLO_TETRA_CHIP 0x79 in bttv.h*/
+ 		.name           = "Euresys Picolo Tetra",
+ 		.video_inputs   = 4,
+ 		/* .audio_inputs= 0, */
+@@ -2506,7 +2506,7 @@ struct tvcard bttv_tvcards[] = {
+ 	     one external BNC composite input (mux 2)
+ 	     three internal composite inputs (unknown muxes)
+ 	     an 18-bit stereo A/D (CS5331A), which has:
+-	       one external stereo unblanced (RCA) audio connection
++	       one external stereo unbalanced (RCA) audio connection
+ 	       one (or 3?) internal stereo balanced (XLR) audio connection
+ 	       input is selected via gpio to a 14052B mux
+ 		 (mask=0x300, unbal=0x000, bal=0x100, ??=0x200,0x300)
+@@ -3924,7 +3924,7 @@ static void osprey_eeprom(struct bttv *btv, const u8 ee[256])
+ 	u32 serial = 0;
+ 	int cardid = -1;
+ 
+-	/* This code will nevery actually get called in this case.... */
++	/* This code will never actually get called in this case.... */
+ 	if (btv->c.type == BTTV_BOARD_UNKNOWN) {
+ 		/* this might be an antique... check for MMAC label in eeprom */
+ 		if (!strncmp(ee, "MMAC", 4)) {
+@@ -4086,7 +4086,7 @@ static void avermedia_eeprom(struct bttv *btv)
+ /*
+  * For Voodoo TV/FM and Voodoo 200.  These cards' tuners use a TDA9880
+  * analog demod, which is not I2C controlled like the newer and more common
+- * TDA9887 series.  Instead is has two tri-state input pins, S0 and S1,
++ * TDA9887 series.  Instead it has two tri-state input pins, S0 and S1,
+  * that control the IF for the video and audio.  Apparently, bttv GPIO
+  * 0x10000 is connected to S0.  S0 low selects a 38.9 MHz VIF for B/G/D/K/I
+  * (i.e., PAL) while high selects 45.75 MHz for M/N (i.e., NTSC).
+@@ -4144,7 +4144,7 @@ static void init_PXC200(struct bttv *btv)
+ 	int tmp;
+ 	u32 val;
+ 
+-	/* Initialise GPIO-connevted stuff */
++	/* Initialise GPIO-connected stuff */
+ 	gpio_inout(0xffffff, (1<<13));
+ 	gpio_write(0);
+ 	udelay(3);
+@@ -4580,7 +4580,7 @@ static void xguard_muxsel(struct bttv *btv, unsigned int input)
+ }
+ static void picolo_tetra_init(struct bttv *btv)
+ {
+-	/*This is the video input redirection fonctionality : I DID NOT USED IT. */
++	/*This is the video input redirection functionality : I DID NOT USE IT. */
+ 	btwrite (0x08<<16,BT848_GPIO_DATA);/*GPIO[19] [==> 4053 B+C] set to 1 */
+ 	btwrite (0x04<<16,BT848_GPIO_DATA);/*GPIO[18] [==> 4053 A]  set to 1*/
+ }
+@@ -4598,7 +4598,7 @@ static void picolo_tetra_muxsel (struct bttv* btv, unsigned int input)
+  * ivc120_muxsel [Added by Alan Garfield <alan@fromorbit.com>]
+  *
+  * The IVC120G security card has 4 i2c controlled TDA8540 matrix
+- * swichers to provide 16 channels to MUX0. The TDA8540's have
++ * switchers to provide 16 channels to MUX0. The TDA8540's have
+  * 4 independent outputs and as such the IVC120G also has the
+  * optional "Monitor Out" bus. This allows the card to be looking
+  * at one input while the monitor is looking at another.
+-- 
+2.25.1
 
-https://lore.kernel.org/linux-f2fs-devel/20210324031828.67133-1-yuchao0@huawei.com/T/#u
-
-Thanks,
-
-> 
-> Thanks,
-> 
->>
->> Thanks,
->>
->>>
->>>
->>>> +			}
->>>> +		}
->>>> +
->>>>    		if (is_atgc) {
->>>>    			add_victim_entry(sbi, &p, segno);
->>>>    			goto next;
->>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>> index 2d5a82c4ca15..deaf57e13125 100644
->>>> --- a/fs/f2fs/segment.c
->>>> +++ b/fs/f2fs/segment.c
->>>> @@ -2650,6 +2650,26 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
->>>>    		seg->next_blkoff++;
->>>>    }
->>>> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
->>>> +{
->>>> +	struct sit_info *sit = SIT_I(sbi);
->>>> +	struct seg_entry *se = get_seg_entry(sbi, segno);
->>>> +	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
->>>> +	unsigned long *target_map = SIT_I(sbi)->tmp_map;
->>>> +	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
->>>> +	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
->>>> +	int i, pos;
->>>> +
->>>> +	down_write(&sit->sentry_lock);
->>>> +	for (i = 0; i < entries; i++)
->>>> +		target_map[i] = ckpt_map[i] | cur_map[i];
->>>> +
->>>> +	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, 0);
->>>> +	up_write(&sit->sentry_lock);
->>>> +
->>>> +	return pos < sbi->blocks_per_seg;
->>>> +}
->>>> +
->>>>    /*
->>>>     * This function always allocates a used segment(from dirty seglist) by SSR
->>>>     * manner, so it should recover the existing segment information of valid blocks
->>>> -- 
->>>> 2.29.2
->>> .
->>>
-> .
-> 
