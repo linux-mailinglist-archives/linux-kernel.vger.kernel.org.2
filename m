@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2B4347A9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 011B9347AB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236213AbhCXOXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:23:11 -0400
-Received: from mga18.intel.com ([134.134.136.126]:60473 "EHLO mga18.intel.com"
+        id S236208AbhCXO3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:29:41 -0400
+Received: from mail.kurz.pw ([89.163.159.92]:37426 "EHLO mail.kurz.pw"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236180AbhCXOWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:22:49 -0400
-IronPort-SDR: OH1ARNGAGYmbAWQxwoGX2xQgNKbFgSEn2iulsJC4eACZcuaV970A/XXW/HwlnsKA0AxFbx8Lf/
- wtYjWPTgXGpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178269164"
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="178269164"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:22:49 -0700
-IronPort-SDR: VwrKILIj/QZQwCX9DSJSCDYw53ud/1y/6178HuzK5RgnLGH3tp2RGzmj30o19mEzRgutOVgMQp
- I1vu/hV9te2A==
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="391317293"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:22:47 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1lP4PE-00FiD8-Q7; Wed, 24 Mar 2021 16:22:44 +0200
-Date:   Wed, 24 Mar 2021 16:22:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH RESEND] intel/pinctrl: check capability offset is between
- MMIO region
-Message-ID: <YFtLNLTrR9wTO41W@smile.fi.intel.com>
-References: <20210324123118.58865-1-roger.pau@citrix.com>
- <YFs3XwOBRGAFyASY@smile.fi.intel.com>
- <YFtEw7qHQKE/4p8t@Air-de-Roger>
+        id S236060AbhCXO3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:29:16 -0400
+X-Greylist: delayed 325 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Mar 2021 10:29:16 EDT
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id F09D0123E06;
+        Wed, 24 Mar 2021 15:23:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=schauer.dev; s=dkim;
+        t=1616595824; h=from:subject:date:message-id:to:cc:mime-version:content-type;
+        bh=DxIVPfQCMqOrZn3/5HfacoYgZRK3+zxnaLQGxHn6K+M=;
+        b=yTw6RPSYj4Ukv9RWSh8QyNZ43Fkqk/o6fNvu/M+eLw4HeVVhvydpa3wip0SRSgw7Xo5Oi3
+        8c2hhAXtK4yB0tA8Qut8LzHV3R5wYNCqehTfs4kJ7MutwSPVgX7+Iwg6hCxBiLNZlVcYN4
+        FLlLZ87pjTlwPcBLOUswyrFay2phahU=
+Date:   Wed, 24 Mar 2021 15:23:32 +0100
+From:   Lukas Schauer <lukas@schauer.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alan Cox <alan@redhat.com>, David Howells <dhowells@redhat.com>
+Subject: [PATCH] fs/pipe: wakeup wr_wait after setting max_usage
+Message-ID: <20210324142332.xfcuvuv2lfjkfznn@vista>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hiyo6ox56cbjkj3z"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFtEw7qHQKE/4p8t@Air-de-Roger>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 02:55:15PM +0100, Roger Pau Monné wrote:
-> On Wed, Mar 24, 2021 at 02:58:07PM +0200, Andy Shevchenko wrote:
-> > On Wed, Mar 24, 2021 at 01:31:18PM +0100, Roger Pau Monne wrote:
 
-...
+--hiyo6ox56cbjkj3z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> What could be done is check whether reading REVID returns ~0 and exit
-> at that point, if ~0 will never be a valid value returned by that
-> register. I think that should be a separate patch however.
+With commit c73be61cede5882f9605a852414db559c0ebedfd a regression was
+introduced that would lock up resized pipes under certain conditions.
 
-Sounds good to me.
+In that commit resizing the pipe ring size was moved to a different
+function, doing that moved the wakeup for pipe->wr_wait before actually
+raising pipe->max_usage. If a pipe was full before the resize occured it
+would result in the wakeup never actually triggering pipe_write,
+resulting in a deadlock.
 
-> > Moreover, it seems you are bailing out and basically denying driver to load.
-> > This does look that capability is simply the first register that blows the setup.
-> > I think you have to fix something into Xen to avoid loading these drivers or
-> > check with something like pci_device_is_present() approach.
-> 
-> Is there a backing PCI device BAR for those MMIO regions that the
-> pinctrl driver is trying to access? AFAICT those regions are only
-> reported in the ACPI DSDT table on the _CRS method of the object (at
-> least on my system).
+This patch moves the wakeup for pipe->wr_wait back to the original
+pipe_set_size function, after pipe->max_usage has actually been updated.
+---
+ fs/pipe.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Unfortunately it does not expose PCI configuration space.
+diff --git a/fs/pipe.c b/fs/pipe.c
+index bfd946a9ad01..58916ad905b4 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -1282,8 +1282,6 @@ int pipe_resize_ring(struct pipe_inode_info *pipe, unsigned int nr_slots)
+ 	pipe->tail = tail;
+ 	pipe->head = head;
 
-> Doing something like pci_device_is_present would require a register
-> that we know will never return ~0 unless the device is not present. As
-> said above, maybe we could use REVID to that end?
+-	/* This might have made more room for writers */
+-	wake_up_interruptible(&pipe->wr_wait);
+ 	return 0;
+ }
 
-Yes, that's good, see above.
+@@ -1335,6 +1333,10 @@ static long pipe_set_size(struct pipe_inode_info *pipe, unsigned long arg)
 
-WRT capabilities, if we crash we will see the report immediately on the
-hardware which has such an issue. (It's quite unlikely we will ever have one,
-that's why I consider it's not critical)
+ 	pipe->max_usage = nr_slots;
+ 	pipe->nr_accounted = nr_slots;
++
++	/* This might have made more room for writers */
++	wake_up_interruptible(&pipe->wr_wait);
++
+ 	return pipe->max_usage * PAGE_SIZE;
 
--- 
-With Best Regards,
-Andy Shevchenko
+ out_revert_acct:
+--
+2.31.0
 
 
+
+--hiyo6ox56cbjkj3z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEPC8mBeB4oeGPR5OQnE2+bPQ48zMFAmBbS2QACgkQnE2+bPQ4
+8zPF1gf+K13g+OsRDdSXWdNCbpNPQRolHWCzgGfDtSL9zyTlLmWS7CBj6Jn/zmxK
+6j914SRe8adddCHpLS9XQ16mbf6qRtyUIMCep8DY58mcZ2V5GPqf0PfvgtMGN6EQ
+sVFMdiTqedbiDOv8K3fxcpRCxYu4O4rCEp0bATAzvu/w3jGm7pWWJhZn94mr/v5C
+kLNMGBKltJIC/+xMvKQ/LmFB8WKTE6k5yf1qjLAp3/82ua8Wm/cYZ5izuwEWANgP
+t8bhL4z3mfss+nEXAIJ6nXVZ471THjkG968DENBNYfun5EIvXXWUqFJ98F5vNt4g
+kqyV2le88n/qmI4dISB0mPfbiLI53A==
+=Q8eY
+-----END PGP SIGNATURE-----
+
+--hiyo6ox56cbjkj3z--
