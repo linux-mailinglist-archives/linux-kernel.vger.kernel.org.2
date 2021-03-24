@@ -2,91 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7882B3484F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339473484FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238451AbhCXW5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:57:41 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43671 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238461AbhCXW5Q (ORCPT
+        id S233929AbhCXW6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238920AbhCXW6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:57:16 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lPCR7-002cPH-4V; Wed, 24 Mar 2021 23:57:13 +0100
-Received: from p57bd9564.dip0.t-ipconnect.de ([87.189.149.100] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lPCR6-000rLx-Tb; Wed, 24 Mar 2021 23:57:13 +0100
-Subject: Re: [PATCH] ia64: mca: allocate early mca with GFP_ATOMIC
+        Wed, 24 Mar 2021 18:58:18 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E859C06174A;
+        Wed, 24 Mar 2021 15:58:18 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id g15so27674pfq.3;
+        Wed, 24 Mar 2021 15:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vki3LQkenPNysugs1SxfO0nn8UpSoyiRVef2WWK+wIk=;
+        b=LBqogV7X/ZOyISVSWNTq3UZ3nd3lzcoCkYC8xVy4/xr8YdD6/fTQBjP80U+sBXPhbg
+         qBD6sz8VOuJ7Mw8/EetE+6RWMlQG0OzszCNDioQ6fNdo4DXct7g1tT1tEtolpugpHI9W
+         XBtHb65QF4bJFPHQySPaJtayGDs72oJqgEO54GYLSkY1VbCQpTCd9g+py5qMVSojxp6d
+         wT8SqdSJ3R88Nss3sWel8zium+yaQwlHbFePyE243sfSl4FCY5QZdE9EeWF5csp8cjTi
+         Ls8KzY8FnnFNhIoetlmvuTVs6kSI6mIGjBqchRTzb5RiODUpzjR6pox9HHkrjA8UsmCa
+         QDvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vki3LQkenPNysugs1SxfO0nn8UpSoyiRVef2WWK+wIk=;
+        b=R/mezQug0L0NzkGO3fwaAp45k24TedMPZJJQ5gHh1IilG/mlz8xyOuskdOs6cHi55m
+         /oQ4J6q7RHuaVsjSsAG5sCzx1pQ10q+fIGgsZracQHaWjoYbmFlGI46xj7YpadtYDCNZ
+         5vnr2jFj/RddkYqen9NOv2BfIoBtkaJYD9UP/2zx10/SMVDjGy9h7p/4LvJvS5GZWTJy
+         V2/POXDmEHxdsbV/sdjCBM8/GPkVb8q1/iNDo4YxpOAJP1+BUfwzflbvCp/Y/RiRhj2L
+         jOnzbuMitPR9bkSUpjttEP4Roup+3qmK0xTzTRMesHQ9SLEtpfqaiMeS++qmcA5YoFMA
+         1T/w==
+X-Gm-Message-State: AOAM533Lo5YsaabOeF54cxTYMhC7Z+UBoZ2aD+vkmYHTe+tW/TBSopW4
+        XbdyeL0azk0GmoIt01r736Y=
+X-Google-Smtp-Source: ABdhPJxTUxmNAADhq4dsE6st8mzUTROA/MwnDOh4zEKs3L65cDXc8+ri8Y9UTqX210Olfhr2EEPbNw==
+X-Received: by 2002:a17:902:b68c:b029:e6:bb9f:7577 with SMTP id c12-20020a170902b68cb02900e6bb9f7577mr5999399pls.0.1616626697734;
+        Wed, 24 Mar 2021 15:58:17 -0700 (PDT)
+Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
+        by smtp.gmail.com with ESMTPSA id z18sm3830927pfa.39.2021.03.24.15.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 15:58:15 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 09:58:12 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
-References: <20210315085045.204414-1-slyfox@gentoo.org>
- <f351183c-7d70-359f-eed7-4d1722cf41c5@physik.fu-berlin.de>
- <20210323174724.78b61c02@sf>
- <4f7ccc08-7355-63a0-7239-16a5fb29207f@physik.fu-berlin.de>
- <20210324153934.963ac2cb8f44a4e529016612@linux-foundation.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <7c2b9840-b1ba-1e5d-1909-5482e8c04ca1@physik.fu-berlin.de>
-Date:   Wed, 24 Mar 2021 23:57:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Zankel <chris@zankel.net>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        James Troup <james.troup@canonical.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kairui Song <kasong@redhat.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Rich Felker <dalias@libc.org>,
+        Robert Richter <rric@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Theodore Dubois <tblodt@icloud.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        William Cohen <wcohen@redhat.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Yoshinori Sato <ysato@users.osdn.me>
+Subject: Re: [PATCH v1 0/3] drivers/char: remove /dev/kmem for good
+Message-ID: <20210324225812.GM77072@balbir-desktop>
+References: <20210324102351.6932-1-david@redhat.com>
+ <20210324122412.e77247e6d3259d5493951019@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210324153934.963ac2cb8f44a4e529016612@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.149.100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324122412.e77247e6d3259d5493951019@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew!
-
-On 3/24/21 11:39 PM, Andrew Morton wrote:
-> On Wed, 24 Mar 2021 11:20:45 +0100 John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
+On Wed, Mar 24, 2021 at 12:24:12PM -0700, Andrew Morton wrote:
 > 
->>>> #NEXT_PATCHES_START mainline-later (next week, approximately)
->>>> ia64-mca-allocate-early-mca-with-gfp_atomic.patch
->>
->> Great, thanks. We're still missing Valentin's patch for the NUMA enumeration issue
->> though. Should Valentin send the patch again with Andrew CC'ed?
+> > Let's remove /dev/kmem, which is unused and obsolete.
 > 
-> I subscribed to linux-ia64 today, so I can go in there to find things. 
-
-Good to know, thanks.
-
-> But if there's anything presently outstanding, please do resend.
+> I grabbed these.  Silently - the cc list is amazing ;)
 > 
-> I presently have
+> I was wondering if it would be better to permanently disable /dev/kmem
+> in Kconfig along with a comment "if you really want this thing then
+> email peeps@places with a very good reason why".  Let that ride for a
+> year or three then blam.
 > 
-> module-remove-duplicate-include-in-arch-ia64-kernel-heads.patch
-> ia64-kernel-few-typos-fixed-in-the-file-fsyss.patch
-> ia64-include-asm-minor-typo-fixes-in-the-file-pgtableh.patch
-> ia64-ensure-proper-numa-distance-and-possible-map-initialization.patch
-> ia64-drop-unused-ia64_fw_emu-ifdef.patch
+> But this is so much more attractive, and it certainly sounds like it's
+> worth any damage it might cause.
+> 
+> We do tend to think about distros.  I bet there are a number of weird
+> embedded type systems using /dev/kmem - it's amazing what sorts of
+> hacks those people will put up with the get something out the door. 
+> But those systems tend to carry a lot of specialized changes anyway, so
+> they can just add "revert David's patch" to their pile.
+>
 
-I send two patches today which fix two ia64-related build issues in tools,
-not sure whether you should pick those as well or I should just wait for
-the maintainers that get_maintainers.pl report to answer.
 
-> https://marc.info/?l=linux-netdev&m=161652285123466&w=2
-> https://marc.info/?l=linux-netdev&m=161652400124112&w=2
+I wonder if we should have the opposite of driver/staging and call it
+outgoing, with a big thank you to the users and developers and also
+to indicate this feature will be removed in the next (few) merge(s)
+cycles. I guess not all code can be accumulated under a single
+hierarchy. May not be worth the effort, just thinking out loud.
 
-Thanks,
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+Balbir Singh 
