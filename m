@@ -2,126 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA612346F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F11346F56
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234746AbhCXCPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:15:15 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14134 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhCXCPC (ORCPT
+        id S231811AbhCXCQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:16:50 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50380 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhCXCQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:15:02 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4sG52PRjz19HpZ;
-        Wed, 24 Mar 2021 10:13:01 +0800 (CST)
-Received: from [10.174.178.163] (10.174.178.163) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 24 Mar 2021 10:14:59 +0800
-Subject: Re: [PATCH v2 5/5] mm/migrate.c: fix potential deadlock in NUMA
- balancing shared exec THP case
-To:     Yang Shi <shy828301@gmail.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <20210323135405.65059-1-linmiaohe@huawei.com>
- <20210323135405.65059-6-linmiaohe@huawei.com>
- <CAHbLzkoSsPWSdyZQBR03NbU8i3AG_DTL4P-efYULvuYmWzyYbg@mail.gmail.com>
- <CAHbLzko11ygmDp3pRry8meo3PhdXwro1rid-aBomC=0+rm3u6Q@mail.gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <f9817bdc-2554-db50-9c72-e629ad3ea12b@huawei.com>
-Date:   Wed, 24 Mar 2021 10:14:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 23 Mar 2021 22:16:21 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0F66580;
+        Wed, 24 Mar 2021 03:16:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616552180;
+        bh=Hd2VQ7lNiXk1pCzm4rwJktq9yUyVzN3a+2R3kbZYRI4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TwwJ++fjgwH1f3m9Ood0w875sJxr2Ygyh71hLll6lgl6XYPexKlYtdRyOGL4cwN8Y
+         AeZDpVKCxu5fqelUp956kcsSHHjOIq8HAu5FdFLuHZ4EIPYs5dZiUQN6wsRuuCJzpf
+         YoZvgSpcoymCuK+wjeJK8byQ7QU1hm2d1xvhr9U0=
+Date:   Wed, 24 Mar 2021 04:15:37 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>, od@zcrc.me,
+        stable <stable@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2 1/3] drm: bridge/panel: Cleanup connector on bridge
+ detach
+Message-ID: <YFqgyTNt42vBe+w+@pendragon.ideasonboard.com>
+References: <20210120123535.40226-1-paul@crapouillou.net>
+ <20210120123535.40226-2-paul@crapouillou.net>
+ <CAKMK7uGGDe8bZpeTnyCkF7g_2gC1nixOzWe4FWYXPRWi-q5y7A@mail.gmail.com>
+ <4YQ8NQ.HNQ7IMBKVEBV2@crapouillou.net>
+ <CAKMK7uFHYPvJm46f-LXBO=nERGBBO3i_=YXZyAUi0ZXJFLmXVw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzko11ygmDp3pRry8meo3PhdXwro1rid-aBomC=0+rm3u6Q@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.163]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uFHYPvJm46f-LXBO=nERGBBO3i_=YXZyAUi0ZXJFLmXVw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/24 9:16, Yang Shi wrote:
-> On Tue, Mar 23, 2021 at 10:17 AM Yang Shi <shy828301@gmail.com> wrote:
->>
->> On Tue, Mar 23, 2021 at 6:55 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->>>
->>> Since commit c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA
->>> balancing"), the NUMA balancing would skip shared exec transhuge page.
->>> But this enhancement is not suitable for transhuge page. Because it's
->>> required that page_mapcount() must be 1 due to no migration pte dance
->>> is done here. On the other hand, the shared exec transhuge page will
->>> leave the migrate_misplaced_page() with pte entry untouched and page
->>> locked. Thus pagefault for NUMA will be triggered again and deadlock
->>> occurs when we start waiting for the page lock held by ourselves.
->>
->> Thanks for catching this. By relooking the code I think the other
->> important reason for removing this is
->> migrate_misplaced_transhuge_page() actually can't see shared exec file
->> THP at all since page_lock_anon_vma_read() is called before and if
->> page is not anonymous page it will just restore the PMD without
->> migrating anything.
->>
->> The pages for private mapped file vma may be anonymous pages due to
->> COW but they can't be THP so it won't trigger THP numa fault at all. I
->> think this is why no bug was reported. I overlooked this in the first
->> place.
->>
->> Your fix is correct, and please add the above justification to your commit log.
+On Wed, Jan 20, 2021 at 06:38:03PM +0100, Daniel Vetter wrote:
+> On Wed, Jan 20, 2021 at 6:12 PM Paul Cercueil wrote:
+> > Le mer. 20 janv. 2021 à 17:03, Daniel Vetter a écrit :
+> > > On Wed, Jan 20, 2021 at 1:35 PM Paul Cercueil wrote:
+> > >>
+> > >>  If we don't call drm_connector_cleanup() manually in
+> > >>  panel_bridge_detach(), the connector will be cleaned up with the other
+> > >>  DRM objects in the call to drm_mode_config_cleanup(). However, since our
+> > >>  drm_connector is devm-allocated, by the time drm_mode_config_cleanup()
+> > >>  will be called, our connector will be long gone. Therefore, the
+> > >>  connector must be cleaned up when the bridge is detached to avoid
+> > >>  use-after-free conditions.
+> > >
+> > > For -fixes this sounds ok, but for -next I think switching to drmm_
+> > > would be much better.
+> >
+> > The API would need to change to have access to the drm_device struct,
+> > though. That would be quite a big patch, there are a few dozens source
+> > files that use this API already.
 > 
-> BTW, I think you can just undo or revert commit c77c5cbafe54 ("mm:
-> migrate: skip shared exec THP for NUMA balancing").
+> Hm right pure drmm_ doesn't work for panel or bridge since it's
+> usually a separate driver. But devm_ also doesn't work. I think what
+> we need here is two-stage: first kmalloc the panel (or bridge, it's
+> really the same) in the panel/bridge driver load. Then when we bind it
+> to the drm_device we can tie it into the managed resources with
+> drmm_add_action_or_reset. Passing the drm_device to the point where we
+> allocate the panel/bridge doesn't work for these.
 > 
+> I think minimally we need a FIXME here and ack from Laurent on how
+> this should be solved at least, since panel bridge is used rather
+> widely.
 
-Yep, we can revert this commit. I thought it handle the shared exec base page too.
-Will do it and with the above justification to the commit log.
-Many Thanks!
+Bridge removal is completely broken. If you unbind a bridge driver from
+the device, the bridge will be unregistered and resources freed, without
+the display driver knowing about this. The lifetime of the drm_bridge
+structure itself isn't the only issue to be addressed here, it's broader
+than that, and needs to consider that the display driver could be
+calling the bridge operations concurrently to the removal.
 
-> Thanks,
-> Yang
-> 
->>
->> Reviewed-by: Yang Shi <shy828301@gmail.com>
->>
->>>
->>> Fixes: c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA balancing")
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> ---
->>>  mm/migrate.c | 4 ----
->>>  1 file changed, 4 deletions(-)
->>>
->>> diff --git a/mm/migrate.c b/mm/migrate.c
->>> index 5357a8527ca2..68bfa1625898 100644
->>> --- a/mm/migrate.c
->>> +++ b/mm/migrate.c
->>> @@ -2192,9 +2192,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
->>>         int page_lru = page_is_file_lru(page);
->>>         unsigned long start = address & HPAGE_PMD_MASK;
->>>
->>> -       if (is_shared_exec_page(vma, page))
->>> -               goto out;
->>> -
->>>         new_page = alloc_pages_node(node,
->>>                 (GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
->>>                 HPAGE_PMD_ORDER);
->>> @@ -2306,7 +2303,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
->>>
->>>  out_unlock:
->>>         unlock_page(page);
->>> -out:
->>>         put_page(page);
->>>         return 0;
->>>  }
->>> --
->>> 2.19.1
->>>
-> .
-> 
+We need a volunteer with enough motivation to solve this subsystem-wide
+:-) In the meantime, whatever shortcut addresses immediate issues is
+probably fine, as yak-shaving in this area would definitely not be
+reasonable.
 
+> > >> v2: Cleanup connector only if it was created
+> > >>
+> > >> Fixes: 13dfc0540a57 ("drm/bridge: Refactor out the panel wrapper from the lvds-encoder bridge.")
+> > >> Cc: <stable@vger.kernel.org> # 4.12+
+> > >> Cc: Andrzej Hajda <a.hajda@samsung.com>
+> > >> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> > >> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+> > >> Cc: Jonas Karlman <jonas@kwiboo.se>
+> > >> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+> > >> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >> ---
+> > >>  drivers/gpu/drm/bridge/panel.c | 6 ++++++
+> > >>  1 file changed, 6 insertions(+)
+> > >>
+> > >> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
+> > >> index 0ddc37551194..df86b0ee0549 100644
+> > >> --- a/drivers/gpu/drm/bridge/panel.c
+> > >> +++ b/drivers/gpu/drm/bridge/panel.c
+> > >> @@ -87,6 +87,12 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
+> > >>
+> > >>  static void panel_bridge_detach(struct drm_bridge *bridge)
+> > >>  {
+> > >> +	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
+> > >> +	struct drm_connector *connector = &panel_bridge->connector;
+> > >> +
+> > >> +	/* Cleanup the connector if we know it was initialized */
+> > >> +	if (!!panel_bridge->connector.dev)
+> > >> +		drm_connector_cleanup(connector);
+> > >>  }
+> > >>
+> > >>  static void panel_bridge_pre_enable(struct drm_bridge *bridge)
+
+-- 
+Regards,
+
+Laurent Pinchart
