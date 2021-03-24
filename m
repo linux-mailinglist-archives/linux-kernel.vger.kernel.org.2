@@ -2,220 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB32347A24
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF654347A28
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235911AbhCXOCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235859AbhCXOCa (ORCPT
+        id S235785AbhCXOEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:04:24 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:30210 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhCXOD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:02:30 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1750AC0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:02:30 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id 14so1343675wrz.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:02:29 -0700 (PDT)
+        Wed, 24 Mar 2021 10:03:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9Srn0HCzRuEqmBIHGKCIDIj1QJnrtcGxEweWmfp41Hk=;
-        b=blJB3/bFvQgdsZFjA+/2zACn4ORPdcyIG+PyUh7o/pVWFmLyVnFIRI0DJxPPn3na3g
-         inpIOlx9DPXatv/jjh7lLKY/A2zld01pxkuerRfrZexXJsma2InqZjZL6YVamwojcRAb
-         ua/kXomby2Ter8CUenDlr7Imi9TUivVVp3AcbN2yIDi4sGya76j/l2u800HBGEnUW9E1
-         zIT3G5XkaT7Ir/8h7xHZ4levDa2Jym3IyRCiBSKR8cLWFLGGbAPwGAmbMpEZBzHZg76u
-         nsmafsfP1hdOBT9U8iQaHt9XtmplU5xBcglj2JwAmNAw7qRdJToR8NEBMayYrsvIxUhN
-         pogw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Srn0HCzRuEqmBIHGKCIDIj1QJnrtcGxEweWmfp41Hk=;
-        b=KclrYeQMY1OhFuCqXzN/U0Y9eASkJ8THQ/74k9wZ+CFyO5ixw8V3Ztf/RgTjfepGAW
-         dOU53i+bRQkdpYA3qSIlBBwVXC1CYVuai0hQIGyCLsXYKKIsuhdV/bCjG+Cba5rB+JhQ
-         KXh72HIVtOqYGLLHgMN2GkcVO1NhxVRJ2kUYo3bIsnXBTaah0UoZeXTWBOsik2WpuZ1N
-         2z4Fpg1u1/mHGGwpIioYRXdbzsO0UFCC1fi0jrU029jwiEBmcWh3YVofURFO4lARzwdD
-         A/xxbZA6AhG6gj/4B72ODicijGarT8IfY8W+4YporDhSQUlO1DxhfoveUtGjp/co2oKg
-         +chQ==
-X-Gm-Message-State: AOAM533kulXkE4An0thrrWMaJpnGmKfoo1j6v2caZhiYtJRfNYzvdj5y
-        h2jv4QxCUhx2vHp5VNL2t2wHtw==
-X-Google-Smtp-Source: ABdhPJxXUx4T2aaNwAFsHs+0aPg0bqPsP3pOb4ZsustW1c+1HMynvIBq9hs4aHMZlVqiC73ovqvuGw==
-X-Received: by 2002:adf:e508:: with SMTP id j8mr3686199wrm.141.1616594548397;
-        Wed, 24 Mar 2021 07:02:28 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:e547:d6b6:59e3:4a81])
-        by smtp.gmail.com with ESMTPSA id b17sm3358310wrt.17.2021.03.24.07.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 07:02:27 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 14:02:26 +0000
-From:   Alessio Balsini <balsini@android.com>
-To:     Rokudo Yan <wu-yan@tcl.com>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Peng Tao <bergwolf@gmail.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND V12 1/8] fs: Generic function to convert iocb to
- rw flags
-Message-ID: <YFtGciOtz6ri9nYS@google.com>
-References: <24bb27b5804fb64238f2f9c1f3c860d5@sslemail.net>
- <YA71ydLBbKmZg5/O@google.com>
- <d136923d-dd50-3cb4-7771-b3c0dceabd24@tcl.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1616594637; x=1648130637;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=wBInpsFLZS8A1IIEXgvAg26d+AexU/0HeDXfGLeqcu8=;
+  b=rmJigHHB9MFp9TAv+ln7k2ZeZ08Pwn8ZYn7m3TMFWc6bkWqcTNbY3Z77
+   UpYRTudsKm9MuNqEEwEoZRAvc6tQc1VXYw+X3V27iLDaCpzgy0/2ssFYw
+   x3bO1AXkMFxzEr/T1o/LohNvxfTz/3cKZ0Gjf0Q/UQtTuQp9z0Wv4t3q0
+   A=;
+X-IronPort-AV: E=Sophos;i="5.81,274,1610409600"; 
+   d="scan'208";a="95933423"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 24 Mar 2021 14:03:47 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 6F6C0A2626;
+        Wed, 24 Mar 2021 14:03:46 +0000 (UTC)
+Received: from EX13D21UWB001.ant.amazon.com (10.43.161.108) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Mar 2021 14:03:46 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
+ EX13D21UWB001.ant.amazon.com (10.43.161.108) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Mar 2021 14:03:46 +0000
+Received: from [192.168.12.56] (10.1.212.27) by mail-relay.amazon.com
+ (10.43.160.118) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 24 Mar 2021 14:03:42 +0000
+Subject: Re: [PATCH v4 0/3] Fix pinctrl-single pcs_pin_dbg_show()
+To:     Drew Fustini <drew@beagleboard.org>
+CC:     <andy.shevchenko@gmail.com>, <tony@atomide.com>,
+        <haojian.zhuang@linaro.org>, <linus.walleij@linaro.org>,
+        <dwmw@amazon.co.uk>, <benh@amazon.com>, <ronenk@amazon.com>,
+        <talel@amazon.com>, <jonnyc@amazon.com>, <hanochu@amazon.com>,
+        <tgershi@amazon.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-omap@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210319152133.28705-1-hhhawa@amazon.com>
+ <20210322055631.GB392062@x1>
+From:   "Hawa, Hanna" <hhhawa@amazon.com>
+Message-ID: <ecaae08b-a8b7-ad36-1f71-af08c0cc6a88@amazon.com>
+Date:   Wed, 24 Mar 2021 16:03:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d136923d-dd50-3cb4-7771-b3c0dceabd24@tcl.com>
+In-Reply-To: <20210322055631.GB392062@x1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 03:43:12PM +0800, Rokudo Yan wrote:
-> On 1/26/21 12:46 AM, Alessio Balsini wrote:
-> > On Mon, Jan 25, 2021 at 03:30:50PM +0000, Alessio Balsini wrote:
-> > > OverlayFS implements its own function to translate iocb flags into rw
-> > > flags, so that they can be passed into another vfs call.
-> > > With commit ce71bfea207b4 ("fs: align IOCB_* flags with RWF_* flags")
-> > > Jens created a 1:1 matching between the iocb flags and rw flags,
-> > > simplifying the conversion.
-> > > 
-> > > Reduce the OverlayFS code by making the flag conversion function generic
-> > > and reusable.
-> > > 
-> > > Signed-off-by: Alessio Balsini <balsini@android.com>
-> > > ---
-> > >   fs/overlayfs/file.c | 23 +++++------------------
-> > >   include/linux/fs.h  |  5 +++++
-> > >   2 files changed, 10 insertions(+), 18 deletions(-)
-> > > 
-> > > diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> > > index bd9dd38347ae..56be2ffc5a14 100644
-> > > --- a/fs/overlayfs/file.c
-> > > +++ b/fs/overlayfs/file.c
-> > > @@ -15,6 +15,8 @@
-> > >   #include <linux/fs.h>
-> > >   #include "overlayfs.h"
-> > > +#define OVL_IOCB_MASK (IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
-> > > +
-> > >   struct ovl_aio_req {
-> > >   	struct kiocb iocb;
-> > >   	struct kiocb *orig_iocb;
-> > > @@ -236,22 +238,6 @@ static void ovl_file_accessed(struct file *file)
-> > >   	touch_atime(&file->f_path);
-> > >   }
-> > > -static rwf_t ovl_iocb_to_rwf(int ifl)
-> > > -{
-> > > -	rwf_t flags = 0;
-> > > -
-> > > -	if (ifl & IOCB_NOWAIT)
-> > > -		flags |= RWF_NOWAIT;
-> > > -	if (ifl & IOCB_HIPRI)
-> > > -		flags |= RWF_HIPRI;
-> > > -	if (ifl & IOCB_DSYNC)
-> > > -		flags |= RWF_DSYNC;
-> > > -	if (ifl & IOCB_SYNC)
-> > > -		flags |= RWF_SYNC;
-> > > -
-> > > -	return flags;
-> > > -}
-> > > -
-> > >   static void ovl_aio_cleanup_handler(struct ovl_aio_req *aio_req)
-> > >   {
-> > >   	struct kiocb *iocb = &aio_req->iocb;
-> > > @@ -299,7 +285,8 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
-> > >   	old_cred = ovl_override_creds(file_inode(file)->i_sb);
-> > >   	if (is_sync_kiocb(iocb)) {
-> > >   		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
-> > > -				    ovl_iocb_to_rwf(iocb->ki_flags));
-> > > +				    iocb_to_rw_flags(iocb->ki_flags,
-> > > +						     OVL_IOCB_MASK));
-> > >   	} else {
-> > >   		struct ovl_aio_req *aio_req;
-> > > @@ -356,7 +343,7 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
-> > >   	if (is_sync_kiocb(iocb)) {
-> > >   		file_start_write(real.file);
-> > >   		ret = vfs_iter_write(real.file, iter, &iocb->ki_pos,
-> > > -				     ovl_iocb_to_rwf(ifl));
-> > > +				     iocb_to_rw_flags(ifl, OVL_IOCB_MASK));
-> > >   		file_end_write(real.file);
-> > >   		/* Update size */
-> > >   		ovl_copyattr(ovl_inode_real(inode), inode);
-> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > > index fd47deea7c17..647c35423545 100644
-> > > --- a/include/linux/fs.h
-> > > +++ b/include/linux/fs.h
-> > > @@ -3275,6 +3275,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
-> > >   	return 0;
-> > >   }
-> > > +static inline rwf_t iocb_to_rw_flags(int ifl, int iocb_mask)
-> > > +{
-> > > +	return ifl & iocb_mask;
-> > > +}
-> > > +
-> > >   static inline ino_t parent_ino(struct dentry *dentry)
-> > >   {
-> > >   	ino_t res;
-> > > -- 
-> > > 2.30.0.280.ga3ce27912f-goog
-> > > 
-> > 
-> > For some reason lkml.org and lore.kernel.org are not showing this change
-> > as part of the thread.
-> > Let's see if replying to the email fixes the indexing.
-> > 
-> > Regards,
-> > Alessio
-> > 
-> 
-> Hi, Alessio
-> 
-> This change imply IOCB_* and RWF_* flags are properly aligned, which is not
-> true for kernel version 5.4/4.19/4.14. As the patch ("fs: align IOCB_* flags
-> with RWF_* flags") is not back-ported to these stable kernel branches. The
-> issue was found when applying these patches
-> to kernel-5.4(files open with passthrough enabled can't do append write). I
-> think the issue exists in AOSP common kernel too.
-> Could you please fix this?
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ce71bfea207b4d7c21d36f24ec37618ffcea1da8
-> 
-> https://android-review.googlesource.com/c/kernel/common/+/1556243
-> 
-> Thanks
-> yanwu
 
-Hi yanwu,
 
-Correct, this change depends on commit ce71bfea207b ("fs: align IOCB_*
-flags with RWF_* flags"), and this dependency is satisfied upstream.
-Being FUSE passthrough a new feature and not a bugfix, I'm not planning
-to do any backporting to LTS kernels (and GregKH won't probably accept
-it).
+On 3/22/2021 7:56 AM, Drew Fustini wrote:
+> I'm curious what SoC are you using?
 
-Android is a different story (and slightly out of topic here).
-We are looking forward to have FUSE passthrough enabled on Android as
-most of the user data is handled by FUSE. We liked the performance
-improvements and non-intrusiveness of the change both for the kernel and
-for userspace, so we started supporting this in android12-5.4+ kernel
-branches. We are not planning to maintain the feature to older kernels
-though (we can't add features to already released), and this is why FUSE
-passthrough is not merged there.
-To answer your question, in AOSP the officially supported kernels
-already have the flags alignment change merged, and a not supported
-backporting to older kernels (i.e., 4.14 and 4.19) is already available:
+I'm working on Amazon Annapurna Labs SoCs (based on ARM cortex 
+processors). That include multiple pins controlled with same register.
 
-https://android-review.googlesource.com/q/%2522BACKPORT:+fs:+align+IOCB_*+flags+with+RWF_*+flags%2522+-status:abandoned
+> 
+> It's good to know who has hardware to test bits_per_mux in the future.
+> 
+> I pay attention to pinctrl-single as that is the driver used for the TI
+> AM3358 SoC used in a variety of BeagleBone boards.  It does not use
+> bits_per_mux, but I can verify that this does not cause any regression
+> for the AM3358 SoC:
+> 
+>    /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single# cat pins
+>    registered pins: 142
+>    pin 0 (PIN0) 0:? 44e10800 00000027 pinctrl-single
+>    pin 1 (PIN1) 0:? 44e10804 00000027 pinctrl-single
+>    pin 2 (PIN2) 0:? 44e10808 00000027 pinctrl-single
+>    pin 3 (PIN3) 0:? 44e1080c 00000027 pinctrl-single
+>    pin 4 (PIN4) 0:? 44e10810 00000027 pinctrl-single
+>    pin 5 (PIN5) 0:? 44e10814 00000027 pinctrl-single
+>    pin 6 (PIN6) 0:? 44e10818 00000027 pinctrl-single
+>    pin 7 (PIN7) 0:? 44e1081c 00000027 pinctrl-single
+>    pin 8 (PIN8) 22:gpio-96-127 44e10820 00000027 pinctrl-single
+>    pin 9 (PIN9) 23:gpio-96-127 44e10824 00000037 pinctrl-single
+>    pin 10 (PIN10) 26:gpio-96-127 44e10828 00000037 pinctrl-single
+>    pin 11 (PIN11) 27:gpio-96-127 44e1082c 00000037 pinctrl-single
+>    pin 12 (PIN12) 0:? 44e10830 00000037 pinctrl-single
+>    <snip>
+>    pin 140 (PIN140) 0:? 44e10a30 00000028 pinctrl-single
+>    pin 141 (PIN141) 13:gpio-64-95 44e10a34 00000020 pinctrl-single
+> 
+> Reviewed-by: Drew Fustini<drew@beagleboard.org>
+
+Thanks for review and verify the change.
 
 Thanks,
-Alessio
+Hanna
+
+> 
+> Thanks,
+> Drew
