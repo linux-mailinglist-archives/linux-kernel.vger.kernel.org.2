@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0060346EE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7725B346EE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbhCXBcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234763AbhCXBcZ (ORCPT
+        id S234654AbhCXBdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:33:20 -0400
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:41606 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234728AbhCXBcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:32:25 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A691C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:32:25 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so21484769ote.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7VOrgrdN70dWogl0XiinauXPdyVgeQermYRaw/QNqt0=;
-        b=hBbmOY/pOdnBESHPKcSbq4XEfcf4CsTlYKItFZKiwcBB/xJPXZAMsIJyLocveyv5+3
-         6eleH0fWCj4QV8HqXjiTV6g/FGwFucgFReVSVdlYeXSv6fXBAIeJaletdSvoFv77FNdk
-         Lnb+TOGdtSauD7phIq8/dztDG5bp8eEKBav5yL5OuNXbd9R86Y2LJtsrRtJ94P6CpRqS
-         emLV3z9gVoAV5j1TjHV/uatbl1hgonybSIpd6tp/26g74llNmPOjI2OUNTR/OE6lH44A
-         p2zyXZhgYaeUVKqIJuvM0EMdeHfjkQqjpCVjddB95WSDqPaN8hdyXbT0dIPIbkRXmQEn
-         1bCw==
+        Tue, 23 Mar 2021 21:32:53 -0400
+Received: by mail-lf1-f54.google.com with SMTP id b14so16251433lfv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:32:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7VOrgrdN70dWogl0XiinauXPdyVgeQermYRaw/QNqt0=;
-        b=Bt0tl/cvpIRhUJSJDCJgnYfEOKhMVRPbaaqNE27Zxl+s1zLbZ4LRPFMcOSVrt6KRq7
-         Qedigrj5y2o22mbG49/lYs7CsKfHgAvQ6Xn5LMXWJu2FeDDTJgdSBGCBST5ymsdcdAax
-         3EkZ7a0hPOvbO2JSAYccN3WyemVpg8arigEmSX47//KQUUraVL/WNPa5x9Hx50WFbHSy
-         HWGgbjimARjaBlHj/MMZq8sBSyeNyZSqgotpjMS/VQnZPzapdoyEXrdIJaXnmw0Ep+5+
-         9ahWo7heLHvPwAMpuZkThNBwJGWA+fFnSI5LMtfOdplHHJb1gPQwbSHKg8Nff1R2fYvl
-         Da1g==
-X-Gm-Message-State: AOAM532X0QR6PgOZSSpmspmPgy1O/9fb44Wogx30poqUcWILki+g4+hT
-        z/o5Vcai5+Hx1IYsCNi3S6M8Zg==
-X-Google-Smtp-Source: ABdhPJxtPxePyuusyTCENnwTIquDwdttrXeqzFJKy60J6pV9Tb419yReTF9TRc4WVj94R5POEgncvQ==
-X-Received: by 2002:a05:6830:225b:: with SMTP id t27mr992966otd.73.1616549544644;
-        Tue, 23 Mar 2021 18:32:24 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g22sm199167oop.7.2021.03.23.18.32.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 18:32:24 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 20:32:22 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sdm845: Move reserved-memory to
- devices
-Message-ID: <20210324013222.GA857060@yoga>
-References: <20210312234310.3490809-1-bjorn.andersson@linaro.org>
- <13234328-7251-407d-8870-d409708632e3@somainline.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TPlGyuHsYMTFJdo8mnBoWVUnbHgk6ZshI4ErqXjbjMo=;
+        b=OpRHBaPYEIJNhnT54ZnhgdaCALWJhzcebpVnHhL4+p0U1lF/nMoChYIIfq9jDgUEB1
+         F5pXsOw0iZ9LvQ3fEhR1NHriNzcfcH5uM84XbBIfr/2BaQQ4Ll/ZlhGz2ClTtAbgqnJ1
+         A6une68Dx9/f9tihnbEvxHRS6NbyDUzOiibiXzqWBXsZ7PIxdjhq7NhjlAvlkmH4FogG
+         JFtbt4Ko+Hn3oZmajn5dfSrtnIjV769snC2G9voWgOK+ursjvSdR6nwYWD+yJ0ISVG35
+         HXjkQi7b71XhY/M49m7hBWWdyzjjr7+R6xXFe9Q8cFrNvccnEqX8JuaWvsC4cGtzbrza
+         mUOQ==
+X-Gm-Message-State: AOAM532/2D21K21EXzXlsbHE6km6M7ythImUE3NdfQX4RJKX7i6Osbqm
+        oiuzgscdjXcRU9gxO6exjec2wDfNaAlLaF3dhEo=
+X-Google-Smtp-Source: ABdhPJxfi2Mf+dSVk5E1f6fDO72JGILV3WZI3NU7FACkW2M+d8vA93SQ5Y9M7X9MCWSqhJJV256Wlc9l6mhy2VcEvGw=
+X-Received: by 2002:a05:6512:36c8:: with SMTP id e8mr427590lfs.635.1616549572493;
+ Tue, 23 Mar 2021 18:32:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <13234328-7251-407d-8870-d409708632e3@somainline.org>
+References: <20210322060635.821531-1-like.xu@linux.intel.com> <20210322060635.821531-4-like.xu@linux.intel.com>
+In-Reply-To: <20210322060635.821531-4-like.xu@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 24 Mar 2021 10:32:41 +0900
+Message-ID: <CAM9d7ci7qj47xDC3z2AzYGjnFdPRNsuEPGivZ1_re-XGhoBwMg@mail.gmail.com>
+Subject: Re: [PATCH v4 RESEND 3/5] perf/x86/lbr: Move cpuc->lbr_xsave
+ allocation out of sleeping region
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 12 Mar 20:35 CST 2021, Konrad Dybcio wrote:
+Hello,
 
-> Hi,
-> 
-> 
-> I'm not sure I can agree. Especially for regions like IPA and
-> TZ-reserved, which seem the same on (almost?) all..
-> 
+On Mon, Mar 22, 2021 at 3:14 PM Like Xu <like.xu@linux.intel.com> wrote:
+> +void reserve_lbr_buffers(struct perf_event *event)
+> +{
+> +       struct kmem_cache *kmem_cache = x86_get_pmu()->task_ctx_cache;
+> +       struct cpu_hw_events *cpuc;
+> +       int cpu;
+> +
+> +       if (!static_cpu_has(X86_FEATURE_ARCH_LBR))
+> +               return;
+> +
+> +       for_each_possible_cpu(cpu) {
+> +               cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
+> +               if (kmem_cache && !cpuc->lbr_xsave && !event->attr.precise_ip)
+> +                       cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
+> +       }
+> +}
 
-Thanks Konrad, I appreciate that.
+I think we should use kmem_cache_alloc_node().
 
-> 
-> Sure, the configuration for various remoteprocs *can* differ based on
-> what the vendor decided to go with, but more often than not
-> (especially with phones) vendors just take a MTP or CDP design, add a
-> screen, couple of cameras and call it their own (you can tell by how
-> similar most of them to the original reference designs in DT). While
-> this is usually the case with lower-end (so not exactly sdm845)
-> devices, it also kinda applies here...
-> 
-
-Unfortunately there's not a single memory map for each reference design,
-the memory map do change during development based on feature set. I
-think we can see this already among the few devices.
-
-> 
-> I guess for this one, we should find the lowest common denominator and
-> keep the nodes that are in the majority of devices in 845 DTSI and
-> only alter them if need be.. For WoA devices that may stray further
-> away, you can just add a label to reserved-memory and /delete-node/
-> it, so that you can rewrite it cleanly. The proposed approach just
-> adds a lot - A LOT - of duplication. It will REALLY bite after more
-> people submit 845-based phones, of which there are plenty (4 Xperias,
-> a whole lot of Xiaomis, a couple of Samsungs, LGs... need I go on?).
-> 
-
-I was hoping to make it easier to reason about the memory map for each
-device, but if your right about these incoming devices then I agree that
-the duplication isn't worth it.
-
-I'll respin patch 2, to get IPA going on the Yoga C630 and put this
-patch on hold until this annoys me again :)
-
-Thank you,
-Bjorn
+Thanks,
+Namhyung
