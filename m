@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29BF3473F5
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0573473F3
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhCXIv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233620AbhCXIvT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:51:19 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C11DC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 01:51:19 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id u19so14160763pgh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 01:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D9t8jH7fiBRNuIpJOprUlwIjQmokxDINeAIuoJ7WsEI=;
-        b=j4H4/cvDRqgHQCNnDg0HwFrPYKAgXoJpgGRMWG8HjKYfH926TB4MRWEiuxCaU1K2Kb
-         woUMNc9qO1qA7/XZH3VEEe2c0RMiYPNrvko7Fy0wKNFcuJtHHw5JAqTXmxcvV+XfEQar
-         vsNs/mdSoKBRN1/3Hxt1zsDwWQ44SvkYxnWpwvtVAsZnah/xDjpzyZQ5helZfwWF4Kqc
-         9vy+GYvo8+FqDq42I6jsxh68pObJO2xf2nt1x1VDJJ7ZDAlEZqzeqjNKTtK1Ie5duYhi
-         Zvn9aPcU1ftOGBOsWNbBp/H3V/eXbrRQDOoBSb9j83hxucYZUvdgkV9pWB7cgYwlW4jb
-         zqug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D9t8jH7fiBRNuIpJOprUlwIjQmokxDINeAIuoJ7WsEI=;
-        b=kM5c7dL8pIP0lXMCJ9/i/8OYTUo1CaJDw7CT6cHrZBP9bguSgXoIpEv3x/dcADWYFO
-         N+xjrqWUeGzZ7PfyelrPkaccKyuN3SBz4LPpt7nN/aXbat9aQjxIVYvqOXYfqxBGyuYK
-         Vbi0cAQKaaW74PlhsonLPAH16XPph48nLcTmoyaDpaKsgg34zLd2/UVZs9S9TQi5HfwH
-         xboz9uB87wZGCxKqEtUtBNoMC+z/pj4Wmbfk4DKT3cgqtjQlC4hIYW9SUl1r/Uhnlh3r
-         UQArv+MevL7X3HmexFju1hlBJhs0rBJCxRyEQOZsyasmLRgzU6cp3WrUpyIIpyhLR0Jf
-         YD9Q==
-X-Gm-Message-State: AOAM530FSKjJXdyhr0tkcKIM445XMNTH3KXfHf4jl02K4lNh6e1RHV1o
-        Q76Z8HITa/FTlZ+Dk6vzxPG5XEo4LZ0dxPACVUIdlg==
-X-Google-Smtp-Source: ABdhPJwX6oaoOONDaii/WKm7gZdPV1gXoOejYkts/sZ0DJFoA4ZGka5pHxdEPlnr77OXIP71hN4AHiGETMo69iqt5h4=
-X-Received: by 2002:aa7:9e5b:0:b029:1f1:5ba4:57a2 with SMTP id
- z27-20020aa79e5b0000b02901f15ba457a2mr2195394pfq.59.1616575878821; Wed, 24
- Mar 2021 01:51:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323145653.25684-1-songmuchun@bytedance.com>
- <CAMZfGtWT8XXDtg0Jcv=1qJpdLD6foJWE=kB_i1ZyHjvrku=vrw@mail.gmail.com> <YFr5SrJ2iNGYwVNA@dhcp22.suse.cz>
-In-Reply-To: <YFr5SrJ2iNGYwVNA@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 24 Mar 2021 16:50:41 +0800
-Message-ID: <CAMZfGtVe6seRLA7Wo4TST0ApkaHdkDmv6sL5GZytK_4hvMbkXg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix memsw uncharge for root_mem_cgroup
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        id S233582AbhCXIvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:51:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48220 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233774AbhCXIux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 04:50:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616575852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MSPKvcu/uoRdcxBP8xOUaNwYGRRAJE5gTDcwquMW0MU=;
+        b=THAL6mYZO0zKISp2nfWK1agQ/uxktBcdJZtCWV2ORyNGCzYSZQbWkA+NvS2lprbMTj8zm3
+        H6uVe5QtfkaIb6vP0FMSOkL53YORF3OnkVagxwZ6FLwmffFXOjBDwXmq18qXYdPu/u8ikT
+        sGD68JdBboqDZBQJ/S2SGAhOcOwET2A=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6F210AC6E;
+        Wed, 24 Mar 2021 08:50:52 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 09:50:51 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     =?utf-8?B?546L5pOO?= <wangqing@vivo.com>
+Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andrey Ignatov <rdna@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: Re: [PATCH V2] workqueue: watchdog: update
+ wq_watchdog_touched for unbound lockup checking
+Message-ID: <YFr9a5tws6PhAjye@alley>
+References: <YFoD/a/SPWe9mocr@alley>
+ <ADYALADXDuGCRBjCE77aRKpD.3.1616552206707.Hmail.wangqing@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ADYALADXDuGCRBjCE77aRKpD.3.1616552206707.Hmail.wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 24-03-21 12:11:35, Muchun Song wrote:
-> > On Tue, Mar 23, 2021 at 11:04 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > The pages aren't accounted at the root level, so we cannot uncharge the
-> > > page to the memsw counter for the root memcg. Fix this.
-> > >
-> > > Fixes: 1f47b61fb407 ("mm: memcontrol: fix swap counter leak on swapout from offline cgroup")
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+On Wed 2021-03-24 10:16:46, 王擎 wrote:
+> 
+> >On Tue 2021-03-23 20:37:35, 王擎 wrote:
+> >> 
+> >> >On Fri 2021-03-19 16:00:36, Wang Qing wrote:
+> >> >> When touch_softlockup_watchdog() is called, only wq_watchdog_touched_cpu 
+> >> >> updated, while the unbound worker_pool running on its core uses 
+> >> >> wq_watchdog_touched to determine whether locked up. This may be mischecked.
+> >> >
+> >> >By other words, unbound workqueues are not aware of the more common
+> >> >touch_softlockup_watchdog() because it updates only
+> >> >wq_watchdog_touched_cpu for the affected CPU. As a result,
+> >> >the workqueue watchdog might report lockup in unbound workqueue
+> >> >even though it is blocked by a known slow code.
+> >> 
+> >> Yes, this is the problem I'm talking about.
 > >
-> > I am very sorry. I should repent. I suddenly realise the fix is totally
-> > wrong. Because the @memcg cannot be root memcg when
-> > @memcg != @swap_memcg.
->
-> I am probably blind but I do not see why this would be the case.
-> We have memcg != swap_memcg in this branch but we do not know the
-> neither of the two is root_mem_cgroup, no? If we did knot that we
-> wouldn't have to check for swap_memcg != root_mem_cgroup. Or do I miss
-> something?
+> >I thought more about it. This patch prevents a false positive.
+> >Could it bring an opposite problem and hide real problems?
+> >
+> >I mean that an unbound workqueue might get blocked on CPU A
+> >because of a real softlockup. But we might not notice it because
+> >CPU B is touched. Well, there are other ways how to detect
+> >this situation, e.g. the softlockup watchdog.
+> >
+> >
+> >> >> My suggestion is to update both when touch_softlockup_watchdog() is called, 
+> >> >> use wq_watchdog_touched_cpu to check bound, and use wq_watchdog_touched 
+> >> >> to check unbound worker_pool.
+> >> >> 
+> >> >> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> >> >> ---
+> >> >>  kernel/watchdog.c  |  5 +++--
+> >> >>  kernel/workqueue.c | 17 ++++++-----------
+> >> >>  2 files changed, 9 insertions(+), 13 deletions(-)
+> >> >> 
+> >> >> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> >> >> index 7110906..107bc38
+> >> >> --- a/kernel/watchdog.c
+> >> >> +++ b/kernel/watchdog.c
+> >> >> @@ -278,9 +278,10 @@ void touch_all_softlockup_watchdogs(void)
+> >> >>  	 * update as well, the only side effect might be a cycle delay for
+> >> >>  	 * the softlockup check.
+> >> >>  	 */
+> >> >> -	for_each_cpu(cpu, &watchdog_allowed_mask)
+> >> >> +	for_each_cpu(cpu, &watchdog_allowed_mask) {
+> >> >>  		per_cpu(watchdog_touch_ts, cpu) = SOFTLOCKUP_RESET;
+> >> >> -	wq_watchdog_touch(-1);
+> >> >> +		wq_watchdog_touch(cpu);
+> >> >
+> >> >Note that wq_watchdog_touch(cpu) newly always updates
+> >> >wq_watchdog_touched. This cycle will set the same jiffies
+> >> >value cpu-times to the same variable.
+> >> >
+> >> Although there is a bit of redundancy here, but the most concise way of 
+> >> implementation, and it is certain that it will not affect performance.
+> >> 
+> Another way to implement is wq_watchdog_touch() remain unchanged, but need 
+> to modify touch_softlockup_watchdog() and touch_all_softlockup_watchdogs():
+> notrace void touch_softlockup_watchdog(void)
+> {
+> 	touch_softlockup_watchdog_sched();
+> 	wq_watchdog_touch(raw_smp_processor_id());
+> +     wq_watchdog_touch(-1);
+> }
+> void touch_all_softlockup_watchdogs(void)
+>  * update as well, the only side effect might be a cycle delay for
+>  * the softlockup check.
+> */
+>  -	for_each_cpu(cpu, &watchdog_allowed_mask)
+> +	for_each_cpu(cpu, &watchdog_allowed_mask) {
+>   		per_cpu(watchdog_touch_ts, cpu) = SOFTLOCKUP_RESET;
+>  +		wq_watchdog_touch(cpu);
+>  +	}
+>  	wq_watchdog_touch(-1);
+>   }
+> So wq_watchdog_touched will not get updated many times,  
+> which do you think is better, Petr?
 
-I look at the mem_cgroup_id_get_online() closely. If memcg is root, this
-function always returns root memcg. So memcg will equal swap_memcg.
-I apologize for not carefully reviewing the code myself.
+I actually prefer the original patch. It makes wq_watchdog_touch()
+easy to use. The complexity is hidden in wq-specific code.
 
-Thanks.
+The alternative way updates each timestamp only once but the use
+is more complicated. IMHO, it is more error prone.
 
-> --
-> Michal Hocko
-> SUSE Labs
+Best Regards,
+Petr
