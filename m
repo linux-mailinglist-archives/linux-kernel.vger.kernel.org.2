@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8758346F28
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73424346F29
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbhCXCBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231544AbhCXCBS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:01:18 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E083C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:01:18 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x26so16201586pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gko5DwdDrrjyuudztCK85u5fA9SOsiUHVh5WfDpFt8E=;
-        b=QlJxkIRDjzXTY962t2mtJA7UVqpJYbvcjCSKEMSo/Q5mM60eQoKJHEXyROJMl7N+ES
-         kEXL+d876OKQFmHIFECPqG2PQLhuC5OYGzBJvk5FNiIa6/eJBbCg1szxejz4xHCjoKaJ
-         BI1VsVWLDZ/5tGIYFIMpjkewa0LZPtGwL3ZTA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gko5DwdDrrjyuudztCK85u5fA9SOsiUHVh5WfDpFt8E=;
-        b=ZclJXwiObdZk+FRraaVBY99DvT+Xw/6X+RowtnjMRfiqoV1eOVCw++qxcSGKGdlIVs
-         D4oBrJ84xtYkfTVJ9u/rdZF8bF9UbF/hZS86zyS/RZEf+E+cx4fQlKN/JRHDrwrk9cAm
-         LAPb8bJcNuPfWMR5re/pxdI33sZEcmkSLAT/8CcOtZKa3mDDOx3gg3v8xZKmohVSAeaE
-         GzBRW/8FcfCynN+AjsiBxCDKwtcDV+vwmvqHIAx52Lqzo1i2iJwRdXydsPHWhVwNM8Uj
-         hW5k4oD6ENcZWsDGnIv+WVGXNT8xE8zGa1uI0oMZHi5o4t0195f+01zLiQP5jkL30sq7
-         cMVA==
-X-Gm-Message-State: AOAM532xlpPR06YqXGnVf6QVJ+bpRyh9fM9mf9QhYSIH3ZzGr/i1Gs8E
-        0pD/muSEPj0IdBi/7uWAqBzJgA==
-X-Google-Smtp-Source: ABdhPJxjsLNxIWN+kP3AAa5XMz8NmKTnf5Z8dD1Tcao1d3voJoNIhlTReYr8pe8xY1AcqQYOBEuOZA==
-X-Received: by 2002:a63:f546:: with SMTP id e6mr954277pgk.299.1616551277775;
-        Tue, 23 Mar 2021 19:01:17 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:bcf2:e05a:a993:9494])
-        by smtp.gmail.com with ESMTPSA id d2sm389013pjx.42.2021.03.23.19.01.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 19:01:17 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 11:01:12 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv3 5/6] media: uvcvideo: add UVC 1.5 ROI control
-Message-ID: <YFqdaHCQak5ZM0Sf@google.com>
-References: <20210319055342.127308-1-senozhatsky@chromium.org>
- <20210319055342.127308-6-senozhatsky@chromium.org>
- <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
+        id S231544AbhCXCCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:02:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62317 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234715AbhCXCCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 22:02:11 -0400
+IronPort-SDR: JKMcKSSGqg3jvq4Jvn7EoU7n3T1FTwwc2d33pezYzhMIgLEKJMbme45kRNwr/5Ad5KoijoG1VQ
+ Yklk5HezqoXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="190637171"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="190637171"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 19:02:11 -0700
+IronPort-SDR: uCMsn+di9fCqE477yigC9GyHvbFNBLBr+ae5WCYO3wOWgXJQtivfsTUzDZuOjlUyKfW4a8bCNn
+ gcuXUQp2vN1A==
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="513998532"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 19:02:07 -0700
+Subject: Re: [PATCH v4 RESEND 2/5] perf/x86/lbr: Simplify the exposure check
+ for the LBR_INFO registers
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+References: <20210322060635.821531-1-like.xu@linux.intel.com>
+ <20210322060635.821531-3-like.xu@linux.intel.com>
+ <20210323213854.GD4746@worktop.programming.kicks-ass.net>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <d7703dfe-918a-15f8-ce67-fd4fefac9cfc@linux.intel.com>
+Date:   Wed, 24 Mar 2021 10:02:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
+In-Reply-To: <20210323213854.GD4746@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/23 17:16), Ricardo Ribalda wrote:
-[..]
-> > +static bool validate_roi_bounds(struct uvc_streaming *stream,
-> > +                               struct v4l2_selection *sel)
-> > +{
-> > +       if (sel->r.left > USHRT_MAX ||
-> > +           sel->r.top > USHRT_MAX ||
-> > +           (sel->r.width + sel->r.left) > USHRT_MAX ||
-> > +           (sel->r.height + sel->r.top) > USHRT_MAX ||
-> > +           !sel->r.width || !sel->r.height)
-> > +               return false;
-> > +
-> > +       if (sel->flags > V4L2_SEL_FLAG_ROI_AUTO_HIGHER_QUALITY)
-> > +               return false;
+On 2021/3/24 5:38, Peter Zijlstra wrote:
+> On Mon, Mar 22, 2021 at 02:06:32PM +0800, Like Xu wrote:
+>> If the platform supports LBR_INFO register, the x86_pmu.lbr_info will
+>> be assigned in intel_pmu_?_lbr_init_?() and it's safe to expose LBR_INFO
 > 
-> Is it not allowed V4L2_SEL_FLAG_ROI_AUTO_IRIS |
-> V4L2_SEL_FLAG_ROI_AUTO_HIGHER_QUALITY   ?
-
-Good question.
-
-I don't know. Depends on what HIGHER_QUALITY can stand for (UVC doesn't
-specify). But overall it seems like features there are mutually
-exclusive. E.g. AUTO_FACE_DETECT and AUTO_DETECT_AND_TRACK.
-
-
-I think it'll be better to replace this with
-
-	if (sel->flags > USHRT_MAX)
-		return false;
-
-so that we don't let overflow happen and accidentally enable/disable
-some of the features.
-
-> > +
-> > +       return true;
-> > +}
-> > +
-> > +static int uvc_ioctl_s_roi(struct file *file, void *fh,
-> > +                          struct v4l2_selection *sel)
-> > +{
-> > +       struct uvc_fh *handle = fh;
-> > +       struct uvc_streaming *stream = handle->stream;
-> > +       struct uvc_roi_rect *roi;
-> > +       int ret;
-> > +
-> > +       if (!validate_roi_bounds(stream, sel))
-> > +               return -E2BIG;
+> You mean: intel_pmu_lbr_*init*(). '?' is a single character glob and
+> you've got too many '_'s.
 > 
-> Not sure if this is the correct approach or if we should convert the
-> value to the closest valid...
+>> in the x86_perf_get_lbr() directly, instead of relying on lbr_format check.
+> 
+> But, afaict, not every model calls one of those. CORE_YONAH for example
+> doesn't.
+> 
+>> Also Architectural LBR has IA32_LBR_x_INFO instead of LBR_FORMAT_INFO_x
+>> to hold metadata for the operation, including mispredict, TSX, and
+>> elapsed cycle time information.
+> 
+> Relevance?
+> 
+> Wouldn't it be much simpler to simple say something like:
+> 
+>    "x86_pmu.lbr_info is 0 unless explicitly initialized, so there's no
+>    point checking lbr_fmt"
 
-Well, at this point we know that ROI rectangle dimensions are out of
-sane value range. I'd rather tell user-space about integer overflow.
+Yes, it is simpler and I will apply it in the next version.
 
-Looking for the closest ROI rectangle that suffice can be rather
-tricky. It may sounds like we can just use BOUNDARIES_MAX, but this
-is what Firmware D returns for GET_MAX
+> 
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>> ---
+>>   arch/x86/events/intel/lbr.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+>> index 21890dacfcfe..355ea70f1879 100644
+>> --- a/arch/x86/events/intel/lbr.c
+>> +++ b/arch/x86/events/intel/lbr.c
+>> @@ -1832,12 +1832,10 @@ void __init intel_pmu_arch_lbr_init(void)
+>>    */
+>>   int x86_perf_get_lbr(struct x86_pmu_lbr *lbr)
+>>   {
+>> -	int lbr_fmt = x86_pmu.intel_cap.lbr_format;
+>> -
+>>   	lbr->nr = x86_pmu.lbr_nr;
+>>   	lbr->from = x86_pmu.lbr_from;
+>>   	lbr->to = x86_pmu.lbr_to;
+>> -	lbr->info = (lbr_fmt == LBR_FORMAT_INFO) ? x86_pmu.lbr_info : 0;
+>> +	lbr->info = x86_pmu.lbr_info;
+>>   
+>>   	return 0;
+>>   }
+>> -- 
+>> 2.29.2
+>>
 
-ioctl(V4L2_SEL_TGT_ROI_BOUNDS_MAX)
-
-	0, 0, 65535, 65535
-
-	-ss
