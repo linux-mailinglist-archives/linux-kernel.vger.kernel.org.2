@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970A7347CAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B469347CB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236684AbhCXPcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:32:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49554 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236594AbhCXPbz (ORCPT
+        id S236498AbhCXPcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236745AbhCXPcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:31:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616599914;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N8kn0B/D+pZ7zXWK7MZP4nFqRkdMczx4RoGNwPla3Io=;
-        b=i7Yefys5GdQJo0zr4Lid9Gb8Gr9E8yHFWp8BOxJxLBuCtOSvePXI2x3khaUNY80UKugOiM
-        otfo6/40zTGYaJPO/Sst+JI0WqnThlK5C+4HqPYeNNqrSlh8/9GxIccLN8yfVGo5fYTmUb
-        Yfsv2AHQrv7bGKs56vWKevi4n8ynLQU=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-6sqhSzs7OSGQODv9PxMGbA-1; Wed, 24 Mar 2021 11:31:51 -0400
-X-MC-Unique: 6sqhSzs7OSGQODv9PxMGbA-1
-Received: by mail-oi1-f200.google.com with SMTP id x201so662083oif.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:31:51 -0700 (PDT)
+        Wed, 24 Mar 2021 11:32:14 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3F0C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:32:14 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id v70so18400178qkb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iVb2QbYSbal4tLqCqk3qMZlVKf8EJnP6RzZIU2b/Gbg=;
+        b=hAnApmAFjU4lv9213jcldZTaZ5s2KhQhYnd4rknFmPZzC4RkUkKgncqV6u2V058lBg
+         LV9UVLtxKrtK10baBKnXk4Lzd/8E09LglXGiHW1+rl9gYBZyAn8w5kAKS427+wtIPTkb
+         KdoAlmuuIl2k5nnaZQcSqy4/nO/mHB+5nBXSw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=N8kn0B/D+pZ7zXWK7MZP4nFqRkdMczx4RoGNwPla3Io=;
-        b=iVhOhIyDLwlHYa5tBPKvq/HJLhn+YDAp+3QaDJ/V0DpUmuTXguxDpQ5j+wGfifSRDj
-         jhwYJ7sulP2PBhztx8n5OrA8hxwb5ZWNWDHoh2eTjgi/jzU7NTzRo+3MNhGlWS9ubOkH
-         ZK3aJzK/Eu6F/r8SanOKBX1vBU+wPUUi5c8z2h5D+r/Xi0+fEGKfTCD1g3kUIU8JDddO
-         kIT1r9S5ralkt0R2KEwrjS6q8BuTv9+DN4o+qrMl5Zg75e7WjvIJQM/lriXdIJOs27Nh
-         xQE9fVthNxU+LG/ZzTJIenIyCO+U0inGvDopAKYPxztm6is+JqkIShemkMkRKx31Wvnm
-         FEeg==
-X-Gm-Message-State: AOAM530uJQhYdoiVzjTqnkbU9HQeH0YunTwOOpk9kjX3O4HqIrTDiMn1
-        DfjowOi24Yy6FqJzHOSkfi/J6Wiv0IG3Q3sT7yWJnZqWzS40npFPFgnj13bTvhPC1xiv8x5aa4I
-        g/IiDnK2cR+nOcruSEQflErhq
-X-Received: by 2002:a9d:6390:: with SMTP id w16mr3703293otk.178.1616599911302;
-        Wed, 24 Mar 2021 08:31:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHcAMbU8Mdirt+zw6MDCjjmFcHf0Mz7Xosca571WY68Qps4nDv94Vb8jBdRKynlG/lxwuTWw==
-X-Received: by 2002:a9d:6390:: with SMTP id w16mr3703287otk.178.1616599911158;
-        Wed, 24 Mar 2021 08:31:51 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id k24sm457636oic.51.2021.03.24.08.31.50
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iVb2QbYSbal4tLqCqk3qMZlVKf8EJnP6RzZIU2b/Gbg=;
+        b=AR5OaJA4DeyTT5bFD/RWXkea3jx0Zc34KcV7VJ7haWaD37r15sF0Z9n4sq/lnhdEln
+         dDe+cSXc+8D/BKrSEzIKmMG4fw9Ce5kWnzlfo2l8DjCUAyv5/SglF4YotBkhTPHjWzeo
+         AatukO2ZuwcdT7QUzOs2QVBo2t7+TvSYrSpdIUA0uCiEjFfQsFE01o1haJROcfo+jkGp
+         Jzq023BdRZJiftcYCfOhcXJRUjBqctgV/Me/rsOcwpJj7XuVTMuYAaxi+fRvTEHbzvMo
+         puPX9WtTMp3FdP0R/16yPxaQLtt8XLreLHsqVUUrL4S7QKnLKyFQbDePBsInF+BQAKVX
+         RYhA==
+X-Gm-Message-State: AOAM530aAv++nzShvCfStOkFKzFMa5yyngppnZ6z3WoN25cFmeqbKBZX
+        JvSQqsVxTdFPYynHG7qHrJZkbUMnOwt1vw==
+X-Google-Smtp-Source: ABdhPJwuV/AkLI2IxNkJkmSzvRjP+n5t0NhgmcMegpOI8YuKKvAXgbUqHHWLhm8YwdpxyBEtyKTF3A==
+X-Received: by 2002:a37:a9cf:: with SMTP id s198mr3471124qke.143.1616599933036;
+        Wed, 24 Mar 2021 08:32:13 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id l8sm1622746qtr.19.2021.03.24.08.32.12
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 08:31:50 -0700 (PDT)
-Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     virtio-fs-list <virtio-fs@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210318135223.1342795-1-ckuehl@redhat.com>
- <20210318135223.1342795-3-ckuehl@redhat.com>
- <YFNvH8w4l7WyEMyr@miu.piliscsaba.redhat.com>
- <04e46a8c-df26-3b58-71f8-c0b94c546d70@redhat.com>
- <CAJfpeguzdPV13LhXFL0U_bfKcpOHQCvg2wfxF6ryksp==tjVWA@mail.gmail.com>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <9879ca3f-548a-25d4-78f0-f307e1189231@redhat.com>
-Date:   Wed, 24 Mar 2021 10:31:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 24 Mar 2021 08:32:12 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id l15so3479565ybm.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:32:12 -0700 (PDT)
+X-Received: by 2002:a25:b443:: with SMTP id c3mr5809966ybg.32.1616599932107;
+ Wed, 24 Mar 2021 08:32:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJfpeguzdPV13LhXFL0U_bfKcpOHQCvg2wfxF6ryksp==tjVWA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210324025534.1837405-1-swboyd@chromium.org>
+In-Reply-To: <20210324025534.1837405-1-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 24 Mar 2021 08:32:00 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VfM10w60VUuTW5yXdykC8oXuxqq=FLfZYDP2aUh0P0_g@mail.gmail.com>
+Message-ID: <CAD=FV=VfM10w60VUuTW5yXdykC8oXuxqq=FLfZYDP2aUh0P0_g@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: trogdor: Add no-hpd to DSI bridge node
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 10:30 AM, Miklos Szeredi wrote:
-> On Wed, Mar 24, 2021 at 4:09 PM Connor Kuehl <ckuehl@redhat.com> wrote:
->>
->> On 3/18/21 10:17 AM, Miklos Szeredi wrote:
->>> I removed the conditional compilation and renamed the limit.  Also made
->>> virtio_fs_get_tree() bail out if it hit the WARN_ON().  Updated patch below.
->>
->> Hi Miklos,
->>
->> Has this patch been queued?
-> 
-> It's in my internal patch queue at the moment.   Will push to
-> fuse.git#for-next in a couple of days.
+Hi,
 
-Cool! Thank you :-)
+On Tue, Mar 23, 2021 at 7:55 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> We should indicate that we're not using the HPD pin on this device, per
+> the binding document. Otherwise if code in the future wants to enable
+> HPD in the bridge when this property is absent we'll be wasting power
+> powering hpd when we don't use it on trogdor boards. We didn't notice
+> this before because the kernel driver blindly disables hpd, but that
+> won't be true for much longer.
+>
+> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Fixes: 7ec3e67307f8 ("arm64: dts: qcom: sc7180-trogdor: add initial trogdor and lazor dt")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index 07c8b2c926c0..298af6d7fb4a 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -595,6 +595,8 @@ sn65dsi86_bridge: bridge@2d {
+>                 clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
+>                 clock-names = "refclk";
+>
+> +               no-hpd;
+> +
 
-Connor
+Sigh. I can't believe that I added this for cheza in commit
+0d1ce0d14bd7 ("arm64: dts: sdm845: Add "no-hpd" to sn65dsi86 on
+cheza") but forgot trogdor. Thanks.
 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+
+NOTE: if you were feeling charitable you might consider sending a
+patch for "sdm850-lenovo-yoga-c630.dts" as well.  I don't personally
+know if HPD is hooked up on that system, but presumably even if it is
+it's just as useless as it is on other systems where the bridge is
+used for eDP. If nothing else setting it preserves existing behavior.
+Someone (I forget who) requested that I word the bindings specifically
+to say that "no-hpd" was OK to specify in cases like that, since the
+bindings say:
+
+>      Set if the HPD line on the bridge isn't hooked up to anything or is
+>      otherwise unusable.
+
+-Doug
