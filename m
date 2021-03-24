@@ -2,115 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AA7346F5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FFA346F55
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbhCXCSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234753AbhCXCR2 (ORCPT
+        id S232021AbhCXCQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:16:51 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:51974 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231264AbhCXCQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:17:28 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2056EC061763;
-        Tue, 23 Mar 2021 19:17:28 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5A638580;
-        Wed, 24 Mar 2021 03:17:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616552245;
-        bh=qmQLAPlk4G6/WYtsOH5D1LVgkD6Jy8yQNYSAiaOxFOM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hjiGesnakNcI11YiR1n37fS+ZicFYib3eqRR5Y7wvWep3+rnjl0gVNb9/y/w0mWFK
-         cn3qV2pdgV9GiX9wF7zX9O3cV9Ut8MMpyy+iHoUY2x6iU9bHMmtUbnMuyfXjmbOBIh
-         C8mLVldMPkFMu9fJNqiEmRkziuUZO/F5ClsnnvgA=
-Date:   Wed, 24 Mar 2021 04:16:43 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Andrzej Hajda <a.hajda@samsung.com>, od@zcrc.me,
-        stable@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v3 1/4] drm: bridge/panel: Cleanup connector on bridge
- detach
-Message-ID: <YFqhC6e/Gb2JrKyC@pendragon.ideasonboard.com>
-References: <20210124085552.29146-1-paul@crapouillou.net>
- <20210124085552.29146-2-paul@crapouillou.net>
+        Tue, 23 Mar 2021 22:16:49 -0400
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id B077A28255B;
+        Wed, 24 Mar 2021 10:16:46 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ADYALADXDuGCRBjCE77aRKpD.3.1616552206707.Hmail.wangqing@vivo.com>
+To:     Petr Mladek <pmladek@suse.com>, Tejun Heo <tj@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andrey Ignatov <rdna@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFJlOiBbUEFUQ0ggVjJdIHdvcmtxdWV1ZTogd2F0Y2hkb2c6IHVwZGF0ZSB3cV93YXRjaGRvZ190b3VjaGVkIGZvciB1bmJvdW5kIGxvY2t1cCBjaGVja2luZw==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <YFoD/a/SPWe9mocr@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210124085552.29146-2-paul@crapouillou.net>
+Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 24 Mar 2021 10:16:46 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Wed, 24 Mar 2021 10:16:46 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQh5NSEpCShpOGUxMVkpNSk1OTklJS01MTUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JSEtISUNCSElJN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6PyI6Nzo*Iz8OPDgpORE4PkxMGikwCz9VSFVKTUpNTk5JSUtMTE1OVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBSktKT043Bg++
+X-HM-Tid: 0a78620521899395kuwsb077a28255b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-Thank you for the patch.
-
-On Sun, Jan 24, 2021 at 08:55:49AM +0000, Paul Cercueil wrote:
-> If we don't call drm_connector_cleanup() manually in
-> panel_bridge_detach(), the connector will be cleaned up with the other
-> DRM objects in the call to drm_mode_config_cleanup(). However, since our
-> drm_connector is devm-allocated, by the time drm_mode_config_cleanup()
-> will be called, our connector will be long gone. Therefore, the
-> connector must be cleaned up when the bridge is detached to avoid
-> use-after-free conditions.
-> 
-> v2: Cleanup connector only if it was created
-> 
-> v3: Add FIXME
-> 
-> Fixes: 13dfc0540a57 ("drm/bridge: Refactor out the panel wrapper from the lvds-encoder bridge.")
-> Cc: <stable@vger.kernel.org> # 4.12+
-> Cc: Andrzej Hajda <a.hajda@samsung.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Jonas Karlman <jonas@kwiboo.se>
-> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/bridge/panel.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
-> index 0ddc37551194..5959e8183cd0 100644
-> --- a/drivers/gpu/drm/bridge/panel.c
-> +++ b/drivers/gpu/drm/bridge/panel.c
-> @@ -87,6 +87,18 @@ static int panel_bridge_attach(struct drm_bridge *bridge,
->  
->  static void panel_bridge_detach(struct drm_bridge *bridge)
->  {
-> +	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
-> +	struct drm_connector *connector = &panel_bridge->connector;
-> +
-> +	/*
-> +	 * Cleanup the connector if we know it was initialized.
-> +	 *
-> +	 * FIXME: This wouldn't be needed if the panel_bridge structure was
-> +	 * allocated with drmm_kzalloc(). This might be tricky since the
-> +	 * drm_device pointer can only be retrieved when the bridge is attached.
-> +	 */
-> +	if (!!panel_bridge->connector.dev)
-
-How about simply
-
-	if (connector->dev)
-
-? With this change,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +		drm_connector_cleanup(connector);
->  }
->  
->  static void panel_bridge_pre_enable(struct drm_bridge *bridge)
-
--- 
-Regards,
-
-Laurent Pinchart
+Cj5PbiBUdWUgMjAyMS0wMy0yMyAyMDozNzozNSwg546L5pOOIHdyb3RlOgo+PiAKPj4gPk9uIEZy
+aSAyMDIxLTAzLTE5IDE2OjAwOjM2LCBXYW5nIFFpbmcgd3JvdGU6Cj4+ID4+IFdoZW4gdG91Y2hf
+c29mdGxvY2t1cF93YXRjaGRvZygpIGlzIGNhbGxlZCwgb25seSB3cV93YXRjaGRvZ190b3VjaGVk
+X2NwdSAKPj4gPj4gdXBkYXRlZCwgd2hpbGUgdGhlIHVuYm91bmQgd29ya2VyX3Bvb2wgcnVubmlu
+ZyBvbiBpdHMgY29yZSB1c2VzIAo+PiA+PiB3cV93YXRjaGRvZ190b3VjaGVkIHRvIGRldGVybWlu
+ZSB3aGV0aGVyIGxvY2tlZCB1cC4gVGhpcyBtYXkgYmUgbWlzY2hlY2tlZC4KPj4gPgo+PiA+Qnkg
+b3RoZXIgd29yZHMsIHVuYm91bmQgd29ya3F1ZXVlcyBhcmUgbm90IGF3YXJlIG9mIHRoZSBtb3Jl
+IGNvbW1vbgo+PiA+dG91Y2hfc29mdGxvY2t1cF93YXRjaGRvZygpIGJlY2F1c2UgaXQgdXBkYXRl
+cyBvbmx5Cj4+ID53cV93YXRjaGRvZ190b3VjaGVkX2NwdSBmb3IgdGhlIGFmZmVjdGVkIENQVS4g
+QXMgYSByZXN1bHQsCj4+ID50aGUgd29ya3F1ZXVlIHdhdGNoZG9nIG1pZ2h0IHJlcG9ydCBsb2Nr
+dXAgaW4gdW5ib3VuZCB3b3JrcXVldWUKPj4gPmV2ZW4gdGhvdWdoIGl0IGlzIGJsb2NrZWQgYnkg
+YSBrbm93biBzbG93IGNvZGUuCj4+IAo+PiBZZXMsIHRoaXMgaXMgdGhlIHByb2JsZW0gSSdtIHRh
+bGtpbmcgYWJvdXQuCj4KPkkgdGhvdWdodCBtb3JlIGFib3V0IGl0LiBUaGlzIHBhdGNoIHByZXZl
+bnRzIGEgZmFsc2UgcG9zaXRpdmUuCj5Db3VsZCBpdCBicmluZyBhbiBvcHBvc2l0ZSBwcm9ibGVt
+IGFuZCBoaWRlIHJlYWwgcHJvYmxlbXM/Cj4KPkkgbWVhbiB0aGF0IGFuIHVuYm91bmQgd29ya3F1
+ZXVlIG1pZ2h0IGdldCBibG9ja2VkIG9uIENQVSBBCj5iZWNhdXNlIG9mIGEgcmVhbCBzb2Z0bG9j
+a3VwLiBCdXQgd2UgbWlnaHQgbm90IG5vdGljZSBpdCBiZWNhdXNlCj5DUFUgQiBpcyB0b3VjaGVk
+LiBXZWxsLCB0aGVyZSBhcmUgb3RoZXIgd2F5cyBob3cgdG8gZGV0ZWN0Cj50aGlzIHNpdHVhdGlv
+biwgZS5nLiB0aGUgc29mdGxvY2t1cCB3YXRjaGRvZy4KPgo+Cj4+ID4+IE15IHN1Z2dlc3Rpb24g
+aXMgdG8gdXBkYXRlIGJvdGggd2hlbiB0b3VjaF9zb2Z0bG9ja3VwX3dhdGNoZG9nKCkgaXMgY2Fs
+bGVkLCAKPj4gPj4gdXNlIHdxX3dhdGNoZG9nX3RvdWNoZWRfY3B1IHRvIGNoZWNrIGJvdW5kLCBh
+bmQgdXNlIHdxX3dhdGNoZG9nX3RvdWNoZWQgCj4+ID4+IHRvIGNoZWNrIHVuYm91bmQgd29ya2Vy
+X3Bvb2wuCj4+ID4+IAo+PiA+PiBTaWduZWQtb2ZmLWJ5OiBXYW5nIFFpbmcgPHdhbmdxaW5nQHZp
+dm8uY29tPgo+PiA+PiAtLS0KPj4gPj4gIGtlcm5lbC93YXRjaGRvZy5jICB8ICA1ICsrKy0tCj4+
+ID4+ICBrZXJuZWwvd29ya3F1ZXVlLmMgfCAxNyArKysrKystLS0tLS0tLS0tLQo+PiA+PiAgMiBm
+aWxlcyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQo+PiA+PiAKPj4g
+Pj4gZGlmZiAtLWdpdCBhL2tlcm5lbC93YXRjaGRvZy5jIGIva2VybmVsL3dhdGNoZG9nLmMKPj4g
+Pj4gaW5kZXggNzExMDkwNi4uMTA3YmMzOAo+PiA+PiAtLS0gYS9rZXJuZWwvd2F0Y2hkb2cuYwo+
+PiA+PiArKysgYi9rZXJuZWwvd2F0Y2hkb2cuYwo+PiA+PiBAQCAtMjc4LDkgKzI3OCwxMCBAQCB2
+b2lkIHRvdWNoX2FsbF9zb2Z0bG9ja3VwX3dhdGNoZG9ncyh2b2lkKQo+PiA+PiAgCSAqIHVwZGF0
+ZSBhcyB3ZWxsLCB0aGUgb25seSBzaWRlIGVmZmVjdCBtaWdodCBiZSBhIGN5Y2xlIGRlbGF5IGZv
+cgo+PiA+PiAgCSAqIHRoZSBzb2Z0bG9ja3VwIGNoZWNrLgo+PiA+PiAgCSAqLwo+PiA+PiAtCWZv
+cl9lYWNoX2NwdShjcHUsICZ3YXRjaGRvZ19hbGxvd2VkX21hc2spCj4+ID4+ICsJZm9yX2VhY2hf
+Y3B1KGNwdSwgJndhdGNoZG9nX2FsbG93ZWRfbWFzaykgewo+PiA+PiAgCQlwZXJfY3B1KHdhdGNo
+ZG9nX3RvdWNoX3RzLCBjcHUpID0gU09GVExPQ0tVUF9SRVNFVDsKPj4gPj4gLQl3cV93YXRjaGRv
+Z190b3VjaCgtMSk7Cj4+ID4+ICsJCXdxX3dhdGNoZG9nX3RvdWNoKGNwdSk7Cj4+ID4KPj4gPk5v
+dGUgdGhhdCB3cV93YXRjaGRvZ190b3VjaChjcHUpIG5ld2x5IGFsd2F5cyB1cGRhdGVzCj4+ID53
+cV93YXRjaGRvZ190b3VjaGVkLiBUaGlzIGN5Y2xlIHdpbGwgc2V0IHRoZSBzYW1lIGppZmZpZXMK
+Pj4gPnZhbHVlIGNwdS10aW1lcyB0byB0aGUgc2FtZSB2YXJpYWJsZS4KPj4gPgo+PiBBbHRob3Vn
+aCB0aGVyZSBpcyBhIGJpdCBvZiByZWR1bmRhbmN5IGhlcmUsIGJ1dCB0aGUgbW9zdCBjb25jaXNl
+IHdheSBvZiAKPj4gaW1wbGVtZW50YXRpb24sIGFuZCBpdCBpcyBjZXJ0YWluIHRoYXQgaXQgd2ls
+bCBub3QgYWZmZWN0IHBlcmZvcm1hbmNlLgo+PiAKQW5vdGhlciB3YXkgdG8gaW1wbGVtZW50IGlz
+IHdxX3dhdGNoZG9nX3RvdWNoKCkgcmVtYWluIHVuY2hhbmdlZCwgYnV0IG5lZWQgCnRvIG1vZGlm
+eSB0b3VjaF9zb2Z0bG9ja3VwX3dhdGNoZG9nKCkgYW5kIHRvdWNoX2FsbF9zb2Z0bG9ja3VwX3dh
+dGNoZG9ncygpOgpub3RyYWNlIHZvaWQgdG91Y2hfc29mdGxvY2t1cF93YXRjaGRvZyh2b2lkKQp7
+Cgl0b3VjaF9zb2Z0bG9ja3VwX3dhdGNoZG9nX3NjaGVkKCk7Cgl3cV93YXRjaGRvZ190b3VjaChy
+YXdfc21wX3Byb2Nlc3Nvcl9pZCgpKTsKKyAgICAgd3Ffd2F0Y2hkb2dfdG91Y2goLTEpOwp9CnZv
+aWQgdG91Y2hfYWxsX3NvZnRsb2NrdXBfd2F0Y2hkb2dzKHZvaWQpCiAqIHVwZGF0ZSBhcyB3ZWxs
+LCB0aGUgb25seSBzaWRlIGVmZmVjdCBtaWdodCBiZSBhIGN5Y2xlIGRlbGF5IGZvcgogKiB0aGUg
+c29mdGxvY2t1cCBjaGVjay4KKi8KIC0JZm9yX2VhY2hfY3B1KGNwdSwgJndhdGNoZG9nX2FsbG93
+ZWRfbWFzaykKKwlmb3JfZWFjaF9jcHUoY3B1LCAmd2F0Y2hkb2dfYWxsb3dlZF9tYXNrKSB7CiAg
+CQlwZXJfY3B1KHdhdGNoZG9nX3RvdWNoX3RzLCBjcHUpID0gU09GVExPQ0tVUF9SRVNFVDsKICsJ
+CXdxX3dhdGNoZG9nX3RvdWNoKGNwdSk7CiArCX0KIAl3cV93YXRjaGRvZ190b3VjaCgtMSk7CiAg
+fQpTbyB3cV93YXRjaGRvZ190b3VjaGVkIHdpbGwgbm90IGdldCB1cGRhdGVkIG1hbnkgdGltZXMs
+ICAKd2hpY2ggZG8geW91IHRoaW5rIGlzIGJldHRlciwgUGV0cj8KPj4gPj4gIAo+PiA+PiAgdm9p
+ZCB0b3VjaF9zb2Z0bG9ja3VwX3dhdGNoZG9nX3N5bmModm9pZCkKPj4gPj4gZGlmZiAtLWdpdCBh
+L2tlcm5lbC93b3JrcXVldWUuYyBiL2tlcm5lbC93b3JrcXVldWUuYwo+PiA+PiBpbmRleCAwZDE1
+MGRhLi5iZTA4Mjk1Cj4+ID4+IC0tLSBhL2tlcm5lbC93b3JrcXVldWUuYwo+PiA+PiArKysgYi9r
+ZXJuZWwvd29ya3F1ZXVlLmMKPj4gPj4gQEAgLTU4MjYsOCArNTgyMSw4IEBAIG5vdHJhY2Ugdm9p
+ZCB3cV93YXRjaGRvZ190b3VjaChpbnQgY3B1KQo+PiA+PiAgewo+PiA+PiAgCWlmIChjcHUgPj0g
+MCkKPj4gPj4gIAkJcGVyX2NwdSh3cV93YXRjaGRvZ190b3VjaGVkX2NwdSwgY3B1KSA9IGppZmZp
+ZXM7Cj4+ID4+IC0JZWxzZQo+PiA+PiAtCQl3cV93YXRjaGRvZ190b3VjaGVkID0gamlmZmllczsK
+Pj4gPj4gKwo+PiA+PiArCXdxX3dhdGNoZG9nX3RvdWNoZWQgPSBqaWZmaWVzOwo+PiA+PiAgfQo+
+PiA+PiAgCj4+ID4+ICBzdGF0aWMgdm9pZCB3cV93YXRjaGRvZ19zZXRfdGhyZXNoKHVuc2lnbmVk
+IGxvbmcgdGhyZXNoKQo+PiA+Cj4+ID5UaGlzIGxhc3QgaHVuayBpcyBlbm91Z2ggdG8gZml4IHRo
+ZSBwcm9ibGVtLiB3cV93YXRjaGRvZ190b3VjaGVkIHdpbGwKPj4gPmdldCB1cGRhdGVkIGFsc28g
+ZnJvbSBjcHUtc3BlY2lmaWMgdG91Y2hfc29mdGxvY2t1cF93YXRjaGRvZygpLgo+PiAKPj4gTm90
+IGVub3VnaCBpbiBmYWN0LCBiZWNhdXNlIHdxX3dhdGNoZG9nX3RvdWNoZWQgd2FzIHVwZGF0ZWQg
+aW4gd3Ffd2F0Y2hkb2dfdG91Y2goKSwgCj4+IHNvIHdxX3dhdGNoZG9nX3RvdWNoZWQgY2FuIG5v
+IGxvbmdlciBiZSB1c2VkIHRvIGp1ZGdlIHRoZSBib3VuZCBwb29sLCB3ZSBtdXN0IHVwZGF0ZSAK
+Pj4gZXZlcnkgd3Ffd2F0Y2hkb2dfdG91Y2hlZF9jcHUgaW4gdG91Y2hfYWxsX3NvZnRsb2NrdXBf
+d2F0Y2hkb2dzKCkgZm9yIGJvdW5kIGp1ZGdtZW50Lgo+Cj5JIHNlZS4gWW91ciBwYXRjaCBtYWtl
+cyBzZW5zZS4KPgo+SSB3b3VsZCBqdXN0IGltcHJvdmUgdGhlIGNvbW1pdCBtZXNzYWdlLiBJdCBz
+aG91bGQgYmV0dGVyIGV4cGxhaW4KPndoeSBhbGwgdGhlIHR3aXN0cyBhcmUgbmVlZGVkLiBJIHdv
+dWxkIHdyaXRlIHNvbWV0aGluZyBsaWtlOgo+Cj48cHJvcG9zYWw+Cj5TdWJqZWN0OiB3b3JrcXVl
+dWUvd2F0Y2hkb2c6IE1ha2UgdW5ib3VuZCB3b3JrcXVldWVzIGF3YXJlIG9mCj50b3VjaF9zb2Z0
+bG9ja3VwX3dhdGNoZG9nKCkKPgo+VGhlcmUgYXJlIHR3byB3b3JrcXVldWUtc3BlY2lmaWMgd2F0
+Y2hkb2cgdGltZXN0YW1wczoKPgo+ICAgICsgQHdxX3dhdGNoZG9nX3RvdWNoZWRfY3B1IChwZXIt
+Q1BVKSB1cGRhdGVkIGJ5Cj4gICAgICB0b3VjaF9zb2Z0bG9ja3VwX3dhdGNoZG9nKCkKPgo+ICAg
+ICsgQHdxX3dhdGNoZG9nX3RvdWNoZWQgKGdsb2JhbCkgdXBkYXRlZCBieQo+ICAgICAgdG91Y2hf
+YWxsX3NvZnRsb2NrdXBfd2F0Y2hkb2dzKCkKPgo+d2F0Y2hkb2dfdGltZXJfZm4oKSBjaGVja3Mg
+b25seSB0aGUgZ2xvYmFsIEB3cV93YXRjaGRvZ190b3VjaGVkIGZvcgo+dW5ib3VuZCB3b3JrcXVl
+dWVzLiBBcyBhIHJlc3VsdCwgdW5ib3VuZCB3b3JrcXVldWVzIGFyZSBub3QgYXdhcmUKPm9mIHRv
+dWNoX3NvZnRsb2NrdXBfd2F0Y2hkb2coKS4gVGhlIHdhdGNoZG9nIG1pZ2h0IHJlcG9ydCBhIHN0
+YWxsCj5ldmVuIHdoZW4gdGhlIHVuYm91bmQgd29ya3F1ZXVlcyBhcmUgYmxvY2tlZCBieSBhIGtu
+b3duIHNsb3cgY29kZS4KPgo+U29sdXRpb246Cj4KPnRvdWNoX3NvZnRsb2NrdXBfd2F0Y2hkb2co
+KSBtdXN0IHRvdWNoIGFsc28gdGhlIGdsb2JhbAo+QHdxX3dhdGNoZG9nX3RvdWNoZWQgdGltZXN0
+YW1wLgo+Cj5UaGUgZ2xvYmFsIHRpbWVzdGFtcCBjYW4gbm90IGxvbmdlciBiZSB1c2VkIGZvciBi
+b3VuZCB3b3JrcXVldWVzCj5iZWNhdXNlIGl0IGlzIHVwZGF0ZWQgb24gYWxsIENQVXMuIEluc3Rl
+YWQsIGJvdW5kIHdvcmtxdWV1ZXMKPmhhdmUgdG8gY2hlY2sgb25seSBAd3Ffd2F0Y2hkb2dfdG91
+Y2hlZF9jcHUgYW5kIHRoZXNlIHRpbWVzdGFtcAo+aGFzIHRvIGJlIHVwZGF0ZWQgZm9yIGFsbCBD
+UFVzIGluIHRvdWNoX2FsbF9zb2Z0bG9ja3VwX3dhdGNoZG9ncygpLgo+Cj5CZXdhcmU6Cj4KPlRo
+ZSBjaGFuZ2UgbWlnaHQgY2F1c2UgdGhlIG9wcG9zaXRlIHByb2JsZW0uIEFuIHVuYm91bmQgd29y
+a3F1ZXVlCj5taWdodCBnZXQgYmxvY2tlZCBvbiBDUFUgQSBiZWNhdXNlIG9mIGEgcmVhbCBzb2Z0
+bG9ja3VwLiBUaGUgd29ya3F1ZXVlCj53YXRjaGRvZyB3b3VsZCBtaXNzIGl0IHdoZW4gdGhlIHRp
+bWVzdGFtcCBnb3QgdG91Y2hlZCBvbiBDUFUgQi4KPgo+SXQgaXMgYWNjZXB0YWJsZSBiZWNhdXNl
+IHNvZnRsb2NrdXBzIGFyZSBkZXRlY3RlZCBieSBzb2Z0bG9ja3VwCj53YXRjaGRvZy4gVGhlIHdv
+cmtxdWV1ZSB3YXRjaGRvZyBpcyB0aGVyZSB0byBkZXRlY3Qgc3RhbGxzIHdoZXJlCj5hIHdvcmsg
+bmV2ZXIgZmluaXNoZXMsIGZvciBleGFtcGxlLCBiZWNhdXNlIG9mIGRlcGVuZGVuY2llcyBvZiB3
+b3Jrcwo+cXVldWVkIGludG8gdGhlIHNhbWUgd29ya3F1ZXVlLgo+PC9wcm9wb3NhbD4KPgo+SG93
+IGRvZXMgdGhhdCBzb3VuZD8KCkl0J3MgZmluZSB0byBtZSwgd2hhdCdzIHlvdXIgb3Bpbmlvbiwg
+VGVqdW4/CgpUaGFua3MsClFpbmcKPgo+QmVzdCBSZWdhcmRzLAo+UGV0cgoNCg0K
