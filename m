@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBBF347DE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4045B347DEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236257AbhCXQjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236419AbhCXQi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:38:58 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA43DC0613E2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:38:57 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id 124so11673552vsg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wNHiEG33VxCvMonOriWGNjj3ArhqwshcClwSjyhBeSM=;
-        b=aIdOLKogREItDPzd5A+jRjsMTc+xmHWs2f8DXYi4nKG1WB6O5apxTb0kST6RgOkHem
-         ghgvEZWjF8nRr4dbvSOuwWbwjFPuV/vbaRD3Z7CGoVZawIxEFV5mJsE5ZtJNXdRjxRPM
-         /pgQmlNT52f7FhktYcLYtuo6wxnQ3p+E5JGCLX8DI9PAwVPuYWrmoFrgkcQEOH3bWko1
-         yeUR3ZGC2yXuGY5z4MB6db/ziAwUVV0vGN+TjSPkoDw6IcyU8wT+LKtbwhYggLzRtOkn
-         QaW82SDYSI17mjm1c8GXof1fEQ8QDILZ6717zNSQ+sv7WNZgh0LtIzkVfeFDKEGTQ5cn
-         qx9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wNHiEG33VxCvMonOriWGNjj3ArhqwshcClwSjyhBeSM=;
-        b=XT5n92Sypxgh33TM49xEVc17OEy5FZj1dN8i5Z7nI6joExDlmUTJF/EY+6Ra+j8YWx
-         uhgITJL6DtfEPifhWY5F6A2xZZVcBfV/HwDelgFiUzAtwqakjOFCvEwsysLL9/lqacAo
-         dQjmApbc9FVqPqXIiAFNt5Dl/8LBNO/aPfq+OGY0RAW+W0h0+bz0FHJrouWZQ3UxvcJd
-         OpcjzcGkOv+5il4TPtsmKgygtY4TZarKU9QOjZHbyFsxU7CgftSZI3lJFEKyBEFetKkp
-         jr6mpYLU8njw+Nsm3ws3VB+vDpf0W/PlJaQsZAt8a4mCOoFBVi20RdUzLygt+mPx5CzO
-         cgsg==
-X-Gm-Message-State: AOAM532LHC9MPi5443MKUJEbfYAv9XVBrj206eU3k+CW/f2xA65MrJdL
-        QOsWVgip2ntV0RTrGwgTFkCiDFnWEn2OLICTpNlOrg==
-X-Google-Smtp-Source: ABdhPJyWiP2FO1YBFJh/0mu3kCEijgEQEuiJ4RCJ6qBqZ4V3CaaQ9VqbbV+Q52zSjlticSrKlbcWuV02zo+EVO7D8+4=
-X-Received: by 2002:a67:2803:: with SMTP id o3mr2580346vso.36.1616603936571;
- Wed, 24 Mar 2021 09:38:56 -0700 (PDT)
+        id S236471AbhCXQln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:41:43 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:35622 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233671AbhCXQl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:41:27 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lP6ZO-0001QD-TS; Wed, 24 Mar 2021 17:41:22 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>, gregkh@linuxfoundation.org,
+        balbi@kernel.org
+Cc:     robh+dt@kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/8] usb: dwc3: of-simple: bail probe if no dwc3 child node
+Date:   Wed, 24 Mar 2021 17:41:22 +0100
+Message-ID: <1861638.PYKUYFuaPT@diego>
+In-Reply-To: <20210209192350.7130-2-jbx6244@gmail.com>
+References: <20210209192350.7130-1-jbx6244@gmail.com> <20210209192350.7130-2-jbx6244@gmail.com>
 MIME-Version: 1.0
-References: <20210323203946.2159693-1-samitolvanen@google.com>
- <20210323203946.2159693-3-samitolvanen@google.com> <92afcbea-1415-2df1-5e78-4e9a7a4d364b@rasmusvillemoes.dk>
-In-Reply-To: <92afcbea-1415-2df1-5e78-4e9a7a4d364b@rasmusvillemoes.dk>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 24 Mar 2021 09:38:45 -0700
-Message-ID: <CABCJKudTZang_aUCnO63MFUc5mud3DKpHUgRFB-e04L__j_XHA@mail.gmail.com>
-Subject: Re: [PATCH v3 02/17] cfi: add __cficanonical
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 8:31 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 23/03/2021 21.39, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG, the compiler replaces a function address taken
-> > in C code with the address of a local jump table entry, which passes
-> > runtime indirect call checks. However, the compiler won't replace
-> > addresses taken in assembly code, which will result in a CFI failure
-> > if we later jump to such an address in instrumented C code. The code
-> > generated for the non-canonical jump table looks this:
-> >
-> >   <noncanonical.cfi_jt>: /* In C, &noncanonical points here */
-> >       jmp noncanonical
-> >   ...
-> >   <noncanonical>:        /* function body */
-> >       ...
-> >
-> > This change adds the __cficanonical attribute, which tells the
-> > compiler to use a canonical jump table for the function instead. This
-> > means the compiler will rename the actual function to <function>.cfi
-> > and points the original symbol to the jump table entry instead:
-> >
-> >   <canonical>:           /* jump table entry */
-> >       jmp canonical.cfi
-> >   ...
-> >   <canonical.cfi>:       /* function body */
-> >       ...
-> >
-> > As a result, the address taken in assembly, or other non-instrumented
-> > code always points to the jump table and therefore, can be used for
-> > indirect calls in instrumented code without tripping CFI checks.
->
-> Random ramblings, I'm trying to understand how this CFI stuff works.
->
-> First, patch 1 and 2 explain the pros and cons of canonical vs
-> non-canonical jump tables, in either case, there's problems with stuff
-> implemented in assembly. But I don't understand why those pros and cons
-> then end up with using the non-canonical jump tables by default. IIUC,
-> with canonical jump tables, function pointer equality would keep working
-> for functions implemented in C, because &func would always refer to the
-> same stub "function" that lives in the same object file as func.cfi,
-> whereas with the non-canonical version, each TU (or maybe DSO) that
-> takes the address of func ends up with its own func.cfi_jt.
+Hi Greg, Felipe,
 
-Correct.
+Am Dienstag, 9. Februar 2021, 20:23:44 CET schrieb Johan Jonker:
+> For some of the dwc3-of-simple compatible SoCs we
+> don't want to bind this driver to a dwc3 node,
+> but bind that node to the 'snps,dwc3' driver instead.
+> The kernel has no logic to decide which driver to bind
+> to if there are 2 matching drivers, so bail probe if no
+> dwc3 child node.
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 
-> There are of course lots of direct calls of assembly functions, but
-> I don't think we take the address of such functions very often. So why
-> can't we instead equip the declarations of those with a
-> __cfi_noncanonical attribute?
+It looks like this patch fell through the cracks?
 
-Clang doesn't support these attributes in function declarations,
-unfortunately. If it did, that would certainly help, until someone
-wants to compare addresses of assembly functions, in which case we
-would again have a problem.
+I.e. I can see patches 1+6 adding the devicetree bindings
+in 5.12-rc but haven't found this patch there.
 
-Another way to work around the issue with canonical CFI would be to
-add C wrappers for all address-taken assembly functions, but that's
-not quite ideal either. I think most indirect calls to assembly
-functions happen in the crypto code, which would have required so many
-changes that we decided to default to non-canonical CFI instead. This
-resulted in far fewer kernel changes despite the cross-module function
-address equality issue.
+And looking at
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/log/drivers/usb/dwc3/dwc3-of-simple.c?h=usb-next
+I also didn't find it.
 
-Sami
+From what I gathered that was somehow mandated from the Devicetree side
+as the dwc3-subnode system merely is some Linux-specific thingy
+and should not be enforced if not explicitly needed.
+
+I guess Johan can provide pointers to the previous discussion.
+
+So could you look at applying this patch to some usb-tree?
+
+
+Thanks
+Heiko
+
+
+> ---
+>  drivers/usb/dwc3/dwc3-of-simple.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
+> index e62ecd22b..347b4d384 100644
+> --- a/drivers/usb/dwc3/dwc3-of-simple.c
+> +++ b/drivers/usb/dwc3/dwc3-of-simple.c
+> @@ -38,6 +38,10 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
+>  
+>  	int			ret;
+>  
+> +	/* Bail probe if no dwc3 child node. */
+> +	if (!of_get_compatible_child(dev->of_node, "snps,dwc3"))
+> +		return -ENODEV;
+> +
+>  	simple = devm_kzalloc(dev, sizeof(*simple), GFP_KERNEL);
+>  	if (!simple)
+>  		return -ENOMEM;
+> 
+
+
+
+
