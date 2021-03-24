@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062D4348331
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2427E34832B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238284AbhCXUv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:51:56 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37548 "EHLO
+        id S238249AbhCXUvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:51:49 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:37588 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238226AbhCXUve (ORCPT
+        with ESMTP id S238199AbhCXUvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:51:34 -0400
+        Wed, 24 Mar 2021 16:51:32 -0400
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -23,15 +23,14 @@ To:     Andy Gross <agross@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
+        Patrice Chotard <patrice.chotard@st.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        <devicetree@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 3/7] powerpc: dts: akebono: Harmonize EHCI/OHCI DT nodes name
-Date:   Wed, 24 Mar 2021 23:48:32 +0300
-Message-ID: <20210324204836.29668-4-Sergey.Semin@baikalelectronics.ru>
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 4/7] arm: dts: stih407-family: Harmonize DWC USB3 DT nodes name
+Date:   Wed, 24 Mar 2021 23:48:33 +0300
+Message-ID: <20210324204836.29668-5-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20210324204836.29668-1-Sergey.Semin@baikalelectronics.ru>
 References: <20210324204836.29668-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -42,48 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In accordance with the Generic EHCI/OHCI bindings the corresponding node
+In accordance with the DWC USB3 bindings the corresponding node
 name is suppose to comply with the Generic USB HCD DT schema, which
 requires the USB nodes to have the name acceptable by the regexp:
-"^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
-nodes are correctly named.
+"^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+named.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Patrice Chotard <patrice.chotard@st.com>
 ---
- arch/powerpc/boot/dts/akebono.dts | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/stih407-family.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/boot/dts/akebono.dts b/arch/powerpc/boot/dts/akebono.dts
-index df18f8dc4642..343326c30380 100644
---- a/arch/powerpc/boot/dts/akebono.dts
-+++ b/arch/powerpc/boot/dts/akebono.dts
-@@ -126,7 +126,7 @@ SATA0: sata@30000010000 {
- 			interrupts = <93 2>;
- 		};
+diff --git a/arch/arm/boot/dts/stih407-family.dtsi b/arch/arm/boot/dts/stih407-family.dtsi
+index 23a1746f3baa..2352f76b5a69 100644
+--- a/arch/arm/boot/dts/stih407-family.dtsi
++++ b/arch/arm/boot/dts/stih407-family.dtsi
+@@ -681,7 +681,7 @@ st_dwc3: dwc3@8f94000 {
  
--		EHCI0: ehci@30010000000 {
-+		EHCI0: usb@30010000000 {
- 			compatible = "ibm,476gtr-ehci", "generic-ehci";
- 			reg = <0x300 0x10000000 0x0 0x10000>;
- 			interrupt-parent = <&MPIC>;
-@@ -140,14 +140,14 @@ SD0: sd@30000000000 {
- 			interrupt-parent = <&MPIC>;
- 		};
+ 			status = "disabled";
  
--		OHCI0: ohci@30010010000 {
-+		OHCI0: usb@30010010000 {
- 			compatible = "ibm,476gtr-ohci", "generic-ohci";
- 			reg = <0x300 0x10010000 0x0 0x10000>;
- 			interrupt-parent = <&MPIC>;
- 			interrupts = <89 1>;
- 			};
- 
--		OHCI1: ohci@30010020000 {
-+		OHCI1: usb@30010020000 {
- 			compatible = "ibm,476gtr-ohci", "generic-ohci";
- 			reg = <0x300 0x10020000 0x0 0x10000>;
- 			interrupt-parent = <&MPIC>;
+-			dwc3: dwc3@9900000 {
++			dwc3: usb@9900000 {
+ 				compatible	= "snps,dwc3";
+ 				reg		= <0x09900000 0x100000>;
+ 				interrupts	= <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.30.1
 
