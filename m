@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D98A3474B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 812773474B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbhCXJbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:31:55 -0400
-Received: from mail.synology.com ([211.23.38.101]:59258 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235004AbhCXJbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:31:45 -0400
-Received: from localhost.localdomain (unknown [10.17.32.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 6B46CCE781EE;
-        Wed, 24 Mar 2021 17:31:44 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1616578304; bh=ycjCGG+Ux6zuThGd3xuSA4cvVmyaodPS7cGN+rD28t0=;
-        h=From:To:Cc:Subject:Date;
-        b=eBNVQZApI1nVQ4+4osC1qG8/CpAYhaS/yColSxeB+GB4O+OhEYrcU4bjgYGMH4IRS
-         XHWGDRpaSgNjDzT7mWjDiwSesW/XQe/TPPUepV4btR4UZPZVVmFLiiZG/YVvYM4npz
-         eu1Xkqzt3JTzkO98516e6qi0QdqJ36j7NGSngzk8=
-From:   bingjingc <bingjingc@synology.com>
-To:     josef@toxicpanda.com, dsterba@suse.com, quwenruo@cn.fujitsu.com,
-        clm@fb.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     bingjingc@synology.com, cccheng@synology.com, robbieko@synology.com
-Subject: [PATCH] btrfs: fix a potential hole-punching failure
-Date:   Wed, 24 Mar 2021 17:31:10 +0800
-Message-Id: <1616578270-7365-1-git-send-email-bingjingc@synology.com>
-X-Mailer: git-send-email 2.7.4
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S234993AbhCXJbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:31:24 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:39240 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234914AbhCXJbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:31:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UT9xWcp_1616578271;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT9xWcp_1616578271)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Mar 2021 17:31:12 +0800
+Subject: Re: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
+ <CAMj1kXE5x82SZUvo9=hjjE=Z9QrzggzfvBHbjaaGExRfQ8PDxw@mail.gmail.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <5777cfde-dbfd-bc25-3936-2e964b8e85be@linux.alibaba.com>
+Date:   Wed, 24 Mar 2021 17:31:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAMj1kXE5x82SZUvo9=hjjE=Z9QrzggzfvBHbjaaGExRfQ8PDxw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: BingJing Chang <bingjingc@synology.com>
+Hi,
 
-In commit d77815461f04 ("btrfs: Avoid trucating page or punching hole in
-a already existed hole."), existed holes can be skipped by calling
-find_first_non_hole() to adjust *start and *len. However, if the given
-len is invalid and large, when an EXTENT_MAP_HOLE extent is found, the
-*len will not be set to zero because (em->start + em->len) is less than
-(*start + *len). Then the ret will be 1 but the *len will not be set to
-0. The propagated non-zero ret will result in fallocate failure.
+On 3/24/21 6:14 AM, Ard Biesheuvel wrote:
+> On Tue, 23 Mar 2021 at 09:36, Tianjia Zhang
+> <tianjia.zhang@linux.alibaba.com> wrote:
+>>
+>> The kernel module signature supports the option to use the SM3
+>> secure hash (OSCCA GM/T 0004-2012 SM3).
+>>
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> 
+> A secure hash is not the same as a signature. Looking at the patch,
+> the asymmetric algorithm that is used to sign the SM3 digest is SM2,
+> is that correct? How does one create such signed modules?
+> 
+> In any case, please provide more context in the commit log on how this
+> is intended to be used.
+> 
+> 
 
-In the while-loop of btrfs_replace_file_extents(), len is not updated
-every time before it calls find_first_non_hole(). That is, if the last
-file extent in the given hole-punching range has been dropped but
-btrfs_drop_extents() fails with -ENOSPC (btrfs_drop_extents() runs out
-of reserved space of the given transaction), the problem can happen.
-After it calls find_first_non_hole(), the cur_offset will be adjusted
-to be larger than or equal to end. However, since the len is not set to
-zero. The break-loop condition (ret && !len) will not meet. After it
-leaves the while-loop, uncleared ret will result in fallocate failure.
+Sorry for the trouble you have caused. You are right. SM2 and SM3 always 
+appear in pairs. The former is used for signatures and the latter is 
+used for hashing algorithms. I will add this information in the next 
+version. It seems This is more appropriate to split into two patches.
 
-We're not able to construct a reproducible way to let
-btrfs_drop_extents() fails with -ENOSPC after it drops the last file
-extent but with remaining holes. However, it's quite easy to fix. We
-just need to update and check the len every time before we call
-find_first_non_hole(). To make the while loop more readable, we also
-pull the variable updates to the bottom of loop like this:
-while (cur_offset < end) {
-        ...
-        // update cur_offset & len
-        // advance cur_offset & len in hole-punching case if needed
-}
-
-Reported-by: Robbie Ko <robbieko@synology.com>
-Fixes: d77815461f04 ("btrfs: Avoid trucating page or punching hole in a
-already existed hole.")
-Reviewed-by: Robbie Ko <robbieko@synology.com>
-Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-Signed-off-by: BingJing Chang <bingjingc@synology.com>
----
- fs/btrfs/file.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 0e155f0..dccb017 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2735,8 +2735,6 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 			extent_info->file_offset += replace_len;
- 		}
- 
--		cur_offset = drop_args.drop_end;
--
- 		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
- 		if (ret)
- 			break;
-@@ -2756,7 +2754,9 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 		BUG_ON(ret);	/* shouldn't happen */
- 		trans->block_rsv = rsv;
- 
--		if (!extent_info) {
-+		cur_offset = drop_args.drop_end;
-+		len = end - cur_offset;
-+		if (!extent_info && len) {
- 			ret = find_first_non_hole(BTRFS_I(inode), &cur_offset,
- 						  &len);
- 			if (unlikely(ret < 0))
--- 
-2.7.4
-
+Best regards,
+Tianjia
