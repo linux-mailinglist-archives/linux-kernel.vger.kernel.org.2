@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D391E34829A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A4634829C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238166AbhCXUJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:09:15 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:49945 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238158AbhCXUI5 (ORCPT
+        id S238119AbhCXUKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238174AbhCXUJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:08:57 -0400
-Received: from mail-oo1-f49.google.com ([209.85.161.49]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MrPVJ-1m2uPY1NxP-00oX6h; Wed, 24 Mar 2021 21:08:55 +0100
-Received: by mail-oo1-f49.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so6130827ook.2;
-        Wed, 24 Mar 2021 13:08:55 -0700 (PDT)
-X-Gm-Message-State: AOAM531oqSU9AkTn+Wkrjyizeb+UsjzJj7DyMRNM93BHbYDMu+QBKBUV
-        KDvvji6MSCA7cMyNl4AYxBakOrLX+07Mz68qA/A=
-X-Google-Smtp-Source: ABdhPJybTxidmqfUgZw7W8iZwqTPZdKNPoMY0wKBfMJ7hCptmQ98ROSV9GMgRQY6K8Yt9kjE9ik3niJWJDsWSHTT3bQ=
-X-Received: by 2002:a4a:304a:: with SMTP id z10mr4221190ooz.26.1616616533996;
- Wed, 24 Mar 2021 13:08:53 -0700 (PDT)
+        Wed, 24 Mar 2021 16:09:58 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F01C061763;
+        Wed, 24 Mar 2021 13:09:58 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 8EEA71F45E6A
+Subject: Re: [RFC PATCH 1/4] Revert "libfs: unexport generic_ci_d_compare()
+ and generic_ci_d_hash()"
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        krisman@collabora.com, smcv@collabora.com, kernel@collabora.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Daniel Rosenberg <drosen@google.com>
+References: <20210323195941.69720-1-andrealmeid@collabora.com>
+ <20210323195941.69720-2-andrealmeid@collabora.com>
+ <20210323201530.GL1719932@casper.infradead.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <5c20d261-eef2-aecc-8f1e-58fb5dbfcd72@collabora.com>
+Date:   Wed, 24 Mar 2021 17:09:48 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210322104343.948660-1-arnd@kernel.org> <20210322104343.948660-5-arnd@kernel.org>
-In-Reply-To: <20210322104343.948660-5-arnd@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 24 Mar 2021 21:08:38 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2K-r9ERQxo-UiKpn-MLTu6ORM8FSooh1vXOtrQoU9kzQ@mail.gmail.com>
-Message-ID: <CAK8P3a2K-r9ERQxo-UiKpn-MLTu6ORM8FSooh1vXOtrQoU9kzQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 5/5] vxge: avoid -Wemtpy-body warnings
-To:     Networking <netdev@vger.kernel.org>, Jon Mason <jdmason@kudzu.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:fijI6r4YMqbAe5M2kVyLTB6NqcK5h28eQt8SXSkYoJnuGFZqnDH
- 4bdZ1UUUptABeCEOHZGh5py8JpkpPM2RP5NBHp6DQww0crfyMEZe3nx6QEk8RUfV3AYcEAA
- 2LQlwmRGIWnXEFaUq6ky+Dv7jnsVp0xsgy5bt1omidvTJrQAm2odgMe+bsXdbMxECELqyoS
- qCYexD8ji5YR3YIAdFxiA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vvtep7z6KLw=:ewumsrakVQjAmz3xOBLYH0
- Y77ofFhvY04rszMboXnmGntYA4pv0DM+XCHKH0M+ET2hwb3lB0zdJT1NfMpJsj2JIErzGYyLt
- DlmNvCa5C2jvpFbswg+R2rc2YDSIEj2PqaEybLNMRZjGBhjRALyJV6xBsNsI8+3NkRfmuwweI
- q/pBWfutZfamnjsCmvKHMhjYe/1gUNibaRsShDA7s+ryJO+18jplyEGZbQ1wzto2bcfQhcURs
- lEzqhJFu1BlqhfEeMJS1Bef9Vq3XAkgv13TZBTejcL+oeuWLJJ881XR9/Mi9ysNEWz42Hll8p
- +am6K9R18edg0/k2qcNbMITQ7BmcVI4dflqomIiNRGiXlguCLt52B5TiWi2/+yu8nf75LwaRC
- aH9yioTKvMqlfTv4Hyysc2CoCiLfS3vg+2wlBKxtdnypsDxkyCGkzNasvjjBFx1Ll0uWw1c4g
- az6z4aziMW1TMBMXvB5HuJvZmpQ2AYY=
+In-Reply-To: <20210323201530.GL1719932@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:43 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> There are a few warnings about empty debug macros in this driver:
->
-> drivers/net/ethernet/neterion/vxge/vxge-main.c: In function 'vxge_probe':
-> drivers/net/ethernet/neterion/vxge/vxge-main.c:4480:76: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->  4480 |                                 "Failed in enabling SRIOV mode: %d\n", ret);
->
-> Change them to proper 'do { } while (0)' expressions to make the
-> code a little more robust and avoid the warnings.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Matthew,
 
-Please disregard this patch, I was accidentally building without -Wformat and
-failed to notice that this introduces a regression. I'll send a new
-version after
-more testing.
+Às 17:15 de 23/03/21, Matthew Wilcox escreveu:
+> On Tue, Mar 23, 2021 at 04:59:38PM -0300, André Almeida wrote:
+>> This reverts commit 794c43f716845e2d48ce195ed5c4179a4e05ce5f.
+>>
+>> For implementing casefolding support at tmpfs, it needs to set dentry
+>> operations at superblock level, given that tmpfs has no support for
+>> fscrypt and we don't need to set operations on a per-dentry basis.
+>> Revert this commit so we can access those exported function from tmpfs
+>> code.
+> 
+> But tmpfs / shmem are Kconfig bools, not tristate.  They can't be built
+> as modules, so there's no need to export the symbols.
+> 
+>> +#ifdef CONFIG_UNICODE
+>> +extern int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str);
+>> +extern int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
+>> +				const char *str, const struct qstr *name);
+>> +#endif
+> 
+> There's no need for the ifdef (it only causes unnecessary rebuilds) and
+> the 'extern' keyword is also unwelcome.
+> 
 
-       Arnd
+Thank you. Instead of reverting the commit, I'll do a new commit doing 
+this in a properly way.
