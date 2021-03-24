@@ -2,129 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267C83483D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3583483D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238513AbhCXVfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:35:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53573 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234073AbhCXVfK (ORCPT
+        id S238525AbhCXVgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238503AbhCXVfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:35:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616621709;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6BnFLXKVdKYd+FoHFgU/6B9JS5Q/kAb0dewwrIr5OVo=;
-        b=Xr61lcn+hgS+x8XuqtKHiFAdTOeoIBc8Hx1oU89Dj6E+CuMslaWR7nF2tcCfG/WtAUWVpC
-        tklLkQJ5U02Gz+tR8qNyO6G6yIxZV0a/q9W4mciMQKrsxgbVn69Ew59akB8/63xhR1M2DP
-        WnkjkmqKk3Dss8Rij1dITtWsCN4gdkA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-u3BcfBy3OJWg78JhInYkYQ-1; Wed, 24 Mar 2021 17:35:05 -0400
-X-MC-Unique: u3BcfBy3OJWg78JhInYkYQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 254FF801817;
-        Wed, 24 Mar 2021 21:35:04 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E1E65D9DE;
-        Wed, 24 Mar 2021 21:35:00 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 4E956300A2A79;
-        Wed, 24 Mar 2021 22:34:59 +0100 (CET)
-Subject: [PATCH mel-git 3/3] net: page_pool: convert to use
- alloc_pages_bulk_array variant
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, chuck.lever@oracle.com,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        netdev@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 22:34:59 +0100
-Message-ID: <161662169926.940814.10878534922009676003.stgit@firesoul>
-In-Reply-To: <161662166301.940814.9765023867613542235.stgit@firesoul>
-References: <161662166301.940814.9765023867613542235.stgit@firesoul>
-User-Agent: StGit/0.19
+        Wed, 24 Mar 2021 17:35:34 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CEEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:35:33 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id z25so515581lja.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XDJljzfzu/Pp4K7dzVQcnIMYdb0HCNsWWH/8/sbTawU=;
+        b=TzPouaP5YtZ7Izi57anrcO5MEDp1eLuXcg9YVxsWRoomBQQF/LlGK12xuoW0cXUMLK
+         imAdJyZe1TNXpUD2aUJWT/6FIxhnj8YVBw0f182l/4+ulmnyOHfhtC1XhlkDhtU5VAGE
+         wImpKaw78H6id7mdHCNk1jhhdhnS4h9dcuHnJ3+GSqLfh5859LHgOpeBhQWXU1zr6JgI
+         vQ/pQWS+fkJSUviqxIu/cqiu2eeyuqw5CKBTGsbaGoPwQQSxgrDFOX0s+aGssVDg/I6E
+         8b8ERUEwXvIGjUKhsLibkb7xWbNDBwFpyEDHKeV5u119aVx+SHUYPDPe60g+7zpeC8Vu
+         XCug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XDJljzfzu/Pp4K7dzVQcnIMYdb0HCNsWWH/8/sbTawU=;
+        b=t6NUj9K4H4WtrmUUov5ki9wT14zqqZH9rly0un26KMmzbv+qK5vT/TREzba1LCzVyD
+         EKmmNhGQgcBlhr527b3tpOZjIUv/PptobsoSN3akxGObrmu6U7zNCV4bP0/rI56x63+l
+         +Y+ZRjU2gF7ZvIAM0xDpg0PR7GPs0KyQPDOzt4XkZJzgMc3N55D9viQSsUMB2lJWolfe
+         0GmMpg6VOj3wU27ljCfN+L0bVTxR/VwfGzh2uZiKjeHifrm4I4OfMQ2innHbvZUp8yqU
+         p7gkQ9OF5BxNXQqmh86r/6vsVdT6hwlQSIi8VLTZgxIl6vZAVLRcNmJ85rSdThtj6Z1u
+         V5Mg==
+X-Gm-Message-State: AOAM5303Sevaoj51EkeHzX6KzhQUE9CONSBkytN/1cS8/gnt5mcYUBvc
+        6dSNLb8HsWUjgIeRWrli2ac=
+X-Google-Smtp-Source: ABdhPJzgKGlPyb+12sTs/JbuUWqcSd/Oyb12cvlkvf0mxW5C3cyf5iVabDvHiAkwUatMIr9m1XseYQ==
+X-Received: by 2002:a2e:8e70:: with SMTP id t16mr3430655ljk.489.1616621732090;
+        Wed, 24 Mar 2021 14:35:32 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id g14sm456163ljj.3.2021.03.24.14.35.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 14:35:31 -0700 (PDT)
+Subject: Re: [PATCH v7] mm: cma: support sysfs
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
+        jhubbard@nvidia.com, willy@infradead.org,
+        Colin Ian King <colin.king@canonical.com>
+References: <20210324205503.2132082-1-minchan@kernel.org>
+ <65840bfd-4471-7c8d-ce71-c4705baf3bfe@gmail.com>
+Message-ID: <c1d08eea-5e27-67a1-dca2-2c1430f36c48@gmail.com>
+Date:   Thu, 25 Mar 2021 00:35:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <65840bfd-4471-7c8d-ce71-c4705baf3bfe@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using the API variant alloc_pages_bulk_array from page_pool
-was done in a separate patch to ease benchmarking the
-variants separately.  Maintainers can squash patch if preferred.
+25.03.2021 00:31, Dmitry Osipenko пишет:
+>> Reported-by: Dmitry Osipenko <digetx@gmail.com>
+>> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+>> Suggested-by: Dmitry Osipenko <digetx@gmail.com>
+> The tags are incorrect, I haven't suggested this change.
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- include/net/page_pool.h |    2 +-
- net/core/page_pool.c    |   22 ++++++++++++++++------
- 2 files changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index b5b195305346..6d517a37c18b 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -65,7 +65,7 @@
- #define PP_ALLOC_CACHE_REFILL	64
- struct pp_alloc_cache {
- 	u32 count;
--	void *cache[PP_ALLOC_CACHE_SIZE];
-+	struct page *cache[PP_ALLOC_CACHE_SIZE];
- };
- 
- struct page_pool_params {
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 3bf6e7f5fc89..9ec1aa9640ad 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -233,24 +233,34 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 	const int bulk = PP_ALLOC_CACHE_REFILL;
- 	unsigned int pp_flags = pool->p.flags;
- 	unsigned int pp_order = pool->p.order;
--	struct page *page, *next;
--	LIST_HEAD(page_list);
-+	struct page *page;
-+	int i, nr_pages;
- 
- 	/* Don't support bulk alloc for high-order pages */
- 	if (unlikely(pp_order))
- 		return __page_pool_alloc_page_order(pool, gfp);
- 
--	if (unlikely(!alloc_pages_bulk_list(gfp, bulk, &page_list)))
-+	/* Unnecessary as alloc cache is empty, but guarantees zero count */
-+	if (unlikely(pool->alloc.count > 0))
-+		return pool->alloc.cache[--pool->alloc.count];
-+
-+	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk_array */
-+	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
-+
-+	nr_pages = alloc_pages_bulk_array(gfp, bulk, pool->alloc.cache);
-+	if (unlikely(!nr_pages))
- 		return NULL;
- 
--	list_for_each_entry_safe(page, next, &page_list, lru) {
--		list_del(&page->lru);
-+	/* Pages have been filled into alloc.cache array, but count is zero and
-+	 * page element have not been (possibly) DMA mapped.
-+	 */
-+	for (i = 0; i < nr_pages; i++) {
-+		page = pool->alloc.cache[i];
- 		if ((pp_flags & PP_FLAG_DMA_MAP) &&
- 		    unlikely(!page_pool_dma_map(pool, page))) {
- 			put_page(page);
- 			continue;
- 		}
--		/* Alloc cache have room as it is empty on function call */
- 		pool->alloc.cache[pool->alloc.count++] = page;
- 		/* Track how many pages are held 'in-flight' */
- 		pool->pages_state_hold_cnt++;
-
-
+The reported-by also should be removed.
