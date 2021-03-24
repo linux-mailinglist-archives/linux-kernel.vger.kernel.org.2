@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0969347173
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B82347176
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhCXGP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:15:27 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:61347 "EHLO pegase1.c-s.fr"
+        id S233362AbhCXGP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:15:58 -0400
+Received: from mail.thorsis.com ([92.198.35.195]:60892 "EHLO mail.thorsis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232833AbhCXGPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:15:02 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F4ydH3K1sz9v0SD;
-        Wed, 24 Mar 2021 07:14:59 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id S9cQDlsfD6rS; Wed, 24 Mar 2021 07:14:59 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F4ydH2Qgmz9v0SB;
-        Wed, 24 Mar 2021 07:14:59 +0100 (CET)
+        id S233182AbhCXGP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 02:15:57 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2E5498B812;
-        Wed, 24 Mar 2021 07:15:00 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id B0ip2SmJdw6T; Wed, 24 Mar 2021 07:15:00 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5800D8B76A;
-        Wed, 24 Mar 2021 07:14:59 +0100 (CET)
-Subject: Re: [PATCH v2 -next] powerpc: kernel/time.c - cleanup warnings
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        He Ying <heying24@huawei.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        a.zummo@towertech.it, npiggin@gmail.com, msuchanek@suse.de,
-        tglx@linutronix.de, peterz@infradead.org, geert+renesas@glider.be,
-        kernelfans@gmail.com, frederic@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-References: <20210323091257.90054-1-heying24@huawei.com>
- <YFppJkpZRHMJFay0@piout.net> <YFp0Qc2P61V+3bm0@piout.net>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <95cd80c5-40ff-1316-9c89-2e8e7836fb6a@csgroup.eu>
-Date:   Wed, 24 Mar 2021 07:14:59 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YFp0Qc2P61V+3bm0@piout.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        by mail.thorsis.com (Postfix) with ESMTP id 9AA3D3242;
+        Wed, 24 Mar 2021 07:15:55 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tl2f0L7LG2pZ; Wed, 24 Mar 2021 07:15:55 +0100 (CET)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+        id C67403374; Wed, 24 Mar 2021 07:15:53 +0100 (CET)
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.2
+Date:   Wed, 24 Mar 2021 07:15:47 +0100 (CET)
+From:   Alexander Dahl <ada@thorsis.com>
+To:     Hermes Zhang <Hermes.Zhang@axis.com>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>
+Cc:     kernel <kernel@axis.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <395366948.12083.1616566547773@seven.thorsis.com>
+In-Reply-To: <cce4da5a92d9414e87b6ac6d1d167fac@XBOX01.axis.com>
+References: <20210324024844.15796-1-chenhui.zhang@axis.com>
+ <558944059.12080.1616565502073@seven.thorsis.com>
+ <cce4da5a92d9414e87b6ac6d1d167fac@XBOX01.axis.com>
+Subject: RE: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Originating-Client: open-xchange-appsuite
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-
-Le 24/03/2021 à 00:05, Alexandre Belloni a écrit :
-> On 23/03/2021 23:18:17+0100, Alexandre Belloni wrote:
->> Hello,
->>
->> On 23/03/2021 05:12:57-0400, He Ying wrote:
->>> We found these warnings in arch/powerpc/kernel/time.c as follows:
->>> warning: symbol 'decrementer_max' was not declared. Should it be static?
->>> warning: symbol 'rtc_lock' was not declared. Should it be static?
->>> warning: symbol 'dtl_consumer' was not declared. Should it be static?
->>>
->>> Declare 'decrementer_max' and 'rtc_lock' in powerpc asm/time.h.
->>> Rename 'rtc_lock' in drviers/rtc/rtc-vr41xx.c to 'vr41xx_rtc_lock' to
->>> avoid the conflict with the variable in powerpc asm/time.h.
->>> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
->>> is declared there.
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: He Ying <heying24@huawei.com>
->>> ---
->>> v2:
->>> - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
->>>    rtc_lock in powerpc asm/time.h.
->>>
->>
->> V1 was actually the correct thing to do. rtc_lock is there exactly
->> because chrp and maple are using mc146818 compatible RTCs. This is then
->> useful because then drivers/char/nvram.c is enabled. The proper fix
->> would be to scrap all of that and use rtc-cmos for those platforms as
->> this drives the RTC properly and exposes the NVRAM for the mc146818.
->>
->> Or at least, if there are no users for the char/nvram driver on those
->> two platforms, remove the spinlock and stop enabling CONFIG_NVRAM or
->> more likely rename the symbol as it seems to be abused by both chrp and
->> powermac.
->>
+> Hermes Zhang <hermes.zhang@axis.com> hat am 24.03.2021 07:04 geschrieben:
 > 
-> Ok so rtc_lock is not even used by the char/nvram.c driver as it is
-> completely compiled out.
+>  
+> > >
+> > > Notes:
+> > >     Add maxItems
+> > 
+> > What about the other part of the series? I think you should send both
+> > patches together with an introduction message on both. If you only change
+> > one patch for a new version spin of the series, just send the other one
+> > unchanged.
+> > 
+> > (It makes no sense to merge the binding as long as the driver is not merged,
+> > otherwise you would end up with a binding without driver. So keeping them
+> > together should help reviewers and maintainers.)
+> > 
 > 
-> I guess it is fine having it move to the individual platform as looking
-> very quickly at the Kconfig, it is not possible to select both
-> simultaneously. Tentative patch:
+> Hi Alexander,
 > 
+> The other part is here: https://lore.kernel.org/patchwork/patch/1399875/, so do you mean I need to combine these two as one commit? Or is there anyway to link them together? Thanks.
 
-Looking at it once more, it looks like including linux/mc146818rtc.h is the thing to do, at least 
-for now. Several platforms are defining the rtc_lock exactly the same way as powerpc does, and 
-including mc146818rtc.h
+Two commits.
 
-I think that to get it clean, this change should go in a dedicated patch and do a bit more and 
-explain exactly what is being do and why. I'll try to draft something for it.
+For sending more than one patch in a series call `git format-patch` with the option --cover-letter. Please have a look at documentation on `git format-patch` and `git send-email` again.
 
-He Y., can you make a version v3 of your patch excluding the rtc_lock change ?
+You can see how it looks if you look out for other patch series on the from the past, especially those with subjects like "[PATCH 0/x] ...". An e-mail client supporting threaded view helps a lot.
 
-Christophe
+> I'm first time to commit a new driver, sorry for that.
+
+Thanks for trying. No need to be sorry, the tools are hard and expectations are high. In the end it's all about efficiency.
+
+Have a nice day
+Alex
