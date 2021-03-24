@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B24347FB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0612347FB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237269AbhCXRlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:41:37 -0400
-Received: from mail-il1-f172.google.com ([209.85.166.172]:39845 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237223AbhCXRlG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:41:06 -0400
-Received: by mail-il1-f172.google.com with SMTP id y17so10485401ila.6;
-        Wed, 24 Mar 2021 10:41:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qx4EDxzhGUtC2AJPebvPB3YgXI61L9lTaX2dRhdfrOs=;
-        b=LoBoJ2wgH4HU6fdMLj4ssol+A9Oxukmvi5/88HJbv/pJGVkddNkQozTEvSYqK+WJI0
-         Uga+A/3e0Tykw4/R3PNWHRJRu9dR7EEFEU4vN6trSTqzoexxjDvD6qac7rYbbTks/bZV
-         PtJwJCTuHtf//+l2KoISLWuZzUHMLcgRQGrinugygqH5azhn/VGzWimke7MvZuUAKfMW
-         RKqi0Nrb5PEupBVNNWhbJeJCjlkCZkxCzXETU3toVJhH4lwfjcxAvIavjJLZo9gKjOw5
-         lV4oJM164F/yCytdfcVTmN3kYR9IIHorrK0D/S24tPBMCes4pj45MAyBCrOw7te8PRVC
-         xqww==
-X-Gm-Message-State: AOAM530M9E/2sBDgltwvTtmkq0MN4UPQ1kNv8vKD3pOOgIqg5AnmHijL
-        rzrzAY2kjzD3MXRXGMysFw==
-X-Google-Smtp-Source: ABdhPJzUTPtzniambejrX61FdLot/3D9UY/ew426v7dAuHtPZCvAW3cB1z4iI77ZW9vSrEyIO6tvcw==
-X-Received: by 2002:a92:7d0d:: with SMTP id y13mr3637182ilc.269.1616607665895;
-        Wed, 24 Mar 2021 10:41:05 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id h13sm1334941ila.82.2021.03.24.10.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 10:41:01 -0700 (PDT)
-Received: (nullmailer pid 3309184 invoked by uid 1000);
-        Wed, 24 Mar 2021 17:40:59 -0000
-Date:   Wed, 24 Mar 2021 11:40:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: serial: amlogic, meson-uart: add
- amlogic, uart-fifosize property
-Message-ID: <20210324174059.GA3308031@robh.at.kernel.org>
-References: <20210315083459.359773-1-narmstrong@baylibre.com>
- <20210315083459.359773-2-narmstrong@baylibre.com>
- <CAFBinCA1WhtWLEfJ-QyBbZpsY75r=su6uzyWamY6nHOQ+HYvAw@mail.gmail.com>
+        id S237223AbhCXRmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:42:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237296AbhCXRlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 13:41:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8049C61A19;
+        Wed, 24 Mar 2021 17:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616607699;
+        bh=htBRaBnyR28VLiCRvWJ8GrezsXw43e6rEl/CYh5JYlY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nC/39jKLJ2WW5B7Ht9uVjnTzS4IVBjlUt+qLupSoW7jSCpOj05mAKW0ze0wVvFBWh
+         vVS+QvUq+zn9dM3FhPYf/Up4ZhUHuyUBQVWlzThEQMOlJy+EcN6HGvnaGgootoghSz
+         2+MHZ1qSlpgjzcfFYw3kbqi+jQhg2VLHPbMyb4la362GqeeMRb3pgGhx7357zM5mwn
+         OMzblv0IlYn2TKJdLwnKYhPFF3cBLeUAGX5mSE3zJ720qVJ1odPYLwdtT3s8xW9v9N
+         WqA31GPfnwLfjtsOTQQFlq8wPk2kwJ02FUJ1L7ImzbC26d38IuELPv73g1oAmS2rtD
+         LnJr8S0H59oJA==
+Date:   Wed, 24 Mar 2021 10:41:35 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] arm64: move --fix-cortex-a53-843419 linker test to
+ Kconfig
+Message-ID: <20210324174135.umlsyuzjvspq5rdz@archlinux-ax161>
+References: <20210324071128.1723273-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFBinCA1WhtWLEfJ-QyBbZpsY75r=su6uzyWamY6nHOQ+HYvAw@mail.gmail.com>
+In-Reply-To: <20210324071128.1723273-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:33:15PM +0100, Martin Blumenstingl wrote:
->  Hi Neil,
+On Wed, Mar 24, 2021 at 04:11:28PM +0900, Masahiro Yamada wrote:
+> $(call ld-option, --fix-cortex-a53-843419) in arch/arm64/Makefile is
+> evaluated every time even for Make targets that do not need the linker,
+> such as "make ARCH=arm64 install".
 > 
-> On Mon, Mar 15, 2021 at 9:37 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
-> >
-> > On most of the Amlogic SoCs, the first UART controller in the "Everything-Else"
-> > power domain has 128bytes of RX & TX FIFO, so add an optional property to describe
-> do we still need wrapping of long lines in commit messages?
-> if so I think the line above is too long
+> Recently, the Kbuild tree queued up a patch to avoid needless
+> compiler/linker flag evaluation. I beleive it is a good improvement
+> itself, but causing a false-positive warning for arm64 installation
+> in linux-next. (Thanks to Nathan for the report)
 > 
-> > a different FIFO size from the other ports (64bytes).
-> >
-> > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Kconfig can test the linker capability just once, and store it in the
+> .config file. The build and installation steps that follow do not need
+> to test the liniker over again.
 > 
-> one additional note below
-> 
-> > ---
-> >  .../devicetree/bindings/serial/amlogic,meson-uart.yaml      | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> > index 75ebc9952a99..e0a742112783 100644
-> > --- a/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> > +++ b/Documentation/devicetree/bindings/serial/amlogic,meson-uart.yaml
-> > @@ -55,6 +55,12 @@ properties:
-> >        - const: pclk
-> >        - const: baud
-> >
-> > +
-> > +  amlogic,uart-fifosize:
-> > +    description: The fifo size supported by the UART channel.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    enum: [64, 128]
-> I personally think this is generic enough to be described as fifo-size
-> (as it's done in Documentation/devicetree/bindings/serial/8250.yaml)
-> let's wait and hear what Rob thinks
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Yes.
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+Thanks for the quick fix!
+
+> ---
+> 
+> I was not sure what the preferred CONFIG option name is.
+> Please suggest a one if you have a better idea.
+> 
+> 
+>  arch/arm64/Kconfig  | 3 +++
+>  arch/arm64/Makefile | 2 +-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 5656e7aacd69..4a33428de8ac 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -521,6 +521,9 @@ config ARM64_ERRATUM_843419
+>  
+>  	  If unsure, say Y.
+>  
+> +config ARM64_LD_HAS_FIX_ERRATUM_843419
+> +	def_bool $(ld-option,--fix-cortex-a53-843419)
+> +
+>  config ARM64_ERRATUM_1024718
+>  	bool "Cortex-A55: 1024718: Update of DBM/AP bits without break before make might result in incorrect update"
+>  	default y
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 5b84aec31ed3..7ef44478560d 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -21,7 +21,7 @@ LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext \
+>  endif
+>  
+>  ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
+> -  ifeq ($(call ld-option, --fix-cortex-a53-843419),)
+> +  ifneq ($(CONFIG_ARM64_LD_HAS_FIX_ERRATUM_843419),y)
+>  $(warning ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum)
+>    else
+>  LDFLAGS_vmlinux	+= --fix-cortex-a53-843419
+> -- 
+> 2.27.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
