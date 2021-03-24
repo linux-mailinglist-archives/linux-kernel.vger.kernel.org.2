@@ -2,165 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781B034752F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F21347532
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbhCXJ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S235288AbhCXJ54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbhCXJ5Q (ORCPT
+        with ESMTP id S235305AbhCXJ5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:57:16 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6ECC0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:57:16 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id u5so31812519ejn.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ui3KK3mzwqbV9eLNTYNhSvBlcu0bQi8tP4Sx/vLrsFM=;
-        b=RW6zzpKKOYU4TonZHWyHu86rXkdv9zk1Kn+dfUmAdQHSnL8x7WIErObnzx9/rde0cl
-         R+mxfCOCbfNcgLEiAGTKpJyJgLqMS6bNhmImpdWBezU4dPQpX08sZi9eQdcsYiiyIJ2U
-         Im+zCCfJX8PghtZ0tLRFjRwUsEypOLYW/flzA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ui3KK3mzwqbV9eLNTYNhSvBlcu0bQi8tP4Sx/vLrsFM=;
-        b=Bl9OGLYmwR8Gq4AHwTLNcPQ8X8HuAP8Lc3yjqFZ8kRErqoo2XSD1Avb+huTiJRM85Y
-         Si2SpRtoEnOYJRFE20XM/w0+1w3qlamAi53NYfjX4Cp5WTORzRk9uGw71SiZfCIyQ5DL
-         W/9yszw11rpRW89T7WZ0mt8fwpoy8cmSt0gQqVT/YbUoqDpLKthbonNqB7VX+dSkRDxJ
-         KLRNRV/MeMESoBpdCA41TF14UWx7rmRC4Gv4P7/+O7KPCoMCaHtHBWq4uBE1s4Y6ORwl
-         9wLDRbsaGTUphlAtu+DLMGKnORmG8p1wjnoAioNFmfSnTVeQvlEFLPVqvv55fLQMnGi8
-         b8xg==
-X-Gm-Message-State: AOAM533nlYabqbaUNKC5LioST/yKJGlReK3gkZtiiGx3ZkrwS5d7JbmD
-        AXSFXQVZCEgAzAzAyQD+DLcHxA==
-X-Google-Smtp-Source: ABdhPJzkMnHFljq3UR0armBnzHqGg/eD2m9c6+lIJW0if0dtjP6SqF8bGhC7DR7RD/5M3+15p/J/xg==
-X-Received: by 2002:a17:906:2710:: with SMTP id z16mr2752772ejc.176.1616579834782;
-        Wed, 24 Mar 2021 02:57:14 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id hd37sm645541ejc.114.2021.03.24.02.57.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 02:57:14 -0700 (PDT)
-Subject: Re: [PATCH v2 04/12] module: Add printk format to add module build ID
- to stacktraces
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-References: <20210324020443.1815557-1-swboyd@chromium.org>
- <20210324020443.1815557-5-swboyd@chromium.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <6dfb8ca2-20f3-e58a-ad6b-db6a6472afe0@rasmusvillemoes.dk>
-Date:   Wed, 24 Mar 2021 10:57:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 24 Mar 2021 05:57:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C73C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:57:39 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lP0GX-0005Cl-5x; Wed, 24 Mar 2021 10:57:29 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:ac2f:839b:d9d7:b2c1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 078375FED4F;
+        Wed, 24 Mar 2021 09:57:25 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 10:57:25 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Patrick Menschel <menschel.p@posteo.de>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-can <linux-can@vger.kernel.org>
+Subject: Re: [kbuild-all] Re: include/linux/compiler_types.h:315:38: error:
+ call to '__compiletime_assert_536' declared with attribute error:
+ BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct
+ canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struc...
+Message-ID: <20210324095725.ro5zs2qnmhemzvts@pengutronix.de>
+References: <f8075a19-10e1-abf9-6d59-1a46454b74b1@hartkopp.net>
+ <b10903ca-c424-b305-d981-fe0004500190@intel.com>
+ <20210323073437.yo63wreqnubbeqby@pengutronix.de>
+ <7ff6bfd3-6b4b-045a-abb7-485927909587@hartkopp.net>
+ <a5599800-53f4-c53f-abcc-e166ea9028b9@rasmusvillemoes.dk>
+ <080d9e5c-fe1f-4a64-2938-8ca6d8a98d78@hartkopp.net>
+ <0a8e8e95-c1a2-ede6-9f87-1ab7a0a155e3@rasmusvillemoes.dk>
+ <212c8bc3-89f9-9c33-ed1b-b50ac04e7532@hartkopp.net>
+ <1a6dd272-8bc2-57dc-5592-47a08493193a@rasmusvillemoes.dk>
+ <2c82ec23-3551-61b5-1bd8-178c3407ee83@hartkopp.net>
 MIME-Version: 1.0
-In-Reply-To: <20210324020443.1815557-5-swboyd@chromium.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ek6ltibujq7z5ejj"
+Content-Disposition: inline
+In-Reply-To: <2c82ec23-3551-61b5-1bd8-178c3407ee83@hartkopp.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 03.04, Stephen Boyd wrote:
 
-> @@ -2778,6 +2793,10 @@ static inline void layout_symtab(struct module *mod, struct load_info *info)
->  static void add_kallsyms(struct module *mod, const struct load_info *info)
->  {
->  }
-> +
-> +static void init_build_id(struct module *mod, const struct load_info *info)
-> +{
-> +}
->  #endif /* CONFIG_KALLSYMS */
->  
->  static void dynamic_debug_setup(struct module *mod, struct _ddebug *debug, unsigned int num)
-> @@ -4004,6 +4023,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
->  		goto free_arch_cleanup;
->  	}
->  
-> +	init_build_id(mod, info);
->  	dynamic_debug_setup(mod, info->debug, info->num_debug);
->  
->  	/* Ftrace init must be called in the MODULE_STATE_UNFORMED state */
-> @@ -4235,7 +4255,7 @@ void * __weak dereference_module_function_descriptor(struct module *mod,
->  const char *module_address_lookup(unsigned long addr,
->  			    unsigned long *size,
->  			    unsigned long *offset,
-> -			    char **modname,
-> +			    char **modname, unsigned char **modbuildid,
+--ek6ltibujq7z5ejj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's an existing defect with modname, but surely this should take a
-"const unsigned char **modbuildid", no?
+On 24.03.2021 10:09:22, Oliver Hartkopp wrote:
+> @Marc: Looks like we can not get around the __packed() fix :-(
+>=20
+> At least we now have some more documentation to be referenced and I would
+> suggest to point out that some compilers handle the union alignment like
+> this.
 
->  			    char *namebuf)
->  {
->  	const char *ret = NULL;
-> @@ -4246,6 +4266,8 @@ const char *module_address_lookup(unsigned long addr,
->  	if (mod) {
->  		if (modname)
->  			*modname = mod->name;
-> +		if (modbuildid)
-> +			*modbuildid = mod->build_id;
->  
->  		ret = find_kallsyms_symbol(mod, addr, size, offset);
->  	}
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 41ddc353ebb8..9cd62e84e4aa 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -961,13 +961,15 @@ char *symbol_string(char *buf, char *end, void *ptr,
->  	char sym[KSYM_SYMBOL_LEN];
->  #endif
->  
-> -	if (fmt[1] == 'R')
-> +	if (fmt[1] == 'R' || fmt[1] == 'r')
->  		ptr = __builtin_extract_return_addr(ptr);
->  	value = (unsigned long)ptr;
->  
->  #ifdef CONFIG_KALLSYMS
->  	if (*fmt == 'B')
->  		sprint_backtrace(sym, value);
-> +	else if (*fmt == 'S' && (fmt[1] == 'b' || fmt[1] == 'r'))
-> +		sprint_symbol_stacktrace(sym, value);
->  	else if (*fmt != 's')
->  		sprint_symbol(sym, value);
->  	else
-> @@ -2129,6 +2131,8 @@ early_param("no_hash_pointers", no_hash_pointers_enable);
->   * - 'S' For symbolic direct pointers (or function descriptors) with offset
->   * - 's' For symbolic direct pointers (or function descriptors) without offset
->   * - '[Ss]R' as above with __builtin_extract_return_addr() translation
-> + * - '[Ss]r' as above with __builtin_extract_return_addr() translation and module build ID
-> + * - '[Ss]b' as above with module build ID (for use in backtraces)
+It's not the compiler, but the ABI.
 
-The code doesn't quite match the comment. The lowercase s is not handled
-(i.e., there's no way to say "without offset, with build ID"). You don't
-have to fix the code to support that right now, the whole kallsyms
-vsprintf code needs to be reworked inside-out anyway (having vsnprint
-call sprint_symbol* which builds the output using snprintf() calls makes
-me cringe), so please just replace [Ss] by S to make the comment match
-the code - I notice that you did only document the S variant in
-printk-formats.rst.
+> To make clear in the comments what we are suppressing here any why.
 
-Is there any reason you didn't just make b an optional flag that could
-be specified with or without R? I suppose the parsing is more difficult
-with several orthogonal flags (see escaped_string()), but it's a little
-easier to understand. Dunno, it's not like we're gonna think of 10 other
-things that could be printed for a symbol, so perhaps it's fine.
+Feel free to post an updated patch description.
 
-Rasmus
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--ek6ltibujq7z5ejj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmBbDQIACgkQqclaivrt
+76kTYwf+JN9hl9/dzGKPNaxn1f/3DJlArPSCS3xSarYe3TcKgT+t4LG/D9urkzNP
+vIbfXeQ78dqjhgwBttM4Niog5NhakpiJdJ8+dhoQ/55PkOrwBQSB8ilPyV2NcBqj
+CqjyyVxzgW+uQ9ULauQascrt0T5K0bwcRNSvJ+/Gm9tw+q73wQ+PPPninyo/WX04
+erOE9EjMIxtjlxjBSBY6/gXNG0h4PqOr6ejhQrdc26QBJmOYyImCOr5OxR8K2T+H
+J+PZMolNN57wkVzFa1eB8Ru8fESxCfp676ojfAdHdoo1jGUgnvxc+Xjq6VL4h2Zs
+eK0kbC8BuNFSiILjmizP8l+Bqcmw9g==
+=8MVo
+-----END PGP SIGNATURE-----
+
+--ek6ltibujq7z5ejj--
