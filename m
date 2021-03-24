@@ -2,125 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30FB348340
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B0B34835A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238241AbhCXU4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238266AbhCXUzx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:55:53 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D34C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:55:53 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id r17so15576186pgi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bW7WoQMagjQIIn/8KR5VslHMG/0qRAE/ZaFZOdCtxDU=;
-        b=CsGZg8KXX0+gDzDoUnbX6Y1biImPWLzCl2DUcsiu5txYHCEtbXGxarA02F0xZrd7Bl
-         yX6HMNsYm2EIwXiBJ8qrS4IjBf3OngUaduS3sd6eZyfkUKcfPv+Bd7HyMDbw6LAMVLON
-         8XkT0BgYZyKDT4YRJ2FIoK/koDunktRmgKUddd2S7BzSSExQP0ay375xoQ/VgRN+yMg6
-         cb+RUNgyzswUsHxKPdPWMuPOPtMq2Jw7kbmZQrmOvPKoyPG3LPPIOGCnycaj37bNbc4h
-         XeXZ+6SW0dj3y547kj/LCHPrd+nLguFMXCA8wdPi5qvdj1SAWP3bNavnpdfhze2WOcLZ
-         Zn4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=bW7WoQMagjQIIn/8KR5VslHMG/0qRAE/ZaFZOdCtxDU=;
-        b=tzETK0Ss50jla56QmyO2tTZcB4ppxY9J9z3G7eWMaNF3/xwKrwMFk+FaHoG5e6KHkg
-         Jmk+RmywG91BSy4xkZOXSMEyuRC6tFMkFSGrq9FH1d/dqD81do3u17xYaJWCZ3tdkKPG
-         HGchSCjWUisNaL9P1D0SCZOI0OObJYqjpkFlLxJKNwZdzlv7P0JZ6RcbX0rc+nbQWlOG
-         QAxSHLm+ZgQ4zUIpCgysFGOpuUg4pz4AiuKdQKBPCOox3cQ4W4Bp9xSUuESelIg/aJem
-         Az5zrsvs6HAk8LyS9SSwfP5K8vTCWYiiTMVlyaI3JtLRG/bdFwbu+arJnrTELOlNtj5F
-         E0dQ==
-X-Gm-Message-State: AOAM5314Icn7W2dPyRcpqW8K7rltB/Ir+2zlYN0y1E09lx/BowP4PONE
-        NVbH1KLm70QwWtIBFsOz+4E=
-X-Google-Smtp-Source: ABdhPJxWLuQACGwGD50bc0v5NiwE3SaRIWPHb0xTmcajBsHfu2DcB7sGbt2Y/fscZvWtPDnwMWWZYw==
-X-Received: by 2002:a62:2a07:0:b029:214:fd95:7f7 with SMTP id q7-20020a622a070000b0290214fd9507f7mr4891951pfq.60.1616619352778;
-        Wed, 24 Mar 2021 13:55:52 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id v126sm3472399pfv.163.2021.03.24.13.55.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 13:55:51 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 24 Mar 2021 13:55:49 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
-        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
-        willy@infradead.org
-Subject: Re: [PATCH] mm: cma: fix corruption cma_sysfs_alloc_pages_count
-Message-ID: <YFunVZLZYSzUDd6n@google.com>
-References: <20210324192044.1505747-1-minchan@kernel.org>
- <18ee5c3e-fba2-0d8d-bd93-5fb8d0dd7a01@gmail.com>
- <89ba4c7a-42d2-5412-2367-cc1cffc1117b@gmail.com>
- <YFuZua1TIEkXtqoL@google.com>
- <900f5707-3352-e3d1-69e8-c1f8580c0fc4@gmail.com>
+        id S238314AbhCXVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:02:43 -0400
+Received: from mga03.intel.com ([134.134.136.65]:18808 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238191AbhCXVCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 17:02:12 -0400
+IronPort-SDR: GLoPmqQv2WZPD3A3MUCmOym1RZ/FoVkRZm6BbtEGY/VWuOWoje/EJYLDR55HZK0VAKg8ko40Bw
+ /bqNGtF1anzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190812791"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="190812791"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:48 -0700
+IronPort-SDR: wwhRyBjPPefLY4IAS+Rz3oLkuXqEtbueYf0s/cpm+RllwF+CrMA+N8zBJsUX+Xzj/SKGEeEM9W
+ e3xD7zweg9RQ==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="415655947"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:45 -0700
+Subject: [PATCH 0/4] cxl/mem: Fix memdev device setup
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-cxl@vger.kernel.org
+Cc:     Ben Widawsky <ben.widawsky@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, ira.weiny@intel.com,
+        vishal.l.verma@intel.com, alison.schofield@intel.com,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 24 Mar 2021 14:01:45 -0700
+Message-ID: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <900f5707-3352-e3d1-69e8-c1f8580c0fc4@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:02:47PM +0300, Dmitry Osipenko wrote:
-> 24.03.2021 22:57, Minchan Kim пишет:
-> > On Wed, Mar 24, 2021 at 10:49:58PM +0300, Dmitry Osipenko wrote:
-> >> 24.03.2021 22:43, Dmitry Osipenko пишет:
-> >>> 24.03.2021 22:20, Minchan Kim пишет:
-> >>>>  static int __init cma_sysfs_init(void)
-> >>>>  {
-> >>>> -	int i = 0;
-> >>>> +	struct kobject *cma_kobj_root;
-> >>>> +	struct cma_kobject *cma_kobj;
-> >>>>  	struct cma *cma;
-> >>>> +	unsigned int i;
-> >>>
-> >>>>  	while (--i >= 0) {
-> >>>
-> >>> Do you realize that this doesn't work anymore?
-> >>>
-> >>>>  		cma = &cma_areas[i];
-> >>>> -		kobject_put(&cma->stat->kobj);
-> >>>> -	}
-> >>>>  
-> >>>> -	kfree(cma_stats);
-> >>>> -	kobject_put(cma_kobj);
-> >>>> +		kobject_put(&cma->cma_kobj->kobj);
-> >>>> +		kfree(cma->cma_kobj);
-> >>>
-> >>> Freeing a null pointer?
-> >>>
-> >>>> +		cma->cma_kobj = NULL;
-> >>>> +	}
-> >>>> +	kobject_put(cma_kobj_root);
-> >>>
-> >>
-> >> Please try to simulate the errors and check that error path is working
-> >> properly in the next version.
-> >>
-> >> Alternatively, we could remove the cma_kobj_release entirely, like Greg
-> >> suggested previously, and then don't care about cleaning up at all.
-> > 
-> > Does he suggested it to remove cma_kobj_release?(Initially, I did but
-> > was rejected from Greg)
-> > 
-> 
-> Alright, I haven't followed the previous threads fully and only saw the
-> reply where he suggested to removed it.
+A small collection of fixes mostly inspired by Jason's recognition of
+dev_set_name() error handling mistakes on other driver review.
 
-No problem. I just posted it new version. Hopefully, it tastes good
-for you. ;-)
+dev_set_name() can fail and although device_add() might catch it that's
+not a reliable assumption. While fixing that I noticed that the unwind
+handling for cdev_device_add() failures leaked the device name.
 
-Thanks for the review!
+The sysfs_emit() fixup and unpublishing of device power management files
+are just sanity cleanups.
+
+---
+
+Dan Williams (4):
+      cxl/mem: Use sysfs_emit() for attribute show routines
+      cxl/mem: Fix cdev_device_add() error handling
+      cxl/mem: Do not rely on device_add() side effects for dev_set_name() failures
+      cxl/mem: Disable cxl device power management
+
+
+ drivers/cxl/mem.c |   31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
+
+base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
