@@ -2,66 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0F33472F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C50D3472F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhCXHsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:48:31 -0400
-Received: from verein.lst.de ([213.95.11.211]:35848 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231344AbhCXHry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:47:54 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6BC6D68B02; Wed, 24 Mar 2021 08:47:51 +0100 (CET)
-Date:   Wed, 24 Mar 2021 08:47:51 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
-Subject: Re: [PATCH v3 01/11] pagemap: Introduce ->memory_failure()
-Message-ID: <20210324074751.GA1630@lst.de>
-References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com> <20210208105530.3072869-2-ruansy.fnst@cn.fujitsu.com> <CAPcyv4jqEdPoF5YM+jSYJd74KqRTwbbEum7=moa3=Wyn6UyU9g@mail.gmail.com> <OSBPR01MB29207A1C06968705C2FEBACFF4939@OSBPR01MB2920.jpnprd01.prod.outlook.com> <CAPcyv4iBnWbG0FYw6-K0MaH--rq62s7RY_yoT9rOYWMa94Yakw@mail.gmail.com> <OSBPR01MB29203F891F9584CC53616FB8F4939@OSBPR01MB2920.jpnprd01.prod.outlook.com> <CAPcyv4gn_AvT6BA7g4jLKRFODSpt7_ORowVd3KgyWxyaFG0k9g@mail.gmail.com> <OSBPR01MB2920E46CBE4816CDF711E004F46F9@OSBPR01MB2920.jpnprd01.prod.outlook.com> <OSBPR01MB29208779955B49F84D857F80F4689@OSBPR01MB2920.jpnprd01.prod.outlook.com> <CAPcyv4jhUU3NVD8HLZnJzir+SugB6LnnrgJZ-jP45BZrbJ1dJQ@mail.gmail.com>
+        id S232764AbhCXHta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:49:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13676 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232265AbhCXHtC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 03:49:02 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F50fn3nyNznV4Q;
+        Wed, 24 Mar 2021 15:46:25 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
+ 2021 15:48:51 +0800
+Subject: Re: [PATCH] Revert "f2fs: give a warning only for readonly partition"
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210323064155.12582-1-yuchao0@huawei.com>
+ <YFo16ADpWJ7OUAvK@google.com>
+ <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
+ <YFq+aQW7eihFuSst@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
+Date:   Wed, 24 Mar 2021 15:48:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jhUU3NVD8HLZnJzir+SugB6LnnrgJZ-jP45BZrbJ1dJQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YFq+aQW7eihFuSst@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 07:19:28PM -0700, Dan Williams wrote:
-> So I think the path forward is:
+On 2021/3/24 12:22, Jaegeuk Kim wrote:
+> On 03/24, Chao Yu wrote:
+>> On 2021/3/24 2:39, Jaegeuk Kim wrote:
+>>> On 03/23, Chao Yu wrote:
+>>>> This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+>>>>
+>>>> Because that commit fails generic/050 testcase which expect failure
+>>>> during mount a recoverable readonly partition.
+>>>
+>>> I think we need to change generic/050, since f2fs can recover this partition,
+>>
+>> Well, not sure we can change that testcase, since it restricts all generic
+>> filesystems behavior. At least, ext4's behavior makes sense to me:
+>>
+>> 	journal_dev_ro = bdev_read_only(journal->j_dev);
+>> 	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
+>>
+>> 	if (journal_dev_ro && !sb_rdonly(sb)) {
+>> 		ext4_msg(sb, KERN_ERR,
+>> 			 "journal device read-only, try mounting with '-o ro'");
+>> 		err = -EROFS;
+>> 		goto err_out;
+>> 	}
+>>
+>> 	if (ext4_has_feature_journal_needs_recovery(sb)) {
+>> 		if (sb_rdonly(sb)) {
+>> 			ext4_msg(sb, KERN_INFO, "INFO: recovery "
+>> 					"required on readonly filesystem");
+>> 			if (really_read_only) {
+>> 				ext4_msg(sb, KERN_ERR, "write access "
+>> 					"unavailable, cannot proceed "
+>> 					"(try mounting with noload)");
+>> 				err = -EROFS;
+>> 				goto err_out;
+>> 			}
+>> 			ext4_msg(sb, KERN_INFO, "write access will "
+>> 			       "be enabled during recovery");
+>> 		}
+>> 	}
+>>
+>>> even though using it as readonly. And, valid checkpoint can allow for user to
+>>> read all the data without problem.
+>>
+>>>>    		if (f2fs_hw_is_readonly(sbi)) {
+>>
+>> Since device is readonly now, all write to the device will fail, checkpoint can
+>> not persist recovered data, after page cache is expired, user can see stale data.
 > 
-> - teach memory_failure() to allow for ranged failures
+> My point is, after mount with ro, there'll be no data write which preserves the
+> current status. So, in the next time, we can recover fsync'ed data later, if
+> user succeeds to mount as rw. Another point is, with the current checkpoint, we
+> should not have any corrupted metadata. So, why not giving a chance to show what
+> data remained to user? I think this can be doable only with CoW filesystems.
+
+I guess we're talking about the different things...
+
+Let me declare two different readonly status:
+
+1. filesystem readonly: file system is mount with ro mount option, and
+app from userspace can not modify any thing of filesystem, but filesystem
+itself can modify data on device since device may be writable.
+
+2. device readonly: device is set to readonly status via 'blockdev --setro'
+command, and then filesystem should never issue any write IO to the device.
+
+So, what I mean is, *when device is readonly*, rather than f2fs mountpoint
+is readonly (f2fs_hw_is_readonly() returns true as below code, instead of
+f2fs_readonly() returns true), in this condition, we should not issue any
+write IO to device anyway, because, AFAIK, write IO will fail due to
+bio_check_ro() check.
+
+  		if (f2fs_hw_is_readonly(sbi)) {
+-			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+-				err = -EROFS;
++			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+  				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+-				goto free_meta;
+-			}
+-			f2fs_info(sbi, "write access unavailable, skipping recovery");
++			else
++				f2fs_info(sbi, "write access unavailable, skipping recovery");
+  			goto reset_checkpoint;
+  		}
+
+For the case of filesystem is readonly and device is writable, it's fine
+to do recovery in order to let user to see fsynced data.
+
+Thanks,
+
 > 
-> - let interested drivers register for memory failure events via a
-> blocking_notifier_head
-
-Eww.  As I said I think the right way is that the file system (or
-other consumer) can register a set of callbacks for opening the device.
-I have a series I need to finish and send out to do that for block
-devices.  We probably also need the concept of a holder for the dax
-device to make it work nicely, as otherwise we're going to have a bit
-of a mess.
-
-> This obviously does not solve Dave's desire to get this type of error
-> reporting on block_devices, but I think there's nothing stopping a
-> parallel notifier chain from being created for block-devices, but
-> that's orthogonal to requirements and capabilities provided by
-> dax-devices.
-
-FYI, my series could easily accomodate that if we ever get a block
-driver that actually could report such errors.
+>>
+>> Am I missing something?
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
+>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>> ---
+>>>>    fs/f2fs/super.c | 8 +++++---
+>>>>    1 file changed, 5 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>>> index b48281642e98..2b78ee11f093 100644
+>>>> --- a/fs/f2fs/super.c
+>>>> +++ b/fs/f2fs/super.c
+>>>> @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>>>>    		 * previous checkpoint was not done by clean system shutdown.
+>>>>    		 */
+>>>>    		if (f2fs_hw_is_readonly(sbi)) {
+>>>> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+>>>> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+>>>> +				err = -EROFS;
+>>>>    				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+>>>> -			else
+>>>> -				f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>> +				goto free_meta;
+>>>> +			}
+>>>> +			f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>>    			goto reset_checkpoint;
+>>>>    		}
+>>>> -- 
+>>>> 2.29.2
+>>> .
+>>>
+> .
+> 
