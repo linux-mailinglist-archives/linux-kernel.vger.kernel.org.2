@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11E2347C6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1EB347C75
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236633AbhCXPVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:21:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46398 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236497AbhCXPVl (ORCPT
+        id S236672AbhCXPWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:22:24 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:33623 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236457AbhCXPVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:21:41 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lP5KB-0002zn-T7; Wed, 24 Mar 2021 15:21:35 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>, linux-staging@lists.linux.dev
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] staging: rtl8188eu: Fix null pointer dereference on free_netdev call
-Date:   Wed, 24 Mar 2021 15:21:35 +0000
-Message-Id: <20210324152135.254152-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 24 Mar 2021 11:21:48 -0400
+Received: by mail-il1-f171.google.com with SMTP id u10so21689313ilb.0;
+        Wed, 24 Mar 2021 08:21:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v9vHwBNOXaaVO3941JRMZCIaF11vJvq/t1fnNMRj5iw=;
+        b=DGm6MveWi7tIYtNOjhra++M0aFrw9qGjPkNt5/cAXIN+GysO/ZAiGzaMdjF1DPmHrc
+         7gJuWj3uUvZkyoMPxpCW/Esx5haSDwXzzh/vaBQCeNMDgYwYNrLqI7tKGHJxuRNBH7Qe
+         6VFadq57htwI0NxHYBqaSCmFjbOr9kctJB5fcE55uDDXZ5SG3pPdH5cg2J8ouYBRAY+8
+         avvPNgVN128TNSqBAb/FmmIbuepZOFjiwVoFupBQt/RQHT16SPe79sg9KHmT5TBAehfR
+         WShVNDHTArp8PyMVzxrysgrrurhg3bXTbY/Z87D6IbcXb2UFlqjbXp7gOvNhWyBcsa/v
+         GDAw==
+X-Gm-Message-State: AOAM533d2FR2u5e82W8eEt2W3ApvTuS9FYO0N6+3simOqAXiVpGiFmcX
+        Pz+WvOGtAedsjQR4x9l6fQ==
+X-Google-Smtp-Source: ABdhPJwrUwOWhn6Z3qobK6pxhX275rNJ58QOwnVhjglMbWpaRA936kanfmmnZ3CRX1w5FrR3v253qQ==
+X-Received: by 2002:a92:ce88:: with SMTP id r8mr2886737ilo.78.1616599307781;
+        Wed, 24 Mar 2021 08:21:47 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z17sm1244379ilz.58.2021.03.24.08.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 08:21:46 -0700 (PDT)
+Received: (nullmailer pid 3089357 invoked by uid 1000);
+        Wed, 24 Mar 2021 15:21:42 -0000
+Date:   Wed, 24 Mar 2021 09:21:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/5] dt-bindings: soc: qcom: wcnss: Add firmware-name
+ property
+Message-ID: <20210324152142.GA3089198@robh.at.kernel.org>
+References: <20210312003318.3273536-1-bjorn.andersson@linaro.org>
+ <20210312003318.3273536-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312003318.3273536-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, 11 Mar 2021 16:33:14 -0800, Bjorn Andersson wrote:
+> The WCNSS needs firmware which differs between platforms, and possibly
+> boards. Add a new property "firmware-name" to allow the DT to specify
+> the platform/board specific path to this firmware file.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/soc/qcom/qcom,wcnss.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-An unregister_netdev call checks if pnetdev is null, hence a later
-call to free_netdev can potentially be passing a null pointer, causing
-a null pointer dereference. Avoid this by adding a null pointer check
-on pnetdev before calling free_netdev.
-
-Fixes: 1665c8fdffbb ("staging: rtl8188eu: use netdev routines for private data")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/staging/rtl8188eu/os_dep/usb_intf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-index 518e9feb3f46..91a3d34a1050 100644
---- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-@@ -446,7 +446,8 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
- 	pr_debug("+r871xu_dev_remove, hw_init_completed=%d\n",
- 		 if1->hw_init_completed);
- 	rtw_free_drv_sw(if1);
--	free_netdev(pnetdev);
-+	if (pnetdev)
-+		free_netdev(pnetdev);
- }
- 
- static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device_id *pdid)
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
