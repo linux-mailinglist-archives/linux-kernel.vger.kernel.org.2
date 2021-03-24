@@ -2,56 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F34347DA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E7C347DA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235159AbhCXQ0u convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 12:26:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235180AbhCXQ0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:26:48 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BC1961A01;
-        Wed, 24 Mar 2021 16:26:47 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 12:26:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     akpm@linux-foundation.org, mingo@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Liam Mark <lmark@codeaurora.org>
-Subject: Re: [PATCH] mm: cma: add trace events for CMA alloc perf testing
-Message-ID: <20210324122645.05152010@gandalf.local.home>
-In-Reply-To: <20210324160740.15901-1-georgi.djakov@linaro.org>
-References: <20210324160740.15901-1-georgi.djakov@linaro.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235114AbhCXQ1W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 12:27:22 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:43376 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235619AbhCXQ1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:27:12 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-36-mooNmgT4MtSKVwTw4DWRzg-1; Wed, 24 Mar 2021 16:27:10 +0000
+X-MC-Unique: mooNmgT4MtSKVwTw4DWRzg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 16:27:09 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 24 Mar 2021 16:27:09 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alex Elder' <elder@linaro.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "evgreen@chromium.org" <evgreen@chromium.org>,
+        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
+        "subashab@codeaurora.org" <subashab@codeaurora.org>,
+        "elder@kernel.org" <elder@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next] net: ipa: avoid 64-bit modulus
+Thread-Topic: [PATCH net-next] net: ipa: avoid 64-bit modulus
+Thread-Index: AQHXH4CsHuvM6SpiNkO+MERkTuT8kKqTVWfg
+Date:   Wed, 24 Mar 2021 16:27:09 +0000
+Message-ID: <f77f12f117934e9d9e3b284ed37e87a7@AcuMS.aculab.com>
+References: <20210323010505.2149882-1-elder@linaro.org>
+In-Reply-To: <20210323010505.2149882-1-elder@linaro.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 18:07:40 +0200
-Georgi Djakov <georgi.djakov@linaro.org> wrote:
-
-> From: Liam Mark <lmark@codeaurora.org>
+From: Alex Elder
+> Sent: 23 March 2021 01:05
+> It is possible for a 32 bit x86 build to use a 64 bit DMA address.
 > 
-> Add cma and migrate trace events to enable CMA allocation
-> performance to be measured via ftrace.
+> There are two remaining spots where the IPA driver does a modulo
+> operation to check alignment of a DMA address, and under certain
+> conditions this can lead to a build error on i386 (at least).
 > 
-> Signed-off-by: Liam Mark <lmark@codeaurora.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> The alignment checks we're doing are for power-of-2 values, and this
+> means the lower 32 bits of the DMA address can be used.  This ensures
+> both operands to the modulo operator are 32 bits wide.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Alex Elder <elder@linaro.org>
 > ---
->  include/trace/events/cma.h     | 39 +++++++++++++++++++++++++++++++++-
->  include/trace/events/migrate.h | 22 +++++++++++++++++++
->  mm/cma.c                       |  4 ++++
->  mm/migrate.c                   |  2 ++
->  4 files changed, 66 insertions(+), 1 deletion(-)
+>  drivers/net/ipa/gsi.c       | 11 +++++++----
+>  drivers/net/ipa/ipa_table.c |  9 ++++++---
+>  2 files changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+> index 7f3e338ca7a72..b6355827bf900 100644
+> --- a/drivers/net/ipa/gsi.c
+> +++ b/drivers/net/ipa/gsi.c
+> @@ -1436,15 +1436,18 @@ static void gsi_evt_ring_rx_update(struct gsi_evt_ring *evt_ring, u32 index)
+>  /* Initialize a ring, including allocating DMA memory for its entries */
+>  static int gsi_ring_alloc(struct gsi *gsi, struct gsi_ring *ring, u32 count)
+>  {
+> -	size_t size = count * GSI_RING_ELEMENT_SIZE;
+> +	u32 size = count * GSI_RING_ELEMENT_SIZE;
+>  	struct device *dev = gsi->dev;
+>  	dma_addr_t addr;
+> 
+> -	/* Hardware requires a 2^n ring size, with alignment equal to size */
+> +	/* Hardware requires a 2^n ring size, with alignment equal to size.
+> +	 * The size is a power of 2, so we can check alignment using just
+> +	 * the bottom 32 bits for a DMA address of any size.
+> +	 */
+>  	ring->virt = dma_alloc_coherent(dev, size, &addr, GFP_KERNEL);
 
-From a tracing perspective:
+Doesn't dma_alloc_coherent() guarantee that alignment?
+I doubt anywhere else checks?
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+	David
 
--- Steve
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
