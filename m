@@ -2,261 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D93347AF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15653347AF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236218AbhCXOl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236115AbhCXOlh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:41:37 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58809C061763;
-        Wed, 24 Mar 2021 07:41:37 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so1316751pjg.5;
-        Wed, 24 Mar 2021 07:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PM0ZkVqllx4XjOpDWUBOi9uWJczPNdCFz98fusYNysE=;
-        b=S7WWbveBF5Opqs2XNnKFyj2B0SwN/ry5NpWpCFGVPdbatiJsV7SCja8PtCWhdMJZCf
-         O5+mdYVCs1ytAEhqbLLCYtF/MWhOfXj/124VUPHFkc/CzUELmL9auNtIqPy6rLJa8JFp
-         vT8SY+NuDAavBSrbeHE8YmgjT4xB/qkrd9C1Vf1d4KYz8uBFTZXpEbJkE201qVt8jxa9
-         kszqoWQ+hxIvGdGqOEczTCSgqDRhgjSRk4oHCYVVvXaY1IKvyaUcx/89lVA72AVmjo0N
-         O9Pb1uMrTiNv6fmuh/dCTXq/zLM/px8YafnLOPkBnz4Fx5Ts1NR4QH04jlU1H6OQs2y1
-         PJTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PM0ZkVqllx4XjOpDWUBOi9uWJczPNdCFz98fusYNysE=;
-        b=Zvjr26YMp5HBKiOa2/Q1U1wTrOOA4N8/NScNapnWrD9eijdpMTMqkByTDM73li+F0t
-         IbTjc1dNZaN6FibefVRqxPD8IItGVlqVir37Zo81ua9QHbIsi92Ml+CJWhnWXvDZnswZ
-         0BoBbJszVgxHhFATcV21IVhR0zT2i6jjRDOvVEudhHBi6hLXJkv0CA7SPLexV+u27PDF
-         SIYd45CqKG1niaTAcfUlmzgCy6T+dpoZQ0W/9Tt8BFrPa10NubFhq8VklYJnhTFkIN49
-         +HfYKRokrErUzQ45h/cNPNyee6HpI1n0argneEQ2dhq8pV0Ry6bB3hR2/KikkFx5Fh/N
-         V3og==
-X-Gm-Message-State: AOAM533wXP/9N8xjRVRdTUJ/uoGrKfCd5FfglWmKEL/kP8RzrpgU3XSW
-        YfeQLbyZwKQhBX8v7Do3SsOhLua6n8uO7JZ9NRo=
-X-Google-Smtp-Source: ABdhPJzWGI8qPaLrYbRDLVpU8rW3yCozUyJDr/PBqBYz+Yb28erhxRB3cCNmdeC3ZxhaRAmUct8BCLZLijo6tGC5lA4=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr3902735pjr.228.1616596896663;
- Wed, 24 Mar 2021 07:41:36 -0700 (PDT)
+        id S236343AbhCXOmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:42:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236277AbhCXOmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:42:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616596933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p3BH4iH92NViRIgwJ7taVMwGIIzHlwzCXFTKjqZA9zc=;
+        b=M/KAUWtmbCcq6owIc+rR+ZAnDxOLWNNyPWFkWTMOSxD9cdKf2U0k57RJsFls9/4Pvwcxfw
+        R8DLCJMmr5hxJJEgsqxTgMOFnWJBOZbijtT+ztN04KIXtRoxvqb+jqn5QgyflWjk0TiZIj
+        xzFIqEE62tWqj4/HVhyNjDAF58P3Ag4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 72D13AF44;
+        Wed, 24 Mar 2021 14:42:13 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 15:42:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de>
+ <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux>
+ <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <1615507142-23097-1-git-send-email-wcheng@codeaurora.org>
- <CAHp75VfUVCB4gzgOWf=bUpCjfyerQLPN_p-vOnVfxUKHi1WJkg@mail.gmail.com>
- <716dca12-2bfc-789f-ca74-5555852e4c8b@codeaurora.org> <CAHp75VeynZArUkrogdJdR9oh+6Ocuqz3ySeDoRBFWusm8F6NRQ@mail.gmail.com>
- <39fdd3c8-9682-6109-f47d-7f7bffc4b85e@codeaurora.org> <CAHp75Vexow3KLjAueNoPrEhXmWk_4AjUpWXOyWcFLZdfB-o2iA@mail.gmail.com>
- <5252d085-bbd6-0409-a8ca-2b73fe269259@codeaurora.org> <CAHp75VdR99vMOz-JPKKCfVvnsBd9SjGxhDtLsa_Zz2SKpWaZOQ@mail.gmail.com>
- <eb91f1dc-d9ae-136d-4074-f1f70d666064@codeaurora.org>
-In-Reply-To: <eb91f1dc-d9ae-136d-4074-f1f70d666064@codeaurora.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 24 Mar 2021 16:41:20 +0200
-Message-ID: <CAHp75VcEg7wcaXRLd_D34bCBptxZcsdinMKxus7nhok29kTSKQ@mail.gmail.com>
-Subject: Re: [PATCH v3] usb: dwc3: gadget: Prevent EP queuing while stopping transfers
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 11:53 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
->
->
->
-> On 3/23/2021 10:27 AM, Andy Shevchenko wrote:
-> > On Tue, Mar 23, 2021 at 1:19 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
-> >>
-> >> Hi Andy,
-> >>
-> >> On 3/22/2021 2:14 PM, Andy Shevchenko wrote:
-> >>> On Mon, Mar 22, 2021 at 10:06 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
-> >>>>
-> >>>> Hi Andy,
-> >>>>
-> >>>> On 3/22/2021 12:34 PM, Andy Shevchenko wrote:
-> >>>>> On Mon, Mar 22, 2021 at 8:49 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
-> >>>>>>
-> >>>>>> Hi Andy,
-> >>>>>>
-> >>>>>> On 3/22/2021 5:48 AM, Andy Shevchenko wrote:
-> >>>>>>> On Fri, Mar 12, 2021 at 2:01 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
-> >>>>>>>>
-> >>>>>>>> In the situations where the DWC3 gadget stops active transfers, once
-> >>>>>>>> calling the dwc3_gadget_giveback(), there is a chance where a function
-> >>>>>>>> driver can queue a new USB request in between the time where the dwc3
-> >>>>>>>> lock has been released and re-aquired.  This occurs after we've already
-> >>>>>>>> issued an ENDXFER command.  When the stop active transfers continues
-> >>>>>>>> to remove USB requests from all dep lists, the newly added request will
-> >>>>>>>> also be removed, while controller still has an active TRB for it.
-> >>>>>>>> This can lead to the controller accessing an unmapped memory address.
-> >>>>>>>>
-> >>>>>>>> Fix this by ensuring parameters to prevent EP queuing are set before
-> >>>>>>>> calling the stop active transfers API.
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> commit f09ddcfcb8c569675066337adac2ac205113471f
-> >>>>>>> Author: Wesley Cheng <wcheng@codeaurora.org>
-> >>>>>>> Date:   Thu Mar 11 15:59:02 2021 -0800
-> >>>>>>>
-> >>>>>>>    usb: dwc3: gadget: Prevent EP queuing while stopping transfers
-> >>>>>>>
-> >>>>>>> effectively broke my gadget setup.
-> >>>>>>>
-> >>>>>>> The output of the kernel (followed by non responsive state of USB controller):
-> >>>>>>>
-> >>>>>>> [  195.228586] using random self ethernet address
-> >>>>>>> [  195.233104] using random host ethernet address
-> >>>>>>> [  195.245306] usb0: HOST MAC aa:bb:cc:dd:ee:f2
-> >>>>>>> [  195.249732] usb0: MAC aa:bb:cc:dd:ee:f1
-> >>>>>>> # [  195.773594] IPv6: ADDRCONF(NETDEV_CHANGE): usb0: link becomes ready
-> >>>>>>> [  195.780585] ------------[ cut here ]------------
-> >>>>>>> [  195.785217] dwc3 dwc3.0.auto: No resource for ep2in
-> >>>>>>> [  195.790162] WARNING: CPU: 0 PID: 217 at
-> >>>>>>> drivers/usb/dwc3/gadget.c:360 dwc3_send_gadget_ep_cmd+0x4b9/0x670
-> >>>>>>> [  195.799760] Modules linked in: usb_f_eem u_ether libcomposite
-> >>>>>>> brcmfmac brcmutil mmc_block pwm_lpss_pci pwm_lps
-> >>>>>>> s snd_sof_pci_intel_tng snd_sof_pci snd_sof_acpi_intel_byt
-> >>>>>>> snd_sof_intel_ipc snd_sof_acpi snd_sof snd_sof_nocodec
-> >>>>>>> spi_pxa2xx_platform snd_sof_xtensa_dsp spi_pxa2xx_pci
-> >>>>>>> extcon_intel_mrfld intel_mrfld_adc sdhci_pci cqhci sdhci m
-> >>>>>>> mc_core intel_mrfld_pwrbtn intel_soc_pmic_mrfld hci_uart btbcm btintel
-> >>>>>>> [  195.835604] CPU: 0 PID: 217 Comm: irq/16-dwc3 Not tainted 5.12.0-rc4+ #60
-> >>>>>>> [  195.842403] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
-> >>>>>>> BIOS 542 2015.01.21:18.19.48
-> >>>>>>> [  195.851191] RIP: 0010:dwc3_send_gadget_ep_cmd+0x4b9/0x670
-> >>>>>>> [  195.856608] Code: cd 00 00 00 44 89 44 24 20 48 89 4c 24 18 e8 ee
-> >>>>>>> f7 e4 ff 48 8b 4c 24 18 4c 89 f2 48 c7 c7 b9
-> >>>>>>> ed 4f a0 48 89 c6 e8 ef 24 43 00 <0f> 0b 41 be ea ff ff ff 44 8b 44 24
-> >>>>>>> 20 e9 80 fc ff ff 41 83 fe 92
-> >>>>>>> [  195.875381] RSP: 0000:ffffa53c00373ba8 EFLAGS: 00010086
-> >>>>>>> [  195.880617] RAX: 0000000000000000 RBX: 0000000000001387 RCX: 00000000ffffdfff
-> >>>>>>> [  195.887755] RDX: 00000000ffffdfff RSI: 00000000ffffffea RDI: 0000000000000000
-> >>>>>>> [  195.894893] RBP: ffff9ce8c8f2b028 R08: ffffffffa0732288 R09: 0000000000009ffb
-> >>>>>>> [  195.902034] R10: 00000000ffffe000 R11: 3fffffffffffffff R12: 0000000000041006
-> >>>>>>> [  195.909170] R13: ffffa53c00373c24 R14: ffff9ce8c11dadb0 R15: ffff9ce8c2861700
-> >>>>>>> [  195.916310] FS:  0000000000000000(0000) GS:ffff9ce8fe200000(0000)
-> >>>>>>> knlGS:0000000000000000
-> >>>>>>> [  195.924409] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>>>>>> [  195.930161] CR2: 00000000f7f694a0 CR3: 0000000038e0c000 CR4: 00000000001006f0
-> >>>>>>> [  195.937300] Call Trace:
-> >>>>>>> [  195.939755]  __dwc3_gadget_ep_enable+0x2d4/0x4e0
-> >>>>>>> [  195.944393]  ? dwc3_remove_requests.constprop.0+0x86/0x170
-> >>>>>>
-> >>>>>> Odd that this change would affect the USB enablment path, as they were
-> >>>>>> focused on the pullup disable path.  Would you happen to have any
-> >>>>>> downstream changes on top of v5.12-rc4 we could review to see if they
-> >>>>>> are still required? (ie where is the dwc3_remove_requests() coming from
-> >>>>>> during ep enable)
-> >>>>>
-> >>>>> You may check my branch [1] on GH. Basically you may be interested in
-> >>>>> the commit:
-> >>>>> 0f86df1294ee7523060cc16eafaf4898c693eab0 REVERTME: usb: dwc3: gadget:
-> >>>>> skip endpoints ep[18]{in,out}
-> >>>>> Otherwise it's a clean v5.12-rc4 with a revert and another USB PHY
-> >>>>> suspend fix (which also shouldn't affect this).
-> >>>>
-> >>>> Can you link your GH reference?
-> >>>
-> >>> Oops, sorry.
-> >>> Here we are:
-> >>>
-> >>> [1]: https://github.com/andy-shev/linux/tree/eds-acpi
-> >>>
-> >> Thanks, I took a look and even tried it on my device running 5.12-rc4,
-> >> but wasn't able to see the same problem.  Could you help collect the
-> >> ftrace after enabling the tracing KCONFIG and running the below sequence?
-> >>
-> >> 1.  Mount debugfs
-> >> 2.  Set up tracing instance
-> >>
-> >> mkdir /sys/kernel/debug/tracing/instances/usb
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_complete_trb/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ctrl_req/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ep_dequeue/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ep_queue/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_cmd/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_disable/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_enable/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_giveback/enable
-> >> echo 1 >
-> >> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_prepare_trb/enable
-> >> echo 1 > /sys/kernel/debug/tracing/instances/usb/tracing_on
-> >>
-> >> 3.  Run your test, which should include:
-> >>         - echo "" > /sys/kernel/config/usb_gadget/g1/UDC
-> >>         - echo <UDC name> > /sys/kernel/config/usb_gadget/g1/UDC
-> >>
-> >> 4.  Collect the trace output:
-> >> cat /sys/kernel/debug/tracing/instances/usb/trace
-> >
-> > Here we are (I cherry-picked again reverted patch, other stays the same) [2].
-> > On top I put a warning, so you may see timestamps.
-> >
-> > Dunno how long it will stay there, please confirm that you got it.
-> >
-> > [2]: https://paste.ubuntu.com/p/jNF565ypPp/
-> >
->
-> Hi Andy,
->
-> Would you be able to give the below change a try?
+On Wed 24-03-21 13:03:29, Michal Hocko wrote:
+> On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
+[...]
+> > I kind of understand to be reluctant to use vmemmap_pages terminology here, but
+> > unfortunately we need to know about it.
+> > We could rename nr_vmemmap_pages to offset_buddy_pages or something like that.
+> 
+> I am not convinced. It seems you are justr trying to graft the new
+> functionality in. But I still believe that {on,off}lining shouldn't care
+> about where their vmemmaps come from at all. It should be a
+> responsibility of the code which reserves that space to compansate for
+> accounting. Otherwise we will end up with a hard to maintain code
+> because expectations would be spread at way too many places. Not to
+> mention different pfns that the code should care about.
 
-Thanks!
+The below is a quick hack on top of this patch to illustrate my
+thinking. I have dug out all the vmemmap pieces out of the
+{on,off}lining and hooked all the accounting when the space is reserved.
+This just compiles without any deeper look so there are likely some
+minor problems but I haven't really encountered any major problems or
+hacks to introduce into the code. The separation seems to be possible.
+The diffstat also looks promising. Am I missing something fundamental in
+this?
 
-Reported-and-tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+--- 
+ drivers/base/memory.c          |   8 +--
+ include/linux/memory_hotplug.h |   6 +-
+ mm/memory_hotplug.c            | 151 ++++++++++++++++++++---------------------
+ 3 files changed, 80 insertions(+), 85 deletions(-)
 
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index 80606b8..cd58bd5 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -791,10 +791,6 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep
-> *dep)
->      reg &= ~DWC3_DALEPENA_EP(dep->number);
->      dwc3_writel(dwc->regs, DWC3_DALEPENA, reg);
->
-> -    dep->stream_capable = false;
-> -    dep->type = 0;
-> -    dep->flags = 0;
-> -
->      /* Clear out the ep descriptors for non-ep0 */
->      if (dep->number > 1) {
->          dep->endpoint.comp_desc = NULL;
-> @@ -803,6 +799,10 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep
-> *dep)
->
->      dwc3_remove_requests(dwc, dep);
->
-> +    dep->stream_capable = false;
-> +    dep->type = 0;
-> +    dep->flags = 0;
-> +
->      return 0;
->  }
->
-> Thanks
-> Wesley Cheng
->
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-
-
-
+diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+index 5ea2b3fbce02..9697acfe96eb 100644
+--- a/drivers/base/memory.c
++++ b/drivers/base/memory.c
+@@ -181,15 +181,15 @@ memory_block_action(unsigned long start_section_nr, unsigned long action,
+ 	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
+ 	int ret;
+ 
+-	start_pfn = section_nr_to_pfn(start_section_nr);
++	start_pfn = section_nr_to_pfn(start_section_nr) + nr_vmemmap_pages;
++	nr_pages -= nr_vmemmap_pages;
+ 
+ 	switch (action) {
+ 	case MEM_ONLINE:
+-		ret = online_pages(start_pfn, nr_pages, nr_vmemmap_pages,
+-				   online_type, nid);
++		ret = online_pages(start_pfn, nr_pages, online_type, nid);
+ 		break;
+ 	case MEM_OFFLINE:
+-		ret = offline_pages(start_pfn, nr_pages, nr_vmemmap_pages);
++		ret = offline_pages(start_pfn, nr_pages);
+ 		break;
+ 	default:
+ 		WARN(1, KERN_WARNING "%s(%ld, %ld) unknown action: "
+diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+index a85d4b7d15c2..673d2d4a8443 100644
+--- a/include/linux/memory_hotplug.h
++++ b/include/linux/memory_hotplug.h
+@@ -109,8 +109,7 @@ extern int zone_grow_waitqueues(struct zone *zone, unsigned long nr_pages);
+ extern int add_one_highpage(struct page *page, int pfn, int bad_ppro);
+ /* VM interface that may be used by firmware interface */
+ extern int online_pages(unsigned long pfn, unsigned long nr_pages,
+-			unsigned long nr_vmemmap_pages, int online_type,
+-			int nid);
++			int online_type, int nid);
+ extern struct zone *test_pages_in_a_zone(unsigned long start_pfn,
+ 					 unsigned long end_pfn);
+ extern void __offline_isolated_pages(unsigned long start_pfn,
+@@ -317,8 +316,7 @@ static inline void pgdat_resize_init(struct pglist_data *pgdat) {}
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+ 
+ extern void try_offline_node(int nid);
+-extern int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+-			 unsigned long nr_vmemmap_pages);
++extern int offline_pages(unsigned long start_pfn, unsigned long nr_pages);
+ extern int remove_memory(int nid, u64 start, u64 size);
+ extern void __remove_memory(int nid, u64 start, u64 size);
+ extern int offline_and_remove_memory(int nid, u64 start, u64 size);
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 0c3a98cb8cde..754026a9164d 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -844,30 +844,19 @@ struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+ }
+ 
+ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+-		       unsigned long nr_vmemmap_pages, int online_type, int nid)
++		       int online_type, int nid)
+ {
+-	unsigned long flags, buddy_start_pfn, buddy_nr_pages;
++	unsigned long flags;
+ 	struct zone *zone;
+ 	int need_zonelists_rebuild = 0;
+ 	int ret;
+ 	struct memory_notify arg;
+ 
+-	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
+-	if (WARN_ON_ONCE(!nr_pages ||
+-			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
+-		return -EINVAL;
+-
+-	buddy_start_pfn = pfn + nr_vmemmap_pages;
+-	buddy_nr_pages = nr_pages - nr_vmemmap_pages;
+-
+ 	mem_hotplug_begin();
+ 
+ 	/* associate pfn range with the zone */
+ 	zone = zone_for_pfn_range(online_type, nid, pfn, nr_pages);
+-	if (nr_vmemmap_pages)
+-		move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
+-				       MIGRATE_UNMOVABLE);
+-	move_pfn_range_to_zone(zone, buddy_start_pfn, buddy_nr_pages, NULL,
++	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL,
+ 			       MIGRATE_ISOLATE);
+ 
+ 	arg.start_pfn = pfn;
+@@ -884,7 +873,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+ 	 * onlining, such that undo_isolate_page_range() works correctly.
+ 	 */
+ 	spin_lock_irqsave(&zone->lock, flags);
+-	zone->nr_isolate_pageblock += buddy_nr_pages / pageblock_nr_pages;
++	zone->nr_isolate_pageblock += nr_pages / pageblock_nr_pages;
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ 
+ 	/*
+@@ -897,7 +886,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+ 		setup_zone_pageset(zone);
+ 	}
+ 
+-	online_pages_range(pfn, nr_pages, buddy_start_pfn);
++	online_pages_range(pfn, nr_pages, pfn);
+ 	zone->present_pages += nr_pages;
+ 
+ 	pgdat_resize_lock(zone->zone_pgdat, &flags);
+@@ -910,9 +899,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+ 	zone_pcp_update(zone);
+ 
+ 	/* Basic onlining is complete, allow allocation of onlined pages. */
+-	undo_isolate_page_range(buddy_start_pfn,
+-				buddy_start_pfn + buddy_nr_pages,
+-				MIGRATE_MOVABLE);
++	undo_isolate_page_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE);
+ 
+ 	/*
+ 	 * Freshly onlined pages aren't shuffled (e.g., all pages are placed to
+@@ -1126,6 +1113,59 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
+ 	       IS_ALIGNED(remaining_size, (pageblock_nr_pages << PAGE_SHIFT));
+ }
+ 
++static void reserve_vmmemmap_space(int nid, unsigned long pfn, unsigned long nr_pages, struct vmem_altmap *altmap)
++{
++	struct zone *zone = &NODE_DATA(nid)->node_zones[ZONE_NORMAL];
++
++	altmap->free = nr_pages;
++	altmap->base_pfn = pfn;
++
++	/* initialize struct pages and account for this space */
++	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_UNMOVABLE);
++}
++
++static void unaccount_vmemmap_space(int nid, unsigned long start_pfn, unsigned long nr_pages)
++{
++	struct zone *zone = &NODE_DATA(nid)->node_zones[ZONE_NORMAL];
++	unsigned long flags;
++
++	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
++	zone->present_pages -= nr_pages;
++
++	pgdat_resize_lock(zone->zone_pgdat, &flags);
++	zone->zone_pgdat->node_present_pages -= nr_pages;
++	pgdat_resize_unlock(zone->zone_pgdat, &flags);
++
++	remove_pfn_range_from_zone(zone, start_pfn, nr_pages);
++}
++
++static int remove_memory_block_cb(struct memory_block *mem, void *arg)
++{
++	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
++	struct vmem_altmap mhp_altmap = {};
++	struct vmem_altmap *altmap = NULL;
++	u64 start = PFN_PHYS(section_nr_to_pfn(mem->start_section_nr));
++	u64 size = memory_block_size_bytes();
++
++	if (!mem->nr_vmemmap_pages) {
++		arch_remove_memory(mem->nid, start, size, NULL);
++		return 0;
++	}
++
++	/*
++	 * Let remove_pmd_table->free_hugepage_table
++	 * do the right thing if we used vmem_altmap
++	 * when hot-adding the range.
++	 */
++	mhp_altmap.alloc = nr_vmemmap_pages;
++	altmap = &mhp_altmap;
++
++	unaccount_vmemmap_space(mem->nid, PHYS_PFN(start), nr_vmemmap_pages);
++	arch_remove_memory(mem->nid, start, size, altmap);
++
++	return 0;
++}
++
+ /*
+  * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
+  * and online/offline operations (triggered e.g. by sysfs).
+@@ -1170,8 +1210,7 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+ 			ret = -EINVAL;
+ 			goto error;
+ 		}
+-		mhp_altmap.free = PHYS_PFN(size);
+-		mhp_altmap.base_pfn = PHYS_PFN(start);
++		reserve_vmmemmap_space(nid, PHYS_PFN(start), PHYS_PFN(size), &mhp_altmap);
+ 		params.altmap = &mhp_altmap;
+ 	}
+ 
+@@ -1639,25 +1678,16 @@ static int count_system_ram_pages_cb(unsigned long start_pfn,
+ 	return 0;
+ }
+ 
+-int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+-			unsigned long nr_vmemmap_pages)
++int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ {
+ 	const unsigned long end_pfn = start_pfn + nr_pages;
+-	unsigned long pfn, buddy_start_pfn, buddy_nr_pages, system_ram_pages = 0;
++	unsigned long pfn, system_ram_pages = 0;
+ 	unsigned long flags;
+ 	struct zone *zone;
+ 	struct memory_notify arg;
+ 	int ret, node;
+ 	char *reason;
+ 
+-	/* We can only offline full sections (e.g., SECTION_IS_ONLINE) */
+-	if (WARN_ON_ONCE(!nr_pages ||
+-			 !IS_ALIGNED(start_pfn | nr_pages, PAGES_PER_SECTION)))
+-		return -EINVAL;
+-
+-	buddy_start_pfn = start_pfn + nr_vmemmap_pages;
+-	buddy_nr_pages = nr_pages - nr_vmemmap_pages;
+-
+ 	mem_hotplug_begin();
+ 
+ 	/*
+@@ -1693,7 +1723,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+ 	zone_pcp_disable(zone);
+ 
+ 	/* set above range as isolated */
+-	ret = start_isolate_page_range(buddy_start_pfn, end_pfn,
++	ret = start_isolate_page_range(start_pfn, end_pfn,
+ 				       MIGRATE_MOVABLE,
+ 				       MEMORY_OFFLINE | REPORT_FAILURE);
+ 	if (ret) {
+@@ -1713,7 +1743,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+ 	}
+ 
+ 	do {
+-		pfn = buddy_start_pfn;
++		pfn = start_pfn;
+ 		do {
+ 			if (signal_pending(current)) {
+ 				ret = -EINTR;
+@@ -1744,18 +1774,18 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+ 		 * offlining actually in order to make hugetlbfs's object
+ 		 * counting consistent.
+ 		 */
+-		ret = dissolve_free_huge_pages(buddy_start_pfn, end_pfn);
++		ret = dissolve_free_huge_pages(start_pfn, end_pfn);
+ 		if (ret) {
+ 			reason = "failure to dissolve huge pages";
+ 			goto failed_removal_isolated;
+ 		}
+ 
+-		ret = test_pages_isolated(buddy_start_pfn, end_pfn, MEMORY_OFFLINE);
++		ret = test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE);
+ 
+ 	} while (ret);
+ 
+ 	/* Mark all sections offline and remove free pages from the buddy. */
+-	__offline_isolated_pages(start_pfn, end_pfn, buddy_start_pfn);
++	__offline_isolated_pages(start_pfn, end_pfn, start_pfn);
+ 	pr_debug("Offlined Pages %ld\n", nr_pages);
+ 
+ 	/*
+@@ -1764,13 +1794,13 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+ 	 * of isolated pageblocks, memory onlining will properly revert this.
+ 	 */
+ 	spin_lock_irqsave(&zone->lock, flags);
+-	zone->nr_isolate_pageblock -= buddy_nr_pages / pageblock_nr_pages;
++	zone->nr_isolate_pageblock -= nr_pages / pageblock_nr_pages;
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ 
+ 	zone_pcp_enable(zone);
+ 
+ 	/* removal success */
+-	adjust_managed_page_count(pfn_to_page(start_pfn), -buddy_nr_pages);
++	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
+ 	zone->present_pages -= nr_pages;
+ 
+ 	pgdat_resize_lock(zone->zone_pgdat, &flags);
+@@ -1799,7 +1829,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+ 	return 0;
+ 
+ failed_removal_isolated:
+-	undo_isolate_page_range(buddy_start_pfn, end_pfn, MIGRATE_MOVABLE);
++	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
+ 	memory_notify(MEM_CANCEL_OFFLINE, &arg);
+ failed_removal_pcplists_disabled:
+ 	zone_pcp_enable(zone);
+@@ -1830,14 +1860,6 @@ static int check_memblock_offlined_cb(struct memory_block *mem, void *arg)
+ 	return 0;
+ }
+ 
+-static int get_nr_vmemmap_pages_cb(struct memory_block *mem, void *arg)
+-{
+-	/*
+-	 * If not set, continue with the next block.
+-	 */
+-	return mem->nr_vmemmap_pages;
+-}
+-
+ static int check_cpu_on_node(pg_data_t *pgdat)
+ {
+ 	int cpu;
+@@ -1912,9 +1934,6 @@ EXPORT_SYMBOL(try_offline_node);
+ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+ {
+ 	int rc = 0;
+-	struct vmem_altmap mhp_altmap = {};
+-	struct vmem_altmap *altmap = NULL;
+-	unsigned long nr_vmemmap_pages = 0;
+ 
+ 	BUG_ON(check_hotplug_memory_range(start, size));
+ 
+@@ -1927,31 +1946,6 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+ 	if (rc)
+ 		return rc;
+ 
+-	/*
+-	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
+-	 * the same granularity it was added - a single memory block.
+-	 */
+-	if (memmap_on_memory) {
+-		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
+-						      get_nr_vmemmap_pages_cb);
+-		if (nr_vmemmap_pages) {
+-			if (size != memory_block_size_bytes()) {
+-				pr_warn("Refuse to remove %#llx - %#llx,"
+-					"wrong granularity\n",
+-					 start, start + size);
+-				return -EINVAL;
+-			}
+-
+-			/*
+-			 * Let remove_pmd_table->free_hugepage_table
+-			 * do the right thing if we used vmem_altmap
+-			 * when hot-adding the range.
+-			 */
+-			mhp_altmap.alloc = nr_vmemmap_pages;
+-			altmap = &mhp_altmap;
+-		}
+-	}
+-
+ 	/* remove memmap entry */
+ 	firmware_map_remove(start, start + size, "System RAM");
+ 
+@@ -1963,7 +1957,10 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+ 
+ 	mem_hotplug_begin();
+ 
+-	arch_remove_memory(nid, start, size, altmap);
++	if (!memmap_on_memory)
++		arch_remove_memory(nid, start, size, NULL);
++	else
++		walk_memory_blocks(start, size, NULL, remove_memory_block_cb);
+ 
+ 	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
+ 		memblock_free(start, size);
 -- 
-With Best Regards,
-Andy Shevchenko
+Michal Hocko
+SUSE Labs
