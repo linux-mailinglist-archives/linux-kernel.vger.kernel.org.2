@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C80347234
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C348347241
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhCXHPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhCXHPO (ORCPT
+        id S235794AbhCXHQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:16:30 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:41278 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235772AbhCXHQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:15:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4680AC061763;
-        Wed, 24 Mar 2021 00:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WZNXlX3eOEcZWcovU9zwR1I2oqNzGrOjWZWd75LU5ZE=; b=dkGd8++747v3h/hYgkBJiJdwk5
-        PWwJAEoFe4SEvtib+PWo8O1uHz83djehIMQSdnlmb1REGO5EV+ai1XfGZioyH8Ql1EhLRkR5p2ZnG
-        1pkAuvYWEkKMLqDvjStL4l9A78QhLzRsPKxflpkfjhZ2hPNag18sMT1dpjWG2WWE+Uc0BBQ/s4dBy
-        6o1fFxinChsqDoPC9wz4p5NvxQWN+AGPjQkubFEVBSKNdmvEPii7GNy/yM3eT1P9iSLUd2Wy8Rhod
-        prA0XCpf7vR/OA/R9UVZ9PZsy/YnOuA17GWykOo2KsrhKISaP/P7KLnX9JfhPBfXzaEy9Ohhktqgn
-        wAvphNNA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOxiH-00B54e-77; Wed, 24 Mar 2021 07:14:16 +0000
-Date:   Wed, 24 Mar 2021 07:13:57 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/17] mm: add generic __va_function and __pa_function
- macros
-Message-ID: <20210324071357.GB2639075@infradead.org>
-References: <20210323203946.2159693-1-samitolvanen@google.com>
- <20210323203946.2159693-4-samitolvanen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323203946.2159693-4-samitolvanen@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Wed, 24 Mar 2021 03:16:21 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id A54E5F3618;
+        Wed, 24 Mar 2021 15:16:11 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P24306T139683791099648S1616570170220819_;
+        Wed, 24 Mar 2021 15:16:11 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <0dea07c13226dbd4fa14ec220f11fc26>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: robh+dt@kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     robh+dt@kernel.org, heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v4 0/4] soc: rockchip: power-domain: add rk3568 powerdomains
+Date:   Wed, 24 Mar 2021 15:16:05 +0800
+Message-Id: <20210324071609.7531-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:39:32PM -0700, Sami Tolvanen wrote:
-> With CONFIG_CFI_CLANG, the compiler replaces function addresses
-> in instrumented C code with jump table addresses. This means that
-> __pa_symbol(function) returns the physical address of the jump table
-> entry instead of the actual function, which may not work as the jump
-> table code will immediately jump to a virtual address that may not be
-> mapped.
-> 
-> To avoid this address space confusion, this change adds generic
-> definitions for __va_function and __pa_function, which architectures
-> that support CFI can override. The typical implementation of the
-> __va_function macro would use inline assembly to take the function
-> address, which avoids compiler instrumentation.
+Support power domain function for RK3568 Soc.
 
-I think these helper are sensible, but shouldn't they have somewhat
-less arcane names and proper documentation?
+Change in V4:
+[PATCH v4 1/4]: No change.
+[PATCH v4 2/4]: Fix up yaml code styles. Remove the new compatible to [PATCH v4 3/4]
+[PATCH v4 3/4]: Adding new compatible for RK3568 Soc.
+[PATCH v4 4/4]: No change. Same as [PATCH v3 3/3].
+
+Change in V3:
+[PATCH v3 1/3]: No change.
+[PATCH v3 2/3]: Fix up the code styles and add rk3568 base on:
+https://patchwork.kernel.org/project/linux-rockchip/patch/20210225102643.653095-1-enric.balletbo@collabora.com/
+[PATCH v3 3/3]: No change.
+
+Change in V2:
+[PATCH v2 1/3]: No change.
+[PATCH v2 2/3]: Fix up yaml code styles.
+[PATCH v2 3/3]: No change.
+
+Elaine Zhang (4):
+  dt-bindings: add power-domain header for RK3568 SoCs
+  dt-bindings: power: rockchip: Convert to json-schema
+  dt-bindings: power: rockchip: Add bindings for RK3568 Soc
+  soc: rockchip: power-domain: add rk3568 powerdomains
+
+ .../power/rockchip,power-controller.yaml      | 286 ++++++++++++++++++
+ .../bindings/soc/rockchip/power_domain.txt    | 136 ---------
+ drivers/soc/rockchip/pm_domains.c             |  31 ++
+ include/dt-bindings/power/rk3568-power.h      |  32 ++
+ 4 files changed, 349 insertions(+), 136 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+ create mode 100644 include/dt-bindings/power/rk3568-power.h
+
+-- 
+2.17.1
+
+
+
