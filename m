@@ -2,127 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E8C347536
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24910347576
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235285AbhCXJ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbhCXJ6c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:58:32 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7FCC0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:58:31 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo813308wmq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=21lx1XKTgIyEE/5VMZ8Qm6fLn097QzloxjnfqNNT1ZQ=;
-        b=IskXKKJt0n34jbY6p0Qq2XnJ3B2KYreze8cG9V12QxYKHqjR1+sMwqd1XwbzUSp4ZD
-         5OVtuN4oN/u0fC1Lzk6+7syNkfwboqjlLvBQAheeMJtKkJPWfMZAEvyoB+onjTtNIM4x
-         uiDRR9tSDGxpp2cidX9yS5na7MD8H8tVxQurQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=21lx1XKTgIyEE/5VMZ8Qm6fLn097QzloxjnfqNNT1ZQ=;
-        b=TOyTpWOx9GqHeVtGc+3DWmDjWICoHQEWk3CJFVMpwXC/uv1HWFF7KxcuWxsPN7FY8J
-         jwr8qISwlW3kr1GbEwpK4qt6Ok0QRp3ZxMaeTFe4d+lzf0qVCLMJhu/xKsgj6UPdTp27
-         1+iC312R/TiSiNaqBpK2kI01Vx+Y91a8Pzn4Rge74UbGbRkQsLb3c5zSu0mEVfOWHqy3
-         6S1GRNzJrBF1AZ4beTcGAv6qrPdAVa7IrkDei71FU3SQ+DknhpZIwzlDy/DSCKHL57Ds
-         alY/VOu/le2EY1lhtgpEQuoq7un2IMCkUDNiFdETuh4mAP43F/VeqQuOkqZqOFQB8Wl4
-         Ao8g==
-X-Gm-Message-State: AOAM533T6pNxHwpOKgoXkOj5rzhnFStzDSNBF8c9Cp2AyKGBJ9NdC6Vx
-        R1Kb0IAleaQAdL2bl7QiD6MxqjkSYC9jFpg2
-X-Google-Smtp-Source: ABdhPJwZIBgLGHXn/QNIGKntkctRuF7sTo3S5PNdweokZQ6ttJuFqd/ULSxIfXm5SgSCIgWZXGgd0Q==
-X-Received: by 2002:a7b:cb89:: with SMTP id m9mr2084820wmi.27.1616579910680;
-        Wed, 24 Mar 2021 02:58:30 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id 9sm1719104wmf.13.2021.03.24.02.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 02:58:30 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 10:58:28 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-Message-ID: <YFsNRIUYrwVQanVF@phenom.ffwll.local>
-Mail-Followup-To: Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-2-thomas_os@shipmail.org>
- <ec99146c7abc35d16b245816aba3e9d14862e624.camel@intel.com>
- <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
+        id S236300AbhCXKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:09:04 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55124 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235394AbhCXKIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 06:08:45 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lP0RM-0008Sw-01; Wed, 24 Mar 2021 11:08:40 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 6762EC1C69; Wed, 24 Mar 2021 10:58:34 +0100 (CET)
+Date:   Wed, 24 Mar 2021 10:58:34 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH V2] mips: asm: octeon: A typo fix in the file
+ cvmx-address.h
+Message-ID: <20210324095834.GB2378@alpha.franken.de>
+References: <20210316043334.2770025-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210316043334.2770025-1-unixbhaskar@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 09:42:18PM +0100, Thomas Hellström (Intel) wrote:
+On Tue, Mar 16, 2021 at 10:03:34AM +0530, Bhaskar Chowdhury wrote:
 > 
-> On 3/23/21 8:52 PM, Williams, Dan J wrote:
-> > On Sun, 2021-03-21 at 19:45 +0100, Thomas Hellström (Intel) wrote:
-> > > TTM sets up huge page-table-entries both to system- and device
-> > > memory,
-> > > and we don't want gup to assume there are always valid backing struct
-> > > pages for these. For PTEs this is handled by setting the pte_special
-> > > bit,
-> > > but for the huge PUDs and PMDs, we have neither pmd_special nor
-> > > pud_special. Normally, huge TTM entries are identified by looking at
-> > > vma_is_special_huge(), but fast gup can't do that, so as an
-> > > alternative
-> > > define _devmap entries for which there are no backing dev_pagemap as
-> > > special, update documentation and make huge TTM entries _devmap,
-> > > after
-> > > verifying that there is no backing dev_pagemap.
-> > Please do not abuse p{m,u}d_devmap like this. I'm in the process of
-> > removing get_devpagemap() from the gup-fast path [1]. Instead there
-> > should be space for p{m,u}d_special in the page table entries (at least
-> > for x86-64). So the fix is to remove that old assumption that huge
-> > pages can never be special.
-> > 
-> > [1]:
-> > http://lore.kernel.org/r/161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com
-> > 
-> Hmm, yes with that patch it will obviously not work as intended.
+> s/techically/technically/
 > 
-> Given that, I think we'll need to disable the TTM huge pages for now until
-> we can sort out and agree on using a page table entry bit.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Changes from V1:
+>  Meh, missed the changelog text, so added :)
+> 
+>  arch/mips/include/asm/octeon/cvmx-address.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yeah :-/
+applied to mips-next.
 
-I think going full pud/pmd_mkspecial should then also mesh well with
-Jason's request to wrap it all up into a vmf_insert_* helper, so at least
-it would all look rather pretty in the end.
--Daniel
+Thomas.
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
