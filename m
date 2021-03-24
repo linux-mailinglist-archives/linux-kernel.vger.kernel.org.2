@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A484347F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EE1347F9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237233AbhCXRgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
+        id S237476AbhCXRhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236616AbhCXRgT (ORCPT
+        with ESMTP id S237456AbhCXRgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:36:19 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D77C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:36:18 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id u5so34260958ejn.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:36:18 -0700 (PDT)
+        Wed, 24 Mar 2021 13:36:49 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FFEC061763;
+        Wed, 24 Mar 2021 10:36:49 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id ce10so34259660ejb.6;
+        Wed, 24 Mar 2021 10:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=iOz5xjpkg1zerz9McIquqk+AEx0Qp1kL5yo6CeVgMos=;
-        b=d8B1svA87XwgY6JS/P1AJZxIwVGsshVBLqHktF+1W4Ii49qqv7hd5BRvkAQ0yUhoBW
-         Xf7K3UfQts2wuc+Nm8v9otEk9ISmGHurm2Z3+rzT6BYWYM5WzEJcwUAnbXMJKL2L/Bg6
-         cMi8ii0FmQ62tHvLDEjA2jqDoPonnOdpDq8XGi0oVx9Co0G8GiT6ZO9tMchtAnlp4EBn
-         y4n5SeP65yB0Dm6NudchJ7SQBdiLSJwUR8+OYk6vqU03x9ne4tNIlC56lPyHHsPDoDsF
-         VdwV6dRUhC6G5clA5LT8Uq2DbjwaAMLX8JmtbJimYDx0Z4SrCa6YjxUnyab8c31BITbB
-         Z2Rw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=itfVnMPvmrJ2NsehZzvMHu8ptMCf86ESb1eCu3uJO/8=;
+        b=sMsjiTiE4bXgP8XZ9zbFt3/FqscgaCxqLPaPAoSlvXjmINHgzVQjD5Q/EHfjOyjxXX
+         kkuUyqJhQ5ddY/DOKj8DZy79nAy4Q02aQuhdWNc3JrNekTLsbZtMxsrfpEJSa4vokuLq
+         hPgAQxm2FZXt1K6ZRlnWaS/YMT+UklpD+MhJX0cwrATCEt1rV39aJScXa0IekfdC0jkl
+         qHi87tGH8HixgrTDBIsjiTAoXP7wcPjm+KmagKwKchO7GDKeqPG+Xf3iiAZJa9LR2Sch
+         fd+Xf9fYjOIlQn0jXe6onMXhFmD+6kqDNEnczWwQlW85WKhu7IWREYZRkB4WuH0p0huc
+         Idzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iOz5xjpkg1zerz9McIquqk+AEx0Qp1kL5yo6CeVgMos=;
-        b=f7MuRO/FC9qcgnUqyml4jBIPJ5Xe0Q225GesVSndjWgUa9bpVGca89p7LrBrJtKHRJ
-         +vQW9VCxXsxRtGl6/kFI85O8e0fazjoPsIfksdP/bUp5Od+qCNRyDGAeiY9iNM0SqP/F
-         SV5OJmb2cVsNDBd1Fl8nSWDjeKgLjEKi5ulVsA1aIxUh0zVukZHYfizAKxyPRdToHtj5
-         rnHxdEeUbU3AfFAJxrkJCqwI7Q8nXIHdmzgQ73zCBCNcnqM6XlVErsKV/I/1Yv2iLGxl
-         wnsMWg7hCarwiQ1zv9oNntV0j9bYnzeytxAYwV9zELHYDhJxrEGlenV1yg8F8v15Fied
-         NiBw==
-X-Gm-Message-State: AOAM530f3yENBbf/9KRMkR16s0RAERk0x/1zOJXrojowy+k0CGTVaLrr
-        nrUVnbyg5RU/qMzzcKeVQLhUeU1gwEcijQ==
-X-Google-Smtp-Source: ABdhPJylry5drzNQCj2y25PDINfTfNjrQEukAB2D/29zjjaDFZeCMDBy8oz/6NNk2uMoFY6jRnU/kA==
-X-Received: by 2002:a17:907:62a7:: with SMTP id nd39mr4958611ejc.510.1616607377316;
-        Wed, 24 Mar 2021 10:36:17 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id e8sm1451401edq.77.2021.03.24.10.36.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=itfVnMPvmrJ2NsehZzvMHu8ptMCf86ESb1eCu3uJO/8=;
+        b=n02lVrm6BCp4Ko1/JR2nXvGr1raMRtKeIqci1Za8QnCuwP2+/J1IMt0y03vlLPxkfd
+         8quIs5OzkDDtTxt537BRxLz/5VYvNqEwUzABULHKHc5ffpvBS1e8M2BdhcgkqhdzLApA
+         PX3aj18pbFm/Xcdnh+ULzj6/JzcYA8zS6tOGGcvyeCsAVXabLW0gEHPRe0eLPYUvZYcD
+         NAszPCwXpgUZzB/WT/laozJP7hxQZZtVdxPmJOlv0Z6Bpi43+Q7oJClrmTc24puqz3Z0
+         uq7fEjYEaIPRZYOnTNpuHJspxbyn5ytLF9USvumWFxS3C/SP0votlK8wFbDBgceCFdrN
+         9D3g==
+X-Gm-Message-State: AOAM5338jbbFCCJ9Ae1pyBPpyMgbGkyYOnhQkgw/mZsuby/P2RAWEtsm
+        sWW2N0xQwVd0z8bAsbi9OhE=
+X-Google-Smtp-Source: ABdhPJyJpiifaIIucKRGzfiYwZhJeSbDjmJwVHRDesaCc3E9+T7Iz7n4sIhCM+LUvYCBeHBWY1GO3Q==
+X-Received: by 2002:a17:906:5607:: with SMTP id f7mr4834989ejq.262.1616607408049;
+        Wed, 24 Mar 2021 10:36:48 -0700 (PDT)
+Received: from LEGION ([111.119.187.57])
+        by smtp.gmail.com with ESMTPSA id g11sm1452028edt.35.2021.03.24.10.36.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 10:36:16 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 17:36:14 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/1] mfd: intel_quark_i2c_gpio: enable MSI interrupt
-Message-ID: <20210324173614.GR2916463@dell>
-References: <20210324170834.20605-1-andriy.shevchenko@linux.intel.com>
+        Wed, 24 Mar 2021 10:36:47 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 22:36:41 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        colin.king@canonical.com, dan.carpenter@oracle.com
+Cc:     musamaanjum@gmail.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/kprobes: Remove dead code
+Message-ID: <20210324173641.GA404706@LEGION>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210324170834.20605-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+The condition in switch statement `opcode & 0xf0` cannot evaluate to
+0xff. So this case statement will never execute. Remove it.
 
-> Allow interrupts to be MSI if supported by hardware.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v4: rebased on clean for-mfd-next branch (Lee)
->  drivers/mfd/intel_quark_i2c_gpio.c | 22 ++++++++++++++++------
->  1 file changed, 16 insertions(+), 6 deletions(-)
+Fixes: 6256e668b7 ("x86/kprobes: Use int3 instead of debug trap for single-step")
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ arch/x86/kernel/kprobes/core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Applied, thanks.
-
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 89d9f26785c7..3b7bcc077020 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -177,9 +177,6 @@ int can_boost(struct insn *insn, void *addr)
+ 	case 0xf0:
+ 		/* clear and set flags are boostable */
+ 		return (opcode == 0xf5 || (0xf7 < opcode && opcode < 0xfe));
+-	case 0xff:
+-		/* indirect jmp is boostable */
+-		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
+ 	default:
+ 		/* CS override prefix and call are not boostable */
+ 		return (opcode != 0x2e && opcode != 0x9a);
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
