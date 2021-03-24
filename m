@@ -2,182 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2B5346F0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD90C346F18
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhCXBtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234526AbhCXBtS (ORCPT
+        id S234653AbhCXByf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:54:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43278 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232101AbhCXBya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:49:18 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A105BC061765;
-        Tue, 23 Mar 2021 18:49:18 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so348024pjv.1;
-        Tue, 23 Mar 2021 18:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Kcc6sYOncKNza4pyjGfSR1hgCICN528qKEruGPFUaW0=;
-        b=i/K/lP2EMNf5mL/ks+jU5qNCAiaM+A4q5Dbzv8tWCoJNfyhniaLAG+lOI7DnGGOst8
-         E/cXZbjoQkNuMSz8fGShcDE5oyVMUfE/nxZ8uhcjhI+qwA5u2x9UUFXqzoEc3XclHswI
-         8eK8ukUX4NXRS+uvPtt7q91dDlMMo9U73FrLrIYDygxtdwgS2zOmzZxk4TQkqADUNQgA
-         AHMBAeG5P1uzR57lXRyXfoC8Yv09xGfjylKRafhs3/H8K1oHng2zTNoNbm+rvv/KYsao
-         Bnkwmgd6KGMgpVatkM/uCyQo52FUYJaarkVNahNbVv4+Gu2cqUSSYJ/RhT2UxDhVtNxh
-         Jg0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Kcc6sYOncKNza4pyjGfSR1hgCICN528qKEruGPFUaW0=;
-        b=okc/WnaoRRP7URWrL5jIDwcCF+dXJYvE5KQxt2+a4S3Y5bHqPlEGwipm2EbrY6bxGk
-         FK/KeMJizIffHaja6hrAQwiWILIFg7Hh39jLyW7rtHgCTBtbxV9T3zdjbI03EMSWrBXv
-         krP3EtUgjDK43kNkcWdnMv1TlwRnl2EgkuTznAHi5z6BizWYU8YwKq/TY+6SbDPc2ExZ
-         Z7jy/hDw9kBMNMgRCO8ryGrW7AOehjGPuWOByH7YWkvlKti+M4OqfcOFU8GqYSgmg0NJ
-         6lg1NDcoGC/NE2F7BA+qUatzX1F1nv7sv4fQdEBccNMRuV+hIH0YrOwIkLUEB9vKepiz
-         vWFA==
-X-Gm-Message-State: AOAM531uNhO3RK5dU/JKnNTxhk+Qy3ZRiWEoLj608MpxxNtL/TMk5hvl
-        8uiOrwUb/lnZWmD8JJleWECn8QaMTiUgVaqxOeM=
-X-Google-Smtp-Source: ABdhPJwSaV2t0JL7d34dMYVjA5vhuv0+uustAjzX/a1J/kIDwNGzbXYxD8SD9PUz9jzxjHc6LckTWoVTeiQmegxvwes=
-X-Received: by 2002:a17:90a:7061:: with SMTP id f88mr937998pjk.56.1616550557213;
- Tue, 23 Mar 2021 18:49:17 -0700 (PDT)
+        Tue, 23 Mar 2021 21:54:30 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12O1Ygu9116639;
+        Tue, 23 Mar 2021 21:54:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ message-id : references : mime-version : content-type : in-reply-to :
+ subject; s=pp1; bh=5jW7gfzb7xC4j2UP6SQKB5rXAdkeaw0c+uJONfxf5vM=;
+ b=MyzUYimdnFFbJgVkBc7g+9KS30FSNvs+FS7e1rhpGBYapLkw6VBFIwnQcVBadxAo4qu4
+ yA4WkV0QI7HV/TsSqO09gp935Z1WRzh4zNXkICyhxV+Tw8SDGp7zw1g8soVwLJJOLWwF
+ cRuwK0nZ9Ngp2dMtAnSRe/MVr0RVC9+h81qm8cHOiR9uJRQsSuBtYn0bBfZNG7lpJZtR
+ Nin3+C8B8vgWtXsyyHA1qk2stDYrsum+CQtXu6InzIJsnewkjyBywOHU72CEXHt9KD0Z
+ wP9gPH40s30WmGxYzsxhXeT5zTudGFGLPDVB22HxojigdGjOW9DCj61r3J/2jeYJbjOn Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fuq40gyp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 21:54:22 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12O1aBY6123178;
+        Tue, 23 Mar 2021 21:54:22 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fuq40gyh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 21:54:22 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12O1pjSW018941;
+        Wed, 24 Mar 2021 01:54:21 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02wdc.us.ibm.com with ESMTP id 37d99rafhf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Mar 2021 01:54:21 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12O1sLGb28705036
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Mar 2021 01:54:21 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 406C4AE060;
+        Wed, 24 Mar 2021 01:54:21 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 57CFFAE05C;
+        Wed, 24 Mar 2021 01:54:20 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.214.185])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 24 Mar 2021 01:54:20 +0000 (GMT)
+Date:   Tue, 23 Mar 2021 20:54:18 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Message-ID: <20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <20200729091908.1378911-1-jolsa@kernel.org>
+ <20200801114050.GB377079@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <7682e4c3-5840-bb6d-5e76-6b3fd37b04c0@huawei.com>
+ <20210323150604.GB8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <a233702a-89b7-ae47-d47a-a7b4539c191e@huawei.com>
 MIME-Version: 1.0
-References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
- <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
- <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAM_iQpXvVZxBRHF6PBDOYSOSCj08nPyfcY0adKuuTg=cqffV+w@mail.gmail.com>
- <87eegddhsj.fsf@toke.dk> <CAHmME9qDU7VRmBV+v0tzLiUpMJykjswSDwqc9P43ZwG1UD7mzw@mail.gmail.com>
- <3bae7b26-9d7f-15b8-d466-ff5c26d08b35@huawei.com> <CAM_iQpVvR1eUQxgihWrZ==X=xQjaaeH_qkehvU0Y2R6i9eM-Qw@mail.gmail.com>
- <9d045462-051e-0cde-24d0-349dd397e2b7@huawei.com>
-In-Reply-To: <9d045462-051e-0cde-24d0-349dd397e2b7@huawei.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 23 Mar 2021 18:49:06 -0700
-Message-ID: <CAM_iQpVgARDaUd3jdvSA11j=Q_K6KvcKfn7DQavGYXUWmvLZtw@mail.gmail.com>
-Subject: Re: [Linuxarm] Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS
- for lockless qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a233702a-89b7-ae47-d47a-a7b4539c191e@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+Subject: RE: [PATCHv4 00/19] perf metric: Add support to reuse metric
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-24_01:2021-03-23,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 mlxscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103240009
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 5:55 PM Yunsheng Lin <linyunsheng@huawei.com> wrote=
-:
->
-> On 2021/3/20 2:15, Cong Wang wrote:
-> > On Thu, Mar 18, 2021 at 12:33 AM Yunsheng Lin <linyunsheng@huawei.com> =
-wrote:
-> >>
-> >> On 2021/3/17 21:45, Jason A. Donenfeld wrote:
-> >>> On 3/17/21, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
-> >>>> Cong Wang <xiyou.wangcong@gmail.com> writes:
-> >>>>
-> >>>>> On Mon, Mar 15, 2021 at 2:07 PM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
-> >>>>>>
-> >>>>>> I thought pfifo was supposed to be "lockless" and this change
-> >>>>>> re-introduces a lock between producer and consumer, no?
-> >>>>>
-> >>>>> It has never been truly lockless, it uses two spinlocks in the ring
-> >>>>> buffer
-> >>>>> implementation, and it introduced a q->seqlock recently, with this =
-patch
-> >>>>> now we have priv->lock, 4 locks in total. So our "lockless" qdisc e=
-nds
-> >>>>> up having more locks than others. ;) I don't think we are going to =
-a
-> >>>>> right direction...
-> >>>>
-> >>>> Just a thought, have you guys considered adopting the lockless MSPC =
-ring
-> >>>> buffer recently introduced into Wireguard in commit:
-> >>>>
-> >>>> 8b5553ace83c ("wireguard: queueing: get rid of per-peer ring buffers=
-")
-> >>>>
-> >>>> Jason indicated he was willing to work on generalising it into a
-> >>>> reusable library if there was a use case for it. I haven't quite tho=
-ugh
-> >>>> through the details of whether this would be such a use case, but
-> >>>> figured I'd at least mention it :)
-> >>>
-> >>> That offer definitely still stands. Generalization sounds like a lot =
-of fun.
-> >>>
-> >>> Keep in mind though that it's an eventually consistent queue, not an
-> >>> immediately consistent one, so that might not match all use cases. It
-> >>> works with wg because we always trigger the reader thread anew when i=
-t
-> >>> finishes, but that doesn't apply to everyone's queueing setup.
-> >>
-> >> Thanks for mentioning this.
-> >>
-> >> "multi-producer, single-consumer" seems to match the lockless qdisc's
-> >> paradigm too, for now concurrent enqueuing/dequeuing to the pfifo_fast=
-'s
-> >> queues() is not allowed, it is protected by producer_lock or consumer_=
-lock.
-> >>
-> >> So it would be good to has lockless concurrent enqueuing, while dequeu=
-ing
-> >> can be protected by qdisc_lock() or q->seqlock, which meets the "multi=
--producer,
-> >> single-consumer" paradigm.
-> >
-> > I don't think so. Usually we have one queue for each CPU so we can expe=
-ct
-> > each CPU has a lockless qdisc assigned, but we can not assume this in
-> > the code, so we still have to deal with multiple CPU's sharing a lockle=
-ss qdisc,
-> > and we usually enqueue and dequeue in process context, so it means we c=
-ould
-> > have multiple producers and multiple consumers.
->
-> For lockless qdisc, dequeuing is always within the qdisc_run_begin() and
-> qdisc_run_end(), so multiple consumers is protected with each other by
-> q->seqlock .
+On Tue, Mar 23, 2021 at 03:15:16PM +0000, John Garry wrote:
+> On 23/03/2021 15:06, Paul A. Clarke wrote:
+> > On Mon, Mar 22, 2021 at 11:36:23AM +0000, John Garry wrote:
+> > > On 01/08/2020 12:40, Paul A. Clarke wrote:
+> > > > > v4 changes:
+> > > > >     - removed acks from patch because it changed a bit
+> > > > >       with the last fixes:
+> > > > >         perf metric: Collect referenced metrics in struct metric_ref_node
+> > > > >     - fixed runtime metrics [Kajol Jain]
+> > > > >     - increased recursion depth [Paul A. Clarke]
+> > > > >     - changed patches due to dependencies:
+> > > > >         perf metric: Collect referenced metrics in struct metric_ref_node
+> > > > >         perf metric: Add recursion check when processing nested metrics
+> > > > >         perf metric: Rename struct egroup to metric
+> > > > >         perf metric: Rename group_list to metric_list
+> > > > > 
+> > > > > Also available in here:
+> > > > >     git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> > > > >     perf/metric
+> > > > I built and ran from the above git branch, and things seem to work.
+> > > > Indeed, I was able to apply my changes to exploit the new capabilities
+> > > > via modifications to tools/perf/pmu-events/arch/powerpc/power9/metrics.json,
+> > > > as I posted earlier (and will submit once this set gets merged).
+> > > I was just wondering: Does perf subtest 10.3 work ok for you with the metric
+> > > reuse?
+> > > 
+> > > That's "Parsing of PMU event table metrics" subtest.
+> > I confess I'm not sure what you are asking. Using the latest mainline
+> > (84196390620ac0e5070ae36af84c137c6216a7dc), perf subtest 10.3 does
+> > pass for me:
+> > --
+> > $ ./perf test 10
+> > 10: PMU events                                                      :
+> > 10.1: PMU event table sanity                                        : Ok
+> > 10.2: PMU event map aliases                                         : Ok
+> > 10.3: Parsing of PMU event table metrics                            : Ok
+> > 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+> > --
+> Since commit 8989f5f07605 ("perf stat: Update POWER9 metrics to utilize
+> other metrics"), power9 has reused metrics.
+> 
+> And I am finding that subtest 10.3 caused problems when I tried to introduce
+> metric reuse on arm64, so I was just asking you to check.
+> 
+> Now I am a bit confused...
 
-So are you saying you will never go lockless for lockless qdisc? I thought
-you really want to go lockless with Jason's proposal of MPMC ring buffer
-code.
+I now understand your original request! :-)
 
->
-> For enqueuing, multiple consumers is protected by producer_lock, see
-> pfifo_fast_enqueue() -> skb_array_produce() -> ptr_ring_produce().
+The above test was run on a POWER8 system.
 
-I think you seriously misunderstand how we classify MPMC or MPSC,
-it is not about how we lock them, it is about whether we truly have
-a single or multiple consumers regardless of locks used, because the
-goal is to go lockless.
+I do see failures on a POWER9 system:
+--
+$ ./perf test 10
+10: PMU events                                                      :
+10.1: PMU event table sanity                                        : Ok
+10.2: PMU event map aliases                                         : Ok
+10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+$ ./perf test --verbose 10 2>&1 | grep -i '^Parse event failed' | wc -l
+112
+--
 
-> I am not sure if lockless MSPC can work with the process context, but
-> even if not, the enqueuing is also protected by rcu_read_lock_bh(),
-> which provides some kind of atomicity, so that producer_lock can be
-> reomved when lockless MSPC is used.
-
-
-Not sure if I can even understand what you are saying here, Jason's
-code only disables preemption with busy wait, I can't see why it can
-not be used in the process context.
-
-Thanks.
+PC
