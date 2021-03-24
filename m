@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416A5347BA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48C0347BA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236465AbhCXPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        id S236380AbhCXPHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236459AbhCXPEd (ORCPT
+        with ESMTP id S236365AbhCXPGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:04:33 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE097C061763;
-        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so1319517pjc.2;
-        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y7euH5yOXTToONzoAXK5U4+rRHWz0rknjZEdozlEFGw=;
-        b=VDCYMZ2i+UIkF0bRoD2Wegyzez8CwM5rqvICzEoxsB6zjeY9rww4o0iyd1EWqC3TeO
-         bXZcKWFXVblSc7OAxQr9xSGNT2IiDH3VHWAz8jADMbKCtaWx2roO443CZoI2UieiTbRi
-         0wQxzd8MLUhO62RdnK8yGw+26dDTL/T7rlfaDCFBvoCtnkiuJg+KdYLr2eYHVPp7ZFWU
-         b+Wsv3vyNjjMpEL4iA3kKvAj77w+mJJl7puk53sBCE+q0XFCuJL7qT9gnywZyDTg9SKy
-         TNyWf50ojJ/8SmQGYyh4qmt12gB+9LLA+gqKicBQYfkLzgk2v4JHQ8dJ9o83P28PHBtU
-         vxLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y7euH5yOXTToONzoAXK5U4+rRHWz0rknjZEdozlEFGw=;
-        b=PGPyQQliw8HS5TgXjzIgNjUgC57PpJ4p50HbzmbYNa6U2HRE3HL6U8oMfGLnpkjwl+
-         +1CJbi5buLRklo+F2VAh9+si3CVBUz0dqzTtgbevg/XtLvBJjxrFnf7MlY/1ah5/2nWp
-         nyXDGSXk2MiTYwIgtDoS1/jJR1tpoCbLxA1gl3ZW3gy48dwHllO0xljveF7enBdkW8RL
-         +ZLLo6OC+noYFrACjU7U1ItlYLNN3AlrUFzb9MqkFkQ/eB+ptYZ32uY6M3CuXdbVFxm9
-         1UbrixF7DfgDCbuo4U6PYfTwfPDmuUgksHPID3YpiHtsjIsyi6Tt4wrZSvtKHDqSP4HX
-         CgnQ==
-X-Gm-Message-State: AOAM5303IsgS5xdBzMXti8NWPtjT/yxNmGSBbFKaQY3W4c3rfsKG9/4P
-        u6fj9gasLVb5Cet89ndxCGOpQ+BMOpxJn0Iv
-X-Google-Smtp-Source: ABdhPJwG07AWe19Exd7mzxFlBqC6ckXmmi3aIfICqr07BirPFjhw2GdWzyAu02x8ucx4dzOJdxJdjg==
-X-Received: by 2002:a17:902:8bc3:b029:e6:8d84:4d50 with SMTP id r3-20020a1709028bc3b02900e68d844d50mr3959677plo.31.1616598272391;
-        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id l20sm3070700pfd.82.2021.03.24.08.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] of/fdt: Check dtb pointer first in unflatten_device_tree
-Date:   Wed, 24 Mar 2021 23:04:25 +0800
-Message-Id: <20210324150425.20688-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 24 Mar 2021 11:06:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD64C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=hVxZXX/ZU/3XdwG31rSSlYrNlBfhoK+5PYvevGCxNoM=; b=YkXU1cN7hCBsBij95SU20l3a5c
+        mKZGgceOPFOc4TikwTUErQVfXX90kOGHTrO2lrEjsoy0DPidFCk78dO+3T34Yx0j+BCWBr6n/nfMn
+        5mdDmm1eeHgxH4dQgfIlNdM2LYSZ4ObkdPrpg51c5YiEW864AXC0Dn+4FYzva72Zybn1mJUFywB9L
+        cBQYMM9968oAqMF5P7nas9hmdcMPuMNv/YyPk9uW7OIE3PF+X1GSnvBu2/pKUwMr0numszjLrfhLB
+        YvowrlrzWxvt5gAzVP36Yjn0DtsCZpBWkrqiLorRIoBUtTxLBd0ysFblcnK0GFGxfJceSJfvv4U8T
+        GBzzwe9g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lP54R-00BTOu-Vw; Wed, 24 Mar 2021 15:05:41 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: [PATCH v2 0/4] vmalloc: Improve vmalloc(4MB) performance
+Date:   Wed, 24 Mar 2021 15:05:14 +0000
+Message-Id: <20210324150518.2734402-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The setup_arch() would invoke unflatten_device_tree() even no
-valid fdt found. So we'd better check it first and return early.
+I may have gone a little too far with the first patch.  It turns out we
+have a lot of code using the vmalloc caller functionality, and I decided
+to convert it all to unsigned long instead of leaving some paths as void *
+and casting later.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- drivers/of/fdt.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I can redo that if necessary.  I've tested arm32, sh4 and powerpc32 builds
+as well as x86, but I wouldn't be surprised if the buildbots tell me I
+missed something.
 
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index dcc1dd96911a..05d439d63bc5 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -1225,6 +1225,11 @@ bool __init early_init_dt_scan(void *params)
-  */
- void __init unflatten_device_tree(void)
- {
-+	if (!initial_boot_params) {
-+		pr_warn("No valid device tree found, continuing without\n");
-+		return;
-+	}
-+
- 	__unflatten_device_tree(initial_boot_params, NULL, &of_root,
- 				early_init_dt_alloc_memory_arch, false);
- 
+Matthew Wilcox (Oracle) (4):
+  mm/vmalloc: Change the 'caller' type to unsigned long
+  mm/util: Add kvmalloc_node_caller
+  mm/vmalloc: Use kvmalloc to allocate the table of pages
+  MAINTAINERS: Add Vlad Rezki as vmalloc maintainer
+
+ MAINTAINERS                               |  7 +++
+ arch/arm/include/asm/io.h                 |  6 +--
+ arch/arm/include/asm/mach/map.h           |  3 --
+ arch/arm/kernel/module.c                  |  4 +-
+ arch/arm/mach-imx/mm-imx3.c               |  2 +-
+ arch/arm/mach-ixp4xx/common.c             |  2 +-
+ arch/arm/mach-mvebu/coherency.c           |  2 +-
+ arch/arm/mm/ioremap.c                     | 27 +++++------
+ arch/arm/mm/mmu.c                         | 10 ++--
+ arch/arm/mm/nommu.c                       | 16 +++---
+ arch/arm64/include/asm/vmap_stack.h       |  2 +-
+ arch/arm64/kernel/module.c                |  5 +-
+ arch/arm64/kernel/probes/kprobes.c        |  2 +-
+ arch/arm64/mm/ioremap.c                   |  7 ++-
+ arch/arm64/mm/mmu.c                       |  2 +-
+ arch/arm64/net/bpf_jit_comp.c             |  3 +-
+ arch/mips/kernel/module.c                 |  2 +-
+ arch/nds32/kernel/module.c                |  2 +-
+ arch/parisc/kernel/module.c               |  5 +-
+ arch/powerpc/include/asm/io-workarounds.h |  2 +-
+ arch/powerpc/include/asm/io.h             |  6 +--
+ arch/powerpc/kernel/io-workarounds.c      |  2 +-
+ arch/powerpc/kernel/irq.c                 |  2 +-
+ arch/powerpc/kernel/module.c              |  3 +-
+ arch/powerpc/kernel/pci_64.c              |  3 +-
+ arch/powerpc/mm/ioremap.c                 | 10 ++--
+ arch/powerpc/mm/ioremap_32.c              |  8 +--
+ arch/powerpc/mm/ioremap_64.c              |  4 +-
+ arch/riscv/kernel/module.c                |  2 +-
+ arch/riscv/net/bpf_jit_comp64.c           |  2 +-
+ arch/s390/kernel/module.c                 |  2 +-
+ arch/s390/kernel/setup.c                  |  3 +-
+ arch/sh/include/asm/io.h                  | 11 ++---
+ arch/sh/kernel/cpu/sh4/sq.c               |  2 +-
+ arch/sh/mm/ioremap.c                      |  2 +-
+ arch/sh/mm/pmb.c                          |  2 +-
+ arch/sparc/kernel/module.c                |  2 +-
+ arch/x86/hyperv/hv_init.c                 |  3 +-
+ arch/x86/kernel/module.c                  |  3 +-
+ arch/x86/mm/ioremap.c                     | 20 ++++----
+ include/linux/mm.h                        |  4 +-
+ include/linux/slab.h                      |  2 +
+ include/linux/vmalloc.h                   | 22 ++++-----
+ kernel/bpf/syscall.c                      |  2 +-
+ kernel/fork.c                             |  2 +-
+ kernel/module.c                           |  2 +-
+ kernel/scs.c                              |  3 +-
+ lib/test_vmalloc.c                        |  7 ++-
+ mm/ioremap.c                              |  3 +-
+ mm/kasan/shadow.c                         |  5 +-
+ mm/nommu.c                                |  4 +-
+ mm/util.c                                 | 52 +++++++++++---------
+ mm/vmalloc.c                              | 59 +++++++++--------------
+ 53 files changed, 172 insertions(+), 198 deletions(-)
+
 -- 
 2.30.2
 
