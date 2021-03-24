@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68709347498
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C7834749A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234741AbhCXJ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234738AbhCXJ1D (ORCPT
+        id S234802AbhCXJ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:27:41 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:65390 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234844AbhCXJ1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:27:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72729C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:27:03 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1lOzmw-0001ez-Ls; Wed, 24 Mar 2021 10:26:54 +0100
-Message-ID: <ca22113963e9499ec47839c627840d7ffee157b3.camel@pengutronix.de>
-Subject: Re: [PATCH v2 1/3] dt-bindings: imx6q-pcie: add one regulator used
- to power up pcie phy
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Richard Zhu <hongxing.zhu@nxp.com>, andrew.smirnov@gmail.com,
-        shawnguo@kernel.org, kw@linux.com, bhelgaas@google.com,
-        stefan@agner.ch, lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Date:   Wed, 24 Mar 2021 10:26:52 +0100
-In-Reply-To: <1616564059-8713-2-git-send-email-hongxing.zhu@nxp.com>
-References: <1616564059-8713-1-git-send-email-hongxing.zhu@nxp.com>
-         <1616564059-8713-2-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 24 Mar 2021 05:27:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UT9Ta7E_1616578026;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT9Ta7E_1616578026)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Mar 2021 17:27:07 +0800
+Subject: Re: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
+ <28d3a339-6210-ffd2-950f-ea5340ac23b7@infradead.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <f01f2b36-4978-1c8d-7b7b-f1f8fd49c6d1@linux.alibaba.com>
+Date:   Wed, 24 Mar 2021 17:27:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <28d3a339-6210-ffd2-950f-ea5340ac23b7@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+Hi,
 
-Am Mittwoch, dem 24.03.2021 um 13:34 +0800 schrieb Richard Zhu:
-> Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
-> In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
-> sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
-> the VREG_BYPASS bits of GPR registers should be cleared from default
-> value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
-> turned on.
+On 3/24/21 12:43 AM, Randy Dunlap wrote:
+> On 3/23/21 1:35 AM, Tianjia Zhang wrote:
+>> The kernel module signature supports the option to use the SM3
+>> secure hash (OSCCA GM/T 0004-2012 SM3).
+>>
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> ---
+>>   Documentation/admin-guide/module-signing.rst | 5 +++--
+>>   crypto/asymmetric_keys/pkcs7_parser.c        | 7 +++++++
+>>   init/Kconfig                                 | 5 +++++
+>>   3 files changed, 15 insertions(+), 2 deletions(-)
+>>
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
+>> diff --git a/init/Kconfig b/init/Kconfig
+>> index 5f5c776ef192..fed9236078e4 100644
+>> --- a/init/Kconfig
+>> +++ b/init/Kconfig
+>> @@ -2202,6 +2202,10 @@ config MODULE_SIG_SHA512
+>>   	bool "Sign modules with SHA-512"
+>>   	select CRYPTO_SHA512
+>>   
+>> +config MODULE_SIG_SM3
+>> +	bool "Sign modules with SM3"
+>> +	select CRYPTO_SM3
+>> +
+>>   endchoice
+>>   
+>>   config MODULE_SIG_HASH
+>> @@ -2212,6 +2216,7 @@ config MODULE_SIG_HASH
+>>   	default "sha256" if MODULE_SIG_SHA256
+>>   	default "sha384" if MODULE_SIG_SHA384
+>>   	default "sha512" if MODULE_SIG_SHA512
+>> +	default "sm3" if MODULE_SIG_SM3
+>>   
+>>   config MODULE_COMPRESS
+>>   	bool "Compress modules on installation"
+>>
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> index de4b2baf91e8..3248b7192ced 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> @@ -38,6 +38,12 @@ Optional properties:
->    The regulator will be enabled when initializing the PCIe host and
->    disabled either as part of the init process or when shutting down the
->    host.
-> +- vph-supply: Should specify the regulator in charge of PCIe PHY power.
-> +  On i.MX8MQ, both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe
-> +  PHY. In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
-> +  sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design, the
-> +  VREG_BYPASS bits of GPR registers should be cleared from default value 1b'1
-> +  to 1b'0.
+> checkpatch tells me:
+> 
+> WARNING: please write a paragraph that describes the config symbol fully
+> #74: FILE: init/Kconfig:2205:
+> +config MODULE_SIG_SM3
+> 
+> 
+> so yes, it should have some help text there.
+> 
+> thanks.
+> 
 
-This description of the internal driver behavior does not belong into a
-DT binding description.
-Instead the binding should describe the function of the regulator
-exactly. From the datasheet I can see that there are actually 3
-supplies (VPH, VP, VPTX) going into the PCIe PHY, so "regulator in
-charge of PCIe PHY power" doesn't seem like a very accurate
-description.
+I noticed, but this is just a list of algorithms, this warning can be 
+ignored.
 
-Regards,
-Lucas
-
+Best regards,
+Tianjia
