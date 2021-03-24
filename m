@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931823481D8
+	by mail.lfdr.de (Postfix) with ESMTP id DEB263481D9
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237821AbhCXTY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:24:28 -0400
-Received: from smtprelay0082.hostedemail.com ([216.40.44.82]:58252 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237667AbhCXTYP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:24:15 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BB3571801AC84;
-        Wed, 24 Mar 2021 19:24:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:421:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1605:1711:1730:1747:1777:1792:1801:2198:2199:2393:2553:2559:2562:2689:2731:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:6120:6691:6742:7652:7903:10004:10400:10848:11026:11232:11233:11473:11657:11658:11783:11914:12043:12048:12296:12297:12438:12740:12895:13894:14181:14659:14721:21080:21433:21451:21627:21740:21990:30012:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: fish34_600c2bf2777d
-X-Filterd-Recvd-Size: 4692
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 24 Mar 2021 19:24:11 +0000 (UTC)
-Message-ID: <d184069de43135a9c9e5f031447faf98ab3f437d.camel@perches.com>
-Subject: Re: [RFC patch] vsprintf: Allow %pe to print non PTR_ERR %pe uses
- as decimal
-From:   Joe Perches <joe@perches.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
+        id S237854AbhCXTYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:24:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237780AbhCXTYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 15:24:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 441EB61962;
+        Wed, 24 Mar 2021 19:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1616613855;
+        bh=k3KeOvY/gY++1wYNecE8Vi7uDBnm7jr2w4YKjm0PyhQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Sprd/8YQn6NWR53KSXnTHGGl8JK7/S2Rt6SQn4o9f98SYsIQcYR4gjkZRnazDs6IE
+         uGVYuCaxdW4Ed0O5cStGnsibK/KvJDIFOnfkvtgnS05HNSBtRQ/WOidStla0oN/Y1k
+         eZ/WJc0DuVozgFEJyQNHpZ47dHHRnRreqXDrz6as=
+Date:   Wed, 24 Mar 2021 12:24:12 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Zankel <chris@zankel.net>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
+        huang ying <huang.ying.caritas@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        James Troup <james.troup@canonical.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kairui Song <kasong@redhat.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Rich Felker <dalias@libc.org>,
+        Robert Richter <rric@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liu Ying <victor.liu@nxp.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 24 Mar 2021 12:24:10 -0700
-In-Reply-To: <9feab1e8-4dee-6b79-03f7-7b9f0cb24f6e@rasmusvillemoes.dk>
-References: <20210324121832.3714570-1-arnd@kernel.org>
-         <e1310273dcc577f3a772380ada7b6cc1906d680b.camel@perches.com>
-         <CAK8P3a0JyoAtTYTi+M_mJ3_KtUJ6NeJB=FNWhzezqcXMac++mQ@mail.gmail.com>
-         <810d36184b9fa2880d3ba7738a8f182e27f5107b.camel@perches.com>
-         <3252fd83141aa9e0e6001acee1dd98e87c676b9a.camel@perches.com>
-         <9feab1e8-4dee-6b79-03f7-7b9f0cb24f6e@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Theodore Dubois <tblodt@icloud.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        William Cohen <wcohen@redhat.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Yoshinori Sato <ysato@users.osdn.me>
+Subject: Re: [PATCH v1 0/3] drivers/char: remove /dev/kmem for good
+Message-Id: <20210324122412.e77247e6d3259d5493951019@linux-foundation.org>
+In-Reply-To: <20210324102351.6932-1-david@redhat.com>
+References: <20210324102351.6932-1-david@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 18:33 +0100, Rasmus Villemoes wrote:
-> On 24/03/2021 18.20, Joe Perches wrote:
-> > On Wed, 2021-03-24 at 09:52 -0700, Joe Perches wrote:
-> > > On Wed, 2021-03-24 at 17:42 +0100, Arnd Bergmann wrote:
-> > > > On Wed, Mar 24, 2021 at 3:20 PM Joe Perches <joe@perches.com> wrote:
-> > > []
-> > > > > > diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-> > > > > []
-> > > > > > @@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
-> > > > > >       int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
-> > > > > >       int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
-> > > > > > 
-> > > > > > +     if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-> > > > > > +             dev_warn(ldb->dev, "%s: invalid mux %d\n",
-> > > > > > +                      __func__, ERR_PTR(mux));
-> > > > > 
-> > > > > This does not compile without warnings.
-> > > > > 
-> > > > > drivers/gpu/drm/imx/imx-ldb.c: In function ‘imx_ldb_encoder_enable’:
-> > > > > drivers/gpu/drm/imx/imx-ldb.c:201:22: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘void *’ [-Wformat=]
-> > > > >   201 |   dev_warn(ldb->dev, "%s: invalid mux %d\n",
-> > > > >       |                      ^~~~~~~~~~~~~~~~~~~~~~
-> > > > > 
-> > > > > If you want to use ERR_PTR, the %d should be %pe as ERR_PTR
-> > > > > is converting an int a void * to decode the error type and
-> > > > > emit it as a string.
-> > > > 
-> > > > Sorry about that.
-> > > > 
-> > > > I decided against using ERR_PTR() in order to also check for
-> > > > positive array overflow, but the version I tested was different from
-> > > > the version I sent.
-> > > > 
-> > > > v3 coming.
-> > > 
-> > > Thanks.  No worries.
-> > > 
-> > > Up to you, vsprintf would emit the positive mux as a funky hashed
-> > > hex value by default if you use ERR_PTR with mux > ARRAY_SIZE so
-> > > perhaps %d without the ERR_PTR use makes the most sense.
-> > > 
-> 
-> > 
-> > Maybe it's better to output non PTR_ERR %pe uses as decimal so this
-> > sort of code would work.
-> 
-> No, because that would leak the pointer value when somebody has
-> accidentally passed a real kernel pointer to %pe.
 
-I think it's not really an issue.
+> Let's remove /dev/kmem, which is unused and obsolete.
 
-_All_ code that uses %p<foo> extensions need inspection anyway.
+I grabbed these.  Silently - the cc list is amazing ;)
 
-It's already possible to intentionally 'leak' the ptr value
-by using %pe, -ptr so I think that's not really an issue.
+I was wondering if it would be better to permanently disable /dev/kmem
+in Kconfig along with a comment "if you really want this thing then
+email peeps@places with a very good reason why".  Let that ride for a
+year or three then blam.
 
-> 
-> If the code wants a cute -EFOO string explaining what's wrong, what
-> about "%pe", ERR_PTR(mux < 0 : mux : -ERANGE)? Or two separate error
-> messages
-> 
-> if (mux < 0)
->   ...
-> else if (mux >= ARRAY_SIZE())
->   ...
+But this is so much more attractive, and it certainly sounds like it's
+worth any damage it might cause.
 
-Multiple tests, more unnecessary code, multiple format strings, etc...
+We do tend to think about distros.  I bet there are a number of weird
+embedded type systems using /dev/kmem - it's amazing what sorts of
+hacks those people will put up with the get something out the door. 
+But those systems tend to carry a lot of specialized changes anyway, so
+they can just add "revert David's patch" to their pile.
 
 
