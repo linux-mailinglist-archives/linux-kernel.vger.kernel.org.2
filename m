@@ -2,170 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02166347761
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAA9347767
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhCXLaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
+        id S232680AbhCXLa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhCXLaO (ORCPT
+        with ESMTP id S229576AbhCXLaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:30:14 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F5BC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 04:30:14 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lP1iD-0000Qo-QT; Wed, 24 Mar 2021 12:30:09 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lP1iD-00024C-G0; Wed, 24 Mar 2021 12:30:09 +0100
-Date:   Wed, 24 Mar 2021 12:30:06 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@pengutronix.de, Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>,
-        Sam Nobs <samuel.nobs@taitradio.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
-Message-ID: <20210324113006.3zerxrp73fkzvakf@pengutronix.de>
-References: <20210322111036.31966-1-johan@kernel.org>
- <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
- <20210322113918.ze52gq54cpsspgej@linutronix.de>
- <20210322115536.knkea7i6vrfpotol@pengutronix.de>
- <YFiZuXWYmxPIaQH9@hovoldconsulting.com>
- <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
- <20210322204836.i4ksobvp6hxl5owh@linutronix.de>
- <20210323073447.r3utxintt5c3blb4@pengutronix.de>
- <20210323090413.ogeweygw3iejtbsv@linutronix.de>
+        Wed, 24 Mar 2021 07:30:25 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DBCC061763;
+        Wed, 24 Mar 2021 04:30:25 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id j7so17225892qtx.5;
+        Wed, 24 Mar 2021 04:30:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=1NwD+D09MxNMkHHIjKoYtWYoeiPO6llKDF7IfnR4kj8=;
+        b=CHXscW1Vtic/hwNvX57CkIQfkxFGzPz1kKvVehJw8RA6mFUCNa9bQQVZ47GhJOsMIT
+         WVN8ffqRc1kMFApqCmIH55EdS29+2gdZ0sMsT2fybCE2diCDUHZTHn20qWieXDmNVqMU
+         f6w01Hs1whm2Tm/g+aYsLamaX/JlRC+nDFqwUgbxjftn3a52aM+G7beR0SvOdxXbYnzh
+         PESVmkiFyOucuMyx0zGRai7AIZjkimSkJlWwFX0gueLsjRf4lnpbU14ihmX2v8d+VlMD
+         oyjDXdgsCyTYlIQYilBmOBQHHnhZAdzLlsuEM7FRYASBliJxWj6oydKB1CPeeXqtXifn
+         TwRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=1NwD+D09MxNMkHHIjKoYtWYoeiPO6llKDF7IfnR4kj8=;
+        b=m37zFJekod9O1ilDlfmqQeep6ORcnTaM4a9PXNk4oAhGz+aU/tA5zQwUB6MjUFDp+7
+         ZWRWVQrfrFMQyPMeNtv/1u2OisnKN+3+PB16UmahFRw3uE/37qiGVS/YFL12MmO8CSYn
+         COeAj/6CKI1e9HqQGfy1dNEi7lIjR2EBgD4XA5LdNxOXDqWh7mpwvDnjQyZUrPKpesk5
+         8pikEQmJctHIKeBUlM4ahtdCHsTonSguHFdpLe4Bu0avW5fWGWwW23i9aRzVShxkk9Um
+         Taz09IMgJv5YEeuMfYRW3Cj8qdrAPgHTqpwT46FQNaYo2Xut9WgD8QHBN8j34BleXrIt
+         lrrQ==
+X-Gm-Message-State: AOAM531KrTwnBx9AKSfs+qGnjj6P/XV/ZTbPKHPv33DdyECPJCARh4rs
+        98f756uHPMpnZRN2H2R50cK6CCbsHcIy5KFfVxXvMaMCKkU=
+X-Google-Smtp-Source: ABdhPJxh9O1xF11jsgRuSYRADzQ0QHd9acdPE8xzHFVhOn5mBkxhpYdORQSJP+Xc7wrkAmhhtzBmDn9gfASsHImTgXg=
+X-Received: by 2002:ac8:4e86:: with SMTP id 6mr2449035qtp.213.1616585424116;
+ Wed, 24 Mar 2021 04:30:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gvqvn6hs6msar5bv"
-Content-Disposition: inline
-In-Reply-To: <20210323090413.ogeweygw3iejtbsv@linutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <1616578270-7365-1-git-send-email-bingjingc@synology.com>
+In-Reply-To: <1616578270-7365-1-git-send-email-bingjingc@synology.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 24 Mar 2021 11:30:12 +0000
+Message-ID: <CAL3q7H7YGA0PFJp6J7vFvK0EPSixY7chnReS6Zbqa_9S2p_QRQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix a potential hole-punching failure
+To:     bingjingc <bingjingc@synology.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Qu Wenruo <quwenruo@cn.fujitsu.com>, Chris Mason <clm@fb.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        cccheng@synology.com, Robbie Ko <robbieko@synology.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Mar 24, 2021 at 11:15 AM bingjingc <bingjingc@synology.com> wrote:
+>
+> From: BingJing Chang <bingjingc@synology.com>
+>
+> In commit d77815461f04 ("btrfs: Avoid trucating page or punching hole in
+> a already existed hole."), existed holes can be skipped by calling
+> find_first_non_hole() to adjust *start and *len. However, if the given
+> len is invalid and large, when an EXTENT_MAP_HOLE extent is found, the
+> *len will not be set to zero because (em->start + em->len) is less than
+> (*start + *len). Then the ret will be 1 but the *len will not be set to
+> 0. The propagated non-zero ret will result in fallocate failure.
+>
+> In the while-loop of btrfs_replace_file_extents(), len is not updated
+> every time before it calls find_first_non_hole(). That is, if the last
+> file extent in the given hole-punching range has been dropped but
+> btrfs_drop_extents() fails with -ENOSPC (btrfs_drop_extents() runs out
+> of reserved space of the given transaction), the problem can happen.
 
---gvqvn6hs6msar5bv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is not entirely clear. Dropping the last extent and still
+returning ENOSPC is confusing.
+I think you mean that it drops the last file extent item that does not
+represent hole (disk_bytenr > 0), and after it there's only one file
+extent item representing a hole (disk_bytenr =3D=3D 0).
+It fails with -ENOSPC when attempting to drop the file extent item
+representing the hole, after successfully dropping the non-hole file
+extent item.
+Is that it?
 
-Hello Sebastian,
+> After it calls find_first_non_hole(), the cur_offset will be adjusted
+> to be larger than or equal to end. However, since the len is not set to
+> zero. The break-loop condition (ret && !len) will not meet. After it
+> leaves the while-loop, uncleared ret will result in fallocate failure.
 
-On Tue, Mar 23, 2021 at 10:04:13AM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-03-23 08:34:47 [+0100], Uwe Kleine-K=C3=B6nig wrote:
-> > On Mon, Mar 22, 2021 at 09:48:36PM +0100, Sebastian Andrzej Siewior wro=
-te:
-> > > On 2021-03-22 14:40:32 [+0100], Uwe Kleine-K=C3=B6nig wrote:
-> > > > From a strictly logically point of view you indeed cannot. But if y=
-ou go
-> > > > to the street and say to people there that they can park their car =
-in
-> > > > this street free of charge between Monday and Friday, I expect that=
- most
-> > > > of them will assume that they have to pay for parking on weekends.
-> > >=20
-> > > Uwe, the patch reverts a change which was needed for !RT + threadirqs.
-> >=20
-> > This would be a useful information for the commit log.
-> >=20
-> > > The commit message claims that since the referenced commit "=E2=80=A6=
- interrupt
-> > > handlers always run with interrupts disabled on non-RT=E2=80=A6 ". Th=
-is has
-> > > nothing to do with _this_ change. It argues why the workaround is not
-> > > needed.
-> >=20
-> > It argues why the work around is not needed on non-RT. It might be
-> > obvious for someone who is firm in the RT concepts, but IMHO commit logs
-> > should be understandable by and make sense for a wider audience than the
-> > deep experts. From what I know about RT "Force-threaded interrupt
-> > handlers used to run with interrupts enabled" still applies there.
->=20
-> Yes. The commit Johan referenced explains it in more detail.
+Ok, fallocate will return 1, an unexpected return value.
 
-In my book the commit log should be understandable without reading the
-referenced commits.
+>
+> We're not able to construct a reproducible way to let
+> btrfs_drop_extents() fails with -ENOSPC after it drops the last file
+> extent but with remaining holes. However, it's quite easy to fix. We
+> just need to update and check the len every time before we call
+> find_first_non_hole(). To make the while loop more readable, we also
+> pull the variable updates to the bottom of loop like this:
+> while (cur_offset < end) {
+>         ...
+>         // update cur_offset & len
+>         // advance cur_offset & len in hole-punching case if needed
+> }
+>
+> Reported-by: Robbie Ko <robbieko@synology.com>
+> Fixes: d77815461f04 ("btrfs: Avoid trucating page or punching hole in a
+> already existed hole.")
+> Reviewed-by: Robbie Ko <robbieko@synology.com>
+> Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+> Signed-off-by: BingJing Chang <bingjingc@synology.com>
 
-> > > If the referenced commit breaks RT then this is another story.
-> >=20
-> > I'm surprised to hear that from you. With the goal to get RT into
-> > mainline I would expect you to be happy if people consider the effects
-> > on RT in their reviews.
->=20
-> Correct, I do and I am glad if people consider other aspects of the
-> kernel in their review including RT.
->=20
-> > > > So when you said that on on-RT the reason why it used to need a
-> > > > workaround is gone made me wonder what that implies for RT.
-> > >=20
-> > > There was never reason (or a lockdep splat) for it on RT. If so you
-> > > should have seen it, right?
-> >=20
-> > No, I don't consider myself to be an RT expert who is aware of all the
-> > problems. So I admit that for me the effect on RT of the patch under
-> > discussion isn't obvious. I just wonder that the change is justified
-> > with being OK on non-RT. So it's either bad that it breaks RT *or*
-> > improving the commit log would be great.
-> >=20
-> > And even if I had reason to believe that there is no problem with the
-> > commit on RT, I'd still wish that the commit log wouldn't suggest to the
-> > casual reader that there might be a problem.
->=20
-> Okay. I added a sentence. What about this rewording:
->=20
->   Force-threaded interrupt handlers used to run with interrupts enabled,
->   something which could lead to deadlocks in case a threaded handler
->   shared a lock with code running in hard interrupt context (e.g. timer
->   callbacks) and did not explicitly disable interrupts. =20
->  =20
->   This was specifically the case for serial drivers that take the port
->   lock in their console write path as printk can be called from hard
->   interrupt context also with forced threading ("threadirqs").
->  =20
->   Since commit 81e2073c175b ("genirq: Disable interrupts for force
->   threaded handlers") interrupt handlers always run with interrupts
->   disabled on non-RT so that drivers no longer need to do handle this.
->   RT is not affected by the referenced commit and the workaround, that is
->   reverted, was not required because spinlock_t must not be acquired on
->   RT in hardirq context.
->  =20
->   Drop the now obsolete workaround added by commit 33f16855dcb9 ("tty:
->   serial: imx: fix potential deadlock").
+Looks good.
+Please just update that paragraph to be more clear about what is going on.
 
-This resolves my concerns. Thanks
-Uwe
+Thanks.
+
+> ---
+>  fs/btrfs/file.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 0e155f0..dccb017 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -2735,8 +2735,6 @@ int btrfs_replace_file_extents(struct inode *inode,=
+ struct btrfs_path *path,
+>                         extent_info->file_offset +=3D replace_len;
+>                 }
+>
+> -               cur_offset =3D drop_args.drop_end;
+> -
+>                 ret =3D btrfs_update_inode(trans, root, BTRFS_I(inode));
+>                 if (ret)
+>                         break;
+> @@ -2756,7 +2754,9 @@ int btrfs_replace_file_extents(struct inode *inode,=
+ struct btrfs_path *path,
+>                 BUG_ON(ret);    /* shouldn't happen */
+>                 trans->block_rsv =3D rsv;
+>
+> -               if (!extent_info) {
+> +               cur_offset =3D drop_args.drop_end;
+> +               len =3D end - cur_offset;
+> +               if (!extent_info && len) {
+>                         ret =3D find_first_non_hole(BTRFS_I(inode), &cur_=
+offset,
+>                                                   &len);
+>                         if (unlikely(ret < 0))
+> --
+> 2.7.4
+>
+
 
 --=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Filipe David Manana,
 
---gvqvn6hs6msar5bv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBbIrsACgkQwfwUeK3K
-7AnmRwf/fhrKa9qA0/qKMWdyyCUDqoV8EraIoueqQCqWElB20L0rcTS7n3VHD5xr
-r19DzPNa9j1u8gJIaxsXhcKCYClAbmjT7nb03rnMkDT+jy4OHro7kiToCrWLKU9A
-/0qqNLHeWltpb0AA38tpnkx1MYVirb0ky5eM1w9Y+B3cXYcBgsZUTszfmRfrmd7L
-BehGLiJqUqk4adtshACMF0WLBXw04Q6uqTEq54Mz5o9t94YZhj3aYWbmroZbJbH/
-7BhHcEZeJ3j5cHk6hcdoFQc090elG+buZ/a/FdWTZX0U1hsbDMZ4zEHFc1w+neeY
-5BpDWK/JTZu7yOvMqRGTg9DQc7iWdg==
-=hJOT
------END PGP SIGNATURE-----
-
---gvqvn6hs6msar5bv--
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
