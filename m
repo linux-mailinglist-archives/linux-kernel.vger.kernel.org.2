@@ -2,461 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49A6347B2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 379C9347B33
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236403AbhCXOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:53:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32454 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236387AbhCXOwp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:52:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616597565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bpu2A/pW1a1W5AJSucmodOCKzDSDFqBH0HZmo6Fhjlg=;
-        b=dYYvJ8nAg9MnwzU6cYN37dLSWAwVQzepUbkJyEmJTmHWBCeQ1KtS5AjfQ/1PHl/BmcNkNW
-        qJ0DjNuympCxlE4eGLtZBVzwtqgzRe/uqNHKUuLuShP7yJA8aehu8SmgZXCkaSLnYnPeJe
-        7fc8QvtdfmLUcyDxmpnN4RfVNeJJ0LM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-tWQtTvN7Obm7ICpKD_svwg-1; Wed, 24 Mar 2021 10:52:43 -0400
-X-MC-Unique: tWQtTvN7Obm7ICpKD_svwg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 222C31005D58;
-        Wed, 24 Mar 2021 14:52:42 +0000 (UTC)
-Received: from [10.36.115.66] (ovpn-115-66.ams2.redhat.com [10.36.115.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 94AFF5D9CA;
-        Wed, 24 Mar 2021 14:52:39 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210319092635.6214-1-osalvador@suse.de>
- <20210319092635.6214-2-osalvador@suse.de> <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
- <20210324101259.GB16560@linux> <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
- <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
-Date:   Wed, 24 Mar 2021 15:52:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S236336AbhCXOx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:53:58 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:34780 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236399AbhCXOxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:53:18 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lP4sX-0000qF-Gw; Wed, 24 Mar 2021 15:53:01 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     dri-devel@lists.freedesktop.org,
+        Helen Koike <helen.koike@collabora.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hjc@rock-chips.com, robh+dt@kernel.org,
+        sebastian.fricke@posteo.net, linux-media@vger.kernel.org,
+        dafna.hirschfeld@collabora.com, ezequiel@collabora.com,
+        cmuellner@linux.com
+Subject: Re: [PATCH 3/6] drm/rockchip: dsi: add ability to work as a phy instead of full dsi
+Date:   Wed, 24 Mar 2021 15:52:59 +0100
+Message-ID: <12741091.uLZWGnKmhe@diego>
+In-Reply-To: <d7b8137c-66ce-935a-c8d7-e507146143d7@collabora.com>
+References: <20210210111020.2476369-1-heiko@sntech.de> <20210210111020.2476369-4-heiko@sntech.de> <d7b8137c-66ce-935a-c8d7-e507146143d7@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.03.21 15:42, Michal Hocko wrote:
-> On Wed 24-03-21 13:03:29, Michal Hocko wrote:
->> On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
-> [...]
->>> I kind of understand to be reluctant to use vmemmap_pages terminology here, but
->>> unfortunately we need to know about it.
->>> We could rename nr_vmemmap_pages to offset_buddy_pages or something like that.
->>
->> I am not convinced. It seems you are justr trying to graft the new
->> functionality in. But I still believe that {on,off}lining shouldn't care
->> about where their vmemmaps come from at all. It should be a
->> responsibility of the code which reserves that space to compansate for
->> accounting. Otherwise we will end up with a hard to maintain code
->> because expectations would be spread at way too many places. Not to
->> mention different pfns that the code should care about.
+Am Montag, 15. Februar 2021, 15:33:19 CET schrieb Helen Koike:
+> > From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> > diff --git a/drivers/gpu/drm/rockchip/Kconfig b/drivers/gpu/drm/rockchip/Kconfig
+> > index cb25c0e8fc9b..3094d4533ad6 100644
+> > --- a/drivers/gpu/drm/rockchip/Kconfig
+> > +++ b/drivers/gpu/drm/rockchip/Kconfig
+> > @@ -9,6 +9,8 @@ config DRM_ROCKCHIP
+> >   	select DRM_ANALOGIX_DP if ROCKCHIP_ANALOGIX_DP
+> >   	select DRM_DW_HDMI if ROCKCHIP_DW_HDMI
+> >   	select DRM_DW_MIPI_DSI if ROCKCHIP_DW_MIPI_DSI
+> > +	select GENERIC_PHY if ROCKCHIP_DW_MIPI_DSI
+> > +	select GENERIC_PHY_MIPI_DPHY if ROCKCHIP_DW_MIPI_DSI
 > 
-> The below is a quick hack on top of this patch to illustrate my
-> thinking. I have dug out all the vmemmap pieces out of the
-> {on,off}lining and hooked all the accounting when the space is reserved.
-> This just compiles without any deeper look so there are likely some
-> minor problems but I haven't really encountered any major problems or
-> hacks to introduce into the code. The separation seems to be possible.
-> The diffstat also looks promising. Am I missing something fundamental in
-> this?
+> maybe alphabetical order?
+
+ok
+
+> > +static int dw_mipi_dsi_dphy_power_on(struct phy *phy)
+> > +{
+> > +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
+> > +	int i, ret;
 > 
+> It seems "i" could be removed, use ret instead.
 
- From a quick glimpse, this touches on two things discussed in the past:
+I don't think so
 
-1. If the underlying memory block is offline, all sections are offline. 
-Zone shrinking code will happily skip over the vmemmap pages and you can 
-end up with out-of-zone pages assigned to the zone. Can happen in corner 
-cases. There is no way to know that the memmap of these pages was 
-initialized and is of value.
+I.e. the driver does
 
-2. You heavily fragment zone layout although you might end up with 
-consecutive zones (e.g., online all hotplugged memory movable)
+	i = max_mbps_to_parameter(...)
+	...
+	ret = power-on-clocks-and-stuff
+	...
+	dw_mipi_dsi_phy_write(.... dppa_map[i].hsfreqrange)
 
-> ---
->   drivers/base/memory.c          |   8 +--
->   include/linux/memory_hotplug.h |   6 +-
->   mm/memory_hotplug.c            | 151 ++++++++++++++++++++---------------------
->   3 files changed, 80 insertions(+), 85 deletions(-)
+So will need to keep the param index separate.
+
+
+> In general, the patch doesn't look wrong to me.
 > 
-> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
-> index 5ea2b3fbce02..9697acfe96eb 100644
-> --- a/drivers/base/memory.c
-> +++ b/drivers/base/memory.c
-> @@ -181,15 +181,15 @@ memory_block_action(unsigned long start_section_nr, unsigned long action,
->   	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
->   	int ret;
->   
-> -	start_pfn = section_nr_to_pfn(start_section_nr);
-> +	start_pfn = section_nr_to_pfn(start_section_nr) + nr_vmemmap_pages;
-> +	nr_pages -= nr_vmemmap_pages;
->   
->   	switch (action) {
->   	case MEM_ONLINE:
-> -		ret = online_pages(start_pfn, nr_pages, nr_vmemmap_pages,
-> -				   online_type, nid);
-> +		ret = online_pages(start_pfn, nr_pages, online_type, nid);
->   		break;
->   	case MEM_OFFLINE:
-> -		ret = offline_pages(start_pfn, nr_pages, nr_vmemmap_pages);
-> +		ret = offline_pages(start_pfn, nr_pages);
->   		break;
->   	default:
->   		WARN(1, KERN_WARNING "%s(%ld, %ld) unknown action: "
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-> index a85d4b7d15c2..673d2d4a8443 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -109,8 +109,7 @@ extern int zone_grow_waitqueues(struct zone *zone, unsigned long nr_pages);
->   extern int add_one_highpage(struct page *page, int pfn, int bad_ppro);
->   /* VM interface that may be used by firmware interface */
->   extern int online_pages(unsigned long pfn, unsigned long nr_pages,
-> -			unsigned long nr_vmemmap_pages, int online_type,
-> -			int nid);
-> +			int online_type, int nid);
->   extern struct zone *test_pages_in_a_zone(unsigned long start_pfn,
->   					 unsigned long end_pfn);
->   extern void __offline_isolated_pages(unsigned long start_pfn,
-> @@ -317,8 +316,7 @@ static inline void pgdat_resize_init(struct pglist_data *pgdat) {}
->   #ifdef CONFIG_MEMORY_HOTREMOVE
->   
->   extern void try_offline_node(int nid);
-> -extern int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
-> -			 unsigned long nr_vmemmap_pages);
-> +extern int offline_pages(unsigned long start_pfn, unsigned long nr_pages);
->   extern int remove_memory(int nid, u64 start, u64 size);
->   extern void __remove_memory(int nid, u64 start, u64 size);
->   extern int offline_and_remove_memory(int nid, u64 start, u64 size);
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 0c3a98cb8cde..754026a9164d 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -844,30 +844,19 @@ struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
->   }
->   
->   int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
-> -		       unsigned long nr_vmemmap_pages, int online_type, int nid)
-> +		       int online_type, int nid)
->   {
-> -	unsigned long flags, buddy_start_pfn, buddy_nr_pages;
-> +	unsigned long flags;
->   	struct zone *zone;
->   	int need_zonelists_rebuild = 0;
->   	int ret;
->   	struct memory_notify arg;
->   
-> -	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
-> -	if (WARN_ON_ONCE(!nr_pages ||
-> -			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
-> -		return -EINVAL;
-> -
-> -	buddy_start_pfn = pfn + nr_vmemmap_pages;
-> -	buddy_nr_pages = nr_pages - nr_vmemmap_pages;
-> -
->   	mem_hotplug_begin();
->   
->   	/* associate pfn range with the zone */
->   	zone = zone_for_pfn_range(online_type, nid, pfn, nr_pages);
-> -	if (nr_vmemmap_pages)
-> -		move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
-> -				       MIGRATE_UNMOVABLE);
-> -	move_pfn_range_to_zone(zone, buddy_start_pfn, buddy_nr_pages, NULL,
-> +	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL,
->   			       MIGRATE_ISOLATE);
->   
->   	arg.start_pfn = pfn;
-> @@ -884,7 +873,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->   	 * onlining, such that undo_isolate_page_range() works correctly.
->   	 */
->   	spin_lock_irqsave(&zone->lock, flags);
-> -	zone->nr_isolate_pageblock += buddy_nr_pages / pageblock_nr_pages;
-> +	zone->nr_isolate_pageblock += nr_pages / pageblock_nr_pages;
->   	spin_unlock_irqrestore(&zone->lock, flags);
->   
->   	/*
-> @@ -897,7 +886,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->   		setup_zone_pageset(zone);
->   	}
->   
-> -	online_pages_range(pfn, nr_pages, buddy_start_pfn);
-> +	online_pages_range(pfn, nr_pages, pfn);
->   	zone->present_pages += nr_pages;
->   
->   	pgdat_resize_lock(zone->zone_pgdat, &flags);
-> @@ -910,9 +899,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->   	zone_pcp_update(zone);
->   
->   	/* Basic onlining is complete, allow allocation of onlined pages. */
-> -	undo_isolate_page_range(buddy_start_pfn,
-> -				buddy_start_pfn + buddy_nr_pages,
-> -				MIGRATE_MOVABLE);
-> +	undo_isolate_page_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE);
->   
->   	/*
->   	 * Freshly onlined pages aren't shuffled (e.g., all pages are placed to
-> @@ -1126,6 +1113,59 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
->   	       IS_ALIGNED(remaining_size, (pageblock_nr_pages << PAGE_SHIFT));
->   }
->   
-> +static void reserve_vmmemmap_space(int nid, unsigned long pfn, unsigned long nr_pages, struct vmem_altmap *altmap)
-> +{
-> +	struct zone *zone = &NODE_DATA(nid)->node_zones[ZONE_NORMAL];
-> +
-> +	altmap->free = nr_pages;
-> +	altmap->base_pfn = pfn;
-> +
-> +	/* initialize struct pages and account for this space */
-> +	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_UNMOVABLE);
-> +}
-> +
-> +static void unaccount_vmemmap_space(int nid, unsigned long start_pfn, unsigned long nr_pages)
-> +{
-> +	struct zone *zone = &NODE_DATA(nid)->node_zones[ZONE_NORMAL];
-> +	unsigned long flags;
-> +
-> +	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
-> +	zone->present_pages -= nr_pages;
-> +
-> +	pgdat_resize_lock(zone->zone_pgdat, &flags);
-> +	zone->zone_pgdat->node_present_pages -= nr_pages;
-> +	pgdat_resize_unlock(zone->zone_pgdat, &flags);
-> +
-> +	remove_pfn_range_from_zone(zone, start_pfn, nr_pages);
-> +}
-> +
-> +static int remove_memory_block_cb(struct memory_block *mem, void *arg)
-> +{
-> +	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
-> +	struct vmem_altmap mhp_altmap = {};
-> +	struct vmem_altmap *altmap = NULL;
-> +	u64 start = PFN_PHYS(section_nr_to_pfn(mem->start_section_nr));
-> +	u64 size = memory_block_size_bytes();
-> +
-> +	if (!mem->nr_vmemmap_pages) {
-> +		arch_remove_memory(mem->nid, start, size, NULL);
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * Let remove_pmd_table->free_hugepage_table
-> +	 * do the right thing if we used vmem_altmap
-> +	 * when hot-adding the range.
-> +	 */
-> +	mhp_altmap.alloc = nr_vmemmap_pages;
-> +	altmap = &mhp_altmap;
-> +
-> +	unaccount_vmemmap_space(mem->nid, PHYS_PFN(start), nr_vmemmap_pages);
-> +	arch_remove_memory(mem->nid, start, size, altmap);
-> +
-> +	return 0;
-> +}
-> +
->   /*
->    * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
->    * and online/offline operations (triggered e.g. by sysfs).
-> @@ -1170,8 +1210,7 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
->   			ret = -EINVAL;
->   			goto error;
->   		}
-> -		mhp_altmap.free = PHYS_PFN(size);
-> -		mhp_altmap.base_pfn = PHYS_PFN(start);
-> +		reserve_vmmemmap_space(nid, PHYS_PFN(start), PHYS_PFN(size), &mhp_altmap);
->   		params.altmap = &mhp_altmap;
->   	}
->   
-> @@ -1639,25 +1678,16 @@ static int count_system_ram_pages_cb(unsigned long start_pfn,
->   	return 0;
->   }
->   
-> -int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
-> -			unsigned long nr_vmemmap_pages)
-> +int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
->   {
->   	const unsigned long end_pfn = start_pfn + nr_pages;
-> -	unsigned long pfn, buddy_start_pfn, buddy_nr_pages, system_ram_pages = 0;
-> +	unsigned long pfn, system_ram_pages = 0;
->   	unsigned long flags;
->   	struct zone *zone;
->   	struct memory_notify arg;
->   	int ret, node;
->   	char *reason;
->   
-> -	/* We can only offline full sections (e.g., SECTION_IS_ONLINE) */
-> -	if (WARN_ON_ONCE(!nr_pages ||
-> -			 !IS_ALIGNED(start_pfn | nr_pages, PAGES_PER_SECTION)))
-> -		return -EINVAL;
-> -
-> -	buddy_start_pfn = start_pfn + nr_vmemmap_pages;
-> -	buddy_nr_pages = nr_pages - nr_vmemmap_pages;
-> -
->   	mem_hotplug_begin();
->   
->   	/*
-> @@ -1693,7 +1723,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
->   	zone_pcp_disable(zone);
->   
->   	/* set above range as isolated */
-> -	ret = start_isolate_page_range(buddy_start_pfn, end_pfn,
-> +	ret = start_isolate_page_range(start_pfn, end_pfn,
->   				       MIGRATE_MOVABLE,
->   				       MEMORY_OFFLINE | REPORT_FAILURE);
->   	if (ret) {
-> @@ -1713,7 +1743,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
->   	}
->   
->   	do {
-> -		pfn = buddy_start_pfn;
-> +		pfn = start_pfn;
->   		do {
->   			if (signal_pending(current)) {
->   				ret = -EINTR;
-> @@ -1744,18 +1774,18 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
->   		 * offlining actually in order to make hugetlbfs's object
->   		 * counting consistent.
->   		 */
-> -		ret = dissolve_free_huge_pages(buddy_start_pfn, end_pfn);
-> +		ret = dissolve_free_huge_pages(start_pfn, end_pfn);
->   		if (ret) {
->   			reason = "failure to dissolve huge pages";
->   			goto failed_removal_isolated;
->   		}
->   
-> -		ret = test_pages_isolated(buddy_start_pfn, end_pfn, MEMORY_OFFLINE);
-> +		ret = test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE);
->   
->   	} while (ret);
->   
->   	/* Mark all sections offline and remove free pages from the buddy. */
-> -	__offline_isolated_pages(start_pfn, end_pfn, buddy_start_pfn);
-> +	__offline_isolated_pages(start_pfn, end_pfn, start_pfn);
->   	pr_debug("Offlined Pages %ld\n", nr_pages);
->   
->   	/*
-> @@ -1764,13 +1794,13 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
->   	 * of isolated pageblocks, memory onlining will properly revert this.
->   	 */
->   	spin_lock_irqsave(&zone->lock, flags);
-> -	zone->nr_isolate_pageblock -= buddy_nr_pages / pageblock_nr_pages;
-> +	zone->nr_isolate_pageblock -= nr_pages / pageblock_nr_pages;
->   	spin_unlock_irqrestore(&zone->lock, flags);
->   
->   	zone_pcp_enable(zone);
->   
->   	/* removal success */
-> -	adjust_managed_page_count(pfn_to_page(start_pfn), -buddy_nr_pages);
-> +	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
->   	zone->present_pages -= nr_pages;
->   
->   	pgdat_resize_lock(zone->zone_pgdat, &flags);
-> @@ -1799,7 +1829,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
->   	return 0;
->   
->   failed_removal_isolated:
-> -	undo_isolate_page_range(buddy_start_pfn, end_pfn, MIGRATE_MOVABLE);
-> +	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
->   	memory_notify(MEM_CANCEL_OFFLINE, &arg);
->   failed_removal_pcplists_disabled:
->   	zone_pcp_enable(zone);
-> @@ -1830,14 +1860,6 @@ static int check_memblock_offlined_cb(struct memory_block *mem, void *arg)
->   	return 0;
->   }
->   
-> -static int get_nr_vmemmap_pages_cb(struct memory_block *mem, void *arg)
-> -{
-> -	/*
-> -	 * If not set, continue with the next block.
-> -	 */
-> -	return mem->nr_vmemmap_pages;
-> -}
-> -
->   static int check_cpu_on_node(pg_data_t *pgdat)
->   {
->   	int cpu;
-> @@ -1912,9 +1934,6 @@ EXPORT_SYMBOL(try_offline_node);
->   static int __ref try_remove_memory(int nid, u64 start, u64 size)
->   {
->   	int rc = 0;
-> -	struct vmem_altmap mhp_altmap = {};
-> -	struct vmem_altmap *altmap = NULL;
-> -	unsigned long nr_vmemmap_pages = 0;
->   
->   	BUG_ON(check_hotplug_memory_range(start, size));
->   
-> @@ -1927,31 +1946,6 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
->   	if (rc)
->   		return rc;
->   
-> -	/*
-> -	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
-> -	 * the same granularity it was added - a single memory block.
-> -	 */
-> -	if (memmap_on_memory) {
-> -		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
-> -						      get_nr_vmemmap_pages_cb);
-> -		if (nr_vmemmap_pages) {
-> -			if (size != memory_block_size_bytes()) {
-> -				pr_warn("Refuse to remove %#llx - %#llx,"
-> -					"wrong granularity\n",
-> -					 start, start + size);
-> -				return -EINVAL;
-> -			}
-> -
-> -			/*
-> -			 * Let remove_pmd_table->free_hugepage_table
-> -			 * do the right thing if we used vmem_altmap
-> -			 * when hot-adding the range.
-> -			 */
-> -			mhp_altmap.alloc = nr_vmemmap_pages;
-> -			altmap = &mhp_altmap;
-> -		}
-> -	}
-> -
->   	/* remove memmap entry */
->   	firmware_map_remove(start, start + size, "System RAM");
->   
-> @@ -1963,7 +1957,10 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
->   
->   	mem_hotplug_begin();
->   
-> -	arch_remove_memory(nid, start, size, altmap);
-> +	if (!memmap_on_memory)
-> +		arch_remove_memory(nid, start, size, NULL);
-> +	else
-> +		walk_memory_blocks(start, size, NULL, remove_memory_block_cb);
->   
->   	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
->   		memblock_free(start, size);
-> 
+> For the whole serie:
+> Acked-by: Helen Koike <helen.koike@collabora.com>
+
+Thanks a lot :-)
 
 
--- 
-Thanks,
+Heiko
 
-David / dhildenb
 
