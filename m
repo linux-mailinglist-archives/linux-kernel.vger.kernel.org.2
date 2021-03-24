@@ -2,266 +2,461 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD33347B2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B49A6347B2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236393AbhCXOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:52:49 -0400
-Received: from mail-eopbgr130139.outbound.protection.outlook.com ([40.107.13.139]:30023
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236247AbhCXOwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:52:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=doS3oVgOOcs8uNwpdR0R/S0X5zdPXZfhQ/XUvehUn5kzxDet2NFVAc9VAtnwHlD9o6wtpp8wx46ApDYMkEvqaas33EKaeW5WWTvIU91ij6BcuaH+6q+HFMATokJ5PompwNG7Hl7yxFvKxvqJb8JvM4Fj8tHDhAtwzmgFPqbSSk+vPBMNUYBRCDnk1Bc5Pn7w3gjtoGtNwx2QBfqYVJQUCvTaw4GFoyMe5L0lVx3xBpXGFJaQXOURLWaR73EQgXJUZnitYNVeAPJvkPrJsXa6VnSumG8h0zzPYiEMD8csXcnb8ER5ZU02U09rM/jQv3DwOAK5ZKRBvhp5Rh2QxpCJow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vmWVw3J5HTQRBFgUg20wZue6CmfiEvxFpRG3knnhMv0=;
- b=fgGmEphdc0+ueVfKfyD0htoWg3vmhaXwpxA+N3p11bcoHkLTiWo2eG5G7YmLq4ia3oUWANBs+S1IOY6vddezO0y/tHW5W1L+D+owxi5gQECnKTr9eMl4CEA13PIWkQhAcEfTRoKovRf3DTondLVSKO4EGbtbQ2EW9zoCXsUDq1TbyruXor18QcIjKFOlmUcYAJncK+VrietvPxSflW/dgIDUmrRfVTiJ83bf0IUgqquf8Ng1wb7t47kE1k6/udCfoHnTLZS/SCogoeERoFVlOP2D2ETNF0QBMVmEL7UCA7m2uEd3KX4X24VR2GGge5nWnG+S8zqLy0Ifc0V7BAnELw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
- header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vmWVw3J5HTQRBFgUg20wZue6CmfiEvxFpRG3knnhMv0=;
- b=juZZoH8hi1I6wPH674mwrCnhtXY17EZG8A3xdATwafTy+7PTuM336rVhT71kJToXFCjUOMzkSNLt3oUpd5q50dtUoI2YyyMu8JqpU7xRoqH8+xeLuVsHVK7B4rDPP8sxP3kebp3xuad2KeFSQlAhEU1QdCMbJ5cRx3GDFVomWUg=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=virtuozzo.com;
-Received: from VE1PR08MB4989.eurprd08.prod.outlook.com (2603:10a6:803:114::19)
- by VI1PR0801MB1632.eurprd08.prod.outlook.com (2603:10a6:800:57::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 24 Mar
- 2021 14:52:12 +0000
-Received: from VE1PR08MB4989.eurprd08.prod.outlook.com
- ([fe80::d1ec:aee1:885c:ad1a]) by VE1PR08MB4989.eurprd08.prod.outlook.com
- ([fe80::d1ec:aee1:885c:ad1a%5]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
- 14:52:11 +0000
-Subject: Re: [CRIU] [PATCH] mnt: allow to add a mount into an existing group
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     Pavel Tikhomirov <snorcht@gmail.com>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, crml <criu@openvz.org>,
-        Andrei Vagin <avagin@gmail.com>
-References: <aba1e14c-8af8-e171-dbf8-c9000ddccb70@virtuozzo.com>
-From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Message-ID: <96115c40-3fc7-e3d6-ecd8-1be2969e5ff4@virtuozzo.com>
-Date:   Wed, 24 Mar 2021 17:52:08 +0300
+        id S236403AbhCXOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:53:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236387AbhCXOwp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:52:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616597565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bpu2A/pW1a1W5AJSucmodOCKzDSDFqBH0HZmo6Fhjlg=;
+        b=dYYvJ8nAg9MnwzU6cYN37dLSWAwVQzepUbkJyEmJTmHWBCeQ1KtS5AjfQ/1PHl/BmcNkNW
+        qJ0DjNuympCxlE4eGLtZBVzwtqgzRe/uqNHKUuLuShP7yJA8aehu8SmgZXCkaSLnYnPeJe
+        7fc8QvtdfmLUcyDxmpnN4RfVNeJJ0LM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-tWQtTvN7Obm7ICpKD_svwg-1; Wed, 24 Mar 2021 10:52:43 -0400
+X-MC-Unique: tWQtTvN7Obm7ICpKD_svwg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 222C31005D58;
+        Wed, 24 Mar 2021 14:52:42 +0000 (UTC)
+Received: from [10.36.115.66] (ovpn-115-66.ams2.redhat.com [10.36.115.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94AFF5D9CA;
+        Wed, 24 Mar 2021 14:52:39 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de> <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux> <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+ <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
+Date:   Wed, 24 Mar 2021 15:52:38 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
-In-Reply-To: <aba1e14c-8af8-e171-dbf8-c9000ddccb70@virtuozzo.com>
+MIME-Version: 1.0
+In-Reply-To: <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [81.200.17.122]
-X-ClientProxiedBy: AM9P192CA0023.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:20b:21d::28) To VE1PR08MB4989.eurprd08.prod.outlook.com
- (2603:10a6:803:114::19)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.192] (81.200.17.122) by AM9P192CA0023.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21d::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend Transport; Wed, 24 Mar 2021 14:52:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f2d7a3ae-2ad6-4a67-a9b0-08d8eed467b7
-X-MS-TrafficTypeDiagnostic: VI1PR0801MB1632:
-X-LD-Processed: 0bc7f26d-0264-416e-a6fc-8352af79c58f,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0801MB1632C6C1C9403760AE2AF193B7639@VI1PR0801MB1632.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: //LDa+yWi39Hr+oWdrTggoU/hx75fZKMNLnadF9EynFVh8SKJjOEE7pf1pPS0Wt5uYSNSoNo+IpDLIXUGIasCRQP1OMMNddLTS02SsqgrwIz9tT/OLUbJOZNIPJOpO/CeiX8bnq4JtmbNjQZU2U4nJ5OlFjB/BnDX6KNAX7CtKBS02cqe1m1aGrTpRRqJ/6zeP8sjMsEb8AeI3D0vs+VrqYIx7yGxhoql7YbzhjDMlV3fSw39Vpj2dZjok195NiWOTXsVqyKn/EySOWkiaUUO7QAtxaT7Ylfb0wtX0NEHvf/Pz9bfbHsOl0e2miQu9qzD1+cMXFErvuQXt4Ybn020mZpAXYkzyJc0sAkr2w0YiPdfwumazKs6LUGsqDgh4KNv5OuoVNdGC4eXzr3juw1d1qQp1SJx8dN6KVG7PBYvfJtxOOJkAQ5bQTQzFxH2Ytx5SqY2yb4DsPdvp4+vF25j06oAArqliIWfpEHQs+2AhJIrsbMHS8Rmay/fiRjAAP4dMkaI1A9GKDJ5a8Xc/fe+49dexwRkzPXEcDnklWo7I0Za1/JLF8knCLdPe4GGJTqbMkKycaQ2qoqMJsgMfN4KU8s/ten1e6m0SRc4vX6p30Hmmfy8whx3uel5j9g60M4vIZoFKh2Ukd3a9dTWTYINkVd4AGBCCZefh7vM0L5BvgDjwkTPYIvIsB/hwjX4crvWj70/hAwjrZcH9ouiJtNO8HnfJCgFmQycVr//S4lx5awp65SZmEjcdZp77V9T6b6qxviOX4Sh+l+J9rymTWn0L9MqlI1deAYbXuYHSXHwiQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4989.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39840400004)(366004)(396003)(376002)(346002)(2616005)(478600001)(83380400001)(110136005)(956004)(8936002)(6486002)(5660300002)(31696002)(36756003)(31686004)(54906003)(966005)(16576012)(52116002)(316002)(86362001)(53546011)(16526019)(186003)(38100700001)(66946007)(66556008)(2906002)(26005)(8676002)(66476007)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZFpPVEYxYjA1OFhsODVibllYczFlTUNOeGwxdFdRL1BLZ2xsd3BodStCK2NQ?=
- =?utf-8?B?NEZoQjUxWTVmN3ptNFdDdzhpU25KNFFHVld2RHFwT21Xc2JCRzg3YzZmMnF2?=
- =?utf-8?B?blROb1NJMWhYS2NsYVF6VGR0SkZQM2hyR2swVS8xZlJ6c1k1dWk4SVo4Sjkr?=
- =?utf-8?B?cS94Q3l0KzhjLzlXRXdMWXZxeHdJL0Nxa3dlUGNZczdNeEdxYkFsL09WSkhi?=
- =?utf-8?B?bmN6TTVaWGVjanlwaW5ubFBncW81Z3UzRzhIQVhpSjJFQjJDTitSVFR5SjRZ?=
- =?utf-8?B?V0dTNTZMVFBuQzdSY3Z6MnlETjBhTFJycy9SNjIyZnhIZHVJdEtHaHFES2NP?=
- =?utf-8?B?UGM3UGRZbGE5cTVKMXdkUFZObll6bDE2NG9taERka3VUa2tNWWxnSmpDMFZp?=
- =?utf-8?B?YnNmUWJTZW9GVE9OVXlqTDNaSWxhT1ZBMjlFWkJPTXloVHl6VkhOTWppdW85?=
- =?utf-8?B?Wlh1NnQ0cllKN1V4T3dMUkFEeHNPYjlhd0hzcnVUaFpHMVc2WU9VWmJFUFVC?=
- =?utf-8?B?SEs0YzZSYW90eXEvT0hleTdYTUZrV2hHdTQyVGUvYTcxdkxkWXYzOEJNSHU3?=
- =?utf-8?B?dktEY3M4ckIyWWZuSkdUYTF6RktzQ2RXdmpMVEFac3laS2NHRTVFakRpMVJn?=
- =?utf-8?B?bkRxQ3FmcExwV0RUbWNLRFQ0RGZUZjdGU1NZNGpCRjd0aU9IM0tDakJrYkFQ?=
- =?utf-8?B?VE1teStqNHpFWXNUYWpLT0lsWXVwS25Nb1JnZnc2ZmNpckdVNEQvY2Z2WEtH?=
- =?utf-8?B?UEUvZ0V0YzdWcFIwWm9JZG5aTGMrZEVXWjNsZjU3TGJrMndJUCtFNDUvM0Ew?=
- =?utf-8?B?QnU3YnJETzlxUk9KMmllUVk2dEdTeTJVT3BBRi94NU56T0VOek9EcE1uTGpN?=
- =?utf-8?B?YTRxMHVkZ0NvT1dWbVNjcnBPaXROem91Q2RTMzA2TmhDL2lDVmtzcFNNdTJQ?=
- =?utf-8?B?QmxNUGFGZ2h0ME1WbkxHM1ZIeEFCSFQyT1NOSVlDeTBqeXl0MEtwODZiWXZQ?=
- =?utf-8?B?NUIzbW9NUVJDNWtSMEg4c1ZZeks2dmVOeFo4Z3hXVmlib3dtSWE3Tk55N2h0?=
- =?utf-8?B?cUx3Zzd1SGxJdjE5QUJvcnVZWCtaWnAzSFdERG1MQks5L2RPam5LQnZJSkV1?=
- =?utf-8?B?eVVObFB0OFRXb2hOUHh0SWtiTlE5bVpEUkNtRUZ6aldvNmg3ZDdPeGNyU1pi?=
- =?utf-8?B?YUZUR2tMQUo4UmVCeldvMmV2WnkvVWhkWjJnWm50eEhMRGRJNXREak1tWUNj?=
- =?utf-8?B?T3NGemU5VDR1d0d5V3pES3VnUjVpeWNRZ3lhS1VvTlNLdEtFb0xtVFRUNFNZ?=
- =?utf-8?B?YjBicVVCTWxSVlVNazZNdjBPcUxNeXE1R2hNUkRnalBLeHlnRW1hVlZ4OVNr?=
- =?utf-8?B?bjdMRmpOWndTVC9OMXZBUWJodXhuaHBxbUVJTkdqbU5zb250V0IyOUR4Q3U5?=
- =?utf-8?B?MGpDNXZwVmZuTjBVOCtCU2oxZS9xWVBYU2RMWDBmOFcweFhLNWpiMWNoVTU4?=
- =?utf-8?B?dGRJTDQ0Yyt5blJFTFFhRkxGTGs5VjRZTkhvNzhGQ0xLak1LRStjb0syY1Rz?=
- =?utf-8?B?NFBIZlZkLzFTT1IvazZvV2s3Zm4zeENHR0hvRmxhYU1EemlaN1M0TU9NQjBw?=
- =?utf-8?B?Tkk1WnQzMFJSak5CQWU0UmVLRzQycERNV0Y3SENjaHBqMDZ4Zml4eUxpWHpl?=
- =?utf-8?B?K1AwdDF2UkM4bkpkd1VuQ0J4M0lHUVdoODFPYThIYUtNMVF6M2lNMEp1U0Nh?=
- =?utf-8?Q?Ew5YqMWvzJrKv0D4NMNY9lugxlbEdVwg39WPlSD?=
-X-OriginatorOrg: virtuozzo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2d7a3ae-2ad6-4a67-a9b0-08d8eed467b7
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4989.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 14:52:11.8569
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q3F0RYGqHGx0b+rnwvpLSm5HkCaHPCXMikTGPLScKINV8PCDdYrCTt98ijNqmFkcrBRoVA01RHhvWdzb/U/fHa9SafntRTiZo+VG2K+tDxo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0801MB1632
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Andrew to CC with the right email.
+On 24.03.21 15:42, Michal Hocko wrote:
+> On Wed 24-03-21 13:03:29, Michal Hocko wrote:
+>> On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
+> [...]
+>>> I kind of understand to be reluctant to use vmemmap_pages terminology here, but
+>>> unfortunately we need to know about it.
+>>> We could rename nr_vmemmap_pages to offset_buddy_pages or something like that.
+>>
+>> I am not convinced. It seems you are justr trying to graft the new
+>> functionality in. But I still believe that {on,off}lining shouldn't care
+>> about where their vmemmaps come from at all. It should be a
+>> responsibility of the code which reserves that space to compansate for
+>> accounting. Otherwise we will end up with a hard to maintain code
+>> because expectations would be spread at way too many places. Not to
+>> mention different pfns that the code should care about.
+> 
+> The below is a quick hack on top of this patch to illustrate my
+> thinking. I have dug out all the vmemmap pieces out of the
+> {on,off}lining and hooked all the accounting when the space is reserved.
+> This just compiles without any deeper look so there are likely some
+> minor problems but I haven't really encountered any major problems or
+> hacks to introduce into the code. The separation seems to be possible.
+> The diffstat also looks promising. Am I missing something fundamental in
+> this?
+> 
 
-On 3/23/21 3:59 PM, Pavel Tikhomirov wrote:
-> Hi! Can we restart the discussion on this topic?
+ From a quick glimpse, this touches on two things discussed in the past:
+
+1. If the underlying memory block is offline, all sections are offline. 
+Zone shrinking code will happily skip over the vmemmap pages and you can 
+end up with out-of-zone pages assigned to the zone. Can happen in corner 
+cases. There is no way to know that the memmap of these pages was 
+initialized and is of value.
+
+2. You heavily fragment zone layout although you might end up with 
+consecutive zones (e.g., online all hotplugged memory movable)
+
+> ---
+>   drivers/base/memory.c          |   8 +--
+>   include/linux/memory_hotplug.h |   6 +-
+>   mm/memory_hotplug.c            | 151 ++++++++++++++++++++---------------------
+>   3 files changed, 80 insertions(+), 85 deletions(-)
 > 
-> In CRIU we need to be able to dump/restore all mount trees of system 
-> container (CT). CT can have anything inside - users which create their 
-> custom mounts configuration, systemd with custom mount namespaces for 
-> it's services, nested application containers inside the CT with their 
-> own mount namespaces, and all mounts in CT mount trees can be grouped by 
-> sharing groupes (e.g. same shared_id + master_id pair), and those groups 
-> can depend one from another forming a tree structure of sharing groups.
+> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+> index 5ea2b3fbce02..9697acfe96eb 100644
+> --- a/drivers/base/memory.c
+> +++ b/drivers/base/memory.c
+> @@ -181,15 +181,15 @@ memory_block_action(unsigned long start_section_nr, unsigned long action,
+>   	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
+>   	int ret;
+>   
+> -	start_pfn = section_nr_to_pfn(start_section_nr);
+> +	start_pfn = section_nr_to_pfn(start_section_nr) + nr_vmemmap_pages;
+> +	nr_pages -= nr_vmemmap_pages;
+>   
+>   	switch (action) {
+>   	case MEM_ONLINE:
+> -		ret = online_pages(start_pfn, nr_pages, nr_vmemmap_pages,
+> -				   online_type, nid);
+> +		ret = online_pages(start_pfn, nr_pages, online_type, nid);
+>   		break;
+>   	case MEM_OFFLINE:
+> -		ret = offline_pages(start_pfn, nr_pages, nr_vmemmap_pages);
+> +		ret = offline_pages(start_pfn, nr_pages);
+>   		break;
+>   	default:
+>   		WARN(1, KERN_WARNING "%s(%ld, %ld) unknown action: "
+> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+> index a85d4b7d15c2..673d2d4a8443 100644
+> --- a/include/linux/memory_hotplug.h
+> +++ b/include/linux/memory_hotplug.h
+> @@ -109,8 +109,7 @@ extern int zone_grow_waitqueues(struct zone *zone, unsigned long nr_pages);
+>   extern int add_one_highpage(struct page *page, int pfn, int bad_ppro);
+>   /* VM interface that may be used by firmware interface */
+>   extern int online_pages(unsigned long pfn, unsigned long nr_pages,
+> -			unsigned long nr_vmemmap_pages, int online_type,
+> -			int nid);
+> +			int online_type, int nid);
+>   extern struct zone *test_pages_in_a_zone(unsigned long start_pfn,
+>   					 unsigned long end_pfn);
+>   extern void __offline_isolated_pages(unsigned long start_pfn,
+> @@ -317,8 +316,7 @@ static inline void pgdat_resize_init(struct pglist_data *pgdat) {}
+>   #ifdef CONFIG_MEMORY_HOTREMOVE
+>   
+>   extern void try_offline_node(int nid);
+> -extern int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+> -			 unsigned long nr_vmemmap_pages);
+> +extern int offline_pages(unsigned long start_pfn, unsigned long nr_pages);
+>   extern int remove_memory(int nid, u64 start, u64 size);
+>   extern void __remove_memory(int nid, u64 start, u64 size);
+>   extern int offline_and_remove_memory(int nid, u64 start, u64 size);
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 0c3a98cb8cde..754026a9164d 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -844,30 +844,19 @@ struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+>   }
+>   
+>   int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+> -		       unsigned long nr_vmemmap_pages, int online_type, int nid)
+> +		       int online_type, int nid)
+>   {
+> -	unsigned long flags, buddy_start_pfn, buddy_nr_pages;
+> +	unsigned long flags;
+>   	struct zone *zone;
+>   	int need_zonelists_rebuild = 0;
+>   	int ret;
+>   	struct memory_notify arg;
+>   
+> -	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
+> -	if (WARN_ON_ONCE(!nr_pages ||
+> -			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
+> -		return -EINVAL;
+> -
+> -	buddy_start_pfn = pfn + nr_vmemmap_pages;
+> -	buddy_nr_pages = nr_pages - nr_vmemmap_pages;
+> -
+>   	mem_hotplug_begin();
+>   
+>   	/* associate pfn range with the zone */
+>   	zone = zone_for_pfn_range(online_type, nid, pfn, nr_pages);
+> -	if (nr_vmemmap_pages)
+> -		move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
+> -				       MIGRATE_UNMOVABLE);
+> -	move_pfn_range_to_zone(zone, buddy_start_pfn, buddy_nr_pages, NULL,
+> +	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL,
+>   			       MIGRATE_ISOLATE);
+>   
+>   	arg.start_pfn = pfn;
+> @@ -884,7 +873,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>   	 * onlining, such that undo_isolate_page_range() works correctly.
+>   	 */
+>   	spin_lock_irqsave(&zone->lock, flags);
+> -	zone->nr_isolate_pageblock += buddy_nr_pages / pageblock_nr_pages;
+> +	zone->nr_isolate_pageblock += nr_pages / pageblock_nr_pages;
+>   	spin_unlock_irqrestore(&zone->lock, flags);
+>   
+>   	/*
+> @@ -897,7 +886,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>   		setup_zone_pageset(zone);
+>   	}
+>   
+> -	online_pages_range(pfn, nr_pages, buddy_start_pfn);
+> +	online_pages_range(pfn, nr_pages, pfn);
+>   	zone->present_pages += nr_pages;
+>   
+>   	pgdat_resize_lock(zone->zone_pgdat, &flags);
+> @@ -910,9 +899,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>   	zone_pcp_update(zone);
+>   
+>   	/* Basic onlining is complete, allow allocation of onlined pages. */
+> -	undo_isolate_page_range(buddy_start_pfn,
+> -				buddy_start_pfn + buddy_nr_pages,
+> -				MIGRATE_MOVABLE);
+> +	undo_isolate_page_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE);
+>   
+>   	/*
+>   	 * Freshly onlined pages aren't shuffled (e.g., all pages are placed to
+> @@ -1126,6 +1113,59 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
+>   	       IS_ALIGNED(remaining_size, (pageblock_nr_pages << PAGE_SHIFT));
+>   }
+>   
+> +static void reserve_vmmemmap_space(int nid, unsigned long pfn, unsigned long nr_pages, struct vmem_altmap *altmap)
+> +{
+> +	struct zone *zone = &NODE_DATA(nid)->node_zones[ZONE_NORMAL];
+> +
+> +	altmap->free = nr_pages;
+> +	altmap->base_pfn = pfn;
+> +
+> +	/* initialize struct pages and account for this space */
+> +	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_UNMOVABLE);
+> +}
+> +
+> +static void unaccount_vmemmap_space(int nid, unsigned long start_pfn, unsigned long nr_pages)
+> +{
+> +	struct zone *zone = &NODE_DATA(nid)->node_zones[ZONE_NORMAL];
+> +	unsigned long flags;
+> +
+> +	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
+> +	zone->present_pages -= nr_pages;
+> +
+> +	pgdat_resize_lock(zone->zone_pgdat, &flags);
+> +	zone->zone_pgdat->node_present_pages -= nr_pages;
+> +	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+> +
+> +	remove_pfn_range_from_zone(zone, start_pfn, nr_pages);
+> +}
+> +
+> +static int remove_memory_block_cb(struct memory_block *mem, void *arg)
+> +{
+> +	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
+> +	struct vmem_altmap mhp_altmap = {};
+> +	struct vmem_altmap *altmap = NULL;
+> +	u64 start = PFN_PHYS(section_nr_to_pfn(mem->start_section_nr));
+> +	u64 size = memory_block_size_bytes();
+> +
+> +	if (!mem->nr_vmemmap_pages) {
+> +		arch_remove_memory(mem->nid, start, size, NULL);
+> +		return 0;
+> +	}
+> +
+> +	/*
+> +	 * Let remove_pmd_table->free_hugepage_table
+> +	 * do the right thing if we used vmem_altmap
+> +	 * when hot-adding the range.
+> +	 */
+> +	mhp_altmap.alloc = nr_vmemmap_pages;
+> +	altmap = &mhp_altmap;
+> +
+> +	unaccount_vmemmap_space(mem->nid, PHYS_PFN(start), nr_vmemmap_pages);
+> +	arch_remove_memory(mem->nid, start, size, altmap);
+> +
+> +	return 0;
+> +}
+> +
+>   /*
+>    * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
+>    * and online/offline operations (triggered e.g. by sysfs).
+> @@ -1170,8 +1210,7 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>   			ret = -EINVAL;
+>   			goto error;
+>   		}
+> -		mhp_altmap.free = PHYS_PFN(size);
+> -		mhp_altmap.base_pfn = PHYS_PFN(start);
+> +		reserve_vmmemmap_space(nid, PHYS_PFN(start), PHYS_PFN(size), &mhp_altmap);
+>   		params.altmap = &mhp_altmap;
+>   	}
+>   
+> @@ -1639,25 +1678,16 @@ static int count_system_ram_pages_cb(unsigned long start_pfn,
+>   	return 0;
+>   }
+>   
+> -int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+> -			unsigned long nr_vmemmap_pages)
+> +int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+>   {
+>   	const unsigned long end_pfn = start_pfn + nr_pages;
+> -	unsigned long pfn, buddy_start_pfn, buddy_nr_pages, system_ram_pages = 0;
+> +	unsigned long pfn, system_ram_pages = 0;
+>   	unsigned long flags;
+>   	struct zone *zone;
+>   	struct memory_notify arg;
+>   	int ret, node;
+>   	char *reason;
+>   
+> -	/* We can only offline full sections (e.g., SECTION_IS_ONLINE) */
+> -	if (WARN_ON_ONCE(!nr_pages ||
+> -			 !IS_ALIGNED(start_pfn | nr_pages, PAGES_PER_SECTION)))
+> -		return -EINVAL;
+> -
+> -	buddy_start_pfn = start_pfn + nr_vmemmap_pages;
+> -	buddy_nr_pages = nr_pages - nr_vmemmap_pages;
+> -
+>   	mem_hotplug_begin();
+>   
+>   	/*
+> @@ -1693,7 +1723,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+>   	zone_pcp_disable(zone);
+>   
+>   	/* set above range as isolated */
+> -	ret = start_isolate_page_range(buddy_start_pfn, end_pfn,
+> +	ret = start_isolate_page_range(start_pfn, end_pfn,
+>   				       MIGRATE_MOVABLE,
+>   				       MEMORY_OFFLINE | REPORT_FAILURE);
+>   	if (ret) {
+> @@ -1713,7 +1743,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+>   	}
+>   
+>   	do {
+> -		pfn = buddy_start_pfn;
+> +		pfn = start_pfn;
+>   		do {
+>   			if (signal_pending(current)) {
+>   				ret = -EINTR;
+> @@ -1744,18 +1774,18 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+>   		 * offlining actually in order to make hugetlbfs's object
+>   		 * counting consistent.
+>   		 */
+> -		ret = dissolve_free_huge_pages(buddy_start_pfn, end_pfn);
+> +		ret = dissolve_free_huge_pages(start_pfn, end_pfn);
+>   		if (ret) {
+>   			reason = "failure to dissolve huge pages";
+>   			goto failed_removal_isolated;
+>   		}
+>   
+> -		ret = test_pages_isolated(buddy_start_pfn, end_pfn, MEMORY_OFFLINE);
+> +		ret = test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE);
+>   
+>   	} while (ret);
+>   
+>   	/* Mark all sections offline and remove free pages from the buddy. */
+> -	__offline_isolated_pages(start_pfn, end_pfn, buddy_start_pfn);
+> +	__offline_isolated_pages(start_pfn, end_pfn, start_pfn);
+>   	pr_debug("Offlined Pages %ld\n", nr_pages);
+>   
+>   	/*
+> @@ -1764,13 +1794,13 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+>   	 * of isolated pageblocks, memory onlining will properly revert this.
+>   	 */
+>   	spin_lock_irqsave(&zone->lock, flags);
+> -	zone->nr_isolate_pageblock -= buddy_nr_pages / pageblock_nr_pages;
+> +	zone->nr_isolate_pageblock -= nr_pages / pageblock_nr_pages;
+>   	spin_unlock_irqrestore(&zone->lock, flags);
+>   
+>   	zone_pcp_enable(zone);
+>   
+>   	/* removal success */
+> -	adjust_managed_page_count(pfn_to_page(start_pfn), -buddy_nr_pages);
+> +	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
+>   	zone->present_pages -= nr_pages;
+>   
+>   	pgdat_resize_lock(zone->zone_pgdat, &flags);
+> @@ -1799,7 +1829,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+>   	return 0;
+>   
+>   failed_removal_isolated:
+> -	undo_isolate_page_range(buddy_start_pfn, end_pfn, MIGRATE_MOVABLE);
+> +	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
+>   	memory_notify(MEM_CANCEL_OFFLINE, &arg);
+>   failed_removal_pcplists_disabled:
+>   	zone_pcp_enable(zone);
+> @@ -1830,14 +1860,6 @@ static int check_memblock_offlined_cb(struct memory_block *mem, void *arg)
+>   	return 0;
+>   }
+>   
+> -static int get_nr_vmemmap_pages_cb(struct memory_block *mem, void *arg)
+> -{
+> -	/*
+> -	 * If not set, continue with the next block.
+> -	 */
+> -	return mem->nr_vmemmap_pages;
+> -}
+> -
+>   static int check_cpu_on_node(pg_data_t *pgdat)
+>   {
+>   	int cpu;
+> @@ -1912,9 +1934,6 @@ EXPORT_SYMBOL(try_offline_node);
+>   static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>   {
+>   	int rc = 0;
+> -	struct vmem_altmap mhp_altmap = {};
+> -	struct vmem_altmap *altmap = NULL;
+> -	unsigned long nr_vmemmap_pages = 0;
+>   
+>   	BUG_ON(check_hotplug_memory_range(start, size));
+>   
+> @@ -1927,31 +1946,6 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>   	if (rc)
+>   		return rc;
+>   
+> -	/*
+> -	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
+> -	 * the same granularity it was added - a single memory block.
+> -	 */
+> -	if (memmap_on_memory) {
+> -		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
+> -						      get_nr_vmemmap_pages_cb);
+> -		if (nr_vmemmap_pages) {
+> -			if (size != memory_block_size_bytes()) {
+> -				pr_warn("Refuse to remove %#llx - %#llx,"
+> -					"wrong granularity\n",
+> -					 start, start + size);
+> -				return -EINVAL;
+> -			}
+> -
+> -			/*
+> -			 * Let remove_pmd_table->free_hugepage_table
+> -			 * do the right thing if we used vmem_altmap
+> -			 * when hot-adding the range.
+> -			 */
+> -			mhp_altmap.alloc = nr_vmemmap_pages;
+> -			altmap = &mhp_altmap;
+> -		}
+> -	}
+> -
+>   	/* remove memmap entry */
+>   	firmware_map_remove(start, start + size, "System RAM");
+>   
+> @@ -1963,7 +1957,10 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>   
+>   	mem_hotplug_begin();
+>   
+> -	arch_remove_memory(nid, start, size, altmap);
+> +	if (!memmap_on_memory)
+> +		arch_remove_memory(nid, start, size, NULL);
+> +	else
+> +		walk_memory_blocks(start, size, NULL, remove_memory_block_cb);
+>   
+>   	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
+>   		memblock_free(start, size);
 > 
-> 1) Imagine that we have this sharing group tree (in format (shared_id, 
-> master_id), 0 means no sharing, we don't care about actual mounts for 
-> now only master-slave dependencies between sharing groups):
-> 
-> (1,0)
->    |- (2,1)
->    |- (3,1)
->         |- (4,3)
->              |- (0,4)
-> 
-> The main problem of restoring mounts is the fact that sharing groups 
-> currently can be only inherited, e.g. if you have one mount (first) with 
-> shared_id = x, master_id = y, the only way to get another mount with 
-> (x,y) is to create a bindmount from the first mount. Also to create 
-> mount (y,z) from mount (x,y) one should also first inherit (x,y) via 
-> bindmount and than change to (y,z).
-> 
-> This means that mentioned above tree puts restriction on the mounts 
-> creation order, one need to have at least one mount for each of sharing 
-> groups (1,0), (3,1) and (4,3) before creating the first mount of the 
-> sharing group (0,4).
-> 
-> But what if we want to mount (restore) actual mounts in this mount tree 
-> "reverse" order:
-> 
-> mntid    parent    mountpoint    (shared_id, master_id)
-> 101    0    /tmp        (0,4)
-> 102    101    /tmp        (4,3)
-> 103    102    /tmp        (3,1)
-> 104    103    /tmp        (1,0)
-> 
-> Mount 104's sharing group should be created before mount 101, 102 and 
-> 103 sharing groups, but mount 104 should be created after those mounts. 
-> One can actually prepare this setup (on mainstream kernel) by 
-> pre-creating sharing groups elsewhere and then binding to /tmp in proper 
-> order with careful unmounting of propagations (see test.sh attached):
-> 
-> [root@snorch propagation-tests]# bash ../test.sh
-> ------------
-> 960 1120 0:56 / /tmp/propagation-tests/tmp rw,relatime master:452 - 
-> tmpfs propagation-tests-src rw,inode64
-> 958 960 0:56 / /tmp/propagation-tests/tmp/sub rw,relatime shared:452 
-> master:451 - tmpfs propagation-tests-src rw,inode64
-> 961 958 0:56 / /tmp/propagation-tests/tmp/sub/sub rw,relatime shared:451 
-> master:433 - tmpfs propagation-tests-src rw,inode64
-> 963 961 0:56 / /tmp/propagation-tests/tmp/sub/sub/sub rw,relatime 
-> shared:433 - tmpfs propagation-tests-src rw,inode64
-> ------------
-> 
-> But this "pre-creating" from test.sh is not universal at all and only 
-> works for this simple case. CRIU does not know anything about the 
-> history of mount creation for system container, it also does not know 
-> anything about any temporary mounts which were used and then removed. So 
-> understanding the proper order is almost impossible like Andrew says.
-> 
-> I've also prepared a presentation on Linux Plumbers last year about how 
-> much problems propagation brings to mounts restore in CRIU, you can take 
-> a look here https://www.linuxplumbersconf.org/event/7/contributions/640/
-> 
-> 2) Propagation creates tons of mounts
-> 3) Mount reparenting
-> 4) "Mount trap"
-> 5) "Non-uniform" propagation
-> 6) “Cross-namespace” sharing groups
-> 
-> Allowing to create mounts private first and create sharing groups later 
-> and copy sharing groups later instead of inheriting them resolves all 
-> the problems with propagation at once.
-> 
-> One can take a look on the implementation of sharing group restore in 
-> CRIU if we have this (mnt: allow to add a mount into an existing group) 
-> patch applied: 
-> https://github.com/Snorch/criu/blob/bebbded98128ec787950fa8365a6c74ce6a3b2cb/criu/mount-v2.c#L898 
-> 
-> 
-> Obviously this does not solve all the problems with mounts I know about 
-> but it's a big step forward in properly supporting them in CRIU. We 
-> already have this tested in Virtuozzo for almost a year and it works nice.
-> 
-> Notes:
-> 
-> - There is another idea, but I should say early that I don't like it, 
-> because with it restoring mounts with criu would be still super complex. 
-> We can add extra flag to mount/move_mount syscall to disable propagation 
-> temporary so that CRIU can restore the mount tree without problems 2-5, 
-> also we can now create cross-namespace bindmounts with 
-> (copy_tree+move_mount) to solve 6. But this solution does not help much 
-> with problem 1 - ordering and the need of temporary mounts. As you can 
-> see in test.sh you would still need to think hard to solve different 
-> similar configurations of reverse order between mounts and sharing groups.
-> 
-> - We can actually prohibit cross-namespace MS_SET_GROUP if you like. (If 
-> both namespaces are non abstract.) We can use open_tree to create a copy 
-> of the mount with the same sharing group and only then copy sharing from 
-> the copy while being in proper mountns.
-> 
-> - We still need it:
-> 
->  > this code might be made unnecessary by allowing bind mounts between
->  > mount namespaces.
-> 
-> No, because of problem 1. Guessing right order would be still to complex.
-> 
-> - This approach does not allow creation of any "bad" trees.
-> 
->  > Can they create loops in mount propagation trees that we can not 
-> create today?
-> 
-> There would be no loops in "sharing groups tree" for sure, as this new 
-> MS_SET_GROUP only adds one _private_ mount to one group (without moving 
-> between groups), the tree itself is unchanged after mount(MS_SET_GROUP).
-> 
-> - Probably mount syscall is not the right place for MS_SET_GROUP. I see 
-> new syscall mount_setattr, first I thought reworking MS_SET_GROUP to be 
-> a part of it, but interface of mount_setattr for copying is not 
-> convenient. Probably we can add MS_SET_GROUP flag to move_mount which 
-> has exactly what we want path to source and destination relative to fd:
-> 
-> static inline int move_mount(int from_dfd, const char *from_pathname,
->                               int to_dfd, const char *to_pathname,
->                               unsigned int flags)
-> 
-> As in mount-v2 now I had to use proc hacks to access mounts at dfd:
-> 
-> https://github.com/Snorch/criu/blob/bebbded98128ec787950fa8365a6c74ce6a3b2cb/criu/mount-v2.c#L923 
-> 
-> 
-> - I hope that we still have a chance for MS_SET_GROUP, this way we can 
-> port mount-v2 to mainstream CRIU.
-> 
+
 
 -- 
-Best regards, Tikhomirov Pavel
-Software Developer, Virtuozzo.
+Thanks,
+
+David / dhildenb
+
