@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4134D347A2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E01D347A39
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbhCXOEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235859AbhCXOE3 (ORCPT
+        id S235984AbhCXOIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:08:06 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14575 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235709AbhCXOHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:04:29 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ED0C061763;
-        Wed, 24 Mar 2021 07:04:29 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id q3so18070762qkq.12;
-        Wed, 24 Mar 2021 07:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CpPLSn6SC+tjm/MP07tit/iX5OAxIHrELjJluCN4+Z4=;
-        b=gK5Mfehw83CQNoo5eO1MGPKzFRwSFCx1vqAA28oFXLRTV77chR4gF8N12l9TMcl97r
-         cWvV5XnWYoGjF6ouRwSJenqexpLsuARyB0/VwUZmMxruLd8c8kxXLjQzV1x1mubb8UGX
-         1aU3vVsN/vvRK0/ygLinYq36Q7Oxr09rXYsAkWHsgc4phugCighwF47+TdD4h8VNYFzv
-         7BsGHqcprnPLKvo/sc4vKNFTA+m3a4VySXoulxk5pmA3cDOZWwdzg6rgVBFQFZEXmdVs
-         2sx0muI+K5n2Eqvp8Ds9THCqMm2lfsC2MCg+NKWQCb6ThIcqOPdEITvJFZnaADU/Opbw
-         z6Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CpPLSn6SC+tjm/MP07tit/iX5OAxIHrELjJluCN4+Z4=;
-        b=l7bjn+IdtXucBCTNWsti8b62OvhBNG7rU9/QlX3KEW3GlmQ+9WYy4OwvPAfcPEpGLf
-         qIEddQocHMeQVlK1cDWz4x3CrYdmFMKBVDfj8ygkLYGz5qPbjBwVa9z3Ha4uy2p2J6JH
-         zx10iGvSO+C7TsKijHrQ4ig4/DWCC9AneZ/HNBKt9fQe7nzmDSs7geUFTXQnk/JKXKmY
-         xVplVEy3nbJvxoqDUaEfyBmGJEfL9QcKb7o29kkHS2ExQXaiAeRDwXXRXiWFjoY5BY8t
-         iDIwJJRr6tx7i4H2CX+4h9HzDLqYQo80pBwQ9AmR5ERYyOsbB+smzgxCUAJGKCc24Rn7
-         wEzQ==
-X-Gm-Message-State: AOAM531RV2f7UHerV1BSDGhGg2ClQd7HwVCee+cE53NEnz3+4sEddmT5
-        +I8QuwluIWdI2h8+KWaYPXs=
-X-Google-Smtp-Source: ABdhPJxvFiADFOynFmLKf93cGd6AwCKXxls8SlNl74wx2zHm5MoUxa6OiY+hjvXImOw9EEkuYUg7Uw==
-X-Received: by 2002:a05:620a:2013:: with SMTP id c19mr3175599qka.403.1616594668546;
-        Wed, 24 Mar 2021 07:04:28 -0700 (PDT)
-Received: from Slackware.localdomain ([156.146.36.138])
-        by smtp.gmail.com with ESMTPSA id s6sm1524096qtn.15.2021.03.24.07.04.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 07:04:27 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, p.zabel@pengutronix.de,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] i2c-stm32f4: Mundane typo fix
-Date:   Wed, 24 Mar 2021 19:36:10 +0530
-Message-Id: <20210324140610.32385-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Wed, 24 Mar 2021 10:07:36 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F594C2mlrz19HW9;
+        Wed, 24 Mar 2021 22:05:31 +0800 (CST)
+Received: from localhost (10.174.179.96) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Mar 2021
+ 22:07:21 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <ruscur@russell.cc>, <oohall@gmail.com>, <mpe@ellerman.id.au>,
+        <benh@kernel.crashing.org>, <paulus@samba.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] powerpc/eeh: Remove unused inline function eeh_dev_phb_init_dynamic()
+Date:   Wed, 24 Mar 2021 22:07:14 +0800
+Message-ID: <20210324140714.19612-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.96]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+commit 475028efc708 ("powerpc/eeh: Remove eeh_dev_phb_init_dynamic()")
+left behind this, so can remove it.
 
-s/postion/position/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/i2c/busses/i2c-stm32f4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/eeh.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
-index 937c2c8fd349..4933fc8ce3fd 100644
---- a/drivers/i2c/busses/i2c-stm32f4.c
-+++ b/drivers/i2c/busses/i2c-stm32f4.c
-@@ -534,7 +534,7 @@ static void stm32f4_i2c_handle_rx_addr(struct stm32f4_i2c_dev *i2c_dev)
- 	default:
- 		/*
- 		 * N-byte reception:
--		 * Enable ACK, reset POS (ACK postion) and clear ADDR flag.
-+		 * Enable ACK, reset POS (ACK position) and clear ADDR flag.
- 		 * In that way, ACK will be sent as soon as the current byte
- 		 * will be received in the shift register
- 		 */
---
-2.30.1
+diff --git a/arch/powerpc/include/asm/eeh.h b/arch/powerpc/include/asm/eeh.h
+index b1a5bba2e0b9..ee0e7b8eac60 100644
+--- a/arch/powerpc/include/asm/eeh.h
++++ b/arch/powerpc/include/asm/eeh.h
+@@ -333,8 +333,6 @@ static inline bool eeh_enabled(void)
+ 
+ static inline void eeh_show_enabled(void) { }
+ 
+-static inline void eeh_dev_phb_init_dynamic(struct pci_controller *phb) { }
+-
+ static inline int eeh_check_failure(const volatile void __iomem *token)
+ {
+ 	return 0;
+-- 
+2.17.1
 
