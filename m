@@ -2,78 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D92347FF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03815348000
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237328AbhCXSEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:04:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236787AbhCXSDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:03:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616609025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=foTe1xJ94AwyuiY3jn5t5XLMRfrBh5Yrjw+oJoljw7A=;
-        b=QN23ZE9vjKbMHoSUZbFbesl4764TI2eLjNFyg4v1YbZPXO8zhRv0A/7YqPaDsufUv2EQjO
-        VcLZVovFPG7ESntsE2T2eePLFAbZZH2+ZVOeFioWf/ttz4lTLjmQzkw4HHfJvZdiuz81jA
-        kF2WQhrWaSEMPsmy6w+uk7k0O4j36Bg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-Bi7d1kwxOai1WzShSxZ5Og-1; Wed, 24 Mar 2021 14:03:41 -0400
-X-MC-Unique: Bi7d1kwxOai1WzShSxZ5Og-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB759190D343;
-        Wed, 24 Mar 2021 18:03:39 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.218])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 893995D723;
-        Wed, 24 Mar 2021 18:03:26 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 24 Mar 2021 19:03:39 +0100 (CET)
-Date:   Wed, 24 Mar 2021 19:03:25 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [patch V5 2/2] signal: Allow tasks to cache one sigqueue struct
-Message-ID: <20210324180324.GA13021@redhat.com>
-References: <87o8f9r7ug.fsf@nanos.tec.linutronix.de>
- <87sg4lbmxo.fsf@nanos.tec.linutronix.de>
+        id S237364AbhCXSGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:06:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232618AbhCXSFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:05:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4430861A1B;
+        Wed, 24 Mar 2021 18:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616609154;
+        bh=4ddFWD0HDeMvJooIHBmVBLMfgHrZIiewXKZt5ch7iWs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A6FHmx+M+t/r7327J8jHlQn2j7eeeQwtuRXHcULuzLaaVTXqZuHY/wFrucrpfDQZC
+         takEBJ1G9jXLsxWNCfiPyc5ZsXKzT28qWT72jH7fC40YsYIR6fwCVeQCoVV2TtWmRK
+         LS4MrPVDMZakskpDgdmzRuOpYyqqXPbmznxYMSyIwiDu9rGOlBQrm7O3NetB/A0p/w
+         bo3i8Dzo1959a2p8UE2xQyE/NJhKDQ5hgIwCiTXFbJtvuzmT5chNnES9MbrJQ9BnGx
+         jqlnKGaoqZzmXDfV9VMH5xlIPe9OzrVIVBpaKUO3ToguDiPbUNN04mlRNBY/WbP8/S
+         iEWD9+cmga8Tw==
+Date:   Wed, 24 Mar 2021 18:05:46 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH v3 01/27] arm64: Cope with CPUs stuck in VHE mode
+Message-ID: <20210324180546.GA13181@willie-the-truck>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-2-marcan@marcan.st>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87sg4lbmxo.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210304213902.83903-2-marcan@marcan.st>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/23, Thomas Gleixner wrote:
->
->  include/linux/sched.h  |    1 +
->  include/linux/signal.h |    1 +
->  kernel/exit.c          |    1 +
->  kernel/fork.c          |    1 +
->  kernel/signal.c        |   44 ++++++++++++++++++++++++++++++++++++++++++--
->  5 files changed, 46 insertions(+), 2 deletions(-)
+On Fri, Mar 05, 2021 at 06:38:36AM +0900, Hector Martin wrote:
+> From: Marc Zyngier <maz@kernel.org>
+> 
+> It seems that the CPU known as Apple M1 has the terrible habit
+> of being stuck with HCR_EL2.E2H==1, in violation of the architecture.
+> 
+> Try and work around this deplorable state of affairs by detecting
+> the stuck bit early and short-circuit the nVHE dance. It is still
+> unknown whether there are many more such nuggets to be found...
+> 
+> Reported-by: Hector Martin <marcan@marcan.st>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/kernel/head.S     | 33 ++++++++++++++++++++++++++++++---
+>  arch/arm64/kernel/hyp-stub.S | 28 ++++++++++++++++++++++++----
+>  2 files changed, 54 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> index 66b0e0b66e31..673002b11865 100644
+> --- a/arch/arm64/kernel/head.S
+> +++ b/arch/arm64/kernel/head.S
+> @@ -477,14 +477,13 @@ EXPORT_SYMBOL(kimage_vaddr)
+>   * booted in EL1 or EL2 respectively.
+>   */
+>  SYM_FUNC_START(init_kernel_el)
+> -	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
+> -	msr	sctlr_el1, x0
+> -
+>  	mrs	x0, CurrentEL
+>  	cmp	x0, #CurrentEL_EL2
+>  	b.eq	init_el2
+>  
+>  SYM_INNER_LABEL(init_el1, SYM_L_LOCAL)
+> +	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
+> +	msr	sctlr_el1, x0
+>  	isb
+>  	mov_q	x0, INIT_PSTATE_EL1
+>  	msr	spsr_el1, x0
+> @@ -504,6 +503,34 @@ SYM_INNER_LABEL(init_el2, SYM_L_LOCAL)
+>  	msr	vbar_el2, x0
+>  	isb
+>  
+> +	/*
+> +	 * Fruity CPUs seem to have HCR_EL2.E2H set to RES1,
+> +	 * making it impossible to start in nVHE mode. Is that
+> +	 * compliant with the architecture? Absolutely not!
+> +	 */
+> +	mrs	x0, hcr_el2
+> +	and	x0, x0, #HCR_E2H
+> +	cbz	x0, 1f
+> +
+> +	/* Switching to VHE requires a sane SCTLR_EL1 as a start */
+> +	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
+> +	msr_s	SYS_SCTLR_EL12, x0
+> +
+> +	/*
+> +	 * Force an eret into a helper "function", and let it return
+> +	 * to our original caller... This makes sure that we have
+> +	 * initialised the basic PSTATE state.
+> +	 */
+> +	mov	x0, #INIT_PSTATE_EL2
+> +	msr	spsr_el1, x0
+> +	adr_l	x0, stick_to_vhe
+> +	msr	elr_el1, x0
+> +	eret
+> +
+> +1:
+> +	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
+> +	msr	sctlr_el1, x0
+> +
+>  	msr	elr_el2, lr
+>  	mov	w0, #BOOT_CPU_MODE_EL2
+>  	eret
+> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> index 5eccbd62fec8..c7601030ee82 100644
+> --- a/arch/arm64/kernel/hyp-stub.S
+> +++ b/arch/arm64/kernel/hyp-stub.S
+> @@ -27,12 +27,12 @@ SYM_CODE_START(__hyp_stub_vectors)
+>  	ventry	el2_fiq_invalid			// FIQ EL2t
+>  	ventry	el2_error_invalid		// Error EL2t
+>  
+> -	ventry	el2_sync_invalid		// Synchronous EL2h
+> +	ventry	elx_sync			// Synchronous EL2h
+>  	ventry	el2_irq_invalid			// IRQ EL2h
+>  	ventry	el2_fiq_invalid			// FIQ EL2h
+>  	ventry	el2_error_invalid		// Error EL2h
+>  
+> -	ventry	el1_sync			// Synchronous 64-bit EL1
+> +	ventry	elx_sync			// Synchronous 64-bit EL1
+>  	ventry	el1_irq_invalid			// IRQ 64-bit EL1
+>  	ventry	el1_fiq_invalid			// FIQ 64-bit EL1
+>  	ventry	el1_error_invalid		// Error 64-bit EL1
+> @@ -45,7 +45,7 @@ SYM_CODE_END(__hyp_stub_vectors)
+>  
+>  	.align 11
+>  
+> -SYM_CODE_START_LOCAL(el1_sync)
+> +SYM_CODE_START_LOCAL(elx_sync)
+>  	cmp	x0, #HVC_SET_VECTORS
+>  	b.ne	1f
+>  	msr	vbar_el2, x1
+> @@ -71,7 +71,7 @@ SYM_CODE_START_LOCAL(el1_sync)
+>  
+>  9:	mov	x0, xzr
+>  	eret
+> -SYM_CODE_END(el1_sync)
+> +SYM_CODE_END(elx_sync)
+>  
+>  // nVHE? No way! Give me the real thing!
+>  SYM_CODE_START_LOCAL(mutate_to_vhe)
+> @@ -243,3 +243,23 @@ SYM_FUNC_START(switch_to_vhe)
+>  #endif
+>  	ret
+>  SYM_FUNC_END(switch_to_vhe)
+> +
+> +SYM_FUNC_START(stick_to_vhe)
+> +	/*
+> +	 * Make sure the switch to VHE cannot fail, by overriding the
+> +	 * override. This is hilarious.
+> +	 */
+> +	adr_l	x1, id_aa64mmfr1_override
+> +	add	x1, x1, #FTR_OVR_MASK_OFFSET
+> +	dc 	civac, x1
+> +	dsb	sy
+> +	isb
 
-both patches look good to me, feel free to add
+Why do we need an ISB here?
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> +	ldr	x0, [x1]
+> +	bic	x0, x0, #(0xf << ID_AA64MMFR1_VHE_SHIFT)
+> +	str	x0, [x1]
 
+I find it a bit bizarre doing this here, as for the primary CPU we're still
+a way away from parsing the early paramaters and for secondary CPUs this
+doesn't need to be done for each one. Furthermore, this same code is run
+on the resume path, which can probably then race with itself.
+
+Is it possible to do it later on the boot CPU only, e.g. in
+init_feature_override()? We should probably also log a warning that we're
+ignoring the option because nVHE is not available.
+
+Will
