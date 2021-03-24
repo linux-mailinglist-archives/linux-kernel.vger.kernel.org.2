@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E9B34806F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 786FD348070
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237587AbhCXSYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:24:47 -0400
-Received: from mail-il1-f175.google.com ([209.85.166.175]:35475 "EHLO
-        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237571AbhCXSYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:24:40 -0400
-Received: by mail-il1-f175.google.com with SMTP id 19so22243988ilj.2;
-        Wed, 24 Mar 2021 11:24:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2uCZ/bwWNO1uVSwIWibQv13vsjAJC18SvkGaZ7yVAoQ=;
-        b=hYm3Kk2Fk9vQ+fxAS7dmYEIjf/IVnqWNXld6+7hzpCaN9RJJQebHOuzunvfljLIl9j
-         GjgbVM2Zy4/L3tDTYRHbqM+xhAg23rETdvd/WI0I+Rmc6yOi3/9+ICa9lhBQiBhgrB3S
-         OLvqAljiU8SZ8q3TkK/ba05lfLGcX6t6bts0guQ7OB2tyGiWxEa910laEIJLbqh/UJBj
-         hfwnfC72G/KuEZis4Skr8qR0WCXAIVQsWWOn/fTcixSZ4gsoUA7IO8Ki3tBkpHfphVzR
-         IOuCwejisXsTxgxqS1CtXTVctbo0wDev1/K1hvOSwjhPC1sF1V1ehP8wG9ZI1SpnrF2s
-         Al7Q==
-X-Gm-Message-State: AOAM530Tqm8pChyD2oDUg7BVOKTm2MWJphLkJ5xcaVOnNgsvkzxEpffZ
-        ZRN9ak8Dnuv4V0qM0IHZSw==
-X-Google-Smtp-Source: ABdhPJzDhMoyyUt2DgAmUZOSiiH4Txzeab4TTfv0MBbnAy5yt9G95NIs1um6UYEEwNrx8jGr4UYjpw==
-X-Received: by 2002:a05:6e02:1d98:: with SMTP id h24mr3478175ila.38.1616610279375;
-        Wed, 24 Mar 2021 11:24:39 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id k12sm1417689ilo.8.2021.03.24.11.24.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 11:24:38 -0700 (PDT)
-Received: (nullmailer pid 3378228 invoked by uid 1000);
-        Wed, 24 Mar 2021 18:24:36 -0000
-Date:   Wed, 24 Mar 2021 12:24:36 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] dt-bindings: mailbox: qcom-ipcc: Add compatible for
- SC7280
-Message-ID: <20210324182436.GA3378168@robh.at.kernel.org>
-References: <20210315184410.21063-1-saiprakash.ranjan@codeaurora.org>
+        id S237584AbhCXSZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:25:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237549AbhCXSYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:24:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E32B61A02;
+        Wed, 24 Mar 2021 18:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616610293;
+        bh=HYs+nGuL0HZgWLRYyeYnAW6kjv3X1W7oq2C2YlCIsbQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e8T/VoLVYDqZVg4zZzpf82wmOuKSU1vhsr8PjqWuqwxTqvP1mWHLC9G67H1O/+yxo
+         aLWEZzeVuXdrUVefV0f+nU4Z3emCbNwjooWiFpjcwikvgBzp/8xqdVIKLbnNSMNTce
+         wZy7iU7JEAlx2XXeaxAL1j1sYIhZQFBP6sHu2di3lVRCXahUK8yWFxPIX6NeCmQqvU
+         8qRsoEII/kgWq9HGFjW3CP7GGqzTt8KXgddO7HejCSkWa9ISXspBxHVhHyPJmSeFOZ
+         erAsUz31lBzVBiiJmUNrwYGmYT7h/+L8n5keXMTu3Fb1w5EU3VUKInu01tppVe5SSY
+         8IO63czFwCt4w==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clk fixes for v5.12-rc4
+Date:   Wed, 24 Mar 2021 11:24:53 -0700
+Message-Id: <20210324182453.2033329-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315184410.21063-1-saiprakash.ranjan@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 00:14:10 +0530, Sai Prakash Ranjan wrote:
-> Add IPCC compatible for SC7280 SoC.
-> 
-> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Cc: Jassi Brar <jaswinder.singh@linaro.org>
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-Acked-by: Rob Herring <robh@kernel.org>
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+
+for you to fetch changes up to 148ddaa89d4a0a927c4353398096cc33687755c1:
+
+  clk: qcom: gcc-sc7180: Use floor ops for the correct sdcc1 clk (2021-03-13 13:00:05 -0800)
+
+----------------------------------------------------------------
+Three fixes for the Qualcomm clk driver, two for regressions this merge
+window and one for a long standing problem that only popped up now that
+eMMC is being used.
+
+----------------------------------------------------------------
+Douglas Anderson (1):
+      clk: qcom: gcc-sc7180: Use floor ops for the correct sdcc1 clk
+
+Marijn Suijten (1):
+      clk: qcom: rcg2: Rectify clk_gfx3d rate rounding without mux division
+
+Taniya Das (1):
+      clk: qcom: rpmh: Update the XO clock source for SC7280
+
+ drivers/clk/qcom/clk-rcg2.c   | 17 +++++++++--------
+ drivers/clk/qcom/clk-rpmh.c   |  7 +++++--
+ drivers/clk/qcom/gcc-sc7180.c |  4 ++--
+ 3 files changed, 16 insertions(+), 12 deletions(-)
+
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
