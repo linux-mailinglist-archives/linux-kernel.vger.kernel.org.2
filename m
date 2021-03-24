@@ -2,71 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6CF347758
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF10B34775B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhCXL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:28:28 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:45039 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhCXL2N (ORCPT
+        id S233153AbhCXL2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:28:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33607 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232545AbhCXL2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:28:13 -0400
-Received: by mail-wr1-f44.google.com with SMTP id c8so11156790wrq.11;
-        Wed, 24 Mar 2021 04:28:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KU6Dop6apks1kihX2YOTKvNWDKeXQ1Kugy0fdGkesUo=;
-        b=RQlvlYRLezr7U+O3czo3zDVKnUtg4dbCrFfTf/LVt+gI+FVrrjAxAzulBGkkFzOUi0
-         baCcPYu7KluymLwAWdVNOI23Qg4dcKigb3yv7tzUY4Wm4CEhg9HIU5NQknbUmNf9TSUA
-         gvtMRoUdW9Mz0gzRmwC1kLNCWdEp2ba0xlglMAytPY60QypPyrqN0E9vkiM7US562gEh
-         fj+/Yk/EKasXK5H/jp1w8H/1IMCM6n5bGbT0795rHJxcyDH9ru9ATGxdhM1RNee9p5Nb
-         A/QIwGMpaOVyF17WHRUix//DREIkFuYWqdT9fHsDMkVo4+ViZP2bLQrpxKJ5cQb/fM/8
-         dtWg==
-X-Gm-Message-State: AOAM532m51B2eZKiUD3IDoGJUs1yuzwlTxoBgVLFzvUnE0+36ivg7mDG
-        uGSrNYO+kCGP7AYxgWv7i4c=
-X-Google-Smtp-Source: ABdhPJyprfHTGT03IVPxhkqw3jBH7YUkK5fWR9U6uwyBT311htVyjfE/HL884+ZtcLB4mkY4Yyl+6g==
-X-Received: by 2002:a5d:4fca:: with SMTP id h10mr3140552wrw.70.1616585291877;
-        Wed, 24 Mar 2021 04:28:11 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id i16sm4663531wmq.3.2021.03.24.04.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 04:28:11 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 11:28:10 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Xu Yihang <xuyihang@huawei.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        johnny.chenyi@huawei.com, heying24@huawei.com,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH -next] x86: Fix unused variable 'msr_val' warning
-Message-ID: <20210324112810.lkeu3ffv6dv7fbab@liuwe-devbox-debian-v2>
-References: <20210322031713.23853-1-xuyihang@huawei.com>
- <20210323024302.174434-1-xuyihang@huawei.com>
+        Wed, 24 Mar 2021 07:28:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616585318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oEtMbE1m2IC72jJ8v6aeU/OBewRFspn2AuP8ScrD10I=;
+        b=XDMPt2nHqz6XJwEcJMmMRgigRo6sHCeynSGi0RwIdu3UcQiM6z58BjyIFiww7IMn/iszbQ
+        SSiI80s8pOZaF5w0weN2oNfN/OvBU2ytv1zPpJHDja/Uuer5koyOG1hsCZZfFy1u+dMM81
+        6A44S2N9JwMCh0b6y4ScLkpvcuMSsGs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-EBTSN4fnMNW2hktyP4UpDA-1; Wed, 24 Mar 2021 07:28:34 -0400
+X-MC-Unique: EBTSN4fnMNW2hktyP4UpDA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA8AF1005584;
+        Wed, 24 Mar 2021 11:28:31 +0000 (UTC)
+Received: from [10.36.115.66] (ovpn-115-66.ams2.redhat.com [10.36.115.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA4A15D9D0;
+        Wed, 24 Mar 2021 11:28:22 +0000 (UTC)
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        kexec@lists.infradead.org
+References: <20210322160200.19633-1-david@redhat.com>
+ <20210322160200.19633-2-david@redhat.com> <20210324111835.GA18855@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v1 1/3] kernel/resource: make walk_system_ram_res() find
+ all busy IORESOURCE_SYSTEM_RAM resources
+Message-ID: <8aa6af09-6f8b-1f50-820f-90eab0993f1c@redhat.com>
+Date:   Wed, 24 Mar 2021 12:28:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210324111835.GA18855@linux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210323024302.174434-1-xuyihang@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:43:02AM +0800, Xu Yihang wrote:
-> Fixes the following W=1 kernel build warning(s):
-> arch/x86/hyperv/hv_spinlock.c:28:16: warning: variable ‘msr_val’ set but not used [-Wunused-but-set-variable]
->   unsigned long msr_val;
+On 24.03.21 12:18, Oscar Salvador wrote:
+> On Mon, Mar 22, 2021 at 05:01:58PM +0100, David Hildenbrand wrote:
+>> It used to be true that we can have busy system RAM only on the first level
+>> in the resourc tree. However, this is no longer holds for driver-managed
+>> system RAM (i.e., added via dax/kmem and virtio-mem), which gets added on
+>> lower levels.
 > 
-> As Hypervisor Top-Level Functional Specification states in chapter 7.5 Virtual Processor Idle Sleep State, "A partition which possesses the AccessGuestIdleMsr privilege (refer to section 4.2.2) may trigger entry into the virtual processor idle sleep state through a read to the hypervisor-defined MSR HV_X64_MSR_GUEST_IDLE". That means only a read is necessary, msr_val is not uesed, so potentially cast to void in order to silent this warning.
+> Let me ask some rookie questions:
 > 
-> Reference:
-> https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
+> What does "busy" term stand for here?
 
-Applied to hyperv-next. Thanks.
+IORESOURCE_BUSY - here: actually added, not just some reserved range / container.
+
+
+> Why resources coming from virtio-mem are added at a lower levels?
+
+Some information can be had from ebf71552bb0e690cad523ad175e8c4c89a33c333
+
+commit ebf71552bb0e690cad523ad175e8c4c89a33c333
+Author: David Hildenbrand <david@redhat.com>
+Date:   Thu May 7 16:01:35 2020 +0200
+
+     virtio-mem: Add parent resource for all added "System RAM"
+     
+     Let's add a parent resource, named after the virtio device (inspired by
+     drivers/dax/kmem.c). This allows user space to identify which memory
+     belongs to which virtio-mem device.
+     
+     With this change and two virtio-mem devices:
+             :/# cat /proc/iomem
+             00000000-00000fff : Reserved
+             00001000-0009fbff : System RAM
+             [...]
+             140000000-333ffffff : virtio0
+               140000000-147ffffff : System RAM
+               148000000-14fffffff : System RAM
+               150000000-157ffffff : System RAM
+             [...]
+             334000000-3033ffffff : virtio1
+               338000000-33fffffff : System RAM
+               340000000-347ffffff : System RAM
+               348000000-34fffffff : System RAM
+             [...]
+
+
+
+For dax/kmem it comes naturally due to the "Persistent Memory" and
+device parent resources like:
+
+             140000000-33fffffff : Persistent Memory
+               140000000-1481fffff : namespace0.0
+               150000000-33fffffff : dax0.0
+                 150000000-33fffffff : System RAM (kmem)
+             3280000000-32ffffffff : PCI Bus 0000:00
+
+
+Thanks
+
+-- 
+Thanks,
+
+David / dhildenb
+
