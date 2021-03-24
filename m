@@ -2,126 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0553B346FC4
+	by mail.lfdr.de (Postfix) with ESMTP id 50E53346FC5
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234989AbhCXDBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234961AbhCXDBD (ORCPT
+        id S234999AbhCXDBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:01:40 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:34553 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234977AbhCXDBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:01:03 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623C6C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:01:02 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id l18so17714110edc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:01:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PBjcpQgIglZYIQCLYI/ABjzh4xZMbSaRaKT1WiivV+Y=;
-        b=P+Cj5trNRI+g0OmQ7t84I96iN9b9Xc6vphPi42LmTQYbZXpFuxaYlAE/p34MW97Ker
-         GY+7qxE6jvn0R8H5lpa3DkiNdekJkuMU7n4hJ+Run6n8/EWdh1PxJVdfHdU0UNFWvlnf
-         BvEUsJQ+8eDyNI+EEsY/6bDwocR274HobSDGU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PBjcpQgIglZYIQCLYI/ABjzh4xZMbSaRaKT1WiivV+Y=;
-        b=t+yOGS0peA8rz07lnnMQxgI3+z7YOVJsIkA1Xxyn6gXm+BvN0aPJlQjlMpqE11qg9i
-         EHAMeer0iieQ/taluC/qHMUsxq+e4oXi1beBvDj2KPmtlr7UjepMryAbkNA8491DHepx
-         5BsY/1c4qW1U/npFdVtsbF+ThDkkbnxmi2cefvJn+kiU/hRhAI58WAqnRIq0PB5mt3aK
-         OyWQC+uR0NEEHEunfzxXAU22O/1KftAPZbDtTa4hDzDOq9QobnPaAvzBOSeZoajgVHY9
-         yxssX8OdOkYqu1R7H1/9utm+urCtNvnP7phGPHLnRK/J+Htj1kHoKJHfML5J5jxkwG8m
-         n+8Q==
-X-Gm-Message-State: AOAM532aE8b1JQS1d5zn3t+mMvWGMGAwaABPo7myO+GqBCjmj7aYU8Wk
-        qkM9F5LErIrXR24k59vp0wy+kO7nc1vW6A==
-X-Google-Smtp-Source: ABdhPJz9fQd+SDPMAovAtgVVBmwpwOhKzmCRnOMZEuzCSbax2MnI87mM+eIFAf577WxknXrx1w45qg==
-X-Received: by 2002:aa7:cf95:: with SMTP id z21mr1027457edx.76.1616554860697;
-        Tue, 23 Mar 2021 20:01:00 -0700 (PDT)
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
-        by smtp.gmail.com with ESMTPSA id ld19sm260132ejb.102.2021.03.23.20.00.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 20:01:00 -0700 (PDT)
-Received: by mail-wm1-f43.google.com with SMTP id g20so12097003wmk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:00:59 -0700 (PDT)
-X-Received: by 2002:a1c:c282:: with SMTP id s124mr710113wmf.99.1616554859441;
- Tue, 23 Mar 2021 20:00:59 -0700 (PDT)
+        Tue, 23 Mar 2021 23:01:22 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id BA4B412EE;
+        Tue, 23 Mar 2021 23:01:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 23 Mar 2021 23:01:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=u
+        1fXNeBzs7omAL13kJEw9tGpAjKdIaBTjIuzN3j2LV0=; b=aOWFkBiCaqPh2rLAA
+        0caOBKGLMTfdguD661RwNVoKZPcToDRIP6vbBPDka3NRfyapGwSyJukvMNekbV9J
+        kEvSp4JJ63r3V7tLRs2Uv1UxBpibxXUJM5wx8fZGtJRJW0WbxG0jM9UI1ZNWQnc4
+        dcXSJ0E73jWulY6/PAW6zoCaSESbgoEPDBjJiAAJc3jiWamlgwTAH52uhXd5NDUm
+        JImuSjfhtrNSukVF9sEgkiX3jOvpZIb1aqVATzVxkbKXSihWpRsJqPd7J/yA/ZI5
+        yOyMeY9pPlEzrU3b8pzkxSPMpK5jLfW7znxffmtU66mYISOcAG0y50ZoF52SmIb1
+        WnNnQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=u1fXNeBzs7omAL13kJEw9tGpAjKdIaBTjIuzN3j2L
+        V0=; b=UDJ0opYQaUMKhQSByps+U9LMIZXhE9N7zxPWM14IxoEYDNn48pEOlL4F+
+        WpnGuK0RfFmjjjis+xntGr7wPq7wDzVjiHTdj7Jcj2096w+2Zg2CPHf9OMp8J/dz
+        RTuoBGG1su0FMbQ8ehpR1JLzaTVWt7lXgjtm5CveWidF1LtNeSAEh8Lc+kevtM09
+        1ZtbD892SJ4cV/84auy20cXICAqbDUNSEUTh2lIyce6kE/YQ+DZ/MhVUjzOZQb5Y
+        oWTsa7EGqPnXIl8yIni2QF2CH6MA/u71DMWTkcTaUlG/oJi0V2S2fxP7z92pxEKY
+        22aJX9t9NMeUXxudfvx+AiplZLiWw==
+X-ME-Sender: <xms:f6taYNvP90h5E3ChMJM74FVa9fh4kvZhYjtxDi8GyiM_jh8I-17ZNw>
+    <xme:f6taYKwtvtuf2S8eP7-zFQTD3v2X8oFrRMgxqfFomWOOezuI7FCCu5hZAifDm_fEM
+    ZIeEwfMq9TT0KFq5A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegjedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
+    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:f6taYP6sJos2ivnj9sMAU9sgdgGiikYnJ3GG6yHMLJWElIMZWr8FLw>
+    <xmx:f6taYMXT3W6qPouwFIAgAEJ6XlyQAfMo-tW4xmNSlVVrro5eT5xLPw>
+    <xmx:f6taYD0x0MQVl8FCubGTeDSaqWwxbnxGFk7KfctEvVnGTg4xxEwhwg>
+    <xmx:gataYEu4oeLPTdv7a13g0HPolexxhI40A2coRt9NXOOnFc0e8CRDZA>
+Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 99DC924033F;
+        Tue, 23 Mar 2021 23:01:19 -0400 (EDT)
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com, linux-sunxi@googlegroups.com
+References: <20210322140152.101709-1-jagan@amarulasolutions.com>
+ <20210322140152.101709-3-jagan@amarulasolutions.com>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v4 2/4] drm: sun4i: dsi: Add bridge support
+Message-ID: <b1f29eaa-6022-3180-f2fa-11d34ac3d9b1@sholland.org>
+Date:   Tue, 23 Mar 2021 22:01:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20210319055342.127308-1-senozhatsky@chromium.org>
- <20210319055342.127308-6-senozhatsky@chromium.org> <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
- <YFqdaHCQak5ZM0Sf@google.com> <CAAFQd5DaDZA8==HPrL1v1M=1a5g3DgY58nuq7KnA8USQ6UuiTQ@mail.gmail.com>
- <YFqkaumASvjrYP/n@google.com> <CAAFQd5AdJfNLoXwDEgCf90cm5e30rT98SO5CRJ=oR8Do_T566A@mail.gmail.com>
- <YFqpcR60384JWbNP@google.com>
-In-Reply-To: <YFqpcR60384JWbNP@google.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 24 Mar 2021 12:00:48 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5CJBPtLo22u2dM-vOGmqaD2e=TU5Qv1eoKcHsxuumgXGw@mail.gmail.com>
-Message-ID: <CAAFQd5CJBPtLo22u2dM-vOGmqaD2e=TU5Qv1eoKcHsxuumgXGw@mail.gmail.com>
-Subject: Re: [PATCHv3 5/6] media: uvcvideo: add UVC 1.5 ROI control
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210322140152.101709-3-jagan@amarulasolutions.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:52 AM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> On (21/03/24 11:34), Tomasz Figa wrote:
-> > On Wed, Mar 24, 2021 at 11:31 AM Sergey Senozhatsky
-> > <senozhatsky@chromium.org> wrote:
-> [..]
-> > > > Adjusting the rectangle to something supported by the hardware is
-> > > > mentioned explicitly in the V4L2 API documentation and is what drivers
-> > > > have to implement. Returning an error on invalid value is not a
-> > > > correct behavior here (and similarly for many other operations, e.g.
-> > > > S_FMT).
-> > >
-> > > Well, in this particular case we are talking about user-space that wants
-> > > to set ROI rectangle that is knowingly violates device's GET_MAX and
-> > > overflows UVC ROI rectangle u16 value range. That's a clear bug in user-space.
-> > > Do we want to pretend that user-space does the correct thing and fixup
-> > > stuff behind the scenes?
-> > >
-> >
-> > That's how the API is defined. There is a valid use case for this -
-> > you don't need to run QUERY_CTRL if all you need is setting the
-> > biggest possible rectangle, just set it to (0, 0), (INT_MAX, INT_MAX).
->
-> I guess in our case we need to talk about rectangle,auto-controls tuple
-> that we send to firmware
->
->         rect {
->                 (0, 0), (INT_MAX, INT_MAX)
->         }
->         auto-controls {
->                 INT_MAX
->         }
->
-> For ROI user-space also must provide valid auto-controls value, which
-> normally requires GET_MIN/GET_MAX discovery.
->
-> v4l2 selection API mentions only rectangle adjustments and errnos like
-> -ERANGE also mention "It is not possible to adjust struct v4l2_rect r
-> rectangle to satisfy all constraints given in the flags argument".
->
-> So in case when auto-controls is out of supported range (out of
-> GET_MIN, GET_MAX range) there is no way for us to tell user-space that
-> auto-controls is wrong. We probably need silently pick up the first
-> supported value, but not sure how well this will work out in the end.
+On 3/22/21 9:01 AM, Jagan Teki wrote:
+> Some display panels would come up with a non-DSI output which
+> can have an option to connect DSI interface by means of bridge
+> converter.
+> 
+> This DSI to non-DSI bridge converter would require a bridge
+> driver that would communicate the DSI controller for bridge
+> functionalities.
+> 
+> So, add support for bridge functionalities in Allwinner DSI
+> controller.
+> 
+> Cc: Samuel Holland <samuel@sholland.org>
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+> Note: 
+> Samuel Holland, The existing kms hotplug dropped in order to 
+> attach the bridge properly. 
+> 
+> However, I did try several ways to support hotplug with the 
+> bridge but it's resulting in a deadlock where bind never attach 
+> bridge until bridge pointer found and bridge pointer cannot 
+> found until bind finishes. Any inputs on this would be appreciated.
 
-Shouldn't the autocontrol selection be done via a separate bitmask
-control rather than some custom flags in the selection API?
+The intended behavior is that sun6i_dsi_bind() is independent of any DSI
+device. And sun6i_dsi_attach() must only be called after bind completes
+and the DRM device is registered. This design allows the rest of the
+display engine (such as the HDMI output) to work even if no panel is
+listed in the device tree, or if a panel driver is missing.
 
-Best regards,
-Tomasz
+> Changes for v4:
+> - none
+> Changes for v3:
+> - updated with new API's 
+> 
+>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 34 +++++++++++++++++---------
+>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h |  2 +-
+>  2 files changed, 23 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> index 2e9e7b2d4145..39321299dc27 100644
+> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> @@ -773,6 +773,9 @@ static void sun6i_dsi_encoder_enable(struct drm_encoder *encoder)
+>  	if (dsi->panel)
+>  		drm_panel_prepare(dsi->panel);
+>  
+> +	if (dsi->panel_bridge)
+> +		dsi->panel_bridge->funcs->pre_enable(dsi->panel_bridge);
+> +
+>  	/*
+>  	 * FIXME: This should be moved after the switch to HS mode.
+>  	 *
+> @@ -788,6 +791,9 @@ static void sun6i_dsi_encoder_enable(struct drm_encoder *encoder)
+>  	if (dsi->panel)
+>  		drm_panel_enable(dsi->panel);
+>  
+> +	if (dsi->panel_bridge)
+> +		dsi->panel_bridge->funcs->enable(dsi->panel_bridge);
+> +
+>  	sun6i_dsi_start(dsi, DSI_START_HSC);
+>  
+>  	udelay(1000);
+> @@ -804,6 +810,9 @@ static void sun6i_dsi_encoder_disable(struct drm_encoder *encoder)
+>  	if (dsi->panel) {
+>  		drm_panel_disable(dsi->panel);
+>  		drm_panel_unprepare(dsi->panel);
+> +	} else if (dsi->panel_bridge) {
+> +		dsi->panel_bridge->funcs->disable(dsi->panel_bridge);
+> +		dsi->panel_bridge->funcs->post_disable(dsi->panel_bridge);
+>  	}
+>  
+>  	phy_power_off(dsi->dphy);
+> @@ -964,23 +973,17 @@ static int sun6i_dsi_attach(struct mipi_dsi_host *host,
+>  			    struct mipi_dsi_device *device)
+>  {
+>  	struct sun6i_dsi *dsi = host_to_sun6i_dsi(host);
+> -	struct drm_panel *panel;
+>  	int ret;
+>  
+>  	ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 0, 0,
+> -					  &panel, NULL);
+> +					  &dsi->panel, &dsi->panel_bridge);
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (!dsi->drm || !dsi->drm->registered)
+> -		return -EPROBE_DEFER;
+> -
+> -	dsi->panel = panel;
+>  	dsi->device = device;
+>  
+> -	drm_kms_helper_hotplug_event(dsi->drm);
+> -
+> -	dev_info(host->dev, "Attached device %s\n", device->name);
+> +	dev_info(host->dev, "Attached %s %s\n",
+> +		 device->name, dsi->panel ? "panel" : "bridge");
+>  
+>  	return 0;
+>  }
+> @@ -991,9 +994,10 @@ static int sun6i_dsi_detach(struct mipi_dsi_host *host,
+>  	struct sun6i_dsi *dsi = host_to_sun6i_dsi(host);
+>  
+>  	dsi->panel = NULL;
+> +	dsi->panel_bridge = NULL;
+>  	dsi->device = NULL;
+>  
+> -	drm_kms_helper_hotplug_event(dsi->drm);
+> +	drm_of_panel_bridge_remove(dsi->dev->of_node, 0, 0);
+>  
+>  	return 0;
+>  }
+> @@ -1082,7 +1086,13 @@ static int sun6i_dsi_bind(struct device *dev, struct device *master,
+>  
+>  	drm_connector_attach_encoder(&dsi->connector, &dsi->encoder);
+>  
+> -	dsi->drm = drm;
+> +	if (dsi->panel_bridge) {
+> +		ret = drm_bridge_attach(&dsi->encoder, dsi->panel_bridge, NULL, 0);
+> +		if (ret) {
+> +			dev_err(dsi->dev, "Couldn't attach drm bridge\n");
+> +			goto err_cleanup_connector;
+> +		}
+> +	}
+
+You initialize dsi->panel_bridge in sun6i_dsi_attach() above, but that
+function may run long after sun6i_dsi_bind() has completed -- for
+example if this driver is built in, but the panel/bridge driver is built
+as a module. So you cannot reference dsi->panel_bridge from this function.
+
+Regards,
+Samuel
+
+>  
+>  	return 0;
+>  
+> @@ -1096,7 +1106,7 @@ static void sun6i_dsi_unbind(struct device *dev, struct device *master,
+>  {
+>  	struct sun6i_dsi *dsi = dev_get_drvdata(dev);
+>  
+> -	dsi->drm = NULL;
+> +	drm_encoder_cleanup(&dsi->encoder);
+>  }
+>  
+>  static const struct component_ops sun6i_dsi_ops = {
+> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h
+> index c863900ae3b4..370ecb356a63 100644
+> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h
+> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h
+> @@ -29,8 +29,8 @@ struct sun6i_dsi {
+>  
+>  	struct device		*dev;
+>  	struct mipi_dsi_device	*device;
+> -	struct drm_device	*drm;
+>  	struct drm_panel	*panel;
+> +	struct drm_bridge	*panel_bridge;
+>  };
+>  
+>  static inline struct sun6i_dsi *host_to_sun6i_dsi(struct mipi_dsi_host *host)
+> 
+
