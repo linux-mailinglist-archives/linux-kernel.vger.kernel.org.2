@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87F2347491
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0A1347490
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234772AbhCXJ0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234738AbhCXJ0Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:26:24 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D124BC0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:26:23 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lOzmP-0001bV-VY; Wed, 24 Mar 2021 10:26:22 +0100
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S234753AbhCXJ0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:26:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234735AbhCXJ0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:26:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEF6061A02;
+        Wed, 24 Mar 2021 09:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616577977;
+        bh=6wiIThzSkVnF7qtv1l/O8z77Ue/yw9XMyIc65XSUbi4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hFWkBGMgO6ReKOD1zxIBOsFedXhuo0yRN9qBEyxCDO7/tyEGiy7V7xAgP5W9pSLm8
+         McTPFwuBA7DK9NrpuGDd43ZKOC1kjJmvFSS3uE9eihNwLJ3aKiUyod9maCk+0QkNgj
+         dYfB1EKitdWzQT93Rqv9qWNXBJU/KtNg2uhveNbs=
+Date:   Wed, 24 Mar 2021 10:26:15 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Florian Westphal <fw@strlen.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
- <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
- <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
- <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
-Date:   Wed, 24 Mar 2021 10:26:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 5.10 104/157] mptcp: put subflow sock on connect error
+Message-ID: <YFsFt1+5do3d0iTH@kroah.com>
+References: <20210322121933.746237845@linuxfoundation.org>
+ <20210322121937.071435221@linuxfoundation.org>
+ <CA+G9fYvRM+9DmGuKM0ErDnrYBOmZ6zzmMkrWevMJqOzhejWwZg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvRM+9DmGuKM0ErDnrYBOmZ6zzmMkrWevMJqOzhejWwZg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mimi,
-
-On 23.03.21 19:07, Mimi Zohar wrote:
-> On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
->> On 21.03.21 21:48, Horia Geantă wrote:
->>> caam has random number generation capabilities, so it's worth using that
->>> by implementing .get_random.
->>
->> If the CAAM HWRNG is already seeding the kernel RNG, why not use the kernel's?
->>
->> Makes for less code duplication IMO.
+On Wed, Mar 24, 2021 at 02:02:06PM +0530, Naresh Kamboju wrote:
+> On Mon, 22 Mar 2021 at 18:15, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Florian Westphal <fw@strlen.de>
+> >
+> > [ Upstream commit f07157792c633b528de5fc1dbe2e4ea54f8e09d4 ]
+> >
+> > mptcp_add_pending_subflow() performs a sock_hold() on the subflow,
+> > then adds the subflow to the join list.
+> >
+> > Without a sock_put the subflow sk won't be freed in case connect() fails.
+> >
+> > unreferenced object 0xffff88810c03b100 (size 3000):
+> > [..]
+> >     sk_prot_alloc.isra.0+0x2f/0x110
+> >     sk_alloc+0x5d/0xc20
+> >     inet6_create+0x2b7/0xd30
+> >     __sock_create+0x17f/0x410
+> >     mptcp_subflow_create_socket+0xff/0x9c0
+> >     __mptcp_subflow_connect+0x1da/0xaf0
+> >     mptcp_pm_nl_work+0x6e0/0x1120
+> >     mptcp_worker+0x508/0x9a0
+> >
+> > Fixes: 5b950ff4331ddda ("mptcp: link MPC subflow into msk only after accept")
+> > Signed-off-by: Florian Westphal <fw@strlen.de>
+> > Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+> > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
 > 
-> Using kernel RNG, in general, for trusted keys has been discussed
-> before.   Please refer to Dave Safford's detailed explanation for not
-> using it [1].
-
-The argument seems to boil down to:
-
- - TPM RNG are known to be of good quality
- - Trusted keys always used it so far
-
-Both are fine by me for TPMs, but the CAAM backend is new code and neither point
-really applies.
-
-get_random_bytes_wait is already used for generating key material elsewhere.
-Why shouldn't new trusted key backends be able to do the same thing?
-
-Cheers,
-Ahmad
-
+> I have reported the following warnings and kernel crash on 5.10.26-rc2 [1]
+> The bisect reported that issue pointing out to this commit.
 > 
-> thanks,
+> commit 460916534896e6d4f80a37152e0948db33376873
+> mptcp: put subflow sock on connect error
 > 
-> Mimi
-> 
-> [1] 
-> https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A3C035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
->  
-> 
-> 
+> This problem is specific to 5.10.26-rc2.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thank you for tracking this down!
