@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7711B347A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B962D347A15
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235783AbhCXNzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235776AbhCXNzG (ORCPT
+        id S235859AbhCXN6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:58:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235838AbhCXN6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:55:06 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F318C061763;
-        Wed, 24 Mar 2021 06:55:03 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id z10so18022236qkz.13;
-        Wed, 24 Mar 2021 06:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bl+twAxTABzyYq2Klqss4Te0Jt29mShp2MJ9BTS37Kk=;
-        b=SP47RER0wtPvVgzy95KQ4pLZMs76Df4F1moWk7n1OHLD6ElO2H/wteAe0TLwhQ3DRY
-         lpUTdLIl43m2zAvR2d5tOkv4gVE1GrtF2rfE75oL8r3BIrnqgzdBi09mtSYA4xZuHWIz
-         0P0p3azDVo4n5pFS3uMGZBULXru74uE2rMlIf3NcUCIU7gZiOO2Nlk3yyLCp+62tWn5A
-         Na76qcpAj5lY7cvR+eur0fUzR23pjtgHtP0Jq+0SVMURlucmalPXzr/yFn7pZl7Zs4GK
-         5GKIkl0PhF+Hl3vCbqJYyPseOOZIqNPhDgrglbb+htnfhU2UDLgdeRoY5jMSV9TjtLRK
-         0V+A==
+        Wed, 24 Mar 2021 09:58:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616594312;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/C5hrHviblBlz6qOuCjmxQmp+MydE/HY6zib4cOG+CM=;
+        b=T9zC9YfCgG4kwHAUFBAoK/QXaEgrr+LPoSusmkvtTP9i0hOcY9C7/kqgo6X+uxBpt+k1RD
+        03YdDbCsvE5l3jpLtv5TDRzqb/NAkpFmCNzG3+ub8IMiWFLHvdJoz4h6D1D6XPn1mRXXj6
+        04Ip7/KP0WJyCw9QvVDsP+LED8DRCI4=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-FZ5ARaN3P-GHy8z2E3Wp0Q-1; Wed, 24 Mar 2021 09:58:29 -0400
+X-MC-Unique: FZ5ARaN3P-GHy8z2E3Wp0Q-1
+Received: by mail-oo1-f70.google.com with SMTP id a8so1325014ooo.14
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:58:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bl+twAxTABzyYq2Klqss4Te0Jt29mShp2MJ9BTS37Kk=;
-        b=TaB72kK3T7khwnbkyDZ4QTNwe565a2wtVja7lQoZA1bj88k/LIajcL1tE0e5LCrTjC
-         6vgtbkqL/K+/+2tU0s7IpTFk6wPPJapFtfeFAiUSW8c8TKmvye7RdBGvwiTApNtx/LbK
-         GDdKD9Wi8Ih/TIWDNLCs5mw3h8pEoH4tSg4MBnEoDvrwtzyw2hzVPiqdSctuzrDTlVXC
-         bTV6YgaJruAWgqsmB5CDxr3+iEHO6aqZps6oTQWTwFcm8M3DNst8Z7ZI0Wh2rhFe4V+p
-         LEjiB7IRpFC8UALbWOKrRCl5D7PAHROr8o+1TfWluDWKIeW/YvZi9gJco3nrjoMfsaOY
-         3+7A==
-X-Gm-Message-State: AOAM533LZSvoImE/7qRy3q5+j1MRLPyq7/pjHypKhjYehO6fDH1shckW
-        yYAoogWemkFxrWFJ/vwfcro=
-X-Google-Smtp-Source: ABdhPJxPieUj7toob6UDD8yMp3VtqUFsKRFjK79RWJFyXQggM3E+g66VFMH1wvf3SvasVQJpWyhvWg==
-X-Received: by 2002:a37:9dc1:: with SMTP id g184mr3317778qke.285.1616594102913;
-        Wed, 24 Mar 2021 06:55:02 -0700 (PDT)
-Received: from Slackware.localdomain ([156.146.36.138])
-        by smtp.gmail.com with ESMTPSA id x10sm1390816qtw.17.2021.03.24.06.54.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 06:55:02 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, unixbhaskar@gmail.com,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] media: atomisp-ov2680: A trivial typo fix
-Date:   Wed, 24 Mar 2021 19:26:42 +0530
-Message-Id: <20210324135642.30054-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        bh=/C5hrHviblBlz6qOuCjmxQmp+MydE/HY6zib4cOG+CM=;
+        b=c+tgOHKR+KpJj7HHVSF6NO7etKpiy28VqNfAyxJ0Cvf/oP5lSCaYcVwUOCd9goJ+gD
+         DWl0+zfhPGN2gutP3KQSwPvdUUXbDH01YrIZkYm+hI3pr6l0f7QIAfPxU+iSvYrJh8xi
+         nOb4EBBw6pTpc+bVOipe0in3IRO9pKM7iHJ8B5wBQsyU5nCk+YvaI0gFp6jHH13lBCr0
+         Dstbj/jX/GGD0PrzrTqTJ2YO+MFeHL0JIFoD+S1E9W34Spynh/L55AdnSgdY3aOpCCTR
+         prL07RXV6u7SxuAV1RWpc+fZe9HEBN4Bee/O2EOhpadNsAmylvdfQwzQRYWAbhBrbi5x
+         Nc5g==
+X-Gm-Message-State: AOAM532pFzj6QZ8qrPUf+9b4juMM0CvdQpFBuR2SkidkYv304XOptNVa
+        hwswNkfnP4oJFmcjXVYuRTKAzvrrAUM+WnXtx2AwN14KMi/JgA/sdvEI1M5xC+HG+tiDAqgw2Fp
+        hZspqOo4GroOKRo3cI30aaGJCNTi21jDym7XqgcIo0awfVkfi0cB9lOMLMl66Rt9/2iZms+TcTA
+        ==
+X-Received: by 2002:aca:2418:: with SMTP id n24mr2426478oic.103.1616594308297;
+        Wed, 24 Mar 2021 06:58:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzUzpwRYGx/Gf/SW6R+ymtcIvEm7PSV63CIFAnOYbgbfamQmwZBNs2xw4TBchd0MKmqjjledg==
+X-Received: by 2002:aca:2418:: with SMTP id n24mr2426458oic.103.1616594308072;
+        Wed, 24 Mar 2021 06:58:28 -0700 (PDT)
+Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
+        by smtp.gmail.com with ESMTPSA id a6sm400144oiw.44.2021.03.24.06.58.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 06:58:27 -0700 (PDT)
+Subject: Re: [PATCH] fs/fuse/virtio_fs: Fix a potential memory allocation
+ failure
+To:     zhouchuangao <zhouchuangao@vivo.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1616589523-32024-1-git-send-email-zhouchuangao@vivo.com>
+From:   Connor Kuehl <ckuehl@redhat.com>
+Message-ID: <7dbe66b5-344b-2008-ca8f-559a271a061f@redhat.com>
+Date:   Wed, 24 Mar 2021 08:58:26 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1616589523-32024-1-git-send-email-zhouchuangao@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/24/21 7:38 AM, zhouchuangao wrote:
+> Allocate memory for struct fuse_conn may fail, we should not jump to
+> out_err to kfree(fc).
 
-s/miror/mirror/
+Why not? If fc's allocation fails then it is NULL and calling kfree() on 
+a NULL pointer is a noop[1].
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/staging/media/atomisp/i2c/ov2680.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Connor
 
-diff --git a/drivers/staging/media/atomisp/i2c/ov2680.h b/drivers/staging/media/atomisp/i2c/ov2680.h
-index 49920245e064..889395933099 100644
---- a/drivers/staging/media/atomisp/i2c/ov2680.h
-+++ b/drivers/staging/media/atomisp/i2c/ov2680.h
-@@ -627,7 +627,7 @@ static struct ov2680_reg const ov2680_1296x976_30fps[] = {
- 	{0x5706, 0x0c},
- 	{0x5707, 0x78},
- 	{0x3820, 0xc0},
--	{0x3821, 0x00}, //miror/flip
-+	{0x3821, 0x00}, //mirror/flip
- 	// {0x5090, 0x0c},
- 	{}
- };
---
-2.30.1
+[1] 
+https://www.kernel.org/doc/html/latest/core-api/mm-api.html?highlight=kfree#c.kfree
 
