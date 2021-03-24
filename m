@@ -2,88 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05523471D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6B33471DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235612AbhCXGrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbhCXGqs (ORCPT
+        id S235651AbhCXGtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:49:39 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:38329 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235626AbhCXGtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:46:48 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2C7C061763;
-        Tue, 23 Mar 2021 23:46:47 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id dc12so10895760qvb.4;
-        Tue, 23 Mar 2021 23:46:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iKdTjkFOUGjD/3o95IGnMVTN3xwcieIE3gPA5ReilEk=;
-        b=u+CVk9BjxR2IPflLx5NKRjBJU/eWxuYImaiw9aQTXjWab8JPem/6aOpEP/mL7MqcdU
-         wIRSRv7UbURG285ZMeOdyVRIsNo0LWYlYTTqex3qTQ7OW5nauItRubmJb4eNrxkvz9qW
-         7by3JKI0kneXo8xwD37bwDot9wlugH729SnARGlTV5JoaTMqxT1LsPuVhStqX96okwXT
-         bVuXueYaBsnljsgMZJWxj0MVrEHv86RKNqEQBZNa+U99jO5b0k4ns3zmukxqvJLiJx4r
-         BXlZsHOk+jvdEyR+3w1tptc10rvJoL/M1qLCArFVvpD4BgcbhLxi4eZC9ZxSYh+4c4hY
-         UysQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iKdTjkFOUGjD/3o95IGnMVTN3xwcieIE3gPA5ReilEk=;
-        b=fag12YeDu5MSDn/lVM0JAaNu1yHQiHK3s96nKlth60K/41+sTox32yxIOgOHMC66+n
-         uQigFKClsJxtuTlL8jrzrxcLnkcAESWNLsLda0wPwQT9kNWLxUP9HjTwTuaUmoixZNY1
-         YF7GkVgBcvfrYCtxJS2LBTwekArdTWSQbLmCnNAY212gBejZBMQASx2zMl5IF76sw5Lh
-         c1Ja38TipH3C7kLrdazypjbUHrXBhsFmq7QNqRx7+MbpS96qznorIpOz5cs2AGs+xtHF
-         rqvw9JY7vJuPl0Bp65EP8ciFHL/NLz73MdrEB1JedQLrKVOki8pLwQXetJfaX2JJOds3
-         vp/A==
-X-Gm-Message-State: AOAM531J7D4IKhj6zjcmRX7XgROd7ufLnA1IAGtY4e4Rnr9gaGrLf5F4
-        wUlx63F1VOt+NXqI23mqDII=
-X-Google-Smtp-Source: ABdhPJzN5uKWcg3NdeaG74nB8bZc5A2sIUkSmVoQ8AESEYtr2bY1BAwdkXdg69F0MS8AjctrYtp4WQ==
-X-Received: by 2002:ad4:58ed:: with SMTP id di13mr1742233qvb.34.1616568407186;
-        Tue, 23 Mar 2021 23:46:47 -0700 (PDT)
-Received: from Slackware.localdomain ([156.146.37.194])
-        by smtp.gmail.com with ESMTPSA id a14sm1086172qkc.47.2021.03.23.23.46.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 23:46:46 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] scsi: lpfc: A mundane typo fix
-Date:   Wed, 24 Mar 2021 12:18:29 +0530
-Message-Id: <20210324064829.32092-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Wed, 24 Mar 2021 02:49:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616568546; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=oBQV+I9x0ZBz/5epdrA7py274iUh8GHJsi69OW1jM1E=;
+ b=APmVMhw1gFzTEDwFHBkX/Ke8PJ3nUO2VD+hh0QS3AttwWqb2SEV282Ob66LXqb/ZH8qj0wCH
+ f4Srqy+XHncis1uV1MKZThFX/RvH9bLdw8w3WzXsgmcWhyanyVoox+cc3xA/BoU+80WxGpnb
+ 5zNcQTGkBW6w6rlRRpS040g6v8A=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 605ae0df4db3bb680173578e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Mar 2021 06:49:03
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F716C43461; Wed, 24 Mar 2021 06:49:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF8D8C433C6;
+        Wed, 24 Mar 2021 06:49:01 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Mar 2021 12:19:01 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        p.zabel@pengutronix.de, robh+dt@kernel.org, agross@kernel.org,
+        mani@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] arm64: dts: qcom: sc7280: Add nodes to boot WPSS
+In-Reply-To: <161653719350.3012082.12055201782488576903@swboyd.mtv.corp.google.com>
+References: <1615269111-25559-1-git-send-email-sibis@codeaurora.org>
+ <1615269111-25559-7-git-send-email-sibis@codeaurora.org>
+ <161567197220.1478170.12600358804299446135@swboyd.mtv.corp.google.com>
+ <YE2OJz1pI81Uj8DA@builder.lan>
+ <161653719350.3012082.12055201782488576903@swboyd.mtv.corp.google.com>
+Message-ID: <14476306c74356a747473e820d4067a6@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-24 03:36, Stephen Boyd wrote:
+> Quoting Bjorn Andersson (2021-03-13 20:16:39)
+>> On Sat 13 Mar 15:46 CST 2021, Stephen Boyd wrote:
+>> 
+>> > Quoting Sibi Sankar (2021-03-08 21:51:51)
+>> > > Add miscellaneous nodes to boot the Wireless Processor Subsystem on
+>> >
+>> > Maybe add (WPSS) after the name so we know they're related.
+>> >
+>> > > SC7280 SoCs.
+>> > >
+>> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> > > ---
+>> > >
+>> > > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=438217
+>> > > Depends on ipcc dt node enablement from ^^
+>> > >
+>> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 143 +++++++++++++++++++++++++++++++++++
+>> > >  1 file changed, 143 insertions(+)
+>> > >
+>> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> > > index 18637c369c1d..4f03c468df51 100644
+>> > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> > > @@ -244,12 +251,131 @@
+>> > >                 reg = <0 0x80000000 0 0>;
+>> > >         };
+>> > >
+>> > > +       tcsr_mutex: hwlock {
+>> > > +               compatible = "qcom,tcsr-mutex";
+>> > > +               syscon = <&tcsr_mutex_regs 0 0x1000>;
+>> > > +               #hwlock-cells = <1>;
+>> > > +       };
+>> >
+>> > Is this node in the right place? I think the node above it is 'memory'?
+>> > In which case 'hwlock' comes before 'memory' alphabetically.
+>> >
+>> 
+>> Thanks for spotting this, as it's no longer acceptable to have a
+>> standalone "syscon" node I was asked to rewrite the binding for this a
+>> few months ago. So the tcsr_mutex should now be represented with a reg
+>> under /soc.
+> 
+> Oh nice, I wasn't aware.
+> 
+>> > > +                       #interrupt-cells = <2>;
+>> > > +               };
+>> > > +       };
+>> > > +
+>> > > +       smp2p-mpss {
+>> > > +               compatible = "qcom,smp2p";
+>> > > +               qcom,smem = <435>, <428>;
+>> > > +               interrupts-extended = <&ipcc IPCC_CLIENT_MPSS
+>> > > +                                            IPCC_MPROC_SIGNAL_SMP2P
+>> > > +                                            IRQ_TYPE_EDGE_RISING>;
+>> > > +               mboxes = <&ipcc IPCC_CLIENT_MPSS
+>> > > +                               IPCC_MPROC_SIGNAL_SMP2P>;
+>> > > +
+>> > > +               qcom,local-pid = <0>;
+>> > > +               qcom,remote-pid = <1>;
+>> > > +
+>> > > +               modem_smp2p_out: master-kernel {
+>> > > +                       qcom,entry-name = "master-kernel";
+>> > > +                       #qcom,smem-state-cells = <1>;
+>> > > +               };
+>> > > +
+>> > > +               modem_smp2p_in: slave-kernel {
+>> > > +                       qcom,entry-name = "slave-kernel";
+>> >
+>> > Do these names need to have 'master' and 'slave' in them? We're trying
+>> > to avoid these terms. See Documentation/process/coding-style.rst Section
+>> > 4 naming.
+>> >
+>> 
+>> They need to match the naming in the firmware, but I would welcome a
+>> future change to something in line with the coding style and simply 
+>> more
+>> descriptive.
+>> 
+> 
+> Sibi can this be done? I think it's still pretty early days for the
+> firmware so hopefully the terms can be replaced with something
+> different.
 
-s/conditons/conditions/
+I'll discuss the ask with the modem fw team and
+get back.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/scsi/lpfc/lpfc_els.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index f0a758138ae8..04fb95edc5b0 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -1912,7 +1912,7 @@ lpfc_cmpl_els_rrq(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
-  * ndlp on the vport node list that matches the remote node ID from the
-  * PLOGI response IOCB. If such ndlp does not exist, the PLOGI is simply
-  * ignored and command IOCB released. The PLOGI response IOCB status is
-- * checked for error conditons. If there is error status reported, PLOGI
-+ * checked for error conditions. If there is error status reported, PLOGI
-  * retry shall be attempted by invoking the lpfc_els_retry() routine.
-  * Otherwise, the lpfc_plogi_confirm_nport() routine shall be invoked on
-  * the ndlp and the NLP_EVT_CMPL_PLOGI state to the Discover State Machine
---
-2.30.1
-
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
