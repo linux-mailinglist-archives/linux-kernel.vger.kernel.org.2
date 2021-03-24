@@ -2,162 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E44347CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39D8347CBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236721AbhCXPbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236684AbhCXPbW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:31:22 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3946C0613E2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:31:20 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id hq27so33576698ejc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fckQzWuJnvD6S/jFF8HUa1PwKAcbSDOKJ4gWr/ndvyk=;
-        b=OlKQtU1q2ZxhFAsb1Cs2Js3zE+ZJzDOEI4+bnRMrr1+uVB7P/Iu6eKckjnXg8zK56l
-         Irrft7thQGCzqA32QFBdXE4+uBuO6iQgfPeDjc1NS4TUbZsPKk2pdNdVY5R9tx4z25Dg
-         ozY6uLy7niX57VhmCVl+dE8zMrZFu7sQlODj4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fckQzWuJnvD6S/jFF8HUa1PwKAcbSDOKJ4gWr/ndvyk=;
-        b=BrTHFr1nTsWGYS7ercs47NyYaMXoC1VsprzEJrUqEw7W33hUxqJbXZhNQq4Iz4nMLz
-         6SC02wH+VeGV4QOJTClQf/K8Pu8mHlDd2+2UWhWhSzCsgZD0xAVjnb+RQZ5EIX4wtMmF
-         pe0czh1kycb871xyrNE2FJE21pUc81O58WhYJ+EkL3yKvoi2iT7iIQybNmaNUgrjKXAx
-         hPMlWNEfQtt6bhGf7FkYgfI4qDt6BkkYijIaJnKXiRjknSD8El9+UFo2khE7nnIi/SGi
-         VJDMwbCrS6FVqjAZ69r1nG9WbahAwTgu/v5IxB/Uzh8sto0N2oWcQ91QPMoac8sKcHeY
-         7SKw==
-X-Gm-Message-State: AOAM532th3OnCvliTRe8CbdZa/F2iWQ57PRlxR+ysi62DZAhTljoKVHU
-        EsVh8o2lQ0oEChCwAzFGOIeZrEqv6mRHQod+
-X-Google-Smtp-Source: ABdhPJwQj/wpq3nFF6bQFT/Rz0xc2jmEi77W566MBeimLH4Wx2lLOahfvWOwYafWC5mURjTYGhXuXw==
-X-Received: by 2002:a17:906:358c:: with SMTP id o12mr4397574ejb.156.1616599878962;
-        Wed, 24 Mar 2021 08:31:18 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id b12sm1262238eds.94.2021.03.24.08.31.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 08:31:18 -0700 (PDT)
-Subject: Re: [PATCH v3 02/17] cfi: add __cficanonical
-To:     Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323203946.2159693-1-samitolvanen@google.com>
- <20210323203946.2159693-3-samitolvanen@google.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <92afcbea-1415-2df1-5e78-4e9a7a4d364b@rasmusvillemoes.dk>
-Date:   Wed, 24 Mar 2021 16:31:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236759AbhCXPcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:32:48 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50422 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236763AbhCXPcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:32:21 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F5C0L2sW7z9v23n;
+        Wed, 24 Mar 2021 16:32:18 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id FoMssj87XpiI; Wed, 24 Mar 2021 16:32:18 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F5C0L1pWyz9v23m;
+        Wed, 24 Mar 2021 16:32:18 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C1C068B82B;
+        Wed, 24 Mar 2021 16:32:19 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id IYkaSLfBGIjX; Wed, 24 Mar 2021 16:32:19 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A77598B812;
+        Wed, 24 Mar 2021 16:32:18 +0100 (CET)
+Subject: Re: [PATCH v2 4/7] CMDLINE: powerpc: convert to generic builtin
+ command line
+To:     Daniel Walker <danielwa@cisco.com>
+Cc:     Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-kernel@vger.kernel.org
+References: <20210309000247.2989531-5-danielwa@cisco.com>
+ <c5c8b57e-7954-ec02-188a-7f85cb0af731@csgroup.eu>
+ <20210309214051.GS109100@zorba>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9c5b8e33-026e-c9d6-c267-a5dd4a2b999c@csgroup.eu>
+Date:   Wed, 24 Mar 2021 16:31:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210323203946.2159693-3-samitolvanen@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210309214051.GS109100@zorba>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/2021 21.39, Sami Tolvanen wrote:
-> With CONFIG_CFI_CLANG, the compiler replaces a function address taken
-> in C code with the address of a local jump table entry, which passes
-> runtime indirect call checks. However, the compiler won't replace
-> addresses taken in assembly code, which will result in a CFI failure
-> if we later jump to such an address in instrumented C code. The code
-> generated for the non-canonical jump table looks this:
+
+
+Le 09/03/2021 à 22:40, Daniel Walker a écrit :
+> On Tue, Mar 09, 2021 at 08:56:47AM +0100, Christophe Leroy wrote:
+>>
+>>
+>> Le 09/03/2021 à 01:02, Daniel Walker a écrit :
+>>> This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
+>>> option.
+>>>
+>>> Cc: xe-linux-external@cisco.com
+>>> Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
+>>> Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
+>>> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+>>> ---
+>>>    arch/powerpc/Kconfig            | 37 +--------------------------------
+>>>    arch/powerpc/kernel/prom.c      |  1 +
+>>>    arch/powerpc/kernel/prom_init.c | 35 ++++++++++++++++++-------------
+>>>    3 files changed, 23 insertions(+), 50 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+>>> index 107bb4319e0e..276b06d5c961 100644
+>>> --- a/arch/powerpc/Kconfig
+>>> +++ b/arch/powerpc/Kconfig
+>>> @@ -167,6 +167,7 @@ config PPC
+>>>    	select EDAC_SUPPORT
+>>>    	select GENERIC_ATOMIC64			if PPC32
+>>>    	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
+>>> +	select GENERIC_CMDLINE
+>>>    	select GENERIC_CMOS_UPDATE
+>>>    	select GENERIC_CPU_AUTOPROBE
+>>>    	select GENERIC_CPU_VULNERABILITIES	if PPC_BARRIER_NOSPEC
+>>> @@ -906,42 +907,6 @@ config PPC_DENORMALISATION
+>>>    	  Add support for handling denormalisation of single precision
+>>>    	  values.  Useful for bare metal only.  If unsure say Y here.
+>>> -config CMDLINE
+>>> -	string "Initial kernel command string"
+>>> -	default ""
+>>> -	help
+>>> -	  On some platforms, there is currently no way for the boot loader to
+>>> -	  pass arguments to the kernel. For these platforms, you can supply
+>>> -	  some command-line options at build time by entering them here.  In
+>>> -	  most cases you will need to specify the root device here.
+>>> -
+>>> -choice
+>>> -	prompt "Kernel command line type" if CMDLINE != ""
+>>> -	default CMDLINE_FROM_BOOTLOADER
+>>> -
+>>> -config CMDLINE_FROM_BOOTLOADER
+>>> -	bool "Use bootloader kernel arguments if available"
+>>> -	help
+>>> -	  Uses the command-line options passed by the boot loader. If
+>>> -	  the boot loader doesn't provide any, the default kernel command
+>>> -	  string provided in CMDLINE will be used.
+
+I can't see how the above is supported in the generic builtin.
+
+Taking into account that it is the default on powerpc, I'm having hardtime with that.
+
+>>> -
+>>> -config CMDLINE_EXTEND
+>>> -	bool "Extend bootloader kernel arguments"
+>>> -	help
+>>> -	  The command-line arguments provided by the boot loader will be
+>>> -	  appended to the default kernel command string.
+>>> -
+>>> -config CMDLINE_FORCE
+>>> -	bool "Always use the default kernel command string"
+>>> -	help
+>>> -	  Always use the default kernel command string, even if the boot
+>>> -	  loader passes other arguments to the kernel.
+>>> -	  This is useful if you cannot or don't want to change the
+>>> -	  command-line options your boot loader passes to the kernel.
+>>> -
+>>> -endchoice
+>>> -
+>>>    config EXTRA_TARGETS
+>>>    	string "Additional default image types"
+>>>    	help
+>>> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+>>> index ae3c41730367..96d0a01be1b4 100644
+>>> --- a/arch/powerpc/kernel/prom.c
+>>> +++ b/arch/powerpc/kernel/prom.c
+>>> @@ -27,6 +27,7 @@
+>>>    #include <linux/irq.h>
+>>>    #include <linux/memblock.h>
+>>>    #include <linux/of.h>
+>>> +#include <linux/cmdline.h>
+>>
+>> Why is this needed in prom.c ?
+>   
+> Must have been a mistake, I don't think it's needed.
 > 
->   <noncanonical.cfi_jt>: /* In C, &noncanonical points here */
-> 	jmp noncanonical
->   ...
->   <noncanonical>:        /* function body */
-> 	...
 > 
-> This change adds the __cficanonical attribute, which tells the
-> compiler to use a canonical jump table for the function instead. This
-> means the compiler will rename the actual function to <function>.cfi
-> and points the original symbol to the jump table entry instead:
+>>>    #include <linux/of_fdt.h>
+>>>    #include <linux/libfdt.h>
+>>>    #include <linux/cpu.h>
+>>> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+>>> index e9d4eb6144e1..657241534d69 100644
+>>> --- a/arch/powerpc/kernel/prom_init.c
+>>> +++ b/arch/powerpc/kernel/prom_init.c
+>>> @@ -27,6 +27,7 @@
+>>>    #include <linux/initrd.h>
+>>>    #include <linux/bitops.h>
+>>>    #include <linux/pgtable.h>
+>>> +#include <linux/cmdline.h>
+>>>    #include <asm/prom.h>
+>>>    #include <asm/rtas.h>
+>>>    #include <asm/page.h>
+>>> @@ -242,15 +243,6 @@ static int __init prom_strcmp(const char *cs, const char *ct)
+>>>    	return 0;
+>>>    }
+>>> -static char __init *prom_strcpy(char *dest, const char *src)
+>>> -{
+>>> -	char *tmp = dest;
+>>> -
+>>> -	while ((*dest++ = *src++) != '\0')
+>>> -		/* nothing */;
+>>> -	return tmp;
+>>> -}
+>>> -
+>>
+>> This game with prom_strcpy() should go a separate preceeding patch.
+>>
+>> Also, it looks like checkpatch.pl recommends to use strscpy() instead of strlcpy().
 > 
->   <canonical>:           /* jump table entry */
-> 	jmp canonical.cfi
->   ...
->   <canonical.cfi>:       /* function body */
-> 	...
+> strscpy() is very large. I'm not sure it's compatible with this prom_init.c
+> environment.
+
+Ok you are right, lets keep strlcpy() and ignore checkpatch complaints
+
 > 
-> As a result, the address taken in assembly, or other non-instrumented
-> code always points to the jump table and therefore, can be used for
-> indirect calls in instrumented code without tripping CFI checks.
+>>>    static int __init prom_strncmp(const char *cs, const char *ct, size_t count)
+>>>    {
+>>>    	unsigned char c1, c2;
+>>> @@ -276,6 +268,20 @@ static size_t __init prom_strlen(const char *s)
+>>>    	return sc - s;
+>>>    }
+>>> +static size_t __init prom_strlcpy(char *dest, const char *src, size_t size)
+>>> +{
+>>> +	size_t ret = prom_strlen(src);
+>>> +
+>>> +	if (size) {
+>>> +		size_t len = (ret >= size) ? size - 1 : ret;
+>>> +
+>>> +		memcpy(dest, src, len);
+>>> +		dest[len] = '\0';
+>>> +	}
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +
+>>>    static int __init prom_memcmp(const void *cs, const void *ct, size_t count)
+>>>    {
+>>>    	const unsigned char *su1, *su2;
+>>> @@ -304,6 +310,7 @@ static char __init *prom_strstr(const char *s1, const char *s2)
+>>>    	return NULL;
+>>>    }
+>>> +#ifdef GENERIC_CMDLINE_NEED_STRLCAT
+>>>    static size_t __init prom_strlcat(char *dest, const char *src, size_t count)
+>>>    {
+>>>    	size_t dsize = prom_strlen(dest);
+>>> @@ -323,6 +330,7 @@ static size_t __init prom_strlcat(char *dest, const char *src, size_t count)
+>>>    	return res;
+>>>    }
+>>> +#endif
+>>>    #ifdef CONFIG_PPC_PSERIES
+>>>    static int __init prom_strtobool(const char *s, bool *res)
+>>> @@ -775,12 +783,11 @@ static void __init early_cmdline_parse(void)
+>>>    	prom_cmd_line[0] = 0;
+>>>    	p = prom_cmd_line;
+>>> -	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && (long)prom.chosen > 0)
+>>> +	if ((long)prom.chosen > 0)
+>>>    		l = prom_getprop(prom.chosen, "bootargs", p, COMMAND_LINE_SIZE-1);
+>>> -	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) || l <= 0 || p[0] == '\0')
+>>> -		prom_strlcat(prom_cmd_line, " " CONFIG_CMDLINE,
+>>> -			     sizeof(prom_cmd_line));
+>>> +	cmdline_add_builtin_custom(prom_cmd_line, (l > 0 ? p : NULL), sizeof(prom_cmd_line),
+>>> +					__prombss, prom_strlcpy, prom_strlcat);
+>>
+>> So we are referencing a function that doesn't exist (namely prom_strlcat).
+>> But it works because cmdline_add_builtin_custom() looks like a function but
+>> is in fact an obscure macro that doesn't use prom_strlcat() unless
+>> GENERIC_CMDLINE_NEED_STRLCAT is defined.
+>>
+>> IMHO that's awful for readability and code maintenance.
+> 
+> powerpc is a special case, there's no other users like this. The reason is
+> because of all the difficulty in this prom_init.c code. A lot of the generic
+> code has similar kind of changes to work across architectures.
 
-Random ramblings, I'm trying to understand how this CFI stuff works.
+Any feedback on the proposed changes I made on the 13th ? I know it is partly buggy but that was 
+more for the principle. I can make clean working patch if it helps.
 
-First, patch 1 and 2 explain the pros and cons of canonical vs
-non-canonical jump tables, in either case, there's problems with stuff
-implemented in assembly. But I don't understand why those pros and cons
-then end up with using the non-canonical jump tables by default. IIUC,
-with canonical jump tables, function pointer equality would keep working
-for functions implemented in C, because &func would always refer to the
-same stub "function" that lives in the same object file as func.cfi,
-whereas with the non-canonical version, each TU (or maybe DSO) that
-takes the address of func ends up with its own func.cfi_jt.
+> 
+> 
+>>>    	prom_printf("command line: %s\n", prom_cmd_line);
+>>> @@ -2706,7 +2713,7 @@ static void __init flatten_device_tree(void)
+>>>    	/* Add "phandle" in there, we'll need it */
+>>>    	namep = make_room(&mem_start, &mem_end, 16, 1);
+>>> -	prom_strcpy(namep, "phandle");
+>>> +	prom_strlcpy(namep, "phandle", 8);
+>>
+>> Should be in a separate patch.
+> 
+> I can move it, I missed that from the first round.
+> 
+> Daniel
+> 
 
-There are of course lots of direct calls of assembly functions, but
-I don't think we take the address of such functions very often. So why
-can't we instead equip the declarations of those with a
-__cfi_noncanonical attribute?
-
-And now, more directed at the clang folks on cc:
-
-As to how CFI works, I've tried to make sense of the clang docs. So at
-place where some int (*)(long, int) function pointer is called, the
-compiler computes (roughly) md5sum("int (*)(long, int)") and uses the
-first 8 bytes as a cookie representing that type. It then goes to some
-global table of jump table ranges indexed by that cookie and checks that
-the address it is about to call is within that range. All jump table
-entries for one type of function are consecutive in memory (with
-complications arising from cross-DSO calls).
-
-What I don't understand about all this is why that indirection through
-some hidden global table and magic jump table (whether canonical or not)
-is even needed in the simple common case of ordinary C functions. Why
-can't the compiler just emit the cookie corresponding to a given
-function's prototype immediately prior to the function? Then the inline
-check would just be "if (*(u64*)((void*)func - 8) == cookie)" and
-function pointer comparison would just work because there's no magic
-involved when doing &func. Cross-DSO calls of C function have no extra
-cost to look up a __cfi_check function in the target DSO. An indirect
-call doesn't touch at least two extra cache lines (the range table and
-the jump table entry). It seems to rely on LTO anyway, so it's not even
-that the compiler would have to emit that cookie for every single
-function, it knows at link time which functions have their address
-taken. Calling functions implemented in assembly through a function
-pointer will have the same problem as with the "canonical" jump table
-approach, but with a suitable attribute on those surely the compiler
-could emit a func.cfi_hoop
-
-  .quad 0x1122334455667788 // cookie
-  <func.cfi_hoop>:
-	jmp func
-
-and perhaps no such attribute would even be needed (with LTO, the
-compiler should be able to see "hey, I don't know that function, it's
-probably implemented in assembly, so lemme emit that trampoline with a
-cookie in front and redirect address-of to that").
-
-Rasmus
+Christophe
