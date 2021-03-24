@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9463483DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69633483E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238480AbhCXVky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S238539AbhCXVk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbhCXVke (ORCPT
+        with ESMTP id S231235AbhCXVkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:40:34 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0A0C0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:40:34 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id a11so243668qto.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:40:34 -0700 (PDT)
+        Wed, 24 Mar 2021 17:40:35 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B45C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:40:35 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id x27so163886qvd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:40:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tu47D6rgPK5Ch8hxGqsY0MMWLz7AproMEYVk2VvxMPs=;
-        b=EZNKOmm/yesJO4TFU1RQ5h9ztLddredYksOfiz2mYRoQ1oeS6zW6UtUQZIx6vZ8j9X
-         jbbP+YLZ6LH+bOppdPhj6gkvz/rwXV70RVb3XPf1xboOuVhsk9tO+NuoMltK2UA/SbFG
-         nAMxozpliyUgk52LdjNiL88e0oOKfHj7RpiFY=
+        bh=TEt/Q0fyd99CjX8sufoMKgrht6eFmVFNODN9qka8JY4=;
+        b=dJmRwlGAYK3+4cb4CNprt6qh4j3A3BNWh9YSM7qs/RBnDBz1OZ/XKfndsALwjnUaKn
+         uai3Wbobx9OFmcKRZD2uN0dk5Y7lV7FNNoUjxQLv62WdJvErkjGPdawsc7awv/OA466D
+         ZBkWe/YiktQqz45yRo89MzqYPgYfAfw7xVxKE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tu47D6rgPK5Ch8hxGqsY0MMWLz7AproMEYVk2VvxMPs=;
-        b=Q5eBYuQFmF2ACODRjBuWkgi21WEnaAiAzYIn4XkzXcloGfNsA114m2oKMJWRdABN6l
-         uKa1Q1oH7zxIFJs46kRlmiSctcpOXSGOt0r24RHKGjre882Wo9vNxa7Rxnf+LY1Tc2R1
-         7g2qA0SBScO0ZVLiXzomvyCXmocrwazec6w0nMkzzASDVwGBOWm9rhi2lFeenvTAXjSy
-         jGkgwNf+uY7ZDwY9EbCf+2HdQJ3/XNbUI4Eqbs+rFv69gTK7jJLaaqyEaE7z6Ue1f1f3
-         2hrDsCEZ+prX3YjC+YRzHqJeV8a02YXcQCtG2K1ABVl/k0l2nzvPtrlx9x90Q9gYiPDr
-         OUHQ==
-X-Gm-Message-State: AOAM531eWIX0oHC1NpvlSTiPD7WpoiA6xIx5P6MUd23SzAslpaH+AW0y
-        dPCJ/cQUN11T0NBw4xeAFfs6Aw==
-X-Google-Smtp-Source: ABdhPJzHdO3QsiAw55RaPADUjVlYqPpYSvv3fWD/LgR5d7oWm8tyNEnhAp91AnxAxuDkMobs4hIebw==
-X-Received: by 2002:a05:622a:c3:: with SMTP id p3mr4820861qtw.43.1616622033304;
-        Wed, 24 Mar 2021 14:40:33 -0700 (PDT)
+        bh=TEt/Q0fyd99CjX8sufoMKgrht6eFmVFNODN9qka8JY4=;
+        b=qqS+h25YWhC3snKDiatRe/kCCo+NPscOHi3KsvQmx3F1K9mT7nIYNUug+Y6nSkY7cF
+         AdxgmWXls23TF/LmQTOD1Dvjydj1PCZQK/0HZ5Ta6GEr20G3rLxL6xwPDgRv2dDiod5Y
+         piqPOimSUtaxTngYRpw1YSSldQcgoAobhxmT3lpTw/wOpqxwmL4ltfgPyZKQImnsLpF8
+         TxvVpON4FwV4bKdKPgnaIqskf/KeiizM9WU6FgojsieCsqMhAWynzg0uxaqubHu+JheU
+         6iZT6uz/JlSfh1xDMUyshVJppBGk42eR4lJQ9i/C7vCq4Bh8kuyjiD18rWxZ29IsGgt7
+         w7yg==
+X-Gm-Message-State: AOAM533huHuque3wqUxx02KyodUv4M3KlrGj6k0bSKfXSOy8Rr8sKBaE
+        m4XevkhGwBmen3+91wGxEv3zQw==
+X-Google-Smtp-Source: ABdhPJwngq+l2E8AX4eV5aT2yrT5tMqkDum+zXWuIZFo9EKDzHdHretvQPxMkQXl14w/5eLdXyvJKw==
+X-Received: by 2002:a0c:c248:: with SMTP id w8mr5194917qvh.58.1616622034631;
+        Wed, 24 Mar 2021 14:40:34 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:3177:30e:b1de:1fb4])
-        by smtp.gmail.com with ESMTPSA id h75sm2661107qke.80.2021.03.24.14.40.31
+        by smtp.gmail.com with ESMTPSA id h75sm2661107qke.80.2021.03.24.14.40.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 14:40:32 -0700 (PDT)
+        Wed, 24 Mar 2021 14:40:34 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -72,9 +72,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
         Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
         Tom Lendacky <thomas.lendacky@amd.com>, dhiatt@digitalocean.com
-Subject: [PATCH resend 4/8] kselftest: Add test for core sched prctl interface
-Date:   Wed, 24 Mar 2021 17:40:16 -0400
-Message-Id: <20210324214020.34142-5-joel@joelfernandes.org>
+Subject: [PATCH resend 5/8] sched: cgroup cookie API for core scheduling
+Date:   Wed, 24 Mar 2021 17:40:17 -0400
+Message-Id: <20210324214020.34142-6-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 In-Reply-To: <20210324214020.34142-1-joel@joelfernandes.org>
 References: <20210324214020.34142-1-joel@joelfernandes.org>
@@ -84,433 +84,395 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chris hyser <chris.hyser@oracle.com>
+From: Josh Don <joshdon@google.com>
 
-Provides a selftest and examples of using the interface.
+This adds the API to set/get the cookie for a given cgroup. This
+interface lives at cgroup/cpu.core_tag.
 
-Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
+The cgroup interface can be used to toggle a unique cookie value for all
+descendent tasks, preventing these tasks from sharing with any others.
+See Documentation/admin-guide/hw-vuln/core-scheduling.rst for a full
+rundown of both this and the per-task API.
+
 Signed-off-by: Josh Don <joshdon@google.com>
 ---
- tools/testing/selftests/sched/.gitignore      |   1 +
- tools/testing/selftests/sched/Makefile        |  14 +
- tools/testing/selftests/sched/config          |   1 +
- tools/testing/selftests/sched/cs_prctl_test.c | 370 ++++++++++++++++++
- 4 files changed, 386 insertions(+)
- create mode 100644 tools/testing/selftests/sched/.gitignore
- create mode 100644 tools/testing/selftests/sched/Makefile
- create mode 100644 tools/testing/selftests/sched/config
- create mode 100644 tools/testing/selftests/sched/cs_prctl_test.c
+ kernel/sched/core.c    |  61 ++++++++++++++--
+ kernel/sched/coretag.c | 156 ++++++++++++++++++++++++++++++++++++++++-
+ kernel/sched/sched.h   |  25 +++++++
+ 3 files changed, 235 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/sched/.gitignore b/tools/testing/selftests/sched/.gitignore
-new file mode 100644
-index 000000000000..6996d4654d92
---- /dev/null
-+++ b/tools/testing/selftests/sched/.gitignore
-@@ -0,0 +1 @@
-+cs_prctl_test
-diff --git a/tools/testing/selftests/sched/Makefile b/tools/testing/selftests/sched/Makefile
-new file mode 100644
-index 000000000000..10c72f14fea9
---- /dev/null
-+++ b/tools/testing/selftests/sched/Makefile
-@@ -0,0 +1,14 @@
-+# SPDX-License-Identifier: GPL-2.0+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3093cb3414c3..a733891dfe7d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9328,6 +9328,8 @@ struct task_group *sched_create_group(struct task_group *parent)
+ 
+ 	alloc_uclamp_sched_group(tg, parent);
+ 
++	alloc_sched_core_sched_group(tg);
 +
-+ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
-+CLANG_FLAGS += -no-integrated-as
-+endif
+ 	return tg;
+ 
+ err:
+@@ -9391,6 +9393,11 @@ static void sched_change_group(struct task_struct *tsk, int type)
+ 	tg = container_of(task_css_check(tsk, cpu_cgrp_id, true),
+ 			  struct task_group, css);
+ 	tg = autogroup_task_group(tsk, tg);
 +
-+CFLAGS += -O2 -Wall -g -I./ -I../../../../usr/include/  -Wl,-rpath=./ \
-+	  $(CLANG_FLAGS)
-+LDLIBS += -lpthread
-+
-+TEST_GEN_FILES := cs_prctl_test
-+TEST_PROGS := cs_prctl_test
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/sched/config b/tools/testing/selftests/sched/config
-new file mode 100644
-index 000000000000..e8b09aa7c0c4
---- /dev/null
-+++ b/tools/testing/selftests/sched/config
-@@ -0,0 +1 @@
-+CONFIG_SCHED_DEBUG=y
-diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
-new file mode 100644
-index 000000000000..03581e180e31
---- /dev/null
-+++ b/tools/testing/selftests/sched/cs_prctl_test.c
-@@ -0,0 +1,370 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Use the core scheduling prctl() to test core scheduling cookies control.
-+ *
-+ * Copyright (c) 2021 Oracle and/or its affiliates.
-+ * Author: Chris Hyser <chris.hyser@oracle.com>
-+ *
-+ *
-+ * This library is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2.1 of the GNU Lesser General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This library is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
-+ * for more details.
-+ *
-+ * You should have received a copy of the GNU Lesser General Public License
-+ * along with this library; if not, see <http://www.gnu.org/licenses>.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/eventfd.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sched.h>
-+#include <sys/prctl.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+#include <time.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#if __GLIBC_PREREQ(2, 30) == 0
-+#include <sys/syscall.h>
-+static pid_t gettid(void)
-+{
-+	return syscall(SYS_gettid);
-+}
++#ifdef CONFIG_SCHED_CORE
++	sched_core_change_group(tsk, tg);
 +#endif
 +
-+#ifndef PR_SCHED_CORE_SHARE
-+#define PR_SCHED_CORE_SHARE		60
-+# define PR_SCHED_CORE_CLEAR		0
-+# define PR_SCHED_CORE_CREATE		1
-+# define PR_SCHED_CORE_SHARE_FROM	2
-+# define PR_SCHED_CORE_SHARE_TO		3
+ 	tsk->sched_task_group = tg;
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+@@ -9443,11 +9450,6 @@ void sched_move_task(struct task_struct *tsk)
+ 	task_rq_unlock(rq, tsk, &rf);
+ }
+ 
+-static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
+-{
+-	return css ? container_of(css, struct task_group, css) : NULL;
+-}
+-
+ static struct cgroup_subsys_state *
+ cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ {
+@@ -9483,6 +9485,18 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
+ 	return 0;
+ }
+ 
++static void cpu_cgroup_css_offline(struct cgroup_subsys_state *css)
++{
++#ifdef CONFIG_SCHED_CORE
++	struct task_group *tg = css_tg(css);
++
++	if (tg->core_tagged) {
++		sched_core_put();
++		tg->core_tagged = 0;
++	}
 +#endif
-+
-+#define MAX_PROCESSES 128
-+#define MAX_THREADS   128
-+
-+static const char USAGE[] = "cs_prctl_test [options]\n"
-+"    options:\n"
-+"	-P  : number of processes to create.\n"
-+"	-T  : number of threads per process to create.\n"
-+"	-d  : delay time to keep tasks alive.\n"
-+"	-k  : keep tasks alive until keypress.\n";
-+
-+enum pid_type {PIDTYPE_PID = 0, PIDTYPE_TGID, PIDTYPE_PGID};
-+
-+const int THREAD_CLONE_FLAGS = CLONE_THREAD | CLONE_SIGHAND | CLONE_FS | CLONE_VM | CLONE_FILES;
-+
-+static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned long arg4,
-+		  unsigned long arg5)
-+{
-+	int res;
-+
-+	res = prctl(option, arg2, arg3, arg4, arg5);
-+	printf("%d = prctl(%d, %ld, %ld, %ld, %lx)\n", res, option, (long)arg2, (long)arg3,
-+	       (long)arg4, arg5);
-+	return res;
 +}
 +
-+#define STACK_SIZE (1024 * 1024)
-+
-+#define handle_error(msg) __handle_error(__FILE__, __LINE__, msg)
-+static void __handle_error(char *fn, int ln, char *msg)
+ static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
+ {
+ 	struct task_group *tg = css_tg(css);
+@@ -9517,6 +9531,25 @@ static void cpu_cgroup_fork(struct task_struct *task)
+ 	task_rq_unlock(rq, task, &rf);
+ }
+ 
++static void cpu_cgroup_exit(struct task_struct *task)
 +{
-+	printf("(%s:%d) - ", fn, ln);
-+	perror(msg);
-+	exit(EXIT_FAILURE);
-+}
++#ifdef CONFIG_SCHED_CORE
++	/*
++	 * This is possible if task exit races with core sched being
++	 * disabled due to the task's cgroup no longer being tagged, since
++	 * cpu_core_tag_write_u64() will miss dying tasks.
++	 */
++	if (unlikely(sched_core_enqueued(task))) {
++		struct rq *rq;
++		struct rq_flags rf;
 +
-+static void handle_usage(int rc, char *msg)
-+{
-+	puts(USAGE);
-+	puts(msg);
-+	putchar('\n');
-+	exit(rc);
-+}
-+
-+static unsigned long get_cs_cookie(int pid)
-+{
-+	char buf[4096];
-+	char fn[512];
-+	FILE *inf;
-+	char *c;
-+	int i;
-+
-+	if (pid == 0)
-+		pid = getpid();
-+	snprintf(fn, 512, "/proc/%d/sched", pid);
-+
-+	inf = fopen(fn, "r");
-+	if (!inf)
-+		return -2UL;
-+
-+	while (fgets(buf, 4096, inf)) {
-+		if (!strncmp(buf, "core_cookie", 11)) {
-+			for (i = 0, c = buf; *c != '\0' && *c != ':' && i < 4096; ++i, ++c)
-+				;
-+			if (*c == ':') {
-+				fclose(inf);
-+				return strtoul(c + 1, NULL, 10);
-+			}
-+		}
++		rq = task_rq_lock(task, &rf);
++		sched_core_dequeue(rq, task);
++		task_rq_unlock(rq, task, &rf);
 +	}
-+	fclose(inf);
-+	printf("Not a core sched system\n");
-+	return -1UL;
++#endif
 +}
 +
-+struct child_args {
-+	int num_threads;
-+	int pfd[2];
-+	int cpid;
-+	int thr_tids[MAX_THREADS];
-+};
+ static int cpu_cgroup_can_attach(struct cgroup_taskset *tset)
+ {
+ 	struct task_struct *task;
+@@ -10084,6 +10117,14 @@ static struct cftype cpu_legacy_files[] = {
+ 		.write_u64 = cpu_rt_period_write_uint,
+ 	},
+ #endif
++#ifdef CONFIG_SCHED_CORE
++	{
++		.name = "core_tag",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = cpu_core_tag_read_u64,
++		.write_u64 = cpu_core_tag_write_u64,
++	},
++#endif
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+ 	{
+ 		.name = "uclamp.min",
+@@ -10257,6 +10298,14 @@ static struct cftype cpu_files[] = {
+ 		.write_s64 = cpu_weight_nice_write_s64,
+ 	},
+ #endif
++#ifdef CONFIG_SCHED_CORE
++	{
++		.name = "core_tag",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = cpu_core_tag_read_u64,
++		.write_u64 = cpu_core_tag_write_u64,
++	},
++#endif
+ #ifdef CONFIG_CFS_BANDWIDTH
+ 	{
+ 		.name = "max",
+@@ -10285,10 +10334,12 @@ static struct cftype cpu_files[] = {
+ struct cgroup_subsys cpu_cgrp_subsys = {
+ 	.css_alloc	= cpu_cgroup_css_alloc,
+ 	.css_online	= cpu_cgroup_css_online,
++	.css_offline	= cpu_cgroup_css_offline,
+ 	.css_released	= cpu_cgroup_css_released,
+ 	.css_free	= cpu_cgroup_css_free,
+ 	.css_extra_stat_show = cpu_extra_stat_show,
+ 	.fork		= cpu_cgroup_fork,
++	.exit		= cpu_cgroup_exit,
+ 	.can_attach	= cpu_cgroup_can_attach,
+ 	.attach		= cpu_cgroup_attach,
+ 	.legacy_cftypes	= cpu_legacy_files,
+diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
+index 550f4975eea2..1498790bc76c 100644
+--- a/kernel/sched/coretag.c
++++ b/kernel/sched/coretag.c
+@@ -96,9 +96,19 @@ static void __sched_core_set_task_cookie(struct sched_core_cookie *cookie,
+ static void __sched_core_set_group_cookie(struct sched_core_cookie *cookie,
+ 					  unsigned long val)
+ {
++	struct task_group *tg = (struct task_group *)val;
++	u64 group_cookie_id; /* only uses lower 32 bits */
 +
-+static int child_func_thread(void __attribute__((unused))*arg)
-+{
-+	while (1)
-+		usleep(20000);
-+	return 0;
-+}
-+
-+static void create_threads(int num_threads, int thr_tids[])
-+{
-+	void *child_stack;
-+	pid_t tid;
-+	int i;
-+
-+	for (i = 0; i < num_threads; ++i) {
-+		child_stack = malloc(STACK_SIZE);
-+		if (!child_stack)
-+			handle_error("child stack allocate");
-+
-+		tid = clone(child_func_thread, child_stack + STACK_SIZE, THREAD_CLONE_FLAGS, NULL);
-+		if (tid == -1)
-+			handle_error("clone thread");
-+		thr_tids[i] = tid;
-+	}
-+}
-+
-+static int child_func_process(void *arg)
-+{
-+	struct child_args *ca = (struct child_args *)arg;
-+
-+	close(ca->pfd[0]);
-+
-+	create_threads(ca->num_threads, ca->thr_tids);
-+
-+	write(ca->pfd[1], &ca->thr_tids, sizeof(int) * ca->num_threads);
-+	close(ca->pfd[1]);
-+
-+	while (1)
-+		usleep(20000);
-+	return 0;
-+}
-+
-+static unsigned char child_func_process_stack[STACK_SIZE];
-+
-+void create_processes(int num_processes, int num_threads, struct child_args proc[])
-+{
-+	pid_t cpid;
-+	int i;
-+
-+	for (i = 0; i < num_processes; ++i) {
-+		proc[i].num_threads = num_threads;
-+
-+		if (pipe(proc[i].pfd) == -1)
-+			handle_error("pipe() failed");
-+
-+		cpid = clone(child_func_process, child_func_process_stack + STACK_SIZE,
-+			     SIGCHLD, &proc[i]);
-+		proc[i].cpid = cpid;
-+		close(proc[i].pfd[1]);
-+	}
-+
-+	for (i = 0; i < num_processes; ++i) {
-+		read(proc[i].pfd[0], &proc[i].thr_tids, sizeof(int) * proc[i].num_threads);
-+		close(proc[i].pfd[0]);
-+	}
-+}
-+
-+void disp_processes(int num_processes, struct child_args proc[])
-+{
-+	int i, j;
-+
-+	printf("tid=%d, / tgid=%d / pgid=%d: %lx\n", gettid(), getpid(), getpgid(0),
-+	       get_cs_cookie(getpid()));
-+
-+	for (i = 0; i < num_processes; ++i) {
-+		printf("    tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].cpid, proc[i].cpid,
-+		       getpgid(proc[i].cpid), get_cs_cookie(proc[i].cpid));
-+		for (j = 0; j < proc[i].num_threads; ++j) {
-+			printf("        tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].thr_tids[j],
-+			       proc[i].cpid, getpgid(0), get_cs_cookie(proc[i].thr_tids[j]));
-+		}
-+	}
-+	puts("\n");
-+}
-+
-+static int errors;
-+
-+#define validate(v) _validate(__LINE__, v, #v)
-+void _validate(int line, int val, char *msg)
-+{
-+	if (!val) {
-+		++errors;
-+		printf("(%d) FAILED: %s\n", line, msg);
-+	} else {
-+		printf("(%d) PASSED: %s\n", line, msg);
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct child_args procs[MAX_PROCESSES];
-+
-+	int keypress = 0;
-+	int num_processes = 2;
-+	int num_threads = 3;
-+	int delay = 0;
-+	int res = 0;
-+	int pidx;
-+	int pid;
-+	int opt;
-+
-+	while ((opt = getopt(argc, argv, ":hkT:P:d:")) != -1) {
-+		switch (opt) {
-+		case 'P':
-+			num_processes = (int)strtol(optarg, NULL, 10);
-+			break;
-+		case 'T':
-+			num_threads = (int)strtoul(optarg, NULL, 10);
-+			break;
-+		case 'd':
-+			delay = (int)strtol(optarg, NULL, 10);
-+			break;
-+		case 'k':
-+			keypress = 1;
-+			break;
-+		case 'h':
-+			printf(USAGE);
-+			exit(EXIT_SUCCESS);
-+		default:
-+			handle_usage(20, "unknown option");
-+		}
-+	}
-+
-+	if (num_processes < 1 || num_processes > MAX_PROCESSES)
-+		handle_usage(1, "Bad processes value");
-+
-+	if (num_threads < 1 || num_threads > MAX_THREADS)
-+		handle_usage(2, "Bad thread value");
-+
-+	if (keypress)
-+		delay = -1;
-+
-+	srand(time(NULL));
-+
-+	/* put into separate process group */
-+	if (setpgid(0, 0) != 0)
-+		handle_error("process group");
-+
-+	printf("\n## Create a thread/process/process group hiearchy\n");
-+	create_processes(num_processes, num_threads, procs);
-+	disp_processes(num_processes, procs);
-+	validate(get_cs_cookie(0) == 0);
-+
-+	printf("\n## Set a cookie on entire process group\n");
-+	if (_prctl(PR_SCHED_CORE_SHARE, PR_SCHED_CORE_CREATE, 0, PIDTYPE_PGID, 0) < 0)
-+		handle_error("core_sched create failed -- PGID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) != 0);
-+
-+	/* get a random process pid */
-+	pidx = rand() % num_processes;
-+	pid = procs[pidx].cpid;
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(pid));
-+	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Set a new cookie on entire process/TGID [%d]\n", pid);
-+	if (_prctl(PR_SCHED_CORE_SHARE, PR_SCHED_CORE_CREATE, pid, PIDTYPE_TGID, 0) < 0)
-+		handle_error("core_sched create failed -- TGID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) != get_cs_cookie(pid));
-+	validate(get_cs_cookie(pid) != 0);
-+	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Copy the cookie of current/PGID[%d], to pid [%d] as PIDTYPE_PID\n",
-+	       getpid(), pid);
-+	if (_prctl(PR_SCHED_CORE_SHARE, PR_SCHED_CORE_SHARE_TO, pid, PIDTYPE_PID, 0) < 0)
-+		handle_error("core_sched share to itself failed -- PID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(pid));
-+	validate(get_cs_cookie(pid) != 0);
-+	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Copy cookie from a thread [%d] to current/PGID [%d] as PIDTYPE_PID\n",
-+	       procs[pidx].thr_tids[0], getpid());
-+	if (_prctl(PR_SCHED_CORE_SHARE, PR_SCHED_CORE_SHARE_FROM, procs[pidx].thr_tids[0],
-+		   PIDTYPE_PID, 0) < 0)
-+		handle_error("core_sched share from thread failed -- PID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Clear a cookie on a single task [%d]\n", pid);
-+	if (_prctl(PR_SCHED_CORE_SHARE, PR_SCHED_CORE_CLEAR, pid, PIDTYPE_PID, 0) < 0)
-+		handle_error("core_sched clear failed -- PID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(pid) == 0);
-+	validate(get_cs_cookie(procs[pidx].thr_tids[0]) != 0);
-+
-+	printf("\n## Copy cookie from current [%d] to current as pidtype PGID\n", getpid());
-+	if (_prctl(PR_SCHED_CORE_SHARE, PR_SCHED_CORE_SHARE_TO, 0, PIDTYPE_PGID, 0) < 0)
-+		handle_error("core_sched share to self failed -- PGID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(pid));
-+	validate(get_cs_cookie(pid) != 0);
-+	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Clear cookies on the entire process group\n");
-+	if (_prctl(PR_SCHED_CORE_SHARE, PR_SCHED_CORE_CLEAR, 0, PIDTYPE_PGID, 0) < 0)
-+		handle_error("core_sched clear failed -- PGID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) == 0);
-+	validate(get_cs_cookie(pid) == 0);
-+	validate(get_cs_cookie(procs[pidx].thr_tids[0]) == 0);
-+
-+	if (errors) {
-+		printf("TESTS FAILED. errors: %d\n", errors);
-+		res = 10;
-+	} else {
-+		printf("SUCCESS !!!\n");
-+	}
-+
-+	if (keypress)
-+		getchar();
+ 	cookie->group_cookie = val;
+ 
+-	// XXX incorporate group_cookie into userspace id
++	if (tg)
++		group_cookie_id = tg->sched_core_id;
 +	else
-+		sleep(delay);
++		group_cookie_id = 0;
 +
-+	for (pidx = 0; pidx < num_processes; ++pidx)
-+		kill(procs[pidx].cpid, 15);
++	/* group cookie userspace id is the lower 32 bits */
++	cookie->userspace_id &= 0xffffffff00000000;
++	cookie->userspace_id |= group_cookie_id;
+ }
+ #endif
+ 
+@@ -394,6 +404,142 @@ int sched_core_share_pid(unsigned long flags, pid_t pid, enum pid_type type)
+ 	return err;
+ }
+ 
++/* CGroup core-scheduling interface support. */
++#ifdef CONFIG_CGROUP_SCHED
++/*
++ * Helper to get the group cookie in a hierarchy. Any ancestor can have a
++ * cookie.
++ *
++ * Can race with an update to tg->core_tagged if sched_core_group_mutex is
++ * not held.
++ */
++static unsigned long cpu_core_get_group_cookie(struct task_group *tg)
++{
++	for (; tg; tg = tg->parent) {
++		if (READ_ONCE(tg->core_tagged))
++			return (unsigned long)tg;
++	}
 +
-+	return res;
++	return 0;
 +}
++
++/* Determine if any group in @tg's children are tagged. */
++static bool cpu_core_check_descendants(struct task_group *tg, bool check_tag)
++{
++	struct task_group *child;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(child, &tg->children, siblings) {
++		if ((child->core_tagged && check_tag)) {
++			rcu_read_unlock();
++			return true;
++		}
++
++		rcu_read_unlock();
++		return cpu_core_check_descendants(child, check_tag);
++	}
++
++	rcu_read_unlock();
++	return false;
++}
++
++u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
++			  struct cftype *cft)
++{
++	return !!css_tg(css)->core_tagged;
++}
++
++int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
++			   u64 val)
++{
++	static DEFINE_MUTEX(sched_core_group_mutex);
++	struct task_group *tg = css_tg(css);
++	struct cgroup_subsys_state *css_tmp;
++	struct task_struct *p;
++	unsigned long group_cookie;
++	int ret = 0;
++
++	if (val > 1)
++		return -ERANGE;
++
++	if (!static_branch_likely(&sched_smt_present))
++		return -EINVAL;
++
++	mutex_lock(&sched_core_group_mutex);
++
++	if (!tg->core_tagged && val) {
++		/* Tag is being set. Check ancestors and descendants. */
++		if (cpu_core_get_group_cookie(tg) ||
++		    cpu_core_check_descendants(tg, true /* tag */)) {
++			ret = -EBUSY;
++			goto out_unlock;
++		}
++	} else if (tg->core_tagged && !val) {
++		/* Tag is being reset. Check descendants. */
++		if (cpu_core_check_descendants(tg, true /* tag */)) {
++			ret = -EBUSY;
++			goto out_unlock;
++		}
++	} else {
++		goto out_unlock;
++	}
++
++	if (val)
++		sched_core_get();
++
++	tg->core_tagged = val;
++	group_cookie = cpu_core_get_group_cookie(tg);
++
++	rcu_read_lock();
++	css_for_each_descendant_pre(css_tmp, css) {
++		struct css_task_iter it;
++
++		css_task_iter_start(css_tmp, 0, &it);
++		/*
++		 * Note: css_task_iter_next will skip dying tasks.
++		 * There could still be dying tasks left in the core queue
++		 * when we set cgroup tag to 0 when the loop is done below.
++		 * We will handle this in cpu_cgroup_exit().
++		 */
++		while ((p = css_task_iter_next(&it))) {
++			sched_core_update_cookie(p, group_cookie,
++						 sched_core_group_cookie_type);
++		}
++
++		css_task_iter_end(&it);
++	}
++	rcu_read_unlock();
++
++	if (!val)
++		sched_core_put();
++
++out_unlock:
++	mutex_unlock(&sched_core_group_mutex);
++	return ret;
++}
++
++void sched_core_change_group(struct task_struct *p, struct task_group *new_tg)
++{
++	lockdep_assert_held(rq_lockp(task_rq(p)));
++
++	/*
++	 * Reading the group cookie can race, but since the task is already
++	 * visible in the group, a concurrent group_cookie update will also
++	 * update this task.
++	 */
++	__sched_core_set_group_cookie(&p->core_cookie,
++				      cpu_core_get_group_cookie(new_tg));
++}
++
++void alloc_sched_core_sched_group(struct task_group *tg)
++{
++	static u32 next_id = 1;
++
++	tg->sched_core_id = next_id++;
++	WARN_ON_ONCE(next_id == 0);
++}
++#endif
++
+ int sched_core_exec(void)
+ {
+ 	int ret = 0;
+@@ -408,7 +554,13 @@ int sched_core_exec(void)
+ 	return ret;
+ }
+ 
+-/* Called from sched_fork() */
++/*
++ * Called from sched_fork().
++ *
++ * NOTE: This might race with a concurrent cgroup cookie update. That's
++ * ok; sched_core_change_group() will handle this post-fork, once the
++ * task is visible.
++ */
+ int sched_core_fork(struct task_struct *p, unsigned long clone_flags)
+ {
+ 	/*
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 1be86d9cc58f..c3435469ea24 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -385,6 +385,11 @@ struct cfs_bandwidth {
+ struct task_group {
+ 	struct cgroup_subsys_state css;
+ 
++#ifdef CONFIG_SCHED_CORE
++	int			core_tagged;
++	u32			sched_core_id;
++#endif
++
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 	/* schedulable entities of this group on each CPU */
+ 	struct sched_entity	**se;
+@@ -433,6 +438,11 @@ struct task_group {
+ 
+ };
+ 
++static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
++{
++	return css ? container_of(css, struct task_group, css) : NULL;
++}
++
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ #define ROOT_TASK_GROUP_LOAD	NICE_0_LOAD
+ 
+@@ -1170,6 +1180,7 @@ static inline raw_spinlock_t *__rq_lockp(struct rq *rq)
+ 	return &rq->__lock;
+ }
+ 
++void sched_core_change_group(struct task_struct *p, struct task_group *new_tg);
+ int sched_core_fork(struct task_struct *p, unsigned long clone_flags);
+ 
+ static inline bool sched_core_enqueued(struct task_struct *task)
+@@ -1186,6 +1197,16 @@ void sched_core_put(void);
+ 
+ int sched_core_share_pid(unsigned long flags, pid_t pid, enum pid_type type);
+ 
++#ifdef CONFIG_CGROUP_SCHED
++u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
++			  struct cftype *cft);
++
++int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
++			   u64 val);
++
++void alloc_sched_core_sched_group(struct task_group *tg);
++#endif
++
+ bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
+ 
+ int sched_core_cookie_cmp(const struct sched_core_cookie *a,
+@@ -1305,6 +1326,10 @@ static inline bool sched_core_enqueued(struct task_struct *task)
+ static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
+ static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
+ 
++#ifdef CONFIG_CGROUP_SCHED
++void alloc_sched_core_sched_group(struct task_group *tg) {}
++#endif
++
+ #endif /* CONFIG_SCHED_CORE */
+ 
+ static inline void lockdep_assert_rq_held(struct rq *rq)
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
