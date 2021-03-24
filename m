@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EC2347054
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 05:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8E434705D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 05:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhCXEDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 00:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhCXECi (ORCPT
+        id S229853AbhCXEFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 00:05:23 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:34664 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhCXEFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 00:02:38 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570ABC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 21:02:38 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id k4so7229924plk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 21:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l+oEqrPK4Jh5Yh1K1agFFtG8yqWY6RUsmzxm5BWQMh4=;
-        b=rtu7m/MUwYEQhtZ3hvBoBY8BPSqNRTcUuwaVklp/Nh3hYVFTqYwUHXXMn/JJm5RVfb
-         C5dsYrqQ9ZiiXgCHUg5W+QUPKbMopDA4Xz63sDtH0CLmOwZsvE/YwPHzLZ5SRutLArsM
-         CFmGTEiA1CIewKzsLwd4eOvqL69IgMWA+cZ+zaIUex81ElsrrUxsTCuUG2rtep5RbFol
-         wSDdaGFSV9TLFd4RK9yw0AHPrFz9iX2FESUZBBIF+ZwSd2N9Htc87mDSZpv0gKiiSJKN
-         oBFgqbDUG3Twk8/uUCYRLdquR1+vockGgxLLsl91/ty08lFS0G4MH1uQ04LDY1zDjhLZ
-         CZXQ==
+        Wed, 24 Mar 2021 00:05:04 -0400
+Received: by mail-lj1-f175.google.com with SMTP id f16so28500524ljm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 21:05:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l+oEqrPK4Jh5Yh1K1agFFtG8yqWY6RUsmzxm5BWQMh4=;
-        b=NdfgxgA/K5aku+EgwrRFEW5yE4FXvrdf64MIy0ZqyYH6F0d8HKUzlqr/i8XJxmZ+Xv
-         e4KQLS7R7PI6OhdS7bVvbOiRir4G1lN3IftvQqMl4ZmnsG7XbJHwDx5QlE4XzNV7yrdJ
-         3c742YyTEKuCOa07zr0o4x005kpWz2F2HXxxOMRMN/DK/MyAe3t0vCFdMHZ3sc0yg7d/
-         nvy2l2kAB05N125HldmYBZL2bL5gFQa6vn88cYceY2trnwpu74rsB4sB3MeGY0VMSZeQ
-         S+uvgp+2XxMAQatUJusoJXbrIZe4JIpqWg06FJ/qjR99uWf1r+c86DXrTl5MIbJniXZa
-         dD/A==
-X-Gm-Message-State: AOAM532sb+02en69ceo8lHOv97eEqndXKJxM5xDPBbbWn99bJI5HX8L0
-        4pcwPJQL3ELfOtKPDd/AuSjQxw==
-X-Google-Smtp-Source: ABdhPJwSA8y6J+5XjApUxlt5SYVAV3+L6fs7ph8TQwoIVsjtJUxOk39yGEtpPARocP0zeq24ABotog==
-X-Received: by 2002:a17:90a:fa0b:: with SMTP id cm11mr1428854pjb.140.1616558551914;
-        Tue, 23 Mar 2021 21:02:31 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id s19sm626312pfh.168.2021.03.23.21.02.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Mar 2021 21:02:31 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 09:32:29 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210324040229.45gxaqfkfqjwleed@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323090108.ygx76exdgzudeeqi@vireshk-i7>
- <20210323093839.n7cq7f5poebqdwit@vireshk-i7>
- <5a415dbe-8e3b-2731-cc52-19aeadda1a17@intel.com>
- <20210324035225.skkllxexjl65gs6x@vireshk-i7>
- <70a2d0f7-ac48-b477-8368-7ef55696bff1@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TgVU7M3hkTrPRlTPdUuQz41iZtTwxWQCelmHjTb2Nyw=;
+        b=MaE7wEj95QcnMpn9kmDpsc97VT4zFdKbIaGqDUCXYZZ9fHFSFtTbbVjLVyA6MABjKl
+         mz8RMldPPVY0Qm9GlBtiakcLtr1Qs3OKOo0SVMIjZOAQMx9qFNHMz+NiRXvbcKhFHmnz
+         gYgHWVTO6N6GrCrvIXTgRjKpregU7WIa+PJ+rJCLZ8mukLb0xkkf0vHzfTGfoZTpjIo/
+         Bhy19HmOSPZok9LosTGRPjgVPNzp5vG5uU5ou9pY6B88RpkuHv55KSK/0/FMAONDelxx
+         KRBoRvortQR1FYSHeui9W4WkBSIYtSaaahz0eDazHSKGBMdRHv8wzg0zqRCd1zWy9e20
+         FFoA==
+X-Gm-Message-State: AOAM531t2CZOQxvjRIcKdcJo9MS1Dx1YbbBGQMsTbJQwJERBL1YXdbvw
+        FGDIfaMBVC68sDcPS62gL4/AyZm8tWn7JEEkJRq7JYh9
+X-Google-Smtp-Source: ABdhPJwuTZkfudwfmSrLG88G1i63zGoWR6QAKCkBuRa3c48GySBQSNn/z2MVi4pH+7y9X4tk89IvBauilaXzd5meS5o=
+X-Received: by 2002:a2e:5057:: with SMTP id v23mr696969ljd.393.1616558703541;
+ Tue, 23 Mar 2021 21:05:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70a2d0f7-ac48-b477-8368-7ef55696bff1@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210322060635.821531-1-like.xu@linux.intel.com>
+ <20210322060635.821531-4-like.xu@linux.intel.com> <CAM9d7ci7qj47xDC3z2AzYGjnFdPRNsuEPGivZ1_re-XGhoBwMg@mail.gmail.com>
+ <5fda3599-1b51-5f58-fdcc-2afcf6d4968b@linux.intel.com>
+In-Reply-To: <5fda3599-1b51-5f58-fdcc-2afcf6d4968b@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 24 Mar 2021 13:04:52 +0900
+Message-ID: <CAM9d7cgouGAAt46qe_DGqMX0xzYF3a0ZQw2aXFwdxo4d66d18A@mail.gmail.com>
+Subject: Re: [PATCH v4 RESEND 3/5] perf/x86/lbr: Move cpuc->lbr_xsave
+ allocation out of sleeping region
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-03-21, 12:00, Jie Deng wrote:
-> 
-> On 2021/3/24 11:52, Viresh Kumar wrote:
-> > On 24-03-21, 08:53, Jie Deng wrote:
-> > > On 2021/3/23 17:38, Viresh Kumar wrote:
-> > > > On 23-03-21, 14:31, Viresh Kumar wrote:
-> > > > > On 23-03-21, 22:19, Jie Deng wrote:
-> > > > > > +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
-> > > > > > +{
-> > > > > > +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
-> > > > > > +	struct virtqueue *vq = vi->vq;
-> > > > > > +	struct virtio_i2c_req *reqs;
-> > > > > > +	unsigned long time_left;
-> > > > > > +	int ret, nr;
-> > > > > > +
-> > > > > > +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
-> > > > > > +	if (!reqs)
-> > > > > > +		return -ENOMEM;
-> > > > > > +
-> > > > > > +	mutex_lock(&vi->lock);
-> > > > > > +
-> > > > > > +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
-> > > > > > +	if (ret == 0)
-> > > > > > +		goto err_unlock_free;
-> > > > > > +
-> > > > > > +	nr = ret;
-> > > > > > +	reinit_completion(&vi->completion);
-> > > > > I think I may have found a possible bug here. This reinit_completion() must
-> > > > > happen before we call virtio_i2c_send_reqs(). It is certainly possible (surely
-> > > > > in corner cases) that virtio_i2c_msg_done() may get called right after
-> > > > > virtio_i2c_send_reqs() and before we were able to call reinit_completion(). And
-> > > > > in that case we will never see the completion happen at all.
-> > > > > 
-> > > > > > +	virtqueue_kick(vq);
-> > > > I may have misread this. Can the actually start before virtqueue_kick() is
-> > > > called ?
-> > I didn't write it properly here. I wanted to say,
-> > 
-> > "Can the _transfer_ actually start before virtqueue_kick() is called ?"
-> 
-> 
-> It can't start until the virtqueue_kick() is called. Call virtqueue_kick
-> then wait.
+On Wed, Mar 24, 2021 at 12:47 PM Like Xu <like.xu@linux.intel.com> wrote:
+>
+> Hi Namhyung,
+>
+> On 2021/3/24 9:32, Namhyung Kim wrote:
+> > Hello,
+> >
+> > On Mon, Mar 22, 2021 at 3:14 PM Like Xu <like.xu@linux.intel.com> wrote:
+> >> +void reserve_lbr_buffers(struct perf_event *event)
+> >> +{
+> >> +       struct kmem_cache *kmem_cache = x86_get_pmu()->task_ctx_cache;
+> >> +       struct cpu_hw_events *cpuc;
+> >> +       int cpu;
+> >> +
+> >> +       if (!static_cpu_has(X86_FEATURE_ARCH_LBR))
+> >> +               return;
+> >> +
+> >> +       for_each_possible_cpu(cpu) {
+> >> +               cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
+> >> +               if (kmem_cache && !cpuc->lbr_xsave && !event->attr.precise_ip)
+> >> +                       cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
+> >> +       }
+> >> +}
+> >
+> > I think we should use kmem_cache_alloc_node().
+>
+> "kmem_cache_alloc_node - Allocate an object on the specified node"
+>
+> The reserve_lbr_buffers() is called in __x86_pmu_event_init().
+> When the LBR perf_event is scheduled to another node, it seems
+> that we will not call init() and allocate again.
+>
+> Do you mean use kmem_cache_alloc_node() for each numa_nodes_parsed ?
 
-Great, thanks for the confirmation. The code is fine then.
+I assume cpuc->lbr_xsave will be accessed for that cpu only.
+Then it needs to allocate it in the node that cpu belongs to.
+Something like below..
 
--- 
-viresh
+    cpuc->lbr_xsave = kmem_cache_alloc_node(kmem_cache, GFP_KERNEL,
+                                               cpu_to_node(cpu));
+
+Thanks,
+Namhyung
