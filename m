@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA231347C36
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D780347C3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236594AbhCXPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:19:48 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40171 "EHLO mga17.intel.com"
+        id S236616AbhCXPUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:20:15 -0400
+Received: from mga02.intel.com ([134.134.136.20]:5443 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236558AbhCXPTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:19:22 -0400
-IronPort-SDR: Zn2GkqVZDV+F27jZEWhPIo4v809vj+WwdIe1hiu8zJJkYuSlmP+btzDNhGaj7rzIy1HwxNyrnF
- YuM5wdTearMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="170704278"
+        id S236622AbhCXPUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:20:05 -0400
+IronPort-SDR: 8B0I7IHkDmVn7MCYwijv7T5kqXYfB/AnwAEf43KvE20aMUgtTVFN9X9A0QH4maxSEl9KhGQRjS
+ Oj623A0+hdGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="177843099"
 X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="170704278"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:19:18 -0700
-IronPort-SDR: 7OdYXiQ2/SO/jBlIPUYfsq3QhvVySrWY7+SL5h6fg1FFxGXiQEKM1fD9XX7ik7aZ+mxpx9ISAC
- P753hWlfB6YQ==
-X-ExtLoop1: 1
+   d="scan'208";a="177843099"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:20:04 -0700
+IronPort-SDR: 0Csxo38hYG0gOWjX4f8jYtke/oOzK7BN7YMXUE1uQxG3pye9fUXjGOMOwlDz/Tf+xGLjli431t
+ w3AjDvzB7v1w==
 X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="514231841"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Mar 2021 08:19:17 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1441F16A; Wed, 24 Mar 2021 17:19:30 +0200 (EET)
+   d="scan'208";a="408895864"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:20:03 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lP5If-00Fj94-4b; Wed, 24 Mar 2021 17:20:01 +0200
+Date:   Wed, 24 Mar 2021 17:20:01 +0200
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v3 1/1] mfd: intel_quark_i2c_gpio: enable MSI interrupt
-Date:   Wed, 24 Mar 2021 17:19:29 +0200
-Message-Id: <20210324151929.36844-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
+Message-ID: <YFtYoefcG6+jI3mQ@smile.fi.intel.com>
+References: <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
+ <20210324102931.GH2916463@dell>
+ <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
+ <20210324104729.GL2916463@dell>
+ <YFsgf9J+hQjfrZCb@smile.fi.intel.com>
+ <20210324115033.GM2916463@dell>
+ <YFsv6DijMMiv3D10@smile.fi.intel.com>
+ <20210324130723.GN2916463@dell>
+ <YFtKo4IrOGWoX6O3@smile.fi.intel.com>
+ <20210324151035.GO2916463@dell>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324151035.GO2916463@dell>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow interrupts to be MSI if supported by hardware.
+On Wed, Mar 24, 2021 at 03:10:35PM +0000, Lee Jones wrote:
+> On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+> > On Wed, Mar 24, 2021 at 01:07:23PM +0000, Lee Jones wrote:
+> > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+> > > > On Wed, Mar 24, 2021 at 11:50:33AM +0000, Lee Jones wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v3: added a comment about magic 1s (Lee)
+...
 
- drivers/mfd/intel_quark_i2c_gpio.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+> > > > It's a two way road:
+> > > > a) driver states that it needs only 1 vector and it's enough to it
+> > > > b) hardware must provide at least 1 vector to be served by this driver.
+> > > > 
+> > > > Look again into grepped output. Most of drivers that define it as an variable
+> > > > may dynamically adapt to the different amount of IRQ vectors. When it's static,
+> > > > usually drivers just hard code those values.
+> > > > 
+> > > > I'm really don't see a point to define them _in this driver_.
+> > > 
+> > > That's fine.  I just felt like I had to ask.
+> > > 
+> > > Would you consider a comment that lets people unfamiliar with the API
+> > > what the values mean?
+> > > 
+> > > Something to the tune of:
+> > > 
+> > >   "This driver requests 1 (and only 1) IRQ vector"
+> > 
+> > 
+> > Rather
+> > 
+> >     "This driver requests only 1 (and it's enough) IRQ vector"
+> 
+>  "This driver only requires 1 IRQ vector"
 
-diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-index 52728a963c17..7f90e6f022ba 100644
---- a/drivers/mfd/intel_quark_i2c_gpio.c
-+++ b/drivers/mfd/intel_quark_i2c_gpio.c
-@@ -169,8 +169,8 @@ static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
- 	res[INTEL_QUARK_IORES_MEM].end =
- 		pci_resource_end(pdev, MFD_I2C_BAR);
- 
--	res[INTEL_QUARK_IORES_IRQ].start = pdev->irq;
--	res[INTEL_QUARK_IORES_IRQ].end = pdev->irq;
-+	res[INTEL_QUARK_IORES_IRQ].start = pci_irq_vector(pdev, 0);
-+	res[INTEL_QUARK_IORES_IRQ].end = pci_irq_vector(pdev, 0);
- 
- 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
- 	if (!pdata)
-@@ -217,7 +217,7 @@ static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
- 	pdata->properties->idx		= 0;
- 	pdata->properties->ngpio	= INTEL_QUARK_MFD_NGPIO;
- 	pdata->properties->gpio_base	= INTEL_QUARK_MFD_GPIO_BASE;
--	pdata->properties->irq[0]	= pdev->irq;
-+	pdata->properties->irq[0]	= pci_irq_vector(pdev, 0);
- 
- 	cell->platform_data = pdata;
- 	cell->pdata_size = sizeof(*pdata);
-@@ -245,22 +245,31 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
- 	if (ret)
- 		return ret;
- 
-+	pci_set_master(pdev);
-+
-+	/* This driver only requires 1 IRQ vector */
-+	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
-+	if (ret < 0)
-+		goto err_unregister_i2c_clk;
-+
- 	ret = intel_quark_i2c_setup(pdev, &intel_quark_mfd_cells[MFD_I2C_BAR]);
- 	if (ret)
--		goto err_unregister_i2c_clk;
-+		goto err_free_irq_vectors;
- 
- 	ret = intel_quark_gpio_setup(pdev, &intel_quark_mfd_cells[MFD_GPIO_BAR]);
- 	if (ret)
--		goto err_unregister_i2c_clk;
-+		goto err_free_irq_vectors;
- 
- 	ret = mfd_add_devices(&pdev->dev, 0, intel_quark_mfd_cells,
- 			      ARRAY_SIZE(intel_quark_mfd_cells), NULL, 0,
- 			      NULL);
- 	if (ret)
--		goto err_unregister_i2c_clk;
-+		goto err_free_irq_vectors;
- 
- 	return 0;
- 
-+err_free_irq_vectors:
-+	pci_free_irq_vectors(pdev);
- err_unregister_i2c_clk:
- 	intel_quark_unregister_i2c_clk(&pdev->dev);
- 	return ret;
-@@ -269,6 +278,7 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
- static void intel_quark_mfd_remove(struct pci_dev *pdev)
- {
- 	mfd_remove_devices(&pdev->dev);
-+	pci_free_irq_vectors(pdev);
- 	intel_quark_unregister_i2c_clk(&pdev->dev);
- }
- 
+Thanks! v3 has been sent.
+
+> > or something like this.
+> > 
+> > Should I send a patch with the comment included? If so, please suggest if it's
+> > good from English grammar/style perspective.
+
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
