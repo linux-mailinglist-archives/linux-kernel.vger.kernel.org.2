@@ -2,116 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852A5346E8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16915346E92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234180AbhCXBS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:18:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:54152 "EHLO mga11.intel.com"
+        id S234227AbhCXBTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:19:02 -0400
+Received: from ozlabs.org ([203.11.71.1]:34777 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233880AbhCXBSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:18:04 -0400
-IronPort-SDR: FBDSabMShZ1LlcrlPeJFbHv7RbG281OoolWQ0A3ZGqSmBA5hUsa33qJg9ZHHyc4dknGTdKvwTX
- 6wWVjo6XYqeg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="187285497"
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="187285497"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 18:18:03 -0700
-IronPort-SDR: zAlVZ9yHmWlD4rtt/9FoVQjk34tigwDEmDonNYtYPOpKDIpnEJojpLYTTQ3KhEgBo45gVMFNs+
- fySOsJvqCaIQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
-   d="scan'208";a="441971978"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Mar 2021 18:17:58 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
+        id S234188AbhCXBSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 21:18:42 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4r3L0lTtz9sWV;
+        Wed, 24 Mar 2021 12:18:37 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616548718;
+        bh=2zn+dHvSOjP1psSX7dRMUQa86aPXcoq0uxVdQ9/MVlg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=t/h4X8KDD92V2hfI+Yo+q0546927IMkrwbRB/laTFmzUsvVU/pF0pMCApxc6baOf1
+         PXGqEI0u9++zj6b0CdbTlkgukhhkHDwoITOCBoP+6dsztjsPav8Ym+USo0xL14glHt
+         yPMlhWRhBpyx46AlQwdUbo5tIBNbW4p5w2SLyHv57wOsdC3/Ic811/kSTJmKpuQ+g1
+         hnyOJUZBHLXixYMzE7p/990Cek31eDPCccVOHDoPcXYcCUjvWSHPQIcA0mh4t5Lo+N
+         nUwFmEp6zXXbnPsOM4ERoZIy5N8+fnTezuTU2eaCADSjKH/xiDvnlaNquKgS/Slr89
+         VTcybX7a5FnZQ==
+Date:   Wed, 24 Mar 2021 12:18:35 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Alaa Hleihel <alaa@nvidia.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
- <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
- <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <3a671a0a-b0d0-be1a-5463-8124ff63684d@intel.com>
-Date:   Wed, 24 Mar 2021 09:17:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maor Dickman <maord@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210324121835.716d0088@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/MHZNfrd03A7qAv6Ch0Gbxt1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/MHZNfrd03A7qAv6Ch0Gbxt1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/3/23 17:27, Arnd Bergmann wrote:
-> On Tue, Mar 23, 2021 at 9:33 AM Jie Deng <jie.deng@intel.com> wrote:
->> On 2021/3/23 15:27, Viresh Kumar wrote:
->>
->>> On 23-03-21, 22:19, Jie Deng wrote:
->>>> +static int __maybe_unused virtio_i2c_freeze(struct virtio_device *vdev)
->>>> +{
->>>> +    virtio_i2c_del_vqs(vdev);
->>>> +    return 0;
->>>> +}
->>>> +
->>>> +static int __maybe_unused virtio_i2c_restore(struct virtio_device *vdev)
->>>> +{
->>>> +    return virtio_i2c_setup_vqs(vdev->priv);
->>>> +}
->>> Sorry for not looking at this earlier, but shouldn't we enclose the above two
->>> within #ifdef CONFIG_PM_SLEEP instead and drop the __maybe_unused ?
->>
->> I remembered I was suggested to use "__maybe_unused" instead of "#ifdef".
->>
->> You may check this https://lore.kernel.org/patchwork/patch/732981/
->>
->> The reason may be something like that.
-> I usually recommend the use of __maybe_unused for the suspend/resume
-> callbacks for drivers that use SIMPLE_DEV_PM_OPS() or similar helpers
-> that hide the exact conditions under which the functions get called.
->
-> In this driver, there is an explicit #ifdef in the reference to the
-> functions, so
-> it would make sense to use the same #ifdef around the definition.
->
-> A better question to ask is whether you could use the helpers instead,
-> and drop the other #ifdef.
->
->         Arnd
+Hi all,
 
+Today's linux-next merge of the net-next tree got a conflict in:
 
-I didn't see the "struct virtio_driver" has a member "struct dev_pm_ops *pm"
+  drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
 
-It defines its own hooks (freeze and restore) though it includes "struct 
-device_driver"
+between commit:
 
-which has a "struct dev_pm_ops *pm".
+  7d6c86e3ccb5 ("net/mlx5e: Allow to match on MPLS parameters only for MPLS=
+ over UDP")
 
-I just follow other virtio drivers to directly use the hooks defined in 
-"struct virtio_driver".
+from the net tree and commit:
 
-For this driver, Both __maybe_unused and #ifdef are OK to me.
+  a3222a2da0a2 ("net/mlx5e: Allow to match on ICMP parameters")
 
+from the net-next tree.
 
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index df2a0af854bb,730f33ada90a..000000000000
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@@ -2295,17 -2314,49 +2314,60 @@@ static int __parse_cls_flower(struct ml
+  		if (match.mask->flags)
+  			*match_level =3D MLX5_MATCH_L4;
+  	}
+ +
+ +	/* Currenlty supported only for MPLS over UDP */
+ +	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_MPLS) &&
+ +	    !netif_is_bareudp(filter_dev)) {
+ +		NL_SET_ERR_MSG_MOD(extack,
+ +				   "Matching on MPLS is supported only for MPLS over UDP");
+ +		netdev_err(priv->netdev,
+ +			   "Matching on MPLS is supported only for MPLS over UDP\n");
+ +		return -EOPNOTSUPP;
+ +	}
+ +
++ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_ICMP)) {
++ 		struct flow_match_icmp match;
++=20
++ 		flow_rule_match_icmp(rule, &match);
++ 		switch (ip_proto) {
++ 		case IPPROTO_ICMP:
++ 			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
++ 			      MLX5_FLEX_PROTO_ICMP))
++ 				return -EOPNOTSUPP;
++ 			MLX5_SET(fte_match_set_misc3, misc_c_3, icmp_type,
++ 				 match.mask->type);
++ 			MLX5_SET(fte_match_set_misc3, misc_v_3, icmp_type,
++ 				 match.key->type);
++ 			MLX5_SET(fte_match_set_misc3, misc_c_3, icmp_code,
++ 				 match.mask->code);
++ 			MLX5_SET(fte_match_set_misc3, misc_v_3, icmp_code,
++ 				 match.key->code);
++ 			break;
++ 		case IPPROTO_ICMPV6:
++ 			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
++ 			      MLX5_FLEX_PROTO_ICMPV6))
++ 				return -EOPNOTSUPP;
++ 			MLX5_SET(fte_match_set_misc3, misc_c_3, icmpv6_type,
++ 				 match.mask->type);
++ 			MLX5_SET(fte_match_set_misc3, misc_v_3, icmpv6_type,
++ 				 match.key->type);
++ 			MLX5_SET(fte_match_set_misc3, misc_c_3, icmpv6_code,
++ 				 match.mask->code);
++ 			MLX5_SET(fte_match_set_misc3, misc_v_3, icmpv6_code,
++ 				 match.key->code);
++ 			break;
++ 		default:
++ 			NL_SET_ERR_MSG_MOD(extack,
++ 					   "Code and type matching only with ICMP and ICMPv6");
++ 			netdev_err(priv->netdev,
++ 				   "Code and type matching only with ICMP and ICMPv6\n");
++ 			return -EINVAL;
++ 		}
++ 		if (match.mask->code || match.mask->type) {
++ 			*match_level =3D MLX5_MATCH_L4;
++ 			spec->match_criteria_enable |=3D MLX5_MATCH_MISC_PARAMETERS_3;
++ 		}
++ 	}
+  	return 0;
+  }
+ =20
+
+--Sig_/MHZNfrd03A7qAv6Ch0Gbxt1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBak2sACgkQAVBC80lX
+0GzXogf/cJRPK8eDlyY8jegnB1mvptdAqpH510tr9VZeWe9JgfHs9XuM58rPY4dp
+cD/8oZmYQOwfPcez2xdlW6d6BiYbxCZ2xZWUxkRxIzmYRirKHcTKdnd+etsndBCZ
+1mhX1FGYaJj5uFOHGS9qPwT2jUQI4HCvwL3Sx1v3KT6tk5dJEA7vc6ctfths4u4z
+KHswhWzmTuE8oo9Ik7/gBXudrK6vHIVc9S+lcKV5dEdZNN+GdY4yErQFQ7mFRwBH
+3dxhtfaJlx+nV85vK1BgsnlAl6EVYjRR1A+6hIAvpDOCv0qjOc9zCedsgNF/I1Mo
+LVKnb3puBA1kiYBr1ztlmWzxJlQtLw==
+=4R5A
+-----END PGP SIGNATURE-----
+
+--Sig_/MHZNfrd03A7qAv6Ch0Gbxt1--
