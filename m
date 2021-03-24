@@ -2,156 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73065347679
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85C8347676
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbhCXKsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
+        id S230374AbhCXKrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233790AbhCXKrf (ORCPT
+        with ESMTP id S231605AbhCXKrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:47:35 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F26C0613E2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:47:34 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 75so31200935lfa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:47:34 -0700 (PDT)
+        Wed, 24 Mar 2021 06:47:33 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD99C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:47:33 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id x7so1465960wrw.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ey+2292BkH6x041fX3yRwofo+kD7iZk7X6ckEEcQYiM=;
-        b=wOpDYenTLNC5o8Rarb2OFmUczdkjNuWqZymzj6lBygep5Yd7GB2gh5V4iK5s09JlP6
-         yrGBhqkmBeK5d1pbDMSFFgsrPAZy3mE0skMAgab3K7copJacg2MO/0lfbvDl9pLGn5rr
-         5BkjddszhsrZCY3P2ZyhvTQ+//m8JOKbckvDK71Eu14aDkiGUgwPFlFcornRoc+Ut2sS
-         IBrxfX8eCVRlKa3D+BsNyrmFNi03KIH29UMMMiW0maebcG2AFLrpZ0LZPWWclW6Act8s
-         pyXZxz3WbZAIogJ0uMjCxkqr5kHcJOrQ6xsvKobcwu0WDXurBq/B0FmwrxLO73e2b0Nh
-         HeYw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=RFJC5LVgMGym5UjOW55CJgbtGhV9mkAemOL0bTvX1iI=;
+        b=EqQoqzA7HsaTzNuntCIkR+riixnRU68VFyohSNUUooZevc/p8Z/654bZuFr1UQCwQp
+         umUWUxdY4bN1xHR0+w4HKEJ5b/YQ4GI2SqeTshED862aIEQGV01Oe/KQ9VJ7efLWrW1+
+         NFPSzvhYZeInFTIDO3YiZ4wjliG+S5pvx/TF69jXmM2E0J91qJT+NvtiyVi1AUR0hyys
+         hP4zNVBJudbL6POsdanAh6JljNLXzChVYzcNk5lGxTu4jVREbBtyhpcykqhJkCCY4tla
+         QH4VGhLXRH1pUVOzY0SFoz8UhIngb+wVi8sC4NlJz+hrh0m+zg7ugXcZ1JVVyG5pSWbb
+         kN1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ey+2292BkH6x041fX3yRwofo+kD7iZk7X6ckEEcQYiM=;
-        b=UvWE+LTIu5+QjfWcHKLXcFzDaN7bQYf0I6uXADgChWNguXfynCdwVXlErI2poawYwH
-         kQJJ9fOpeqbZPuo6R0f38Xv+Qsp1AFDNn0U0bLdp0m7Azwt9tQOYXYW+vxzTenDfnKBX
-         HZHC6Cm5W3FJyQAJnH6RJ21hzLQx16G7ue69RX4JaU1Mbz0LvrvhYNfzHdou765ti/5E
-         92tPhBrNAdj1Q9utK+FtSVwB/Jrewg1a31v5XT5/72Kvt/DMjDJPUJ0U7BgA1xvQuAQg
-         w3I8sYBgKirUdH5CKKOvIPuFZrzWVRRRKdX73wZrsZYPHUFnqQBzT0LPCGxUVrSgGI10
-         11yQ==
-X-Gm-Message-State: AOAM530MMfkaUEZoPlpxLZh+GQcFlxUIZZBMEKKY3QFivaeV0ggZhs43
-        EyW1sX07pCJ13x4kE8o4Gt1D6/vQz/bJSyrb4gKEDA==
-X-Google-Smtp-Source: ABdhPJzmEK8UFfoOBxPtEBmqPf6Hoc+0fs0j6LtMLq04iyal514Inhwtzy/LLK66UpNucjWsaSeaq6z/MCalVaqGZrM=
-X-Received: by 2002:a19:6109:: with SMTP id v9mr1632879lfb.546.1616582853107;
- Wed, 24 Mar 2021 03:47:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=RFJC5LVgMGym5UjOW55CJgbtGhV9mkAemOL0bTvX1iI=;
+        b=jNz7DWKtM6apuWSUmIP95vY5ge9k1/BVGlNOfNSw2qIine/77TizF5+PSHeTGiSuE4
+         SafyCkyIt5F35m/7FfnqiEIUxMU/FxhpG5qPvAvXe4WyxVrw8BOLPQ5L7lbu87oPhur8
+         xliBxtwmNSph4inmky3UPNTUopN40zeRlr/5Dog8j0hMetK0e8ZSlj21EjnKlrHSvW+e
+         wHXYkeqP/uZ1PJaoPRbHebnhzAE6iHmXk2wGb3G7jZSOAl6Jof42QBBzap2ntygazIpH
+         9iGAZU9ECeZQHSbvbn8xeWR51kAHH/lKdO56sGoUMdlwMnrDKiEPpzN/sdIEsj08k3K1
+         j54A==
+X-Gm-Message-State: AOAM5334pryRi+ZwHa7NJei47yU0QbHxhOk/L5g+1b8IzV5re8qHSPPY
+        tnMz7BoN+cb4mIPLPbgLCQXEjw==
+X-Google-Smtp-Source: ABdhPJyPlcyZoZ7V+z7aDolfoaRFyWtPmcuNvbU0EVaR4/UQ+3hvEkE/qnsyogmsxUVOpxnzO35GUw==
+X-Received: by 2002:a5d:4105:: with SMTP id l5mr2871878wrp.105.1616582852031;
+        Wed, 24 Mar 2021 03:47:32 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id h21sm1852674wmp.10.2021.03.24.03.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 03:47:31 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 10:47:29 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
+Message-ID: <20210324104729.GL2916463@dell>
+References: <20210323123433.45371-1-andriy.shevchenko@linux.intel.com>
+ <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
+ <20210324102931.GH2916463@dell>
+ <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
- <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com> <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
- <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com> <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
-In-Reply-To: <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 24 Mar 2021 16:17:21 +0530
-Message-ID: <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 at 14:56, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->
-> Hello Mimi,
->
-> On 23.03.21 19:07, Mimi Zohar wrote:
-> > On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
-> >> On 21.03.21 21:48, Horia Geant=C4=83 wrote:
-> >>> caam has random number generation capabilities, so it's worth using t=
-hat
-> >>> by implementing .get_random.
-> >>
-> >> If the CAAM HWRNG is already seeding the kernel RNG, why not use the k=
-ernel's?
-> >>
-> >> Makes for less code duplication IMO.
-> >
-> > Using kernel RNG, in general, for trusted keys has been discussed
-> > before.   Please refer to Dave Safford's detailed explanation for not
-> > using it [1].
->
-> The argument seems to boil down to:
->
->  - TPM RNG are known to be of good quality
->  - Trusted keys always used it so far
->
-> Both are fine by me for TPMs, but the CAAM backend is new code and neithe=
-r point
-> really applies.
->
-> get_random_bytes_wait is already used for generating key material elsewhe=
-re.
-> Why shouldn't new trusted key backends be able to do the same thing?
->
+On Wed, 24 Mar 2021, Andy Shevchenko wrote:
 
-Please refer to documented trusted keys behaviour here [1]. New
-trusted key backends should align to this behaviour and in your case
-CAAM offers HWRNG so we should be better using that.
+> On Wed, Mar 24, 2021 at 10:29:31AM +0000, Lee Jones wrote:
+> > On Tue, 23 Mar 2021, Andy Shevchenko wrote:
+> > 
+> > > Allow interrupts to be MSI if supported by hardware.
+> > > 
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > ---
+> > > v2: new patch
+> > >  drivers/mfd/intel_quark_i2c_gpio.c | 21 +++++++++++++++------
+> > >  1 file changed, 15 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
+> > > index 52728a963c17..16ce9cb3aa2f 100644
+> > > --- a/drivers/mfd/intel_quark_i2c_gpio.c
+> > > +++ b/drivers/mfd/intel_quark_i2c_gpio.c
+> > > @@ -169,8 +169,8 @@ static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
+> > >  	res[INTEL_QUARK_IORES_MEM].end =
+> > >  		pci_resource_end(pdev, MFD_I2C_BAR);
+> > >  
+> > > -	res[INTEL_QUARK_IORES_IRQ].start = pdev->irq;
+> > > -	res[INTEL_QUARK_IORES_IRQ].end = pdev->irq;
+> > > +	res[INTEL_QUARK_IORES_IRQ].start = pci_irq_vector(pdev, 0);
+> > > +	res[INTEL_QUARK_IORES_IRQ].end = pci_irq_vector(pdev, 0);
+> > >  
+> > >  	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+> > >  	if (!pdata)
+> > > @@ -217,7 +217,7 @@ static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
+> > >  	pdata->properties->idx		= 0;
+> > >  	pdata->properties->ngpio	= INTEL_QUARK_MFD_NGPIO;
+> > >  	pdata->properties->gpio_base	= INTEL_QUARK_MFD_GPIO_BASE;
+> > > -	pdata->properties->irq[0]	= pdev->irq;
+> > > +	pdata->properties->irq[0]	= pci_irq_vector(pdev, 0);
+> > >  
+> > >  	cell->platform_data = pdata;
+> > >  	cell->pdata_size = sizeof(*pdata);
+> > > @@ -245,22 +245,30 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
+> > >  	if (ret)
+> > >  		return ret;
+> > >  
+> > > +	pci_set_master(pdev);
+> > > +
+> > > +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+> > 
+> > Is there any way these magic number can be defined or sizeof()'ed?
+> 
+> Grep for it in the kernel, it's rarely defined.
 
-Also, do update documentation corresponding to CAAM as a trusted keys backe=
-nd.
+I already did.  It is sometimes defined, other times not.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/=
-tree/Documentation/security/keys/trusted-encrypted.rst#n87
+Also, past acceptance does not guarantee ideal/correct usage.
 
--Sumit
+> The semantic is min-max range and having two defines (*) here for these seems
+> to me as an utter overkill.
+> 
+> Of course, if you insist I may do it.
+> 
+> *) since value is the same, we might have one definition, but it will be even
+>    more confusion to have it as a min and max at the same time.
 
-> Cheers,
-> Ahmad
->
-> >
-> > thanks,
-> >
-> > Mimi
-> >
-> > [1]
-> > https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A3C=
-035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
-> >
-> >
-> >
->
-> --
-> Pengutronix e.K.                           |                             =
-|
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
-|
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
-|
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
-|
+It's just tricky to decypher for people who do not know the API, which
+is most people, myself included.  For APIs like usleep_range() et al.,
+obviously this makes no sense at all.
+
+What defines a vector?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
