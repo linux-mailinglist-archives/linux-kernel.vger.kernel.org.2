@@ -2,127 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D0C3472F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0F33472F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhCXHrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:47:46 -0400
-Received: from mail-bn8nam12on2069.outbound.protection.outlook.com ([40.107.237.69]:38496
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231344AbhCXHrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:47:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CmkFKN/14j8VilnlQPFnQTzdrRL8X2QejA61NAz19Gh7p3YG6p60gZhK41pNBSqk2/nPXbD8mL7sH8JcdmP8q9z9pP1idFtuQCiHBRTw5/xMhWBDXFQAQzKWFAwZ0ihdpqpFJ1/2wN2gHDFHvg9cZWW1DMZwCG0NV3izVbsZZf6McuZB1wywMlf6iqXDY9xAa3LFzbv/uXyODGbCKxJX4YASLUq0DD/MzWQsCU077xMqFYM4Mjiu2EL+FrzdlWN1vmYJz89Mm+7NDWjAngphURbvgoKzb6+CFtsRG4jVlbPdoESZqhwagSclN2z4Z304fsa0LiXNWSvrxuNHqkJBpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BRY4slBiMcBX+GaFohZmvlolgcLAtvqkZGYPj2aLarY=;
- b=jNAqujCgazjH9mTqYMaYkWYKjwTWqlHd5CnQ/E4w95gqQLeb6dDgJmqQPIjHdPcL+Cwlhj0paCxXWTkYh3l0Bn/b5UPyU2dsnnTdJIjyzoabUb+M+0u8q5VuaSLK6HNIYM5D+M2yn+A1vf1UKq2e/bnboTg4ZSYVs9SD2JB4W/nq9PnW4MbfZi2V3jRYmXM/ubYd5G+uGYUChWBhdfIhCAO3aKqzJ3HRDuN4yKg7LSswLo6AVK31TrMln2O6WaNi+bmH3ipjnVLkWSf2BnROmTCneliKYxIvjhUrcLBN0m7gPYVzV8EOmKbrfZqNWLlwt8Wf1oq3m+qPKHDc7xJPRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BRY4slBiMcBX+GaFohZmvlolgcLAtvqkZGYPj2aLarY=;
- b=hMHgC34m2kVnnFjsoOUF4uIXWiu1x3bQ1t46NBnjgcaqljN26dmy1fZ2TICyZvgssL2RAqmWvfZXlEjLAg1r23uaBZNputWniAkyr8C90ApHfVNWA0kja2e72r8SoBb5XqoqP+XV9WsmQTXQPNiqw51d1qYkzcga8W4+s7GJGDA=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by BYAPR03MB4551.namprd03.prod.outlook.com (2603:10b6:a03:c3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Wed, 24 Mar
- 2021 07:47:30 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%7]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
- 07:47:30 +0000
-Date:   Wed, 24 Mar 2021 15:47:21 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mmc: sdhci-of-dwcmshc: set MMC_CAP_WAIT_WHILE_BUSY
-Message-ID: <20210324154703.69f97fde@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BY3PR03CA0011.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::16) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+        id S232844AbhCXHsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:48:31 -0400
+Received: from verein.lst.de ([213.95.11.211]:35848 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231344AbhCXHry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 03:47:54 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6BC6D68B02; Wed, 24 Mar 2021 08:47:51 +0100 (CET)
+Date:   Wed, 24 Mar 2021 08:47:51 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
+Subject: Re: [PATCH v3 01/11] pagemap: Introduce ->memory_failure()
+Message-ID: <20210324074751.GA1630@lst.de>
+References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com> <20210208105530.3072869-2-ruansy.fnst@cn.fujitsu.com> <CAPcyv4jqEdPoF5YM+jSYJd74KqRTwbbEum7=moa3=Wyn6UyU9g@mail.gmail.com> <OSBPR01MB29207A1C06968705C2FEBACFF4939@OSBPR01MB2920.jpnprd01.prod.outlook.com> <CAPcyv4iBnWbG0FYw6-K0MaH--rq62s7RY_yoT9rOYWMa94Yakw@mail.gmail.com> <OSBPR01MB29203F891F9584CC53616FB8F4939@OSBPR01MB2920.jpnprd01.prod.outlook.com> <CAPcyv4gn_AvT6BA7g4jLKRFODSpt7_ORowVd3KgyWxyaFG0k9g@mail.gmail.com> <OSBPR01MB2920E46CBE4816CDF711E004F46F9@OSBPR01MB2920.jpnprd01.prod.outlook.com> <OSBPR01MB29208779955B49F84D857F80F4689@OSBPR01MB2920.jpnprd01.prod.outlook.com> <CAPcyv4jhUU3NVD8HLZnJzir+SugB6LnnrgJZ-jP45BZrbJ1dJQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BY3PR03CA0011.namprd03.prod.outlook.com (2603:10b6:a03:39a::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 24 Mar 2021 07:47:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 424e3897-05db-4863-aefa-08d8ee9913ad
-X-MS-TrafficTypeDiagnostic: BYAPR03MB4551:
-X-Microsoft-Antispam-PRVS: <BYAPR03MB4551537B1C148F12F9C1D8FEED639@BYAPR03MB4551.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1148;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YwrhL44RStT9mBU3WYLH2ClwQHyUKKbfmUjo+W5KXf2Mpu28l7UOVLKDh+W4qqFKCzBQCUY/eMnqYz4GcvmeeyMc82AtN+o1dYTJLKIrCoqwcl6UEtKTbdgLtSDVt5YUjdd5I4zdBzj9GD6LgL2VH5qR1NtGn5EO29osZuEEv4pWEj74c6/yo7m2dlQFyRFHRMGofDZ/jcZqGcr5XHweTjUCFyj/Ynj7nRafg8OTM+U4uuqcaR5dN62bz1Jp7ks5ecnHxDZEhCqlkCWNAKKjNcgW9Bqp/ovCycUGZS/j33vsm02I583LRwlHaSLZqV5LiY94fanBYZSQMjS9nb1W0A6TtnMXsR7CdkmRXzLBSM3EVmHDgzW7hlU854/+c9gArQI4ddaN6LLHnQjQQwsnI6Tyob7iyYMD9yaFJ7fzfK9Al0UtuIn6gE8M6GjIEV42QWj0pUlQkuM7cg0nidGDrFz0Du9hdebeTti4JFeyaDtoK1kp+8iKejJ4eSpJxZRVqhJjogX8XMNzkj0TCzRO+2ST6fxaM0WCRrD9xD7tuxm+xri03/1Oy5HHYRUyosuN8BTrml2I5h/rTy940545JfLUoSrwc7/fdg9XB5VCiATZvyG/Ywlj1uCfL5kedBnejFOEi7ne4eaZFVadV8A3i4GyfKgydQ2ZlWQQE7BWnsVSgBGhegZV20VrQi+z7ePa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(376002)(346002)(39860400002)(83380400001)(5660300002)(2906002)(16526019)(4744005)(478600001)(8676002)(956004)(66556008)(8936002)(52116002)(7696005)(6506007)(66476007)(55016002)(6666004)(86362001)(110136005)(1076003)(316002)(38100700001)(26005)(4326008)(186003)(9686003)(66946007)(133343001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hET3Kv3Qc5ZzhTjogHTKjVpbNM5gYOWCN5w6Q+RvBmVrhvKaY2Qv99VZxQN0?=
- =?us-ascii?Q?5KIKCOxTjXdydGIhbKcCQzzbBYtb77n7rHXfXXlI+1hlYNpMtHXkv6uEUGK4?=
- =?us-ascii?Q?LGGfXC04N17tdc4lC6yE4oncyHSUA6ynT56SMjWo1tsALuEnBdhTMBORjqcN?=
- =?us-ascii?Q?54Oxi+ndr0srNma8M405AuaVqEHsCPJEqMg4Q0JjnVGElp3nfBlfOfDOtAZf?=
- =?us-ascii?Q?KISG3C5LQbTBvFhfv23QhXndbG0L4sF1O2l6PUDl350ovFRMqorTvjLw9yzm?=
- =?us-ascii?Q?wTsxZoTbMeTNPXGspw3ztaydKymHmpvb2PCPexSGjEcz74g1Zk9jaJX84iJ8?=
- =?us-ascii?Q?mWpf97jU9HOjoDOUNhTLrX1jy8KO1A9a/mdt2cd311wphhIL8pYewy5laNHV?=
- =?us-ascii?Q?LUWMknhmbfww97DJNXSON4OuxA2CKFTemv3K4cNuDSBL282L8Jr78rpWICDn?=
- =?us-ascii?Q?s50IflQ4jMCqiRWSIyJj13+TxdgGN6LIhdUER5eTN+fEQB55QpmEuKPuy624?=
- =?us-ascii?Q?vcuZ9zoYnS13jCkAAzn5AUGVwr4kV+Uu/NwH8NpIx9AK4bNJ8QciFq3FkUte?=
- =?us-ascii?Q?evYgwT+Lwt41ble60d6showyEiq5XU1g0aLnnt+cmPxr5dgdugAo4NlXRqZA?=
- =?us-ascii?Q?PEmzWgPQILiFlRc68Aa2Jd/BldUwsOgHvqI0Xj8wFKmwKnkQwoCYOweAAGyd?=
- =?us-ascii?Q?KEMENAFY/D8c0hlz8gJr++7Fm1DDjX2lHIhVGlG4Jb+y+XZvu8SdOkyFT127?=
- =?us-ascii?Q?mPzgq4SHOPiognLMdbtY56+kmbidb3xtcnoaxDWQNeHSa8ke9DlQLFr4CmMm?=
- =?us-ascii?Q?dKoAHcOCJm4oFqkJYn1ajJyDUS50LemNfGpFEAwZFmrIrzhveq14860xv13I?=
- =?us-ascii?Q?psWflZ5qC9O0JYYWjqGRBQKo8Qzt02bHr1aCQnCNKDLEfOVgZdAxhGvLwf4j?=
- =?us-ascii?Q?GOKu0xk+WROA50cq3Nqrxhvv83ihVVac09dyzR9oVi0X68IdiXqLln7O2ihE?=
- =?us-ascii?Q?1WvIoZEcVhx8sP2rVwBTyfzqLa+wwI1fnpIpawW51zLpCNYuNhHqcvT3usMg?=
- =?us-ascii?Q?//Mm72iWEMdMm3e8vJEzSBghRpTtvgr5sLRFvk+298hzLn5kEsfF0I4Ku/Zc?=
- =?us-ascii?Q?oLC6sSsP0m1sLzoviqs7ggrjNHymtu7znvq/SrpkdVRqGI7k0GyEtO2ypw60?=
- =?us-ascii?Q?y0faAtBra+uVpUjjE2n+c19KFzhNN1HYrHEwZMVjYOxA+KWWeVx4KNgW3DW/?=
- =?us-ascii?Q?YGtplDr9rARYN6xtKdNpdOCJoxha6hU0iEUbQFzU0Le2VayXJbgo6r6SyM7A?=
- =?us-ascii?Q?N2hwo3E4jLPRY6Yrrh9LhNUD?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 424e3897-05db-4863-aefa-08d8ee9913ad
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 07:47:30.2333
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /wyw9L0sT+Cxo/vrD5UOeghVvCc/MOs3dfbQfLWayND4izIZl5uwpCTIGimxHmLnzJEazWbIijlfMyhKjpwL8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4551
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jhUU3NVD8HLZnJzir+SugB6LnnrgJZ-jP45BZrbJ1dJQ@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The host supports HW busy detection of the device busy signaling over
-dat0 line. Set MMC_CAP_wAIT_WHILE_BUSY host capability.
+On Tue, Mar 23, 2021 at 07:19:28PM -0700, Dan Williams wrote:
+> So I think the path forward is:
+> 
+> - teach memory_failure() to allow for ranged failures
+> 
+> - let interested drivers register for memory failure events via a
+> blocking_notifier_head
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/mmc/host/sdhci-of-dwcmshc.c | 2 ++
- 1 file changed, 2 insertions(+)
+Eww.  As I said I think the right way is that the file system (or
+other consumer) can register a set of callbacks for opening the device.
+I have a series I need to finish and send out to do that for block
+devices.  We probably also need the concept of a holder for the dax
+device to make it work nicely, as otherwise we're going to have a bit
+of a mess.
 
-diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-index 06873686d5e9..b6ceb1b92b3f 100644
---- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-+++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-@@ -393,6 +393,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
- 			goto err_clk;
- 	}
- 
-+	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
-+
- 	err = sdhci_add_host(host);
- 	if (err)
- 		goto err_clk;
--- 
-2.31.0
+> This obviously does not solve Dave's desire to get this type of error
+> reporting on block_devices, but I think there's nothing stopping a
+> parallel notifier chain from being created for block-devices, but
+> that's orthogonal to requirements and capabilities provided by
+> dax-devices.
 
+FYI, my series could easily accomodate that if we ever get a block
+driver that actually could report such errors.
