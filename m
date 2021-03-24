@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB412346F86
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7CB346F8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhCXCa3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Mar 2021 22:30:29 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3496 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231869AbhCXCaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:30:17 -0400
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F4sbr3XZzzRTSr;
-        Wed, 24 Mar 2021 10:28:24 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 24 Mar 2021 10:30:14 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
- Wed, 24 Mar 2021 10:30:13 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     "tiantao (H)" <tiantao6@hisilicon.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] dma-mapping: make map_benchmark compile into module
-Thread-Topic: [PATCH] dma-mapping: make map_benchmark compile into module
-Thread-Index: AQHXIFPOFGbiIAxEO0+6jc+KbhZliqqSZ4OA
-Date:   Wed, 24 Mar 2021 02:30:13 +0000
-Message-ID: <970499782ce34f8985beb2145504c941@hisilicon.com>
-References: <1616552258-22282-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1616552258-22282-1-git-send-email-tiantao6@hisilicon.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.12]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232076AbhCXCcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:32:07 -0400
+Received: from m12-11.163.com ([220.181.12.11]:47288 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232019AbhCXCbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 22:31:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=QB5sr
+        IEpoTZgw2u5PRNuaX6WnECVWqJ2qDsPzwzgx2E=; b=kWeYqymkj4Hb8NJfoUP64
+        Kwyn3nl36qiEk7RrY52iedJUHUj+hl3COSSWJAmOYN8GplTKeS8SWtJgJheDfUzo
+        9BhoNJXdYhF0U0J9Lrth28zqqFhN9/4V7cto4uMIX7b+KCEaD9XFXnhQt4oSMMUE
+        yRJSRLjUkp+MDZNQEYu5Vc=
+Received: from caizhichao.ccdomain.com (unknown [218.94.48.178])
+        by smtp7 (Coremail) with SMTP id C8CowAAHA_NLpFpgvVEyTw--.11030S2;
+        Wed, 24 Mar 2021 10:30:54 +0800 (CST)
+From:   caizhichao <tomstomsczc@163.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhichao Cai <caizhichao@yulong.com>
+Subject: [PATCH] Simplify the code by using module_platform_driver macro
+Date:   Wed, 24 Mar 2021 10:30:47 +0800
+Message-Id: <20210324023047.1337-1-tomstomsczc@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowAAHA_NLpFpgvVEyTw--.11030S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7JF4UWw1DXFy3trWkAw15twb_yoW8JrWUpF
+        WUJry7Wr48Gw1UX3WkJw1kZry5G3WUKryjgF4UG3s5Xw4kAw1UZr1kA345Xr1UJayUKF13
+        tr15Zr43WFZ8JwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jO8n5UUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pwrp23prpvu6rf6rljoofrz/1tbiyQZeilQHNSrN8gABsp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhichao Cai <caizhichao@yulong.com>
 
+for ftmac100
 
-> -----Original Message-----
-> From: tiantao (H)
-> Sent: Wednesday, March 24, 2021 3:18 PM
-> To: akpm@linux-foundation.org; peterz@infradead.org; paulmck@kernel.org;
-> ast@kernel.org; tglx@linutronix.de; rostedt@goodmis.org; hch@lst.de;
-> m.szyprowski@samsung.com; Song Bao Hua (Barry Song)
-> <song.bao.hua@hisilicon.com>
-> Cc: iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org; tiantao
-> (H) <tiantao6@hisilicon.com>
-> Subject: [PATCH] dma-mapping: make map_benchmark compile into module
-> 
-> under some scenarios, it is necessary to compile map_benchmark
-> into module to test iommu, so this patch changed Kconfig and
-> export_symbol to implement map_benchmark compiled into module.
-> 
-> On the other hand, map_benchmark is a driver, which is supposed
-> to be able to run as a module.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
+Signed-off-by: Zhichao Cai <caizhichao@yulong.com>
+---
+ drivers/net/ethernet/faraday/ftmac100.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-Acked-by: Barry Song <song.bao.hua@hisilicon.com>
-
-Look sensible to me. I like the idea that map_benchmark is
-a driver. It seems unreasonable to always require built-in.
-
-
->  kernel/dma/Kconfig | 2 +-
->  kernel/kthread.c   | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-> index 77b4055..0468293 100644
-> --- a/kernel/dma/Kconfig
-> +++ b/kernel/dma/Kconfig
-> @@ -223,7 +223,7 @@ config DMA_API_DEBUG_SG
->  	  If unsure, say N.
-> 
->  config DMA_MAP_BENCHMARK
-> -	bool "Enable benchmarking of streaming DMA mapping"
-> +	tristate "Enable benchmarking of streaming DMA mapping"
->  	depends on DEBUG_FS
->  	help
->  	  Provides /sys/kernel/debug/dma_map_benchmark that helps with testing
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 1578973..fa4736f 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -455,6 +455,7 @@ void kthread_bind_mask(struct task_struct *p, const struct
-> cpumask *mask)
->  {
->  	__kthread_bind_mask(p, mask, TASK_UNINTERRUPTIBLE);
->  }
-> +EXPORT_SYMBOL(kthread_bind_mask);
-> 
->  /**
->   * kthread_bind - bind a just-created kthread to a cpu.
-> --
-> 2.7.4
-
-Thanks
-Barry
+diff --git a/drivers/net/ethernet/faraday/ftmac100.c b/drivers/net/ethernet/faraday/ftmac100.c
+index 473b337..5a1a8f2 100644
+--- a/drivers/net/ethernet/faraday/ftmac100.c
++++ b/drivers/net/ethernet/faraday/ftmac100.c
+@@ -1177,18 +1177,7 @@ static int ftmac100_remove(struct platform_device *pdev)
+ /******************************************************************************
+  * initialization / finalization
+  *****************************************************************************/
+-static int __init ftmac100_init(void)
+-{
+-	return platform_driver_register(&ftmac100_driver);
+-}
+-
+-static void __exit ftmac100_exit(void)
+-{
+-	platform_driver_unregister(&ftmac100_driver);
+-}
+-
+-module_init(ftmac100_init);
+-module_exit(ftmac100_exit);
++module_platform_driver(ftmac100_driver);
+ 
+ MODULE_AUTHOR("Po-Yu Chuang <ratbert@faraday-tech.com>");
+ MODULE_DESCRIPTION("FTMAC100 driver");
+-- 
+1.9.1
 
