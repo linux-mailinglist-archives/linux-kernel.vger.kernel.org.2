@@ -2,80 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B00347795
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D41534779D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhCXLml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:42:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47320 "EHLO mx2.suse.de"
+        id S231180AbhCXLox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:44:53 -0400
+Received: from muru.com ([72.249.23.125]:46460 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230489AbhCXLmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:42:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5E505AD38;
-        Wed, 24 Mar 2021 11:42:27 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 11:42:24 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>, linux-doc@vger.kernel.org,
-        Paul Turner <pjt@google.com>
-Subject: Re: [PATCH v2] sched: Warn on long periods of pending need_resched
-Message-ID: <20210324114224.GP15768@suse.de>
-References: <20210323035706.572953-1-joshdon@google.com>
- <YFsIZjhCFbxKyos3@hirez.programming.kicks-ass.net>
- <YFsaYBO/UqMHSpGS@hirez.programming.kicks-ass.net>
+        id S230316AbhCXLop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 07:44:45 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id DC6A48117;
+        Wed, 24 Mar 2021 11:45:41 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 13:44:41 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] bus: ti-sysc: Use kzalloc for allocating only one
+ thing
+Message-ID: <YFsmKYv2u2zFzpPe@atomide.com>
+References: <20201229135147.23593-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFsaYBO/UqMHSpGS@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201229135147.23593-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:54:24AM +0100, Peter Zijlstra wrote:
-> On Wed, Mar 24, 2021 at 10:37:43AM +0100, Peter Zijlstra wrote:
-> > Should we perhaps take out all SCHED_DEBUG sysctls and move them to
-> > /debug/sched/ ? (along with the existing /debug/sched_{debug,features,preemp}
-> > files)
-> > 
-> > Having all that in sysctl and documented gives them far too much sheen
-> > of ABI.
-> 
-> ... a little something like this ...
-> 
+* Zheng Yongjun <zhengyongjun3@huawei.com> [201229 15:51]:
+> Use kzalloc rather than kcalloc(1,...)
 
-I did not read this particularly carefully or boot it to check but some
-of the sysctls moved are expected to exist and should never should have
-been under SCHED_DEBUG.
+Thanks applying into omap-for-v5.13/ti-sysc.
 
-For example, I'm surprised that numa_balancing is under the SCHED_DEBUG
-sysctl because there are legimiate reasons to disable that at runtime.
-For example, HPC clusters running various workloads may disable NUMA
-balancing globally for particular jobs without wanting to reboot and
-reenable it when finished.
-
-Moving something like sched_min_granularity_ns will break a number of
-tuning guides as well as the "tuned" tool which ships by default with
-some distros and I believe some of the default profiles used for tuned
-tweak kernel.sched_min_granularity_ns
-
-Whether there are legimiate reasons to modify those values or not,
-removing them may generate fun bug reports.
-
--- 
-Mel Gorman
-SUSE Labs
+Tony
