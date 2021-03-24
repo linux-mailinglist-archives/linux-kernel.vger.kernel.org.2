@@ -2,124 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708003475D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB1F3475E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbhCXKVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:21:19 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:58189 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230452AbhCXKUr (ORCPT
+        id S231470AbhCXKVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:21:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhCXKV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:20:47 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lP0d4-001nkY-29; Wed, 24 Mar 2021 11:20:46 +0100
-Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lP0d3-002kEf-SP; Wed, 24 Mar 2021 11:20:46 +0100
-Subject: Re: [PATCH] ia64: mca: allocate early mca with GFP_ATOMIC
-To:     Sergei Trofimovich <slyfox@gentoo.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
-References: <20210315085045.204414-1-slyfox@gentoo.org>
- <f351183c-7d70-359f-eed7-4d1722cf41c5@physik.fu-berlin.de>
- <20210323174724.78b61c02@sf>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <4f7ccc08-7355-63a0-7239-16a5fb29207f@physik.fu-berlin.de>
-Date:   Wed, 24 Mar 2021 11:20:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 24 Mar 2021 06:21:26 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EB2C0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:21:25 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id s25so11043621vsa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oclPmDUoiD7lVtqYFaeAKVJ4MgENgI/TTup1xZ2DUh0=;
+        b=foH1MXFg/S6iNbrzbS/RPr3xu+uWLYvPLzwyBtolaqVdFNiKnS9Olbao5Kw3seqEnk
+         x1/tPI6XP/J9b1J3DIOhJwbmQKU7wXz9ESGENNw737F9G/OhhMtVU21tyw2LJzl8W45d
+         5dTuTJ4E/X60GlkTV0Znu/pxINQjh6lCDwgbmH40EgV/CGlqOzRdJ+Q/w4nzbDSLarY4
+         u4xism6XcJw0aOPLqEZ796RsXTHejm/+JysCCEFSA9+aze6b8TtoCayVpq6BQ/4tJcON
+         HOrG5yvUtXsTZKTn2Oox0ElykA11xXBMzgADJkhqec0Hw/cGP71Pqb9FzAFWXZgr5DFU
+         kUUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oclPmDUoiD7lVtqYFaeAKVJ4MgENgI/TTup1xZ2DUh0=;
+        b=fxEhWKs1EdmSPNevPbbejKZqKlMXtCtXVwu9QVH9gYtggFbPxnzlF9PO02TCsGlkGa
+         NGjgSPcwjr85e6jcbLUrcU3i03mkM+Dx7weKCZi5mWyZeHnT4ry9knRtDGcQevVsVIgn
+         5iQA/xf1BwxnbP8z1OyPixLovlBOKRF/ob5jsSCunn+pbmcKnDStY5QdzRzp2MkNvNYU
+         MqKjiA8RPcG6oEHbfP3M8IQAwtoT9vEcK/bopKLuEAJHY9+LKwzjMeF8XzIeSUTrw8qH
+         TIFnGoJumazF6ThhlUEqdDREBNBfeJIOGMtZpGluRRtUerL95HHmLQJcGl+RzVOZJJLb
+         Tlbw==
+X-Gm-Message-State: AOAM5303AlYTpwkug9mlAk14w1DD0O4saOY5588FfwJHU1sdf1rf75Bc
+        J+7WC0ahK0FbA/tiV+MEXdAfBsCM3RjPjN8sE9Q3lA==
+X-Google-Smtp-Source: ABdhPJzf627vcZrgVxPa3vsOwxYzgZwf4l4cR51TZvbQ8vIlb+sLfccF/lA4W8DLrnB3/JPdhuf4m+37yqFN56JNEwg=
+X-Received: by 2002:a05:6102:7b0:: with SMTP id x16mr1027973vsg.34.1616581284604;
+ Wed, 24 Mar 2021 03:21:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323174724.78b61c02@sf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 160.45.32.140
+References: <b62a68d1f8488e7f95befc6723ba5c20d6781628.1615487235.git.limings@nvidia.com>
+ <1616453211-275165-1-git-send-email-limings@nvidia.com>
+In-Reply-To: <1616453211-275165-1-git-send-email-limings@nvidia.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 24 Mar 2021 11:20:48 +0100
+Message-ID: <CAPDyKFp1kiH-MtRdeDv4bTgV1t_habswCBGR8shw0xMUQJ65-g@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: sdhci-of-dwcmshc: add ACPI support for
+ BlueField-3 SoC
+To:     Liming Sun <limings@nvidia.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Khalil Blaiech <kblaiech@nvidia.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergei!
+On Mon, 22 Mar 2021 at 23:47, Liming Sun <limings@nvidia.com> wrote:
+>
+> This commit adds ACPI support in the sdhci-of-dwcmshc driver for
+> BlueField-3 SoC. It has changes to only use the clock hierarchy
+> for Deviec Tree since the clk is not supported by ACPI. Instead,
+> ACPI can define 'clock-frequency' which is parsed by existing
+> sdhci_get_property(). This clock value will be returned in function
+> dwcmshc_get_max_clock().
+>
+> Signed-off-by: Liming Sun <limings@nvidia.com>
+> Reviewed-by: Khalil Blaiech <kblaiech@nvidia.com>
 
-On 3/23/21 6:47 PM, Sergei Trofimovich wrote:
-> On Tue, 23 Mar 2021 16:15:06 +0100
-> John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
-> 
->> Hi Andrew!
->>
->> On 3/15/21 9:50 AM, Sergei Trofimovich wrote:
->>> The sleep warning happens at early boot right at
->>> secondary CPU activation bootup:
->>>
->>>     smp: Bringing up secondary CPUs ...
->>>     BUG: sleeping function called from invalid context at mm/page_alloc.c:4942
->>>     in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
->>>     CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.12.0-rc2-00007-g79e228d0b611-dirty #99
->>>
->>>     Call Trace:
->>>      [<a000000100014d10>] show_stack+0x90/0xc0
->>>      [<a000000101111d90>] dump_stack+0x150/0x1c0
->>>      [<a0000001000cbec0>] ___might_sleep+0x1c0/0x2a0
->>>      [<a0000001000cc040>] __might_sleep+0xa0/0x160
->>>      [<a000000100399960>] __alloc_pages_nodemask+0x1a0/0x600
->>>      [<a0000001003b71b0>] alloc_page_interleave+0x30/0x1c0
->>>      [<a0000001003b9b60>] alloc_pages_current+0x2c0/0x340
->>>      [<a00000010038c270>] __get_free_pages+0x30/0xa0
->>>      [<a000000100044730>] ia64_mca_cpu_init+0x2d0/0x3a0
->>>      [<a000000100023430>] cpu_init+0x8b0/0x1440
->>>      [<a000000100054680>] start_secondary+0x60/0x700
->>>      [<a00000010111e1d0>] start_ap+0x750/0x780
->>>     Fixed BSP b0 value from CPU 1
->>>
->>> As I understand interrupts are not enabled yet and system has a lot
->>> of memory. There is little chance to sleep and switch to GFP_ATOMIC
->>> should be a no-op.
->>>
->>> CC: Andrew Morton <akpm@linux-foundation.org>
->>> CC: linux-ia64@vger.kernel.org
->>> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
->>> ---
->>>  arch/ia64/kernel/mca.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
->>> index d4cae2fc69ca..adf6521525f4 100644
->>> --- a/arch/ia64/kernel/mca.c
->>> +++ b/arch/ia64/kernel/mca.c
->>> @@ -1824,7 +1824,7 @@ ia64_mca_cpu_init(void *cpu_data)
->>>  			data = mca_bootmem();
->>>  			first_time = 0;
->>>  		} else
->>> -			data = (void *)__get_free_pages(GFP_KERNEL,
->>> +			data = (void *)__get_free_pages(GFP_ATOMIC,
->>>  							get_order(sz));
->>>  		if (!data)
->>>  			panic("Could not allocate MCA memory for cpu %d\n",
->>>   
->>
->> Has this one been picked up for your tree already?
-> 
-> Should be there: https://www.ozlabs.org/~akpm/mmotm/series
-> 
->> #NEXT_PATCHES_START mainline-later (next week, approximately)
->> ia64-mca-allocate-early-mca-with-gfp_atomic.patch
+Applied for next, thanks!
 
-Great, thanks. We're still missing Valentin's patch for the NUMA enumeration issue
-though. Should Valentin send the patch again with Andrew CC'ed?
+Kind regards
+Uffe
 
-Adrian
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+> ---
+> v2->v3:
+>    Rebase to mmc next.
+> v1->v2:
+>    Changes for comments from Adrian Hunter <adrian.hunter@intel.com>:
+>    - Make changes in sdhci-of-dwcmshc instead.
+> v1: Initial version which was done in sdhci-acpi.c
+> ---
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 50 ++++++++++++++++++++++++++-----------
+>  1 file changed, 36 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index 0687368..1113a56 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -7,6 +7,7 @@
+>   * Author: Jisheng Zhang <jszhang@kernel.org>
+>   */
+>
+> +#include <linux/acpi.h>
+>  #include <linux/clk.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/iopoll.h>
+> @@ -94,6 +95,16 @@ static void dwcmshc_adma_write_desc(struct sdhci_host *host, void **desc,
+>         sdhci_adma_write_desc(host, desc, addr, len, cmd);
+>  }
+>
+> +static unsigned int dwcmshc_get_max_clock(struct sdhci_host *host)
+> +{
+> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +
+> +       if (pltfm_host->clk)
+> +               return sdhci_pltfm_clk_get_max_clock(host);
+> +       else
+> +               return pltfm_host->clock;
+> +}
+> +
+>  static void dwcmshc_check_auto_cmd23(struct mmc_host *mmc,
+>                                      struct mmc_request *mrq)
+>  {
+> @@ -248,7 +259,7 @@ static void dwcmshc_rk3568_set_clock(struct sdhci_host *host, unsigned int clock
+>         .set_clock              = sdhci_set_clock,
+>         .set_bus_width          = sdhci_set_bus_width,
+>         .set_uhs_signaling      = dwcmshc_set_uhs_signaling,
+> -       .get_max_clock          = sdhci_pltfm_clk_get_max_clock,
+> +       .get_max_clock          = dwcmshc_get_max_clock,
+>         .reset                  = sdhci_reset,
+>         .adma_write_desc        = dwcmshc_adma_write_desc,
+>  };
+> @@ -323,8 +334,16 @@ static int dwcmshc_rk3568_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
+>  };
+>  MODULE_DEVICE_TABLE(of, sdhci_dwcmshc_dt_ids);
+>
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id sdhci_dwcmshc_acpi_ids[] = {
+> +       { .id = "MLNXBF30" },
+> +       {}
+> +};
+> +#endif
+> +
+>  static int dwcmshc_probe(struct platform_device *pdev)
+>  {
+> +       struct device *dev = &pdev->dev;
+>         struct sdhci_pltfm_host *pltfm_host;
+>         struct sdhci_host *host;
+>         struct dwcmshc_priv *priv;
+> @@ -347,7 +366,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>         /*
+>          * extra adma table cnt for cross 128M boundary handling.
+>          */
+> -       extra = DIV_ROUND_UP_ULL(dma_get_required_mask(&pdev->dev), SZ_128M);
+> +       extra = DIV_ROUND_UP_ULL(dma_get_required_mask(dev), SZ_128M);
+>         if (extra > SDHCI_MAX_SEGS)
+>                 extra = SDHCI_MAX_SEGS;
+>         host->adma_table_cnt += extra;
+> @@ -355,19 +374,21 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>         pltfm_host = sdhci_priv(host);
+>         priv = sdhci_pltfm_priv(pltfm_host);
+>
+> -       pltfm_host->clk = devm_clk_get(&pdev->dev, "core");
+> -       if (IS_ERR(pltfm_host->clk)) {
+> -               err = PTR_ERR(pltfm_host->clk);
+> -               dev_err(&pdev->dev, "failed to get core clk: %d\n", err);
+> -               goto free_pltfm;
+> -       }
+> -       err = clk_prepare_enable(pltfm_host->clk);
+> -       if (err)
+> -               goto free_pltfm;
+> +       if (dev->of_node) {
+> +               pltfm_host->clk = devm_clk_get(dev, "core");
+> +               if (IS_ERR(pltfm_host->clk)) {
+> +                       err = PTR_ERR(pltfm_host->clk);
+> +                       dev_err(dev, "failed to get core clk: %d\n", err);
+> +                       goto free_pltfm;
+> +               }
+> +               err = clk_prepare_enable(pltfm_host->clk);
+> +               if (err)
+> +                       goto free_pltfm;
+>
+> -       priv->bus_clk = devm_clk_get(&pdev->dev, "bus");
+> -       if (!IS_ERR(priv->bus_clk))
+> -               clk_prepare_enable(priv->bus_clk);
+> +               priv->bus_clk = devm_clk_get(dev, "bus");
+> +               if (!IS_ERR(priv->bus_clk))
+> +                       clk_prepare_enable(priv->bus_clk);
+> +       }
+>
+>         err = mmc_of_parse(host->mmc);
+>         if (err)
+> @@ -489,6 +510,7 @@ static int dwcmshc_resume(struct device *dev)
+>                 .name   = "sdhci-dwcmshc",
+>                 .probe_type = PROBE_PREFER_ASYNCHRONOUS,
+>                 .of_match_table = sdhci_dwcmshc_dt_ids,
+> +               .acpi_match_table = ACPI_PTR(sdhci_dwcmshc_acpi_ids),
+>                 .pm = &dwcmshc_pmops,
+>         },
+>         .probe  = dwcmshc_probe,
+> --
+> 1.8.3.1
+>
