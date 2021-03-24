@@ -2,102 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707F134777D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB4A34777A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhCXLfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:35:45 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:53626 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhCXLe0 (ORCPT
+        id S232442AbhCXLfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:35:11 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:33158 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhCXLe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:34:26 -0400
-Date:   Wed, 24 Mar 2021 11:33:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1616585642; bh=KEThvGs8mhCJUE7NWLOhItOB7I4hTptrR+HW935IQCk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=L9mnu1wusvlo5z/k8/W0m0vwLz+p+blybKZ5aTd459zOPr+cU5ol0BWJ86Fb5vceH
-         jQ+uOkJgO10PoK82Yql8YQFGFHYIWAi6FqbuavWlRjtg/dTKdClXvX9kO8JZ9uMv/w
-         I2jmLOer8UwjQdjZ47KXlh9lCzLg+4FLYHvVsT61fIacfY9GHkcNHP2rM+IP5BMMID
-         029uIUgE13CqYFGiJSrOjzm73NG57pEW6agvHoA/xs99stxLEgiwAb2Z4tr0iSWDLV
-         SVevpCXD06gWTBJmhnMBvQE2OcWT5cRFgvQAjB1vHq4dzJjpvaPHBmONdNzK6a3qQv
-         Hrnr0I5Wr8JjQ==
-To:     =?utf-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
+        Wed, 24 Mar 2021 07:34:27 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 9C665E03B9;
+        Wed, 24 Mar 2021 19:34:21 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Wang Qing <wangqing@vivo.com>, Petr Mladek <pmladek@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Santosh Sivaraj <santosh@fossix.org>,
         linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH RESEND] PCI: dwc: put struct dw_pcie::{ep,pp} into a union to reduce its size
-Message-ID: <20210324113259.2809-1-alobakin@pm.me>
-In-Reply-To: <YFqWftATEbuxsJbn@rocinante>
-References: <20210312140116.9453-1-alobakin@pm.me> <YFqWftATEbuxsJbn@rocinante>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Subject: [PATCH V3] workqueue/watchdog: Make unbound workqueues aware of
+Date:   Wed, 24 Mar 2021 19:34:02 +0800
+Message-Id: <1616585643-26720-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSUtNTUNCSRkdQk4ZVkpNSk1OQ05NTUpCQkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NiI6Nio5Qj8VHj8ZKBA#FEMi
+        EBkwCTZVSlVKTUpNTkNOTU1JSExJVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUJZV1kIAVlBT09NQzcG
+X-HM-Tid: 0a7864039de32c17kusn9c665e03b9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Wilczy=C5=84ski <kw@linux.com>
-Date: Wed, 24 Mar 2021 02:31:42 +0100
+There are two workqueue-specific watchdog timestamps:
 
-> Hi Alexander,
+    + @wq_watchdog_touched_cpu (per-CPU) updated by
+      touch_softlockup_watchdog()
 
-Hi!
+    + @wq_watchdog_touched (global) updated by
+      touch_all_softlockup_watchdogs()
 
-> Thank you for sending the patch over!
->
-> > A single dw_pcie entity can't be a root complex and an endpoint at
-> > the same time.
->
-> Nice catch!
->
-> A small nitpick: this would be Root Complex and Endpoint, as it's
-> customary to capitalise these.
->
-> Also, if you could capitalise the subject line - it could also perhaps
-> be simplified to something like, for example:
->
->   Optimize struct dw_pcie to reduce its size
->
-> Feel free to ignore both suggestions, as these are just nitpicks.
+watchdog_timer_fn() checks only the global @wq_watchdog_touched for
+unbound workqueues. As a result, unbound workqueues are not aware
+of touch_softlockup_watchdog(). The watchdog might report a stall
+even when the unbound workqueues are blocked by a known slow code.
 
-They are both correct, so I can send a v2 if this one wont't be
-picked to the tree, let's say, this week.
+Solution:
+touch_softlockup_watchdog() must touch also the global @wq_watchdog_touched 
+timestamp.
 
-> > We can use this to reduce the size of dw_pcie by 80, from 280 to 200
-> > bytes (on x32, guess more on x64), by putting the related embedded
-> > structures (struct pcie_port and struct dw_pcie_ep) into a union.
->
-> [...]
-> > -=09struct pcie_port=09pp;
-> > -=09struct dw_pcie_ep=09ep;
-> > +=09union {
-> > +=09=09struct pcie_port=09pp;
-> > +=09=09struct dw_pcie_ep=09ep;
-> > +=09};
-> [...]
->
-> How did you measure the difference?  Often, people include pahole output
-> for the "before" and "after", so to speak, to showcase the difference
-> and/or improvement.  Do you have something like that handy?
+The global timestamp can not longer be used for bound workqueues
+because it is updated on all CPUs. Instead, bound workqueues
+have to check only @wq_watchdog_touched_cpu and these timestamp
+has to be updated for all CPUs in touch_all_softlockup_watchdogs().
 
-I didn't use pahole to measure the difference, just printed sizeofs
-for the structures "before" and "after". But I can get pahole's
-output and include it in v2 to make commit message more useful.
+Beware:
+The change might cause the opposite problem. An unbound workqueue
+might get blocked on CPU A because of a real softlockup. The workqueue
+watchdog would miss it when the timestamp got touched on CPU B.
 
-> Krzysztof
+It is acceptable because softlockups are detected by softlockup
+watchdog. The workqueue watchdog is there to detect stalls where
+a work never finishes, for example, because of dependencies of works
+queued into the same workqueue.
 
-Thanks!
-Al
+V3:
+- Modify the commit message clearly according to Petr's suggestion.
+
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ kernel/watchdog.c  |  5 +++--
+ kernel/workqueue.c | 17 ++++++-----------
+ 2 files changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 7110906..107bc38
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -278,9 +278,10 @@ void touch_all_softlockup_watchdogs(void)
+ 	 * update as well, the only side effect might be a cycle delay for
+ 	 * the softlockup check.
+ 	 */
+-	for_each_cpu(cpu, &watchdog_allowed_mask)
++	for_each_cpu(cpu, &watchdog_allowed_mask) {
+ 		per_cpu(watchdog_touch_ts, cpu) = SOFTLOCKUP_RESET;
+-	wq_watchdog_touch(-1);
++		wq_watchdog_touch(cpu);
++	}
+ }
+ 
+ void touch_softlockup_watchdog_sync(void)
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 0d150da..be08295
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5787,22 +5787,17 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
+ 			continue;
+ 
+ 		/* get the latest of pool and touched timestamps */
++		if (pool->cpu >= 0)
++			touched = READ_ONCE(per_cpu(wq_watchdog_touched_cpu, pool->cpu));
++		else
++			touched = READ_ONCE(wq_watchdog_touched);
+ 		pool_ts = READ_ONCE(pool->watchdog_ts);
+-		touched = READ_ONCE(wq_watchdog_touched);
+ 
+ 		if (time_after(pool_ts, touched))
+ 			ts = pool_ts;
+ 		else
+ 			ts = touched;
+ 
+-		if (pool->cpu >= 0) {
+-			unsigned long cpu_touched =
+-				READ_ONCE(per_cpu(wq_watchdog_touched_cpu,
+-						  pool->cpu));
+-			if (time_after(cpu_touched, ts))
+-				ts = cpu_touched;
+-		}
+-
+ 		/* did we stall? */
+ 		if (time_after(jiffies, ts + thresh)) {
+ 			lockup_detected = true;
+@@ -5826,8 +5821,8 @@ notrace void wq_watchdog_touch(int cpu)
+ {
+ 	if (cpu >= 0)
+ 		per_cpu(wq_watchdog_touched_cpu, cpu) = jiffies;
+-	else
+-		wq_watchdog_touched = jiffies;
++
++	wq_watchdog_touched = jiffies;
+ }
+ 
+ static void wq_watchdog_set_thresh(unsigned long thresh)
+-- 
+2.7.4
 
