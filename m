@@ -2,175 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077EE347821
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B989A347828
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbhCXMRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:17:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46298 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233178AbhCXMRZ (ORCPT
+        id S233399AbhCXMSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:18:25 -0400
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:51104 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233683AbhCXMSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:17:25 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12OC5M5B025409;
-        Wed, 24 Mar 2021 08:17:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=bPHeblJeSyCsQWtTH0OyaMsEht+pO1aUqrLDmYceQxw=;
- b=KS6YgQXfWRlWujqbCymaQ/c9oLpHgP+HG6wPXy7fHw8gXDlrQHdP4N3HaZBnLojPFzh4
- nojrUwCRMyv1zab4Q/AEcIxmPc3Rt1UTtLDzecFD5IJJn5XZYh/quDLwjCijTcog/7on
- rKv98nvwix/l2Npb8SEDt+S95qxroKBNwqYa3g7W7CQEOup1+gKjKPv/0sTe2zyUTrNG
- wp1Tzm2sTBS+Aln1vsV4eIL3hWlxSBXGQGxZQqyCJfU7SFrU90xhkTMaPG+A5HkOKcCf
- P3K7xR2WpkKmvFfVCgqUExtR05M63QHmEeyo5J03QaNLWV4cOS1hyAtj7z1UhoUK9eWm kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37g32kv81a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 08:17:19 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12OC5btU026858;
-        Wed, 24 Mar 2021 08:17:19 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37g32kv80r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 08:17:18 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12OC7o3m028118;
-        Wed, 24 Mar 2021 12:17:16 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 37d99rcajv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 12:17:16 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12OCHEWc33816888
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 12:17:14 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E6C64204D;
-        Wed, 24 Mar 2021 12:17:14 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 28EA44204F;
-        Wed, 24 Mar 2021 12:17:12 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.72.148])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Mar 2021 12:17:11 +0000 (GMT)
-Message-ID: <f370fed01e9d341ae6e4265785ad85b83dbc889c.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH 2/2] integrity: double check iint_cache was
- initialized
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-integrity@vger.kernel.org, James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Date:   Wed, 24 Mar 2021 08:17:10 -0400
-In-Reply-To: <CACT4Y+YatH2MHMh5s1KJtb-5w-RvmZPtQyRZqpVk=YP=HJYMkg@mail.gmail.com>
-References: <20210319200358.22816-1-zohar@linux.ibm.com>
-         <20210319200358.22816-2-zohar@linux.ibm.com>
-         <8450c80a-104a-3f36-0963-0ae8fa69e0f2@i-love.sakura.ne.jp>
-         <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
-         <1a2245c6-3cab-7085-83d3-55b083619303@i-love.sakura.ne.jp>
-         <8039976be3df9bd07374fe4f1931b8ce28b89dab.camel@linux.ibm.com>
-         <cde00350-2a18-1759-d53b-2e7489b6cc0e@i-love.sakura.ne.jp>
-         <8a8763a7-eeeb-3578-d50c-c15919fbe1f9@i-love.sakura.ne.jp>
-         <3ed2004413e0ac07c7bd6f10294d6b6fac6fdbf3.camel@linux.ibm.com>
-         <cc01e7b7-d685-289c-a792-fc76fabba807@i-love.sakura.ne.jp>
-         <721b4f8d38b014babb0f4ae829d76014bbf7734e.camel@linux.ibm.com>
-         <0a0c5cc5-0e1b-ef01-60c4-5247af2124f4@i-love.sakura.ne.jp>
-         <37aeaf361bfbd800e29db761f5160f2ce1869298.camel@linux.ibm.com>
-         <05ca20d0-9596-152e-4da2-1ffe28c52055@i-love.sakura.ne.jp>
-         <CACT4Y+Y+wzPytH7hMAn3O6zT0p2D4UyQwDbuKbUqc4REzPECkw@mail.gmail.com>
-         <ca2b63a47c2910072397d41448c46293750456f7.camel@linux.ibm.com>
-         <CACT4Y+YatH2MHMh5s1KJtb-5w-RvmZPtQyRZqpVk=YP=HJYMkg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-24_10:2021-03-24,2021-03-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- bulkscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=828
- adultscore=0 impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103240094
+        Wed, 24 Mar 2021 08:18:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1616588283;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=MA7RNmnKUxFc7ThtAOfwvxK5EVURvJy926VFsubP/gM=;
+  b=WXDeTVWw6eFW3nZWPQWu9bXvSFY5BdcbewSV1jJvHQY/02IW3vlhCNSL
+   PptEWqWEapEqrh70uTDHrNw8yTO+IADf04JxF0x3f7woYs+59D3wFxQQv
+   OC85bPWua1PowKDKn1vB66jliVAoWbcGW5eR5MfrgW+q6r5RXDOC2pTUF
+   c=;
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: ufolKvIAkNeHf3TxRyosTpXzSPo4bFhEM8sTJ9y//1ZaVABUOc3DioOwYPthh0CHVX3MnUWsGi
+ EFPw1zTdGiffij860eGuQwfbr3+Hm/wse+qa4mZjMnE0hnzisrYAvn9fSm8lKW+l0lbCLiEUN3
+ rw72APvFqxRt47KFIoTnNJy9R6Sv/DYWKXligFMls0fTWL7mS05nlOPgXL5RJc1be5JTaugLxr
+ cFON36qovmplZvrscFakmvxSonx9lNQL77hP68JOVR+rukIVF+HU7Vt3utJ1PCsYA4dsOM+x1G
+ cYM=
+X-SBRS: 5.2
+X-MesageID: 40163521
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+IronPort-HdrOrdr: A9a23:gaYUYqwtQO9N8akB6MPZKrPx/uskLtp033Aq2lEZdDV8btGYm8
+ eynP4SyB/zj3IrVGs9nM2bUZPsfVr3//dOgbU5F7GkQQXgpS+UPJhvhLGSpwHINg/f0qpm1a
+ lme7VjE9GYNzJHpOvz/QXQKbkd6fad9qTAv4nj5lNMaS0vVK169Qd+DW+gYyhLbS1LH4AwGp
+ bZxucvnUvCRV0tYs62BmYIUoH4zrWmqLvcbQMbHBli0QGSjFqTg4LSKQSS3RsVTlp0sNUf2F
+ XC+jaZ2oyT98uV5zWZ/G/V4pRQlrLau6Z+Lf3JsOc5AHHBjg6pYa5oRrGNuiskydvflGoCoZ
+ 33jDoLe+h19nPNbkG5yCGdpDXI4XIVxFLJjX+enHf5rsTySFsBerR8rLMcSDT1wQ4EnrhHoc
+ V29lPcjbV7J1f8uR64wN7yWxRjhiOP0AEfuN9WtVNze88jcrNLxLZvmn99IdM7Mw/RzpsoK+
+ VqBNG03octTXqqK0rUuWRi27WXLw0ONybDRkADv/qc2CRNkEZ4yFMFxNcekm1ozuNEd6V5
+X-IronPort-AV: E=Sophos;i="5.81,274,1610427600"; 
+   d="scan'208";a="40163521"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T9K/LODDjejv+NyiBUiUx8CY9XhtZOFswgMUlOo1OrQhbp76R8IstBH3RuO6daSSvWfEnOsp6deYaLWC/JlPHhlgyDPSxF9RPx53ejFtFuLEF84rMVnlgi/7ra6oZU7sVsTV7zFTw5ZpbeFrBq3q0k0DykLyVAJaLrKtRTcEfFRmc1UFkaE6tqRO1QgbPtHmiAP94T+NTE/huusRgB57zyUFG+eHfEUzxXOCnU+hwND/uSaOwQDBMcjUHjwW0GvkDftD3iexrM97+Q2y7cpEjsZu4mfg8EAnAeXdNevAd/YTWbZSRp2zE2mWoqBZYR9+knb50I2hC4OTocG3ZzPnKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zw3d2v6aNIIWAAyD1yYCNSl+vqRyx1tcom5wbgbKMwU=;
+ b=cTJNNLYdTLbwRI6yvis0g7rhXczkylh0rY9T98v1ScCqTFdvKyXE1+FHFbeMAZUIze+JcN0Rxv4mTHDn6SKT6QHykq9i0VCKiln9vuucHZ4C6vgJZl1FnTmMWz7b7Led1l69MPA3UPWD4J5QmEeermAxSiBaRuqFw2PBDupUVFaVKxdRltOwRo1hk4psqHzxRVAoQsN7OcxaweMRqiDgHFxWYhbNa+GlzILgp0mHIZJJLjubS9TLV6uxxhLOR4dUjtlJtzyR5h1kc91qdZnQxu9ftHlIXwR9hVjfQWjUkojd3VC7tyKIQfRVlLBGZkkOkTYmuv10rY6HHbo8Biph5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zw3d2v6aNIIWAAyD1yYCNSl+vqRyx1tcom5wbgbKMwU=;
+ b=u0U2U6jbYsl3H5/x4HRNbvZ4E0LikQ44S3/9NMst9JhgwCADT7IqiyGpPNZQ+6kTay7pVGoZl/NwskdHIe2adXZshQbiP7ybr++X8vvbw3bs90Yb3DNUKxLeOCkdaIWc4lkCDU2buj1dYs/euJZit4q4GZJkl0rSJUf98nn21cw=
+From:   Roger Pau Monne <roger.pau@citrix.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <xen-devel@lists.xenproject.org>,
+        Roger Pau Monne <roger.pau@citrix.com>
+Subject: [PATCH] intel/pinctrl: check capability offset is between MMIO region
+Date:   Wed, 24 Mar 2021 13:17:44 +0100
+Message-ID: <20210324121744.58324-1-roger.pau@citrix.com>
+X-Mailer: git-send-email 2.30.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MR1P264CA0026.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:2f::13) To DS7PR03MB5608.namprd03.prod.outlook.com
+ (2603:10b6:5:2c9::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9a2910dc-bf35-4ec7-6a16-08d8eebedbcf
+X-MS-TrafficTypeDiagnostic: DM6PR03MB4138:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR03MB4138BC2A7870745C878CBC9F8F639@DM6PR03MB4138.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NxGIMfyO5R/mAl2mCczXWgAxkZBwN8ngLFXwCmxQ2f3f4ZbBT+4bVz81FqaBi3OhseT8YIjbh37k83v3V/Xita5+ktFbfPDaKk3IggSgHH1eISwXenQU1QXZkaeMkNIqqkiSeN37rzi33MhmvJpl5qbSH08lkY63e4ek1xVTB3rNlWtn8q2y1w+Bmn5FXxJ5ts9sNbASvv7O3RHU6O+rUfmErWFRI0lmQXODzQJOgUMA6unlJeOA3L8nqZ9YLxiGGuMkKuHuDwzdENf8gK2SG6dQ5na78vUtOdeLCvzRFe6c8Pw4BPYantZcNpe2Wva2oSB1I5Ng24t5jV8ILjwqd1Icyj/DqTkBUbRDh7DGbwb7rnvrs6UAp3bp9CoqThQ8nFFbp6fCgeERWvJEZt7bQZUI25Tt5eBhBMyMRKhMaXHG4HjXzuvoAK5r03zbfSlOaa02kLUt08GsPhbQ3e6y0nx8T8Cwo8Ug9CBoMPMUmt93sD2q5zjzVh/Rz13ozd8eWWsrs20ta8Hs4t0CoJUOT4fHooZwVi/6bYPkMSiRPKqc03MmaMTudbWbv0rX6X24GezWJD/0hxOWHjv82a4t6F1J8nVtkLxU/hrMK2g08epirie+sxZEuL2xNTtPF1I2evPM0D4ojhklowGZppFjEehcKoiEKDqONCw71eV1GSA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(107886003)(1076003)(4326008)(478600001)(66556008)(66946007)(36756003)(86362001)(66476007)(6916009)(6496006)(83380400001)(38100700001)(2616005)(186003)(8676002)(6666004)(956004)(5660300002)(2906002)(6486002)(316002)(8936002)(16526019)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VlJjRVNWTmMreTF4V09mcnZ4ZzdEd3E4QVk4VHRoQkRLQWhiVGJPZEhEeWZF?=
+ =?utf-8?B?cW05QkhDL0N1QTF0azc1cllkMzl5MnBVTTEzSDNaRXIyTFBVYUZqMnpaamV4?=
+ =?utf-8?B?NFdNcWFvQi94SHdJRU9wZExZbzhXWWNSYkdDQW13eVJ5ZStZZDJIWGIyaXBp?=
+ =?utf-8?B?YldvYXh3ckpSUHFsSXE1c1IzUy8rODFIWmVMd3dYb2tMWERuWjZwME5rQWFQ?=
+ =?utf-8?B?Q2VXMUJEaVpSeE1FdWpvQzZkSHRlWERjQWhUSjVLenJ3ckR0Q09pbEtqeWNa?=
+ =?utf-8?B?ZzhHc0ZkKzVvNU93eWQ5KzhhcHgxUmo1enIxYVNkckU5OVkvcUYzWi93WTdE?=
+ =?utf-8?B?SlJuQmphSkNKNVNoRHNRTUVrb3o5RGkvVHUrVVU3d1hBYUhTOFhOemFmUUZk?=
+ =?utf-8?B?OHFQQ1V3NExpR2lBU3MzYUQ3Qm5IOW85L1J2a3RKa2l0c1ZONzk0TFpPUU44?=
+ =?utf-8?B?MnNRb0dIZFNicS82aUZjaE1uOVh1MjNiZi9hVHRETTVMdFgwTTFxblQzYWgz?=
+ =?utf-8?B?bU9RZFpzbFdYZnVtWENhbUNLN3hvWndOTzBzcUFoRkdaOW9KMEpuR2ZoNzhS?=
+ =?utf-8?B?OU5jNnU2MFpkUzRnU3lPRVlLK2ZYaXVsWWRIemdGYkpwVFJKaFVRc0J1ZERC?=
+ =?utf-8?B?RFN4c2tTMzZuRHVsM0dWNHhKa1R4cmUzWjlPZDhJcEduMjF0bDFSc2xEdnE4?=
+ =?utf-8?B?MWZqMnlrckRFUHE0RWxWUHdUaTRkOGxGbnBndWJ0bXVXVVU5YVZhczk5WFBU?=
+ =?utf-8?B?L21Oa1hIWVBJNEdDSWt5UTVLNDJBM1hwcVFLUWZ4N21EY2RrU2h6REI5a2p4?=
+ =?utf-8?B?T3UxZFRmaE40WGRpYkNVTnlTUlFiRzhSRHpmRmZLdm9JV1ZjTzU5RE9DbFNi?=
+ =?utf-8?B?b05wN2pVK3lmYTdmUnB0TEZvT1JtUHY3NlpLelVkcDh0NXFXK0E2SStoNGhT?=
+ =?utf-8?B?OWFIc0JvOWdMbE5zV3BoWHdyNmRmUWgrd205ek4zeDJtUGh6Vi96UExmZjVz?=
+ =?utf-8?B?cnIrQjFKODY3bUdqNGJDRThVRmJ1YjhwWUVGWW5na2kvbHRoSHhEbDJheWVu?=
+ =?utf-8?B?MW9UUktFVWVoazhPWFFZdmIzcnoxODBSeG9nMlNPWHJwZmZlUUIyY2xaaXpM?=
+ =?utf-8?B?M1ZvMHJ0aEZQRnlFMkd5aCs3a0JrT1JyZjFQSVBJTUlHMy90WlJubnQzeUJR?=
+ =?utf-8?B?UHYyUWNBUDlrRE1jQ240TThHZnhmaVRGUUs0MkRpQnY5Z3dyVlF6MENvLzJ4?=
+ =?utf-8?B?MG01U2J4dWx6Wnd3VXFseEIvTXAvcTJGYlYxL0pIbUQ4SWtJNFFkRlZob3lk?=
+ =?utf-8?B?TGZ2WmxHMS9RTk5rUkZ4bXdicXF2akRZRXM2UjVVSEdnUkVJaXJmcU9CN2ZS?=
+ =?utf-8?B?WHRyaXFmc3BtanR6NnY0MjU5RmpuSE8wUEJGVHR4dzl2KzJBbXROVHhyVHlz?=
+ =?utf-8?B?dGgrQjBBcmpZNzFBNDlpUmFpVzFEZ29ZUlZYemh3VEdzSDh3SXBaZlovTFY1?=
+ =?utf-8?B?bVg5QnVRV3o2d1dSdnpKUUVXOVhzM1NybVIwN1lVa3hQS3RRb0drSjM2UkpH?=
+ =?utf-8?B?S21QOVlRMlJ1SnlDNFJPRU9tdGtEbEJwTkdQemIwQkNuaHZUTXB1cVpibnVF?=
+ =?utf-8?B?bDJ4YW5mSUtKQjlHQVNyck9HNDdwSVZhVmRIQlpmSW5lMXRhSTZOazdRM0xj?=
+ =?utf-8?B?eWl6Z1ZwL1R1TE9aOUlHR1Y2ckVqZVBoM3VuWnp6VmdDbkd2VVJ4SDN4ZnFG?=
+ =?utf-8?Q?yPsh+QQw+c/bU7vvIAmaYfWouwFyqiV8+29N8cB?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a2910dc-bf35-4ec7-6a16-08d8eebedbcf
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 12:17:57.4245
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0aQh/YD2499ACgv6aBsVljD5zHyTAqR0oQGCqz5LDobXK4hgFplXns9FZNPl9nldsADaG//a+mI3p+XaYPUdNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4138
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 12:58 +0100, Dmitry Vyukov wrote:
-> On Wed, Mar 24, 2021 at 12:49 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> >
-> > On Wed, 2021-03-24 at 12:37 +0100, Dmitry Vyukov wrote:
-> > > On Wed, Mar 24, 2021 at 12:21 PM Tetsuo Handa
-> > > <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> > > >
-> > > > On 2021/03/24 20:10, Mimi Zohar wrote:
-> > > > > On Wed, 2021-03-24 at 19:10 +0900, Tetsuo Handa wrote:
-> > > > >> On 2021/03/24 1:13, Mimi Zohar wrote:
-> > > > >>> On Wed, 2021-03-24 at 00:14 +0900, Tetsuo Handa wrote:
-> > > > >>>> On 2021/03/23 23:47, Mimi Zohar wrote:
-> > > > >>>>> Initially I also questioned making "integrity" an LSM.  Perhaps it's
-> > > > >>>>> time to reconsider.   For now, it makes sense to just fix the NULL
-> > > > >>>>> pointer dereferencing.
-> > > > >>>>
-> > > > >>>> Do we think calling panic() as "fix the NULL pointer dereferencing" ?
-> > > > >>>
-> > > > >>> Not supplying "integrity" as an "lsm=" option is a user error.  There
-> > > > >>> are only two options - allow or deny the caller to proceed.   If the
-> > > > >>> user is expecting the integrity subsystem to be properly working,
-> > > > >>> returning a NULL and allowing the system to boot (RFC patch version)
-> > > > >>> does not make sense.   Better to fail early.
-> > > > >>
-> > > > >> What does the "user" mean? Those who load the vmlinux?
-> > > > >> Only the "root" user (so called administrators)?
-> > > > >> Any users including other than "root" user?
-> > > > >>
-> > > > >> If the user means those who load the vmlinux, that user is explicitly asking
-> > > > >> for disabling "integrity" for some reason. In that case, it is a bug if
-> > > > >> booting with "integrity" disabled is impossible.
-> > > > >>
-> > > > >> If the user means something other than those who load the vmlinux,
-> > > > >> is there a possibility that that user (especially non "root" users) is
-> > > > >> allowed to try to use "integrity" ? If processes other than global init
-> > > > >> process can try to use "integrity", wouldn't it be a DoS attack vector?
-> > > > >> Please explain in the descripotion why calling panic() does not cause
-> > > > >> DoS attack vector.
-> > > > >
-> > > > > User in this case, is anyone rebooting the system and is intentionally
-> > > > > changing the default values, dropping the "integrity" option on the
-> > > > > boot command line.
-> > > >
-> > > > OK. Then, I expect that the system boots instead of calling panic().
-> > > > That user is explicitly asking for disabling "integrity" for some reason.
-> > >
-> > > That was actually my intention. The prebuilt kernel that I use for
-> > > things has all LSMs enabled, but then I needed to try some workload
-> > > with only 1 specific LSM, so I gave a different lsm= argument.
-> >
-> > IMA/EVM is dependent on "integrity".  Was your intention to also
-> > disable IMA and EVM?
-> 
-> I think, yes... or not sure. I was trying to test a bug that requires
-> a different major LSM and all minor LSMs are presumably irrelevant. I
-> dropped existing lsm= arg and added something like lsm=apparmor.
-> 
-> > If so, when disabling "integrity", don't load an
-> > IMA policy.
-> 
-> I don't really know what this means. I guess it simply comes from the
-> image? If so, there was no easy way to avoid loading.
+When parsing the capability list make sure the offset is between the
+MMIO region mapped in 'regs', or else the kernel hits a page fault.
 
-There are a couple of builtin IMA policies, which may be loaded on boot
-by specifying on the boot command line "ima_policy=".   Unless the boot
-command line "ima_policy=" option is specified, no policy will loaded.
+This fault has been seen when running as a Xen PVH dom0, which doesn't
+have the MMIO regions mapped into the domain physical memory map,
+despite having the device reported in the ACPI DSDT table. This
+results in reporting a capability offset of 0xffff (because the kernel
+is accessing unpopulated memory), and such offset is outside of the
+mapped region.
 
-A custom IMA policy may subsequently be loaded, normally in the
-initramfs, by echo'ing the file pathname to
-/sys/kernel/security/ima/policy.
+Adding the check is harmless, and prevents buggy or broken systems
+from crashing the kernel if the MMIO region is not properly reported.
 
-Mimi
+Fixes: 91d898e51e60 ('pinctrl: intel: Convert capability list to features')
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+---
+ drivers/pinctrl/intel/pinctrl-intel.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
+index 8085782cd8f9..bc8b990d8021 100644
+--- a/drivers/pinctrl/intel/pinctrl-intel.c
++++ b/drivers/pinctrl/intel/pinctrl-intel.c
+@@ -1481,16 +1481,22 @@ static int intel_pinctrl_probe(struct platform_device *pdev,
+ 
+ 	for (i = 0; i < pctrl->ncommunities; i++) {
+ 		struct intel_community *community = &pctrl->communities[i];
++		struct resource *res;
+ 		void __iomem *regs;
++		size_t size;
+ 		u32 offset;
+ 		u32 value;
+ 
+ 		*community = pctrl->soc->communities[i];
+ 
+-		regs = devm_platform_ioremap_resource(pdev, community->barno);
++		regs = devm_platform_get_and_ioremap_resource(pdev,
++							      community->barno,
++							      &res);
+ 		if (IS_ERR(regs))
+ 			return PTR_ERR(regs);
+ 
++		size = res->end - res->start;
++
+ 		/* Determine community features based on the revision */
+ 		value = readl(regs + REVID);
+ 		if (((value & REVID_MASK) >> REVID_SHIFT) >= 0x94) {
+@@ -1519,6 +1525,12 @@ static int intel_pinctrl_probe(struct platform_device *pdev,
+ 				break;
+ 			}
+ 			offset = (value & CAPLIST_NEXT_MASK) >> CAPLIST_NEXT_SHIFT;
++			if (offset >= size) {
++				dev_err(&pdev->dev,
++					"wrong capability offset: %#x\n",
++					offset);
++				return -ENOENT;
++			}
+ 		} while (offset);
+ 
+ 		dev_dbg(&pdev->dev, "Community%d features: %#08x\n", i, community->features);
+-- 
+2.30.1
 
