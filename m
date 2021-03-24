@@ -2,174 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2F7347CAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A891347B9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236767AbhCXPcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:32:23 -0400
-Received: from mga06.intel.com ([134.134.136.31]:6267 "EHLO mga06.intel.com"
+        id S236457AbhCXPEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236611AbhCXPcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:32:01 -0400
-IronPort-SDR: d9ubA7y00vntnNnBFABl+k2ezMRlctZ4b4bg9/k2HhuptUPPf2vXqZecDxJlEftGICqhj+WfRt
- gjqBxhJ1Ajbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="252087121"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="252087121"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:32:01 -0700
-IronPort-SDR: AxDddmw+YCYh7g59uN05Wg4w8oePcVqXDwKx1lEhT5IyOtWrqMeutIvUjD66w96loCyKAr3uVl
- SkldLBgMij2A==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="608143696"
-Received: from mailunda-mobl.amr.corp.intel.com (HELO [10.209.33.48]) ([10.209.33.48])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:32:00 -0700
-Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
-        srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
- <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink> <YFma1ClahDe2bZhR@kroah.com>
- <aa9cfc49-913e-b3ba-1d92-2fab55bf4fa7@linux.intel.com>
- <YFsZdiVQpLfsWmv2@vkoul-mobl.Dlink>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c3534676-f8df-b9ce-582d-3cf02db4d02c@linux.intel.com>
-Date:   Wed, 24 Mar 2021 10:03:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236408AbhCXPEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:04:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D02AA619A4;
+        Wed, 24 Mar 2021 15:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616598252;
+        bh=x7SH3yA/mzmsnH/hrV2pehEtDfcK1K7ccJXFfQNsj0g=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=SEJSAB564QkDcEBxa4kkqRIb3Ik/vUs4bkVbqHvJNbIYe2fSsv7ftrYdpByDO0YGv
+         GUii5Fx2HKPYpvj4cIULD+XTNHy2a/yRCaRlE68CYvx8jKLyoLhFKDsgdWTe74ftrh
+         mIWypR6eZcjRTQ+4SiRjmDOlZQhUPZA6H3yZMe5UGeOp4uVA3zSxjaCEmDq6szv6Uj
+         mLrNVjGmXEJVKUG6Edtff9UAxNiX7xeZ+rUuXdikoFpxDcf3mgeuZXtRRNByf6z+gQ
+         U98Nz1buOAhXJjI0YXJ6vTqPTJi4Dq9skB/1aZbdSInOslz5MfpeWN57kPZmF9jfBB
+         RvFskDn1kpZsw==
+Message-ID: <ffff6f72c5ab4b5916aaeb73435ed8141876ac1f.camel@kernel.org>
+Subject: Re: [PATCH] ceph: convert {n}ref from atomic_t to refcount_t
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Yejune Deng <yejune.deng@gmail.com>, idryomov@gmail.com
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 24 Mar 2021 11:04:10 -0400
+In-Reply-To: <20210324102625.112640-1-yejune.deng@gmail.com>
+References: <20210324102625.112640-1-yejune.deng@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <YFsZdiVQpLfsWmv2@vkoul-mobl.Dlink>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/24/21 5:50 AM, Vinod Koul wrote:
-> On 23-03-21, 12:29, Pierre-Louis Bossart wrote:
->> Thanks Greg and Vinod for the reviews
->>
->>>>> -static int intel_master_probe(struct platform_device *pdev)
->>>>> +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
->>>>>    {
->>>>> -	struct device *dev = &pdev->dev;
->>>>> +	struct device *dev = &auxdev->dev;
->>>>> +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
->>>>
->>>> Do we need another abstractions for resources here, why not aux dev
->>>> creation set the resources required and we skip this step...
->>
->> Not sure what resources you are referring to?
+On Wed, 2021-03-24 at 18:26 +0800, Yejune Deng wrote:
+> refcount_t type should be used instead of atomic_t when the variable
+> is used as a reference counter. This is because the implementation of
+> refcount_t can prevent overflows and detect possible use-after-free.
 > 
-> Resources in the sdw_intel_link_dev which are sdw_intel_link_res. They
-> should be resources for auxdev and if you do that lets you get rid of
-> this abstraction.
-
-Sorry Vinod, I am not following your line of thought. We must be talking 
-of different things or having a different understanding of what the 
-auxiliary device is.
-
-The auxiliary device is deliberately minimal by design and does not 
-contain domain-specific information/resources/pointers/pdata as the 
-platform_device does. You extend it by defining a larger structure that 
-contains an auxiliary device and whatever domain-specific 
-fields/structures/domains are needed, then use container_of to access it.
-
-It's not just Intel doing this, the first example from Mellanox uses the 
-same pattern, albeit with a single pointer instead of the structure we used.
-
-see e.g. 
-https://elixir.bootlin.com/linux/latest/source/include/linux/mlx5/driver.h#L545
-
-So I am not sure what you mean by 'rid of this abstraction' when this 
-abstraction is pretty much the way things were designed?
-
-Maybe an example of what sort of structure you had in mind would help?
-
-
->> this is just a container_of() and the documented way of extending the auxbus
->> (see https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#example-usage)
->>
->>
->> struct sdw_intel_link_dev {
->> 	struct auxiliary_device auxdev;
->> 	struct sdw_intel_link_res link_res;
->> };
->>
->> #define auxiliary_dev_to_sdw_intel_link_dev(auxiliary_dev) \
->> 	container_of(auxiliary_dev, struct sdw_intel_link_dev, auxdev)
->>
->>>>>    	struct sdw_intel *sdw;
->>>>>    	struct sdw_cdns *cdns;
->>>>>    	struct sdw_bus *bus;
->>>>> @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
->>>>>    	cdns = &sdw->cdns;
->>>>>    	bus = &cdns->bus;
->>>>> -	sdw->instance = pdev->id;
->>>>> -	sdw->link_res = dev_get_platdata(dev);
->>>>> +	sdw->instance = auxdev->id;
->>>>
->>>> so auxdev has id and still we pass id as argument :( Not sure if folks
->>>> can fix this now
->>>
->>> That's odd, yeah, it should be fixed.
->>
->> I think we are talking about different things?
->>
->> this is defined in mod_devicetable.h:
->>
->> struct auxiliary_device_id {
->> 	char name[AUXILIARY_NAME_SIZE];
->> 	kernel_ulong_t driver_data;
->> };
->>
->> and used for the driver probe:
->>
->> 	ret = auxdrv->probe(auxdev, auxiliary_match_id(auxdrv->id_table, auxdev));
->>
->> but there is a separate id:
->>
->> struct auxiliary_device {
->> 	struct device dev;
->> 	const char *name;
->> 	u32 id;
->> };
->>
->> which is set during the device initialization in intel_init.c
->>
->> 	/* we don't use an IDA since we already have a link ID */
->> 	auxdev->id = link_id;
->>
->> In the auxiliary bus design, the parent has to take care of managing this
->> id, be it with an IDA or as we do here with a physical link ID that is
->> unique.
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  fs/ceph/mds_client.h |  2 +-
+>  fs/ceph/snap.c       | 27 +++++++++++++++------------
+>  fs/ceph/super.h      |  2 +-
+>  3 files changed, 17 insertions(+), 14 deletions(-)
 > 
-> Aha, maybe both of them should not be 'id' to avoid this confusion!
+> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> index eaa7c5422116..bf99c5ba47fc 100644
+> --- a/fs/ceph/mds_client.h
+> +++ b/fs/ceph/mds_client.h
+> @@ -351,7 +351,7 @@ struct ceph_pool_perm {
+>  struct ceph_snapid_map {
+>  	struct rb_node node;
+>  	struct list_head lru;
+> -	atomic_t ref;
+> +	refcount_t ref;
+>  	u64 snap;
+>  	dev_t dev;
+>  	unsigned long last_used;
+> diff --git a/fs/ceph/snap.c b/fs/ceph/snap.c
+> index 0728b01d4d43..c0fbbb56b259 100644
+> --- a/fs/ceph/snap.c
+> +++ b/fs/ceph/snap.c
+> @@ -66,14 +66,15 @@ void ceph_get_snap_realm(struct ceph_mds_client *mdsc,
+>  			 struct ceph_snap_realm *realm)
+>  {
+>  	dout("get_realm %p %d -> %d\n", realm,
+> -	     atomic_read(&realm->nref), atomic_read(&realm->nref)+1);
+> +	     refcount_read(&realm->nref), refcount_read(&realm->nref)+1);
+>  	/*
+>  	 * since we _only_ increment realm refs or empty the empty
+>  	 * list with snap_rwsem held, adjusting the empty list here is
+>  	 * safe.  we do need to protect against concurrent empty list
+>  	 * additions, however.
+>  	 */
+> -	if (atomic_inc_return(&realm->nref) == 1) {
+> +	refcount_inc(&realm->nref);
+> +	if (refcount_read(&realm->nref) == 1) {
+>  		spin_lock(&mdsc->snap_empty_lock);
+>  		list_del_init(&realm->empty_item);
+>  		spin_unlock(&mdsc->snap_empty_lock);
+> @@ -117,7 +118,7 @@ static struct ceph_snap_realm *ceph_create_snap_realm(
+>  	if (!realm)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	atomic_set(&realm->nref, 1);    /* for caller */
+> +	refcount_set(&realm->nref, 1);    /* for caller */
+>  	realm->ino = ino;
+>  	INIT_LIST_HEAD(&realm->children);
+>  	INIT_LIST_HEAD(&realm->child_item);
+> @@ -199,8 +200,8 @@ static void __put_snap_realm(struct ceph_mds_client *mdsc,
+>  			     struct ceph_snap_realm *realm)
+>  {
+>  	dout("__put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
+> -	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
+> -	if (atomic_dec_and_test(&realm->nref))
+> +	     refcount_read(&realm->nref), refcount_read(&realm->nref)-1);
+> +	if (refcount_dec_and_test(&realm->nref))
+>  		__destroy_snap_realm(mdsc, realm);
+>  }
+>  
+> @@ -211,8 +212,8 @@ void ceph_put_snap_realm(struct ceph_mds_client *mdsc,
+>  			 struct ceph_snap_realm *realm)
+>  {
+>  	dout("put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
+> -	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
+> -	if (!atomic_dec_and_test(&realm->nref))
+> +	     refcount_read(&realm->nref), refcount_read(&realm->nref)-1);
+> +	if (!refcount_dec_and_test(&realm->nref))
+>  		return;
+>  
+>  	if (down_write_trylock(&mdsc->snap_rwsem)) {
+> @@ -1034,7 +1035,8 @@ struct ceph_snapid_map* ceph_get_snapid_map(struct ceph_mds_client *mdsc,
+>  		} else if (snap < exist->snap) {
+>  			p = &(*p)->rb_right;
+>  		} else {
+> -			if (atomic_inc_return(&exist->ref) == 1)
+> +			refcount_inc(&exist->ref);
+> +			if (refcount_read(&exist->ref) == 1)
+>  				list_del_init(&exist->lru);
+>  			break;
+>  		}
+> @@ -1057,7 +1059,7 @@ struct ceph_snapid_map* ceph_get_snapid_map(struct ceph_mds_client *mdsc,
+>  	}
+>  
+>  	INIT_LIST_HEAD(&sm->lru);
+> -	atomic_set(&sm->ref, 1);
+> +	refcount_set(&sm->ref, 1);
+>  	sm->snap = snap;
+>  
+>  	exist = NULL;
+> @@ -1076,7 +1078,8 @@ struct ceph_snapid_map* ceph_get_snapid_map(struct ceph_mds_client *mdsc,
+>  		exist = NULL;
+>  	}
+>  	if (exist) {
+> -		if (atomic_inc_return(&exist->ref) == 1)
+> +		refcount_inc(&exist->ref);
+> +		if (refcount_read(&exist->ref) == 1)
+>  			list_del_init(&exist->lru);
+>  	} else {
+>  		rb_link_node(&sm->node, parent, p);
+> @@ -1099,7 +1102,7 @@ void ceph_put_snapid_map(struct ceph_mds_client* mdsc,
+>  {
+>  	if (!sm)
+>  		return;
+> -	if (atomic_dec_and_lock(&sm->ref, &mdsc->snapid_map_lock)) {
+> +	if (refcount_dec_and_lock(&sm->ref, &mdsc->snapid_map_lock)) {
+>  		if (!RB_EMPTY_NODE(&sm->node)) {
+>  			sm->last_used = jiffies;
+>  			list_add_tail(&sm->lru, &mdsc->snapid_map_lru);
+> @@ -1161,7 +1164,7 @@ void ceph_cleanup_snapid_map(struct ceph_mds_client *mdsc)
+>  		sm = list_first_entry(&to_free, struct ceph_snapid_map, lru);
+>  		list_del(&sm->lru);
+>  		free_anon_bdev(sm->dev);
+> -		if (WARN_ON_ONCE(atomic_read(&sm->ref))) {
+> +		if (WARN_ON_ONCE(refcount_read(&sm->ref))) {
+>  			pr_err("snapid map %llx -> %x still in use\n",
+>  			       sm->snap, sm->dev);
+>  		}
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index c48bb30c8d70..062123a73ef1 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -835,7 +835,7 @@ struct ceph_readdir_cache_control {
+>  struct ceph_snap_realm {
+>  	u64 ino;
+>  	struct inode *inode;
+> -	atomic_t nref;
+> +	refcount_t nref;
+>  	struct rb_node node;
+>  
+>  	u64 created, seq;
 
-the function definition follows the expected prototype
+Thanks, merged into ceph-client/testing branch. This should make v5.13.
 
-struct auxiliary_driver {
-         int (*probe)(struct auxiliary_device *,
-                      const struct auxiliary_device_id *id);
-
-we can rename the argument to e.g. dev_id if that helps. Suggestions 
-welcome.
-
-> That also reminds me that we have duplicate info:
-> 
-> +       sdw->instance = auxdev->id;
-> +       bus->link_id = auxdev->id;
-> 
-> drop the local driver instance and use bus->link_id please
-
-if you are referring to sdw->instance, it could probably be removed, but 
-that would need to be a separate cleanup changing cadence_master.c as 
-well. this patch only changes pdev->id with auxdev->id and provides only 
-the transition from platform device to auxiliary device.
+Cheers,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
