@@ -2,157 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD90C346F18
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECE1346F20
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbhCXByf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:54:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43278 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232101AbhCXBya (ORCPT
+        id S234635AbhCXB5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:57:50 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14133 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231278AbhCXB5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:54:30 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12O1Ygu9116639;
-        Tue, 23 Mar 2021 21:54:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- message-id : references : mime-version : content-type : in-reply-to :
- subject; s=pp1; bh=5jW7gfzb7xC4j2UP6SQKB5rXAdkeaw0c+uJONfxf5vM=;
- b=MyzUYimdnFFbJgVkBc7g+9KS30FSNvs+FS7e1rhpGBYapLkw6VBFIwnQcVBadxAo4qu4
- yA4WkV0QI7HV/TsSqO09gp935Z1WRzh4zNXkICyhxV+Tw8SDGp7zw1g8soVwLJJOLWwF
- cRuwK0nZ9Ngp2dMtAnSRe/MVr0RVC9+h81qm8cHOiR9uJRQsSuBtYn0bBfZNG7lpJZtR
- Nin3+C8B8vgWtXsyyHA1qk2stDYrsum+CQtXu6InzIJsnewkjyBywOHU72CEXHt9KD0Z
- wP9gPH40s30WmGxYzsxhXeT5zTudGFGLPDVB22HxojigdGjOW9DCj61r3J/2jeYJbjOn Rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37fuq40gyp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 21:54:22 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12O1aBY6123178;
-        Tue, 23 Mar 2021 21:54:22 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37fuq40gyh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 21:54:22 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12O1pjSW018941;
-        Wed, 24 Mar 2021 01:54:21 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma02wdc.us.ibm.com with ESMTP id 37d99rafhf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 01:54:21 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12O1sLGb28705036
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 01:54:21 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 406C4AE060;
-        Wed, 24 Mar 2021 01:54:21 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57CFFAE05C;
-        Wed, 24 Mar 2021 01:54:20 +0000 (GMT)
-Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.214.185])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Wed, 24 Mar 2021 01:54:20 +0000 (GMT)
-Date:   Tue, 23 Mar 2021 20:54:18 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Message-ID: <20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <20200729091908.1378911-1-jolsa@kernel.org>
- <20200801114050.GB377079@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <7682e4c3-5840-bb6d-5e76-6b3fd37b04c0@huawei.com>
- <20210323150604.GB8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <a233702a-89b7-ae47-d47a-a7b4539c191e@huawei.com>
+        Tue, 23 Mar 2021 21:57:44 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4rt72MRJz19Hj0;
+        Wed, 24 Mar 2021 09:55:43 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
+ 2021 09:57:39 +0800
+Subject: Re: [PATCH] Revert "f2fs: give a warning only for readonly partition"
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210323064155.12582-1-yuchao0@huawei.com>
+ <YFo16ADpWJ7OUAvK@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
+Date:   Wed, 24 Mar 2021 09:57:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a233702a-89b7-ae47-d47a-a7b4539c191e@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-Subject: RE: [PATCHv4 00/19] perf metric: Add support to reuse metric
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-24_01:2021-03-23,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 suspectscore=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 mlxscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103240009
+In-Reply-To: <YFo16ADpWJ7OUAvK@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 03:15:16PM +0000, John Garry wrote:
-> On 23/03/2021 15:06, Paul A. Clarke wrote:
-> > On Mon, Mar 22, 2021 at 11:36:23AM +0000, John Garry wrote:
-> > > On 01/08/2020 12:40, Paul A. Clarke wrote:
-> > > > > v4 changes:
-> > > > >     - removed acks from patch because it changed a bit
-> > > > >       with the last fixes:
-> > > > >         perf metric: Collect referenced metrics in struct metric_ref_node
-> > > > >     - fixed runtime metrics [Kajol Jain]
-> > > > >     - increased recursion depth [Paul A. Clarke]
-> > > > >     - changed patches due to dependencies:
-> > > > >         perf metric: Collect referenced metrics in struct metric_ref_node
-> > > > >         perf metric: Add recursion check when processing nested metrics
-> > > > >         perf metric: Rename struct egroup to metric
-> > > > >         perf metric: Rename group_list to metric_list
-> > > > > 
-> > > > > Also available in here:
-> > > > >     git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> > > > >     perf/metric
-> > > > I built and ran from the above git branch, and things seem to work.
-> > > > Indeed, I was able to apply my changes to exploit the new capabilities
-> > > > via modifications to tools/perf/pmu-events/arch/powerpc/power9/metrics.json,
-> > > > as I posted earlier (and will submit once this set gets merged).
-> > > I was just wondering: Does perf subtest 10.3 work ok for you with the metric
-> > > reuse?
-> > > 
-> > > That's "Parsing of PMU event table metrics" subtest.
-> > I confess I'm not sure what you are asking. Using the latest mainline
-> > (84196390620ac0e5070ae36af84c137c6216a7dc), perf subtest 10.3 does
-> > pass for me:
-> > --
-> > $ ./perf test 10
-> > 10: PMU events                                                      :
-> > 10.1: PMU event table sanity                                        : Ok
-> > 10.2: PMU event map aliases                                         : Ok
-> > 10.3: Parsing of PMU event table metrics                            : Ok
-> > 10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-> > --
-> Since commit 8989f5f07605 ("perf stat: Update POWER9 metrics to utilize
-> other metrics"), power9 has reused metrics.
+On 2021/3/24 2:39, Jaegeuk Kim wrote:
+> On 03/23, Chao Yu wrote:
+>> This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+>>
+>> Because that commit fails generic/050 testcase which expect failure
+>> during mount a recoverable readonly partition.
 > 
-> And I am finding that subtest 10.3 caused problems when I tried to introduce
-> metric reuse on arm64, so I was just asking you to check.
+> I think we need to change generic/050, since f2fs can recover this partition,
+
+Well, not sure we can change that testcase, since it restricts all generic
+filesystems behavior. At least, ext4's behavior makes sense to me:
+
+	journal_dev_ro = bdev_read_only(journal->j_dev);
+	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
+
+	if (journal_dev_ro && !sb_rdonly(sb)) {
+		ext4_msg(sb, KERN_ERR,
+			 "journal device read-only, try mounting with '-o ro'");
+		err = -EROFS;
+		goto err_out;
+	}
+
+	if (ext4_has_feature_journal_needs_recovery(sb)) {
+		if (sb_rdonly(sb)) {
+			ext4_msg(sb, KERN_INFO, "INFO: recovery "
+					"required on readonly filesystem");
+			if (really_read_only) {
+				ext4_msg(sb, KERN_ERR, "write access "
+					"unavailable, cannot proceed "
+					"(try mounting with noload)");
+				err = -EROFS;
+				goto err_out;
+			}
+			ext4_msg(sb, KERN_INFO, "write access will "
+			       "be enabled during recovery");
+		}
+	}
+
+> even though using it as readonly. And, valid checkpoint can allow for user to
+> read all the data without problem.
+
+ >>   		if (f2fs_hw_is_readonly(sbi)) {
+
+Since device is readonly now, all write to the device will fail, checkpoint can
+not persist recovered data, after page cache is expired, user can see stale data.
+
+Am I missing something?
+
+Thanks,
+
 > 
-> Now I am a bit confused...
-
-I now understand your original request! :-)
-
-The above test was run on a POWER8 system.
-
-I do see failures on a POWER9 system:
---
-$ ./perf test 10
-10: PMU events                                                      :
-10.1: PMU event table sanity                                        : Ok
-10.2: PMU event map aliases                                         : Ok
-10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
-10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-$ ./perf test --verbose 10 2>&1 | grep -i '^Parse event failed' | wc -l
-112
---
-
-PC
+>>
+>> Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>   fs/f2fs/super.c | 8 +++++---
+>>   1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>> index b48281642e98..2b78ee11f093 100644
+>> --- a/fs/f2fs/super.c
+>> +++ b/fs/f2fs/super.c
+>> @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>>   		 * previous checkpoint was not done by clean system shutdown.
+>>   		 */
+>>   		if (f2fs_hw_is_readonly(sbi)) {
+>> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+>> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+>> +				err = -EROFS;
+>>   				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+>> -			else
+>> -				f2fs_info(sbi, "write access unavailable, skipping recovery");
+>> +				goto free_meta;
+>> +			}
+>> +			f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>   			goto reset_checkpoint;
+>>   		}
+>>   
+>> -- 
+>> 2.29.2
+> .
+> 
