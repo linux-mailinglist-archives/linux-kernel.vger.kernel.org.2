@@ -2,81 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0D4347D57
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05397347D60
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhCXQLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhCXQLO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:11:14 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85838C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:11:13 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1lP667-0001Ly-SM; Wed, 24 Mar 2021 17:11:07 +0100
-Date:   Wed, 24 Mar 2021 17:11:07 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] staging: rtl8188eu: Fix null pointer dereference
- on free_netdev call
-Message-ID: <20210324161107.m7gbexp4e7e5vf77@viti.kaiser.cx>
-References: <20210324152135.254152-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324152135.254152-1-colin.king@canonical.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+        id S233243AbhCXQM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233296AbhCXQMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:12:00 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95F0061A01;
+        Wed, 24 Mar 2021 16:11:59 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lP66v-003YPB-O4; Wed, 24 Mar 2021 16:11:57 +0000
+Date:   Wed, 24 Mar 2021 16:11:56 +0000
+Message-ID: <8735wkjzub.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 12/15] PCI/MSI: Let PCI host bridges declare their reliance on MSI domains
+In-Reply-To: <20210324131938.GA16722@e121166-lin.cambridge.arm.com>
+References: <20210322184614.802565-1-maz@kernel.org>
+        <20210322184614.802565-13-maz@kernel.org>
+        <6a2eaa5d-1d83-159f-69e5-c9e0a00a7b50@arm.com>
+        <87im5hkahr.wl-maz@kernel.org>
+        <20210324131938.GA16722@e121166-lin.cambridge.arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: lorenzo.pieralisi@arm.com, robin.murphy@arm.com, bhelgaas@google.com, frank-w@public-files.de, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, mikelley@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michal.simek@xilinx.com, paul.walmsley@sifive.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Colin,
+On Wed, 24 Mar 2021 13:19:38 +0000,
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
+> 
+> On Tue, Mar 23, 2021 at 06:09:36PM +0000, Marc Zyngier wrote:
+> > Hi Robin,
+> > 
+> > On Tue, 23 Mar 2021 11:45:02 +0000,
+> > Robin Murphy <robin.murphy@arm.com> wrote:
+> > > 
+> > > On 2021-03-22 18:46, Marc Zyngier wrote:
+> > > > The new 'no_msi' attribute solves the problem of advertising the lack
+> > > > of MSI capability for host bridges that know for sure that there will
+> > > > be no MSI for their end-points.
+> > > > 
+> > > > However, there is a whole class of host bridges that cannot know
+> > > > whether MSIs will be provided or not, as they rely on other blocks
+> > > > to provide the MSI functionnality, using MSI domains.  This is
+> > > > the case for example on systems that use the ARM GIC architecture.
+> > > > 
+> > > > Introduce a new attribute ('msi_domain') indicating that implicit
+> > > > dependency, and use this property to set the NO_MSI flag when
+> > > > no MSI domain is found at probe time.
+> > > > 
+> > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > > ---
+> > > >   drivers/pci/probe.c | 2 +-
+> > > >   include/linux/pci.h | 1 +
+> > > >   2 files changed, 2 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> > > > index 146bd85c037e..bac9f69a06a8 100644
+> > > > --- a/drivers/pci/probe.c
+> > > > +++ b/drivers/pci/probe.c
+> > > > @@ -925,7 +925,7 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+> > > >   	device_enable_async_suspend(bus->bridge);
+> > > >   	pci_set_bus_of_node(bus);
+> > > >   	pci_set_bus_msi_domain(bus);
+> > > > -	if (bridge->no_msi)
+> > > > +	if (bridge->no_msi || (bridge->msi_domain && !bus->dev.msi_domain))
+> > > >   		bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+> > > >     	if (!parent)
+> > > > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > > > index 48605cca82ae..d322d00db432 100644
+> > > > --- a/include/linux/pci.h
+> > > > +++ b/include/linux/pci.h
+> > > > @@ -551,6 +551,7 @@ struct pci_host_bridge {
+> > > >   	unsigned int	preserve_config:1;	/* Preserve FW resource setup */
+> > > >   	unsigned int	size_windows:1;		/* Enable root bus sizing */
+> > > >   	unsigned int	no_msi:1;		/* Bridge has no MSI support */
+> > > > +	unsigned int	msi_domain:1;		/* Bridge wants MSI domain */
+> > > 
+> > > Aren't these really the same thing? Either way we're saying the bridge
+> > > itself doesn't handle MSIs, it's just in one case we're effectively
+> > > encoding a platform-specific assumption that an external domain won't
+> > > be provided. I can't help wondering whether that distinction is really
+> > > necessary...
+> > 
+> > There is a subtle difference: no_msi indicates that there is no way
+> > *any* MSI can be dealt with whatsoever (maybe because the RC doesn't
+> > forward the corresponding TLPs?). msi_domain says "no MSI unless...".
+> > 
+> > We could implement the former with the latter, but I have the feeling
+> > that's not totally bullet proof. Happy to revisit this if you think it
+> > really matters.
+> 
+> IIUC msi_domain == 1 means: this host bridge needs an msi_domain to enable
+> MSIs, which in turn means that there are bridges that do _not_ require
+> an msi_domain to enable MSIs. I don't know how other arches handle the 
+> msi_domain pointer but I am asking whether making:
+> 
+> if (bridge->no_msi || !bus->dev.msi_domain))
+> 	bus->bus_flags |= PCI_BUS_FLAGS_NO_MSI;
+> 
+> is a possibility (removing the need for the msi_domain flag).
+> 
+> At least this looks more like an arch property than a host bridge
+> specific property (eg patch [13] pci_host_common_probe() may be used on
+> arches other than ARM where it is not necessary true that it requires an
+> msi_domain to enable MSIs).
+> 
+> I agree that's complicated to untangle - just asking if there is way
+> to simplify it.
 
-Thus wrote Colin King (colin.king@canonical.com):
+I tried to simplify that in the past (see the original discussion at
+[1]), and tglx reported some breakages on systems that do not use MSI
+domains, which is why we ended up with an explicit flag.
 
-> From: Colin Ian King <colin.king@canonical.com>
+What I have done for now is to go with Robin's proposal of dropping
+'no_msi' and rely on solely on 'msi_domain' to set
+PCI_BUS_FLAGS_NO_MSI when no domain is found.
 
-> An unregister_netdev call checks if pnetdev is null, hence a later
-> call to free_netdev can potentially be passing a null pointer, causing
-> a null pointer dereference. Avoid this by adding a null pointer check
-> on pnetdev before calling free_netdev.
+Note that if we indeed have a host bridge that uses
+pci_host_common_probe() that doesn't use MSI domains, we may indeed
+run into problems. I don't have a good way around that, unfortunately.
 
-> Fixes: 1665c8fdffbb ("staging: rtl8188eu: use netdev routines for private data")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/staging/rtl8188eu/os_dep/usb_intf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks,
 
-> diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-> index 518e9feb3f46..91a3d34a1050 100644
-> --- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-> @@ -446,7 +446,8 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
->  	pr_debug("+r871xu_dev_remove, hw_init_completed=%d\n",
->  		 if1->hw_init_completed);
->  	rtw_free_drv_sw(if1);
-> -	free_netdev(pnetdev);
-> +	if (pnetdev)
-> +		free_netdev(pnetdev);
->  }
+	M.
 
->  static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device_id *pdid)
-> -- 
-> 2.30.2
+[1] https://lore.kernel.org/r/20201031140330.83768-1-linux@fw-web.de
 
-you're right. I removed the NULL check that was part of rtw_free_netdev.
-Sorry for the mistake and thanks for your fix.
-
-Reviewed-by: Martin Kaiser <martin@kaiser.cx>
-
-Best regards,
-Martin
+-- 
+Without deviation from the norm, progress is not possible.
