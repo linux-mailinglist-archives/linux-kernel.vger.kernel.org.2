@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292003476FC
+	by mail.lfdr.de (Postfix) with ESMTP id 792BF3476FD
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbhCXLUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:20:45 -0400
-Received: from mga05.intel.com ([192.55.52.43]:54144 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234685AbhCXLUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:20:35 -0400
-IronPort-SDR: 1ws+mNzisgPu2pYDA9W7wsbcTt0VnGqhXph71VpC0AG+GGj7McdDFlLgfAwIl0GyAeNpJfxk39
- SyoG3HAGETpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="275794389"
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="275794389"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 04:20:35 -0700
-IronPort-SDR: o6f5Y/LzjPV5OHVsv3qF0h5gPh8qMGWJzCQfDV3VqrcqM5Zg2MOapco2OTA6wV0ztg2jqtTUbI
- M1uWhb5EHaVg==
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="452554484"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 04:20:34 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lP1Yt-00FeUs-CW; Wed, 24 Mar 2021 13:20:31 +0200
-Date:   Wed, 24 Mar 2021 13:20:31 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
-Message-ID: <YFsgf9J+hQjfrZCb@smile.fi.intel.com>
-References: <20210323123433.45371-1-andriy.shevchenko@linux.intel.com>
- <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
- <20210324102931.GH2916463@dell>
- <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
- <20210324104729.GL2916463@dell>
+        id S234712AbhCXLUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:20:46 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:61970 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234688AbhCXLUl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 07:20:41 -0400
+Received: from fsav404.sakura.ne.jp (fsav404.sakura.ne.jp [133.242.250.103])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12OBKdaE096058;
+        Wed, 24 Mar 2021 20:20:39 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav404.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp);
+ Wed, 24 Mar 2021 20:20:39 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12OBKdEH096052
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 24 Mar 2021 20:20:39 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [RFC PATCH 2/2] integrity: double check iint_cache was
+ initialized
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+References: <20210319200358.22816-1-zohar@linux.ibm.com>
+ <20210319200358.22816-2-zohar@linux.ibm.com>
+ <8450c80a-104a-3f36-0963-0ae8fa69e0f2@i-love.sakura.ne.jp>
+ <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
+ <1a2245c6-3cab-7085-83d3-55b083619303@i-love.sakura.ne.jp>
+ <8039976be3df9bd07374fe4f1931b8ce28b89dab.camel@linux.ibm.com>
+ <cde00350-2a18-1759-d53b-2e7489b6cc0e@i-love.sakura.ne.jp>
+ <8a8763a7-eeeb-3578-d50c-c15919fbe1f9@i-love.sakura.ne.jp>
+ <3ed2004413e0ac07c7bd6f10294d6b6fac6fdbf3.camel@linux.ibm.com>
+ <cc01e7b7-d685-289c-a792-fc76fabba807@i-love.sakura.ne.jp>
+ <721b4f8d38b014babb0f4ae829d76014bbf7734e.camel@linux.ibm.com>
+ <0a0c5cc5-0e1b-ef01-60c4-5247af2124f4@i-love.sakura.ne.jp>
+ <37aeaf361bfbd800e29db761f5160f2ce1869298.camel@linux.ibm.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <05ca20d0-9596-152e-4da2-1ffe28c52055@i-love.sakura.ne.jp>
+Date:   Wed, 24 Mar 2021 20:20:39 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324104729.GL2916463@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <37aeaf361bfbd800e29db761f5160f2ce1869298.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:47:29AM +0000, Lee Jones wrote:
-> On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-> > On Wed, Mar 24, 2021 at 10:29:31AM +0000, Lee Jones wrote:
-> > > On Tue, 23 Mar 2021, Andy Shevchenko wrote:
-
-...
-
-> Also, past acceptance does not guarantee ideal/correct usage.
-
-In this case it's hardly can be misused. But I heard you.
-
-...
-
-> > The semantic is min-max range and having two defines (*) here for these seems
-> > to me as an utter overkill.
-> > 
-> > Of course, if you insist I may do it.
-> > 
-> > *) since value is the same, we might have one definition, but it will be even
-> >    more confusion to have it as a min and max at the same time.
+On 2021/03/24 20:10, Mimi Zohar wrote:
+> On Wed, 2021-03-24 at 19:10 +0900, Tetsuo Handa wrote:
+>> On 2021/03/24 1:13, Mimi Zohar wrote:
+>>> On Wed, 2021-03-24 at 00:14 +0900, Tetsuo Handa wrote:
+>>>> On 2021/03/23 23:47, Mimi Zohar wrote:
+>>>>> Initially I also questioned making "integrity" an LSM.  Perhaps it's
+>>>>> time to reconsider.   For now, it makes sense to just fix the NULL
+>>>>> pointer dereferencing.
+>>>>
+>>>> Do we think calling panic() as "fix the NULL pointer dereferencing" ?
+>>>
+>>> Not supplying "integrity" as an "lsm=" option is a user error.  There
+>>> are only two options - allow or deny the caller to proceed.   If the
+>>> user is expecting the integrity subsystem to be properly working,
+>>> returning a NULL and allowing the system to boot (RFC patch version)
+>>> does not make sense.   Better to fail early.
+>>
+>> What does the "user" mean? Those who load the vmlinux?
+>> Only the "root" user (so called administrators)?
+>> Any users including other than "root" user?
+>>
+>> If the user means those who load the vmlinux, that user is explicitly asking
+>> for disabling "integrity" for some reason. In that case, it is a bug if
+>> booting with "integrity" disabled is impossible.
+>>
+>> If the user means something other than those who load the vmlinux,
+>> is there a possibility that that user (especially non "root" users) is
+>> allowed to try to use "integrity" ? If processes other than global init
+>> process can try to use "integrity", wouldn't it be a DoS attack vector?
+>> Please explain in the descripotion why calling panic() does not cause
+>> DoS attack vector.
 > 
-> It's just tricky to decypher for people who do not know the API, which
-> is most people, myself included.  For APIs like usleep_range() et al.,
-> obviously this makes no sense at all.
+> User in this case, is anyone rebooting the system and is intentionally
+> changing the default values, dropping the "integrity" option on the
+> boot command line.
 
-Seem like you are insisting. Okay, I will define them. What do you prefer one
-or two definitions?
-
-...
-
-> What defines a vector?
-
-The combination is solely of the driver-hardware. Driver explicitly tells that
-how many vectors it may consume (taking into account the range asked) and API
-returns amount given or an error.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+OK. Then, I expect that the system boots instead of calling panic().
+That user is explicitly asking for disabling "integrity" for some reason.
