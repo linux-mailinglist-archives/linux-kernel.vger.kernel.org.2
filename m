@@ -2,156 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1A8347755
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FAC347756
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhCXL2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235262AbhCXL1B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:27:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF42C0613E3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 04:26:33 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lP1ef-0000BZ-4o; Wed, 24 Mar 2021 12:26:29 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lP1ee-0001xW-Ih; Wed, 24 Mar 2021 12:26:28 +0100
-Date:   Wed, 24 Mar 2021 12:26:26 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Nobs <samuel.nobs@taitradio.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
-Message-ID: <20210324112626.iqteqgfbkci3xmvh@pengutronix.de>
-References: <20210322111036.31966-1-johan@kernel.org>
- <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
- <20210322113918.ze52gq54cpsspgej@linutronix.de>
- <20210322115536.knkea7i6vrfpotol@pengutronix.de>
- <YFiZuXWYmxPIaQH9@hovoldconsulting.com>
- <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
- <YFn9KenzUQl4KPRt@hovoldconsulting.com>
+        id S232536AbhCXL2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:28:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39592 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230222AbhCXL1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 07:27:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2283DAD6D;
+        Wed, 24 Mar 2021 11:27:43 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 11:27:39 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        David Rientjes <rientjes@google.com>,
+        Oleg Rombakh <olegrom@google.com>, linux-doc@vger.kernel.org,
+        Paul Turner <pjt@google.com>
+Subject: Re: [PATCH v2] sched: Warn on long periods of pending need_resched
+Message-ID: <20210324112739.GO15768@suse.de>
+References: <20210323035706.572953-1-joshdon@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zi5o6fqsy3kf62o4"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <YFn9KenzUQl4KPRt@hovoldconsulting.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210323035706.572953-1-joshdon@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 08:57:06PM -0700, Josh Don wrote:
+> From: Paul Turner <pjt@google.com>
+> 
+> CPU scheduler marks need_resched flag to signal a schedule() on a
+> particular CPU. But, schedule() may not happen immediately in cases
+> where the current task is executing in the kernel mode (no
+> preemption state) for extended periods of time.
+> 
+> This patch adds a warn_on if need_resched is pending for more than the
+> time specified in sysctl resched_latency_warn_ms. If it goes off, it is
+> likely that there is a missing cond_resched() somewhere. Monitoring is
+> done via the tick and the accuracy is hence limited to jiffy scale. This
+> also means that we won't trigger the warning if the tick is disabled.
+> 
+> This feature is default disabled. It can be toggled on using sysctl
+> resched_latency_warn_enabled.
+> 
+> Signed-off-by: Paul Turner <pjt@google.com>
+> Signed-off-by: Josh Don <joshdon@google.com>
+> ---
+> Delta from v1:
+> - separate sysctl for enabling/disabling and triggering warn_once
+>   behavior
+> - add documentation
+> - static branch for the enable
+>  Documentation/admin-guide/sysctl/kernel.rst | 23 ++++++
+>  include/linux/sched/sysctl.h                |  4 ++
+>  kernel/sched/core.c                         | 78 ++++++++++++++++++++-
+>  kernel/sched/debug.c                        | 10 +++
+>  kernel/sched/sched.h                        | 10 +++
+>  kernel/sysctl.c                             | 24 +++++++
+>  6 files changed, 148 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 1d56a6b73a4e..2d4a21d3b79f 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -1077,6 +1077,29 @@ ROM/Flash boot loader. Maybe to tell it what to do after
+>  rebooting. ???
+>  
+>  
+> +resched_latency_warn_enabled
+> +============================
+> +
+> +Enables/disables a warning that will trigger if need_resched is set for
+> +longer than sysctl ``resched_latency_warn_ms``. This warning likely
+> +indicates a kernel bug, such as a failure to call cond_resched().
+> +
+> +Requires ``CONFIG_SCHED_DEBUG``.
+> +
 
---zi5o6fqsy3kf62o4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm not a fan of the name. I know other sysctls have _enabled in the
+name but it's redundant. If you say the name out loud, it sounds weird.
+I would suggest an alternative but see below.
 
-Hello Johan,
+> +
+> +resched_latency_warn_ms
+> +=======================
+> +
+> +See ``resched_latency_warn_enabled``.
+> +
+> +
+> +resched_latency_warn_once
+> +=========================
+> +
+> +If set, ``resched_latency_warn_enabled`` will only trigger one warning
+> +per boot.
+> +
 
-On Tue, Mar 23, 2021 at 03:37:29PM +0100, Johan Hovold wrote:
-> On Mon, Mar 22, 2021 at 02:40:32PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Mon, Mar 22, 2021 at 02:20:57PM +0100, Johan Hovold wrote:
-> > > On Mon, Mar 22, 2021 at 12:55:36PM +0100, Uwe Kleine-K=F6nig wrote:
-> > > > On Mon, Mar 22, 2021 at 12:39:18PM +0100, Sebastian Andrzej Siewior=
- wrote:
-> > > > > On 2021-03-22 12:34:02 [+0100], Uwe Kleine-K=F6nig wrote:
-> > > > > > On Mon, Mar 22, 2021 at 12:10:36PM +0100, Johan Hovold wrote:
-> > > > > > > Force-threaded interrupt handlers used to run with interrupts=
- enabled,
-> > > > > > > something which could lead to deadlocks in case a threaded ha=
-ndler
-> > > > > > > shared a lock with code running in hard interrupt context (e.=
-g. timer
-> > > > > > > callbacks) and did not explicitly disable interrupts.
-> > > > > > >=20
-> > > > > > > This was specifically the case for serial drivers that take t=
-he port
-> > > > > > > lock in their console write path as printk can be called from=
- hard
-> > > > > > > interrupt context also with forced threading ("threadirqs").
-> > > > > > >=20
-> > > > > > > Since commit 81e2073c175b ("genirq: Disable interrupts for fo=
-rce
-> > > > > > > threaded handlers") interrupt handlers always run with interr=
-upts
-> > > > > > > disabled on non-RT so that drivers no longer need to do handl=
-e this.
-> > > > > >=20
-> > > > > > So we're breaking RT knowingly here? If this is the case I'm no=
-t happy
-> > > > > > with your change. (And if RT is not affected a different wordin=
-g would
-> > > > > > be good.)
-> > > > >=20
-> > > > > Which wording, could you be more specific? It looks good from her=
-e and
-> > > > > no, RT is not affected.
-> > > >=20
-> > > > The commit log says essentially: "The change is fine on non-RT" whi=
-ch
-> > > > suggests there is a problem on RT.
-> > >=20
-> > > I don't think you can read that into the commit message.
-> >=20
-> > From a strictly logically point of view you indeed cannot. But if you go
-> > to the street and say to people there that they can park their car in
-> > this street free of charge between Monday and Friday, I expect that most
-> > of them will assume that they have to pay for parking on weekends.
->=20
-> That analogy would almost seem to suggest bad intent on my side.
+I suggest semantics and naming similar to hung_task_warnings
+because it's sortof similar. resched_latency_warnings would combine
+resched_latency_warn_enabled and resched_latency_warn_once. 0 would mean
+"never warn", -1 would mean always warn and any positive value means
+"warn X number of times".
 
-That analogy's purpose was to put over my point that writing
-(paraphrased) "Since non-RT changed, this workaround isn't necessary any
-more" suggests to me that the change might be bad for RT. So again,
-there was no harm intended, this is just a call for clearing up either
-the commit log to make it obvious the change is right or to fix the
-problem on RT if there is any.
+Internally, you could still use the static label
+resched_latency_warn_enabled, it would simply be false if
+resched_latency_warnings == 0.
 
-> To say that this workaround is no longer needed on !RT does not imply
-> that it is needed on RT. If anything it suggests I have considered RT,
-> I'd say.
+Obviously though sysctl_resched_latency_warn_once would need to change.
 
-The code in question was used for both RT and non-RT. You drop it for
-both cases and only justify one of them. OK, fine, you considered both
-cases. Just from reading the commit log I considered you didn't. It's
-completely ok for me to be wrong here, but I still think the chosen
-words are not optimal and stumbling as I did is easy. So I still see a
-potential to improve the wording.
+> +
+>  sched_energy_aware
+>  ==================
+>  
+> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+> index 3c31ba88aca5..43a1f5ab819a 100644
+> --- a/include/linux/sched/sysctl.h
+> +++ b/include/linux/sched/sysctl.h
+> @@ -48,6 +48,10 @@ extern unsigned int sysctl_numa_balancing_scan_size;
+>  extern __read_mostly unsigned int sysctl_sched_migration_cost;
+>  extern __read_mostly unsigned int sysctl_sched_nr_migrate;
+>  
+> +extern struct static_key_false resched_latency_warn_enabled;
+> +extern int sysctl_resched_latency_warn_ms;
+> +extern int sysctl_resched_latency_warn_once;
+> +
+>  int sched_proc_update_handler(struct ctl_table *table, int write,
+>  		void *buffer, size_t *length, loff_t *ppos);
+>  #endif
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 98191218d891..d69ae342b450 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -58,7 +58,21 @@ const_debug unsigned int sysctl_sched_features =
+>  #include "features.h"
+>  	0;
+>  #undef SCHED_FEAT
+> -#endif
+> +
+> +/*
+> + * Print a warning if need_resched is set for the given duration (if
+> + * resched_latency_warn_enabled is set).
+> + *
+> + * If sysctl_resched_latency_warn_once is set, only one warning will be shown
+> + * per boot.
+> + *
+> + * Resched latency will be ignored for the first resched_boot_quiet_sec, to
+> + * reduce false alarms.
+> + */
+> +int sysctl_resched_latency_warn_ms = 100;
+> +int sysctl_resched_latency_warn_once = 1;
 
-Best regards
-Uwe
+Use __read_mostly
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+> +const long resched_boot_quiet_sec = 600;
 
---zi5o6fqsy3kf62o4
-Content-Type: application/pgp-signature; name="signature.asc"
+This seems arbitrary but could also be a #define. More on this later
 
------BEGIN PGP SIGNATURE-----
+> +#endif /* CONFIG_SCHED_DEBUG */
+>  
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBbId8ACgkQwfwUeK3K
-7AmrPQf/ddQwQ54O9l7xV1/XHw8vOIwucKKyjYQahAx40PXG3l82aSNYFbEm2naq
-Skuiv/ZUYkuFgJplG45b5lSQCplanZ29bpfJJA6umGqNLU26U77BbscwG6Rw6DC0
-uJ6764kmQcQXgp9gn8+IAZUlmVw4FReNdvJcLqKgsU2Q1XUyoUAbLW8cF5Ijqliq
-5KvWHZcVw6srh3zGo1YYDqIWEfnyB/y18tcSrD5ywaGS6heFxJXNOeucvm2IxDZQ
-0dNLzqJuruItdbPN1foj3zaZwSQozrqhXkn81z0XG4H02ub7lkYPNjG9PE3095EI
-hkuQ8I5b5VWjg5BwyMY5QjbhtjSeOA==
-=Tj6B
------END PGP SIGNATURE-----
 
---zi5o6fqsy3kf62o4--
+>  /*
+>   * Number of tasks to iterate in a single balance run.
+> @@ -4520,6 +4534,58 @@ unsigned long long task_sched_runtime(struct task_struct *p)
+>  	return ns;
+>  }
+>  
+> +#ifdef CONFIG_SCHED_DEBUG
+> +static u64 resched_latency_check(struct rq *rq)
+> +{
+> +	int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
+> +	u64 need_resched_latency, now = rq_clock(rq);
+> +	static bool warned_once;
+> +
+> +	if (sysctl_resched_latency_warn_once && warned_once)
+> +		return 0;
+> +
+
+That is a global variable that can be modified in parallel and I do not
+think it's properly locked (scheduler_tick is holding rq lock which does
+not protect this).
+
+Consider making resched_latency_warnings atomic and use
+atomic_dec_if_positive. If it drops to zero in this path, disable the
+static branch.
+
+That said, it may be overkill. hung_task_warnings does not appear to have
+special protection that prevents it going to -1 or lower values by accident
+either. Maybe it can afford to be a bit more relaxed because a system that
+is spamming hung task warnings is probably dead or might as well be dead.
+
+> +	if (!need_resched() || WARN_ON_ONCE(latency_warn_ms < 2))
+> +		return 0;
+> +
+
+Why is 1ms special? Regardless of the answer, if the sysctl should not
+be 1 then the user should not be able to set it to 1.
+
+> +	/* Disable this warning for the first few mins after boot */
+> +	if (now < resched_boot_quiet_sec * NSEC_PER_SEC)
+> +		return 0;
+> +
+
+Check system_state == SYSTEM_BOOTING instead?
+
+> +	if (!rq->last_seen_need_resched_ns) {
+> +		rq->last_seen_need_resched_ns = now;
+> +		rq->ticks_without_resched = 0;
+> +		return 0;
+> +	}
+> +
+> +	rq->ticks_without_resched++;
+> +	need_resched_latency = now - rq->last_seen_need_resched_ns;
+> +	if (need_resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
+> +		return 0;
+> +
+
+The naming need_resched_latency implies it's a boolean but it's not.
+Maybe just resched_latency?
+
+Similarly, resched_latency_check implies it returns a boolean but it
+returns an excessive latency value. At this point I've been reading the
+patch for a long time so I've ran out of naming suggestions :)
+
+> +	warned_once = true;
+> +
+> +	return need_resched_latency;
+> +}
+> +
+
+I note that you split when a warning is needed and printing the warning
+but it's not clear why. Sure you are under the RQ lock but there are other
+places that warn under the RQ lock. I suppose for consistency it could
+use SCHED_WARN_ON even though all this code is under SCHED_DEBUG already.
+
+> +static int __init setup_resched_latency_warn_ms(char *str)
+> +{
+> +	long val;
+> +
+> +	if ((kstrtol(str, 0, &val))) {
+> +		pr_warn("Unable to set resched_latency_warn_ms\n");
+> +		return 1;
+> +	}
+> +
+> +	sysctl_resched_latency_warn_ms = val;
+> +	return 1;
+> +}
+> +__setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
+> +#else
+> +static inline u64 resched_latency_check(struct rq *rq) { return 0; }
+> +#endif /* CONFIG_SCHED_DEBUG */
+> +
+> +DEFINE_STATIC_KEY_FALSE(resched_latency_warn_enabled);
+> +
+>  /*
+>   * This function gets called by the timer code, with HZ frequency.
+>   * We call it with interrupts disabled.
+> @@ -4531,6 +4597,7 @@ void scheduler_tick(void)
+>  	struct task_struct *curr = rq->curr;
+>  	struct rq_flags rf;
+>  	unsigned long thermal_pressure;
+> +	u64 resched_latency = 0;
+>  
+>  	arch_scale_freq_tick();
+>  	sched_clock_tick();
+> @@ -4541,11 +4608,17 @@ void scheduler_tick(void)
+>  	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+>  	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+>  	curr->sched_class->task_tick(rq, curr, 0);
+> +	if (static_branch_unlikely(&resched_latency_warn_enabled))
+> +		resched_latency = resched_latency_check(rq);
+>  	calc_global_load_tick(rq);
+>  	psi_task_tick(rq);
+>  
+>  	rq_unlock(rq, &rf);
+>  
+> +	if (static_branch_unlikely(&resched_latency_warn_enabled) &&
+> +	    resched_latency)
+> +		resched_latency_warn(cpu, resched_latency);
+> +
+>  	perf_event_task_tick();
+>  
+
+I don't see the need to split latency detection with the display of the
+warning. As resched_latency_check is static with a single caller, it should
+be inlined so you can move all the logic, including the static branch
+check there. Maybe to be on the safe side, explicitly mark it inline.
+
+That allows you to delete resched_latency_warn and avoid advertising it
+through sched.h
+
+-- 
+Mel Gorman
+SUSE Labs
