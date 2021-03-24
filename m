@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5E2348357
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A83D348358
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238298AbhCXVCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:02:14 -0400
-Received: from mga09.intel.com ([134.134.136.24]:28460 "EHLO mga09.intel.com"
+        id S238304AbhCXVCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:02:15 -0400
+Received: from mga05.intel.com ([192.55.52.43]:37982 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238222AbhCXVB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:01:57 -0400
-IronPort-SDR: PuCpZ5tfQdLH8j//B7Yw2R7JcZLIOwo008bggVCGSL86Xk5/VA/45wUqC8gXoVmyrYGkE8T9yr
- unUWwL6J1+1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190880557"
+        id S238227AbhCXVCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 17:02:02 -0400
+IronPort-SDR: yTZEL2TQFsJy0ot+bji1yE8u/GSdhdBxvHvP0aT4mwD0cM5E1dzCGZ1zxeMfuuTjcPGQIQoYPz
+ 9XlFrOoK4H9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="275911380"
 X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="190880557"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:56 -0700
-IronPort-SDR: ScMrBpVrY5kPX+Il3Tf25SnLBHZQfFRT0dKgKkbsq8zxAs5AN5y21IuVwAOJAteBUntmqHSOG+
- zzzJT5EflWlA==
+   d="scan'208";a="275911380"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:02:02 -0700
+IronPort-SDR: kfYrElActq2cIErox7P7fpRMpkbZxrWpXugfzR+FNjRc4BK7BSfgySaWqbO+iXzfW/StzvjjEe
+ t9Mm+06nRHYA==
 X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="452748654"
+   d="scan'208";a="442415541"
 Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:56 -0700
-Subject: [PATCH 2/4] cxl/mem: Fix cdev_device_add() error handling
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:02:02 -0700
+Subject: [PATCH 3/4] cxl/mem: Do not rely on device_add() side effects for
+ dev_set_name() failures
 From:   Dan Williams <dan.j.williams@intel.com>
 To:     linux-cxl@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@nvidia.com>, ira.weiny@intel.com,
         vishal.l.verma@intel.com, alison.schofield@intel.com,
         linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 14:01:56 -0700
-Message-ID: <161661971651.1721612.7457823773061754064.stgit@dwillia2-desk3.amr.corp.intel.com>
+Date:   Wed, 24 Mar 2021 14:02:01 -0700
+Message-ID: <161661972173.1721612.9458160848430375459.stgit@dwillia2-desk3.amr.corp.intel.com>
 In-Reply-To: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
 References: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
 User-Agent: StGit/0.18-3-g996c
@@ -42,69 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If cdev_device_add() fails then the allocation performed by
-dev_set_name() is leaked. Use put_device(), not open coded release, for
-device_add() failures.
+While device_add() will happen to catch dev_set_name() failures it is a
+broken pattern to follow given that the core may try to fall back to a
+different name.
 
-The comment is obsolete because direct err_id failures need not worry
-about the device being live.
-
-The release method expects the percpu_ref is already dead, so
-percpu_ref_kill() is needed before put_device(). However, given that the
-cdev was partially live wait_for_completion() also belongs in the
-release method.
+Add explicit checking for dev_set_name() failures to be cleaned up by
+put_device(). Skip cdev_device_add() and proceed directly to
+put_device() if the name set failure.
 
 Fixes: b39cb1052a5c ("cxl/mem: Register CXL memX devices")
 Reported-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
- drivers/cxl/mem.c |   16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ drivers/cxl/mem.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-index 30bf4f0f3c17..e53d573ae4ab 100644
+index e53d573ae4ab..d615f183520c 100644
 --- a/drivers/cxl/mem.c
 +++ b/drivers/cxl/mem.c
-@@ -1049,6 +1049,7 @@ static void cxl_memdev_release(struct device *dev)
- {
- 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+@@ -1204,12 +1204,14 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+ 	dev->bus = &cxl_bus_type;
+ 	dev->devt = MKDEV(cxl_mem_major, cxlmd->id);
+ 	dev->type = &cxl_memdev_type;
+-	dev_set_name(dev, "mem%d", cxlmd->id);
  
-+	wait_for_completion(&cxlmd->ops_dead);
- 	percpu_ref_exit(&cxlmd->ops_active);
- 	ida_free(&cxl_memdev_ida, cxlmd->id);
- 	kfree(cxlmd);
-@@ -1157,7 +1158,6 @@ static void cxlmdev_unregister(void *_cxlmd)
- 
- 	percpu_ref_kill(&cxlmd->ops_active);
- 	cdev_device_del(&cxlmd->cdev, dev);
--	wait_for_completion(&cxlmd->ops_dead);
- 	cxlmd->cxlm = NULL;
- 	put_device(dev);
- }
-@@ -1210,20 +1210,16 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+ 	cdev = &cxlmd->cdev;
  	cdev_init(cdev, &cxl_memdev_fops);
  
- 	rc = cdev_device_add(cdev, dev);
--	if (rc)
--		goto err_add;
-+	if (rc) {
-+		percpu_ref_kill(&cxlmd->ops_active);
-+		put_device(dev);
-+		return rc;
-+	}
- 
- 	return devm_add_action_or_reset(dev->parent, cxlmdev_unregister, cxlmd);
- 
--err_add:
--	ida_free(&cxl_memdev_ida, cxlmd->id);
- err_id:
--	/*
--	 * Theoretically userspace could have already entered the fops,
--	 * so flush ops_active.
--	 */
- 	percpu_ref_kill(&cxlmd->ops_active);
--	wait_for_completion(&cxlmd->ops_dead);
- 	percpu_ref_exit(&cxlmd->ops_active);
- err_ref:
- 	kfree(cxlmd);
+-	rc = cdev_device_add(cdev, dev);
++	rc = dev_set_name(dev, "mem%d", cxlmd->id);
++	if (rc == 0)
++		rc = cdev_device_add(cdev, dev);
++
+ 	if (rc) {
+ 		percpu_ref_kill(&cxlmd->ops_active);
+ 		put_device(dev);
 
