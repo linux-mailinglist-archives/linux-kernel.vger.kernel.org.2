@@ -2,128 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0143D3484C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9C63484CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238857AbhCXWoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233912AbhCXWnx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:43:53 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C527C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:43:53 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id z10so19818334qkz.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GWMxWz3piUu0E2SKHD8SGAU1LhDZYlXiAId/32v4ol8=;
-        b=ULVqvxm4U91zfE1dgFNEhJFnAyQ+/wwoqjiFqO73eUpwGcd8EBj8emwbMNUytA7MTd
-         v0mYgBfK9gQm38WxXs6uvdngYSs31V7UGrrQ79FG9aCbgU4xC2qPVSlmKifW0xJCaj20
-         4Ft2hIzINQogQkYQ26260vQHKfIJhRGv2S7/0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GWMxWz3piUu0E2SKHD8SGAU1LhDZYlXiAId/32v4ol8=;
-        b=pRR3BEZXDkmBo/JWmlRSieNdo+CDy/yKdZYFt1UzrHl9gyWXxAUHrWA5zEmTLxHrUY
-         Fl3IJ9dc1rWwMCoIKtXTJNQgm3mMmq2GOMGaWf25JKAjhyZOaHdBGpt2yPejzc+mzhvj
-         eQYVyCoaWffFlGoX307cbMrL+LS45idJMo7tfXDfYddLXDdHMQ/plEBJtPlTAtTebMCc
-         U5klZc2b5E+CCPN3w00ky04IuQ3YkH4W2eGs0V1h4cRF+VW6F8UPTzIK/m1TakgxsX6C
-         +ppfoHVsqrsv3+2rCfP8qmASaHFEX91/7PQG24CNFdU/fq0mOyK3ka8bRBzcP56V3CfH
-         FuIQ==
-X-Gm-Message-State: AOAM532l9IHf5Fy1dETSho8I/er4H+q/XQdBVmN9v5xZAx/m6hGv6tqL
-        j7Gf83c9/7PClQ+00Bj/B++xnCLe3kTegQ==
-X-Google-Smtp-Source: ABdhPJz8qkh7asZ3lshqUAB7ptNq2GV8TAyJqBpr7OZTTL/wKZ0mjnwzQZFKN6uUukJkmGFeSrz7dQ==
-X-Received: by 2002:a37:615:: with SMTP id 21mr5440377qkg.421.1616625832231;
-        Wed, 24 Mar 2021 15:43:52 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id f136sm2883759qke.24.2021.03.24.15.43.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 15:43:51 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id i9so284110ybp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:43:51 -0700 (PDT)
-X-Received: by 2002:a25:b443:: with SMTP id c3mr8496662ybg.32.1616625831301;
- Wed, 24 Mar 2021 15:43:51 -0700 (PDT)
+        id S238872AbhCXWpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238873AbhCXWpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 18:45:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CB9F61A0A;
+        Wed, 24 Mar 2021 22:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616625899;
+        bh=oRJw9N2CYdxmQ8g7HDQZYwcLUHHvN38l9BdcxP6M1Dc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jku2oBAesk/+b1S5md937sEhXLoksk4ofuiWKfiG7YGqDx6pcjac6oajE/s9HX5/T
+         xboP16kJlXUqZUE5dDIPCID8lX9/JLbV9d4m1XAOBSoqz2LkdFzx5JOSNzvJ0lxqsj
+         QaOCr3MBY+MIrpxLWjlL8Cwq1tDMYChFVbuP3KWkTw6C5ICERwnau45T9DoyiOsFYu
+         3gOOgJzarsJi7I+w4bx/tB5tCgTzAN9Rob5Utz7Xfnsq8L5QfWP6INCScOkUV54MTW
+         wZhjYMSpjiYv0vCSyL4h1/zAXqAraf76LCwlh5SZ0XNwcwyjveiBfIHSFyCF6DMVFz
+         GklU23x/jaZtw==
+Date:   Wed, 24 Mar 2021 15:44:58 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH] Revert "f2fs: give a warning only for readonly partition"
+Message-ID: <YFvA6uzDLeD7dRdY@google.com>
+References: <20210323064155.12582-1-yuchao0@huawei.com>
+ <YFo16ADpWJ7OUAvK@google.com>
+ <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
+ <YFq+aQW7eihFuSst@google.com>
+ <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
 MIME-Version: 1.0
-References: <20210324191549.2043808-1-swboyd@chromium.org>
-In-Reply-To: <20210324191549.2043808-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 24 Mar 2021 15:43:39 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UTm9QshU88y3F+-GxYSsWpjwZDTst0VA+efb7-=MKKmg@mail.gmail.com>
-Message-ID: <CAD=FV=UTm9QshU88y3F+-GxYSsWpjwZDTst0VA+efb7-=MKKmg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: c630: Add no-hpd to DSI bridge node
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Steev Klimaszewski <steev@kali.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 03/24, Chao Yu wrote:
+> On 2021/3/24 12:22, Jaegeuk Kim wrote:
+> > On 03/24, Chao Yu wrote:
+> > > On 2021/3/24 2:39, Jaegeuk Kim wrote:
+> > > > On 03/23, Chao Yu wrote:
+> > > > > This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+> > > > > 
+> > > > > Because that commit fails generic/050 testcase which expect failure
+> > > > > during mount a recoverable readonly partition.
+> > > > 
+> > > > I think we need to change generic/050, since f2fs can recover this partition,
+> > > 
+> > > Well, not sure we can change that testcase, since it restricts all generic
+> > > filesystems behavior. At least, ext4's behavior makes sense to me:
+> > > 
+> > > 	journal_dev_ro = bdev_read_only(journal->j_dev);
+> > > 	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
+> > > 
+> > > 	if (journal_dev_ro && !sb_rdonly(sb)) {
+> > > 		ext4_msg(sb, KERN_ERR,
+> > > 			 "journal device read-only, try mounting with '-o ro'");
+> > > 		err = -EROFS;
+> > > 		goto err_out;
+> > > 	}
+> > > 
+> > > 	if (ext4_has_feature_journal_needs_recovery(sb)) {
+> > > 		if (sb_rdonly(sb)) {
+> > > 			ext4_msg(sb, KERN_INFO, "INFO: recovery "
+> > > 					"required on readonly filesystem");
+> > > 			if (really_read_only) {
+> > > 				ext4_msg(sb, KERN_ERR, "write access "
+> > > 					"unavailable, cannot proceed "
+> > > 					"(try mounting with noload)");
+> > > 				err = -EROFS;
+> > > 				goto err_out;
+> > > 			}
+> > > 			ext4_msg(sb, KERN_INFO, "write access will "
+> > > 			       "be enabled during recovery");
+> > > 		}
+> > > 	}
+> > > 
+> > > > even though using it as readonly. And, valid checkpoint can allow for user to
+> > > > read all the data without problem.
+> > > 
+> > > > >    		if (f2fs_hw_is_readonly(sbi)) {
+> > > 
+> > > Since device is readonly now, all write to the device will fail, checkpoint can
+> > > not persist recovered data, after page cache is expired, user can see stale data.
+> > 
+> > My point is, after mount with ro, there'll be no data write which preserves the
+> > current status. So, in the next time, we can recover fsync'ed data later, if
+> > user succeeds to mount as rw. Another point is, with the current checkpoint, we
+> > should not have any corrupted metadata. So, why not giving a chance to show what
+> > data remained to user? I think this can be doable only with CoW filesystems.
+> 
+> I guess we're talking about the different things...
+> 
+> Let me declare two different readonly status:
+> 
+> 1. filesystem readonly: file system is mount with ro mount option, and
+> app from userspace can not modify any thing of filesystem, but filesystem
+> itself can modify data on device since device may be writable.
+> 
+> 2. device readonly: device is set to readonly status via 'blockdev --setro'
+> command, and then filesystem should never issue any write IO to the device.
+> 
+> So, what I mean is, *when device is readonly*, rather than f2fs mountpoint
+> is readonly (f2fs_hw_is_readonly() returns true as below code, instead of
+> f2fs_readonly() returns true), in this condition, we should not issue any
+> write IO to device anyway, because, AFAIK, write IO will fail due to
+> bio_check_ro() check.
 
-On Wed, Mar 24, 2021 at 12:15 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> We should indicate that we're not using the HPD pin on this device, per
-> the binding document. Otherwise if code in the future wants to enable
-> HPD in the bridge when this property is absent we'll be wasting power
-> powering hpd when we don't use it.
+In that case, mount(2) will try readonly, no?
 
-It's not really about wasting power. It's really more about:
+# blockdev --setro /dev/vdb
+# mount -t f2fs /dev/vdb /mnt/test/
+mount: /mnt/test: WARNING: source write-protected, mounted read-only.
 
-a) If HPD is actually hooked up on the board, it's actually _slower_
-to use it than to just assume the worst case time.
-
-b) If HPD isn't hooked up but we try to use it then everything will just fail.
-
-I don't know which of a) or b) is true, but I'd imagine that one or
-the other is.
-
-
-> Presumably this board isn't using hpd
-> on the bridge.
->
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: Douglas Anderson <dianders@chromium.org>
-
-Cc: Steev Klimaszewski <steev@kali.org>
-
-
-> Fixes: 7ec3e67307f8 ("arm64: dts: qcom: sc7180-trogdor: add initial trogdor and lazor dt")
-
-Wrong Fixes?
-
-
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> index 140db2d5ba31..c2a709a384e9 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-> @@ -376,6 +376,8 @@ sn65dsi86: bridge@2c {
->                 clocks = <&sn65dsi86_refclk>;
->                 clock-names = "refclk";
->
-> +               no-hpd;
-> +
->                 ports {
->                         #address-cells = <1>;
->                         #size-cells = <0>;
->
-> base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
-> --
-> https://chromeos.dev
->
+> 
+>  		if (f2fs_hw_is_readonly(sbi)) {
+> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+> -				err = -EROFS;
+> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+>  				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+> -				goto free_meta;
+> -			}
+> -			f2fs_info(sbi, "write access unavailable, skipping recovery");
+> +			else
+> +				f2fs_info(sbi, "write access unavailable, skipping recovery");
+>  			goto reset_checkpoint;
+>  		}
+> 
+> For the case of filesystem is readonly and device is writable, it's fine
+> to do recovery in order to let user to see fsynced data.
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > Am I missing something?
+> > > 
+> > > Thanks,
+> > > 
+> > > > 
+> > > > > 
+> > > > > Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
+> > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > > ---
+> > > > >    fs/f2fs/super.c | 8 +++++---
+> > > > >    1 file changed, 5 insertions(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > > > > index b48281642e98..2b78ee11f093 100644
+> > > > > --- a/fs/f2fs/super.c
+> > > > > +++ b/fs/f2fs/super.c
+> > > > > @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+> > > > >    		 * previous checkpoint was not done by clean system shutdown.
+> > > > >    		 */
+> > > > >    		if (f2fs_hw_is_readonly(sbi)) {
+> > > > > -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+> > > > > +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+> > > > > +				err = -EROFS;
+> > > > >    				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+> > > > > -			else
+> > > > > -				f2fs_info(sbi, "write access unavailable, skipping recovery");
+> > > > > +				goto free_meta;
+> > > > > +			}
+> > > > > +			f2fs_info(sbi, "write access unavailable, skipping recovery");
+> > > > >    			goto reset_checkpoint;
+> > > > >    		}
+> > > > > -- 
+> > > > > 2.29.2
+> > > > .
+> > > > 
+> > .
+> > 
