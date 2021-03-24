@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9992A347526
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EF234752A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235239AbhCXJzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235231AbhCXJza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:55:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8714B619FF;
-        Wed, 24 Mar 2021 09:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616579730;
-        bh=18uKbCpAadpjBgK+Ca0IQSHXhABhrG/iV9tFw88sKhc=;
+        id S235248AbhCXJ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:56:48 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:56788 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235229AbhCXJ4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:56:19 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1E6B1883;
+        Wed, 24 Mar 2021 10:56:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616579778;
+        bh=MF17FmOqoyOW932sJKCAjoaWTSypZjBZUltL1AENlzI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ye9LfB9hmX5e3A2Dxo1PVutttAPwXEVmUluZhUooCFY+ruAi/o6htRwseVSzmhIWe
-         nItxfMwe/n6xzsOEDOGImsmA+/scsdT2QpS2n8I4mNJ1t8O5Jk6tACDUlB86gHxycK
-         tFl8n7b/Nqp8DIzwl34A4w06HaQdR7uK7KdckwzA=
-Date:   Wed, 24 Mar 2021 10:55:27 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Subject: Re: [PATCH] scripts: stable: add script to validate backports
-Message-ID: <YFsMj3kL5Rl/Dc5R@kroah.com>
-References: <20210316213136.1866983-1-ndesaulniers@google.com>
- <YFnyHaVyvgYl/qWg@kroah.com>
- <CAKwvOd=9HwLcTD8GaMsbEWiTPfZ+fj=vgFOefqBxDYkFiv_6YQ@mail.gmail.com>
- <YFo78StZ6Tq82hHJ@kroah.com>
- <CAKwvOdmL4cF7ConV8841BX+Pey571KDWM8CBt8NnYY47vJ_Gfg@mail.gmail.com>
+        b=eOZKwX2MyS2Gii8BQt2ycAY0Kt0pZDaGcZegzLv8KwWBV3kxzW6UmRFm/z3n4VyGa
+         pxuXWya/BIBWb6oE7M/tCriPiyX1QGT8UOfRPHKBja7UuCi5Y7Qj3/QDTbopUYXkK2
+         gQ20dCl/DAJpkN/vaRg142NHnwBiedijx9X3AvA8=
+Date:   Wed, 24 Mar 2021 11:55:35 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: [PATCH v4 1/4] drm: sun4i: dsi: Use drm_of_find_panel_or_bridge
+Message-ID: <YFsMl2CB0ZmpJiKf@pendragon.ideasonboard.com>
+References: <20210322140152.101709-1-jagan@amarulasolutions.com>
+ <20210322140152.101709-2-jagan@amarulasolutions.com>
+ <YFpxYpA+EIZm7sOf@pendragon.ideasonboard.com>
+ <f47bc0ad-dbd6-05b5-aaec-2e3256e3715a@sholland.org>
+ <CAMty3ZDOVeMeYTsuF8n4EQTG6eEbj6e33TuTPrFiMWG4RhRdSw@mail.gmail.com>
+ <YFsIkGH2cRgWk8z9@pendragon.ideasonboard.com>
+ <CAMty3ZBGnz_a4_HO_TZ-zPNJwHMcVJyrBi3kZX2=a6G47Ze-yw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdmL4cF7ConV8841BX+Pey571KDWM8CBt8NnYY47vJ_Gfg@mail.gmail.com>
+In-Reply-To: <CAMty3ZBGnz_a4_HO_TZ-zPNJwHMcVJyrBi3kZX2=a6G47Ze-yw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:28:38PM -0700, Nick Desaulniers wrote:
-> On Tue, Mar 23, 2021 at 12:05 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+Hi Jagan,
+
+On Wed, Mar 24, 2021 at 03:19:10PM +0530, Jagan Teki wrote:
+> On Wed, Mar 24, 2021 at 3:09 PM Laurent Pinchart wrote:
+> > On Wed, Mar 24, 2021 at 02:44:57PM +0530, Jagan Teki wrote:
+> > > On Wed, Mar 24, 2021 at 8:18 AM Samuel Holland wrote:
+> > > > On 3/23/21 5:53 PM, Laurent Pinchart wrote:
+> > > > > On Mon, Mar 22, 2021 at 07:31:49PM +0530, Jagan Teki wrote:
+> > > > >> Replace of_drm_find_panel with drm_of_find_panel_or_bridge
+> > > > >> for finding panel, this indeed help to find the bridge if
+> > > > >> bridge support added.
+> > > > >>
+> > > > >> Added NULL in bridge argument, same will replace with bridge
+> > > > >> parameter once bridge supported.
+> > > > >>
+> > > > >> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > > >
+> > > > > Looks good, there should be no functional change.
+> > > >
+> > > > Actually this breaks all existing users of this driver, see below.
+> > > >
+> > > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > >
+> > > > >> ---
+> > > > >> Changes for v4, v3:
+> > > > >> - none
+> > > > >>
+> > > > >>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 11 ++++++++---
+> > > > >>  1 file changed, 8 insertions(+), 3 deletions(-)
+> > > > >>
+> > > > >> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > > > >> index 4f5efcace68e..2e9e7b2d4145 100644
+> > > > >> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > > > >> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > > > >> @@ -21,6 +21,7 @@
+> > > > >>
+> > > > >>  #include <drm/drm_atomic_helper.h>
+> > > > >>  #include <drm/drm_mipi_dsi.h>
+> > > > >> +#include <drm/drm_of.h>
+> > > > >>  #include <drm/drm_panel.h>
+> > > > >>  #include <drm/drm_print.h>
+> > > > >>  #include <drm/drm_probe_helper.h>
+> > > > >> @@ -963,10 +964,14 @@ static int sun6i_dsi_attach(struct mipi_dsi_host *host,
+> > > > >>                          struct mipi_dsi_device *device)
+> > > > >>  {
+> > > > >>      struct sun6i_dsi *dsi = host_to_sun6i_dsi(host);
+> > > > >> -    struct drm_panel *panel = of_drm_find_panel(device->dev.of_node);
+> > > >
+> > > > This is using the OF node of the DSI device, which is a direct child of
+> > > > the DSI host's OF node. There is no OF graph involved.
+> > > >
+> > > > >> +    struct drm_panel *panel;
+> > > > >> +    int ret;
+> > > > >> +
+> > > > >> +    ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 0, 0,
+> > > > >> +                                      &panel, NULL);
+> > > >
+> > > > However, this function expects to find the panel using OF graph. This
+> > > > does not work with existing device trees (PinePhone, PineTab) which do
+> > > > not use OF graph to connect the panel. And it cannot work, because the
+> > > > DSI host's binding specifies a single port: the input port from the
+> > > > display engine.
+> > >
+> > > Thanks for noticing this. I did understand your point and yes, I did
+> > > mention the updated pipeline in previous versions and forgot to add it
+> > > to this series.
+> > >
+> > > Here is the updated pipeline to make it work:
+> > >
+> > > https://patchwork.kernel.org/project/dri-devel/patch/20190524104252.20236-1-jagan@amarulasolutions.com/
+> > >
+> > > Let me know your comments on this, so I will add a patch for the
+> > > above-affected DTS files.
 > >
-> > The only time git gets involved is when we do a -rc release or when we
-> > do a "real" release, and then we use 'git quiltimport' on the whole
-> > stack.
-> >
-> > Here's a script that I use (much too slow, I know), for checking this
-> > type of thing and I try to remember to run it before every cycle of -rc
-> > releases:
-> >         https://github.com/gregkh/commit_tree/blob/master/find_fixes_in_queue
-> >
-> > It's a hack, and picks up more things than is really needed, but I would
-> > rather it error on that side than the other.
+> > DT is an ABI, we need to ensure backward compatibility. Changes in
+> > kernel drivers can't break devices that have an old DT.
 > 
-> Yes, my script is similar.  Looks like yours also runs on a git tree.
+> Thanks for your point.
 > 
-> I noticed that id_fixed_in runs `git grep -l --threads=3 <sha>` to
-> find fixes; that's neat, I didn't know about `--threads=`.  I tried it
-> with ae46578b963f manually:
-> 
-> $ git grep -l --threads=3 ae46578b963f
-> $
-> 
-> Should it have found a7889c6320b9 and 773e0c402534?  Perhaps `git log
-> --grep=<sha>` should be used instead?  I thought `git grep` only greps
-> files in the archive, not commit history?
+> So, we need to choose APIs that would compatible with the old DT and
+> new DT changes. Am I correct?
 
-Yes, it does only grep the files in the archive.
+Yes, that's correct.
 
-But look closer at the archive that this script lives in :)
+-- 
+Regards,
 
-This archive is a "blown up" copy of the Linux kernel tree, with one
-file per commit.  The name of the file is the commit id, and the content
-of the file is the changelog of the commit itself.
-
-So it's a hack that I use to be able to simply search the changelogs of
-all commits to find out if they have a "Fixes:" tag with a specific
-commit id in it.
-
-So in your example above, in the repo I run it and get:
-
-~/linux/stable/commit_tree $ git grep -l --threads=3 ae46578b963f
-changes/5.2/773e0c40253443e0ce5491cb0e414b62f7cc45ed
-ids/5.2
-
-Which shows me that in commit 773e0c402534 ("afs: Fix
-afs_xattr_get_yfs() to not try freeing an error value") in the kernel
-tree, it has a "Fixes:" tag that references "ae46578b963f".
-
-It also shows me that commit ae46578b963f was contained in the 5.2
-kernel release, as I use the "ids/" subdirectory here for other fast
-lookups (it's a tiny bit faster than 'git describe --contains').
-
-I don't know how your script is walking through all possible commits to
-see if they are fixing a specific one, maybe I should look and see if
-it's doing it better than my "git tree/directory as a database hack"
-does :)
-
-thanks,
-
-greg k-h
+Laurent Pinchart
