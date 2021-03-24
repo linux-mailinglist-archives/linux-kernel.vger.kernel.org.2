@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9752D346F24
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8758346F28
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbhCXB65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:58:57 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14512 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234684AbhCXB6k (ORCPT
+        id S234684AbhCXCBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231544AbhCXCBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:58:40 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4rtb1krZzPlZk;
-        Wed, 24 Mar 2021 09:56:07 +0800 (CST)
-Received: from [10.67.110.136] (10.67.110.136) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 24 Mar 2021 09:58:34 +0800
-Subject: Re: [PATCH v2 -next] powerpc: kernel/time.c - cleanup warnings
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <a.zummo@towertech.it>,
-        <christophe.leroy@csgroup.eu>, <npiggin@gmail.com>,
-        <msuchanek@suse.de>, <tglx@linutronix.de>, <peterz@infradead.org>,
-        <geert+renesas@glider.be>, <kernelfans@gmail.com>,
-        <frederic@kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>
-References: <20210323091257.90054-1-heying24@huawei.com>
- <YFppJkpZRHMJFay0@piout.net>
-From:   "heying (H)" <heying24@huawei.com>
-Message-ID: <ceeb191e-7aaf-6f02-5d5b-d6b2e8dc4948@huawei.com>
-Date:   Wed, 24 Mar 2021 09:58:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 23 Mar 2021 22:01:18 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E083C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:01:18 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x26so16201586pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:01:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gko5DwdDrrjyuudztCK85u5fA9SOsiUHVh5WfDpFt8E=;
+        b=QlJxkIRDjzXTY962t2mtJA7UVqpJYbvcjCSKEMSo/Q5mM60eQoKJHEXyROJMl7N+ES
+         kEXL+d876OKQFmHIFECPqG2PQLhuC5OYGzBJvk5FNiIa6/eJBbCg1szxejz4xHCjoKaJ
+         BI1VsVWLDZ/5tGIYFIMpjkewa0LZPtGwL3ZTA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gko5DwdDrrjyuudztCK85u5fA9SOsiUHVh5WfDpFt8E=;
+        b=ZclJXwiObdZk+FRraaVBY99DvT+Xw/6X+RowtnjMRfiqoV1eOVCw++qxcSGKGdlIVs
+         D4oBrJ84xtYkfTVJ9u/rdZF8bF9UbF/hZS86zyS/RZEf+E+cx4fQlKN/JRHDrwrk9cAm
+         LAPb8bJcNuPfWMR5re/pxdI33sZEcmkSLAT/8CcOtZKa3mDDOx3gg3v8xZKmohVSAeaE
+         GzBRW/8FcfCynN+AjsiBxCDKwtcDV+vwmvqHIAx52Lqzo1i2iJwRdXydsPHWhVwNM8Uj
+         hW5k4oD6ENcZWsDGnIv+WVGXNT8xE8zGa1uI0oMZHi5o4t0195f+01zLiQP5jkL30sq7
+         cMVA==
+X-Gm-Message-State: AOAM532xlpPR06YqXGnVf6QVJ+bpRyh9fM9mf9QhYSIH3ZzGr/i1Gs8E
+        0pD/muSEPj0IdBi/7uWAqBzJgA==
+X-Google-Smtp-Source: ABdhPJxjsLNxIWN+kP3AAa5XMz8NmKTnf5Z8dD1Tcao1d3voJoNIhlTReYr8pe8xY1AcqQYOBEuOZA==
+X-Received: by 2002:a63:f546:: with SMTP id e6mr954277pgk.299.1616551277775;
+        Tue, 23 Mar 2021 19:01:17 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:bcf2:e05a:a993:9494])
+        by smtp.gmail.com with ESMTPSA id d2sm389013pjx.42.2021.03.23.19.01.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 19:01:17 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 11:01:12 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv3 5/6] media: uvcvideo: add UVC 1.5 ROI control
+Message-ID: <YFqdaHCQak5ZM0Sf@google.com>
+References: <20210319055342.127308-1-senozhatsky@chromium.org>
+ <20210319055342.127308-6-senozhatsky@chromium.org>
+ <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YFppJkpZRHMJFay0@piout.net>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.136]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
+On (21/03/23 17:16), Ricardo Ribalda wrote:
+[..]
+> > +static bool validate_roi_bounds(struct uvc_streaming *stream,
+> > +                               struct v4l2_selection *sel)
+> > +{
+> > +       if (sel->r.left > USHRT_MAX ||
+> > +           sel->r.top > USHRT_MAX ||
+> > +           (sel->r.width + sel->r.left) > USHRT_MAX ||
+> > +           (sel->r.height + sel->r.top) > USHRT_MAX ||
+> > +           !sel->r.width || !sel->r.height)
+> > +               return false;
+> > +
+> > +       if (sel->flags > V4L2_SEL_FLAG_ROI_AUTO_HIGHER_QUALITY)
+> > +               return false;
+> 
+> Is it not allowed V4L2_SEL_FLAG_ROI_AUTO_IRIS |
+> V4L2_SEL_FLAG_ROI_AUTO_HIGHER_QUALITY   ?
+
+Good question.
+
+I don't know. Depends on what HIGHER_QUALITY can stand for (UVC doesn't
+specify). But overall it seems like features there are mutually
+exclusive. E.g. AUTO_FACE_DETECT and AUTO_DETECT_AND_TRACK.
 
 
-ÔÚ 2021/3/24 6:18, Alexandre Belloni Ð´µÀ:
-> Hello,
->
-> On 23/03/2021 05:12:57-0400, He Ying wrote:
->> We found these warnings in arch/powerpc/kernel/time.c as follows:
->> warning: symbol 'decrementer_max' was not declared. Should it be static?
->> warning: symbol 'rtc_lock' was not declared. Should it be static?
->> warning: symbol 'dtl_consumer' was not declared. Should it be static?
->>
->> Declare 'decrementer_max' and 'rtc_lock' in powerpc asm/time.h.
->> Rename 'rtc_lock' in drviers/rtc/rtc-vr41xx.c to 'vr41xx_rtc_lock' to
->> avoid the conflict with the variable in powerpc asm/time.h.
->> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
->> is declared there.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: He Ying <heying24@huawei.com>
->> ---
->> v2:
->> - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
->>    rtc_lock in powerpc asm/time.h.
->>
-> V1 was actually the correct thing to do. rtc_lock is there exactly
-> because chrp and maple are using mc146818 compatible RTCs. This is then
-> useful because then drivers/char/nvram.c is enabled. The proper fix
-> would be to scrap all of that and use rtc-cmos for those platforms as
-> this drives the RTC properly and exposes the NVRAM for the mc146818.
+I think it'll be better to replace this with
 
-Do you mean that 'rtc_lock' declared in linux/mc146818rtc.h points to
+	if (sel->flags > USHRT_MAX)
+		return false;
 
-same thing as that defined in powerpc kernel/time.c? And you think V1
+so that we don't let overflow happen and accidentally enable/disable
+some of the features.
 
-was correct? Oh, I should have added you to my patch V1 senders:)
+> > +
+> > +       return true;
+> > +}
+> > +
+> > +static int uvc_ioctl_s_roi(struct file *file, void *fh,
+> > +                          struct v4l2_selection *sel)
+> > +{
+> > +       struct uvc_fh *handle = fh;
+> > +       struct uvc_streaming *stream = handle->stream;
+> > +       struct uvc_roi_rect *roi;
+> > +       int ret;
+> > +
+> > +       if (!validate_roi_bounds(stream, sel))
+> > +               return -E2BIG;
+> 
+> Not sure if this is the correct approach or if we should convert the
+> value to the closest valid...
 
->
-> Or at least, if there are no users for the char/nvram driver on those
-> two platforms, remove the spinlock and stop enabling CONFIG_NVRAM or
-> more likely rename the symbol as it seems to be abused by both chrp and
-> powermac.
->
-> I'm not completely against the rename in vr41xxx but the fix for the
-> warnings can and should be contained in arch/powerpc.
+Well, at this point we know that ROI rectangle dimensions are out of
+sane value range. I'd rather tell user-space about integer overflow.
 
-Yes, I agree with you. But I have no choice because there is a compiling 
-error.
+Looking for the closest ROI rectangle that suffice can be rather
+tricky. It may sounds like we can just use BOUNDARIES_MAX, but this
+is what Firmware D returns for GET_MAX
 
-Maybe there's a better way.
+ioctl(V4L2_SEL_TGT_ROI_BOUNDS_MAX)
 
-So, what about my patch V1? Should I resend it and add you to senders?
+	0, 0, 65535, 65535
 
-
-Thanks.
-
+	-ss
