@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4322347FC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52A9347FCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237303AbhCXRsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
+        id S237181AbhCXRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237166AbhCXRrn (ORCPT
+        with ESMTP id S237047AbhCXRuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:47:43 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02073C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:47:43 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id b7so34325674ejv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:47:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TwICohQDmNlHACww9Px62AaQdCz/JWNO8WU4gTx6NmU=;
-        b=krUJcfrBhdcGEBsn5aqX/MR8lqOeTw5agdZMqXxibmOZu7vtwTzVoBlXaLSGDKh/bu
-         ds243PYymxqBBkeFxsmYXk7cIKVn1SUKgv/VvHtFuD/c6ibiJwBpsb3rO7BwUCQtbx6z
-         4NiLV73RydSj9jih+GZ9W8VMYy2IDB4BszZ6OD7LOJInVxlGWFfJpqsEwNsvhwSxoQZc
-         Wezay2YHFqHuIgUih+AUR7DL/MCY+ZiY+RUfNyhBaAyOyFiXrbWPVroXCc5HLGcmg+sz
-         mVTDsvVUX3RQI3rccYZ95nAxt8Ib58utJBiVHnfqvX/NE1Dl66f0D80DUs7lpaUyhCcU
-         fMZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TwICohQDmNlHACww9Px62AaQdCz/JWNO8WU4gTx6NmU=;
-        b=KuALWLuQbLMCF/ibkZMgAAYt+vQyUB2hyhZxXtvnh7PJ1tYHHfQGbFn2cFOpD4ld7T
-         8zYfBKGvSmXA5/o8UXLLcvRhpY4yFp3/o+03M9JBKBu+u3LECM3FolhtnXHEiika/h8n
-         zNQYot87E8sOdDBOh45klB234sKGTj9+YM56ZL3CVHc7LF954gYpZ4EoK9kYthdJEJAk
-         Y+iAbcB3lwnuYhyANRy9gDk5c1pCgCZkz3yBof9ETVw+aqxF6VaGcPakWwM1fqda5Lec
-         56px6s5wny/Q3RF04smrTnc/ALsQjYcWWvPyKtgQ5b/sas2/lgxAzAu+nR7cLiPJ+JUe
-         +wFw==
-X-Gm-Message-State: AOAM531Zrqe/5GTZdBJfkiFIJmq4V0zLeSQc0Ke8C9d896nclxMaEw/3
-        VT0KglRNwWGXtPMfex6u8NOSFyHV3OsJIifisvxU1g==
-X-Google-Smtp-Source: ABdhPJxVAyjvlgOpfOQd4oDsp/FOi1l7mgLH+yycDBxpL2Hwm7JCCiXciqd8rMVwmSe56RwHUwiQDAD0P46rC7JOGlk=
-X-Received: by 2002:a17:906:7e12:: with SMTP id e18mr5209337ejr.316.1616608061647;
- Wed, 24 Mar 2021 10:47:41 -0700 (PDT)
+        Wed, 24 Mar 2021 13:50:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43FAC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=i6ejqDzcPMeYivIRYGe0EGru88RfcJegOhLgzvC21HY=; b=tletaZiNy3sb+KFcyuPn6ZkLNo
+        MzozQhKkKtrVQjFFTUjy6J3+HeOl3hY/NHQDB+K9X8rNsnkUIWczzHX/XtSPORypR/xj6G5441U/r
+        C4xkW6hxjO+10UWrD46BsH45HuJVZfrn4MGCJlQwwr/9jQp9uoryiB5mXclSGoYBgowrg91R8WSG6
+        ceuuruzpAQYWqxZAyykzjXCVliwQ/KyzX5oycIUvWv1VASgYurqZhW16Q+PTH+hFTYd2WTsQeVeQY
+        3lOI4LOiMlAZnFrCyG5oh5pEWjaWsOR9ef57d8YXiAjqA7B9pw0CBSDhQgYJp53bTadR6iKya7KxQ
+        usXA/uKQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lP7dH-00BeO6-3M; Wed, 24 Mar 2021 17:49:32 +0000
+Subject: Re: [PATCH] x86/apic: Rudimentary typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dwmw@amazon.co.uk, luto@kernel.org, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org
+References: <20210324134149.30445-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1474439f-d865-d78b-b170-be0f44073d12@infradead.org>
+Date:   Wed, 24 Mar 2021 10:49:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210324170436.31843-1-brijesh.singh@amd.com> <20210324170436.31843-7-brijesh.singh@amd.com>
-In-Reply-To: <20210324170436.31843-7-brijesh.singh@amd.com>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Wed, 24 Mar 2021 10:47:30 -0700
-Message-ID: <CALCETrWH4uPUQHSwgwz5PS8XngJyvjxgWZ85EV5s7VGJX=aa_Q@mail.gmail.com>
-Subject: Re: [RFC Part2 PATCH 06/30] x86/fault: dump the RMP entry on #PF
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210324134149.30445-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:04 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> If hardware detects an RMP violation, it will raise a page-fault exception
-> with the RMP bit set. To help the debug, dump the RMP entry of the faulting
-> address.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  arch/x86/mm/fault.c | 75 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 75 insertions(+)
->
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index f39b551f89a6..7605e06a6dd9 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -31,6 +31,7 @@
->  #include <asm/pgtable_areas.h>         /* VMALLOC_START, ...           */
->  #include <asm/kvm_para.h>              /* kvm_handle_async_pf          */
->  #include <asm/vdso.h>                  /* fixup_vdso_exception()       */
-> +#include <asm/sev-snp.h>               /* lookup_rmpentry ...          */
->
->  #define CREATE_TRACE_POINTS
->  #include <asm/trace/exceptions.h>
-> @@ -147,6 +148,76 @@ is_prefetch(struct pt_regs *regs, unsigned long error_code, unsigned long addr)
->  DEFINE_SPINLOCK(pgd_lock);
->  LIST_HEAD(pgd_list);
->
-> +static void dump_rmpentry(struct page *page, rmpentry_t *e)
-> +{
-> +       unsigned long paddr = page_to_pfn(page) << PAGE_SHIFT;
-> +
-> +       pr_alert("RMPEntry paddr 0x%lx [assigned=%d immutable=%d pagesize=%d gpa=0x%lx asid=%d "
-> +               "vmsa=%d validated=%d]\n", paddr, rmpentry_assigned(e), rmpentry_immutable(e),
-> +               rmpentry_pagesize(e), rmpentry_gpa(e), rmpentry_asid(e), rmpentry_vmsa(e),
-> +               rmpentry_validated(e));
-> +       pr_alert("RMPEntry paddr 0x%lx %016llx %016llx\n", paddr, e->high, e->low);
-> +}
-> +
-> +static void show_rmpentry(unsigned long address)
-> +{
-> +       struct page *page = virt_to_page(address);
+On 3/24/21 6:41 AM, Bhaskar Chowdhury wrote:
+> 
+> s/preferrable/preferable/
+> s/serivced/serviced/
+> s/distributon/distribution/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-This is an error path, and I don't think you have any particular
-guarantee that virt_to_page(address) is valid.  Please add appropriate
-validation or use one of the slow lookup helpers.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  arch/x86/kernel/apic/apic.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+> index bda4f2a36868..e26ee6e67f47 100644
+> --- a/arch/x86/kernel/apic/apic.c
+> +++ b/arch/x86/kernel/apic/apic.c
+> @@ -619,7 +619,7 @@ static void setup_APIC_timer(void)
+> 
+>  	if (this_cpu_has(X86_FEATURE_ARAT)) {
+>  		lapic_clockevent.features &= ~CLOCK_EVT_FEAT_C3STOP;
+> -		/* Make LAPIC timer preferrable over percpu HPET */
+> +		/* Make LAPIC timer preferable over percpu HPET */
+>  		lapic_clockevent.rating = 150;
+>  	}
+> 
+> @@ -1532,7 +1532,7 @@ static bool apic_check_and_ack(union apic_ir *irr, union apic_ir *isr)
+>   * Most probably by now the CPU has serviced that pending interrupt and it
+>   * might not have done the ack_APIC_irq() because it thought, interrupt
+>   * came from i8259 as ExtInt. LAPIC did not get EOI so it does not clear
+> - * the ISR bit and cpu thinks it has already serivced the interrupt. Hence
+> + * the ISR bit and cpu thinks it has already serviced the interrupt. Hence
+>   * a vector might get locked. It was noticed for timer irq (vector
+>   * 0x31). Issue an extra EOI to clear ISR.
+>   *
+> @@ -1657,7 +1657,7 @@ static void setup_local_APIC(void)
+>  	 */
+>  	/*
+>  	 * Actually disabling the focus CPU check just makes the hang less
+> -	 * frequent as it makes the interrupt distributon model be more
+> +	 * frequent as it makes the interrupt distribution model be more
+>  	 * like LRU than MRU (the short-term load is more even across CPUs).
+>  	 */
+> 
+> --
+
+
+-- 
+~Randy
+
