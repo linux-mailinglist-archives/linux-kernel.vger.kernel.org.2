@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD503472B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DA33472B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbhCXHb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:31:56 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:35784 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235585AbhCXHbe (ORCPT
+        id S232280AbhCXHda convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 03:33:30 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3381 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231842AbhCXHdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:31:34 -0400
-Received: by mail-lj1-f176.google.com with SMTP id a1so28964399ljp.2;
-        Wed, 24 Mar 2021 00:31:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=egthqhzn5ZpLM0FjZqjc5wIxAZteYh+EG3fvKfyV1Xo=;
-        b=EznT9iUM4wlaU53v6bN0lfpwk5vpPTny423iglllQzddjbtpUBSQR1O4LsAd/UfqGm
-         lqizPenc0jMDq9pcd2azJvy5LoAi1MYuLq8uufueNjcPwrIQqO9n92Ehw69SJuNapCaN
-         7Qhoo+Rm7NRkgKsfyyGsLWVoU4k/auKVFVPGRzeL2XOnMNSvddQ580i602CqPpy+5alw
-         PsyG7Ga9yrFdhf6giCGmuw9q9fpEZMdaIdVNp9y0f6RzrUB9y7HhwcLgCe5cYipMCQSl
-         QcNzM3bQJpvxQIYd5CmPl9ZMOtlT0wLCPvsuKIIRdkepjYHjztwuu4FPcK79bvamDjgC
-         Mojg==
-X-Gm-Message-State: AOAM532c31x1v5kpuaXoHXJedqZHUQvqhrCTd0a0r9ybmX9be3LCkO9l
-        efCu6BqXzpKF+vLPhEm970o=
-X-Google-Smtp-Source: ABdhPJz5K9P8nQJZ66vs1+1FB+uo5iOT3gHJVZTdAlkQGcCA1g+y5NbDWwjvWXJO7qZopt0ciN1MGw==
-X-Received: by 2002:a2e:b88e:: with SMTP id r14mr1222519ljp.450.1616571092979;
-        Wed, 24 Mar 2021 00:31:32 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id v10sm143682lfb.238.2021.03.24.00.31.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 00:31:32 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 09:31:26 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [PATCH v4 16/16] MAINTAINERS: Add ROHM BD71815AGW
-Message-ID: <55471f9afe9ee89c8469323e92dbd88b7bfeb7ea.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 24 Mar 2021 03:33:25 -0400
+Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4F50Jr2qCHz5gP7;
+        Wed, 24 Mar 2021 15:30:52 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 15:33:23 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.013;
+ Wed, 24 Mar 2021 15:33:23 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] dma-mapping: make map_benchmark compile into module
+Thread-Topic: [PATCH] dma-mapping: make map_benchmark compile into module
+Thread-Index: AQHXIFPOFGbiIAxEO0+6jc+KbhZliqqSM4CAgACIJUA=
+Date:   Wed, 24 Mar 2021 07:33:23 +0000
+Message-ID: <6153f9d247214d58b5eb7a76cb1258b3@hisilicon.com>
+References: <1616552258-22282-1-git-send-email-tiantao6@hisilicon.com>
+ <20210324071305.GB647@lst.de>
+In-Reply-To: <20210324071305.GB647@lst.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.12]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entries for ROHM BD71815AGW drivers.
-New regulator and GPIO drivers were introduced for these PMICs.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changes since v3:
- - No changes
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9e876927c60d..c251af6bfc03 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15452,18 +15452,21 @@ F:	Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
- F:	Documentation/devicetree/bindings/regulator/rohm,bd70528-regulator.txt
- F:	drivers/clk/clk-bd718x7.c
- F:	drivers/gpio/gpio-bd70528.c
-+F:	drivers/gpio/gpio-bd71815.c
- F:	drivers/gpio/gpio-bd71828.c
- F:	drivers/mfd/rohm-bd70528.c
- F:	drivers/mfd/rohm-bd71828.c
- F:	drivers/mfd/rohm-bd718x7.c
- F:	drivers/power/supply/bd70528-charger.c
- F:	drivers/regulator/bd70528-regulator.c
-+F:	drivers/regulator/bd71815-regulator.c
- F:	drivers/regulator/bd71828-regulator.c
- F:	drivers/regulator/bd718x7-regulator.c
- F:	drivers/regulator/rohm-regulator.c
- F:	drivers/rtc/rtc-bd70528.c
- F:	drivers/watchdog/bd70528_wdt.c
- F:	include/linux/mfd/rohm-bd70528.h
-+F:	include/linux/mfd/rohm-bd71815.h
- F:	include/linux/mfd/rohm-bd71828.h
- F:	include/linux/mfd/rohm-bd718x7.h
- F:	include/linux/mfd/rohm-generic.h
--- 
-2.25.4
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+> -----Original Message-----
+> From: Christoph Hellwig [mailto:hch@lst.de]
+> Sent: Wednesday, March 24, 2021 8:13 PM
+> To: tiantao (H) <tiantao6@hisilicon.com>
+> Cc: akpm@linux-foundation.org; peterz@infradead.org; paulmck@kernel.org;
+> ast@kernel.org; tglx@linutronix.de; rostedt@goodmis.org; hch@lst.de;
+> m.szyprowski@samsung.com; Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com>; iommu@lists.linux-foundation.org;
+> linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] dma-mapping: make map_benchmark compile into module
+> 
+> On Wed, Mar 24, 2021 at 10:17:38AM +0800, Tian Tao wrote:
+> > under some scenarios, it is necessary to compile map_benchmark
+> > into module to test iommu, so this patch changed Kconfig and
+> > export_symbol to implement map_benchmark compiled into module.
+> >
+> > On the other hand, map_benchmark is a driver, which is supposed
+> > to be able to run as a module.
+> >
+> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> 
+> Nope, we're not going to export more kthread internals for a test
+> module.
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+The requirement comes from an colleague who is frequently changing
+the map-bench code for some customized test purpose. and he doesn't
+want to build kernel image and reboot every time. So I moved the
+requirement to Tao Tian.
+
+Right now, kthread_bind() is exported, kthread_bind_mask() seems
+to be a little bit "internal" as you said, maybe a wrapper like
+kthread_bind_node() won't be that "internal", comparing to exposing
+the cpumask?
+Anyway, we don't find other driver users for this, hardly I can
+convince you it is worth.
+
+Thanks
+Barry
