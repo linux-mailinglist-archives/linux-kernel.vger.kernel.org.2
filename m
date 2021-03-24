@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6D634853C
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC0734853B
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239043AbhCXXUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhCXXUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:20:33 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC8FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:20:33 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id a143so343123ybg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:20:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Waeg5goT6Kdiuo5kcj7A+VSlRRFbVYj1KRURUA32Oh8=;
-        b=t9OMcHgyLQ9LOWW8TRWHwi2BZrnk+Y3VbI96CfY0cwrR7anE3GG6FpsbGEuJ3iOnyZ
-         fKZznJ0ItxNhHuRL8gaVUev5973Mdp59V/o7c1bM2qnc5eoQ8dVVc5mz4hwVoxNHVTvN
-         W60dvLYptezJaTn+8R80fz58Bhkv0YadksE3Q3GsV6lCQm5C1IH5z/OGfK3o3HG7s4+p
-         lE4hOqJN4rkArZxKxWKWKvHfytdrBI3IWsw0Gq3RXxdAiaMQlStURXuhyJQ4OM8LWKxH
-         6V52uGVWsoipGQ4kacBT1hoPfkdJnwCN+v9WCTq8hyqdePqj25Fd17wIb9ARR2IF2VTw
-         uJ7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Waeg5goT6Kdiuo5kcj7A+VSlRRFbVYj1KRURUA32Oh8=;
-        b=RvmsH5VL18F1NdDEudirrCr2D2B2B+2/wVEhGU6Sj58HsU7tQfKvbDEswRO9bEj06Y
-         k3xcEcvXWSjTWLlHpgLpmUa7FhdA6vDjx/xPBGKhxZKjUvx+YluGsFoNs741dVuzaZne
-         VQpJNBQdlpJnajpYaOFjHC03NNF0+Krj+cDPt4JFhX9BK6OUA+R+H5FedS3jKYy5zn+N
-         Ayhq8WVpbiju8pC9pK5NMe1Zq55ughVW5IFJJe8rLxZw56zIQNmrLhAItaPCq0j8fAj0
-         CoW1Cwjcm7r4WwFD3Vaq2vGS6M1EqVkxcczkOAAyiyTe4sZGUpFtfZu+2Gj/feY25Jzr
-         7hew==
-X-Gm-Message-State: AOAM5303HzanG5BAWgJ7BFyY7ADNT4ybVfRJ61oho2rM8D/HQcN8CtZQ
-        WNOb8w73uOAAbsTsduEI1Qn93XXVRrODUPEmbVc=
-X-Google-Smtp-Source: ABdhPJweQ4JMcUYq19dE/Z3VSmtDPQ4jERg6NBOzXkLvnmMIB3aMa5kFuF+zEUn7UlrzfPx9lI7HD5glI5mIRiJtSDM=
-X-Received: by 2002:a25:38c5:: with SMTP id f188mr8303809yba.178.1616628032898;
- Wed, 24 Mar 2021 16:20:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323074857.38818-1-zou_wei@huawei.com>
-In-Reply-To: <20210323074857.38818-1-zou_wei@huawei.com>
-From:   Ben Skeggs <skeggsb@gmail.com>
-Date:   Thu, 25 Mar 2021 09:20:21 +1000
-Message-ID: <CACAvsv4QztVux4VfPjLB4BMeLEL2+LePgFLVDVS7=4GMbx995g@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH -next] drm/nouveau/core/client: Mark
- nvkm_uclient_sclass with static keyword
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231184AbhCXXUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:20:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230385AbhCXXU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:20:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE88661A0F;
+        Wed, 24 Mar 2021 23:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1616628028;
+        bh=DfPvVvnnPDOnWWAUCw/MMTu0BV/F1aFcs7Ds2Ng04gc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mW4k3bZ+pK+Ysg7gscjEg94zbFO6h0wM0OI3WLRbjquYaGsdT9B6FGHJRwncMqk2o
+         3AmNZ3T7z2vK3kNKvl8TLZ6peKzmZHK9JXI2g/lDl6mAWf9awteRaHy4z57jtli3B4
+         Qg8KK7bbMeg+voQ1gLv3FOPPfzwy3S3GzuUFAHWY=
+Date:   Wed, 24 Mar 2021 16:20:27 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH] userfaultfd/shmem: fix minor fault page leak
+Message-Id: <20210324162027.cc723b545ff62b1ad6f5223e@linux-foundation.org>
+In-Reply-To: <20210322204836.1650221-1-axelrasmussen@google.com>
+References: <20210322204836.1650221-1-axelrasmussen@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 at 17:03, Zou Wei <zou_wei@huawei.com> wrote:
->
-> Fix the following sparse warning:
->
-> drivers/gpu/drm/nouveau/nvkm/core/client.c:64:1: warning: symbol 'nvkm_uclient_sclass' was not declared. Should it be static?
->
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Applied, thanks.
+On Mon, 22 Mar 2021 13:48:35 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
 
-> ---
->  drivers/gpu/drm/nouveau/nvkm/core/client.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/core/client.c b/drivers/gpu/drm/nouveau/nvkm/core/client.c
-> index ac671202919e..0c8c55c73b12 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/core/client.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/core/client.c
-> @@ -60,7 +60,7 @@ nvkm_uclient_new(const struct nvkm_oclass *oclass, void *argv, u32 argc,
->         return 0;
->  }
->
-> -const struct nvkm_sclass
-> +static const struct nvkm_sclass
->  nvkm_uclient_sclass = {
->         .oclass = NVIF_CLASS_CLIENT,
->         .minver = 0,
-> --
-> 2.17.1
->
-> _______________________________________________
-> Nouveau mailing list
-> Nouveau@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/nouveau
+> This fix is analogous to Peter Xu's fix for hugetlb [0]. If we don't
+> put_page() after getting the page out of the page cache, we leak the
+> reference.
+> 
+> The fix can be verified by checking /proc/meminfo and running the
+> userfaultfd selftest in shmem mode. Without the fix, we see MemFree /
+> MemAvailable steadily decreasing with each run of the test. With the
+> fix, memory is correctly freed after the test program exits.
+> 
+> Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+
+Confused.  The affected code:
+
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1831,6 +1831,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>  
+>  	if (page && vma && userfaultfd_minor(vma)) {
+>  		unlock_page(page);
+> +		put_page(page);
+>  		*fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
+>  		return 0;
+>  	}
+
+Is added by Peter's "page && vma && userfaultfd_minor".  I assume that
+"Fixes:" is incorrect?
