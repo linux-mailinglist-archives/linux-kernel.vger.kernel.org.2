@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA1C348463
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA46348466
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238743AbhCXWM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        id S238755AbhCXWNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbhCXWMq (ORCPT
+        with ESMTP id S232434AbhCXWNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:12:46 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB3DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:12:46 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so85997pjv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:12:46 -0700 (PDT)
+        Wed, 24 Mar 2021 18:13:02 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A675AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:13:01 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id q29so34136696lfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=flIXUMrWcifVgFzaSDEmMehB8YW+PGNP6tRqoJaEbVE=;
-        b=w1YG5n57tU6V5WoPNofwTr8BVbm83cBU1pNJsbV0uPfNGfTqmjdyIMRvsABmu1cBOt
-         z+4C4NbpkchDdr1RhFqHT0pyd9oJKf72oqDMaTJ8MVjWNkv82LxnyJdNONSTqodgP0/q
-         t4kQ+hyH6dVcXAROJOeCMh5+qIhNwVADPOk63E9RZek5Spj7NHZAiFiCAkgzdzG8xGAv
-         vamlBIHv+WOL+6v4+kPtRIHIuyCn2y/LCkHxlqqrLarBJq9xKdX18Am6rRJjuJaLKpVo
-         iaEIxC/A6HD2WVbLs3shL0VE3qcq9DZrZduSa5huUefuGiTA9aFhME1IlJ3ld6af7DH2
-         Ggpg==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E5EF3+3G1pSNN3Vz+zg1CDDR54BRucBQmvRe9cDEpR8=;
+        b=IBv0B9r4ZSeKXc64Nc4HJ+1nRa9RRuAsa3xZeZwLdMOgMBLRLMTFYL/N6wlhKHjAMs
+         hddD91lWO7phpnAF2LYWBKutkcRc/rKQCDDNCZZ1Ry10BZegVRIZNw6mDjK8l+nV+1B4
+         UAootwjzIBABQXQX8htpDIsMQL5WaJwvfu7MVvM2ZGdjOZXrTDvyPDM8jXEO706MZCGq
+         g5cNOZ07F6Lp5RPwKoA7Eoqru/SP7O02rTrnwWWiJ6HqWfIx+ynbDa9nUFreHOfPBF6X
+         z84pBvqLokS2GbcM3BhWdxviOMlJjJReChfG1VEKkeQFEzcYHL+/+/N7JcDTKTDcrrY0
+         giOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=flIXUMrWcifVgFzaSDEmMehB8YW+PGNP6tRqoJaEbVE=;
-        b=tnRI1bw2lP60efTjE1aFTO3J39hYtfU20XR4QnAX4hSackY7B3DrpxsThU2RduKwya
-         lh+EyO4t/lJayaP341WuauKBfHlYlhSqzgdBUi5i+3OADhW/+IFICljAsXQaA9rGdCQd
-         kdbtJNrT6Qul0DqHOqd/hBKMSQ1klINMU2PzQdeBuR3v3As43Mmk/IGk74WvJAfFsVx7
-         m8QDFM+vGqXMBKSVupDmpdh6/MNwjnTa+p1JmrVJUZyw/DI3GfRY1Yxom0gFpOZj6rhB
-         68ov0lEOYhIHKIGASmApDlgIWISsSjNwjZjBUo9M83HL8maYnIkBLshAEwBMUgsDV4XG
-         LxHw==
-X-Gm-Message-State: AOAM533IhlblNkeeL6P9dcFZDKv4QrheL0tlSxJ/c3d0BKzXQHQJppUC
-        YNoX6ZxeDQljnnF0LhljvK1VBw==
-X-Google-Smtp-Source: ABdhPJxtJXurekBGr96PplmNJCmNhHIHu3s005dlqHSewvgy8Gs/kUrs+nFZjmsxybjo8R6o4zrtcA==
-X-Received: by 2002:a17:90a:d801:: with SMTP id a1mr5638553pjv.84.1616623965676;
-        Wed, 24 Mar 2021 15:12:45 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:b9f9:ef01:c08a:fb13? ([2601:646:c200:1ef2:b9f9:ef01:c08a:fb13])
-        by smtp.gmail.com with ESMTPSA id o13sm3671100pgv.40.2021.03.24.15.12.44
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E5EF3+3G1pSNN3Vz+zg1CDDR54BRucBQmvRe9cDEpR8=;
+        b=DCb1oriDoYO5Rm52cCyF7JV19yp6IQlx7zjtnfqQ1NI4TgKiBxZGvwDcggA7QebaEC
+         Ky6eU++jRJUI49c9rZTFOoc8o3ywRIqd5Z/HfG646Nrsmsd43S0A7qpSAmC3fClBnMeW
+         Ojw9GQ8Vh/h6uXt7t+NSnLqEqgI6FoUa859kI3cxnam9DQEk1F4+gQcYBVMok47Xs1Z2
+         jNcBpoDSqoxCnr/xyZLfjjbfQS4NO5NgnIMny85+GRPCmi88qjdOJTfRR/3oAZYexpiW
+         CU6OKbaor22/4zPRa62/CAp+oI9BIYQH/4XHMX108wgczAWNF/tyMh8Lc9sa5DoHeIbV
+         +CSw==
+X-Gm-Message-State: AOAM532OSY6fcq42P8FdpRaTXFRl80wB0AfKLH9+EQNEz4hvniDGf01U
+        l3ApRikKk7GbExOoQXcW5B8=
+X-Google-Smtp-Source: ABdhPJzezBSMioh74r3e4fXxnre83j5GCODMtwXav8+0cEFFKx4IshGnNxwHlcAVGkl2g3FoCyyNKg==
+X-Received: by 2002:a19:e12:: with SMTP id 18mr3316830lfo.296.1616623980213;
+        Wed, 24 Mar 2021 15:13:00 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id e18sm462122ljl.92.2021.03.24.15.12.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 15:12:45 -0700 (PDT)
+        Wed, 24 Mar 2021 15:12:59 -0700 (PDT)
+Subject: Re: [PATCH v7] mm: cma: support sysfs
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
+        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
+        willy@infradead.org, Colin Ian King <colin.king@canonical.com>
+References: <20210324205503.2132082-1-minchan@kernel.org>
+ <65840bfd-4471-7c8d-ce71-c4705baf3bfe@gmail.com>
+ <YFu1QoiPEnAOAvXS@google.com>
+ <7d9ccfac-b705-8682-d05c-cb239c215677@gmail.com>
+Message-ID: <2ddd2bf8-d610-a6ad-a56b-7ff66f1a535b@gmail.com>
+Date:   Thu, 25 Mar 2021 01:12:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <7d9ccfac-b705-8682-d05c-cb239c215677@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the first use of dynamic user state
-Date:   Wed, 24 Mar 2021 15:12:43 -0700
-Message-Id: <95242657-E9AC-470C-9834-40BDA2E852B9@amacapital.net>
-References: <90ea8d01-7fa5-100e-8590-d1ed80eb0d6a@intel.com>
-Cc:     Len Brown <lenb@kernel.org>,
-        "Liu, Jing2" <jing2.liu@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        X86 ML <x86@kernel.org>, Len Brown <len.brown@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>
-In-Reply-To: <90ea8d01-7fa5-100e-8590-d1ed80eb0d6a@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-X-Mailer: iPhone Mail (18D61)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+25.03.2021 01:10, Dmitry Osipenko пишет:
+> 25.03.2021 00:55, Minchan Kim пишет:
+>>> There are no dereferences fixed by this patch.
+>> Let me add this:
+>> https://lore.kernel.org/linux-mm/20210316100433.17665-1-colin.king@canonical.com/
+>>
+> 
+> The tag is invalid now, since you squashed the fix. I think you may add
+> "Co-developed-by: Colin Ian King <colin.king@canonical.com>", but this
+> also should require to add the s-b from Colin, if he doesn't mind.
+> 
 
-> On Mar 24, 2021, at 2:58 PM, Dave Hansen <dave.hansen@intel.com> wrote:
->=20
-> =EF=BB=BFOn 3/24/21 2:42 PM, Andy Lutomirski wrote:
->>>>> 3. user space always uses fully uncompacted XSAVE buffers.
->>>>>=20
->>>> There is no reason we have to do this for new states. Arguably we
->>>> shouldn=E2=80=99t for AMX to avoid yet another altstack explosion.
->>> The thing that's worried me is that the list of OS-enabled states is
->>> visible to apps via XGETBV.  It doesn't seem too much of a stretch to
->>> think that apps will see AMX enabled with XGETBV and them assume that
->>> it's on the signal stack.
->>>=20
->>> Please tell me I'm being too paranoid.  If we can break this
->>> assumption, it would get rid of a lot of future pain.
->> There are no AMX apps. I sure hope that there are no apps that
->> enumerate xfeatures with CPUID and try to decode the mess in the
->> signal stack.
->=20
-> I don't think they quite need to decode it in order to be screwed over a
-> bit.  For instance, I don't think it's too crazy if someone did:
->=20
->    xcr0 =3D xgetbv(0);
->    xrstor(xcr0, &sig_stack[something]);
->    // change some registers
->    xsave(xcr0, &sig_stack[something]);
->=20
-> The XRSTOR would work fine, but the XSAVE would overflow the stack
-> because it would save the AMX state.  It also *looks* awfully benign.
-> This is true even if the silly signal handler didn't know about AMX at
-> *ALL*.
->=20
-> A good app would have checked that the xfeatures field in the header
-> matched xcr0.
-
-Ugh.
-
-On the other hand, if we require a syscall to flip the AMX bit in XCR0, we c=
-ould maybe get away with saying that programs that flip the bit and don=E2=80=
-=99t understand the new ABI get to keep both pieces.
-
-I don=E2=80=99t live futzing with the ABI like this, but AMX is really only b=
-arely compatible with everything before it.=
+Ah, I now see that the s-b tag is already there.
