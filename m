@@ -2,256 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EF634760B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F1234760D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhCXKZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:25:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59127 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235714AbhCXKZG (ORCPT
+        id S230209AbhCXKZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235603AbhCXKZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:25:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616581505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hLr3oxEF1/9Rhj8o+UPHLCrvFG5XatLxuy2W9STTzPM=;
-        b=GMAgQFoFt1RltsFR5cE9jXVsf/FyQDge8FbHrszlKQ8vIagBZwpx5UERAXXVXRhYtF5mmc
-        vSNG110zCifRGXMBjVUvTPllJgZu1tq/OwB2EDDULrf94pinAOGnCP8JFBCcUKMlXo46Jp
-        vujdXIlPxDC8zBKKPHl9kMYeDV601bA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-shSdeTk8O9ahfEpodI8hHw-1; Wed, 24 Mar 2021 06:25:01 -0400
-X-MC-Unique: shSdeTk8O9ahfEpodI8hHw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D16DA81621;
-        Wed, 24 Mar 2021 10:24:59 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-115-66.ams2.redhat.com [10.36.115.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6ECA10013D7;
-        Wed, 24 Mar 2021 10:24:56 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Minchan Kim <minchan@kernel.org>,
-        huang ying <huang.ying.caritas@gmail.com>
-Subject: [PATCH v1 3/3] mm/vmalloc: remove vwrite()
-Date:   Wed, 24 Mar 2021 11:23:51 +0100
-Message-Id: <20210324102351.6932-4-david@redhat.com>
-In-Reply-To: <20210324102351.6932-1-david@redhat.com>
-References: <20210324102351.6932-1-david@redhat.com>
+        Wed, 24 Mar 2021 06:25:13 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CD8CC061763;
+        Wed, 24 Mar 2021 03:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=CQxzGixpgbWGArS2H8DTMl+TRREKp6I+YVDe
+        syqE3EM=; b=Wcr4A4xAIyyTen5OhWFOBjLQaAQx+rwlv239WGFHbjM+WaUqJ9Vo
+        ZwnSsQMWs1PZ56AI1zzJlIUWUV5rq70ABrzL/ul4dj2Csa20ItYyvowMXNIoDrzj
+        UOQ9ckO6RJGp4lhZJTXxKtJjkmK36Yz/3KcSSFHkJAKhjKj/VNrScB4=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Wed, 24 Mar
+ 2021 18:24:48 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Wed, 24 Mar 2021 18:24:48 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Michael Kelley" <mikelley@microsoft.com>
+Cc:     "KY Srinivasan" <kys@microsoft.com>,
+        "Haiyang Zhang" <haiyangz@microsoft.com>,
+        "Stephen Hemminger" <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: RE: [PATCH] video/fbdev: Fix a double free in hvfb_probe
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <MWHPR21MB1593E96D24957865DB46D3DBD7649@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210323073350.17697-1-lyl2019@mail.ustc.edu.cn>
+ <MWHPR21MB1593E96D24957865DB46D3DBD7649@MWHPR21MB1593.namprd21.prod.outlook.com>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Message-ID: <5c22e0b9.10ae8.17863c3eddb.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygBnbkpwE1tgAq8yAA--.0W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoKBlQhn5ZS1wACs8
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The last user (/dev/kmem) is gone. Let's drop it.
-
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Hillf Danton <hdanton@sina.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: huang ying <huang.ying.caritas@gmail.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/vmalloc.h |   1 -
- mm/nommu.c              |  10 ----
- mm/vmalloc.c            | 116 +---------------------------------------
- 3 files changed, 1 insertion(+), 126 deletions(-)
-
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 390af680e916..9c1b17c7dd95 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -200,7 +200,6 @@ static inline void set_vm_flush_reset_perms(void *addr)
- 
- /* for /proc/kcore */
- extern long vread(char *buf, char *addr, unsigned long count);
--extern long vwrite(char *buf, char *addr, unsigned long count);
- 
- /*
-  *	Internals.  Dont't use..
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 5c9ab799c0e6..85a3a68dffb6 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -210,16 +210,6 @@ long vread(char *buf, char *addr, unsigned long count)
- 	return count;
- }
- 
--long vwrite(char *buf, char *addr, unsigned long count)
--{
--	/* Don't allow overflow */
--	if ((unsigned long) addr + count < count)
--		count = -(unsigned long) addr;
--
--	memcpy(addr, buf, count);
--	return count;
--}
--
- /*
-  *	vmalloc  -  allocate virtually contiguous memory
-  *
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index ccb405b82581..434f61c9c466 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2802,10 +2802,7 @@ static int aligned_vread(char *buf, char *addr, unsigned long count)
- 		 * kmap() and get small overhead in this access function.
- 		 */
- 		if (p) {
--			/*
--			 * we can expect USER0 is not used (see vread/vwrite's
--			 * function description)
--			 */
-+			/* We can expect USER0 is not used -- see vread() */
- 			void *map = kmap_atomic(p);
- 			memcpy(buf, map + offset, length);
- 			kunmap_atomic(map);
-@@ -2820,43 +2817,6 @@ static int aligned_vread(char *buf, char *addr, unsigned long count)
- 	return copied;
- }
- 
--static int aligned_vwrite(char *buf, char *addr, unsigned long count)
--{
--	struct page *p;
--	int copied = 0;
--
--	while (count) {
--		unsigned long offset, length;
--
--		offset = offset_in_page(addr);
--		length = PAGE_SIZE - offset;
--		if (length > count)
--			length = count;
--		p = vmalloc_to_page(addr);
--		/*
--		 * To do safe access to this _mapped_ area, we need
--		 * lock. But adding lock here means that we need to add
--		 * overhead of vmalloc()/vfree() calles for this _debug_
--		 * interface, rarely used. Instead of that, we'll use
--		 * kmap() and get small overhead in this access function.
--		 */
--		if (p) {
--			/*
--			 * we can expect USER0 is not used (see vread/vwrite's
--			 * function description)
--			 */
--			void *map = kmap_atomic(p);
--			memcpy(map + offset, buf, length);
--			kunmap_atomic(map);
--		}
--		addr += length;
--		buf += length;
--		copied += length;
--		count -= length;
--	}
--	return copied;
--}
--
- /**
-  * vread() - read vmalloc area in a safe way.
-  * @buf:     buffer for reading data
-@@ -2936,80 +2896,6 @@ long vread(char *buf, char *addr, unsigned long count)
- 	return buflen;
- }
- 
--/**
-- * vwrite() - write vmalloc area in a safe way.
-- * @buf:      buffer for source data
-- * @addr:     vm address.
-- * @count:    number of bytes to be read.
-- *
-- * This function checks that addr is a valid vmalloc'ed area, and
-- * copy data from a buffer to the given addr. If specified range of
-- * [addr...addr+count) includes some valid address, data is copied from
-- * proper area of @buf. If there are memory holes, no copy to hole.
-- * IOREMAP area is treated as memory hole and no copy is done.
-- *
-- * If [addr...addr+count) doesn't includes any intersects with alive
-- * vm_struct area, returns 0. @buf should be kernel's buffer.
-- *
-- * Note: In usual ops, vwrite() is never necessary because the caller
-- * should know vmalloc() area is valid and can use memcpy().
-- * This is for routines which have to access vmalloc area without
-- * any information, as /dev/kmem.
-- *
-- * Return: number of bytes for which addr and buf should be
-- * increased (same number as @count) or %0 if [addr...addr+count)
-- * doesn't include any intersection with valid vmalloc area
-- */
--long vwrite(char *buf, char *addr, unsigned long count)
--{
--	struct vmap_area *va;
--	struct vm_struct *vm;
--	char *vaddr;
--	unsigned long n, buflen;
--	int copied = 0;
--
--	/* Don't allow overflow */
--	if ((unsigned long) addr + count < count)
--		count = -(unsigned long) addr;
--	buflen = count;
--
--	spin_lock(&vmap_area_lock);
--	list_for_each_entry(va, &vmap_area_list, list) {
--		if (!count)
--			break;
--
--		if (!va->vm)
--			continue;
--
--		vm = va->vm;
--		vaddr = (char *) vm->addr;
--		if (addr >= vaddr + get_vm_area_size(vm))
--			continue;
--		while (addr < vaddr) {
--			if (count == 0)
--				goto finished;
--			buf++;
--			addr++;
--			count--;
--		}
--		n = vaddr + get_vm_area_size(vm) - addr;
--		if (n > count)
--			n = count;
--		if (!(vm->flags & VM_IOREMAP)) {
--			aligned_vwrite(buf, addr, n);
--			copied++;
--		}
--		buf += n;
--		addr += n;
--		count -= n;
--	}
--finished:
--	spin_unlock(&vmap_area_lock);
--	if (!copied)
--		return 0;
--	return buflen;
--}
--
- /**
-  * remap_vmalloc_range_partial - map vmalloc pages to userspace
-  * @vma:		vma to cover
--- 
-2.29.2
-
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIk1pY2hhZWwgS2Vs
+bGV5IiA8bWlrZWxsZXlAbWljcm9zb2Z0LmNvbT4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTI0
+IDAyOjUyOjA3ICjmmJ/mnJ/kuIkpDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5
+QG1haWwudXN0Yy5lZHUuY24+LCAiS1kgU3Jpbml2YXNhbiIgPGt5c0BtaWNyb3NvZnQuY29tPiwg
+IkhhaXlhbmcgWmhhbmciIDxoYWl5YW5nekBtaWNyb3NvZnQuY29tPiwgIlN0ZXBoZW4gSGVtbWlu
+Z2VyIiA8c3RoZW1taW5AbWljcm9zb2Z0LmNvbT4sICJ3ZWkubGl1QGtlcm5lbC5vcmciIDx3ZWku
+bGl1QGtlcm5lbC5vcmc+DQo+IOaKhOmAgTogImxpbnV4LWh5cGVydkB2Z2VyLmtlcm5lbC5vcmci
+IDxsaW51eC1oeXBlcnZAdmdlci5rZXJuZWwub3JnPiwgImRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmciIDxkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnPiwgImxpbnV4LWZiZGV2
+QHZnZXIua2VybmVsLm9yZyIgPGxpbnV4LWZiZGV2QHZnZXIua2VybmVsLm9yZz4sICJsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnIiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4NCj4g
+5Li76aKYOiBSRTogW1BBVENIXSB2aWRlby9mYmRldjogRml4IGEgZG91YmxlIGZyZWUgaW4gaHZm
+Yl9wcm9iZQ0KPiANCj4gRnJvbTogTHYgWXVubG9uZyA8bHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNu
+PiBTZW50OiBUdWVzZGF5LCBNYXJjaCAyMywgMjAyMSAxMjozNCBBTQ0KPiA+IA0KPiA+IEluIGZ1
+bmN0aW9uIGh2ZmJfcHJvYmUgaW4gaHlwZXJ2X2ZiLmMsIGl0IGNhbGxzIGh2ZmJfZ2V0bWVtKGhk
+ZXYsIGluZm8pDQo+ID4gYW5kIHJldHVybiBlcnIgd2hlbiBpbmZvLT5hcGVydHVyZXMgaXMgZnJl
+ZWQuDQo+ID4gDQo+ID4gSW4gdGhlIGVycm9yMSBsYWJlbCBvZiBodmZiX3Byb2JlLCBpbmZvLT5h
+cGVydHVyZXMgd2lsbCBiZSBmcmVlZCB0d2ljZQ0KPiA+IGJ5IGZyYW1lYnVmZmVyX3JlbGVhc2Uo
+aW5mbykuDQo+ID4gDQo+ID4gTXkgcGF0Y2ggc2V0cyBpbmZvLT5hcGVydHVyZXMgdG8gTlVMTCBh
+ZnRlciBpdCB3YXMgZnJlZWQgdG8gYXZvaWQNCj4gPiBkb3VibGUgZnJlZS4NCj4gPiANCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBMdiBZdW5sb25nIDxseWwyMDE5QG1haWwudXN0Yy5lZHUuY24+DQo+ID4g
+LS0tDQo+ID4gIGRyaXZlcnMvdmlkZW8vZmJkZXYvaHlwZXJ2X2ZiLmMgfCAzICsrKw0KPiA+ICAx
+IGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvdmlkZW8vZmJkZXYvaHlwZXJ2X2ZiLmMgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2h5cGVy
+dl9mYi5jDQo+ID4gaW5kZXggYzhiMGFlNjc2ODA5Li4yZmM5YjUwN2U3M2EgMTAwNjQ0DQo+ID4g
+LS0tIGEvZHJpdmVycy92aWRlby9mYmRldi9oeXBlcnZfZmIuYw0KPiA+ICsrKyBiL2RyaXZlcnMv
+dmlkZW8vZmJkZXYvaHlwZXJ2X2ZiLmMNCj4gPiBAQCAtMTAzMiw2ICsxMDMyLDcgQEAgc3RhdGlj
+IGludCBodmZiX2dldG1lbShzdHJ1Y3QgaHZfZGV2aWNlICpoZGV2LCBzdHJ1Y3QgZmJfaW5mbw0K
+PiA+ICppbmZvKQ0KPiA+ICAJCWlmICghcGRldikgew0KPiA+ICAJCQlwcl9lcnIoIlVuYWJsZSB0
+byBmaW5kIFBDSSBIeXBlci1WIHZpZGVvXG4iKTsNCj4gPiAgCQkJa2ZyZWUoaW5mby0+YXBlcnR1
+cmVzKTsNCj4gPiArCQkJaW5mby0+YXBlcnR1cmVzID0gTlVMTDsNCj4gPiAgCQkJcmV0dXJuIC1F
+Tk9ERVY7DQo+ID4gIAkJfQ0KPiA+IA0KPiA+IEBAIC0xMTMwLDYgKzExMzEsNyBAQCBzdGF0aWMg
+aW50IGh2ZmJfZ2V0bWVtKHN0cnVjdCBodl9kZXZpY2UgKmhkZXYsIHN0cnVjdCBmYl9pbmZvDQo+
+ID4gKmluZm8pDQo+ID4gIAkJcGNpX2Rldl9wdXQocGRldik7DQo+ID4gIAl9DQo+ID4gIAlrZnJl
+ZShpbmZvLT5hcGVydHVyZXMpOw0KPiA+ICsJaW5mby0+YXBlcnR1cmVzID0gTlVMTDsNCj4gPiAN
+Cj4gPiAgCXJldHVybiAwOw0KPiA+IA0KPiA+IEBAIC0xMTQyLDYgKzExNDQsNyBAQCBzdGF0aWMg
+aW50IGh2ZmJfZ2V0bWVtKHN0cnVjdCBodl9kZXZpY2UgKmhkZXYsIHN0cnVjdCBmYl9pbmZvDQo+
+ID4gKmluZm8pDQo+ID4gIAlpZiAoIWdlbjJ2bSkNCj4gPiAgCQlwY2lfZGV2X3B1dChwZGV2KTsN
+Cj4gPiAgCWtmcmVlKGluZm8tPmFwZXJ0dXJlcyk7DQo+ID4gKwlpbmZvLT5hcGVydHVyZXMgPSBO
+VUxMOw0KPiA+IA0KPiA+ICAJcmV0dXJuIC1FTk9NRU07DQo+ID4gIH0NCj4gPiAtLQ0KPiA+IDIu
+MjUuMQ0KPiA+IA0KPiANCj4gV2hpbGUgSSB0aGluayB0aGlzIHdvcmtzLCBhIHNsaWdodGx5IGJl
+dHRlciBzb2x1dGlvbiBtaWdodCBiZSB0byByZW1vdmUNCj4gYWxsIGNhbGxzIHRvIGtmcmVlKGlu
+Zm8tPmFwZXJ0dXJlcykgaW4gaHZmYl9nZXRtZW0oKSwgIGFuZCBqdXN0IGxldA0KPiBmcmFtZWJ1
+ZmZlcl9yZWxlYXNlKCkgaGFuZGxlIGZyZWVpbmcgdGhlIG1lbW9yeS4gIFRoYXQncyB3aGF0IGlz
+DQo+IGRvbmUgaW4gb3RoZXIgZHJpdmVycyB0aGF0IGZvbGxvdyB0aGUgZmJkZXYgcGF0dGVybiwg
+YW5kIGl0J3MgbGVzcw0KPiBjb2RlIG92ZXJhbGwuICANCj4gDQo+IE1pY2hhZWwNCg0KT2ssIGkg
+YWdyZWUgd2l0aCB5b3UuIFJlbW92ZSBhbGwgY2FsbHMgdG8ga2ZyZWUoaW5mby0+YXBlcnR1cmVz
+KQ0KaW4gaHZmYl9nZXRtZW0oKSBpcyBhIGJldHRlciBzb2x1dGlvbi4NCg0KSSB3aWxsIHN1Ymlt
+dCBhIFBBVENIIHYyIGZvciB5b3UgdG8gcmV2aWV3LiBUaGFua3MuDQo=
