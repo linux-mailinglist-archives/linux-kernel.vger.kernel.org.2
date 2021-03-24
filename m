@@ -2,99 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03670348543
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE5C348544
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbhCXXX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:23:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:14556 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhCXXXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:23:49 -0400
-IronPort-SDR: oJ1+qBYzTuvcMfabBLfz1XKfXgCR7WwHVyDG+1LCEaPCq5EyFHaoqErwjlFaKctBUA3tgnOsls
- DzZN0hcXlD6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="188513331"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="188513331"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 16:23:49 -0700
-IronPort-SDR: TjT8mVaAXncq/9NN9IWUcs+CkXPUg8Ns1ipcpKrJlhQfAUrH7oouXJiLlIjuxBVo0KZw16pRaz
- j1/zRlw9s9MQ==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="415697964"
-Received: from prdubey-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.230.226])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 16:23:45 -0700
-Date:   Thu, 25 Mar 2021 12:23:43 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-Id: <20210325122343.008120ef70c1a1b16b5657ca@intel.com>
-In-Reply-To: <236c0aa9-92f2-97c8-ab11-d55b9a98c931@redhat.com>
-References: <YFjoZQwB7e3oQW8l@google.com>
-        <20210322191540.GH6481@zn.tnic>
-        <YFjx3vixDURClgcb@google.com>
-        <20210322210645.GI6481@zn.tnic>
-        <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
-        <20210322223726.GJ6481@zn.tnic>
-        <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
-        <YFoNCvBYS2lIYjjc@google.com>
-        <20210323160604.GB4729@zn.tnic>
-        <YFoVmxIFjGpqM6Bk@google.com>
-        <20210323163258.GC4729@zn.tnic>
-        <b35f66a10ecc07a1eecb829912d5664886ca169b.camel@intel.com>
-        <236c0aa9-92f2-97c8-ab11-d55b9a98c931@redhat.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234018AbhCXXYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhCXXYU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:24:20 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E6FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:24:20 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id j2so341046ybj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q43DZqTfht3NrCwrhOoH0GTpptu7qHLVnI4+js1qVVg=;
+        b=LEmqw7acR1vo3ktaHg+ANOGf5OggOojszFWfBM09wKWmGvFqAmt8EToX8JUX7hasCc
+         nOBhZR2AOq7mV7XtzdIXizoLYCckYM3k1HjPqQ7jBn1cuICTyAyRkoTvJEYrr4TdGP85
+         P1jf265cj82sWOjWAXoLxddhlzA9Kpfv4MWVsSnnDsx7AA5xfbw4G0+Mmsx7yegWu/0Y
+         uWaqH4jBKT6kZ0WFA2i2vmBIlGEbkRVc1605Qi34pMLGtO2Snm7pbh2yw8fpqr8MNWS9
+         VGfahqS9yw+xKDtUP6t94++csS81Kh9T0Lk80egnjnAycqJFPIJy+NdI0xNXmMZf8IW0
+         z6kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q43DZqTfht3NrCwrhOoH0GTpptu7qHLVnI4+js1qVVg=;
+        b=qvhNcfRgPMFn5t8KVgL+a1fLyMVEU0eziBdR7QXOlBoFm8IiUEf1NK8pSFPnPXWvLB
+         /bmBHMQUJLj9Dv7K+y6UM7/i3f/nXkuH6eAzXDBDLBCzzFsmv4t1Y+PCFfkNdN9djh43
+         sU8eqy5J+ti6O3tAVl/MElY1u3SguurO3eb/e4NSZlgX/HYxgG8ovLZyk0nIai4v16BQ
+         qm1xpfWXjAkGtoqBh6I97s2bMp9uZCLGJiIUpuItjtTOMzzqLupIJBl4bBYyPG8UGSEZ
+         FXpAdjuzlDpEJb9lxa3Lbz0yYkB4jBiL3lf1MIbYAtPJGKihDg+wxSkcykaI4/l7/B71
+         McXg==
+X-Gm-Message-State: AOAM533AA6lIqtDre06sZJkVFzWMJ67hnhNWoDmx7OtRA53l/bCvR7yx
+        g2zlTl2XJf/XrfUIi6zyMN0kXLG0ATGm/D4L9UMlMmETBKY=
+X-Google-Smtp-Source: ABdhPJyi94rqLBo0EzJatuAQiIuyAwh7jg4g0fQ+yDzEJbHPG9HnIMPgOfadaDi6EBNdGuUfuWCI/O7cWKDFDxH0lqE=
+X-Received: by 2002:a25:6003:: with SMTP id u3mr8605761ybb.96.1616628259668;
+ Wed, 24 Mar 2021 16:24:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210318230351.982064-1-lyude@redhat.com>
+In-Reply-To: <20210318230351.982064-1-lyude@redhat.com>
+From:   Ben Skeggs <skeggsb@gmail.com>
+Date:   Thu, 25 Mar 2021 09:24:08 +1000
+Message-ID: <CACAvsv72yRdtsRRWUx183XWEAOU3NSjjsYhEbKSGy=sQ+zdwKQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/nouveau/kms/nv50-: Correct size checks for cursors
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     ML nouveau <nouveau@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        Jeremy Cline <jcline@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Martin Peres <martin.peres@mupuf.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 19 Mar 2021 at 09:04, Lyude Paul <lyude@redhat.com> wrote:
+>
+> Found this while trying to make some changes to the kms_cursor_crc test.
+> curs507a_acquire checks that the width and height of the cursor framebuffer
+> are equal (asyw->image.{w,h}). This isn't entirely correct though, as the
+> height of the cursor can be larger than the size of the cursor, as long as
+> the width is the same as the cursor size and there's no framebuffer offset.
+>
+> Note that I'm not entirely sure why this wasn't previously breaking
+> kms_cursor_crc tests - they all set up cursors with the height being one
+> pixel larger than the actual size of the cursor. But this seems to fix
+> things, and the code before was definitely incorrect - so it's not really
+> worth looking into further imho.
+>
+> Changes since v1:
+> * Don't use crtc_w everywhere for determining cursor layout, just use fb
+>   size again
+> * Change check so that we only check that the w/h of the cursor plane is
+>   the same, the width of the scanout surface is the same as the framebuffer
+>   width, and that there's no offset being used for the cursor surface.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Cc: Martin Peres <martin.peres@mupuf.org>
+> Cc: Jeremy Cline <jcline@redhat.com>
+Thanks Lyude!
 
-> 
-> > +/* Error message for EREMOVE failure, when kernel is about to leak EPC page */
-> > +#define EREMOVE_ERROR_MESSAGE \
-> > +       "EREMOVE returned %d (0x%x), kernel bug likely.  EPC page leaked, SGX may become
-> > unusuable.  Please refer to Documentation/x86/sgx.rst for more information."
-> 
-> Rewritten:
-> 
-> EREMOVE returned %d and an EPC page was leaked; SGX may become unusable.
-> This is a kernel bug, refer to Documentation/x86/sgx.rst for more information.
-> 
-> Also please split it across multiple lines.
-> 
-> Paolo
-> 
-
-Hi Boris/Paolo,
-
-I changed to below (with slight modification on Paolo's):
-
-/* Error message for EREMOVE failure, when kernel is about to leak EPC page */
-#define EREMOVE_ERROR_MESSAGE \ 
-        "EREMOVE returned %d (0x%x) and an EPC page was leaked.  SGX may become unusuable.  " \
-        "This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more information."
-
-I got a checkpatch warning however:
-
-WARNING: It's generally not useful to have the filename in the file
-#60: FILE: Documentation/x86/sgx.rst:223:
-+This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more
-
-I suppose it is OK? Since the error msg is actually hard-coded in the code,
-and in this document, IMHO we should explicitly call out what error message user
-is supposed to see, when this bug happens, so that user can absolutely know
-he/she is dealing with this particular issue.
-
-
-
+> ---
+>  drivers/gpu/drm/nouveau/dispnv50/curs507a.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/curs507a.c b/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
+> index 54fbd6fe751d..00e19fd959ea 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/curs507a.c
+> @@ -98,6 +98,7 @@ static int
+>  curs507a_acquire(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw,
+>                  struct nv50_head_atom *asyh)
+>  {
+> +       struct nouveau_drm *drm = nouveau_drm(wndw->plane.dev);
+>         struct nv50_head *head = nv50_head(asyw->state.crtc);
+>         int ret;
+>
+> @@ -109,8 +110,20 @@ curs507a_acquire(struct nv50_wndw *wndw, struct nv50_wndw_atom *asyw,
+>         if (ret || !asyh->curs.visible)
+>                 return ret;
+>
+> -       if (asyw->image.w != asyw->image.h)
+> +       if (asyw->state.crtc_w != asyw->state.crtc_h) {
+> +               NV_ATOMIC(drm, "Plane width/height must be equal for cursors\n");
+>                 return -EINVAL;
+> +       }
+> +
+> +       if (asyw->image.w != asyw->state.crtc_w) {
+> +               NV_ATOMIC(drm, "Plane width must be equal to fb width for cursors (height can be larger though)\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (asyw->state.src_x || asyw->state.src_y) {
+> +               NV_ATOMIC(drm, "Cursor planes do not support framebuffer offsets\n");
+> +               return -EINVAL;
+> +       }
+>
+>         ret = head->func->curs_layout(head, asyw, asyh);
+>         if (ret)
+> --
+> 2.29.2
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
