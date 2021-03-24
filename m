@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC0534854B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B43D348553
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234159AbhCXX3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
+        id S234622AbhCXXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhCXX3E (ORCPT
+        with ESMTP id S234628AbhCXXa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:29:04 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401BCC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:29:04 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id i144so398352ybg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:29:04 -0700 (PDT)
+        Wed, 24 Mar 2021 19:30:27 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D30AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:30:27 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id a11so433388qto.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:30:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=szMyrlVIzLgkuWOdfnjXqAD83OmSXPmtaUZglnnq0Iw=;
-        b=U1Wb1zOKrEBdqaW8up8hYUOKhLJOii3QLZEBREfU6wiLpwHRSg721PdIN2QEmhKpSu
-         Q4iZAyLmtlSjLIXvfyGhaN9kwjgF7OdcrWkv8CRNB26WCWcFbvU9eheYY783bUNX8MWj
-         cnkO8eJmaR5S1ETumlGVDkbnZSuclmpqcjaESJxyDeMQYsFwunkoUXYKjEw2Yduqrnyx
-         l/k6UCfTC2gpx5oEtC8B17v2DjYSzIWDokLeVqgoCo+DhYDvJQsGeMvysMKu8Fhf7IRB
-         5DwfdlWd8Qav2VZafgi9CtexdsYullmmY0XNi2Ng6W5o35dW++W8lJrDlOB9Sm3TfNAw
-         +z/Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCUugQWc5ApTNLeo5R0uIFrXvl0aq1eCfWyJgRU76RY=;
+        b=dk6k0UOMRwMwiotNFkrL5dpo4/Re9dr6Gv1Olu0MYyV/RqkA3s+6WdRKPMD5rOS8W0
+         zep+VEKPV68BgPuoTQrSe9/xa8d62vRfSuvl1sNMdRz1Mr3x90lD8h/I+C/nezR8o4Mv
+         moGxEre7YqiQKSzpBJk48fThDFK4N/ZlY+jVAv4lmMAVfAgdZ0nnxPEtE07rOP0J4RJi
+         Qzx374JdJlahZ6F1aOv1CMOlNyNGEL3c7y0yZ2RLiFKGbDlySVEG4uBQNVdNqdz2KtPY
+         b/hVw0AMvK/doN4SvxBijLMwKzH+zwfiXj7fY1gQ1FiixuZ88lnkkWXHn+UjGcNt8UQk
+         NWqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=szMyrlVIzLgkuWOdfnjXqAD83OmSXPmtaUZglnnq0Iw=;
-        b=QxBHGRMWzAx50Eyxg6sZPb/MVAYgTWjJhAedPhPb0tK0RpB+tAqDIu7ACAZ+HpuT3E
-         VVpV/FpYzOYJMGu9p5AHs7QI342HvOeZw1a3SdnQONFnML9m5vf98lg9poHA7KWBBzag
-         B/jtuCUvrp6AQpXVEw8tn2v95VwSih5CZurVCoxib9zcJNTHwHAJpOmNzqLAOn/NOe9U
-         eghPElogXh1SkTwFTc7+ywVP452WOSM1DeRGGZXhNJBm7c5FF93rnYKLdCc3TYtsm+11
-         1oBpcHoOqkUBYq/QUXsccrYQMwCrdVLGZ8PT5TmgYZoKXYIptb597e8ue80aD5nn31DJ
-         yxsw==
-X-Gm-Message-State: AOAM532q6dFVP1OzgqxUmLTV62g+g7yxYZVaWHeFYWQfWyiMJU/Me2j3
-        U/W5Y2wDv1pG+xJqixKf+K6fQ3F11LIq7nm+Dl8=
-X-Google-Smtp-Source: ABdhPJyOs9xaGa+QOKUSOuI31tkhHjwgr5dxjeryBWUSHHVi7wTeTF4Stk2Ysp67G6woc0dQ0qgfpRTJ0VGQLHnGRPA=
-X-Received: by 2002:a5b:591:: with SMTP id l17mr8407393ybp.60.1616628543635;
- Wed, 24 Mar 2021 16:29:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCUugQWc5ApTNLeo5R0uIFrXvl0aq1eCfWyJgRU76RY=;
+        b=n6n7lJNjVFtJUk1JAyi63QxQcSNOb6Op6Ual2JSk4fjvj9CyeneW42Jp0n+xiZ59yX
+         eTl1/xWo9xScZS8dhl5a6m5a9RDHwcvYOcltjjn34Zhpa8zCjbcsrmIUaHYaOFjc6QL3
+         dDqKrNyjLzb2GAUa8YMF3DQVu4TShy2OprJJD+1Hnwybi3cLHFdCThYQBbRUpVFfymy4
+         kC0i1prpQ2dsheiKSxhCie5g52LE0pJ40aD3o/uUAyim5pGO7ApcpcvVUdgnQ+QoCur9
+         RPMc3qU2YP8Uer7G6kw2XfHwtE13Lpab3lJQnyY35kLFKwL97P0W99gFekOLHvJmcR1s
+         kyVw==
+X-Gm-Message-State: AOAM530t756vVeOf1Ab0LHINLpc7pR1z3xRD81B0I0yLG+EyB7EvBdh2
+        gf6Wbulecseurl4eYtXrM67g+LwbNW2Hz3yk
+X-Google-Smtp-Source: ABdhPJzNn+J7Radxc40SXj/IPb/kto6ah655u+RH0xGtjgdEqu+uc896OM+nffNkj9iBrlUbIESRYw==
+X-Received: by 2002:aed:31e4:: with SMTP id 91mr5466935qth.9.1616628626644;
+        Wed, 24 Mar 2021 16:30:26 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.55.193])
+        by smtp.gmail.com with ESMTPSA id d10sm2861969qko.70.2021.03.24.16.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 16:30:25 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] drm/radeon/r600_cs:  Few typo fixes
+Date:   Thu, 25 Mar 2021 04:59:41 +0530
+Message-Id: <20210324232941.21439-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210317093545.354-1-tangchunyou@163.com>
-In-Reply-To: <20210317093545.354-1-tangchunyou@163.com>
-From:   Ben Skeggs <skeggsb@gmail.com>
-Date:   Thu, 25 Mar 2021 09:28:52 +1000
-Message-ID: <CACAvsv6ixo422jtf+KRQj9P1bs3LCqMB3JhSnVhQ0wyQrUa84g@mail.gmail.com>
-Subject: Re: [PATCH] nouveau/nvkm/subdev/devinit/mcp89.c:Unneeded variable
-To:     ChunyouTang <tangchunyou@163.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        tangchunyou@yulong.com, LKML <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 at 19:51, ChunyouTang <tangchunyou@163.com> wrote:
->
-> From: tangchunyou <tangchunyou@yulong.com>
->
-> disable,delete disable and return 0
->
-> Signed-off-by: tangchunyou <tangchunyou@yulong.com>
-Thanks!
+s/miror/mirror/
+s/needind/needing/
+s/informations/information/
 
-> ---
->  drivers/gpu/drm/nouveau/nvkm/subdev/devinit/mcp89.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/mcp89.c b/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/mcp89.c
-> index fb90d47..a9cdf24 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/mcp89.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/mcp89.c
-> @@ -32,7 +32,6 @@
->         struct nvkm_device *device = init->subdev.device;
->         u32 r001540 = nvkm_rd32(device, 0x001540);
->         u32 r00154c = nvkm_rd32(device, 0x00154c);
-> -       u64 disable = 0;
->
->         if (!(r001540 & 0x40000000)) {
->                 nvkm_subdev_disable(device, NVKM_ENGINE_MSPDEC, 0);
-> @@ -48,7 +47,7 @@
->         if (!(r00154c & 0x00000200))
->                 nvkm_subdev_disable(device, NVKM_ENGINE_CE, 0);
->
-> -       return disable;
-> +       return 0;
->  }
->
->  static const struct nvkm_devinit_func
-> --
-> 1.9.1
->
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Changes from V1:
+ Randy's finding incorporated ,i.e in one place,informations->information
+  Adjusted the subject line accordingly
+
+ drivers/gpu/drm/radeon/r600_cs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r600_cs.c
+index 34b7c6f16479..8be4799a98ef 100644
+--- a/drivers/gpu/drm/radeon/r600_cs.c
++++ b/drivers/gpu/drm/radeon/r600_cs.c
+@@ -38,7 +38,7 @@ extern void r600_cs_legacy_get_tiling_conf(struct drm_device *dev, u32 *npipes,
+
+
+ struct r600_cs_track {
+-	/* configuration we miror so that we use same code btw kms/ums */
++	/* configuration we mirror so that we use same code btw kms/ums */
+ 	u32			group_size;
+ 	u32			nbanks;
+ 	u32			npipes;
+@@ -963,7 +963,7 @@ static int r600_cs_parse_packet0(struct radeon_cs_parser *p,
+  *
+  * This function will test against r600_reg_safe_bm and return 0
+  * if register is safe. If register is not flag as safe this function
+- * will test it against a list of register needind special handling.
++ * will test it against a list of register needing special handling.
+  */
+ static int r600_cs_check_reg(struct radeon_cs_parser *p, u32 reg, u32 idx)
+ {
+@@ -2336,7 +2336,7 @@ int r600_cs_parse(struct radeon_cs_parser *p)
+ /**
+  * r600_dma_cs_next_reloc() - parse next reloc
+  * @p:		parser structure holding parsing context.
+- * @cs_reloc:		reloc informations
++ * @cs_reloc:		reloc information
+  *
+  * Return the next reloc, do bo validation and compute
+  * GPU offset using the provided start.
+--
+2.30.1
+
