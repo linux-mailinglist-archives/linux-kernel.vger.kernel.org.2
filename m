@@ -2,109 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53C8346FA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53370346FA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbhCXCjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbhCXCjO (ORCPT
+        id S234928AbhCXCkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:40:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14135 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234937AbhCXCke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:39:14 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2262C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:39:14 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id i22so2100931pgl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=R0Z3hom4olFyC1rLHUMekzsab4PlziwAhqIDP1XJVa0=;
-        b=go/+PYIDh9xeklhQ2aTi/PJbwvHLcfR+BK8sVV0y3MpcKyuwrw4T4MHD/TEdeQjAxP
-         05kueFQjNzv7ZZunoDfaGj7sHg3UG/i4J+3bGJotgjZBQGCQTlMAZOovlI3aW6+46YjX
-         amxV28ZObYjgpRSNYUQTpmteIkN4rb+zvu+rCiPpG+I/C7Ws9dbaupuSc9EUYiZ8ejeR
-         UnCn4iQvOXl553SRUj8kOaBY70orTmMb9J6UbmmepAv4FPNcxvZN7KG/FYmrWWQaa/Y2
-         4/UHdbMAIgSLFuqEktUa7VozhrBjO+x/Uvy5qUd1Q0SsQrYmgf/3GYG6k8qpLj/YQF09
-         FeOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=R0Z3hom4olFyC1rLHUMekzsab4PlziwAhqIDP1XJVa0=;
-        b=OyCw906RRrynVLrhR87Vohc76IaAEd+DYEPUfONaKw/K432YOiLzsI7fbNd4XzKCu5
-         ritMnCrMeu7pUwxKc3gPg2E4gFeGVNm0Z7PFHGMWAWDLwNtqRbtMlmoZ71Atspy9yW0w
-         1TklmOZgnhyHfSaCKyvxuEPCQSkedZv0SB1twVC8BfM3MDDPKWBhYjZgHT0WGmhfb+dU
-         xczeHCUHUrh2WbGwFhprZcSxDBgh4AWc6XeIOmK+MjZ++2FWSWg/w3wfMdB0Pe+b+yj+
-         edu1h8SPZVZDbQhETw+8C4+UR+ExHLovCO/B/GWsopLdifcB6TTLvaS+quJZ+qFfT4Ox
-         xs6g==
-X-Gm-Message-State: AOAM533rTevp3Z7JZf59R09a7VfzF7MlwxGyKz+LKYS/3cU/w7HXyZT2
-        Zpcm4LX7RXBQu0igcW6HynWzhA==
-X-Google-Smtp-Source: ABdhPJwVO58KX4g0YNO5cPBeI7GxgivkaD5uif5IKIo3FZPRa3cfEWTT1TjOomDAHx92rPIjsfBlyw==
-X-Received: by 2002:a62:7b83:0:b029:1f1:5ef3:b4d9 with SMTP id w125-20020a627b830000b02901f15ef3b4d9mr1101621pfc.65.1616553554190;
-        Tue, 23 Mar 2021 19:39:14 -0700 (PDT)
-Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
-        by smtp.gmail.com with UTF8SMTPSA id fr23sm452105pjb.22.2021.03.23.19.39.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 19:39:13 -0700 (PDT)
-Message-ID: <b65bf833-7167-e43f-717a-923dfa8bbc15@ozlabs.ru>
-Date:   Wed, 24 Mar 2021 13:39:04 +1100
+        Tue, 23 Mar 2021 22:40:34 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4sqZ00ywz19HGZ;
+        Wed, 24 Mar 2021 10:38:33 +0800 (CST)
+Received: from [10.174.178.163] (10.174.178.163) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 24 Mar 2021 10:40:28 +0800
+Subject: Re: [PATCH v2 1/5] mm/migrate.c: remove unnecessary VM_BUG_ON_PAGE on
+ putback_movable_page()
+To:     David Hildenbrand <david@redhat.com>
+CC:     <jglisse@redhat.com>, <shy828301@gmail.com>, <aquini@redhat.com>,
+        <apopple@nvidia.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>
+References: <20210323135405.65059-1-linmiaohe@huawei.com>
+ <20210323135405.65059-2-linmiaohe@huawei.com>
+ <0017dfc4-05a4-1989-59dc-3f34f7b3517c@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <8a25f3e9-c502-068e-ca40-242cce875584@huawei.com>
+Date:   Wed, 24 Mar 2021 10:40:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:87.0) Gecko/20100101
- Thunderbird/87.0
-Subject: Re: [PATCH 8/9] vfio/pci: export nvlink2 support into vendor vfio_pci
- drivers
+In-Reply-To: <0017dfc4-05a4-1989-59dc-3f34f7b3517c@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, cjia@nvidia.com, yishaih@nvidia.com,
-        mjrosato@linux.ibm.com
-References: <20210319162033.GA18218@lst.de>
- <20210319162848.GZ2356281@nvidia.com> <20210319163449.GA19186@lst.de>
- <20210319113642.4a9b0be1@omen.home.shazbot.org>
- <20210319200749.GB2356281@nvidia.com>
- <20210319150809.31bcd292@omen.home.shazbot.org>
- <20210319225943.GH2356281@nvidia.com>
- <20210319224028.51b01435@x1.home.shazbot.org>
- <20210321125818.GM2356281@nvidia.com>
- <20210322104016.36eb3c1f@omen.home.shazbot.org>
- <20210323193213.GM2356281@nvidia.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <20210323193213.GM2356281@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.163]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 24/03/2021 06:32, Jason Gunthorpe wrote:
-
->>> For NVIDIA GPU Max checked internally and we saw it looks very much
->>> like how Intel GPU works. Only some PCI IDs trigger checking on the
->>> feature the firmware thing is linked to.
+On 2021/3/23 22:27, David Hildenbrand wrote:
+> On 23.03.21 14:54, Miaohe Lin wrote:
+>> The !PageLocked() check is implicitly done in PageMovable(). Remove this
+>> explicit one.
 >>
->> And as Alexey noted, the table came up incomplete.  But also those same
->> devices exist on platforms where this extension is completely
->> irrelevant.
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>   mm/migrate.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index 47df0df8f21a..facec65c7374 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -145,7 +145,6 @@ void putback_movable_page(struct page *page)
+>>   {
+>>       struct address_space *mapping;
+>>   -    VM_BUG_ON_PAGE(!PageLocked(page), page);
+>>       VM_BUG_ON_PAGE(!PageMovable(page), page);
+>>       VM_BUG_ON_PAGE(!PageIsolated(page), page);
+>>  
 > 
-> I understood he ment that NVIDI GPUs *without* NVLINK can exist, but
-> the ID table we have here is supposed to be the NVLINK compatible
-> ID's.
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
+Many thanks for your review. But I'am going to change this patch, so this Reviewed-by tag may not
+applies any more. Sorry about it!
 
-I also meant there are more (than in the proposed list)  GPUs with 
-NVLink which will work on P9.
+> 
 
-
--- 
-Alexey
