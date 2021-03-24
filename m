@@ -2,82 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07451346EFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F638346EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhCXBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhCXBoj (ORCPT
+        id S231661AbhCXBpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:45:44 -0400
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:34716 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhCXBpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:44:39 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BEFC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:44:38 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id u8so352863qtq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ptioshG+2dIFNP/OQB4kxeiMvcEgTk3PcQJ8b1Wlui4=;
-        b=jxs+sx48jY9q1YOqNTS5XanF/iwJIMQahFq2kPojEMaYK2PVxwqZlQhUeIqPn6uX+C
-         uPd3UPHLHesuU6uyioUWJWdwhVeHFDdNbab/L6NbQbZorUVtrC3fGAW7AT2gyb7OeFF7
-         a0pJXJsE5K78tzkjvzGrY5tGpnGP2QWLYAEbR9MO+xUg4OnhYuwlkpGuUHnGxvW1Xf0F
-         Njq7V77lwVapKjMUz+PdZmbY7AiY+4DrD8v2Rb6cChRjFlqPzU5BBy9+ZnZ9lA8qYlrO
-         PtHItO/31nOvGJcKnCH54eqozZTWHuW9qz/dphkZ1DkvgZtYK1gVdV9FZoNYRgphoLvR
-         4RWw==
+        Tue, 23 Mar 2021 21:45:34 -0400
+Received: by mail-lf1-f54.google.com with SMTP id i26so13667078lfl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:45:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ptioshG+2dIFNP/OQB4kxeiMvcEgTk3PcQJ8b1Wlui4=;
-        b=d1puZEwhYpDOhRvv51zO1KvOoalZFRXGjxUDNBW4ijSr4uitCpEH0P2jsvEZPltkp7
-         iOd26eIrR/jUiMoE7g3gobrbkSkhA+u4+uWDO71/Yqe6c44JgBCBJKspdA/jwRIcXT5H
-         A0NLK7ck0tgd9wtw5L6fQ/88xIAlN2fkdpomsI7Jw9U5/WMwHs4+GK/jaVdOBcWfRWpi
-         5/zwtqoMTfM3GR7tbkI3p8YofbSCom5+IqgYGbgfpWIrSI2M9VHW+qcN4J+dXoLtj+TG
-         K7Ka18JNaY5B7sopnBC3RsmIj8Tx3p4iELzUPeU5tXdLvvH/klKhast1gMDsqWxK7wvT
-         8Xuw==
-X-Gm-Message-State: AOAM533CLNPwCavS5FS2be5XzgMHGtYX+nuZased4+EV3embR35dQRnF
-        O7GsKyjcyWrOmTNqf0sLRmBDVROBUg1/I1YS4OE=
-X-Google-Smtp-Source: ABdhPJxKcSdyS8HdLo4YR2hVKK5rxuhzXy8eprlF7YHHz/jSjMiCSwpeP9ucbyty5m4+XA51q4tdpxfvnQwtNvV9v2w=
-X-Received: by 2002:a05:622a:454:: with SMTP id o20mr1067602qtx.292.1616550277946;
- Tue, 23 Mar 2021 18:44:37 -0700 (PDT)
+        bh=tal5jVdrjgVWMUWypFZT5HSvKaB1RMRGOJXZbG1abew=;
+        b=TF2PchEcCOL2Rd7hvH8yCqatXACCZDwmZ4MqiK+22aXQC63kk9+X+KNhIIx71LZ0Cc
+         xf//5vDBn9q/Jiq6vcQLGS81RPfiia7TFtQpswWt6/gLRKCOnBvL2K29xmKuQAGqJcRi
+         abUidkYieZBPutd8mn7UsXEst2C5w51dG+cdzkoSvlspTjxB9sK/H27tI+XBGbLnkymj
+         3KMw3zrMmrf01EpKDs+wAe4heR+YkCMj4qykLecTXKyHOnigFnR91H1lniFpX70r7IqU
+         z0C0My/93HUlYrWQMs0m37tQjnJ5vYdHKpXZ1yp+dDIJizvISkABZ/iaeeMDWltnJlYK
+         dc4A==
+X-Gm-Message-State: AOAM532NmMFsG8wNULi3xl4JvDmOJCg+U67sXmsHveXD4kSA+30Zd8RF
+        j1+qMzB1v8TuUkzakZsSEfcff0ADC92g/u9XgvI=
+X-Google-Smtp-Source: ABdhPJxn1BNLQFJY4Uq1HZNHBDQwECvPAOE6+RYH9exqk77p2rStZ7XqY3xdMVWyHFOkuRcoxQW9u1y/FA9i2hEEU7s=
+X-Received: by 2002:a19:430e:: with SMTP id q14mr541786lfa.374.1616550333154;
+ Tue, 23 Mar 2021 18:45:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <1615341642-3797-1-git-send-email-shengjiu.wang@nxp.com> <20210310132404.GB4746@sirena.org.uk>
-In-Reply-To: <20210310132404.GB4746@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Wed, 24 Mar 2021 09:44:26 +0800
-Message-ID: <CAA+D8ANXcyJ+GrEqTNuoNJ4wGCQfqjRkhcevt-eXSrNj_V128w@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] ASoC: wm8960: Remove bitclk relax condition in wm8960_configure_sysclk
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        patches@opensource.cirrus.com, gustavoars@kernel.org,
-        Takashi Iwai <tiwai@suse.com>, daniel.baluta@nxp.com,
+References: <20210320104554.529213-1-leo.yan@linaro.org>
+In-Reply-To: <20210320104554.529213-1-leo.yan@linaro.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 24 Mar 2021 10:45:22 +0900
+Message-ID: <CAM9d7ch4TQtwK_VxHuJCB=szyq8K0MurKgFjJAcNbw6dDVU8=g@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Change to use bash for daemon test
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark
+Hi Leo,
 
-On Wed, Mar 10, 2021 at 9:26 PM Mark Brown <broonie@kernel.org> wrote:
+On Sat, Mar 20, 2021 at 7:46 PM Leo Yan <leo.yan@linaro.org> wrote:
 >
-> On Wed, Mar 10, 2021 at 10:00:42AM +0800, Shengjiu Wang wrote:
+> When executed the daemon test on Arm64 and x86 with Debian (Buster)
+> distro, both skip the test case with the log:
 >
-> > changes in resend v2
-> > - Add acked-by Charles
+>   # ./perf test -v 76
+>   76: daemon operations                                               :
+>   --- start ---
+>   test child forked, pid 11687
+>   test daemon list
+>   trap: SIGINT: bad trap
+>   ./tests/shell/daemon.sh: 173: local: cpu-clock: bad variable name
+>   test child finished with -2
+>   ---- end ----
+>   daemon operations: Skip
 >
-> Please don't resend for acks, it just makes for more noise.
+> So the error happens for the variable expansion when use local variable
+> in the shell script.  Since Debian Buster uses dash but not bash as
+> non-interactive shell, when execute the daemon testing, it hits a
+> known issue for dash which was reported [1].
+>
+> To resolve this issue, one option is to add double quotes for all local
+> variables assignment, so need to change the code from:
+>
+>   local line=`perf daemon --config ${config} -x: | head -2 | tail -1`
+>
+>   ... to:
+>
+>   local line="`perf daemon --config ${config} -x: | head -2 | tail -1`"
+>
+> But the testing script has bunch of local variables, this leads to big
+> changes for whole script.
+>
+> On the other hand, the testing script asks to use the "local" feature
+> which is bash-specific, so this patch explicitly uses "#!/bin/bash" to
+> ensure running the script with bash.
+>
+> After:
+>
+>   # ./perf test -v 76
+>   76: daemon operations                                               :
+>   --- start ---
+>   test child forked, pid 11329
+>   test daemon list
+>   test daemon reconfig
+>   test daemon stop
+>   test daemon signal
+>   signal 12 sent to session 'test [11596]'
+>   signal 12 sent to session 'test [11596]'
+>   test daemon ping
+>   test daemon lock
+>   test child finished with 0
+>   ---- end ----
+>   daemon operations: Ok
+>
+> [1] https://bugs.launchpad.net/ubuntu/+source/dash/+bug/139097
+>
+> Fixes: 2291bb915b55 ("perf tests: Add daemon 'list' command test")
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-ok, but could you please review this patch?
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Best regards
-wang shengjiu
+Thanks,
+Namhyung
+
+
+> ---
+>  tools/perf/tests/shell/daemon.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
+> index ee4a30ca3f57..45fc24af5b07 100755
+> --- a/tools/perf/tests/shell/daemon.sh
+> +++ b/tools/perf/tests/shell/daemon.sh
+> @@ -1,4 +1,4 @@
+> -#!/bin/sh
+> +#!/bin/bash
+>  # daemon operations
+>  # SPDX-License-Identifier: GPL-2.0
+>
+> --
+> 2.25.1
+>
