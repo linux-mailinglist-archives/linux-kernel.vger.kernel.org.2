@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA71347981
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F63347982
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235192AbhCXNWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:22:34 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:51150 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhCXNV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:21:57 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4F585r6cDpz1qtfD;
-        Wed, 24 Mar 2021 14:21:52 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4F585r4y3wz1qsk8;
-        Wed, 24 Mar 2021 14:21:52 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id Ec622X1yBJ6V; Wed, 24 Mar 2021 14:21:50 +0100 (CET)
-X-Auth-Info: Wy0aHOg7MRsGS0dgJhi4wXhn+NlMDJsLXSIT1LPaZwE=
-Received: from [10.88.0.186] (dslb-084-056-254-233.084.056.pools.vodafone-ip.de [84.56.254.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 24 Mar 2021 14:21:50 +0100 (CET)
-Subject: Re: [PATCH v3 2/2] drm: bridge: Add TI SN65DSI83/84/85 DSI to LVDS
- bridge
-To:     Jagan Teki <jagan@amarulasolutions.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-amarula@amarulasolutions.com
-References: <20210214174453.104616-1-jagan@amarulasolutions.com>
- <20210214174453.104616-2-jagan@amarulasolutions.com>
-From:   Claudius Heine <ch@denx.de>
-Organization: Denx Software Engineering
-Message-ID: <8cac7848-3a8e-c597-1efc-c67fb6daba25@denx.de>
-Date:   Wed, 24 Mar 2021 14:21:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S235226AbhCXNXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:23:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235190AbhCXNW0 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24B0861A0B;
+        Wed, 24 Mar 2021 13:22:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616592146;
+        bh=GcSGNS86IPXuekaXg9ipptP0xu07BYVN32Dn3lAw5Vs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SklqiAhLUjox0olCmABDVLAnSBUJ5s6OGmyU3Kk2YFNhthajh1NGNcWVk/jpBBPSe
+         p0L6FZD84SRaOSlNJ1UAvqx8FTRJNgeTqdN1JEOef6ScdX3xr3kd+8lUWBr3sOU09x
+         MqKLfDr2Y7Y6+Fm+JJ0y8VDKvp8evQz3ky3wuqOdJUSLcXj0M9KJYU6PRUzLDgtNI7
+         3r9Jnssoqz9bWgDGJpqTqoxHpQgHwJiDJD3Hiq2f+b/ZzydcVdXOqs+Li3Hj3muMV8
+         MDBWISshSRa3gMw6JBtKZLESNH4PETakz5JwIvEHj9yXBXUTsMqfb/L1XLHmBCMUti
+         xSO7B2BBssHSg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 026CF40647; Wed, 24 Mar 2021 10:22:23 -0300 (-03)
+Date:   Wed, 24 Mar 2021 10:22:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v3 1/2] perf stat: Align CSV output for summary mode
+Message-ID: <YFs9D0+bLpnN4rs5@kernel.org>
+References: <20210319070156.20394-1-yao.jin@linux.intel.com>
+ <YFkJBD2laOM23pbk@krava>
 MIME-Version: 1.0
-In-Reply-To: <20210214174453.104616-2-jagan@amarulasolutions.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFkJBD2laOM23pbk@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
+Em Mon, Mar 22, 2021 at 10:15:48PM +0100, Jiri Olsa escreveu:
+> On Fri, Mar 19, 2021 at 03:01:55PM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+> >   102107,,branch-misses,8012781751,100.00,4.15,of all branches
+> > 
+> > This option can be enabled in perf config by setting the variable
+> > 'stat.no-cvs-summary'.
+> > 
+> >   # perf config stat.no-cvs-summary=true
+> > 
+> >   # perf config -l
+> >   stat.no-cvs-summary=true
+> > 
+> >   # perf stat -x, -I1000 --interval-count 1 --summary
+> >        1.001330198,8013.28,msec,cpu-clock,8013279201,100.00,8.013,CPUs utilized
+> >        1.001330198,205,,context-switches,8013308394,100.00,25.583,/sec
+> >        1.001330198,10,,cpu-migrations,8013324681,100.00,1.248,/sec
+> >        1.001330198,0,,page-faults,8013340926,100.00,0.000,/sec
+> >        1.001330198,8027742,,cycles,8013344503,100.00,0.001,GHz
+> >        1.001330198,2871717,,instructions,8013356501,100.00,0.36,insn per cycle
+> >        1.001330198,553564,,branches,8013366204,100.00,69.081,K/sec
+> >        1.001330198,54021,,branch-misses,8013375952,100.00,9.76,of all branches
+> >   8013.28,msec,cpu-clock,8013279201,100.00,7.985,CPUs utilized
+> >   205,,context-switches,8013308394,100.00,25.583,/sec
+> >   10,,cpu-migrations,8013324681,100.00,1.248,/sec
+> >   0,,page-faults,8013340926,100.00,0.000,/sec
+> >   8027742,,cycles,8013344503,100.00,0.001,GHz
+> >   2871717,,instructions,8013356501,100.00,0.36,insn per cycle
+> >   553564,,branches,8013366204,100.00,69.081,K/sec
+> >   54021,,branch-misses,8013375952,100.00,9.76,of all branches
+> > 
+> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> 
+> LGTM, for patchset:
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-On 2021-02-14 18:44, Jagan Teki wrote:
-[...]
-> +static void sn65dsi_enable(struct drm_bridge *bridge)
-> +{
-> +	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
-> +	struct drm_display_mode *mode = bridge_to_mode(bridge);
-> +	int bpp = mipi_dsi_pixel_format_to_bpp(sn->dsi->format);
-> +	unsigned int lanes = sn->dsi->lanes;
-> +	unsigned int pixel_clk = mode->clock * 1000;
-> +	unsigned int dsi_clk = pixel_clk * bpp / (lanes * 2);
-> +	unsigned int val;
-> +
-> +	/* reset SOFT_RESET bit */
-> +	regmap_write(sn->regmap, SN65DSI_SOFT_RESET, 0x0);
-> +
-> +	msleep(10);
-> +
-> +	/* reset PLL_EN bit */
-> +	regmap_write(sn->regmap, SN65DSI_CLK_PLL, 0x0);
-> +
-> +	msleep(10);
-> +
-> +	/* setup lvds clock */
-> +	val = sn65dsi_get_clk_range(0, 5, pixel_clk, 25000000, 25000000);
-> +	if (val < 0) {
+After doing the s/cvs/csv/ changes, applied.
 
-val is unsigned int, so it can never be negative so this condition is 
-always false. Same error further down in that function as well.
-
-regards,
-Claudius
+- Arnaldo
