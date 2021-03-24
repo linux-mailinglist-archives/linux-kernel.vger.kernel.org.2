@@ -2,89 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB99348496
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9178334849A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhCXWZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
+        id S232571AbhCXW1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhCXWZG (ORCPT
+        with ESMTP id S230005AbhCXW1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:25:06 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90175C06174A;
-        Wed, 24 Mar 2021 15:25:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F5N8T3WjPz9sWS;
-        Thu, 25 Mar 2021 09:24:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616624700;
-        bh=Lt1046lPm+M0t+PnUEF/7zYkeQkAleAyRe/nHCtvliQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=n97owxz9QYJoqMkBquoOBIbQ3m85Fn5VJrXFdU8xakKvYG7bPyTsEmTK6KrHVv+1A
-         wzgBTsDbTG5zvav6L1oxzvYrf5DFfbA+Og3AiddKpHAZI1TYjxrmb+/lWM6+2+oGSc
-         7AwGwYX0i6UmPW33OXpYA/zqQQRqMdgLKsXca865Emjt/WzHNimyDq+n5ssgaegFcj
-         JHpbZLlSa/bE3Tu7AbEp1z3BBhRhGfE9NMlLyGCL6d7VYNq7TxBY/Xnrk45pWTDNt7
-         P4jJLnjKj2YPx/gGvntMX+tO4j7nHvqU8+BeG7ygFjC8OjTOgO4XZ7L087v5TOQdno
-         bIokMdizzJIQg==
-Date:   Thu, 25 Mar 2021 09:24:55 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Imre Deak <imre.deak@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-intel-fixes tree
-Message-ID: <20210325092455.7a629047@canb.auug.org.au>
+        Wed, 24 Mar 2021 18:27:31 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E825AC06174A;
+        Wed, 24 Mar 2021 15:27:27 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id u19so15759211pgh.10;
+        Wed, 24 Mar 2021 15:27:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GRkYdhVDclltdfZ2FdYU31f1Z7mv5y7KNEhciLwpFQU=;
+        b=L9H7tXhLm56vOtoJETiA5o6hXACBJgzCuzRlItMdm19EkPpWmCFG30wGH+nqGkbgx5
+         NBNHCgJm3XI3cbQHWO3vNHWyiohZ49fY8CWv2sqCqxwoTJ0WddkFocj+Tj/5k6ABAbI/
+         wdzSJR8p2m+zQOamqMQEMhgzU8StOGgoshgjRwPCKM1YWeacwgRZ68VNGA0RXEAZBiSz
+         nw6pTh0NcIMXvkIu6nvlKGpHbz+CMhzR5iNWSR5F4J1HIMtPfgHJOVHH332Jsn6qXi4s
+         3mZzOzpx1nPOLBbyUwVx+pxenFBl0dPGcFg6BM4mXwn2J3QY1crGyXnicoQXL3bau+bd
+         JOrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GRkYdhVDclltdfZ2FdYU31f1Z7mv5y7KNEhciLwpFQU=;
+        b=ispM2z2h81p1Nv7bHFU+bBFTB55A8uBFY2ZTmKJKsNlXfVwtgvrA2gX9xTUuEMJgYl
+         MPYgiXAqqAyxYjQIa1c1NPMlE2Eu7PIsAVk6RjrRrmayZjoofH0B7MUPv+FYo5DK9BWv
+         ts2NiC4VStaB6rHPcW8ZV72EhDKIP9/yUA/PcD0Vh8ovOrqfXwZR4QNliw1Uq3lY+uGa
+         R8SDxGDJRceTp7VZVhG6bCzJfJ4+QSdcpLHgzJtAyw5BSWzp2gMCF0ky8z9aQ6nhoPBP
+         cTRAjPxvdaobX1xq3nlo89K7Zp+H3dmcSlXHII84i/Yb/MjQvZrIpOCtGPNUmy7tlqF2
+         pF5Q==
+X-Gm-Message-State: AOAM531RuWUO97Yyx6pMqbjKEETK1l5wNPvVZQEcT9lQKKZPNFXRYgDi
+        e4tqWYIEZnczhkVz7sR/sN8=
+X-Google-Smtp-Source: ABdhPJz1J7k4jp41C7Yu0tZrufMMQ9j+Nz6By7Pd6kpJyaRl16hQtHfu0Y8n77QNZqwTJyNx65OFGg==
+X-Received: by 2002:a17:903:22d1:b029:e7:1052:a979 with SMTP id y17-20020a17090322d1b02900e71052a979mr4819494plg.16.1616624847389;
+        Wed, 24 Mar 2021 15:27:27 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4d6b:ca5a:c720:f5c9])
+        by smtp.gmail.com with ESMTPSA id i13sm3287456pgi.3.2021.03.24.15.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 15:27:26 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 15:27:23 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: ensure timely release of driver-allocated resources
+Message-ID: <YFu8y9CuG6Mouxnq@google.com>
+References: <YFf2RD931nq3RudJ@google.com>
+ <20210322123707.GB4681@sirena.org.uk>
+ <YFjyJycuAXdTX42D@google.com>
+ <20210323173606.GB5490@sirena.org.uk>
+ <YFo7wkq037P2Dosz@google.com>
+ <20210324213225.GD4596@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nicSjGR_B/XICY4AoVrQOrA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324213225.GD4596@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nicSjGR_B/XICY4AoVrQOrA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 24, 2021 at 09:32:26PM +0000, Mark Brown wrote:
+> On Tue, Mar 23, 2021 at 12:04:34PM -0700, Dmitry Torokhov wrote:
+> > On Tue, Mar 23, 2021 at 05:36:06PM +0000, Mark Brown wrote:
+> 
+> > No it is ordering issue. I do not have a proven real-life example for
+> > SPI, but we do have one for I2C:
+> 
+> > https://lore.kernel.org/linux-devicetree/20210305041236.3489-7-jeff@labundy.com/
+> 
+> TBH that looks like a fairly standard case where you probably don't want
+> to be using devm for the interrupts in the first place.  Leaving the
+> interrupts live after the bus thinks it freed the device doesn't seem
+> like the best idea, I'm not sure I'd expect that to work reliably when
+> the device tries to call into the bus code to interact with the device
+> that the bus thought was already freed anyway.
 
-Hi all,
+That is not an argument really. By that token we should not be using
+devm for anything but memory, and that is only until we implement some
+kind of memleak checker that will ensure that driver-allocated memory is
+released after driver's remove() method exits.
 
-After merging the drm-intel-fixes tree, today's linux-next build
-(htmldocs) produced this warning:
+If we have devm API we need to make sure it works.
 
-Documentation/gpu/i915:22: /home/sfr/next/next/drivers/gpu/drm/i915/intel_r=
-untime_pm.c:423: WARNING: Inline strong start-string without end-string.
+You also misread that the issue is limited to interrupts, when i fact
+in this particular driver it is the input device that is being
+unregistered too late and fails to timely quiesce the device. Resulting
+interrupt storm is merely a side effect of this.
 
-Introduced by commit
+> 
+> If we want this to work reliably it really feels like we should have two
+> remove callbacks in the driver core doing this rather than open coding
+> in every single bus which is what we'd need to do - this is going to
+> affect any bus that does anything other than just call the device's
+> remove() callback.  PCI looks like it might have issues too for example,
+> and platform does as well and those were simply the first two buses I
+> looked at.  Possibly we want a driver core callback which is scheduled
+> via devm (remove_devm(), cleanup() or something).  We'd still need to
+> move things about in all the buses but it seems preferable to do it that
+> way rather than open coding opening a group and the comments about
+> what's going on and the ordering requirements everywhere, it's a little
+> less error prone going forward.
 
-  8840e3bd981f ("drm/i915: Fix the GT fence revocation runtime PM logic")
+From the driver's perspective they expect devm-allocated resources to
+happen immediately after ->remove() method is run. I do not believe any
+driver is interested in additional callback, and you'd need to modify
+a boatload of drivers to fix this issue.
 
---=20
-Cheers,
-Stephen Rothwell
+I agree with you that manual group handling might be a bit confusing
+and sprinkling the same comment everywhere is not too nice, so how about
+we provide:
 
---Sig_/nicSjGR_B/XICY4AoVrQOrA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+	void *devm_mark_driver_resources(struct device *dev)
 
------BEGIN PGP SIGNATURE-----
+and
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBbvDcACgkQAVBC80lX
-0Gwu7gf6AipS7+ub2HMWch7KBKGHskD98Lxo/DuFL9WVwNXFWpXDOdVJ6pT9wsHs
-DlBBT1/4uSXzY2SDIQ+bxSlANTond+9Mc6ne6a+0JlrI3mMu9Q9R8nfKPNi327GJ
-qTOq3NtPovhJZqzg4EhNjM+H0jF5L6NUbaeA2b5fW5j3BszhdouKOtyG6OPd74l8
-bqLYAsLOMmyisDDanymY9lumMw7we4e2kZdmzLYmqPt0+Vhfa74UJre2OzAluVpm
-+d7GniRz61rLuqUgKzZxIpxBZbmkdbt6LYYvFzxMOr4Ut+G4Ueo8ywvxJTcBX1IV
-1yQNdIDrukr8nQYS4v6fpAr5Lbh2+g==
-=dyCb
------END PGP SIGNATURE-----
+	void devm_release_driver_resources()
 
---Sig_/nicSjGR_B/XICY4AoVrQOrA--
+and keep the commentary there? The question is where to keep
+driver_res_id field - in generic device structure or put it into bus'
+device structure as some buses and classes do not need it and we'd be
+sawing 4-8 bytes per device structure this way.
+
+Another way is to force buses to use devm for their resource management
+(I.e. in case of SPI wrap dev_pm_domain_detach() in
+devm_add_action_or_release()). It works for buses that have small number
+of resource allocated, but gets more unwieldy and more expensive the
+more resources are managed at bus level, that is why I opted for opening
+a group.
+
+> 
+> > Note how dev_pm_domain_detach() jumped ahead of everything, and
+> > strictly speaking past this point we can no longer guarantee that we can
+> > access the chip and disable it.
+> 
+> Frankly it looks like the PM domain stuff shouldn't be in the probe()
+> and remove() paths at all and this has been bogusly copies from other
+> buses, it should be in the device registration paths.  The device is in
+> the domain no matter what's going on with binding it.  Given how generic
+> code is I'm not even sure why it's in the buses.
+
+Here I will agree with you, bit I think it comes from power domain
+"duality". In OF power domain represents grouping of devices, and is
+static as devices do not move around, whereas in ACPI domain means
+control, and we are putting a device under control of ACPI PM when we
+bind it to a driver. As part of that control we bring the device into
+_D0, etc.
+
+Yay for mixing concepts, but this is not really material to the question
+of how to orderly release resources.
+
+Thanks.
+
+-- 
+Dmitry
