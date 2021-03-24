@@ -2,176 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2F03473B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 358BE3473CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbhCXIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233769AbhCXIcT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:32:19 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74634C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 01:32:19 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u5so31441482ejn.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 01:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9wesJELvx+bK90Yan+GlwOUfkFnftNNGgIWX46f5DhQ=;
-        b=L5atFcpsn0qNbjNj7+QZ02Oz0hoT2IwnUUb1X3pIkgCn/fQL0kEomBej8koaqkwTX6
-         VOe+lESjI9UHyARWxWYqibBuTvTD685c4Xo0v2pzZX+89XuODZzvzBS5O7OBrnJooOar
-         tgrPuh7FYK9KU06ShlIMEU+MvsonPD6XDVFoPLvVV3tl/8H1BiOXAYh+LHbypOJiBiEf
-         EIk+/0Ul+rMGLlg7sXk14gAzOKZ2+N3cxLvo1u3fhKpe374sAw6n232doa7z01aXaZIR
-         FlayPGPnu4/MJWtlHTGBNWWYPPe7JiH6tH1eKFL8IEfVDXq8NCiSC/tIHQoMrrOM60GG
-         5ftw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9wesJELvx+bK90Yan+GlwOUfkFnftNNGgIWX46f5DhQ=;
-        b=GayTQmLeKOkVyMCeZGpX80uw9zqeYbmrBSzErOJnbYKcaNes1EzHcTYgd0N4ayNxoe
-         e4sIsNk0YGHQ2LrgBFKEioqU4T7kJhvjA7pePDP/ps6X6ID+gQ9uDApesk9rOiHUfm5I
-         +nO5/4iB1ae/6tNQhkp7m7sFEStryVgt13V1VAliV2blVZUw8EM2pjvi1TtYPj9nCHQ0
-         2H8Rgm2yjaA/yQHuQYzpn+9LJSbm8FK27N7UeYDhkgdRwyMfqewaxsqMhXyCnJfSimNj
-         73VYNtdyEY9y+OuSCPttrz3ZJlhHMlgQbuBDnLVZ7vau5OgsBNjmj2kHjJfvTBmq4gRX
-         NGYQ==
-X-Gm-Message-State: AOAM5321t7yALJawzfKXob15BYhf4r9/LfZVD6bzyEqtfx7YHrVMxNC/
-        H02GSKT7aq6H1EN4tYDoDtauBU6hoz2irSaa80/mvQ==
-X-Google-Smtp-Source: ABdhPJwuTFnAurZuzernlxyfX3QtBwNudCt6QCdVR9y0FMZrPDSlDQGybI886gY9MvLiyhEhD6FSCvVcRKHGerG7zE8=
-X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr2343237ejc.375.1616574737826;
- Wed, 24 Mar 2021 01:32:17 -0700 (PDT)
+        id S233941AbhCXIjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:39:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:3069 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230259AbhCXIjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 04:39:44 -0400
+IronPort-SDR: jeaM+3zWT8xi38PFtiK+WrU4eohA+s6k8mkmllQ9+D8arEp30ra3Zeb84EoyKAr5ZNyb24OsJf
+ qpx5F/QIQdqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="254654470"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="254654470"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 01:39:43 -0700
+IronPort-SDR: /1Hn1Gw25ZH8DZ0wrqQYR8IE94GRz/aOqMJX7UflhUHsaH0rukH/1JnjNa40VhuvDsunlnrZ19
+ bn837bul6Wvw==
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="415386079"
+Received: from yhuang6-desk1.sh.intel.com ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 01:39:39 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        Yu Zhao <yuzhao@google.com>, Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>
+Subject: [RFC] mm: activate access-more-than-once page via NUMA balancing
+Date:   Wed, 24 Mar 2021 16:32:09 +0800
+Message-Id: <20210324083209.527427-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210322121933.746237845@linuxfoundation.org> <20210322121937.071435221@linuxfoundation.org>
-In-Reply-To: <20210322121937.071435221@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 24 Mar 2021 14:02:06 +0530
-Message-ID: <CA+G9fYvRM+9DmGuKM0ErDnrYBOmZ6zzmMkrWevMJqOzhejWwZg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 104/157] mptcp: put subflow sock on connect error
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 at 18:15, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Florian Westphal <fw@strlen.de>
->
-> [ Upstream commit f07157792c633b528de5fc1dbe2e4ea54f8e09d4 ]
->
-> mptcp_add_pending_subflow() performs a sock_hold() on the subflow,
-> then adds the subflow to the join list.
->
-> Without a sock_put the subflow sk won't be freed in case connect() fails.
->
-> unreferenced object 0xffff88810c03b100 (size 3000):
-> [..]
->     sk_prot_alloc.isra.0+0x2f/0x110
->     sk_alloc+0x5d/0xc20
->     inet6_create+0x2b7/0xd30
->     __sock_create+0x17f/0x410
->     mptcp_subflow_create_socket+0xff/0x9c0
->     __mptcp_subflow_connect+0x1da/0xaf0
->     mptcp_pm_nl_work+0x6e0/0x1120
->     mptcp_worker+0x508/0x9a0
->
-> Fixes: 5b950ff4331ddda ("mptcp: link MPC subflow into msk only after accept")
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+One idea behind the LRU page reclaiming algorithm is to put the
+access-once pages in the inactive list and access-more-than-once pages
+in the active list.  This is true for the file pages that are accessed
+via syscall (read()/write(), etc.), but not for the pages accessed via
+the page tables.  We can only activate them via page reclaim scanning
+now.  This may cause some problems.  For example, even if there are
+only hot file pages accessed via the page tables in the inactive list,
+we will enable the cache trim mode incorrectly to scan only the hot
+file pages instead of cold anon pages.
 
-I have reported the following warnings and kernel crash on 5.10.26-rc2 [1]
-The bisect reported that issue pointing out to this commit.
+This can be improved via NUMA balancing.  Where, the page tables of
+all processes will be scanned gradually to trap the page accesses.
+With that, we can identify whether a page in the inactive list has
+been accessed at least twice.  If so, we can activate the page to
+leave only the access-once pages in the inactive list.  This patch
+implements this.
 
-commit 460916534896e6d4f80a37152e0948db33376873
-mptcp: put subflow sock on connect error
+It may sound overkill to enable NUMA balancing only to activate some
+pages.  But firstly, if you have used NUMA balancing already, the
+added overhead is negligible.  Secondly, this patch is only the first
+step to take advantage of the NUMA balancing to optimize the page
+reclaiming.  We may improve the page reclaim further with the help of
+the NUMA balancing.  For example, we have implemented a way to measure
+the page hot/cold via NUMA balancing in
 
-This problem is specific to 5.10.26-rc2.
+https://lore.kernel.org/linux-mm/20210311081821.138467-5-ying.huang@intel.com/
 
-Warning:
---------
-[ 1040.114695] refcount_t: addition on 0; use-after-free.
-[ 1040.119857] WARNING: CPU: 3 PID: 31925 at
-/usr/src/kernel/lib/refcount.c:25 refcount_warn_saturate+0xd7/0x100
-[ 1040.129769] Modules linked in: act_mirred cls_u32 sch_netem sch_etf
-ip6table_nat xt_nat iptable_nat nf_nat ip6table_filter xt_conntrack
-nf_conntrack nf_defrag_ipv4 libcrc32c ip6_tables nf_defrag_ipv6 sch_fq
-iptable_filter xt_mark ip_tables cls_bpf sch_ingress algif_hash
-x86_pkg_temp_thermal fuse [last unloaded: test_blackhole_dev]
-[ 1040.159030] CPU: 3 PID: 31925 Comm: mptcp_connect Tainted: G
-W     K   5.10.26-rc2 #1
-[ 1040.167459] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[ 1040.174851] RIP: 0010:refcount_warn_saturate+0xd7/0x100
+That may help to improve the LRU algorithm.  For example, instead of
+migrating from PMEM to DRAM, the hot pages can be put at the head of
+the active list (or a separate hot page list) to make it easier to
+reclaim the cold pages at the tail of the LRU.
 
-And
+This patch is inspired by the work done by Yu Zhao in the
+Multigenerational LRU patchset as follows,
 
-Kernel Panic:
--------------
-[ 1069.557485] BUG: kernel NULL pointer dereference, address: 0000000000000010
-[ 1069.564446] #PF: supervisor read access in kernel mode
-[ 1069.569583] #PF: error_code(0x0000) - not-present page
-[ 1069.574714] PGD 0 P4D 0
-[ 1069.577246] Oops: 0000 [#1] SMP PTI
-[ 1069.580730] CPU: 1 PID: 17 Comm: ksoftirqd/1 Tainted: G        W
- K   5.10.26-rc2 #1
-[ 1069.588719] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.2 05/23/2018
-[ 1069.596106] RIP: 0010:selinux_socket_sock_rcv_skb+0x3f/0x290
-...
-[ 1069.961697] Kernel panic - not syncing: Fatal exception in interrupt
-[ 1069.968083] Kernel Offset: 0x18600000 from 0xffffffff81000000
-(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+https://lore.kernel.org/linux-mm/20210313075747.3781593-1-yuzhao@google.com/
 
-steps to reproduce:
---------------------------
-          - cd /opt/kselftests/mainline/net/mptcp
-          - ./mptcp_join.sh  || true
+It may be possible to combine some ideas from the multi-generational
+LRU patchset with the NUMA balancing page table scanning to improve
+the LRU page reclaiming algorithm.  Compared with the page table
+scanning method used in the multi-generational LRU patchset, the page
+tables can be scanned much slower via NUMA balancing, because the page
+faults instead of the Accessed bit is used to trap the page accesses.
+This can reduce the peak overhead of scanning.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+To show the effect of the patch, we designed a test as follows,
 
-crash test link:
-https://lkft.validation.linaro.org/scheduler/job/2436164
+On a system with 128 GB DRAM and 2 NVMe disks as swap,
 
-Revert this commit and test job:
-https://lkft.validation.linaro.org/scheduler/job/2437401#L1207
+  * Run the workload A with about 60 GB hot anon pages.
 
+  * After 100 seconds, run the workload B with about 58 GB cold anon
+    pages (accessed-once).
 
-> ---
->  net/mptcp/subflow.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-> index 16adba172fb9..591546d0953f 100644
-> --- a/net/mptcp/subflow.c
-> +++ b/net/mptcp/subflow.c
-> @@ -1133,6 +1133,7 @@ int __mptcp_subflow_connect(struct sock *sk, const struct mptcp_addr_info *loc,
->         spin_lock_bh(&msk->join_list_lock);
->         list_add_tail(&subflow->node, &msk->join_list);
->         spin_unlock_bh(&msk->join_list_lock);
-> +       sock_put(mptcp_subflow_tcp_sock(subflow));
->
->         return err;
->
+  * After another 200 second, run the workload C with about 57 GB hot
+    anon pages.
 
-url:
-[1] https://lore.kernel.org/stable/20210323182123.3ce89282@yaviniv.e18.physik.tu-muenchen.de/T/#m7994b86b52391a746e7d5be214885a5a1b2f9713
+It’s desirable that the 58 GB cold pages of the workload B will be
+swapped out to accommodate the 57 GB memory of the workload C.
 
+The test results are as follows,
+
+			         base	      patched
+Pages swapped in (GB)		  2.3		  0.0
+Pages swapped out (GB)		 59.0		 55.9
+Pages scanned (GB)		296.7		172.5
+Avg length of active
+list (GB)			 18.1		 58.4
+Avg length of inactive
+list (GB)			 89.1		 48.4
+
+Because the size of the cold workload B (58 GB) is larger than the
+size of the workload C, it’s desirable that the accessed-once pages of
+workload B will be reclaimed to accommodate the workload C, so that
+there should be no pages to be swapped in.  But in the base kernel,
+because the pages of the workload A are scanned before that of the
+workload B, some hot pages (~2.3 GB) from the workload A will be
+swapped out wrongly.  While in the patched kernel, the pages of
+workload A will be activated to the active list beforehand, so the
+pages swapped in reduces greatly (~14.2 MB).  Because the size of
+inactive list is much shorter in the patched kernel, to reclaim pages
+for the workload C, the pages scanned is much less too (172.5 GB
+vs. 296.7 GB).
+
+As always, the VM subsystem is complex, any change may cause some
+regressions.  We have observed some for this patch too.  The
+fundamental effect of the patch is to reduce the size of inactive list
+to reduce the scanning overhead and improve scanning correctness.  But
+in some situations, the long inactive list in the base kernel (not
+patched) can help performance.  Because it will take longer to scan
+a (not so) hot page twice, to make it easier to distinguish the hot
+and cold pages.  But generally, I don't think it is a good idea to
+improve the performance via increasing the system overhead purely.
+
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Inspired-by: Yu Zhao <yuzhao@google.com>
+Cc: Hillf Danton <hdanton@sina.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Yang Shi <shy828301@gmail.com>
+---
+ mm/memory.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 5efa07fb6cdc..b44b6fd577a8 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4165,6 +4165,13 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 			&flags);
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
+ 	if (target_nid == NUMA_NO_NODE) {
++		if (!PageActive(page) && page_evictable(page) &&
++		    (!PageSwapBacked(page) || total_swap_pages)) {
++			if (pte_young(old_pte) && !PageReferenced(page))
++				SetPageReferenced(page);
++			if (PageReferenced(page))
++				mark_page_accessed(page);
++		}
+ 		put_page(page);
+ 		goto out;
+ 	}
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.30.2
+
