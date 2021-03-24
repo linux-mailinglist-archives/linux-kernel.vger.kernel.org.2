@@ -2,109 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF654347A28
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BE1347A31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235785AbhCXOEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:04:24 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:30210 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhCXOD5 (ORCPT
+        id S235958AbhCXOF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235937AbhCXOFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:03:57 -0400
+        Wed, 24 Mar 2021 10:05:13 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC61C0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:05:13 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id n8so20881643oie.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:05:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1616594637; x=1648130637;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=wBInpsFLZS8A1IIEXgvAg26d+AexU/0HeDXfGLeqcu8=;
-  b=rmJigHHB9MFp9TAv+ln7k2ZeZ08Pwn8ZYn7m3TMFWc6bkWqcTNbY3Z77
-   UpYRTudsKm9MuNqEEwEoZRAvc6tQc1VXYw+X3V27iLDaCpzgy0/2ssFYw
-   x3bO1AXkMFxzEr/T1o/LohNvxfTz/3cKZ0Gjf0Q/UQtTuQp9z0Wv4t3q0
-   A=;
-X-IronPort-AV: E=Sophos;i="5.81,274,1610409600"; 
-   d="scan'208";a="95933423"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 24 Mar 2021 14:03:47 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 6F6C0A2626;
-        Wed, 24 Mar 2021 14:03:46 +0000 (UTC)
-Received: from EX13D21UWB001.ant.amazon.com (10.43.161.108) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 24 Mar 2021 14:03:46 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D21UWB001.ant.amazon.com (10.43.161.108) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 24 Mar 2021 14:03:46 +0000
-Received: from [192.168.12.56] (10.1.212.27) by mail-relay.amazon.com
- (10.43.160.118) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 24 Mar 2021 14:03:42 +0000
-Subject: Re: [PATCH v4 0/3] Fix pinctrl-single pcs_pin_dbg_show()
-To:     Drew Fustini <drew@beagleboard.org>
-CC:     <andy.shevchenko@gmail.com>, <tony@atomide.com>,
-        <haojian.zhuang@linaro.org>, <linus.walleij@linaro.org>,
-        <dwmw@amazon.co.uk>, <benh@amazon.com>, <ronenk@amazon.com>,
-        <talel@amazon.com>, <jonnyc@amazon.com>, <hanochu@amazon.com>,
-        <tgershi@amazon.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210319152133.28705-1-hhhawa@amazon.com>
- <20210322055631.GB392062@x1>
-From:   "Hawa, Hanna" <hhhawa@amazon.com>
-Message-ID: <ecaae08b-a8b7-ad36-1f71-af08c0cc6a88@amazon.com>
-Date:   Wed, 24 Mar 2021 16:03:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OfhOIdD0/JF1R4rl2yl8LbcQIZX0RUkjo+PIbGE7ciE=;
+        b=kIHyqH8JFqLF0l4tVjAXu/sDM7iO8ss5W7oPbFSR+Bn7bdjw8XPZ8DzVZ0pXACYIug
+         qej0C40RTpmUdDOXTstZhp7o/4HIfBz5cmPb7OdHwtnOA1D17xLmO8kfJmUZpflPVgC6
+         uE+W69lYB6c55FX+05RO8s69fjyyAw+ZxaUGJQiU99Ad6F4PLxJ2iYJgPcpew1hynsfq
+         D3uO41v+JiL2vRWHp1vkjYLUNfx3T1jM9iiCUo0Tj904SMJVraupg67zLibhTU+MIVYm
+         nB5vdFrZq9zkoHPiuSNX2xc4DdZ+vBuSVbLLitsupYGNTzEFGGsjHhxTxjsREvVYkR1k
+         JpPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OfhOIdD0/JF1R4rl2yl8LbcQIZX0RUkjo+PIbGE7ciE=;
+        b=oPSAiBGWYa63owWBlD8E7rh+9tEDZOjYe/xYQUPSmGeivyxg/OlR6Ii+BiFAOHoTek
+         wfzsOyKMZ+xgv23TSs1GiKmH8Mp/aNJGRIpatr5mEQFYlTjzwnAZ+COBJk1c2MjVvILg
+         B9eSFswAxqZiyb7WJQF37C51uVZnpNcHfmEE3M+m0I6xMaG5IIiGjzFO57Oa8cE4JLha
+         Ofm4BSgO8L80h/afBoPZHRnRNQJQmuquZWjAxeOagX3aPjXXDwurS5Bdl1NISI1lPClT
+         5TVe4kw0JyGdZhEwvbgfKxlXgTNywKZiUO81aMngSVi5ae++AKxGPon3kgcHUB+CUMGd
+         UAKQ==
+X-Gm-Message-State: AOAM533N705OJXCGrmRlJWKaAypff+bRDduhUcgnSbUWWUvebh6DbxAK
+        A+4frYd2Qqsx8NXRm+QmZSSISg/WVMdQrDfdweOhsQ==
+X-Google-Smtp-Source: ABdhPJxdAYITQjy6PUTtztEnIEr7S6Tr2BKexm3VGKs9O0tMTmBvQVzf6klIwBU1ixhxrhKmArzODSCAgIOrKl1qqew=
+X-Received: by 2002:aca:44d6:: with SMTP id r205mr2482806oia.172.1616594712647;
+ Wed, 24 Mar 2021 07:05:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210322055631.GB392062@x1>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210324112503.623833-1-elver@google.com> <20210324112503.623833-8-elver@google.com>
+ <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net> <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
+ <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net> <YFtB+Ta9pkMg4C2h@hirez.programming.kicks-ass.net>
+ <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net>
+In-Reply-To: <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 24 Mar 2021 15:05:01 +0100
+Message-ID: <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
+Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on SIGTRAP
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 24 Mar 2021 at 15:01, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> One last try, I'll leave it alone now, I promise :-)
 
+This looks like it does what you suggested, thanks! :-)
 
-On 3/22/2021 7:56 AM, Drew Fustini wrote:
-> I'm curious what SoC are you using?
+I'll still need to think about it, because of the potential problem
+with modify-signal-races and what the user's synchronization story
+would look like then.
 
-I'm working on Amazon Annapurna Labs SoCs (based on ARM cortex 
-processors). That include multiple pins controlled with same register.
-
-> 
-> It's good to know who has hardware to test bits_per_mux in the future.
-> 
-> I pay attention to pinctrl-single as that is the driver used for the TI
-> AM3358 SoC used in a variety of BeagleBone boards.  It does not use
-> bits_per_mux, but I can verify that this does not cause any regression
-> for the AM3358 SoC:
-> 
->    /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single# cat pins
->    registered pins: 142
->    pin 0 (PIN0) 0:? 44e10800 00000027 pinctrl-single
->    pin 1 (PIN1) 0:? 44e10804 00000027 pinctrl-single
->    pin 2 (PIN2) 0:? 44e10808 00000027 pinctrl-single
->    pin 3 (PIN3) 0:? 44e1080c 00000027 pinctrl-single
->    pin 4 (PIN4) 0:? 44e10810 00000027 pinctrl-single
->    pin 5 (PIN5) 0:? 44e10814 00000027 pinctrl-single
->    pin 6 (PIN6) 0:? 44e10818 00000027 pinctrl-single
->    pin 7 (PIN7) 0:? 44e1081c 00000027 pinctrl-single
->    pin 8 (PIN8) 22:gpio-96-127 44e10820 00000027 pinctrl-single
->    pin 9 (PIN9) 23:gpio-96-127 44e10824 00000037 pinctrl-single
->    pin 10 (PIN10) 26:gpio-96-127 44e10828 00000037 pinctrl-single
->    pin 11 (PIN11) 27:gpio-96-127 44e1082c 00000037 pinctrl-single
->    pin 12 (PIN12) 0:? 44e10830 00000037 pinctrl-single
->    <snip>
->    pin 140 (PIN140) 0:? 44e10a30 00000028 pinctrl-single
->    pin 141 (PIN141) 13:gpio-64-95 44e10a34 00000020 pinctrl-single
-> 
-> Reviewed-by: Drew Fustini<drew@beagleboard.org>
-
-Thanks for review and verify the change.
-
-Thanks,
-Hanna
-
-> 
-> Thanks,
-> Drew
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -778,6 +778,9 @@ struct perf_event {
+>         void *security;
+>  #endif
+>         struct list_head                sb_list;
+> +
+> +       unsigned long                   si_uattr;
+> +       unsigned long                   si_data;
+>  #endif /* CONFIG_PERF_EVENTS */
+>  };
+>
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -5652,13 +5652,17 @@ static long _perf_ioctl(struct perf_even
+>                 return perf_event_query_prog_array(event, (void __user *)arg);
+>
+>         case PERF_EVENT_IOC_MODIFY_ATTRIBUTES: {
+> +               struct perf_event_attr __user *uattr;
+>                 struct perf_event_attr new_attr;
+> -               int err = perf_copy_attr((struct perf_event_attr __user *)arg,
+> -                                        &new_attr);
+> +               int err;
+>
+> +               uattr = (struct perf_event_attr __user *)arg;
+> +               err = perf_copy_attr(uattr, &new_attr);
+>                 if (err)
+>                         return err;
+>
+> +               event->si_uattr = (unsigned long)uattr;
+> +
+>                 return perf_event_modify_attr(event,  &new_attr);
+>         }
+>         default:
+> @@ -6399,7 +6403,12 @@ static void perf_sigtrap(struct perf_eve
+>         clear_siginfo(&info);
+>         info.si_signo = SIGTRAP;
+>         info.si_code = TRAP_PERF;
+> -       info.si_errno = event->attr.type;
+> +       info.si_addr = (void *)event->si_data;
+> +
+> +       info.si_perf = event->si_uattr;
+> +       if (event->parent)
+> +               info.si_perf = event->parent->si_uattr;
+> +
+>         force_sig_info(&info);
+>  }
+>
+> @@ -6414,8 +6423,8 @@ static void perf_pending_event_disable(s
+>                 WRITE_ONCE(event->pending_disable, -1);
+>
+>                 if (event->attr.sigtrap) {
+> -                       atomic_set(&event->event_limit, 1); /* rearm event */
+>                         perf_sigtrap(event);
+> +                       atomic_set_release(&event->event_limit, 1); /* rearm event */
+>                         return;
+>                 }
+>
+> @@ -9121,6 +9130,7 @@ static int __perf_event_overflow(struct
+>         if (events && atomic_dec_and_test(&event->event_limit)) {
+>                 ret = 1;
+>                 event->pending_kill = POLL_HUP;
+> +               event->si_data = data->addr;
+>
+>                 perf_event_disable_inatomic(event);
+>         }
+> @@ -12011,6 +12021,8 @@ SYSCALL_DEFINE5(perf_event_open,
+>                 goto err_task;
+>         }
+>
+> +       event->si_uattr = (unsigned long)attr_uptr;
+> +
+>         if (is_sampling_event(event)) {
+>                 if (event->pmu->capabilities & PERF_PMU_CAP_NO_INTERRUPT) {
+>                         err = -EOPNOTSUPP;
