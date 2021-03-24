@@ -2,188 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F9F347026
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C09347028
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235069AbhCXDbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:31:49 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3380 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbhCXDbP (ORCPT
+        id S235104AbhCXDbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235062AbhCXDbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:31:15 -0400
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4F4txP5hCVz5fjd;
-        Wed, 24 Mar 2021 11:28:41 +0800 (CST)
-Received: from shaphisprc48410 (100.108.177.173) by
- dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 24 Mar 2021 11:31:11 +0800
-Date:   Wed, 24 Mar 2021 03:31:04 +0000
-From:   Zang Leigang <zangleigang@hisilicon.com>
-To:     Avri Altman <avri.altman@wdc.com>
-CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        <alim.akhtar@samsung.com>, <asutoshd@codeaurora.org>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <stanley.chu@mediatek.com>
-Subject: Re: [PATCH v6 02/10] scsi: ufshpb: Add host control mode support to
- rsp_upiu
-Message-ID: <20210324033104.5kms7pez6arnkaoz@shaphisprc48410>
-References: <20210322081044.62003-1-avri.altman@wdc.com>
- <20210322081044.62003-3-avri.altman@wdc.com>
+        Tue, 23 Mar 2021 23:31:35 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385D9C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:31:35 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id y200so16338624pfb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j9te7omEbpKZ/N4rlb8wG4FVpFTLsGLsOoHiGZQa/MQ=;
+        b=vA5er0UpZRPIE11eaIlIxYJor2VwhaBGCYr32FNWFPKbvFjNaEM9t7yzW5jrDyT9C4
+         yZv7GGnhzIAx7XnfwalWMgqfeC7lCdMUuPbEdtP2PW4Nd4pP4jjJkCts0hE9A6ctt0tY
+         qq0iS4S5DGINTxLrsaqQypVEnqcbTbDnr/UBjDDVosozQvUEvl4CkJAmQ2Dm2ZMZehT8
+         h7bHj8GbwY/ytrJJ3DyUnTEtR5GU1KNURGVPP70bDIXWcudWhgmfFCoqFRysV11rwJC1
+         k64u0LlfiuacrdGSV+jDVhSLJ/m05dkbwpdjJBRjAB2xWESNH2omF+dE72v1DcwUpgDH
+         dmlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=j9te7omEbpKZ/N4rlb8wG4FVpFTLsGLsOoHiGZQa/MQ=;
+        b=eGJUJlR78cH09x5AfeEP3DdnN7hmiiJgue/8CxSFgOeIS4x0ZaEWjWmJk49UTF960/
+         0afD+2Rpbu4gRDqohly1/pUYYYJdU25wD1pwdN16vklJKfAMSexMPcXpRHDtFgz9FHzk
+         VFv5x/vT4HI1cmEPdAYrRXb3XMSNUu5clZv5DIZ7ZRaJ4Pd8QlwPN9h8JNC2C+8/wo9B
+         5m/ld8h+lW5P+MDuwEfgnzPDMnzCn7hqYCXbt/rT4pwNCZu1JWQQUrB715zEdggjLdpc
+         E8mkPgs+CN6HSI7rSXFOnHiGeK6NsXRTR+hXUMfGniP1Qa3OnN/8/hH0Rv/j7J7qUFwv
+         J9mg==
+X-Gm-Message-State: AOAM532ymTi5DboFVewJj8lRS3CCaN5AS2XOS4keITp79iahHNNtjypM
+        Vv18bphmB8Q4GG3IwtBFcW8=
+X-Google-Smtp-Source: ABdhPJxMn7EGa6KEQcrL6Cy9awi9U1hljgaVowP+kN5H7zJTo4qA5jMFFERacDq6VlECDstvXx3t9Q==
+X-Received: by 2002:a62:7b83:0:b029:1f1:5ef3:b4d9 with SMTP id w125-20020a627b830000b02901f15ef3b4d9mr1274163pfc.65.1616556694767;
+        Tue, 23 Mar 2021 20:31:34 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
+        by smtp.gmail.com with ESMTPSA id 143sm571513pfx.144.2021.03.23.20.31.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 20:31:33 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 23 Mar 2021 20:31:31 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
+        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
+        digetx@gmail.com
+Subject: Re: [PATCH v5] mm: cma: support sysfs
+Message-ID: <YFqyk0/yXs2kMP76@google.com>
+References: <20210323195050.2577017-1-minchan@kernel.org>
+ <20210324030224.GO1719932@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322081044.62003-3-avri.altman@wdc.com>
-User-Agent: NeoMutt/20171215
-X-Originating-IP: [100.108.177.173]
-X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
- dggeme759-chm.china.huawei.com (10.3.19.105)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210324030224.GO1719932@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:10:36AM +0200, Avri Altman wrote:
-> In device control mode, the device may recommend the host to either
-> activate or inactivate a region, and the host should follow. Meaning
-> those are not actually recommendations, but more of instructions.
+On Wed, Mar 24, 2021 at 03:02:24AM +0000, Matthew Wilcox wrote:
+> On Tue, Mar 23, 2021 at 12:50:50PM -0700, Minchan Kim wrote:
+> > +	/* the number of CMA page successful allocations */
+> > +	atomic64_t nr_pages_succeeded;
 > 
-> On the contrary, in host control mode, the recommendation protocol is
-> slightly changed:
-> a) The device may only recommend the host to update a subregion of an
->    already-active region. And,
-> b) The device may *not* recommend to inactivate a region.
+> > +void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
+> > +{
+> > +	atomic64_add(count, &cma->nr_pages_succeeded);
+> > +}
 > 
-> Furthermore, in host control mode, the host may choose not to follow any
-> of the device's recommendations. However, in case of a recommendation to
-> update an active and clean subregion, it is better to follow those
-> recommendation because otherwise the host has no other way to know that
-> some internal relocation took place.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->  drivers/scsi/ufs/ufshpb.c | 34 +++++++++++++++++++++++++++++++++-
->  drivers/scsi/ufs/ufshpb.h |  2 ++
->  2 files changed, 35 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index fb10afcbb49f..d4f0bb6d8fa1 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -166,6 +166,8 @@ static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
->  	else
->  		set_bit_len = cnt;
->  
-> +	set_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
-> +
->  	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
->  	    srgn->srgn_state == HPB_SRGN_VALID)
->  		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
-> @@ -235,6 +237,11 @@ static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
->  	return false;
->  }
->  
-> +static inline bool is_rgn_dirty(struct ufshpb_region *rgn)
-> +{
-> +	return test_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
-> +}
-> +
->  static int ufshpb_fill_ppn_from_page(struct ufshpb_lu *hpb,
->  				     struct ufshpb_map_ctx *mctx, int pos,
->  				     int len, u64 *ppn_buf)
-> @@ -713,6 +720,7 @@ static void ufshpb_put_map_req(struct ufshpb_lu *hpb,
->  static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
->  				     struct ufshpb_subregion *srgn)
->  {
-> +	struct ufshpb_region *rgn;
->  	u32 num_entries = hpb->entries_per_srgn;
->  
->  	if (!srgn->mctx) {
-> @@ -726,6 +734,10 @@ static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
->  		num_entries = hpb->last_srgn_entries;
->  
->  	bitmap_zero(srgn->mctx->ppn_dirty, num_entries);
-> +
-> +	rgn = hpb->rgn_tbl + srgn->rgn_idx;
-> +	clear_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
-> +
->  	return 0;
->  }
->  
-> @@ -1245,6 +1257,18 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
->  		srgn_i =
->  			be16_to_cpu(rsp_field->hpb_active_field[i].active_srgn);
->  
-> +		rgn = hpb->rgn_tbl + rgn_i;
-> +		if (hpb->is_hcm &&
-> +		    (rgn->rgn_state != HPB_RGN_ACTIVE || is_rgn_dirty(rgn))) {
-> +			/*
-> +			 * in host control mode, subregion activation
-> +			 * recommendations are only allowed to active regions.
-> +			 * Also, ignore recommendations for dirty regions - the
-> +			 * host will make decisions concerning those by himself
-> +			 */
-> +			continue;
-> +		}
-> +
+> I don't understand.  A size_t is a byte count.  But the variable is called
+> 'nr_pages'.  So which is it, a byte count or a page count?
 
-Hi Avri, host control mode also need the recommendations from device,
-because the bkops would make the ppn invalid, is that right?
+It's page count. I followed the cma_alloc interface since it has
+size_t count variable for nr_pages.
 
->  		dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
->  			"activate(%d) region %d - %d\n", i, rgn_i, srgn_i);
->  
-> @@ -1252,7 +1276,6 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
->  		ufshpb_update_active_info(hpb, rgn_i, srgn_i);
->  		spin_unlock(&hpb->rsp_list_lock);
->  
-> -		rgn = hpb->rgn_tbl + rgn_i;
->  		srgn = rgn->srgn_tbl + srgn_i;
->  
->  		/* blocking HPB_READ */
-> @@ -1263,6 +1286,14 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
->  		hpb->stats.rb_active_cnt++;
->  	}
->  
-> +	if (hpb->is_hcm) {
-> +		/*
-> +		 * in host control mode the device is not allowed to inactivate
-> +		 * regions
-> +		 */
-> +		goto out;
-> +	}
-> +
->  	for (i = 0; i < rsp_field->inactive_rgn_cnt; i++) {
->  		rgn_i = be16_to_cpu(rsp_field->hpb_inactive_field[i]);
->  		dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
-> @@ -1287,6 +1318,7 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
->  		hpb->stats.rb_inactive_cnt++;
->  	}
->  
-> +out:
->  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "Noti: #ACT %u #INACT %u\n",
->  		rsp_field->active_rgn_cnt, rsp_field->inactive_rgn_cnt);
->  
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> index 7df30340386a..032672114881 100644
-> --- a/drivers/scsi/ufs/ufshpb.h
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -121,6 +121,8 @@ struct ufshpb_region {
->  
->  	/* below information is used by lru */
->  	struct list_head list_lru_rgn;
-> +	unsigned long rgn_flags;
-> +#define RGN_FLAG_DIRTY 0
->  };
->  
->  #define for_each_sub_region(rgn, i, srgn)				\
-> -- 
-> 2.25.1
+Let's go with unsigned long nr_pages:
+void cma_sysfs_alloc_pages_count(struct cma *cma, unsigned long
+nr_pages)
+
+> 
+> > +static ssize_t alloc_pages_success_show(struct kobject *kobj,
+> > +					struct kobj_attribute *attr, char *buf)
+> > +{
+> > +	struct cma_kobject *cma_kobj = container_of(kobj,
+> > +						    struct cma_kobject, kobj);
+> > +	struct cma *cma = cma_kobj->cma;
+> > +
+> > +	return sysfs_emit(buf, "%llu\n",
+> > +			  atomic64_read(&cma->nr_pages_succeeded));
+> 
+> ... if it's in bytes, it should probably be reported in kilobytes
+> and be suffixed with a 'K' like many other stats.
 > 
