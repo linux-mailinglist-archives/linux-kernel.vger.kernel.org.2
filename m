@@ -2,212 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D09347F95
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362E7347F99
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237448AbhCXRfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237271AbhCXRec (ORCPT
+        id S237176AbhCXRgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:36:46 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:41060 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237170AbhCXRgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:34:32 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC91C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:31 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id kt15so24779495ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5ncqrjTAWBMAuIT+QNk4MgUhfbKLtj8kt+uo2wlM/dg=;
-        b=PISlI40CQm3nn/6AYfPh4VAEVaX46+vrAoFPGv+FIfCNbX/dfRhw301twvFcF1W7fp
-         tJIZiI1/hYX5yIk8M4FF7wWW6kjhjE6qnW1AWg0BpiQ2WfxcHRiN92YdT2Al5w+8qgZI
-         TOIeIxu7+z5JK86KZppnoQWi6aoUzAe27/XauJtm3RZE5TcoBeTV1zPaXGJbVFx1SVq9
-         cXpzQRQbpPs/CLRZzi8A/DR37PBtQQklruvPt3JBN53GYwHWBdtQL0S1CPqxyW9xWR+c
-         7LGEsPWhvyo5jil0JJA9C0QS0S4je/Ks+68bJ/U8S3LwVbMiTPp+8B9W0qD/vVM6DPa8
-         03pw==
+        Wed, 24 Mar 2021 13:36:15 -0400
+Received: by mail-io1-f72.google.com with SMTP id n1so1922816iob.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:36:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5ncqrjTAWBMAuIT+QNk4MgUhfbKLtj8kt+uo2wlM/dg=;
-        b=NmVfmeT1csqN0bGWOG6dcFz+mPxHmCS5V3KvwRAh7ucWeuvPXapci5ASx5lmpFbJIF
-         fxZausZ4StJInmHOvMD05mE7m3LRFNybkyaQfgu6GTxkM/PR1bewJWq/j9Gz5/wh33+7
-         poXXhKqowWi3IMnaMMnMH8/Ho1fYLba/pTFrqNDCISTjCHcbheizqtzfhstzAPS+iunW
-         Ad+W50RXSmrIk00Q0cTI3guaVFz8MzcgW+JUUTgCRbVLRJ9ALjiolLFleLHQiu4dvkGf
-         eGEILDk07ztnCdpna69Oel9hilbZ8ooTqjm/a+TGpjLsKreQQUaylersSPtkIQZI5VXI
-         3Drg==
-X-Gm-Message-State: AOAM532lM9ElW4FWLElbjFhbIE/zu41PRHguzNZSaOIw7nYrSfBMUZgJ
-        Xzq7FaTLyqrZn0cYJncRXBeGGA==
-X-Google-Smtp-Source: ABdhPJwoWLddMYQprFC2QnlJ4CHKIY3FK362cwfc9slhyDWW/PZ3XNOqAY34ntweYwyIWvqZBmovqw==
-X-Received: by 2002:a17:906:51c3:: with SMTP id v3mr4959484ejk.497.1616607270465;
-        Wed, 24 Mar 2021 10:34:30 -0700 (PDT)
-Received: from dell.default ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id p19sm1466367edr.57.2021.03.24.10.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 10:34:26 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
-        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
-        linux-input@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 18/25] HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
-Date:   Wed, 24 Mar 2021 17:33:57 +0000
-Message-Id: <20210324173404.66340-19-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210324173404.66340-1-lee.jones@linaro.org>
-References: <20210324173404.66340-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=d3+3d6jtDAfbf+GrVq1Qg39NvVvFXf+9538V36yRUSU=;
+        b=FqN1s9klHm/JusYcHwLquZcOE9xxSi9oWhxaBvoiYmTixODjIKgqEYjZEbjYWM12e8
+         FJpCnhMHsu8PGhehHsn6IxXInHU8kf5oBEUGpVrJhcHM4jHYbhJxkVUZnyF3kC/OJjSM
+         an8fTCzQj79wIOKmruyXcW2XctxmvvzQTp4pwMs5kGrqHRtPV1gdXWsD3prcnXdKVt4Z
+         RoyiiWQFsvGaswiLwt8ZrZbEkxoU/iflNYw5pYMiLn4YocXn+bSkd6BFdtZifZjRIKuc
+         HSsF7DaD7/eFadhYC+krYCOJOJqohB8HTa+zy1fk/V9Jxuu8+zql8rc7ptDiy4v2so86
+         YFwA==
+X-Gm-Message-State: AOAM531UT8n7/Im+kybDITYKRsUt2w+D3EEdTW1jlzoVLye8wuY5B/Wz
+        PFlkFOoJtqrMpsFfnotqb5NmyubMDCIEqj19ZoAOZoM8umpU
+X-Google-Smtp-Source: ABdhPJxsi/nKXBOjK9tKvCSkjNR1gE52sVVkbu7LTJLTQBAOqNn/1bIURKBzhOmyPltX4xwB0IKh/VWOKGvqjov4yWz8/ppbJf8I
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5e:dd0c:: with SMTP id t12mr3281038iop.50.1616607374591;
+ Wed, 24 Mar 2021 10:36:14 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 10:36:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004dcb8c05be4bbcf8@google.com>
+Subject: [syzbot] UBSAN: shift-out-of-bounds in vhci_hub_control (2)
+From:   syzbot <syzbot+3dea30b047f41084de66@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, shuah@kernel.org,
+        syzkaller-bugs@googlegroups.com, valentina.manea.m@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hello,
 
- drivers/hid/hid-thrustmaster.c:23: warning: Incorrect use of kernel-doc format:  * These interrupts are used to prevent a nasty crash when initializing the
- drivers/hid/hid-thrustmaster.c:26: warning: cannot understand function prototype: 'const u8 setup_0[] = '
- drivers/hid/hid-thrustmaster.c:49: warning: cannot understand function prototype: 'struct tm_wheel_info '
- drivers/hid/hid-thrustmaster.c:62: warning: wrong kernel-doc identifier on line:
- drivers/hid/hid-thrustmaster.c:84: warning: cannot understand function prototype: 'struct __packed tm_wheel_response '
- drivers/hid/hid-thrustmaster.c:143: warning: wrong kernel-doc identifier on line:
- drivers/hid/hid-thrustmaster.c:202: warning: Function parameter or member 'urb' not described in 'thrustmaster_model_handler'
- drivers/hid/hid-thrustmaster.c:202: warning: expecting prototype for Called by the USB subsystem when the wheel responses to our request(). Prototype was for thrustmaster_model_handler() instead
- drivers/hid/hid-thrustmaster.c:265: warning: wrong kernel-doc identifier on line:
+syzbot found the following issue on:
 
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: Dario Pagani <dario.pagani.146+linuxk@gmail.com>
-Cc: Kim Kuparinen <kimi.h.kuparinen@gmail.com>
-Cc: linux-input@vger.kernel.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+HEAD commit:    84196390 Merge tag 'selinux-pr-20210322' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12ea778ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
+dashboard link: https://syzkaller.appspot.com/bug?extid=3dea30b047f41084de66
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15449662d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f81026d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3dea30b047f41084de66@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: shift-out-of-bounds in drivers/usb/usbip/vhci_hcd.c:605:42
+shift exponent 768 is too large for 32-bit type 'int'
+CPU: 0 PID: 8421 Comm: syz-executor852 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+ vhci_hub_control.cold+0x20b/0x5f0 drivers/usb/usbip/vhci_hcd.c:605
+ rh_call_control drivers/usb/core/hcd.c:683 [inline]
+ rh_urb_enqueue drivers/usb/core/hcd.c:841 [inline]
+ usb_hcd_submit_urb+0xcaf/0x22d0 drivers/usb/core/hcd.c:1544
+ usb_submit_urb+0x6e4/0x1540 drivers/usb/core/urb.c:585
+ usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
+ usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+ usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
+ do_proc_control+0x4af/0x980 drivers/usb/core/devio.c:1165
+ proc_control drivers/usb/core/devio.c:1191 [inline]
+ usbdev_do_ioctl drivers/usb/core/devio.c:2535 [inline]
+ usbdev_ioctl+0x10e2/0x36c0 drivers/usb/core/devio.c:2708
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x443499
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd96535f58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 0000000000443499
+RDX: 0000000020000000 RSI: 00000000c0185500 RDI: 0000000000000003
+RBP: 0000000000403040 R08: 0000000000000000 R09: 00000000004004a0
+R10: 000000000000000f R11: 0000000000000246 R12: 00000000004030d0
+R13: 0000000000000000 R14: 00000000004b1018 R15: 00000000004004a0
+================================================================================
+
+
 ---
- drivers/hid/hid-thrustmaster.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/hid/hid-thrustmaster.c b/drivers/hid/hid-thrustmaster.c
-index bfcd08759ba09..4f9c0642e816b 100644
---- a/drivers/hid/hid-thrustmaster.c
-+++ b/drivers/hid/hid-thrustmaster.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--/**
-+/*
-  * When connected to the machine, the Thrustmaster wheels appear as
-  * a «generic» hid gamepad called "Thrustmaster FFB Wheel".
-  *
-@@ -19,7 +19,7 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- 
--/**
-+/*
-  * These interrupts are used to prevent a nasty crash when initializing the
-  * T300RS. Used in thrustmaster_interrupts().
-  */
-@@ -36,7 +36,7 @@ static const unsigned int setup_arr_sizes[] = {
- 	ARRAY_SIZE(setup_3),
- 	ARRAY_SIZE(setup_4)
- };
--/**
-+/*
-  * This struct contains for each type of
-  * Thrustmaster wheel
-  *
-@@ -49,7 +49,7 @@ static const unsigned int setup_arr_sizes[] = {
- struct tm_wheel_info {
- 	uint16_t wheel_type;
- 
--	/**
-+	/*
- 	 * See when the USB control out packet is prepared...
- 	 * @TODO The TMX seems to require multiple control codes to switch.
- 	 */
-@@ -58,7 +58,7 @@ struct tm_wheel_info {
- 	char const *const wheel_name;
- };
- 
--/**
-+/*
-  * Known wheels.
-  * Note: TMX does not work as it requires 2 control packets
-  */
-@@ -72,7 +72,7 @@ static const struct tm_wheel_info tm_wheels_infos[] = {
- 
- static const uint8_t tm_wheels_infos_length = 4;
- 
--/**
-+/*
-  * This structs contains (in little endian) the response data
-  * of the wheel to the request 73
-  *
-@@ -82,7 +82,7 @@ static const uint8_t tm_wheels_infos_length = 4;
-  */
- struct __packed tm_wheel_response
- {
--	/**
-+	/*
- 	 * Seems to be the type of packet
- 	 * - 0x0049 if is data.a (15 bytes)
- 	 * - 0x0047 if is data.b (7 bytes)
-@@ -93,7 +93,7 @@ struct __packed tm_wheel_response
- 		struct __packed {
- 			uint16_t field0;
- 			uint16_t field1;
--			/**
-+			/*
- 			 * Seems to be the model code of the wheel
- 			 * Read table thrustmaster_wheels to values
- 			 */
-@@ -122,7 +122,7 @@ struct tm_wheel {
- 	struct usb_ctrlrequest *change_request;
- };
- 
--/** The control packet to send to wheel */
-+/* The control packet to send to wheel */
- static const struct usb_ctrlrequest model_request = {
- 	.bRequestType = 0xc1,
- 	.bRequest = 73,
-@@ -139,7 +139,7 @@ static const struct usb_ctrlrequest change_request = {
- 	.wLength = 0
- };
- 
--/**
-+/*
-  * On some setups initializing the T300RS crashes the kernel,
-  * these interrupts fix that particular issue. So far they haven't caused any
-  * adverse effects in other wheels.
-@@ -191,7 +191,7 @@ static void thrustmaster_change_handler(struct urb *urb)
- 		hid_warn(hdev, "URB to change wheel mode seems to have failed with error %d\n", urb->status);
- }
- 
--/**
-+/*
-  * Called by the USB subsystem when the wheel responses to our request
-  * to get [what it seems to be] the wheel's model.
-  *
-@@ -261,7 +261,7 @@ static void thrustmaster_remove(struct hid_device *hdev)
- 	hid_hw_stop(hdev);
- }
- 
--/**
-+/*
-  * Function called by HID when a hid Thrustmaster FFB wheel is connected to the host.
-  * This function starts the hid dev, tries to allocate the tm_wheel data structure and
-  * finally send an USB CONTROL REQUEST to the wheel to get [what it seems to be] its
--- 
-2.27.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
