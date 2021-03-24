@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0597C346FBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C093346FBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234959AbhCXC4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhCXCzg (ORCPT
+        id S234964AbhCXC5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:57:32 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:29826 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234979AbhCXC5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:55:36 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74727C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:55:36 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so431646pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VxX3jCU9gxpYCK5wxlC07dKnMnHlhcGJNIa5hTcYbHE=;
-        b=f40wFQdeT6npH+pw+HAc7cVoVM24lGjxsjvh9ss0IAFkeMdNXo3UsL/t0j43d2olss
-         FfsR86iQ9J9/5W27eztxDunvESkS1E7olyR/007Sm4fP6xQmoAc/IH2jSDK8VRvTZM/a
-         UGupzhmMml/m4ViNMWC1wJMjsbFj9Rq8avW+k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VxX3jCU9gxpYCK5wxlC07dKnMnHlhcGJNIa5hTcYbHE=;
-        b=dFsDMIMqbiXp5gskXbHzxpyfjocRZevU1iOT5DZXYX4r9MSfoONcsEBgeZIs5duMhg
-         n6Cc7Lb4SkG7cKm3QSJydmRHy+sCXU3n9GnH5I4EnjRkjxnPfZRDd/Su9sNuhd7sRWrM
-         yZJzVK856zz8IJ9VWzn4FGlGAmbKqcjnsyRrb68Vk24TjFgf5W0I7T3GK9e8uz1kiZhM
-         7oAwNXXB6BlAqORIVyiMOjiTxKtwty0yb4Hwev/aeO3YQeluls5VKF/jWfRhan+HK76Y
-         rH6EbnaCdteCcfwAF+KzwIBJ709Zi+QDF0iPoWm1YU7oIqI3AnK8nNukuVx7Mmy8YiwP
-         LhGA==
-X-Gm-Message-State: AOAM533XLaZ4J1A7DaAnQpH51W1FBCF4VjmpiA8nRh5SPyoYlWEN8ZR1
-        EzOe/eWlbuLSace3MRzxNPzSGA==
-X-Google-Smtp-Source: ABdhPJynwED2kc7VSNElAA7bTKcRRHocGbOuLARI0DW++dV5v5I4giF/PTHaV0dDpzmJNobxrQDgyA==
-X-Received: by 2002:a17:902:f547:b029:e4:6dbc:6593 with SMTP id h7-20020a170902f547b02900e46dbc6593mr1474686plf.4.1616554535976;
-        Tue, 23 Mar 2021 19:55:35 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
-        by smtp.gmail.com with ESMTPSA id t12sm468146pfe.203.2021.03.23.19.55.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 19:55:35 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] arm64: dts: qcom: trogdor: Add no-hpd to DSI bridge node
-Date:   Tue, 23 Mar 2021 19:55:34 -0700
-Message-Id: <20210324025534.1837405-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 23 Mar 2021 22:57:06 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id B17B5E0146;
+        Wed, 24 Mar 2021 10:56:59 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Jonathan Corbet <corbet@lwn.net>, Wang Qing <wangqing@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Petr Mladek <pmladek@suse.com>, Andrey Ignatov <rdna@fb.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Modify the explanation and documentation related to watchdog thread
+Date:   Wed, 24 Mar 2021 10:56:39 +0800
+Message-Id: <1616554602-1857-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTExLSR9OGRoaTB5DVkpNSk1OTk9NSUtOT09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MDI6MBw*Vj8OODhWETkpVikU
+        TlZPCUxVSlVKTUpNTk5PTUlLQklOVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISVlXWQgBWUFPTEJMNwY+
+X-HM-Tid: 0a786229f6362c17kusnb17b5e0146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should indicate that we're not using the HPD pin on this device, per
-the binding document. Otherwise if code in the future wants to enable
-HPD in the bridge when this property is absent we'll be wasting power
-powering hpd when we don't use it on trogdor boards. We didn't notice
-this before because the kernel driver blindly disables hpd, but that
-won't be true for much longer.
+"watchdog/%u" threads has be replaced by cpu_stop_work, So we need to modify 
+the explanation and documentation related to this.
 
-Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Cc: Douglas Anderson <dianders@chromium.org>
-Fixes: 7ec3e67307f8 ("arm64: dts: qcom: sc7180-trogdor: add initial trogdor and lazor dt")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ .../admin-guide/kernel-per-CPU-kthreads.rst          | 20 --------------------
+ kernel/watchdog.c                                    | 12 ++++--------
+ 2 files changed, 4 insertions(+), 28 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 07c8b2c926c0..298af6d7fb4a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -595,6 +595,8 @@ sn65dsi86_bridge: bridge@2d {
- 		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
- 		clock-names = "refclk";
+diff --git a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+index 531f689..5e51ee5
+--- a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
++++ b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
+@@ -332,23 +332,3 @@ To reduce its OS jitter, do at least one of the following:
+ 	kthreads from being created in the first place.  However, please
+ 	note that this will not eliminate OS jitter, but will instead
+ 	shift it to RCU_SOFTIRQ.
+-
+-Name:
+-  watchdog/%u
+-
+-Purpose:
+-  Detect software lockups on each CPU.
+-
+-To reduce its OS jitter, do at least one of the following:
+-
+-1.	Build with CONFIG_LOCKUP_DETECTOR=n, which will prevent these
+-	kthreads from being created in the first place.
+-2.	Boot with "nosoftlockup=0", which will also prevent these kthreads
+-	from being created.  Other related watchdog and softlockup boot
+-	parameters may be found in Documentation/admin-guide/kernel-parameters.rst
+-	and Documentation/watchdog/watchdog-parameters.rst.
+-3.	Echo a zero to /proc/sys/kernel/watchdog to disable the
+-	watchdog timer.
+-4.	Echo a large number of /proc/sys/kernel/watchdog_thresh in
+-	order to reduce the frequency of OS jitter due to the watchdog
+-	timer down to a level that is acceptable for your workload.
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 7110906..d7fb4fb
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -92,7 +92,7 @@ __setup("nmi_watchdog=", hardlockup_panic_setup);
+  * own hardlockup detector.
+  *
+  * watchdog_nmi_enable/disable can be implemented to start and stop when
+- * softlockup watchdog threads start and stop. The arch must select the
++ * softlockup watchdog start and stop. The arch must select the
+  * SOFTLOCKUP_DETECTOR Kconfig.
+  */
+ int __weak watchdog_nmi_enable(unsigned int cpu)
+@@ -322,7 +322,7 @@ static DEFINE_PER_CPU(struct completion, softlockup_completion);
+ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
  
-+		no-hpd;
-+
- 		ports {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+ /*
+- * The watchdog thread function - touches the timestamp.
++ * The watchdog feed function - touches the timestamp.
+  *
+  * It only runs once every sample_period seconds (4 seconds by
+  * default) to reset the softlockup timestamp. If this gets delayed
+@@ -551,11 +551,7 @@ static void lockup_detector_reconfigure(void)
+ }
+ 
+ /*
+- * Create the watchdog thread infrastructure and configure the detector(s).
+- *
+- * The threads are not unparked as watchdog_allowed_mask is empty.  When
+- * the threads are successfully initialized, take the proper locks and
+- * unpark the threads in the watchdog_cpumask if the watchdog is enabled.
++ * Create the watchdog infrastructure and configure the detector(s).
+  */
+ static __init void lockup_detector_setup(void)
+ {
+@@ -621,7 +617,7 @@ void lockup_detector_soft_poweroff(void)
+ 
+ #ifdef CONFIG_SYSCTL
+ 
+-/* Propagate any changes to the watchdog threads */
++/* Propagate any changes to the watchdog infrastructure */
+ static void proc_watchdog_update(void)
+ {
+ 	/* Remove impossible cpus to keep sysctl output clean. */
 -- 
-https://chromeos.dev
+2.7.4
 
