@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A55347913
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8729E3478F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbhCXM4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbhCXM4E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:56:04 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9260EC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:56:03 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id o19so27486844edc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vjfeStBI2DcHZmjQrx+N+dsAxgF1a/tnl6rrv3SVE6Q=;
-        b=tekIiAZWW3kwi3DlNvLmMjX9jCWj63bcKAuPkI/Q5kJI1jxRdebmh1n9A/tlN0QDix
-         AhF96gOTxQDa/INulpZewfZFCBHRT32NBq4aN7Wt9iCdCk3hqwXQu0HoXJcnqap2l8rT
-         hp892/IN6CoTYtv4sXGNN0pSbemNt7+zWkpKgHHWadomhZp399P88VkrOkkjNOLK/EO1
-         7/wbr3XDjeBjDtw3cLPZB8UFskNHxNGG40xlP5icGyEQXICCz1O9EsMJb3DXQOXP3TOD
-         Ci3Pr1aUf75aTPI9Grsc2yKD1Y1687FHnbcYBoFJve456VIQJ2f1B4xhuPoI55jOS2ev
-         k91Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vjfeStBI2DcHZmjQrx+N+dsAxgF1a/tnl6rrv3SVE6Q=;
-        b=nE6c64NpVBgZqY+rI9amo8xMyQWeN3RjKw8BKEwy/k1yo3BX7TugrDv2VMv7Vugzhv
-         W+hX7CW4GTindm3jz2r1aqFLN32XMS84qQHlpsH1qmUMzmqiuQDhK6OTMPtr6N6LHHpM
-         1d2xKu2e9I6WLC2A209hVaChvTIi8vamt+x/7Oiw61i+2QJcAycALYLoiLLNFGz7Pmlb
-         /gnfBKuLFwBweBVY+/NoR8tKvxag7Vh6pa95mPVTaKuEi2dLhsfEY/pvhfkUl+8bn0AO
-         i6NNKnSh5GS7O+SfPdgrPGo9/9CsQ8UtdYHL+3LKxtZ7yw+0fD2q+/4LCLt1OK39gD/6
-         O2dQ==
-X-Gm-Message-State: AOAM533/pNjqxPITTAvOvQwjgaSGpw7/pq6kUizI1lF5Erc1UUmhRbGN
-        5o0mlgPluaPdHBnCT2zvtwDyyg==
-X-Google-Smtp-Source: ABdhPJyE/+A23QNDkwguoiMrfXl+jMVy6xCycwVkij0rRzaeQOah7cxBFhnpOcFlsG90OWCUZmfHRg==
-X-Received: by 2002:a05:6402:2076:: with SMTP id bd22mr3260352edb.378.1616590562364;
-        Wed, 24 Mar 2021 05:56:02 -0700 (PDT)
-Received: from localhost.localdomain ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id fi11sm880282ejb.73.2021.03.24.05.56.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 05:56:02 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Cc:     coproscefalo@gmail.com, hdegoede@redhat.com,
-        mgross@linux.intel.com, jic23@kernel.org, linux@deviqon.com,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 02/10] platform/x86: toshiba_acpi: use devm_add_action_or_reset() for singleton clear
-Date:   Wed, 24 Mar 2021 14:55:40 +0200
-Message-Id: <20210324125548.45983-3-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210324125548.45983-1-aardelean@deviqon.com>
-References: <20210324125548.45983-1-aardelean@deviqon.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234381AbhCXM4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:56:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233835AbhCXMzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:55:44 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A9A461A06;
+        Wed, 24 Mar 2021 12:55:44 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lP32z-003WS0-VE; Wed, 24 Mar 2021 12:55:42 +0000
+Date:   Wed, 24 Mar 2021 12:55:40 +0000
+Message-ID: <878s6ck8xf.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Bharat Kumar Gogada <bharatku@xilinx.com>
+Cc:     "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michals@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>
+Subject: Re: [PATCH v2 04/15] PCI: xilinx: Don't allocate extra memory for the MSI capture address
+In-Reply-To: <BYAPR02MB5559D4117C9096D70C5FFE76A5639@BYAPR02MB5559.namprd02.prod.outlook.com>
+References: <20210322184614.802565-1-maz@kernel.org>
+        <20210322184614.802565-5-maz@kernel.org>
+        <BYAPR02MB5559D4117C9096D70C5FFE76A5639@BYAPR02MB5559.namprd02.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: bharatku@xilinx.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com, frank-w@public-files.de, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, mikelley@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michals@xilinx.com, paul.walmsley@sifive.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only reason to do this is to enforce the ordering of deinitialization,
-when the conversion of the device-managed functions is done.
+On Wed, 24 Mar 2021 12:35:58 +0000,
+Bharat Kumar Gogada <bharatku@xilinx.com> wrote:
+> 
+> Thanks Marc for the patch.
+> > Subject: [PATCH v2 04/15] PCI: xilinx: Don't allocate extra memory for the
+> > MSI capture address
+> > 
+> > A long cargo-culted behaviour of PCI drivers is to allocate memory to obtain
+> > an address that is fed to the controller as the MSI capture address (i.e. the
+> > MSI doorbell).
+> > 
+> > But there is no actual requirement for this address to be RAM.
+> > All it needs to be is a suitable aligned address that will
+> > *not* be DMA'd to.
+> > 
+> > Use the physical address of the 'port' data structure as the MSI capture
+> > address.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/pci/controller/pcie-xilinx.c | 18 ++++++------------
+> >  1 file changed, 6 insertions(+), 12 deletions(-)
+> 
+> ...
+> > -	msg.address_hi = 0;
+> > -	msg.address_lo = msg_addr;
+> > +	msg.address_hi = upper_32_bits(msg_addr);
+> > +	msg.address_lo = lower_32_bits(msg_addr);
+> 
+> The XILINX_PCIE_REG_MSIBASE2 register expects 4KB aligned address.
+> The lower 12-bits are always set to 0 in this register. So we need
+> to mask the address while programming address to
 
-The singleton object should be cleared right before it is free'd.
+Thanks for the heads up, I'll fix this up. Does it work correctly once
+the address is aligned?
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/platform/x86/toshiba_acpi.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+	M.
 
-diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
-index 6d298810b7bf..c5284601bc2a 100644
---- a/drivers/platform/x86/toshiba_acpi.c
-+++ b/drivers/platform/x86/toshiba_acpi.c
-@@ -2995,9 +2995,6 @@ static int toshiba_acpi_remove(struct acpi_device *acpi_dev)
- 		rfkill_destroy(dev->wwan_rfk);
- 	}
- 
--	if (toshiba_acpi)
--		toshiba_acpi = NULL;
--
- 	return 0;
- }
- 
-@@ -3012,6 +3009,11 @@ static const char *find_hci_method(acpi_handle handle)
- 	return NULL;
- }
- 
-+static void toshiba_acpi_singleton_clear(void *data)
-+{
-+	toshiba_acpi = NULL;
-+}
-+
- static int toshiba_acpi_add(struct acpi_device *acpi_dev)
- {
- 	struct device *parent = &acpi_dev->dev;
-@@ -3035,6 +3037,13 @@ static int toshiba_acpi_add(struct acpi_device *acpi_dev)
- 	dev = devm_kzalloc(parent, sizeof(*dev), GFP_KERNEL);
- 	if (!dev)
- 		return -ENOMEM;
-+
-+	ret = devm_add_action_or_reset(parent,
-+				       toshiba_acpi_singleton_clear,
-+				       NULL);
-+	if (ret)
-+		return ret;
-+
- 	dev->acpi_dev = acpi_dev;
- 	dev->method_hci = hci_method;
- 	dev->miscdev.minor = MISC_DYNAMIC_MINOR;
 -- 
-2.30.2
-
+Without deviation from the norm, progress is not possible.
