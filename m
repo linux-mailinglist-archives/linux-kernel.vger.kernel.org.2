@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89892348517
+	by mail.lfdr.de (Postfix) with ESMTP id D4C21348518
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238974AbhCXXL6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 19:11:58 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48277 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234731AbhCXXLg (ORCPT
+        id S238981AbhCXXL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238939AbhCXXL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:11:36 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-57-ByNutTSLPryHL587jqF9Ew-1; Wed, 24 Mar 2021 23:11:31 +0000
-X-MC-Unique: ByNutTSLPryHL587jqF9Ew-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 23:11:30 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 24 Mar 2021 23:11:30 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Jeevan Shriram <jshriram@codeaurora.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "Vinod Koul" <vkoul@kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] pinctrl: qcom: fix unintentional string concatenation
-Thread-Topic: [PATCH] pinctrl: qcom: fix unintentional string concatenation
-Thread-Index: AQHXH+cnzD0REIZ51kmEV+qVFS5oLKqTxYmg
-Date:   Wed, 24 Mar 2021 23:11:30 +0000
-Message-ID: <787a3368942c4be98d29d5b00cad6b7d@AcuMS.aculab.com>
-References: <20210323131728.2702789-1-arnd@kernel.org>
-In-Reply-To: <20210323131728.2702789-1-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 24 Mar 2021 19:11:57 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAEFC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:11:56 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id c16so223184oib.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xibY7VsM3uen8eBjYDMbBuXb62rn6BpP560y1L0HSGQ=;
+        b=XnMWHCrr/H5Cm9K9HevZjnxOKrtkZdNrhBPmuncqm4xWB51/m5pBzeM0E654YnlUbK
+         vWlBCnk78fQkejupUbZm+8QUcPU568gPos+gZc/+uXKY/Hp75FhDMq7vYDdaXPrnQm7e
+         DbTlqhUBX3cgQBf/KT4Y8cxLaF3pZbMEH9PGwFT+O4ffRZVw7sVXyu54rgG+8vx3w/F+
+         JxFUi0RctDWAkWSk2Cd6DYshdlEU/AIsr+vRsJwI8xJpL+9yo1Co8nmvyN5CsQZM/p80
+         WghxVHXqG0Ih0GVg0DRf5ofgiRmzQThu/9FHTvGnhp2R1EzFoOOIc9PW+oZml+lW2mSd
+         2lvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xibY7VsM3uen8eBjYDMbBuXb62rn6BpP560y1L0HSGQ=;
+        b=XPeM73dk0mEGVReq4GRikLmmMVtFQXlqpCbhGAR8q4eQIH+TspQ8ogWeBXafRWoFl9
+         yXBCV3CcOQ3AnCp62jUpOoOC/GzHDxGLkcDSTABPsE/2A6EvPLJBS2D8TsSL/nC9GEgt
+         QvPk55UnJtzyuswiUoq3m6stzrmQtsrBKZwLIpet6/tLqj5jgH1/hcTFedry5zWAuUVw
+         VHi889pHDR7b60HGq+sO8p2g23KWoszQ3438pBbjfqfLiFqtKfEW/UgCjQqvAnk/23Pv
+         R0l58XG6xHdw6ZpJfNPoIHrnwjKU160DM9Rh0hFYK7fRXGMio6t/0AedNFcMIRxvSS2i
+         2JZw==
+X-Gm-Message-State: AOAM530uYGG/ZHKrdvkpBE22vEH01KJNJFjfmpIydqLAUGo37P5un5gI
+        vBtxvDUwYn19KHim3ne5+Bfi5v8sTeDKQwrSboPHnw==
+X-Google-Smtp-Source: ABdhPJzOgYirgRUWzuFnLSsjbC5YbWRe/tIL+XCoVD3DgD+uLW5KlX0MAiw0uOIdR9KNwxOd57vDQevEy5hWqiGQ59c=
+X-Received: by 2002:aca:bb06:: with SMTP id l6mr3931467oif.121.1616627516008;
+ Wed, 24 Mar 2021 16:11:56 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210323062303.19541-1-tl445047925@gmail.com> <CACT4Y+atQZKKQqdUrk-JvQNXaZCBHz0S_tSkFuOA+nkTS4eoHg@mail.gmail.com>
+ <CANpmjNMFfQs6bV4wrigfcWMwCvA_oMwBxy9gkaD4g+A1sZJ6-Q@mail.gmail.com> <20210324160358.0f36aa1f8ea7098f66fe64bd@linux-foundation.org>
+In-Reply-To: <20210324160358.0f36aa1f8ea7098f66fe64bd@linux-foundation.org>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 25 Mar 2021 00:11:44 +0100
+Message-ID: <CANpmjNMBUjGL0cVqnAk7cLLHQkaP+YSNhmn+iMQjBo==4z9ryw@mail.gmail.com>
+Subject: Re: [PATCH] kernel: kcov: fix a typo in comment
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     tl455047 <tl445047925@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 23 March 2021 13:17
-> clang is clearly correct to point out a typo in a silly
-> array of strings:
-> 
-> drivers/pinctrl/qcom/pinctrl-sdx55.c:426:61: error: suspicious concatenation of string literals in an
-> array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-
-> concatenation]
->         "gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
->                                                                    ^
-> Add the missing comma that must have accidentally been removed.
-> 
-> Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/pinctrl/qcom/pinctrl-sdx55.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sdx55.c b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> index 2b5b0e2b03ad..5aaf57b40407 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> @@ -423,7 +423,7 @@ static const char * const gpio_groups[] = {
-> 
->  static const char * const qdss_stm_groups[] = {
->  	"gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gpio6", "gpio7", "gpio12", "gpio13",
-> -	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
-> +	"gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21", "gpio22",
->  	"gpio23", "gpio44", "gpio45", "gpio52", "gpio53", "gpio56", "gpio57", "gpio61", "gpio62",
->  	"gpio63", "gpio64", "gpio65", "gpio66",
+On Thu, 25 Mar 2021 at 00:04, Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Tue, 23 Mar 2021 23:32:57 +0100 Marco Elver <elver@google.com> wrote:
+> > On Tue, 23 Mar 2021 at 07:45, 'Dmitry Vyukov' via kasan-dev
+> > <kasan-dev@googlegroups.com> wrote:
+> > > On Tue, Mar 23, 2021 at 7:24 AM tl455047 <tl445047925@gmail.com> wrote:
+> > > >
+> > > > Fixed a typo in comment.
+> > > >
+> > > > Signed-off-by: tl455047 <tl445047925@gmail.com>
+> > >
+> > > Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> > >
+> > > +Andrew, linux-mm as KCOV patches are generally merged into mm.
+> > >
+> > > Thanks for the fix
+> >
+> > FYI, I believe this code may not be accepted due to this:
+> >
+> > "[...] It is imperative that all code contributed to the kernel be legitimately
+> > free software.  For that reason, code from anonymous (or pseudonymous)
+> > contributors will not be accepted."
+> >
+> > See Documentation/process/1.Intro.rst
+>
+> Correct.  I let this one pass because the patch is so minor.  But yes,
+> a real name would be preferred, please.
 
-
-That may be replaceable with:
-static const char qdss_stm_groups[][8] = { .... };
-
-For a code and data size reduction.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+I've just seen that the author sent
+https://lkml.kernel.org/r/20210324071051.55229-1-tl445047925@gmail.com
