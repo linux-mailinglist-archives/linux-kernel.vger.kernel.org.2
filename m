@@ -2,123 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECE1346F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9752D346F24
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbhCXB5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:57:50 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14133 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhCXB5o (ORCPT
+        id S234677AbhCXB65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:58:57 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14512 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234684AbhCXB6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:57:44 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4rt72MRJz19Hj0;
-        Wed, 24 Mar 2021 09:55:43 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
- 2021 09:57:39 +0800
-Subject: Re: [PATCH] Revert "f2fs: give a warning only for readonly partition"
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20210323064155.12582-1-yuchao0@huawei.com>
- <YFo16ADpWJ7OUAvK@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
-Date:   Wed, 24 Mar 2021 09:57:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 23 Mar 2021 21:58:40 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4rtb1krZzPlZk;
+        Wed, 24 Mar 2021 09:56:07 +0800 (CST)
+Received: from [10.67.110.136] (10.67.110.136) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 24 Mar 2021 09:58:34 +0800
+Subject: Re: [PATCH v2 -next] powerpc: kernel/time.c - cleanup warnings
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <a.zummo@towertech.it>,
+        <christophe.leroy@csgroup.eu>, <npiggin@gmail.com>,
+        <msuchanek@suse.de>, <tglx@linutronix.de>, <peterz@infradead.org>,
+        <geert+renesas@glider.be>, <kernelfans@gmail.com>,
+        <frederic@kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>
+References: <20210323091257.90054-1-heying24@huawei.com>
+ <YFppJkpZRHMJFay0@piout.net>
+From:   "heying (H)" <heying24@huawei.com>
+Message-ID: <ceeb191e-7aaf-6f02-5d5b-d6b2e8dc4948@huawei.com>
+Date:   Wed, 24 Mar 2021 09:58:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YFo16ADpWJ7OUAvK@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
+In-Reply-To: <YFppJkpZRHMJFay0@piout.net>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.136]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/24 2:39, Jaegeuk Kim wrote:
-> On 03/23, Chao Yu wrote:
->> This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+Dear,
+
+
+ÔÚ 2021/3/24 6:18, Alexandre Belloni Ð´µÀ:
+> Hello,
+>
+> On 23/03/2021 05:12:57-0400, He Ying wrote:
+>> We found these warnings in arch/powerpc/kernel/time.c as follows:
+>> warning: symbol 'decrementer_max' was not declared. Should it be static?
+>> warning: symbol 'rtc_lock' was not declared. Should it be static?
+>> warning: symbol 'dtl_consumer' was not declared. Should it be static?
 >>
->> Because that commit fails generic/050 testcase which expect failure
->> during mount a recoverable readonly partition.
-> 
-> I think we need to change generic/050, since f2fs can recover this partition,
-
-Well, not sure we can change that testcase, since it restricts all generic
-filesystems behavior. At least, ext4's behavior makes sense to me:
-
-	journal_dev_ro = bdev_read_only(journal->j_dev);
-	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
-
-	if (journal_dev_ro && !sb_rdonly(sb)) {
-		ext4_msg(sb, KERN_ERR,
-			 "journal device read-only, try mounting with '-o ro'");
-		err = -EROFS;
-		goto err_out;
-	}
-
-	if (ext4_has_feature_journal_needs_recovery(sb)) {
-		if (sb_rdonly(sb)) {
-			ext4_msg(sb, KERN_INFO, "INFO: recovery "
-					"required on readonly filesystem");
-			if (really_read_only) {
-				ext4_msg(sb, KERN_ERR, "write access "
-					"unavailable, cannot proceed "
-					"(try mounting with noload)");
-				err = -EROFS;
-				goto err_out;
-			}
-			ext4_msg(sb, KERN_INFO, "write access will "
-			       "be enabled during recovery");
-		}
-	}
-
-> even though using it as readonly. And, valid checkpoint can allow for user to
-> read all the data without problem.
-
- >>   		if (f2fs_hw_is_readonly(sbi)) {
-
-Since device is readonly now, all write to the device will fail, checkpoint can
-not persist recovered data, after page cache is expired, user can see stale data.
-
-Am I missing something?
-
-Thanks,
-
-> 
+>> Declare 'decrementer_max' and 'rtc_lock' in powerpc asm/time.h.
+>> Rename 'rtc_lock' in drviers/rtc/rtc-vr41xx.c to 'vr41xx_rtc_lock' to
+>> avoid the conflict with the variable in powerpc asm/time.h.
+>> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
+>> is declared there.
 >>
->> Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: He Ying <heying24@huawei.com>
 >> ---
->>   fs/f2fs/super.c | 8 +++++---
->>   1 file changed, 5 insertions(+), 3 deletions(-)
+>> v2:
+>> - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
+>>    rtc_lock in powerpc asm/time.h.
 >>
->> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->> index b48281642e98..2b78ee11f093 100644
->> --- a/fs/f2fs/super.c
->> +++ b/fs/f2fs/super.c
->> @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>   		 * previous checkpoint was not done by clean system shutdown.
->>   		 */
->>   		if (f2fs_hw_is_readonly(sbi)) {
->> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
->> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
->> +				err = -EROFS;
->>   				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
->> -			else
->> -				f2fs_info(sbi, "write access unavailable, skipping recovery");
->> +				goto free_meta;
->> +			}
->> +			f2fs_info(sbi, "write access unavailable, skipping recovery");
->>   			goto reset_checkpoint;
->>   		}
->>   
->> -- 
->> 2.29.2
-> .
-> 
+> V1 was actually the correct thing to do. rtc_lock is there exactly
+> because chrp and maple are using mc146818 compatible RTCs. This is then
+> useful because then drivers/char/nvram.c is enabled. The proper fix
+> would be to scrap all of that and use rtc-cmos for those platforms as
+> this drives the RTC properly and exposes the NVRAM for the mc146818.
+
+Do you mean that 'rtc_lock' declared in linux/mc146818rtc.h points to
+
+same thing as that defined in powerpc kernel/time.c? And you think V1
+
+was correct? Oh, I should have added you to my patch V1 senders:)
+
+>
+> Or at least, if there are no users for the char/nvram driver on those
+> two platforms, remove the spinlock and stop enabling CONFIG_NVRAM or
+> more likely rename the symbol as it seems to be abused by both chrp and
+> powermac.
+>
+> I'm not completely against the rename in vr41xxx but the fix for the
+> warnings can and should be contained in arch/powerpc.
+
+Yes, I agree with you. But I have no choice because there is a compiling 
+error.
+
+Maybe there's a better way.
+
+So, what about my patch V1? Should I resend it and add you to senders?
+
+
+Thanks.
+
