@@ -2,54 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24910347576
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEF6347596
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236300AbhCXKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:09:04 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55124 "EHLO elvis.franken.de"
+        id S235581AbhCXKNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:13:36 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:35896 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235394AbhCXKIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:08:45 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lP0RM-0008Sw-01; Wed, 24 Mar 2021 11:08:40 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6762EC1C69; Wed, 24 Mar 2021 10:58:34 +0100 (CET)
-Date:   Wed, 24 Mar 2021 10:58:34 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH V2] mips: asm: octeon: A typo fix in the file
- cvmx-address.h
-Message-ID: <20210324095834.GB2378@alpha.franken.de>
-References: <20210316043334.2770025-1-unixbhaskar@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316043334.2770025-1-unixbhaskar@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230170AbhCXKNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 06:13:07 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8140A1A27DC;
+        Wed, 24 Mar 2021 11:13:03 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6F98E1A1D0A;
+        Wed, 24 Mar 2021 11:12:59 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C03284029B;
+        Wed, 24 Mar 2021 11:12:29 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] ASoC: fsl: Don't use devm_regmap_init_mmio_clk
+Date:   Wed, 24 Mar 2021 17:58:42 +0800
+Message-Id: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:03:34AM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/techically/technically/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  Changes from V1:
->  Meh, missed the changelog text, so added :)
-> 
->  arch/mips/include/asm/octeon/cvmx-address.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+When there is power domain bind with ipg clock,
 
-applied to mips-next.
+The call flow:
+devm_regmap_init_mmio_clk
+    - clk_prepare()
+        - clk_pm_runtime_get()
 
-Thomas.
+cause the power domain of clock always be enabled after
+regmap_init(). which impact the power consumption.
+
+So use devm_regmap_init_mmio instead of
+devm_regmap_init_mmio_clk.
+
+Shengjiu Wang (6):
+  ASoC: fsl_esai: Don't use devm_regmap_init_mmio_clk
+  ASoC: fsl_spdif: Don't use devm_regmap_init_mmio_clk
+  ASoC: fsl_asrc: Don't use devm_regmap_init_mmio_clk
+  ASoC: fsl_easrc: Don't use devm_regmap_init_mmio_clk
+  ASoC: fsl_audmix: Don't use devm_regmap_init_mmio_clk
+  ASoC: fsl_micfil: Don't use devm_regmap_init_mmio_clk
+
+ sound/soc/fsl/fsl_asrc.c   | 57 +++++++++++++++++++++++++++++---------
+ sound/soc/fsl/fsl_audmix.c |  3 +-
+ sound/soc/fsl/fsl_easrc.c  |  3 +-
+ sound/soc/fsl/fsl_esai.c   | 48 ++++++++++++++++++++++++--------
+ sound/soc/fsl/fsl_micfil.c | 25 +++++++++++++----
+ sound/soc/fsl/fsl_spdif.c  |  3 +-
+ 6 files changed, 103 insertions(+), 36 deletions(-)
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.27.0
+
