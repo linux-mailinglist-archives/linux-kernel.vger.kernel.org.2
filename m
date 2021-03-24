@@ -2,112 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35859346F69
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E59B346F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhCXCWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhCXCWZ (ORCPT
+        id S234859AbhCXCYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:24:31 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14857 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234920AbhCXCYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:22:25 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBD8C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:22:25 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id g15so16250707pfq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=24qmeKyq+RHas/0nWkzkV/yI24iW9xTstvjT8SYVV4E=;
-        b=Z/cYUHiAg1doJjTTL9i5pzxTGBcMOwSFHfvXzdWI360hIUuuL+l/4Itd0NqBwrVq3m
-         JpNg1TbeLRgZx7/VHCob/VRq2QxVsDTWRa7GlmDMKrGrYSzi+hdtqb10NhgvShPeSiWS
-         HOQyDu00aY3ueYqPJ6vocPlj9PM+p5LpE4gjQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=24qmeKyq+RHas/0nWkzkV/yI24iW9xTstvjT8SYVV4E=;
-        b=Q05U26tbjAxazCKXJi3KvONF94kSqEaPewtIJpmfSZam1yRiR7enTpKszcm+yanpYU
-         x2X2jz/1U3soQvhl2hbo8DB11abPLTpvZSseYs4ZH/U3/j1CPwCUWK85sJozkV7RKHVY
-         D8o4yOtrrhXZU5RWBYYdBazR2G6C99a2dG4AYMqawkM69v8mXc51jU/+pvIibx5C8YSF
-         0qLq5V+NAXetJ3AjlNTf1I5mgt74G/NGlCKpvOYMgvY/b4aKgrN+0FEa9DE5yV3ZaN8n
-         QPyBGphbHD736beWNNVcYxSDQUxhW5SLPzr4nRFcq5qIDYP7TGNkeaXcIX+7ciah/5zr
-         wVWA==
-X-Gm-Message-State: AOAM5328TYQ/YHoOA/4GzhqC7qDOuQ7/TDO+3vqPvQyP0+w4ruT1vQKC
-        rHpTU+MN+wqqk/TtkCTxH4Z1Wg==
-X-Google-Smtp-Source: ABdhPJxnk/W0wD4yXUfVCUeih3TUIWGMrPaANeh6c9Cpau3Dqf9YRsDnOkp2GPsr2Rbg8zwwigZIQg==
-X-Received: by 2002:a63:43c2:: with SMTP id q185mr993479pga.41.1616552544705;
-        Tue, 23 Mar 2021 19:22:24 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:bcf2:e05a:a993:9494])
-        by smtp.gmail.com with ESMTPSA id j3sm439947pfi.74.2021.03.23.19.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 19:22:23 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 11:22:18 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv3 3/6] media: v4l UAPI: add ROI auto-controls flags
-Message-ID: <YFqiWixqSuPMTwXz@google.com>
-References: <20210319055342.127308-1-senozhatsky@chromium.org>
- <20210319055342.127308-4-senozhatsky@chromium.org>
- <CANiDSCseJdKuPSZFDvc8VGp=PDqGEN42ZsLVGgkwhAz5hhVCQQ@mail.gmail.com>
+        Tue, 23 Mar 2021 22:24:11 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4sSd0Fyyz93BL;
+        Wed, 24 Mar 2021 10:22:09 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 24 Mar 2021 10:24:02 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>
+Subject: [PATCH net v2] net: sched: fix packet stuck problem for lockless qdisc
+Date:   Wed, 24 Mar 2021 10:24:37 +0800
+Message-ID: <1616552677-39016-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiDSCseJdKuPSZFDvc8VGp=PDqGEN42ZsLVGgkwhAz5hhVCQQ@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/23 17:04), Ricardo Ribalda wrote:
-> On Fri, Mar 19, 2021 at 6:53 AM Sergey Senozhatsky
-> <senozhatsky@chromium.org> wrote:
-> >
-> > UVC 1.5 defines the following Region Of Interest auto controls:
-> >
-> > D0: Auto Exposure
-> > D1: Auto Iris
-> > D2: Auto White Balance
-> > D3: Auto Focus
-> > D4: Auto Face Detect
-> > D5: Auto Detect and Track
-> > D6: Image Stabilization
-> > D7: Higher Quality
-> > D8 – D15: Reserved, set to zero
-> >
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > ---
-> >  include/uapi/linux/v4l2-common.h | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
-> > index 3651ebb8cb23..34f1c262d6aa 100644
-> > --- a/include/uapi/linux/v4l2-common.h
-> > +++ b/include/uapi/linux/v4l2-common.h
-> > @@ -92,6 +92,16 @@
-> >  #define V4L2_SEL_FLAG_LE               (1 << 1)
-> >  #define V4L2_SEL_FLAG_KEEP_CONFIG      (1 << 2)
-> >
-> 
-> Are you sure that you do not want to start with 1<<3, there might be
-> some hardware that support LE/SE
+Lockless qdisc has below concurrent problem:
+    cpu0                 cpu1
+     .                     .
+q->enqueue                 .
+     .                     .
+qdisc_run_begin()          .
+     .                     .
+dequeue_skb()              .
+     .                     .
+sch_direct_xmit()          .
+     .                     .
+     .                q->enqueue
+     .             qdisc_run_begin()
+     .            return and do nothing
+     .                     .
+qdisc_run_end()            .
 
-How the hardware's going to support this? There is simply no way to
-pass these flags to the firmware, the values already overlap with
-auto-controls. So I guess these flags are for the driver (C code).
-uvcvideo driver is not doing any "lesser or equal rectangle" magic
-for ROI. No such thing is defined by UVC spec.
+cpu1 enqueue a skb without calling __qdisc_run() because cpu0
+has not released the lock yet and spin_trylock() return false
+for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
+enqueued by cpu1 when calling dequeue_skb() because cpu1 may
+enqueue the skb after cpu0 calling dequeue_skb() and before
+cpu0 calling qdisc_run_end().
 
-I can move these flags to entirely different value range and do
-remapping to uvc auto-controls values in uvcvideo.
+Lockless qdisc has below another concurrent problem when
+tx_action is involved:
+
+cpu0(serving tx_action)     cpu1             cpu2
+          .                   .                .
+          .              q->enqueue            .
+          .            qdisc_run_begin()       .
+          .              dequeue_skb()         .
+          .                   .            q->enqueue
+          .                   .                .
+          .             sch_direct_xmit()      .
+          .                   .         qdisc_run_begin()
+          .                   .       return and do nothing
+          .                   .                .
+ clear __QDISC_STATE_SCHED    .                .
+ qdisc_run_begin()            .                .
+ return and do nothing        .                .
+          .                   .                .
+          .            qdisc_run_end()         .
+
+This patch fixes the above data race by:
+1. Get the flag before doing spin_trylock().
+2. If the first spin_trylock() return false and the flag is not
+   set before the first spin_trylock(), Set the flag and retry
+   another spin_trylock() in case other CPU may not see the new
+   flag after it releases the lock.
+3. reschedule if the flags is set after the lock is released
+   at the end of qdisc_run_end().
+
+For tx_action case, the flags is also set when cpu1 is at the
+end if qdisc_run_end(), so tx_action will be rescheduled
+again to dequeue the skb enqueued by cpu2.
+
+Only clear the flag before retrying a dequeuing when dequeuing
+returns NULL in order to reduce the overhead of the above double
+spin_trylock() and __netif_schedule() calling.
+
+The performance impact of this patch, tested using pktgen and
+dummy netdev with pfifo_fast qdisc attached:
+
+ threads  without+this_patch   with+this_patch      delta
+    1        2.6Mpps            2.6Mpps             +0.0%
+    2        3.9Mpps            3.8Mpps             -2.5%
+    4        5.6Mpps            5.6Mpps             -0.0%
+    8        2.7Mpps            2.8Mpps             +3.7%
+   16        2.2Mpps            2.2Mpps             +0.0%
+
+Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+V2: Avoid the overhead of fixing the data race as much as
+    possible.
+---
+ include/net/sch_generic.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++-
+ net/sched/sch_generic.c   | 12 ++++++++++++
+ 2 files changed, 59 insertions(+), 1 deletion(-)
+
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index f7a6e14..09a755d 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -36,6 +36,7 @@ struct qdisc_rate_table {
+ enum qdisc_state_t {
+ 	__QDISC_STATE_SCHED,
+ 	__QDISC_STATE_DEACTIVATED,
++	__QDISC_STATE_NEED_RESCHEDULE,
+ };
+ 
+ struct qdisc_size_table {
+@@ -159,12 +160,42 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ {
+ 	if (qdisc->flags & TCQ_F_NOLOCK) {
++		bool dont_retry = test_bit(__QDISC_STATE_NEED_RESCHEDULE,
++					   &qdisc->state);
++
++		if (spin_trylock(&qdisc->seqlock))
++			goto out;
++
++		/* If the flag is set before doing the spin_trylock() and
++		 * the above spin_trylock() return false, it means other cpu
++		 * holding the lock will do dequeuing for us, or it wil see
++		 * the flag set after releasing lock and reschedule the
++		 * net_tx_action() to do the dequeuing.
++		 */
++		if (dont_retry)
++			return false;
++
++		/* We could do set_bit() before the first spin_trylock(),
++		 * and avoid doing secord spin_trylock() completely, then
++		 * we could have multi cpus doing the test_bit(). Here use
++		 * dont_retry to avoiding the test_bit() and the second
++		 * spin_trylock(), which has 5% performance improvement than
++		 * doing the set_bit() before the first spin_trylock().
++		 */
++		set_bit(__QDISC_STATE_NEED_RESCHEDULE,
++			&qdisc->state);
++
++		/* Retry again in case other CPU may not see the new flag
++		 * after it releases the lock at the end of qdisc_run_end().
++		 */
+ 		if (!spin_trylock(&qdisc->seqlock))
+ 			return false;
+ 		WRITE_ONCE(qdisc->empty, false);
+ 	} else if (qdisc_is_running(qdisc)) {
+ 		return false;
+ 	}
++
++out:
+ 	/* Variant of write_seqcount_begin() telling lockdep a trylock
+ 	 * was attempted.
+ 	 */
+@@ -176,8 +207,23 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ static inline void qdisc_run_end(struct Qdisc *qdisc)
+ {
+ 	write_seqcount_end(&qdisc->running);
+-	if (qdisc->flags & TCQ_F_NOLOCK)
++	if (qdisc->flags & TCQ_F_NOLOCK) {
+ 		spin_unlock(&qdisc->seqlock);
++
++		/* qdisc_run_end() is protected by RCU lock, and
++		 * qdisc reset will do a synchronize_net() after
++		 * setting __QDISC_STATE_DEACTIVATED, so testing
++		 * the below two bits separately should be fine.
++		 * For qdisc_run() in net_tx_action() case, we
++		 * really should provide rcu protection explicitly
++		 * for document purposes or PREEMPT_RCU.
++		 */
++		if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
++				      &qdisc->state) &&
++			     !test_bit(__QDISC_STATE_DEACTIVATED,
++				       &qdisc->state)))
++			__netif_schedule(qdisc);
++	}
+ }
+ 
+ static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 44991ea..7e3426b 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ {
+ 	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+ 	struct sk_buff *skb = NULL;
++	bool need_retry = true;
+ 	int band;
+ 
++retry:
+ 	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+ 		struct skb_array *q = band2list(priv, band);
+ 
+@@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ 	}
+ 	if (likely(skb)) {
+ 		qdisc_update_stats_at_dequeue(qdisc, skb);
++	} else if (need_retry &&
++		   test_and_clear_bit(__QDISC_STATE_NEED_RESCHEDULE,
++				      &qdisc->stat)) {
++		/* do another enqueuing after clearing the flag to
++		 * avoid calling __netif_schedule().
++		 */
++		smp_mb__after_atomic();
++		need_retry = false;
++
++		goto retry;
+ 	} else {
+ 		WRITE_ONCE(qdisc->empty, true);
+ 	}
+-- 
+2.7.4
+
