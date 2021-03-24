@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D88C347F04
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F6E347F02
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237261AbhCXRNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:13:04 -0400
-Received: from relay02.th.seeweb.it ([5.144.164.163]:40917 "EHLO
-        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237099AbhCXRMp (ORCPT
+        id S237181AbhCXRM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237143AbhCXRMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:12:45 -0400
-Received: from [192.168.1.101] (abab43.neoplus.adsl.tpnet.pl [83.6.165.43])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 24 Mar 2021 13:12:39 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEE9C061763;
+        Wed, 24 Mar 2021 10:12:38 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6FF621F69D;
-        Wed, 24 Mar 2021 18:12:35 +0100 (CET)
-Subject: Re: [PATCH 9/9] clk: qcom: gcc-msm8994: Add a quirk for a different
- SDCC configuration
-To:     Rob Herring <robh@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210313021919.435332-1-konrad.dybcio@somainline.org>
- <20210313021919.435332-9-konrad.dybcio@somainline.org>
- <20210324171117.GA3260515@robh.at.kernel.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <3947caa6-71fb-371c-cf8e-78348435c830@somainline.org>
-Date:   Wed, 24 Mar 2021 18:12:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        by ms.lwn.net (Postfix) with ESMTPSA id 4156A380;
+        Wed, 24 Mar 2021 17:12:38 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4156A380
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1616605958; bh=BlmsETjY3d55KM0BBCtU0LhNFCRLCNUIeVyS6+Soa88=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=VeiE2kfViAVhaef6m1712dyj5J7l5sbH2WPyqgc+Z04ilYKfeL/tUXhqtx4IE3KN3
+         TcU1gsha0XOc7QparWNJNtX/6z2TBzyWJJxwgZhWzB0tFJI/YgYPR72mtw7jJDqmfp
+         kNRM38dr4NuBy/q3LcBh0J6aS3wUqiQ2e3ACgNMxAUCJHyLB0ey2e7l7dVtZt/acxt
+         rofNYG5pXW7FKD0BzTUiy1u2ifjapG1Fc8bLPDRGF4qevL92gZfnD+lydeXcOmOXtQ
+         3wiC7bBPNkZT/94Jkgf9K2BeQ6vwTcnGF16PA7lfn7e2b0dFCl0YvU5+HKcey6Rgsr
+         cKn7D4vH2xrrA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Finn Behrens <me@kloenk.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] script: get_abi.pl: escape "<" and ">" characters
+In-Reply-To: <e02449ee86d89cd45313627b52500a6892ea37ae.1616605512.git.mchehab+huawei@kernel.org>
+References: <20210317142238.228fb1e8@coco.lan>
+ <e02449ee86d89cd45313627b52500a6892ea37ae.1616605512.git.mchehab+huawei@kernel.org>
+Date:   Wed, 24 Mar 2021 11:12:37 -0600
+Message-ID: <87sg4kcw6y.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <20210324171117.GA3260515@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
-On 24.03.2021 18:11, Rob Herring wrote:
-> On Sat, Mar 13, 2021 at 03:19:18AM +0100, Konrad Dybcio wrote:
->> Some devices come with a different SDCC clock configuration,
->> account for that.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
->> ---
->>  .../bindings/clock/qcom,gcc-msm8994.yaml         |  4 ++++
->>  drivers/clk/qcom/gcc-msm8994.c                   | 16 ++++++++++++++++
->>  2 files changed, 20 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
->> index f8067fb1bbd6..9db0800a4ee4 100644
->> --- a/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
->> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
->> @@ -49,6 +49,10 @@ properties:
->>      description:
->>        Protected clock specifier list as per common clock binding.
->>  
->> +  qcom,sdcc2-clk-src-40mhz:
->> +    description: SDCC2_APPS clock source runs at 40MHz.
->> +    type: boolean
-> Why don't you have some input clock you can get the rate from?
+> After merging the akpm-current tree, today's linux-next build (htmldocs)
+> produced this warning:
+>
+> 	Documentation/ABI/testing/sysfs-kernel-mm-cma:2: WARNING: Inline interpreted text or phrase reference start-string without end-string.
+>
+> Introduced by commit 439d477342a3 ("mm: cma: support sysfs")
+>
+> As pointed by Jonathan, the problem is this text in
+> sysfs-kernel-mm-cma:
+>
+> 	Each CMA heap subdirectory (that is, each
+> 	/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
+> 	following items:
+>
+> Is not parsed well, becase the major/minor signs need to be
+> escaped, when converted into cross-references.
 
+Sorry, I kind of dropped the ball on this, and everything else really; a
+bit of a challenging time here.
 
-This is a SONY-custom hardware change and that's as much information as I can get. Schematics are not available and it's solely based on the downstream kernel source.
+This makes the warning go away, but I have to wonder if it's the right
+fix - wouldn't it be better to avoid trying to create a cross-reference
+entirely in cases where it clearly won't work?  Or am I missing
+something here?
 
+Thanks,
 
-Konrad
-
+jon
