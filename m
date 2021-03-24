@@ -2,150 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035723474A4
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9C23474A5
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234779AbhCXJ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:29:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22834 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232217AbhCXJ2o (ORCPT
+        id S234905AbhCXJ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:29:15 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:59139 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234834AbhCXJ3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:28:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616578123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fIa5MTTbbF2h5i82NLwRCE2FeeKGdQ6mEyVMr3p46EA=;
-        b=E3qsDSqadghYwVdxI2X57bKjwpat6JPxPbdldw6M0FETnwwTf26cThVwyQ6o6+LKYbZbIH
-        Akrhe9mZJmvuJYDOUlve3lY/lSSlPmjta9vvxHsE76GuEU92o014ctK6lwNRkLHep93lLG
-        g5Q6oySE7jIHC91LkGEMYbbmTO47yS0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-Gcx75zl2PwWiEtTkgVVUcg-1; Wed, 24 Mar 2021 05:28:40 -0400
-X-MC-Unique: Gcx75zl2PwWiEtTkgVVUcg-1
-Received: by mail-wr1-f71.google.com with SMTP id b6so794498wrq.22
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:28:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fIa5MTTbbF2h5i82NLwRCE2FeeKGdQ6mEyVMr3p46EA=;
-        b=uQRVzf1QMynzaAbtHBRT7O7HuJCOqWwICA96P0xNGuWqTViGswkdVFLdyCj3dH2lNm
-         ztJuxL/Hv2TeALN6h4LOdJfZf3WEbEHcuh0UWrElOiEH6O8D50ONpclSRVV68OP/4BXP
-         2ZPNaDCwddTl00ZuwmcUmp/Q96fuwx7AiU0oaFyBdZRHxn+vKS1+ToXtufFvBzI9iq3W
-         OtEzVwtpj2eFX7cSWTF0csBvTSmEOju+6h9iq4dZLs57+1la/WsmtCA6Q534AW/Dqt9e
-         tmTKKPpsnEnuAi23ktDvmbffVTMZ+Hwz+ZwyxHJ0Y7D4HmIBbJ3GTOpwMVeuh357BL93
-         LsJg==
-X-Gm-Message-State: AOAM530DBUY566LPqDeE0QhnhY+brlQJi88iPyy0flNb1rnTckCZyS0a
-        josO/oeqXYI/pZF32IawUrT9l/UbylrXLGMA4KNhwKi3Xo/8By5kp2GwhVzEhtdaFJTSahhtThg
-        r7hCax26dp5NVWaUukpwexEUc
-X-Received: by 2002:a05:600c:2312:: with SMTP id 18mr1961712wmo.8.1616578119255;
-        Wed, 24 Mar 2021 02:28:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzYbWDW+MGBZ81vAKerZL7OP61pFoC017ZeK3TIAR0+ikJWUeuGMb3jeM4vhALe/X4IJ8Y3dA==
-X-Received: by 2002:a05:600c:2312:: with SMTP id 18mr1961690wmo.8.1616578119072;
-        Wed, 24 Mar 2021 02:28:39 -0700 (PDT)
-Received: from localhost ([151.66.54.126])
-        by smtp.gmail.com with ESMTPSA id e17sm2493386wra.65.2021.03.24.02.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 02:28:38 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 10:28:35 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH net-next 6/6] mvneta: recycle buffers
-Message-ID: <YFsGQx6XMbYRtBOR@lore-desk>
-References: <20210322170301.26017-1-mcroce@linux.microsoft.com>
- <20210322170301.26017-7-mcroce@linux.microsoft.com>
- <20210323160611.28ddc712@carbon>
+        Wed, 24 Mar 2021 05:29:09 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B4B024000A;
+        Wed, 24 Mar 2021 09:29:06 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 10:29:06 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     He Ying <heying24@huawei.com>
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        a.zummo@towertech.it, christophe.leroy@csgroup.eu,
+        npiggin@gmail.com, msuchanek@suse.de, tglx@linutronix.de,
+        peterz@infradead.org, geert@linux-m68k.org,
+        geert+renesas@glider.be, kernelfans@gmail.com, frederic@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH V3 -next] powerpc: kernel/time.c - cleanup warnings
+Message-ID: <YFsGYgdNH5HrlqDJ@piout.net>
+References: <20210324090939.143477-1-heying24@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PFe7S71U15D4cqrp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323160611.28ddc712@carbon>
+In-Reply-To: <20210324090939.143477-1-heying24@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/03/2021 05:09:39-0400, He Ying wrote:
+> We found these warnings in arch/powerpc/kernel/time.c as follows:
+> warning: symbol 'decrementer_max' was not declared. Should it be static?
+> warning: symbol 'rtc_lock' was not declared. Should it be static?
+> warning: symbol 'dtl_consumer' was not declared. Should it be static?
+> 
+> Declare 'decrementer_max' in powerpc asm/time.h.
+> Include linux/mc146818rtc.h in powerpc kernel/time.c where 'rtc_lock'
+> is declared. And remove duplicated declaration of 'rtc_lock' in powerpc
+> platforms/chrp/time.c because it has included linux/mc146818rtc.h.
+> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
+> is declared there.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: He Ying <heying24@huawei.com>
+> ---
+> V2:
+> - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
+>   rtc_lock in powerpc asm/time.h.
+> V3:
+> - Recover to V1, that is including linux/mc146818rtc.h in powerpc
+>   kernel/time.c. And remove duplicated declaration of 'rtc_lock' in powerpc
+>   platforms/chrp/time.c because it has included linux/mc146818rtc.h.
+> 
+>  arch/powerpc/include/asm/time.h    | 1 +
+>  arch/powerpc/kernel/time.c         | 9 ++++-----
+>  arch/powerpc/platforms/chrp/time.c | 2 --
+>  3 files changed, 5 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
+> index 8dd3cdb25338..2cd2b50bedda 100644
+> --- a/arch/powerpc/include/asm/time.h
+> +++ b/arch/powerpc/include/asm/time.h
+> @@ -22,6 +22,7 @@ extern unsigned long tb_ticks_per_jiffy;
+>  extern unsigned long tb_ticks_per_usec;
+>  extern unsigned long tb_ticks_per_sec;
+>  extern struct clock_event_device decrementer_clockevent;
+> +extern u64 decrementer_max;
+>  
+>  
+>  extern void generic_calibrate_decr(void);
+> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+> index b67d93a609a2..ac81f043bf49 100644
+> --- a/arch/powerpc/kernel/time.c
+> +++ b/arch/powerpc/kernel/time.c
+> @@ -55,8 +55,9 @@
+>  #include <linux/sched/cputime.h>
+>  #include <linux/sched/clock.h>
+>  #include <linux/processor.h>
+> -#include <asm/trace.h>
+> +#include <linux/mc146818rtc.h>
 
---PFe7S71U15D4cqrp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm fine with that but I really think my suggestion to make the rtc_lock
+local to the platforms was better because it is only used to synchronize
+between concurrent invocations of chrp_set_rtc_time or
+maple_set_rtc_time. The rtc core will never do that and the only case
+would be concurrent calls to rtc_ops.set_time and
+update_persistent_clock64 (which should also be removed at some point).
 
-[...]
-> > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethern=
-et/marvell/mvneta.c
-> > index a635cf84608a..8b3250394703 100644
-> > --- a/drivers/net/ethernet/marvell/mvneta.c
-> > +++ b/drivers/net/ethernet/marvell/mvneta.c
-> > @@ -2332,7 +2332,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, str=
-uct mvneta_rx_queue *rxq,
-> >  	if (!skb)
-> >  		return ERR_PTR(-ENOMEM);
-> > =20
-> > -	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
-> > +	skb_mark_for_recycle(skb, virt_to_page(xdp->data), &xdp->rxq->mem);
-> > =20
-> >  	skb_reserve(skb, xdp->data - xdp->data_hard_start);
-> >  	skb_put(skb, xdp->data_end - xdp->data);
-> > @@ -2344,7 +2344,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, str=
-uct mvneta_rx_queue *rxq,
-> >  		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-> >  				skb_frag_page(frag), skb_frag_off(frag),
-> >  				skb_frag_size(frag), PAGE_SIZE);
-> > -		page_pool_release_page(rxq->page_pool, skb_frag_page(frag));
-> > +		skb_mark_for_recycle(skb, skb_frag_page(frag), &xdp->rxq->mem);
-> >  	}
-> > =20
-> >  	return skb;
->=20
-> This cause skb_mark_for_recycle() to set 'skb->pp_recycle=3D1' multiple
-> times, for the same SKB.  (copy-pasted function below signature to help
-> reviewers).
->=20
-> This makes me question if we need an API for setting this per page
-> fragment?
-> Or if the API skb_mark_for_recycle() need to walk the page fragments in
-> the SKB and set the info stored in the page for each?
+>  
+> +#include <asm/trace.h>
+>  #include <asm/interrupt.h>
+>  #include <asm/io.h>
+>  #include <asm/nvram.h>
+> @@ -150,10 +151,6 @@ bool tb_invalid;
+>  u64 __cputime_usec_factor;
+>  EXPORT_SYMBOL(__cputime_usec_factor);
+>  
+> -#ifdef CONFIG_PPC_SPLPAR
+> -void (*dtl_consumer)(struct dtl_entry *, u64);
+> -#endif
+> -
+>  static void calc_cputime_factors(void)
+>  {
+>  	struct div_result res;
+> @@ -179,6 +176,8 @@ static inline unsigned long read_spurr(unsigned long tb)
+>  
+>  #include <asm/dtl.h>
+>  
+> +void (*dtl_consumer)(struct dtl_entry *, u64);
+> +
+>  /*
+>   * Scan the dispatch trace log and count up the stolen time.
+>   * Should be called with interrupts disabled.
+> diff --git a/arch/powerpc/platforms/chrp/time.c b/arch/powerpc/platforms/chrp/time.c
+> index acde7bbe0716..b94dfd5090d8 100644
+> --- a/arch/powerpc/platforms/chrp/time.c
+> +++ b/arch/powerpc/platforms/chrp/time.c
+> @@ -30,8 +30,6 @@
+>  
+>  #include <platforms/chrp/chrp.h>
+>  
+> -extern spinlock_t rtc_lock;
+> -
+>  #define NVRAM_AS0  0x74
+>  #define NVRAM_AS1  0x75
+>  #define NVRAM_DATA 0x77
+> -- 
+> 2.17.1
+> 
 
-Considering just performances, I guess it is better open-code here since the
-driver already performs a loop over fragments to build the skb, but I guess
-this approach is quite risky and I would prefer to have a single utility
-routine to take care of linear area + fragments. What do you think?
-
-Regards,
-Lorenzo
-
->=20
->=20
-> --=20
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->=20
-
---PFe7S71U15D4cqrp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYFsGQAAKCRA6cBh0uS2t
-rFgiAP0c8Q5ppxzpPYMYk5waAY9QN9APUtx2G3i42vTAQpux1wEAsok6G5Kdb/ww
-bYEkrUU4/iizc56IifIQQ8iY05slpgk=
-=h2Ta
------END PGP SIGNATURE-----
-
---PFe7S71U15D4cqrp--
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
