@@ -2,108 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9513474BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C023474BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234948AbhCXJdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        id S236103AbhCXJeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhCXJdK (ORCPT
+        with ESMTP id S232387AbhCXJdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:33:10 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4F9C0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:33:09 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id p19so12499554wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:33:09 -0700 (PDT)
+        Wed, 24 Mar 2021 05:33:45 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC9DC061763;
+        Wed, 24 Mar 2021 02:33:44 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id kt15so22228103ejb.12;
+        Wed, 24 Mar 2021 02:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DW7EouFyCURbwP8jZhQOeWE4+yb9VH28DAGEEY1uTLA=;
-        b=lhn/sZFHW1OaA3bqg8UVcZ/oMlJ+b8RpnbPoZspt1bkNo1nCSELiJQR3O7k95jUnSI
-         MjaoXMrXtaey+USMhrCC8a0RE2d8YvdZ+BJTCk7zlbGTBW74zXEPKj28zgcXMhTZ3o1F
-         8o3OEKNnyQbOzImZMvFm7DioR1yiHpL+6jZ8GKX9lw2xsKYDTOo5Db70RqNWv7M0FX7R
-         DNHTX5jPHtmh2MuwnmRmTkOM24VyeVvLYuFA4/tMCoB6/0Yr4iw3cJUv1wnawSK3RRD2
-         5j+15et5Wzqw8FKiuSA32ANxHacxCjgFHtt1TMpFTvaEqnbuMM2BIWTfRHN585bvfXw4
-         2GWQ==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=v/E6C3caqS+yX4Js+LYDHx8WD7YNLpPp6fRlzI3Vgko=;
+        b=upafuQETnBvUKULUt+6GYBhUaI81T0JW6NhcqQ/uzvmDR+lkAV7G69lHAxMRzRUJs8
+         u+Z/frl09a1k+xyPVMB5Stc7j8wPsGWUFadWhoyjZ8/ap4Yp8VutLe9Evty15tfiTcOP
+         6SUMW7WalvUtLAhwUZUepIF51l3gZviav5uadpbgUusQc3rYfp1UdG5BJNhKGHifB3ju
+         FnISvO4PkshDtGUCQEUfwJXr3MCjP/GKLZKJhh/pT3yXvLXiXAmt0SQxlas2MBUqY1t0
+         CmEqeOTx3io8J5OWcjF/irRFiVGfIKlggTgwTomKMCi+qh67SlLPoB46TH9jyvUbCkRq
+         LH5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DW7EouFyCURbwP8jZhQOeWE4+yb9VH28DAGEEY1uTLA=;
-        b=A/2rlHw25HA4w2AUDxlKqbh1vXjllCOKqIvAhRmDQmobcsLtPIfN8hqVJWdb+0aPnZ
-         9PjSJO33rgszJXsNCkuFjmARlbVILBNFmmynsN1Gqvmh5kOa0F25V8Au8+3FNkRnaZ7f
-         +CxqGPEuAdTmDm1bQh+1Tj4hByyWqE5BcISwWfxtBnZDOO+xzI4tGfmnJfwr+J3utGAL
-         gFBGhNaW3S+KtWFb+HOj3rEw9z2rbxXuWbH6VhDurQ7oOtmx/h5CNoqDzrdJyv+e9UM1
-         DDXqe3ptXJ/OSaWXRdlErzhiELl4yokEJZqP1b9USrOUplwPjkBE5LXMqwL5WXQZS72L
-         d9gA==
-X-Gm-Message-State: AOAM531YAy4GqS2farqkA2IICmZGp0cT2RfpwkrWNfSjzVNl2LMS7L7w
-        fmwo4UNTnTYRf7rS2nZ9FTPf8/747PRU7g==
-X-Google-Smtp-Source: ABdhPJxF3U4EiJ3OdXNHJk9Gnn8tzPqKMzJhY0aBsV3veUekqp0YrdrPt8sxtV0BPlDt/64JKfcT2Q==
-X-Received: by 2002:a05:600c:1992:: with SMTP id t18mr1969565wmq.125.1616578388410;
-        Wed, 24 Mar 2021 02:33:08 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:91e2:6a05:a4ac:7d0a? ([2a01:e34:ed2f:f020:91e2:6a05:a4ac:7d0a])
-        by smtp.googlemail.com with ESMTPSA id n4sm1595499wmq.40.2021.03.24.02.33.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 02:33:07 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] arm64: sunxi: Enable the sun4i timer
-To:     Samuel Holland <samuel@sholland.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210322044707.19479-1-samuel@sholland.org>
- <7bb14a82-5dc9-cefe-4b58-1d2c83974965@linaro.org>
- <64f6d712-11fe-4626-aa24-8e31c21a8ad4@sholland.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <0b3689ad-6bb3-bd7a-46be-0c4d3d7de268@linaro.org>
-Date:   Wed, 24 Mar 2021 10:33:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=v/E6C3caqS+yX4Js+LYDHx8WD7YNLpPp6fRlzI3Vgko=;
+        b=YsnCNdRKqdmv3luJNwHbn3YZx3FXwQGJqMfduAJkHyDremA/3lVs1IoEekiKYoezfg
+         FNhSkBAVYLEda8wWWFOu2fH991hpi+d8449FLu2/rw0RW8lLrAp13MOZFVdNNy9y3E+T
+         i3H1Sh8JvE7Nyz3OQgQBzaJ064X2DrEMS6EfGvKmnQ04/4U32Sl/FC6CjCHEnnfaHsgG
+         W9F+k+Z0rQ0aAn/Ov7y22emR1C4gA1+uTxB60iM8ZzP+zQQolKKLNVakAwSpm3rcR41X
+         E98tFGyr/Y/nMI+Pjy6FQpX3mp4v856Fg4SMneGtlhXKe4EYEz/VPaOpDds79m46bX0J
+         ItRQ==
+X-Gm-Message-State: AOAM533CRBna/nNhwUJTKtdszdzkcNyiFNY9A13rn9Vudf6mwm30rR5g
+        LbHsZSWxtp4i9ZyTHxaerwk=
+X-Google-Smtp-Source: ABdhPJze6qgcqjQPc163Aq6L/CCebTUxC1VKmnogwCCFgqDFe0BDJjfU5C8cVCMGA5ALt03mLpmOLw==
+X-Received: by 2002:a17:906:6bd1:: with SMTP id t17mr2657325ejs.319.1616578423366;
+        Wed, 24 Mar 2021 02:33:43 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id kj3sm635319ejc.117.2021.03.24.02.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 02:33:42 -0700 (PDT)
+Message-ID: <7bfcc7d6cedd1d674172722f8cc074dac9c2a640.camel@gmail.com>
+Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     Avri Altman <Avri.Altman@wdc.com>, daejun7.park@samsung.com,
+        Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+Date:   Wed, 24 Mar 2021 10:33:40 +0100
+In-Reply-To: <5f68a41406b157f4ed4b3765e1d8e032@codeaurora.org>
+References: <f224bea78cf235ee94823528f07e28a6@codeaurora.org>
+         <1df7bb51dc481c3141cdcf85105d3a5b@codeaurora.org>
+         <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
+         <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+         <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
+         <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
+         <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
+         <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
+         <20210323061922epcms2p739666492ebb458d70deab026d074caf4@epcms2p7>
+         <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p2>
+         <20210323063726epcms2p28aadb16bb96943ade1d2b288bb634811@epcms2p2>
+         <a9017bbb57618c5560b21c1cdadb4f80@codeaurora.org>
+         <DM6PR04MB657535F2F25BB41CAD191DB6FC649@DM6PR04MB6575.namprd04.prod.outlook.com>
+         <dfb68d3632340c2ddffa487c69723aa3@codeaurora.org>
+         <020853d32271f0a16b26a343a72fd930e9505ffe.camel@gmail.com>
+         <5f68a41406b157f4ed4b3765e1d8e032@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <64f6d712-11fe-4626-aa24-8e31c21a8ad4@sholland.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 04:51, Samuel Holland wrote:
-> On 3/22/21 9:18 AM, Daniel Lezcano wrote:
->> On 22/03/2021 05:47, Samuel Holland wrote:
->>> In preparation for adding CPU idle states, hook up the sun4i timer.
->>> Having a non-c3stop clockevent source available is necessary for all
->>> CPUs to simultaneously enter a local-timer-stop idle state.
->>
->> Why simultaneously ?
-> Because the CPU providing (the hrtimer providing) the broadcast timer
-> cannot enter an idle state which would stop that timer. So in my case,
-> with 4 CPUs, I was seeing at most 3 CPUs enter idle at any given time.
-> This prevented any cluster-level idle states from doing anything. After
-> applying this series, I was able to observe the whole cluster powering
-> down when appropriate.
+On Wed, 2021-03-24 at 17:24 +0800, Can Guo wrote:
+> On 2021-03-24 16:37, Bean Huo wrote:
+> > On Wed, 2021-03-24 at 09:45 +0800, Can Guo wrote:
+> > > On 2021-03-23 20:48, Avri Altman wrote:
+> > > 
+> > > > > On 2021-03-23 14:37, Daejun Park wrote:
+> > > > > > > On 2021-03-23 14:19, Daejun Park wrote:
+> > > > > > > > > On 2021-03-23 13:37, Daejun Park wrote:
+> > > > > > > > > > > On 2021-03-23 12:22, Can Guo wrote:
+> > > > > > > > > > > > On 2021-03-22 17:11, Bean Huo wrote:
+> > > > > > > > > > > > > On Mon, 2021-03-22 at 15:54 +0900, Daejun
+> > > > > > > > > > > > > Park
+> > > > > > > > > > > > > wrote:
+> > > > > > > > > > > > > > +       switch (rsp_field->hpb_op) {
+> > > > > > > > > > > > > > +       case HPB_RSP_REQ_REGION_UPDATE:
+> > > > > > > > > > > > > > +               if (data_seg_len !=
+> > > > > > > > > > > > > > DEV_DATA_SEG_LEN)
+> > > > > > > > > > > > > > +                       dev_warn(&hpb-
+> > > > > > > > > > > > > > > sdev_ufs_lu->sdev_dev,
+> > > > > > > > > > > > > > +                                "%s: data
+> > > > > > > > > > > > > > seg
+> > > > > > > > > > > > > > length is not
+> > > > > > > > > > > > > > same.\n",
+> > > > > > > > > > > > > > +                                __func__);
+> > > > > > > > > > > > > > +
+> > > > > > > > > > > > > > ufshpb_rsp_req_region_update(hpb,
+> > > > > > > > > > > > > > rsp_field);
+> > > > > > > > > > > > > > +               break;
+> > > > > > > > > > > > > > +       case HPB_RSP_DEV_RESET:
+> > > > > > > > > > > > > > +               dev_warn(&hpb->sdev_ufs_lu-
+> > > > > > > > > > > > > > > sdev_dev,
+> > > > > > > > > > > > > > +                        "UFS device lost
+> > > > > > > > > > > > > > HPB
+> > > > > > > > > > > > > > information
+> > > > > > > > > > > > > > during
+> > > > > > > > > > > > > > PM.\n");
+> > > > > > > > > > > > > > +               break;
+> > > > > > > > > > > > > Hi Deajun,
+> > > > > > > > > > > > > This series looks good to me. Just here I
+> > > > > > > > > > > > > have
+> > > > > > > > > > > > > one question. You
+> > > > > > > > > > > > > didn't
+> > > > > > > > > > > > > handle HPB_RSP_DEV_RESET, just a
+> > > > > > > > > > > > > warning.  Based
+> > > > > > > > > > > > > on your SS UFS,
+> > > > > > > > > > > > > how
+> > > > > > > > > > > > > to
+> > > > > > > > > > > > > handle HPB_RSP_DEV_RESET from the host side?
+> > > > > > > > > > > > > Do
+> > > > > > > > > > > > > you think we
+> > > > > > > > > > > > > shoud
+> > > > > > > > > > > > > reset host side HPB entry as well or what
+> > > > > > > > > > > > > else?
+> > > > > > > > > > > > > Bean
+> > > > > > > > > > > > Same question here - I am still collecting
+> > > > > > > > > > > > feedbacks from flash
+> > > > > > > > > > > > vendors
+> > > > > > > > > > > > about
+> > > > > > > > > > > > what is recommanded host behavior on reception
+> > > > > > > > > > > > of
+> > > > > > > > > > > > HPB Op code
+> > > > > > > > > > > > 0x2,
+> > > > > > > > > > > > since it
+> > > > > > > > > > > > is not cleared defined in HPB2.0 specs.
+> > > > > > > > > > > > Can Guo.
+> > > > > > > > > > > I think the question should be asked in the
+> > > > > > > > > > > HPB2.0
+> > > > > > > > > > > patch, since in
+> > > > > > > > > > > HPB1.0 device
+> > > > > > > > > > > control mode, a HPB reset in device side does not
+> > > > > > > > > > > impact anything
+> > > > > > > > > > > in
+> > > > > > > > > > > host side -
+> > > > > > > > > > > host is not writing back any HPB entries to
+> > > > > > > > > > > device
+> > > > > > > > > > > anyways and HPB
+> > > > > > > > > > > Read
+> > > > > > > > > > > cmd with
+> > > > > > > > > > > invalid HPB entries shall be treated as normal
+> > > > > > > > > > > Read(10) cmd
+> > > > > > > > > > > without
+> > > > > > > > > > > any
+> > > > > > > > > > > problems.
+> > > > > > > > > > Yes, UFS device will process read command even the
+> > > > > > > > > > HPB
+> > > > > > > > > > entries are
+> > > > > > > > > > valid or
+> > > > > > > > > > not. So it is warning about read performance drop
+> > > > > > > > > > by
+> > > > > > > > > > dev reset.
+> > > > > > > > > Yeah, but still I am 100% sure about what should host
+> > > > > > > > > do
+> > > > > > > > > in case of
+> > > > > > > > > HPB2.0
+> > > > > > > > > when it receives HPB Op code 0x2, I am waiting for
+> > > > > > > > > feedbacks.
+> > > > > > > > I think the host has two choices when it receives 0x2.
+> > > > > > > > One is nothing on host.
+> > > > > > > > The other is discarding all HPB entries in the host.
+> > > > > > > > In the JEDEC HPB spec, it as follows:
+> > > > > > > > When the device is powered off by the host, the device
+> > > > > > > > may
+> > > > > > > > restore
+> > > > > > > > L2P
+> > > > > > > > map
+> > > > > > > > data upon power up or build from the host’s HPB READ
+> > > > > > > > command.
+> > > > > > > > If some UFS builds L2P map data from the host's HPB
+> > > > > > > > READ
+> > > > > > > > commands, we
+> > > > > > > > don't
+> > > > > > > > have to discard HPB entries in the host.
+> > > > > > > > So I thinks there is nothing to do when it receives
+> > > > > > > > 0x2.
+> > > > > > > But in HPB2.0, if we do nothing to active regions in host
+> > > > > > > side, host
+> > > > > > > can
+> > > > > > > write
+> > > > > > > HPB entries (which host thinks valid, but actually
+> > > > > > > invalid in
+> > > > > > > device
+> > > > > > > side since
+> > > > > > > reset happened) back to device through HPB Write Buffer
+> > > > > > > cmds
+> > > > > > > (BUFFER
+> > > > > > > ID
+> > > > > > > = 0x2).
+> > > > > > > My question is that are all UFSs OK with this?
+> > > > > > Yes, it must be OK.
+> > > > > > Please refer the following the HPB 2.0 spec:
+> > > > > > If the HPB Entries sent by HPB WRITE BUFFER are removed by
+> > > > > > the
+> > > > > > device,
+> > > > > > for example, because they are not consumed for a long
+> > > > > > enough
+> > > > > > period of
+> > > > > > time,
+> > > > > > then the HPB READ command for the removed HPB entries shall
+> > > > > > be
+> > > > > > handled
+> > > > > > as a
+> > > > > > normal READ command.
+> > > > > No, it is talking about the subsequent HPB READ cmd sent
+> > > > > after a
+> > > > > HPB
+> > > > > WRITE BUFFER cmd,
+> > > > > but not the HPB WRITE BUFFER cmd itself...
+> > > > Looks like this discussion is going the same way as we had in
+> > > > host
+> > > > mode.
+> > > > HPB-WRITE-BUFFER 0x2, if exist,  is always a companion to HPB-
+> > > > READ.
+> > > > You shouldn't consider them separately.
+> > > > The device is expected to handle invalid ppn by itself, and
+> > > > specifically for this case,
+> > > > As Daejun explained, Handle each HPB-READ (and its companion
+> > > > HPB-WRITE-BUFFER) like READ10.
+> > > > For device mode, doing nothing in case of dev reset, seems to
+> > > > me
+> > > > like
+> > > > the right thing to do.
+> > > 
+> > > I just got some feedbacks from other flash vendors, they all
+> > > commit
+> > > that
+> > > 
+> > > their devices can work well in this scenario [1]. Some of them
+> > > proposed
+> > > 
+> > > even complicated (maybe better) principles of handling the "HPB
+> > > reset",
+> > > 
+> > > but since the device works well in [1], I am OK with current
+> > > (simpler)
+> > > 
+> > > handling of "HPB reset" - in device mode doing nothing, in host
+> > > mode
+> > > 
+> > > re-activate regions that host is trying to do a read to.
+> > > 
+> > > 
+> > > 
+> > 
+> > Our suggestion on this indication 0x2:
+> > 
+> > 1. If current mode is device control mode, we suggest host just
+> > deactivate all active regions and don't send HPB READ BUFFER
+> > command to
+> > device unless device indicate host to activate certain region in
+> > later
+> > response. In another way, it is a signal telling host to reset host
+> > side L2P entry and to rebuild the L2P mapping entry in host memroy.
+> > 
+> > 2. If current mode is host control mode, we suggest host send HPB
+> > READ
+> > BUFFER command before it wants to send read command on this region,
+> > rather than sending HPB READ BUFFER commands on all regions at the
+> > same
+> > time.
+> > 
+> > 
+> > Bean
+> 
+> Hi Bean,
+> 
+> I got this proposal from your side too, after that I've checked with
+> Leon Ge from your side and he confirmed that it is fine that host
+> just
+> ignores the "HPB reset" indication. We can leave it as it is as of
+> now
+> and revisit it if any UFS needs extra care. What do you say?
+> 
+> Thanks,
+> Can Guo.
 
-Ah, ok. I did not realize this fourth CPU was acting as the broadcast
-timer, so allowing at least a CPU power down. This setup is unusual.
+Hi Can,
 
-The changes make sense.
+Agree. Current handling is ok to us, but if we want to change it, we
+hope it is the same with the above suggestion. We can keep current
+implementation, seeing if need changes in the near future based on the
+feedback or new updates in the Spec.
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Thanks,
+Bean
 
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> 
+> > > Thanks,
+> > > 
+> > > Can Guo.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
