@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE3A347AF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2970347ACB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236295AbhCXOma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236164AbhCXOmQ (ORCPT
+        id S236350AbhCXOdY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 10:33:24 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13681 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236346AbhCXOdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:42:16 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFA5C061763;
-        Wed, 24 Mar 2021 07:42:16 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id a8so21010000oic.11;
-        Wed, 24 Mar 2021 07:42:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QC9Yl04RRN1dr9gjHudNHhgmFiM2HY1qvPpG4GDHyMU=;
-        b=iMZyUIIittwdBwbUwbKVXPq486zdYl85QivQeofs/ZS5aASewE3r1rN1fpS8XF7fbC
-         tnu2NtQFiGQS4iOIYBKp4v4PsnHtq6F40Kav3vams87Z9PTT3BC4pn2Z1Czaan7ypinz
-         mnJ7WIkSZ7KMn0Mx37cGrjsrFQ+VptsNpzbKDxW+7m+Xo9ESl+euFobyG/r+zQVrW9bh
-         3x0zEarZzJsw67WlF3ex6j4kNyaVa5ZHqEoCNSVWrgrk8yqFGE9s5RkUba5jgJQXkm/Y
-         plhBM9kXZtKzEw5pnEAugxEj7uDbpODv3j9VVRK1RFt0Xy1Tbigl67i5P5vacUnDK+s3
-         VzgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QC9Yl04RRN1dr9gjHudNHhgmFiM2HY1qvPpG4GDHyMU=;
-        b=qaMdGvr3Iq3BZWXflADxvA8KfcPQcIUbiPQ4cCPYQH0IA15UG5zXU5sgjEavQNXAbK
-         Nszp8mC0aRZrCIKDVIJCabHSsfu8C2t+0dRt7IL3SsqPf9YSVxhcjt+XqjG3NWI/bRXr
-         jOYRhs3s4VCQ20s1nlGGxnVopAq3e5HFr4LRCACMPgLuDuxV2EcByEHncyywZcI6Eger
-         KRBzaOYX0a+8+b3bLgtrb51lo8BXWqPnMTBbkw4sKYLBz0Wx6q3e71B9OUsb9A+S8835
-         +hVnxLVOGhmY63I7Y2D5xYqAzEyOFlSijccmuesuvsfBYdsVDStbVCgkA5F5YB+DZvip
-         m0gA==
-X-Gm-Message-State: AOAM532EETqNn+H0hK1WuR+U4o6VXZ18X6CSSmPmSWWu/e2JbxiZYiPI
-        IhxKMZ2CfkLkM8TtTJaTOHd/znrm1kg=
-X-Google-Smtp-Source: ABdhPJwJVjJSAiPWJXZBVf8saK/FRo5cPp/JJ243VB3tKmroGn55ys8P0CLqtPfwdJa4RCd2ZkbVDw==
-X-Received: by 2002:a54:4001:: with SMTP id x1mr2700466oie.76.1616596935630;
-        Wed, 24 Mar 2021 07:42:15 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u194sm430252oia.27.2021.03.24.07.42.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Mar 2021 07:42:15 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 24 Mar 2021 07:42:14 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/150] 5.10.26-rc3 review
-Message-ID: <20210324144214.GA224108@roeck-us.net>
-References: <20210324093435.962321672@linuxfoundation.org>
+        Wed, 24 Mar 2021 10:33:11 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F59dB1dRqznW2v;
+        Wed, 24 Mar 2021 22:30:38 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 24 Mar 2021 22:33:03 +0800
+From:   'Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Dan Williams <dan.j.williams@intel.com>,
+        "Vishal Verma" <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Ira Weiny" <ira.weiny@intel.com>
+CC:     <linux-nvdimm@lists.01.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] libnvdimm/security: Make symbol '__nvdimm_security_overwrite_query' static
+Date:   Wed, 24 Mar 2021 14:42:57 +0000
+Message-ID: <20210324144257.1014160-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324093435.962321672@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.175.102.38]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:40:21AM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.26 release.
-> There are 150 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 26 Mar 2021 09:33:54 +0000.
-> Anything received after that time might be too late.
-> 
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-Build results:
-	total: 156 pass: 156 fail: 0
-Qemu test results:
-	total: 433 pass: 433 fail: 0
+The sparse tool complains as follows:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+drivers/nvdimm/security.c:416:6: warning:
+ symbol '__nvdimm_security_overwrite_query' was not declared. Should it be static?
 
-Guenter
+This symbol is not used outside of security.c, so this
+commit marks it static.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/nvdimm/security.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/nvdimm/security.c b/drivers/nvdimm/security.c
+index 4b80150e4afa..d3e782662bf4 100644
+--- a/drivers/nvdimm/security.c
++++ b/drivers/nvdimm/security.c
+@@ -413,7 +413,7 @@ static int security_overwrite(struct nvdimm *nvdimm, unsigned int keyid)
+ 	return rc;
+ }
+ 
+-void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
++static void __nvdimm_security_overwrite_query(struct nvdimm *nvdimm)
+ {
+ 	struct nvdimm_bus *nvdimm_bus = walk_to_nvdimm_bus(&nvdimm->dev);
+ 	int rc;
+
