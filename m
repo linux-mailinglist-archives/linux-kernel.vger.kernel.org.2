@@ -2,185 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E52734702B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F9F347026
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235117AbhCXDcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:32:32 -0400
-Received: from mail-eopbgr60073.outbound.protection.outlook.com ([40.107.6.73]:62147
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235137AbhCXDcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:32:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=igh4HaFBnBVCPTK5U+Na3NnXay9ls22QkRNc34XqPWbTsLOSXvsIX3z/KqfzyXsgq4WlXoanrrkqNZW43JPWumD8/RrJ2K9966FP2WY8//F/BTCHjsbLmdT+VXrI7TahtHof7Dhk8wKIDGvlfLaMD29PRRGFm0C1ni81kXwlppTBGmfeAMUn5NhM2IkTUN4vmfc7kahNTp7CsD6jMMiWzoUXuh2XixIGCFnU99IfBjzdQve0agl7gEpkZYhQ6N/l8xcLXifb6/hQ5sOJ8gXQff/RphoOpArRhcl+cjYU1kpv6VCy6BNXEsBznJ/w1RvdqG0z6HB3KNNdm4859o67Yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=360GPYGly2Vsq9tXg5V5q2IB4G4s4wNz8rU/2AywEEg=;
- b=fmJUOaMO5q8TMF8TwICDmxkcQwYVgUh3K4oLnvkdFdxS58EXXrQKaxlnoTwzYxmjPAmrObxaylMQRRQjUZO9V0Sp/NiTrKKBYcDwXMNU45s0YblV0ev2Y70UU3OeIKK6j6HcGlml+UaGU1/uA8LaJvFeqrzlwfo+T4sXi72xiOSs6hQ98Bi3mczjL59UXIa+ckti+l5LYLf9Tx+uCB4azVLl1Ai4KnLpDD1nkLdvYWHi+sQY+J4HFtkd+3Cx9L2XTHvFPAMJ7AXcyGmVokcN4gHg7m0CV3C3CeHGoR0HZo1i4IuNp8L2E+bFJ1VYb0ewUY3pv6LCtWZKq0PsW+AXuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=360GPYGly2Vsq9tXg5V5q2IB4G4s4wNz8rU/2AywEEg=;
- b=NfD5cZcPyWYvFyRJ74Brp5Zu6xo1EWVNfIilfInstPCGn72IQEqrozR67cVFrVTcslwEInprH1Wlnn3MXcfT4B328oRau+ian5IVw5N5CM+PgjtOGiO+jV+yUebKLQpGaLMH8t9tgoLwYpcSiRBzM3ygBeiNM0aU5koFGi1zh68=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB4238.eurprd04.prod.outlook.com (2603:10a6:803:4e::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Wed, 24 Mar
- 2021 03:32:08 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c%5]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
- 03:32:08 +0000
-Message-ID: <ba7610119fbb676597d0d8f1bd0beffa076e171e.camel@nxp.com>
-Subject: Re: [PATCH] drm/imx: fix out of bounds array access warning
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Joe Perches <joe@perches.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 11:30:33 +0800
-In-Reply-To: <20210323130550.2289487-1-arnd@kernel.org>
-References: <20210323130550.2289487-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2PR06CA0021.apcprd06.prod.outlook.com
- (2603:1096:202:2e::33) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S235069AbhCXDbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:31:49 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3380 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232782AbhCXDbP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 23:31:15 -0400
+Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4F4txP5hCVz5fjd;
+        Wed, 24 Mar 2021 11:28:41 +0800 (CST)
+Received: from shaphisprc48410 (100.108.177.173) by
+ dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 11:31:11 +0800
+Date:   Wed, 24 Mar 2021 03:31:04 +0000
+From:   Zang Leigang <zangleigang@hisilicon.com>
+To:     Avri Altman <avri.altman@wdc.com>
+CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        <alim.akhtar@samsung.com>, <asutoshd@codeaurora.org>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <stanley.chu@mediatek.com>
+Subject: Re: [PATCH v6 02/10] scsi: ufshpb: Add host control mode support to
+ rsp_upiu
+Message-ID: <20210324033104.5kms7pez6arnkaoz@shaphisprc48410>
+References: <20210322081044.62003-1-avri.altman@wdc.com>
+ <20210322081044.62003-3-avri.altman@wdc.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry (119.31.174.66) by HK2PR06CA0021.apcprd06.prod.outlook.com (2603:1096:202:2e::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Wed, 24 Mar 2021 03:32:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 109f6b28-f225-482c-43f5-08d8ee756704
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4238:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4238526CE997BC3515894E3098639@VI1PR04MB4238.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:226;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OCJpf8T7dBOk1YwjPjVPiKkEE8ga6zbRbs8co3NsLzjOOasZnMNLEQdpQX12I5WUPH64iLIL8vlMxoYQ9S9biDkITlVQLtnT+ipjuG0MLGMStyAE9AfmnpMy8K7Y5DA5OEf3ZUHg/1+CAEn2nIg27gE369GdjVNvIdX2tmf+pit3EuTmkAY03dfxe/4Xu9EBB/HFYGI8jEt+bpfK7yg/v4/hc+fgC24E9fHp7DMhUD/c080ARzW3OqAP/P4Ld2VAYZpvPlHkxqSq4cYvw8N51ZxsBpZmcKH+/cHyMPFudfoiwvJXkugMyan7vEoAc8bZO/Fdly4P2K46d3OqcT7y3h+bnNRF3sPymEea92+UGg+f9CBGwxzSI9MmApGpiqMJhDadYn8BSbLJCpulun7Vh8W/fi77spRb71rxUXhXqnhcuCjv4wYN7D7IGmfzq5so9051UFXQWTjeMTruLdQ4oW+6HwUjb9HJU//6SruCWo10N1ykTAXYEhe2ShsVbkFjpwms7Iu8AcR/X3zTXEGE9Dyzo6LWTlav24xyUfST1Tusnt4z1vNy1b8z2Rj5J24eGKzZw2WqPdxAPsVkFKljtUHzlE0IoSavTlYQ31O8cHLAPz51uXOVeTOgRU6TJFtbvOi05gilBjUiwWNA/HkH7amztfDsAPxE/YBvF8s8hCo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(66556008)(5660300002)(7416002)(6486002)(2906002)(83380400001)(16526019)(956004)(66946007)(2616005)(6666004)(66476007)(186003)(52116002)(110136005)(316002)(54906003)(8936002)(8676002)(478600001)(6496006)(4326008)(26005)(36756003)(38100700001)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a3NsY2xqbjRXa05TbzJRQ0dOVUtUZXUxV052Ym1YeThBbzdKbDRFb2FWeVk0?=
- =?utf-8?B?dmVxMzhsTldFYXlWTFhJMTVpanlmNjdvQnNTZXdrZG4wL3EvSjVpM3d0NnJT?=
- =?utf-8?B?MnAzb1VoOUYrNzhEZWJveGUzQjlVQmNKVGFGcm82QjNtUVNwcjdDMzJoT0Ns?=
- =?utf-8?B?c2c5UXE4ZUo3SmpWTE5zZGlRVXBjbG5mMjZtV1RiOWdLK2RiQ2VuVG5DMEtq?=
- =?utf-8?B?UlpwMC9VNWFyT25rMURsYXlRMWJvMmxyVll4QlY5QUtJU3NEY3RtTkx2TXIv?=
- =?utf-8?B?cktWbnhqckUydXNjUXVuTU9EM1FBMVoxenFBOXVYdUlIZ1dPMVZhYzlqWWlS?=
- =?utf-8?B?TzhqYXd6eVFYVkhwcGE0dERxYnZjV05qWHdBc0VWVUhBZTZxVFlQbW9ZdEZR?=
- =?utf-8?B?U0lNd0EzbnhzVFNJUnlzcWdZdUZVQnVRYWE1SEh6YUluN05KaFg5NTRUUXUx?=
- =?utf-8?B?Y2Rtc0tjSkl4TFZUQk45bTdwSHArZm0xRE1rQTNmMFk5N0kxOExUM0QxdWFH?=
- =?utf-8?B?WDd0OGRsQnM3aXdiMEMrdk5HNmkyU25obFBtNTYyTGk5aUtqczROamdyTzJC?=
- =?utf-8?B?eWtGSGhQYWEvNjBLdUNaRmJWemYvQ1d0Tm91UDFiVUxNVzBCQ2JNVkRPdG51?=
- =?utf-8?B?M1dkL0J2dWJIRFpsdWxvdGpYMmVIRVVvWDVqenQ2QStJbEFaL1QvMzlEYjYy?=
- =?utf-8?B?M0tKdUtRUlNlYXZrS3BxNFhsUEp5RkJaQ0NuTmhWbmdYeGs2UHlKZWtFRWJq?=
- =?utf-8?B?dFhrbjYvWXN1SzliSk00eHNTK1ZKNnZ5eTJkc0Z4eDVxdjNzSFdIT1lEM0Ux?=
- =?utf-8?B?QUxrQ1RJd0hhKytuWjRBVWVUSnE4cC9aTkdNdzViOVkzM1E5YUxyUXRCaUI4?=
- =?utf-8?B?Rm9uTGdReHZkOTZqMVFUSXJxQlpoeG9jRTN1clc0ZjBvQmttUmFON0kyQWxK?=
- =?utf-8?B?VHBYcWZ6Y0gzSjRFL3NzQ1FTUWRhZUZGakt5NE5wdnpDYjdFNndtQU94d2xn?=
- =?utf-8?B?M3ZsVnpsL0UzekxTaUZnUG1Bc1hneDhZaE83Zkt0ZHpvM1c0L2J4R2NBOEo5?=
- =?utf-8?B?bFJjMU1zb3M3cjFRc0l1M0F2L3IvQW5EK283aWx6cUZubjFLMjZjTGhVUzA3?=
- =?utf-8?B?ZXIzTGNDVkxYUHRpaTlneGNHR0Z4NVVNSUdFKzA1VGhvb0UrSnBleU9iUGsz?=
- =?utf-8?B?eFQ3dDFOU0U2ZStKaWtmVU13RWZKcG9CTHVkL1VVR0xmWnE4dHJ0azdBWmlM?=
- =?utf-8?B?MndGOVhMS0MxTFhYd1MxRWZzRWRUbVN4d1lxQWJCSW9IcVNLWEIzYlNHU1Az?=
- =?utf-8?B?YytJdExLRTc1VkN5ZGs5ak5DdFhFNlF5cGc1cS9WNU1PK2xucVNBekEzYzQ3?=
- =?utf-8?B?czJKR25PNHA2emFZNlVpVUJQRjVDbHVvRVZiTFNFcWlPYnpmNzQ3UkRYcmFT?=
- =?utf-8?B?dW5xZ2dLRXNhUEVKV0JVWVo5T1Foc2lpV0tpdHdIR0piVFoxc2V0emx0MVh2?=
- =?utf-8?B?OWc4SC9MK3JWWllLZUNGSHIxTmNyU2lJV3o5R0drMG54WFVxaFIxZ1ByS0lu?=
- =?utf-8?B?UE1FVFRLSTVIdjJxaCtHUXJZOUJNSkRnVVFhc2hMeTBvc2xyNDgxVXdNdWhU?=
- =?utf-8?B?UC9aRmpsMnFiWXNPRWhVb29vTUtxb0lIOTFjODh4dGtDd21TWm02VEMycmln?=
- =?utf-8?B?TDVJZ2pScWxoNUFOSldRVTRHWEFhUnNiOTVCNWR3L1E1Y2RUeEJDeDZhQ09E?=
- =?utf-8?Q?+1ERm+2SBqUeIa2+Xrc5QP+Hi76Gz9Vr1Ka4Maj?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 109f6b28-f225-482c-43f5-08d8ee756704
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 03:32:08.2500
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WYs4KCB+k8DaMIzUMj+kAG49afwOSUVR/Uzvsbsng5nYu1Y0kfzp6EalaB5mM3V3AROp+h0uKdSNhxc4etSUBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4238
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210322081044.62003-3-avri.altman@wdc.com>
+User-Agent: NeoMutt/20171215
+X-Originating-IP: [100.108.177.173]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggeme759-chm.china.huawei.com (10.3.19.105)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-Thanks for your patch.
-
-It would be good to improve the patch's head line to something like:
-drm/imx: imx-ldb: fix out of bounds array access warning
-
-Regards,
-Liu Ying
-
-On Tue, 2021-03-23 at 14:05 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Mar 22, 2021 at 10:10:36AM +0200, Avri Altman wrote:
+> In device control mode, the device may recommend the host to either
+> activate or inactivate a region, and the host should follow. Meaning
+> those are not actually recommendations, but more of instructions.
 > 
-> When CONFIG_OF is disabled, building with 'make W=1' produces warnings
-> about out of bounds array access:
+> On the contrary, in host control mode, the recommendation protocol is
+> slightly changed:
+> a) The device may only recommend the host to update a subregion of an
+>    already-active region. And,
+> b) The device may *not* recommend to inactivate a region.
 > 
-> drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
-> drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
+> Furthermore, in host control mode, the host may choose not to follow any
+> of the device's recommendations. However, in case of a recommendation to
+> update an active and clean subregion, it is better to follow those
+> recommendation because otherwise the host has no other way to know that
+> some internal relocation took place.
 > 
-> Add an error check before the index is used, which helps with the
-> warning, as well as any possible other error condition that may be
-> triggered at runtime.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
 > ---
->  drivers/gpu/drm/imx/imx-ldb.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  drivers/scsi/ufs/ufshpb.c | 34 +++++++++++++++++++++++++++++++++-
+>  drivers/scsi/ufs/ufshpb.h |  2 ++
+>  2 files changed, 35 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-> index dbfe39e2f7f6..1210360cec8a 100644
-> --- a/drivers/gpu/drm/imx/imx-ldb.c
-> +++ b/drivers/gpu/drm/imx/imx-ldb.c
-> @@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
->  	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
->  	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index fb10afcbb49f..d4f0bb6d8fa1 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -166,6 +166,8 @@ static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
+>  	else
+>  		set_bit_len = cnt;
 >  
-> +	if (mux < 0) {
-> +		dev_warn(ldb->dev,
-> +			 "%s: invalid mux\n", __func__);
-> +		return;
-> +	}
+> +	set_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
 > +
->  	drm_panel_prepare(imx_ldb_ch->panel);
+>  	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
+>  	    srgn->srgn_state == HPB_SRGN_VALID)
+>  		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
+> @@ -235,6 +237,11 @@ static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
+>  	return false;
+>  }
 >  
->  	if (dual) {
-> @@ -255,6 +261,12 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
->  	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
->  	u32 bus_format = imx_ldb_ch->bus_format;
->  
-> +	if (mux < 0) {
-> +		dev_warn(ldb->dev,
-> +			 "%s: invalid mux\n", __func__);
-> +		return;
-> +	}
+> +static inline bool is_rgn_dirty(struct ufshpb_region *rgn)
+> +{
+> +	return test_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
+> +}
 > +
->  	if (mode->clock > 170000) {
->  		dev_warn(ldb->dev,
->  			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
+>  static int ufshpb_fill_ppn_from_page(struct ufshpb_lu *hpb,
+>  				     struct ufshpb_map_ctx *mctx, int pos,
+>  				     int len, u64 *ppn_buf)
+> @@ -713,6 +720,7 @@ static void ufshpb_put_map_req(struct ufshpb_lu *hpb,
+>  static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
+>  				     struct ufshpb_subregion *srgn)
+>  {
+> +	struct ufshpb_region *rgn;
+>  	u32 num_entries = hpb->entries_per_srgn;
+>  
+>  	if (!srgn->mctx) {
+> @@ -726,6 +734,10 @@ static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
+>  		num_entries = hpb->last_srgn_entries;
+>  
+>  	bitmap_zero(srgn->mctx->ppn_dirty, num_entries);
+> +
+> +	rgn = hpb->rgn_tbl + srgn->rgn_idx;
+> +	clear_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1245,6 +1257,18 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
+>  		srgn_i =
+>  			be16_to_cpu(rsp_field->hpb_active_field[i].active_srgn);
+>  
+> +		rgn = hpb->rgn_tbl + rgn_i;
+> +		if (hpb->is_hcm &&
+> +		    (rgn->rgn_state != HPB_RGN_ACTIVE || is_rgn_dirty(rgn))) {
+> +			/*
+> +			 * in host control mode, subregion activation
+> +			 * recommendations are only allowed to active regions.
+> +			 * Also, ignore recommendations for dirty regions - the
+> +			 * host will make decisions concerning those by himself
+> +			 */
+> +			continue;
+> +		}
+> +
 
+Hi Avri, host control mode also need the recommendations from device,
+because the bkops would make the ppn invalid, is that right?
+
+>  		dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
+>  			"activate(%d) region %d - %d\n", i, rgn_i, srgn_i);
+>  
+> @@ -1252,7 +1276,6 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
+>  		ufshpb_update_active_info(hpb, rgn_i, srgn_i);
+>  		spin_unlock(&hpb->rsp_list_lock);
+>  
+> -		rgn = hpb->rgn_tbl + rgn_i;
+>  		srgn = rgn->srgn_tbl + srgn_i;
+>  
+>  		/* blocking HPB_READ */
+> @@ -1263,6 +1286,14 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
+>  		hpb->stats.rb_active_cnt++;
+>  	}
+>  
+> +	if (hpb->is_hcm) {
+> +		/*
+> +		 * in host control mode the device is not allowed to inactivate
+> +		 * regions
+> +		 */
+> +		goto out;
+> +	}
+> +
+>  	for (i = 0; i < rsp_field->inactive_rgn_cnt; i++) {
+>  		rgn_i = be16_to_cpu(rsp_field->hpb_inactive_field[i]);
+>  		dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
+> @@ -1287,6 +1318,7 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
+>  		hpb->stats.rb_inactive_cnt++;
+>  	}
+>  
+> +out:
+>  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "Noti: #ACT %u #INACT %u\n",
+>  		rsp_field->active_rgn_cnt, rsp_field->inactive_rgn_cnt);
+>  
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index 7df30340386a..032672114881 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -121,6 +121,8 @@ struct ufshpb_region {
+>  
+>  	/* below information is used by lru */
+>  	struct list_head list_lru_rgn;
+> +	unsigned long rgn_flags;
+> +#define RGN_FLAG_DIRTY 0
+>  };
+>  
+>  #define for_each_sub_region(rgn, i, srgn)				\
+> -- 
+> 2.25.1
+> 
