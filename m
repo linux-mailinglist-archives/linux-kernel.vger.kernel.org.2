@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067A6347448
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE64B34744D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhCXJOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:14:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234605AbhCXJNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:13:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90ED06157F;
-        Wed, 24 Mar 2021 09:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616577227;
-        bh=w8CRVnJFyS/XR+Mj1hn0bNzvz+r35MHD7pK0TCVHjD4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Uo2mt6FtAPAq/f6vQn46VxbR2DRGY30BApaODqpGYP2p0eskhkEKbE+6NUzIy9+Mb
-         CqoaAFK4QSC2+gVl5gUS41iuTAxCz4f/4hCOL3gPdEU914dfbdCc5YO8YKCgDN2ksx
-         Gkt/9S6Pw4Y4qwl3JIo32a9eSTw35cKyzKc51DfI=
-Date:   Wed, 24 Mar 2021 10:13:44 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        id S231747AbhCXJOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234534AbhCXJOh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:14:37 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D9AC0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:14:36 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id x16so23626899wrn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:14:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4rN1YksKNQ6jMnv83wrys0vsQCA6pM1XeLstkQR9zSk=;
+        b=aaEalBsXBstsM7Ugh18M+hl8k/wTbYlQwQ6ihztFCEL9SFffFl/IlB3eU6LSKJs1k4
+         GjK340N7lCr3K0iNQ2HLCSKfu9qwSSS5Mp8zQ/OAzufhpBV6bxJQJuLmIMW602QW0Z0i
+         CTqj7hTA4262C48pcQPTWxgvKGSQ1LQgks/73S/V10RAeBK5hHJhx7ZbxahrIHGsK5bU
+         crb2aPqZrt9ArMgFvNEf6/iL2Ia25u/EldQEsOKbOrKgyMUfulRjc6gCETsPm62Fki99
+         ayEXOIgKaYa4YohjIIoMQ+HavVGjkXvTiQCd0/ZohrHC0rsOqSu+B+oZ12+Csh5u+2CE
+         xVgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4rN1YksKNQ6jMnv83wrys0vsQCA6pM1XeLstkQR9zSk=;
+        b=PAvWh7jcsDngxnIwMbvPFiThBES9t6C70ZyKvYiGZglUtuji0tCci+XgIDn5ESf0Q2
+         P786CAuj2t3tugkm3S5pUsBMcEd4efeW2BtdxC1MAf0QlG6x7aV18kmwwTjveB6ewy/O
+         A1KJ8La5Xk88kxzz2fGJXQrwRX4cn9fuvSlUzZHTUNtKOmZr64vj3Vbui0xBapqtxHI/
+         2ZTBjiKyKnI/ZPEtHDbP2jNLdfOePAL7mUwGpBaRduCWIUc85u8oMu3/uNsAeCVjdzd9
+         clJW8haOVBmwnR98/pj5awuCxMGMGGJpx0WJuMsWmXzQX81VZMR7X7cfLf2qSNgkloGr
+         sKLQ==
+X-Gm-Message-State: AOAM532/w5F7Yeqm84OIpQ7myCGDuRyrMg7BKayFXUjNhvCImr3KYIjw
+        9u/ztnmdEVynoZMhFRdx+hDypA==
+X-Google-Smtp-Source: ABdhPJwiwVGAQSOrEM4tqzstTbRBmqfvaxH3KFKNSYNSQI1y++GJvlZicb7puOlrOD6JdzLf3utu9Q==
+X-Received: by 2002:adf:e8c9:: with SMTP id k9mr2327816wrn.315.1616577275230;
+        Wed, 24 Mar 2021 02:14:35 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id n1sm2536565wro.36.2021.03.24.02.14.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 02:14:34 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 09:14:32 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Jingoo Han <jingoohan1@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        git@xilinx.com, saikrishna12468@gmail.com
-Subject: Re: [PATCH v4 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
-Message-ID: <YFsCyGO1cLcM7IG0@kroah.com>
-References: <1615969516-87663-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1615969516-87663-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <YFnwN6mqXml5xdR3@kroah.com>
- <e0a2c5b6-ff05-644c-8c88-b614a37b4929@xilinx.com>
- <YFr9GqNmYuEG2OvZ@kroah.com>
- <dabcfe43-568a-66c1-642e-eef065f9b5ab@xilinx.com>
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH 2/2] video: backlight: qcom-wled: Add PMI8994 compatible
+Message-ID: <20210324091432.GC2916463@dell>
+References: <20210228124106.135812-1-konrad.dybcio@somainline.org>
+ <20210228124106.135812-2-konrad.dybcio@somainline.org>
+ <20210322161810.biagj2qro66rv4gt@maple.lan>
+ <20210323083935.GF2916463@dell>
+ <CAMuHMdUamD4rAY1Sn-3Fb9Xf1B9g0FY0Pob8rAFsFR0ZcNZ0rw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <dabcfe43-568a-66c1-642e-eef065f9b5ab@xilinx.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdUamD4rAY1Sn-3Fb9Xf1B9g0FY0Pob8rAFsFR0ZcNZ0rw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:02:53AM +0100, Michal Simek wrote:
-> 
-> 
-> On 3/24/21 9:49 AM, Greg Kroah-Hartman wrote:
-> > On Wed, Mar 24, 2021 at 09:29:12AM +0100, Michal Simek wrote:
-> >> On 3/23/21 2:42 PM, Greg Kroah-Hartman wrote:
-> >>> On Wed, Mar 17, 2021 at 01:55:16PM +0530, Sai Krishna Potthuri wrote:
-> >>>> Adding pinctrl driver for Xilinx ZynqMP platform.
-> >>>> This driver queries pin information from firmware and registers
-> >>>> pin control accordingly.
-> >>>>
-> >>>> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-> >>>> ---
-> >>>>  drivers/pinctrl/Kconfig          |   13 +
-> >>>>  drivers/pinctrl/Makefile         |    1 +
-> >>>>  drivers/pinctrl/pinctrl-zynqmp.c | 1030 ++++++++++++++++++++++++++++++
-> >>>>  3 files changed, 1044 insertions(+)
-> >>>>  create mode 100644 drivers/pinctrl/pinctrl-zynqmp.c
-> >>>>
-> >>>> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-> >>>> index 815095326e2d..25d3c7208975 100644
-> >>>> --- a/drivers/pinctrl/Kconfig
-> >>>> +++ b/drivers/pinctrl/Kconfig
-> >>>> @@ -341,6 +341,19 @@ config PINCTRL_ZYNQ
-> >>>>  	help
-> >>>>  	  This selects the pinctrl driver for Xilinx Zynq.
-> >>>>  
-> >>>> +config PINCTRL_ZYNQMP
-> >>>> +	bool "Pinctrl driver for Xilinx ZynqMP"
-> >>>
-> >>> Please make this work as a module.
-> >>
-> >> The most of pinctrl drivers are builtin modules now which is not excuse
-> >> it is just fact.
-> >> $ git grep module_pla drivers/pinctrl/ | wc -l
-> >> 40
-> >> $ git grep  builtin_pla drivers/pinctrl/ | wc -l
-> >> 64
-> > 
-> > For new ones, we can do better, don't make us have to go back and fix
-> > this up later.
-> 
-> As I said not a big deal. If this is the way to go then I these rules
-> should be followed which is not what it is happening based on 3 latest
-> pinctrl drivers below.
+On Wed, 24 Mar 2021, Geert Uytterhoeven wrote:
 
-I do not disagree, but I point out issues when I see them, you got
-unlucky :)
+> Hi Lee,
+> 
+> On Tue, Mar 23, 2021 at 9:40 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > On Mon, 22 Mar 2021, Daniel Thompson wrote:
+> > > On Sun, Feb 28, 2021 at 01:41:05PM +0100, Konrad Dybcio wrote:
+> > > > Add a compatible for PMI8994 WLED. It uses the V4 of WLED IP.
+> > > >
+> > > > Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> > >
+> > > Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> >
+> > Why are you Reviewing/Acking a patch that was applied on the 10th?
+> 
+> Only 12 days later?!?
+> 
+> It's not uncommon to receive acks for patches after they have been
+> applied upstream. But it is if the patch was applied 10 years and 9
+> months ago!
+> https://lore.kernel.org/linux-m68k/F5513AE92A5A1047AC2F91AEBB9202680288CBBA3983@E2K7-MS2.ds.strath.ac.uk/
+
+That truly is next level! :)
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
