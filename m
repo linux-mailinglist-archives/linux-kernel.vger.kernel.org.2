@@ -2,225 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E275D34719D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E66934719B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbhCXG3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:29:03 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:36485 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhCXG2e (ORCPT
+        id S235535AbhCXG0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhCXG0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:28:34 -0400
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 12O6SF2Y021933;
-        Wed, 24 Mar 2021 15:28:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 12O6SF2Y021933
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1616567296;
-        bh=MpFvCRYoenu2OQWQCuu1YENNRzvcSrbyI7aw7UAmxW4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bQ2LpycnMVnx7XkKkfJD6gASsdqXaqI1ovIVIUIV8+WQjAaoqqKCDT4GSCs44zca+
-         FZ87Y1+SET88Wc6BJ5YyLyRbfb0jHu2ZPiUQmb/Mmq00ofq8WjPbP9V0oltmuYFHK+
-         Xynl3oEtEhX4Ud4FdzrALKThRNC8DbUE5kj0k7a6dibwmQ9UXKREGKgN8N/d/DPUCv
-         1jUUy/8Aqeqs8g6g32Grhals/70r9J5qhvLdyZ5n6gQ3RgF51RKvWAcj2RKM0fs6nJ
-         2HhNcP7oc/z+vMYIsZXSZPQBeipn5xxypbhi9CGxD525Gh3QcF4I8w/cVl60bFIPst
-         CAYJTUK0QZtDw==
-X-Nifty-SrcIP: [209.85.215.169]
-Received: by mail-pg1-f169.google.com with SMTP id v186so13951206pgv.7;
-        Tue, 23 Mar 2021 23:28:16 -0700 (PDT)
-X-Gm-Message-State: AOAM530/b4NVlcq0hMDp2e844boOjogmhHP7/l7rcL5GW73MwNFAIZ4J
-        M1FgyS+CPEWqqWfz1DY670gwuP8DSKllDfAoDVc=
-X-Google-Smtp-Source: ABdhPJydOLP1zGgE/BRmqJEf7gpvza0Dm4vJCq/f6k+bH7jUnOURyRApmIOEdHEDcbiGCwem5Gixz4ZYCIYh3q1KHR8=
-X-Received: by 2002:aa7:8814:0:b029:21d:d2ce:7be with SMTP id
- c20-20020aa788140000b029021dd2ce07bemr1716215pfo.80.1616567295504; Tue, 23
- Mar 2021 23:28:15 -0700 (PDT)
+        Wed, 24 Mar 2021 02:26:46 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DC1C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 23:26:46 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id t5so11774767qvs.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 23:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zx5C6uMzxw4Vl/QH2wrrkx5fCD68akObEgrDpyyxlCk=;
+        b=b/s6ea++OmzKaHyjlF4jVKmnk1lm7saJJobR/xeUEudDq+TzvYMh7wTnJ1tKscrSYv
+         SzCPxZ2Rc12zA9CHXAaAe7n2kNbK/EL7TaT3scmiiXyxaw6CltOT1OMcrNU6fOVvrnIJ
+         aFjh5rF+RtkDymmSboVqhhnBCgUtNH+apxn0dUN8ufTpEa7ksSii9TMRx3r0mZCigBJn
+         eqAflwQJ8E5Dsezw6k7PN0fZPTkGLsOTepTrzDtnFEcIqq0ZqgScxf3RzyrR+Z4pZGdt
+         9TX5MSKoHuXEApCYhhQsZmY2IPWsYtcNYoqzJpVimUaPog+SwfmA89EZiUi22tLPgTvf
+         GApA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zx5C6uMzxw4Vl/QH2wrrkx5fCD68akObEgrDpyyxlCk=;
+        b=BCmwr9f64LGDR244wv9UHBMEPzDlAbhDLV8TCi2K+iR+BzoN61IVIJYuDGrgma2pWZ
+         CiHHdx90kvhxgdQWLTqj2aCk8s+E3Usou3EKTXYUlBvTZB/LDm+4xSQRXkguyLsMngPe
+         NGUltF7o5ssEQnCnnEMzavls+s1FGyypGVHZd4B1JbHVGOMjAukW7a+lupMiDLCWHefI
+         1zjIyZJK6UXr8mlbOSZPfIHJTVraAjQ3cRoUr7L6KUZgROLP/W13LW3Jx+DLiDAIvBfK
+         TnGdv0Gm7+s6/LeS5epqiVnO+ieWs48JHl9PZpkzUxAbfdACLCjPwDm24AEhh8zhoXx9
+         G0PQ==
+X-Gm-Message-State: AOAM533JfuCfTqfgChdXTJ77QiNZ1pEf5q15M2CAfR+UmWGTATokR1ys
+        vnZRyQVtoPbPMwYb23oyjgI=
+X-Google-Smtp-Source: ABdhPJzXOlIsTO3ZJ60v4ubmCQ6pCT4W29rAfS8UsS7gOqmTnxeNDvElR+7W/aigEHC7OSxxhZ3QAw==
+X-Received: by 2002:a0c:b410:: with SMTP id u16mr1717214qve.8.1616567205719;
+        Tue, 23 Mar 2021 23:26:45 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.37.194])
+        by smtp.gmail.com with ESMTPSA id f12sm851826qti.63.2021.03.23.23.26.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 23:26:44 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     haver@linux.ibm.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] misc: genwqe: Rudimentary typo fixes
+Date:   Wed, 24 Mar 2021 11:58:28 +0530
+Message-Id: <20210324062828.14807-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <1614608540-1025-1-git-send-email-jshriram@codeaurora.org>
- <CAK7LNARjxtyiBAfejQKePp-f=MTpA2PjAEedsHyCjHx6_eoJqA@mail.gmail.com> <b1fb2334-a85e-c299-3439-b70e9cb63454@codeaurora.org>
-In-Reply-To: <b1fb2334-a85e-c299-3439-b70e9cb63454@codeaurora.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 24 Mar 2021 15:27:38 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATedZeZxoO_bdtfRdXZVFM_7FhX7okca5ZR4zwTc_bKvQ@mail.gmail.com>
-Message-ID: <CAK7LNATedZeZxoO_bdtfRdXZVFM_7FhX7okca5ZR4zwTc_bKvQ@mail.gmail.com>
-Subject: Re: [PATCH] scripts: Fix incremental build header re-generation
-To:     Jeevan Shriram <jshriram@codeaurora.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Trilok Soni <tsoni@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 11:55 AM Jeevan Shriram <jshriram@codeaurora.org> wrote:
->
->
-> On 3/1/2021 7:36 PM, Masahiro Yamada wrote:
-> > On Mon, Mar 1, 2021 at 11:23 PM Jeevan Shriram <jshriram@codeaurora.org> wrote:
-> >> compile.h and autoconf.h are ignored when checking headers sha as they
-> >> are always re-generated for every kernel compilation. However,
-> >> these two headers are packaged into kheaders tar. During incremental
-> >> compilation of kernel, kheaders tar file is always generated and re-packaged
-> >> irrespective of the changes in headers.
-> >
-> > I do not see this problem.
-> > Could you describe the steps to reproduce it, please?
-> >
-> Without making any changes in the kernel or it's headers, re-compile the kernel. i.e.,incremental kernel build without any changes.
-> I have added following log in gen_kheaders.sh script for confirming the hash differences.
+
+s/requsted/requested/  .....two different places.
+s/equests/requests/
+s/occured/occurred/    ......two different places.
+s/conditon/condition/
+s/requestors/requesters/
 
 
-Of course they are different because you are comparing
-the hashes of two different files.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/misc/genwqe/card_ddcb.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/misc/genwqe/card_ddcb.c b/drivers/misc/genwqe/card_ddcb.c
+index 0db4000dedf2..98f6cd3fc66a 100644
+--- a/drivers/misc/genwqe/card_ddcb.c
++++ b/drivers/misc/genwqe/card_ddcb.c
+@@ -316,7 +316,7 @@ static int enqueue_ddcb(struct genwqe_dev *cd, struct ddcb_queue *queue,
 
+ /**
+  * copy_ddcb_results() - Copy output state from real DDCB to request
+- * @req:        pointer to requsted DDCB parameters
++ * @req:        pointer to requested DDCB parameters
+  * @ddcb_no:    pointer to ddcb number being tapped
+  *
+  * Copy DDCB ASV to request struct. There is no endian
+@@ -356,7 +356,7 @@ static void copy_ddcb_results(struct ddcb_requ *req, int ddcb_no)
+ }
 
->
-> diff --git a/kernel/gen_kheaders.sh b/kernel/gen_kheaders.sh
-> index b7425a0..ee542a0 100755
-> --- a/kernel/gen_kheaders.sh
-> +++ b/kernel/gen_kheaders.sh
-> @@ -40,6 +40,10 @@ obj_files_md5="$(find $dir_list -name "*.h"                     |
->   # Any changes to this script will also cause a rebuild of the archive.
->   this_file_md5="$(ls -l $sfile | md5sum | cut -d ' ' -f1)"
->   if [ -f $tarfile ]; then tarfile_md5="$(md5sum $tarfile | cut -d ' ' -f1)"; fi
-> +
-> +echo "Old Tar file $tarfile_md5"
+ /**
+- * genwqe_check_ddcb_queue() - Checks DDCB queue for completed work equests.
++ * genwqe_check_ddcb_queue() - Checks DDCB queue for completed work requests.
+  * @cd:         pointer to genwqe device descriptor
+  * @queue:	queue to be checked
+  *
+@@ -460,7 +460,7 @@ static int genwqe_check_ddcb_queue(struct genwqe_dev *cd,
+ /**
+  * __genwqe_wait_ddcb(): Waits until DDCB is completed
+  * @cd:         pointer to genwqe device descriptor
+- * @req:        pointer to requsted DDCB parameters
++ * @req:        pointer to requested DDCB parameters
+  *
+  * The Service Layer will update the RETC in DDCB when processing is
+  * pending or done.
+@@ -498,7 +498,7 @@ int __genwqe_wait_ddcb(struct genwqe_dev *cd, struct ddcb_requ *req)
 
+ 	/*
+ 	 * We need to distinguish 3 cases here:
+-	 *   1. rc == 0              timeout occured
++	 *   1. rc == 0              timeout occurred
+ 	 *   2. rc == -ERESTARTSYS   signal received
+ 	 *   3. rc > 0               remaining jiffies condition is true
+ 	 */
+@@ -543,7 +543,7 @@ int __genwqe_wait_ddcb(struct genwqe_dev *cd, struct ddcb_requ *req)
+ 		return -EINVAL;
+ 	}
 
-This is the hash of kernel/kheaders_data.tar.xz
-
-
-> +echo "New Tar file hash $this_file_md5"
-
-
-This is the hash of kernel/gen_kheaders.sh
-
-
-
-
-> +
->   if [ -f kernel/kheaders.md5 ] &&
->          [ "$(cat kernel/kheaders.md5|head -1)" == "$src_files_md5" ] &&
->          [ "$(cat kernel/kheaders.md5|head -2|tail -1)" == "$obj_files_md5" ] &&
->
-> log output :
-> 89306 19:29:02.109961   CHK     kernel/kheaders_data.tar.xz
-> 89307 19:29:02.109971 Old Tar file 2aa6990e4183c31a862951f4bcac037e
-> 89308 19:29:02.109982 New Tar file hash ecf84e700c7cacfe8b35a0905859582d
-
-
-I do not understand what your claim is.
-
-
-
-CHK     kernel/kheaders_data.tar.xz
-
-is displayed when it is checking the hash in order to
-determine if the tarball should be updated.
-
-
-GEN     kernel/kheaders_data.tar.xz
-
-is displayed when the tarball is really updated.
-
-
-
-
-
-[Incremental build with no change]
-
-
-masahiro@oscar:~/ref/linux$ make -j24
-  DESCEND  objtool
-  CALL    scripts/atomic/check-atomics.sh
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  CHK     kernel/kheaders_data.tar.xz
-Kernel: arch/x86/boot/bzImage is ready  (#2)
-
-
-[Touch one header and rebuild]
-
-masahiro@oscar:~/ref/linux$ touch include/uapi/drm/exynos_drm.h
-masahiro@oscar:~/ref/linux$ make -j24
-  DESCEND  objtool
-  CALL    scripts/atomic/check-atomics.sh
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  CHK     kernel/kheaders_data.tar.xz
-  GEN     kernel/kheaders_data.tar.xz
-  CC      kernel/kheaders.o
-  AR      kernel/built-in.a
-  GEN     .version
-  CHK     include/generated/compile.h
-  UPD     include/generated/compile.h
-  CC      init/version.o
-  AR      init/built-in.a
-  LD      vmlinux.o
-  MODPOST vmlinux.symvers
-  MODINFO modules.builtin.modinfo
-  GEN     modules.builtin
-  LD      .tmp_vmlinux.kallsyms1
-  KSYMS   .tmp_vmlinux.kallsyms1.S
-  AS      .tmp_vmlinux.kallsyms1.S
-  LD      .tmp_vmlinux.kallsyms2
-  KSYMS   .tmp_vmlinux.kallsyms2.S
-  AS      .tmp_vmlinux.kallsyms2.S
-  LD      vmlinux
-  SORTTAB vmlinux
-  SYSMAP  System.map
-  MODPOST Module.symvers
-  CC      arch/x86/boot/version.o
-  VOFFSET arch/x86/boot/compressed/../voffset.h
-  OBJCOPY arch/x86/boot/compressed/vmlinux.bin
-  RELOCS  arch/x86/boot/compressed/vmlinux.relocs
-  CC      arch/x86/boot/compressed/kaslr.o
-  CC      arch/x86/boot/compressed/misc.o
-  GZIP    arch/x86/boot/compressed/vmlinux.bin.gz
-  MKPIGGY arch/x86/boot/compressed/piggy.S
-  AS      arch/x86/boot/compressed/piggy.o
-  LD      arch/x86/boot/compressed/vmlinux
-  ZOFFSET arch/x86/boot/zoffset.h
-  OBJCOPY arch/x86/boot/vmlinux.bin
-  AS      arch/x86/boot/header.o
-  LD      arch/x86/boot/setup.elf
-  OBJCOPY arch/x86/boot/setup.bin
-  BUILD   arch/x86/boot/bzImage
-Kernel: arch/x86/boot/bzImage is ready  (#3)
-
-
-
-
-
-
-
-> >> Change-Id: I7a64faebb81df44c32230b0fea1d6df09d7ce66f
-> >> Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
-> >> ---
-> >>   kernel/gen_kheaders.sh | 3 +--
-> >>   1 file changed, 1 insertion(+), 2 deletions(-)
-> >>
-> >> diff --git a/kernel/gen_kheaders.sh b/kernel/gen_kheaders.sh
-> >> index c1510f0..5499f72 100755
-> >> --- a/kernel/gen_kheaders.sh
-> >> +++ b/kernel/gen_kheaders.sh
-> >> @@ -51,8 +51,7 @@ this_file_md5="$(ls -l $sfile | md5sum | cut -d ' ' -f1)"
-> >>   if [ -f $tarfile ]; then tarfile_md5="$(md5sum $tarfile | cut -d ' ' -f1)"; fi
-> >>   if [ -f kernel/kheaders.md5 ] &&
-> >>          [ "$(head -n 1 kernel/kheaders.md5)" = "$headers_md5" ] &&
-> >> -       [ "$(head -n 2 kernel/kheaders.md5 | tail -n 1)" = "$this_file_md5" ] &&
-> >> -       [ "$(tail -n 1 kernel/kheaders.md5)" = "$tarfile_md5" ]; then
-> >> +       [ "$(head -n 2 kernel/kheaders.md5 | tail -n 1)" = "$this_file_md5" ]; then
-> >>                  exit
-> >>   fi
-> >>
-> >> --
-> >> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> >> a Linux Foundation Collaborative Project
-> >>
-> >
+-	/* Severe error occured. Driver is forced to stop operation */
++	/* Severe error occurred. Driver is forced to stop operation */
+ 	if (cd->card_state != GENWQE_CARD_USED) {
+ 		dev_err(&pci_dev->dev,
+ 			"[%s] err: DDCB#%d forced to stop (rc=%d)\n",
+@@ -1002,7 +1002,7 @@ static int genwqe_next_ddcb_ready(struct genwqe_dev *cd)
+  * @cd:         pointer to genwqe device descriptor
+  *
+  * Keep track on the number of DDCBs which ware currently in the
+- * queue. This is needed for statistics as well as conditon if we want
++ * queue. This is needed for statistics as well as condition if we want
+  * to wait or better do polling in case of no interrupts available.
+  */
+ int genwqe_ddcbs_in_flight(struct genwqe_dev *cd)
+@@ -1182,7 +1182,7 @@ static irqreturn_t genwqe_vf_isr(int irq, void *dev_id)
+  *
+  * The idea is to check if there are DDCBs in processing. If there are
+  * some finished DDCBs, we process them and wakeup the
+- * requestors. Otherwise we give other processes time using
++ * requesters. Otherwise we give other processes time using
+  * cond_resched().
+  */
+ static int genwqe_card_thread(void *data)
 --
-Best Regards
-Masahiro Yamada
+2.30.1
+
