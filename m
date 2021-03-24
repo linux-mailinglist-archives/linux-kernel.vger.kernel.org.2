@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEB3347D7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E480347D71
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234688AbhCXQRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234131AbhCXQQx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:16:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346B7C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:16:53 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 17:16:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616602610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=TDc6obC9xxGB9aleYAOscRGaYtdO6g42dF2WqEr7Bb4=;
-        b=aaTm+KYvi4nbkGUi+UW4/9Ws15lXkt+qbnNZUBYW44t+F+DBYgRNINmSmHda/en8XLQBh3
-        vKMxZuaBPIvsLYeBz9k6zWVjmrB+5e72OLpb+IrkLbe0FItzndUxKZkrRuZEdkH8LCPK+H
-        6M3kzo+OwRFYDK2tpC0Ue+Co6ih5+M8mw+QgsWesBhnU50xraMj5O9MyOtsambmXR15PED
-        WPng98Ygq3jP2sabeY94HxKOi/KxXrio+DiOk4lu3ASmMFBqiIaE5HdTZ8rFrcpYvGatEW
-        2SogUzKWa4uHXKRq/iPoXwg4Y2FsBr5kx3wxhyz14fzo7zIm2NIbGYgzV8eDgg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616602610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=TDc6obC9xxGB9aleYAOscRGaYtdO6g42dF2WqEr7Bb4=;
-        b=o3tSY0gUSx3rxvWOi15hR6djayRJ2X1MXS3y3ME517NBobLdiT7r2zGFVLLD9gwg9NwaEZ
-        Tay+ePqDYjLLw0DQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH] locking/rtmutex: Use correct define for debug
-Message-ID: <20210324161649.7x25oyj44lelhgls@linutronix.de>
+        id S232746AbhCXQPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:15:09 -0400
+Received: from mga11.intel.com ([192.55.52.93]:57098 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230035AbhCXQOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:14:35 -0400
+IronPort-SDR: zfGTiFEjKYvtYdtrDBg2JmPFkHkDM31AVIESN2o4IN/pF8FZLlrYnuAeT6rTbFpQSWc+CyNxmY
+ nhDw2gaHwFyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="187430914"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="187430914"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 09:14:35 -0700
+IronPort-SDR: QSC95SEdrOKTkNAZDK+sqyjUDZsIHx2HWakvGcOAsBjSY6RfDxOQm0tHKN5ZPswqAR2wDcgFXZ
+ I+y6CZWu0a8w==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="391356730"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 09:14:34 -0700
+Date:   Wed, 24 Mar 2021 09:17:01 -0700
+From:   Jacob Pan <jacob.jun.pan@intel.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        jacob.jun.pan@intel.com
+Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <20210324091701.63c9ce8e@jacob-builder>
+In-Reply-To: <YFjn7wv/iMO4Isgz@google.com>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+        <20210304231946.2766648-2-vipinsh@google.com>
+        <20210319142801.7dcce403@jacob-builder>
+        <YFjn7wv/iMO4Isgz@google.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no such thing like CONFIG_RT_MUTEX_DEBUG. The debugging code
-for rtmutex is hidding behind CONFIG_DEBUG_RT_MUTEXES.
+Hi Vipin,
 
-Use CONFIG_DEBUG_RT_MUTEXES for debugging.
+On Mon, 22 Mar 2021 11:54:39 -0700, Vipin Sharma <vipinsh@google.com> wrote:
 
-Fixes: 3ac7d0ecf0e18 ("locking/rtmutex: Restrict the trylock WARN_ON() to debug")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/locking/rtmutex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, Mar 19, 2021 at 02:28:01PM -0700, Jacob Pan wrote:
+> > On Thu,  4 Mar 2021 15:19:45 -0800, Vipin Sharma <vipinsh@google.com>
+> > wrote:  
+> > > +#ifndef _MISC_CGROUP_H_
+> > > +#define _MISC_CGROUP_H_
+> > > +  
+> > nit: should you do #include <linux/cgroup.h>?
+> > Otherwise, css may be undefined.  
+> 
+> User of this controller will use get_curernt_misc_cg() API which returns
+> a pointer. Ideally the user should use this pointer and they shouldn't
+> have any need to access "css" in their code. They also don't need to
+> create a object of 'struct misc_cg{}', because that won't be correct misc
+> cgroup object. They should just declare a pointer like we are doing here
+> in 'struct kvm_sev_info {}'.
+> 
+> If they do need to use "css" then they can include cgroup header in their
+> code.
+> 
+I didn't mean the users of misc_cgroup will use css directly. I meant if I
+want to use misc cgruop in ioasid.c, I have to do the following to avoid
+undefined css:
+#include <linux/cgroup.h>
+#include <linux/misc_cgroup.h>
 
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index d584e32dae50a..56f1278150637 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1504,7 +1504,7 @@ int __sched rt_mutex_trylock(struct rt_mutex *lock)
- {
- 	int ret;
- 
--	if (IS_ENABLED(CONFIG_RT_MUTEX_DEBUG) && WARN_ON_ONCE(!in_task()))
-+	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES) && WARN_ON_ONCE(!in_task()))
- 		return 0;
- 
- 	ret = rt_mutex_fasttrylock(lock, rt_mutex_slowtrylock);
--- 
-2.31.0
+So it might be simpler if you do #include <linux/cgroup.h> inside
+misc_cgroup.h. Then in ioasid.c, I only need to do
+#include <linux/misc_cgroup.h>.
 
+> Let me know if I am overlooking something here.
+> 
+> Thanks
+> Vipin Sharma
+
+
+Thanks,
+
+Jacob
