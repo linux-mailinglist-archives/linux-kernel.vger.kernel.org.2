@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9E8348205
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0C7348208
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237814AbhCXTeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        id S237886AbhCXThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237780AbhCXTdr (ORCPT
+        with ESMTP id S237659AbhCXTge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:33:47 -0400
-Received: from smtp-190a.mail.infomaniak.ch (smtp-190a.mail.infomaniak.ch [IPv6:2001:1600:4:17::190a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF839C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:33:44 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F5JLt5wb8zMq2dR;
-        Wed, 24 Mar 2021 20:33:42 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F5JLr3wPFzlh8Td;
-        Wed, 24 Mar 2021 20:33:40 +0100 (CET)
-Subject: Re: [PATCH v31 01/12] landlock: Add object management
-To:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210324191520.125779-1-mic@digikod.net>
- <20210324191520.125779-2-mic@digikod.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <3908b240-8a4b-9bd7-bb5f-b59eaed7cb1f@digikod.net>
-Date:   Wed, 24 Mar 2021 20:34:19 +0100
-User-Agent: 
+        Wed, 24 Mar 2021 15:36:34 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC95C061763;
+        Wed, 24 Mar 2021 12:36:33 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v11so25613835wro.7;
+        Wed, 24 Mar 2021 12:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gWw8pr/c6qQDp74PKwcrUz7UHUPDPno5aG6deS6EemM=;
+        b=XprtAHT2IgD43tNdUTswa8Xa+723tWR3QDEneZ6XeqjON5u3wyLvGkD1bLZDbXGceh
+         BE8i4ZLnO3v0I3cZfku+kWF/gXEpJJbd20+wUnIi1Gb3T0htNxSalzMIcOLBCTL0zYKE
+         kT4U02CMc9eMNRvvuWOBt3iY2DmUHV8evM5HMJr4QB3qdVMwVDvP+3I1F8fOlHaTir3s
+         82uY9PuXTD+FGFUjAXzeWFciBBptLgauW5yrpuhRGmNMgR1rkuAnsKuLVD0NeJYViS22
+         ChCNfUJO+VcA9ShcsV3qEBFVX6gyFYo4ll++8E68Sarnk8hjLmh0T+i7mp1q0dz72VDW
+         TgIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gWw8pr/c6qQDp74PKwcrUz7UHUPDPno5aG6deS6EemM=;
+        b=JG+jLE3a5jt5/rAjhZ/B3tC+uWVv2chYNE5Kr6qeLZZa/TmN4/6m5nsASObVngpOBA
+         oe/O1SrctJG9pCoYiL5O30OEILsfADFJ2GRS17iyHtNNommwShzKU+u0HValrshE5jSv
+         tycw+gQfQPvMi6XA2JxslCXcnf4XTgt2y3PkecvBv2KPWOcVQAyFL9ZtsACRv7phcg1J
+         1Yhj1LPv6eDu05hMVmC8OOpXw3T6jqdcoytSIOzJRBQHLSj1IpqRoJn1uOv7kMH9U/hw
+         86NwxSgsh5gdZK+RBYtckNir+Rg0VQ646puvKqlBTroJIcXrwbByJYEbAXlR893XmUKR
+         1xeA==
+X-Gm-Message-State: AOAM533PJ5UU5XvOgmZT4vgzzRwyiX4ujvwbd3SMnKHGRCvLf99aSei0
+        3+Yez8rFCawlr12/bNvtYsw=
+X-Google-Smtp-Source: ABdhPJxUVepXuAteGW5kgBtzDkaeOzmkHJHdujPY13/gI/OYCBAworZWBrB+bd/x2f2bbg2S3i2wkQ==
+X-Received: by 2002:a5d:6dcc:: with SMTP id d12mr5023301wrz.136.1616614592535;
+        Wed, 24 Mar 2021 12:36:32 -0700 (PDT)
+Received: from localhost.localdomain (p200300f137001200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3700:1200:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id n3sm3573277wmi.7.2021.03.24.12.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 12:36:31 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     hauke@hauke-m.de, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
+        davem@davemloft.net, kuba@kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH net] net: dsa: lantiq_gswip: Let GSWIP automatically set the xMII clock
+Date:   Wed, 24 Mar 2021 20:36:04 +0100
+Message-Id: <20210324193604.1433230-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210324191520.125779-2-mic@digikod.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The xMII interface clock depends on the PHY interface (MII, RMII, RGMII)
+as well as the current link speed. Explicitly configure the GSWIP to
+automatically select the appropriate xMII interface clock.
 
-On 24/03/2021 20:15, Mickaël Salaün wrote:
-[...]
-> diff --git a/security/landlock/object.h b/security/landlock/object.h
-> new file mode 100644
-> index 000000000000..3e5d5b6941c3
-> --- /dev/null
-> +++ b/security/landlock/object.h
-> @@ -0,0 +1,91 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Landlock LSM - Object management
-> + *
-> + * Copyright © 2016-2020 Mickaël Salaün <mic@digikod.net>
-> + * Copyright © 2018-2020 ANSSI
-> + */
-> +
-> +#ifndef _SECURITY_LANDLOCK_OBJECT_H
-> +#define _SECURITY_LANDLOCK_OBJECT_H
-> +
-> +#include <linux/compiler_types.h>
-> +#include <linux/refcount.h>
-> +#include <linux/spinlock.h>
-> +
-> +struct landlock_object;
-> +
-> +/**
-> + * struct landlock_object_underops - Operations on an underlying object
-> + */
-> +struct landlock_object_underops {
-> +	/**
-> +	 * @release: Releases the underlying object (e.g. iput() for an inode).
-> +	 */
-> +	void (*release)(struct landlock_object *const object)
-> +		__releases(object->lock);
-> +};
-> +
-> +/**
-> + * struct landlock_object - Security blob tied to a kernel object
-> + *
-> + * The goal of this structure is to enable to tie a set of ephemeral access
-> + * rights (pertaining to different domains) to a kernel object (e.g an inode)
-> + * in a safe way.  This implies to handle concurrent use and modification.
-> + *
-> + * The lifetime of a &struct landlock_object depends of the rules referring to
+This fixes an issue seen by some users where ports using an external
+RMII or RGMII PHY were deaf (no RX or TX traffic could be seen). Most
+likely this is due to an "invalid" xMII clock being selected either by
+the bootloader or hardware-defaults.
 
-You should read "depends on"…
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+It would be great to have this fix backported to Linux 5.4 and 5.10 to
+get rid of one more blocker which prevents OpenWrt from switching to
+this new in-tree driver.
+
+
+ drivers/net/dsa/lantiq_gswip.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index 52e865a3912c..809dfa3be6bb 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -799,10 +799,15 @@ static int gswip_setup(struct dsa_switch *ds)
+ 	/* Configure the MDIO Clock 2.5 MHz */
+ 	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
+ 
+-	/* Disable the xMII link */
+-	for (i = 0; i < priv->hw_info->max_ports; i++)
++	for (i = 0; i < priv->hw_info->max_ports; i++) {
++		/* Disable the xMII link */
+ 		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, i);
+ 
++		/* Automatically select the xMII interface clock */
++		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_RATE_MASK,
++				   GSWIP_MII_CFG_RATE_AUTO, i);
++	}
++
+ 	/* enable special tag insertion on cpu port */
+ 	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
+ 			  GSWIP_FDMA_PCTRLp(cpu_port));
+-- 
+2.31.0
+
