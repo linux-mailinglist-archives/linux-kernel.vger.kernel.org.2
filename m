@@ -2,48 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4DE346EA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145E6346EA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhCXBY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:24:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14132 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234501AbhCXBYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:24:31 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4r7n5sxxz19HqG;
-        Wed, 24 Mar 2021 09:22:29 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
- 2021 09:24:21 +0800
-Subject: Re: [f2fs-dev] [PATCH -next] f2fs: fix wrong comment of nat_tree_lock
-To:     qiulaibin <qiulaibin@huawei.com>, <jaegeuk@kernel.org>
-CC:     <chao@kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-References: <20210323114130.2288596-1-qiulaibin@huawei.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <a73ac76e-330b-f062-942a-ee7aa8d63ad4@huawei.com>
-Date:   Wed, 24 Mar 2021 09:24:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S234485AbhCXBZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:25:30 -0400
+Received: from m12-12.163.com ([220.181.12.12]:45077 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234301AbhCXBZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 21:25:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=O4/+Y
+        l7+L+jA/cvkns/Is7wuSzLFWxwyEvnNlw4szcQ=; b=iYLrgz8UTLylqUtlnSiW4
+        ilK50eFueW79myS7GXwCThjbfV3IHviVlquvfENcer/rKyKKPkjm6gZAO3ofb7+G
+        3O+6HVirRMv/dw905YhZmKl96fm2O94uytPZlIpfi1JXkYu2kOvry/RtlvHwVoLD
+        DJA9g11NmDP6ayiyeNB4LA=
+Received: from localhost (unknown [218.94.48.178])
+        by smtp8 (Coremail) with SMTP id DMCowABnyxzHlFpg8X_KWA--.58686S2;
+        Wed, 24 Mar 2021 09:24:24 +0800 (CST)
+Date:   Wed, 24 Mar 2021 09:24:35 +0800
+From:   Jian Dong <dj0227@163.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     matthias.bgg@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, huyue2@yulong.com,
+        Jian Dong <dongjian@yulong.com>
+Subject: Re: [PATCH] regulator: mt6360: remove redundant error print
+Message-ID: <20210324092435.00000343@163.com>
+In-Reply-To: <20210323171628.GA9323@sirena.org.uk>
+References: <1616502161-125407-1-git-send-email-dj0227@163.com>
+        <20210323171628.GA9323@sirena.org.uk>
+Organization: yulong
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210323114130.2288596-1-qiulaibin@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+X-CM-TRANSID: DMCowABnyxzHlFpg8X_KWA--.58686S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWkCFyDtF4fJr15Zw15twb_yoWfWFX_CF
+        1fCa1IkwsrArsrKFnIqF9IvrZxtw1qqa40q39rKFW3AryfZFn8J3srCryxZr4rX3y0krnx
+        uwnYvr4UXr17ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUb3C7UUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: dgmqjjqx6rljoofrz/1tbiqAhf3Vc7UBLfsQAAsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/23 19:41, qiulaibin wrote:
-> Do trivial comment fix of nat_tree_lock.
+On Tue, 23 Mar 2021 17:16:28 +0000
+Mark Brown <broonie@kernel.org> wrote:
+
+> On Tue, Mar 23, 2021 at 08:22:41PM +0800, Jian Dong wrote:
+> > From: Jian Dong <dongjian@yulong.com>
+> > 
+> > fixes coccicheck warning:
+> > 
+> > drivers/regulator/mt6360-regulator.c:384:3-10: line 384 is
+> > redundant because platform_get_irq() already prints an error  
 > 
-> Signed-off-by: qiulaibin <qiulaibin@huawei.com>
+> This doesn't apply against current code, please check and resend.
+> 
+> Applying: regulator: mt6360: remove redundant error print
+> error: sha1 information is lacking or useless
+> (drivers/regulator/mt6360-regulator.c). error: could not build fake
+> ancestor Patch failed at 0001 regulator: mt6360: remove redundant
+> error print
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Hi 
 
-Thanks,
+I find the problem, before this patch, I had commit a patch 
+"[PATCH]regulator: Use IRQF_ONESHOT", and it hasn't be accepted now, So
+the current code is different.
+
+I will modify and resend later.  
+
