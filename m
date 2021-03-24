@@ -2,268 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D3E346F00
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86D8346F09
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhCXBqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:46:17 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:22236 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231735AbhCXBp4 (ORCPT
+        id S231952AbhCXBtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:49:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3317 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhCXBsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:45:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616550356; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=LF77Fb8g8D35F3nzQv0p179rDM8pO7IbyswGcBVEBEg=;
- b=AUtF7mueIeG0j1nn/3xT6TukCfNMAj9asq2YLt+UdyIqmZJrvyWWzafsH89YJwx2uD94DJMw
- nNiweDg6GV1SNL/rkEaR4eqSWF0oPAunNHoBPPZ82Cjy0NJGcXPcXOMRy/QWwXK3+QMgVBZM
- GexFJdfLuTbAH/lkxC8QufUfXSQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 605a99cce3fca7d0a6cc73a7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Mar 2021 01:45:48
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 227F1C43465; Wed, 24 Mar 2021 01:45:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5597C433ED;
-        Wed, 24 Mar 2021 01:45:45 +0000 (UTC)
+        Tue, 23 Mar 2021 21:48:53 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F4rfX5jh6z1476S;
+        Wed, 24 Mar 2021 09:45:40 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 24 Mar 2021 09:48:50 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 09:48:50 +0800
+Subject: Re: [RFC PATCH v5 02/10] tools headers: Add a macro to get HUGETLB
+ page sizes for mmap
+To:     Andrew Jones <drjones@redhat.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210323135231.24948-1-wangyanan55@huawei.com>
+ <20210323135231.24948-3-wangyanan55@huawei.com>
+ <20210323140341.nkikwolwzpu6ectp@kamzik.brq.redhat.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <4b4df379-4fe4-abf3-3756-448290309a1d@huawei.com>
+Date:   Wed, 24 Mar 2021 09:48:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 24 Mar 2021 09:45:45 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     daejun7.park@samsung.com, Bean Huo <huobean@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, asutoshd@codeaurora.org,
-        stanley.chu@mediatek.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
-In-Reply-To: <DM6PR04MB657535F2F25BB41CAD191DB6FC649@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <f224bea78cf235ee94823528f07e28a6@codeaurora.org>
- <1df7bb51dc481c3141cdcf85105d3a5b@codeaurora.org>
- <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
- <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
- <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
- <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
- <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
- <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
- <20210323061922epcms2p739666492ebb458d70deab026d074caf4@epcms2p7>
- <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p2>
- <20210323063726epcms2p28aadb16bb96943ade1d2b288bb634811@epcms2p2>
- <a9017bbb57618c5560b21c1cdadb4f80@codeaurora.org>
- <DM6PR04MB657535F2F25BB41CAD191DB6FC649@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <dfb68d3632340c2ddffa487c69723aa3@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20210323140341.nkikwolwzpu6ectp@kamzik.brq.redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-23 20:48, Avri Altman wrote:
->> 
->> On 2021-03-23 14:37, Daejun Park wrote:
->> >> On 2021-03-23 14:19, Daejun Park wrote:
->> >>>> On 2021-03-23 13:37, Daejun Park wrote:
->> >>>>>> On 2021-03-23 12:22, Can Guo wrote:
->> >>>>>>> On 2021-03-22 17:11, Bean Huo wrote:
->> >>>>>>>> On Mon, 2021-03-22 at 15:54 +0900, Daejun Park wrote:
->> >>>>>>>>> +       switch (rsp_field->hpb_op) {
->> >>>>>>>>>
->> >>>>>>>>> +       case HPB_RSP_REQ_REGION_UPDATE:
->> >>>>>>>>>
->> >>>>>>>>> +               if (data_seg_len != DEV_DATA_SEG_LEN)
->> >>>>>>>>>
->> >>>>>>>>> +                       dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->> >>>>>>>>>
->> >>>>>>>>> +                                "%s: data seg length is not
->> >>>>>>>>> same.\n",
->> >>>>>>>>>
->> >>>>>>>>> +                                __func__);
->> >>>>>>>>>
->> >>>>>>>>> +               ufshpb_rsp_req_region_update(hpb, rsp_field);
->> >>>>>>>>>
->> >>>>>>>>> +               break;
->> >>>>>>>>>
->> >>>>>>>>> +       case HPB_RSP_DEV_RESET:
->> >>>>>>>>>
->> >>>>>>>>> +               dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
->> >>>>>>>>>
->> >>>>>>>>> +                        "UFS device lost HPB information
->> >>>>>>>>> during
->> >>>>>>>>> PM.\n");
->> >>>>>>>>>
->> >>>>>>>>> +               break;
->> >>>>>>>>
->> >>>>>>>> Hi Deajun,
->> >>>>>>>> This series looks good to me. Just here I have one question. You
->> >>>>>>>> didn't
->> >>>>>>>> handle HPB_RSP_DEV_RESET, just a warning.  Based on your SS UFS,
->> >>>>>>>> how
->> >>>>>>>> to
->> >>>>>>>> handle HPB_RSP_DEV_RESET from the host side? Do you think we
->> >>>>>>>> shoud
->> >>>>>>>> reset host side HPB entry as well or what else?
->> >>>>>>>>
->> >>>>>>>>
->> >>>>>>>> Bean
->> >>>>>>>
->> >>>>>>> Same question here - I am still collecting feedbacks from flash
->> >>>>>>> vendors
->> >>>>>>> about
->> >>>>>>> what is recommanded host behavior on reception of HPB Op code
->> >>>>>>> 0x2,
->> >>>>>>> since it
->> >>>>>>> is not cleared defined in HPB2.0 specs.
->> >>>>>>>
->> >>>>>>> Can Guo.
->> >>>>>>
->> >>>>>> I think the question should be asked in the HPB2.0 patch, since in
->> >>>>>> HPB1.0 device
->> >>>>>> control mode, a HPB reset in device side does not impact anything
->> >>>>>> in
->> >>>>>> host side -
->> >>>>>> host is not writing back any HPB entries to device anyways and HPB
->> >>>>>> Read
->> >>>>>> cmd with
->> >>>>>> invalid HPB entries shall be treated as normal Read(10) cmd
->> >>>>>> without
->> >>>>>> any
->> >>>>>> problems.
->> >>>>>
->> >>>>> Yes, UFS device will process read command even the HPB entries are
->> >>>>> valid or
->> >>>>> not. So it is warning about read performance drop by dev reset.
->> >>>>
->> >>>> Yeah, but still I am 100% sure about what should host do in case of
->> >>>> HPB2.0
->> >>>> when it receives HPB Op code 0x2, I am waiting for feedbacks.
->> >>>
->> >>> I think the host has two choices when it receives 0x2.
->> >>> One is nothing on host.
->> >>> The other is discarding all HPB entries in the host.
->> >>>
->> >>> In the JEDEC HPB spec, it as follows:
->> >>> When the device is powered off by the host, the device may restore
->> >>> L2P
->> >>> map
->> >>> data upon power up or build from the host’s HPB READ command.
->> >>>
->> >>> If some UFS builds L2P map data from the host's HPB READ commands, we
->> >>> don't
->> >>> have to discard HPB entries in the host.
->> >>>
->> >>> So I thinks there is nothing to do when it receives 0x2.
->> >>
->> >> But in HPB2.0, if we do nothing to active regions in host side, host
->> >> can
->> >> write
->> >> HPB entries (which host thinks valid, but actually invalid in device
->> >> side since
->> >> reset happened) back to device through HPB Write Buffer cmds (BUFFER
->> >> ID
->> >> = 0x2).
->> >> My question is that are all UFSs OK with this?
->> >
->> > Yes, it must be OK.
->> >
->> > Please refer the following the HPB 2.0 spec:
->> >
->> > If the HPB Entries sent by HPB WRITE BUFFER are removed by the device,
->> > for example, because they are not consumed for a long enough period of
->> > time,
->> > then the HPB READ command for the removed HPB entries shall be handled
->> > as a
->> > normal READ command.
->> >
->> 
->> No, it is talking about the subsequent HPB READ cmd sent after a HPB
->> WRITE BUFFER cmd,
->> but not the HPB WRITE BUFFER cmd itself...
-> Looks like this discussion is going the same way as we had in host 
-> mode.
-> HPB-WRITE-BUFFER 0x2, if exist,  is always a companion to HPB-READ.
-> You shouldn't consider them separately.
-> 
-> The device is expected to handle invalid ppn by itself, and
-> specifically for this case,
-> As Daejun explained, Handle each HPB-READ (and its companion
-> HPB-WRITE-BUFFER) like READ10.
-> 
-> For device mode, doing nothing in case of dev reset, seems to me like
-> the right thing to do.
 
-I just got some feedbacks from other flash vendors, they all commit that
-their devices can work well in this scenario [1]. Some of them proposed
-even complicated (maybe better) principles of handling the "HPB reset",
-but since the device works well in [1], I am OK with current (simpler)
-handling of "HPB reset" - in device mode doing nothing, in host mode
-re-activate regions that host is trying to do a read to.
+On 2021/3/23 22:03, Andrew Jones wrote:
+> $SUBJECT says "tools headers", but this is actually changing
+> a UAPI header and then copying the change to tools.
+Indeed. I think head of the subject should be "mm/hugetlb".
+I will fix it.
 
 Thanks,
-Can Guo.
-
-> 
+Yanan
 > Thanks,
-> Avri
-> 
->> 
->> Thanks,
->> Can Guo.
->> 
->> > Thanks,
->> > Daejun
->> >
->> >> Thanks,
->> >> Can Guo.
->> >>
->> >>>
->> >>> Thanks,
->> >>> Daejun
->> >>>
->> >>>> Thanks,
->> >>>> Can Guo.
->> >>>>
->> >>>>>
->> >>>>> Thanks,
->> >>>>> Daejun
->> >>>>>
->> >>>>>> Please correct me if I am wrong.
->> >>>>>
->> >>>>>
->> >>>>>
->> >>>>>> Thanks,
->> >>>>>> Can Guo.
->> >>>>>>
->> >>>>>>
->> >>>>>>
->> >>>>
->> >>>>
->> >>>>
->> >>
->> >>
->> >>
+> drew
+>
+> On Tue, Mar 23, 2021 at 09:52:23PM +0800, Yanan Wang wrote:
+>> We know that if a system supports multiple hugetlb page sizes,
+>> the desired hugetlb page size can be specified in bits [26:31]
+>> of the flag arguments. The value in these 6 bits will be the
+>> shift of each hugetlb page size.
+>>
+>> So add a macro to get the page size shift and then calculate the
+>> corresponding hugetlb page size, using flag x.
+>>
+>> Cc: Ben Gardon <bgardon@google.com>
+>> Cc: Ingo Molnar <mingo@kernel.org>
+>> Cc: Adrian Hunter <adrian.hunter@intel.com>
+>> Cc: Jiri Olsa <jolsa@redhat.com>
+>> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+>> Cc: Arnd Bergmann <arnd@arndb.de>
+>> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Suggested-by: Ben Gardon <bgardon@google.com>
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> Reviewed-by: Ben Gardon <bgardon@google.com>
+>> ---
+>>   include/uapi/linux/mman.h       | 2 ++
+>>   tools/include/uapi/linux/mman.h | 2 ++
+>>   2 files changed, 4 insertions(+)
+>>
+>> diff --git a/include/uapi/linux/mman.h b/include/uapi/linux/mman.h
+>> index f55bc680b5b0..d72df73b182d 100644
+>> --- a/include/uapi/linux/mman.h
+>> +++ b/include/uapi/linux/mman.h
+>> @@ -41,4 +41,6 @@
+>>   #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
+>>   #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
+>>   
+>> +#define MAP_HUGE_PAGE_SIZE(x) (1ULL << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
+>> +
+>>   #endif /* _UAPI_LINUX_MMAN_H */
+>> diff --git a/tools/include/uapi/linux/mman.h b/tools/include/uapi/linux/mman.h
+>> index f55bc680b5b0..d72df73b182d 100644
+>> --- a/tools/include/uapi/linux/mman.h
+>> +++ b/tools/include/uapi/linux/mman.h
+>> @@ -41,4 +41,6 @@
+>>   #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
+>>   #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
+>>   
+>> +#define MAP_HUGE_PAGE_SIZE(x) (1ULL << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
+>> +
+>>   #endif /* _UAPI_LINUX_MMAN_H */
+>> -- 
+>> 2.19.1
+>>
+> .
