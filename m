@@ -2,157 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDE5346FAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5A9346FB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhCXCs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:48:59 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42169 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231262AbhCXCs6 (ORCPT
+        id S234940AbhCXCtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:49:46 -0400
+Received: from regular1.263xmail.com ([211.150.70.195]:55314 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232089AbhCXCt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:48:58 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 19B4C15C4;
-        Tue, 23 Mar 2021 22:48:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 23 Mar 2021 22:48:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=S
-        9hVFXlHxFynIOxrNrduoTNoyxZE1kHVtXmwywd0EOI=; b=YZflfkGOYNjYarMU4
-        y+I3z1HYVbAPNVsrpmn1tlLj+rNQBYt3TZJpMFQ4jD01E0y4aYB1QpZQJMSKeSlO
-        GCmU5gQ4N89X/ZZ/ovNeLAlxRoTa1/0K6FG1PhB+1FR+WIF7/DYdIRp5xXz1S55l
-        gYOutV5tYzUecDCfkMFoid3XKLhMYz3n7jfApGV/fPaD3rIOCODOgXEKIcvWS6hk
-        yqHM/LRZb1ssrAajEvvTXE/h+c6vAi+eK8ixg+uihsGE07Cr8geX5tXNh/WOh6OK
-        lbHVQePdBSibzrIUhF0GnO+ulRUlZI4zFkfyhlBp2E5Cxe57QGrkpLPIQjta/y80
-        VuA/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=S9hVFXlHxFynIOxrNrduoTNoyxZE1kHVtXmwywd0E
-        OI=; b=N0ILWQj+oOVBkHETy0CDV/HFnn81ylEhsA5Jb/1XqMlcKjUUBdybTkNq2
-        T7t+YKib2XYRigswWzmnoxsZKjJyPWdzvu9QjbP9WoP6aTVe5yN6pD/nfG5XUPId
-        tMXOrqK0XPJn2DMxHSi+kgVHfJIAikn4NQdR1cmrzEAvbCveoh05VL1WLSRt23C7
-        5Jh7l5OW8coe2sXARkg1n0xj9F2f5LPQ2sI6ZzSssI+GYfyCwmjE194d7A/mKcK7
-        aKWZAF5FW7+tzv1WHHRi746mDQwJ4Ayr9bGziBWek2Su70e8INsIxFe5CV5Fqilu
-        xIPoGbIn+Tt/5ccrT0MMx1+Ujp2eg==
-X-ME-Sender: <xms:lqhaYGM8Plc9p5POMUi41FWfUW2XcWk10-QVyYeB0gptzOa2QqwldQ>
-    <xme:lqhaYE_E-tyo9a0uubro-MZc0TRmDTbHM5R7o9BBQY-3fNk4_gh25xeZ4o5A27QrB
-    SJzkkStqt0IKAk7PA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegjedgheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
-    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:lqhaYNTnWNVVznNNa40VTPKEZbBLa52HWaU_Riqtq2XJbnAACHc-WQ>
-    <xmx:lqhaYGuZdosSi3-hmGnAtvmEI-7HAglUvDtrCQI0U1hikhjMlRUueA>
-    <xmx:lqhaYOc4PWSTUrzH3-gKp_MwNzhMoR2a4Q-933NakVU_EFj6mb-2bg>
-    <xmx:mKhaYEsAapfB8RbPhUabbpBXT4PCwlwubnwwpJ9oVUcAUVhqnIiqKw>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 36C7824033F;
-        Tue, 23 Mar 2021 22:48:54 -0400 (EDT)
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amarula@amarulasolutions.com, linux-sunxi@googlegroups.com
-References: <20210322140152.101709-1-jagan@amarulasolutions.com>
- <20210322140152.101709-2-jagan@amarulasolutions.com>
- <YFpxYpA+EIZm7sOf@pendragon.ideasonboard.com>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v4 1/4] drm: sun4i: dsi: Use drm_of_find_panel_or_bridge
-Message-ID: <f47bc0ad-dbd6-05b5-aaec-2e3256e3715a@sholland.org>
-Date:   Tue, 23 Mar 2021 21:48:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 23 Mar 2021 22:49:29 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id 335B91D1D;
+        Wed, 24 Mar 2021 10:49:00 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.236] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P13111T139928526636800S1616554138557516_;
+        Wed, 24 Mar 2021 10:48:59 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <04df23d237b6fbd553a9c872d6560c96>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: finley.xiao@rock-chips.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v2 2/3] dt-bindings: Convert the rockchip power_domain to
+ YAML and extend
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, cl@rock-chips.com,
+        huangtao@rock-chips.com, kever.yang@rock-chips.com,
+        tony.xie@rock-chips.com, finley.xiao@rock-chips.com
+References: <20210323082410.22818-1-zhangqing@rock-chips.com>
+ <20210323082410.22818-3-zhangqing@rock-chips.com>
+ <87e50d5b-604b-508c-f3cb-ee07fcf15241@gmail.com>
+ <CAFqH_53kBf++SPfir_5mA9Dv2v=u4s1zpqnztAH8Tt2-9dLVnQ@mail.gmail.com>
+From:   "elaine.zhang" <zhangqing@rock-chips.com>
+Organization: rockchip
+Message-ID: <6e906aee-646f-ff7e-deca-fe9bbd435cd8@rock-chips.com>
+Date:   Wed, 24 Mar 2021 10:48:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YFpxYpA+EIZm7sOf@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <CAFqH_53kBf++SPfir_5mA9Dv2v=u4s1zpqnztAH8Tt2-9dLVnQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 5:53 PM, Laurent Pinchart wrote:
-> Hi Jagan,
-> 
-> Thank you for the patch.
-> 
-> On Mon, Mar 22, 2021 at 07:31:49PM +0530, Jagan Teki wrote:
->> Replace of_drm_find_panel with drm_of_find_panel_or_bridge
->> for finding panel, this indeed help to find the bridge if
->> bridge support added.
+Hi, Enric
+
+在 2021/3/24 上午4:58, Enric Balletbo Serra 写道:
+> Hi Elaine,
+>
+> Missatge de Johan Jonker <jbx6244@gmail.com> del dia dt., 23 de març
+> 2021 a les 12:06:
+>> Hi Elaine,
 >>
->> Added NULL in bridge argument, same will replace with bridge
->> parameter once bridge supported.
+>> Some comments. Have a look if it's useful or that you disagree
+>> with...(part 1)
 >>
->> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> 
-> Looks good, there should be no functional change.
-
-Actually this breaks all existing users of this driver, see below.
-
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
->> ---
->> Changes for v4, v3:
->> - none
+>> ======
+>> There is currently already a patch proposal that does the same.
+>> Could you read that review history and port the good things to your own
+>> patch serie?
 >>
->>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 11 ++++++++---
->>  1 file changed, 8 insertions(+), 3 deletions(-)
+>> Re: [PATCH] dt-bindings: power: rockchip: Convert to json-schema
+>> https://lore.kernel.org/linux-rockchip/20201007151159.GA221754@bogus/
 >>
->> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
->> index 4f5efcace68e..2e9e7b2d4145 100644
->> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
->> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
->> @@ -21,6 +21,7 @@
->>  
->>  #include <drm/drm_atomic_helper.h>
->>  #include <drm/drm_mipi_dsi.h>
->> +#include <drm/drm_of.h>
->>  #include <drm/drm_panel.h>
->>  #include <drm/drm_print.h>
->>  #include <drm/drm_probe_helper.h>
->> @@ -963,10 +964,14 @@ static int sun6i_dsi_attach(struct mipi_dsi_host *host,
->>  			    struct mipi_dsi_device *device)
->>  {
->>  	struct sun6i_dsi *dsi = host_to_sun6i_dsi(host);
->> -	struct drm_panel *panel = of_drm_find_panel(device->dev.of_node);
+>> Re: [PATCH v3] dt-bindings: power: rockchip: Convert to json-schema
+>> https://lore.kernel.org/linux-rockchip/20201007151159.GA221754@bogus/
+>>
+> In fact, the latest version is v6 which can be found here:
+>
+> https://patchwork.kernel.org/project/linux-rockchip/patch/20210225102643.653095-1-enric.balletbo@collabora.com/
+>
+> Feel free to integrate and/or improve that version in your series.
+Thank you for your submission. I will revise the submission on this basis.
+>
+>
+>
 
-This is using the OF node of the DSI device, which is a direct child of
-the DSI host's OF node. There is no OF graph involved.
-
->> +	struct drm_panel *panel;
->> +	int ret;
->> +
->> +	ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 0, 0,
->> +					  &panel, NULL);
-
-However, this function expects to find the panel using OF graph. This
-does not work with existing device trees (PinePhone, PineTab) which do
-not use OF graph to connect the panel. And it cannot work, because the
-DSI host's binding specifies a single port: the input port from the
-display engine.
-
-Regards,
-Samuel
-
->> +	if (ret)
->> +		return ret;
->>  
->> -	if (IS_ERR(panel))
->> -		return PTR_ERR(panel);
->>  	if (!dsi->drm || !dsi->drm->registered)
->>  		return -EPROBE_DEFER;
->>  
-> 
 
