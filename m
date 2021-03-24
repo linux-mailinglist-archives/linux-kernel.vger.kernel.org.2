@@ -2,69 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A69D3479FC
+	by mail.lfdr.de (Postfix) with ESMTP id 76AB63479FD
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235752AbhCXNy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbhCXNyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:54:09 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9946DC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:54:09 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a080019d3082655b1d2f4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:800:19d3:826:55b1:d2f4])
+        id S235764AbhCXNya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:54:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235430AbhCXNyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:54:19 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 26A6D1EC03A0;
-        Wed, 24 Mar 2021 14:54:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616594043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9ALF8TSH6pFp1Tk5GDTedC+ypic48uRcRUcUIVI+qqQ=;
-        b=Oj8dEYug8hxvKd+yrgj+qK5A+gffHMpErKXk38TZWb+b6iS0NwdgouUhsykFhQq3Rq2eOn
-        huF9pRIBpp780tA1ONFGpPUOWYHAAGxXeQrGBQcqN1djUFeHCTM1ETYdkQf1e2n+weLsA8
-        jcpV+ns9fmAH70yPdVV8A3pqfxlEXx0=
-Date:   Wed, 24 Mar 2021 14:54:06 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, X86 ML <x86@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3 04/21] x86/insn: Add an insn_decode() API
-Message-ID: <20210324135406.GD5010@zn.tnic>
-References: <20210304174237.31945-1-bp@alien8.de>
- <20210304174237.31945-5-bp@alien8.de>
- <CAP-5=fU2D_kmdaLFL7Azm31Czdfdze6EpKg7=uZ+ohbNnb7ssQ@mail.gmail.com>
- <YFtB+Dir1lWjL2gi@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FD53619BB;
+        Wed, 24 Mar 2021 13:54:18 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 09:54:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "John (Warthog9) Hawley" <warthog9@kernel.org>
+Subject: Re: [PATCH 2/2] streamline_config.pl: Add softtabstop=4 for vim
+ users
+Message-ID: <20210324095417.49c6377b@gandalf.local.home>
+In-Reply-To: <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com>
+References: <20210322213806.089334551@goodmis.org>
+        <20210322214032.293992979@goodmis.org>
+        <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFtB+Dir1lWjL2gi@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:43:20AM -0300, Arnaldo Carvalho de Melo wrote:
-> Borislav, was this addressed? Ian?
+On Wed, 24 Mar 2021 15:01:13 +0900
+Masahiro Yamada <masahiroy@kernel.org> wrote:
 
-Yap:
+> On Tue, Mar 23, 2021 at 6:40 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> >
+> > The tab stop for Perl files is by default (at least in emacs) to be 4
+> > spaces, where a tab is used for all 8 spaces. Add a local variable comment
+> > to make vim do the same by default, and this will help keep the file
+> > consistent in the future when others edit it via vim and not emacs.
+> >
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>  
+> 
+> 
+> Documentation/process/coding-style.rst says "do not do this".
 
-https://git.kernel.org/tip/0705ef64d1ff52b817e278ca6e28095585ff31e1
+I take that file more as for C code, never took it for Perl ;-)
 
--- 
-Regards/Gruss,
-    Boris.
+> 
+> Rather, I want to remove this ugly stuff entirely.
+> https://lore.kernel.org/patchwork/patch/1401439/
 
-https://people.kernel.org/tglx/notes-about-netiquette
+And I totally agree it does not belong in C code.
+
+> 
+> Adding .editorconfig seems OK to me, but
+> Doing this in individual files in an editor-specific
+> manner is a horror.
+
+Is there a way to add this for the directory?
+
+The reason I added this was because of the different ways that vim and
+emacs handle Perl files. I just added this to ktest.pl because I want it to
+be consistent.
+
+The emacs way to edit Perl is to have 4 space indentation, but use tabs for
+every 8 spaces. That is, you have:
+
+    (4 spaces)
+	(1 tab)
+	    (1 tab and 4 spaces)
+		(2 tabs)
+		    (2 tabs and 4 spaces)
+
+etc.
+
+What I found from people who edit Perl code is that they will either just
+indent 8 (with tabs), or just use all spaces. Then you have:
+
+	    (1 tab and 4 spaces)
+            (followed by 12 spaces!)
+
+The way to make vim work the same is to add the softtabspace=4 command.
+
+We can not add this, but then have to either police the patches coming in,
+or constantly clean up the code after the fact.
+
+This code doesn't change much, so I'm fine with that. But for ktest.pl, I'm
+adding it.
+
+-- Steve
