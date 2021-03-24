@@ -2,85 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF937347B17
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBFE347B16
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236391AbhCXOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:46:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
+        id S236383AbhCXOqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:46:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236251AbhCXOqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4188761A0F;
-        Wed, 24 Mar 2021 14:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616597163;
-        bh=IpQqeZizpAkmktM1ykYR3SVGsq3cc7ebBvwgwpKHb54=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f0uoMNCsY34YsQOjwo+6nuFTZULLZcwjyfF47zMiOqHO2Z6jhu9AMPSUvR3Y57LD1
-         028suKzN0rxO3FrrVNP8rSV5SOb/SKEDKLnumQ3lPCKg8ZwW0RwojHzFkqya5YkbJx
-         mtaG3DKcNkFLNBUJ7P0NxijHB7C+WtD7/83CWSjhqIqpVJ3IFWMEYAhgV9Bu86JWBy
-         6tMunJLtesSZL5fTjqhA2zCdAm5jabL7ePNZaapK5elYb95ayP6XfRS+Hbc2mg0ctR
-         VIdu3IvKk677XPRepzNoqzs5dFvbI5rG4AV9oN1JGg2tE7IWyiVqUe+LE0BiDI2H1b
-         8qlzjB/MeeLlQ==
-Received: by mail-ed1-f50.google.com with SMTP id bx7so27924056edb.12;
-        Wed, 24 Mar 2021 07:46:03 -0700 (PDT)
-X-Gm-Message-State: AOAM530j29Bnx2h2zHQ4pFt0IXg27z8J3yL/JMdXgiNIYoDFa4Dg+nzx
-        QQmjka7L5VQsCAH5zfX8yW3OhYfWJe3lnmybjw==
-X-Google-Smtp-Source: ABdhPJx9s+DKhEIneKlm50ecrAh88tChNkD/fmlCgrTsMQymYLNt6jDsywvmbgGVambNzhd8cZzpeq1mkk+S3JmVtj4=
-X-Received: by 2002:a05:6402:2d0:: with SMTP id b16mr3933538edx.194.1616597161877;
- Wed, 24 Mar 2021 07:46:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210309000247.2989531-1-danielwa@cisco.com>
-In-Reply-To: <20210309000247.2989531-1-danielwa@cisco.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 24 Mar 2021 08:45:48 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLN=TtAck+0cT+MFtxRiMUpiWRUMnrvnJJf55fwCxATLg@mail.gmail.com>
-Message-ID: <CAL_JsqLN=TtAck+0cT+MFtxRiMUpiWRUMnrvnJJf55fwCxATLg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] Generic Command Line changes
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        id S236294AbhCXOqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:46:00 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12A87619F3;
+        Wed, 24 Mar 2021 14:46:00 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lP4lh-003XaC-No; Wed, 24 Mar 2021 14:45:58 +0000
+Date:   Wed, 24 Mar 2021 14:45:56 +0000
+Message-ID: <874kh0k3tn.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Bharat Kumar Gogada <bharatku@xilinx.com>
+Cc:     "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michals@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>
+Subject: Re: [PATCH v2 05/15] PCI: xilinx: Convert to MSI domains
+In-Reply-To: <BYAPR02MB5559590C1395C15205582976A5639@BYAPR02MB5559.namprd02.prod.outlook.com>
+References: <20210322184614.802565-1-maz@kernel.org>
+        <20210322184614.802565-6-maz@kernel.org>
+        <BYAPR02MB5559A0B0DA88866EDC7BDFE5A5639@BYAPR02MB5559.namprd02.prod.outlook.com>
+        <877dlwk805.wl-maz@kernel.org>
+        <BYAPR02MB5559590C1395C15205582976A5639@BYAPR02MB5559.namprd02.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: bharatku@xilinx.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com, frank-w@public-files.de, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, mikelley@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michals@xilinx.com, paul.walmsley@sifive.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 8, 2021 at 5:02 PM Daniel Walker <danielwa@cisco.com> wrote:
->
-> This fixed some problem identified in my last release. I made updates
-> based on comments from Christophe Leroy.
->
-> I added scripted updates to the defconfig file for mips and powerpc.
-> This is required in order to maintain the status quo for those platforms
-> which used the prior builtin command line system.
->
-> These were tested on all effected architectures.
->
-> Daniel Walker (7):
->   CMDLINE: add generic builtin command line
->   CMDLINE: drivers: of: ifdef out cmdline section
->   powerpc: convert config files to generic cmdline
->   CMDLINE: powerpc: convert to generic builtin command line
->   mips: convert config files to generic cmdline
->   CMDLINE: mips: convert to generic builtin command line
->   CMDLINE: x86: convert to generic builtin command line
+On Wed, 24 Mar 2021 13:56:16 +0000,
+Bharat Kumar Gogada <bharatku@xilinx.com> wrote:
 
-Can you send out or provide a branch of the other converted arches you
-have patches for? Given this got revived due to arm64 cmdline changes,
-including arm64 patches at least would be beneficial as there are
-folks motivated to review and test this on Arm.
+> > Thanks for that. Can you please try the following patch and let me know if it
+> > helps?
+> > 
+> > Thanks,
+> > 
+> > 	M.
+> > 
+> > diff --git a/drivers/pci/controller/pcie-xilinx.c b/drivers/pci/controller/pcie-
+> > xilinx.c
+> > index ad9abf405167..14001febf59a 100644
+> > --- a/drivers/pci/controller/pcie-xilinx.c
+> > +++ b/drivers/pci/controller/pcie-xilinx.c
+> > @@ -194,8 +194,18 @@ static struct pci_ops xilinx_pcie_ops = {
+> > 
+> >  /* MSI functions */
+> > 
+> > +static void xilinx_msi_top_irq_ack(struct irq_data *d) {
+> > +	/*
+> > +	 * xilinx_pcie_intr_handler() will have performed the Ack.
+> > +	 * Eventually, this should be fixed and the Ack be moved in
+> > +	 * the respective callbacks for INTx and MSI.
+> > +	 */
+> > +}
+> > +
+> >  static struct irq_chip xilinx_msi_top_chip = {
+> >  	.name		= "PCIe MSI",
+> > +	.irq_ack	= xilinx_msi_top_irq_ack,
+> >  };
+> > 
+> >  static int xilinx_msi_set_affinity(struct irq_data *d, const struct cpumask
+> > *mask, bool force) @@ -206,7 +216,7 @@ static int
+> > xilinx_msi_set_affinity(struct irq_data *d, const struct cpumask *mas  static
+> > void xilinx_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)  {
+> >  	struct xilinx_pcie_port *pcie = irq_data_get_irq_chip_data(data);
+> > -	phys_addr_t pa = virt_to_phys(pcie);
+> > +	phys_addr_t pa = ALIGN_DOWN(virt_to_phys(pcie), SZ_4K);
+> > 
+> >  	msg->address_lo = lower_32_bits(pa);
+> >  	msg->address_hi = upper_32_bits(pa);
+> > @@ -468,7 +478,7 @@ static int xilinx_pcie_init_irq_domain(struct
+> > xilinx_pcie_port *port)
+> > 
+> >  	/* Setup MSI */
+> >  	if (IS_ENABLED(CONFIG_PCI_MSI)) {
+> > -		phys_addr_t pa = virt_to_phys(port);
+> > +		phys_addr_t pa = ALIGN_DOWN(virt_to_phys(port), SZ_4K);
+> > 
+> >  		ret = xilinx_allocate_msi_domains(port);
+> >  		if (ret)
+> > 
+> Thanks Marc.
+> With above patch now everything works fine, tested a Samsung NVMe SSD. 
+> tst~# lspci
+> 00:00.0 PCI bridge: Xilinx Corporation Device 0706
+> 01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller 172Xa/172Xb (rev 01)
 
-Rob
+Great, thanks for giving it a shot. Can I take this as a Tested-by:
+tag?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
