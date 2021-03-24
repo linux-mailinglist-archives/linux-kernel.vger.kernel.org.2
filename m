@@ -2,161 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE813479EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A383479ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbhCXNs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235647AbhCXNrz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:47:55 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9C5C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:47:55 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so23058856ote.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tUH1uT1xGENlL23VeLmAGT6RQ/hIIGv8URJxekLD7KA=;
-        b=NQINk5lciTHNfSmo0k4fLx5pcbEjTXfE1KI1AXj30vGqCN2lu5TqFPeK/1DUwA9bBf
-         RRiDPZVJQkYd8iVT6pr3WD2Et13X50D4cLcdCSyws+n4HgeQuHX2sSFaDtMjnBmnfRYy
-         Lsq/HbdcFYQTeKcCn/w7YxXyJFFRPS9rX5cHwBOP2yXMFX8NEmTJ26zeGY2UpfToe37h
-         wC2Uw40HuR0jm60iWO7yCUiTFmaJ/kGdjLvKhf0niMRxrUF+Z2f4VHIxjsCBFDPxh7Yp
-         Lr43KsTzjVBS8tDGIL9/HjNZxVXTRfiKkD1MplT+cSgG3jNy+Y7on3f7r/zuPCz5WBPO
-         QtEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tUH1uT1xGENlL23VeLmAGT6RQ/hIIGv8URJxekLD7KA=;
-        b=oRnUQyMloRNGL8wNX+qdSNvaRR6LfkAmiuICGRbcTyAc7graVK4UoUfJokYhiCVZxE
-         LykiH8lmYRi7BOe338P2KrjIGz+vVA0CyrDWmj5b0+s4bKT1kO5oVKGFrJK2liNN/d4o
-         7362ok5v4OhFYO5aR3U7YZyMUYUcRCLdL2DTLVzd+nUgQlzvg01RAVc1B35J/HPrpWle
-         iHHbpcIsvr5w3lXbOKwMBVyQuNvjroEoNIiac5J1Bv3dEMFXbhQTsJaOxiPgsp56RdOp
-         UJ75EH8tHeTqEeN7MkDEtIV1A7XqTEBNgnBrPBsOPksT3ejlllMXiwQzGSmW9BdcvImr
-         nlKA==
-X-Gm-Message-State: AOAM532fQF+rZgLvjOTcgHAGkiY3Kz0GPzNY4SrwCB8o+nPuEEDzHmnN
-        kCyJJeQn3k4fQP6rcbhjRJgCsMuTZIc8JyyxOR19Yw==
-X-Google-Smtp-Source: ABdhPJy2OgdZKrA26uUEcG/eq5W9jxZ//Ow4t33ARzd9qJ2bSYThVpDB5tES5kneNDjwJcKWTmuug5z1ydukmkbeqb4=
-X-Received: by 2002:a9d:5508:: with SMTP id l8mr3422469oth.233.1616593674497;
- Wed, 24 Mar 2021 06:47:54 -0700 (PDT)
+        id S235553AbhCXNtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:49:00 -0400
+Received: from mail-bn7nam10on2062.outbound.protection.outlook.com ([40.107.92.62]:47265
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235661AbhCXNsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:48:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=heV4dp/QvFuGTbOUwmfTgs66DIPHGrvn6ckNR/GgT23JCOmti4MljBhiDSinfgG8/LfaFuqy7OV1UTnqFjb4qvGPU6idw5Uaebi6hcMQ4kV/3+kOum0Bu7Wbaqz3BcvHg9o0ABTavfw45lRb6Vm1TnYt1oQa184MxoYSa6hOKKoTOlOTFVycvBs9Pt1eorZmYVAg+NDLM6XzhrASx9GFdiHmLijECArzFqly8C9cz217NGXOHstrYQou30fhGJsNKbo31hxUAhCzrzt1Rv9h/IvDREi24vQdw5KYTQ/EY/pGajc5wLJfNMmqQlLqCKGRvH8U9kI+G4XwcNyLjslpTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qiv1Un4zGtiSdXes1h4Zse2yVhagHfuPw3wA/HE2Vf4=;
+ b=nj9zz1NccS8c02CXlVthUqejeR6+wqn3ujVA5sNIn3k5D/S1Joe0ojZ1VYQ++YgNsFg1k+yUCOBpIuo+eK61OKqz6w4kkp3PhsUpO2wz9hD3ht9R0P8FI4niR+U1kjWMGPVbzeJDXfjGq6XE6K+CtHBvob/A1LDfDuJ9Bs/0q/D1IEbdD3f11DnAeziJ8tM8WnnCxVh6fbdJ3y9mgEkcO4j4WsDFhGflWkZ9LPXXZy2R8q25TXANCOlluEE5iKkOVT+03rI+JsiAnXdsjDdv9cy8MBEoKtsps0sBtRmLJf+c4ob2izSVBhAOS7+oO6l7tEujtixfmVNhN4MZaIggAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qiv1Un4zGtiSdXes1h4Zse2yVhagHfuPw3wA/HE2Vf4=;
+ b=nvkhTA4r3x6XLL/lbOExmCSykzPaAvTTHavDXGsRwlhqYo6DDfCf/4V0x/Xzgh9wo7S9XwWW3BQ1ZGSLm6NAbMh6nSCWzte8zgm1KnVmtNGyaSZwEzFxNTJmKUWD1X3urh8ZAf9d9daj8ZODrjrv0Rk2cwYH5bVHikPwaXwmDvBo4XaA03d8AlPE3VP7wSoSWNkku4pXszEJKOHu/1jk259PCLcTiOqUnzTwRlcIwQHQ2qDCx/CAPgzYwNWYZjR77coKSb4x+oN8WVI5EkOqzJ/DSKJJJ3gzGLSxcsSjsoyQYv+I/F2dhj72CMmLC9zbwxjexANaSLeooY967tKPzg==
+Authentication-Results: shipmail.org; dkim=none (message not signed)
+ header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4299.namprd12.prod.outlook.com (2603:10b6:5:223::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 24 Mar
+ 2021 13:48:35 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
+ 13:48:35 +0000
+Date:   Wed, 24 Mar 2021 10:48:33 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <20210324134833.GE2356281@nvidia.com>
+References: <20210321184529.59006-2-thomas_os@shipmail.org>
+ <YFnST5VLcEgv9q+s@phenom.ffwll.local>
+ <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
+ <20210323163715.GJ2356281@nvidia.com>
+ <5824b731-ca6a-92fd-e314-d986b6a7b101@shipmail.org>
+ <YFsM23t2niJwhpM/@phenom.ffwll.local>
+ <20210324122430.GW2356281@nvidia.com>
+ <e12e2c49-afaf-dbac-b18c-272c93c83e06@shipmail.org>
+ <20210324124127.GY2356281@nvidia.com>
+ <6c9acb90-8e91-d8af-7abd-e762d9a901aa@shipmail.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6c9acb90-8e91-d8af-7abd-e762d9a901aa@shipmail.org>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0085.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::24) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210324112503.623833-1-elver@google.com> <20210324112503.623833-8-elver@google.com>
- <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net> <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
- <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net>
-In-Reply-To: <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 24 Mar 2021 14:47:43 +0100
-Message-ID: <CANpmjNOXheY0e96uVAFL3YAB9OztyBs1Uh6Bg18-dPHKc=ehHQ@mail.gmail.com>
-Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on SIGTRAP
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0085.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Wed, 24 Mar 2021 13:48:35 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lP3s9-002125-5r; Wed, 24 Mar 2021 10:48:33 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b77e31cc-ac60-4992-f5b8-08d8eecb8520
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4299:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB42993F63F5E284A5B470938CC2639@DM6PR12MB4299.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fkrmE1OcA+0wwqaCCOc0voeiF985lUHTn05MiSETfEJEaHAd1NRba1Pc94sOckl3DbtUAfBmsb/wqRH1RIhj5YZE0qivCTSO/pc95PPivoP4XHgR39g0ihBvIpHDaZ1NpPcMigx4L0NAHI5Nde2Nxu8AUm1KtHyGAq6hO5SxCW9yrNDiv4F/zZSWIPLDXss8GDDHHGuofpRqbCTg/kntTYtFEJQSGHb0jTY3cx57CIkhGly04UXDHrIOfwjHd9oxHuSlfmu+zrRh7OUkqcXjZqO4yMlli1BKERBfR+dvUWEGzW93X1sd/tsA2eY2FZd3UmaOkON4qR8oBtY8jSICeqtv48OMHwBE2hyXQTFDgx2d48yCaRdGNcdswfzO7AsSEUwtnVA+P7afbjijClPnzgDUsSDNV1ZRTb0o2kxWojZ+AS5MgcvdP4H07bCtMpHp+tn63NXa9zJjYNkx4cCCfw6GMHRWGPs5oA071+vlilR6yVWDXkarMCzwQYfU6hOV7HVOknS8jH2gvY9GZys1BSfT6OV8dYruZ8xTm+YsgCJrnf99nLbdIFFO0EF0V0iyIXtGhW8JqZFhJepR5FJI6d49CnvL0HfbehQhTdkn9QV/7ExqFTNqUchUIdmoYilDBBrvlYM9EpF7k7BfKfkGf13iwxQx8r7F0mdGj05Wl3I/xKw4wMQAkkO3TjbtYGJp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(396003)(376002)(136003)(2906002)(36756003)(33656002)(6916009)(8676002)(8936002)(38100700001)(9746002)(5660300002)(1076003)(9786002)(316002)(54906003)(4326008)(83380400001)(66946007)(86362001)(66556008)(2616005)(26005)(66476007)(426003)(186003)(478600001)(14583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WDQ1UVBMSWRKMkl5SEwzWUNuWFdJd3lTbGVJTFFIWDZNTHpCVWpWZ0FJdDhv?=
+ =?utf-8?B?ZHpzZVBUdlordko2Z1FsS1UycTBtVEdQSWlBK3JDRzcxWVlaQ2hIMFNZbHE3?=
+ =?utf-8?B?ak1kVEdzcmh5Q3BLNWV2RTlmOEpPRlFzUnFIdWFpaWpQNWZ4VjdsOC9DQk5N?=
+ =?utf-8?B?WWdCQkVwWUlOQlljMm5DQXZXdVZOZURMVkUxY21qK1h4NDlUUkZpaEd6c0p4?=
+ =?utf-8?B?MnFhbTZiSWR0S3dsNllTMnNBdWhQS0R3bzU3NDNxZk5Gc0MrbGsraWQrNW9p?=
+ =?utf-8?B?M1UwU3E2VysyNkd6VW4rTEFQVXNkZ1RoSGtsckgzYmJ6Ry9tMXpmeFVuMC9r?=
+ =?utf-8?B?blJWSUlEY1hSN2RXeVdtTnZ4bmR3c2tmbG02cTVsZUwxRmJ4ZjlNcE5Zb01R?=
+ =?utf-8?B?OVhLdnBzc0hOM2dLQUt2UVppZkRaUDdyT3dTSUcvY3VDMUlyazhPRTc2SmE3?=
+ =?utf-8?B?amt5NVlIWStsK0NlN3lPaU1VTkh2dFg3YUhsV2MyalhLU1pETkZTQUFmSS96?=
+ =?utf-8?B?cFpaYkhrd1R3RTNERTVqTURzemdRejZOeHlkNmNrRFQ4OCt4d3hSZWZJOVYv?=
+ =?utf-8?B?V0Z5WHBSMHpBTUkvRXhZSHdFSXp6clVnNDVZVXRpUDdLSmNvSmpjTlA5ekE4?=
+ =?utf-8?B?Tm1NSFI0TDJMV21ubWJDd241UDRqaFdmQko4SG41V0lRRkRFdTdhVGFqOWRX?=
+ =?utf-8?B?Njg5cHI5ZjN5N1p2MDRIWCtFeWhOVUw5NGdzZHhkWTgwSVJST1FmVWRpSVhO?=
+ =?utf-8?B?SmNYdlBIZWZVNGF3Vk1rM1JTcEp1TTlZd0lXS2FwSlFkclpwSUtQd0RoalFS?=
+ =?utf-8?B?N05FZDJucC9wbE5rSEtHdm0wYS9nblduN0NZZXcyME5wSGhxcS92Q3lEbWtl?=
+ =?utf-8?B?anJBS3IrUW9kSFBOcU5QTUYwQUhYcEo1dVZVRlNHa2g4YzhPejlrMm5Sa1Rw?=
+ =?utf-8?B?blJQNzRlS25HSStadVJjZ3pCdHRIU3BYRzgrRXIrWm9EZkF1ck5XUFNoMGg3?=
+ =?utf-8?B?cmh5TTdlZlV4ZXpqYW1hWVN6bk9iNm92d0xVaFAxYWhpdTlrRFU2ZEpDL0ZC?=
+ =?utf-8?B?d2hOOVBwRGN5WG5LOUl6MHdoT1NvMmlNRHVLOGduNTJ3VXUvK0JkM0FnTzh0?=
+ =?utf-8?B?SmQ3Znh3RFpLWGFmZW4yaFZqcFp1cFNEcnpRbGoxNUFyZTNUYUxvSjZPWlR0?=
+ =?utf-8?B?QlRKL3QwaUtxM1FuYkVqdW01Mko0M2pVSTlUMHNMZllWYVFsbHBiTlU0NTVj?=
+ =?utf-8?B?b3dMU3RjM3dhWWQ1WFR2YU9JQkdoSGFTL3VSS0N2bHp2WUhUUE8rVk15dGg5?=
+ =?utf-8?B?Q1UyTnZSNEllWTV6T2NPY2tqSDY2ODBqVS90cWR4M0VkZG9Dczc0QWRQNlYx?=
+ =?utf-8?B?aUlFSTNNN2VBZmV5NmJONm9vOHZPd0dSZHBwQ2I1VkFLVE9VYk1jeGQrQlpO?=
+ =?utf-8?B?Ky9EUXlTZTcwWlN3ZDBKejJTS0tUSXFGdyt6MGIvd0RadlE4WCtlaVl4SUxM?=
+ =?utf-8?B?R3FvY0JzOUlaOUZjN1REUTlLSHpGbytaZ29lMzJYU1A2dis5T3Q4Z2NKdUho?=
+ =?utf-8?B?V0RZNWFVVkluVVFXT2o5czFmVG5XUTMzR2dLV3JjdXFDUFhkUlZZNUxDelFi?=
+ =?utf-8?B?TDh4RHJydm40SkZKck91ZlNlL0Q1blh0Y2hjNDVNYVUxQ1doWmlzaFRXYlpV?=
+ =?utf-8?B?YjRQZ0xVUXBieFB0MkdjRGpiVWRBNUE3cjN1bnU0NjNxclZNY3ZyRXd6NG5O?=
+ =?utf-8?Q?WMH7BvK8UF+Y5Tm9EvcfpdFspj8Mo7ilkDe5xne?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b77e31cc-ac60-4992-f5b8-08d8eecb8520
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 13:48:35.3536
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yMYrrBwsm7N3caJncL/tgMgeorWdfhnSv5tJcYlP1Sat7kiukKslvrtMqv7jCwwN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4299
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 at 14:21, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Mar 24, 2021 at 02:01:56PM +0100, Peter Zijlstra wrote:
-> > On Wed, Mar 24, 2021 at 01:53:48PM +0100, Peter Zijlstra wrote:
-> > > On Wed, Mar 24, 2021 at 12:24:59PM +0100, Marco Elver wrote:
-> > > > Encode information from breakpoint attributes into siginfo_t, which
-> > > > helps disambiguate which breakpoint fired.
-> > > >
-> > > > Note, providing the event fd may be unreliable, since the event may have
-> > > > been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
-> > > > triggering and the signal being delivered to user space.
-> > > >
-> > > > Signed-off-by: Marco Elver <elver@google.com>
-> > > > ---
-> > > > v2:
-> > > > * Add comment about si_perf==0.
-> > > > ---
-> > > >  kernel/events/core.c | 16 ++++++++++++++++
-> > > >  1 file changed, 16 insertions(+)
-> > > >
-> > > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > > index 1e4c949bf75f..0316d39e8c8f 100644
-> > > > --- a/kernel/events/core.c
-> > > > +++ b/kernel/events/core.c
-> > > > @@ -6399,6 +6399,22 @@ static void perf_sigtrap(struct perf_event *event)
-> > > >   info.si_signo = SIGTRAP;
-> > > >   info.si_code = TRAP_PERF;
-> > > >   info.si_errno = event->attr.type;
-> > > > +
-> > > > + switch (event->attr.type) {
-> > > > + case PERF_TYPE_BREAKPOINT:
-> > > > +         info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
-> > > > +         info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
-> > >
-> > > Ahh, here's the si_perf user. I wasn't really clear to me what was
-> > > supposed to be in that field at patch #5 where it was introduced.
-> > >
-> > > Would it perhaps make sense to put the user address of struct
-> > > perf_event_attr in there instead? (Obviously we'd have to carry it from
-> > > the syscall to here, but it might be more useful than a random encoding
-> > > of some bits therefrom).
-> > >
-> > > Then we can also clearly document that's in that field, and it might be
-> > > more useful for possible other uses.
-> >
-> > Something like so...
->
-> Ok possibly something like so, which also gets the data address right
-> for more cases.
+On Wed, Mar 24, 2021 at 02:35:38PM +0100, Thomas Hellström (Intel) wrote:
 
-It'd be nice if this could work. Though I think there's an inherent
-problem (same as with fd) with trying to pass a reference back to the
-user, while the user can concurrently modify that reference.
+> > In an ideal world the creation/destruction of page table levels would
+> > by dynamic at this point, like THP.
+> 
+> Hmm, but I'm not sure what problem we're trying to solve by changing the
+> interface in this way?
 
-Let's assume that user space creates new copies of perf_event_attr for
-every version they want, there's still a race where the user modifies
-an event, and concurrently in another thread a signal arrives. I
-currently don't see a way to determine when it's safe to free a
-perf_event_attr or reuse, without there still being a chance that a
-signal arrives due to some old perf_event_attr. And for our usecase,
-we really need to know a precise subset out of attr that triggered the
-event.
+We are trying to make a sensible driver API to deal with huge pages.
+ 
+> Currently if the core vm requests a huge pud, we give it one, and if we
+> can't or don't want to (because of dirty-tracking, for example, which is
+> always done on 4K page-level) we just return VM_FAULT_FALLBACK, and the
+> fault is retried at a lower level.
 
-So the safest thing I can see is to stash a copy of the relevant
-information in siginfo, which is how we ended up with encoding bits
-from perf_event_attr into si_perf.
+Well, my thought would be to move the pte related stuff into
+vmf_insert_range instead of recursing back via VM_FAULT_FALLBACK.
 
-One way around this I could see is that we know that there's a limited
-number of combinations of attrs, and the user just creates an instance
-for every version they want (and hope it doesn't exceed some large
-number). Of course, for breakpoints, we have bp_addr, but let's assume
-that si_addr has the right version, so we won't need to access
-perf_event_attr::bp_addr.
+I don't know if the locking works out, but it feels cleaner that the
+driver tells the vmf how big a page it can stuff in, not the vm
+telling the driver to stuff in a certain size page which it might not
+want to do.
 
-But given the additional complexities, I'm not sure it's worth it. Is
-there a way to solve the modify-signal-race problem in a nicer way?
+Some devices want to work on a in-between page size like 64k so they
+can't form 2M pages but they can stuff 64k of 4K pages in a batch on
+every fault.
 
-Thanks,
--- Marco
+That idea doesn't fit naturally if the VM is driving the size.
+
+Jason
