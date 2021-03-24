@@ -2,67 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DB1347159
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7C9347161
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhCXGEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:04:20 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:7259 "EHLO smtp1.axis.com"
+        id S235487AbhCXGF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:05:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230057AbhCXGED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:04:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616565843;
-  x=1648101843;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=sk06+HZ6Blr7iUQ4aFmbDlbxhVZxlHgzlIAHEdW4tT4=;
-  b=bIDUvjPl13vgn9k1JJD/czscd52YXbjosXItkdbXKYIE9p7CAxzE1TW9
-   zm8PJk/C760xfIrXThSiwR0kBp6FnVDxpVm7ArT0LucmWvL7penYHeRb6
-   jewGAzA6rhExakJqYomKw3dn9zoqks0214Dv2trjBU7wNdCzU3rm4OVnm
-   5M+qtBHu0WATW9zP8aP/our2V4TqbvTCMrZobw5l4J0dUjIUmD/6yUuwc
-   q5jDdgdUETPYOZWho1lmfk5SDCUVP89vpzIWSkDIxGgqRkO1Jz36tFT8s
-   8CIpFWRNYpYxPujEBhk3coM+EK9C9e5i0MZLZ+d84vpW3J1GJt6s3UVi1
-   g==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     Alexander Dahl <ada@thorsis.com>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>
-CC:     kernel <kernel@axis.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
-Thread-Topic: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
-Thread-Index: AQHXIFhJRIZ9H+Su6ESnlhvrRvIo5aqSk++AgAARZqA=
-Date:   Wed, 24 Mar 2021 06:04:01 +0000
-Message-ID: <cce4da5a92d9414e87b6ac6d1d167fac@XBOX01.axis.com>
-References: <20210324024844.15796-1-chenhui.zhang@axis.com>
- <558944059.12080.1616565502073@seven.thorsis.com>
-In-Reply-To: <558944059.12080.1616565502073@seven.thorsis.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235450AbhCXGEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 02:04:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB269619C7;
+        Wed, 24 Mar 2021 06:04:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616565895;
+        bh=XWHDoRNo/SbiDhxBhdCWg2aKWnxSmfL5zY03GlP5ZxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aL26xrzyOX/byfnAUGEzC0khZ8pV2Pmhubr52R7D4iN5/riQNlIlmmO0EtB4b4D+Z
+         KtGBb7v6UsNqDWxFiIQ7jwMBpGdLKbj5E10kXlqAi0uIi0cr7kZg28cf90LgjpTgUF
+         CTMuWxzmO64LimiomsYTCU8sZA6CLyWMA4+FsfHA=
+Date:   Wed, 24 Mar 2021 07:04:14 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Jason Li <jason.li@cortina-access.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
+Subject: Re: [PATCH 1/3] tty: serial: Add UART driver for Cortina-Access
+ platform
+Message-ID: <YFrWXtYKnBCYMnYd@kroah.com>
+References: <1613702532-5096-1-git-send-email-alex.nemirovsky@cortina-access.com>
+ <YFmzax3pWFNtFbn9@kroah.com>
+ <04208957-55F9-47E8-A20A-4DEB2A35040E@cortina-access.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04208957-55F9-47E8-A20A-4DEB2A35040E@cortina-access.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+DQo+ID4gTm90ZXM6DQo+ID4gICAgIEFkZCBtYXhJdGVtcw0KPiANCj4gV2hhdCBhYm91dCB0
-aGUgb3RoZXIgcGFydCBvZiB0aGUgc2VyaWVzPyBJIHRoaW5rIHlvdSBzaG91bGQgc2VuZCBib3Ro
-DQo+IHBhdGNoZXMgdG9nZXRoZXIgd2l0aCBhbiBpbnRyb2R1Y3Rpb24gbWVzc2FnZSBvbiBib3Ro
-LiBJZiB5b3Ugb25seSBjaGFuZ2UNCj4gb25lIHBhdGNoIGZvciBhIG5ldyB2ZXJzaW9uIHNwaW4g
-b2YgdGhlIHNlcmllcywganVzdCBzZW5kIHRoZSBvdGhlciBvbmUNCj4gdW5jaGFuZ2VkLg0KPiAN
-Cj4gKEl0IG1ha2VzIG5vIHNlbnNlIHRvIG1lcmdlIHRoZSBiaW5kaW5nIGFzIGxvbmcgYXMgdGhl
-IGRyaXZlciBpcyBub3QgbWVyZ2VkLA0KPiBvdGhlcndpc2UgeW91IHdvdWxkIGVuZCB1cCB3aXRo
-IGEgYmluZGluZyB3aXRob3V0IGRyaXZlci4gU28ga2VlcGluZyB0aGVtDQo+IHRvZ2V0aGVyIHNo
-b3VsZCBoZWxwIHJldmlld2VycyBhbmQgbWFpbnRhaW5lcnMuKQ0KPiANCg0KSGkgQWxleGFuZGVy
-LA0KDQpUaGUgb3RoZXIgcGFydCBpcyBoZXJlOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRj
-aHdvcmsvcGF0Y2gvMTM5OTg3NS8sIHNvIGRvIHlvdSBtZWFuIEkgbmVlZCB0byBjb21iaW5lIHRo
-ZXNlIHR3byBhcyBvbmUgY29tbWl0PyBPciBpcyB0aGVyZSBhbnl3YXkgdG8gbGluayB0aGVtIHRv
-Z2V0aGVyPyBUaGFua3MuDQoNCkknbSBmaXJzdCB0aW1lIHRvIGNvbW1pdCBhIG5ldyBkcml2ZXIs
-IHNvcnJ5IGZvciB0aGF0Lg0KDQpCZXN0IFJlZ2FyZHMsDQpIZXJtZXMNCg==
+On Tue, Mar 23, 2021 at 07:28:51PM +0000, Alex Nemirovsky wrote:
+> 
+> 
+> > On Mar 23, 2021, at 2:22 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > 
+> > On Thu, Feb 18, 2021 at 06:42:09PM -0800, Alex Nemirovsky wrote:
+> >> From: Jason Li <jason.li@cortina-access.com>
+> >> 
+> >> This driver supports Cortina Access UART IP integrated
+> >> in most all CAXXXX line of SoCs. Earlycom is also supported
+> >> 
+> >> Signed-off-by: Jason Li <jason.li@cortina-access.com>
+> >> Reviewed-by: Alex Nemirovsky <alex.nemirovsky@cortina-access.com>
+> >> ---
+> >> MAINTAINERS                                |   5 +
+> >> drivers/tty/serial/Kconfig                 |  19 +
+> >> drivers/tty/serial/Makefile                |   1 +
+> >> drivers/tty/serial/serial_cortina-access.c | 798 +++++++++++++++++++++++++++++
+> >> include/uapi/linux/serial_core.h           |   3 +
+> >> 5 files changed, 826 insertions(+)
+> >> create mode 100644 drivers/tty/serial/serial_cortina-access.c
+> >> 
+> >> Change log
+> >>  drivers/tty/serial/serial_cortina-access.c
+> >>   v3:
+> >>    - Remove usage of uintptr_t. Change to pointer to driver's private
+> >>      structure instead.
+> > 
+> > Is this really a "v3"?  The subject lines do not show that, so I'm
+> > totally confused as to what to review and what has been reviewed here.
+> > 
+> > Please fix this up and submit a "v4" so we know what is going on :)
+> 
+> Could you recommend a method or a tool to update the commit subject id with a version prefix?
+> Currently we are doing a git format-patch and the subject line is automatically created without a 
+> version number. Do you just go in manual and edit the resulting patch contents file or do you use a 
+> tool to assist in this?
+
+This is only 3 patches, they are easy to edit by hand...  :)
+
+Anyway 'git format-patch' can do this automatically for you if you want,
+see the -v or --reroll-count option.
+
+thanks,
+
+greg k-h
