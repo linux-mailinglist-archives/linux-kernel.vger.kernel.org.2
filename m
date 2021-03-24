@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AA2347AB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AAE347ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236295AbhCXObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:31:25 -0400
-Received: from mga04.intel.com ([192.55.52.120]:34034 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236210AbhCXOa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:30:56 -0400
-IronPort-SDR: glyNnNWFyV2LfiK5uem9QXqjJ51wBzyD17FsvnLq4xX43Re5avyFGFDsyI+A7SnrHT0SlWSpex
- JBgcMId17C1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="188412927"
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="188412927"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:30:56 -0700
-IronPort-SDR: OnMCmCP7vi9bY6SeAX6AfPxcIqE9JkvOXXLpf3eq4nfWpiPBVMKsvXMWcs58+yClS/XC8kKiya
- en5uaAvqNiEQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="391319551"
-Received: from nntpdsd52-183.inn.intel.com ([10.125.52.183])
-  by orsmga002.jf.intel.com with ESMTP; 24 Mar 2021 07:30:52 -0700
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-To:     acme@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
-        namhyung@kernel.org, irogers@google.com, mingo@redhat.com,
-        peterz@infradead.org, alexey.v.bayduraev@linux.intel.com,
-        alexander.antonov@linux.intel.com
-Subject: [PATCH v5 4/4] perf: Update .gitignore file
-Date:   Wed, 24 Mar 2021 17:30:37 +0300
-Message-Id: <20210324143037.3810-5-alexander.antonov@linux.intel.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20210324143037.3810-1-alexander.antonov@linux.intel.com>
-References: <20210324143037.3810-1-alexander.antonov@linux.intel.com>
+        id S236305AbhCXObs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:31:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43281 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236217AbhCXObM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:31:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616596269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+jtHaYpG/XZInPp8hHHKOOdzU2YSMvIuIW7BEJkipo8=;
+        b=KqHRh/Wf0nk6pudXDypiBEZdt2ZySsNSFvB0+AwMW8iM9l8er6jJchvGa+bZCd0Y4XgpGB
+        YOgogUzZbiMSn1adlCNR5db37w7xTrG+n7Dan2O8Y3fIKmyi8mh+o+hy1BEkak80RzOvXO
+        CPKR/pfnFsYMdXU0gbmkwypkjF3r3PU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-StgQD8mhM_Gsnd5QZIXHCw-1; Wed, 24 Mar 2021 10:31:07 -0400
+X-MC-Unique: StgQD8mhM_Gsnd5QZIXHCw-1
+Received: by mail-wr1-f69.google.com with SMTP id p15so1146838wre.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:31:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+jtHaYpG/XZInPp8hHHKOOdzU2YSMvIuIW7BEJkipo8=;
+        b=SvNA+sx2WYoDfCvDGcG6Borlld4ftXITD7JoOrBkTY4qf5Yf+YJ8vc+ct7V6MY4z5I
+         ozEVXzgjPjQlkklNk8Lur2mY04M9HM06CfUWMq5CnTPqirapRYAUV4NoHGrobJeN+VCK
+         fJo55SsH1d3FNJni44lsg3y2c5nPTdrDbhoHV5Uche1AROWtnHfvnPSvB3osyai85dcI
+         wa+1Uo63KGrB1a19+1Sa+2Cornp2RhtxK4xn7OsP8RxmNHMTFVg2imuT7JPqnDilgK1p
+         2DjusZbeS8npLdPYWznLv+OZKSS++1lanMnZWiIqKQdp13CaB7INCjfpefU4FepUe/NC
+         SSOQ==
+X-Gm-Message-State: AOAM5318nd6qUqdbThl1YM8Y+jBPSYFyATWlLipwt3il7y5tN43uFD/k
+        1pxzmBW3mLZD3jXfe3AfY4254pS0ihsVQMylByOCB5szV23Xt969LnTQCdt6Lh5nqOKz5NCLgXd
+        rg9+/EN4m5Mk4dczIyQyV7F4l
+X-Received: by 2002:a5d:68cd:: with SMTP id p13mr3977875wrw.247.1616596266460;
+        Wed, 24 Mar 2021 07:31:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIf+VryoTPSfwti+YSTkQ2E1C0/b6Xuw3ivYfNPK4a9PF7c1OO41KjvaTv9A51GLRMrRGgKA==
+X-Received: by 2002:a5d:68cd:: with SMTP id p13mr3977856wrw.247.1616596266249;
+        Wed, 24 Mar 2021 07:31:06 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u8sm3366640wrr.42.2021.03.24.07.31.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 07:31:05 -0700 (PDT)
+Subject: Re: [PATCH 3/3] mm: unexport follow_pfn
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        3pvd@google.com, Jann Horn <jannh@google.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
+ <20210316153303.3216674-4-daniel.vetter@ffwll.ch>
+ <20210324125211.GA2356281@nvidia.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b1a46866-cbc7-4e7f-0e17-79fee57b32a0@redhat.com>
+Date:   Wed, 24 Mar 2021 15:31:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210324125211.GA2356281@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After a "make -C tools/perf", git reports the following untracked file:
-perf-iostat
+On 24/03/21 13:52, Jason Gunthorpe wrote:
+> I think this is the right thing to do.
+> 
+> Alex is working on fixing VFIO and while kvm is still racy using
+> follow pte, I think they are working on it too?
 
-Add this generated file to perf's .gitignore file.
+Yeah, or at least we have a plan.
 
-Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
----
- tools/perf/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/perf/.gitignore b/tools/perf/.gitignore
-index f3f84781fd74..e555e9729758 100644
---- a/tools/perf/.gitignore
-+++ b/tools/perf/.gitignore
-@@ -20,6 +20,7 @@ perf.data.old
- output.svg
- perf-archive
- perf-with-kcore
-+perf-iostat
- tags
- TAGS
- cscope*
--- 
-2.19.1
+Paolo
 
