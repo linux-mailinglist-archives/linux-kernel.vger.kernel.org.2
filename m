@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8B73472E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1B33472EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhCXHoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:44:03 -0400
-Received: from mail-lj1-f182.google.com ([209.85.208.182]:36442 "EHLO
-        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhCXHnk (ORCPT
+        id S232741AbhCXHpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhCXHo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:43:40 -0400
-Received: by mail-lj1-f182.google.com with SMTP id z25so28952913lja.3;
-        Wed, 24 Mar 2021 00:43:39 -0700 (PDT)
+        Wed, 24 Mar 2021 03:44:56 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33D7C061763;
+        Wed, 24 Mar 2021 00:44:55 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id o19so11886914qvu.0;
+        Wed, 24 Mar 2021 00:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a5hVopg0FkUmV7gxxD+uFZ1eqADIArsa8hDbBGsoXQY=;
+        b=Xsw6j6CvvVHij9yTWXDIhOkbMAF07q2iUVMdx5/6YG6K0minby4u/Px3s4Qra2E+gd
+         +iK8GF1gvaSBVylANv6MV+CaNcBjhiCHzq3tbfy/AaptCnnx3No8LlGWtHAWZ8LELZnb
+         tjMbcBF8VyjDy4eau4gXVCyi+rhhaSGY+NRBWGOKNjKD4cjPFbI5azXeJGdH5JsBrzYc
+         cNz2YPxXfG+tXHDVy39segWJ36L6NQoA1D2zCfoRfaE9Z8xWDbH5zu3jYQZSNqneA3e2
+         8pvVr/WMUz1+pETBXCVhVy+pcHPATSucXg5lSs3lqXmQ+Qbbb2dt8nLrrPYGqR/HyfZE
+         HcIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VxtNnj3/UL7oLhV4/T5M1JANhE4KKsYGM2Lhl6l/dI4=;
-        b=nxUydPLzWaY7RqIMqAeJNIX1mY9bqj2eBfv9dY8ZlVSTTcOh/He3rtNwFsPFziU10W
-         u7cbpfQ3G0eiusW8fEXTui2isgqJzxLsIL6qK+Hx5vVOhtL495LGs29FpAI0HovI2rxE
-         Tv0G+w+us9WHewQ4neIruq+9HxsOxhzRpcpbF6XoS/MtHlJxe1cS83HgISW2NwNdrGY5
-         tkHdJuU9NyqOrlAdduWZuyb8bgM9ipWFApQpNomJ0dJqQDV1B0POOo2FAE67dk3mCFfS
-         uzbwxVe4RED6zEVpls4AGMQxcdwvVKsRsyf/B9D5zb2RxC3hPh5QniL3qOmpWKdE3K94
-         24RA==
-X-Gm-Message-State: AOAM531tk4Ekxy9SVYArH10KpTjXX1Pp8ekaFdFtUMEYywoL2kYjGhw7
-        obxAha1CQr4A2uevRuVWAp0=
-X-Google-Smtp-Source: ABdhPJyun+swdu2/euwllY2kOmlsVWC3aDUQOA4jS8ERZ9zDXsgfOKlfh5B7zC0rSxbi1oam+GCisQ==
-X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr1357288ljf.18.1616571819157;
-        Wed, 24 Mar 2021 00:43:39 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id t11sm196032ljk.65.2021.03.24.00.43.38
+        bh=a5hVopg0FkUmV7gxxD+uFZ1eqADIArsa8hDbBGsoXQY=;
+        b=UWae5DGXVLpLXrSp9e/8c5I1o4lks+WaCws+uT4ys+wB4nfV7T6DFH2D6lNMn0IVvp
+         Loef+kDOTvSWDAr6m2Bsa4jkXaliLe4WMqTrNWFbCWpwP1wNk3HGTpGhCMISA3zeBq7v
+         9aiRCDhTg0U8y2Ls1vnt4uSqpL4G1L65mMtTLRJSbldNmeyIc/cf3XnhE9YqYKkvuUn4
+         MbB0PbqCf7FIqcUJvN+5v8b8JwWzycbqxnnoO/3RnUH7Z0EXtOVQRdP7Zf/GZnXEyQy3
+         rK83w/e0cjlXO118buoYCvkfAVn/TS6w7+Hvo86algMXX121qPsKLZxxVigJKkwo3hLb
+         pArw==
+X-Gm-Message-State: AOAM532FuymKDngzuL7OCWNDM659Jg7htNn5A98/EV1RJDjyf9wmOT5f
+        N3DXmwZwIjYqUvlutw3iSg0=
+X-Google-Smtp-Source: ABdhPJyaWvd07nNBNqXZ/J8q/e64sDUILKovQT79bveFu1naEtRmYpqAlCcf7VfyPEZo1PSB9Xcnpg==
+X-Received: by 2002:a0c:f7d1:: with SMTP id f17mr1625195qvo.38.1616571895231;
+        Wed, 24 Mar 2021 00:44:55 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.37.194])
+        by smtp.gmail.com with ESMTPSA id s133sm1170575qke.1.2021.03.24.00.44.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 00:43:38 -0700 (PDT)
-Message-ID: <d26f1e700b98ed9069e6508aefa8137675343b99.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v3 6/8] power: supply: Clean-up few drivers by using
- managed work init
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     wens@csie.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>
-In-Reply-To: <CAGb2v67Jd6qFS-zmD+Hm4BJHA+-kx0nAxvDovUwW=WwZTEGYeg@mail.gmail.com>
-References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-         <e5b1b0380cdd1aa066c9ac6d7a8b1a86ba1ddbbe.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-         <CAGb2v67Jd6qFS-zmD+Hm4BJHA+-kx0nAxvDovUwW=WwZTEGYeg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 24 Mar 2021 00:44:54 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] net: sched: Mundane typo fixes
+Date:   Wed, 24 Mar 2021 13:16:37 +0530
+Message-Id: <20210324074637.6038-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Date:   Wed, 24 Mar 2021 09:43:33 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Chen-Yu, Hans, Greg,
 
-On Tue, 2021-03-23 at 22:36 +0800, Chen-Yu Tsai wrote:
-> Hi,
-> 
-> On Tue, Mar 23, 2021 at 9:58 PM Matti Vaittinen
-> <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > Few drivers implement remove call-back only for ensuring a delayed
-> > work gets cancelled prior driver removal. Clean-up these by
-> > switching
-> > to use devm_delayed_work_autocancel() instead.
-> > 
-> > This change is compile-tested only. All testing is appreciated.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > ---
-> > Changelog from RFCv2:
-> >  - RFC dropped. No functional changes.
-> > 
-> >  drivers/power/supply/axp20x_usb_power.c      | 15 +++++----------
-> >  drivers/power/supply/bq24735-charger.c       | 18 ++++++--------
-> > ----
-> >  drivers/power/supply/ltc2941-battery-gauge.c | 20 +++++++---------
-> > ----
-> >  drivers/power/supply/sbs-battery.c           | 16 +++++-----------
-> >  4 files changed, 23 insertions(+), 46 deletions(-)
-> > 
-> > diff --git a/drivers/power/supply/axp20x_usb_power.c
-> > b/drivers/power/supply/axp20x_usb_power.c
-> > index 8933ae26c3d6..4259709e3491 100644
-> > --- a/drivers/power/supply/axp20x_usb_power.c
-> > +++ b/drivers/power/supply/axp20x_usb_power.c
-> > @@ -8,6 +8,7 @@
-> > 
-> >  #include <linux/bitops.h>
-> >  #include <linux/device.h>
-> > +#include <linux/devm-helpers.h>
-> >  #include <linux/init.h>
-> >  #include <linux/interrupt.h>
-> >  #include <linux/kernel.h>
-> > @@ -646,21 +647,16 @@ static int axp20x_usb_power_probe(struct
-> > platform_device *pdev)
-> >                 }
-> >         }
-> > 
-> > +       ret = devm_delayed_work_autocancel(&pdev->dev, &power-
-> > >vbus_detect,
-> > +                                          axp20x_usb_power_poll_vb
-> > us);
-> > +       if (ret)
-> > +               return ret;
-> 
-> This doesn't look right. The IRQ is requested before this, and the
-> delayed_work
-> struct is initialized even earlier, so you'd be re-initializing the
-> struct,
-> with the work item potentially running or queued up already.
+s/procdure/procedure/
+s/maintanance/maintenance/
 
-Sigh. The company mail had redirected this to spam... :/
-I will check this and send appropriate follow-up fix(es) to Greg. Big
-thanks for the heads-up!
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ net/sched/sch_cbq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---Matti
+diff --git a/net/sched/sch_cbq.c b/net/sched/sch_cbq.c
+index 320b3d31fa97..b79a7e27bb31 100644
+--- a/net/sched/sch_cbq.c
++++ b/net/sched/sch_cbq.c
+@@ -263,7 +263,7 @@ cbq_classify(struct sk_buff *skb, struct Qdisc *sch, int *qerr)
+ 		/*
+ 		 * Step 3+n. If classifier selected a link sharing class,
+ 		 *	   apply agency specific classifier.
+-		 *	   Repeat this procdure until we hit a leaf node.
++		 *	   Repeat this procedure until we hit a leaf node.
+ 		 */
+ 		head = cl;
+ 	}
+@@ -859,7 +859,7 @@ cbq_dequeue(struct Qdisc *sch)
+ 	return NULL;
+ }
 
+-/* CBQ class maintanance routines */
++/* CBQ class maintenance routines */
+
+ static void cbq_adjust_levels(struct cbq_class *this)
+ {
+--
+2.30.1
 
