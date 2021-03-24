@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792BF3476FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1004347707
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhCXLUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:20:46 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61970 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234688AbhCXLUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:20:41 -0400
-Received: from fsav404.sakura.ne.jp (fsav404.sakura.ne.jp [133.242.250.103])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12OBKdaE096058;
-        Wed, 24 Mar 2021 20:20:39 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav404.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp);
- Wed, 24 Mar 2021 20:20:39 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12OBKdEH096052
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 24 Mar 2021 20:20:39 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC PATCH 2/2] integrity: double check iint_cache was
- initialized
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210319200358.22816-1-zohar@linux.ibm.com>
- <20210319200358.22816-2-zohar@linux.ibm.com>
- <8450c80a-104a-3f36-0963-0ae8fa69e0f2@i-love.sakura.ne.jp>
- <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
- <1a2245c6-3cab-7085-83d3-55b083619303@i-love.sakura.ne.jp>
- <8039976be3df9bd07374fe4f1931b8ce28b89dab.camel@linux.ibm.com>
- <cde00350-2a18-1759-d53b-2e7489b6cc0e@i-love.sakura.ne.jp>
- <8a8763a7-eeeb-3578-d50c-c15919fbe1f9@i-love.sakura.ne.jp>
- <3ed2004413e0ac07c7bd6f10294d6b6fac6fdbf3.camel@linux.ibm.com>
- <cc01e7b7-d685-289c-a792-fc76fabba807@i-love.sakura.ne.jp>
- <721b4f8d38b014babb0f4ae829d76014bbf7734e.camel@linux.ibm.com>
- <0a0c5cc5-0e1b-ef01-60c4-5247af2124f4@i-love.sakura.ne.jp>
- <37aeaf361bfbd800e29db761f5160f2ce1869298.camel@linux.ibm.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <05ca20d0-9596-152e-4da2-1ffe28c52055@i-love.sakura.ne.jp>
-Date:   Wed, 24 Mar 2021 20:20:39 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234581AbhCXLX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:23:26 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15020 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231811AbhCXLXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 07:23:04 -0400
+IronPort-SDR: 4sPfXJozztFMmGJfwwPLcHN6sKWBNnTMxWCsUdV3LRD0kao4jLqI7CtP+Bnhukw1JwohyEBFm7
+ Qbr/xhC3dXfA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="190094688"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="190094688"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 04:23:04 -0700
+IronPort-SDR: MfwqPanb0Iqc+iEtOQA8LkpLg1kxRPa4SNLLV8oYa35Vku0bst3vAN5AzUVeig8hOQFCgusefC
+ tJPJ+dCnMe/g==
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="593346812"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 04:23:01 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lP1bG-00FeXS-5N; Wed, 24 Mar 2021 13:22:58 +0200
+Date:   Wed, 24 Mar 2021 13:22:58 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v2 03/12] dump_stack: Add vmlinux build ID to stack traces
+Message-ID: <YFshElW7XI+ekhfy@smile.fi.intel.com>
+References: <20210324020443.1815557-1-swboyd@chromium.org>
+ <20210324020443.1815557-4-swboyd@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <37aeaf361bfbd800e29db761f5160f2ce1869298.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324020443.1815557-4-swboyd@chromium.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/24 20:10, Mimi Zohar wrote:
-> On Wed, 2021-03-24 at 19:10 +0900, Tetsuo Handa wrote:
->> On 2021/03/24 1:13, Mimi Zohar wrote:
->>> On Wed, 2021-03-24 at 00:14 +0900, Tetsuo Handa wrote:
->>>> On 2021/03/23 23:47, Mimi Zohar wrote:
->>>>> Initially I also questioned making "integrity" an LSM.  Perhaps it's
->>>>> time to reconsider.   For now, it makes sense to just fix the NULL
->>>>> pointer dereferencing.
->>>>
->>>> Do we think calling panic() as "fix the NULL pointer dereferencing" ?
->>>
->>> Not supplying "integrity" as an "lsm=" option is a user error.  There
->>> are only two options - allow or deny the caller to proceed.   If the
->>> user is expecting the integrity subsystem to be properly working,
->>> returning a NULL and allowing the system to boot (RFC patch version)
->>> does not make sense.   Better to fail early.
->>
->> What does the "user" mean? Those who load the vmlinux?
->> Only the "root" user (so called administrators)?
->> Any users including other than "root" user?
->>
->> If the user means those who load the vmlinux, that user is explicitly asking
->> for disabling "integrity" for some reason. In that case, it is a bug if
->> booting with "integrity" disabled is impossible.
->>
->> If the user means something other than those who load the vmlinux,
->> is there a possibility that that user (especially non "root" users) is
->> allowed to try to use "integrity" ? If processes other than global init
->> process can try to use "integrity", wouldn't it be a DoS attack vector?
->> Please explain in the descripotion why calling panic() does not cause
->> DoS attack vector.
+On Tue, Mar 23, 2021 at 07:04:34PM -0700, Stephen Boyd wrote:
+> Add the running kernel's build ID[1] to the stacktrace information
+> header.  This makes it simpler for developers to locate the vmlinux with
+> full debuginfo for a particular kernel stacktrace. Combined with
+> scripts/decode_stracktrace.sh, a developer can download the correct
+> vmlinux from a debuginfod[2] server and find the exact file and line
+> number for the functions plus offsets in a stacktrace.
 > 
-> User in this case, is anyone rebooting the system and is intentionally
-> changing the default values, dropping the "integrity" option on the
-> boot command line.
+> This is especially useful for pstore crash debugging where the kernel
+> crashes are recorded in the pstore logs and the recovery kernel is
+> different or the debuginfo doesn't exist on the device due to space
+> concerns (the data can be large and a security concern). The stacktrace
+> can be analyzed after the crash by using the build ID to find the
+> matching vmlinux and understand where in the function something went
+> wrong.
+> 
+> Example stacktrace from lkdtm:
 
-OK. Then, I expect that the system boots instead of calling panic().
-That user is explicitly asking for disabling "integrity" for some reason.
+Can we drop the noise from the example and leave only important part(s)?
+
+>  WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNING+0x28/0x30 [lkdtm]
+>  Modules linked in: lkdtm rfcomm algif_hash algif_skcipher af_alg xt_cgroup uinput xt_MASQUERADE
+>  CPU: 4 PID: 3255 Comm: bash Not tainted 5.11 #3 aa23f7a1231c229de205662d5a9e0d4c580f19a1
+>  Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+>  pstate: 00400009 (nzcv daif +PAN -UAO -TCO BTYPE=--)
+>  pc : lkdtm_WARNING+0x28/0x30 [lkdtm]
+>  lr : lkdtm_do_action+0x24/0x40 [lkdtm]
+>  sp : ffffffc0134fbca0
+>  x29: ffffffc0134fbca0 x28: ffffff92d53ba240
+>  x27: 0000000000000000 x26: 0000000000000000
+>  x25: 0000000000000000 x24: ffffffe3622352c0
+>  x23: 0000000000000020 x22: ffffffe362233366
+>  x21: ffffffe3622352e0 x20: ffffffc0134fbde0
+>  x19: 0000000000000008 x18: 0000000000000000
+>  x17: ffffff929b6536fc x16: 0000000000000000
+>  x15: 0000000000000000 x14: 0000000000000012
+>  x13: ffffffe380ed892c x12: ffffffe381d05068
+>  x11: 0000000000000000 x10: 0000000000000000
+>  x9 : 0000000000000001 x8 : ffffffe362237000
+>  x7 : aaaaaaaaaaaaaaaa x6 : 0000000000000000
+>  x5 : 0000000000000000 x4 : 0000000000000001
+>  x3 : 0000000000000008 x2 : ffffff93fef25a70
+>  x1 : ffffff93fef15788 x0 : ffffffe3622352e0
+>  Call trace:
+>   lkdtm_WARNING+0x28/0x30 [lkdtm]
+>   direct_entry+0x16c/0x1b4 [lkdtm]
+>   full_proxy_write+0x74/0xa4
+>   vfs_write+0xec/0x2e8
+>   ksys_write+0x84/0xf0
+>   __arm64_sys_write+0x24/0x30
+>   el0_svc_common+0xf4/0x1c0
+>   do_el0_svc_compat+0x28/0x3c
+>   el0_svc_compat+0x10/0x1c
+>   el0_sync_compat_handler+0xa8/0xcc
+>   el0_sync_compat+0x178/0x180
+>  ---[ end trace 3d95032303e59e68 ]---
+> 
+> The hex string aa23f7a1231c229de205662d5a9e0d4c580f19a1 is the build ID,
+> following the kernel version number.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
