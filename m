@@ -2,179 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05F33479AC
+	by mail.lfdr.de (Postfix) with ESMTP id 838F33479AB
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbhCXNcM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 09:32:12 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:34288 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235048AbhCXNbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:31:39 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lP3ba-0000T8-Q0; Wed, 24 Mar 2021 14:31:26 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     "elaine.zhang" <zhangqing@rock-chips.com>, robh+dt@kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cl@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
-        finley.xiao@rock-chips.com
-Subject: Re: [PATCH v4 2/4] dt-bindings: power: rockchip: Convert to json-schema
-Date:   Wed, 24 Mar 2021 14:31:25 +0100
-Message-ID: <2066097.irdbgypaU6@diego>
-In-Reply-To: <f1323618-7990-9bb7-a8c2-a7321a4034f8@collabora.com>
-References: <20210324071609.7531-1-zhangqing@rock-chips.com> <40a7fad3-17bb-9275-ed4a-2e3d526d05a1@collabora.com> <f1323618-7990-9bb7-a8c2-a7321a4034f8@collabora.com>
+        id S235368AbhCXNcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235230AbhCXNbr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:31:47 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5EDC061763;
+        Wed, 24 Mar 2021 06:31:46 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id x16so24459584wrn.4;
+        Wed, 24 Mar 2021 06:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=e8lPC72F11p8PBhBhydD1cx8exsNe0wRkeHr07SpaS0=;
+        b=Qd6dhey0+eCqZPgZmDNub1vuPD1DQoapTBwS3wk3+jDCZeWSdnP0Y5AAjbU299drNM
+         6kD8jiYya5D/VsfV6Weg5j4hPKGm9NnrPKd43h/URiYNB7GjplubzGCNQhvT6XeIu/kR
+         OPiU6wgsG/6NOFJrUMO83IHDmGJIM3lz795bi/EPNfUKPist1Se3v4uPNBe1mZZVrcQL
+         hBP9Ih4Ieei7iQ1+D5S4RKYt427BBd9TJ0tMQbvXd+Sxvat4WUzjmkN33pTiW/qUS9ZD
+         s7cJ7Cql0fn/+l0Vu3i/GW40D3PvJIvyga3d9WVLBMzrn6xTQXSNiK3Drbp4/tjcFzD3
+         7FTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=e8lPC72F11p8PBhBhydD1cx8exsNe0wRkeHr07SpaS0=;
+        b=hUO60XoOsvfl6TUwzMB4VKUuwvZjJTxQmk3w8khW3mwFlicxaOk3Dw/XU6UKYX7Y9V
+         tvIw6q0Zar4J9eDUlVpU1+yjV+rhEbVHsDlhjpvEj+StbiExJx0nAkT0Qm72+ororeAZ
+         Xt2FyN4k8hlvSJEJFloXfKsIdrjVbPIaQN9N/lqSlT0ETdE+DkW8TTuMmDQB1NuXLqZb
+         dCGsV2A7D2pAbxvQo7rdseOxsbBBW847Fqkawo1nEOBnqC1CN8uyIly9saYQGc5PYFK3
+         iV8Djm6PpnbfRbzIyEkasTXJNbZU/y6wXFV+yYH73RChFB7k3KpYWORK/MdnRJ8V0Uyr
+         bF1g==
+X-Gm-Message-State: AOAM533p7T6y8uBlwc0lHxXvMnC/a7jYcbhxtlufP5wMoTe8l0rzD+Sx
+        ZbyisRKGexkJinUMpMAFR5w=
+X-Google-Smtp-Source: ABdhPJwQ5C/96loWRd8zxzj/soRRkiEZKgv1bSIwXrCr85ovOzmXRjHk77oA03hDU91UqxWjumjXnw==
+X-Received: by 2002:adf:e5c4:: with SMTP id a4mr3588623wrn.174.1616592705153;
+        Wed, 24 Mar 2021 06:31:45 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id u2sm3322739wrp.12.2021.03.24.06.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 06:31:43 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 14:32:04 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, mturquette@baylibre.com,
+        sboyd@kernel.org, JC Kuo <jckuo@nvidia.com>, robh@kernel.org,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v7 00/14] Tegra XHCI controller ELPG support
+Message-ID: <YFs/VBZvZo6mBJqz@orome.fritz.box>
+References: <20210120073414.69208-1-jckuo@nvidia.com>
+ <YB1vGTt0ufzsYBgo@ulmo>
+ <YB1wxazg/QpRSJz6@kroah.com>
+ <YFszBH1JJmjJmjn2@orome.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="u5Zpz5lsXNY2k1xR"
+Content-Disposition: inline
+In-Reply-To: <YFszBH1JJmjJmjn2@orome.fritz.box>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 24. März 2021, 11:32:42 CET schrieb Enric Balletbo i Serra:
-> 
-> On 24/3/21 11:25, Enric Balletbo i Serra wrote:
-> > Hi Elaine,
-> > 
-> > On 24/3/21 11:18, elaine.zhang wrote:
-> >> Hi,  Enric
-> >>
-> >> 在 2021/3/24 下午5:56, Enric Balletbo i Serra 写道:
-> >>> Hi Elaine,
-> >>>
-> >>> This is not the exact version I sent, and you reintroduced a "problem" that were
-> >>> already solved/discussed on previous versions. See below:
-> >>>
-> >>> On 24/3/21 8:16, Elaine Zhang wrote:
-> >>>> Convert the soc/rockchip/power_domain.txt binding document to
-> >>>> json-schema and move to the power bindings directory.
-> >>>>
-> >>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> >>> If you do significant is a good practice shortly describe them within [] here.
-> >>>
-> >>>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-> >>> Note that my last version already had the
-> >>>
-> >>> Reviewed-by: Rob Herring <robh@kernel.org>
-> >>>
-> >>> Which should be fine for merging (with probably only minor changes) and you
-> >>> could maintain if you don't do significant changes, but that's not the case, as
-> >>> I said, you are reintroducing one problem. Please review the comments already
-> >>> received on this patchset or similar patchsets to avoid this.
-> >>>
-> >>>> ---
-> >>>>   .../power/rockchip,power-controller.yaml      | 284 ++++++++++++++++++
-> >>>>   .../bindings/soc/rockchip/power_domain.txt    | 136 ---------
-> >>>>   2 files changed, 284 insertions(+), 136 deletions(-)
-> >>>>   create mode 100644
-> >>>> Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> >>>>   delete mode 100644
-> >>>> Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
-> >>>>
-> >>>> diff --git
-> >>>> a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> >>>> b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> >>>> new file mode 100644
-> >>>> index 000000000000..a220322c5139
-> >>>> --- /dev/null
-> >>>> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> >>>> @@ -0,0 +1,284 @@
-> >>>> +# SPDX-License-Identifier: GPL-2.0-only
-> >>>> +%YAML 1.2
-> >>>> +---
-> >>>> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
-> >>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >>>> +
-> >>>> +title: Rockchip Power Domains
-> >>>> +
-> >>>> +maintainers:
-> >>>> +  - Elaine Zhang <zhangqing@rock-chips.com>
-> >>>> +  - Rob Herring <robh+dt@kernel.org>
-> >>> Up to Rob, but I don't think Rob would like to be the maintainer. I think you
-> >>> can only include yourself and Heiko.
-> >>>
-> >>>
-> >>>> +  - Heiko Stuebner <heiko@sntech.de>
-> >>>> +
-> >>>> +description: |
-> >>>> +  Rockchip processors include support for multiple power domains which can be
-> >>>> +  powered up/down by software based on different application scenarios to
-> >>>> save power.
-> >>>> +
-> >>>> +  Power domains contained within power-controller node are generic power domain
-> >>>> +  providers documented in
-> >>>> Documentation/devicetree/bindings/power/power-domain.yaml.
-> >>>> +
-> >>>> +  IP cores belonging to a power domain should contain a "power-domains"
-> >>>> +  property that is a phandle for the power domain node representing the domain.
-> >>>> +
-> >>>> +properties:
-> >>>> +  $nodename:
-> >>>> +    const: power-controller
-> >>>> +
-> >>>> +  compatible:
-> >>>> +    enum:
-> >>>> +      - rockchip,px30-power-controller
-> >>>> +      - rockchip,rk3036-power-controller
-> >>>> +      - rockchip,rk3066-power-controller
-> >>>> +      - rockchip,rk3128-power-controller
-> >>>> +      - rockchip,rk3188-power-controller
-> >>>> +      - rockchip,rk3228-power-controller
-> >>>> +      - rockchip,rk3288-power-controller
-> >>>> +      - rockchip,rk3328-power-controller
-> >>>> +      - rockchip,rk3366-power-controller
-> >>>> +      - rockchip,rk3368-power-controller
-> >>>> +      - rockchip,rk3399-power-controller
-> >>>> +
-> >>>> +  "#power-domain-cells":
-> >>>> +    const: 1
-> >>>> +
-> >>>> +  "#address-cells":
-> >>>> +    const: 1
-> >>>> +
-> >>>> +  "#size-cells":
-> >>>> +    const: 0
-> >>>> +
-> >>>> +patternProperties:
-> >>>> +  "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
-> >>>> +    type: object
-> >>>> +    description: |
-> >>>> +      Represents the power domains within the power controller node as
-> >>>> documented
-> >>>> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
-> >>>> +
-> >>> The node names must be generic, as this is power-domain must be in the form:
-> >>>
-> >>> +patternProperties:
-> >>> +  "^power-domain@[0-9a-f]+$":
-> >> In this way, dtbs_check cannot be passed, and all the usage methods in dts of
-> >> Rockchip need to be corrected, which I think is a bigger change.
-> > 
-> > Well, the problem is in the Rockchip dtbs, so needs to be fixed there. The
-> > bindings must describe hardware in a generic way, not describe the actual dtbs
-> > to not report errors.
-> > 
-> 
-> FWIW I remember I did something regarding this but never sent to upstream, feel
-> free to pick if you find useful.
-> 
-> *
-> https://gitlab.collabora.com/eballetbo/linux/-/commit/12499f223e3d33602449b9102404fe573fb804f5
-> *
-> https://gitlab.collabora.com/eballetbo/linux/-/commit/12499f223e3d33602449b9102404fe573fb804f5
-> *
-> https://gitlab.collabora.com/eballetbo/linux/-/commit/492bf2213c341152a1c2423242c5634b9e53ff27
 
-looks good that way. I did look at the power-domain driver and
-we're (of course) not doing anything with the name in front of the @ :-) .
+--u5Zpz5lsXNY2k1xR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So I'd be happy to get these.
+On Wed, Mar 24, 2021 at 01:39:32PM +0100, Thierry Reding wrote:
+> On Fri, Feb 05, 2021 at 05:22:29PM +0100, Greg KH wrote:
+> > On Fri, Feb 05, 2021 at 05:15:21PM +0100, Thierry Reding wrote:
+> > > On Wed, Jan 20, 2021 at 03:34:00PM +0800, JC Kuo wrote:
+> > > > Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
+> > > > state for power saving when all of the connected USB devices are in
+> > > > suspended state. This patch series includes clk, phy and pmc changes
+> > > > that are required for properly place controller in ELPG and bring
+> > > > controller out of ELPG.
+> > > >=20
+> > > > JC Kuo (14):
+> > > >   clk: tegra: Add PLLE HW power sequencer control
+> > > >   clk: tegra: Don't enable PLLE HW sequencer at init
+> > > >   phy: tegra: xusb: Move usb3 port init for Tegra210
+> > > >   phy: tegra: xusb: Rearrange UPHY init on Tegra210
+> > > >   phy: tegra: xusb: Add Tegra210 lane_iddq operation
+> > > >   phy: tegra: xusb: Add sleepwalk and suspend/resume
+> > > >   soc/tegra: pmc: Provide USB sleepwalk register map
+> > > >   arm64: tegra210: XUSB PADCTL add "nvidia,pmc" prop
+> > > >   dt-bindings: phy: tegra-xusb: Add nvidia,pmc prop
+> > > >   phy: tegra: xusb: Add wake/sleepwalk for Tegra210
+> > > >   phy: tegra: xusb: Tegra210 host mode VBUS control
+> > > >   phy: tegra: xusb: Add wake/sleepwalk for Tegra186
+> > > >   usb: host: xhci-tegra: Unlink power domain devices
+> > > >   xhci: tegra: Enable ELPG for runtime/system PM
+> > > >=20
+> > > >  .../phy/nvidia,tegra124-xusb-padctl.txt       |    1 +
+> > > >  arch/arm64/boot/dts/nvidia/tegra210.dtsi      |    1 +
+> > > >  drivers/clk/tegra/clk-pll.c                   |   12 -
+> > > >  drivers/clk/tegra/clk-tegra210.c              |   53 +-
+> > > >  drivers/phy/tegra/xusb-tegra186.c             |  558 ++++-
+> > > >  drivers/phy/tegra/xusb-tegra210.c             | 1889 +++++++++++++=
+----
+> > > >  drivers/phy/tegra/xusb.c                      |   92 +-
+> > > >  drivers/phy/tegra/xusb.h                      |   22 +-
+> > > >  drivers/soc/tegra/pmc.c                       |   94 +
+> > > >  drivers/usb/host/xhci-tegra.c                 |  613 ++++--
+> > > >  include/linux/clk/tegra.h                     |    4 +-
+> > > >  include/linux/phy/tegra/xusb.h                |   10 +-
+> > > >  12 files changed, 2784 insertions(+), 565 deletions(-)
+> > > >=20
+> > > > v5 "phy: tegra: xusb: tegra210: Do not reset UPHY PLL" is moved
+> > > > into v6 "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
+> > >=20
+> > > Mike, Stephen,
+> > >=20
+> > > could you guys take a look at the two clk patches here and give an
+> > > Acked-by? There's build-time dependencies throughout the series, so i=
+t'd
+> > > be good if they can all go through either the PHY or USB trees.
+> > >=20
+> > > Kishon, Greg,
+> > >=20
+> > > any comments on these patches? Unfortunately, the USB patches in this
+> > > series have a build-time dependency on the PHY patches, so this should
+> > > all go through one tree. Since this all culminates in the XHCI driver,
+> > > merging this through the USB tree might be best, provided that Kishon
+> > > provides his Acked-by on the PHY patches.
+> > >=20
+> > > Alternatively, I can create a set of branches with the correct
+> > > dependencies and send out pull requests for the three subsystems if
+> > > that's preferrable.
+> >=20
+> > I have no objection for the usb patches to go through your tree as they
+> > are hardware-specific.
+>=20
+> Kishon,
+>=20
+> I haven't heard back from you on this yet. We missed v5.12 but I'd like
+> to get this into v5.13 since it's the last missing piece to get suspend
+> and resume working properly on a number of boards.
+>=20
+> Are you okay if I take this through the Tegra tree to satisfy the
+> interdependencies between clk, PHY and USB patches? I've already got
+> Acked-by's from the clock and USB maintainers.
+>=20
+> I want to tentatively take this into linux-next to give it a bit of soak
+> time before the ARM SoC -rc6 cut-off. Please let me know if you'd prefer
+> to apply these to your tree so I can back them out of the Tegra tree
+> again.
 
-Heiko
+Also adding Vinod for visibility and in case Kishon's too busy.
 
+Thierry
 
+--u5Zpz5lsXNY2k1xR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBbP1EACgkQ3SOs138+
+s6G5sBAAh0Lkrr0lTVpTOBr3PZOfIjNoSUKj3pElbX7MikbUbfAwbA6Q5kQsS/6U
+Cl0wrHoCeWPnYGxN8tJtB0p2KgvIxocNryeIZEahFkf+dXzJLX+gi3q7I26G9t0c
+KQdsu40RA28kYoUPeNiwMUyueeimHMt0R9neLagCh0NPjUXhFybPtA8fcynT7psm
+dPFdqBRJL4E49dkcT0pZRdFiISqMDGo+b4xy/iyIMUGHrdINshI1NMdRQgYZ2A50
+EB72FmS8nvxEWHO7U7fcRg2qBFqwp/YjCHmzz5eePMXMYttY8buYG2SjmnsXPHTe
+TQWJhs4pa1Jpadjr40bwz76Zt8PbAC1OHTi9l0N4iGUaa1FIw6hoieD8iFLSyjS5
+DbNqawgDUDXFuu1/idLzFccSNU24CALZT1xhy32cT3DqtHIP09aI5LBpu8sFyjCj
+zjpx8IoO1Nk4UHWspb6RycyBGVNU880RjtrMT2ip5roy10Ff00ryeX7KZu4CGdkZ
+IgvxegtSq0wIkq3JstCK7TuGLxuDii8HeGYip2HkmZ19tguNU0Imn+2f8IhErW2K
+OVPaqa8hsI0Jd7eXvedMWOfUk8DAfRn7gXdQiBQPcHy4Pz08piNBmedeyfdeZetO
+H998/kewk+3bMPDdxi/6zADUcwUXdMC/88XWKa5be6uDIO3jzMI=
+=AbYf
+-----END PGP SIGNATURE-----
+
+--u5Zpz5lsXNY2k1xR--
