@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC7B3475CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708003475D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbhCXKUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235699AbhCXKUd (ORCPT
+        id S233228AbhCXKVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:21:19 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:58189 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230452AbhCXKUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:20:33 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32356C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:20:33 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id k10so31948111ejg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:20:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0wDWLXKOGdso8sCX9cYlDgiimLp48jn6EeiRWVhbQHc=;
-        b=w0jh6d3IxU4M+f4vLwKoW929zKZl9oRW+TGUP/89uvvijxBBoDo8jAMkm6+s4LWFY7
-         JYmvg05MiMWp2dfscl5m8tee4xf6g3RIQ5g0nGYBCkeYhb0fFmZD+ijK14Kuu+RJrNTa
-         Fdst67N6wKF36pMeIllgsmWOsCXgSXxaEWJxBK41rhzf3DNqKiL0vrZoKAY6zceRbfge
-         dnTKG4A0ngXRAT4Awsls05Isi14zR7zIiaCIEnVnkTn1dEWDM8LzRluyoue5SYRVr+MC
-         jyXi0ewff+jp/i+qYpOa9Yas1TsNtOLxTsyIOcnCpPxUTFjEItqyl3gwpkk65orK+TWS
-         8ydg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0wDWLXKOGdso8sCX9cYlDgiimLp48jn6EeiRWVhbQHc=;
-        b=kNBIsg3bQg1oH/sn2xf8so695tz+sAhoWdPYagve8U4J66xwfhcwHuNDKrIl5eMpYQ
-         6eBOAsomjrr2tkgG50WWOw7whCs+JvyaVRzhIBA6PjrJuiWCIzk17YdoR3O/UJrcBvR+
-         lEl+pVVwFyAEPYp9woNyV0U1/xqRLCL+PzZYasGLvTJPtOFeLNRxW/i5agc+eQ+9ZH0A
-         B98hp7jniLsmg86PfilMhU/vTA6QjPblFW0CwRcCtZbG44ZYykw2sk/tnMGYIUooWsBT
-         Udt/zV+6q5VgbDLtayPD2WIeBmAd5eZ+0VsUST+1FhnrM2Z+JBdIg4m2qufPiCqJx273
-         lRjA==
-X-Gm-Message-State: AOAM5322X0n7FplouPz8i4r7/c2IW+gEAJi2rG1aBTZ0NVwIHGcppRIM
-        zXdBO3dcpkH+opw1otGSxLAd0RbZjZ4OrE2T
-X-Google-Smtp-Source: ABdhPJztxf6aLGtNSiYlEgFkaAGJT+dYqO0eXlr6H/5ChhD7NmKhzXAEckNJaYkNiskmDhrJ8QVwnw==
-X-Received: by 2002:a17:906:7194:: with SMTP id h20mr2832320ejk.154.1616581231654;
-        Wed, 24 Mar 2021 03:20:31 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:2454:3e3:5f00:8dfd:6ac3:6d4d:84c6])
-        by smtp.gmail.com with ESMTPSA id i1sm692336ejh.94.2021.03.24.03.20.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 03:20:31 -0700 (PDT)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     linux-kernel@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: [PATCH v1] MAINTAINERS: Update Maintainers of DRM Bridge Drivers
-Date:   Wed, 24 Mar 2021 11:20:19 +0100
-Message-Id: <20210324102019.1251744-1-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.31.0.30.g398dba342d.dirty
+        Wed, 24 Mar 2021 06:20:47 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lP0d4-001nkY-29; Wed, 24 Mar 2021 11:20:46 +0100
+Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lP0d3-002kEf-SP; Wed, 24 Mar 2021 11:20:46 +0100
+Subject: Re: [PATCH] ia64: mca: allocate early mca with GFP_ATOMIC
+To:     Sergei Trofimovich <slyfox@gentoo.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org
+References: <20210315085045.204414-1-slyfox@gentoo.org>
+ <f351183c-7d70-359f-eed7-4d1722cf41c5@physik.fu-berlin.de>
+ <20210323174724.78b61c02@sf>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <4f7ccc08-7355-63a0-7239-16a5fb29207f@physik.fu-berlin.de>
+Date:   Wed, 24 Mar 2021 11:20:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323174724.78b61c02@sf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 160.45.32.140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as co-maintainer of DRM Bridge Drivers. Repository
-commit access has already been granted.
+Hi Sergei!
 
-https://gitlab.freedesktop.org/freedesktop/freedesktop/-/issues/338
+On 3/23/21 6:47 PM, Sergei Trofimovich wrote:
+> On Tue, 23 Mar 2021 16:15:06 +0100
+> John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
+> 
+>> Hi Andrew!
+>>
+>> On 3/15/21 9:50 AM, Sergei Trofimovich wrote:
+>>> The sleep warning happens at early boot right at
+>>> secondary CPU activation bootup:
+>>>
+>>>     smp: Bringing up secondary CPUs ...
+>>>     BUG: sleeping function called from invalid context at mm/page_alloc.c:4942
+>>>     in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
+>>>     CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.12.0-rc2-00007-g79e228d0b611-dirty #99
+>>>
+>>>     Call Trace:
+>>>      [<a000000100014d10>] show_stack+0x90/0xc0
+>>>      [<a000000101111d90>] dump_stack+0x150/0x1c0
+>>>      [<a0000001000cbec0>] ___might_sleep+0x1c0/0x2a0
+>>>      [<a0000001000cc040>] __might_sleep+0xa0/0x160
+>>>      [<a000000100399960>] __alloc_pages_nodemask+0x1a0/0x600
+>>>      [<a0000001003b71b0>] alloc_page_interleave+0x30/0x1c0
+>>>      [<a0000001003b9b60>] alloc_pages_current+0x2c0/0x340
+>>>      [<a00000010038c270>] __get_free_pages+0x30/0xa0
+>>>      [<a000000100044730>] ia64_mca_cpu_init+0x2d0/0x3a0
+>>>      [<a000000100023430>] cpu_init+0x8b0/0x1440
+>>>      [<a000000100054680>] start_secondary+0x60/0x700
+>>>      [<a00000010111e1d0>] start_ap+0x750/0x780
+>>>     Fixed BSP b0 value from CPU 1
+>>>
+>>> As I understand interrupts are not enabled yet and system has a lot
+>>> of memory. There is little chance to sleep and switch to GFP_ATOMIC
+>>> should be a no-op.
+>>>
+>>> CC: Andrew Morton <akpm@linux-foundation.org>
+>>> CC: linux-ia64@vger.kernel.org
+>>> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+>>> ---
+>>>  arch/ia64/kernel/mca.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
+>>> index d4cae2fc69ca..adf6521525f4 100644
+>>> --- a/arch/ia64/kernel/mca.c
+>>> +++ b/arch/ia64/kernel/mca.c
+>>> @@ -1824,7 +1824,7 @@ ia64_mca_cpu_init(void *cpu_data)
+>>>  			data = mca_bootmem();
+>>>  			first_time = 0;
+>>>  		} else
+>>> -			data = (void *)__get_free_pages(GFP_KERNEL,
+>>> +			data = (void *)__get_free_pages(GFP_ATOMIC,
+>>>  							get_order(sz));
+>>>  		if (!data)
+>>>  			panic("Could not allocate MCA memory for cpu %d\n",
+>>>   
+>>
+>> Has this one been picked up for your tree already?
+> 
+> Should be there: https://www.ozlabs.org/~akpm/mmotm/series
+> 
+>> #NEXT_PATCHES_START mainline-later (next week, approximately)
+>> ia64-mca-allocate-early-mca-with-gfp_atomic.patch
 
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Jonas Karlman <jonas@kwiboo.se>
-Cc: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Jernej Škrabec <jernej.skrabec@siol.net>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Great, thanks. We're still missing Valentin's patch for the NUMA enumeration issue
+though. Should Valentin send the patch again with Andrew CC'ed?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4b705ba51c54..16ace8f58649 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5902,6 +5902,7 @@ F:	drivers/gpu/drm/atmel-hlcdc/
- DRM DRIVERS FOR BRIDGE CHIPS
- M:	Andrzej Hajda <a.hajda@samsung.com>
- M:	Neil Armstrong <narmstrong@baylibre.com>
-+M:	Robert Foss <robert.foss@linaro.org>
- R:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
- R:	Jonas Karlman <jonas@kwiboo.se>
- R:	Jernej Skrabec <jernej.skrabec@siol.net>
+Adrian
+
 -- 
-2.31.0.30.g398dba342d.dirty
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
