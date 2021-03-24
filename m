@@ -2,171 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C50D3472F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E8F347300
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhCXHta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:49:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13676 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbhCXHtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:49:02 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F50fn3nyNznV4Q;
-        Wed, 24 Mar 2021 15:46:25 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
- 2021 15:48:51 +0800
-Subject: Re: [PATCH] Revert "f2fs: give a warning only for readonly partition"
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
-References: <20210323064155.12582-1-yuchao0@huawei.com>
- <YFo16ADpWJ7OUAvK@google.com>
- <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
- <YFq+aQW7eihFuSst@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
-Date:   Wed, 24 Mar 2021 15:48:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <YFq+aQW7eihFuSst@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+        id S235768AbhCXHum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:50:42 -0400
+Received: from mail-mw2nam12on2067.outbound.protection.outlook.com ([40.107.244.67]:35905
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235780AbhCXHu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 03:50:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=odrjEiV+sWIVvb4CjbyN7V+tbMmZ+Ndb+VM3Mk+THNAfMT7qQDjOzLfDKBMaXq1Ymipf4PEcIJQC1baImlF6magdxVMonfFN0btGIfr1JmbIbEl3M8kTn4U5aIydHCBzYeiHfbVSQc0tQzX4BHecmsQdGhpYzvowJh8WY1vlWmW19lJoEB0R7NK57fpTSTtMD72EHkxbc4v0qKXRjCtiTwKlDU0ckVhcePHJFOwOjwLoXl7b/CFRULZpHmGKXcfgACtoY2a1V74HXK0ecLdOV2aQvqSdSFVLePpO/FIrJy7weSwvv6S1/UwOjYTbimw+aiq8YVmHOuzwj7mNQON1Xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VIXyB4Y0zI3S5VVl77tjBQGyk+Y/1eftBDGEMYEDxyk=;
+ b=OEYz5lwXNrYdsjbHepzacRpetryC7fC5vgmiLOkXgG6zH83os8cb4s/sTY3Kl6C/GfD+f7b3XI714cqOWvBOWS3qigbZSGu7rpIrym1sb1MZawaR+4KAwN1tEOVtqDSQIzZ5PJNEfPPwriMgKp6927yf2mwHbDvHVfhfYdLlqsLO1wSLiOciNo+CaJhD5ghi8kLMXbhxNbHaD4BkovBecrzFjkvc++8RM49IqorqzlE3rPy/fB/9ba2BSmIpC1hwqItJ6QksoBkjLg6my4I//TP68AT2IdB+um/OPHifF3uzmbDhdA+WvwJCKY3JXvyHN/6gSMmlxdb0nT3z10klFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VIXyB4Y0zI3S5VVl77tjBQGyk+Y/1eftBDGEMYEDxyk=;
+ b=OIRYA0AdOYLmzVllFmVilavnKTgZzuwO3cYzDWu+0WJ1GIUKTIkfPf2+TXsnn1HanUJks5EjJBZEKIIotgC/CAgF4UGQO2Z5P69HFgDyP3T6t/HUhcKFIE+KUPhVHLeiehJZ8+5M2yI5W7PmUayISmzmMojmE+Latu5VvBq6xPk=
+Authentication-Results: timesys.com; dkim=none (message not signed)
+ header.d=none;timesys.com; dmarc=none action=none header.from=synaptics.com;
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
+ by BYAPR03MB4805.namprd03.prod.outlook.com (2603:10b6:a03:12e::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Wed, 24 Mar
+ 2021 07:50:22 +0000
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72%7]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
+ 07:50:22 +0000
+Date:   Wed, 24 Mar 2021 15:50:13 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+Subject: [PATCH] mmc: sdhci: replace mmc->parent with mmc_dev() for
+ consistency
+Message-ID: <20210324155013.1e5faa3c@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR13CA0176.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::31) To BY5PR03MB5345.namprd03.prod.outlook.com
+ (2603:10b6:a03:219::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR13CA0176.namprd13.prod.outlook.com (2603:10b6:a03:2c7::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.9 via Frontend Transport; Wed, 24 Mar 2021 07:50:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a13c86d1-0165-4baf-55b2-08d8ee997a35
+X-MS-TrafficTypeDiagnostic: BYAPR03MB4805:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB480544C8F948DEA24AA53208ED639@BYAPR03MB4805.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RFrSWPqxb7ESPZsBzKzelUXOwwqqFsypKQh8UwpuLD6nMpqsHjs2fK/b9655SqgIfuI4QwfDX1J/Qt8orOIWzv3GRyIgzlb7satZpfSnWFlt585TPWtNA6aaXwPsw3BDLbP+8pkuD4PzrPZJqb2izqDzN6Nw/GZ/xTw/eHfYKjM+TlKq5xsYZhuysE1I4tAx63VNnD0Njr8sp9GZOLSOKieUWk8b6hk3BoepXIsZkwkAWoJ8sgFa6NHhVt+3uXI2k8vCOLu21iXIWJ/eEp02BoLjnVOM0pmHVJZvFQ+tBXrlYg/m9OBF5inJhOT3C8AIwhByfOSizXXHkjiHRLV8XhEua98lKbSiABhY9Dig2sUmI30pmj/e4gQ0HYq8S2MhogFJuf3Rq+6FfNl/QzTxj5dbT5Yq4fYsN6PvBKaZ2LVyQ08q2WjrJw+AR2Lq3IpROIniCBTRCqCjYSnsFjsmrTCetsa6tJCSiLSfZj/hlUhVw/go63dw7wnVf/761Ei/GcYfSXrtBzdWB/Hm4aQh7hobtGldzeLMKg54H8uh4UGTnjy6lhzowmg2jNgm0z6nAp3RtJKS+TUGDOJNvwAsXl35Wvrp8DCPPaRxrui1x+wj6g5us/pGT8lx6AvdsWM1GjBYErSsJOK0Vfgq6MiMe6JM2nEiw45JboQ3Xvo90UM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(376002)(396003)(39850400004)(7696005)(478600001)(52116002)(6666004)(6506007)(110136005)(7416002)(186003)(16526019)(26005)(4326008)(316002)(2906002)(55016002)(9686003)(956004)(66946007)(30864003)(1076003)(66556008)(86362001)(66476007)(5660300002)(83380400001)(8676002)(38100700001)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?kLE3tdQHpy2mTqeU2q5cCWIRk2tM6jZO5bW4u+VD6aTJxFbzPHEJUFeFqo9D?=
+ =?us-ascii?Q?4uASzORjlcnWgezH2YAnm6mHCxOmgPO8Vk7qotcKh0W5SX2fTL96ITHMhGQa?=
+ =?us-ascii?Q?JkbInEs6pq2Fu73IIkO1yEA+OzPC0kgc83EcaX6AxQ9Ey+6Khl7lfxtwCzQm?=
+ =?us-ascii?Q?oX0GGpvh8EpCJqowdZldMu9jNIWOor9KebNStQZgjzgCIfn/GxjdAyyrgaT7?=
+ =?us-ascii?Q?Fb+rPyUEOKR8yoJWVC69Ein/ymTPAkM0/b8Cz4sBaHxTWZeIOfcajQ9NevIn?=
+ =?us-ascii?Q?sOCgtRL2w8I2K9FBEIcCu7CfwDri/7Tq/iJizOANooHY3OItL70rHtgt7Pn3?=
+ =?us-ascii?Q?gLl5XKMrVyBp8FC7LLy51zNVGkMEi2tNG+yO+oc/wrQ4PG1Mvn8w/tC8D/T/?=
+ =?us-ascii?Q?CZqhG3C9RWULchqYqDTctoxHQ6ryyD1P07ySEmGYtLqzTFHdWF5BCZ+0Karj?=
+ =?us-ascii?Q?yYNP2ugPItnT6WEHrLgKJtkCv4SpHwj+efh70ofVZHYDipYJKsp8+cWZPpQg?=
+ =?us-ascii?Q?QsUhp4jzJAHw0HpfC8U60bReAtrN17zaSiRYm1R9cqyYUfvHt0N73t3CSqTu?=
+ =?us-ascii?Q?Jty5l4YetpjThTh8addGEl5Sx6pphuz0lKK/60DVcK6knjeELRAVg1yPXI77?=
+ =?us-ascii?Q?6t0Nf1lqMmE0JroHuBIYfhBcOPbU2F0RVy29kfGIR1A9mwkpXyKPtEKKJkMo?=
+ =?us-ascii?Q?+1jV5+DLdemJuQmPSfKGKUquWpVdOX5w8TmxlTJHJilbJjhzR+J6/eelDdlm?=
+ =?us-ascii?Q?ZqC4uWx6tX9nDQC4xFP63Kni8XDg3ZOhrixt/JaUYj4KIQPTJnVMMyU5kpsB?=
+ =?us-ascii?Q?Y12gOW92JBT96cJdXCZLLFcvHG4yKgyaSpwgzdJD090L4KD6qIedxTHLC5tx?=
+ =?us-ascii?Q?4nv4VekOgNUhFnQ3pt6yiTSCaBJV9OzeRfE7yDqjMCwnSKIDl3mmNaw2pl/Y?=
+ =?us-ascii?Q?ttnYbHlV+21DitfpSZqcrLu+CbCwi1GFuC3kQZqQ1zwrWYsLpu57gLIIOnAG?=
+ =?us-ascii?Q?aAu/RRl/VdYVnpNGtsR/BQ4Os6474PIU3n8MJ4H35RtwtGIyOCx7ndPk4zRm?=
+ =?us-ascii?Q?1sWkZZfp31CZx2OOHrsgO1c7kTP3/1ovkcC9//K7QiE2WlxVkAwKlNOc7jwR?=
+ =?us-ascii?Q?0s4fq8UOB8PpXn8LJUIoe1EdWn94dl1qQmoC+u0yUAse6dHKz//rvmG3p5VH?=
+ =?us-ascii?Q?hRqebo7mBLvtbUeeG/FBrWHL+YVJ64tXjiDwM2PBkckGSRZLKqNOo4SDUauZ?=
+ =?us-ascii?Q?6CZ77O7re2kZ5A6be267Fz5I5/UK3f6UuGwDucbR+/9t6QyGrbs0qPWi66NX?=
+ =?us-ascii?Q?fpaWteyS1E20Jf0TQFaHO67z?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a13c86d1-0165-4baf-55b2-08d8ee997a35
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 07:50:22.2330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /emMWIYbvh37R6x743IauuMPr+scbAWywyDXowNKhAAC6oJjDo50E3exbanO3ChHJcWc+yJTXOIjkpPXFUzcHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4805
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/24 12:22, Jaegeuk Kim wrote:
-> On 03/24, Chao Yu wrote:
->> On 2021/3/24 2:39, Jaegeuk Kim wrote:
->>> On 03/23, Chao Yu wrote:
->>>> This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
->>>>
->>>> Because that commit fails generic/050 testcase which expect failure
->>>> during mount a recoverable readonly partition.
->>>
->>> I think we need to change generic/050, since f2fs can recover this partition,
->>
->> Well, not sure we can change that testcase, since it restricts all generic
->> filesystems behavior. At least, ext4's behavior makes sense to me:
->>
->> 	journal_dev_ro = bdev_read_only(journal->j_dev);
->> 	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
->>
->> 	if (journal_dev_ro && !sb_rdonly(sb)) {
->> 		ext4_msg(sb, KERN_ERR,
->> 			 "journal device read-only, try mounting with '-o ro'");
->> 		err = -EROFS;
->> 		goto err_out;
->> 	}
->>
->> 	if (ext4_has_feature_journal_needs_recovery(sb)) {
->> 		if (sb_rdonly(sb)) {
->> 			ext4_msg(sb, KERN_INFO, "INFO: recovery "
->> 					"required on readonly filesystem");
->> 			if (really_read_only) {
->> 				ext4_msg(sb, KERN_ERR, "write access "
->> 					"unavailable, cannot proceed "
->> 					"(try mounting with noload)");
->> 				err = -EROFS;
->> 				goto err_out;
->> 			}
->> 			ext4_msg(sb, KERN_INFO, "write access will "
->> 			       "be enabled during recovery");
->> 		}
->> 	}
->>
->>> even though using it as readonly. And, valid checkpoint can allow for user to
->>> read all the data without problem.
->>
->>>>    		if (f2fs_hw_is_readonly(sbi)) {
->>
->> Since device is readonly now, all write to the device will fail, checkpoint can
->> not persist recovered data, after page cache is expired, user can see stale data.
-> 
-> My point is, after mount with ro, there'll be no data write which preserves the
-> current status. So, in the next time, we can recover fsync'ed data later, if
-> user succeeds to mount as rw. Another point is, with the current checkpoint, we
-> should not have any corrupted metadata. So, why not giving a chance to show what
-> data remained to user? I think this can be doable only with CoW filesystems.
+As pointed out by Ulf, "both "mmc->parent" and mmc_dev(mmc) are being
+used in the entire c-file". Convert all the mmc->parent usage in all
+sdhci host driver to mmc_dev() for consistency.
 
-I guess we're talking about the different things...
+Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ drivers/mmc/host/sdhci-esdhc-mcf.c |  8 +++----
+ drivers/mmc/host/sdhci-of-aspeed.c |  2 +-
+ drivers/mmc/host/sdhci-tegra.c     | 34 +++++++++++++++---------------
+ drivers/mmc/host/sdhci.c           | 24 ++++++++++-----------
+ drivers/mmc/host/sdhci_am654.c     |  2 +-
+ 5 files changed, 35 insertions(+), 35 deletions(-)
 
-Let me declare two different readonly status:
+diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-esdhc-mcf.c
+index ca7a1690b2a8..05926bf5ecf9 100644
+--- a/drivers/mmc/host/sdhci-esdhc-mcf.c
++++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
+@@ -367,14 +367,14 @@ static int esdhc_mcf_plat_init(struct sdhci_host *host,
+ 			       struct pltfm_mcf_data *mcf_data)
+ {
+ 	struct mcf_esdhc_platform_data *plat_data;
++	struct device *dev = mmc_dev(host->mmc);
+ 
+-	if (!host->mmc->parent->platform_data) {
+-		dev_err(mmc_dev(host->mmc), "no platform data!\n");
++	if (!dev->platform_data) {
++		dev_err(dev, "no platform data!\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	plat_data = (struct mcf_esdhc_platform_data *)
+-			host->mmc->parent->platform_data;
++	plat_data = (struct mcf_esdhc_platform_data *)dev->platform_data;
+ 
+ 	/* Card_detect */
+ 	switch (plat_data->cd_type) {
+diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
+index 7d8692e90996..d001c51074a0 100644
+--- a/drivers/mmc/host/sdhci-of-aspeed.c
++++ b/drivers/mmc/host/sdhci-of-aspeed.c
+@@ -181,7 +181,7 @@ aspeed_sdhci_configure_phase(struct sdhci_host *host, unsigned long rate)
+ 	struct aspeed_sdhci *sdhci;
+ 	struct device *dev;
+ 
+-	dev = host->mmc->parent;
++	dev = mmc_dev(host->mmc);
+ 	sdhci = sdhci_pltfm_priv(sdhci_priv(host));
+ 
+ 	if (!sdhci->phase_desc)
+diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
+index 41d193fa77bb..c61f797a853f 100644
+--- a/drivers/mmc/host/sdhci-tegra.c
++++ b/drivers/mmc/host/sdhci-tegra.c
+@@ -596,49 +596,49 @@ static void tegra_sdhci_parse_pad_autocal_dt(struct sdhci_host *host)
+ 			&tegra_host->autocal_offsets;
+ 	int err;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-up-offset-3v3",
+ 			&autocal->pull_up_3v3);
+ 	if (err)
+ 		autocal->pull_up_3v3 = 0;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-down-offset-3v3",
+ 			&autocal->pull_down_3v3);
+ 	if (err)
+ 		autocal->pull_down_3v3 = 0;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-up-offset-1v8",
+ 			&autocal->pull_up_1v8);
+ 	if (err)
+ 		autocal->pull_up_1v8 = 0;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-down-offset-1v8",
+ 			&autocal->pull_down_1v8);
+ 	if (err)
+ 		autocal->pull_down_1v8 = 0;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-up-offset-sdr104",
+ 			&autocal->pull_up_sdr104);
+ 	if (err)
+ 		autocal->pull_up_sdr104 = autocal->pull_up_1v8;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-down-offset-sdr104",
+ 			&autocal->pull_down_sdr104);
+ 	if (err)
+ 		autocal->pull_down_sdr104 = autocal->pull_down_1v8;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-up-offset-hs400",
+ 			&autocal->pull_up_hs400);
+ 	if (err)
+ 		autocal->pull_up_hs400 = autocal->pull_up_1v8;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-down-offset-hs400",
+ 			&autocal->pull_down_hs400);
+ 	if (err)
+@@ -653,7 +653,7 @@ static void tegra_sdhci_parse_pad_autocal_dt(struct sdhci_host *host)
+ 	if (!(tegra_host->soc_data->nvquirks & NVQUIRK_NEEDS_PAD_CONTROL))
+ 		return;
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-up-offset-3v3-timeout",
+ 			&autocal->pull_up_3v3_timeout);
+ 	if (err) {
+@@ -664,7 +664,7 @@ static void tegra_sdhci_parse_pad_autocal_dt(struct sdhci_host *host)
+ 		autocal->pull_up_3v3_timeout = 0;
+ 	}
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-down-offset-3v3-timeout",
+ 			&autocal->pull_down_3v3_timeout);
+ 	if (err) {
+@@ -675,7 +675,7 @@ static void tegra_sdhci_parse_pad_autocal_dt(struct sdhci_host *host)
+ 		autocal->pull_down_3v3_timeout = 0;
+ 	}
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-up-offset-1v8-timeout",
+ 			&autocal->pull_up_1v8_timeout);
+ 	if (err) {
+@@ -686,7 +686,7 @@ static void tegra_sdhci_parse_pad_autocal_dt(struct sdhci_host *host)
+ 		autocal->pull_up_1v8_timeout = 0;
+ 	}
+ 
+-	err = device_property_read_u32(host->mmc->parent,
++	err = device_property_read_u32(mmc_dev(host->mmc),
+ 			"nvidia,pad-autocal-pull-down-offset-1v8-timeout",
+ 			&autocal->pull_down_1v8_timeout);
+ 	if (err) {
+@@ -720,17 +720,17 @@ static void tegra_sdhci_parse_tap_and_trim(struct sdhci_host *host)
+ 	struct sdhci_tegra *tegra_host = sdhci_pltfm_priv(pltfm_host);
+ 	int err;
+ 
+-	err = device_property_read_u32(host->mmc->parent, "nvidia,default-tap",
++	err = device_property_read_u32(mmc_dev(host->mmc), "nvidia,default-tap",
+ 				       &tegra_host->default_tap);
+ 	if (err)
+ 		tegra_host->default_tap = 0;
+ 
+-	err = device_property_read_u32(host->mmc->parent, "nvidia,default-trim",
++	err = device_property_read_u32(mmc_dev(host->mmc), "nvidia,default-trim",
+ 				       &tegra_host->default_trim);
+ 	if (err)
+ 		tegra_host->default_trim = 0;
+ 
+-	err = device_property_read_u32(host->mmc->parent, "nvidia,dqs-trim",
++	err = device_property_read_u32(mmc_dev(host->mmc), "nvidia,dqs-trim",
+ 				       &tegra_host->dqs_trim);
+ 	if (err)
+ 		tegra_host->dqs_trim = 0x11;
+@@ -741,7 +741,7 @@ static void tegra_sdhci_parse_dt(struct sdhci_host *host)
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct sdhci_tegra *tegra_host = sdhci_pltfm_priv(pltfm_host);
+ 
+-	if (device_property_read_bool(host->mmc->parent, "supports-cqe"))
++	if (device_property_read_bool(mmc_dev(host->mmc), "supports-cqe"))
+ 		tegra_host->enable_hwcq = true;
+ 	else
+ 		tegra_host->enable_hwcq = false;
+@@ -1529,7 +1529,7 @@ static int sdhci_tegra_add_host(struct sdhci_host *host)
+ 
+ 	host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
+ 
+-	cq_host = devm_kzalloc(host->mmc->parent,
++	cq_host = devm_kzalloc(mmc_dev(host->mmc),
+ 				sizeof(*cq_host), GFP_KERNEL);
+ 	if (!cq_host) {
+ 		ret = -ENOMEM;
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index aefd0441658c..bf238ade1602 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -188,7 +188,7 @@ static void sdhci_runtime_pm_bus_on(struct sdhci_host *host)
+ 	if (host->bus_on)
+ 		return;
+ 	host->bus_on = true;
+-	pm_runtime_get_noresume(host->mmc->parent);
++	pm_runtime_get_noresume(mmc_dev(host->mmc));
+ }
+ 
+ static void sdhci_runtime_pm_bus_off(struct sdhci_host *host)
+@@ -196,7 +196,7 @@ static void sdhci_runtime_pm_bus_off(struct sdhci_host *host)
+ 	if (!host->bus_on)
+ 		return;
+ 	host->bus_on = false;
+-	pm_runtime_put_noidle(host->mmc->parent);
++	pm_runtime_put_noidle(mmc_dev(host->mmc));
+ }
+ 
+ void sdhci_reset(struct sdhci_host *host, u8 mask)
+@@ -648,7 +648,7 @@ static int sdhci_pre_dma_transfer(struct sdhci_host *host,
+ 			}
+ 		}
+ 		/* Switch ownership to the DMA */
+-		dma_sync_single_for_device(host->mmc->parent,
++		dma_sync_single_for_device(mmc_dev(host->mmc),
+ 					   host->bounce_addr,
+ 					   host->bounce_buffer_size,
+ 					   mmc_get_dma_dir(data));
+@@ -1176,7 +1176,7 @@ static int sdhci_external_dma_init(struct sdhci_host *host)
+ 	int ret = 0;
+ 	struct mmc_host *mmc = host->mmc;
+ 
+-	host->tx_chan = dma_request_chan(mmc->parent, "tx");
++	host->tx_chan = dma_request_chan(mmc_dev(mmc), "tx");
+ 	if (IS_ERR(host->tx_chan)) {
+ 		ret = PTR_ERR(host->tx_chan);
+ 		if (ret != -EPROBE_DEFER)
+@@ -1185,7 +1185,7 @@ static int sdhci_external_dma_init(struct sdhci_host *host)
+ 		return ret;
+ 	}
+ 
+-	host->rx_chan = dma_request_chan(mmc->parent, "rx");
++	host->rx_chan = dma_request_chan(mmc_dev(mmc), "rx");
+ 	if (IS_ERR(host->rx_chan)) {
+ 		if (host->tx_chan) {
+ 			dma_release_channel(host->tx_chan);
+@@ -2489,14 +2489,14 @@ void sdhci_enable_sdio_irq(struct mmc_host *mmc, int enable)
+ 	unsigned long flags;
+ 
+ 	if (enable)
+-		pm_runtime_get_noresume(mmc->parent);
++		pm_runtime_get_noresume(mmc_dev(mmc));
+ 
+ 	spin_lock_irqsave(&host->lock, flags);
+ 	sdhci_enable_sdio_irq_nolock(host, enable);
+ 	spin_unlock_irqrestore(&host->lock, flags);
+ 
+ 	if (!enable)
+-		pm_runtime_put_noidle(mmc->parent);
++		pm_runtime_put_noidle(mmc_dev(mmc));
+ }
+ EXPORT_SYMBOL_GPL(sdhci_enable_sdio_irq);
+ 
+@@ -3063,7 +3063,7 @@ static bool sdhci_request_done(struct sdhci_host *host)
+ 						length = host->bounce_buffer_size;
+ 					}
+ 					dma_sync_single_for_cpu(
+-						host->mmc->parent,
++						mmc_dev(host->mmc),
+ 						host->bounce_addr,
+ 						host->bounce_buffer_size,
+ 						DMA_FROM_DEVICE);
+@@ -3074,7 +3074,7 @@ static bool sdhci_request_done(struct sdhci_host *host)
+ 				} else {
+ 					/* No copying, just switch ownership */
+ 					dma_sync_single_for_cpu(
+-						host->mmc->parent,
++						mmc_dev(host->mmc),
+ 						host->bounce_addr,
+ 						host->bounce_buffer_size,
+ 						mmc_get_dma_dir(data));
+@@ -4053,7 +4053,7 @@ static void sdhci_allocate_bounce_buffer(struct sdhci_host *host)
+ 	 * speedups by the help of a bounce buffer to group scattered
+ 	 * reads/writes together.
+ 	 */
+-	host->bounce_buffer = devm_kmalloc(mmc->parent,
++	host->bounce_buffer = devm_kmalloc(mmc_dev(mmc),
+ 					   bounce_size,
+ 					   GFP_KERNEL);
+ 	if (!host->bounce_buffer) {
+@@ -4067,11 +4067,11 @@ static void sdhci_allocate_bounce_buffer(struct sdhci_host *host)
+ 		return;
+ 	}
+ 
+-	host->bounce_addr = dma_map_single(mmc->parent,
++	host->bounce_addr = dma_map_single(mmc_dev(mmc),
+ 					   host->bounce_buffer,
+ 					   bounce_size,
+ 					   DMA_BIDIRECTIONAL);
+-	ret = dma_mapping_error(mmc->parent, host->bounce_addr);
++	ret = dma_mapping_error(mmc_dev(mmc), host->bounce_addr);
+ 	if (ret)
+ 		/* Again fall back to max_segs == 1 */
+ 		return;
+diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+index 7a34649b0754..1fad6e442688 100644
+--- a/drivers/mmc/host/sdhci_am654.c
++++ b/drivers/mmc/host/sdhci_am654.c
+@@ -558,7 +558,7 @@ static int sdhci_am654_cqe_add_host(struct sdhci_host *host)
+ 	struct cqhci_host *cq_host;
+ 	int ret;
+ 
+-	cq_host = devm_kzalloc(host->mmc->parent, sizeof(struct cqhci_host),
++	cq_host = devm_kzalloc(mmc_dev(host->mmc), sizeof(struct cqhci_host),
+ 			       GFP_KERNEL);
+ 	if (!cq_host)
+ 		return -ENOMEM;
+-- 
+2.31.0
 
-1. filesystem readonly: file system is mount with ro mount option, and
-app from userspace can not modify any thing of filesystem, but filesystem
-itself can modify data on device since device may be writable.
-
-2. device readonly: device is set to readonly status via 'blockdev --setro'
-command, and then filesystem should never issue any write IO to the device.
-
-So, what I mean is, *when device is readonly*, rather than f2fs mountpoint
-is readonly (f2fs_hw_is_readonly() returns true as below code, instead of
-f2fs_readonly() returns true), in this condition, we should not issue any
-write IO to device anyway, because, AFAIK, write IO will fail due to
-bio_check_ro() check.
-
-  		if (f2fs_hw_is_readonly(sbi)) {
--			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
--				err = -EROFS;
-+			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
-  				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
--				goto free_meta;
--			}
--			f2fs_info(sbi, "write access unavailable, skipping recovery");
-+			else
-+				f2fs_info(sbi, "write access unavailable, skipping recovery");
-  			goto reset_checkpoint;
-  		}
-
-For the case of filesystem is readonly and device is writable, it's fine
-to do recovery in order to let user to see fsynced data.
-
-Thanks,
-
-> 
->>
->> Am I missing something?
->>
->> Thanks,
->>
->>>
->>>>
->>>> Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
->>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>> ---
->>>>    fs/f2fs/super.c | 8 +++++---
->>>>    1 file changed, 5 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>> index b48281642e98..2b78ee11f093 100644
->>>> --- a/fs/f2fs/super.c
->>>> +++ b/fs/f2fs/super.c
->>>> @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>>>    		 * previous checkpoint was not done by clean system shutdown.
->>>>    		 */
->>>>    		if (f2fs_hw_is_readonly(sbi)) {
->>>> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
->>>> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
->>>> +				err = -EROFS;
->>>>    				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
->>>> -			else
->>>> -				f2fs_info(sbi, "write access unavailable, skipping recovery");
->>>> +				goto free_meta;
->>>> +			}
->>>> +			f2fs_info(sbi, "write access unavailable, skipping recovery");
->>>>    			goto reset_checkpoint;
->>>>    		}
->>>> -- 
->>>> 2.29.2
->>> .
->>>
-> .
-> 
