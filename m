@@ -2,231 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCDB347DFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4E9347DFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbhCXQoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236440AbhCXQnu (ORCPT
+        id S236602AbhCXQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:44:57 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:40704 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236477AbhCXQoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:43:50 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBA7C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:43:50 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id v3so15014836pgq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:43:50 -0700 (PDT)
+        Wed, 24 Mar 2021 12:44:37 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12OGf0ii137958;
+        Wed, 24 Mar 2021 16:43:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=uHabbloj8Na+6/YaHgHRSziqZN6xkhYxqmPjoNaD1/w=;
+ b=NCeJi+D1bQjQWytH5UV1T73WVwgDXDBNgZlazyN+OiHlTi1hVHJdr4+SdgDjLhV541jF
+ TFeNRvLGHIXy3F747CYPn3jpsboz4nwEoEwb1Jl1uFmceHBVmYarFHFNB51vA8ZNf0FL
+ xD2NfN1QACKScqz79di7ngT09cap3ZIIJzg9g+sWEgl5LhviLvxCjGsKIimCM7hX8/R4
+ fXp5OAEWSDj0RnraZvNKZ2Qr7BPl+dPLKQxVn+6ukVgeMGByJuh0Q+f5vBCwh+bud01V
+ msMlDK3WfTjSMthgOjAnZ4Nbp+4ncr3v7WFZIHTIprDLbDwhAigpVbRkRT7QGlCYANwB 3g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 37d6jbkjk5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Mar 2021 16:43:56 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12OGeSGj125637;
+        Wed, 24 Mar 2021 16:43:56 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by aserp3020.oracle.com with ESMTP id 37dty0tdy7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Mar 2021 16:43:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SEHUCWVUA+N//oqUfp/5/IkiQDC+2mqBsXM2yhaCfWer1R3VdFWxXXcCpJTGS+/1v2B9PGnmIUiww7xg89RMbOVkrT6TTCQG7lhqR6GnA0SBA1dEyAyWTuAly3zX2Hkueogp2qNi8cgl17gsWH8S9QRjTiWTqZJwh4CZG5++SNPYIsdr74VDwt7B1UkTjKJrH7x8vKlC1xMW+9QVhw0JWyeBKIZqsH1omfCPWGt39ocHLvqQznQjt6P/wwox79148/Re07i4wW12an4bqDCTteXxDxZCjUrFL2tZvgV0a8xdo+4lR2e46ShnT3I0pwlaVHiPfeIOhT8SndBZaOgQFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uHabbloj8Na+6/YaHgHRSziqZN6xkhYxqmPjoNaD1/w=;
+ b=g/FXG9vC+lgGAyIeXySFF+j/IAzigT7Jvk2o2GKonBubUZyTVu+QVy0qf+vBBg96271LN76WLNN6Em3GMCR3GcS5B2921ZRRgRm44DGkNLnYgSYuFSV+crBNA1WO00aNsr7cUZkcbHB2MDcK3yXmDnmnsjX/H48sWDuqN8H4OAwAQVbFGn3Bif+SQuMiZ/9ht7+w4/JnRMpOd5Pvb0NG5Hlax1ePTu6JVj/n5sh1MW2dTX4qhqe2zbwiD1eowmIr8H6C6AlyoCWtzcAoH2TdpsH/ZMAW2xqfpu+lXJYowCgqwSjl9UCHjVUwcME92ajTMC0yH6GZgS5pEQNsykm0GQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=KNQex8kih6XoW5flaVyQnC82ktag4xH5XicNTOPAF7c=;
-        b=bnpNUsQe8XrJaJv1WPS4jXwZsQq3r4mlSxEMMvIYIwyZz7PV7eQuWsEsw3s3M4XB1n
-         0tgPAWTfiq9KgGkcpY2vsI7SCFEz4Dv4Q1Gq+2ntQjw+uJnlOk9G4IygqKUiKHeiPMiQ
-         FztR7+vOY8h4K2uGNt9NtYXOJfuO7IwL8prvg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=KNQex8kih6XoW5flaVyQnC82ktag4xH5XicNTOPAF7c=;
-        b=LsR25Ju0oEpMJamxjkuPwFx41IlYY+5zgHEjCqV/QTtnF3ogQmSKsf1IRwyvoPaYnV
-         cZ/Sd5Kn87qhSGj1y7IIDNhYGN+2Hfn1S4Dhngt9u1Ip5rSKkHqrTbI/Nuvr3uyaSiCS
-         rxxDIWZiMZ6Q0KJ1docGYUS8k0JRDCuP3qjjFSjVQg6shqr4upst8Altg9pXiuur2Vut
-         ScQl2kcn3cRZJ302/ceLyc8422QDwc1UULwXpXus6JaRZGFyxmwU9MRfNxAk1snoMKgR
-         08Qe5oNr1r7wX9bBxsBHSWzpYj/jSy3ZfksoOvt0d0PkDK/fXzDG/BTn7Bf+T2sE9YjJ
-         m5qw==
-X-Gm-Message-State: AOAM530ycBjeAcICdlXSKh0ZqbkQX+CTrtHzIEWlSvLHHPERAg5ueRYY
-        huUuXxWSuH0g9jPowrFwNAZmxpqy67uj+7Qxg9L5SW9ersDlOn6gOc7Ubt75yacWc9zuKQm71be
-        dZuwdMCFBKYgkyT1Y3OU1mEi96hSaGU8F5pOVX8gzhnLA7z8lbyvyfhI1PsWEVq2wadXw2pDI0E
-        0aALFh8B8aUOo=
-X-Google-Smtp-Source: ABdhPJy9oB6kLzcAg1sewJLV1RILKrMKpLEU6QhO81UMhCYhgQ/e+CubBnLh6m1Z81OYwzB8g7HTkQ==
-X-Received: by 2002:a65:4782:: with SMTP id e2mr3883245pgs.93.1616604229355;
-        Wed, 24 Mar 2021 09:43:49 -0700 (PDT)
-Received: from lbrmn-lnxub113.ric.broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id x190sm3099541pfx.166.2021.03.24.09.43.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 09:43:48 -0700 (PDT)
-Subject: Re: [PATCH 1/4] dt-bindings: mmc: iproc-sdhci: Convert to json-schema
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>
-Cc:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>, f.fainelli@gmail.com,
-        phil@raspberrypi.com, tim.gover@raspberrypi.com,
-        adrian.hunter@intel.com, alcooperx@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20210322185816.27582-1-nsaenz@kernel.org>
- <20210322185816.27582-2-nsaenz@kernel.org>
- <0e98588e-65f1-6839-1fcd-584b480a31bd@broadcom.com>
- <20210323210812.GA1318204@robh.at.kernel.org>
- <c1989e31501ccfb6e1350d467d4f26089bfcfb64.camel@suse.de>
- <28a133d2-c713-4bce-271c-5fa228d830ca@broadcom.com>
- <9de20a5960e029b8842dc026be3be85295647175.camel@suse.de>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <bacfa0ef-dcb1-150a-4d10-46524a0a7082@broadcom.com>
-Date:   Wed, 24 Mar 2021 09:43:45 -0700
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uHabbloj8Na+6/YaHgHRSziqZN6xkhYxqmPjoNaD1/w=;
+ b=feu5l0CkP+RocaqnDBZCNTaH9b38mb8G3oqbhvlPKw/i6ErnaQ1+KWhPT4B4VmEwpsfDw7gFXuNajhCnvjPYW4PnRIl42DEWupRHGExTNL8XDPp1zCCR5VKXN9AeurroGAMIf7csESBKvEIJJDaUY4c+Lx9ObALTbIcYTSZ3kKM=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BY5PR10MB4356.namprd10.prod.outlook.com (2603:10b6:a03:210::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Wed, 24 Mar
+ 2021 16:43:53 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee%6]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
+ 16:43:53 +0000
+Subject: Re: [RFC PATCH 2/8] hugetlb: recompute min_count when dropping
+ hugetlb_lock
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-3-mike.kravetz@oracle.com>
+ <YFikrdN6DHQSEm6a@dhcp22.suse.cz>
+ <a7d90d58-fa6a-7fa1-77c9-a08515746018@oracle.com>
+ <YFmd3d5B2VT4GkiG@dhcp22.suse.cz>
+ <YFmgPkTzZY6Ocj6X@hirez.programming.kicks-ass.net>
+ <YFmjVNnnHHpyxqKe@dhcp22.suse.cz>
+ <52db15d1-4ed1-6c3c-b638-6efdccf6e62e@oracle.com>
+ <YFr6A927XhhiciFj@dhcp22.suse.cz>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <7f1f3c92-725f-0cc9-3dc8-420c4e9c96ec@oracle.com>
+Date:   Wed, 24 Mar 2021 09:43:51 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.1.1
+In-Reply-To: <YFr6A927XhhiciFj@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR2001CA0001.namprd20.prod.outlook.com
+ (2603:10b6:301:15::11) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-In-Reply-To: <9de20a5960e029b8842dc026be3be85295647175.camel@suse.de>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000dff52e05be4b0057"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MWHPR2001CA0001.namprd20.prod.outlook.com (2603:10b6:301:15::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend Transport; Wed, 24 Mar 2021 16:43:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b1e292f5-3fbb-4952-e556-08d8eee4025f
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4356:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB43564761FD9A7AAF2BE8A530E2639@BY5PR10MB4356.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A1HU5065v0QldMaPA94oo205pa1vOXb7/GUp2QRkugnoHqHIdLhEfEDfZHniP20abn0n5kukGNIH+TL6Ysyirap+x4MjxRMehKuPCXeytw/chnz7UdfE3QNreyI6RIg6xh647rDl9epdORzuBZMgZS0+23rxU1L2zoANtXY3CAZojzUfVWVsVnVVKm/LSYGO4y9ygmvZz0NQ7Nv8XGAdwfUmN0TLVijNQPgpVKQYUp2+0FD7pM4ytN/yYLuGt8OLeHErohnhHj1tnHRc3QaFlbyWVgjUu7MTzYqyab5p4HgrI02C2y7PWkycwtl4PRz9pJJLelmHqRVqqfWjqL4G+JmX/mjT7YU7dn3xFMZaCJH4t60FC42HPhkBGKNobuyhx6cMfkwZ51hxBmhphNmFyK0OiDhJYfUg9iAh/FHN3oUyQRdUnTYlm5QJ39IUdsevhPdjOd/UO0+/V1KLyDsTPi5lyum1NEdjFahWXSurciWmmi1adzpozvCvZMywA96jiykxv+PGTmAvQ1CwnddzpwYWrzWC47qv61Lh/BSGzjjfrEomA8SElhQhclgc7WTJ8bGbsaPy4+vpsc/lk/7HtUK9VCPcNO6EBcjropue4/ACgHtOwiNrok4Mxb4hFYmw/PmoUcfI9dHaCyc7SXJm/NsrQHGCMs7GBd0w2FxQf8xBOpQ6c0snSOXLVn0s/jMqRdf+is4jorqj43Au7sv9Fw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(376002)(39860400002)(366004)(4744005)(956004)(5660300002)(83380400001)(2906002)(6486002)(16526019)(53546011)(8676002)(52116002)(31686004)(2616005)(7416002)(8936002)(478600001)(66476007)(66946007)(36756003)(66556008)(31696002)(16576012)(86362001)(54906003)(6916009)(38100700001)(26005)(4326008)(186003)(44832011)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Mm1oUCtlVUpoa2J1dmtkc3NVc2pxWDdQcE9zOTlCcnpXam9Cbjk1cGg4eEo2?=
+ =?utf-8?B?Nm1Qay9mdVRWelUzS3NKcklzQjFqRzVzaWRSTmVVTlhQaCsxZnJiT0Z5ZXN0?=
+ =?utf-8?B?U0RVUGttOFhpdGE3T0JKMmlnK1pVandmNS9ocEpjSThCUXE5Tjg5TW8vUWow?=
+ =?utf-8?B?OExLbVM2QVc2d3NCSXgrSllqN0EzL2IrYTV0N1pST21nanpHT0hwNXdvSTdn?=
+ =?utf-8?B?QWRCa2t3enh3dVcxQng2L1dPNWs4cVdCRkY5RXZmNnRtOW9teXNrY2hKWkVq?=
+ =?utf-8?B?YUQvSHpyRW5zZm5GdVRwT2RIbmpVenE2R2JhUTBnMWZXZWlDS0N0VU5oYjNR?=
+ =?utf-8?B?TGJ3akZiNDQrZkd5cGVrMDdPeURvUjJlOFVrcFhKOVVDVVZkeUo0bENyM0lC?=
+ =?utf-8?B?T3gwaDFPbyt2Z0xqL085MndQWVcvcmN1OWp6V0JWZUFFd1QwY2VQaUlLUEtG?=
+ =?utf-8?B?cktzK1FIUWt6anVjNFFvb0lIMXoxNTdReWhOWFhXaXFqUzhaNThKWXo3Uiti?=
+ =?utf-8?B?YWx4K1ZHZUYwWnFLcVVrYmRmOTlnVXFyaDVBZmd4eGVwSG5Jdjk4RWlRZUg4?=
+ =?utf-8?B?RGhsQXdaK0dER1BLdEtvejR0N2FwN2pkek9CNGhITWRFVmRkSzllWllJU1A5?=
+ =?utf-8?B?ek1NN3IxSG9peVV6dVphMkp0dG02OTFPUnBtTXl0Qk8wMEVHZjd2MzRqVjBV?=
+ =?utf-8?B?bWl6RE9BNDQ1bjhpN295THdUUFVRRVltaVkzVjRnZDFYc1ZMZWVSOWhsb29q?=
+ =?utf-8?B?S1ZBVjNKdGRWTzVqU21idUhvb1B5aVIrOTMrU2crQmY0QXh4VHZnL29Tajky?=
+ =?utf-8?B?WHlMdFRsRWcvcFloUHFnM3hwRDJaTTRYbHYveWNjSk9BVEErUmttQ09OWlhl?=
+ =?utf-8?B?ZXFyV29Bc0JXcS8rRnJwZW43TE5ZNDcwYjd3bHEzNzdIVVIzY3hMb3BSS2cx?=
+ =?utf-8?B?M1JtcTE0TGlFcFFsQ2RhVm9KTGNKMTZIZEdBMXp1bkQ5VUVneDk1Wk04RHNK?=
+ =?utf-8?B?U3VFTThFdnA1ZTViOGJRS0dkL3NodEEwRUNTWkZwWHJ5Uk84T01MOUFaZWlj?=
+ =?utf-8?B?ZFF0OHY4a3I5Y0c3c1l3cDloV3FmelpwdjZxNm1KajdoTnVZQkp4Skp6YmFT?=
+ =?utf-8?B?OG9Gc2ViUEgxVGRZVjFpUGFtZVBXY1h2T2xYbmFrbVl2bnVjbUExVmIzc0oz?=
+ =?utf-8?B?bzhmOFlPTWVzUjJFTytqRjErSVJma29BdGRkcEluaS9lcHNrWEVEQkI1TDR2?=
+ =?utf-8?B?NHlJVnJIaU5UM3kyc1o2Zk12ME1XZ3lwdnJlelVOcFpyQ1FrY2FoVWdEc05W?=
+ =?utf-8?B?Y0dqWTg1KzFjc2wvUy9TSTBGZXd3S01ZMXJ5N3VQeTgySDQ4Uy9tTU5IQ2ls?=
+ =?utf-8?B?a0ptRU4wdVY2VzRFUUtUUHVkNHAxVGZ1WkxYUlBHcll0RTlnZkpHcWhRTytT?=
+ =?utf-8?B?V0VnYjczTlhYeXBkdnZCTTdLOHMrdEs5UFYyeEcwRnRxRG9Fak5JeVpnUmo4?=
+ =?utf-8?B?dno3OXJzSFhaazh3R0NqdzRxK01KeG1VSWY3SUo2dE0zNStBSmhZQkNUVFJp?=
+ =?utf-8?B?QVdueVF6Z3BnVWExTEYyU2ozcG16anhIQ1ZSWVJ0T3lpa1NqZTdMR1dIR2tR?=
+ =?utf-8?B?bklpTk1WOU80K1ZRbTZRTlduWnY4OGhualhhSjYyQlJaWHI1aFZWTk9IOE14?=
+ =?utf-8?B?ZDBwR0Y0NEswL2MzM2R5SkdXa1p4azBVN29HUzJmSWYwek1tRzZsNm9UTzly?=
+ =?utf-8?Q?Cy5xfbG9jSF89c3e3TJVIThgiyJMuGn7Sk+cAyn?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1e292f5-3fbb-4952-e556-08d8eee4025f
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 16:43:53.5864
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iOfhDNJApsgwgoOO+g5HIVPXtViCFrFXnN91C3tyWP0IzCHyr+GaMAlxC6T0+nEwbUyR0/Q74XrJtf+nJEbf4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4356
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103240120
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ spamscore=0 adultscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103240120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dff52e05be4b0057
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-
-On 2021-03-24 9:35 a.m., Nicolas Saenz Julienne wrote:
-> On Wed, 2021-03-24 at 09:27 -0700, Scott Branden wrote:
->> On 2021-03-23 2:24 p.m., Nicolas Saenz Julienne wrote:
->>> On Tue, 2021-03-23 at 15:08 -0600, Rob Herring wrote:
->>>> On Mon, Mar 22, 2021 at 12:11:29PM -0700, Scott Branden wrote:
->>>>> On 2021-03-22 11:58 a.m., Nicolas Saenz Julienne wrote:
->>>>>> Convert the brcm,iproc-sdhci binding to DT schema format using json-schema
->>>>>>
->>>>>> Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
->>>>>> ---
->>>>>>  .../bindings/mmc/brcm,iproc-sdhci.yaml        | 58 +++++++++++++++++++
->>>>>>  .../bindings/mmc/brcm,sdhci-iproc.txt         | 37 ------------
->>>>>>  2 files changed, 58 insertions(+), 37 deletions(-)
->>>>>>  create mode 100644 Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
->>>>>>  delete mode 100644 Documentation/devicetree/bindings/mmc/brcm,sdhci-iproc.txt
->>>>>>
->>>>>> diff --git a/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
->>>>>> new file mode 100644
->>>>>> index 000000000000..19d84f3ef9e6
->>>>>> --- /dev/null
->>>>>> +++ b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
->>>>>> @@ -0,0 +1,58 @@
->>>>>> +# SPDX-License-Identifier: GPL-2.0
->>>>>> +%YAML 1.2
->>>>>> +---
->>>>>> +$id: http://devicetree.org/schemas/mmc/brcm,iproc-sdhci.yaml#
->>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>>> +
->>>>>> +title: Broadcom IPROC SDHCI controller
->>>>>> +
->>>>>> +maintainers:
->>>>>> +  - Nicolas Saenz Julienne <nsaenz@kernel.org>
->>>>> This is already covered in the MAINTAINERS section via "N:	iproc".
->>>>> M:	Ray Jui <ray.jui@broadcom.com>
->>>>>
->>>>> M:	Scott Branden <scott.branden@broadcom.com>
->>>>>
->>>>> M:	bcm-kernel-feedback-list@broadcom.com
->>>>
->>>> Maybe so, but still required here. The problem is there is no 
->>>> MAINTAINERS file in the DT only tree[1].
->>>
->>> Well in that case, if Scott and Ray are OK with it I'll add them.
->> I do not know what the "maintainers" section in the yaml file is used to indicate.
->> If it is maintainer for the driver then please add the duplicate of what is
->> already in the MAINTAINERS file.  If it is for maintainer of devicetrees that
->> use this driver then no need to add us.
+On 3/24/21 1:36 AM, Michal Hocko wrote:
+> On Tue 23-03-21 16:18:08, Mike Kravetz wrote:
+> [...]
+>> Here is another thought.
+>> In patch 5 you suggest removing all pages from hugetlb with the lock
+>> held, and adding them to a list.  Then, drop the lock and free all
+>> pages on the list.  If we do this, then the value computed here (min_count)
+>> can not change while we are looping.  So, this patch would be unnecessary.
+>> That is another argument in favor of batching the frees.
+>>
+>> Unless there is something wrong in my thinking, I am going to take that
+>> approach and drop this patch.
 > 
-> From the dt bindings documentation:
-> 
-> maintainers
->   A DT specific property. Contains a list of email address(es)
->   for maintainers of this binding.
-> 
-> That's the maintainers for the bindings, not the devicetrees consuming them. I
-> belive it makes sense for you guys to maintain it as it has a strong
-> relationship to driver changes. But if you're not interested I'll do it myself.
-Sure, you can add us as well.
-> 
-> Regards,
-> Nicolas
+> Makes sense
 > 
 
+I still think this is the way to go in this series.
 
---000000000000dff52e05be4b0057
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-cRe0CRXA7ypOJSgxO/nOOyQoaJxT7CGg1npOeSpPjEuc3fE4xum3l0nvU85hj6MlKZu43hokdBh0
-D0nLyyhEwlR3AC/msdff/UGbM/JR9vk812RP4m/aNWZFJwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUOhjEpl04Sz9dh5MI82E1
-V39lM/owDQYJKoZIhvcNAQELBQADggEBAA7Rlypx/esz/iq1yA4+KW7uwV/aBY344BWcXt6I+SNK
-VwFBgFWfLj5vaEud9TVv2fPSiaHJo0umemOJk+43QD+bsoqmgcFXd21PrOt7Jjs+jjVED9VC5kJq
-S4NNKUkS+BqijJwSegtVygrc/atrIlJbjI21q4qpemUo5fgwqCNm++BmBGTI8yA09vtGSNDRN42k
-lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
-wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
-Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBnv6igRHhmDbuAl73NW7VJttv36
-iz9mgBr+KhkZnktaMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDMyNDE2NDM1MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQB4OUd/wIloP4mmMpP8pnXU5F50RBVU7vvjsWpVqC0LVY83
-4N76dsFSuX9ZdcmPMTZJb89RdNwwSEqDon3/G9BavgVWPRP3B7EJlfQU8wT7I12iYmXkMlGlLlQs
-PQ3lCuA1u+9H7vOyPIpW/6cV7/hDqQ/nSC8ZL/5OHfdrXDZj6p5WQqPpdUxc1kYkPUGYuOSaxIF1
-Lme1K/z763isQVgRjNaj49/ZHdehpy/e8r41dB6OrIVOMZ67apyghsb9czKZ51q1aE9vSb9Ke1uo
-p+SDj7YZOlcFrce4CQRYvTh79FHZBA2DHQ6o1qOaeZjm4dhxMEgzGRKz3mpd8hM88Exp
---000000000000dff52e05be4b0057--
+However, Muchun's "Free some vmemmap pages of HugeTLB page" series would
+likely want to drop the lock for each page as the free operation may
+fail.  So, we may end up back with one lock cycle per page.  That is
+something that will be discussed in that series.
+-- 
+Mike Kravetz
