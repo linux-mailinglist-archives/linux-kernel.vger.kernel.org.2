@@ -2,87 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9187534805C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C05348062
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237511AbhCXSWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237571AbhCXSVo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:21:44 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466C5C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:21:33 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x16so25422670wrn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Fgs5+vYQG4I5W+8l5V1B7+DsPBLi1z0BapcBg3qgVE=;
-        b=U5xGApXj987w3pZV48fwgmvzOdOdhCriw5kDTTTQkTgEhfs41n3g3yS4wj0JGrepHO
-         TmfiNBbjXlZgXsfsSUWUY+CJTt6XZ9sy9M9XIftqUF+4q/mMfWSDdJ5ZSvrdgSKFwOYf
-         vlNNBsVXg9G5GjOsS1B5WuUitqN9jboEZfJVM35f8z6CDp2Ke8LHG0vbBkQjc7BpZmQM
-         mYlgRDTbJ1jDq0AZdiDcFu8KYZLwxlQDQQ62KU7+lgzTdwjws7Q2g+jJwRQlUFR6Og25
-         h0pNfD+zfYVvyh+dQa95+RCRugvgi+oy0exh2JC1upWvFrPZ+CsShaxvKrQ6Q0KkeqBQ
-         7R3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Fgs5+vYQG4I5W+8l5V1B7+DsPBLi1z0BapcBg3qgVE=;
-        b=Grqs8Nwr3bOsnlRbMIMbSXt+wVeXG6L2/r/ZEe7k95AucKdoWzhWmXQiTfd69dANod
-         hIhxZ8Z/zI6JSr7zbGWBhlg1aja4nq3xb60poFLRV71EqqdRCp369kIw7ipHpLp9xBrf
-         tSyTYAAlUoN2MF4yNF2NmVYxtYjz7o19IaORrjDUQXa1BVK3PagYInHZTUhrB4LodUTA
-         F8V1R6v5fqF14XiErLFGIple6qBdEnYgLTTTD5rhfQinlUTdeS4yJOJmVAM8PNo5UJTC
-         Wvf/b91LUn0xzUj6TOgI+2ToL1zo1y7r/9ufCw+AX8aWP9emOWTcX/88TaMo9F4BU49K
-         U9GA==
-X-Gm-Message-State: AOAM532IsP/ahQF/jhahmpqyM0g5g4cbqqM0DZsWcNZYqCXLTaaCSr7Z
-        pAXSsHUg5uPCGH9BT6C55XH+CBxTVDMmRm+/DBEwew==
-X-Google-Smtp-Source: ABdhPJwTypSmzk15zxIHskKCdwQrTqYaSpXWmb6ON0yw5X6PacFF+Iiz56x6a3nSlQXK3q196R6+IvguAkOphMvuwdM=
-X-Received: by 2002:a5d:6411:: with SMTP id z17mr4766522wru.119.1616610091879;
- Wed, 24 Mar 2021 11:21:31 -0700 (PDT)
+        id S237451AbhCXSXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:23:09 -0400
+Received: from mga18.intel.com ([134.134.136.126]:18139 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237494AbhCXSWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:22:50 -0400
+IronPort-SDR: 0qB9NNC4zoSv4Rhb/u4FlOrDM005zy2w9wCC2RGwsNJqcyYHly2C1PSZnWWDarNH+DGAGdFnot
+ 5CYlrkio+5MA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178317414"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="178317414"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 11:22:49 -0700
+IronPort-SDR: bPLVKBIfX2/fZ67H6twLVC/PqUgyY/DB2F/TjiylyJ29z2f1ThOXUR6F1ClcFH6RKrMDaWJR+n
+ 5xcRcViKFEjg==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="415604529"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 11:22:49 -0700
+From:   ira.weiny@intel.com
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/sgx: Remove unnecessary kmap() from sgx_ioc_enclave_init()
+Date:   Wed, 24 Mar 2021 11:22:46 -0700
+Message-Id: <20210324182246.2484875-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-References: <20210304174237.31945-1-bp@alien8.de> <20210304174237.31945-5-bp@alien8.de>
- <CAP-5=fU2D_kmdaLFL7Azm31Czdfdze6EpKg7=uZ+ohbNnb7ssQ@mail.gmail.com>
- <YFtB+Dir1lWjL2gi@kernel.org> <20210324135406.GD5010@zn.tnic>
-In-Reply-To: <20210324135406.GD5010@zn.tnic>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 24 Mar 2021 11:21:19 -0700
-Message-ID: <CAP-5=fWwZ8WVKHT=+rWdYODx1MTOMR8318mSiheSMx_q4r41hA@mail.gmail.com>
-Subject: Re: [PATCH v3 04/21] x86/insn: Add an insn_decode() API
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, X86 ML <x86@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 6:54 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Mar 24, 2021 at 10:43:20AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Borislav, was this addressed? Ian?
->
-> Yap:
->
-> https://git.kernel.org/tip/0705ef64d1ff52b817e278ca6e28095585ff31e1
+From: Ira Weiny <ira.weiny@intel.com>
 
-Tested on PPC and ARM64 fwiw. Thanks,
-Ian
+kmap is inefficient and is being replaced by kmap_local_page(), if
+possible.
 
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+That said, there is no readily apparent reason why initp_page needs to
+be allocated and kmap'ed() except that 'sigstruct' needs to be page
+aligned and 'token' 512 byte aligned.
+
+Rather than change this kmap() to kmap_local_page() use kmalloc()
+instead because kmalloc() can gives this alignment when allocating
+PAGE_SIZE bytes.
+
+Remove the alloc_page()/kmap() and replace with kmalloc(PAGE_SIZE, ...)
+to get a page aligned kernel address.
+
+In addition add a comment to document the alignment requirements so that
+others don't attempt to 'fix' this again.
+
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Jethro Beekman <jethro@fortanix.com>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+---
+Changes from v5[5]:
+	From Boris
+		Clean up commit msg and comment
+
+Changes from v4[4]:
+        Add Ack and Reviews
+        Send to the correct maintainers
+
+Changes from v3[3]:
+	Remove BUILD_BUG_ONs
+
+Changes from v2[2]:
+        When allocating a power of 2 size kmalloc() now guarantees the
+        alignment of the respective size.  So go back to using kmalloc() but
+        with a PAGE_SIZE allocation to get the alignment.  This also follows
+        the pattern in sgx_ioc_enclave_create()
+
+Changes from v1[1]:
+	Use page_address() instead of kcmalloc() to ensure sigstruct is
+	page aligned
+	Use BUILD_BUG_ON to ensure token and sigstruct don't collide.
+
+[1] https://lore.kernel.org/lkml/20210129001459.1538805-1-ira.weiny@intel.com/
+[2] https://lore.kernel.org/lkml/20210202013725.3514671-1-ira.weiny@intel.com/
+[3] https://lore.kernel.org/lkml/20210205050850.GC5033@iweiny-DESK2.sc.intel.com/#t
+[4] https://lore.kernel.org/lkml/YCBY02iEKLVyj7Ix@kernel.org/
+[5] https://lore.kernel.org/lkml/20210306002058.303796-1-ira.weiny@intel.com/
+---
+ arch/x86/kernel/cpu/sgx/ioctl.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+index 90a5caf76939..2e10367ea66c 100644
+--- a/arch/x86/kernel/cpu/sgx/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ {
+ 	struct sgx_sigstruct *sigstruct;
+ 	struct sgx_enclave_init init_arg;
+-	struct page *initp_page;
+ 	void *token;
+ 	int ret;
+ 
+@@ -615,11 +614,15 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ 	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
+ 		return -EFAULT;
+ 
+-	initp_page = alloc_page(GFP_KERNEL);
+-	if (!initp_page)
++	/*
++	 * 'sigstruct' must be on a page boundary and 'token' on a 512 byte
++	 * boundary.  kmalloc() will give this alignment when allocating
++	 * PAGE_SIZE bytes.
++	 */
++	sigstruct = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!sigstruct)
+ 		return -ENOMEM;
+ 
+-	sigstruct = kmap(initp_page);
+ 	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
+ 	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
+ 
+@@ -645,8 +648,7 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ 	ret = sgx_encl_init(encl, sigstruct, token);
+ 
+ out:
+-	kunmap(initp_page);
+-	__free_page(initp_page);
++	kfree(sigstruct);
+ 	return ret;
+ }
+ 
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
