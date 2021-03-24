@@ -2,50 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC0734853B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03670348543
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhCXXUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:20:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34286 "EHLO mail.kernel.org"
+        id S233767AbhCXXX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:23:56 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14556 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhCXXU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:20:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE88661A0F;
-        Wed, 24 Mar 2021 23:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1616628028;
-        bh=DfPvVvnnPDOnWWAUCw/MMTu0BV/F1aFcs7Ds2Ng04gc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mW4k3bZ+pK+Ysg7gscjEg94zbFO6h0wM0OI3WLRbjquYaGsdT9B6FGHJRwncMqk2o
-         3AmNZ3T7z2vK3kNKvl8TLZ6peKzmZHK9JXI2g/lDl6mAWf9awteRaHy4z57jtli3B4
-         Qg8KK7bbMeg+voQ1gLv3FOPPfzwy3S3GzuUFAHWY=
-Date:   Wed, 24 Mar 2021 16:20:27 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH] userfaultfd/shmem: fix minor fault page leak
-Message-Id: <20210324162027.cc723b545ff62b1ad6f5223e@linux-foundation.org>
-In-Reply-To: <20210322204836.1650221-1-axelrasmussen@google.com>
-References: <20210322204836.1650221-1-axelrasmussen@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229624AbhCXXXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:23:49 -0400
+IronPort-SDR: oJ1+qBYzTuvcMfabBLfz1XKfXgCR7WwHVyDG+1LCEaPCq5EyFHaoqErwjlFaKctBUA3tgnOsls
+ DzZN0hcXlD6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="188513331"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="188513331"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 16:23:49 -0700
+IronPort-SDR: TjT8mVaAXncq/9NN9IWUcs+CkXPUg8Ns1ipcpKrJlhQfAUrH7oouXJiLlIjuxBVo0KZw16pRaz
+ j1/zRlw9s9MQ==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="415697964"
+Received: from prdubey-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.230.226])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 16:23:45 -0700
+Date:   Thu, 25 Mar 2021 12:23:43 +1300
+From:   Kai Huang <kai.huang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-Id: <20210325122343.008120ef70c1a1b16b5657ca@intel.com>
+In-Reply-To: <236c0aa9-92f2-97c8-ab11-d55b9a98c931@redhat.com>
+References: <YFjoZQwB7e3oQW8l@google.com>
+        <20210322191540.GH6481@zn.tnic>
+        <YFjx3vixDURClgcb@google.com>
+        <20210322210645.GI6481@zn.tnic>
+        <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
+        <20210322223726.GJ6481@zn.tnic>
+        <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
+        <YFoNCvBYS2lIYjjc@google.com>
+        <20210323160604.GB4729@zn.tnic>
+        <YFoVmxIFjGpqM6Bk@google.com>
+        <20210323163258.GC4729@zn.tnic>
+        <b35f66a10ecc07a1eecb829912d5664886ca169b.camel@intel.com>
+        <236c0aa9-92f2-97c8-ab11-d55b9a98c931@redhat.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -53,31 +59,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 13:48:35 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
 
-> This fix is analogous to Peter Xu's fix for hugetlb [0]. If we don't
-> put_page() after getting the page out of the page cache, we leak the
-> reference.
 > 
-> The fix can be verified by checking /proc/meminfo and running the
-> userfaultfd selftest in shmem mode. Without the fix, we see MemFree /
-> MemAvailable steadily decreasing with each run of the test. With the
-> fix, memory is correctly freed after the test program exits.
+> > +/* Error message for EREMOVE failure, when kernel is about to leak EPC page */
+> > +#define EREMOVE_ERROR_MESSAGE \
+> > +       "EREMOVE returned %d (0x%x), kernel bug likely.  EPC page leaked, SGX may become
+> > unusuable.  Please refer to Documentation/x86/sgx.rst for more information."
 > 
-> Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+> Rewritten:
+> 
+> EREMOVE returned %d and an EPC page was leaked; SGX may become unusable.
+> This is a kernel bug, refer to Documentation/x86/sgx.rst for more information.
+> 
+> Also please split it across multiple lines.
+> 
+> Paolo
+> 
 
-Confused.  The affected code:
+Hi Boris/Paolo,
 
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1831,6 +1831,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->  
->  	if (page && vma && userfaultfd_minor(vma)) {
->  		unlock_page(page);
-> +		put_page(page);
->  		*fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
->  		return 0;
->  	}
+I changed to below (with slight modification on Paolo's):
 
-Is added by Peter's "page && vma && userfaultfd_minor".  I assume that
-"Fixes:" is incorrect?
+/* Error message for EREMOVE failure, when kernel is about to leak EPC page */
+#define EREMOVE_ERROR_MESSAGE \ 
+        "EREMOVE returned %d (0x%x) and an EPC page was leaked.  SGX may become unusuable.  " \
+        "This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more information."
+
+I got a checkpatch warning however:
+
+WARNING: It's generally not useful to have the filename in the file
+#60: FILE: Documentation/x86/sgx.rst:223:
++This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more
+
+I suppose it is OK? Since the error msg is actually hard-coded in the code,
+and in this document, IMHO we should explicitly call out what error message user
+is supposed to see, when this bug happens, so that user can absolutely know
+he/she is dealing with this particular issue.
+
+
+
