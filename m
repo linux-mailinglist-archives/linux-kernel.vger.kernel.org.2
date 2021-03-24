@@ -2,195 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40A2348442
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A87B348445
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238586AbhCXV7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:59:09 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18358 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231869AbhCXV66 (ORCPT
+        id S238689AbhCXV7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:59:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20129 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238686AbhCXV7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:58:58 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12OLY0nF022052;
-        Wed, 24 Mar 2021 17:58:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : content-transfer-encoding : mime-version; s=pp1;
- bh=2udZytcE7wnXy7QM4AYF1+62IUCvMlqSdsmDDY4IFOE=;
- b=HYsjzlc3f3sW5NMapoEybjA8CpfzhADNWE4joB0jFgXE5Rf/Xc9/QPEz5u8a+QGZe6Hw
- 0hjQYvtCJmxSAENQ+dEewN9M3bzAlUol/KvTxxgLRJyn4Ld+yJrfyGzNvKg87KXSaMY4
- sMNTU7hM/IVAPhroKhV0DaN7HOZU6XXA4Z01f2KRs7GKXrGlcryen0miYi94FVFvj3EP
- w12Tqtnt1bRwIF7hq/IzneoQAV8LqQ/9pjQ3i+XSFAgHSUaE4vtg4SG7wusLZV6hQ+hk
- PHiBoB/holbI84XLIY7fmfCbkr2wj3VicmilO66fj6ZeA7HFPqUZu/OOEvHlVfWoVJin 8w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37g865hqt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 17:58:38 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12OLYep9024764;
-        Wed, 24 Mar 2021 17:58:38 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37g865hqss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 17:58:38 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12OLkfV0011325;
-        Wed, 24 Mar 2021 21:58:37 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02dal.us.ibm.com with ESMTP id 37d9an13a0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 21:58:37 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12OLwZC132768258
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 21:58:35 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9642178060;
-        Wed, 24 Mar 2021 21:58:35 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7619678063;
-        Wed, 24 Mar 2021 21:58:31 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.147.73])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Mar 2021 21:58:31 +0000 (GMT)
-Message-ID: <766a68a95e6c095bb202f430b8b091d008002205.camel@linux.ibm.com>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Horia =?UTF-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
-Date:   Wed, 24 Mar 2021 14:58:30 -0700
-In-Reply-To: <df118419f28a04d2e711a55678c0149115606071.camel@linux.ibm.com>
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
-         <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
-         <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
-         <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
-         <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
-         <9ba89168d8c4f1e3d6797a0b3713e152ac6388fd.camel@linux.ibm.com>
-         <df118419f28a04d2e711a55678c0149115606071.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-X-TM-AS-GCONF: 00
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 24 Mar 2021 17:59:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616623175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sFzpylW/Ivr5aQk5H1g6AKbksqO6a0byFVS5ZXBUDgI=;
+        b=EeDseClgFOLiBsFO884sYYDYpVsVrftSLPfI6g98me5YgAF2TFDXpjgv7H8OfCt1JOlpEd
+        zy5xiik7trHmiJkLQOZvauUAt17E0KGBsgxWP7Xdsd8jA0QK23USjUetiHB6W2UXI1ZQQV
+        gZX3WQcItrNBt3lcNhQGdV1aqB0Hcf4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-rqz7zSOHP0a0JiAXKM03XA-1; Wed, 24 Mar 2021 17:59:33 -0400
+X-MC-Unique: rqz7zSOHP0a0JiAXKM03XA-1
+Received: by mail-wr1-f69.google.com with SMTP id o11so1653277wrc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:59:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sFzpylW/Ivr5aQk5H1g6AKbksqO6a0byFVS5ZXBUDgI=;
+        b=kMW8L1YNWbh7nIqHM2WEOuzKG3ATGFMd+jGibe2XrJznGUdwpfopcRZOvGYUMdtFeP
+         ROogBURF0gEKT3CC9rOyOEJMAltPY0n2Nrx/axQl4V2bTdtQ6c49b3qFdHpxIlF5IUvp
+         6twOb57S+YTumc+kwqG165o9h7JpOJUlTylek7rOhzdmpeK0HAozAd/5v0xlhOFyyUPc
+         wjMYxuHh3in7xdjAprWO6I2wUfWNFchr8buH21nrf/XUMlw25Se1E9bP+5S+UoOekVRR
+         l8mQUA+zgdvaNpJ0miUWSJq/Y+HneLUzQrW9LrieVNQ8Wm0VTuTGVStIU+8PD0Qpg57X
+         aV0g==
+X-Gm-Message-State: AOAM532Bpc1Sm0N6N9x7UeC0uDOB0cEe9S7gqE5V0JqmweB9cDukymD9
+        i4w4LoH7k3gJIqTZNEW9SZSfr6O0MrI8lbb9GB/seDOBnQcKRS5VjgSzowVTG7jQ8BAaoeV+y3p
+        pP5Id5njoiJ2SOh/qQcYFRSSp
+X-Received: by 2002:a5d:554b:: with SMTP id g11mr5433801wrw.411.1616623172165;
+        Wed, 24 Mar 2021 14:59:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDhLDhqcEk8qPr6PRDCmGSFYoDEToCC8z/2B0+32YuAGUBVFwbT+VHVtEM+Wwt5nFZgpHW4A==
+X-Received: by 2002:a5d:554b:: with SMTP id g11mr5433774wrw.411.1616623172001;
+        Wed, 24 Mar 2021 14:59:32 -0700 (PDT)
+Received: from [192.168.1.124] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id c2sm3649441wme.15.2021.03.24.14.59.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 14:59:31 -0700 (PDT)
+Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
+To:     Borislav Petkov <bp@alien8.de>, Babu Moger <babu.moger@amd.com>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <78cc2dc7-a2ee-35ac-dd47-8f3f8b62f261@redhat.com>
+ <d7c6211b-05d3-ec3f-111a-f69f09201681@amd.com>
+ <20210311200755.GE5829@zn.tnic> <20210311203206.GF5829@zn.tnic>
+ <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com>
+ <20210311214013.GH5829@zn.tnic>
+ <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com>
+ <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com>
+ <20210311235215.GI5829@zn.tnic>
+ <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
+ <20210324212139.GN5010@zn.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <feabccbb-8e0f-83b0-64a7-b5e1988c4559@redhat.com>
+Date:   Wed, 24 Mar 2021 22:59:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-24_13:2021-03-24,2021-03-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 clxscore=1011
- spamscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103240156
+In-Reply-To: <20210324212139.GN5010@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 16:49 -0400, Mimi Zohar wrote:
-> On Wed, 2021-03-24 at 09:14 -0700, James Bottomley wrote:
-> > On Tue, 2021-03-23 at 14:07 -0400, Mimi Zohar wrote:
-> > > On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
-> > > > Hello Horia,
-> > > > 
-> > > > On 21.03.21 21:48, Horia Geantă wrote:
-> > > > > On 3/16/2021 7:02 PM, Ahmad Fatoum wrote:
-> > > > > [...]
-> > > > > > +struct trusted_key_ops caam_trusted_key_ops = {
-> > > > > > +	.migratable = 0, /* non-migratable */
-> > > > > > +	.init = trusted_caam_init,
-> > > > > > +	.seal = trusted_caam_seal,
-> > > > > > +	.unseal = trusted_caam_unseal,
-> > > > > > +	.exit = trusted_caam_exit,
-> > > > > > +};
-> > > > > caam has random number generation capabilities, so it's worth
-> > > > > using that
-> > > > > by implementing .get_random.
-> > > > 
-> > > > If the CAAM HWRNG is already seeding the kernel RNG, why not
-> > > > use
-> > > > the kernel's?
-> > > > 
-> > > > Makes for less code duplication IMO.
-> > > 
-> > > Using kernel RNG, in general, for trusted keys has been discussed
-> > > before.   Please refer to Dave Safford's detailed explanation for
-> > > not
-> > > using it [1].
-> > > 
-> > > [1] 
-> > > https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A3C035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
-> > 
-> > I still don't think relying on one source of randomness to be
-> > cryptographically secure is a good idea.  The fear of bugs in the
-> > kernel entropy pool is reasonable, but since it's widely used
-> > they're
-> > unlikely to persist very long.  Studies have shown that some TPMs
-> > (notably the chinese manufactured ones) have suspicious failures in
-> > their RNGs:
-> > 
-> > https://www.researchgate.net/publication/45934562_Benchmarking_the_True_Random_Number_Generator_of_TPM_Chips
-> > 
-> > And most cryptograhpers recommend using a TPM for entropy mixing
-> > rather
-> > than directly:
-> > 
-> > https://blog.cryptographyengineering.com/category/rngs/
-> > 
-> > The TPMFail paper also shows that in spite of NIST certification
-> > things can go wrong with a TPM:
-> > 
-> > https://tpm.fail/
+On 24/03/21 22:21, Borislav Petkov wrote:
+>  	if (kaiser_enabled)
+>   		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
+> +	else
+> +		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
+> +
+>   	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
+>   }
+
+I think the kernel ASID flush can also be moved under the "if"?
+
+> and the reason why it does, IMHO, is because on AMD, kaiser_enabled is
+> false because AMD is not affected by Meltdown, which means, there's no
+> user/kernel pagetables split.
 > 
-> We already had a lengthy discussion on replacing the TPM RNG with the
-> kernel RNG for trusted keys, when TEE was being introduced
-> [2,3].  I'm not interested in re-hashing that discussion here.   The
-> only difference now is that CAAM is a new trust source.  I suspect
-> the same concerns/issues persist, but at least in this case using the
-> kernel RNG would not be a regression.
+> And that also means, you have global TLB entries which means that if you
+> look at that __native_flush_tlb_single() function, it needs to flush
+> global TLB entries on CPUs with X86_FEATURE_INVPCID_SINGLE by doing an
+> INVLPG in the kaiser_enabled=0 case. Errgo, the above hunk.
 
-Upstreaming the ASN.1 parser gives us a way to create trusted keys
-outside the kernel and so choose any RNG that suits the user, so I
-don't think there's any need to rehash for TPM based keys either.
+Makes sense.
 
-However CaaM doesn't have the ability to create keys outside the kernel
-yet, so they do need to consider the problem.
-
-James
-
-
-> [2] Pascal Van Leeuwen on mixing different sources of entropy and
-> certification -
->  
-> https://lore.kernel.org/linux-integrity/MN2PR20MB29732A856A40131A671F949FCA950@MN2PR20MB2973.namprd20.prod.outlook.com/
-> [3] Jarrko on "regression" and tpm_asym.c - 
-> https://lore.kernel.org/linux-integrity/20191014190033.GA15552@linux.intel.com/ 
-> 
-> Mimi
-> 
-
+Paolo
 
