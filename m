@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8FB34709C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 06:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FA63470A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 06:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235198AbhCXFCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 01:02:30 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:40672 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232648AbhCXFCN (ORCPT
+        id S235222AbhCXFDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 01:03:06 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:38406 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232648AbhCXFDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 01:02:13 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOvel-008keX-JS; Wed, 24 Mar 2021 05:02:11 +0000
-Date:   Wed, 24 Mar 2021 05:02:11 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 01/18] vfs: add miscattr ops
-Message-ID: <YFrH098Tbbezg2hI@zeniv-ca.linux.org.uk>
-References: <20210322144916.137245-1-mszeredi@redhat.com>
- <20210322144916.137245-2-mszeredi@redhat.com>
+        Wed, 24 Mar 2021 01:03:04 -0400
+Received: by mail-lf1-f48.google.com with SMTP id f3so21707097lfu.5;
+        Tue, 23 Mar 2021 22:03:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=Yu+c5hKm75xWmBphehGW0wkPgb4hhf6daZ13Tp8/oFw=;
+        b=G4lMJVut5IVzR1UvZhn5dr/KqdQR5EnhK/SZ7+X00hxhpZxfYS04tOnjYCRzCOi24Z
+         7v9+hecM/hKw3scWXN0uxj65ua8sE9l0E2rvDYoG5XiXdkR4rZ+DVB7rvLr0au1HKE5J
+         d8AdrvmBVFShU4S3m3i+4/ekf8WJpLrQP2/BVyWOjD0m7ebZLbanCwf4WYPMY1FZd9ym
+         QWnPryHDQgvZWNeAVnYytqoemoRiQ7qqHm8zvm6hHBxcUtAcUT+jxxCx3nPwioCJIvsg
+         oBcN0Tc6gGipjV7PjgluLDwkWfq++RymKM22Hos6aDR5AijMc6tXpRBqb7ZrdQ91hP34
+         saiA==
+X-Gm-Message-State: AOAM5329dARjr+NkQCZo1BNKonrYzxfn7lG5POdHP/x35gSTRiiZiRND
+        QHECbllop/VFtdRTg3nByE7Wxmmzc5E=
+X-Google-Smtp-Source: ABdhPJz7kd4QmFbOUKs49q6MTXLWXUVwSAj3AuyDgvuKNTbfR5sq8lcR1SgUMe2L+HvUCRrhFS87cw==
+X-Received: by 2002:a05:6512:34c3:: with SMTP id w3mr833800lfr.437.1616562182708;
+        Tue, 23 Mar 2021 22:03:02 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id h206sm114917lfd.4.2021.03.23.22.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 22:03:01 -0700 (PDT)
+Message-ID: <1f5247a81077f6cb3c96730b1202bbd61dd1900b.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v3 3/8] extconn: Clean-up few drivers by using managed
+ work init
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org
+In-Reply-To: <14800e19-da8c-81ba-48ee-cc51cc1925c9@samsung.com>
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+         <CGME20210323135719epcas1p326dfbf8acd6c95703a30d832fb111879@epcas1p3.samsung.com>
+         <b1030eddbf0069f2d39e951be1d8e40d6413aeeb.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+         <14800e19-da8c-81ba-48ee-cc51cc1925c9@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322144916.137245-2-mszeredi@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Date:   Wed, 24 Mar 2021 07:02:52 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:48:59PM +0100, Miklos Szeredi wrote:
+Hello Chanwoo, Greg,
 
-minor nit: copy_fsxattr_{to,from}_user() might be better.
+Thanks for the review.
 
-> +int fsxattr_copy_to_user(const struct miscattr *ma, struct fsxattr __user *ufa)
-> +{
-> +	struct fsxattr fa = {
-> +		.fsx_xflags	= ma->fsx_xflags,
-> +		.fsx_extsize	= ma->fsx_extsize,
-> +		.fsx_nextents	= ma->fsx_nextents,
-> +		.fsx_projid	= ma->fsx_projid,
-> +		.fsx_cowextsize	= ma->fsx_cowextsize,
-> +	};
+On Wed, 2021-03-24 at 11:09 +0900, Chanwoo Choi wrote:
+> Hi,
+> 
+> Need to fix the work as following:
+> s/extconn/extcon
+> 
+> And I'd like you to use the more correct patch title like the
+> following example:
+> "extcon: Use resource-managed function for delayed work"
 
-That wants a comment along the lines of "guaranteed to be gap-free",
-since otherwise you'd need memset() to avoid an infoleak.
+I think Greg merged this already. How should we handle this?
 
-> +static int ioctl_getflags(struct file *file, void __user *argp)
-> +{
-> +	struct miscattr ma = { .flags_valid = true }; /* hint only */
-> +	unsigned int flags;
-> +	int err;
-> +
-> +	err = vfs_miscattr_get(file_dentry(file), &ma);
+> @@ -112,7 +113,9 @@ static int gpio_extcon_probe(struct
+> > platform_device *pdev)
+> >  	if (ret < 0)
+> >  		return ret;
+> >  
+> > -	INIT_DELAYED_WORK(&data->work, gpio_extcon_work);
+> > +	ret = devm_delayed_work_autocancel(dev, &data->work,
+> > gpio_extcon_work);
+> > +	if (ret)
+> > +		return ret;
+> 
+> Need to add the error log as following:
+> 	if (ret) {
+> 		dev_err(dev, "Failed to initialize delayed_work");
+> 		return ret;
+> 	}	
 
-Umm...  Just to clarify - do we plan to have that ever called via
-ovl_real_ioctl()?  IOW, is file_dentry() anything other than a way
-to spell ->f_path.dentry here?
+I could send incremental patch to Greg for this but it does not change
+the commit message.
 
-> +struct miscattr {
-> +	u32	flags;		/* flags (FS_IOC_GETFLAGS/FS_IOC_SETFLAGS) */
-> +	/* struct fsxattr: */
-> +	u32	fsx_xflags;	/* xflags field value (get/set) */
-> +	u32	fsx_extsize;	/* extsize field value (get/set)*/
-> +	u32	fsx_nextents;	/* nextents field value (get)	*/
-> +	u32	fsx_projid;	/* project identifier (get/set) */
-> +	u32	fsx_cowextsize;	/* CoW extsize field value (get/set)*/
-> +	/* selectors: */
-> +	bool	flags_valid:1;
-> +	bool	xattr_valid:1;
-> +};
+Best Regards
+	Matti Vaittinen
 
-OK as long as it stays kernel-only, but if we ever expose that to userland, we'd
-better remember to turn the last two into an u32 with explicit bitmasks.
+
