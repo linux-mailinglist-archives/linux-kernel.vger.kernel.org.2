@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CB4347295
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC47734729C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbhCXH1i convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 03:27:38 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3920 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbhCXH1a (ORCPT
+        id S232973AbhCXH3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233024AbhCXH3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:27:30 -0400
-Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F50Bb6K1Yz5hRL;
-        Wed, 24 Mar 2021 15:25:27 +0800 (CST)
-Received: from dggpemm100011.china.huawei.com (7.185.36.112) by
- DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 24 Mar 2021 15:27:04 +0800
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm100011.china.huawei.com (7.185.36.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 24 Mar 2021 15:27:04 +0800
-Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
- dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2106.013;
- Wed, 24 Mar 2021 15:27:04 +0800
-From:   "chenjun (AM)" <chenjun102@huawei.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will.deacon@arm.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        liuyanshi <liuyanshi@huawei.com>,
-        wuzengkun <wuzengkun@hisilicon.com>
-Subject: [question] insert ko failed because count_plts return 0 when
- CONFIG_RANDOMIZE_BASE is not set
-Thread-Topic: [question] insert ko failed because count_plts return 0 when
- CONFIG_RANDOMIZE_BASE is not set
-Thread-Index: AQHXIH8WXlqb5UrgakG+rdPSQ9Lizw==
-Date:   Wed, 24 Mar 2021 07:27:04 +0000
-Message-ID: <6c819e1944044bfa8f88574beb094ef5@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.53]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 24 Mar 2021 03:29:08 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D426C0613DB
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:29:07 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id b10so20453999iot.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YfeIczbpJJu3G0wGJ/ec/80ZG1AIJtuj0h2L9wYV6TM=;
+        b=IxqgU+sTQMLeFrSxPsFbt29lEJBSGbWacpIK6qsKxeMmr7R78NZ778gsooIOF7V57b
+         uW5x3/2J0kVRqBygaELvMnr7SDcNp82E5kMreHlVhBLwXTD7Eg0BBGvN6AWMJ6CSi+ft
+         sZ1RzApM2CZis6pP9pMCTDHjLH2K2ACSFw8ho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YfeIczbpJJu3G0wGJ/ec/80ZG1AIJtuj0h2L9wYV6TM=;
+        b=k2ZtvaxzqKPZJXEWPEfW0hG4zLf7A5aTqll2PC5nh9IfPzvWSEPBtwGPNCrjS1o0jX
+         hMFsLk2esjDNXgFo0lDn2Osb0iTChPYDRNMyxUp7Bw/Rncy5MTzTl1h6UEYcv/ilF7b2
+         W4pZyqaIMI0trrVA6OdpECMgQaqEpXYd0vEHKEU1VABARWtk7Ql52bPsPODFmJPtcmxO
+         FN85ZYSSBU5qVa0Vs8vEjsNC0xdfT0DOxv/M5zvae2p9NgQhZU0ivuXZ9nAKIDyBCpMD
+         EKpWOHxc94FgE8lvYV7Hc9kDGbyCSNH71UquaF1eQZeiihqE5gVPNvLi9siPxb4x/zgm
+         fUZQ==
+X-Gm-Message-State: AOAM531NxLCWMs99VvXbBUkT3AC4+jTSDjsW7Yxt5/gaq2vRIULoY7sz
+        kUdqbRQ/qIRKwhFB1Y1h1xXJVR3LvN+uPm3w
+X-Google-Smtp-Source: ABdhPJyuHSH4SPjOXK0z+zD7+LnScwwIvrPSvbbMGfdxyXkIUEeAaHyHkEfvZXEzr4lfhyvkG+TDJQ==
+X-Received: by 2002:a6b:590e:: with SMTP id n14mr1442432iob.107.1616570946755;
+        Wed, 24 Mar 2021 00:29:06 -0700 (PDT)
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com. [209.85.166.172])
+        by smtp.gmail.com with ESMTPSA id m20sm705898ilj.66.2021.03.24.00.29.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 00:29:06 -0700 (PDT)
+Received: by mail-il1-f172.google.com with SMTP id 19so20518041ilj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:29:05 -0700 (PDT)
+X-Received: by 2002:a05:6e02:2182:: with SMTP id j2mr1642748ila.89.1616570945322;
+ Wed, 24 Mar 2021 00:29:05 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210319055342.127308-1-senozhatsky@chromium.org>
+ <20210319055342.127308-4-senozhatsky@chromium.org> <CANiDSCseJdKuPSZFDvc8VGp=PDqGEN42ZsLVGgkwhAz5hhVCQQ@mail.gmail.com>
+ <YFqiWixqSuPMTwXz@google.com>
+In-Reply-To: <YFqiWixqSuPMTwXz@google.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Wed, 24 Mar 2021 08:28:54 +0100
+X-Gmail-Original-Message-ID: <CANiDSCujVZy93W=HW317R5rEzEtdaaR8XwA_tu-ZT4eFe1VSrQ@mail.gmail.com>
+Message-ID: <CANiDSCujVZy93W=HW317R5rEzEtdaaR8XwA_tu-ZT4eFe1VSrQ@mail.gmail.com>
+Subject: Re: [PATCHv3 3/6] media: v4l UAPI: add ROI auto-controls flags
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+HI Sergey
 
-I make a Image for arm64 (without CONFIG_RANDOMIZE_BASE). And a ko (13M) 
-can not be inserted.
+On Wed, Mar 24, 2021 at 3:22 AM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> On (21/03/23 17:04), Ricardo Ribalda wrote:
+> > On Fri, Mar 19, 2021 at 6:53 AM Sergey Senozhatsky
+> > <senozhatsky@chromium.org> wrote:
+> > >
+> > > UVC 1.5 defines the following Region Of Interest auto controls:
+> > >
+> > > D0: Auto Exposure
+> > > D1: Auto Iris
+> > > D2: Auto White Balance
+> > > D3: Auto Focus
+> > > D4: Auto Face Detect
+> > > D5: Auto Detect and Track
+> > > D6: Image Stabilization
+> > > D7: Higher Quality
+> > > D8 =E2=80=93 D15: Reserved, set to zero
+> > >
+> > > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > > ---
+> > >  include/uapi/linux/v4l2-common.h | 10 ++++++++++
+> > >  1 file changed, 10 insertions(+)
+> > >
+> > > diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4=
+l2-common.h
+> > > index 3651ebb8cb23..34f1c262d6aa 100644
+> > > --- a/include/uapi/linux/v4l2-common.h
+> > > +++ b/include/uapi/linux/v4l2-common.h
+> > > @@ -92,6 +92,16 @@
+> > >  #define V4L2_SEL_FLAG_LE               (1 << 1)
+> > >  #define V4L2_SEL_FLAG_KEEP_CONFIG      (1 << 2)
+> > >
+> >
+> > Are you sure that you do not want to start with 1<<3, there might be
+> > some hardware that support LE/SE
+>
+> How the hardware's going to support this? There is simply no way to
+> pass these flags to the firmware, the values already overlap with
+> auto-controls. So I guess these flags are for the driver (C code).
+> uvcvideo driver is not doing any "lesser or equal rectangle" magic
+> for ROI. No such thing is defined by UVC spec.
 
-WARNING: CPU: 2 PID: 1998 at arch/arm64/kernel/module-plts.c:39
-module_emit_plt_entry+0x100/0x118
-..
-Call trace:
-module_emit_plt_entry+0x100/0x118
-apply_relocate_add+0x34c/0x570
-..
+The driver can implement se/le.
 
-I think the problem is that:
-in apply_relocate_add:
-                  case R_AARCH64_CALL26:
-                      ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 26,
-                                               AARCH64_INSN_IMM_26);
+>
+> I can move these flags to entirely different value range and do
+> remapping to uvc auto-controls values in uvcvideo.
+I think that is more correct in this case. Yes it is annoying, but if
+more devices support this....
 
-                      if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
-                          ovf == -ERANGE) {
-                              val = module_emit_plt_entry(me, sechdrs, 
-loc, &rel[i], sym); realoc_insn_imm return -ERANGE (because the ko is 
-too big?)
 
-in module_emit_plt_entry:
-WARN_ON(pltsec->plt_num_entries > pltsec->plt_max_entries)
-pltsec->plt_max_entries is 0 if CONFIG_RANDOMIZE_BASE is not be set.
 
-a257e02 arm64/kernel: don't ban ADRP to work around Cortex-A53 erratum
-#843419
-   static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int 
-num,
--                              Elf64_Word dstidx)
-+                              Elf64_Word dstidx, Elf_Shdr *dstsec)
-   {
-..
-                  switch (ELF64_R_TYPE(rela[i].r_info)) {
-                  case R_AARCH64_JUMP26:
-                  case R_AARCH64_CALL26:
-+                       if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
-+                               break;
-+
-
-Why we need break if !IS_ENABLED(CONFIG_RANDOMIZE_BASE)? or any 
-restrictions on ko?
-
-I comment out this part of the code. the ko could be inserted, and seems 
-to work well. So is it a accepted way? or any solution for my case?
-
---
-Regards
-Chen Jun
-
+--=20
+Ricardo Ribalda
