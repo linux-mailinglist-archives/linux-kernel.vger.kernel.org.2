@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7817348038
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFCC348041
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237203AbhCXSRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:17:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42086 "EHLO mail.kernel.org"
+        id S237497AbhCXSS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:18:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237126AbhCXSR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:17:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF59D61A1B;
-        Wed, 24 Mar 2021 18:17:25 +0000 (UTC)
+        id S237451AbhCXSSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:18:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D9261A1E;
+        Wed, 24 Mar 2021 18:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616609847;
-        bh=4pdlq11RIrLWbal0eLSrsoU2qpVHCmm//Uxr7uO5jvY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m4ZteAYgWR/1D3ZZHoKlmFU8fZ9uGhlBkHWDVijMGwlEwP4cdW4LHOMl5OTYImHsM
-         UxN0lOUM2It6Ru9uOC2U10xE1fdtUcMANlzlQa7ip9xRqltkKQxeAUktdHrJ4OKXeQ
-         4xfKOAYm44hLmcFofEsoUVv8sKEdtY3kgcEwt6vbhOISILYqt79sUlsz5MvZ44Lzbf
-         9TwteNfuj6a42CcB7cSUo3oFmf8bmiahbDOId5wsdIiVkDwBk14eFIKd9Q/7f4QdWb
-         NOLSw1zasUbceiBB6GNB5iKkx+5PASQ81MwcaPH8xnnhXEu3aS/bgL22S6BDtXCF1f
-         Y+kBgdtx6uAJA==
-Date:   Wed, 24 Mar 2021 19:17:22 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Finn Behrens <me@kloenk.de>,
+        s=k20201202; t=1616609891;
+        bh=jLEIjTDMdOEnl8/SfGx6/gltYIIdLbMFJhqthmu7sWI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UbVwO873llNdsjRRLI+J5vMaoN88DXm+jw+j0sUIZBUclPpTb7Ziu4k6wnsHNiCfF
+         Pm2+8JW+mzLubs4Qy/nr2Bk6fhTTesVy3I2z9ELtOFs5HGiaC5QBnIfT3k5o/JzCZm
+         Ic42bD5UwJKGUYYHQspuAp5GKrQ60c3dz+5EGEwi1k6ZI7Kx9PkjQEdrNeaBoO8Yhb
+         jBw6AICm26Y35MtNLuYn7lyHgfMwRX/Fp97hFQKLceiZRFcnCy5y/YHi8ZYFr7e/xI
+         wWLImdBodOm9uRF/OdDCIZd0jNPTDFT32jtdH9eLMTF9V/7O66u5riEBqlrYUlKpOO
+         8yaOV23QpmtAQ==
+Date:   Wed, 24 Mar 2021 18:18:04 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] script: get_abi.pl: escape "<" and ">" characters
-Message-ID: <20210324191722.08d352e4@coco.lan>
-In-Reply-To: <87sg4kcw6y.fsf@meer.lwn.net>
-References: <20210317142238.228fb1e8@coco.lan>
-        <e02449ee86d89cd45313627b52500a6892ea37ae.1616605512.git.mchehab+huawei@kernel.org>
-        <87sg4kcw6y.fsf@meer.lwn.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH v3 11/27] arm64: Implement ioremap_np() to map MMIO
+ as nGnRnE
+Message-ID: <20210324181803.GD13181@willie-the-truck>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-12-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304213902.83903-12-marcan@marcan.st>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 24 Mar 2021 11:12:37 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
-
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+On Fri, Mar 05, 2021 at 06:38:46AM +0900, Hector Martin wrote:
+> This is used on Apple ARM platforms, which require most MMIO
+> (except PCI devices) to be mapped as nGnRnE.
 > 
-> > After merging the akpm-current tree, today's linux-next build (htmldocs)
-> > produced this warning:
-> >
-> > 	Documentation/ABI/testing/sysfs-kernel-mm-cma:2: WARNING: Inline interpreted text or phrase reference start-string without end-string.
-> >
-> > Introduced by commit 439d477342a3 ("mm: cma: support sysfs")
-> >
-> > As pointed by Jonathan, the problem is this text in
-> > sysfs-kernel-mm-cma:
-> >
-> > 	Each CMA heap subdirectory (that is, each
-> > 	/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
-> > 	following items:
-> >
-> > Is not parsed well, becase the major/minor signs need to be
-> > escaped, when converted into cross-references.  
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  arch/arm64/include/asm/io.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Sorry, I kind of dropped the ball on this, and everything else really; a
-> bit of a challenging time here.
-> 
-> This makes the warning go away, but I have to wonder if it's the right
-> fix 
+> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
+> index 5ea8656a2030..953b8703af60 100644
+> --- a/arch/arm64/include/asm/io.h
+> +++ b/arch/arm64/include/asm/io.h
+> @@ -169,6 +169,7 @@ extern void __iomem *ioremap_cache(phys_addr_t phys_addr, size_t size);
+>  
+>  #define ioremap(addr, size)		__ioremap((addr), (size), __pgprot(PROT_DEVICE_nGnRE))
+>  #define ioremap_wc(addr, size)		__ioremap((addr), (size), __pgprot(PROT_NORMAL_NC))
+> +#define ioremap_np(addr, size)		__ioremap((addr), (size), __pgprot(PROT_DEVICE_nGnRnE))
 
-There's indeed an issue on another part of the script. I'm testing 
-a second version using a better and more generic regex set.
+Probably worth noting that whether or not this actually results in a
+non-posted mapping depends on the system architecture, but this is the
+best we can do, so:
 
-> - wouldn't it be better to avoid trying to create a cross-reference
-> entirely in cases where it clearly won't work?  Or am I missing
-> something here?
+Acked-by: Will Deacon <will@kernel.org>
 
-The cross-reference logic on this script is somewhat smart: it
-will only create cross-references if the symbol exists. If not,
-it keeps the symbol as-is.
+I would personally prefer that drivers didn't have to care about this, and
+ioremap on arm64 figured out the right attributes based on the region being
+mapped, but I haven't followed the discussion closely so I won't die on that
+hill.
 
-The problem was actually on another part of the logic: there is
-a symbol "/sys/kernel/mm/cma". The script is currently thinking
-that the "<" character at:
-	/sys/kernel/mm/cma/<cma-heap-name> 
-
-is a bondary. So, it ended converting the first part 
-("/sys/kernel/mm/cma/") into a cross reference.
-
-This patch fixed it by dropping the reference for the non-existent 
-symbol "/sys/kernel/mm/cma/" (the reference should be, instead,
-to /sys/kernel/mm/cma/<cma-heap-name>/foo), but there's still
-a hidden bug, which causes that a reference for
-/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success to be
-broken.
-
-I have already a new patch. I'm checking right now if everything
-is ok after the regex change. I should be sending a version 2
-probably in a few.
-
-Thanks,
-Mauro
+Will
