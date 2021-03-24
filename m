@@ -2,131 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059BF347041
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A62347048
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhCXDwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
+        id S235183AbhCXD6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235183AbhCXDwc (ORCPT
+        with ESMTP id S235120AbhCXD6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:52:32 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB55C0613D9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:52:32 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id f10so6674119pgl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3j5OyUrftEzcDXX4MpjT7fR+wbe3Yv5y5R6X/vBZjJQ=;
-        b=SLpHyYmHPpBuZfgEnc7aIx8GyYHbTlCdViwxtR0TEFAqoH6Co57I5/GH6Ghv7gYREK
-         YoZDyi6GiHTtQirA7XKDDFL6oucRys/mzhTATHl/jQnCC/9Z59VS64azThymSHNOyOAP
-         uk2USEmA7qpWhxfDT7ZVH/cevwiBf6lKq1YXy+yqSZKaJuaZi35Gh0IInr5qiVUrru9a
-         LIOLJpqdf9SembDFDJhCW4jZJYj0Jtz4bBpv77+ypTAQlRTOv/ALj+tE1y+ghdzk9nRB
-         t5Y7kdYGbTGolx/nZa15DGpe1a4G7dg9FQyIKVRC4elRXJCdoMr5EuY3ennhf90B5fVr
-         010w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3j5OyUrftEzcDXX4MpjT7fR+wbe3Yv5y5R6X/vBZjJQ=;
-        b=Cb1uZ16NJAnKDXmz0WMYSs+Iqx4w8yJEgHonFNAy0mTQtW+N3B0vvTOGXwKcnazaDd
-         FnXkCG+16uvMZXj+cLIsRuc0ui8q0fk8FoM8O5hYN+oha+Q/2jZyS62tdrgEJ0xEYSMq
-         5wSP7rocxYQ57KaJAMF8daLOaAShh2ZTNYSuuIaF13JNWZGeFliriRPZWy6eFc0gyOqp
-         eR8/CL7b2nS/FeKL4FVQCvIqkr8o+2mJdy5o6RqJRU+JXK1Gtb3GH1MaD/lXXKhcPF21
-         lDZTNGbYJtr/rbD+kgsvaMPPFXQMnYLF1VAPb58t89dfBGpWVpq+zZFuqvyo/siRhoU1
-         JdMA==
-X-Gm-Message-State: AOAM530RtzLWVmUauZFksWWgX6PnGyyKaq169kVBW+vka3je5yC3i4Pq
-        xTd7oI/ve4PliWo8G7FtxiX7qg==
-X-Google-Smtp-Source: ABdhPJwS7CzKG1KeSya4Uww0J2B7VcOU1nBY8jh4mVwy8qnnMCjeW6O7tPjhMNgQ2e7moAaEbcW9CA==
-X-Received: by 2002:a62:3503:0:b029:1aa:6f15:b9fe with SMTP id c3-20020a6235030000b02901aa6f15b9femr1061153pfa.65.1616557951696;
-        Tue, 23 Mar 2021 20:52:31 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id m5sm623171pfd.96.2021.03.23.20.52.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Mar 2021 20:52:28 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 09:22:25 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210324035225.skkllxexjl65gs6x@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323090108.ygx76exdgzudeeqi@vireshk-i7>
- <20210323093839.n7cq7f5poebqdwit@vireshk-i7>
- <5a415dbe-8e3b-2731-cc52-19aeadda1a17@intel.com>
+        Tue, 23 Mar 2021 23:58:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022E6C061763;
+        Tue, 23 Mar 2021 20:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=FkHspzZ4eIco0CCf9Vy8eC47ISGEcdGFSl/9SbDwvfM=; b=bgW5XiJrkiyCjCJ41/OrSEZ0Na
+        pOd/febPxkGppUOKhyfu94L8yN/QtRXbWt5N5nGywesdNOS4iMQH8zTegchOx9W3yi37woW4D4Gnp
+        6y4BRerobBHKrN8utW63jQ3/IUNa4EK9QG5EaUvGMCrfSPg929C4R1PBKAlOc/Iqr2MHm85nS5Zzx
+        xAotg0U9YNx4wwcSDnJefs2l82qi06T5zXZ2ZarFoTlrhkJiDiAPcGxRVxj0fL1c54QSRNILqAx8w
+        wGhTiwavbcQUqXTm+skIgUqZOvdSWHhLJNfFD+QObtCCV1h5U8kNLzfupdZuEtmqVjKBzC5MHURuW
+        CLE9VMig==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOueF-00AtUm-Co; Wed, 24 Mar 2021 03:57:41 +0000
+Subject: Re: [PATCH v2] drivers/media/pci/bt8xx/bttv-cards: fix typos
+To:     Xiaofeng Cao <cxfcosmos@gmail.com>, mchehab@kernel.org
+Cc:     Julia.Lawall@inria.fr, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
+References: <20210324032906.17094-1-caoxiaofeng@yulong.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c8e7929e-17d7-fe38-a809-a057d383ad4c@infradead.org>
+Date:   Tue, 23 Mar 2021 20:57:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a415dbe-8e3b-2731-cc52-19aeadda1a17@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210324032906.17094-1-caoxiaofeng@yulong.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-03-21, 08:53, Jie Deng wrote:
+On 3/23/21 8:29 PM, Xiaofeng Cao wrote:
+> change 'vodeo'     to 'video'
+> change 'nevery'    to 'never'
+> change 'is'        to 'it'
+> change 'connevted' to 'connected'
+> change 'swichers'  to 'switchers'
+> change 'strucure'  to 'structure'
+> change 'unblanced' to 'unbalanced'
+> change 'fonctionality' to 'functionality'
 > 
-> On 2021/3/23 17:38, Viresh Kumar wrote:
-> > On 23-03-21, 14:31, Viresh Kumar wrote:
-> > > On 23-03-21, 22:19, Jie Deng wrote:
-> > > > +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
-> > > > +{
-> > > > +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
-> > > > +	struct virtqueue *vq = vi->vq;
-> > > > +	struct virtio_i2c_req *reqs;
-> > > > +	unsigned long time_left;
-> > > > +	int ret, nr;
-> > > > +
-> > > > +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
-> > > > +	if (!reqs)
-> > > > +		return -ENOMEM;
-> > > > +
-> > > > +	mutex_lock(&vi->lock);
-> > > > +
-> > > > +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
-> > > > +	if (ret == 0)
-> > > > +		goto err_unlock_free;
-> > > > +
-> > > > +	nr = ret;
-> > > > +	reinit_completion(&vi->completion);
-> > > I think I may have found a possible bug here. This reinit_completion() must
-> > > happen before we call virtio_i2c_send_reqs(). It is certainly possible (surely
-> > > in corner cases) that virtio_i2c_msg_done() may get called right after
-> > > virtio_i2c_send_reqs() and before we were able to call reinit_completion(). And
-> > > in that case we will never see the completion happen at all.
-> > > 
-> > > > +	virtqueue_kick(vq);
-> > I may have misread this. Can the actually start before virtqueue_kick() is
-> > called ?
+> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
 
-I didn't write it properly here. I wanted to say,
+LGTM. Thanks.
 
-"Can the _transfer_ actually start before virtqueue_kick() is called ?"
- 
-> No. It starts when wait_for_completion_timeout is called.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-No, the transfer doesn't have anything to do with wait_for_completion_timeout().
-And if complete() gets called before wait_for_completion_timeout() is called,
-then wait_for_completion_timeout() will simply return back.
-
-> So it should be fine here.
+> ---
+> v2: resume space and change 'USED' to 'USE'
+>  drivers/media/pci/bt8xx/bttv-cards.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 > 
+> diff --git a/drivers/media/pci/bt8xx/bttv-cards.c b/drivers/media/pci/bt8xx/bttv-cards.c
+> index ca20b806e82d..c2b5ab287dd7 100644
+> --- a/drivers/media/pci/bt8xx/bttv-cards.c
+> +++ b/drivers/media/pci/bt8xx/bttv-cards.c
+> @@ -2011,7 +2011,7 @@ struct tvcard bttv_tvcards[] = {
+>  		/* .audio_inputs= 0, */
+>  		.svhs           = 9,
+>  		.gpiomask       = 0x00,
+> -		.gpiomask2      = 0x03, /* used for external vodeo mux */
+> +		.gpiomask2      = 0x03, /* used for external video mux */
+>  		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 0),
+>  		.muxsel_hook	= phytec_muxsel,
+>  		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
+> @@ -2025,7 +2025,7 @@ struct tvcard bttv_tvcards[] = {
+>  		/* .audio_inputs= 0, */
+>  		.svhs           = 9,
+>  		.gpiomask       = 0x00,
+> -		.gpiomask2      = 0x03, /* used for external vodeo mux */
+> +		.gpiomask2      = 0x03, /* used for external video mux */
+>  		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 1),
+>  		.muxsel_hook	= phytec_muxsel,
+>  		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
+> @@ -2180,8 +2180,8 @@ struct tvcard bttv_tvcards[] = {
+>  	[BTTV_BOARD_PICOLO_TETRA_CHIP] = {
+>  		/*Eric DEBIEF <debief@telemsa.com>*/
+>  		/*EURESYS Picolo Tetra : 4 Conexant Fusion 878A, no audio, video input set with analog multiplexers GPIO controlled*/
+> -		/* adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration strucure, and #define BTTV_BOARD_PICOLO_TETRA_CHIP*/
+> -		/*0x79 in bttv.h*/
+> +		/*adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration*/
+> +		/*structure and #define BTTV_BOARD_PICOLO_TETRA_CHIP 0x79 in bttv.h*/
+>  		.name           = "Euresys Picolo Tetra",
+>  		.video_inputs   = 4,
+>  		/* .audio_inputs= 0, */
+> @@ -2506,7 +2506,7 @@ struct tvcard bttv_tvcards[] = {
+>  	     one external BNC composite input (mux 2)
+>  	     three internal composite inputs (unknown muxes)
+>  	     an 18-bit stereo A/D (CS5331A), which has:
+> -	       one external stereo unblanced (RCA) audio connection
+> +	       one external stereo unbalanced (RCA) audio connection
+>  	       one (or 3?) internal stereo balanced (XLR) audio connection
+>  	       input is selected via gpio to a 14052B mux
+>  		 (mask=0x300, unbal=0x000, bal=0x100, ??=0x200,0x300)
+> @@ -3924,7 +3924,7 @@ static void osprey_eeprom(struct bttv *btv, const u8 ee[256])
+>  	u32 serial = 0;
+>  	int cardid = -1;
+>  
+> -	/* This code will nevery actually get called in this case.... */
+> +	/* This code will never actually get called in this case.... */
+>  	if (btv->c.type == BTTV_BOARD_UNKNOWN) {
+>  		/* this might be an antique... check for MMAC label in eeprom */
+>  		if (!strncmp(ee, "MMAC", 4)) {
+> @@ -4086,7 +4086,7 @@ static void avermedia_eeprom(struct bttv *btv)
+>  /*
+>   * For Voodoo TV/FM and Voodoo 200.  These cards' tuners use a TDA9880
+>   * analog demod, which is not I2C controlled like the newer and more common
+> - * TDA9887 series.  Instead is has two tri-state input pins, S0 and S1,
+> + * TDA9887 series.  Instead it has two tri-state input pins, S0 and S1,
+>   * that control the IF for the video and audio.  Apparently, bttv GPIO
+>   * 0x10000 is connected to S0.  S0 low selects a 38.9 MHz VIF for B/G/D/K/I
+>   * (i.e., PAL) while high selects 45.75 MHz for M/N (i.e., NTSC).
+> @@ -4144,7 +4144,7 @@ static void init_PXC200(struct bttv *btv)
+>  	int tmp;
+>  	u32 val;
+>  
+> -	/* Initialise GPIO-connevted stuff */
+> +	/* Initialise GPIO-connected stuff */
+>  	gpio_inout(0xffffff, (1<<13));
+>  	gpio_write(0);
+>  	udelay(3);
+> @@ -4580,7 +4580,7 @@ static void xguard_muxsel(struct bttv *btv, unsigned int input)
+>  }
+>  static void picolo_tetra_init(struct bttv *btv)
+>  {
+> -	/*This is the video input redirection fonctionality : I DID NOT USED IT. */
+> +	/*This is the video input redirection functionality : I DID NOT USE IT. */
+>  	btwrite (0x08<<16,BT848_GPIO_DATA);/*GPIO[19] [==> 4053 B+C] set to 1 */
+>  	btwrite (0x04<<16,BT848_GPIO_DATA);/*GPIO[18] [==> 4053 A]  set to 1*/
+>  }
+> @@ -4598,7 +4598,7 @@ static void picolo_tetra_muxsel (struct bttv* btv, unsigned int input)
+>   * ivc120_muxsel [Added by Alan Garfield <alan@fromorbit.com>]
+>   *
+>   * The IVC120G security card has 4 i2c controlled TDA8540 matrix
+> - * swichers to provide 16 channels to MUX0. The TDA8540's have
+> + * switchers to provide 16 channels to MUX0. The TDA8540's have
+>   * 4 independent outputs and as such the IVC120G also has the
+>   * optional "Monitor Out" bus. This allows the card to be looking
+>   * at one input while the monitor is looking at another.
 > 
-> >   If not, then completion may be fine where it is.
-> > 
+
 
 -- 
-viresh
+~Randy
+
