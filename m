@@ -2,498 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB5034793F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EFE347944
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234393AbhCXNHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:07:16 -0400
-Received: from mail.codeweavers.com ([50.203.203.244]:40350 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234381AbhCXNG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:06:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:To:Subject:From:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7G8nLDTDzPAMf/bvFkOWAqqMkcbLMjpmpKRXerw14yU=; b=F3imPyBHLOJ9CUqwBeVtvzJ4UQ
-        qptziXgtIorStMCfczVEvEndI9nsruqdYt6Ifll30fuI5lRmQhasZi0A2+AxMr/dnZ2wtu4G3Y91P
-        gkfPZ5XSGlTYuFlMWcGma8FbFT48h/nvYHUe5X4O2E3gnMZfhKFpQ2ofF5Ung3yRxS2A=;
-Received: from [10.69.141.136]
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <nfraser@codeweavers.com>)
-        id 1lP3Do-0006Ha-AE; Wed, 24 Mar 2021 08:06:54 -0500
-From:   Nicholas Fraser <nfraser@codeweavers.com>
-Subject: [PATCH] perf data: export to JSON
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        linux-kernel@vger.kernel.org
-Message-ID: <4687bbe5-4ff3-af3a-fcec-06d8bfe5591c@codeweavers.com>
-Date:   Wed, 24 Mar 2021 09:06:50 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234712AbhCXNHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:07:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234381AbhCXNHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:07:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E67B619F2;
+        Wed, 24 Mar 2021 13:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616591255;
+        bh=ipRkHJfSO7gbOj1+Zj4KAE72qEZRW4QoMykE1Mghsjk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aIu1IF6BxPI3ZLsSx8wcxgzU/yjCf/1AM9NW1GiG1k4hxH0JsER0b80LwZbhgdjrf
+         VZNMLqrf0M1n5pvx1NGxvr12ah9aXrKw4ELo0PtcCdeRK5ix2NjzOWkofkutFq2WIj
+         IVkeLd6x38+ijiCHKXw6hJZ+sBdFO+mGKoIzG4hHFb4scFpXWvgOIv4xHAxrydTFpl
+         QyilaMTk58IWbvEpUL9aybINMxVNztsmbVAs50Zk3MMwQRhUS3weNGGMbSjxhx18Wi
+         8h5Evy4SravyouqCKe2py+5vF1azderK9mUu/gLYgakX/Uwo+ijSnsfh6RsYU0oDjd
+         CVAKOrqJNDhkw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Bin Luo <luobin9@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] hinic: avoid gcc -Wrestrict warning
+Date:   Wed, 24 Mar 2021 14:07:22 +0100
+Message-Id: <20210324130731.1513798-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds preliminary support to dump the contents of a perf.data file to
-human-readable JSON.
+From: Arnd Bergmann <arnd@arndb.de>
 
-The "perf data" command currently only supports exporting to Common Trace
-Format and it doesn't do symbol resolution among other things. Dumping to JSON
-means the data can be trivially parsed by anything without any dependencies
-(besides a JSON parser.) We use this to import the data into a tool on Windows
-where integrating perf or libbabeltrace is impractical.
+With extra warnings enabled, gcc complains that snprintf should not
+take the same buffer as source and destination:
 
-The JSON is encoded using some trivial fprintf() commands; there is no
-dependency on any JSON library. It currently only outputs samples. Other stuff
-like processes and mappings could easily be added as needed. The output is of
-course huge but it compresses well enough.
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c: In function 'hinic_set_settings_to_hw':
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:480:9: error: 'snprintf' argument 4 overlaps destination object 'set_link_str' [-Werror=restrict]
+  480 |   err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  481 |           "%sspeed %d ", set_link_str, speed);
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:464:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+  464 |  char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
 
-Use it like this:
+Rewrite this to avoid the nested sprintf and instead use separate
+buffers, which is simpler.
 
-    perf data convert --to-json out.json
-
-Here's what the output looks like:
-
-{
-        "linux-perf-json-version": 1,
-        "samples": [
-                {
-                        "timestamp": 3074717308597,
-                        "pid": 8604,
-                        "tid": 8604,
-                        "comm": "sh",
-                        "callchain": [
-                                {
-                                        "ip": "0x7f1e0deb2d36",
-                                        "symbol": "__strcmp_avx2",
-                                        "dso": "libc-2.33.so"
-                                },
-                                {
-                                        "ip": "0x7f1e0dd7f49f",
-                                        "symbol": "__gconv_find_transform",
-                                        "dso": "libc-2.33.so"
-                                },
-                                {
-                                        "ip": "0x7f1e0de0b71c",
-                                        "symbol": "__wcsmbs_load_conv",
-                                        "dso": "libc-2.33.so"
-                                }
-                        ]
-                },
-                ...
-        ]
-}
-
-Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- tools/perf/Documentation/perf-data.txt |   5 +-
- tools/perf/builtin-data.c              |  39 ++++-
- tools/perf/util/Build                  |   1 +
- tools/perf/util/data-convert-json.c    | 228 +++++++++++++++++++++++++
- tools/perf/util/data-convert-json.h    |   9 +
- tools/perf/util/data-convert.h         |   2 +
- 6 files changed, 276 insertions(+), 8 deletions(-)
- create mode 100644 tools/perf/util/data-convert-json.c
- create mode 100644 tools/perf/util/data-convert-json.h
+v2: rework according to feedback from Rasmus. This one could
+    easily avoid most of the pitfalls
+---
+ .../net/ethernet/huawei/hinic/hinic_ethtool.c | 25 ++++++++-----------
+ 1 file changed, 10 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-data.txt b/tools/perf/Documentation/perf-data.txt
-index 726b9bc9e1a7..417bf17e265c 100644
---- a/tools/perf/Documentation/perf-data.txt
-+++ b/tools/perf/Documentation/perf-data.txt
-@@ -17,7 +17,7 @@ Data file related processing.
- COMMANDS
- --------
- convert::
--	Converts perf data file into another format (only CTF [1] format is support by now).
-+	Converts perf data file into another format.
- 	It's possible to set data-convert debug variable to get debug messages from conversion,
- 	like:
- 	  perf --debug data-convert data convert ...
-@@ -27,6 +27,9 @@ OPTIONS for 'convert'
- --to-ctf::
- 	Triggers the CTF conversion, specify the path of CTF data directory.
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+index c340d9acba80..d7e20dab6e48 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+@@ -34,7 +34,7 @@
+ #include "hinic_rx.h"
+ #include "hinic_dev.h"
  
-+--to-json::
-+	Triggers JSON conversion. Specify the JSON filename to output.
-+
- --tod::
- 	Convert time to wall clock time.
+-#define SET_LINK_STR_MAX_LEN	128
++#define SET_LINK_STR_MAX_LEN	16
  
-diff --git a/tools/perf/builtin-data.c b/tools/perf/builtin-data.c
-index 8d23b8d6ee8e..64546ba517a5 100644
---- a/tools/perf/builtin-data.c
-+++ b/tools/perf/builtin-data.c
-@@ -8,6 +8,7 @@
- #include <subcmd/parse-options.h>
- #include "data-convert.h"
- #include "data-convert-bt.h"
-+#include "data-convert-json.h"
- 
- typedef int (*data_cmd_fn_t)(int argc, const char **argv);
- 
-@@ -55,7 +56,8 @@ static const char * const data_convert_usage[] = {
- 
- static int cmd_data_convert(int argc, const char **argv)
+ #define GET_SUPPORTED_MODE	0
+ #define GET_ADVERTISED_MODE	1
+@@ -462,24 +462,19 @@ static int hinic_set_settings_to_hw(struct hinic_dev *nic_dev,
  {
--	const char *to_ctf     = NULL;
-+	const char *to_json = NULL;
-+	const char *to_ctf = NULL;
- 	struct perf_data_convert_opts opts = {
- 		.force = false,
- 		.all = false,
-@@ -63,6 +65,7 @@ static int cmd_data_convert(int argc, const char **argv)
- 	const struct option options[] = {
- 		OPT_INCR('v', "verbose", &verbose, "be more verbose"),
- 		OPT_STRING('i', "input", &input_name, "file", "input file name"),
-+		OPT_STRING(0, "to-json", &to_json, NULL, "Convert to JSON format"),
- #ifdef HAVE_LIBBABELTRACE_SUPPORT
- 		OPT_STRING(0, "to-ctf", &to_ctf, NULL, "Convert to CTF format"),
- 		OPT_BOOLEAN(0, "tod", &opts.tod, "Convert time to wall clock time"),
-@@ -72,11 +75,6 @@ static int cmd_data_convert(int argc, const char **argv)
- 		OPT_END()
- 	};
+ 	struct hinic_link_ksettings_info settings = {0};
+ 	char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
++	const char *autoneg_str;
+ 	struct net_device *netdev = nic_dev->netdev;
+ 	enum nic_speed_level speed_level = 0;
+ 	int err;
  
--#ifndef HAVE_LIBBABELTRACE_SUPPORT
--	pr_err("No conversion support compiled in. perf should be compiled with environment variables LIBBABELTRACE=1 and LIBBABELTRACE_DIR=/path/to/libbabeltrace/\n");
--	return -1;
--#endif
--
- 	argc = parse_options(argc, argv, options,
- 			     data_convert_usage, 0);
- 	if (argc) {
-@@ -84,11 +82,38 @@ static int cmd_data_convert(int argc, const char **argv)
- 		return -1;
+-	err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN, "%s",
+-		       (set_settings & HILINK_LINK_SET_AUTONEG) ?
+-		       (autoneg ? "autong enable " : "autong disable ") : "");
+-	if (err < 0 || err >= SET_LINK_STR_MAX_LEN) {
+-		netif_err(nic_dev, drv, netdev, "Failed to snprintf link state, function return(%d) and dest_len(%d)\n",
+-			  err, SET_LINK_STR_MAX_LEN);
+-		return -EFAULT;
+-	}
++	autoneg_str = (set_settings & HILINK_LINK_SET_AUTONEG) ?
++		      (autoneg ? "autong enable " : "autong disable ") : "";
+ 
+ 	if (set_settings & HILINK_LINK_SET_SPEED) {
+ 		speed_level = hinic_ethtool_to_hw_speed_level(speed);
+ 		err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
+-			       "%sspeed %d ", set_link_str, speed);
+-		if (err <= 0 || err >= SET_LINK_STR_MAX_LEN) {
++			       "speed %d ", speed);
++		if (err >= SET_LINK_STR_MAX_LEN) {
+ 			netif_err(nic_dev, drv, netdev, "Failed to snprintf link speed, function return(%d) and dest_len(%d)\n",
+ 				  err, SET_LINK_STR_MAX_LEN);
+ 			return -EFAULT;
+@@ -494,11 +489,11 @@ static int hinic_set_settings_to_hw(struct hinic_dev *nic_dev,
+ 	err = hinic_set_link_settings(nic_dev->hwdev, &settings);
+ 	if (err != HINIC_MGMT_CMD_UNSUPPORTED) {
+ 		if (err)
+-			netif_err(nic_dev, drv, netdev, "Set %s failed\n",
+-				  set_link_str);
++			netif_err(nic_dev, drv, netdev, "Set %s%sfailed\n",
++				  autoneg_str, set_link_str);
+ 		else
+-			netif_info(nic_dev, drv, netdev, "Set %s successfully\n",
+-				   set_link_str);
++			netif_info(nic_dev, drv, netdev, "Set %s%ssuccessfully\n",
++				   autoneg_str, set_link_str);
+ 
+ 		return err;
  	}
- 
-+	if (to_json && to_ctf) {
-+		pr_err("You cannot specify both --to-ctf and --to-json.\n");
-+		return -1;
-+	}
-+	if (!to_json && !to_ctf) {
-+		pr_err("You must specify one of --to-ctf or --to-json.\n");
-+		return -1;
-+	}
-+
-+	if (to_json) {
-+		if (opts.all) {
-+			pr_err("--all is currently unsupported for JSON output.\n");
-+			return -1;
-+		}
-+		if (opts.tod) {
-+			pr_err("--tod is currently unsupported for JSON output.\n");
-+			return -1;
-+		}
-+		if (opts.force) {
-+			pr_err("--force is currently unsupported for JSON output.\n");
-+			return -1;
-+		}
-+		return bt_convert__perf2json(input_name, to_json, &opts);
-+	}
-+
- 	if (to_ctf) {
- #ifdef HAVE_LIBBABELTRACE_SUPPORT
- 		return bt_convert__perf2ctf(input_name, to_ctf, &opts);
- #else
--		pr_err("The libbabeltrace support is not compiled in.\n");
-+		pr_err("The libbabeltrace support is not compiled in. perf should be "
-+					"compiled with environment variables LIBBABELTRACE=1 and "
-+					"LIBBABELTRACE_DIR=/path/to/libbabeltrace/\n");
- 		return -1;
- #endif
- 	}
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index e2563d0154eb..de9ac182b25a 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -163,6 +163,7 @@ perf-$(CONFIG_LIBUNWIND_X86)      += libunwind/x86_32.o
- perf-$(CONFIG_LIBUNWIND_AARCH64)  += libunwind/arm64.o
- 
- perf-$(CONFIG_LIBBABELTRACE) += data-convert-bt.o
-+perf-y += data-convert-json.o
- 
- perf-y += scripting-engines/
- 
-diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
-new file mode 100644
-index 000000000000..b19674a9f2b8
---- /dev/null
-+++ b/tools/perf/util/data-convert-json.c
-@@ -0,0 +1,228 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * JSON export.
-+ *
-+ * Copyright (C) 2021, CodeWeavers Inc. <nfraser@codeweavers.com>
-+ */
-+
-+#include "data-convert-json.h"
-+
-+#include <unistd.h>
-+#include <inttypes.h>
-+
-+#include "linux/compiler.h"
-+#include "linux/err.h"
-+#include "util/auxtrace.h"
-+#include "util/debug.h"
-+#include "util/dso.h"
-+#include "util/event.h"
-+#include "util/evsel.h"
-+#include "util/header.h"
-+#include "util/map.h"
-+#include "util/session.h"
-+#include "util/symbol.h"
-+#include "util/thread.h"
-+#include "util/tool.h"
-+
-+struct convert_json {
-+	struct perf_tool tool;
-+	FILE *out;
-+	bool first;
-+};
-+
-+static void output_json_string(FILE *out, const char *s)
-+{
-+	fputc('"', out);
-+	while (*s) {
-+		switch (*s) {
-+
-+		// required escapes with special forms as per RFC 8259
-+		case '"':  fprintf(out, "\\\""); break;
-+		case '\\': fprintf(out, "\\\\"); break;
-+		case '/':  fprintf(out, "\\/");  break;
-+		case '\b': fprintf(out, "\\b");  break;
-+		case '\f': fprintf(out, "\\f");  break;
-+		case '\n': fprintf(out, "\\n");  break;
-+		case '\r': fprintf(out, "\\r");  break;
-+		case '\t': fprintf(out, "\\t");  break;
-+
-+		default:
-+			// all other control characters must be escaped by hex code
-+			if (*s <= 0x1f) {
-+				fprintf(out, "\\u%04x", *s);
-+			} else {
-+				fputc(*s, out);
-+			}
-+			break;
-+		}
-+
-+		++s;
-+	}
-+	fputc('"', out);
-+}
-+
-+static void output_sample_callchain_entry(struct perf_tool *tool,
-+		u64 ip, struct addr_location *al)
-+{
-+	struct convert_json *c = container_of(tool, struct convert_json, tool);
-+	FILE *out = c->out;
-+
-+	fprintf(out, "\n\t\t\t\t{");
-+	fprintf(out, "\n\t\t\t\t\t\"ip\": \"0x%" PRIx64 "\"", ip);
-+
-+	if (al && al->sym && al->sym->name && strlen(al->sym->name) > 0) {
-+		fprintf(out, ",\n\t\t\t\t\t\"symbol\": ");
-+		output_json_string(out, al->sym->name);
-+
-+		if (al->map && al->map->dso) {
-+			const char *dso = al->map->dso->short_name;
-+			if (dso && strlen(dso) > 0) {
-+				fprintf(out, ",\n\t\t\t\t\t\"dso\": ");
-+				output_json_string(out, dso);
-+			}
-+		}
-+	}
-+
-+	fprintf(out, "\n\t\t\t\t}");
-+}
-+
-+static int process_sample_event(struct perf_tool *tool,
-+				union perf_event *event __maybe_unused,
-+				struct perf_sample *sample,
-+				struct evsel *evsel __maybe_unused,
-+				struct machine *machine)
-+{
-+	struct convert_json *c = container_of(tool, struct convert_json, tool);
-+	FILE *out = c->out;
-+	struct addr_location al, tal;
-+	u8 cpumode = PERF_RECORD_MISC_USER;
-+
-+	if (machine__resolve(machine, &al, sample) < 0) {
-+		return 0;
-+	}
-+
-+	if (c->first) {
-+		c->first = false;
-+	} else {
-+		fprintf(out, ",");
-+	}
-+	fprintf(out, "\n\t\t{");
-+
-+	fprintf(out, "\n\t\t\t\"timestamp\": %" PRIi64, sample->time);
-+	fprintf(out, ",\n\t\t\t\"pid\": %i", al.thread->pid_);
-+	fprintf(out, ",\n\t\t\t\"tid\": %i", al.thread->tid);
-+
-+	if (al.thread->cpu >= 0) {
-+		fprintf(out, ",\n\t\t\t\"cpu\": %i", al.thread->cpu);
-+	}
-+
-+	fprintf(out, ",\n\t\t\t\"comm\": ");
-+	output_json_string(out, thread__comm_str(al.thread));
-+
-+	fprintf(out, ",\n\t\t\t\"callchain\": [");
-+	if (sample->callchain) {
-+		unsigned int i;
-+		bool ok;
-+		bool first_callchain = true;
-+
-+		for (i = 0; i < sample->callchain->nr; ++i) {
-+			u64 ip = sample->callchain->ips[i];
-+
-+			if (ip >= PERF_CONTEXT_MAX) {
-+				switch (ip) {
-+				case PERF_CONTEXT_HV:
-+					cpumode = PERF_RECORD_MISC_HYPERVISOR;
-+					break;
-+				case PERF_CONTEXT_KERNEL:
-+					cpumode = PERF_RECORD_MISC_KERNEL;
-+					break;
-+				case PERF_CONTEXT_USER:
-+					cpumode = PERF_RECORD_MISC_USER;
-+					break;
-+				default:
-+					pr_debug("invalid callchain context: "
-+						"%"PRId64"\n", (s64) ip);
-+					break;
-+				}
-+				continue;
-+			}
-+
-+			if (first_callchain) {
-+				first_callchain = false;
-+			} else {
-+				fprintf(out, ",");
-+			}
-+
-+			ok = thread__find_symbol(al.thread, cpumode, ip, &tal);
-+			output_sample_callchain_entry(tool, ip, ok ? &tal : NULL);
-+		}
-+	} else {
-+		output_sample_callchain_entry(tool, sample->ip, &al);
-+	}
-+	fprintf(out, "\n\t\t\t]");
-+
-+	fprintf(out, "\n\t\t}");
-+	return 0;
-+}
-+
-+int bt_convert__perf2json(const char *input_name, const char *output_name,
-+			 struct perf_data_convert_opts *opts __maybe_unused)
-+{
-+	struct perf_session *session;
-+
-+	struct convert_json c = {
-+		.tool = {
-+			.sample = process_sample_event,
-+			.mmap = perf_event__process_mmap,
-+			.mmap2 = perf_event__process_mmap2,
-+			.comm = perf_event__process_comm,
-+			.namespaces = perf_event__process_namespaces,
-+			.cgroup = perf_event__process_cgroup,
-+			.exit = perf_event__process_exit,
-+			.fork = perf_event__process_fork,
-+			.lost = perf_event__process_lost,
-+			.tracing_data = perf_event__process_tracing_data,
-+			.build_id = perf_event__process_build_id,
-+			.id_index = perf_event__process_id_index,
-+			.auxtrace_info = perf_event__process_auxtrace_info,
-+			.auxtrace = perf_event__process_auxtrace,
-+			.event_update = perf_event__process_event_update,
-+			.ordered_events = true,
-+			.ordering_requires_timestamps = true,
-+		},
-+		.first = true,
-+	};
-+
-+	struct perf_data data = {
-+		.mode = PERF_DATA_MODE_READ,
-+		.path = input_name,
-+	};
-+
-+	c.out = fopen(output_name, "w");
-+	if (!c.out) {
-+		fprintf(stderr, "error opening output file!\n");
-+		return -1;
-+	}
-+
-+	session = perf_session__new(&data, false, &c.tool);
-+	if (IS_ERR(session)) {
-+		fprintf(stderr, "error creating perf session!\n");
-+		return -1;
-+	}
-+
-+	if (symbol__init(&session->header.env) < 0) {
-+		fprintf(stderr, "symbol init error!\n");
-+		return -1;
-+	}
-+
-+	// Version number for future-proofing. Most additions should be able to be
-+	// done in a backwards-compatible way so this should only need to be bumped
-+	// if some major breaking change must be made.
-+	fprintf(c.out, "{\n\t\"linux-perf-json-version\": 1,");
-+
-+	fprintf(c.out, "\n\t\"samples\": [");
-+	perf_session__process_events(session);
-+	fprintf(c.out, "\n\t]\n}\n");
-+
-+	return 0;
-+}
-diff --git a/tools/perf/util/data-convert-json.h b/tools/perf/util/data-convert-json.h
-new file mode 100644
-index 000000000000..1fcac5ce3ec1
---- /dev/null
-+++ b/tools/perf/util/data-convert-json.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DATA_CONVERT_JSON_H
-+#define __DATA_CONVERT_JSON_H
-+#include "data-convert.h"
-+
-+int bt_convert__perf2json(const char *input_name, const char *to_ctf,
-+			 struct perf_data_convert_opts *opts);
-+
-+#endif /* __DATA_CONVERT_JSON_H */
-diff --git a/tools/perf/util/data-convert.h b/tools/perf/util/data-convert.h
-index feab5f114e37..17c35eb6ab4f 100644
---- a/tools/perf/util/data-convert.h
-+++ b/tools/perf/util/data-convert.h
-@@ -2,6 +2,8 @@
- #ifndef __DATA_CONVERT_H
- #define __DATA_CONVERT_H
- 
-+#include <stdbool.h>
-+
- struct perf_data_convert_opts {
- 	bool force;
- 	bool all;
 -- 
-2.31.0
-
+2.29.2
 
