@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B76347832
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAB0347835
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhCXMT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:19:29 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:36462 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232109AbhCXMTO (ORCPT
+        id S233894AbhCXMTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:19:35 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36026 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232459AbhCXMTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:19:14 -0400
-Date:   Wed, 24 Mar 2021 15:18:58 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 1/3] usb: dwc3: qcom: Add missing DWC3 OF node
- refcount decrement
-Message-ID: <20210324121858.b2hwbm6vmklbbt7c@mobilestation>
-References: <20210212205521.14280-1-Sergey.Semin@baikalelectronics.ru>
- <20210218152904.75bg2v6uh5ool5h3@mobilestation>
- <YC6IjYlDXWJMyZIP@kroah.com>
- <20210218154051.hqhytxv6poizvfgm@mobilestation>
- <YFnRDaSTKCw4aDuQ@kroah.com>
+        Wed, 24 Mar 2021 08:19:22 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12OCJ65V074002;
+        Wed, 24 Mar 2021 07:19:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616588346;
+        bh=4zNAk6cBK18g4U4veJusH44WE8cfhR5G6ftOuayllUQ=;
+        h=From:To:CC:Subject:Date;
+        b=ZvGhMWanNegTiP0A+2Z7tt3D4B+NW6lvuWQpTFCgE2AlTv1LtS/BeCletGSLHptB+
+         hLMw90449xEd3Oc02fhcGsY/dUnXC2GyQUfKcC+KEvSi01ng/hovupE4LyJjnJ4HIh
+         QXXdz6YfRymBo6s13l3c++IfU5cTMsydsJz4xPoY=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12OCJ5vf065772
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Mar 2021 07:19:06 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 24
+ Mar 2021 07:19:05 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 24 Mar 2021 07:19:05 -0500
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12OCJ1Cg121061;
+        Wed, 24 Mar 2021 07:19:02 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH 0/2] PCI: Fixes in pci-keystone driver
+Date:   Wed, 24 Mar 2021 17:48:59 +0530
+Message-ID: <20210324121901.1856-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YFnRDaSTKCw4aDuQ@kroah.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Patch series includes a couple of fixes in pci-keystone driver
+for issues seen when testing Root Complex mode in K2G driver.
 
-On Tue, Mar 23, 2021 at 12:29:17PM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Feb 18, 2021 at 06:40:51PM +0300, Serge Semin wrote:
-> > On Thu, Feb 18, 2021 at 04:32:29PM +0100, Greg Kroah-Hartman wrote:
-> > > On Thu, Feb 18, 2021 at 06:29:04PM +0300, Serge Semin wrote:
-> > > > Bjorn, Greg, Felippe, Andy,
-> > > > Any comments on this series? Bjorn, Greg you asked me to resend the
-> > > > patches related with the DW USB3 node name change. I did as you said,
-> > > > but no news since then. I'd be glad to have this patch accepted in
-> > > > some -next repo and forget about it.
-> > > 
-> > 
-> > > Sorry, but it's the merge window right now and I can't add anything new
-> > > until 5.12-rc1 is out.  So can you wait until then?
-> > 
-> > Well, I don't think there is another choice but to wait now.)
-> > Hopefully the patchset won't be forgotten when the merge window closes
-> > as that happened with the original series...
-> 
+Kishon Vijay Abraham I (2):
+  PCI: keystone: Set mode as RootComplex for "ti,keystone-pcie"
+    compatible
+  PCI: keystone: Add link up check in ks_child_pcie_ops.map_bus()
 
-> Can you resend this if still needed?  I don't see them in my queue...
+ drivers/pci/controller/dwc/pci-keystone.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-I see the very first patch of this series has already been merged in 
-somewhere between v5.12-rc3 and v5.12-rc2. See commit 1cffb1c66499 ("usb: 
-dwc3: qcom: Add missing DWC3 OF node refcount decrement"). But the rest of
-the patches still hanging up unattended. I'll resend them in a few minutes.
-Could you merge them in too?
+-- 
+2.17.1
 
--Sergey
-
-> 
-> thanks,
-> 
-> greg k-h
