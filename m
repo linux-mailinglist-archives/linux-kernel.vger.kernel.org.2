@@ -2,98 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB18347473
+	by mail.lfdr.de (Postfix) with ESMTP id A8DF8347474
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhCXJVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:21:40 -0400
-Received: from mail-lj1-f173.google.com ([209.85.208.173]:44961 "EHLO
-        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbhCXJVX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:21:23 -0400
-Received: by mail-lj1-f173.google.com with SMTP id u9so1630285ljd.11;
-        Wed, 24 Mar 2021 02:21:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+gMqvRolEZnnoKM5KaXGodkWheXP+g5d9dALKOnmgGY=;
-        b=X1E4lFdv2nLEJRifNEVhs5Z0ev/zG0yIPj6Ug+EODpET30WXbBmsvadutVpr92uYKo
-         3+lVkAMULIFBds0zhZ9fXbL0PNu8mEduX3Ww7sDZrTS+EXYJFwD7mQZg/g1pR0KAu3ZI
-         tg+pD/iUSI0HjafjEuLt2+vQBhOYpdBX+4iXJNb2URs1BLMDqSxzQPqHZsoGn8XUhRjK
-         hIh+MWWylRNXHR9Pl0GRwxekH5T+1H8WOBoUiWJ79k9ibV46Utfo3PR3Yd64qfSfp2Mr
-         sfDYEBvKtFmsVgt8d2jgNcv2wA4MMaU5cN9gep0utZ4Pw8e5zOvG8UnxKqHzOMNpMARF
-         /cfQ==
-X-Gm-Message-State: AOAM533YNmN7TZX/Xk8L61WNOT8GOH3B+38X4PplSY6Ze5C0kJlq8SKX
-        DBNadl8vSH7IzxcWLcP92Ww=
-X-Google-Smtp-Source: ABdhPJwAk8NX4Fjgxdj3cpFu2LhijJDIo2BxsTSTwgO1c7egREXS33T7qJcmSQqEbdjyHTIRc+4M3A==
-X-Received: by 2002:a2e:b7c1:: with SMTP id p1mr1498436ljo.198.1616577682372;
-        Wed, 24 Mar 2021 02:21:22 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id e9sm236846ljj.52.2021.03.24.02.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 02:21:22 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 11:21:16 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH 1/2] extcon: extcon-gpio: Log error if work-queue init fails
-Message-ID: <bfd893701ac3d239fef856d2f589063983422100.1616574973.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1616574973.git.matti.vaittinen@fi.rohmeurope.com>
+        id S234663AbhCXJVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:21:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231992AbhCXJVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:21:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06DB961A01;
+        Wed, 24 Mar 2021 09:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616577694;
+        bh=Z8Xi7Q8XrtT4F7FmogpqExj0J3gLxfayNYnPLUO4ciw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IX8HIiJcOggHfRNa7iDGiJ00dV3Dhn50tyxXMh6sG9pKDdFrygcQGGTXaYgrj14LD
+         TRihOGZHrFKSV0NYKKlnMJUbzKzp/NkHIc02qgB8f8X1xUBrCYWpN195h85QgPzbxp
+         9DJbFxGTPsFk2YTzXVyIIKamwwJK4xgp/R3omLKfXCTkA566OvtEjE3nfcYFqT2GtB
+         46zH5pnRi2J169CxexKsMg+/2vj/pesvX0N9iZpz/4EhA4e/xbNdgqMom01x0l67L7
+         6AE8Pii5l4t7gLcnhrsDnITah7aIYIruTqgyurLdBArHGcFXsKjk/v1HnWu0JW8wuB
+         MWc65FGkOBW7w==
+Date:   Wed, 24 Mar 2021 11:21:30 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] infiniband: Fix a use after free in
+ isert_connect_request
+Message-ID: <YFsEmqAdFNxEYK7J@unreal>
+References: <20210322161325.7491-1-lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1616574973.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210322161325.7491-1-lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add error print for probe failure when resource managed work-queue
-initialization fails.
+On Mon, Mar 22, 2021 at 09:13:25AM -0700, Lv Yunlong wrote:
+> The device is got by isert_device_get() with refcount is 1,
+> and is assigned to isert_conn by isert_conn->device = device.
+> When isert_create_qp() failed, device will be freed with
+> isert_device_put().
+> 
+> Later, the device is used in isert_free_login_buf(isert_conn)
+> by the isert_conn->device->ib_device statement. This patch
+> free the device in the correct order.
+> 
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/infiniband/ulp/isert/ib_isert.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
----
- drivers/extcon/extcon-gpio.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/extcon/extcon-gpio.c b/drivers/extcon/extcon-gpio.c
-index 4105df74f2b0..8ea2cda8f7f3 100644
---- a/drivers/extcon/extcon-gpio.c
-+++ b/drivers/extcon/extcon-gpio.c
-@@ -114,8 +114,10 @@ static int gpio_extcon_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	ret = devm_delayed_work_autocancel(dev, &data->work, gpio_extcon_work);
--	if (ret)
-+	if (ret) {
-+		dev_err(dev, "Failed to initialize delayed_work");
- 		return ret;
-+	}
- 
- 	/*
- 	 * Request the interrupt of gpio to detect whether external connector
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
