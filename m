@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE8B347FD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70807347FD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbhCXRw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:52:27 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:34526 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236526AbhCXRvx (ORCPT
+        id S237345AbhCXRx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237121AbhCXRxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:51:53 -0400
-Received: by mail-io1-f54.google.com with SMTP id x16so22417072iob.1;
-        Wed, 24 Mar 2021 10:51:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=17TKIF0QgDUzTxJGnuM465tbTrl6KEfcXDq37nKfdvc=;
-        b=nshaLLuqQvChe4Mcer+IULnyq4fFJ2+nySWFhiYwRkP2u2/799swfvAEEPZYyX45hb
-         Ldn5aZ6GhQ5SbCklM5P+mVFUV1JUU7JwHz5zPEw31BC6Wdgz3zCgpnc2DoIBGjfoZgN5
-         Wfu3iCQV+JIbmT1yPlEDKzqWWRSjqQymrymFkzt9kQmADN7lt+j7p13+FInGHli42ofX
-         tLQV7JN4MPmV2r79S6RqKD9Oi+fRTKMev7PyqrVYg6+NMAYIq51uNEgFGs1KI1aCGz0F
-         ptYQtkIIVXipcSYUkUAzFSQV2diH7RF2UeVIlMddLUkMFAaofHSVjA/l7m2eiSPuzTBw
-         hsAQ==
-X-Gm-Message-State: AOAM533zpHDZvX8K+kSJ0zdvndDBxd4DCKUMPwgky84O6bhvRVXitGPb
-        gcPGkwn70z0CwI3G8jv37w==
-X-Google-Smtp-Source: ABdhPJx7hPRAeDLMlQ3t6S4EyGJIm+TvC3ilVZW8FSTOnuKiHnkj+ZxNsVYm6pnIJjby7DwcY3TeQA==
-X-Received: by 2002:a02:a90f:: with SMTP id n15mr4000419jam.110.1616608312821;
-        Wed, 24 Mar 2021 10:51:52 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v17sm1361275ios.46.2021.03.24.10.51.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 10:51:52 -0700 (PDT)
-Received: (nullmailer pid 3326340 invoked by uid 1000);
-        Wed, 24 Mar 2021 17:51:49 -0000
-Date:   Wed, 24 Mar 2021 11:51:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
-Message-ID: <20210324175149.GA3320002@robh.at.kernel.org>
-References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
- <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
- <067c42f3726578ebe60d201a141dfdb6@walle.cc>
- <20210316180655.6oidvffum7yuwknr@ti.com>
- <97410b24785492f9e80999dd7a1ffdea@walle.cc>
+        Wed, 24 Mar 2021 13:53:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F64C061763;
+        Wed, 24 Mar 2021 10:53:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=9/3k0AHtaMfdxAZXGbthGhLvgi4daNXj7PuUxegsSz8=; b=SNB16JGMv3nP/anwx6zdfPnYY/
+        hEF1sm4HF0sl37Lr+C95EDzFbmewzMHL7VgGYU0OmDPyZmpyzXLL+NDjlUSJXkB1pXBjgMF7j9OwT
+        joWNIhgoCofzgNAjgHRsyI4Q2zlSqu/DoC/b2ceyDzBYqAqeKJyaMJQYOSJ0X4iHULQgfiGXW56Aq
+        zDJSqJp5VlBpzhauIM41+iwd7K+dsmT5R5EHNKz9M7wiuQ7mSfnzD4+6Gn/kOuBar/QYcpCip8TDM
+        MJ5ml32+4giqdmrYrlZqHh7Clh06NvLdIF82lzMn6zGdqc+p4gJeBGKF6pO1lkBYbfJPFZzW2N6Yn
+        h52ae5Ag==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lP7gm-00Begv-QS; Wed, 24 Mar 2021 17:53:16 +0000
+Subject: Re: [PATCH] sparc/traps_64.c: Mundane typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, davem@davemloft.net,
+        akpm@linux-foundation.org, 0x7f454c46@gmail.com,
+        rob.gardner@oracle.com, rppt@kernel.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210324060251.24208-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7d4e516c-bf33-2bd8-9101-54126a994279@infradead.org>
+Date:   Wed, 24 Mar 2021 10:52:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97410b24785492f9e80999dd7a1ffdea@walle.cc>
+In-Reply-To: <20210324060251.24208-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 07:22:56PM +0100, Michael Walle wrote:
-> Am 2021-03-16 19:06, schrieb Pratyush Yadav:
-> > On 16/03/21 06:45PM, Michael Walle wrote:
-> > > Am 2021-03-15 19:30, schrieb Pratyush Yadav:
-> > > 
-> > > ..
-> > > > > +patternProperties:
-> > > > > +  "@[0-9a-f]+":
-> > > 
-> > > Shouldn't this be "^.*@[0-9a-f]+$"?
-> > 
-> > The pattern has to match _anywhere_ in the string so both should match
-> > the flash node. Your pattern is more "strict" or "precise". See the note
-> > at [0].
+On 3/23/21 11:02 PM, Bhaskar Chowdhury wrote:
+> s/conditon/condition/
+> s/periof/period/
 > 
-> I know, but specifying the whole line is widely used in the bindings.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  arch/sparc/kernel/traps_64.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/sparc/kernel/traps_64.c b/arch/sparc/kernel/traps_64.c
+> index a850dccd78ea..2353ba7e1469 100644
+> --- a/arch/sparc/kernel/traps_64.c
+> +++ b/arch/sparc/kernel/traps_64.c
+> 
+> -/* Return the highest priority error conditon mentioned. */
+> +/* Return the highest priority error condition mentioned. */
+> @@ -1853,7 +1853,7 @@ struct sun4v_error_entry {
+>  	/* ID of the CPU */
+>  /*0x24*/u16		err_cpu;
+> 
+> -	/* Grace periof for shutdown, in seconds */
+> +	/* Grace period for shutdown, in seconds */
+>  /*0x26*/u16		err_secs;
+> 
+>  	/* Value of the %asi register */
+> --
 
-It should be '@[0-9a-f]+$' which is equivalent to Michael's suggestion.
+Please fix line 378 (in linux-next) while you are
+touching this file:
 
-Rob
+	 * is vectored thorugh data access exception trap with fault type
+
+
+
+thanks.
+-- 
+~Randy
+
