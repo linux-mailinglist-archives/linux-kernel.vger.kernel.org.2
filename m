@@ -2,192 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6F2347B0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF937347B17
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236372AbhCXOps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236314AbhCXOpN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:45:13 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE564C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:45:12 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id l4so33296648ejc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hw1eLcINJXJ7kBu9TNdDZUsBVYHNAqV2qgHC5PFjVRA=;
-        b=FBHHyyBA9USwL9FdcXdH+9SxVdnTbS6u6k2Ufu/4jq1Ow62XmPhd3n2RBhom7FzaQE
-         6ci1yOhnA3cFJgwdtoo18EkFRkEG1fOeXrKc/y19A/OtOd5r6Lj/MGWXipDdtAS+2m91
-         rye5ubDqJ5PgpfVOekXC9l+ppk/tWOQoD62WNmxvUvJqr2HJ4R/IN9j852BNoaNIKnsJ
-         m0eQsIs+ULjirzksoPHr2mS5EjVeffD9USpVa+M69eLrCrF51OSWAvFqJ/Xv2Y1i1eeu
-         eMPTnx9SQXhwanin3j0zbGZSOz+Ahm0QhFxAKIZyZSmKcrDWTqF/zEgBR1L1U45yDyPn
-         xI7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hw1eLcINJXJ7kBu9TNdDZUsBVYHNAqV2qgHC5PFjVRA=;
-        b=mrQkm/HrlKIFKrR7GjIiUdQkrUZwvh96DOX2MS539sIfw/7+O9tLq2WOlbosdkMpa1
-         jBj0PO279cMJpD5Y8pNFLfxNCE31Sk/56PlE8JB9isMo36paxZFGg26af4U48Opz8tEl
-         ovc3MEHAsHUG5cIQ2HmbJT1dzyUVrsLhyCJtPBbplZwAyzmO7JDMibIRZaeIBbvvRuiB
-         t1uxIqEi4UuDYgdqhxwerNHyiYUz65Q1CBjOlKL7GVXpfg4yTwF1GsZOLG9a3pNKonrd
-         WJX+UMR4wU1g5njDsRG1PVKpUG2YxT04KSc0VNkof9JA+h5LUlksf4C7w2IlpSuTMAYf
-         3QMA==
-X-Gm-Message-State: AOAM532FvruFrjP4IvE567LewhC5lse5CEkg0cHBgOdX+59aPWHNgdMl
-        DRrDxPkXUxA+tfPhwGskG0M9iQ==
-X-Google-Smtp-Source: ABdhPJzXlJVn38THC0xklzH2BTqBEFR6CeHvuYZWDrCLQTwygcFss8GCRzmitn3qBdiTHh8tKStq4A==
-X-Received: by 2002:a17:906:4dce:: with SMTP id f14mr4004853ejw.349.1616597111367;
-        Wed, 24 Mar 2021 07:45:11 -0700 (PDT)
-Received: from [192.168.1.54] (hst-221-122.medicom.bg. [84.238.221.122])
-        by smtp.googlemail.com with ESMTPSA id f21sm1022723ejw.124.2021.03.24.07.45.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 07:45:11 -0700 (PDT)
-Subject: Re: [PATCH] media: venus: Fix internal buffer size calculations for
- v6.
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1615970128-25668-1-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <4716b318-08f4-0129-5021-b1b6dec3f174@linaro.org>
-Date:   Wed, 24 Mar 2021 16:45:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236391AbhCXOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:46:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236251AbhCXOqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:46:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4188761A0F;
+        Wed, 24 Mar 2021 14:46:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616597163;
+        bh=IpQqeZizpAkmktM1ykYR3SVGsq3cc7ebBvwgwpKHb54=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f0uoMNCsY34YsQOjwo+6nuFTZULLZcwjyfF47zMiOqHO2Z6jhu9AMPSUvR3Y57LD1
+         028suKzN0rxO3FrrVNP8rSV5SOb/SKEDKLnumQ3lPCKg8ZwW0RwojHzFkqya5YkbJx
+         mtaG3DKcNkFLNBUJ7P0NxijHB7C+WtD7/83CWSjhqIqpVJ3IFWMEYAhgV9Bu86JWBy
+         6tMunJLtesSZL5fTjqhA2zCdAm5jabL7ePNZaapK5elYb95ayP6XfRS+Hbc2mg0ctR
+         VIdu3IvKk677XPRepzNoqzs5dFvbI5rG4AV9oN1JGg2tE7IWyiVqUe+LE0BiDI2H1b
+         8qlzjB/MeeLlQ==
+Received: by mail-ed1-f50.google.com with SMTP id bx7so27924056edb.12;
+        Wed, 24 Mar 2021 07:46:03 -0700 (PDT)
+X-Gm-Message-State: AOAM530j29Bnx2h2zHQ4pFt0IXg27z8J3yL/JMdXgiNIYoDFa4Dg+nzx
+        QQmjka7L5VQsCAH5zfX8yW3OhYfWJe3lnmybjw==
+X-Google-Smtp-Source: ABdhPJx9s+DKhEIneKlm50ecrAh88tChNkD/fmlCgrTsMQymYLNt6jDsywvmbgGVambNzhd8cZzpeq1mkk+S3JmVtj4=
+X-Received: by 2002:a05:6402:2d0:: with SMTP id b16mr3933538edx.194.1616597161877;
+ Wed, 24 Mar 2021 07:46:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1615970128-25668-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210309000247.2989531-1-danielwa@cisco.com>
+In-Reply-To: <20210309000247.2989531-1-danielwa@cisco.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 24 Mar 2021 08:45:48 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLN=TtAck+0cT+MFtxRiMUpiWRUMnrvnJJf55fwCxATLg@mail.gmail.com>
+Message-ID: <CAL_JsqLN=TtAck+0cT+MFtxRiMUpiWRUMnrvnJJf55fwCxATLg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] Generic Command Line changes
+To:     Daniel Walker <danielwa@cisco.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        xe-linux-external@cisco.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 8, 2021 at 5:02 PM Daniel Walker <danielwa@cisco.com> wrote:
+>
+> This fixed some problem identified in my last release. I made updates
+> based on comments from Christophe Leroy.
+>
+> I added scripted updates to the defconfig file for mips and powerpc.
+> This is required in order to maintain the status quo for those platforms
+> which used the prior builtin command line system.
+>
+> These were tested on all effected architectures.
+>
+> Daniel Walker (7):
+>   CMDLINE: add generic builtin command line
+>   CMDLINE: drivers: of: ifdef out cmdline section
+>   powerpc: convert config files to generic cmdline
+>   CMDLINE: powerpc: convert to generic builtin command line
+>   mips: convert config files to generic cmdline
+>   CMDLINE: mips: convert to generic builtin command line
+>   CMDLINE: x86: convert to generic builtin command line
 
+Can you send out or provide a branch of the other converted arches you
+have patches for? Given this got revived due to arm64 cmdline changes,
+including arm64 patches at least would be beneficial as there are
+folks motivated to review and test this on Arm.
 
-On 3/17/21 10:35 AM, Dikshita Agarwal wrote:
-> - Update persist buffer size for encoder to 204800.
-> - Update persist buffer size calculation for h264 decoder.
-> - h264d level 6 support needs update in internal buffer size.
->   update below buffers size
->   - h264 decoder colocated motion vector buffer.
->   - h264 decoder VPP command buffer.
->   - h265 decoder VPP command buffer.
-> - Update VP9_NUM_FRAME_INFO_BUF to 32.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  .../media/platform/qcom/venus/hfi_plat_bufs_v6.c   | 27 ++++++++++++++--------
->  1 file changed, 18 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
-> index d43d1a5..a41ad63 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
-> @@ -40,7 +40,8 @@
->  
->  #define MAX_TILE_COLUMNS				32 /* 8K/256 */
->  
-> -#define NUM_HW_PIC_BUF					10
-> +#define VPP_CMD_MAX_SIZE				BIT(20)
-
-This macro represents size, so I think it would be better to use SZ_1M.
-
-> +#define NUM_HW_PIC_BUF					32
->  #define BIN_BUFFER_THRESHOLD				(1280 * 736)
->  #define H264D_MAX_SLICE					1800
->  /* sizeof(h264d_buftab_t) aligned to 256 */
-> @@ -90,6 +91,7 @@
->  #define SIZE_SLIST_BUF_H264		512
->  #define LCU_MAX_SIZE_PELS		64
->  #define LCU_MIN_SIZE_PELS		16
-> +#define SIZE_SEI_USERDATA		4096
->  
->  #define H265D_MAX_SLICE			600
->  #define SIZE_H265D_HW_PIC_T		SIZE_H264D_HW_PIC_T
-> @@ -199,7 +201,7 @@ static inline u32 size_vpxd_lb_se_left_ctrl(u32 width, u32 height)
->  #define VPX_DECODER_FRAME_BIN_RES_BUDGET_RATIO_DEN	2
->  
->  #define VP8_NUM_FRAME_INFO_BUF			(5 + 1)
-> -#define VP9_NUM_FRAME_INFO_BUF			(8 + 2 + 1 + 8)
-> +#define VP9_NUM_FRAME_INFO_BUF			32
->  #define VP8_NUM_PROBABILITY_TABLE_BUF		VP8_NUM_FRAME_INFO_BUF
->  #define VP9_NUM_PROBABILITY_TABLE_BUF		(VP9_NUM_FRAME_INFO_BUF + 4)
->  #define VP8_PROB_TABLE_SIZE			3840
-> @@ -211,7 +213,7 @@ static inline u32 size_vpxd_lb_se_left_ctrl(u32 width, u32 height)
->  
->  #define QMATRIX_SIZE				(sizeof(u32) * 128 + 256)
->  #define MP2D_QPDUMP_SIZE			115200
-> -#define HFI_IRIS2_ENC_PERSIST_SIZE		102400
-> +#define HFI_IRIS2_ENC_PERSIST_SIZE		204800
->  #define HFI_MAX_COL_FRAME			6
->  #define HFI_VENUS_VENC_TRE_WB_BUFF_SIZE		(65 << 4) /* in Bytes */
->  #define HFI_VENUS_VENC_DB_LINE_BUFF_PER_MB	512
-> @@ -467,7 +469,7 @@ static u32 hfi_iris2_h264d_comv_size(u32 width, u32 height,
->  {
->  	u32 frame_width_in_mbs = ((width + 15) >> 4);
->  	u32 frame_height_in_mbs = ((height + 15) >> 4);
-> -	u32 col_mv_aligned_width = (frame_width_in_mbs << 6);
-> +	u32 col_mv_aligned_width = (frame_width_in_mbs << 7);
-
-So we start align on 256 instead of 128?
-
->  	u32 col_zero_aligned_width = (frame_width_in_mbs << 2);
->  	u32 col_zero_size = 0, size_colloc = 0, comv_size = 0;
->  
-> @@ -499,10 +501,14 @@ static u32 size_h264d_bse_cmd_buf(u32 height)
->  
->  static u32 size_h264d_vpp_cmd_buf(u32 height)
->  {
-> +	u32 size = 0;
->  	u32 aligned_height = ALIGN(height, 32);
-
-Add blank line here.
-
-> +	size = min_t(u32, (((aligned_height + 15) >> 4) * 3 * 4), H264D_MAX_SLICE) *
-> +		SIZE_H264D_VPP_CMD_PER_BUF;
-> +	if (size > VPP_CMD_MAX_SIZE)
-> +		size = VPP_CMD_MAX_SIZE;
->  
-> -	return min_t(u32, (((aligned_height + 15) >> 4) * 3 * 4),
-> -		     H264D_MAX_SLICE) * SIZE_H264D_VPP_CMD_PER_BUF;
-> +	return size;
->  }
->  
->  static u32 hfi_iris2_h264d_non_comv_size(u32 width, u32 height,
-> @@ -559,8 +565,11 @@ static u32 size_h265d_vpp_cmd_buf(u32 width, u32 height)
->  	size = min_t(u32, size, H265D_MAX_SLICE + 1);
->  	size = ALIGN(size, 4);
->  	size = 2 * size * SIZE_H265D_VPP_CMD_PER_BUF;
-> +	size = ALIGN(size, HFI_DMA_ALIGNMENT);
-> +	if (size > VPP_CMD_MAX_SIZE)
-> +		size = VPP_CMD_MAX_SIZE;
->  
-> -	return ALIGN(size, HFI_DMA_ALIGNMENT);
-> +	return size;
->  }
->  
->  static u32 hfi_iris2_h265d_comv_size(u32 width, u32 height,
-> @@ -1004,8 +1013,8 @@ static u32 enc_persist_size(void)
->  
->  static u32 h264d_persist1_size(void)
->  {
-> -	return ALIGN((SIZE_SLIST_BUF_H264 * NUM_SLIST_BUF_H264),
-> -		     HFI_DMA_ALIGNMENT);
-> +	return ALIGN((SIZE_SLIST_BUF_H264 * NUM_SLIST_BUF_H264
-> +		     + NUM_HW_PIC_BUF * SIZE_SEI_USERDATA), HFI_DMA_ALIGNMENT);
->  }
->  
->  static u32 h265d_persist1_size(void)
-> 
-
--- 
-regards,
-Stan
+Rob
