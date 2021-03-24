@@ -2,259 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEB2347873
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D3634786F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhCXMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:25:33 -0400
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:51491 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234088AbhCXMYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:24:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1616588695;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=giVRHJtlc3DCWL3OaQWEKD7vShJB0d2LgQoSwJbG6k8=;
-  b=ebB8dqxmpEsCCyr1klnc5ZCBJvuJqQ4MzB3tQoJEc/J4vyd7QHHCHn2g
-   7BfUpso9FYugO75f4DFA/wR12ZYiM5J602DcN1bjMDWrv7FQ0P0VQl+9P
-   Rkq2174bp10IhBa6SMc+r/qgDJBof7DZ/ifaN4aHAtw8bjIA9FKICh4+h
-   Q=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: MWVqDfl5Oh2x+CTTTVlOFChm9giwfAsqHU6eOOwBY+4wQE1uvn/NH1DFD86R8B3mH4aaKG51vo
- 6Fi1xAFkfRMwOEisaDmMJkstzoLFVq4aHdcMDhyp9s134SrKgfyJEePuR1KxvHN9CVm8SIIFAv
- 0D+fmPCsmDi1L63UKh7Lm7nY0pGCeXGJ5h2iU0cJiv+MjQrzD02R1WyMx/MC+eZfdH//PJmzDw
- Lqu4YZLM6l/kAxHz/2YlJl9PjhQDd3Vt1juDT0i6Hj3X67Ma3Bq5WgHy6ybFlW4WBr9yE1I+Wg
- F8E=
-X-SBRS: 5.2
-X-MesageID: 40164080
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-IronPort-HdrOrdr: A9a23:glLOwq/CR2AKh9hOauNuk+FdcL1zdoIgy1knxilNYDRvWIixi9
- 2ukPMH1RX9lTYWXzUalcqdPbSbKEmyybdc2qNUGbu5RgHptC+TLI9k5Zb/2DGIIUHD38Zn/+
- Nbf6B6YeecMXFTkdv67A6kE9wp3dmA9+SSif3Dymp2JDsKV4hLxW5Ce2KmO2dxQxRLAod8KY
- GV4dBJqyHlVXMcaMm6AXdtZZm+m/TgkpX6bRkaQyM28QXmt0LU1JfWMTi9mi0fXTRG3Ks4/Q
- H+/TDRy62/v5iAu3nh/kDJ6ZA+oqqC9vJiA4i2htEROnHQjG+TFf9ccpmjmBxwn+218lYtl7
- D30mcdFuB+8WnYcG3wgTaF4XiY7B8U53XvyUCVjBLYyKSTLlJKaLsyuatjfhTU8EYmtt1nuZ
- g7pV6xjJZLEQjG2B30+tmgbWAaqmOPvXEgneQP5kYvNrc2Vbk5l/17wGplVL0EHC789bk9Fv
- hvAMz29J9tAC2nRkGckW91zNO2WHMvWj+AX0gZo8SQlwNbhXZj0iIjtYAit0ZF0Kh4Z4hP5u
- zCPKgtvLZSTvUOZaY4IOsaW8O4BkHEXBqkChPcHX3XUIU8f17doZ/+57s4oMuwfoYT8Zc0kJ
- PdFHtFqG8bYSvVeI2z9awO1iqIbHS2XDzrxM0bzYN+oKfASL3iNjDGYEwykvGnv+4UDqTgKr
- eOEaMTJ8WmAXrlGI5P0QG7cYJVM2MiXMocvct+dEmJpu7NN432ps3WePveP9PWYHQZc1K6Jk
- FGcCn4Jc1G4EzucGT/mgLtV3TkfVG63Z8YKtmew8EjjKw2cqFcuAkcjlq0ouuRLydZj6AwdE
- xiZJfukqaxo3iK7X/Fhl8ZfiZ1PwJw2vHNQnlKrQgFPwffarAYoeiSfmhUwT+hKgJgSdjVVC
- pSvU5+967yD5H4/1FtN/uXdkahy1cDrnODSJkR3oeZ493+R58+BpE6HIprFQvKEBRxsR1wqH
- hKbTIFQkO3LEKstYyVyLgvQM3Pfdh1hwmmZeROr2jEiEmarcYzAkcAUyWWSs6RiwY2Tz9yjl
- l8mpVvx4aoqHKKEy8Ske44OFpDZCCyDKhdBAqIXolSh4vmYRp9V2uMmDychSwiY2aCzTRguk
- XRaQmvPd3bCFtUvX5Vlpzn9155bU2xVUN9YHISi/w3KU32/lJIlcObbKu61GWcLmYYyuYGKT
- fffH85OQV13e260xaThRePHXgr3Y8VI+TYFbgvGoujnE+FGcmtr+UrDvVU9JFqOJTSqecNS/
- uYYBLQAzXiCe8lsjbl0EoNCW1Rkj0Dnvzp0hG+szT98347HPbIIFNpA5scOMqR6mD4R/COlL
- V15OhFydeYAyHUUJqhz6qSUhtobjX0ikSyR/szqZ9Vsbkp3YEDV6XzYH/t7jV/wB46LM3Ij0
- sQT6Rw3aDZNuZUDrkvUhMc2mBsqc+GI0QquDHnG+MSfVkiiHnAItOCioC43oYHMwmkrAv0NU
- L3yVwkw971Gw+C36UdEaQ+PCB/b1U98m1r+Iq5BsftITTvU+FI51yhNHChNJdbVaieAL0V6j
- J3+cuBkePSVy323mnrzHZGC5ML12asWsWpBg2QXcZO7tyhIFyJxpKQ3/Tbtka/dRKLL2IChY
- NEckQMbsNMzhka5bdHrRSae+jQuUIqk1xX/Dd9sEXis7LWuVvmIQ==
-X-IronPort-AV: E=Sophos;i="5.81,274,1610427600"; 
-   d="scan'208";a="40164080"
+        id S233583AbhCXMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:24:48 -0400
+Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:50529
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231566AbhCXMYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:24:36 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lmEJF6Lr/PzEU6Q/xMbVIRQoT22nwov3vHu+lrXdsc9o8f1bdvl2EtB7pgKo7aRw/2uVJaMkFkBVaDOQMDqtCiIEVCCKtKKHAYFDf0jBOoPtQRWzQRWgM/tsg8glYIIAOWEuZ0i2tfL9XQ/wXZmH/atmj99CPjlBG3RYdcBIOtGUJHwFgRxVkv2jd6QxXvfjPLcaKFaMp+gFq/v1nPjq8Bh4kq/1Gdpj22bYKw/IMAQIIUKl9QBYwl8INUmKLXC+xded95SJT7U9RW5k59xkbBSU6N+2dKD2czYluCVSy+NITmXce7vTzQ0E7iIj7k0CjIZNcNZqgi0iGtJNVuzUzA==
+ b=IDgxdvXrd4i729NktA7TLfhfZLbk+gvWvcMrYwNEFpMPX2wE2wYKU+iu9++a8cwvWNhSRs5x71PQNr8g+fik01Gn/gM5uCO8JKaXzW5iRhmN8bJIz5I/FSauL6xN3XBBaktT+KL+WnWK4+H4DOybm/eq1CJAGzYYE9JDL1niCGW42ZNGTcbQlTeLy2dw7jSGlXiwZPYGi5KP0kSAITchKPeoepPYOIoFC1r6bAtGEv9rPQvwdcoL22I0WkUO9luchslOSGwCBQBHYyWlkEKoWPJzCB+cGPnAvMzU0/iExrwH5Ssp9OcsWFzuRK7pKlsoCHPbwwULy3JxNMFgpRgT2A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pQB1zomGHXhgskyyATY7D426hfczy2/Zc/M/21Hxsgk=;
- b=ZXP5QIvuHN99v6u8S72SbDpaLVQRgWKy4Ek5/0WT7tXoirJl9F3nmuNjKd09eHokHgPZpSX8Gl3naRXoz2pdoQESPPPX+/kQBiZ5gQ+/57Ah8BWFrSGxJRqv0gCfKg2wuEM404mC0sJw2HIRQQ0eX6iD3Str3CwImuxuVFEBEL5T2iK51ClksDS4GDoazd/yRvn07bMmyG+Y35USLtYyAHqIHsz+zesf6oE4pd3bYBBuhkXn15f0P5yeDjs6aqPMDY8MTyPtOPkQXQMDVBFKaJVPet3XNsYRva6JooK/Q+ABMZlsrjV4hz30MiOgoY5Yb/+EgJ2+uz1W4yZt8mpUFQ==
+ bh=+FBWiIXAhofQbkYblUPIbb5ol27zUlwYxHQMNJEB7HU=;
+ b=gLlBkTuYMz6kMviFxH4dqwcOhQ+WrTH1Ujwr6b0Wz4AKaP2aebX0BIF3vB3nXsiii046RdTr7ngntaZbYfdsx0KDfm39HtIL9AlrcWoUnKgn6tz+1yh8eU9WTEGjY1+fjZRqoZHJ+liaR3C2lTp4//0aq2XGgoSx7VoFGp6ajUczWYXc9/07q1HMwY7BkDRgAuaiYzwReafliqjkECDbgF2vBAPxKCTl0B/3lxhWbRMU5NYlvP1k+RSHjGizMgTJUEJR+5kMjAiWY/2Zjf6QwHNobBhH1dxQfEVZ12eL3HDc1T6oGb2wnIC2XJy1zC6GW2ivz4SAiOTuS6XajwJwMg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pQB1zomGHXhgskyyATY7D426hfczy2/Zc/M/21Hxsgk=;
- b=dDJSONtAJGzYuSJhhzlaoc/hWqXwgeRu3owH6fLp3cSiYMG9l8P1BWWzkICQTPx46t/fuxaXbAn4krvloWOGI59sIi2nDiKAa22c1KJ6GraYChUFjV1Mdjh75IJDgwEQhn5OOg16jaL8RAKKxXc8OZSgv3xAKHvD/YTgseKjIF4=
-From:   Roger Pau Monne <roger.pau@citrix.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Roger Pau Monne <roger.pau@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jan Beulich <jbeulich@suse.com>,
-        <xen-devel@lists.xenproject.org>
-Subject: [PATCH v2 2/2] Revert "xen: fix p2m size in dom0 for disabled memory hotplug case"
-Date:   Wed, 24 Mar 2021 13:24:24 +0100
-Message-ID: <20210324122424.58685-3-roger.pau@citrix.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210324122424.58685-1-roger.pau@citrix.com>
-References: <20210324122424.58685-1-roger.pau@citrix.com>
-Content-Type: text/plain; charset=UTF-8
+ bh=+FBWiIXAhofQbkYblUPIbb5ol27zUlwYxHQMNJEB7HU=;
+ b=fjpGwJiNXO6YloZaU/yU58DhJXfUtorzNIsWDkjFfP9Tave5iUHNDrWewjhSF4mHkyPNPeSlq23GUhkCUGkfS3Cgb3VtmEvIvFgit86dkcBsvQeAt9hlgwj0lknP2Or+S5z17FcNQBf2/I/MJbCezvJx7kuqG9Cl57LvccbS2S5FtoTGE3t0oZuoiDLyS8M9YNvRUEKgMw+6UTnKnIht/oGxn9tjQhddQ98tu3f6viBnJhSJ5lHXS6a4iis3SEoEgPAhTQiYEvPscZNTV1D3yeHmoYEz1RwFKbra7/XLRdTfpPE2NlYhrLTwOjyUs0FpkzYYG71uv/4rm838yGnfmw==
+Authentication-Results: shipmail.org; dkim=none (message not signed)
+ header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1434.namprd12.prod.outlook.com (2603:10b6:3:77::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Wed, 24 Mar
+ 2021 12:24:32 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
+ 12:24:32 +0000
+Date:   Wed, 24 Mar 2021 09:24:30 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <20210324122430.GW2356281@nvidia.com>
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+ <YFnST5VLcEgv9q+s@phenom.ffwll.local>
+ <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
+ <20210323163715.GJ2356281@nvidia.com>
+ <5824b731-ca6a-92fd-e314-d986b6a7b101@shipmail.org>
+ <YFsM23t2niJwhpM/@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MR2P264CA0127.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:500:30::19) To DS7PR03MB5608.namprd03.prod.outlook.com
- (2603:10b6:5:2c9::18)
+In-Reply-To: <YFsM23t2niJwhpM/@phenom.ffwll.local>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0088.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0088.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Wed, 24 Mar 2021 12:24:32 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lP2Yo-001yu8-BY; Wed, 24 Mar 2021 09:24:30 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 45ff27a1-9f85-417c-9673-08d8eebfcf5d
-X-MS-TrafficTypeDiagnostic: DM6PR03MB5338:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR03MB533860FED47D662569BC7D1B8F639@DM6PR03MB5338.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:422;
+X-MS-Office365-Filtering-Correlation-Id: 471eed84-f9dc-4738-78b7-08d8eebfc748
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1434:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1434BC102C211EA874A68E7AC2639@DM5PR12MB1434.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a8O3q5wVPgEqjakRRsL9+Ld3zERZXwkbTdWHkxRZsUCQ7bCc9bzlAzd5cDmMHVw03YzheQUkESAzp+qBj2rH7DM34Z4SgDTDjWQTCwmxhOHxtdmzLnopZc6/xyipcxNRUGGqzQt2UPsuO6HkpiiuveUz2ihbM/rccTlxOSdK710fvv9QsVnHeHtUFOy+b32iT0XJh5LWdmUZzgnTAkryd6WnC0gC2Uk1PC3LunSGm5UOuBqCSJctjbrhaTEFe5Tui36NhS6isWQKVxZUCAyEc2OJg/C7CUr/jvKvjHVYZMIegoRcJfMHVlVk7S7ZZ7lwi8qMZKaUJ8j4siAB+0gN5WoBqo7OUiJQ4ouM9GeFqbHj2mCczVFwKIbC8D9cZnv8Zqng2PoUhsIeLptEBfNmqL7X/RgGSH6xSXTaVJCkt70WRKUh3Er2UIlB9KAsTZ6vXGBrcnI56ClbA9bkXZWBm9qkfAP5f3lTHb2cZCf1ROe1UhruEu0Ru2itLtPVpqgRLyOi/L/VKajDXozzST/i3RSVKE3m2iAhM6OeTNuc9Z3VGry9AFykYay/Kn34CIG6KmnSvE7qvFlHc6ILReX0hUSgY8SbIqi8/eBZxchkwy1P0n2gCf2Q++pZgVa0i4msc/hxmpMg/d2UZXZuuNa36d1vv2oJerD6PgUp1VqHd14=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39860400002)(366004)(2616005)(1076003)(83380400001)(8676002)(5660300002)(16526019)(6486002)(956004)(478600001)(36756003)(6496006)(66946007)(2906002)(66476007)(8936002)(66556008)(6666004)(86362001)(38100700001)(6916009)(186003)(26005)(54906003)(316002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UXM4R2NrZzJHR285dzhNZkl3S0wxTFZERWRtUzdYVXgxamN6VXdCSXI2UklH?=
- =?utf-8?B?c1h1bEZkUlFCNXlac3N5d0cyeWFKNmUvcnNmZHVuNW90RDhoeVlzZ2FKdUFZ?=
- =?utf-8?B?MWhDUXBNcGpadGtpTjZUZHpnY21IU0NJOHkvVTF6M2N3d2VZOW4xTU93enYx?=
- =?utf-8?B?SGZMamc0VHRHbFc4emZnVk9HSVdvWXhhMG40Snk5UVQ0R2o3VlNCYWg1NUla?=
- =?utf-8?B?Tm0rc0ppd2tSNGU4Zy9nR2YvbFJOM1hPZnBXd1BlVVhXc2RqSFlTWXczWUNG?=
- =?utf-8?B?UlRyMDQ4K2ZYNWs3RkNmYlpUMjQvN2l5MklnRWhiU3JxRzZOTmFoU2p1Z1Bl?=
- =?utf-8?B?WkdKVEJXM0tSVXhSN1AxSGdGTDZJR3p0S0N4b3BUVGZNbmJjRVhvR2ZtWFB4?=
- =?utf-8?B?NUkxb0tHQzZzY1N6OVRFL0ljOUp5OE9CZHlIUHMxTlV3SFozWHFlclB1SVd6?=
- =?utf-8?B?U3JEWCtUVTI2bi9kZDZUK2VtbDQrdlFyTVQybzdNVmhBU2xCTHJOaEFqelhT?=
- =?utf-8?B?b0lBa2w3WHlyVlhhajdsbjg4VytWYTA0YWQ2Y1ZqcDBzUUk3S0NwYmZxRHNk?=
- =?utf-8?B?a0JnT25JLzZ2TkNzKzlPQ0p4RnBuR0JNSGpkcG42ZGQ3NmRVWmRXMWF0dlpD?=
- =?utf-8?B?UStBUUdJcUZXNkJKUmV5bHBlL3owSDNvbDF1MXNCcHZWZk9ndklvMXkwNzVn?=
- =?utf-8?B?ZklLdWRUU0YvMjlacnNNWnNzcUhzYzV4OEZzU3RsbkZ4N0pHR0Z3TFo4OXN4?=
- =?utf-8?B?U0UvTzlOaHRpMHFPM25LdDJMamQ1NWtCKzVMdERVV1JZTEJJMW91VUQwTS94?=
- =?utf-8?B?V0FMRXQ1S0UvN2pzZVUvai9pUGNmc0h0T3RCMmV3bUpvaFczb2pWWnFjL2VM?=
- =?utf-8?B?d3FlMU9KVXZpVlFCTERsNHNjSXEvdFcwU0MxbGZEWGJONnptcmphK0tWb2ti?=
- =?utf-8?B?dm9RbEhKUWtsUHFMSk9iSmRFWnZ3cVU3YzZ0RXcwcFM2RVRPNW1rMHp6S1Ix?=
- =?utf-8?B?YUREazQvMWkvTUpsOUJDSDloQWNEMUxvaHhTMHoxSStLakhoOFZPVW0xL2po?=
- =?utf-8?B?QTh3dWNHUUJZK212UnF3ek10SkFwRGtNRXZmUlRoQm1RQ2pVZE1UTVBJU1R2?=
- =?utf-8?B?V0lSWkthNG5OcTFkK05LMG9oWStrVHYzWXJkSzhXZXJobytheXNkVHNkQk1H?=
- =?utf-8?B?TDN0MWhzcVVqMFZpSkkwTEdzVnNTVVZ1d3k0ZUxYL1c2MEhVcElDeG8vdUlT?=
- =?utf-8?B?ZWNtbm9uVnM5NEh3SW9iUGVDOTlQdU8xaDl6VUFrdFpFTVBQSlR2SVg3TzlI?=
- =?utf-8?B?N3NlbVFyYmpGNDdjQXJ6MGFjMmkwbFN3NGpoRzAvR3ZvUVhGeVNDT3NtSUlO?=
- =?utf-8?B?ejR4NVQ5K2F2VXJ1UUc5dUl4NTZPMytRcjVxdTV2WTFDVWRnSUw4aE9tb3du?=
- =?utf-8?B?Zzd0dGFzelNpUnRaTXh1N2JnVklpekc5eCtYVm52Y2s5dWQxOU5KSll6blRQ?=
- =?utf-8?B?Mm1hckYxa3RyTzNpL1RVUmZ3ek5kUnZDSnhpZ0V1VTkvZGRyUlZTbTRRZ0pT?=
- =?utf-8?B?OWZsOWovMWJNTUcxZjFwaUY5bzR6UFpJKzc5MlVPdG40VHRjQTdpR2F2Q3M5?=
- =?utf-8?B?dWs0OTVkcmtEQnZuOEMzS1ZyUzFPNW5ncjRJYkpPTVZTK1pGUGhSdW04cG5U?=
- =?utf-8?B?akEwQ3RUMkpSQ21mU2NZNk9nY0psYWp5Q3dpcVJ5Rjg3M3JkWmhXWm9KTVRj?=
- =?utf-8?Q?N6DKcNiiP2EPW4hfOGDqfA52oYds5yqB+fnqNQg?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45ff27a1-9f85-417c-9673-08d8eebfcf5d
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: zPLZtBABdo5QzJNJUk7YXugEOmGVOvsnyT652lKBf7KdqNPZbwMikaNfRLj64Xh76vydt2npGpJnSrDr3luuEKON9CvAOJ028O3DYbk0ztb+o7rtkfO6cEXP8r/gZvPJjrBNE1oF2iR4wrb845ktZliHz/OJXeKeJgZH4UMiAxsyny7SoL2KRHyfCIIGSihArdDgBhihJPYfKOs8tRoucsgWwDkJMQ/b7NAFl/yPwbCGo29kgHtu0s3jzRMiqLRKI+xb2xwT1slLTjnpQvbhxA9LdDzwvoiTOO1eCtKscyejj8Ra9LYCIaBAKY2D/yF/Hxw1i8McnqzKmH7WRN6msJuhjG86bCspVCsA2+n9SOaaiZ5R2FTRgpAWQzg+XS4/VNfDRAjDX+aCKKcNtRejM2nIB2jdUuFT8YnaYI90M1kFMfh8mokCQmeVSX8Y+uKfatPH6OV+RSCGOK8mqe49b2MUCks8PB1WuMGKBgiUSUvJXr61E+qNhBwcNz7GXrW+Dap5YKoM0E3w8cn4nxsnhgkzgaO1wCnkX2ODEfd9IDmtSUA2X8J9i8aVNpmw1LvG9s15qVGop4KwUQIe1f43CMJBKv4cRiJ6dvjOIqd70hzzyMrMHAT6uzWU8OsAg6sPmr3SpI4VZD8ad5BxMx1U5wdxVPGTffQ+7XWwc137mhOpZNzseUmmgI+1oZ23fBjTZKINOZMdh/9DAJFV/W6r0w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(366004)(376002)(346002)(66556008)(83380400001)(1076003)(5660300002)(9786002)(9746002)(478600001)(26005)(186003)(66574015)(86362001)(316002)(426003)(2616005)(110136005)(66476007)(36756003)(38100700001)(8676002)(8936002)(66946007)(53546011)(33656002)(2906002)(21314003)(14583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dFVsZXNEZG5BWmxSZUJXZzdRNzlvc2Voc0JMSThoREhIby9XRGt6YkpFSm53?=
+ =?utf-8?B?RkZBZnV1N1VYV2t2NXhmUU9HTU1Sa043ZWhBT0VKRHhweFJReThzdnErTjNs?=
+ =?utf-8?B?anFONkpkNmtFbDFxNnpRaUFhV29QV29VcnMxZ2xBWTRWb0kxTVdUaEFxcWpt?=
+ =?utf-8?B?TkY0RnZ1eFRzRU00bHVJbGRaUk1GMG83aGNtUUNBdjRZSlpOeTV0b09sZTlw?=
+ =?utf-8?B?RWlrbFZkeEkvT0MxTk5CaUdiQTlFeXd6cVlxWVY2QXd3VG1ucVA4ZitVZUx5?=
+ =?utf-8?B?bzdoSDlHaVo3VXJZSmY5Z0prVDZWajVVMmp0UmxVZlJzWVZvNGVyeUpaMXE5?=
+ =?utf-8?B?VUQ3Nkx0MElPanBMbys1SHBucU8vTzQ3c25CNDJKSnc5cjVENzYrd1c4a0hv?=
+ =?utf-8?B?ZHVOT0s5VndDY3dibnQ1RlN3RnlkM25rTDRYRmdNUGNmOFZCTnBRTGlzMnNB?=
+ =?utf-8?B?SnpxWDczbmwxck9ZTS9EZUFEci9hVnJOeEk4dW91amlxL3Vlcy9Tc3lKU3BG?=
+ =?utf-8?B?cmMyZGVKSkx4VGkvYUQ5RVA4OXB2Mjg3K1Bwenh2MFlzSWJ0OTk0aUtPb1cz?=
+ =?utf-8?B?N1Y5UXJSV01LcmJkZDIvaDd4NWtodWc5V2xwRjQ1MXVBQTFkYWN2RGJab25t?=
+ =?utf-8?B?Q3ZXOExiTjQwNERnQTRQUFdWdytkbnBjUG9PaTR3V3lDZjFYdDk1b3k0RC9p?=
+ =?utf-8?B?cFV4RXVSc1YwSGljeC9QbDlNcllpN1ZzU2Q3bVRJanpwWGppZnh2djZsN1pH?=
+ =?utf-8?B?ZEZHd1RLWWdHdkZrZWI3UkxHWFRjZXVPNnFJZUI1QUR5bkdTdjQ0TTJkR1ZT?=
+ =?utf-8?B?K0Nuc0xtOTQ1TktPZnQxOUdrQ3ZWMFYzdzdHZzVvRURpcHo1aTJ1REg0TFpu?=
+ =?utf-8?B?SlhKZks5V1p4eU1nbWUzZWdrTnlJcVE5Q1c0TnFjT0FEeGdWSjZqdWZhK1pl?=
+ =?utf-8?B?R2tsMFAwMjBtaVh5WTVuRWx3RmZqSVRGMzV0b1FteUc4NDd6eDRxNi91dHBw?=
+ =?utf-8?B?Tml3OEdPNUNuVHNDWm9jU0tXVFRGcGpGZ0o0cXdpUFBGaUFXdFl4SE9sS1hY?=
+ =?utf-8?B?L1dzeE5CV00xU3BKeTNYUzBpZFlwbnRvcjd5c2NDdUlDbGRPanB4UVdXVytK?=
+ =?utf-8?B?S3BLMzkzdjd2ZmJnNjVNUHg3MW9iSDNCd3R3U1dkalNHZVFHSHJvTHkweGFx?=
+ =?utf-8?B?d0JTdnRTaXVJQzVIZHZEbDQyRmhuaUtWa2h0UDJVNHBreFhKWElQK0QzYjFm?=
+ =?utf-8?B?ditqc05aZnZ5dEtpQ1NCWEo4c0NRUlY5OU81Sm9uSzlCZklML3RPdHJtSE8r?=
+ =?utf-8?B?Z2d4U0grdlZqdi9kWG5wb2l3cXBseWNiM05jWkMxMUpaS1drUlZxcnFXU0ZJ?=
+ =?utf-8?B?V1d4amxoRTFrUTA5WXd5UXZLbkFmTU5Mc1NJV2YwdVNHSVJoc0VYSjJ3NGN5?=
+ =?utf-8?B?WmtKczloNUFGa3RUVVJrYkcxaE54b3ZXMk04SlZ4WFpmaUhzNjFCTVVTZ1RB?=
+ =?utf-8?B?UVM4SnB0ZE82QlJlaGRESmdBRjI0dnJrcnRhZWliZHlGUW9rMklOTTU2WnZO?=
+ =?utf-8?B?ZmVkdkVQWnUrYkVkMWxXRDVuRlZzZm5abk1BNk54RVhTK3Z0SkU1NkRhc0k0?=
+ =?utf-8?B?dVRxSFE2ZEIwR2lQYW1HR09PRmJsTm5pZnB5eVluQmE3VG1YQXF0QlYvMGRP?=
+ =?utf-8?B?TDBUWDltM0Q3c3dENzdPK2IrSXlYTkoxZkV0a3g5Ly83RytZOTJWL0sxK1l2?=
+ =?utf-8?Q?5vpv+hP6EwfF1Y54BmhAl/I4ePCNP6Hpphkhzgj?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 471eed84-f9dc-4738-78b7-08d8eebfc748
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 12:24:46.3343
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 12:24:32.4923
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: f5P5AHeoLbcfH/J+D+I8hYdLpSAH5u9ZHVFulgpdZii+3jzSyaltJ7+iKJOnLkntvn28zsL+r0iAlmNi5wLOIA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5338
-X-OriginatorOrg: citrix.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7/mQ9uFNpgYN4xpXoiphKDjI83MyFxwSWFl8Uz548ioD6d3UWsvH2hzov5XQQmay
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1434
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This partially reverts commit 882213990d32fd224340a4533f6318dd152be4b2.
+On Wed, Mar 24, 2021 at 10:56:43AM +0100, Daniel Vetter wrote:
+> On Tue, Mar 23, 2021 at 06:06:53PM +0100, Thomas Hellström (Intel) wrote:
+> > 
+> > On 3/23/21 5:37 PM, Jason Gunthorpe wrote:
+> > > On Tue, Mar 23, 2021 at 05:34:51PM +0100, Thomas Hellström (Intel) wrote:
+> > > 
+> > > > > > @@ -210,6 +211,20 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
+> > > > > >    	if ((pfn & (fault_page_size - 1)) != 0)
+> > > > > >    		goto out_fallback;
+> > > > > > +	/*
+> > > > > > +	 * Huge entries must be special, that is marking them as devmap
+> > > > > > +	 * with no backing device map range. If there is a backing
+> > > > > > +	 * range, Don't insert a huge entry.
+> > > > > > +	 * If this check turns out to be too much of a performance hit,
+> > > > > > +	 * we can instead have drivers indicate whether they may have
+> > > > > > +	 * backing device map ranges and if not, skip this lookup.
+> > > > > > +	 */
+> > > > > I think we can do this statically:
+> > > > > - if it's system memory we know there's no devmap for it, and we do the
+> > > > >     trick to block gup_fast
+> > > > Yes, that should work.
+> > > > > - if it's iomem, we know gup_fast wont work anyway if don't set PFN_DEV,
+> > > > >     so might as well not do that
+> > > > I think gup_fast will unfortunately mistake a huge iomem page for an
+> > > > ordinary page and try to access a non-existant struct page for it, unless we
+> > > > do the devmap trick.
+> > > > 
+> > > > And the lookup would then be for the rare case where a driver would have
+> > > > already registered a dev_pagemap for an iomem area which may also be mapped
+> > > > through TTM (like the patch from Felix a couple of weeks ago). If a driver
+> > > > can promise not to do that, then we can safely remove the lookup.
+> > > Isn't the devmap PTE flag arch optional? Does this fall back to not
+> > > using huge pages on arches that don't support it?
+> > 
+> > Good point. No, currently it's only conditioned on transhuge page support.
+> > Need to condition it on also devmap support.
+> > 
+> > > 
+> > > Also, I feel like this code to install "pte_special" huge pages does
+> > > not belong in the drm subsystem..
+> > 
+> > I could add helpers in huge_memory.c:
+> > 
+> > vmf_insert_pfn_pmd_prot_special() and
+> > vmf_insert_pfn_pud_prot_special()
+> 
+> The somewhat annoying thing is that we'd need an error code so we fall
+> back to pte fault handling. That's at least my understanding of how
+> pud/pmd fault handling works. Not sure how awkward that is going to be
+> with the overall fault handling flow.
+> 
+> But aside from that I think this makes tons of sense.
 
-There's no need to special case XEN_UNPOPULATED_ALLOC anymore in order
-to correctly size the p2m. The generic memory hotplug option has
-already been tied together with the Xen hotplug limit, so enabling
-memory hotplug should already trigger a properly sized p2m on Xen PV.
+Why should the driver be so specific?
 
-Note that XEN_UNPOPULATED_ALLOC depends on ZONE_DEVICE which pulls in
-MEMORY_HOTPLUG.
+vmf_insert_pfn_range_XXX()
 
-Leave the check added to __set_phys_to_machine and the adjusted
-comment about EXTRA_MEM_RATIO.
+And it will figure out the optimal way to build the page tables.
 
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
----
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Jan Beulich <jbeulich@suse.com>
-Cc: xen-devel@lists.xenproject.org
----
-Changes since v1:
- - Expand commit message.
- - Do not revert code comment.
----
- arch/x86/include/asm/xen/page.h | 12 ------------
- arch/x86/xen/p2m.c              |  3 ---
- arch/x86/xen/setup.c            | 16 ++++++++++++++--
- 3 files changed, 14 insertions(+), 17 deletions(-)
+Driver should provide the largest physically contiguous range it can
 
-diff --git a/arch/x86/include/asm/xen/page.h b/arch/x86/include/asm/xen/page.h
-index 7068e4bb057d..1a162e559753 100644
---- a/arch/x86/include/asm/xen/page.h
-+++ b/arch/x86/include/asm/xen/page.h
-@@ -86,18 +86,6 @@ clear_foreign_p2m_mapping(struct gnttab_unmap_grant_ref *unmap_ops,
- }
- #endif
- 
--/*
-- * The maximum amount of extra memory compared to the base size.  The
-- * main scaling factor is the size of struct page.  At extreme ratios
-- * of base:extra, all the base memory can be filled with page
-- * structures for the extra memory, leaving no space for anything
-- * else.
-- *
-- * 10x seems like a reasonable balance between scaling flexibility and
-- * leaving a practically usable system.
-- */
--#define XEN_EXTRA_MEM_RATIO	(10)
--
- /*
-  * Helper functions to write or read unsigned long values to/from
-  * memory, when the access may fault.
-diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
-index a33902d05e45..ac06ca32e9ef 100644
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -416,9 +416,6 @@ void __init xen_vmalloc_p2m_tree(void)
- 	xen_p2m_last_pfn = xen_max_p2m_pfn;
- 
- 	p2m_limit = (phys_addr_t)P2M_LIMIT * 1024 * 1024 * 1024 / PAGE_SIZE;
--	if (!p2m_limit && IS_ENABLED(CONFIG_XEN_UNPOPULATED_ALLOC))
--		p2m_limit = xen_start_info->nr_pages * XEN_EXTRA_MEM_RATIO;
--
- 	vm.flags = VM_ALLOC;
- 	vm.size = ALIGN(sizeof(unsigned long) * max(xen_max_p2m_pfn, p2m_limit),
- 			PMD_SIZE * PMDS_PER_MID_PAGE);
-diff --git a/arch/x86/xen/setup.c b/arch/x86/xen/setup.c
-index 1a3b75652fa4..99ef476dc702 100644
---- a/arch/x86/xen/setup.c
-+++ b/arch/x86/xen/setup.c
-@@ -59,6 +59,18 @@ static struct {
- } xen_remap_buf __initdata __aligned(PAGE_SIZE);
- static unsigned long xen_remap_mfn __initdata = INVALID_P2M_ENTRY;
- 
-+/* 
-+ * The maximum amount of extra memory compared to the base size.  The
-+ * main scaling factor is the size of struct page.  At extreme ratios
-+ * of base:extra, all the base memory can be filled with page
-+ * structures for the extra memory, leaving no space for anything
-+ * else.
-+ * 
-+ * 10x seems like a reasonable balance between scaling flexibility and
-+ * leaving a practically usable system.
-+ */
-+#define EXTRA_MEM_RATIO		(10)
-+
- static bool xen_512gb_limit __initdata = IS_ENABLED(CONFIG_XEN_512GB);
- 
- static void __init xen_parse_512gb(void)
-@@ -778,13 +790,13 @@ char * __init xen_memory_setup(void)
- 		extra_pages += max_pages - max_pfn;
- 
- 	/*
--	 * Clamp the amount of extra memory to a XEN_EXTRA_MEM_RATIO
-+	 * Clamp the amount of extra memory to a EXTRA_MEM_RATIO
- 	 * factor the base size.
- 	 *
- 	 * Make sure we have no memory above max_pages, as this area
- 	 * isn't handled by the p2m management.
- 	 */
--	extra_pages = min3(XEN_EXTRA_MEM_RATIO * min(max_pfn, PFN_DOWN(MAXMEM)),
-+	extra_pages = min3(EXTRA_MEM_RATIO * min(max_pfn, PFN_DOWN(MAXMEM)),
- 			   extra_pages, max_pages - max_pfn);
- 	i = 0;
- 	addr = xen_e820_table.entries[0].addr;
--- 
-2.30.1
-
+Jason
