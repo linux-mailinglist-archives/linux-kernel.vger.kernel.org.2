@@ -2,263 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFF83471F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1D8347201
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235627AbhCXG66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:58:58 -0400
-Received: from mga06.intel.com ([134.134.136.31]:30790 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235661AbhCXG6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:58:47 -0400
-IronPort-SDR: j9YLmX89nxqU9OtXf23rl71m4gx/TqrHb99EGWJ6pHr2iJpdI1DVlsfOSvIe/Q6Xh8uikXJgRJ
- uPyHn4dSB96g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="252001833"
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="252001833"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 23:58:46 -0700
-IronPort-SDR: bbwhu28Hi/fraSjmg9UaXEHrJuG/Xch+ToBoXoKevzpXFWHXxz3fBa6Kx0LFsmrY/x/jw+sF8T
- 8xm+A8/EDj6g==
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="415349945"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 23:58:40 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>, linux-kernel@vger.kernel.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
-References: <20210313075747.3781593-1-yuzhao@google.com>
-        <20210313075747.3781593-10-yuzhao@google.com>
-        <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
-        <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFAsjP7NIZM5Ld+m@google.com>
-        <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFBktbCH9JFcT0rL@google.com>
-        <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFHeFslZ85/h3o/q@google.com>
-        <87czvryj74.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFhQbvSq2Px25Ub5@google.com>
-Date:   Wed, 24 Mar 2021 14:58:37 +0800
-In-Reply-To: <YFhQbvSq2Px25Ub5@google.com> (Yu Zhao's message of "Mon, 22 Mar
-        2021 02:08:14 -0600")
-Message-ID: <87ft0lhwbm.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S235670AbhCXHFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:05:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:39280 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhCXHFR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 03:05:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616569517; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=GSuzv68z73zXdYYHmOBg3yhM/DxDs3uPEYGKUNXQJI8=;
+ b=pJmv855yAgQct8TmsiY2tWS0UNoy+EHGrVfqBZWGKnDadUfWKz1Pyrv/yi86yL0COw6TDNE/
+ MhmTrJaOKg7KC4rYYFvVRHgDl8BuGygAxyXx2thkj8gSIVFV8volOYOOtRXd9fFNgaFTHKe0
+ jVFChxvMvo7AZc/I8uLvd65Pixs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 605ae4a14db3bb68017c7d09 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Mar 2021 07:05:05
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1A89AC43464; Wed, 24 Mar 2021 07:05:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3108EC433CA;
+        Wed, 24 Mar 2021 07:05:04 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Mar 2021 12:35:04 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        devicetree@vger.kernel.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 8/9] arm64: dts: qcom: sc7280: Add AOSS QMP node
+In-Reply-To: <161647068330.3012082.2910442813045392403@swboyd.mtv.corp.google.com>
+References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
+ <463a45f2c3e4a91430c006fa1637c7f4f124185e.1614244789.git.saiprakash.ranjan@codeaurora.org>
+ <161428210272.1254594.16034240343090747878@swboyd.mtv.corp.google.com>
+ <dc3be32a3f8197d3138fe1ef6c24316a@codeaurora.org>
+ <161436520297.1254594.4348845199981053890@swboyd.mtv.corp.google.com>
+ <5cf5692ef7d348ec361081d0341f1254@codeaurora.org>
+ <d19fbcc91b4ef045014b225e7fdf9780@codeaurora.org>
+ <161647068330.3012082.2910442813045392403@swboyd.mtv.corp.google.com>
+Message-ID: <0a8540993e6f59c3b03e44e6aee4f81b@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
-
-> On Mon, Mar 22, 2021 at 11:13:19AM +0800, Huang, Ying wrote:
->> Yu Zhao <yuzhao@google.com> writes:
+On 2021-03-23 09:08, Stephen Boyd wrote:
+> Quoting Sibi Sankar (2021-03-08 21:58:21)
+>> On 2021-02-27 19:26, Sai Prakash Ranjan wrote:
+>> > On 2021-02-27 00:16, Stephen Boyd wrote:
+>> >> Quoting Sai Prakash Ranjan (2021-02-25 23:51:00)
+>> >>> On 2021-02-26 01:11, Stephen Boyd wrote:
+>> >>> > Quoting Sai Prakash Ranjan (2021-02-25 01:30:24)
+>> >>> >> Add a DT node for the AOSS QMP on SC7280 SoC.
+>> >>> >>
+>> >>> >> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> >>> >> ---
+>> >>> >>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 14 ++++++++++++++
+>> >>> >>  1 file changed, 14 insertions(+)
+>> >>> >>
+>> >>> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >>> >> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >>> >> index 65c1e0f2fb56..cbd567ccc04e 100644
+>> >>> >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >>> >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> >>> >> @@ -9,6 +9,7 @@
+>> >>> >>  #include <dt-bindings/clock/qcom,rpmh.h>
+>> >>> >>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> >>> >>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>> >>> >> +#include <dt-bindings/power/qcom-aoss-qmp.h>
+>> >>> >>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>> >>> >>
+>> >>> >>  / {
+>> >>> >> @@ -368,6 +369,19 @@ pdc: interrupt-controller@b220000 {
+>> >>> >>                         interrupt-controller;
+>> >>> >>                 };
+>> >>> >>
+>> >>> >> +               aoss_qmp: qmp@c300000 {
+>> >>> >
+>> >>> > power-domain-controller@c300000? power-controller@c300000?
+>> >>> >
+>> >>>
+>> >>> Its an AOSS message RAM and all other SM* SoCs have as qmp@
+>> >>> and the dt binding as well, I see only SM8150 with power-controller,
+>> >>> that should probably be fixed?
+>> >>
+>> >> Node name should be generic while still being meaningful. Nobody knows
+>> >> what qmp is, but power-controller makes sense. Can you fix this and
+>> >> the
+>> >> others to be power-controller?
+>> >>
 >> 
->> > On Wed, Mar 17, 2021 at 11:37:38AM +0800, Huang, Ying wrote:
->> >> Yu Zhao <yuzhao@google.com> writes:
->> >> 
->> >> > On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
->> >> > The scanning overhead is only one of the two major problems of the
->> >> > current page reclaim. The other problem is the granularity of the
->> >> > active/inactive (sizes). We stopped using them in making job
->> >> > scheduling decision a long time ago. I know another large internet
->> >> > company adopted a similar approach as ours, and I'm wondering how
->> >> > everybody else is coping with the discrepancy from those counters.
->> >> 
->> >> From intuition, the scanning overhead of the full page table scanning
->> >> appears higher than that of the rmap scanning for a small portion of
->> >> system memory.  But form your words, you think the reality is the
->> >> reverse?  If others concern about the overhead too, finally, I think you
->> >> need to prove the overhead of the page table scanning isn't too higher,
->> >> or even lower with more data and theory.
->> >
->> > There is a misunderstanding here. I never said anything about full
->> > page table scanning. And this is not how it's done in this series
->> > either. I guess the misunderstanding has something to do with the cold
->> > memory tracking you are thinking about?
+>> we probably would be changing them back
+>> to qmp or something more generic soon
+>> since the consensus was qmp wasn't a
+>> power-controller. So not sure if its
+>> worth the effort here.
 >> 
->> If my understanding were correct, from the following code path in your
->> patch 10/14,
->> 
->> age_active_anon
->>   age_lru_gens
->>     try_walk_mm_list
->>       walk_mm_list
->>         walk_mm
->> 
->> So, in kswapd(), the page tables of many processes may be scanned
->> fully.  If the number of processes that are active are high, the
->> overhead may be high too.
->
-> That's correct. Just in case we have different definitions of what we
-> call "full":
->
->   I understand it as the full range of the address space of a process
->   that was loaded by switch_mm() at least once since the last scan.
->   This is not the case because we don't scan the full range -- we skip
->   holes and VMAs that are unevictable, as well as PTE tables that have
->   no accessed entries on x86_64, by should_skip_vma() and
->   CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG.
->
->   If you are referring to the full range of PTE tables that have at
->   least one accessed entry, i.e., other 511 are not none  but have not
->   been accessed either since the last scan on x86_64, then yes, you
->   are right again :) This is the worse case scenario.
+> 
+> Hmm alright. Maybe mailbox? qmp is not generic. What does it stand for?
+> qualcomm messaging protocol?
 
-OK.  So there's no fundamental difference between us on this.
+It's documented as ^^ in the git log
+but I guess it should be called qualcomm
+mailbox protocol instead. I don't think
+it can be called mailbox since it doesn't
+have mbox cells in its bindings.
 
->> > This series uses page tables to discover page accesses when a system
->> > has run out of inactive pages. Under such a situation, the system is
->> > very likely to have a lot of page accesses, and using the rmap is
->> > likely to cost a lot more because its poor memory locality compared
->> > with page tables.
->> 
->> This is the theory.  Can you verify this with more data?  Including the
->> CPU cycles or time spent scanning page tables?
->
-> Yes, I'll be happy to do so as I should, because page table scanning
-> is counterintuitive. Let me add more theory in case it's still unclear
-> to others.
->
-> From my understanding, the two fundamental questions we need to
-> consider in terms of page reclaim are:
->
->   What are the sizes of hot clusters (spatial locality) should we
->   expect under memory pressure?
->
->   On smaller systems with 4GB memory, our observations are that the
->   average size of hot clusters found during each scan is 32KB. On
->   larger systems with hundreds of gigabytes of memory, it's well
->   above this value -- 512KB or larger. These values vary under
->   different workloads and with different memory allocators. Unless
->   done deliberately by memory allocators, e.g., Scudo as I've
->   mentioned earlier, it's safe to say if a PTE entry has been
->   accessed, its neighbors are likely to have been accessed too.
->
->   What's hot memory footprint (total size of hot clusters) should we
->   expect when we have run out of inactive pages?
->
->   Some numbers first: on large and heavily overcommitted systems, we
->   have observed close to 90% during a scan. Those systems have
->   millions of pages and using the rmap to find out which pages to
->   reclaim will just blow kswapd. On smaller systems with less memory
->   pressure (due to their weaker CPUs), this number is more reasonable,
->   ~50%. Here is some kswapd profiles from a smaller systems running
->   5.11:
->
->    the rmap                                 page table scan
->    ---------------------------------------------------------------------
->    31.03%  page_vma_mapped_walk             49.36%  lzo1x_1_do_compress
->    25.59%  lzo1x_1_do_compress               4.54%  page_vma_mapped_walk
->     4.63%  do_raw_spin_lock                  4.45%  memset_erms
->     3.89%  vma_interval_tree_iter_next       3.47%  walk_pte_range
->     3.33%  vma_interval_tree_subtree_search  2.88%  zram_bvec_rw
->
->   The page table scan is only twice as fast. Only larger systems,
->   it's usually more than 4 times, without THP. With THP, both are
->   negligible (<1% CPU usage). I can grab profiles from our servers
->   too if you are interested in seeing them on 4.15 kernel.
-
-Yes.  On a heavily overcommitted systems with high-percent hot pages,
-the page table scanning works much better.  Because almost all pages
-(and their mappings) will be scanned finally.
-
-But on a not-so-heavily overcommitted system with low-percent hot pages,
-it's possible that rmap scanning works better.  That is, only a small
-fraction of the pages need to be scanned.  I know that the page table
-scanning may still work better in many cases.
-
-And another possibility, on a system with cool instead of completely
-cold pages, that is, some pages are accessed at quite low frequency, but
-not 0, there will be always some low-bandwidth memory reclaiming.  That
-is, it's impossible to find a perfect solution with one or two full
-scanning.  But we need to reclaim some pages periodically.  And I guess
-there are no perfect (or very good) page reclaiming solutions for some
-other situations too. Where what we can do are,
-
-- Avoid OOM, that is, reclaim some pages if possible.
-
-- Control the overhead of the page reclaiming.
-
-But this is theory only.  If anyone can point out that they are not
-realistic at all, it's good too :-)
-
->> > But, page tables can be sparse too, in terms of hot memory tracking.
->> > Dave has asked me to test the worst case scenario, which I'll do.
->> > And I'd be happy to share more data. Any specific workload you are
->> > interested in?
->> 
->> We can start with some simple workloads that are easier to be reasoned.
->> For example,
->> 
->> 1. Run the workload with hot and cold pages, when the free memory
->> becomes lower than the low watermark, kswapd will be waken up to scan
->> and reclaim some cold pages.  How long will it take to do that?  It's
->> expected that almost all pages need to be scanned, so that page table
->
-> A typical scenario. Otherwise why would we have run out of cold pages
-> and still be under memory? Because what's in memory is hot and
-> therefore most of the them need to be scanned :)
->
->> scanning is expected to have less overhead.  We can measure how well it
->> is.
->
-> Sounds good to me.
->
->> 2. Run the workload with hot and cold pages, if the whole working-set
->> cannot fit in DRAM, that is, the cold pages will be reclaimed and
->> swapped in regularly (for example tens MB/s).  It's expected that less
->> pages may be scanned with rmap, but the speed of page table scanning is
->> faster.
->
-> So IIUC, this is a sustained memory pressure, i.e., servers constantly
-> running under memory pressure?
-
-Yes.  The system can accommodate more workloads at the cost of
-performance, as long as the end-user latency isn't unacceptable.  Or we
-need some time to schedule more computing resources, so we need to run
-in this condition for some while.
-
-But again, this is theory only.  I am glad if people can tell me that
-this is unrealistic.
-
->> 3. Run the workload with hot and cold pages, the system is
->> overcommitted, that is, some cold pages will be placed in swap.  But the
->> cold pages are cold enough, so there's almost no thrashing.  Then the
->> hot working-set of the workload changes, that is, some hot pages become
->> cold, while some cold pages becomes hot, so page reclaiming and swapin
->> will be triggered.
->
-> This is usually what we see on clients, i.e., bursty workloads when
-> switching from an active app to an inactive one.
-
-Thanks for your information.  Now I know a typical realistic use case :-)
-
->> For each cases, we can use some different parameters.  And we can
->> measure something like the number of pages scanned, the time taken to
->> scan them, the number of page reclaimed and swapped in, etc.
->
-> Thanks, I appreciate these -- very well thought test cases. I'll look
-> into them and probably write some synthetic test cases. If you have
-> some already, I'd love to get my hands one them.
-
-Sorry.  I have no test cases in hand.  Maybe we can add some into
-Fengguang's vm-scalability test suite as follows.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/
-
-Best Regards,
-Huang, Ying
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
