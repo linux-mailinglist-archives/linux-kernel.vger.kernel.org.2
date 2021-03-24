@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E480347D71
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8304F347D84
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhCXQPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:15:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57098 "EHLO mga11.intel.com"
+        id S234802AbhCXQSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:18:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230035AbhCXQOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:14:35 -0400
-IronPort-SDR: zfGTiFEjKYvtYdtrDBg2JmPFkHkDM31AVIESN2o4IN/pF8FZLlrYnuAeT6rTbFpQSWc+CyNxmY
- nhDw2gaHwFyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="187430914"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="187430914"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 09:14:35 -0700
-IronPort-SDR: QSC95SEdrOKTkNAZDK+sqyjUDZsIHx2HWakvGcOAsBjSY6RfDxOQm0tHKN5ZPswqAR2wDcgFXZ
- I+y6CZWu0a8w==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="391356730"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 09:14:34 -0700
-Date:   Wed, 24 Mar 2021 09:17:01 -0700
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        jacob.jun.pan@intel.com
-Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <20210324091701.63c9ce8e@jacob-builder>
-In-Reply-To: <YFjn7wv/iMO4Isgz@google.com>
-References: <20210304231946.2766648-1-vipinsh@google.com>
-        <20210304231946.2766648-2-vipinsh@google.com>
-        <20210319142801.7dcce403@jacob-builder>
-        <YFjn7wv/iMO4Isgz@google.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        id S234881AbhCXQSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:18:03 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF85061878;
+        Wed, 24 Mar 2021 16:18:02 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lP6Cm-003YU9-Td; Wed, 24 Mar 2021 16:18:01 +0000
+Date:   Wed, 24 Mar 2021 16:17:59 +0000
+Message-ID: <87y2ecikzs.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <youlin.pei@mediatek.com>,
+        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
+        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
+        <Rex-BC.Chen@mediatek.com>, <anson.chuang@mediatek.com>,
+        Krzysztof Wilczyski <kw@linux.com>,
+        Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Subject: Re: [v9,4/7] PCI: mediatek-gen3: Add INTx support
+In-Reply-To: <20210324030510.29177-5-jianjun.wang@mediatek.com>
+References: <20210324030510.29177-1-jianjun.wang@mediatek.com>
+        <20210324030510.29177-5-jianjun.wang@mediatek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: jianjun.wang@mediatek.com, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, ryder.lee@mediatek.com, p.zabel@pengutronix.de, matthias.bgg@gmail.com, linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, youlin.pei@mediatek.com, chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com, sin_jieyang@mediatek.com, drinkcat@chromium.org, Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com, kw@linux.com, pali@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vipin,
-
-On Mon, 22 Mar 2021 11:54:39 -0700, Vipin Sharma <vipinsh@google.com> wrote:
-
-> On Fri, Mar 19, 2021 at 02:28:01PM -0700, Jacob Pan wrote:
-> > On Thu,  4 Mar 2021 15:19:45 -0800, Vipin Sharma <vipinsh@google.com>
-> > wrote:  
-> > > +#ifndef _MISC_CGROUP_H_
-> > > +#define _MISC_CGROUP_H_
-> > > +  
-> > nit: should you do #include <linux/cgroup.h>?
-> > Otherwise, css may be undefined.  
+On Wed, 24 Mar 2021 03:05:07 +0000,
+Jianjun Wang <jianjun.wang@mediatek.com> wrote:
 > 
-> User of this controller will use get_curernt_misc_cg() API which returns
-> a pointer. Ideally the user should use this pointer and they shouldn't
-> have any need to access "css" in their code. They also don't need to
-> create a object of 'struct misc_cg{}', because that won't be correct misc
-> cgroup object. They should just declare a pointer like we are doing here
-> in 'struct kvm_sev_info {}'.
+> Add INTx support for MediaTek Gen3 PCIe controller.
 > 
-> If they do need to use "css" then they can include cgroup header in their
-> code.
-> 
-I didn't mean the users of misc_cgroup will use css directly. I meant if I
-want to use misc cgruop in ioasid.c, I have to do the following to avoid
-undefined css:
-#include <linux/cgroup.h>
-#include <linux/misc_cgroup.h>
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
 
-So it might be simpler if you do #include <linux/cgroup.h> inside
-misc_cgroup.h. Then in ioasid.c, I only need to do
-#include <linux/misc_cgroup.h>.
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-> Let me know if I am overlooking something here.
-> 
-> Thanks
-> Vipin Sharma
+	M.
 
-
-Thanks,
-
-Jacob
+-- 
+Without deviation from the norm, progress is not possible.
