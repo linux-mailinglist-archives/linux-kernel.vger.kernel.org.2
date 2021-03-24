@@ -2,344 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02983481BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF433481C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238054AbhCXTRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238057AbhCXTQV (ORCPT
+        id S237855AbhCXTSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:18:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51919 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237943AbhCXTSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:16:21 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1E8C0613E0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:16:17 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id v186so15328513pgv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=5kk7kGcUMLXn9AF+VvHdt3yODemQew7HtAejeNNetfk=;
-        b=O+dfjqd8NRvkeQjRaduHrLWpKUlhsIDjfFVfa3f07NKbN9Fhb6X4gvNXGMuLr/xM1P
-         ILEaiEkbX5xTjTV3FfaxHNPyTYhNMytEwTthnm925o1Sb3nymsWBO+LrK2HsrgwEK0Ko
-         YC6LF41vVRf3CNeZYZDA/bfB4DEJBPyXTeg8pjLW12MjQ9qVT+dzk5AaeqgQ0Ba4jaE1
-         tr3jmG5bFOnqAtG5Ierd2WNzf6ECe0jjUC3xqxKaT9SIehiJlngoKdWssY5O6uABLmNr
-         hfqNfUAyivKTA08tf0uSlTEbBkIiIRdR/AhwkbRb2tA2xrnUHcJRgfpeAL1/jw7p/kqp
-         n/dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=5kk7kGcUMLXn9AF+VvHdt3yODemQew7HtAejeNNetfk=;
-        b=aJtOg7EdZu4F6kjJfFpUmT5wS1wCJy08YuXRGKfGAbw58LmPR2iTQFeiOE3xXiIQX+
-         HUn24rlJy68NfWQ51D8vYVRnzMyuI9LD6CWIInDJM1eY7oRn2IdwNTtt2fn3KeHMIFvD
-         X3e8F6H5yb6a75Colz0sXhY0V1jlhQrEuyChsyApWw4mM1Mp10AxgzGoDRKjzyKMRe1u
-         YqPTwqWhVyO6OQzIuf1PCQxKIq4Z/krnJjKYmZrpnfMRPmglwIWVfeQmdgigiB2Fbx+m
-         CET8Zw8hcXrG4CHUtovWpp75i9iTRF+AnlzK0tnCSRy33qqYaXJ0Gs6f9Q4ehnHxn/LR
-         J+tg==
-X-Gm-Message-State: AOAM5337psUDzHmVI3xSmXf6+OXgeqkfjjwPNMromPJwhxoCpi2IT8oZ
-        y2tOo9nOo/ZLSp6IcQYZ1OwCYA==
-X-Google-Smtp-Source: ABdhPJw3Q7OXamkYlVjlFLA9pq76DmQnsdTF+2kQw/CLU+xDab7bZ8DlAnNmwiJo8e4CEupRaYLcAA==
-X-Received: by 2002:aa7:86c1:0:b029:203:900:2813 with SMTP id h1-20020aa786c10000b029020309002813mr4399007pfo.35.1616613376801;
-        Wed, 24 Mar 2021 12:16:16 -0700 (PDT)
-Received: from [2620:15c:17:3:4192:718f:4827:be5] ([2620:15c:17:3:4192:718f:4827:be5])
-        by smtp.gmail.com with ESMTPSA id l10sm3143107pfc.125.2021.03.24.12.16.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 12:16:15 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 12:16:15 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Zi Yan <ziy@nvidia.com>
-cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Wed, 24 Mar 2021 15:18:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616613486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L6QfMU6ICmnSA0e3EzDjVM0dhhad75vCN7chXuQhF9w=;
+        b=UOozatgP5mYyV6Pa2qrrJM5L2oomrPhromtKR3XwXpXhuqZDa7e9WA9H6fgc3q/HiaXcLP
+        si1o7rVsVgHFTY19uE6dR6W/dUUMS1iNOfqPuNOalbF6EfX+qdugxpWZorpzhk3lEoc77T
+        gWFWFq3NTN9Dda+2DqCvFdNZvAAerLk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-rNCPKapKMgqOwm393TehQA-1; Wed, 24 Mar 2021 15:18:02 -0400
+X-MC-Unique: rNCPKapKMgqOwm393TehQA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CCD21020357;
+        Wed, 24 Mar 2021 19:16:57 +0000 (UTC)
+Received: from [10.36.115.66] (ovpn-115-66.ams2.redhat.com [10.36.115.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DABA25D9CA;
+        Wed, 24 Mar 2021 19:16:54 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mika Penttila <mika.penttila@nextfour.com>
-Subject: Re: [PATCH v6 1/2] mm: huge_memory: a new debugfs interface for
- splitting THP tests.
-In-Reply-To: <20210322200547.68587-1-zi.yan@sent.com>
-Message-ID: <3ef65bfc-5be6-eba4-f7e8-f5e64a554870@google.com>
-References: <20210322200547.68587-1-zi.yan@sent.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de> <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux> <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+ <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
+ <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
+ <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
+Date:   Wed, 24 Mar 2021 20:16:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021, Zi Yan wrote:
-
-> From: Zi Yan <ziy@nvidia.com>
+On 24.03.21 17:04, Michal Hocko wrote:
+> On Wed 24-03-21 15:52:38, David Hildenbrand wrote:
+>> On 24.03.21 15:42, Michal Hocko wrote:
+>>> On Wed 24-03-21 13:03:29, Michal Hocko wrote:
+>>>> On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
+>>> [...]
+>>>>> I kind of understand to be reluctant to use vmemmap_pages terminology here, but
+>>>>> unfortunately we need to know about it.
+>>>>> We could rename nr_vmemmap_pages to offset_buddy_pages or something like that.
+>>>>
+>>>> I am not convinced. It seems you are justr trying to graft the new
+>>>> functionality in. But I still believe that {on,off}lining shouldn't care
+>>>> about where their vmemmaps come from at all. It should be a
+>>>> responsibility of the code which reserves that space to compansate for
+>>>> accounting. Otherwise we will end up with a hard to maintain code
+>>>> because expectations would be spread at way too many places. Not to
+>>>> mention different pfns that the code should care about.
+>>>
+>>> The below is a quick hack on top of this patch to illustrate my
+>>> thinking. I have dug out all the vmemmap pieces out of the
+>>> {on,off}lining and hooked all the accounting when the space is reserved.
+>>> This just compiles without any deeper look so there are likely some
+>>> minor problems but I haven't really encountered any major problems or
+>>> hacks to introduce into the code. The separation seems to be possible.
+>>> The diffstat also looks promising. Am I missing something fundamental in
+>>> this?
+>>>
+>>
+>>  From a quick glimpse, this touches on two things discussed in the past:
+>>
+>> 1. If the underlying memory block is offline, all sections are offline. Zone
+>> shrinking code will happily skip over the vmemmap pages and you can end up
+>> with out-of-zone pages assigned to the zone. Can happen in corner cases.
 > 
-> We did not have a direct user interface of splitting the compound page
-> backing a THP and there is no need unless we want to expose the THP
-> implementation details to users. Make <debugfs>/split_huge_pages accept
-> a new command to do that.
+> You are right. But do we really care? Those pages should be of no
+> interest to anybody iterating through zones/nodes anyway.
+
+Well, we were just discussing getting zone/node links + span right for 
+all pages (including for special reserved pages), because it already 
+resulted in BUGs. So I am not convinced that we *don't* have to care.
+
+However, I agree that most code that cares about node/zone spans 
+shouldn't care - e.g., never call set_pfnblock_flags_mask() on such blocks.
+
+But I guess there are corner cases where we would end up with 
+zone_is_empty() == true, not sure what that effect would be ... at least 
+the node cannot vanish as we disallow offlining it while we have a 
+memory block linked to it.
+
+
+Another thing that comes to my mind is that our zone shrinking code 
+currently searches in PAGES_PER_SUBSECTION (2 MiB IIRC) increments. In 
+case our vmemmap pages would be less than that, we could accidentally 
+shrink the !vmemmap part too much, as we are mis-detecting the type for 
+a PAGES_PER_SUBSECTION block.
+
+IIRC, this would apply for memory block sizes < 128 MiB. Not relevant on 
+x86 and arm64. Could be relevant for ppc64, if we'd ever want to support 
+memmap_on_memory there. Or if we'd ever reduce the section size on some 
+arch below 128 MiB. At least we would have to fence it somehow.
+
+
 > 
-> By writing "<pid>,<vaddr_start>,<vaddr_end>" to
-> <debugfs>/split_huge_pages, THPs within the given virtual address range
-> from the process with the given pid are split. It is used to test
-> split_huge_page function. In addition, a selftest program is added to
-> tools/testing/selftests/vm to utilize the interface by splitting
-> PMD THPs and PTE-mapped THPs.
+>> There is no way to know that the memmap of these pages was initialized and
+>> is of value.
+>>
+>> 2. You heavily fragment zone layout although you might end up with
+>> consecutive zones (e.g., online all hotplugged memory movable)
 > 
+> What would be consequences?
 
-I'm curious if this is the only use case or whether you have additional 
-use cases or extensions in mind?
+IIRC, set_zone_contiguous() will leave zone->contiguous = false.
 
-Specifically, I'm wondering if you are looking into more appropriately 
-dividing the limited number of hugepages available on the system amongst 
-the most latency sensitive processes?
+This, in turn, will force pageblock_pfn_to_page() via the slow path, 
+turning page isolation a bit slower.
 
-The set of hugepages available on the system can be limited by 
-fragmentation.  We've found opportunities where latency sensitive 
-processes would benefit from memory backed by thp, but they cannot be 
-allocated at fault for this reason.  Yet, there are other processes that 
-have memory backed by hugepages that may not be benefiting from them.
+Not a deal breaker, but obviously something where Oscar's original patch 
+can do better.
 
-Could this be useful to split a hugepage for a latency tolerant 
-application, migrate the pages elsewhere, and make the now-free hugepage 
-available for a latency sensitive application (through something like my 
-MADV_COLLAPSE proposal?)
 
-Couple questions inline.
+I yet have to think again about other issues (I remember most issues we 
+discussed back then were related to having the vmemmap only within the 
+same memory block). I think 2) might be tolerable, although unfortunate. 
+Regarding 1), we'll have to dive into more details.
 
-> This does not change the old behavior, i.e., writing 1 to the interface
-> to split all THPs in the system.
-> 
-> Changelog:
-> 
-> From v5:
-> 1. Skipped special VMAs and other fixes. (suggested by Yang Shi)
-> 
-> From v4:
-> 1. Fixed the error code return issue, spotted by kernel test robot
->    <lkp@intel.com>.
-> 
-> From v3:
-> 1. Factored out split huge pages in the given pid code to a separate
->    function.
-> 2. Added the missing put_page for not split pages.
-> 3. pr_debug -> pr_info, make reading results simpler.
-> 
-> From v2:
-> 1. Reused existing <debugfs>/split_huge_pages interface. (suggested by
->    Yang Shi)
-> 
-> From v1:
-> 1. Removed unnecessary calling to vma_migratable, spotted by kernel test
->    robot <lkp@intel.com>.
-> 2. Dropped the use of find_mm_struct and code it directly, since there
->    is no need for the permission check in that function and the function
->    is only available when migration is on.
-> 3. Added some comments in the selftest program to clarify how PTE-mapped
->    THPs are formed.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/huge_memory.c                              | 151 ++++++++-
->  tools/testing/selftests/vm/.gitignore         |   1 +
->  tools/testing/selftests/vm/Makefile           |   1 +
->  .../selftests/vm/split_huge_page_test.c       | 318 ++++++++++++++++++
->  4 files changed, 464 insertions(+), 7 deletions(-)
->  create mode 100644 tools/testing/selftests/vm/split_huge_page_test.c
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index bff92dea5ab3..b653255a548e 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -7,6 +7,7 @@
->  
->  #include <linux/mm.h>
->  #include <linux/sched.h>
-> +#include <linux/sched/mm.h>
->  #include <linux/sched/coredump.h>
->  #include <linux/sched/numa_balancing.h>
->  #include <linux/highmem.h>
-> @@ -2922,16 +2923,14 @@ static struct shrinker deferred_split_shrinker = {
->  };
->  
->  #ifdef CONFIG_DEBUG_FS
-> -static int split_huge_pages_set(void *data, u64 val)
-> +static void split_huge_pages_all(void)
->  {
->  	struct zone *zone;
->  	struct page *page;
->  	unsigned long pfn, max_zone_pfn;
->  	unsigned long total = 0, split = 0;
->  
-> -	if (val != 1)
-> -		return -EINVAL;
-> -
-> +	pr_info("Split all THPs\n");
+-- 
+Thanks,
 
-Is this necessary to print?
+David / dhildenb
 
->  	for_each_populated_zone(zone) {
->  		max_zone_pfn = zone_end_pfn(zone);
->  		for (pfn = zone->zone_start_pfn; pfn < max_zone_pfn; pfn++) {
-> @@ -2959,11 +2958,149 @@ static int split_huge_pages_set(void *data, u64 val)
->  	}
->  
->  	pr_info("%lu of %lu THP split\n", split, total);
-> +}
->  
-> -	return 0;
-> +static inline bool vma_not_suitable_for_thp_split(struct vm_area_struct *vma)
-> +{
-> +	return vma_is_special_huge(vma) || (vma->vm_flags & VM_IO) ||
-> +		    is_vm_hugetlb_page(vma);
->  }
-> -DEFINE_DEBUGFS_ATTRIBUTE(split_huge_pages_fops, NULL, split_huge_pages_set,
-> -		"%llu\n");
-> +
-> +static int split_huge_pages_pid(int pid, unsigned long vaddr_start,
-> +				unsigned long vaddr_end)
-> +{
-> +	int ret = 0;
-> +	struct task_struct *task;
-> +	struct mm_struct *mm;
-> +	unsigned long total = 0, split = 0;
-> +	unsigned long addr;
-> +
-> +	vaddr_start &= PAGE_MASK;
-> +	vaddr_end &= PAGE_MASK;
-> +
-> +	/* Find the task_struct from pid */
-> +	rcu_read_lock();
-> +	task = find_task_by_vpid(pid);
-> +	if (!task) {
-> +		rcu_read_unlock();
-> +		ret = -ESRCH;
-> +		goto out;
-> +	}
-> +	get_task_struct(task);
-> +	rcu_read_unlock();
-> +
-> +	/* Find the mm_struct */
-> +	mm = get_task_mm(task);
-> +	put_task_struct(task);
-> +
-> +	if (!mm) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	pr_info("Split huge pages in pid: %d, vaddr: [0x%lx - 0x%lx]\n",
-> +		 pid, vaddr_start, vaddr_end);
-
-Hmm, does this need to be in the kernel log?
-
-> +
-> +	mmap_read_lock(mm);
-> +	/*
-> +	 * always increase addr by PAGE_SIZE, since we could have a PTE page
-> +	 * table filled with PTE-mapped THPs, each of which is distinct.
-> +	 */
-> +	for (addr = vaddr_start; addr < vaddr_end; addr += PAGE_SIZE) {
-> +		struct vm_area_struct *vma = find_vma(mm, addr);
-> +		unsigned int follflags;
-> +		struct page *page;
-> +
-> +		if (!vma || addr < vma->vm_start)
-> +			break;
-> +
-
-Should there be a cond_resched() right here?
-
-> +		/* skip special VMA and hugetlb VMA */
-> +		if (vma_not_suitable_for_thp_split(vma)) {
-> +			addr = vma->vm_end;
-> +			continue;
-> +		}
-> +
-> +		/* FOLL_DUMP to ignore special (like zero) pages */
-> +		follflags = FOLL_GET | FOLL_DUMP;
-> +		page = follow_page(vma, addr, follflags);
-> +
-> +		if (IS_ERR(page))
-> +			continue;
-> +		if (!page)
-> +			continue;
-> +
-> +		if (!is_transparent_hugepage(page))
-> +			goto next;
-> +
-> +		total++;
-> +		if (!can_split_huge_page(compound_head(page), NULL))
-> +			goto next;
-> +
-> +		if (!trylock_page(page))
-> +			goto next;
-> +
-> +		if (!split_huge_page(page))
-> +			split++;
-> +
-> +		unlock_page(page);
-> +next:
-> +		put_page(page);
-> +	}
-> +	mmap_read_unlock(mm);
-> +	mmput(mm);
-> +
-> +	pr_info("%lu of %lu THP split\n", split, total);
-> +
-> +out:
-> +	return ret;
-> +}
-> +
-> +#define MAX_INPUT_BUF_SZ 255
-> +
-> +static ssize_t split_huge_pages_write(struct file *file, const char __user *buf,
-> +				size_t count, loff_t *ppops)
-> +{
-> +	static DEFINE_MUTEX(split_debug_mutex);
-> +	ssize_t ret;
-> +	char input_buf[MAX_INPUT_BUF_SZ]; /* hold pid, start_vaddr, end_vaddr */
-> +	int pid;
-> +	unsigned long vaddr_start, vaddr_end;
-> +
-> +	ret = mutex_lock_interruptible(&split_debug_mutex);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = -EFAULT;
-> +
-> +	memset(input_buf, 0, MAX_INPUT_BUF_SZ);
-> +	if (copy_from_user(input_buf, buf, min_t(size_t, count, MAX_INPUT_BUF_SZ)))
-> +		goto out;
-> +
-> +	input_buf[MAX_INPUT_BUF_SZ - 1] = '\0';
-> +	ret = sscanf(input_buf, "%d,0x%lx,0x%lx", &pid, &vaddr_start, &vaddr_end);
-> +	if (ret == 1 && pid == 1) {
-> +		split_huge_pages_all();
-> +		ret = strlen(input_buf);
-> +		goto out;
-> +	} else if (ret != 3) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	ret = split_huge_pages_pid(pid, vaddr_start, vaddr_end);
-> +	if (!ret)
-> +		ret = strlen(input_buf);
-> +out:
-> +	mutex_unlock(&split_debug_mutex);
-> +	return ret;
-> +
-> +}
-> +
-> +static const struct file_operations split_huge_pages_fops = {
-> +	.owner	 = THIS_MODULE,
-> +	.write	 = split_huge_pages_write,
-> +	.llseek  = no_llseek,
-> +};
->  
->  static int __init split_huge_pages_debugfs(void)
->  {
