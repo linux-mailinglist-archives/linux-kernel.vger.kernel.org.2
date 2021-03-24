@@ -2,160 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E4B347481
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06692347484
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234676AbhCXJZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        id S234677AbhCXJ0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:26:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18949 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232107AbhCXJZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:25:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8946C61A03;
-        Wed, 24 Mar 2021 09:25:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616577923;
-        bh=O0a1n/S9dOJwgzqzEYVtbF/EMLMwvmSvIJcKg0dHGk4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SZe2UqDgmE3mBmxzcopgzJJ/qqPsLzWARBLPVf5MxeJY+HBk4VzFOeTC3U4sHVguB
-         ZtYeUb5lqzxc7elP6qQQDU1ioSU8klOHkVDoUUlkOWFKYEe6FxHmcjni6UrYOprkmr
-         A4zxm87IqwXlmv/Mihcfc2FclrfYiH3NPK6NWaS0=
-Date:   Wed, 24 Mar 2021 10:25:20 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v6 1/5] misc: Add Synopsys DesignWare xData IP driver
-Message-ID: <YFsFgO4Z+2E7VLN/@kroah.com>
-References: <cover.1613150798.git.gustavo.pimentel@synopsys.com>
- <724f5d30e3a9b86448df7e32fb5ed1e814416368.1613150798.git.gustavo.pimentel@synopsys.com>
- <YFnmVEB86JcAENcN@kroah.com>
- <DM5PR12MB18355EDB515CE57C38ECF6D4DA639@DM5PR12MB1835.namprd12.prod.outlook.com>
+        id S231734AbhCXJZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:25:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616577948; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uGzL7pp3kEyLH8Z3B1DFI8O6ESe1kEXR4hYo06Ds+5A=;
+ b=Ya/+pP4MfuLWltY+CzpYpeLyNXJO7yN/Z340Lu2REY29GdHFQzA4phrof0XLnlM4zztaOWiw
+ hJ91QIZ0q1Hn2OKyGHFf71/uTdCq7fVJXNk7sTzlN8UukLqrVT1O7EozLTTKg+yQv2myF5PS
+ 96FLm/uS4Yumy4GLXR6yR+BJEXo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 605b05875d70193f88129fe4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Mar 2021 09:25:27
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5C373C43467; Wed, 24 Mar 2021 09:25:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A6F3C433C6;
+        Wed, 24 Mar 2021 09:25:25 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM5PR12MB18355EDB515CE57C38ECF6D4DA639@DM5PR12MB1835.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Mar 2021 17:25:25 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v6 03/10] scsi: ufshpb: Add region's reads counter
+In-Reply-To: <20210322081044.62003-4-avri.altman@wdc.com>
+References: <20210322081044.62003-1-avri.altman@wdc.com>
+ <20210322081044.62003-4-avri.altman@wdc.com>
+Message-ID: <48758404e172e8faca07c3fab8a3bd5c@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 09:15:46AM +0000, Gustavo Pimentel wrote:
-> Hi Greg,
+On 2021-03-22 16:10, Avri Altman wrote:
+> In host control mode, reads are the major source of activation trials.
+> Keep track of those reads counters, for both active as well inactive
+> regions.
 > 
-> On Tue, Mar 23, 2021 at 13:0:4, Greg Kroah-Hartman 
-> <gregkh@linuxfoundation.org> wrote:
+> We reset the read counter upon write - we are only interested in 
+> "clean"
+> reads.
 > 
-> > On Fri, Feb 12, 2021 at 06:28:03PM +0100, Gustavo Pimentel wrote:
-> > > +static const struct attribute_group xdata_attr_group = {
-> > > +	.attrs = default_attrs,
-> > > +	.name = DW_XDATA_DRIVER_NAME,
-> > > +};
-> > 
-> > ATTRIBUTE_GROUPS()?
+> Keep those counters normalized, as we are using those reads as a
+> comparative score, to make various decisions.
+> If during consecutive normalizations an active region has exhaust its
+> reads - inactivate it.
 > 
-> Nicely catched!
+> while at it, protect the {active,inactive}_count stats by adding them
+> into the applicable handler.
 > 
-> > 
-> > > +static int dw_xdata_pcie_probe(struct pci_dev *pdev,
-> > > +			       const struct pci_device_id *pid)
-> > > +{
-> > > +	const struct dw_xdata_pcie_data *pdata = (void *)pid->driver_data;
-> > > +	struct dw_xdata *dw;
-> > > +	u64 addr;
-> > > +	int err;
-> > > +
-> > > +	/* Enable PCI device */
-> > > +	err = pcim_enable_device(pdev);
-> > > +	if (err) {
-> > > +		pci_err(pdev, "enabling device failed\n");
-> > > +		return err;
-> > > +	}
-> > > +
-> > > +	/* Mapping PCI BAR regions */
-> > > +	err = pcim_iomap_regions(pdev, BIT(pdata->rg_bar), pci_name(pdev));
-> > > +	if (err) {
-> > > +		pci_err(pdev, "xData BAR I/O remapping failed\n");
-> > > +		return err;
-> > > +	}
-> > > +
-> > > +	pci_set_master(pdev);
-> > > +
-> > > +	/* Allocate memory */
-> > > +	dw = devm_kzalloc(&pdev->dev, sizeof(*dw), GFP_KERNEL);
-> > > +	if (!dw)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	/* Data structure initialization */
-> > > +	mutex_init(&dw->mutex);
-> > > +
-> > > +	dw->rg_region.vaddr = pcim_iomap_table(pdev)[pdata->rg_bar];
-> > > +	if (!dw->rg_region.vaddr)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	dw->rg_region.vaddr += pdata->rg_off;
-> > > +	dw->rg_region.paddr = pdev->resource[pdata->rg_bar].start;
-> > > +	dw->rg_region.paddr += pdata->rg_off;
-> > > +	dw->rg_region.sz = pdata->rg_sz;
-> > > +
-> > > +	dw->max_wr_len = pcie_get_mps(pdev);
-> > > +	dw->max_wr_len >>= 2;
-> > > +
-> > > +	dw->max_rd_len = pcie_get_readrq(pdev);
-> > > +	dw->max_rd_len >>= 2;
-> > > +
-> > > +	dw->pdev = pdev;
-> > > +
-> > > +	writel(0x0, &(__dw_regs(dw)->RAM_addr));
-> > > +	writel(0x0, &(__dw_regs(dw)->RAM_port));
-> > > +
-> > > +	addr = dw->rg_region.paddr + DW_XDATA_EP_MEM_OFFSET;
-> > > +	writel(lower_32_bits(addr), &(__dw_regs(dw)->addr_lsb));
-> > > +	writel(upper_32_bits(addr), &(__dw_regs(dw)->addr_msb));
-> > > +	pci_dbg(pdev, "xData: target address = 0x%.16llx\n", addr);
-> > > +
-> > > +	pci_dbg(pdev, "xData: wr_len=%zu, rd_len=%zu\n",
-> > > +		dw->max_wr_len * 4, dw->max_rd_len * 4);
-> > > +
-> > > +	/* Saving data structure reference */
-> > > +	pci_set_drvdata(pdev, dw);
-> > > +
-> > > +	/* Sysfs */
-> > > +	err = sysfs_create_group(&pdev->dev.kobj, &xdata_attr_group);
-> > 
-> > You just raced with userspace and lost :(
-> > 
-> > Have the driver core properly create/remove your sysfs files, set the
-> > default groups pointer in your driver and all will be fine.
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> ---
+>  drivers/scsi/ufs/ufshpb.c | 100 +++++++++++++++++++++++++++++++-------
+>  drivers/scsi/ufs/ufshpb.h |   5 ++
+>  2 files changed, 88 insertions(+), 17 deletions(-)
 > 
-> I've gone around and around, searched in other drivers, but I'm not 
-> understanding your PoV or what I should do. Can you throw me a bone here?
-> I'm starting to pull my hair off, lol
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index d4f0bb6d8fa1..a1519cbb4ce0 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -16,6 +16,8 @@
+>  #include "ufshpb.h"
+>  #include "../sd.h"
+> 
+> +#define ACTIVATION_THRESHOLD 8 /* 8 IOs */
+> +
+>  /* memory management */
+>  static struct kmem_cache *ufshpb_mctx_cache;
+>  static mempool_t *ufshpb_mctx_pool;
+> @@ -546,6 +548,23 @@ static int ufshpb_issue_pre_req(struct ufshpb_lu
+> *hpb, struct scsi_cmnd *cmd,
+>  	return ret;
+>  }
+> 
+> +static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
+> rgn_idx,
+> +				      int srgn_idx)
+> +{
+> +	struct ufshpb_region *rgn;
+> +	struct ufshpb_subregion *srgn;
+> +
+> +	rgn = hpb->rgn_tbl + rgn_idx;
+> +	srgn = rgn->srgn_tbl + srgn_idx;
+> +
+> +	list_del_init(&rgn->list_inact_rgn);
+> +
+> +	if (list_empty(&srgn->list_act_srgn))
+> +		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
+> +
+> +	hpb->stats.rb_active_cnt++;
+> +}
+> +
+>  /*
+>   * This function will set up HPB read command using host-side L2P map 
+> data.
+>   */
+> @@ -596,12 +615,43 @@ int ufshpb_prep(struct ufs_hba *hba, struct
+> ufshcd_lrb *lrbp)
+>  		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+>  				 transfer_len);
+>  		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> +
+> +		if (hpb->is_hcm) {
+> +			spin_lock(&rgn->rgn_lock);
+> +			rgn->reads = 0;
+> +			spin_unlock(&rgn->rgn_lock);
+> +		}
+> +
+>  		return 0;
+>  	}
+> 
+>  	if (!ufshpb_is_support_chunk(hpb, transfer_len))
+>  		return 0;
+> 
+> +	if (hpb->is_hcm) {
+> +		bool activate = false;
+> +		/*
+> +		 * in host control mode, reads are the main source for
+> +		 * activation trials.
+> +		 */
+> +		spin_lock(&rgn->rgn_lock);
+> +		rgn->reads++;
+> +		if (rgn->reads == ACTIVATION_THRESHOLD)
+> +			activate = true;
+> +		spin_unlock(&rgn->rgn_lock);
+> +		if (activate) {
+> +			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+> +			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
 
-Set the dev_groups field of the struct device_driver in your pci driver
-structure and all should be fine.
+If a transfer_len (possible with HPB2.0) sits accross two 
+regions/sub-regions,
+here it only updates active info of the first region/sub-region.
 
-But wait, why are you adding attributes to a pci device and not your
-"own" device?  You should make a sub-device for this device-specific
-things, otherwise it will be impossible to find these types of
-attributes anywhere in sysfs.
+Thanks,
+Can Guo.
 
-> I would like to ask you about something, it's you the maintainer of misc 
-> drivers right?
-
-MAINTAINERS shows this so I guess it must be true...
-
-> After fixing this issue, does this driver have a chance to be pulled on 
-> 5.13?
-
-No idea, I do not promise anything :)
-
-thanks,
-
-greg k-h
+> +			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+> +			dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
+> +				"activate region %d-%d\n", rgn_idx, srgn_idx);
+> +		}
+> +
+> +		/* keep those counters normalized */
+> +		if (rgn->reads > hpb->entries_per_srgn)
+> +			schedule_work(&hpb->ufshpb_normalization_work);
+> +	}
+> +
+>  	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+>  	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+>  				   transfer_len)) {
+> @@ -741,21 +791,6 @@ static int ufshpb_clear_dirty_bitmap(struct 
+> ufshpb_lu *hpb,
+>  	return 0;
+>  }
+> 
+> -static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int 
+> rgn_idx,
+> -				      int srgn_idx)
+> -{
+> -	struct ufshpb_region *rgn;
+> -	struct ufshpb_subregion *srgn;
+> -
+> -	rgn = hpb->rgn_tbl + rgn_idx;
+> -	srgn = rgn->srgn_tbl + srgn_idx;
+> -
+> -	list_del_init(&rgn->list_inact_rgn);
+> -
+> -	if (list_empty(&srgn->list_act_srgn))
+> -		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
+> -}
+> -
+>  static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int 
+> rgn_idx)
+>  {
+>  	struct ufshpb_region *rgn;
+> @@ -769,6 +804,8 @@ static void ufshpb_update_inactive_info(struct
+> ufshpb_lu *hpb, int rgn_idx)
+> 
+>  	if (list_empty(&rgn->list_inact_rgn))
+>  		list_add_tail(&rgn->list_inact_rgn, &hpb->lh_inact_rgn);
+> +
+> +	hpb->stats.rb_inactive_cnt++;
+>  }
+> 
+>  static void ufshpb_activate_subregion(struct ufshpb_lu *hpb,
+> @@ -1089,6 +1126,7 @@ static int ufshpb_evict_region(struct ufshpb_lu
+> *hpb, struct ufshpb_region *rgn)
+>  			 rgn->rgn_idx);
+>  		goto out;
+>  	}
+> +
+>  	if (!list_empty(&rgn->list_lru_rgn)) {
+>  		if (ufshpb_check_srgns_issue_state(hpb, rgn)) {
+>  			ret = -EBUSY;
+> @@ -1283,7 +1321,6 @@ static void ufshpb_rsp_req_region_update(struct
+> ufshpb_lu *hpb,
+>  		if (srgn->srgn_state == HPB_SRGN_VALID)
+>  			srgn->srgn_state = HPB_SRGN_INVALID;
+>  		spin_unlock(&hpb->rgn_state_lock);
+> -		hpb->stats.rb_active_cnt++;
+>  	}
+> 
+>  	if (hpb->is_hcm) {
+> @@ -1315,7 +1352,6 @@ static void ufshpb_rsp_req_region_update(struct
+> ufshpb_lu *hpb,
+>  		}
+>  		spin_unlock(&hpb->rgn_state_lock);
+> 
+> -		hpb->stats.rb_inactive_cnt++;
+>  	}
+> 
+>  out:
+> @@ -1514,6 +1550,29 @@ static void
+> ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
+>  	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+>  }
+> 
+> +static void ufshpb_normalization_work_handler(struct work_struct 
+> *work)
+> +{
+> +	struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu,
+> +					     ufshpb_normalization_work);
+> +	int rgn_idx;
+> +
+> +	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
+> +		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
+> +
+> +		spin_lock(&rgn->rgn_lock);
+> +		rgn->reads = (rgn->reads >> 1);
+> +		spin_unlock(&rgn->rgn_lock);
+> +
+> +		if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
+> +			continue;
+> +
+> +		/* if region is active but has no reads - inactivate it */
+> +		spin_lock(&hpb->rsp_list_lock);
+> +		ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
+> +		spin_unlock(&hpb->rsp_list_lock);
+> +	}
+> +}
+> +
+>  static void ufshpb_map_work_handler(struct work_struct *work)
+>  {
+>  	struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu, 
+> map_work);
+> @@ -1673,6 +1732,8 @@ static int ufshpb_alloc_region_tbl(struct
+> ufs_hba *hba, struct ufshpb_lu *hpb)
+>  		rgn = rgn_table + rgn_idx;
+>  		rgn->rgn_idx = rgn_idx;
+> 
+> +		spin_lock_init(&rgn->rgn_lock);
+> +
+>  		INIT_LIST_HEAD(&rgn->list_inact_rgn);
+>  		INIT_LIST_HEAD(&rgn->list_lru_rgn);
+> 
+> @@ -1914,6 +1975,9 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
+> *hba, struct ufshpb_lu *hpb)
+>  	INIT_LIST_HEAD(&hpb->list_hpb_lu);
+> 
+>  	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
+> +	if (hpb->is_hcm)
+> +		INIT_WORK(&hpb->ufshpb_normalization_work,
+> +			  ufshpb_normalization_work_handler);
+> 
+>  	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
+>  			  sizeof(struct ufshpb_req), 0, 0, NULL);
+> @@ -2013,6 +2077,8 @@ static void ufshpb_discard_rsp_lists(struct
+> ufshpb_lu *hpb)
+> 
+>  static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+>  {
+> +	if (hpb->is_hcm)
+> +		cancel_work_sync(&hpb->ufshpb_normalization_work);
+>  	cancel_work_sync(&hpb->map_work);
+>  }
+> 
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index 032672114881..32d72c46c57a 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -123,6 +123,10 @@ struct ufshpb_region {
+>  	struct list_head list_lru_rgn;
+>  	unsigned long rgn_flags;
+>  #define RGN_FLAG_DIRTY 0
+> +
+> +	/* region reads - for host mode */
+> +	spinlock_t rgn_lock;
+> +	unsigned int reads;
+>  };
+> 
+>  #define for_each_sub_region(rgn, i, srgn)				\
+> @@ -212,6 +216,7 @@ struct ufshpb_lu {
+> 
+>  	/* for selecting victim */
+>  	struct victim_select_info lru_info;
+> +	struct work_struct ufshpb_normalization_work;
+> 
+>  	/* pinned region information */
+>  	u32 lu_pinned_start;
