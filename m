@@ -2,140 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D7F347211
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE52634720F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235681AbhCXHIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:08:53 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:55513 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235714AbhCXHI3 (ORCPT
+        id S235713AbhCXHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhCXHIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:08:29 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lOxcp-000TyT-2y; Wed, 24 Mar 2021 08:08:19 +0100
-Received: from p57bd9564.dip0.t-ipconnect.de ([87.189.149.100] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lOxco-002Ehe-Rv; Wed, 24 Mar 2021 08:08:19 +0100
-Subject: Re: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
-To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Wed, 24 Mar 2021 03:08:48 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41168C0613DA
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:08:48 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v3so14030957pgq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/RRd13xSmzzPdeil2PYUhQm6+cyptrl5URL+s03EZsI=;
+        b=QAlvvh5jK4gEHwYp56McvWt/j2reVUksBe/t038i9Nj2NpKhSptr9UYnHfJlpEG+0C
+         UwhTCSKgC7iznOpXn6CbSdFmENIzBHhUQBG+azqFBg2RL2lZ7B8/1/2Bz5NU/Jcd0rQi
+         1a9rgyMnNWcZd/Rxtf3SY8EtBjHSmHbaEYUSc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/RRd13xSmzzPdeil2PYUhQm6+cyptrl5URL+s03EZsI=;
+        b=X13Xu8pcFXV2/KpZ1OhkIICtTGwZRDJOLypYn5r3XTHaTUV6dt0+DO6w1QoEsYc9VE
+         1Uu+6ERpdi/amBLCgOet9WRo1nHxWi6EtJ6znKdJocDEPBmV+mVxEzq2hGlQbeT1I1eX
+         bmDNPDpqOnGXFNSkqJbVZDq3PqlLHGLV0Mt7fziRBwf2OvUfL11rwIToTuAn6XOjXsPJ
+         8x/6eW0zrq4M/9MTQBZ/6ZTdYEzv6HXOtiMOyOy+Rr1bRpSnnRL1/nB7G74Z6+f01mPd
+         EK7O+h7+vhUFjh1I/Imlrz6MubuTEnio/exD/b41yV5inR+CseGZUcmzjAU/MNFhFlq3
+         4gWg==
+X-Gm-Message-State: AOAM530PZ9tAfTIO5rB4SpOmpViye7yXXRUI+YeLkad3WNctWwYT0g2p
+        fSKYsRSRhSdaL0/l8GdVwOUw5Q==
+X-Google-Smtp-Source: ABdhPJwI0x2w6Tp2BHTsGd/z+j1YMe41PeKg3PJTel2Z+1wKA5TzhFhhV2Req+NqwYyObpioIBwOtw==
+X-Received: by 2002:a62:2a83:0:b029:21a:d3a4:80f2 with SMTP id q125-20020a622a830000b029021ad3a480f2mr1665580pfq.47.1616569727657;
+        Wed, 24 Mar 2021 00:08:47 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:c8d1:279a:cb3a:39cd])
+        by smtp.gmail.com with ESMTPSA id t18sm1408077pgg.33.2021.03.24.00.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 00:08:47 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Cc:     linux-ia64@vger.kernel.org, storagedev@microchip.com,
-        linux-scsi@vger.kernel.org, Joe Szczypek <jszczype@redhat.com>,
-        Scott Benesh <scott.benesh@microchip.com>,
-        Scott Teel <scott.teel@microchip.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Don Brace <don.brace@microchip.com>
-References: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
- <20210312222718.4117508-1-slyfox@gentoo.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <f533ad03-9dcf-fa28-e76a-63fef33d523c@physik.fu-berlin.de>
-Date:   Wed, 24 Mar 2021 08:08:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: [PATCH v2] arm64: dts: mt8183: Add gce client reg for display subcomponents
+Date:   Wed, 24 Mar 2021 15:08:42 +0800
+Message-Id: <20210324070842.1037233-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-In-Reply-To: <20210312222718.4117508-1-slyfox@gentoo.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.149.100
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Add mediatek,gce-client-reg for mmsys, ccorr, aal, gamma, dither.
 
-On 3/12/21 11:27 PM, Sergei Trofimovich wrote:
-> The failure initially observed as boot failure on rx3600 ia64 machine
-> with RAID bus controller: Hewlett-Packard Company Smart Array P600:
-> 
->     kernel unaligned access to 0xe000000105dd8b95, ip=0xa000000100b87551
->     kernel unaligned access to 0xe000000105dd8e95, ip=0xa000000100b87551
->     hpsa 0000:14:01.0: Controller reports max supported commands of 0 Using 16 instead. Ensure that firmware is up to date.
->     swapper/0[1]: error during unaligned kernel access
-> 
-> Here unaligned access comes from 'struct CommandList' that happens
-> to be packed. The change f749d8b7a ("scsi: hpsa: Correct dev cmds
-> outstanding for retried cmds") introduced unexpected padding and
-> un-aligned atomic_t from natural alignment to something else.
-> 
-> This change does not remove packing annotation from struct but only
-> restores alignment of atomic variable.
-> 
-> The change is tested on the same rx3600 machine.
-> 
-> CC: linux-ia64@vger.kernel.org
-> CC: storagedev@microchip.com
-> CC: linux-scsi@vger.kernel.org
-> CC: Joe Szczypek <jszczype@redhat.com>
-> CC: Scott Benesh <scott.benesh@microchip.com>
-> CC: Scott Teel <scott.teel@microchip.com>
-> CC: Tomas Henzl <thenzl@redhat.com>
-> CC: "Martin K. Petersen" <martin.petersen@oracle.com>
-> CC: Don Brace <don.brace@microchip.com>
-> Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Suggested-by: Don Brace <don.brace@microchip.com>
-> Fixes: f749d8b7a "scsi: hpsa: Correct dev cmds outstanding for retried cmds"
-> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> ---
->  drivers/scsi/hpsa_cmd.h | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/hpsa_cmd.h b/drivers/scsi/hpsa_cmd.h
-> index d126bb877250..617bdae9a7de 100644
-> --- a/drivers/scsi/hpsa_cmd.h
-> +++ b/drivers/scsi/hpsa_cmd.h
-> @@ -20,6 +20,9 @@
->  #ifndef HPSA_CMD_H
->  #define HPSA_CMD_H
->  
-> +#include <linux/build_bug.h> /* static_assert */
-> +#include <linux/stddef.h> /* offsetof */
-> +
->  /* general boundary defintions */
->  #define SENSEINFOBYTES          32 /* may vary between hbas */
->  #define SG_ENTRIES_IN_CMD	32 /* Max SG entries excluding chain blocks */
-> @@ -448,11 +451,20 @@ struct CommandList {
->  	 */
->  	struct hpsa_scsi_dev_t *phys_disk;
->  
-> -	bool retry_pending;
-> +	int retry_pending;
->  	struct hpsa_scsi_dev_t *device;
->  	atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */
->  } __aligned(COMMANDLIST_ALIGNMENT);
->  
-> +/*
-> + * Make sure our embedded atomic variable is aligned. Otherwise we break atomic
-> + * operations on architectures that don't support unaligned atomics like IA64.
-> + *
-> + * Ideally this header should be cleaned up to only mark individual structs as
-> + * packed.
-> + */
-> +static_assert(offsetof(struct CommandList, refcount) % __alignof__(atomic_t) == 0);
-> +
->  /* Max S/G elements in I/O accelerator command */
->  #define IOACCEL1_MAXSGENTRIES           24
->  #define IOACCEL2_MAXSGENTRIES		28
+Fixes: 91f9c963ce79 ("arm64: dts: mt8183: Add display nodes for MT8183")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
+v1->v2:
+Add for mmsys.
+---
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-I'm seeing this issue as well and without the patch, the kernel won't boot on multiple
-ia64 servers. Is there anything that speaks against fixing this?
-
-Thanks,
-Adrian
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 80519a145f13..16f4b1fc0fb9 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -983,6 +983,9 @@ mmsys: syscon@14000000 {
+ 			compatible = "mediatek,mt8183-mmsys", "syscon";
+ 			reg = <0 0x14000000 0 0x1000>;
+ 			#clock-cells = <1>;
++			mboxes = <&gce 0 CMDQ_THR_PRIO_HIGHEST>,
++				 <&gce 1 CMDQ_THR_PRIO_HIGHEST>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
+ 		};
+ 
+ 		ovl0: ovl@14008000 {
+@@ -1058,6 +1061,7 @@ ccorr0: ccorr@1400f000 {
+ 			interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_LOW>;
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+ 			clocks = <&mmsys CLK_MM_DISP_CCORR0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xf000 0x1000>;
+ 		};
+ 
+ 		aal0: aal@14010000 {
+@@ -1067,6 +1071,7 @@ aal0: aal@14010000 {
+ 			interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_LOW>;
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+ 			clocks = <&mmsys CLK_MM_DISP_AAL0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0 0x1000>;
+ 		};
+ 
+ 		gamma0: gamma@14011000 {
+@@ -1075,6 +1080,7 @@ gamma0: gamma@14011000 {
+ 			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_LOW>;
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+ 			clocks = <&mmsys CLK_MM_DISP_GAMMA0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x1000 0x1000>;
+ 		};
+ 
+ 		dither0: dither@14012000 {
+@@ -1083,6 +1089,7 @@ dither0: dither@14012000 {
+ 			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_LOW>;
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+ 			clocks = <&mmsys CLK_MM_DISP_DITHER0>;
++			mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x2000 0x1000>;
+ 		};
+ 
+ 		dsi0: dsi@14014000 {
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.31.0.291.g576ba9dcdaf-goog
 
