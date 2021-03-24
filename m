@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D780347C3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734EC347C6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhCXPUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:20:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:5443 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236622AbhCXPUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:20:05 -0400
-IronPort-SDR: 8B0I7IHkDmVn7MCYwijv7T5kqXYfB/AnwAEf43KvE20aMUgtTVFN9X9A0QH4maxSEl9KhGQRjS
- Oj623A0+hdGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="177843099"
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="177843099"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:20:04 -0700
-IronPort-SDR: 0Csxo38hYG0gOWjX4f8jYtke/oOzK7BN7YMXUE1uQxG3pye9fUXjGOMOwlDz/Tf+xGLjli431t
- w3AjDvzB7v1w==
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="408895864"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:20:03 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lP5If-00Fj94-4b; Wed, 24 Mar 2021 17:20:01 +0200
-Date:   Wed, 24 Mar 2021 17:20:01 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
-Message-ID: <YFtYoefcG6+jI3mQ@smile.fi.intel.com>
-References: <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
- <20210324102931.GH2916463@dell>
- <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
- <20210324104729.GL2916463@dell>
- <YFsgf9J+hQjfrZCb@smile.fi.intel.com>
- <20210324115033.GM2916463@dell>
- <YFsv6DijMMiv3D10@smile.fi.intel.com>
- <20210324130723.GN2916463@dell>
- <YFtKo4IrOGWoX6O3@smile.fi.intel.com>
- <20210324151035.GO2916463@dell>
+        id S236620AbhCXPVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236471AbhCXPVU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:21:20 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBDDC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:21:19 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id n138so32547841lfa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3XcQtBW2pWb3U+df3ex1+Hhi50G51wTIprzcAH+EBJQ=;
+        b=CDl64vzfljKg43qIelbz0cgBgakJdVgrQU91jH5/QDV5ZussvDriYPMSLrINiJzE9h
+         fC6WnXJ5dNjcMeQh9E9PJmdPf7kSnO2kH8FwcQerVDRP9vyO8yqXubTzIJjQumFEsbiU
+         dwN5vA/4omeE1nbR2sgTaU/VeKGpNe+ijGTo0uCQLOqBlOb2D73h6SUsS8cjw8epSuSd
+         0KBXxutsRHn4qeJrz5spQHcN6sBIhizC4JdPKqTW01hx93uI2oFz13UUPFd5HgrvN3Fu
+         p+WigmTCnUSPaFG/l5XEOZmf4JQtwtxQaUNVKpCy1QxSdHAy3OUXwZ8wC+BRfyiLJlmK
+         V9Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3XcQtBW2pWb3U+df3ex1+Hhi50G51wTIprzcAH+EBJQ=;
+        b=ELUlVF1XKax9sY+XhuIpZSSYrtvIa3D2+gq2d+A9g+DsPFt946Iz+3m6J2DOTx+4CB
+         ltwgB8LefVVMQy5Ho4X5FaFFejkY65xks4TsiK7jhdVM+oEVUEQBKC4efueLePMpgOVz
+         G2zISnBcWXMOVL0JxCKInazh/YBlgjNPpRL26LW3s1mbRF1ZlSjdXRDK7mqUPDZfb8CX
+         k4r7NTLXx3HSB/bih9KURwlFZ/dZWPBg450sUYf5GKrToMBHfPvxzrgQUicKVrpmco6E
+         9cm+R5DyhFJTi3O0QNsk/z/30hxx+bpA3birnwPmDiISafq3aLGznKHohLJBeny3Tu4I
+         4OWw==
+X-Gm-Message-State: AOAM532svPbbI2SaoQLBmWUiS63VrIqjY6VYhmv/NiN2Q0YdTcALyxCK
+        SAOJIVKRIbABmcUh90vrknWTF44mdJzkOIm1nGKWzg==
+X-Google-Smtp-Source: ABdhPJwFHy/BR75zWE4kd73NiY96ZW993iszaMZ//vKc+0dkRh8vhv8zydS7tEGsS/+YcXIHE3UVELb7j70okvWkdBc=
+X-Received: by 2002:ac2:5a0b:: with SMTP id q11mr2273174lfn.391.1616599278269;
+ Wed, 24 Mar 2021 08:21:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324151035.GO2916463@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210324150312.20535-1-changbin.du@gmail.com>
+In-Reply-To: <20210324150312.20535-1-changbin.du@gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 24 Mar 2021 20:51:06 +0530
+Message-ID: <CAAhSdy19Tpf1D0Q4V7CF0ZOvksHMXxA2fF3L3J2f_Ka8NZgVAQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Do not invoke early_init_dt_verify() twice
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 03:10:35PM +0000, Lee Jones wrote:
-> On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-> > On Wed, Mar 24, 2021 at 01:07:23PM +0000, Lee Jones wrote:
-> > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-> > > > On Wed, Mar 24, 2021 at 11:50:33AM +0000, Lee Jones wrote:
+On Wed, Mar 24, 2021 at 8:33 PM Changbin Du <changbin.du@gmail.com> wrote:
+>
+> In the setup_arch() of riscv, function early_init_dt_verify() has
+> been done by parse_dtb(). So no need to call it again. Just directly
+> invoke unflatten_device_tree().
+>
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> ---
+>  arch/riscv/kernel/setup.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index f8f15332caa2..2a3d487e1710 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -255,10 +255,7 @@ void __init setup_arch(char **cmdline_p)
+>  #if IS_ENABLED(CONFIG_BUILTIN_DTB)
+>         unflatten_and_copy_device_tree();
+>  #else
+> -       if (early_init_dt_verify(__va(dtb_early_pa)))
+> -               unflatten_device_tree();
+> -       else
+> -               pr_err("No DTB found in kernel mappings\n");
+> +       unflatten_device_tree();
+>  #endif
 
-...
+The early_init_dt_verify() set he DTB base address in Linux OF.
 
-> > > > It's a two way road:
-> > > > a) driver states that it needs only 1 vector and it's enough to it
-> > > > b) hardware must provide at least 1 vector to be served by this driver.
-> > > > 
-> > > > Look again into grepped output. Most of drivers that define it as an variable
-> > > > may dynamically adapt to the different amount of IRQ vectors. When it's static,
-> > > > usually drivers just hard code those values.
-> > > > 
-> > > > I'm really don't see a point to define them _in this driver_.
-> > > 
-> > > That's fine.  I just felt like I had to ask.
-> > > 
-> > > Would you consider a comment that lets people unfamiliar with the API
-> > > what the values mean?
-> > > 
-> > > Something to the tune of:
-> > > 
-> > >   "This driver requests 1 (and only 1) IRQ vector"
-> > 
-> > 
-> > Rather
-> > 
-> >     "This driver requests only 1 (and it's enough) IRQ vector"
-> 
->  "This driver only requires 1 IRQ vector"
+When parse_dtb() calls early_init_dt_verify(), MMU is enabled but
+we have temporary mapping for DTB (i.e. dtb_early_va).
 
-Thanks! v3 has been sent.
+After paging_init(), we have moved to final swapper_pg_dir so
+temporary mapping for DTB does not exists anymore but DTB
+is at same physical address so update DTB base address in
+Linux OF by calling early_init_dt_verify() again.
 
-> > or something like this.
-> > 
-> > Should I send a patch with the comment included? If so, please suggest if it's
-> > good from English grammar/style perspective.
+Based on above, NACK to this patch.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Anup
 
-
+>         misc_mem_init();
+>
+> --
+> 2.30.2
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
