@@ -2,162 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25703476F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294253476F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbhCXLSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:18:39 -0400
-Received: from mail-bn8nam11on2057.outbound.protection.outlook.com ([40.107.236.57]:26966
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231455AbhCXLSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:18:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hsgRKHYDuEzwOBxxITHZKBba8q60F8D43oBvHb5CEssW3R7B/TPayDD+oefsIQ1FZbysDrdU8Lv6QS43dS/vDPVR7l/2TgI/TpAs3QEiS3sZo7FK4oy3sKbRFANdZ0Q5nN2tnHkjAB2gKA51V0bfMHWHnmxFYrkRO3fLdHvFP/hYH8vJ2UI4f9cyAJTqHenyXP8TFl6K2EzSMNMWm0q9YeAev9VRWFg4JmyAFia88wfluWp+T2qxRc1OVdBwPjw/fiojaCIU+Jm1hBHywOdGs/y2PNdQg4TL1EAArDNheuoTcaiWzKzeteJH8bQJEWiCxNDjiUj+4UCteI1AtkmHEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u0QAc6Kud6+01O7KSE/Iprlyv16HyR4g+TOQFJ/+TeE=;
- b=Wp5On4BsHyq8iMn5dEM6/qdNLjiP9zjNE6HVC5DlRUmkbyg65mlXMR2ZI/23rILiNYAVFBDYrVzg3m+bJZyNG8ctSadpPhJmIlzSrTu7Q7H8uxJSDn4OhU212sNlDRLSopZgUv7knK88lhbhX7Jle5yoFe4sO22hkJ9qbA3kh/pJLUE5y1BUb3tOJi0z9IZMy5OmddpArpLAI8aTKSW0joJ4LJ2rWBpucXptR6y6MEapdONL8Rf58HIqSlkkxNHfyKghNDroipIuhs7rNYeg/B73Ew+/VWy8RxEF4NnyY6aJCNjbhABS4d3cRYfeG2KwJbMxPJxpGID5sI3mhr8VXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u0QAc6Kud6+01O7KSE/Iprlyv16HyR4g+TOQFJ/+TeE=;
- b=qRyEh4/Y2K9sbhQCn5n1CtHYmjMVL79SWhcKPDYXSlCsAy4KiTbD5XeRmd0zRil++jsrU/Cwa8DXK9hz51nmBQPo8b/L/OSP4Apv4miyZbwy0UbSLlqRL3uVrnm7PxTxG2IGDd/rFzEIlQFywW/r3UjXhAn3/yMRhtldf+sr/ACJgzYbYSDBHGPoftkHMKaYfaM3hnenmeUCzHsNJxosPog8YwlB3EUS8x3yPL7WtRWgv5MPH7GER/+5LiIXcbOPlTfKzU7ZfExQihc/jRKWNB5l/GFZHFbUDQVs1PoyB7wiKvnefstqefF3QMDf6EcaknJd4PI16STiHrrsnRHg8g==
-Received: from MW4PR04CA0364.namprd04.prod.outlook.com (2603:10b6:303:81::9)
- by MN2PR12MB2941.namprd12.prod.outlook.com (2603:10b6:208:a9::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 24 Mar
- 2021 11:18:19 +0000
-Received: from CO1NAM11FT037.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:81:cafe::be) by MW4PR04CA0364.outlook.office365.com
- (2603:10b6:303:81::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend
- Transport; Wed, 24 Mar 2021 11:18:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT037.mail.protection.outlook.com (10.13.174.91) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Wed, 24 Mar 2021 11:18:18 +0000
-Received: from [10.25.96.178] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 24 Mar
- 2021 11:18:12 +0000
-Subject: Re: [PATCH] ASoC: dt-bindings: nvidia,tegra210-ahub: Add missing
- child nodes
-To:     Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>
-References: <20210323200005.1196572-1-robh@kernel.org>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <6b6d57fb-8596-fa22-0a5a-9d535803d10a@nvidia.com>
-Date:   Wed, 24 Mar 2021 16:48:06 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S234662AbhCXLTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:19:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60746 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231455AbhCXLSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 07:18:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 95105AE37;
+        Wed, 24 Mar 2021 11:18:45 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 12:18:40 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v1 1/3] kernel/resource: make walk_system_ram_res() find
+ all busy IORESOURCE_SYSTEM_RAM resources
+Message-ID: <20210324111835.GA18855@linux>
+References: <20210322160200.19633-1-david@redhat.com>
+ <20210322160200.19633-2-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210323200005.1196572-1-robh@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 42854e5b-27e3-43ac-d677-08d8eeb686f4
-X-MS-TrafficTypeDiagnostic: MN2PR12MB2941:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB29412CB732ABCD1CF6CBEFFCA7639@MN2PR12MB2941.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VSi8QgUlmuA6hL/IlNXAFL0VDWbPLsE98FWNTgoAMZLrVJ2w4O7FUWlR5SlrOl54xCe2as5ipOW5uNKe8Pu1Y+TNdaDbsaBnQ3gfSx8/sdePQZ6SE1gQuWbqEfmdPTl5Intfuc4zqUX60fv0MD9d24asibmwYN9bzAsN+4B9/6rzghEr1B6TxQv3yb8ZMayXNEkfPfyEOlhN+9xsXX0g5DIINJbLMzEQJ3VYB8UYIeIfPcTlx2FY/2rkbSXvNbVRedyJDcH70/9NuYNlcz04bucZ25+tLIwHTOczJnU3Lzp9VNGMAklS3pjrKcFNRUrC9DVsdkbx5V/3VbjIaequ0IuA0zLE5qD76jjB9aqDg9L7Ntv/a7TOjm7GaDpwfQh7o8pt+XtglOZoFsfxUOSf9UPPqe7ZTFSDE1TT8rxHixZW/boi1UjGEl8uPaaRzRISvYfJyb+8pcXqBEVH7DyAFj6MF9LiR3D7MtHqpHYqRC9GhxqW8jkTZC/zm4Sqc+YJcxFy6xxuOrzc4/PdF6naPBubSw9w9SwO7zRm/Axb8QGDyXOEp+Zhz+e5VkCToPTBrXWGmllCzr9BAqX0lRaQB4th2sFFKm4R80Qc0zmfFyS02ULVzfMVMYT8s3pcAs91eh70WYBZePfo12yYtNa+wbeW6UJS6K1BakQQFsFoduiH59RhagmJ0EYKSSVttHMQooY/ry3LRLlWfmWfDvJEMjZv2vqkTvIqKaoF0rYLz1eQSgbvq83mec19/gUMtYwY3NvBUOQov6+ZDOyX1cVgeCWJtxu6YrHgbfKKR8vqVhc=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(136003)(376002)(46966006)(36840700001)(47076005)(36756003)(336012)(31686004)(4326008)(5660300002)(70206006)(426003)(8936002)(8676002)(316002)(2616005)(82310400003)(70586007)(86362001)(186003)(26005)(36860700001)(83380400001)(966005)(53546011)(478600001)(6666004)(110136005)(82740400003)(16526019)(7636003)(2906002)(356005)(54906003)(31696002)(36906005)(16576012)(21314003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 11:18:18.7516
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42854e5b-27e3-43ac-d677-08d8eeb686f4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT037.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB2941
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322160200.19633-2-david@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 05:01:58PM +0100, David Hildenbrand wrote:
+> It used to be true that we can have busy system RAM only on the first level
+> in the resourc tree. However, this is no longer holds for driver-managed
+> system RAM (i.e., added via dax/kmem and virtio-mem), which gets added on
+> lower levels.
 
+Let me ask some rookie questions:
 
-On 3/24/2021 1:30 AM, Rob Herring wrote:
-> External email: Use caution opening links or attachments
->
->
-> The nvidia,tegra210-ahub binding is missing schema for child nodes. This
-> results in warnings if 'additionalProperties: false' is set (or when the
-> tools implement 'unevaluatedProperties' support). Add the child nodes
-> and reference their schema if one exists.
->
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: Sameer Pujar <spujar@nvidia.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-tegra@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+What does "busy" term stand for here?
+Why resources coming from virtio-mem are added at a lower levels?
+
+> 
+> We have two users of walk_system_ram_res(), which currently only
+> consideres the first level:
+> a) kernel/kexec_file.c:kexec_walk_resources() -- We properly skip
+>    IORESOURCE_SYSRAM_DRIVER_MANAGED resources via
+>    locate_mem_hole_callback(), so even after this change, we won't be
+>    placing kexec images onto dax/kmem and virtio-mem added memory. No
+>    change.
+> b) arch/x86/kernel/crash.c:fill_up_crash_elf_data() -- we're currently
+>    not adding relevant ranges to the crash elf info, resulting in them
+>    not getting dumped via kdump.
+> 
+> This change fixes loading a crashkernel via kexec_file_load() and including
+> dax/kmem and virtio-mem added System RAM in the crashdump on x86-64. Note
+> that e.g,, arm64 relies on memblock data and, therefore, always considers
+> all added System RAM already.
+> 
+> Let's find all busy IORESOURCE_SYSTEM_RAM resources, making the function
+> behave like walk_system_ram_range().
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Cc: Signed-off-by: David Hildenbrand <david@redhat.com>
+> Cc: Dave Young <dyoung@redhat.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Keith Busch <keith.busch@intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Eric Biederman <ebiederm@xmission.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: x86@kernel.org
+> Cc: kexec@lists.infradead.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
-> This patch ideally should be applied before this series[1].
->
-> [1] https://lore.kernel.org/r/20210323163634.877511-1-robh@kernel.org/
->
->   .../bindings/sound/nvidia,tegra210-ahub.yaml         | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> index e568d6c7dddd..d7a5eb77ed4f 100644
-> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-> @@ -69,6 +69,18 @@ properties:
->           $ref: audio-graph-port.yaml#
->           unevaluatedProperties: false
->
-> +patternProperties:
-> +  '^i2s@[0-9a-f]+$':
-> +    type: object
-> +
-> +  '^dmic@[0-9a-f]+$':
-> +    type: object
-> +    $ref: nvidia,tegra210-dmic.yaml#
-> +
-> +  '^admaif@[0-9a-f]+$':
-> +    type: object
-> +    $ref: nvidia,tegra210-admaif.yaml#
-> +
+>  kernel/resource.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index 627e61b0c124..4efd6e912279 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -457,7 +457,7 @@ int walk_system_ram_res(u64 start, u64 end, void *arg,
+>  {
+>  	unsigned long flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+>  
+> -	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, true,
+> +	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
+>  				     arg, func);
+>  }
+>  
+> -- 
+> 2.29.2
+> 
+> 
 
-There is "dspk@xxx" child node as well for ahub, though schema example 
-does not show this. I am seeing error because of this during 
-"dtbs_check". Wondering if we can add following with this patch?
-
-+  '^dspk@[0-9a-f]+$':
-+    type: object
-+    $ref: nvidia,tegra186-dspk.yaml#
-
-
->   required:
->     - compatible
->     - reg
-> --
-> 2.27.0
->
-
+-- 
+Oscar Salvador
+SUSE L3
