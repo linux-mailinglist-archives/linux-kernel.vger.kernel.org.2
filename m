@@ -2,142 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB4A34777A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBC2347778
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhCXLfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:35:11 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:33158 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhCXLe1 (ORCPT
+        id S231425AbhCXLfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:35:04 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:43948 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhCXLef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:34:27 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 9C665E03B9;
-        Wed, 24 Mar 2021 19:34:21 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Wang Qing <wangqing@vivo.com>, Petr Mladek <pmladek@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3] workqueue/watchdog: Make unbound workqueues aware of
-Date:   Wed, 24 Mar 2021 19:34:02 +0800
-Message-Id: <1616585643-26720-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSUtNTUNCSRkdQk4ZVkpNSk1OQ05NTUpCQkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NiI6Nio5Qj8VHj8ZKBA#FEMi
-        EBkwCTZVSlVKTUpNTkNOTU1JSExJVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5LVUpMTVVJSUJZV1kIAVlBT09NQzcG
-X-HM-Tid: 0a7864039de32c17kusn9c665e03b9
+        Wed, 24 Mar 2021 07:34:35 -0400
+Received: by mail-wm1-f45.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so984610wmj.2;
+        Wed, 24 Mar 2021 04:34:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wm/9a6kZkiuVOFe31z2+1vJJkLjZFaF876IvDwGaMmI=;
+        b=aNPIHyGlX6kUhHd3dBqcYvxzqfz7mGQxbCb85IWHVnBdMGeFRa3kfh6PIw3ckDMSk7
+         /SpIhiYQqSI3P5xvQIUROOpL+e0BFxZ0Y4xKIjr42YijPzeAaZm1lk7vSEBPHe41C/RN
+         JIY2Zc6P5tguVAeDRqIomEFSW8p/hNMXnJvylNnFJFcebqgsBnSgPLYiop/sNFixnhRY
+         YjVIGc4IRvH51eErwvyQQaSm+EhxOjMvf8gp7cXmYpU/utQVQ1/X7YiviAUby2PQQG3I
+         afbgUIoRfam8Ufq+y6RTrKThTrNv7v2eYZTxN0thkndFViwIi0Yu+DNwFNpVfcwFWgek
+         IQ3Q==
+X-Gm-Message-State: AOAM5310+aJLkMfbsh15V4zwxGTIQ8xu4/0+0sfJFocrrPyW1C5a/pIY
+        +zCsbAbihtCsowtB9ctawyc=
+X-Google-Smtp-Source: ABdhPJwPJq3dYlQZdKdJ9R7TCaOjbAYsM9iwM2zP8j2DwSLab0Hc592VNibgh9UFHomwlxclhsnMSg==
+X-Received: by 2002:a05:600c:3647:: with SMTP id y7mr2487829wmq.17.1616585668486;
+        Wed, 24 Mar 2021 04:34:28 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id a14sm2772901wrn.5.2021.03.24.04.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 04:34:27 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 11:34:26 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Xu Yihang <xuyihang@huawei.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        johnny.chenyi@huawei.com
+Subject: Re: [PATCH -next] x86: Fix unused variable 'hi'
+Message-ID: <20210324113426.n5xmcqmrsjzrgwrd@liuwe-devbox-debian-v2>
+References: <20210318074607.124663-1-xuyihang@huawei.com>
+ <20210323025013.191533-1-xuyihang@huawei.com>
+ <20210323113250.ktsfwr2wzjycugyk@liuwe-devbox-debian-v2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323113250.ktsfwr2wzjycugyk@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two workqueue-specific watchdog timestamps:
+On Tue, Mar 23, 2021 at 11:32:50AM +0000, Wei Liu wrote:
+> On Tue, Mar 23, 2021 at 10:50:13AM +0800, Xu Yihang wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > arch/x86/hyperv/hv_apic.c:58:15: warning: variable ‘hi’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Compiled with CONFIG_HYPERV enabled:
+> > make allmodconfig ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+> > make W=1 arch/x86/hyperv/hv_apic.o ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+> > 
+> > HV_X64_MSR_EOI stores on bit 31:0 and HV_X64_MSR_TPR stores in bit 7:0, which means higher
+> > 32 bits are not really used, therefore  potentially cast to void in order to silent this warning.
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Xu Yihang <xuyihang@huawei.com>
+> > ---
+> >  arch/x86/hyperv/hv_apic.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/arch/x86/hyperv/hv_apic.c b/arch/x86/hyperv/hv_apic.c
+> > index 284e73661a18..a8b639498033 100644
+> > --- a/arch/x86/hyperv/hv_apic.c
+> > +++ b/arch/x86/hyperv/hv_apic.c
+> > @@ -60,9 +60,11 @@ static u32 hv_apic_read(u32 reg)
+> >  	switch (reg) {
+> >  	case APIC_EOI:
+> >  		rdmsr(HV_X64_MSR_EOI, reg_val, hi);
+> > +		(void) hi;
+> >  		return reg_val;
+> >  	case APIC_TASKPRI:
+> >  		rdmsr(HV_X64_MSR_TPR, reg_val, hi);
+> > +		(void) hi;
+> 
+> I would like to remove the space while committing this patch. There is
+> no need for you to do anything.
 
-    + @wq_watchdog_touched_cpu (per-CPU) updated by
-      touch_softlockup_watchdog()
-
-    + @wq_watchdog_touched (global) updated by
-      touch_all_softlockup_watchdogs()
-
-watchdog_timer_fn() checks only the global @wq_watchdog_touched for
-unbound workqueues. As a result, unbound workqueues are not aware
-of touch_softlockup_watchdog(). The watchdog might report a stall
-even when the unbound workqueues are blocked by a known slow code.
-
-Solution:
-touch_softlockup_watchdog() must touch also the global @wq_watchdog_touched 
-timestamp.
-
-The global timestamp can not longer be used for bound workqueues
-because it is updated on all CPUs. Instead, bound workqueues
-have to check only @wq_watchdog_touched_cpu and these timestamp
-has to be updated for all CPUs in touch_all_softlockup_watchdogs().
-
-Beware:
-The change might cause the opposite problem. An unbound workqueue
-might get blocked on CPU A because of a real softlockup. The workqueue
-watchdog would miss it when the timestamp got touched on CPU B.
-
-It is acceptable because softlockups are detected by softlockup
-watchdog. The workqueue watchdog is there to detect stalls where
-a work never finishes, for example, because of dependencies of works
-queued into the same workqueue.
-
-V3:
-- Modify the commit message clearly according to Petr's suggestion.
-
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- kernel/watchdog.c  |  5 +++--
- kernel/workqueue.c | 17 ++++++-----------
- 2 files changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 7110906..107bc38
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -278,9 +278,10 @@ void touch_all_softlockup_watchdogs(void)
- 	 * update as well, the only side effect might be a cycle delay for
- 	 * the softlockup check.
- 	 */
--	for_each_cpu(cpu, &watchdog_allowed_mask)
-+	for_each_cpu(cpu, &watchdog_allowed_mask) {
- 		per_cpu(watchdog_touch_ts, cpu) = SOFTLOCKUP_RESET;
--	wq_watchdog_touch(-1);
-+		wq_watchdog_touch(cpu);
-+	}
- }
- 
- void touch_softlockup_watchdog_sync(void)
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 0d150da..be08295
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5787,22 +5787,17 @@ static void wq_watchdog_timer_fn(struct timer_list *unused)
- 			continue;
- 
- 		/* get the latest of pool and touched timestamps */
-+		if (pool->cpu >= 0)
-+			touched = READ_ONCE(per_cpu(wq_watchdog_touched_cpu, pool->cpu));
-+		else
-+			touched = READ_ONCE(wq_watchdog_touched);
- 		pool_ts = READ_ONCE(pool->watchdog_ts);
--		touched = READ_ONCE(wq_watchdog_touched);
- 
- 		if (time_after(pool_ts, touched))
- 			ts = pool_ts;
- 		else
- 			ts = touched;
- 
--		if (pool->cpu >= 0) {
--			unsigned long cpu_touched =
--				READ_ONCE(per_cpu(wq_watchdog_touched_cpu,
--						  pool->cpu));
--			if (time_after(cpu_touched, ts))
--				ts = cpu_touched;
--		}
--
- 		/* did we stall? */
- 		if (time_after(jiffies, ts + thresh)) {
- 			lockup_detected = true;
-@@ -5826,8 +5821,8 @@ notrace void wq_watchdog_touch(int cpu)
- {
- 	if (cpu >= 0)
- 		per_cpu(wq_watchdog_touched_cpu, cpu) = jiffies;
--	else
--		wq_watchdog_touched = jiffies;
-+
-+	wq_watchdog_touched = jiffies;
- }
- 
- static void wq_watchdog_set_thresh(unsigned long thresh)
--- 
-2.7.4
-
+Applied to hyperv-next.
