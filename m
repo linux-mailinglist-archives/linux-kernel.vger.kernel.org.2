@@ -2,313 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BC33475AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D8B34A4A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhCXKP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:15:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230094AbhCXKPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:15:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75A43619BB;
-        Wed, 24 Mar 2021 10:15:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616580942;
-        bh=oBzpQjECDLbDpeG6Pa0irL9Xx1mC7G4xHusdndHrJFI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RmAEAbix+lvoibPoKrLrV/xrPrwYCy3ac5Uy2fs6uPNOOSthwgzAO23q16IhH6EYd
-         po3W9PNUOzWu13yhSOgCnGlnY8aGvLkfX5pCYZIA07H+aSrM6NImcJe1u9tO2GzEP5
-         WZE7gS/VbMsAP83NzCOXy49LILr0epAPyqe610A3H+jNm1cYaMGv0ymg3bC70Fr2Zr
-         W9tjNlBEEn12OOtdzSO+Bl0Xm6qwMmUEn6LY9X4pWb7b2Jil5nQj/vcVubAIzAaFOV
-         YYEoH0mTZtogMaUaU9SCHDMwOVrTmGTsk887ChnddylqP75isIZYDLhEduJOzSkyNZ
-         JzEa6N05afXzQ==
-From:   guoren@kernel.org
-To:     guoren@kernel.org
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup@brainfault.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] riscv: locks: introduce ticket-based spinlock implementation
-Date:   Wed, 24 Mar 2021 10:14:52 +0000
-Message-Id: <1616580892-80815-1-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
+        id S230135AbhCZJhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:37:22 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:58404 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhCZJhD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:37:03 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210326093701epoutp0115ecb8b507c569eec809138acc76c572~v2toHrpvL0517005170epoutp01D
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 09:37:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210326093701epoutp0115ecb8b507c569eec809138acc76c572~v2toHrpvL0517005170epoutp01D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616751421;
+        bh=hxHXp6PeFmfwJxhC51xr7jOS0CvxIZzcuhvqoRIdIoY=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=NzjKLmCfwxm5+swbdcj36hMuiiRJODvGQlye6vmgT1Y0o+YXs4FtwDzRgTxHsWaLG
+         sRdNWNLjlV2K4eJTcGkOu6q8JEp8p68LRGnpphja7qsFt90eW/goRfDu1F9SFy2z5x
+         3/tHveYG6A/clraEdsAoiL7EM8m/cT9RKb7MVVd0=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20210326093659epcas5p318af0671c516bc2e17b4a202fa47783a~v2tmyN0O52571125711epcas5p3v;
+        Fri, 26 Mar 2021 09:36:59 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        93.CD.41008.B3BAD506; Fri, 26 Mar 2021 18:36:59 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210324101555epcas5p1b5c8ff4d99b045b94f820c2151800127~vP9B0vIAg1046710467epcas5p1g;
+        Wed, 24 Mar 2021 10:15:55 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210324101555epsmtrp1347a89b34131b9c8ca40757871367bea~vP9Bz2m9F1863418634epsmtrp1M;
+        Wed, 24 Mar 2021 10:15:55 +0000 (GMT)
+X-AuditID: b6c32a4b-661ff7000001a030-fb-605dab3bca2b
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2C.DD.33967.B511B506; Wed, 24 Mar 2021 19:15:55 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210324101553epsmtip14886026cd630a4b503948d646d4664fd~vP9AIC2nm1129011290epsmtip1y;
+        Wed, 24 Mar 2021 10:15:53 +0000 (GMT)
+From:   Shradha Todi <shradha.t@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Cc:     p.rajanbabu@samsung.com, lorenzo.pieralisi@arm.com, kishon@ti.com,
+        bhelgaas@google.com, niyas.ahmed@samsung.com, hari.tv@samsung.com,
+        l.mehra@samsung.com, pankaj.dubey@samsung.com,
+        Shradha Todi <shradha.t@samsung.com>,
+        Sriram Dash <dash.sriram@gmail.com>
+Subject: [PATCH v5] PCI: endpoint: Fix NULL pointer dereference for
+ ->get_features()
+Date:   Wed, 24 Mar 2021 15:46:09 +0530
+Message-Id: <20210324101609.79278-1-shradha.t@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPIsWRmVeSWpSXmKPExsWy7bCmuq716tgEg0fHNS2WNGVYLLu0mdHi
+        47SVTBYXnvawWdx5foPR4vKuOWwWZ+cdZ7N48/sFu8WTKY9YLY5uDLZYtPULu0Xv4VoHHo81
+        89YweuycdZfdY8GmUo++LasYPY7f2M7k8XmTXABbFJdNSmpOZllqkb5dAlfGjimv2QoOiFYs
+        OuTcwLhZqIuRk0NCwETi+qy/7F2MXBxCArsZJW7//8MM4XxilLjXsJERwvnGKHF+zz0ghwOs
+        ZepbX4j4XkaJzfsPMUE4LUwSD76uYwKZyyagJdH4tYsZxBYRsJY43L6FDcRmFuhgktizIATE
+        FhYIk3h25D0jiM0ioCoxdfcmdpAFvAJWEo9vpUOcJy+xesMBsIskBG6xS5xeOJMNIuEicerw
+        PxYIW1ji1fEt7BC2lMTL/jYoO19i6oWnLBBHV0gs76mDCNtLHLgyByzMLKApsX6XPkRYVmLq
+        KYjrmQX4JHp/P2GCiPNK7JgHYytLfPm7B2qrpMS8Y5dZIWwPiY8zP4JtFRKIlXh68g3TBEbZ
+        WQgbFjAyrmKUTC0ozk1PLTYtMM5LLdcrTswtLs1L10vOz93ECE4TWt47GB89+KB3iJGJg/EQ
+        owQHs5IIb5JvTIIQb0piZVVqUX58UWlOavEhRmkOFiVx3h0GD+KFBNITS1KzU1MLUotgskwc
+        nFINTD55mocT7rQHt2Rl32j5rCQUdvFE3r2LPfqKa/KT9txmfn3hXWaIj4wcQ8KPV9Mk4vsa
+        dbstg/Y/uys09ZPChW9Pdv87X9D5959uOJdV4v+p8c02Syqm9e71v13tWW5xt4vLLpVx4wUz
+        vh0BDAzrq2P5OKo3z3vmu+qS4orzt/epJT49qCP+ZZ9WVJ/X1kMb9lW+CvrG86fYsf//He43
+        7ibTuXIjEt/+WXemeFtExt571ZOcl+7Tr9m3xMtZ9KHJwqpdFwpelT6vMVNhizgob/dt9/mw
+        5+be7yKva09fcDFZ+NCtVR4d1179cW00Uk5W+bZ8fa3tBr1F34JPbO9Ru/NnJpN0xCwe89U/
+        na8YJyuxFGckGmoxFxUnAgC4s1LGggMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOLMWRmVeSWpSXmKPExsWy7bCSnG60YHSCQd8ZDYslTRkWyy5tZrT4
+        OG0lk8WFpz1sFnee32C0uLxrDpvF2XnH2Sze/H7BbvFkyiNWi6Mbgy0Wbf3CbtF7uNaBx2PN
+        vDWMHjtn3WX3WLCp1KNvyypGj+M3tjN5fN4kF8AWxWWTkpqTWZZapG+XwJWxY8prtoIDohWL
+        Djk3MG4W6mLk4JAQMJGY+ta3i5GLQ0hgN6PE0rv32bsYOYHikhKfL65jgrCFJVb+e84OUdTE
+        JHFoyzsWkASbgJZE49cuZhBbRMBW4v6jyawgRcwCU5gkHn48wAaSEBYIkfi68SCYzSKgKjF1
+        9yZ2kM28AlYSj2+lQyyQl1i94QDzBEaeBYwMqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLz
+        czcxgsNOS3MH4/ZVH/QOMTJxMB5ilOBgVhLhbQmPSBDiTUmsrEotyo8vKs1JLT7EKM3BoiTO
+        e6HrZLyQQHpiSWp2ampBahFMlomDU6qBaZWdy52pmx5WvHBcvt+hirem6xXTugXC9dFhfy0y
+        K9YfFZtgKzuX+fX57HlcJd/a3TTCTT5edMgzmGEgdmHzh7mTFNRzty3PvfeTWyJlT+bDa4mG
+        rflv5yfvt+pxU73xKjNt2bsOgfnLjFKnM62VlH0qOs1ZTWHXy/Vmzky7Cq57e6wSOnoxXuZ6
+        7535Cw5MfOf5882lTbrFtyV0r/gtM5g384ro2uvVmv3u31NCT6287LTSecZX9Q+lEpwzE2+c
+        Xuxacyl2nuh/i3v/NXlldv4UOLj7uMSlGYpaxezXp50I5Lff2KC/0zfz/s77GXdXvL09uSd1
+        5kwTs+9rm6e4R5382qT0qmvpxb+Pt67hLeVVYinOSDTUYi4qTgQAMF9lZqoCAAA=
+X-CMS-MailID: 20210324101555epcas5p1b5c8ff4d99b045b94f820c2151800127
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210324101555epcas5p1b5c8ff4d99b045b94f820c2151800127
+References: <CGME20210324101555epcas5p1b5c8ff4d99b045b94f820c2151800127@epcas5p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+get_features ops of pci_epc_ops may return NULL, causing NULL pointer
+dereference in pci_epf_test_alloc_space function. Let us add a check for
+pci_epc_feature pointer in pci_epf_test_bind before we access it to avoid
+any such NULL pointer dereference and return -ENOTSUPP in case
+pci_epc_feature is not found.
 
-This patch introduces a ticket lock implementation for riscv, along the
-same lines as the implementation for arch/arm & arch/csky.
+When the patch is not applied and EPC features is not implemented in the
+platform driver, we see the following dump due to kernel NULL pointer
+dereference.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Anup Patel <anup@brainfault.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
+Call trace:
+ pci_epf_test_bind+0xf4/0x388
+ pci_epf_bind+0x3c/0x80
+ pci_epc_epf_link+0xa8/0xcc
+ configfs_symlink+0x1a4/0x48c
+ vfs_symlink+0x104/0x184
+ do_symlinkat+0x80/0xd4
+ __arm64_sys_symlinkat+0x1c/0x24
+ el0_svc_common.constprop.3+0xb8/0x170
+ el0_svc_handler+0x70/0x88
+ el0_svc+0x8/0x640
+Code: d2800581 b9403ab9 f9404ebb 8b394f60 (f9400400)
+---[ end trace a438e3c5a24f9df0 ]---
+
+Fixes: 2c04c5b8eef79 ("PCI: pci-epf-test: Use pci_epc_get_features() to get EPC features")
+Reviewed-by: Pankaj Dubey <pankaj.dubey@samsung.com>
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Sriram Dash <dash.sriram@gmail.com>
+Signed-off-by: Shradha Todi <shradha.t@samsung.com>
 ---
- arch/riscv/Kconfig                      |   1 +
- arch/riscv/include/asm/Kbuild           |   1 +
- arch/riscv/include/asm/spinlock.h       | 158 ++++++++++++--------------------
- arch/riscv/include/asm/spinlock_types.h |  19 ++--
- 4 files changed, 74 insertions(+), 105 deletions(-)
+Changes w.r.t. v4:
+  https://lkml.org/lkml/2021/1/12/815
+  - Changed commit message to remove time stamp as suggested by Lorenzo
+  - Since deference in not actually happening in bind function, mentioned
+    the same in the commit message as suggested by Leon.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 87d7b52..7c56a20 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -30,6 +30,7 @@ config RISCV
- 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
- 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
-+	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select ARCH_WANT_FRAME_POINTERS
- 	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
-diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
-index 445ccc9..e57ef80 100644
---- a/arch/riscv/include/asm/Kbuild
-+++ b/arch/riscv/include/asm/Kbuild
-@@ -3,5 +3,6 @@ generic-y += early_ioremap.h
- generic-y += extable.h
- generic-y += flat.h
- generic-y += kvm_para.h
-+generic-y += qrwlock.h
- generic-y += user.h
- generic-y += vmlinux.lds.h
-diff --git a/arch/riscv/include/asm/spinlock.h b/arch/riscv/include/asm/spinlock.h
-index f4f7fa1..2c81764 100644
---- a/arch/riscv/include/asm/spinlock.h
-+++ b/arch/riscv/include/asm/spinlock.h
-@@ -7,129 +7,91 @@
- #ifndef _ASM_RISCV_SPINLOCK_H
- #define _ASM_RISCV_SPINLOCK_H
+ drivers/pci/endpoint/functions/pci-epf-test.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+index c0ac4e9cbe72..bc35b3566be6 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-test.c
++++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+@@ -833,15 +833,18 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+ 		return -EINVAL;
  
--#include <linux/kernel.h>
--#include <asm/current.h>
--#include <asm/fence.h>
--
- /*
-- * Simple spin lock operations.  These provide no fairness guarantees.
-+ * Ticket-based spin-locking.
-  */
-+static inline void arch_spin_lock(arch_spinlock_t *lock)
-+{
-+	arch_spinlock_t lockval;
-+	u32 tmp;
-+
-+	asm volatile (
-+		"1:	lr.w	%0, %2		\n"
-+		"	mv	%1, %0		\n"
-+		"	addw	%0, %0, %3	\n"
-+		"	sc.w	%0, %0, %2	\n"
-+		"	bnez	%0, 1b		\n"
-+		: "=&r" (tmp), "=&r" (lockval), "+A" (lock->lock)
-+		: "r" (1 << TICKET_NEXT)
-+		: "memory");
- 
--/* FIXME: Replace this with a ticket lock, like MIPS. */
--
--#define arch_spin_is_locked(x)	(READ_ONCE((x)->lock) != 0)
-+	while (lockval.tickets.next != lockval.tickets.owner) {
-+		/*
-+		 * FIXME - we need wfi/wfe here to prevent:
-+		 *  - cache line bouncing
-+		 *  - saving cpu pipeline in multi-harts-per-core
-+		 *    processor
-+		 */
-+		lockval.tickets.owner = READ_ONCE(lock->tickets.owner);
-+	}
- 
--static inline void arch_spin_unlock(arch_spinlock_t *lock)
--{
--	smp_store_release(&lock->lock, 0);
-+	__atomic_acquire_fence();
- }
- 
- static inline int arch_spin_trylock(arch_spinlock_t *lock)
- {
--	int tmp = 1, busy;
--
--	__asm__ __volatile__ (
--		"	amoswap.w %0, %2, %1\n"
--		RISCV_ACQUIRE_BARRIER
--		: "=r" (busy), "+A" (lock->lock)
--		: "r" (tmp)
-+	u32 tmp, contended, res;
-+
-+	do {
-+		asm volatile (
-+		"	lr.w	%0, %3		\n"
-+		"	srliw	%1, %0, %5	\n"
-+		"	slliw	%2, %0, %5	\n"
-+		"	or	%1, %2, %1	\n"
-+		"	li	%2, 0		\n"
-+		"	sub	%1, %1, %0	\n"
-+		"	bnez	%1, 1f		\n"
-+		"	addw	%0, %0, %4	\n"
-+		"	sc.w	%2, %0, %3	\n"
-+		"1:				\n"
-+		: "=&r" (tmp), "=&r" (contended), "=&r" (res),
-+		  "+A" (lock->lock)
-+		: "r" (1 << TICKET_NEXT), "I" (TICKET_NEXT)
- 		: "memory");
-+	} while (res);
- 
--	return !busy;
--}
--
--static inline void arch_spin_lock(arch_spinlock_t *lock)
--{
--	while (1) {
--		if (arch_spin_is_locked(lock))
--			continue;
--
--		if (arch_spin_trylock(lock))
--			break;
-+	if (!contended) {
-+		__atomic_acquire_fence();
-+		return 1;
-+	} else {
-+		return 0;
+ 	epc_features = pci_epc_get_features(epc, epf->func_no);
+-	if (epc_features) {
+-		linkup_notifier = epc_features->linkup_notifier;
+-		core_init_notifier = epc_features->core_init_notifier;
+-		test_reg_bar = pci_epc_get_first_free_bar(epc_features);
+-		if (test_reg_bar < 0)
+-			return -EINVAL;
+-		pci_epf_configure_bar(epf, epc_features);
++	if (!epc_features) {
++		dev_err(&epf->dev, "epc_features not implemented\n");
++		return -EOPNOTSUPP;
  	}
- }
  
--/***********************************************************/
--
--static inline void arch_read_lock(arch_rwlock_t *lock)
-+static inline void arch_spin_unlock(arch_spinlock_t *lock)
- {
--	int tmp;
--
--	__asm__ __volatile__(
--		"1:	lr.w	%1, %0\n"
--		"	bltz	%1, 1b\n"
--		"	addi	%1, %1, 1\n"
--		"	sc.w	%1, %1, %0\n"
--		"	bnez	%1, 1b\n"
--		RISCV_ACQUIRE_BARRIER
--		: "+A" (lock->lock), "=&r" (tmp)
--		:: "memory");
-+	smp_store_release(&lock->tickets.owner, lock->tickets.owner + 1);
-+	/* FIXME - we need ipi/sev here to notify above */
- }
- 
--static inline void arch_write_lock(arch_rwlock_t *lock)
-+static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
- {
--	int tmp;
--
--	__asm__ __volatile__(
--		"1:	lr.w	%1, %0\n"
--		"	bnez	%1, 1b\n"
--		"	li	%1, -1\n"
--		"	sc.w	%1, %1, %0\n"
--		"	bnez	%1, 1b\n"
--		RISCV_ACQUIRE_BARRIER
--		: "+A" (lock->lock), "=&r" (tmp)
--		:: "memory");
-+	return lock.tickets.owner == lock.tickets.next;
- }
- 
--static inline int arch_read_trylock(arch_rwlock_t *lock)
-+static inline int arch_spin_is_locked(arch_spinlock_t *lock)
- {
--	int busy;
--
--	__asm__ __volatile__(
--		"1:	lr.w	%1, %0\n"
--		"	bltz	%1, 1f\n"
--		"	addi	%1, %1, 1\n"
--		"	sc.w	%1, %1, %0\n"
--		"	bnez	%1, 1b\n"
--		RISCV_ACQUIRE_BARRIER
--		"1:\n"
--		: "+A" (lock->lock), "=&r" (busy)
--		:: "memory");
--
--	return !busy;
-+	return !arch_spin_value_unlocked(READ_ONCE(*lock));
- }
- 
--static inline int arch_write_trylock(arch_rwlock_t *lock)
-+static inline int arch_spin_is_contended(arch_spinlock_t *lock)
- {
--	int busy;
--
--	__asm__ __volatile__(
--		"1:	lr.w	%1, %0\n"
--		"	bnez	%1, 1f\n"
--		"	li	%1, -1\n"
--		"	sc.w	%1, %1, %0\n"
--		"	bnez	%1, 1b\n"
--		RISCV_ACQUIRE_BARRIER
--		"1:\n"
--		: "+A" (lock->lock), "=&r" (busy)
--		:: "memory");
-+	struct __raw_tickets tickets = READ_ONCE(lock->tickets);
- 
--	return !busy;
-+	return (tickets.next - tickets.owner) > 1;
- }
-+#define arch_spin_is_contended	arch_spin_is_contended
- 
--static inline void arch_read_unlock(arch_rwlock_t *lock)
--{
--	__asm__ __volatile__(
--		RISCV_RELEASE_BARRIER
--		"	amoadd.w x0, %1, %0\n"
--		: "+A" (lock->lock)
--		: "r" (-1)
--		: "memory");
--}
--
--static inline void arch_write_unlock(arch_rwlock_t *lock)
--{
--	smp_store_release(&lock->lock, 0);
--}
-+#include <asm/qrwlock.h>
- 
- #endif /* _ASM_RISCV_SPINLOCK_H */
-diff --git a/arch/riscv/include/asm/spinlock_types.h b/arch/riscv/include/asm/spinlock_types.h
-index f398e76..d7b38bf 100644
---- a/arch/riscv/include/asm/spinlock_types.h
-+++ b/arch/riscv/include/asm/spinlock_types.h
-@@ -10,16 +10,21 @@
- # error "please don't include this file directly"
- #endif
- 
-+#define TICKET_NEXT	16
++	linkup_notifier = epc_features->linkup_notifier;
++	core_init_notifier = epc_features->core_init_notifier;
++	test_reg_bar = pci_epc_get_first_free_bar(epc_features);
++	if (test_reg_bar < 0)
++		return -EINVAL;
++	pci_epf_configure_bar(epf, epc_features);
 +
- typedef struct {
--	volatile unsigned int lock;
-+	union {
-+		u32 lock;
-+		struct __raw_tickets {
-+			/* little endian */
-+			u16 owner;
-+			u16 next;
-+		} tickets;
-+	};
- } arch_spinlock_t;
+ 	epf_test->test_reg_bar = test_reg_bar;
+ 	epf_test->epc_features = epc_features;
  
--#define __ARCH_SPIN_LOCK_UNLOCKED	{ 0 }
--
--typedef struct {
--	volatile unsigned int lock;
--} arch_rwlock_t;
-+#define __ARCH_SPIN_LOCK_UNLOCKED	{ { 0 } }
- 
--#define __ARCH_RW_LOCK_UNLOCKED		{ 0 }
-+#include <asm-generic/qrwlock_types.h>
- 
- #endif /* _ASM_RISCV_SPINLOCK_TYPES_H */
 -- 
-2.7.4
+2.17.1
 
