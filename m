@@ -2,197 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C32D3473DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294433473E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbhCXIoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233791AbhCXIoL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:44:11 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C37C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 01:44:09 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id v4so23535682wrp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 01:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UQ2hEc/oKz/yz+r+7NuRxm3ZC0agePHpnR729978KoI=;
-        b=RSnt7rd9lYoXNzEF+9JE/tc8BCcDWtfDeVS4E7zKZ259RqNy3gjZPOYAuWcj+gD4A9
-         f1cQpvFaYbVUUlkV9rlp3Ehumovc5ht43lMUzjkaqYmIcQ1RBRNlTkYGm7vb/dmsmX8e
-         EW90VGgNe4dqXbHEcCN1j9VXyARCWk7RsitkyLYEG+4s4IfY2oCoN6u0WTmxAruRbvMi
-         RacPwr35ETjM53WPxeSqzzDUDakBWW50yGjMp2gZ3hBNUHT7L5AN6uwxsXUbA2ZK8Afp
-         Z4UIoL8M/rJT8JRjdhT6uJZ2PaPnix8qHkRgXreun/J5FjtdBvTgOgh7QKzwE7RaqJOI
-         rMqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UQ2hEc/oKz/yz+r+7NuRxm3ZC0agePHpnR729978KoI=;
-        b=s0hrc/PQBkU/Jw1WaaigHgcGHX00go6JCeb0Qsz/hrLVFqbGP2GiZ3uMbGfJcdFrOi
-         LXLlDvxzTHrsixSGImC0NYyFuCF1Qgy+8lbI9I9Iex31bm4pOCcQKDKx2PK3fDcJyW1+
-         NIYFLUSGSAhUnLhv7QEkuGgNlR7+4WoeTx+C34y4TdgkgyiS8lXbKKdkBGQ5dtuITj1a
-         7sotDq+HgDAchElj4ROlpJOsPhXCyuNVe71rSeL6AjnbkYb7qYnmeGq+PJtrrMv6LCAX
-         BSisIyj2kN0WiEtlPDFZGmeEKDiAq/rjc1XZzT5xLzOxOqvnEIyb4CkV+HS/FBFrEC81
-         +yKQ==
-X-Gm-Message-State: AOAM530r+7Y9EZdaXPM+n8tD0acFtNObhMbzyHqKEPpetp0jyymkS7UT
-        89MIKntWNt622eUTFEBiouqwDQ==
-X-Google-Smtp-Source: ABdhPJxbjraC5qErKMa/evjqnlAdHTKKuHn477iabRv3jVV+MslLw0iV5FtKJacjdVJVefgrlSt89w==
-X-Received: by 2002:adf:f9d0:: with SMTP id w16mr2279442wrr.336.1616575447973;
-        Wed, 24 Mar 2021 01:44:07 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id i3sm2090329wra.66.2021.03.24.01.44.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 01:44:07 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 08:44:05 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Campion.Kang" <Campion.Kang@advantech.com.tw>
-Cc:     "chia-lin.kao@canonical.com" <chia-lin.kao@canonical.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "Campion.Kang@gmail.com" <Campion.Kang@gmail.com>
-Subject: Re: [PATCH v6 4/6] mfd: ahc1ec0: Add support for Advantech embedded
- controller
-Message-ID: <20210324084405.GB2916463@dell>
-References: <20210309160755.GR4931@dell>
- <20210319100105.18278-1-campion.kang@advantech.com.tw>
- <20210319141443.GI2916463@dell>
- <f47a66c80d8b4cf6b9c28a4519a10521@Taipei11.ADVANTECH.CORP>
+        id S233665AbhCXIp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:45:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234423AbhCXIpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 04:45:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 471F4AC6E;
+        Wed, 24 Mar 2021 08:45:04 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 09:45:01 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/5] mm,memory_hotplug: Add kernel boot option to
+ enable memmap_on_memory
+Message-ID: <20210324084457.GA16560@linux>
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-4-osalvador@suse.de>
+ <YFnHWQ30O5efsdQ1@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f47a66c80d8b4cf6b9c28a4519a10521@Taipei11.ADVANTECH.CORP>
+In-Reply-To: <YFnHWQ30O5efsdQ1@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021, Campion.Kang wrote:
-
-> Thanks a lot, please see below descriptions.
+On Tue, Mar 23, 2021 at 11:47:53AM +0100, Michal Hocko wrote:
+> On Fri 19-03-21 10:26:33, Oscar Salvador wrote:
+> > Self stored memmap leads to a sparse memory situation which is unsuitable
+> > for workloads that requires large contiguous memory chunks, so make this
+> > an opt-in which needs to be explicitly enabled.
+> > 
+> > To control this, let memory_hotplug have its own memory space, as suggested
+> > by David, so we can add memory_hotplug.memmap_on_memory parameter.
+> > 
+> > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> > Reviewed-by: David Hildenbrand <david@redhat.com>
 > 
-> >-----Original Message-----
-> >From: Lee Jones <lee.jones@linaro.org>
-> >Sent: Friday, March 19, 2021 10:15 PM
-> >To: Campion.Kang <Campion.Kang@advantech.com.tw>
-> >Cc: chia-lin.kao@canonical.com; devicetree@vger.kernel.org;
-> >jdelvare@suse.com; linux-hwmon@vger.kernel.org;
-> >linux-kernel@vger.kernel.org; linux-watchdog@vger.kernel.org;
-> >linux@roeck-us.net; robh+dt@kernel.org; wim@linux-watchdog.org;
-> >Campion.Kang@gmail.com
-> >Subject: Re: [PATCH v6 4/6] mfd: ahc1ec0: Add support for Advantech
-> >embedded controller
-> >
-> >On Fri, 19 Mar 2021, Campion Kang wrote:
-> >
-> >>
-> >> Please check [Campion] text in below as my reply.
-> >
-> >This is a mess.  Please setup your mailer to quote correctly.
-> >
-> >> Sorry, due to the mail was rejected by vger.kernel.org as SPAM before
-> >> so I reply the mail late and had some test email before.
-> >>
-> >> -----------------------------------------------------------------------------------------
-> >> Date:   Tue, 9 Mar 2021 16:07:55 +0000
-> >> From:   Lee Jones <lee.jones@linaro.org>
-> >
-> >[...]
-> >
-> >> > +enum {
-> >> > +	ADVEC_SUBDEV_BRIGHTNESS = 0,
-> >> > +	ADVEC_SUBDEV_EEPROM,
-> >> > +	ADVEC_SUBDEV_GPIO,
-> >> > +	ADVEC_SUBDEV_HWMON,
-> >> > +	ADVEC_SUBDEV_LED,
-> >> > +	ADVEC_SUBDEV_WDT,
-> >> > +	ADVEC_SUBDEV_MAX,
-> >> > +};
-> >>
-> >> Are these arbitrary?
-> >> [Campion] cannot arbitrary there, due to it is a index to identify its number
-> >of sub device.
-> >
-> >I'm asking what this is dictated by.
-> >
-> >Are these ID/index values written into H/W?
-> >
+> Acked-by: Michal Hocko <mhocko@suse.com>
 > 
-> These index written in BIOS ACPI table. 
+> I would just rephrased the help text to be less low level
+...
+> 			When enabled, runtime hotplugged memory will
+> 			allocate its internal metadata (struct pages)
+> 			from the hotadded memory which will allow to
+> 			hotadd a lot of memory without requiring
+> 			additional memory to do so.
+> 			This feature is disabled by default because it
+> 			has some implication on large (e.g. GB)
+> 			allocations in some configurations (e.g. small
+> 			memory blocks).
 
-Please consider renaming to make this clear.
+Ok, this sounds good as well, and I guess it might suit best for what admin-guide
+is about.
 
-  ADVEC_ACPI_ID_{DEVICE}
+> The memmap_on_memory can be dropped from the 1st patch IIUC and only
+> introduce it now.
 
-Add a comment to express the importance of the order too.
+It could be done, and I __think__ in some previous persion it was that way, but
+I am leaning to not do it.
+In the 1st patch, memmap_on_memory is false by default, so I see it as a preparatory
+step for later (this patchset) till it might be enabled.
 
-[...]
+Moreover, the big comment from mhp_support_memmap_on_memory() should change to not
+mention it, and change here again to reflect it.
 
-> >> > +int write_gpio_dir(struct adv_ec_platform_data *adv_ec_data, unsigned
-> >char PinNumber,
-> >> > +		unsigned char value)
-> >> > +{
-> >> > +}
-> >>
-> >> All of the GPIO functions above should move into drivers/gpio.
-> >>
-> >> [Campion] Due to it has a flow need to cowork with EC chip and firmware, it
-> >cannot be interrupt
-> >>           by other functions. So it needs to keep in here.
-> >
-> >Please provide more details.
+All in all, I think it can stay, but maybe place a comment in the 1st patch above
+the variable saying something like "This is a noop now, it will be enabled later on"
+
+
+
+> > +
+> > +/*
+> > + * memory_hotplug.memmap_on_memory parameter
+> > + */
+> > +static bool memmap_on_memory __ro_after_init;
+> > +#ifdef CONFIG_MHP_MEMMAP_ON_MEMORY
+> > +module_param(memmap_on_memory, bool, 0444);
+> > +MODULE_PARM_DESC(memmap_on_memory, "Enable memmap on memory for memory hotplug");
+> > +#endif
 > 
-> These gpio functions are common used for gpio to adjust the gpio direction and access its status. It has a complete lower process with EC that cannot be interrupted likes others. The flow is:
-> 0.mutex lock to get the EC access
-> 1.it needs wait IBF (Input Buffer Full) to be clear and then can send the command
-> 2.Send read command to EC command port
-> 3.wait IBF clear that means command is got by EC
-> 4.send read address to EC data port
-> 5.wait OBF (Output Buffer Full) data ready
-> 6.get data from EC data port
-> 7.mutex unlock
-> So it cannot be interrupted as other EC lower access due to they use the same mutex to lock the flow. 
+> I am not very much familiar with the machinery. Does this expose the
+> state to the userspace?
 
-That's fine.  You can share a lock with the GPIO driver.
+Kind of:
 
-> >>           But vger.kernel.org returned the mail to mail as spam mail.
-> >>           I will modity it as the following, is it OK?
-> >>           examples:
-> >>             - |
-> >>           #include <dt-bindings/mfd/ahc1ec0-dt.h>
-> >>           ahc1ec0 {
-> >>                   compatible = "advantech,ahc1ec0";
-> >>
-> >>                   advantech,hwmon-profile =
-> ><AHC1EC0_HWMON_PRO_UNO2271G>;
-> >>                   advantech,watchdog = true;
-> >
-> >Shouldn't the watchdog be it's own sub-node?
-> 
-> it doesnot need so far. 
+# ls /sys/module/memory_hotplug/parameters
+memmap_on_memory
+# cat /sys/module/memory_hotplug/parameters/memmap_on_memory 
+Y
 
-IMO, it's more clear than having a property.
+But that is not really the state, but rather it shows whether the user
+opted-in the feature by passing "memory_hotplug.memmap_on_memory=yes".
+It might be that the user opted-in the feature, but it cannot be used at
+at runtime (e.g: mhp_support_memmap_on_memory() return false due to size !=
+memory_block_size())
 
-[...]
-
-> [Campion.Kang] So far, some registers or settings are have default value. They can be adjusted by runtime. 
-> Is this ahc1ec0.yaml OK?
-
-Rob has the final say on that.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Oscar Salvador
+SUSE L3
