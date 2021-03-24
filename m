@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A045C347922
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D43B347923
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234412AbhCXM6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233950AbhCXM6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:58:08 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E46C0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:58:07 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id j25so17256043pfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7nSXLa0g4vdV8/W+gRepcbbFbJlq08ZTsV+Xug3aA4s=;
-        b=aw6tknWNgO6BmFU7+3w3hHNXz/DW4bxRF9dkU8+QTFcwB/We2rUb4EAflmRJQMof5b
-         dPM18ozI0XDuj7jTSu2dHCVjTHHkJsDqpNrUiC6zwCmWje/xd1FyqGHjDopeUffKHR+s
-         jrWeGw3u4CEpIJirg+PCyfJ1bI1KcJvcW85/VulPCemLZsULXWvJfFc9D/MHCCAwhz/j
-         imN7X5xfhaWuUnsQkrMaFSyLXZst8eYTgxxZ7yrt/JfNQKGfhzdtG1j8iDpUdH0C4OGC
-         qH8ATONV75P15OldfTAuLUp0vQhab8Xtz9R65DkH+no6kGtiv19cw9DmGwgM2Z6iAxv2
-         /hdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7nSXLa0g4vdV8/W+gRepcbbFbJlq08ZTsV+Xug3aA4s=;
-        b=k3K6u+pc4iXGG6bqwg3VM42jIAPUGyYKZ5cPs23lOFRRYu7lCjTh2sWygYYKtZCF9W
-         5UPvAcDMtCFgLF1WCmID56S66+iG3lq4DcsbQSZVeyftZPwWjMn9h9VSwgbRZD/tn6Il
-         6rD8MiVYQKux+r3FVyNl1su31nEJwut7+r6rAtPJ2Rbg7ZT3bVxoRRWKFcSmgChW/puY
-         tmVD/+aSRVDw77+v9O2h8CxvvoPJxmidlqS8IqAzXtPyzLNdslurS7iqgKgcZXs/E8tb
-         TOiexodmDpvgMCbmT31SH2cM7/bxjSXhFIIr0Xa4JszsTSO4RduuI1AajYloDLmS6lJU
-         i3/g==
-X-Gm-Message-State: AOAM533h9ukqqRjx4KTCaJIfP8Uvm5WTSOPNtNpb7DaJLqoNhWjklAkI
-        olXe9k/7C4sihuE35piDIvo6Ssr42ckXDg==
-X-Google-Smtp-Source: ABdhPJwpGeN2T5LtbiDg8g8v70tn9qDxiWZvdMTlcMYpWXGZfHom+RikYLm7E0qSV24l5h7cMsVkYg==
-X-Received: by 2002:aa7:96f0:0:b029:1f3:97a4:19d2 with SMTP id i16-20020aa796f00000b02901f397a419d2mr2808767pfq.73.1616590687184;
-        Wed, 24 Mar 2021 05:58:07 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id 27sm2505726pgq.51.2021.03.24.05.58.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 05:58:06 -0700 (PDT)
-Subject: Re: [PATCH] drivers/block: Goodbye BLK_DEV_UMEM
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     dbueso@suse.de, hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <0d26434e-36e2-58f2-16b4-ef0fa4292c6e@kernel.dk>
- <20210323190710.101888-1-dave@stgolabs.net>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1f6626a2-863c-06d9-836f-2c837494c2ce@kernel.dk>
-Date:   Wed, 24 Mar 2021 06:58:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234552AbhCXM6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:58:40 -0400
+Received: from mga04.intel.com ([192.55.52.120]:26158 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234152AbhCXM6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:58:11 -0400
+IronPort-SDR: oxAAXS7EedakGyHa0eMzdOFQo7aOiKQhxNbLeUc75aoa8W6NsrT8iM6NmQWCF40nZMXHDD1Vsp
+ ffKhQSz8jr4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="188393566"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="188393566"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 05:58:11 -0700
+IronPort-SDR: PmJQBp3JonAqGpUiW1irNX+pcSR62Rcn/S2FPW030FJzXa/AdtmMqNrN1wdrIxFlGlMP8ZfieG
+ Z6nhLd7LWhog==
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="442213365"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 05:58:09 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1lP35L-00FgFX-56; Wed, 24 Mar 2021 14:58:07 +0200
+Date:   Wed, 24 Mar 2021 14:58:07 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Roger Pau Monne <roger.pau@citrix.com>
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH RESEND] intel/pinctrl: check capability offset is between
+ MMIO region
+Message-ID: <YFs3XwOBRGAFyASY@smile.fi.intel.com>
+References: <20210324123118.58865-1-roger.pau@citrix.com>
 MIME-Version: 1.0
-In-Reply-To: <20210323190710.101888-1-dave@stgolabs.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210324123118.58865-1-roger.pau@citrix.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 1:07 PM, Davidlohr Bueso wrote:
-> This removes the driver on the premise that it has been unused for a long
-> time. This is a better approach compared to changing untestable code nobody
-> cares about in the first place. Similarly, the umem.com website now shows a
-> mere Godaddy parking add.
+On Wed, Mar 24, 2021 at 01:31:18PM +0100, Roger Pau Monne wrote:
+> When parsing the capability list make sure the offset is between the
+> MMIO region mapped in 'regs', or else the kernel hits a page fault.
+> 
+> This fault has been seen when running as a Xen PVH dom0, which doesn't
+> have the MMIO regions mapped into the domain physical memory map,
+> despite having the device reported in the ACPI DSDT table. This
+> results in reporting a capability offset of 0xffff (because the kernel
+> is accessing unpopulated memory), and such offset is outside of the
+> mapped region.
+> 
+> Adding the check is harmless, and prevents buggy or broken systems
+> from crashing the kernel if the MMIO region is not properly reported.
 
-Applied, thanks.
+Thanks for the report.
+
+Looking into the code I would like rather see the explicit comparison to 0xffff
+or ~0 against entire register b/c it's (one of) standard way of devices to tell
+that something is not supported.
+
+Moreover, it seems you are bailing out and basically denying driver to load.
+This does look that capability is simply the first register that blows the setup.
+I think you have to fix something into Xen to avoid loading these drivers or
+check with something like pci_device_is_present() approach.
+
+> Fixes: 91d898e51e60 ('pinctrl: intel: Convert capability list to features')
+> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+> ---
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: Andy Shevchenko <andy@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: linux-gpio@vger.kernel.org
+> ---
+> Resend because I've missed adding the maintainers, sorry for the spam.
+
+I have a script to make it easier: https://github.com/andy-shev/home-bin-tools/blob/master/ge2maintainer.sh
 
 -- 
-Jens Axboe
+With Best Regards,
+Andy Shevchenko
+
 
