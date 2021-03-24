@@ -2,126 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF9934794A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5074E347964
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhCXNNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:13:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233465AbhCXNMr (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:12:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40C7961A0C;
-        Wed, 24 Mar 2021 13:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616591566;
-        bh=OKs1mD2qebIMJb13DJKJIHreCaRQdOzExwSlbZBjb1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XN1hk9SsmnUD4Hp0fO8t9nyqpHmjXujFW7nS+NaHWuRMWPv+ij9FaKf1ISYxQuiuU
-         aRJppYBOkbafZKjw2qDn7cXpnSZd5saAhX1tDP+6Au/7kILtre/XxEB1ZwWJyO0HJq
-         bamq0UNVS0FcT4yHek7cnRDZM4QeOjCFt8Ysv+7g5niOw/Z2gmcSPo0byZHr6/NKEf
-         9VlYZszUMZoL3HcyYqCmBPWs6gDZDdQh8eArwMFSzMOtUFUTWGWF16+G9iJ1BYrRPu
-         kXXNtVlbrqJegbXxt/7eaWzsRd/lbIeZNQdOEu7QAVql+XIu1VRw5a3T9nW7Oatcy1
-         6S4Ifinxqe41w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D954D40647; Wed, 24 Mar 2021 10:12:43 -0300 (-03)
-Date:   Wed, 24 Mar 2021 10:12:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 2/2] perf test: Add CVS summary test
-Message-ID: <YFs6y8EW4yWpqBh+@kernel.org>
-References: <20210319070156.20394-1-yao.jin@linux.intel.com>
- <20210319070156.20394-2-yao.jin@linux.intel.com>
- <YFs5DvUwtwblghqc@kernel.org>
+        id S235407AbhCXNR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:17:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47298 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234753AbhCXNPr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:15:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616591747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PSFX/DcSFEgheuDXE3GzEee+g+XEjoU2CBXg1Z8/dSA=;
+        b=fwfRna23b1/1zuMFzGp4YS0CnL5NG2i+hg1hHfBfPGAmI5Az+pXmjpHCkXuJ5lQKeLdJ8V
+        A1DL+ameiDvscplK75p1HWBYufB6MutB9kW9qOqcRZroge0c/hh/2Tgr+XnY9IdndhLv2Z
+        pzQprvcfBiCyvWR8hAKmvBQQQG0nOLU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-u5ZjKIz3N9W3KYy5VT2eBw-1; Wed, 24 Mar 2021 09:15:43 -0400
+X-MC-Unique: u5ZjKIz3N9W3KYy5VT2eBw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59A9A88AEE8;
+        Wed, 24 Mar 2021 13:13:34 +0000 (UTC)
+Received: from [10.36.115.66] (ovpn-115-66.ams2.redhat.com [10.36.115.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 74B6A83168;
+        Wed, 24 Mar 2021 13:13:32 +0000 (UTC)
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de> <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux> <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+ <YFssRr7gZEPfHieA@dhcp22.suse.cz>
+ <c3ff7038-a694-d311-c246-b881a2f55be7@redhat.com>
+ <YFsydJNF63OEcCaY@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <32bc6e31-0200-1e8c-895c-3f60ed072fc2@redhat.com>
+Date:   Wed, 24 Mar 2021 14:13:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFs5DvUwtwblghqc@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <YFsydJNF63OEcCaY@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Mar 24, 2021 at 10:05:18AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Mar 19, 2021 at 03:01:56PM +0800, Jin Yao escreveu:
-> > The patch "perf stat: Align CSV output for summary mode" aligned
-> > CVS output and added "summary" to the first column of summary
-> > lines.
-> > 
-> > Now we check if the "summary" string is added to the CVS output.
-> > 
-> > If we set '--no-cvs-summary' option, the "summary" string would
-> > not be added, also check with this case.
+On 24.03.21 13:37, Michal Hocko wrote:
+> On Wed 24-03-21 13:23:47, David Hildenbrand wrote:
+>> On 24.03.21 13:10, Michal Hocko wrote:
+>>> On Wed 24-03-21 13:03:29, Michal Hocko wrote:
+>>>> On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
+>>> [...]
+>>>
+>>> an additional remark
+>>>
+>>>>> - online_pages()->move_pfn_range_to_zone(): Accounts for node/zone's spanned pages
+>>>>> - online_pages()->zone->present_pages += nr_pages;
+>>>
+>>> I am pretty sure you shouldn't account vmmemmap pages to the target zone
+>>> in some cases - e.g. vmemmap cannot be part of the movable zone, can it?
+>>> So this would be yet another special casing. This patch has got it wrong
+>>> unless I have missed some special casing.
+>>>
+>>
+>> It's a bit unfortunate that we have to discuss the very basic design
+>> decisions again.
 > 
-> You mixed up cvs with csv in various places, I'm fixing it up...
+> It would be great to have those basic design decisions layed out in the
+> changelog.
+> 
+>> @Oscar, maybe you can share the links where we discussed all this and add
+>> some of it to the patch description.
+>>
+>> I think what we have right here is good enough for an initial version, from
+>> where on we can improve things without having to modify calling code.
+> 
+> I have to say I really dislike vmemmap proliferation into
+> {on,off}lining. It just doesn't belong there from a layering POV. All
+> this code should care about is to hand over pages to the allocator and
+> make them visible.
 
-This, for the first patch, now fixing the second.
+Well, someone has to initialize the vmemmap of the vmemmap pages ( which 
+is itself :) ), and as the vemmap does not span complete sections things 
+can get very weird as we can only set whole sections online (there was 
+more to that, I think it's buried in previous discussions).
 
+> 
+> Is that a sufficient concern to nack the whole thing? No, I do not think
+> so. But I do not see any particular rush to have this work needs to be
+> merged ASAP.
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index e81a45cadd4a0bdb..6ec5960b08c3de21 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -482,14 +482,14 @@ convenient for post processing.
- --summary::
- Print summary for interval mode (-I).
- 
----no-cvs-summary::
-+--no-csv-summary::
- Don't print 'summary' at the first column for CVS summary output.
- This option must be used with -x and --summary.
- 
- This option can be enabled in perf config by setting the variable
--'stat.no-cvs-summary'.
-+'stat.no-csv-summary'.
- 
--$ perf config stat.no-cvs-summary=true
-+$ perf config stat.no-csv-summary=true
- 
- EXAMPLES
- --------
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 6daa090129a65c78..2a2c15cac80a3bee 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1093,9 +1093,9 @@ void perf_stat__set_big_num(int set)
- 	stat_config.big_num = (set != 0);
- }
- 
--void perf_stat__set_no_cvs_summary(int set)
-+void perf_stat__set_no_csv_summary(int set)
- {
--	stat_config.no_cvs_summary = (set != 0);
-+	stat_config.no_csv_summary = (set != 0);
- }
- 
- static int stat__set_big_num(const struct option *opt __maybe_unused,
-@@ -1254,8 +1254,8 @@ static struct option stat_options[] = {
- 		    "threads of same physical core"),
- 	OPT_BOOLEAN(0, "summary", &stat_config.summary,
- 		       "print summary for interval mode"),
--	OPT_BOOLEAN(0, "no-cvs-summary", &stat_config.no_cvs_summary,
--		       "don't print 'summary' for CVS summary output"),
-+	OPT_BOOLEAN(0, "no-csv-summary", &stat_config.no_csv_summary,
-+		       "don't print 'summary' for CSV summary output"),
- 	OPT_BOOLEAN(0, "quiet", &stat_config.quiet,
- 			"don't print output (useful with record)"),
- #ifdef HAVE_LIBPFM
-diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-index df78f11f6fb50a0b..6bcb5ef221f8c1be 100644
---- a/tools/perf/util/config.c
-+++ b/tools/perf/util/config.c
-@@ -457,8 +457,8 @@ static int perf_stat_config(const char *var, const char *value)
- 	if (!strcmp(var, "stat.big-num"))
- 		perf_stat__set_big_num(perf_config_bool(var, value));
- 
--	if (!strcmp(var, "stat.no-cvs-summary"))
--		perf_stat__set_no_cvs_summary(perf_config_bool(var, value));
-+	if (!strcmp(var, "stat.no-csv-summary"))
-+		perf_stat__set_no_csv_summary(perf_config_bool(var, value));
- 
- 	/* Add other config variables here. */
- 	return 0;
+Sure, there is no need to rush (not that I suggested that).
+
+-- 
+Thanks,
+
+David / dhildenb
+
