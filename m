@@ -2,114 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BE9347CC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0D3347CC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236672AbhCXPeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:34:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45108 "EHLO mx2.suse.de"
+        id S236575AbhCXPfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:35:25 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6915 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236629AbhCXPeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:34:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C2AD5AD9F;
-        Wed, 24 Mar 2021 15:34:10 +0000 (UTC)
-Message-ID: <78dec30c052e9bb76e52c38f3da5af371e5d65f5.camel@suse.de>
-Subject: Re: [PATCH 4/4] ARM: dts: Fix-up EMMC2 controller's frequency
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     f.fainelli@gmail.com, phil@raspberrypi.com,
-        tim.gover@raspberrypi.com, adrian.hunter@intel.com,
-        sbranden@broadcom.com, alcooperx@gmail.com,
-        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org
-Date:   Wed, 24 Mar 2021 16:34:09 +0100
-In-Reply-To: <401100ea-90ad-57b1-50da-967118a090da@i2se.com>
-References: <20210322185816.27582-1-nsaenz@kernel.org>
-         <20210322185816.27582-5-nsaenz@kernel.org>
-         <401100ea-90ad-57b1-50da-967118a090da@i2se.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-FFEARCZYyZSHobHLGWfZ"
-User-Agent: Evolution 3.38.4 
+        id S236629AbhCXPfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:35:05 -0400
+IronPort-SDR: GLBuNMQKnEite8bpbcIFgbpV1EucRfqNss+HTZvsdxS48IPENU/mrQ1HXOWCsKhXPJWzVNT+io
+ 9SqnvENmEfrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="177846322"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="177846322"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:35:04 -0700
+IronPort-SDR: u88QPQP9OqThtSCWmlBumzh8Ily4n5DsBwOciDJ/LVBkU/p/by/3yXpi6gxcLVwDqmg7kDJM1t
+ auTRLm+JOr9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="408900965"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Mar 2021 08:35:04 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 08:35:04 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 08:35:03 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Wed, 24 Mar 2021 08:35:03 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Song, Youquan" <youquan.song@intel.com>
+Subject: RE: [PATCH] x86/mce: Add Skylake quirk for patrol scrub reported
+ errors
+Thread-Topic: [PATCH] x86/mce: Add Skylake quirk for patrol scrub reported
+ errors
+Thread-Index: AQHXH2vrxdAXwArxf0GPI/vTElW+BqqTsz4A//+TlNA=
+Date:   Wed, 24 Mar 2021 15:35:03 +0000
+Message-ID: <5dfbe1167e2f4978a8add0c84e3fb064@intel.com>
+References: <20210322223710.307123-1-tony.luck@intel.com>
+ <20210324150004.GG5010@zn.tnic>
+In-Reply-To: <20210324150004.GG5010@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---=-FFEARCZYyZSHobHLGWfZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi Stefan,
-
-On Wed, 2021-03-24 at 16:16 +0100, Stefan Wahren wrote:
-> Hi Nicolas,
->=20
-> Am 22.03.21 um 19:58 schrieb Nicolas Saenz Julienne:
-> > From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> >=20
-> > Force emmc2's frequency to 150MHz as the default 100MHz (set by FW)
-> > seems to interfere with the VPU clock when setup at frequencies bigger
-> > than 500MHz (a pretty common case). This ends up causing unwarranted
-> > SDHCI CMD hangs  when no SD card is present.
-> >=20
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> > ---
-> > =C2=A0arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 6 ++++++
-> > =C2=A01 file changed, 6 insertions(+)
-> >=20
-> > diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/dts/=
-bcm2711-rpi-4-b.dts
-> > index 3b4ab947492a..9aa8408d9960 100644
-> > --- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> > +++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> > @@ -257,6 +257,12 @@ &emmc2 {
-> > =C2=A0	vqmmc-supply =3D <&sd_io_1v8_reg>;
-> > =C2=A0	vmmc-supply =3D <&sd_vcc_reg>;
-> > =C2=A0	broken-cd;
-> > +	/*
-> > +	 * Force the frequency to 150MHz as the default 100MHz seems to
-> > +	 * interfere with the VPU clock when setup at frequencies bigger than
-> > +	 * 500MHz, causing unwarranted CMD hangs.
-> > +	 */
-> > +	clock-frequency =3D <150000000>;
->=20
-> i don't want to bike-shed here, but is there any chance to solve this in
-> clk-bcm2835 in a less hacky way?
-
-What do you have in mind?
-
-All I can think of is adding some kind of heuristic to the clock's prepare(=
-)
-callback. That said, I don't feel it would be a better solution than this.
-
-Regards,
-Nicolas
-
-
-
---=-FFEARCZYyZSHobHLGWfZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBbW/EACgkQlfZmHno8
-x/67jAgAkEAjGxqXoq4Ga/ry0PqEcfUiGD4+CRAlqZtglOAj2WqZ5z6CRwxg6Xt5
-LYDxIoLjBAENrkkjbMv4nQPdLLDvf3UjBeRTK70mfsON7Pt6HLk3fxAws/36/1DK
-AAMprq5BVCTNY04+tjdQvV0A/w6o71aQF74ghlytDlP2fm7jS6WcEqRLIkuGqe7U
-dXtOGwt7SPJGevPbktCQff7xLJ5Aw4W0+JHoM3nxDIdiA3hpOFvuQSQbn90OpCTf
-P4O9cbCFQ4Am60dYBmGAIuV3jGpkB4PZk8wJms+ePiTGtZBso5eorU1jyqKbZAOd
-kB4wrjXd1OrQbZB87A5SELjhUUa1FQ==
-=qWwb
------END PGP SIGNATURE-----
-
---=-FFEARCZYyZSHobHLGWfZ--
-
+PiBZZWFoLCBpbnRvDQo+IA0KPiBmZDI1OGRjNDQ0MmMgKCJ4ODYvbWNlOiBBZGQgU2t5bGFrZSBx
+dWlyayBmb3IgcGF0cm9sIHNjcnViIHJlcG9ydGVkIGVycm9ycyIpDQoNClRoYW5rcyAuLi4gbXkg
+bWVtb3J5IGlzIGZhaWxpbmcsIGFuZCBJIGZvcmdvdCB0aGF0IHRoZSBwYXRjaCBoYWQgYmVlbiBp
+bXByb3ZlZCBhbmQNCm1vdmVkIGZyb20gY29yZS5jICh3aGVyZSBJIGxvb2tlZCBmb3IgaXQpIGlu
+dG8gc2V2ZXJpdHkuYw0KDQotVG9ueQ0KDQo=
