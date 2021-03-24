@@ -2,125 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DAB347DF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCDB347DFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbhCXQnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:43:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233671AbhCXQmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:42:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FEA161A15
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616604170;
-        bh=FpJ4ufMl3GoETEBMXPsfhMl5UzmY31frNljvtIkqZOE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ip//tYNx0qxfnmr4eR3JAA2+Itc24es7mwJQjJL07abkvmQYpDXcO9J8WWxO268/I
-         JFbBlzhLB4pjKpi3ajTdodXBCgK5RLYj6OXrTWOad//1IpkDWh8PA/DxmErNyoY6fi
-         YSJc3LSD6udZE6sznr4+WullETs4zWCfSXkXwGFSkD4OUDddqbDe9Tu0zPZvKfF+g8
-         J0gqhFSdJKUkkjV+UomcUJZTk8aF2So2W8338Pv32ORTAfG7CDwqERgQBkBNR7aapi
-         eEZic2+cqlNuQNCc/cdhH59T6vYOv+iIzvLiP3V0CcGnlnZo+VcgAdOZFFs6mYNqF6
-         tUS+8klPf5qIg==
-Received: by mail-oi1-f177.google.com with SMTP id m13so21441648oiw.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:42:50 -0700 (PDT)
-X-Gm-Message-State: AOAM53336HbYhFCezSjpiNK4Dj+9huecPJO/TJSzWE4JxmYzO0IJ6iXi
-        k9OCMBUT5OJYiohetJACeNK/XDzk+E0aGvbTj8I=
-X-Google-Smtp-Source: ABdhPJzT1TALAguRWsDlD8O6reb7Z/5YQKB/EH/94NPd80Aw6gOETK/aeiwvnSRsg6ZUwyQE7bBChezT8Gvob1FyBik=
-X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr3096654oie.4.1616604169767;
- Wed, 24 Mar 2021 09:42:49 -0700 (PDT)
+        id S236428AbhCXQoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236440AbhCXQnu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:43:50 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBA7C0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:43:50 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id v3so15014836pgq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:43:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=KNQex8kih6XoW5flaVyQnC82ktag4xH5XicNTOPAF7c=;
+        b=bnpNUsQe8XrJaJv1WPS4jXwZsQq3r4mlSxEMMvIYIwyZz7PV7eQuWsEsw3s3M4XB1n
+         0tgPAWTfiq9KgGkcpY2vsI7SCFEz4Dv4Q1Gq+2ntQjw+uJnlOk9G4IygqKUiKHeiPMiQ
+         FztR7+vOY8h4K2uGNt9NtYXOJfuO7IwL8prvg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=KNQex8kih6XoW5flaVyQnC82ktag4xH5XicNTOPAF7c=;
+        b=LsR25Ju0oEpMJamxjkuPwFx41IlYY+5zgHEjCqV/QTtnF3ogQmSKsf1IRwyvoPaYnV
+         cZ/Sd5Kn87qhSGj1y7IIDNhYGN+2Hfn1S4Dhngt9u1Ip5rSKkHqrTbI/Nuvr3uyaSiCS
+         rxxDIWZiMZ6Q0KJ1docGYUS8k0JRDCuP3qjjFSjVQg6shqr4upst8Altg9pXiuur2Vut
+         ScQl2kcn3cRZJ302/ceLyc8422QDwc1UULwXpXus6JaRZGFyxmwU9MRfNxAk1snoMKgR
+         08Qe5oNr1r7wX9bBxsBHSWzpYj/jSy3ZfksoOvt0d0PkDK/fXzDG/BTn7Bf+T2sE9YjJ
+         m5qw==
+X-Gm-Message-State: AOAM530ycBjeAcICdlXSKh0ZqbkQX+CTrtHzIEWlSvLHHPERAg5ueRYY
+        huUuXxWSuH0g9jPowrFwNAZmxpqy67uj+7Qxg9L5SW9ersDlOn6gOc7Ubt75yacWc9zuKQm71be
+        dZuwdMCFBKYgkyT1Y3OU1mEi96hSaGU8F5pOVX8gzhnLA7z8lbyvyfhI1PsWEVq2wadXw2pDI0E
+        0aALFh8B8aUOo=
+X-Google-Smtp-Source: ABdhPJy9oB6kLzcAg1sewJLV1RILKrMKpLEU6QhO81UMhCYhgQ/e+CubBnLh6m1Z81OYwzB8g7HTkQ==
+X-Received: by 2002:a65:4782:: with SMTP id e2mr3883245pgs.93.1616604229355;
+        Wed, 24 Mar 2021 09:43:49 -0700 (PDT)
+Received: from lbrmn-lnxub113.ric.broadcom.net ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id x190sm3099541pfx.166.2021.03.24.09.43.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 09:43:48 -0700 (PDT)
+Subject: Re: [PATCH 1/4] dt-bindings: mmc: iproc-sdhci: Convert to json-schema
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>
+Cc:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>, f.fainelli@gmail.com,
+        phil@raspberrypi.com, tim.gover@raspberrypi.com,
+        adrian.hunter@intel.com, alcooperx@gmail.com,
+        linux-kernel@vger.kernel.org
+References: <20210322185816.27582-1-nsaenz@kernel.org>
+ <20210322185816.27582-2-nsaenz@kernel.org>
+ <0e98588e-65f1-6839-1fcd-584b480a31bd@broadcom.com>
+ <20210323210812.GA1318204@robh.at.kernel.org>
+ <c1989e31501ccfb6e1350d467d4f26089bfcfb64.camel@suse.de>
+ <28a133d2-c713-4bce-271c-5fa228d830ca@broadcom.com>
+ <9de20a5960e029b8842dc026be3be85295647175.camel@suse.de>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <bacfa0ef-dcb1-150a-4d10-46524a0a7082@broadcom.com>
+Date:   Wed, 24 Mar 2021 09:43:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210324121832.3714570-1-arnd@kernel.org> <e1310273dcc577f3a772380ada7b6cc1906d680b.camel@perches.com>
-In-Reply-To: <e1310273dcc577f3a772380ada7b6cc1906d680b.camel@perches.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 24 Mar 2021 17:42:34 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0JyoAtTYTi+M_mJ3_KtUJ6NeJB=FNWhzezqcXMac++mQ@mail.gmail.com>
-Message-ID: <CAK8P3a0JyoAtTYTi+M_mJ3_KtUJ6NeJB=FNWhzezqcXMac++mQ@mail.gmail.com>
-Subject: Re: [PATCH] [v2] drm/imx: imx-ldb: fix out of bounds array access warning
-To:     Joe Perches <joe@perches.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liu Ying <victor.liu@nxp.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9de20a5960e029b8842dc026be3be85295647175.camel@suse.de>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000dff52e05be4b0057"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 3:20 PM Joe Perches <joe@perches.com> wrote:
->
-> On Wed, 2021-03-24 at 13:17 +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > When CONFIG_OF is disabled, building with 'make W=3D1' produces warning=
-s
-> > about out of bounds array access:
-> >
-> > drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop=
-':
-> > drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is belo=
-w array bounds of 'struct clk *[4]' [-Werror=3Darray-bounds]
-> >
-> > Add an error check before the index is used, which helps with the
-> > warning, as well as any possible other error condition that may be
-> > triggered at runtime.
-> >
-> > The warning could be fixed by adding a Kconfig depedency on CONFIG_OF,
-> > but Liu Ying points out that the driver may hit the out-of-bounds
-> > problem at runtime anyway.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> > v2: fix subject line
-> >     expand patch description
-> >     print mux number
-> >     check upper bound as well
-> []
-> > diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ld=
-b.c
-> []
-> > @@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_enco=
-der *encoder)
-> >       int dual =3D ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
-> >       int mux =3D drm_of_encoder_active_port_id(imx_ldb_ch->child, enco=
-der);
-> >
-> > +     if (mux < 0 || mux >=3D ARRAY_SIZE(ldb->clk_sel)) {
-> > +             dev_warn(ldb->dev, "%s: invalid mux %d\n",
-> > +                      __func__, ERR_PTR(mux));
->
-> This does not compile without warnings.
->
-> drivers/gpu/drm/imx/imx-ldb.c: In function =E2=80=98imx_ldb_encoder_enabl=
-e=E2=80=99:
-> drivers/gpu/drm/imx/imx-ldb.c:201:22: warning: format =E2=80=98%d=E2=80=
-=99 expects argument of type =E2=80=98int=E2=80=99, but argument 4 has type=
- =E2=80=98void *=E2=80=99 [-Wformat=3D]
->   201 |   dev_warn(ldb->dev, "%s: invalid mux %d\n",
->       |                      ^~~~~~~~~~~~~~~~~~~~~~
->
-> If you want to use ERR_PTR, the %d should be %pe as ERR_PTR
-> is converting an int a void * to decode the error type and
-> emit it as a string.
+--000000000000dff52e05be4b0057
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 
-Sorry about that.
+On 2021-03-24 9:35 a.m., Nicolas Saenz Julienne wrote:
+> On Wed, 2021-03-24 at 09:27 -0700, Scott Branden wrote:
+>> On 2021-03-23 2:24 p.m., Nicolas Saenz Julienne wrote:
+>>> On Tue, 2021-03-23 at 15:08 -0600, Rob Herring wrote:
+>>>> On Mon, Mar 22, 2021 at 12:11:29PM -0700, Scott Branden wrote:
+>>>>> On 2021-03-22 11:58 a.m., Nicolas Saenz Julienne wrote:
+>>>>>> Convert the brcm,iproc-sdhci binding to DT schema format using json-schema
+>>>>>>
+>>>>>> Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+>>>>>> ---
+>>>>>>  .../bindings/mmc/brcm,iproc-sdhci.yaml        | 58 +++++++++++++++++++
+>>>>>>  .../bindings/mmc/brcm,sdhci-iproc.txt         | 37 ------------
+>>>>>>  2 files changed, 58 insertions(+), 37 deletions(-)
+>>>>>>  create mode 100644 Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
+>>>>>>  delete mode 100644 Documentation/devicetree/bindings/mmc/brcm,sdhci-iproc.txt
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..19d84f3ef9e6
+>>>>>> --- /dev/null
+>>>>>> +++ b/Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml
+>>>>>> @@ -0,0 +1,58 @@
+>>>>>> +# SPDX-License-Identifier: GPL-2.0
+>>>>>> +%YAML 1.2
+>>>>>> +---
+>>>>>> +$id: http://devicetree.org/schemas/mmc/brcm,iproc-sdhci.yaml#
+>>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>>> +
+>>>>>> +title: Broadcom IPROC SDHCI controller
+>>>>>> +
+>>>>>> +maintainers:
+>>>>>> +  - Nicolas Saenz Julienne <nsaenz@kernel.org>
+>>>>> This is already covered in the MAINTAINERS section via "N:	iproc".
+>>>>> M:	Ray Jui <ray.jui@broadcom.com>
+>>>>>
+>>>>> M:	Scott Branden <scott.branden@broadcom.com>
+>>>>>
+>>>>> M:	bcm-kernel-feedback-list@broadcom.com
+>>>>
+>>>> Maybe so, but still required here. The problem is there is no 
+>>>> MAINTAINERS file in the DT only tree[1].
+>>>
+>>> Well in that case, if Scott and Ray are OK with it I'll add them.
+>> I do not know what the "maintainers" section in the yaml file is used to indicate.
+>> If it is maintainer for the driver then please add the duplicate of what is
+>> already in the MAINTAINERS file.  If it is for maintainer of devicetrees that
+>> use this driver then no need to add us.
+> 
+> From the dt bindings documentation:
+> 
+> maintainers
+>   A DT specific property. Contains a list of email address(es)
+>   for maintainers of this binding.
+> 
+> That's the maintainers for the bindings, not the devicetrees consuming them. I
+> belive it makes sense for you guys to maintain it as it has a strong
+> relationship to driver changes. But if you're not interested I'll do it myself.
+Sure, you can add us as well.
+> 
+> Regards,
+> Nicolas
+> 
 
-I decided against using ERR_PTR() in order to also check for
-positive array overflow, but the version I tested was different from
-the version I sent.
 
-v3 coming.
+--000000000000dff52e05be4b0057
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-         Arnd
+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
+cRe0CRXA7ypOJSgxO/nOOyQoaJxT7CGg1npOeSpPjEuc3fE4xum3l0nvU85hj6MlKZu43hokdBh0
+D0nLyyhEwlR3AC/msdff/UGbM/JR9vk812RP4m/aNWZFJwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUOhjEpl04Sz9dh5MI82E1
+V39lM/owDQYJKoZIhvcNAQELBQADggEBAA7Rlypx/esz/iq1yA4+KW7uwV/aBY344BWcXt6I+SNK
+VwFBgFWfLj5vaEud9TVv2fPSiaHJo0umemOJk+43QD+bsoqmgcFXd21PrOt7Jjs+jjVED9VC5kJq
+S4NNKUkS+BqijJwSegtVygrc/atrIlJbjI21q4qpemUo5fgwqCNm++BmBGTI8yA09vtGSNDRN42k
+lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
+wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
+Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBnv6igRHhmDbuAl73NW7VJttv36
+iz9mgBr+KhkZnktaMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDMyNDE2NDM1MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQB4OUd/wIloP4mmMpP8pnXU5F50RBVU7vvjsWpVqC0LVY83
+4N76dsFSuX9ZdcmPMTZJb89RdNwwSEqDon3/G9BavgVWPRP3B7EJlfQU8wT7I12iYmXkMlGlLlQs
+PQ3lCuA1u+9H7vOyPIpW/6cV7/hDqQ/nSC8ZL/5OHfdrXDZj6p5WQqPpdUxc1kYkPUGYuOSaxIF1
+Lme1K/z763isQVgRjNaj49/ZHdehpy/e8r41dB6OrIVOMZ67apyghsb9czKZ51q1aE9vSb9Ke1uo
+p+SDj7YZOlcFrce4CQRYvTh79FHZBA2DHQ6o1qOaeZjm4dhxMEgzGRKz3mpd8hM88Exp
+--000000000000dff52e05be4b0057--
