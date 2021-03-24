@@ -2,170 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65FB3483C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1092A3483C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238433AbhCXVbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:31:40 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40195 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238425AbhCXVbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:31:09 -0400
-IronPort-SDR: E0ki/7qIbGPOgdkKJH8tgBvDu5QlowOejCnL7Axz213RahWQ30xr6QiyyWnRY5K7dB+HX001Ar
- 8k/ZkPEhiVCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="275915669"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="275915669"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:31:07 -0700
-IronPort-SDR: UiqiTq0h9Rx3ezRrb3TUYKTsDocGhk2W+N2YAhGdc8BZ3B4ltUrKmDcpnRQEHq3U9oOFpKBcTY
- 0Q+FHZS4HJCQ==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="608245303"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:31:07 -0700
-Subject: [PATCH 8/8] cxl/acpi: Add module parameters to stand in for ACPI
- tables
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        ira.weiny@intel.com, vishal.l.verma@intel.com,
-        alison.schofield@intel.com, ben.widawsky@intel.com,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 14:31:07 -0700
-Message-ID: <161662146724.1723715.10554067294730837889.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <161662142382.1723715.5934723983022398253.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <161662142382.1723715.5934723983022398253.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S238451AbhCXVcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:32:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238489AbhCXVbz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 17:31:55 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E39C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:31:54 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id s17so487934ljc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GXCHwCjIojzQra6Ybo8a6ubZkkqtpIUTfy1bdb9pub8=;
+        b=lrwPb0OwRuF4bqws2EJVVX5j0uiXIFTIr2bAgHN/bzUHYfymLk2LM7VDU3LXmidK0i
+         bXBwWghuY/RV0QdKb7L8MAAwIiU43qvbC2j3VUGxWhINR97vi0mClUWlb0ugOuvrxVhg
+         7yuaV32pEYwNNMeqBAWYrcA7z5P3Df43dTILzg41SoOUOsqOlSJfc599iONwRuVBj34Q
+         BAMm3RiVw7hYomiB9gt5kUyXp3qNlW4MOKyrfynVuNeC/FrMV0oCSAgbNTNJLB48wzD5
+         aU46LmJe7lbhAxidq8v3T7oj1diu1Qh7UcoP0B2Cn96LwMxVq1tnOCja0Vb0D9ILq17d
+         6Fxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GXCHwCjIojzQra6Ybo8a6ubZkkqtpIUTfy1bdb9pub8=;
+        b=MmUAr/cWfxAL1oPLmsJXVsjVBfFLtpDFTi9wLIWvXTqnEE3mbJFP7tFoQ0CY1Kz2Jh
+         v/eRFWmivTlJVdiiE0275nVf1zYFzgNm2/RcOdJJxTe8AJQ0PalBswBIgEvZiK8hSJ7s
+         Ows1hCuSdYgRQ/rriF07QT1HLQWuddvHsP1ISNgJkXpXy94H5moprZei5+hduIZfJD2N
+         ayGDiFmRWoXw1+xvkuN+zv9zS+DpBJH/jcvRltdUo+OcAWTCwjA2XpTZQGc0YMYfxhJ0
+         hJyFbntFWoKRjmyYxeHzUkHnIZw5npHUmmste7vyLCcMb2AkMk7lgzK2hKJdf/MVT4Cv
+         v1jw==
+X-Gm-Message-State: AOAM530TRZAfoSY3FqxKTzTHQugmSbinXKmQfd9FOYsn7Cyb1tRbrwNx
+        naWAJfwTEGGLNUlfJXSpnQU=
+X-Google-Smtp-Source: ABdhPJzBtOjhGlUc6Vg44/mMvTfBcv1StLpDGOr8ECeh+GUX875JodrX5Ivs3aMrj//h3c23tXyLUw==
+X-Received: by 2002:a2e:700a:: with SMTP id l10mr3362086ljc.368.1616621512815;
+        Wed, 24 Mar 2021 14:31:52 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id u9sm444852ljd.130.2021.03.24.14.31.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 14:31:52 -0700 (PDT)
+Subject: Re: [PATCH v7] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
+        jhubbard@nvidia.com, willy@infradead.org,
+        Colin Ian King <colin.king@canonical.com>
+References: <20210324205503.2132082-1-minchan@kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <65840bfd-4471-7c8d-ce71-c4705baf3bfe@gmail.com>
+Date:   Thu, 25 Mar 2021 00:31:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210324205503.2132082-1-minchan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[debug / to-be-replaced / not-for-upstream]
+24.03.2021 23:55, Minchan Kim пишет:
+> Since CMA is getting used more widely, it's more important to
+> keep monitoring CMA statistics for system health since it's
+> directly related to user experience.
+> 
+> This patch introduces sysfs statistics for CMA, in order to provide
+> some basic monitoring of the CMA allocator.
+> 
+>  * the number of CMA page successful allocations
+>  * the number of CMA page allocation failures
+> 
+> These two values allow the user to calcuate the allocation
+> failure rate for each CMA area.
+> 
+> e.g.)
+>   /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
+>   /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
+>   /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
+> 
+> The cma_stat was intentionally allocated by dynamic allocation
+> to harmonize with kobject lifetime management.
+> https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
+> 
+> Reported-by: Dmitry Osipenko <digetx@gmail.com>
+> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> Suggested-by: Dmitry Osipenko <digetx@gmail.com>
 
-Given ACPICA support is needed before drivers can integrate ACPI
-functionality add some module parameters as proxies.
----
- drivers/cxl/acpi.c |   81 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 79 insertions(+), 2 deletions(-)
+The tags are incorrect, I haven't suggested this change.
 
-diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-index bc2a35ae880b..2a48a728f3e0 100644
---- a/drivers/cxl/acpi.c
-+++ b/drivers/cxl/acpi.c
-@@ -4,10 +4,84 @@
- #include <linux/module.h>
- #include <linux/device.h>
- #include <linux/kernel.h>
-+#include <linux/range.h>
- #include <linux/acpi.h>
- #include <linux/pci.h>
- #include "cxl.h"
- 
-+/*
-+ * TODO: Replace all of the below module parameters with ACPI CXL
-+ * resource descriptions once ACPICA makes them available.
-+ */
-+static unsigned long chbcr[4];
-+module_param_named(chbcr0, chbcr[0], ulong, 0400);
-+module_param_named(chbcr1, chbcr[1], ulong, 0400);
-+module_param_named(chbcr2, chbcr[2], ulong, 0400);
-+module_param_named(chbcr3, chbcr[3], ulong, 0400);
-+
-+/* TODO: cross-bridge interleave */
-+static struct cxl_address_space cxl_space[] = {
-+	[0] = { .range = { 0, -1 }, .targets = 0x1, },
-+	[1] = { .range = { 0, -1 }, .targets = 0x1, },
-+	[2] = { .range = { 0, -1 }, .targets = 0x1, },
-+	[3] = { .range = { 0, -1 }, .targets = 0x1, },
-+};
-+
-+static int set_range(const char *val, const struct kernel_param *kp)
-+{
-+	unsigned long long size, base;
-+	struct cxl_address_space *space;
-+	unsigned long flags;
-+	char *p;
-+	int rc;
-+
-+	size = memparse(val, &p);
-+	if (*p != '@')
-+		return -EINVAL;
-+
-+	base = memparse(p + 1, &p);
-+	if (*p != ':')
-+		return -EINVAL;
-+
-+	rc = kstrtoul(p + 1, 0, &flags);
-+	if (rc)
-+		return rc;
-+	if (!flags || flags > CXL_ADDRSPACE_MASK)
-+		return rc;
-+
-+	space = kp->arg;
-+	*space = (struct cxl_address_space) {
-+		.range = {
-+			.start = base,
-+			.end = base + size - 1,
-+		},
-+		.flags = flags,
-+	};
-+
-+	return 0;
-+}
-+
-+static int get_range(char *buf, const struct kernel_param *kp)
-+{
-+	struct cxl_address_space *space = kp->arg;
-+
-+	if (!range_len(&space->range))
-+		return -EINVAL;
-+
-+	return sysfs_emit(buf, "%#llx@%#llx :%s%s%s%s\n",
-+			  (unsigned long long)range_len(&space->range),
-+			  (unsigned long long)space->range.start,
-+			  space->flags & CXL_ADDRSPACE_RAM ? " ram" : "",
-+			  space->flags & CXL_ADDRSPACE_PMEM ? " pmem" : "",
-+			  space->flags & CXL_ADDRSPACE_TYPE2 ? " type2" : "",
-+			  space->flags & CXL_ADDRSPACE_TYPE3 ? " type3" : "");
-+}
-+
-+module_param_call(range0, set_range, get_range, &cxl_space[0], 0400);
-+module_param_call(range1, set_range, get_range, &cxl_space[1], 0400);
-+module_param_call(range2, set_range, get_range, &cxl_space[2], 0400);
-+module_param_call(range3, set_range, get_range, &cxl_space[3], 0400);
-+
- static int match_ACPI0016(struct device *dev, const void *host)
- {
- 	struct acpi_device *adev = to_acpi_device(dev);
-@@ -67,13 +141,16 @@ static int cxl_acpi_register_ports(struct device *dev, struct acpi_device *root,
- 				   struct cxl_port *port, int idx)
- {
- 	struct acpi_pci_root *pci_root = acpi_pci_find_root(root->handle);
-+	resource_size_t chbcr_base = ~0ULL;
- 	struct cxl_walk_context ctx;
- 
- 	if (!pci_root)
- 		return -ENXIO;
- 
- 	/* TODO: fold in CEDT.CHBS retrieval */
--	port = devm_cxl_add_port(dev, port, &root->dev, idx, ~0ULL);
-+	if (idx < ARRAY_SIZE(chbcr))
-+		chbcr_base = chbcr[idx];
-+	port = devm_cxl_add_port(dev, port, &root->dev, idx, chbcr_base);
- 	if (IS_ERR(port))
- 		return PTR_ERR(port);
- 	dev_dbg(dev, "%s: register: %s\n", dev_name(&root->dev),
-@@ -99,7 +176,7 @@ static int cxl_acpi_probe(struct platform_device *pdev)
- 	struct cxl_root *cxl_root;
- 	int rc, i = 0;
- 
--	cxl_root = devm_cxl_add_root(dev, NULL, 0);
-+	cxl_root = devm_cxl_add_root(dev, cxl_space, ARRAY_SIZE(cxl_space));
- 	if (IS_ERR(cxl_root))
- 		return PTR_ERR(cxl_root);
- 	dev_dbg(dev, "register: %s\n", dev_name(&cxl_root->port.dev));
+> Suggested-by: John Hubbard <jhubbard@nvidia.com>
+> Suggested-by: Matthew Wilcox <willy@infradead.org>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
+> Addresses-Coverity: ("Dereference after null check")
+
+There are no dereferences fixed by this patch.
+
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+...
+
+>  #include <linux/debugfs.h>
+> +#include <linux/kobject.h>
+> +
+> +struct cma_kobject {
+> +	struct cma *cma;
+> +	struct kobject kobj;
+
+If you'll place the kobj as the first member of the struct, then
+container_of will be a no-op.
+
+...
+> +#include <linux/cma.h>
+> +#include <linux/kernel.h>
+> +#include <linux/slab.h>
+> +
+> +#include "cma.h"
+> +
+> +void cma_sysfs_account_success_pages(struct cma *cma, unsigned long nr_pages)
+> +{
+> +	atomic64_add(nr_pages, &cma->nr_pages_succeeded);
+> +}
+> +
+> +void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages)
+> +{
+> +	atomic64_add(nr_pages, &cma->nr_pages_failed);
+> +}
+> +
+> +#define CMA_ATTR_RO(_name) \
+> +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+
+nit: #defines and inlined helpers typically are placed at the top of the
+code, after includes.
+
+> +static inline struct cma *cma_from_kobj(struct kobject *kobj)
+> +{
+> +	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject,
+> +						    kobj);
+> +	struct cma *cma = cma_kobj->cma;
+> +
+> +	return cma;
+
+nit: you can write this as:
+
+return container_of(kobj, struct cma_kobject, kobj)->cma;
+
+> +}
+> +
+> +static ssize_t alloc_pages_success_show(struct kobject *kobj,
+> +					struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct cma *cma = cma_from_kobj(kobj);
+> +
+> +	return sysfs_emit(buf, "%llu\n",
+> +			atomic64_read(&cma->nr_pages_succeeded));
+
+nit: Algnment isn't right, should be better to write it as single line, IMO.
+
+...
+> +static int __init cma_sysfs_init(void)
+> +{
+> +	struct kobject *cma_kobj_root;
+> +	struct cma_kobject *cma_kobj;
+> +	struct cma *cma;
+> +	int i, err;
+> +
+> +	cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
+> +	if (!cma_kobj_root)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < cma_area_count; i++) {
+> +		cma_kobj = kzalloc(sizeof(*cma_kobj), GFP_KERNEL);
+> +		if (!cma_kobj) {
+> +			err = -ENOMEM;
+> +			goto out;
+> +		}
+> +
+> +		cma = &cma_areas[i];
+> +		cma->cma_kobj = cma_kobj;
+> +		cma_kobj->cma = cma;
+> +		err = kobject_init_and_add(&cma_kobj->kobj, &cma_ktype,
+> +				cma_kobj_root, "%s", cma->name);
+
+nit: Previousy algnment of the code was better here.
+
+Otherwise this is okay to me:
+
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
