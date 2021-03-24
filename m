@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8196347390
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1288134739D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhCXIW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:22:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52539 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236265AbhCXIVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:21:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616574090;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jAgNsK9devgKzZZEmPPhrqr8dUdGVfpvAFbi2fl9vfk=;
-        b=QJO3rlCuyx4rPWXPI/zUaCBCQV50E8dEAgjFeIlOfucy7yaxrSLU0eTlyHWiLnkg+EOYj9
-        yYNDhnGgkpib5v4NAGWK3g+OQY4izThNCcTReVpn9p5Td1zSS2IcWvRIbZ8Fyyqc01nsNl
-        fZeHEr69wwnpCtaOuHW5clkJ/+HOQpA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-QjT4gwMxNvWA814f-aWyuQ-1; Wed, 24 Mar 2021 04:21:27 -0400
-X-MC-Unique: QjT4gwMxNvWA814f-aWyuQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42F77100746C;
-        Wed, 24 Mar 2021 08:21:26 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-58.rdu2.redhat.com [10.10.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E7C6A6E6FD;
-        Wed, 24 Mar 2021 08:21:21 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] cachefiles, afs: mm wait fixes
+        id S233484AbhCXI1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:27:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:32112 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233491AbhCXI0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 04:26:55 -0400
+IronPort-SDR: 0Lfbh1CppgWknsTN2/We3F0kEzfccb+wkOBEpAGQa+ZR9AlFyVUKzM1wmr7dKvnc4LuxgS+zB8
+ /3G282cJOdEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="210758659"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="210758659"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 01:26:55 -0700
+IronPort-SDR: uWZsj1jx5IrDe3h4aTHfSUqVc1vj4lfTyMAQlqUBdOC5rbUbgCvIGzicgDNqxXI3v4k62VeKcd
+ kK3HThWswSfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="408734817"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Mar 2021 01:26:53 -0700
+Date:   Wed, 24 Mar 2021 16:22:17 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v12 0/2] UIO support for dfl devices
+Message-ID: <20210324082217.GA405791@yilunxu-OptiPlex-7050>
+References: <1615168776-8553-1-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2813136.1616574054.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-From:   David Howells <dhowells@redhat.com>
-Date:   Wed, 24 Mar 2021 08:21:21 +0000
-Message-ID: <2813194.1616574081@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615168776-8553-1-git-send-email-yilun.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Moritz:
 
-Could you pull these patches from Matthew Wilcox to fix page
-waiting-related issues in cachefiles and afs as extracted from his folio
-series[1]:
+Sorry I need to get back to you again, seems no more comments from Greg.
 
- (1) In cachefiles, remove the use of the wait_bit_key struct to access
-     something that's actually in wait_page_key format.  The proper struct
-     is now available in the header, so that should be used instead.
+The patchset is stuck here for more than 1 month. Do you have some
+more suggestion that could make it move forward? Do you have some more
+comments? Or give an acked-by? Or could you apply it to your fpga branch
+and go with next pull request?
 
- (2) Add a proper wait function for waiting killably on the page writeback
-     flag.  This includes a recent bugfix[2] that's not in the afs code.
+Thanks,
+Yilun
 
- (3) In afs, use the function added in (2) rather than using
-     wait_on_page_bit_killable() which doesn't provide the aforementioned
-     bugfix.
-
-Notes:
-
- - I've included these together since they are an excerpt from a patch
-   series of Willy's, but I can send the first separately from the other
-   two if you'd prefer since they touch different modules.
-
- - The cachefiles patch could be deferred to the next merge window as
-   whichever compiler is used probably *should* generate the same code for
-   both structs, even with struct randomisation turned on.
-
- - AuriStor (auristor.com) have added certain of my branches to their
-   automated AFS testing, hence the Tested-by kafs-testing@auristor.com ta=
-g
-   on the patches in this set.  Is this the best way to represent this?
-
-David
-
-Link: https://lore.kernel.org/r/20210320054104.1300774-1-willy@infradead.o=
-rg[1]
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/c=
-ommit/?id=3Dc2407cf7d22d0c0d94cf20342b3b8f06f1d904e7 [2]
-Link: https://lore.kernel.org/r/20210323120829.GC1719932@casper.infradead.=
-org/ # v1
-
----
-The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49=
-b:
-
-  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
-/afs-cachefiles-fixes-20210323
-
-for you to fetch changes up to 75b69799610c2b909a18e709c402923ea61aedc0:
-
-  afs: Use wait_on_page_writeback_killable (2021-03-23 20:54:37 +0000)
-
-----------------------------------------------------------------
-cachefiles, afs: mm wait fixes
-
-----------------------------------------------------------------
-Matthew Wilcox (Oracle) (3):
-      fs/cachefiles: Remove wait_bit_key layout dependency
-      mm/writeback: Add wait_on_page_writeback_killable
-      afs: Use wait_on_page_writeback_killable
-
- fs/afs/write.c          |  3 +--
- fs/cachefiles/rdwr.c    |  7 +++----
- include/linux/pagemap.h |  2 +-
- mm/page-writeback.c     | 16 ++++++++++++++++
- 4 files changed, 21 insertions(+), 7 deletions(-)
-
+On Mon, Mar 08, 2021 at 09:59:34AM +0800, Xu Yilun wrote:
+> This patchset supports some dfl device drivers written in userspace.
+> 
+> There are some Q&A about why UIO driver is needed in v11:
+> 
+> >From Greg:
+>   Why are you saying that an ethernet driver should be using the UIO
+>   interface?
+> 
+>   And why can't you use the existing UIO drivers that bind to memory
+>   regions specified by firmware?  Without an interrupt being used, why is
+>   UIO needed at all?
+> 
+> >From Moritz:
+>   Essentially I see two options:
+>   - Have a DFL bus driver instantiate a platform driver (uio_pdrv_genirq)
+>     which I *think* you described above?
+>   - What this patch implements -- a UIO driver on the DFL bus
+> 
+>   These FPGA devices can on the fly change their contents and -- even if
+>   just for test -- being able to expose a bunch of registers via UIO can
+>   be extremely useful.
+> 
+>   Whether a device should expose registers or not should be up to the
+>   implemeneter of the FPGA design I think (policy). This patch (or the
+>   previous version) provides a mechanism to do so via DFL.
+> 
+>   This is similar in nature to uio_pdrv_genirq on a DT based platform, to
+>   expose the registers you instantiate the DT node.
+> 
+>   Re-implementing a new driver for each of these instances doesn't seem
+>   desirable and tying DFL as enumeration mechanism to UIO seems like a
+>   good compromise for enabling this kind of functionality.
+> 
+>   Note this is *not* an attempt to bypass the network stack or other
+>   existing subsystems.
+> 
+> See the original message in:
+>   https://lore.kernel.org/linux-fpga/YDvQ8aO8v3NhLKzx@epycbox.lan/T/#m66ba2c96848e3dea38d1a4f16dfea3cb291f7975
+> 
+> 
+> >From Yilun:
+>   The ETH GROUP IP is not designed as the full functional ethernet
+>   controller. It is specially developed for the Intel N3000 NIC. Since it
+>   is an FPGA based card, it is designed for the users to runtime reload
+>   part of the MAC layer logic developed by themselves, while the ETH GROUP
+>   is another part of the MAC which is not expected to be reloaded by
+>   customers, but it provides some configurations for software to work with
+>   the user logic.
+> 
+>   So I category the feature as the devices that "designed for specific
+>   purposes and does not fit into one of the standard kernel subsystems".
+>   Some related description could be found in Patch #2, to illustrate why
+>   using UIO for some DFL devices.
+> 
+>   There are now UIO drivers for PCI or platform devices, but in this case
+>   we are going to export a DFL(Device Feature List) bus device to
+>   userspace, a DFL driver for UIO is needed to bind to it.
+> 
+> See the original message in:
+>   https://lore.kernel.org/linux-fpga/YDvQ8aO8v3NhLKzx@epycbox.lan/T/#m91b303fd61485644353fad1e1e9c11d528844684
+> 
+> 
+> Xu Yilun (2):
+>   uio: uio_dfl: add userspace i/o driver for DFL bus
+>   Documentation: fpga: dfl: Add description for DFL UIO support
+> 
+>  Documentation/fpga/dfl.rst | 26 ++++++++++++++++++
+>  MAINTAINERS                |  1 +
+>  drivers/uio/Kconfig        | 17 ++++++++++++
+>  drivers/uio/Makefile       |  1 +
+>  drivers/uio/uio_dfl.c      | 66 ++++++++++++++++++++++++++++++++++++++++++++++
+>  5 files changed, 111 insertions(+)
+>  create mode 100644 drivers/uio/uio_dfl.c
+> 
+> -- 
+> 2.7.4
