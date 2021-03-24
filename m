@@ -2,72 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5123347869
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF3834786A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhCXMYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234099AbhCXMXx (ORCPT
+        id S233240AbhCXMYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:24:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28341 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232276AbhCXMYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:23:53 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0479CC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:23:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4W4nSNFoir5Yp+A6zyQO0RGkUWgdlE6idemxYmJ56sY=; b=HNa43HM8bjAIEOC8TuNxKpdvpJ
-        RRngvoi5SAlttlGmdAU+RtEbVyWEywUKxsfoe5U7FgMeTpC6+yECLW3/qnBB76dIJNYnUhXyxnwZ4
-        TkJfdGK8yVon0F13EwLmx6iyjynpuGqYCz3vOju9qnjG32f2Zx0VJSEMdtl1JqM/tEYZuAZW9JxzN
-        so2l6sYGMS3lyhsXROmlkfhBRUinANkPT6NP/8h2Cz+9TslepJ7ZyCCMXLcZkDV3QNPcXWBPmeH2G
-        80cJiamwG6DuQzw8CqPluG/1o6vg6U3IphWsgNnDu5ynrzUA1qEgkAEGTZ1yIMPRH5T3F2hvI+vGm
-        nz4lQ2dg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP2Y2-00H3X7-VM; Wed, 24 Mar 2021 12:23:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1343F3007CD;
-        Wed, 24 Mar 2021 13:23:42 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EBBF92BF5B73E; Wed, 24 Mar 2021 13:23:41 +0100 (CET)
-Date:   Wed, 24 Mar 2021 13:23:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     guoren@kernel.org, linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup@brainfault.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock
- implementation
-Message-ID: <YFsvTXg07U+Adsto@hirez.programming.kicks-ass.net>
-References: <1616580892-80815-1-git-send-email-guoren@kernel.org>
- <CAM4kBBK7_s9U2vJbq68yC8WdDEfPQTaCOvn1xds3Si5B-Wpw+A@mail.gmail.com>
+        Wed, 24 Mar 2021 08:24:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616588644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XGTuM/6dwW8oPW7JX32HRs4SmM+PHWXQq1cuJEp3pks=;
+        b=T+8DSqA9ZvSD+O+65d2aoAyDf6vRoTMsVg7p+UeHgG+CQrXWhVEv0qsu0886Ol4dh9IAFM
+        Sn5nbcL6mQTiXQ4RvUSpDXgDcql+dBb4xVMvRKhdhSidanZQDs+I+RX9GAe2sRf98a4m99
+        bq5WZ4FZ8RNqYbk8BZsOykSkKpa81Ts=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-93jokzXmO5KEzIkXUWxVOw-1; Wed, 24 Mar 2021 08:23:59 -0400
+X-MC-Unique: 93jokzXmO5KEzIkXUWxVOw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 527C51005D55;
+        Wed, 24 Mar 2021 12:23:58 +0000 (UTC)
+Received: from [10.36.115.66] (ovpn-115-66.ams2.redhat.com [10.36.115.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 071FC19D80;
+        Wed, 24 Mar 2021 12:23:50 +0000 (UTC)
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+To:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de> <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux> <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+ <YFssRr7gZEPfHieA@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <c3ff7038-a694-d311-c246-b881a2f55be7@redhat.com>
+Date:   Wed, 24 Mar 2021 13:23:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM4kBBK7_s9U2vJbq68yC8WdDEfPQTaCOvn1xds3Si5B-Wpw+A@mail.gmail.com>
+In-Reply-To: <YFssRr7gZEPfHieA@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:15:47PM +0100, Vitaly Wool wrote:
-> On Wed, Mar 24, 2021, 11:16 AM <guoren@kernel.org> wrote:
+On 24.03.21 13:10, Michal Hocko wrote:
+> On Wed 24-03-21 13:03:29, Michal Hocko wrote:
+>> On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
+> [...]
 > 
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > This patch introduces a ticket lock implementation for riscv, along the
-> > same lines as the implementation for arch/arm & arch/csky.
-> >
+> an additional remark
 > 
-> Could you please provide a rationale for this? Like, what is wrong with the
-> current implementation.
+>>> - online_pages()->move_pfn_range_to_zone(): Accounts for node/zone's spanned pages
+>>> - online_pages()->zone->present_pages += nr_pages;
+> 
+> I am pretty sure you shouldn't account vmmemmap pages to the target zone
+> in some cases - e.g. vmemmap cannot be part of the movable zone, can it?
+> So this would be yet another special casing. This patch has got it wrong
+> unless I have missed some special casing.
+> 
 
-test-and-set spinlocks have terrible worst case behaviour.
+It's a bit unfortunate that we have to discuss the very basic design 
+decisions again.
+
+@Oscar, maybe you can share the links where we discussed all this and 
+add some of it to the patch description.
+
+I think what we have right here is good enough for an initial version, 
+from where on we can improve things without having to modify calling code.
+
+-- 
+Thanks,
+
+David / dhildenb
+
