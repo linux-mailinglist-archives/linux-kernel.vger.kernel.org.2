@@ -2,78 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7CB346F8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00463346F8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232076AbhCXCcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:32:07 -0400
-Received: from m12-11.163.com ([220.181.12.11]:47288 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232019AbhCXCbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232029AbhCXCbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 23 Mar 2021 22:31:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=QB5sr
-        IEpoTZgw2u5PRNuaX6WnECVWqJ2qDsPzwzgx2E=; b=kWeYqymkj4Hb8NJfoUP64
-        Kwyn3nl36qiEk7RrY52iedJUHUj+hl3COSSWJAmOYN8GplTKeS8SWtJgJheDfUzo
-        9BhoNJXdYhF0U0J9Lrth28zqqFhN9/4V7cto4uMIX7b+KCEaD9XFXnhQt4oSMMUE
-        yRJSRLjUkp+MDZNQEYu5Vc=
-Received: from caizhichao.ccdomain.com (unknown [218.94.48.178])
-        by smtp7 (Coremail) with SMTP id C8CowAAHA_NLpFpgvVEyTw--.11030S2;
-        Wed, 24 Mar 2021 10:30:54 +0800 (CST)
-From:   caizhichao <tomstomsczc@163.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhichao Cai <caizhichao@yulong.com>
-Subject: [PATCH] Simplify the code by using module_platform_driver macro
-Date:   Wed, 24 Mar 2021 10:30:47 +0800
-Message-Id: <20210324023047.1337-1-tomstomsczc@163.com>
-X-Mailer: git-send-email 2.30.0.windows.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232012AbhCXCbM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 22:31:12 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E35C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:31:12 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id q11so7135751pld.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:31:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=smeNo2nLOzLoAqQ0eDu45bUTA0pWmhws44H491W9z+0=;
+        b=EvmzBDZ30bavlVo5llPGM4DVAa7h37P89ePfMEf5oMkGD9epTsE5m75nO/7X6hw4cN
+         SkizuxTwxzNwMrDOJoCrMnbrim2PTBN2Y5aXzWvRh/4d5q/RPYgoE/mwZU5zQNdlgYm9
+         DdiJf5xPDxzLRVShek+nVRVOBfaWMIesglLag=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=smeNo2nLOzLoAqQ0eDu45bUTA0pWmhws44H491W9z+0=;
+        b=b4F/RESlRzQZudh0IX2GOWF7HN5VEOjIWLDE1/v1+x4QQ0ngyz19fvpPjjdsNFdNDD
+         ordBxQ1yPXx/3E92ChNIwD+6ABob7SxzY2nEih/WbbWsffuc2g8gRK8iU1cz6LQiyhq0
+         BJGmfGQkbyrrSDCS5QxR0scaSuuOqObh6AOYTmdHNC3b0Pv7rTmn2CIlkJiEmItR0qQl
+         4H8ygYO7nqppxbO+CQQMUDEDX720jVCC0EYFcx2olZEoddQeaEOu2uaS2bbeZm6sI3Vo
+         /2n7M0lez4FIZ26KkImzUGS0E9Rg8E2+PDeiXfJvGCajm3eJrGHAkom3bJwrZlqnMU+R
+         3g9g==
+X-Gm-Message-State: AOAM531H943pVSfjRqeXwrBuzVz7fmx0RoYKKXblaX8voCRa8rEzG9sn
+        QeTis5RGhMSMdtLk7X0FakLaMA==
+X-Google-Smtp-Source: ABdhPJyQemMa34PxA+NGQjFfeUL30hAreLQlm0fYvCVp2BCeLlDpkEH/+O+4ZOoe04EnjIFerPZr0Q==
+X-Received: by 2002:a17:90a:4d07:: with SMTP id c7mr1058957pjg.104.1616553071745;
+        Tue, 23 Mar 2021 19:31:11 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:bcf2:e05a:a993:9494])
+        by smtp.gmail.com with ESMTPSA id l19sm444720pjt.16.2021.03.23.19.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 19:31:11 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 11:31:06 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv3 5/6] media: uvcvideo: add UVC 1.5 ROI control
+Message-ID: <YFqkaumASvjrYP/n@google.com>
+References: <20210319055342.127308-1-senozhatsky@chromium.org>
+ <20210319055342.127308-6-senozhatsky@chromium.org>
+ <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
+ <YFqdaHCQak5ZM0Sf@google.com>
+ <CAAFQd5DaDZA8==HPrL1v1M=1a5g3DgY58nuq7KnA8USQ6UuiTQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowAAHA_NLpFpgvVEyTw--.11030S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7JF4UWw1DXFy3trWkAw15twb_yoW8JrWUpF
-        WUJry7Wr48Gw1UX3WkJw1kZry5G3WUKryjgF4UG3s5Xw4kAw1UZr1kA345Xr1UJayUKF13
-        tr15Zr43WFZ8JwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jO8n5UUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pwrp23prpvu6rf6rljoofrz/1tbiyQZeilQHNSrN8gABsp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAFQd5DaDZA8==HPrL1v1M=1a5g3DgY58nuq7KnA8USQ6UuiTQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhichao Cai <caizhichao@yulong.com>
+On (21/03/24 11:14), Tomasz Figa wrote:
+> > > > +static int uvc_ioctl_s_roi(struct file *file, void *fh,
+> > > > +                          struct v4l2_selection *sel)
+> > > > +{
+> > > > +       struct uvc_fh *handle = fh;
+> > > > +       struct uvc_streaming *stream = handle->stream;
+> > > > +       struct uvc_roi_rect *roi;
+> > > > +       int ret;
+> > > > +
+> > > > +       if (!validate_roi_bounds(stream, sel))
+> > > > +               return -E2BIG;
+> > >
+> > > Not sure if this is the correct approach or if we should convert the
+> > > value to the closest valid...
+> >
+> > Well, at this point we know that ROI rectangle dimensions are out of
+> > sane value range. I'd rather tell user-space about integer overflow.
+> 
+> Adjusting the rectangle to something supported by the hardware is
+> mentioned explicitly in the V4L2 API documentation and is what drivers
+> have to implement. Returning an error on invalid value is not a
+> correct behavior here (and similarly for many other operations, e.g.
+> S_FMT).
 
-for ftmac100
+Well, in this particular case we are talking about user-space that wants
+to set ROI rectangle that is knowingly violates device's GET_MAX and
+overflows UVC ROI rectangle u16 value range. That's a clear bug in user-space.
+Do we want to pretend that user-space does the correct thing and fixup
+stuff behind the scenes?
 
-Signed-off-by: Zhichao Cai <caizhichao@yulong.com>
----
- drivers/net/ethernet/faraday/ftmac100.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+> > Looking for the closest ROI rectangle that suffice can be rather
+> > tricky. It may sounds like we can just use BOUNDARIES_MAX, but this
+> > is what Firmware D returns for GET_MAX
+> >
+> > ioctl(V4L2_SEL_TGT_ROI_BOUNDS_MAX)
+> >
+> >         0, 0, 65535, 65535
+> 
+> Perhaps the frame size would be the correct bounds?
 
-diff --git a/drivers/net/ethernet/faraday/ftmac100.c b/drivers/net/ethernet/faraday/ftmac100.c
-index 473b337..5a1a8f2 100644
---- a/drivers/net/ethernet/faraday/ftmac100.c
-+++ b/drivers/net/ethernet/faraday/ftmac100.c
-@@ -1177,18 +1177,7 @@ static int ftmac100_remove(struct platform_device *pdev)
- /******************************************************************************
-  * initialization / finalization
-  *****************************************************************************/
--static int __init ftmac100_init(void)
--{
--	return platform_driver_register(&ftmac100_driver);
--}
--
--static void __exit ftmac100_exit(void)
--{
--	platform_driver_unregister(&ftmac100_driver);
--}
--
--module_init(ftmac100_init);
--module_exit(ftmac100_exit);
-+module_platform_driver(ftmac100_driver);
- 
- MODULE_AUTHOR("Po-Yu Chuang <ratbert@faraday-tech.com>");
- MODULE_DESCRIPTION("FTMAC100 driver");
--- 
-1.9.1
-
+I can check that.
