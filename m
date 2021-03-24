@@ -2,162 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A62347048
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE89834704B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 05:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbhCXD6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235120AbhCXD6H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:58:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022E6C061763;
-        Tue, 23 Mar 2021 20:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=FkHspzZ4eIco0CCf9Vy8eC47ISGEcdGFSl/9SbDwvfM=; b=bgW5XiJrkiyCjCJ41/OrSEZ0Na
-        pOd/febPxkGppUOKhyfu94L8yN/QtRXbWt5N5nGywesdNOS4iMQH8zTegchOx9W3yi37woW4D4Gnp
-        6y4BRerobBHKrN8utW63jQ3/IUNa4EK9QG5EaUvGMCrfSPg929C4R1PBKAlOc/Iqr2MHm85nS5Zzx
-        xAotg0U9YNx4wwcSDnJefs2l82qi06T5zXZ2ZarFoTlrhkJiDiAPcGxRVxj0fL1c54QSRNILqAx8w
-        wGhTiwavbcQUqXTm+skIgUqZOvdSWHhLJNfFD+QObtCCV1h5U8kNLzfupdZuEtmqVjKBzC5MHURuW
-        CLE9VMig==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOueF-00AtUm-Co; Wed, 24 Mar 2021 03:57:41 +0000
-Subject: Re: [PATCH v2] drivers/media/pci/bt8xx/bttv-cards: fix typos
-To:     Xiaofeng Cao <cxfcosmos@gmail.com>, mchehab@kernel.org
-Cc:     Julia.Lawall@inria.fr, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaofeng Cao <caoxiaofeng@yulong.com>
-References: <20210324032906.17094-1-caoxiaofeng@yulong.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c8e7929e-17d7-fe38-a809-a057d383ad4c@infradead.org>
-Date:   Tue, 23 Mar 2021 20:57:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S235194AbhCXD7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:59:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18163 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235185AbhCXD71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 23:59:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616558367; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=BsmeMdezVqvMu28lTn6tiXj/adA2HRB7cfqcT1XrXJ8=;
+ b=IPJRxal2QRzMpFsGD0uagHjalXfpXYzD4uf2Kw966XwJ4bvy6s2r299rvoKpX3jVgIdhVGx1
+ hWyubTEAUd9f1Kp0scK1TdlYy2pEie/o87M6nk6qnE0w9W1jKIMsE8DXIvwr1OvgeB25W0Ra
+ 3nR9YB1ShRHFTWnlqZOObzHjpPU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 605ab9092b0e10a0badfa993 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Mar 2021 03:59:05
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 14AECC43468; Wed, 24 Mar 2021 03:59:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C225FC433C6;
+        Wed, 24 Mar 2021 03:59:03 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210324032906.17094-1-caoxiaofeng@yulong.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Mar 2021 11:59:03 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Zang Leigang <zangleigang@hisilicon.com>
+Cc:     Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v6 02/10] scsi: ufshpb: Add host control mode support to
+ rsp_upiu
+In-Reply-To: <20210324033104.5kms7pez6arnkaoz@shaphisprc48410>
+References: <20210322081044.62003-1-avri.altman@wdc.com>
+ <20210322081044.62003-3-avri.altman@wdc.com>
+ <20210324033104.5kms7pez6arnkaoz@shaphisprc48410>
+Message-ID: <e3bfb8c4fcadc8e1b7f9fec0ee4d57f5@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 8:29 PM, Xiaofeng Cao wrote:
-> change 'vodeo'     to 'video'
-> change 'nevery'    to 'never'
-> change 'is'        to 'it'
-> change 'connevted' to 'connected'
-> change 'swichers'  to 'switchers'
-> change 'strucure'  to 'structure'
-> change 'unblanced' to 'unbalanced'
-> change 'fonctionality' to 'functionality'
+On 2021-03-24 11:31, Zang Leigang wrote:
+> On Mon, Mar 22, 2021 at 10:10:36AM +0200, Avri Altman wrote:
+>> In device control mode, the device may recommend the host to either
+>> activate or inactivate a region, and the host should follow. Meaning
+>> those are not actually recommendations, but more of instructions.
+>> 
+>> On the contrary, in host control mode, the recommendation protocol is
+>> slightly changed:
+>> a) The device may only recommend the host to update a subregion of an
+>>    already-active region. And,
+>> b) The device may *not* recommend to inactivate a region.
+>> 
+>> Furthermore, in host control mode, the host may choose not to follow 
+>> any
+>> of the device's recommendations. However, in case of a recommendation 
+>> to
+>> update an active and clean subregion, it is better to follow those
+>> recommendation because otherwise the host has no other way to know 
+>> that
+>> some internal relocation took place.
+>> 
+>> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+>> ---
+>>  drivers/scsi/ufs/ufshpb.c | 34 +++++++++++++++++++++++++++++++++-
+>>  drivers/scsi/ufs/ufshpb.h |  2 ++
+>>  2 files changed, 35 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>> index fb10afcbb49f..d4f0bb6d8fa1 100644
+>> --- a/drivers/scsi/ufs/ufshpb.c
+>> +++ b/drivers/scsi/ufs/ufshpb.c
+>> @@ -166,6 +166,8 @@ static void ufshpb_set_ppn_dirty(struct ufshpb_lu 
+>> *hpb, int rgn_idx,
+>>  	else
+>>  		set_bit_len = cnt;
+>> 
+>> +	set_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
+>> +
+>>  	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
+>>  	    srgn->srgn_state == HPB_SRGN_VALID)
+>>  		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
+>> @@ -235,6 +237,11 @@ static bool ufshpb_test_ppn_dirty(struct 
+>> ufshpb_lu *hpb, int rgn_idx,
+>>  	return false;
+>>  }
+>> 
+>> +static inline bool is_rgn_dirty(struct ufshpb_region *rgn)
+>> +{
+>> +	return test_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
+>> +}
+>> +
+>>  static int ufshpb_fill_ppn_from_page(struct ufshpb_lu *hpb,
+>>  				     struct ufshpb_map_ctx *mctx, int pos,
+>>  				     int len, u64 *ppn_buf)
+>> @@ -713,6 +720,7 @@ static void ufshpb_put_map_req(struct ufshpb_lu 
+>> *hpb,
+>>  static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
+>>  				     struct ufshpb_subregion *srgn)
+>>  {
+>> +	struct ufshpb_region *rgn;
+>>  	u32 num_entries = hpb->entries_per_srgn;
+>> 
+>>  	if (!srgn->mctx) {
+>> @@ -726,6 +734,10 @@ static int ufshpb_clear_dirty_bitmap(struct 
+>> ufshpb_lu *hpb,
+>>  		num_entries = hpb->last_srgn_entries;
+>> 
+>>  	bitmap_zero(srgn->mctx->ppn_dirty, num_entries);
+>> +
+>> +	rgn = hpb->rgn_tbl + srgn->rgn_idx;
+>> +	clear_bit(RGN_FLAG_DIRTY, &rgn->rgn_flags);
+>> +
+>>  	return 0;
+>>  }
+>> 
+>> @@ -1245,6 +1257,18 @@ static void ufshpb_rsp_req_region_update(struct 
+>> ufshpb_lu *hpb,
+>>  		srgn_i =
+>>  			be16_to_cpu(rsp_field->hpb_active_field[i].active_srgn);
+>> 
+>> +		rgn = hpb->rgn_tbl + rgn_i;
+>> +		if (hpb->is_hcm &&
+>> +		    (rgn->rgn_state != HPB_RGN_ACTIVE || is_rgn_dirty(rgn))) {
+>> +			/*
+>> +			 * in host control mode, subregion activation
+>> +			 * recommendations are only allowed to active regions.
+>> +			 * Also, ignore recommendations for dirty regions - the
+>> +			 * host will make decisions concerning those by himself
+>> +			 */
+>> +			continue;
+>> +		}
+>> +
 > 
-> Signed-off-by: Xiaofeng Cao <caoxiaofeng@yulong.com>
+> Hi Avri, host control mode also need the recommendations from device,
+> because the bkops would make the ppn invalid, is that right?
 
-LGTM. Thanks.
+Right, but ONLY recommandations to ACTIVE regions are of host's interest
+in host control mode. For those inactive regions, host makes its own 
+decisions.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Can Guo.
 
-> ---
-> v2: resume space and change 'USED' to 'USE'
->  drivers/media/pci/bt8xx/bttv-cards.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/media/pci/bt8xx/bttv-cards.c b/drivers/media/pci/bt8xx/bttv-cards.c
-> index ca20b806e82d..c2b5ab287dd7 100644
-> --- a/drivers/media/pci/bt8xx/bttv-cards.c
-> +++ b/drivers/media/pci/bt8xx/bttv-cards.c
-> @@ -2011,7 +2011,7 @@ struct tvcard bttv_tvcards[] = {
->  		/* .audio_inputs= 0, */
->  		.svhs           = 9,
->  		.gpiomask       = 0x00,
-> -		.gpiomask2      = 0x03, /* used for external vodeo mux */
-> +		.gpiomask2      = 0x03, /* used for external video mux */
->  		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 0),
->  		.muxsel_hook	= phytec_muxsel,
->  		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
-> @@ -2025,7 +2025,7 @@ struct tvcard bttv_tvcards[] = {
->  		/* .audio_inputs= 0, */
->  		.svhs           = 9,
->  		.gpiomask       = 0x00,
-> -		.gpiomask2      = 0x03, /* used for external vodeo mux */
-> +		.gpiomask2      = 0x03, /* used for external video mux */
->  		.muxsel         = MUXSEL(2, 2, 2, 2, 3, 3, 3, 3, 1, 1),
->  		.muxsel_hook	= phytec_muxsel,
->  		.gpiomux        = { 0, 0, 0, 0 }, /* card has no audio */
-> @@ -2180,8 +2180,8 @@ struct tvcard bttv_tvcards[] = {
->  	[BTTV_BOARD_PICOLO_TETRA_CHIP] = {
->  		/*Eric DEBIEF <debief@telemsa.com>*/
->  		/*EURESYS Picolo Tetra : 4 Conexant Fusion 878A, no audio, video input set with analog multiplexers GPIO controlled*/
-> -		/* adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration strucure, and #define BTTV_BOARD_PICOLO_TETRA_CHIP*/
-> -		/*0x79 in bttv.h*/
-> +		/*adds picolo_tetra_muxsel(), picolo_tetra_init(), the following declaration*/
-> +		/*structure and #define BTTV_BOARD_PICOLO_TETRA_CHIP 0x79 in bttv.h*/
->  		.name           = "Euresys Picolo Tetra",
->  		.video_inputs   = 4,
->  		/* .audio_inputs= 0, */
-> @@ -2506,7 +2506,7 @@ struct tvcard bttv_tvcards[] = {
->  	     one external BNC composite input (mux 2)
->  	     three internal composite inputs (unknown muxes)
->  	     an 18-bit stereo A/D (CS5331A), which has:
-> -	       one external stereo unblanced (RCA) audio connection
-> +	       one external stereo unbalanced (RCA) audio connection
->  	       one (or 3?) internal stereo balanced (XLR) audio connection
->  	       input is selected via gpio to a 14052B mux
->  		 (mask=0x300, unbal=0x000, bal=0x100, ??=0x200,0x300)
-> @@ -3924,7 +3924,7 @@ static void osprey_eeprom(struct bttv *btv, const u8 ee[256])
->  	u32 serial = 0;
->  	int cardid = -1;
->  
-> -	/* This code will nevery actually get called in this case.... */
-> +	/* This code will never actually get called in this case.... */
->  	if (btv->c.type == BTTV_BOARD_UNKNOWN) {
->  		/* this might be an antique... check for MMAC label in eeprom */
->  		if (!strncmp(ee, "MMAC", 4)) {
-> @@ -4086,7 +4086,7 @@ static void avermedia_eeprom(struct bttv *btv)
->  /*
->   * For Voodoo TV/FM and Voodoo 200.  These cards' tuners use a TDA9880
->   * analog demod, which is not I2C controlled like the newer and more common
-> - * TDA9887 series.  Instead is has two tri-state input pins, S0 and S1,
-> + * TDA9887 series.  Instead it has two tri-state input pins, S0 and S1,
->   * that control the IF for the video and audio.  Apparently, bttv GPIO
->   * 0x10000 is connected to S0.  S0 low selects a 38.9 MHz VIF for B/G/D/K/I
->   * (i.e., PAL) while high selects 45.75 MHz for M/N (i.e., NTSC).
-> @@ -4144,7 +4144,7 @@ static void init_PXC200(struct bttv *btv)
->  	int tmp;
->  	u32 val;
->  
-> -	/* Initialise GPIO-connevted stuff */
-> +	/* Initialise GPIO-connected stuff */
->  	gpio_inout(0xffffff, (1<<13));
->  	gpio_write(0);
->  	udelay(3);
-> @@ -4580,7 +4580,7 @@ static void xguard_muxsel(struct bttv *btv, unsigned int input)
->  }
->  static void picolo_tetra_init(struct bttv *btv)
->  {
-> -	/*This is the video input redirection fonctionality : I DID NOT USED IT. */
-> +	/*This is the video input redirection functionality : I DID NOT USE IT. */
->  	btwrite (0x08<<16,BT848_GPIO_DATA);/*GPIO[19] [==> 4053 B+C] set to 1 */
->  	btwrite (0x04<<16,BT848_GPIO_DATA);/*GPIO[18] [==> 4053 A]  set to 1*/
->  }
-> @@ -4598,7 +4598,7 @@ static void picolo_tetra_muxsel (struct bttv* btv, unsigned int input)
->   * ivc120_muxsel [Added by Alan Garfield <alan@fromorbit.com>]
->   *
->   * The IVC120G security card has 4 i2c controlled TDA8540 matrix
-> - * swichers to provide 16 channels to MUX0. The TDA8540's have
-> + * switchers to provide 16 channels to MUX0. The TDA8540's have
->   * 4 independent outputs and as such the IVC120G also has the
->   * optional "Monitor Out" bus. This allows the card to be looking
->   * at one input while the monitor is looking at another.
-> 
-
-
--- 
-~Randy
-
+>>  		dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
+>>  			"activate(%d) region %d - %d\n", i, rgn_i, srgn_i);
+>> 
+>> @@ -1252,7 +1276,6 @@ static void ufshpb_rsp_req_region_update(struct 
+>> ufshpb_lu *hpb,
+>>  		ufshpb_update_active_info(hpb, rgn_i, srgn_i);
+>>  		spin_unlock(&hpb->rsp_list_lock);
+>> 
+>> -		rgn = hpb->rgn_tbl + rgn_i;
+>>  		srgn = rgn->srgn_tbl + srgn_i;
+>> 
+>>  		/* blocking HPB_READ */
+>> @@ -1263,6 +1286,14 @@ static void ufshpb_rsp_req_region_update(struct 
+>> ufshpb_lu *hpb,
+>>  		hpb->stats.rb_active_cnt++;
+>>  	}
+>> 
+>> +	if (hpb->is_hcm) {
+>> +		/*
+>> +		 * in host control mode the device is not allowed to inactivate
+>> +		 * regions
+>> +		 */
+>> +		goto out;
+>> +	}
+>> +
+>>  	for (i = 0; i < rsp_field->inactive_rgn_cnt; i++) {
+>>  		rgn_i = be16_to_cpu(rsp_field->hpb_inactive_field[i]);
+>>  		dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
+>> @@ -1287,6 +1318,7 @@ static void ufshpb_rsp_req_region_update(struct 
+>> ufshpb_lu *hpb,
+>>  		hpb->stats.rb_inactive_cnt++;
+>>  	}
+>> 
+>> +out:
+>>  	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "Noti: #ACT %u #INACT %u\n",
+>>  		rsp_field->active_rgn_cnt, rsp_field->inactive_rgn_cnt);
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+>> index 7df30340386a..032672114881 100644
+>> --- a/drivers/scsi/ufs/ufshpb.h
+>> +++ b/drivers/scsi/ufs/ufshpb.h
+>> @@ -121,6 +121,8 @@ struct ufshpb_region {
+>> 
+>>  	/* below information is used by lru */
+>>  	struct list_head list_lru_rgn;
+>> +	unsigned long rgn_flags;
+>> +#define RGN_FLAG_DIRTY 0
+>>  };
+>> 
+>>  #define for_each_sub_region(rgn, i, srgn)				\
+>> --
+>> 2.25.1
+>> 
