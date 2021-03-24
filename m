@@ -2,215 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4138F347246
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B21347249
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhCXHSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:18:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24028 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232230AbhCXHSm (ORCPT
+        id S235824AbhCXHTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:19:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56029 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232230AbhCXHTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:18:42 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12O77jia013236;
-        Wed, 24 Mar 2021 03:18:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=hOPWf5uLYS8MSJmd5l/SPND9xclp5e9VTd1t0JEFVsw=;
- b=Lvvo3SnBA2hIxh+uqQpdQ5IjsKtcIYsMJ+NZ7DweNOTmqV209v1tJVvefdrlbiveAIDf
- xFL3vzCO6j7PFeG9f8pHONkeSvnPHGMNgQtIkHch+HGsCg1TUJv7jB9xVF+hv0Lm98AP
- duKvvPTbzt7TZJFkqedFP3LH77ETyHnxM9ToAFuas7NWXycsNIJTWhbqU7RbcDbAKTbj
- FacEXV9NSwvhDNM8xcqE8USDAh3zq+lgLQmqMHZ5xxxKw/gp2epZj6AvnKan5falO+aV
- 8sFtlAEeBoN5nXD94rw34kNuvGETUuvmTKK+WmphrZIi5aGkg1obgSE4QJSVaTlwcCKk ug== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37fsm0h90a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 03:18:39 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12O7Hi1g023981;
-        Wed, 24 Mar 2021 07:18:38 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma01fra.de.ibm.com with ESMTP id 37d99xj4nv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 07:18:38 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12O7IZeN22872360
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 07:18:35 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23AF54204B;
-        Wed, 24 Mar 2021 07:18:35 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D0A7342045;
-        Wed, 24 Mar 2021 07:18:34 +0000 (GMT)
-Received: from li-e35baacc-2106-11b2-a85c-8f97eb669a6e.ibm.com (unknown [9.145.88.230])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Mar 2021 07:18:34 +0000 (GMT)
-Subject: Re: [PATCH] perf test: Fix perf test 42
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com
-References: <20210322125339.1384351-1-tmricht@linux.ibm.com>
- <YFouKGT7oS1T/oMS@kernel.org>
-From:   Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-Message-ID: <e4b0b5a6-8e7f-1915-0e10-843ec00bc403@linux.ibm.com>
-Date:   Wed, 24 Mar 2021 08:18:34 +0100
+        Wed, 24 Mar 2021 03:19:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616570348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LNxz6dk8N6Qim1jk1gv3DRN8orM2zCPzuP4pcushAnw=;
+        b=HtZLvpxkcNCMtqS6vBbP2gYR0DP6HH9bZgEjvDuwVTv0carU5lNUBKR3LCeBQ3Iwn5uYsb
+        ueS9uDsO04Cht9wVSivt1TpJR49xuMFNB7A48Xuy9pe16HTvSG/7uM1VLvcjxWfs6UwhBu
+        pBiMV5L1ILqCL53CUp5nuzHO11AkdgY=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-_ZJiu0pnOcasE13WNjGBNA-1; Wed, 24 Mar 2021 03:19:07 -0400
+X-MC-Unique: _ZJiu0pnOcasE13WNjGBNA-1
+Received: by mail-ej1-f72.google.com with SMTP id 11so485127ejz.20
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:19:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LNxz6dk8N6Qim1jk1gv3DRN8orM2zCPzuP4pcushAnw=;
+        b=ZLFD9qM3DktIXmDvfWWliBCm29xAVHSvqcHfknNyWMoOBr51OpOD9jNM4g4j+lWTk6
+         PN26lelTZ7H5vsSlZdmjn6Om8zwVf8cqG082MPt0ULjNlE1qzzmrroyTUEj9UZ/NKZoC
+         xcd8EeyI/7SZuqMncgS/1SByWE107aTNmT/ISahiUhAmI81WO8g7S8LI3YH700vw/XCq
+         HXIFCkoLpsSwogGBqXGYIoYAINVEOeGQOSdyTULSUXzRC3yD2hfEm2h8VYurCJYqwirn
+         J8F468fBlw3CR9nqg06pVbhYIApZ/Y4DfXQLdjOdje4+MlW3c3rCQw8Yy/Tm89M2j0Vv
+         dUPQ==
+X-Gm-Message-State: AOAM530JV5QS0xDmw5/TYYs0h7xk4BBs8O9CKxOIUzcSpeqPCjdq/ZyD
+        UKAUwoOMhi/wsiZk+hjsca/2kTbKsfGA5JWZ+9zV4p5Qod/CQG0weDf6bbw2n+jfsOPuB0oD6ti
+        YtoDxtJKMIFTlU0GLUM7giKLw
+X-Received: by 2002:a05:6402:50c8:: with SMTP id h8mr1863235edb.360.1616570345812;
+        Wed, 24 Mar 2021 00:19:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlbfdmREJxME+JRNtvUW27K2DsKI6/XR8AbALCh74d7s9kMg/MD7c5V9abhKL5/x66UnXfjg==
+X-Received: by 2002:a05:6402:50c8:: with SMTP id h8mr1863215edb.360.1616570345634;
+        Wed, 24 Mar 2021 00:19:05 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id i11sm484830ejf.76.2021.03.24.00.19.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 00:19:05 -0700 (PDT)
+Subject: Re: [PATCH v3 3/8] extconn: Clean-up few drivers by using managed
+ work init
+To:     matti.vaittinen@fi.rohmeurope.com,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <CGME20210323135719epcas1p326dfbf8acd6c95703a30d832fb111879@epcas1p3.samsung.com>
+ <b1030eddbf0069f2d39e951be1d8e40d6413aeeb.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <14800e19-da8c-81ba-48ee-cc51cc1925c9@samsung.com>
+ <1f5247a81077f6cb3c96730b1202bbd61dd1900b.camel@fi.rohmeurope.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <efc4359d-9c2c-9115-7cee-b9f6eb51539c@redhat.com>
+Date:   Wed, 24 Mar 2021 08:19:04 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YFouKGT7oS1T/oMS@kernel.org>
+In-Reply-To: <1f5247a81077f6cb3c96730b1202bbd61dd1900b.camel@fi.rohmeurope.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-24_04:2021-03-23,2021-03-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- mlxlogscore=999 clxscore=1015 impostorscore=0 suspectscore=0
- malwarescore=0 mlxscore=0 priorityscore=1501 bulkscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103240053
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 7:06 PM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Mar 22, 2021 at 01:53:39PM +0100, Thomas Richter escreveu:
->> For some time now the perf test 42: BPF filter returns an error
->> on bpf relocation subtest, at least on x86 and s390. This is caused by
->>
->> commit d859900c4c56 ("bpf, libbpf: support global data/bss/rodata sections")
->>
->> which introduces support for global variables in eBPF programs. At least
->> for global variables defined static.
->>
->> Perf test 42 checks that the eBPF relocation fails when the eBPF program
->> contains a global variable. It returns OK when the eBPF program
->> could not be loaded and FAILED otherwise.
->>
->> With above commit the test logic for the eBPF relocation need to change:
->> 1. The function prepare_bpf() now always succeeds, the eBPF program
->>    compiled without errors and returns a valid object pointer instead of
->>    NULL.
->> 2. There is no kprobe named sys_write, it now named ksys_write.
->> 3. The function do_test() now returns TEST_FAIL because function
->>    parse_events_load_bpf_obj() can not execute the eBPF program. The
->>    eBPF verifier complains on an invalid map pointer:
->>       libbpf: load bpf program failed: Permission denied
->>       libbpf: -- BEGIN DUMP LOG ---
->>       libbpf:
->>       0: (b7) r1 = 0
->>       1: (63) *(u32 *)(r10 -4) = r1
->>       last_idx 1 first_idx 0
->>       regs=2 stack=0 before 0: (b7) r1 = 0
->>       2: (63) *(u32 *)(r10 -8) = r1
->>       3: (bf) r2 = r10
->>       4: (07) r2 += -4
->>       5: (bf) r3 = r10
->>       6: (07) r3 += -8
->>       7: (18) r1 = 0x380006ce000
->>       9: (b7) r4 = 0
->>       10: (85) call bpf_map_update_elem#2
->>       R1 type=map_value expected=map_ptr
->>
->> Fix this by added logic to handle the kernel verifier return code:
->> 1. Add function myksys_write() to cope with successful compile.
->> 2. Use kprobe ksys_write
->> 3. Handle eBPF verifier error.
->>
->> Output after:
->>  42: BPF filter                          :
->>  42.1: Basic BPF filtering               : Ok
->>  42.2: BPF pinning                       : Ok
->>  42.3: BPF prologue generation           : Ok
->>  42.4: BPF relocation checker            : Failed
->>  #
->>
->> Output after:
->>  # ./perf test -F 42
->>  42: BPF filter                          :
->>  42.1: Basic BPF filtering               : Ok
->>  42.2: BPF pinning                       : Ok
->>  42.3: BPF prologue generation           : Ok
->>  42.4: BPF relocation checker            : Ok
->>  #
->>
->> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
->> ---
->>  tools/perf/tests/bpf-script-test-relocation.c |  4 ++--
->>  tools/perf/tests/bpf.c                        | 11 +++++++++++
->>  2 files changed, 13 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/tests/bpf-script-test-relocation.c b/tools/perf/tests/bpf-script-test-relocation.c
->> index 74006e4b2d24..f8f8176ad4d1 100644
->> --- a/tools/perf/tests/bpf-script-test-relocation.c
->> +++ b/tools/perf/tests/bpf-script-test-relocation.c
->> @@ -34,8 +34,8 @@ struct bpf_map_def SEC("maps") my_table = {
->>  
->>  int this_is_a_global_val;
->>  
->> -SEC("func=sys_write")
->> -int bpf_func__sys_write(void *ctx)
->> +SEC("func=ksys_write")
->> +int bpf_func__ksys_write(void *ctx)
->>  {
->>  	int key = 0;
->>  	int value = 0;
->> diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
->> index f57e075b0ed2..d60ef9472d3d 100644
->> --- a/tools/perf/tests/bpf.c
->> +++ b/tools/perf/tests/bpf.c
->> @@ -59,6 +59,11 @@ static int llseek_loop(void)
->>  
->>  #endif
->>  
->> +static int myksys_write(void)
->> +{
->> +	return 0;
->> +}
->> +
->>  static struct {
->>  	enum test_llvm__testcase prog_id;
->>  	const char *desc;
->> @@ -105,6 +110,7 @@ static struct {
->>  		.name		  = "[bpf_relocation_test]",
->>  		.msg_compile_fail = "fix 'perf test LLVM' first",
->>  		.msg_load_fail	  = "libbpf error when dealing with relocation",
->> +		.target_func	  = &myksys_write,
->>  	},
->>  };
->>  
->> @@ -258,6 +264,11 @@ static int __test__bpf(int idx)
->>  		ret = do_test(obj,
->>  			      bpf_testcase_table[idx].target_func,
->>  			      bpf_testcase_table[idx].expect_result);
->> +		if (bpf_testcase_table[idx].prog_id == LLVM_TESTCASE_BPF_RELOCATION
->> +		    && ret == TEST_FAIL) {
->> +			ret = TEST_OK;
->> +			goto out;
->> +		}
+Hi,
+
+On 3/24/21 6:02 AM, Matti Vaittinen wrote:
+> Hello Chanwoo, Greg,
 > 
-> At this point, if it doesn't matter if it fails or succeeds, just drop
-> this test case?
+> Thanks for the review.
 > 
-> - Arnaldo
+> On Wed, 2021-03-24 at 11:09 +0900, Chanwoo Choi wrote:
+>> Hi,
+>>
+>> Need to fix the work as following:
+>> s/extconn/extcon
+>>
+>> And I'd like you to use the more correct patch title like the
+>> following example:
+>> "extcon: Use resource-managed function for delayed work"
 > 
+> I think Greg merged this already. How should we handle this?
+> 
+>> @@ -112,7 +113,9 @@ static int gpio_extcon_probe(struct
+>>> platform_device *pdev)
+>>>  	if (ret < 0)
+>>>  		return ret;
+>>>  
+>>> -	INIT_DELAYED_WORK(&data->work, gpio_extcon_work);
+>>> +	ret = devm_delayed_work_autocancel(dev, &data->work,
+>>> gpio_extcon_work);
+>>> +	if (ret)
+>>> +		return ret;
+>>
+>> Need to add the error log as following:
+>> 	if (ret) {
+>> 		dev_err(dev, "Failed to initialize delayed_work");
+>> 		return ret;
+>> 	}	
+> 
+> I could send incremental patch to Greg for this but it does not change
+> the commit message.
 
-Arnaldo,
+We cannot do anything about the commit message anymore, but the ordering
+issue which you introduced really needs to be fixed.
 
-dropping this test case is fine with me. Support for eBPF global variables is now
-part of the linux kernel and there are test programs in the 
-.../testing/selftests/bpf directory. File prog_tests/global_data.c for example.
+Please send an incremental patch fixing the wrong order and the double
+init of the workqueue.
 
-If you agree, I will provide a patch to remove the test case 42.4.
+Regards,
 
--- 
-Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
---
-Vorsitzender des Aufsichtsrats: Gregor Pillen
-Geschäftsführung: Dirk Wittkopp
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+Hans
+
