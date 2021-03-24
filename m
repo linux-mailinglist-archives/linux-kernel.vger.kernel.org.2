@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECDD348438
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A16234843A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbhCXVzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234670AbhCXVzt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:55:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE27C06174A;
-        Wed, 24 Mar 2021 14:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=XUb+BQanDBoDTDTC63k606fqfZtavrU2Q8tHp0ZZT2g=; b=J0CwAq6eEwi7Ph3FZkUtCZIBW7
-        v0HOzn9n3VL5O+v0lR7yu2WEw11rGGvz/LPf2kT3nnYLUW/b7m+gKydSODJTnxRmXGujpNen+Ooew
-        sQjYXK3uYAHorSeqdHs4Q22QF2To/5T7eEuWC9l9aSprXjki1jgBujNSsxnr2DB5TyvnfQ5vF39u6
-        JOxx7FUlDKwR21CkjWi4D98yYOPllsuRdegjEnSsRbGlb3ntmGi3SDkWB8U3WSi9YnMTfN29fizaV
-        MWZhYxGA2tk2XW/6J4WNNkGj+ksCGqcSkL0qnhjWp9wrUFOl69VSPIizG0d9mA2R1EZ0PkNqF8D4a
-        /YIB3q/g==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPBTZ-000GGP-IT; Wed, 24 Mar 2021 21:55:46 +0000
-Subject: Re: [PATCH] scsi: esp_scsi: Trivial typo fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210324061318.5744-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3d732769-e4f3-e5d8-e848-101ccff9eab7@infradead.org>
-Date:   Wed, 24 Mar 2021 14:55:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S234853AbhCXV44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:56:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41880 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231869AbhCXV4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 17:56:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616623005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jBjOzdTCI5alb7jYcViZAPDiBK1WPc+e/WGWIJGXArw=;
+        b=DhrbA/tVqf9uCoYm4s7RQxVbZPoHrfzVoKYTZe87BQllvWidEXlh2nk2bx0rbdUBodEtxv
+        5MBMLQBq0AIVRlf6aApbV2mL3MSvYgoyvNbqO9iFWLZuFRNTjg+XolcmEzIdFIurCL1f0e
+        gX4q/hXAT+x+6J8muKJK9agDrBMHc5U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8E2D4AB9B;
+        Wed, 24 Mar 2021 21:56:45 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 22:56:44 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Arjun Roy <arjunroy@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Arjun Roy <arjunroy.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
+Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+Message-ID: <YFu1nO3yYT5VVebo@dhcp22.suse.cz>
+References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+ <YFCH8vzFGmfFRCvV@cmpxchg.org>
+ <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+ <YFJ+5+NBOBiUbGWS@cmpxchg.org>
+ <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
+ <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
+ <YFsA78FfzICrnFf7@dhcp22.suse.cz>
+ <CAOFY-A1+TT5EgT0oVEkGgHAaJavbLzbKp5fQx_uOrMtw-7VEiA@mail.gmail.com>
+ <CALvZod6HQ=bG2K1YPofmD=7q3OX+FoRHbzLHcGAMSKOXtfn9dw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210324061318.5744-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod6HQ=bG2K1YPofmD=7q3OX+FoRHbzLHcGAMSKOXtfn9dw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 11:13 PM, Bhaskar Chowdhury wrote:
+On Wed 24-03-21 13:53:34, Shakeel Butt wrote:
+[...]
+> > Given that's the case, the options seem to be:
+> > 1) Use a page flag - with the downside that they are a severely
+> > limited resource,
+> > 2) Use some bits inside page->memcg_data - this I believe Johannes had
+> > reasons against, and it isn't always the case that MEMCG support is
+> > enabled.
+> > 3) Use compound_dtor - but I think this would have problems for the
+> > prior reasons.
 > 
-> s/conditon/condition/
-> s/pecularity/peculiarity/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> I don't think Michal is suggesting to use PageCompound() or
+> PageHead(). He is suggesting to add a more general page flag
+> (PageHasDestructor) and corresponding page->dtor, so other potential
+> users can use it too.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-> ---
->  drivers/scsi/esp_scsi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/esp_scsi.c b/drivers/scsi/esp_scsi.c
-> index 007ccef5d1e2..342535ac0570 100644
-> --- a/drivers/scsi/esp_scsi.c
-> +++ b/drivers/scsi/esp_scsi.c
-> @@ -647,7 +647,7 @@ static void esp_unmap_sense(struct esp *esp, struct esp_cmd_entry *ent)
->  	ent->sense_ptr = NULL;
->  }
-> 
-> -/* When a contingent allegiance conditon is created, we force feed a
-> +/* When a contingent allegiance condition is created, we force feed a
->   * REQUEST_SENSE command to the device to fetch the sense data.  I
->   * tried many other schemes, relying on the scsi error handling layer
->   * to send out the REQUEST_SENSE automatically, but this was difficult
-> @@ -1341,7 +1341,7 @@ static int esp_data_bytes_sent(struct esp *esp, struct esp_cmd_entry *ent,
->  	bytes_sent -= esp->send_cmd_residual;
-> 
->  	/*
-> -	 * The am53c974 has a DMA 'pecularity'. The doc states:
-> +	 * The am53c974 has a DMA 'peculiarity'. The doc states:
->  	 * In some odd byte conditions, one residual byte will
->  	 * be left in the SCSI FIFO, and the FIFO Flags will
->  	 * never count to '0 '. When this happens, the residual
-> --
-
-
+Yes, that is eaxactly my point. If there is a page flag to use for a
+specific destruction then we can use an already existing scheme. I have
+fully digested Johannes' other reply so I might be still missing
+something but fundamentally if sombody knows that the particular part of
+the page is not used (most really should) then the page can claim
+destructor by a flag and the freeing routine would just call that
+callback. Or is there any reason why othe subsystems outside of
+networking couldn't claim their own callback?
 -- 
-~Randy
-
+Michal Hocko
+SUSE Labs
