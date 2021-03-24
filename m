@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00463346F8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC06346F92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhCXCbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
+        id S232111AbhCXCdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbhCXCbM (ORCPT
+        with ESMTP id S231944AbhCXCcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:31:12 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E35C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:31:12 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id q11so7135751pld.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=smeNo2nLOzLoAqQ0eDu45bUTA0pWmhws44H491W9z+0=;
-        b=EvmzBDZ30bavlVo5llPGM4DVAa7h37P89ePfMEf5oMkGD9epTsE5m75nO/7X6hw4cN
-         SkizuxTwxzNwMrDOJoCrMnbrim2PTBN2Y5aXzWvRh/4d5q/RPYgoE/mwZU5zQNdlgYm9
-         DdiJf5xPDxzLRVShek+nVRVOBfaWMIesglLag=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=smeNo2nLOzLoAqQ0eDu45bUTA0pWmhws44H491W9z+0=;
-        b=b4F/RESlRzQZudh0IX2GOWF7HN5VEOjIWLDE1/v1+x4QQ0ngyz19fvpPjjdsNFdNDD
-         ordBxQ1yPXx/3E92ChNIwD+6ABob7SxzY2nEih/WbbWsffuc2g8gRK8iU1cz6LQiyhq0
-         BJGmfGQkbyrrSDCS5QxR0scaSuuOqObh6AOYTmdHNC3b0Pv7rTmn2CIlkJiEmItR0qQl
-         4H8ygYO7nqppxbO+CQQMUDEDX720jVCC0EYFcx2olZEoddQeaEOu2uaS2bbeZm6sI3Vo
-         /2n7M0lez4FIZ26KkImzUGS0E9Rg8E2+PDeiXfJvGCajm3eJrGHAkom3bJwrZlqnMU+R
-         3g9g==
-X-Gm-Message-State: AOAM531H943pVSfjRqeXwrBuzVz7fmx0RoYKKXblaX8voCRa8rEzG9sn
-        QeTis5RGhMSMdtLk7X0FakLaMA==
-X-Google-Smtp-Source: ABdhPJyQemMa34PxA+NGQjFfeUL30hAreLQlm0fYvCVp2BCeLlDpkEH/+O+4ZOoe04EnjIFerPZr0Q==
-X-Received: by 2002:a17:90a:4d07:: with SMTP id c7mr1058957pjg.104.1616553071745;
-        Tue, 23 Mar 2021 19:31:11 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:bcf2:e05a:a993:9494])
-        by smtp.gmail.com with ESMTPSA id l19sm444720pjt.16.2021.03.23.19.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 19:31:11 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 11:31:06 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv3 5/6] media: uvcvideo: add UVC 1.5 ROI control
-Message-ID: <YFqkaumASvjrYP/n@google.com>
-References: <20210319055342.127308-1-senozhatsky@chromium.org>
- <20210319055342.127308-6-senozhatsky@chromium.org>
- <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
- <YFqdaHCQak5ZM0Sf@google.com>
- <CAAFQd5DaDZA8==HPrL1v1M=1a5g3DgY58nuq7KnA8USQ6UuiTQ@mail.gmail.com>
+        Tue, 23 Mar 2021 22:32:41 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE2DC061763;
+        Tue, 23 Mar 2021 19:32:41 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0E91883;
+        Wed, 24 Mar 2021 03:32:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616553160;
+        bh=l7BD45qd1EreNw2oPGiKvtAPxI7dpJU1XkD1ZqEr9R0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T5q51G7369lgTkBPV6hJMlzYWYozCdmLKtEGYFrjmEFkaBNH9Rnw3Uq0z46NnlOwo
+         hcSbaLCVEBIi18wZLAiEm2Ue/JNcTb1Efte23egBegX8BidBati2lzx0BObdcOK+/H
+         J/Ipten2UGI3SEPY7sqqHqrt7C1EBSl3h9sXXf/g=
+Date:   Wed, 24 Mar 2021 04:31:57 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, od@zcrc.me, stable@vger.kernel.org,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v3 4/4] drm/ingenic: Fix non-OSD mode
+Message-ID: <YFqknayQuJQmG7lm@pendragon.ideasonboard.com>
+References: <20210124085552.29146-1-paul@crapouillou.net>
+ <20210124085552.29146-5-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAAFQd5DaDZA8==HPrL1v1M=1a5g3DgY58nuq7KnA8USQ6UuiTQ@mail.gmail.com>
+In-Reply-To: <20210124085552.29146-5-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/24 11:14), Tomasz Figa wrote:
-> > > > +static int uvc_ioctl_s_roi(struct file *file, void *fh,
-> > > > +                          struct v4l2_selection *sel)
-> > > > +{
-> > > > +       struct uvc_fh *handle = fh;
-> > > > +       struct uvc_streaming *stream = handle->stream;
-> > > > +       struct uvc_roi_rect *roi;
-> > > > +       int ret;
-> > > > +
-> > > > +       if (!validate_roi_bounds(stream, sel))
-> > > > +               return -E2BIG;
-> > >
-> > > Not sure if this is the correct approach or if we should convert the
-> > > value to the closest valid...
-> >
-> > Well, at this point we know that ROI rectangle dimensions are out of
-> > sane value range. I'd rather tell user-space about integer overflow.
+Hi Paul,
+
+Thank you for the patch.
+
+On Sun, Jan 24, 2021 at 08:55:52AM +0000, Paul Cercueil wrote:
+> Even though the JZ4740 did not have the OSD mode, it had (according to
+> the documentation) two DMA channels, but there is absolutely no
+> information about how to select the second DMA channel.
 > 
-> Adjusting the rectangle to something supported by the hardware is
-> mentioned explicitly in the V4L2 API documentation and is what drivers
-> have to implement. Returning an error on invalid value is not a
-> correct behavior here (and similarly for many other operations, e.g.
-> S_FMT).
-
-Well, in this particular case we are talking about user-space that wants
-to set ROI rectangle that is knowingly violates device's GET_MAX and
-overflows UVC ROI rectangle u16 value range. That's a clear bug in user-space.
-Do we want to pretend that user-space does the correct thing and fixup
-stuff behind the scenes?
-
-> > Looking for the closest ROI rectangle that suffice can be rather
-> > tricky. It may sounds like we can just use BOUNDARIES_MAX, but this
-> > is what Firmware D returns for GET_MAX
-> >
-> > ioctl(V4L2_SEL_TGT_ROI_BOUNDS_MAX)
-> >
-> >         0, 0, 65535, 65535
+> Make the ingenic-drm driver work in non-OSD mode by using the
+> foreground0 plane (which is bound to the DMA0 channel) as the primary
+> plane, instead of the foreground1 plane, which is the primary plane
+> when in OSD mode.
 > 
-> Perhaps the frame size would be the correct bounds?
+> Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
+> Cc: <stable@vger.kernel.org> # v5.8+
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-I can check that.
+I don't have much knowledge about this platform, but the change looks
+reasonable to me.
+
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index b23011c1c5d9..59ce43862e16 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -554,7 +554,7 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>  		height = state->src_h >> 16;
+>  		cpp = state->fb->format->cpp[0];
+>  
+> -		if (priv->soc_info->has_osd && plane->type == DRM_PLANE_TYPE_OVERLAY)
+> +		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
+>  			hwdesc = &priv->dma_hwdescs->hwdesc_f0;
+>  		else
+>  			hwdesc = &priv->dma_hwdescs->hwdesc_f1;
+> @@ -826,6 +826,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  	const struct jz_soc_info *soc_info;
+>  	struct ingenic_drm *priv;
+>  	struct clk *parent_clk;
+> +	struct drm_plane *primary;
+>  	struct drm_bridge *bridge;
+>  	struct drm_panel *panel;
+>  	struct drm_encoder *encoder;
+> @@ -940,9 +941,11 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  	if (soc_info->has_osd)
+>  		priv->ipu_plane = drm_plane_from_index(drm, 0);
+>  
+> -	drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
+> +	primary = priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
+>  
+> -	ret = drm_universal_plane_init(drm, &priv->f1, 1,
+> +	drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
+> +
+> +	ret = drm_universal_plane_init(drm, primary, 1,
+>  				       &ingenic_drm_primary_plane_funcs,
+>  				       priv->soc_info->formats_f1,
+>  				       priv->soc_info->num_formats_f1,
+> @@ -954,7 +957,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  
+>  	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
+>  
+> -	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
+> +	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
+>  					NULL, &ingenic_drm_crtc_funcs, NULL);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to init CRTC: %i\n", ret);
+
+-- 
+Regards,
+
+Laurent Pinchart
