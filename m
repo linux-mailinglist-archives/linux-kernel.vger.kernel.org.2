@@ -2,214 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1814F346F61
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06175346F63
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhCXCTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhCXCTi (ORCPT
+        id S234832AbhCXCUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:20:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14454 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231776AbhCXCTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:19:38 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDC3C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:19:38 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id jy13so30302120ejc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O6pYt7i3ZfjZRsHKNRy9TSnJLBhdXZsjApsl7qVrkWA=;
-        b=RsVkB/Y0CZH9XZzn82erHDDP8QMmPgtgAa2wOWWwpxmakMZJgHzNO7I/+g4m4adiEA
-         /AuXJMSkwTq4YjUQhLPhFDbNlzE2s0z/XuQk4Yg9oVyPlFKtUWFGXz9b0FcDyGFf1ZSx
-         gkTTKLNlXDSjsuh3nOejNfxEfpMWeohC44aSax0AJ/HiZfzuvt5xWllMplzX3LmiyS9+
-         HFcxDA7Y913vpd56MDpHtmf02XWLCE3WdLeUSj4zP1CKL4A7JEBAF9uR9Tj6+4exlzq/
-         /21DNknGe39jAd9gmA5iOuCZzGMbd3mXM7qmNlmeF/yAv6uShf/XV5CbiPngHl/r30am
-         JXMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O6pYt7i3ZfjZRsHKNRy9TSnJLBhdXZsjApsl7qVrkWA=;
-        b=pn2LsufkIF9IAY4WZK7378jOW5VTiwT5ibbZszbrLOqO17EdOXYoS+uG2+XQIWa7JH
-         N2piJIt5RZ/BmLHiSOxo0k1NLe8wb47M/OXCqjPci/UGSh1YavLUpOAkevLxUpRbwRmK
-         Z4aEfqUGHMj+zN2qMahyJVoIkZpbzUrKz7/+BacWtXdyEqh7n2a3uYpkFGqrysezHQH4
-         dWHlPVmUXZmg6Cqkjk7HrdyvdoBs3blylTeQ+5nahYj47PTjcDL1wqjPJMiphHQMlNVx
-         RKNdPwpB9oe2GzSKREaw1eQlSBr7vAUBq3wt2cVfaCuLkBfncqoq1TcozkBuBK8sj5Ji
-         vlAw==
-X-Gm-Message-State: AOAM53047Fx05cv+bu08BimDpT98d3waNpCaAAol5y7iLdhCQg4ZGP5d
-        MsMwack9xfkZ8Hd3jfq1t/JRciGEOrq7gKUfHHYrig==
-X-Google-Smtp-Source: ABdhPJxD4PFaqvtvK1VRDwzCV3Hl7JUGp0Ljr770gbmSGeQf+7GIop0/MoqaotWJPaQPZgD8nzvxH/6snKVhCi2Z0VU=
-X-Received: by 2002:a17:906:2ac1:: with SMTP id m1mr1187750eje.472.1616552376639;
- Tue, 23 Mar 2021 19:19:36 -0700 (PDT)
+        Tue, 23 Mar 2021 22:19:48 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4sMZ1xSszwPL7;
+        Wed, 24 Mar 2021 10:17:46 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
+ 2021 10:19:42 +0800
+Subject: Re: [PATCH 2/2] f2fs: fix error path of f2fs_remount()
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210317095604.125820-1-yuchao0@huawei.com>
+ <20210317095604.125820-2-yuchao0@huawei.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <b3538de1-2bc2-9f58-a586-2571e9891987@huawei.com>
+Date:   Wed, 24 Mar 2021 10:19:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com>
- <20210208105530.3072869-2-ruansy.fnst@cn.fujitsu.com> <CAPcyv4jqEdPoF5YM+jSYJd74KqRTwbbEum7=moa3=Wyn6UyU9g@mail.gmail.com>
- <OSBPR01MB29207A1C06968705C2FEBACFF4939@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <CAPcyv4iBnWbG0FYw6-K0MaH--rq62s7RY_yoT9rOYWMa94Yakw@mail.gmail.com>
- <OSBPR01MB29203F891F9584CC53616FB8F4939@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <CAPcyv4gn_AvT6BA7g4jLKRFODSpt7_ORowVd3KgyWxyaFG0k9g@mail.gmail.com>
- <OSBPR01MB2920E46CBE4816CDF711E004F46F9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <OSBPR01MB29208779955B49F84D857F80F4689@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSBPR01MB29208779955B49F84D857F80F4689@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 23 Mar 2021 19:19:28 -0700
-Message-ID: <CAPcyv4jhUU3NVD8HLZnJzir+SugB6LnnrgJZ-jP45BZrbJ1dJQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/11] pagemap: Introduce ->memory_failure()
-To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        david <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210317095604.125820-2-yuchao0@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 7:18 PM ruansy.fnst@fujitsu.com
-<ruansy.fnst@fujitsu.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: ruansy.fnst@fujitsu.com <ruansy.fnst@fujitsu.com>
-> > Subject: RE: [PATCH v3 01/11] pagemap: Introduce ->memory_failure()
-> > > > > > >
-> > > > > > > After the conversation with Dave I don't see the point of this.
-> > > > > > > If there is a memory_failure() on a page, why not just call
-> > > > > > > memory_failure()? That already knows how to find the inode and
-> > > > > > > the filesystem can be notified from there.
-> > > > > >
-> > > > > > We want memory_failure() supports reflinked files.  In this
-> > > > > > case, we are not able to track multiple files from a page(this
-> > > > > > broken
-> > > > > > page) because
-> > > > > > page->mapping,page->index can only track one file.  Thus, I
-> > > > > > page->introduce this
-> > > > > > ->memory_failure() implemented in pmem driver, to call
-> > > > > > ->->corrupted_range()
-> > > > > > upper level to upper level, and finally find out files who are
-> > > > > > using(mmapping) this page.
-> > > > > >
-> > > > >
-> > > > > I know the motivation, but this implementation seems backwards.
-> > > > > It's already the case that memory_failure() looks up the
-> > > > > address_space associated with a mapping. From there I would expect
-> > > > > a new 'struct address_space_operations' op to let the fs handle
-> > > > > the case when there are multiple address_spaces associated with a given
-> > file.
-> > > > >
-> > > >
-> > > > Let me think about it.  In this way, we
-> > > >     1. associate file mapping with dax page in dax page fault;
-> > >
-> > > I think this needs to be a new type of association that proxies the
-> > > representation of the reflink across all involved address_spaces.
-> > >
-> > > >     2. iterate files reflinked to notify `kill processes signal` by the
-> > > >           new address_space_operation;
-> > > >     3. re-associate to another reflinked file mapping when unmmaping
-> > > >         (rmap qeury in filesystem to get the another file).
-> > >
-> > > Perhaps the proxy object is reference counted per-ref-link. It seems
-> > > error prone to keep changing the association of the pfn while the reflink is
-> > in-tact.
-> > Hi, Dan
-> >
-> > I think my early rfc patchset was implemented in this way:
-> >  - Create a per-page 'dax-rmap tree' to store each reflinked file's (mapping,
-> > offset) when causing dax page fault.
-> >  - Mount this tree on page->zone_device_data which is not used in fsdax, so
-> > that we can iterate reflinked file mappings in memory_failure() easily.
-> > In my understanding, the dax-rmap tree is the proxy object you mentioned.  If
-> > so, I have to say, this method was rejected. Because this will cause huge
-> > overhead in some case that every dax page have one dax-rmap tree.
-> >
->
-> Hi, Dan
->
-> How do you think about this?  I am still confused.  Could you give me some advice?
+Ping,
 
-So I think the primary driver of this functionality is dax-devices and
-the architectural model for memory failure where several architectures
-and error handlers know how to route pfn failure to the
-memory_failure() frontend.
-
-Compare that to block-devices where sector failure has no similar
-framework, and despite some initial interest about reusing 'struct
-badblocks' for this type of scenario there has been no real uptake to
-expand 'struct badblocks' outside of the pmem driver.
-
-I think the work you have done for ->corrupted_range() just needs to
-be repurposed away from a block-device operation to dax-device
-infrastructure. Christoph's pushback on extending
-block_device_operations makes sense to me because there is likely no
-other user of this facility than the pmem driver, and the pmem driver
-only needs it for the vestigial reason that filesystems mount on
-block-devices and not dax-devices.
-
-Recently Dave drove home the point that a filesystem can't do anything
-with pfns, it needs LBAs. A dax-device does not have LBA's, but it
-does operate on the concept of device-relative offsets. The filesystem
-is allowed to assume that dax-device:PFN[device_byte_offset >>
-PAGE_SHIFT] aliases the same data as the associated
-block-device:LBA[device_byte_offset >> SECTOR_SHIFT]. He also
-reiterated that this interface should be range based, which you
-already had, but I did not include in my attempt to communicate the
-mass failure of an entire surprise-removed device.
-
-So I think the path forward is:
-
-- teach memory_failure() to allow for ranged failures
-
-- let interested drivers register for memory failure events via a
-blocking_notifier_head
-
-- teach memory_failure() to optionally let the notifier chain claim
-the event vs its current default of walking page->mapping
-
-- teach the pmem driver to register for memory_failure() events and
-filter the ones that apply to pfns that the driver owns
-
-- drop the nfit driver's usage of the mce notifier chain since
-memory_failure() is a superset of what the mce notifier communicates
-
-- augment the pmem driver's view of badblocks that it gets from
-address range scrub with one's it gets from memory_failure() events
-
-- when pmem handles a memory_failure() event or an address range scrub
-event fire a new event on a new per-dax-device blocking_notifier_head
-indicating the dax-relative offset ranges of the translated PFNs. This
-notification can optionally indicate failure, offline (for removal),
-and online (for repaired ranges).
-
-- teach dm to receive dax-device notifier events from its leaf devices
-and then translate them into dax-device notifications relative to the
-dm-device offset. This would seem to be a straightforward conversion
-of what you have done with ->corrupted_range()
-
-- teach filesystems to register for dax-device notifiers
-
-With all of that in place an interested filesystem can take ownership
-of a memory failure that impacts a range of pfns it is responsible for
-via a dax-device, but it also allows a not interested filesystem to
-default to standard single-pfn-at-a-time error handling and
-assumptions about page->mapping only referring to a single address
-space.
-
-This obviously does not solve Dave's desire to get this type of error
-reporting on block_devices, but I think there's nothing stopping a
-parallel notifier chain from being created for block-devices, but
-that's orthogonal to requirements and capabilities provided by
-dax-devices.
+On 2021/3/17 17:56, Chao Yu wrote:
+> In error path of f2fs_remount(), it missed to restart/stop kernel thread
+> or enable/disable checkpoint, then mount option status may not be
+> consistent with real condition of filesystem, so let's reorder remount
+> flow a bit as below and do recovery correctly in error path:
+> 
+> 1) handle gc thread
+> 2) handle ckpt thread
+> 3) handle flush thread
+> 4) handle checkpoint disabling
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>   fs/f2fs/super.c | 47 ++++++++++++++++++++++++++++++++++-------------
+>   1 file changed, 34 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 6716af216dca..fa60f08c30bb 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -1942,8 +1942,9 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	struct f2fs_mount_info org_mount_opt;
+>   	unsigned long old_sb_flags;
+>   	int err;
+> -	bool need_restart_gc = false;
+> -	bool need_stop_gc = false;
+> +	bool need_restart_gc = false, need_stop_gc = false;
+> +	bool need_restart_ckpt = false, need_stop_ckpt = false;
+> +	bool need_restart_flush = false, need_stop_flush = false;
+>   	bool no_extent_cache = !test_opt(sbi, EXTENT_CACHE);
+>   	bool disable_checkpoint = test_opt(sbi, DISABLE_CHECKPOINT);
+>   	bool no_io_align = !F2FS_IO_ALIGNED(sbi);
+> @@ -2081,19 +2082,10 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   		clear_sbi_flag(sbi, SBI_IS_CLOSE);
+>   	}
+>   
+> -	if (checkpoint_changed) {
+> -		if (test_opt(sbi, DISABLE_CHECKPOINT)) {
+> -			err = f2fs_disable_checkpoint(sbi);
+> -			if (err)
+> -				goto restore_gc;
+> -		} else {
+> -			f2fs_enable_checkpoint(sbi);
+> -		}
+> -	}
+> -
+>   	if ((*flags & SB_RDONLY) || test_opt(sbi, DISABLE_CHECKPOINT) ||
+>   			!test_opt(sbi, MERGE_CHECKPOINT)) {
+>   		f2fs_stop_ckpt_thread(sbi);
+> +		need_restart_ckpt = true;
+>   	} else {
+>   		err = f2fs_start_ckpt_thread(sbi);
+>   		if (err) {
+> @@ -2102,6 +2094,7 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   			    err);
+>   			goto restore_gc;
+>   		}
+> +		need_stop_ckpt = true;
+>   	}
+>   
+>   	/*
+> @@ -2111,11 +2104,24 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	if ((*flags & SB_RDONLY) || !test_opt(sbi, FLUSH_MERGE)) {
+>   		clear_opt(sbi, FLUSH_MERGE);
+>   		f2fs_destroy_flush_cmd_control(sbi, false);
+> +		need_restart_flush = true;
+>   	} else {
+>   		err = f2fs_create_flush_cmd_control(sbi);
+>   		if (err)
+> -			goto restore_gc;
+> +			goto restore_ckpt;
+> +		need_stop_flush = true;
+>   	}
+> +
+> +	if (checkpoint_changed) {
+> +		if (test_opt(sbi, DISABLE_CHECKPOINT)) {
+> +			err = f2fs_disable_checkpoint(sbi);
+> +			if (err)
+> +				goto restore_flush;
+> +		} else {
+> +			f2fs_enable_checkpoint(sbi);
+> +		}
+> +	}
+> +
+>   skip:
+>   #ifdef CONFIG_QUOTA
+>   	/* Release old quota file names */
+> @@ -2130,6 +2136,21 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	adjust_unusable_cap_perc(sbi);
+>   	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
+>   	return 0;
+> +restore_flush:
+> +	if (need_restart_flush) {
+> +		if (f2fs_create_flush_cmd_control(sbi))
+> +			f2fs_warn(sbi, "background flush thread has stopped");
+> +	} else if (need_stop_flush) {
+> +		clear_opt(sbi, FLUSH_MERGE);
+> +		f2fs_destroy_flush_cmd_control(sbi, false);
+> +	}
+> +restore_ckpt:
+> +	if (need_restart_ckpt) {
+> +		if (f2fs_start_ckpt_thread(sbi))
+> +			f2fs_warn(sbi, "background ckpt thread has stopped");
+> +	} else if (need_stop_ckpt) {
+> +		f2fs_stop_ckpt_thread(sbi);
+> +	}
+>   restore_gc:
+>   	if (need_restart_gc) {
+>   		if (f2fs_start_gc_thread(sbi))
+> 
