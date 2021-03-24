@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23761347160
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DB1347159
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235457AbhCXGF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
+        id S233361AbhCXGEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:04:20 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:7259 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233315AbhCXGEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:04:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27C766192B;
-        Wed, 24 Mar 2021 06:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616565892;
-        bh=SOcYlJ+GJCugSLx/8qtddpu6enwjrjm3cFZt5Ul8FhI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZTxuybjbSx2NUQu4w05iqtSncmIBBBLc0ixcGvTUSfsPZRJPcbQ7vWQvUS7+qe8ZW
-         iwOae9e4dDfz3nNWUcGSyJx0BWeMXqpjmqhxGIkA5/aJrqdnx45EXLYYe9jkpa4dhr
-         0nm1RxQAPXt3HNaBJ5kFLmxq+8LUpFjMRLygGeNs=
-Date:   Wed, 24 Mar 2021 07:02:59 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alex Nemirovsky <Alex.Nemirovsky@cortina-access.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Jason Li <jason.li@cortina-access.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH 1/3] tty: serial: Add UART driver for Cortina-Access
- platform
-Message-ID: <YFrWE93aJ/XGparI@kroah.com>
-References: <1613702532-5096-1-git-send-email-alex.nemirovsky@cortina-access.com>
- <YFmzuEfpN7zzKel3@kroah.com>
- <E0630C1D-AC64-4DB5-9467-EA2F4590EB26@cortina-access.com>
+        id S230057AbhCXGED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 02:04:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1616565843;
+  x=1648101843;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=sk06+HZ6Blr7iUQ4aFmbDlbxhVZxlHgzlIAHEdW4tT4=;
+  b=bIDUvjPl13vgn9k1JJD/czscd52YXbjosXItkdbXKYIE9p7CAxzE1TW9
+   zm8PJk/C760xfIrXThSiwR0kBp6FnVDxpVm7ArT0LucmWvL7penYHeRb6
+   jewGAzA6rhExakJqYomKw3dn9zoqks0214Dv2trjBU7wNdCzU3rm4OVnm
+   5M+qtBHu0WATW9zP8aP/our2V4TqbvTCMrZobw5l4J0dUjIUmD/6yUuwc
+   q5jDdgdUETPYOZWho1lmfk5SDCUVP89vpzIWSkDIxGgqRkO1Jz36tFT8s
+   8CIpFWRNYpYxPujEBhk3coM+EK9C9e5i0MZLZ+d84vpW3J1GJt6s3UVi1
+   g==;
+From:   Hermes Zhang <Hermes.Zhang@axis.com>
+To:     Alexander Dahl <ada@thorsis.com>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>
+CC:     kernel <kernel@axis.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
+Thread-Topic: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
+Thread-Index: AQHXIFhJRIZ9H+Su6ESnlhvrRvIo5aqSk++AgAARZqA=
+Date:   Wed, 24 Mar 2021 06:04:01 +0000
+Message-ID: <cce4da5a92d9414e87b6ac6d1d167fac@XBOX01.axis.com>
+References: <20210324024844.15796-1-chenhui.zhang@axis.com>
+ <558944059.12080.1616565502073@seven.thorsis.com>
+In-Reply-To: <558944059.12080.1616565502073@seven.thorsis.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.0.5.60]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E0630C1D-AC64-4DB5-9467-EA2F4590EB26@cortina-access.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 07:25:58PM +0000, Alex Nemirovsky wrote:
-> Hi Greg,
-> 
-> > On Mar 23, 2021, at 2:24 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > 
-> > On Thu, Feb 18, 2021 at 06:42:09PM -0800, Alex Nemirovsky wrote:
-> >> +static struct cortina_uart_port *cortina_uart_ports;
-> > 
-> > Why is this not a per-device pointer?
-> > 
-> >> +static void __exit cortina_uart_exit(void)
-> >> +{
-> >> +	platform_driver_unregister(&serial_cortina_driver);
-> >> +	uart_unregister_driver(&cortina_uart_driver);
-> >> +	kfree(cortina_uart_ports);
-> > 
-> > Should not need to free this here, it should be tied to the device, not
-> > the driver.
-> 
-> Would it be possible to provide a reference to an example 
-> of a good way to do it.
-
-You have a device-specific data structure, put this information there.
-
-> >> +}
-> >> +
-> >> +module_init(cortina_uart_init);
-> >> +module_exit(cortina_uart_exit);
-> >> +
-> >> +MODULE_AUTHOR("Cortina-Access Inc.");
-> >> +MODULE_DESCRIPTION(" Cortina-Access UART driver");
-> >> +MODULE_LICENSE("GPL");
-> >> diff --git a/include/uapi/linux/serial_core.h b/include/uapi/linux/serial_core.h
-> >> index 62c2204..1931892 100644
-> >> --- a/include/uapi/linux/serial_core.h
-> >> +++ b/include/uapi/linux/serial_core.h
-> >> @@ -277,4 +277,7 @@
-> >> /* Freescale LINFlexD UART */
-> >> #define PORT_LINFLEXUART	122
-> >> 
-> >> +/* Cortina-Access UART */
-> >> +#define PORT_CORTINA_ACCESS	123
-> > 
-> > Also, no need for this, right?  I would prefer to not add new ids if at
-> > all possible.
-> 
-> Could you explain why these are no longer required and what has 
-> been done in the tty design to make this obsolete?
-
-What do you use in userspace that requires this information to be sent
-from the kernel?
-
-thanks,
-
-greg k-h
+PiA+DQo+ID4gTm90ZXM6DQo+ID4gICAgIEFkZCBtYXhJdGVtcw0KPiANCj4gV2hhdCBhYm91dCB0
+aGUgb3RoZXIgcGFydCBvZiB0aGUgc2VyaWVzPyBJIHRoaW5rIHlvdSBzaG91bGQgc2VuZCBib3Ro
+DQo+IHBhdGNoZXMgdG9nZXRoZXIgd2l0aCBhbiBpbnRyb2R1Y3Rpb24gbWVzc2FnZSBvbiBib3Ro
+LiBJZiB5b3Ugb25seSBjaGFuZ2UNCj4gb25lIHBhdGNoIGZvciBhIG5ldyB2ZXJzaW9uIHNwaW4g
+b2YgdGhlIHNlcmllcywganVzdCBzZW5kIHRoZSBvdGhlciBvbmUNCj4gdW5jaGFuZ2VkLg0KPiAN
+Cj4gKEl0IG1ha2VzIG5vIHNlbnNlIHRvIG1lcmdlIHRoZSBiaW5kaW5nIGFzIGxvbmcgYXMgdGhl
+IGRyaXZlciBpcyBub3QgbWVyZ2VkLA0KPiBvdGhlcndpc2UgeW91IHdvdWxkIGVuZCB1cCB3aXRo
+IGEgYmluZGluZyB3aXRob3V0IGRyaXZlci4gU28ga2VlcGluZyB0aGVtDQo+IHRvZ2V0aGVyIHNo
+b3VsZCBoZWxwIHJldmlld2VycyBhbmQgbWFpbnRhaW5lcnMuKQ0KPiANCg0KSGkgQWxleGFuZGVy
+LA0KDQpUaGUgb3RoZXIgcGFydCBpcyBoZXJlOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRj
+aHdvcmsvcGF0Y2gvMTM5OTg3NS8sIHNvIGRvIHlvdSBtZWFuIEkgbmVlZCB0byBjb21iaW5lIHRo
+ZXNlIHR3byBhcyBvbmUgY29tbWl0PyBPciBpcyB0aGVyZSBhbnl3YXkgdG8gbGluayB0aGVtIHRv
+Z2V0aGVyPyBUaGFua3MuDQoNCkknbSBmaXJzdCB0aW1lIHRvIGNvbW1pdCBhIG5ldyBkcml2ZXIs
+IHNvcnJ5IGZvciB0aGF0Lg0KDQpCZXN0IFJlZ2FyZHMsDQpIZXJtZXMNCg==
