@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4241B347190
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49551347195
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235511AbhCXGWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:22:48 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:37766 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232508AbhCXGWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:22:42 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F4yp820VHz9v0SJ;
-        Wed, 24 Mar 2021 07:22:40 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id zZTmdDlJy8_F; Wed, 24 Mar 2021 07:22:40 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F4yp817TSz9v0SG;
-        Wed, 24 Mar 2021 07:22:40 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 01D668B812;
-        Wed, 24 Mar 2021 07:22:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id oNPB7e02iixS; Wed, 24 Mar 2021 07:22:40 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 22BA68B76A;
-        Wed, 24 Mar 2021 07:22:40 +0100 (CET)
-Subject: Re: [PATCH v2 -next] powerpc: kernel/time.c - cleanup warnings
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        He Ying <heying24@huawei.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        a.zummo@towertech.it, npiggin@gmail.com, msuchanek@suse.de,
-        tglx@linutronix.de, peterz@infradead.org, geert+renesas@glider.be,
-        kernelfans@gmail.com, frederic@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-References: <20210323091257.90054-1-heying24@huawei.com>
- <YFppJkpZRHMJFay0@piout.net> <YFp0Qc2P61V+3bm0@piout.net>
- <95cd80c5-40ff-1316-9c89-2e8e7836fb6a@csgroup.eu>
-Message-ID: <a30a94af-f551-c2a4-18df-a9488ba11d53@csgroup.eu>
-Date:   Wed, 24 Mar 2021 07:22:39 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235506AbhCXGYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232508AbhCXGYK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 02:24:10 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB02C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 23:24:10 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id m12so30263784lfq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 23:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=91gjQEIhYRpIwdrlAB3Zu/S2nP17uZud9Feh2dBN07U=;
+        b=gNIKNEr3KsNITZziqCwsa5Z7lse71dcG+0BTeE9/Ek71ioXa3pZdVeH0Ll0Wlm9DU7
+         KNzaQEGsPdm3N4BHNqwOiFAQiaFvJop8pXRF+G7sBdIYJ1lumkBkllLlDxo2rWXbzgu+
+         3vXw57dW2/h1AJAE1pSS5mkVXS/0L/YeDnt6+frkXhNB2+WYiFw2n3Iow13Np6ABmvPJ
+         Uza12nOoaGTppCYkwvwjYyafCd/Q7rXiadv3BgZP+Prua7u2145HHe2r3DVYvFWGCeQ7
+         IOUccxnxWCOPHtIi4kDIZmm0Zjo4fRvOJrWUxc6I04aXPhhmu2Ti5vWtOZKHTOCpvvEk
+         xvNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=91gjQEIhYRpIwdrlAB3Zu/S2nP17uZud9Feh2dBN07U=;
+        b=bEgE/GWx040UaNottc6hx11WqDPu/T5ewMy87R9sNqVtvGpz0V+qjfKm+3ufDs6/7R
+         zuRl4sG5Qot6GFICbqVMPCRaq98rf3I/3woMBGhugnYKIeo5V0ywwG/BAxhzW36NU+Dp
+         kv9iuqRzASaJlNLXRpgL7x5WIwibXQ7KMxb4n/SFg/pBHj0GFUEdFVBV3PltUm+Q3k3M
+         nID3T40X1ly5RfFJbj7OqmQLquaECIHNaBe0sun9fuXkvYpTqVDWWleMiQ5U44XYEYPZ
+         J85Yxxnf7MqBh7e+hsx2R/YZfdo/SpY30kIv4diz/aA6byaA9fLbbOsEux/1AWANHRU9
+         jjVQ==
+X-Gm-Message-State: AOAM533e5f/D+XXP0n4vkgWYjjiFH88Ni798pbOwhVJEiuWkEQrZUbs1
+        JskZgSnI1cQizlUIKdyYB/fZVXnCMV7/K4raGIO/RQ==
+X-Google-Smtp-Source: ABdhPJxIIMd/c0aL0BXBbBT8gbEyXiKm+E34v5FP6ythJ1yP+S65b48zqE2oFdc800/mKt6OeYj1gK1sUSIdMN96RGw=
+X-Received: by 2002:ac2:5509:: with SMTP id j9mr1035675lfk.302.1616567048746;
+ Tue, 23 Mar 2021 23:24:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <95cd80c5-40ff-1316-9c89-2e8e7836fb6a@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <f0f43b30-3dfb-c2a0-7f69-6e5488f871cd@nxp.com> <8b72335f-6ecd-3683-af82-ab5ca96d9528@pengutronix.de>
+In-Reply-To: <8b72335f-6ecd-3683-af82-ab5ca96d9528@pengutronix.de>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 24 Mar 2021 11:53:57 +0530
+Message-ID: <CAFA6WYPfOuerX0Q5HizARfdYFOQa5gUrpHt7bN9==aaV1Tka9A@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 23 Mar 2021 at 22:04, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>
+> Hello Horia,
+>
+> On 21.03.21 21:01, Horia Geant=C4=83 wrote:
+> > On 3/16/2021 7:02 PM, Ahmad Fatoum wrote:
+> >> This patch series builds on top of Sumit's rework to have the CAAM as =
+yet another
+> >> trusted key backend.
+> >>
+> > Shouldn't the description under TRUSTED_KEYS (in security/keys/Kconfig)
+> > be updated to reflect the availability of multiple backends?
+>
+> This is indeed no longer correct. It also depends on TCG_TPM, which AFAIU
+> is not really needed for the new TEE backend.
+>
+> @Sumit, can you confirm?
+>
 
+Yes, that's correct. Let me share a separate patch to fix that.
 
-Le 24/03/2021 à 07:14, Christophe Leroy a écrit :
-> 
-> 
-> Le 24/03/2021 à 00:05, Alexandre Belloni a écrit :
->> On 23/03/2021 23:18:17+0100, Alexandre Belloni wrote:
->>> Hello,
->>>
->>> On 23/03/2021 05:12:57-0400, He Ying wrote:
->>>> We found these warnings in arch/powerpc/kernel/time.c as follows:
->>>> warning: symbol 'decrementer_max' was not declared. Should it be static?
->>>> warning: symbol 'rtc_lock' was not declared. Should it be static?
->>>> warning: symbol 'dtl_consumer' was not declared. Should it be static?
->>>>
->>>> Declare 'decrementer_max' and 'rtc_lock' in powerpc asm/time.h.
->>>> Rename 'rtc_lock' in drviers/rtc/rtc-vr41xx.c to 'vr41xx_rtc_lock' to
->>>> avoid the conflict with the variable in powerpc asm/time.h.
->>>> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
->>>> is declared there.
->>>>
->>>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>>> Signed-off-by: He Ying <heying24@huawei.com>
->>>> ---
->>>> v2:
->>>> - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
->>>>    rtc_lock in powerpc asm/time.h.
->>>>
->>>
->>> V1 was actually the correct thing to do. rtc_lock is there exactly
->>> because chrp and maple are using mc146818 compatible RTCs. This is then
->>> useful because then drivers/char/nvram.c is enabled. The proper fix
->>> would be to scrap all of that and use rtc-cmos for those platforms as
->>> this drives the RTC properly and exposes the NVRAM for the mc146818.
->>>
->>> Or at least, if there are no users for the char/nvram driver on those
->>> two platforms, remove the spinlock and stop enabling CONFIG_NVRAM or
->>> more likely rename the symbol as it seems to be abused by both chrp and
->>> powermac.
->>>
->>
->> Ok so rtc_lock is not even used by the char/nvram.c driver as it is
->> completely compiled out.
->>
->> I guess it is fine having it move to the individual platform as looking
->> very quickly at the Kconfig, it is not possible to select both
->> simultaneously. Tentative patch:
->>
-> 
-> Looking at it once more, it looks like including linux/mc146818rtc.h is the thing to do, at least 
-> for now. Several platforms are defining the rtc_lock exactly the same way as powerpc does, and 
-> including mc146818rtc.h
-> 
-> I think that to get it clean, this change should go in a dedicated patch and do a bit more and 
-> explain exactly what is being do and why. I'll try to draft something for it.
-> 
-> He Y., can you make a version v3 of your patch excluding the rtc_lock change ?
-> 
+-Sumit
 
-Finally, I think there is not enough changes to justify a separate patch.
-
-So you can send a V3 based on your V1. In addition to the changes you had in V1, please remove the 
-declaration of rfc_lock in arch/powerpc/platforms/chrp/chrp.h
-
-Christophe
+> --
+> Pengutronix e.K.                           |                             =
+|
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
+|
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
+|
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
+|
