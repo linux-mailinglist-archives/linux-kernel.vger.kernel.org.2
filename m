@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154D5347BAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30055347BC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236486AbhCXPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S236500AbhCXPJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236474AbhCXPHl (ORCPT
+        with ESMTP id S236470AbhCXPI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:07:41 -0400
+        Wed, 24 Mar 2021 11:08:56 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1155C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:07:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2333C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:08:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=1JCSW6fhPhnUwYncwpS20rorlG/js5sifoyi387v58U=; b=a12sGQgsKwfYuwbQ1gBupszG1C
-        yAeb6nnGZRI3R+69ggOJafJWtp13VdbaAliVZsTER/1hsNxFFU1t2KDbEx5paEL3HHhRlj5KFLf/M
-        eC7LAdaYRv8+w94Ny4nBOE2uvC4n+90QiwFjLDlm7E6a2dl68Qxdb7p0OiwJIvYFEQyx1oMeIrEa3
-        9wSsZtkcI5F1rPfd+RktLQwnt02h7SKU40Sxu7kaM7EK0o1X8R9r2+Gyeb22Yrx+fAJN/wHb3jmIc
-        X+hlVmuCSKoX+WR/UqcSD+LBC0JiSuYIacUF4+U1TJny4vwITd02UstB1FQGY0UEwowuDPnbyR17G
-        ucX0BvkA==;
+        bh=abzLZDSImtUt7gowe+fZWKLMOfxUM8lbrZGEl5NlJeE=; b=DP5U0ziYjavGXyvDlMHC5tOdpp
+        2+6l7JStA6bWAK2kdHpRNk+Sozs5P0azkTYpOvTb+Iq0jmPFsDg44/qJ/UKN+sCzBloTUL4d2ehp8
+        LDBCJQli5Z/nUYz4FzXZ8kmaldxiwgm2tPNh7TvBjhKvJU/8JVrgZ6C2L1FZx0rJqkCfk58zzZ82K
+        XaNpR5cZe1gS7m6vpLv6CxSp24Ib06w1kbGfIwVD2jqCQnL0SjMDP5mBNKt6UCSF2QTB9u+j8m2Qm
+        98oD8at91d10HUiHnFSsCG14+xiOesFUkGhK9HR/DFZearCRujZ9D7uGe8V3AI86e7GHXpZxAD1j4
+        w+Q97wSg==;
 Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP55t-00BU5L-Jx; Wed, 24 Mar 2021 15:06:56 +0000
+        id 1lP56J-00BUEF-Gj; Wed, 24 Mar 2021 15:07:22 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -39,9 +39,9 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Uladzislau Rezki <urezki@gmail.com>,
         Nicholas Piggin <npiggin@gmail.com>
-Subject: [PATCH v2 2/4] mm/util: Add kvmalloc_node_caller
-Date:   Wed, 24 Mar 2021 15:05:16 +0000
-Message-Id: <20210324150518.2734402-3-willy@infradead.org>
+Subject: [PATCH v2 3/4] mm/vmalloc: Use kvmalloc to allocate the table of pages
+Date:   Wed, 24 Mar 2021 15:05:17 +0000
+Message-Id: <20210324150518.2734402-4-willy@infradead.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210324150518.2734402-1-willy@infradead.org>
 References: <20210324150518.2734402-1-willy@infradead.org>
@@ -51,120 +51,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the caller of kvmalloc to specify who counts as the allocator
-of the memory instead of assuming it's the immediate caller.
+If we're trying to allocate 4MB of memory, the table will be 8KiB in size
+(1024 pointers * 8 bytes per pointer), which can usually be satisfied
+by a kmalloc (which is significantly faster).  Instead of changing this
+open-coded implementation, just use kvmalloc().
+
+This improves the allocation speed of vmalloc(4MB) by approximately
+5% in our benchmark.  It's still dominated by the 1024 calls to
+alloc_pages_node(), which will be the subject of a later patch.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- include/linux/mm.h   |  4 +++-
- include/linux/slab.h |  2 ++
- mm/util.c            | 51 +++++++++++++++++++++++++-------------------
- 3 files changed, 34 insertions(+), 23 deletions(-)
+ mm/vmalloc.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index cb1e191da319..b65a7105d9a7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -786,7 +786,9 @@ static inline int is_vmalloc_or_module_addr(const void *x)
- }
- #endif
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index a22241e9c363..a9ed2a4b697e 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2801,13 +2801,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 		gfp_mask |= __GFP_HIGHMEM;
  
--extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
-+void *kvmalloc_node_caller(size_t size, gfp_t flags, int node,
-+		unsigned long caller);
-+void *kvmalloc_node(size_t size, gfp_t flags, int node);
- static inline void *kvmalloc(size_t size, gfp_t flags)
- {
- 	return kvmalloc_node(size, flags, NUMA_NO_NODE);
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 0c97d788762c..6611b8ee55ee 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -663,6 +663,8 @@ extern void *__kmalloc_node_track_caller(size_t, gfp_t, int, unsigned long);
- 
- #else /* CONFIG_NUMA */
- 
-+#define __kmalloc_node_track_caller(size, flags, node, caller) \
-+	__kmalloc_track_caller(size, flags, caller)
- #define kmalloc_node_track_caller(size, flags, node) \
- 	kmalloc_track_caller(size, flags)
- 
-diff --git a/mm/util.c b/mm/util.c
-index 5c2304bb02ae..96dd498206ad 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -539,26 +539,8 @@ unsigned long vm_mmap(struct file *file, unsigned long addr,
- }
- EXPORT_SYMBOL(vm_mmap);
- 
--/**
-- * kvmalloc_node - attempt to allocate physically contiguous memory, but upon
-- * failure, fall back to non-contiguous (vmalloc) allocation.
-- * @size: size of the request.
-- * @flags: gfp mask for the allocation - must be compatible (superset) with GFP_KERNEL.
-- * @node: numa node to allocate from
-- *
-- * Uses kmalloc to get the memory but if the allocation fails then falls back
-- * to the vmalloc allocator. Use kvfree for freeing the memory.
-- *
-- * Reclaim modifiers - __GFP_NORETRY and __GFP_NOFAIL are not supported.
-- * __GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
-- * preferable to the vmalloc fallback, due to visible performance drawbacks.
-- *
-- * Please note that any use of gfp flags outside of GFP_KERNEL is careful to not
-- * fall back to vmalloc.
-- *
-- * Return: pointer to the allocated memory of %NULL in case of failure
-- */
--void *kvmalloc_node(size_t size, gfp_t flags, int node)
-+void *kvmalloc_node_caller(size_t size, gfp_t flags, int node,
-+		unsigned long caller)
- {
- 	gfp_t kmalloc_flags = flags;
- 	void *ret;
-@@ -584,7 +566,7 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
- 			kmalloc_flags |= __GFP_NORETRY;
- 	}
- 
--	ret = kmalloc_node(size, kmalloc_flags, node);
-+	ret = __kmalloc_node_track_caller(size, kmalloc_flags, node, caller);
- 
- 	/*
- 	 * It doesn't really make sense to fallback to vmalloc for sub page
-@@ -593,7 +575,32 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
- 	if (ret || size <= PAGE_SIZE)
- 		return ret;
- 
--	return __vmalloc_node(size, 1, flags, node, _RET_IP_);
-+	return __vmalloc_node(size, 1, flags, node, caller);
-+}
-+
-+/**
-+ * kvmalloc_node - attempt to allocate physically contiguous memory, but upon
-+ * failure, fall back to non-contiguous (vmalloc) allocation.
-+ * @size: size of the request.
-+ * @flags: GFP flags for the allocation - must be compatible (superset) with GFP_KERNEL.
-+ * @node: numa node to allocate from
-+ *
-+ * Uses kmalloc to get the memory but if the allocation fails then falls back
-+ * to the vmalloc allocator. Use kvfree for freeing the memory.
-+ *
-+ * Reclaim modifiers - __GFP_NORETRY and __GFP_NOFAIL are not supported.
-+ * __GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
-+ * preferable to the vmalloc fallback, due to visible performance drawbacks.
-+ *
-+ * Please note that any use of gfp flags outside of GFP_KERNEL is careful to not
-+ * fall back to vmalloc.
-+ *
-+ * Return: pointer to the allocated memory or %NULL in case of failure.
-+ * %ZERO_SIZE_PTR if @size is zero.
-+ */
-+void *kvmalloc_node(size_t size, gfp_t flags, int node)
-+{
-+	return kvmalloc_node_caller(size, flags, node, _RET_IP_);
- }
- EXPORT_SYMBOL(kvmalloc_node);
- 
+ 	/* Please note that the recursion is strictly bounded. */
+-	if (array_size > PAGE_SIZE) {
+-		pages = __vmalloc_node(array_size, 1, nested_gfp, node,
++	pages = kvmalloc_node_caller(array_size, nested_gfp, node,
+ 					area->caller);
+-	} else {
+-		pages = kmalloc_node(array_size, nested_gfp, node);
+-	}
+-
+ 	if (!pages) {
+ 		free_vm_area(area);
+ 		return NULL;
 -- 
 2.30.2
 
