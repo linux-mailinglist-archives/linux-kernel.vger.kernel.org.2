@@ -2,441 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9D0347861
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97B534786B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhCXMXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:23:15 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:33832 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231600AbhCXMWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:22:42 -0400
-Received: from [95.90.166.74] (helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lP2X2-00009P-ND; Wed, 24 Mar 2021 13:22:40 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     heiko@sntech.de
-Cc:     jagan@amarulasolutions.com, jbx6244@gmail.com,
-        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        arnd@kernel.org,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH 7/7] arm64: dts: rockchip: move mmc aliases to board dts on rk3399
-Date:   Wed, 24 Mar 2021 13:22:35 +0100
-Message-Id: <20210324122235.1059292-7-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210324122235.1059292-1-heiko@sntech.de>
-References: <20210324122235.1059292-1-heiko@sntech.de>
+        id S233370AbhCXMY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231566AbhCXMYI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:24:08 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F014C061763;
+        Wed, 24 Mar 2021 05:24:08 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id m7so17313774qtq.11;
+        Wed, 24 Mar 2021 05:24:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IyefHO45u1U79eOxkhQZcovymc+b6GZnAZonAFNEudY=;
+        b=AzcC0/z9nhIrk7tsnxoiGx6Hxh4wxkyl2LZXY5sa6IuPIwog/g1PdI1vnvtyNk2SnV
+         BHccAXRGdxDs1W4vxoWeyifTRi1eJdgUR4PfpCKwpjNi5vXOO1dnQL34fOi9ZVnKYRak
+         HGOthOxMBa3sXkN1OrI2FN8ZA5ifdTzj+qXJfOWIQbd/W6bQdvzDxLuNxEPu2tQoV/Uz
+         I1WzxpXe0B3sF7wUhtiCoQ8UBX2xyLOiVPfH902YJP7rBTFtpFaruvrgzxiohFaP3ZgD
+         fgemh8hkgiXLCsPMrZ6LJr+/HT08PsVXHuNDcDErfEtmAFuV58QKlpgb6+BDNyXNLLo5
+         UbGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IyefHO45u1U79eOxkhQZcovymc+b6GZnAZonAFNEudY=;
+        b=ZyYrbJ/WcyJIX7XYshSIOjDLoCYxXMs+t6w3WfWJmSD8j4J7s0xMz2LPX5r5McY0Zn
+         oh24/2jl6HbMIBayGpw6/ih8jgD0lVMxhR5+sv0gvvuG6YfAxVAM7/2fU4PIZxBHOmpG
+         4LgrqEZGHeP/sLR/GWe3fxzH4oWnPvwFD4qMEvLEU8MSeSvyXUzOEhCf+aV6h2ZnGv+Z
+         jYcfmvhZX2ICDtH0hZmvQDntq6pfNwKK55Pr7K+AavX3Mm6h5EL3LXzzqsK4eWy+ySU2
+         BvJf+S6CZ6GPi540kr8yYFi0Y5d/E2SJrmOkPtN08UwUfu7btYsB28yqiPu1TAUOsrzD
+         SlZQ==
+X-Gm-Message-State: AOAM531F5SWygw+GaCWxSwKAF9BYRPfzzHuCndknErgYzPGvKGfvUbrp
+        BhXKy4Sw/Dkk6NbTAJtkVj0DYse7jAcjrt2CIziPFitjpw==
+X-Google-Smtp-Source: ABdhPJxxqv4PH7lOqzrXhUUrR/+RU3+KtNx7idK4wtFJIGRdxxQMRcQ3sHfZAOIRYkmdWtfykAd33CuVcTuirXpo/LQ=
+X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr2595220qtv.137.1616588647824;
+ Wed, 24 Mar 2021 05:24:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210323084515.1346540-1-vkuznets@redhat.com>
+In-Reply-To: <20210323084515.1346540-1-vkuznets@redhat.com>
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+Date:   Wed, 24 Mar 2021 20:23:30 +0800
+Message-ID: <CAB5KdOZb1pfKC8GkFSWQxBxz_KLvmSxqbnLL7qRjgfV19jiNvA@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/vPMU: Forbid writing to MSR_F15H_PERF MSRs when
+ guest doesn't have X86_FEATURE_PERFCTR_CORE
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wei Huang <wei.huang2@amd.com>, Joerg Roedel <joro@8bytes.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+On Tue, Mar 23, 2021 at 4:48 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>
+> MSR_F15H_PERF_CTL0-5, MSR_F15H_PERF_CTR0-5 MSRs are only available when
+> X86_FEATURE_PERFCTR_CORE CPUID bit was exposed to the guest. KVM, however,
+> allows these MSRs unconditionally because kvm_pmu_is_valid_msr() ->
+> amd_msr_idx_to_pmc() check always passes and because kvm_pmu_set_msr() ->
+> amd_pmu_set_msr() doesn't fail.
 
-As suggested by Arnd Bergmann, the newly added mmc aliases
-should be board specific, so move them from the general dtsi
-to the individual boards.
+I have tested on AMD EPYC platform with perfctr_core(`cat
+/proc/cpuinfo | grep perfctr_core`).
+I started a vm without `perfctr-core`(-cpu host,-perfctr-core).
 
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
----
- arch/arm64/boot/dts/rockchip/rk3399-evb.dts                | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399-firefly.dts            | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi               | 5 +++++
- arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts         | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi       | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts     | 5 +++++
- arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts          | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi           | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts           | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts       | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts        | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi              | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts   | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi            | 5 +++++
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi         | 5 +++++
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts         | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts         | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi           | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi         | 6 ++++++
- arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts | 4 ++++
- arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi          | 5 +++++
- arch/arm64/boot/dts/rockchip/rk3399.dtsi                   | 3 ---
- arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi      | 5 +++++
- 23 files changed, 112 insertions(+), 3 deletions(-)
+Before patch :
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-evb.dts b/arch/arm64/boot/dts/rockchip/rk3399-evb.dts
-index 694b0d08d644..7b717ebec8ff 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-evb.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-evb.dts
-@@ -11,6 +11,10 @@ / {
- 	model = "Rockchip RK3399 Evaluation Board";
- 	compatible = "rockchip,rk3399-evb", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdhci;
-+	};
-+
- 	backlight: backlight {
- 		compatible = "pwm-backlight";
- 		brightness-levels = <
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-index 6db18808b9c5..45254be1350d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-@@ -13,6 +13,12 @@ / {
- 	model = "Firefly-RK3399 Board";
- 	compatible = "firefly,firefly-rk3399", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-index 32dcaf210085..4002742fed4c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-@@ -10,6 +10,11 @@
- #include "rk3399-op1-opp.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdmmc;
-+		mmc1 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:115200n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-index 341d074ed996..bee45c17e2ca 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-@@ -9,6 +9,12 @@ / {
- 	model = "Hugsun X99 TV BOX";
- 	compatible = "hugsun,x99", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-index 635afdd99122..d5c7648c841d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-@@ -11,6 +11,12 @@
- #include "rk3399-opp.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
-index 66c725a34220..19485b552bc4 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
-@@ -18,6 +18,11 @@ / {
- 	model = "Kobol Helios64";
- 	compatible = "kobol,helios64", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdmmc;
-+		mmc1 = &sdhci;
-+	};
-+
- 	avdd_1v8_s0: avdd-1v8-s0 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "avdd_1v8_s0";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-index 1fa80ac15464..7c93f840bc64 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-@@ -13,6 +13,12 @@ / {
- 	model = "Leez RK3399 P710";
- 	compatible = "leez,p710", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-index 48ed4aaa37f3..16fd58c4a80f 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-@@ -17,6 +17,12 @@
- #include "rk3399-opp.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-index ad7c4d00888f..04b54abea3cc 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-@@ -15,6 +15,12 @@ / {
- 	model = "Orange Pi RK3399 Board";
- 	compatible = "rockchip,rk3399-orangepi", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-index 219b7507a10f..2b5f001ff4a6 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-@@ -18,6 +18,12 @@ / {
- 	model = "Pine64 Pinebook Pro";
- 	compatible = "pine64,pinebook-pro", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
-index 42a488b74e0e..545de88d756f 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
-@@ -10,6 +10,10 @@ / {
- 	model = "Theobroma Systems RK3399-Q7 SoM";
- 	compatible = "tsd,rk3399-puma-haikou", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc1 = &sdmmc;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-index 6aad90e23141..c635b01e67df 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-@@ -8,6 +8,10 @@
- #include "rk3399-opp.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdhci;
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts
-index 754627d97144..9447c8724b65 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts
-@@ -11,6 +11,10 @@ / {
- 	model = "Firefly ROC-RK3399-PC Mezzanine Board";
- 	compatible = "firefly,roc-rk3399-pc-mezzanine", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc2 = &sdio0;
-+	};
-+
- 	/* MP8009 PoE PD */
- 	poe_12v: poe-12v {
- 		compatible = "regulator-fixed";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-index 20309076dbac..c172f5a803e7 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
-@@ -13,6 +13,11 @@ / {
- 	model = "Firefly ROC-RK3399-PC Board";
- 	compatible = "firefly,roc-rk3399-pc", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdmmc;
-+		mmc1 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-index fb7599f07af4..7d0a7c697703 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-@@ -11,6 +11,11 @@
- #include "rk3399-opp.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdmmc;
-+		mmc1 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-index f0055ce2fda0..6c63e617063c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-@@ -10,6 +10,10 @@
- / {
- 	model = "Radxa ROCK Pi 4B";
- 	compatible = "radxa,rockpi4b", "radxa,rockpi4", "rockchip,rk3399";
-+
-+	aliases {
-+		mmc2 = &sdio0;
-+	};
- };
- 
- &sdio0 {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-index 4c7ebb1c5d2d..99169bcd51c0 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-@@ -11,6 +11,10 @@
- / {
- 	model = "Radxa ROCK Pi 4C";
- 	compatible = "radxa,rockpi4c", "radxa,rockpi4", "rockchip,rk3399";
-+
-+	aliases {
-+		mmc2 = &sdio0;
-+	};
- };
- 
- &sdio0 {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-index 5e3ac589bc54..25dc61c26a94 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-@@ -9,6 +9,12 @@
- #include "rk3399-opp.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	sdio_pwrseq: sdio-pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		clocks = <&rk808 1>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-index d42c75c6dcbd..6bff8db7d33e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
-@@ -10,6 +10,12 @@
- #include "rk3399-opp.dtsi"
- 
- / {
-+	aliases {
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts b/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts
-index 73e269a8ae0c..f6b2199a42bd 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire-excavator.dts
-@@ -10,6 +10,10 @@ / {
- 	model = "Excavator-RK3399 Board";
- 	compatible = "rockchip,rk3399-sapphire-excavator", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc2 = &sdio0;
-+	};
-+
- 	adc-keys {
- 		compatible = "adc-keys";
- 		io-channels = <&saradc 1>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-index 701a567d7638..46b0f97a0b1c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-@@ -11,6 +11,11 @@
- / {
- 	compatible = "rockchip,rk3399-sapphire", "rockchip,rk3399";
- 
-+	aliases {
-+		mmc0 = &sdmmc;
-+		mmc1 = &sdhci;
-+	};
-+
- 	chosen {
- 		stdout-path = "serial2:1500000n8";
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 98cec9387300..d620a683bff3 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -29,9 +29,6 @@ aliases {
- 		i2c6 = &i2c6;
- 		i2c7 = &i2c7;
- 		i2c8 = &i2c8;
--		mmc0 = &sdio0;
--		mmc1 = &sdmmc;
--		mmc2 = &sdhci;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
- 		serial2 = &uart2;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
-index 7257494d2831..c0074b3ed4af 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
-@@ -12,6 +12,11 @@
- / {
- 	compatible = "vamrs,rk3399pro-vmarc-som", "rockchip,rk3399pro";
- 
-+	aliases {
-+		mmc0 = &sdmmc;
-+		mmc1 = &sdhci;
-+	};
-+
- 	vcc3v3_pcie: vcc-pcie-regulator {
- 		compatible = "regulator-fixed";
- 		enable-active-high;
--- 
-2.29.2
+$ rdmsr 0xc0010200
+0
+$ wrmsr 0xc0010200 1
+$ rdmsr 0xc0010200
+1
 
+After patch:
+
+# rdmsr 0xc0010200
+0
+# wrmsr 0xc0010200 1
+wrmsr: CPU 0 cannot set MSR 0xc0010200 to 0x0000000000000001
+# rdmsr 0xc0010200
+0
+
+So,
+
+Tested-by: Haiwei Li <lihaiwei@tencent.com>
