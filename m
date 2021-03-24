@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C7834749A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FDA3474A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhCXJ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:27:41 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:65390 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234844AbhCXJ1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:27:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UT9Ta7E_1616578026;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT9Ta7E_1616578026)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 24 Mar 2021 17:27:07 +0800
-Subject: Re: [PATCH] init/Kconfig: Support sign module with SM3 hash algorithm
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Nick Terrell <terrelln@fb.com>, KP Singh <kpsingh@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210323083528.25678-1-tianjia.zhang@linux.alibaba.com>
- <28d3a339-6210-ffd2-950f-ea5340ac23b7@infradead.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <f01f2b36-4978-1c8d-7b7b-f1f8fd49c6d1@linux.alibaba.com>
-Date:   Wed, 24 Mar 2021 17:27:06 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S234826AbhCXJ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234779AbhCXJ2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:28:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C05B619FF;
+        Wed, 24 Mar 2021 09:28:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616578114;
+        bh=xEeMYENWJ8eHZP35YBP9kXgN0WisfIGoBPFtuDmZEDE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q6a8PHrQM/EB8ZQlOmUzsi5MQCYwOZLFhEqTU2kyfMKVSm/frA01PT2byL24paXvc
+         aqctd2ewfRak1PMav4Cs6AS/5E/E/FGd3cqu/imnkM8JGaQJyqyf6B75I9rWTnuY/u
+         hIaBkJcJOmdbTy2JBO/G08H6zCMCG+BH4AIyXPMzPyTiPGioWEiYeMo+UhDTzt+b6Q
+         VNZ7l98VrKL14SZ5gnClw1uKzeNsAc+hBEE1fvm0iMvCqzJdkY0xOsv3+1/34wYcf/
+         GVCfH9g9s/2L0Mqg+7mk4Xz/qSdErGQS3b5Q0itR+eAS/36bLmluPyN5M3rQMhon6n
+         9dIRXBgivlFpw==
+Date:   Wed, 24 Mar 2021 11:28:05 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Kai Huang <kai.huang@intel.com>,
+        kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <YFsGJfYA9H69hwKd@kernel.org>
+References: <YFjoZQwB7e3oQW8l@google.com>
+ <20210322191540.GH6481@zn.tnic>
+ <YFjx3vixDURClgcb@google.com>
+ <20210322210645.GI6481@zn.tnic>
+ <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
+ <20210322223726.GJ6481@zn.tnic>
+ <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
+ <YFoNCvBYS2lIYjjc@google.com>
+ <20210323160604.GB4729@zn.tnic>
+ <YFoVmxIFjGpqM6Bk@google.com>
 MIME-Version: 1.0
-In-Reply-To: <28d3a339-6210-ffd2-950f-ea5340ac23b7@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFoVmxIFjGpqM6Bk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Mar 23, 2021 at 04:21:47PM +0000, Sean Christopherson wrote:
+> On Tue, Mar 23, 2021, Borislav Petkov wrote:
+> > On Tue, Mar 23, 2021 at 03:45:14PM +0000, Sean Christopherson wrote:
+> > > Practically speaking, "basic" deployments of SGX VMs will be insulated from
+> > > this bug.  KVM doesn't support EPC oversubscription, so even if all EPC is
+> > > exhausted, new VMs will fail to launch, but existing VMs will continue to chug
+> > > along with no ill effects....
+> > 
+> > Ok, so it sounds to me like *at* *least* there should be some writeup in
+> > Documentation/ explaining to the user what to do when she sees such an
+> > EREMOVE failure, perhaps the gist of this thread and then possibly the
+> > error message should point to that doc.
+> > 
+> > We will of course have to revisit when this hits the wild and people
+> > start (or not) hitting this. But judging by past experience, if it is
+> > there, we will hit it. Murphy says so.
+> 
+> I like the idea of pointing at the documentation.  The documentation should
+> probably emphasize that something is very, very wrong.  E.g. if a kernel bug
+> triggers EREMOVE failure and isn't detected until the kernel is widely deployed
+> in a fleet, then the folks deploying the kernel probably _should_ be in all out
+> panic.  For this variety of bug to escape that far, it means there are huge
+> holes in test coverage, in both the kernel itself and in the infrasturcture of
+> whoever is rolling out their new kernel.
 
-On 3/24/21 12:43 AM, Randy Dunlap wrote:
-> On 3/23/21 1:35 AM, Tianjia Zhang wrote:
->> The kernel module signature supports the option to use the SM3
->> secure hash (OSCCA GM/T 0004-2012 SM3).
->>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> ---
->>   Documentation/admin-guide/module-signing.rst | 5 +++--
->>   crypto/asymmetric_keys/pkcs7_parser.c        | 7 +++++++
->>   init/Kconfig                                 | 5 +++++
->>   3 files changed, 15 insertions(+), 2 deletions(-)
->>
-> 
->> diff --git a/init/Kconfig b/init/Kconfig
->> index 5f5c776ef192..fed9236078e4 100644
->> --- a/init/Kconfig
->> +++ b/init/Kconfig
->> @@ -2202,6 +2202,10 @@ config MODULE_SIG_SHA512
->>   	bool "Sign modules with SHA-512"
->>   	select CRYPTO_SHA512
->>   
->> +config MODULE_SIG_SM3
->> +	bool "Sign modules with SM3"
->> +	select CRYPTO_SM3
->> +
->>   endchoice
->>   
->>   config MODULE_SIG_HASH
->> @@ -2212,6 +2216,7 @@ config MODULE_SIG_HASH
->>   	default "sha256" if MODULE_SIG_SHA256
->>   	default "sha384" if MODULE_SIG_SHA384
->>   	default "sha512" if MODULE_SIG_SHA512
->> +	default "sm3" if MODULE_SIG_SM3
->>   
->>   config MODULE_COMPRESS
->>   	bool "Compress modules on installation"
->>
-> 
-> checkpatch tells me:
-> 
-> WARNING: please write a paragraph that describes the config symbol fully
-> #74: FILE: init/Kconfig:2205:
-> +config MODULE_SIG_SM3
-> 
-> 
-> so yes, it should have some help text there.
-> 
-> thanks.
-> 
+My own experience with WARN()'s has been so far, that the stack trace does
+the job fairly well. It's commonly misintepreted same as oops.
 
-I noticed, but this is just a list of algorithms, this warning can be 
-ignored.
-
-Best regards,
-Tianjia
+/Jarkko
