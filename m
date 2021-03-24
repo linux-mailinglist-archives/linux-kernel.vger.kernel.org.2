@@ -2,328 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8973474C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4815F3474CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbhCXJiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:38:25 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:18839 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232502AbhCXJiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:38:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616578680; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=G/7AKqbcGLiiUbHBI1tp1jgz9yJGJZEtHUsROzGoGjk=;
- b=ge9G/btLHv5PAz1Mepnlu+0SV/uFWGMvXN9hBD9obSyTDXrAV0xceEInJ8zRUZqqquFHZkAd
- 13HXBvXALshasUNWKU7nSwRp24FVVtFrhRqUaa3zEb60amlpQNZq9n/lih1r/sbGmgCpswGF
- mWFgwM4G9DpDk7DYrraLVv+PhQo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 605b0870e2200c0a0d3d955f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Mar 2021 09:37:52
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0E802C43464; Wed, 24 Mar 2021 09:37:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B94BC433CA;
-        Wed, 24 Mar 2021 09:37:50 +0000 (UTC)
+        id S236217AbhCXJjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232603AbhCXJjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:39:09 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6DCC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:39:09 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6FC88580;
+        Wed, 24 Mar 2021 10:39:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616578746;
+        bh=OpiUjjnMJhqf4VDAVhNdufxOxaOTNCJNSAerYwkbvwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ifjiNNoi8hgbYJmUPBJui6RUg+081OAs+FjyDH1k2mVsjFxDl3wD8YHzvLQD/wKAm
+         y5xRfr7qa2u0Y7ov3Npew6cWruNL9NbcB7x2NS36iyJwJw5elRRBSWkR69wF5rCLmf
+         NH29XFDcw94yfuZWpYkPDgihpThkjulGKilVrqLM=
+Date:   Wed, 24 Mar 2021 11:38:24 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: [PATCH v4 1/4] drm: sun4i: dsi: Use drm_of_find_panel_or_bridge
+Message-ID: <YFsIkGH2cRgWk8z9@pendragon.ideasonboard.com>
+References: <20210322140152.101709-1-jagan@amarulasolutions.com>
+ <20210322140152.101709-2-jagan@amarulasolutions.com>
+ <YFpxYpA+EIZm7sOf@pendragon.ideasonboard.com>
+ <f47bc0ad-dbd6-05b5-aaec-2e3256e3715a@sholland.org>
+ <CAMty3ZDOVeMeYTsuF8n4EQTG6eEbj6e33TuTPrFiMWG4RhRdSw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 24 Mar 2021 17:37:50 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     Avri Altman <Avri.Altman@wdc.com>, daejun7.park@samsung.com,
-        Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, asutoshd@codeaurora.org,
-        stanley.chu@mediatek.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-Subject: Re: [PATCH v31 2/4] scsi: ufs: L2P map management for HPB read
-In-Reply-To: <7bfcc7d6cedd1d674172722f8cc074dac9c2a640.camel@gmail.com>
-References: <f224bea78cf235ee94823528f07e28a6@codeaurora.org>
- <1df7bb51dc481c3141cdcf85105d3a5b@codeaurora.org>
- <e9b912bca9fd48c9b2fd76bea80439ae@codeaurora.org>
- <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
- <20210322065410epcms2p431f73262f508e9e3e16bd4995db56a4b@epcms2p4>
- <75df140d2167eadf1089d014f571d711a9aeb6a5.camel@gmail.com>
- <d6a032261a642a4afed80188ea4772ee@codeaurora.org>
- <20210323053731epcms2p70788f357b546e9ca21248175a8884554@epcms2p7>
- <20210323061922epcms2p739666492ebb458d70deab026d074caf4@epcms2p7>
- <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p2>
- <20210323063726epcms2p28aadb16bb96943ade1d2b288bb634811@epcms2p2>
- <a9017bbb57618c5560b21c1cdadb4f80@codeaurora.org>
- <DM6PR04MB657535F2F25BB41CAD191DB6FC649@DM6PR04MB6575.namprd04.prod.outlook.com>
- <dfb68d3632340c2ddffa487c69723aa3@codeaurora.org>
- <020853d32271f0a16b26a343a72fd930e9505ffe.camel@gmail.com>
- <5f68a41406b157f4ed4b3765e1d8e032@codeaurora.org>
- <7bfcc7d6cedd1d674172722f8cc074dac9c2a640.camel@gmail.com>
-Message-ID: <74b808bd7fe9e45173e2a63f7ca3e009@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMty3ZDOVeMeYTsuF8n4EQTG6eEbj6e33TuTPrFiMWG4RhRdSw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-24 17:33, Bean Huo wrote:
-> On Wed, 2021-03-24 at 17:24 +0800, Can Guo wrote:
->> On 2021-03-24 16:37, Bean Huo wrote:
->> > On Wed, 2021-03-24 at 09:45 +0800, Can Guo wrote:
->> > > On 2021-03-23 20:48, Avri Altman wrote:
->> > >
->> > > > > On 2021-03-23 14:37, Daejun Park wrote:
->> > > > > > > On 2021-03-23 14:19, Daejun Park wrote:
->> > > > > > > > > On 2021-03-23 13:37, Daejun Park wrote:
->> > > > > > > > > > > On 2021-03-23 12:22, Can Guo wrote:
->> > > > > > > > > > > > On 2021-03-22 17:11, Bean Huo wrote:
->> > > > > > > > > > > > > On Mon, 2021-03-22 at 15:54 +0900, Daejun
->> > > > > > > > > > > > > Park
->> > > > > > > > > > > > > wrote:
->> > > > > > > > > > > > > > +       switch (rsp_field->hpb_op) {
->> > > > > > > > > > > > > > +       case HPB_RSP_REQ_REGION_UPDATE:
->> > > > > > > > > > > > > > +               if (data_seg_len !=
->> > > > > > > > > > > > > > DEV_DATA_SEG_LEN)
->> > > > > > > > > > > > > > +                       dev_warn(&hpb-
->> > > > > > > > > > > > > > > sdev_ufs_lu->sdev_dev,
->> > > > > > > > > > > > > > +                                "%s: data
->> > > > > > > > > > > > > > seg
->> > > > > > > > > > > > > > length is not
->> > > > > > > > > > > > > > same.\n",
->> > > > > > > > > > > > > > +                                __func__);
->> > > > > > > > > > > > > > +
->> > > > > > > > > > > > > > ufshpb_rsp_req_region_update(hpb,
->> > > > > > > > > > > > > > rsp_field);
->> > > > > > > > > > > > > > +               break;
->> > > > > > > > > > > > > > +       case HPB_RSP_DEV_RESET:
->> > > > > > > > > > > > > > +               dev_warn(&hpb->sdev_ufs_lu-
->> > > > > > > > > > > > > > > sdev_dev,
->> > > > > > > > > > > > > > +                        "UFS device lost
->> > > > > > > > > > > > > > HPB
->> > > > > > > > > > > > > > information
->> > > > > > > > > > > > > > during
->> > > > > > > > > > > > > > PM.\n");
->> > > > > > > > > > > > > > +               break;
->> > > > > > > > > > > > > Hi Deajun,
->> > > > > > > > > > > > > This series looks good to me. Just here I
->> > > > > > > > > > > > > have
->> > > > > > > > > > > > > one question. You
->> > > > > > > > > > > > > didn't
->> > > > > > > > > > > > > handle HPB_RSP_DEV_RESET, just a
->> > > > > > > > > > > > > warning.  Based
->> > > > > > > > > > > > > on your SS UFS,
->> > > > > > > > > > > > > how
->> > > > > > > > > > > > > to
->> > > > > > > > > > > > > handle HPB_RSP_DEV_RESET from the host side?
->> > > > > > > > > > > > > Do
->> > > > > > > > > > > > > you think we
->> > > > > > > > > > > > > shoud
->> > > > > > > > > > > > > reset host side HPB entry as well or what
->> > > > > > > > > > > > > else?
->> > > > > > > > > > > > > Bean
->> > > > > > > > > > > > Same question here - I am still collecting
->> > > > > > > > > > > > feedbacks from flash
->> > > > > > > > > > > > vendors
->> > > > > > > > > > > > about
->> > > > > > > > > > > > what is recommanded host behavior on reception
->> > > > > > > > > > > > of
->> > > > > > > > > > > > HPB Op code
->> > > > > > > > > > > > 0x2,
->> > > > > > > > > > > > since it
->> > > > > > > > > > > > is not cleared defined in HPB2.0 specs.
->> > > > > > > > > > > > Can Guo.
->> > > > > > > > > > > I think the question should be asked in the
->> > > > > > > > > > > HPB2.0
->> > > > > > > > > > > patch, since in
->> > > > > > > > > > > HPB1.0 device
->> > > > > > > > > > > control mode, a HPB reset in device side does not
->> > > > > > > > > > > impact anything
->> > > > > > > > > > > in
->> > > > > > > > > > > host side -
->> > > > > > > > > > > host is not writing back any HPB entries to
->> > > > > > > > > > > device
->> > > > > > > > > > > anyways and HPB
->> > > > > > > > > > > Read
->> > > > > > > > > > > cmd with
->> > > > > > > > > > > invalid HPB entries shall be treated as normal
->> > > > > > > > > > > Read(10) cmd
->> > > > > > > > > > > without
->> > > > > > > > > > > any
->> > > > > > > > > > > problems.
->> > > > > > > > > > Yes, UFS device will process read command even the
->> > > > > > > > > > HPB
->> > > > > > > > > > entries are
->> > > > > > > > > > valid or
->> > > > > > > > > > not. So it is warning about read performance drop
->> > > > > > > > > > by
->> > > > > > > > > > dev reset.
->> > > > > > > > > Yeah, but still I am 100% sure about what should host
->> > > > > > > > > do
->> > > > > > > > > in case of
->> > > > > > > > > HPB2.0
->> > > > > > > > > when it receives HPB Op code 0x2, I am waiting for
->> > > > > > > > > feedbacks.
->> > > > > > > > I think the host has two choices when it receives 0x2.
->> > > > > > > > One is nothing on host.
->> > > > > > > > The other is discarding all HPB entries in the host.
->> > > > > > > > In the JEDEC HPB spec, it as follows:
->> > > > > > > > When the device is powered off by the host, the device
->> > > > > > > > may
->> > > > > > > > restore
->> > > > > > > > L2P
->> > > > > > > > map
->> > > > > > > > data upon power up or build from the host’s HPB READ
->> > > > > > > > command.
->> > > > > > > > If some UFS builds L2P map data from the host's HPB
->> > > > > > > > READ
->> > > > > > > > commands, we
->> > > > > > > > don't
->> > > > > > > > have to discard HPB entries in the host.
->> > > > > > > > So I thinks there is nothing to do when it receives
->> > > > > > > > 0x2.
->> > > > > > > But in HPB2.0, if we do nothing to active regions in host
->> > > > > > > side, host
->> > > > > > > can
->> > > > > > > write
->> > > > > > > HPB entries (which host thinks valid, but actually
->> > > > > > > invalid in
->> > > > > > > device
->> > > > > > > side since
->> > > > > > > reset happened) back to device through HPB Write Buffer
->> > > > > > > cmds
->> > > > > > > (BUFFER
->> > > > > > > ID
->> > > > > > > = 0x2).
->> > > > > > > My question is that are all UFSs OK with this?
->> > > > > > Yes, it must be OK.
->> > > > > > Please refer the following the HPB 2.0 spec:
->> > > > > > If the HPB Entries sent by HPB WRITE BUFFER are removed by
->> > > > > > the
->> > > > > > device,
->> > > > > > for example, because they are not consumed for a long
->> > > > > > enough
->> > > > > > period of
->> > > > > > time,
->> > > > > > then the HPB READ command for the removed HPB entries shall
->> > > > > > be
->> > > > > > handled
->> > > > > > as a
->> > > > > > normal READ command.
->> > > > > No, it is talking about the subsequent HPB READ cmd sent
->> > > > > after a
->> > > > > HPB
->> > > > > WRITE BUFFER cmd,
->> > > > > but not the HPB WRITE BUFFER cmd itself...
->> > > > Looks like this discussion is going the same way as we had in
->> > > > host
->> > > > mode.
->> > > > HPB-WRITE-BUFFER 0x2, if exist,  is always a companion to HPB-
->> > > > READ.
->> > > > You shouldn't consider them separately.
->> > > > The device is expected to handle invalid ppn by itself, and
->> > > > specifically for this case,
->> > > > As Daejun explained, Handle each HPB-READ (and its companion
->> > > > HPB-WRITE-BUFFER) like READ10.
->> > > > For device mode, doing nothing in case of dev reset, seems to
->> > > > me
->> > > > like
->> > > > the right thing to do.
->> > >
->> > > I just got some feedbacks from other flash vendors, they all
->> > > commit
->> > > that
->> > >
->> > > their devices can work well in this scenario [1]. Some of them
->> > > proposed
->> > >
->> > > even complicated (maybe better) principles of handling the "HPB
->> > > reset",
->> > >
->> > > but since the device works well in [1], I am OK with current
->> > > (simpler)
->> > >
->> > > handling of "HPB reset" - in device mode doing nothing, in host
->> > > mode
->> > >
->> > > re-activate regions that host is trying to do a read to.
->> > >
->> > >
->> > >
->> >
->> > Our suggestion on this indication 0x2:
->> >
->> > 1. If current mode is device control mode, we suggest host just
->> > deactivate all active regions and don't send HPB READ BUFFER
->> > command to
->> > device unless device indicate host to activate certain region in
->> > later
->> > response. In another way, it is a signal telling host to reset host
->> > side L2P entry and to rebuild the L2P mapping entry in host memroy.
->> >
->> > 2. If current mode is host control mode, we suggest host send HPB
->> > READ
->> > BUFFER command before it wants to send read command on this region,
->> > rather than sending HPB READ BUFFER commands on all regions at the
->> > same
->> > time.
->> >
->> >
->> > Bean
->> 
->> Hi Bean,
->> 
->> I got this proposal from your side too, after that I've checked with
->> Leon Ge from your side and he confirmed that it is fine that host
->> just
->> ignores the "HPB reset" indication. We can leave it as it is as of
->> now
->> and revisit it if any UFS needs extra care. What do you say?
->> 
->> Thanks,
->> Can Guo.
-> 
-> Hi Can,
-> 
-> Agree. Current handling is ok to us, but if we want to change it, we
-> hope it is the same with the above suggestion. We can keep current
-> implementation, seeing if need changes in the near future based on the
-> feedback or new updates in the Spec.
-> 
+Hi Jagan,
 
-Sure.
-
-BTW, do you have plans to make the proposal into JEDEC specs?
-
-Thanks,
-Can Guo.
-
-> Thanks,
-> Bean
+On Wed, Mar 24, 2021 at 02:44:57PM +0530, Jagan Teki wrote:
+> On Wed, Mar 24, 2021 at 8:18 AM Samuel Holland wrote:
+> > On 3/23/21 5:53 PM, Laurent Pinchart wrote:
+> > > On Mon, Mar 22, 2021 at 07:31:49PM +0530, Jagan Teki wrote:
+> > >> Replace of_drm_find_panel with drm_of_find_panel_or_bridge
+> > >> for finding panel, this indeed help to find the bridge if
+> > >> bridge support added.
+> > >>
+> > >> Added NULL in bridge argument, same will replace with bridge
+> > >> parameter once bridge supported.
+> > >>
+> > >> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > >
+> > > Looks good, there should be no functional change.
+> >
+> > Actually this breaks all existing users of this driver, see below.
+> >
+> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > >
+> > >> ---
+> > >> Changes for v4, v3:
+> > >> - none
+> > >>
+> > >>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 11 ++++++++---
+> > >>  1 file changed, 8 insertions(+), 3 deletions(-)
+> > >>
+> > >> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > >> index 4f5efcace68e..2e9e7b2d4145 100644
+> > >> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > >> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > >> @@ -21,6 +21,7 @@
+> > >>
+> > >>  #include <drm/drm_atomic_helper.h>
+> > >>  #include <drm/drm_mipi_dsi.h>
+> > >> +#include <drm/drm_of.h>
+> > >>  #include <drm/drm_panel.h>
+> > >>  #include <drm/drm_print.h>
+> > >>  #include <drm/drm_probe_helper.h>
+> > >> @@ -963,10 +964,14 @@ static int sun6i_dsi_attach(struct mipi_dsi_host *host,
+> > >>                          struct mipi_dsi_device *device)
+> > >>  {
+> > >>      struct sun6i_dsi *dsi = host_to_sun6i_dsi(host);
+> > >> -    struct drm_panel *panel = of_drm_find_panel(device->dev.of_node);
+> >
+> > This is using the OF node of the DSI device, which is a direct child of
+> > the DSI host's OF node. There is no OF graph involved.
+> >
+> > >> +    struct drm_panel *panel;
+> > >> +    int ret;
+> > >> +
+> > >> +    ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 0, 0,
+> > >> +                                      &panel, NULL);
+> >
+> > However, this function expects to find the panel using OF graph. This
+> > does not work with existing device trees (PinePhone, PineTab) which do
+> > not use OF graph to connect the panel. And it cannot work, because the
+> > DSI host's binding specifies a single port: the input port from the
+> > display engine.
 > 
+> Thanks for noticing this. I did understand your point and yes, I did
+> mention the updated pipeline in previous versions and forgot to add it
+> to this series.
 > 
+> Here is the updated pipeline to make it work:
 > 
->> 
->> > > Thanks,
->> > >
->> > > Can Guo.
+> https://patchwork.kernel.org/project/dri-devel/patch/20190524104252.20236-1-jagan@amarulasolutions.com/
+> 
+> Let me know your comments on this, so I will add a patch for the
+> above-affected DTS files.
+
+DT is an ABI, we need to ensure backward compatibility. Changes in
+kernel drivers can't break devices that have an old DT.
+
+-- 
+Regards,
+
+Laurent Pinchart
