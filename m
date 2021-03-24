@@ -2,151 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB493480ED
+	by mail.lfdr.de (Postfix) with ESMTP id 8C17B3480EE
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237645AbhCXSto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
+        id S237666AbhCXStq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237391AbhCXStP (ORCPT
+        with ESMTP id S237532AbhCXSt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:49:15 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8850C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:49:14 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id e72so6438117vsc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:49:14 -0700 (PDT)
+        Wed, 24 Mar 2021 14:49:29 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB30C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:49:29 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 11so18012124pfn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2xQeOsBIewt8ZgUK9t8HEZ9lSbkOzfS8qbc/ekQA/6k=;
-        b=g1SQTFNnKeuOKt+oNIwnqTljgmASJYgdu5HhzDRCfulgYaksQOv1CpA9JUWHEOfsR9
-         wKr4dgj9ZG60AbA1Fsm8lRvR59XN7+YXCws1G9lufH3Jl8jbRmB4BYe50pM+CxhjlFAB
-         /xeeke8NCCswPdWLTCsP1b/aGDLHAZ+O+sEfG79G0kj9OhB//aspZvJ/5SnCQOzLAXOZ
-         vc4v9yBFQB7v9p9EnqMbT05rVP4X2aDqbXB/XObhWh5Iutjr9o4MH+gUdM3sCeSVjbdo
-         roRVYwhEW5M8pzT7jlKxjjvfX80Onh1Xx3nDlOV5W6hW6NRPd44XuiTmdwVrbDFPYQyz
-         tcWg==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=pmbPpEKsJkRcMr/+EGl0xO5iqNgXKyXmsvkfUXs17ck=;
+        b=GBA61vQ119NNAnbkQDmcX11wSj86geUW1JZS3YUHuEvQkf1BwUzlNncgIIvNIFmdPZ
+         3izambxW+MX40279EcICBTOsiQciP9EDbXt++M4fzoIZg9ZFhV6vDxKoVeNRVMiIfUS1
+         V8m7n+L2Ux2lD6wWoTMvNfdRDkCVfElLphsuNWNN2/2oHDIfEacVW2c2ldE6PKC+uKIF
+         7dWmvpxFI5EML5jlB0e8BP1Ax1JFNPBqqjxiKK0hMk+zIJYguQvD6XVdnqsIViwlB/CD
+         Yww8JH+7CfmThVL1w6xAHj95H7aDU3QUjHkI40W24npSy+C7CTSZ94Z9JAhYaVLjnQEF
+         5OEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2xQeOsBIewt8ZgUK9t8HEZ9lSbkOzfS8qbc/ekQA/6k=;
-        b=ITQQilWwOuYXDq9xVUHjfYkXvoInwNsPiuCwkuSTDx5ayS7a0AUgvdOGGg3DLzwPF6
-         ciHBebKJzfRsfz7dVE5ajKWrNpMJVQzPsxqojmc6ZueEcQGBQuTGA5EdiyjJALSkjEnC
-         DyeGATDSipn9iVxnJe+w0v74oH9SJ+MQtceTKUCihx53H4OJMGG18/Xk5E0rIzYKDEaO
-         Z7FGLLAZyWdZxKpiUrNkOBb9ahzstrrWxrGaBnQkKJH7eGRlrEImvFuXt+ELwTVVaelT
-         +3wlocDcunkDUWatk4sCAlaVI8J+fKch1G1F0DxM0VbD7L1auEAftno1fGNGVH1WvxuZ
-         xfPA==
-X-Gm-Message-State: AOAM533FfilyGLdoXbtlIDA7qyPqdj6/I5IA/bbxuYgPRA/dpem7gkO0
-        hWCJV1l0oN2iZceKVAWw6PldnziUDnErAoz3vKjtSw==
-X-Google-Smtp-Source: ABdhPJwGan1W0m9mZstMi1JdW4zm0+2vYu8Z3FKLGhV/7CiqgQ2dlLGOKgSMScz/C0X2MqKpoacwj28dDqe7KsR1TX0=
-X-Received: by 2002:a67:6786:: with SMTP id b128mr3102602vsc.9.1616611753841;
- Wed, 24 Mar 2021 11:49:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=pmbPpEKsJkRcMr/+EGl0xO5iqNgXKyXmsvkfUXs17ck=;
+        b=dQzuqDkziPHX0T8euBb8ICIE2Jc9C3/K8iLs3L2N+2IEll13EtwAiHRSKpQOXaO8dm
+         LpiqsTzQFOrBw0oBIQvrzZH5HrPFx8bMDBe561b6DoScGDY6NZSwQ/l8DgfZMcMK9/Z2
+         7S9jl0Ytxklv4+YfQ4e0eMkhY1EVaeqMfZOvRMXUZ8IKblrjIB+6/H5b8O/uSPM26zxW
+         KIXWuayq3j647swBimRcB/GZF8TRz6OKtS6+Pd8BEMBzwfyXH6BozFZbg7yd6HUS2+YG
+         61RK9q3QXxMc1hDJ06GcgGS8vpOcwbv6Hv5q63f4jICXE/6buJlqURroWSI1Z2VxXUY4
+         7W5w==
+X-Gm-Message-State: AOAM5310t0bHfui78edKrhdSYIfUqCTJNd6oZCDTnhk6y0/1wIEcarSX
+        jp3D0rz2S5wev5Ix+1S3Xqj03Q==
+X-Google-Smtp-Source: ABdhPJzj1SdlJ6U8pMVkuYXepWh2p1vb3JaOyahgyUnvOxyqaXoD8M5HWASAoyKxVLELeJwlz7NtHA==
+X-Received: by 2002:a65:4203:: with SMTP id c3mr4192417pgq.65.1616611769124;
+        Wed, 24 Mar 2021 11:49:29 -0700 (PDT)
+Received: from [2620:15c:17:3:4192:718f:4827:be5] ([2620:15c:17:3:4192:718f:4827:be5])
+        by smtp.gmail.com with ESMTPSA id y8sm3175606pjb.11.2021.03.24.11.49.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 11:49:28 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 11:49:27 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] mm/slub.c: Trivial typo fixes
+In-Reply-To: <20210324130619.16872-1-unixbhaskar@gmail.com>
+Message-ID: <8a21e996-93f9-d22a-65b9-4bdafc43b36e@google.com>
+References: <20210324130619.16872-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-References: <20210323141653.1.I53e6be1f7df0be198b7e55ae9fc45c7f5760132d@changeid>
- <8E70C497-BDCE-471F-9ECD-790E2FE3B024@holtmann.org>
-In-Reply-To: <8E70C497-BDCE-471F-9ECD-790E2FE3B024@holtmann.org>
-From:   Daniel Winkler <danielwinkler@google.com>
-Date:   Wed, 24 Mar 2021 11:49:02 -0700
-Message-ID: <CAP2xMbseUhKhxdw93Q320euOdUZ39GtpiHNy49m_p0U7j58u8Q@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: Always call advertising disable before setting params
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Marcel,
+On Wed, 24 Mar 2021, Bhaskar Chowdhury wrote:
 
-Thank you for the feedback. I have just sent a V2 with a btmon snippet
-showing the HCI Set Advertising Parameters "Command Disallowed"
-failure that occurs as a result of this issue. I tried to provide some
-annotation for context. Please take a look.
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3021ce9bf1b3..cd3c7be33f69 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3,7 +3,7 @@
+>   * SLUB: A slab allocator that limits cache line use instead of queuing
+>   * objects in per cpu and per node lists.
+>   *
+> - * The allocator synchronizes using per slab locks or atomic operatios
+> + * The allocator synchronizes using per slab locks or atomic operation
 
-Thanks!
-Daniel
-
-
-On Wed, Mar 24, 2021 at 12:06 AM Marcel Holtmann <marcel@holtmann.org> wrot=
-e:
->
-> Hi Daniel,
->
-> > In __hci_req_enable_advertising, the HCI_LE_ADV hdev flag is temporaril=
-y
-> > cleared to allow the random address to be set, which exposes a race
-> > condition when an advertisement is configured immediately (<10ms) after
-> > software rotation starts to refresh an advertisement.
-> >
-> > In normal operation, the HCI_LE_ADV flag is updated as follows:
-> >
-> > 1. adv_timeout_expire is called, HCI_LE_ADV gets cleared in
-> >   __hci_req_enable_advertising, but hci_req configures an enable
-> >   request
-> > 2. hci_req is run, enable callback re-sets HCI_LE_ADV flag
-> >
-> > However, in this race condition, the following occurs:
-> >
-> > 1. adv_timeout_expire is called, HCI_LE_ADV gets cleared in
-> >   __hci_req_enable_advertising, but hci_req configures an enable
-> >   request
-> > 2. add_advertising is called, which also calls
-> >   __hci_req_enable_advertising. Because HCI_LE_ADV was cleared in Step
-> >   1, no "disable" command is queued.
-> > 3. hci_req for adv_timeout_expire is run, which enables advertising and
-> >   re-sets HCI_LE_ADV
-> > 4. hci_req for add_advertising is run, but because no "disable" command
-> >   was queued, we try to set advertising parameters while advertising is
-> >   active, causing a Command Disallowed error, failing the registration.
-> >
-> > To resolve the issue, this patch removes the check for the HCI_LE_ADV
-> > flag, and always queues the "disable" request, since HCI_LE_ADV could b=
-e
-> > very temporarily out-of-sync. According to the spec, there is no harm i=
-n
-> > calling "disable" when advertising is not active.
-> >
-> > Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> > Signed-off-by: Daniel Winkler <danielwinkler@google.com>
-> > ---
-> >
-> > net/bluetooth/hci_request.c | 6 ++++--
-> > 1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-> > index 8ace5d34b01efe..2b4b99f4cedf21 100644
-> > --- a/net/bluetooth/hci_request.c
-> > +++ b/net/bluetooth/hci_request.c
-> > @@ -1547,8 +1547,10 @@ void __hci_req_enable_advertising(struct hci_req=
-uest *req)
-> >       if (!is_advertising_allowed(hdev, connectable))
-> >               return;
-> >
-> > -     if (hci_dev_test_flag(hdev, HCI_LE_ADV))
-> > -             __hci_req_disable_advertising(req);
-> > +     /* Request that the controller stop advertising. This can be call=
-ed
-> > +      * whether or not there is an active advertisement.
-> > +      */
-> > +     __hci_req_disable_advertising(req);
->
-> can you include a btmon trace that shows that we don=E2=80=99t get a HCI =
-error. Since if we get one, then the complete request will fail. And that h=
-as further side effects.
->
-> Regards
->
-> Marcel
->
+operations
