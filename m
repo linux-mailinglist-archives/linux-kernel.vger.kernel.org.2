@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B233478CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3133478D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhCXMqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbhCXMqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:46:09 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A506C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:46:09 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id u21so14661662ejo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=i+VYNNsUhwNP8yoe1kFexaTYLiNv7t3QiYT3Nd2kONs=;
-        b=O/19JYrO28UArZ88Lfx7hgoqLqTG2gwaPMrF16nOtlBbHFOsstM6Jlut2VPd/ftSiG
-         kzJN3dptmLeeMgvdzmMnYM8rDKMHnG4rsnI51cJUxYmRhPlZ7FzxtqX2VHOGZqNAjkFI
-         PxhoB7mqOz3UzX2NQg4lvNkLWvvQk8v4q1h6c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i+VYNNsUhwNP8yoe1kFexaTYLiNv7t3QiYT3Nd2kONs=;
-        b=dhVyE7U3Ezck6QjuSeF+aP6ic2OPHip8TzpunW1cGKpVne7C3fgQsLGLCgHSZ7he9J
-         yDrBTQtTQKWYOq5IX+PXkpns44zRMUdYptQR1yc8+yrKw0XXgMnSHZ3NmaOTZDpcWiRB
-         ZVt34XuQPD6WtrGdQnkQkej1ooj2EvxPFQkyts4bUjIDmDH68n9FjEPyazNrZYAsf3sh
-         Yp+PAchNkyuE5+FtYug92nNZGrDYOXEyOl02s5vMJBIgNmMBYLEJc/qlaHaAInmpW0eO
-         h0PZUsy8oYJSi+vGIcHMFtogc/XYBn5KHD2JUVGScgz+O6lWyKYO6QNTyMawOvIE+R5X
-         w5Gg==
-X-Gm-Message-State: AOAM533+i32CQ7FUgNcWTx9ioMvWN/rsnDIDle8ujjgD1bpxfXo4vlCL
-        wUhlhm/mf8f9bZi9UBUlukbyjA==
-X-Google-Smtp-Source: ABdhPJxuoI5rYTpNVMVK2zEcda7BaNF+gchsTWi1BYrbXTLurn0LkgD5amalQYgCFdhvOGwbz3vAwg==
-X-Received: by 2002:a17:907:76ed:: with SMTP id kg13mr3295566ejc.99.1616589968067;
-        Wed, 24 Mar 2021 05:46:08 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id de17sm881523ejc.16.2021.03.24.05.46.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 05:46:07 -0700 (PDT)
-Subject: Re: [PATCH] static_call: fix function type mismatch
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-References: <20210322170711.1855115-1-arnd@kernel.org>
- <20210322153214.25d869b1@gandalf.local.home>
- <YFkCZuOwe37d2bV+@hirez.programming.kicks-ass.net>
- <CAK8P3a2sz4emewH_HA+nsf0e5tP6qtAxhBOFucmzW4OPDJASdQ@mail.gmail.com>
- <20210322172921.56350a69@gandalf.local.home>
- <YFmdJlESrCh4iC9A@hirez.programming.kicks-ass.net>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <0f4679d6-44a4-d045-f249-a9cffb126fd4@rasmusvillemoes.dk>
-Date:   Wed, 24 Mar 2021 13:46:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <YFmdJlESrCh4iC9A@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233395AbhCXMuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:50:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39580 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232501AbhCXMtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:49:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0C421AD71;
+        Wed, 24 Mar 2021 12:49:24 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 13:49:23 +0100
+Message-ID: <s5ho8f8ogx8.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Gregor Pintar <grpintar@gmail.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dylan Robinson <dylan_robinson@motu.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Olivia Mackintosh <livvy@base.nu>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: usb-audio: Apply sample rate quirk to Logitech Connect
+In-Reply-To: <CAATdQgDrri-tMtu3AOFRcbGHfL6hONDfdMdZh45BusbdAoWfdw@mail.gmail.com>
+References: <20210324105153.2322881-1-ikjn@chromium.org>
+        <c21de867cf4ccbfcc8cf555c78dc70dd3a47dfe8.camel@infinera.com>
+        <CAATdQgDrri-tMtu3AOFRcbGHfL6hONDfdMdZh45BusbdAoWfdw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/03/2021 08.47, Peter Zijlstra wrote:
-> On Mon, Mar 22, 2021 at 05:29:21PM -0400, Steven Rostedt wrote:
->> On Mon, 22 Mar 2021 22:18:17 +0100
->> Arnd Bergmann <arnd@kernel.org> wrote:
->>
->>> I think the code works correctly on all architectures we support because
->>> both 'int' and 'long' are returned in a register with any unused bits cleared.
->>> It is however undefined behavior in C because 'int' and 'long' are not
->>> compatible types, and the calling conventions don't have to allow this.
->>
->> Static calls (and so do tracepoints) currently rely on these kind of
->> "undefined behavior" in C. This isn't the only UB that it relies on.
+On Wed, 24 Mar 2021 13:03:14 +0100,
+Ikjoon Jang wrote:
 > 
-> Right, most of the kernel lives in UB. That's what we have -fwrapv
-> -fno-strict-aliassing and lots of other bits for, to 'fix' the stupid C
-> standard.
+> On Wed, Mar 24, 2021, 7:16 PM Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+> wrote:
 > 
-> This is one more of them, so just ignore the warning and make it go
-> away:
+>     On Wed, 2021-03-24 at 18:51 +0800, Ikjoon Jang wrote:
+>     > Logitech ConferenceCam Connect is a compound USB device with UVC and
+>     > UAC. Not 100% reproducible but sometimes it keeps responding STALL to
+>     > every control transfer once it receives get_freq request.
+>     >
+>     > This patch adds 046d:0x084c to a snd_usb_get_sample_rate_quirk list.
+>     >
+>     > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203419
+>     > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+>    
+>     Most Logitech USB headset I got needs a delay in snd_usb_ctl_msg_quirk()
+>     Have you tried to add say 20 ms delay in there?
 > 
->  -Wno-cast-function-type
+> I didn't try that. But it sounds reasonable to me.
 > 
-> seems to be the magic knob.
-> 
+> let me try that quirk here. If that is the case, HID might need that delay
+> also. Logitech Group webcam had a similar problem on control xfer of
+> get_report from an another interface for HID.
 
-That can be done for now, but I think something has to be done if CFI is
-to become a thing.
+The Logitech devices with 046d:* should be covered generally in
+snd_usb_ctl_msg_quirk(), so I guess it's a different problem.
+But please check it first.
 
-Sami, what happens if you try to boot a
-CONFIG_CFI_CLANG+CONFIG_PREEMPT_DYNAMIC kernel?
+> And 20ms can be too long if it's applied to every control transfer. I will
+> test the device with shorter delay if you didn't try it before.
 
-Rasmus
+Actually the delay applied to Logitech devices is from 1 to 2ms, not
+20ms.  The 20ms delay is applied for some other devices.  But if
+extending the delay fixes the problem, we need to reconsider the delay
+length.
+
+
+Takashi
