@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAE9348455
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B926334845C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238710AbhCXWFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:05:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44446 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238720AbhCXWF2 (ORCPT
+        id S235080AbhCXWKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhCXWJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:05:28 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12OM2vJq026543;
-        Wed, 24 Mar 2021 18:05:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=l8or5TUcHsvNqpPcmEDhSobfz5xeCciUB5blaMfLtOo=;
- b=lvGVgowbFsqmRYQ8j9UBzEIFo+TVOJZPf0TS3rKdTPON5+rV3+xg0Q8KX0YuUBf/iFI6
- 7Dga4Y7gJOt2rGbmFM1q31G7vbQUqC073pvKjYWwpe/VDs2HEKuc1ZE/8/a6NzlDYOJB
- 4geZG+FggVkL+2Dhn1zZrMlItAvkeuWQi0q4ijbkgBrTjlX4olo9d0GfFFFMJU27UAd7
- f4BSwo1437Mh6I99BgoxqJh5m/HEm1VtW9z4E6JK33IAsRYx0B36TxqbDLS893wqLLYw
- CaPybm/XkJJ9/dhvPHppph+3CkYITAVhKOMRm8LyiSYbyqOsqEr/Itm1hfDACu0Vg+eV Cg== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37gca625hp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 18:05:26 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12OLlOqI010248;
-        Wed, 24 Mar 2021 22:05:25 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma01dal.us.ibm.com with ESMTP id 37equds2ut-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 22:05:25 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12OM5Otk22348224
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 22:05:24 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C77B1AE076;
-        Wed, 24 Mar 2021 22:05:24 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F16EAE05F;
-        Wed, 24 Mar 2021 22:05:24 +0000 (GMT)
-Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.68.238])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Mar 2021 22:05:23 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-spi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, broonie@kernel.org, joel@jms.id.au,
-        Eddie James <eajames@linux.ibm.com>
-Subject: [PATCH] spi: fsi: Remove multiple sequenced ops for restricted chips
-Date:   Wed, 24 Mar 2021 17:05:16 -0500
-Message-Id: <20210324220516.41192-1-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 24 Mar 2021 18:09:59 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12726C0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:09:58 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so1863838pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:09:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B8cQEyenOi6P1dFAPnRKGJMuEeOhjBSY7qxP2TEHV/o=;
+        b=lj6TKx0RstOX0gCi1HsZbR1+i32sFs4YgJqVKDqJMqNl9P/JoBwbO2aTapvdiuP0d5
+         DUBzUDV4+r6jkyN2lpepyEX/HLGAKoApLDB3/ZFZ7jrzOOBwRnGPJi32vqtxploDw8q1
+         2xhcRg8iqo4Uoje6GvexvUjTkiOfFCXWqIfDCogdi6ZVYcl3Rv+mv39+uPPb1UJQ0bAq
+         kPBthg+XX84Uy842vs62HsYZxS37Bz66dcdBGKhNLGpXt+qaGBIV9rPIPwlqOLM5a7s5
+         d2YGvho3F6mV31G/8IGY/TAGgIePMext3VqLwc+P0J3CSrRxDdUt2MZENf3sS5fMS1iY
+         xCaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B8cQEyenOi6P1dFAPnRKGJMuEeOhjBSY7qxP2TEHV/o=;
+        b=tDPUix0JW1M1qj6Nq3tBXdzTXCX0G4hMsXh4G0m/3CSta19BcTIPVEpGgpNEagkC2h
+         GbW7H/gM0rXYldfrlPAvnSogFn7Q3WOvXRBq6bXUvsJJBhgJj3uhVCea4TYoPnSR2SJt
+         6hegfqfgeWommxbboFcQcmNbk1tdP4RfAQ6/U/6962Kloxkg6feJFUbpQsYaV4PXATvn
+         32+w00e/QOza1ijn5jQKR2ZZ8Ljl3u9KGo76/BIzfGGZctlxlsD99/3DSlGxDC64Zshh
+         c5kQSnipxB3LuKO8RR+Ocha7T54bGLYSKsyBConhsouBUJ8dSK6nU9P9TZRzLk+iVbQv
+         hTlw==
+X-Gm-Message-State: AOAM531vTcWXPoK9NVj8wibIdlTPNC46ZYufkf9qQiMqEY8UB6Lz1WtP
+        t1qwaMMByAzNmOPuF2UpdXe/2A==
+X-Google-Smtp-Source: ABdhPJwDnC4jlfo2PQVfu3zVk/BwUUsPMSuyyqmtpRY1Zky6hwjMqnenksH0I1CQfv2uSoDEcNT57g==
+X-Received: by 2002:a17:90a:ab91:: with SMTP id n17mr5749245pjq.4.1616623798097;
+        Wed, 24 Mar 2021 15:09:58 -0700 (PDT)
+Received: from google.com ([2620:0:1008:10:7c86:15f3:3afd:ba78])
+        by smtp.gmail.com with ESMTPSA id d22sm3418535pjx.24.2021.03.24.15.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 15:09:57 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 15:09:53 -0700
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Jacob Pan <jacob.jun.pan@intel.com>
+Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YFu4sdhT7KexlyES@google.com>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+ <20210304231946.2766648-2-vipinsh@google.com>
+ <20210319142801.7dcce403@jacob-builder>
+ <YFjn7wv/iMO4Isgz@google.com>
+ <20210324091701.63c9ce8e@jacob-builder>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-24_13:2021-03-24,2021-03-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=934 malwarescore=0 lowpriorityscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 spamscore=0 mlxscore=0 adultscore=0
- phishscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103240157
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324091701.63c9ce8e@jacob-builder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updated restricted chips have trouble processing multiple sequenced
-operations. So remove the capability to sequence multiple operations and
-reduce the maximum transfer size to 8 bytes.
+On Wed, Mar 24, 2021 at 09:17:01AM -0700, Jacob Pan wrote:
+> I didn't mean the users of misc_cgroup will use css directly. I meant if I
+> want to use misc cgruop in ioasid.c, I have to do the following to avoid
+> undefined css:
+> #include <linux/cgroup.h>
+> #include <linux/misc_cgroup.h>
+> 
+> So it might be simpler if you do #include <linux/cgroup.h> inside
+> misc_cgroup.h. Then in ioasid.c, I only need to do
+> #include <linux/misc_cgroup.h>.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/spi/spi-fsi.c | 27 +++++++--------------------
- 1 file changed, 7 insertions(+), 20 deletions(-)
+Sorry, I misunderstood the comment first time. I agree with you, I will
+add cgroup header file in the misc_cgroup.h after  #ifdef
+CONFIG_CGROUP_MISC statement.
 
-diff --git a/drivers/spi/spi-fsi.c b/drivers/spi/spi-fsi.c
-index 3920cd3286d8..de359718e816 100644
---- a/drivers/spi/spi-fsi.c
-+++ b/drivers/spi/spi-fsi.c
-@@ -26,7 +26,7 @@
- #define SPI_FSI_BASE			0x70000
- #define SPI_FSI_INIT_TIMEOUT_MS		1000
- #define SPI_FSI_MAX_XFR_SIZE		2048
--#define SPI_FSI_MAX_XFR_SIZE_RESTRICTED	32
-+#define SPI_FSI_MAX_XFR_SIZE_RESTRICTED	8
- 
- #define SPI_FSI_ERROR			0x0
- #define SPI_FSI_COUNTER_CFG		0x1
-@@ -265,14 +265,12 @@ static int fsi_spi_sequence_transfer(struct fsi_spi *ctx,
- 				     struct fsi_spi_sequence *seq,
- 				     struct spi_transfer *transfer)
- {
--	bool docfg = false;
- 	int loops;
- 	int idx;
- 	int rc;
- 	u8 val = 0;
- 	u8 len = min(transfer->len, 8U);
- 	u8 rem = transfer->len % len;
--	u64 cfg = 0ULL;
- 
- 	loops = transfer->len / len;
- 
-@@ -292,28 +290,17 @@ static int fsi_spi_sequence_transfer(struct fsi_spi *ctx,
- 		return -EINVAL;
- 	}
- 
--	if (ctx->restricted) {
--		const int eidx = rem ? 5 : 6;
--
--		while (loops > 1 && idx <= eidx) {
--			idx = fsi_spi_sequence_add(seq, val);
--			loops--;
--			docfg = true;
--		}
--
--		if (loops > 1) {
--			dev_warn(ctx->dev, "No sequencer slots; aborting.\n");
--			return -EINVAL;
--		}
-+	if (ctx->restricted && loops > 1) {
-+		dev_warn(ctx->dev,
-+			 "Transfer too large; no branches permitted.\n");
-+		return -EINVAL;
- 	}
- 
- 	if (loops > 1) {
-+		u64 cfg = SPI_FSI_COUNTER_CFG_LOOPS(loops - 1);
-+
- 		fsi_spi_sequence_add(seq, SPI_FSI_SEQUENCE_BRANCH(idx));
--		docfg = true;
--	}
- 
--	if (docfg) {
--		cfg = SPI_FSI_COUNTER_CFG_LOOPS(loops - 1);
- 		if (transfer->rx_buf)
- 			cfg |= SPI_FSI_COUNTER_CFG_N2_RX |
- 				SPI_FSI_COUNTER_CFG_N2_TX |
--- 
-2.27.0
-
+Thanks
+Vipin
