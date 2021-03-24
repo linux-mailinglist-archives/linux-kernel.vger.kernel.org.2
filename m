@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013C634852B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6D634853C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239019AbhCXXTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
+        id S239043AbhCXXUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239024AbhCXXTA (ORCPT
+        with ESMTP id S230047AbhCXXUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:19:00 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3E2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:19:00 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id j7so400399qtx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:19:00 -0700 (PDT)
+        Wed, 24 Mar 2021 19:20:33 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC8FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:20:33 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id a143so343123ybg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:20:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KOQ7esl90KWEmnjDE6UGjHvYuLkknu4oxnEsJM3fbxk=;
-        b=I8LLHJTXiSFwWG08KpCjmbhYHB4+bJ5Jr1PMvkhPb9guXt4kPXwXSDBb5w3pW6YKP+
-         Y3MXDdkhlUigcRn9Soo3y9HjPiYeIjslYj/gs3Qu595nmPh/ErNtubV8ayh2yO3Z4/6B
-         tB6bIdWPlgC++IeivTg9oL6lj9EFP1EHRtvFo=
+        bh=Waeg5goT6Kdiuo5kcj7A+VSlRRFbVYj1KRURUA32Oh8=;
+        b=t9OMcHgyLQ9LOWW8TRWHwi2BZrnk+Y3VbI96CfY0cwrR7anE3GG6FpsbGEuJ3iOnyZ
+         fKZznJ0ItxNhHuRL8gaVUev5973Mdp59V/o7c1bM2qnc5eoQ8dVVc5mz4hwVoxNHVTvN
+         W60dvLYptezJaTn+8R80fz58Bhkv0YadksE3Q3GsV6lCQm5C1IH5z/OGfK3o3HG7s4+p
+         lE4hOqJN4rkArZxKxWKWKvHfytdrBI3IWsw0Gq3RXxdAiaMQlStURXuhyJQ4OM8LWKxH
+         6V52uGVWsoipGQ4kacBT1hoPfkdJnwCN+v9WCTq8hyqdePqj25Fd17wIb9ARR2IF2VTw
+         uJ7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KOQ7esl90KWEmnjDE6UGjHvYuLkknu4oxnEsJM3fbxk=;
-        b=nos1PAx9095g4slYm0JMYGZUj+rAfhE6GzDIADsrTEIdkoxs/US/8vjrqhbtp5vRFt
-         V7d1jJ8AA1S+Tq1bl3B9u1ZZNe21wppzxigk1C23jPFSCnDhiDENIUwiUXOgERyX0Dxu
-         A4NWui3iIj3amC1bMVoxFDOSFLorqw1dS6GyIY+CrJdiYlnO1fTUmNKpStkj3GNtUwgX
-         fZQQ5RgskwMTJDunZDlzqBpm+/AGQZKzuo4jYkfqbii316z8XnZL/mf6orjPx/jVXric
-         Fd/n2kpCzkd4h0Nw4txx+fb4roWJ7mD/t4cl6XrgOBWgYj5a1O+2jQ8VM6fDXh1ZaYvl
-         aZ+w==
-X-Gm-Message-State: AOAM530XY5t/Ibew4kIqdBW+b45bnUWoy8RaqjCJyUbQd8DodZNfPEUt
-        N6Jt5ZLY9zaR6+JnwVzieGbcbm9nyI1JEQ==
-X-Google-Smtp-Source: ABdhPJzUN6oNwo/qjUNOl0WFiWDqUz/zzESIDSSoi++D62OPkON38KxbsZ6ST8tWC9pOOdMpiKPuHw==
-X-Received: by 2002:ac8:70d3:: with SMTP id g19mr5110977qtp.227.1616627939437;
-        Wed, 24 Mar 2021 16:18:59 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id v6sm2725030qkf.132.2021.03.24.16.18.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 16:18:59 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id o66so320202ybg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:18:58 -0700 (PDT)
-X-Received: by 2002:a25:ab54:: with SMTP id u78mr8405375ybi.276.1616627938513;
- Wed, 24 Mar 2021 16:18:58 -0700 (PDT)
+        bh=Waeg5goT6Kdiuo5kcj7A+VSlRRFbVYj1KRURUA32Oh8=;
+        b=RvmsH5VL18F1NdDEudirrCr2D2B2B+2/wVEhGU6Sj58HsU7tQfKvbDEswRO9bEj06Y
+         k3xcEcvXWSjTWLlHpgLpmUa7FhdA6vDjx/xPBGKhxZKjUvx+YluGsFoNs741dVuzaZne
+         VQpJNBQdlpJnajpYaOFjHC03NNF0+Krj+cDPt4JFhX9BK6OUA+R+H5FedS3jKYy5zn+N
+         Ayhq8WVpbiju8pC9pK5NMe1Zq55ughVW5IFJJe8rLxZw56zIQNmrLhAItaPCq0j8fAj0
+         CoW1Cwjcm7r4WwFD3Vaq2vGS6M1EqVkxcczkOAAyiyTe4sZGUpFtfZu+2Gj/feY25Jzr
+         7hew==
+X-Gm-Message-State: AOAM5303HzanG5BAWgJ7BFyY7ADNT4ybVfRJ61oho2rM8D/HQcN8CtZQ
+        WNOb8w73uOAAbsTsduEI1Qn93XXVRrODUPEmbVc=
+X-Google-Smtp-Source: ABdhPJweQ4JMcUYq19dE/Z3VSmtDPQ4jERg6NBOzXkLvnmMIB3aMa5kFuF+zEUn7UlrzfPx9lI7HD5glI5mIRiJtSDM=
+X-Received: by 2002:a25:38c5:: with SMTP id f188mr8303809yba.178.1616628032898;
+ Wed, 24 Mar 2021 16:20:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210324231424.2890039-1-swboyd@chromium.org>
-In-Reply-To: <20210324231424.2890039-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 24 Mar 2021 16:18:47 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VQSzanPn03-98L5KT89rkz4D1CcNLrtz2pXOHW8XOORw@mail.gmail.com>
-Message-ID: <CAD=FV=VQSzanPn03-98L5KT89rkz4D1CcNLrtz2pXOHW8XOORw@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: c630: Add no-hpd to DSI bridge node
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+References: <20210323074857.38818-1-zou_wei@huawei.com>
+In-Reply-To: <20210323074857.38818-1-zou_wei@huawei.com>
+From:   Ben Skeggs <skeggsb@gmail.com>
+Date:   Thu, 25 Mar 2021 09:20:21 +1000
+Message-ID: <CACAvsv4QztVux4VfPjLB4BMeLEL2+LePgFLVDVS7=4GMbx995g@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH -next] drm/nouveau/core/client: Mark
+ nvkm_uclient_sclass with static keyword
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     Ben Skeggs <bskeggs@redhat.com>, Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ML nouveau <nouveau@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Steev Klimaszewski <steev@kali.org>
+        ML dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 23 Mar 2021 at 17:03, Zou Wei <zou_wei@huawei.com> wrote:
+>
+> Fix the following sparse warning:
+>
+> drivers/gpu/drm/nouveau/nvkm/core/client.c:64:1: warning: symbol 'nvkm_uclient_sclass' was not declared. Should it be static?
+>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Applied, thanks.
 
-On Wed, Mar 24, 2021 at 4:14 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> We should indicate that we're not using the HPD pin on this device, per
-> the binding document. Otherwise if code in the future wants to enable
-> HPD in the bridge when this property is absent we'll be enabling HPD
-> when it isn't supposed to be used. Presumably this board isn't using hpd
-> on the bridge.
->
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Steev Klimaszewski <steev@kali.org>
-> Fixes: 956e9c85f47b ("arm64: dts: qcom: c630: Define eDP bridge and panel")
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 2 ++
->  1 file changed, 2 insertions(+)
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>  drivers/gpu/drm/nouveau/nvkm/core/client.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/core/client.c b/drivers/gpu/drm/nouveau/nvkm/core/client.c
+> index ac671202919e..0c8c55c73b12 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/core/client.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/core/client.c
+> @@ -60,7 +60,7 @@ nvkm_uclient_new(const struct nvkm_oclass *oclass, void *argv, u32 argc,
+>         return 0;
+>  }
+>
+> -const struct nvkm_sclass
+> +static const struct nvkm_sclass
+>  nvkm_uclient_sclass = {
+>         .oclass = NVIF_CLASS_CLIENT,
+>         .minver = 0,
+> --
+> 2.17.1
+>
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
