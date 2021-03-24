@@ -2,206 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2A73484DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBE13484D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238903AbhCXWqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:46:24 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:38830 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238899AbhCXWqG (ORCPT
+        id S238886AbhCXWpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238873AbhCXWpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:46:06 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7BF1F580;
-        Wed, 24 Mar 2021 23:46:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616625964;
-        bh=42HY5uwZ1MbcmUVScEyI1EYtiX5bQBYXMVzT77DP95U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uqfMiK2Vr92pgvCfj8Wsr0mvn5xnHYACf5C6V07SW/bVDjTQpGE2Ec53wGwRsLptr
-         jAfFRR42m/l7MmXXHKptfJHacMpLTXtTO8wvzuNdKMrDwgFnZ1P/jBrQX0vWHbB3id
-         5lnaXX/qDxaRM5vYQuNfzuZIt3Ccbr9UrSg44NsU=
-Date:   Thu, 25 Mar 2021 00:45:21 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: media: video-interfaces: Drop the example
-Message-ID: <YFvBAazu5yrV6r5b@pendragon.ideasonboard.com>
-References: <20210324202253.3576798-1-robh@kernel.org>
+        Wed, 24 Mar 2021 18:45:36 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CF0C06174A;
+        Wed, 24 Mar 2021 15:45:36 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id o5so45273qkb.0;
+        Wed, 24 Mar 2021 15:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Hh26ULFb4wq8BYHUWw0+QpzKKrkXdQqjX8h/lbFDYEU=;
+        b=iH54P25ntpvVjviAnClmCW1o71Q8VoEHNJvYAe/C2ouayJ0wMAGfThDSF8db8xYeE8
+         AzCp4bkFHyawLz42l/HiLd43JP5/6qheRX/aSxKIWxYx8DYGNjGKjyJBYFRDA0vJ8REE
+         oMWLSQqhOVDe6o+Ed7VmrQe2TIyFWzChl0n9w8qEuZ7e+fgJrlDPTpGRKaMD/NItuHjF
+         AnJCpjZD87iWJl2ke7ZWi35WWVMbJMxK1C5Uq8lWl0dYDmPIQht/5ClIeiqiNllF3tQw
+         q8py2hsH8bQU6VQrJcR1bInLfF1vNikdXc2+gea5dilDKdyet+kSaHK5ShB01CQ4pNEB
+         V94w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Hh26ULFb4wq8BYHUWw0+QpzKKrkXdQqjX8h/lbFDYEU=;
+        b=ODF9YNp4z8ksjkQVDL9HQD0JyMo6wEaVFoskyfYZNlAGHwPAMNru6OzQUt0rlUUMWt
+         SnMW1qspJOpslAW9Ts2DU118C1ZFkJYqj3H2veB9EqSeQlKrxJ4qZlP68U800JWMpNOh
+         kR5vy4p1d7qQsnDMItxuQH88khEpDjFHRIyk7AKIAR3g7ulVe/d8IvLYQYQRPJUfdC9P
+         xQClo3fcwRYMP8XvlktTQVg3uy1B5htYP5mXmDvkL1bHADaHUEWC15KIXioHHpGR0az8
+         3jHvy25S9NIA/xjsNRQsONVVoP/R9GkvMhXJXJ/csz0+1QlDfe2Y8IfUrWIy165Vz/ah
+         u0EQ==
+X-Gm-Message-State: AOAM532UtPK3X6TWxeYnIMKp59OapJBK7ZJ+hPgMb7L8MU55PgBPm+i7
+        4I00eBeGWiYuC1b7Z/oS3e8=
+X-Google-Smtp-Source: ABdhPJxyMmEaltxjhHYfydLE6/aXk0Eow2tJzvZFTUp4GSdzNgraqf2eiIQXNGRBN1mcJA4fE5+P7g==
+X-Received: by 2002:a37:660e:: with SMTP id a14mr5239578qkc.35.1616625935999;
+        Wed, 24 Mar 2021 15:45:35 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id z2sm2948376qkg.22.2021.03.24.15.45.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 15:45:35 -0700 (PDT)
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source
+ files
+From:   Frank Rowand <frowand.list@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <20210312044712.srmqfuie7fae55pb@vireshk-i7>
+ <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+ <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com>
+ <20210312071325.zosmlttse4ym7sit@vireshk-i7>
+ <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com>
+ <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
+ <20210315064051.otcjt3x6vkfdrio6@vireshk-i7>
+ <98697a33-a07d-6c5f-3f21-97a92ac68d3e@gmail.com>
+ <20210316054236.2blnleucwr4eidfi@vireshk-i7>
+ <077b75aa-6ebc-d76d-d76a-3206e7898c8c@gmail.com>
+Message-ID: <1ae3b0c3-be85-e6ba-ac17-3f83fc4dd087@gmail.com>
+Date:   Wed, 24 Mar 2021 17:45:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <077b75aa-6ebc-d76d-d76a-3206e7898c8c@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210324202253.3576798-1-robh@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Viresh,
 
-Thank you for the patch.
-
-On Wed, Mar 24, 2021 at 02:22:53PM -0600, Rob Herring wrote:
-> The example in video-interfaces.yaml uses a bunch of undocumented
-> bindings which will cause warnings when undocumented compatible checks
-> are enabled. The example could be fixed to use documented bindings, but
-> doing so would just duplicate other examples. So let's just remove the
-> example.
+On 3/24/21 2:34 AM, Frank Rowand wrote:
+> On 3/16/21 12:42 AM, Viresh Kumar wrote:
+>> On 16-03-21, 00:36, Frank Rowand wrote:
+>>> I should have looked at patch 3/5 more carefully instead of counting on
+>>> Masahiro to check it out and simply build testing.
+>>>
+>>> Patch 3/5 does not seem correct.  I'll look over all the makefile related
+>>> changes that have been accepted (if any) and patch 3/5 later today (Tuesday).
+>>
+>> What is already merged by Rob is what everyone reviewed and it wasn't
+>> related to this .dtso/.dtbo discussion we are having. I will resend a
+>> new patchset with the stuff left for merging (which will involve the
+>> thing we are discussing here), so we can get a clear picture of it.
+>>
 > 
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> v2: Drop instead of fixing the example
+> Instead of doing what I suggested in my 16-03-21, 00:36 email (only
+> partly quoted above), I have made most of the changes to unittest.c
+> and drivers/of/unitest/unittest-data/Makefile to allow the unittest
+> .dts files to be .dtso source files and .dtbo FDT files, and tested.
+> One final step remaining in my work is to actually rename the *.dts
+> files to *.dtso.
 > 
->  .../bindings/media/video-interfaces.yaml      | 127 ------------------
->  1 file changed, 127 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> index 0a7a73fd59f2..4391dce2caee 100644
-> --- a/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> @@ -215,130 +215,3 @@ properties:
->        CCP2, for instance.
->  
->  additionalProperties: true
-> -
-> -examples:
-> -  # The example snippet below describes two data pipelines.  ov772x and imx074
-> -  # are camera sensors with a parallel and serial (MIPI CSI-2) video bus
-> -  # respectively. Both sensors are on the I2C control bus corresponding to the
-> -  # i2c0 controller node.  ov772x sensor is linked directly to the ceu0 video
-> -  # host interface. imx074 is linked to ceu0 through the MIPI CSI-2 receiver
-> -  # (csi2). ceu0 has a (single) DMA engine writing captured data to memory.
-> -  # ceu0 node has a single 'port' node which may indicate that at any time
-> -  # only one of the following data pipelines can be active:
-> -  # ov772x -> ceu0 or imx074 -> csi2 -> ceu0.
-> -  - |
-> -    ceu@fe910000 {
-> -        compatible = "renesas,sh-mobile-ceu";
-> -        reg = <0xfe910000 0xa0>;
-> -        interrupts = <0x880>;
-> -
-> -        mclk: master_clock {
-> -            compatible = "renesas,ceu-clock";
-> -            #clock-cells = <1>;
-> -            clock-frequency = <50000000>;  /* Max clock frequency */
-> -            clock-output-names = "mclk";
-> -        };
-> -
-> -        port {
-> -            #address-cells = <1>;
-> -            #size-cells = <0>;
-> -
-> -            /* Parallel bus endpoint */
-> -            ceu0_1: endpoint@1 {
-> -                reg = <1>;    /* Local endpoint # */
-> -                remote-endpoint = <&ov772x_1_1>;  /* Remote phandle */
-> -                bus-width = <8>;  /* Used data lines */
-> -                data-shift = <2>;  /* Lines 9:2 are used */
-> -
-> -                /* If hsync-active/vsync-active are missing,
-> -                   embedded BT.656 sync is used */
-> -                hsync-active = <0>;  /* Active low */
-> -                vsync-active = <0>;  /* Active low */
-> -                data-active = <1>;  /* Active high */
-> -                pclk-sample = <1>;  /* Rising */
-> -            };
-> -
-> -            /* MIPI CSI-2 bus endpoint */
-> -            ceu0_0: endpoint@0 {
-> -                reg = <0>;
-> -                remote-endpoint = <&csi2_2>;
-> -            };
-> -        };
-> -    };
-> -
-> -    i2c {
-> -        #address-cells = <1>;
-> -        #size-cells = <0>;
-> -
-> -        camera@21 {
-> -            compatible = "ovti,ov772x";
-> -            reg = <0x21>;
-> -            vddio-supply = <&regulator1>;
-> -            vddcore-supply = <&regulator2>;
-> -
-> -            clock-frequency = <20000000>;
-> -            clocks = <&mclk 0>;
-> -            clock-names = "xclk";
-> -
-> -            port {
-> -                /* With 1 endpoint per port no need for addresses. */
-> -                ov772x_1_1: endpoint {
-> -                    bus-width = <8>;
-> -                    remote-endpoint = <&ceu0_1>;
-> -                    hsync-active = <1>;
-> -                    vsync-active = <0>; /* Who came up with an
-> -                               inverter here ?... */
-> -                    data-active = <1>;
-> -                    pclk-sample = <1>;
-> -                };
-> -            };
-> -        };
-> -
-> -        camera@1a {
-> -            compatible = "sony,imx074";
-> -            reg = <0x1a>;
-> -            vddio-supply = <&regulator1>;
-> -            vddcore-supply = <&regulator2>;
-> -
-> -            clock-frequency = <30000000>;  /* Shared clock with ov772x_1 */
-> -            clocks = <&mclk 0>;
-> -            clock-names = "sysclk";    /* Assuming this is the
-> -                       name in the datasheet */
-> -            port {
-> -                imx074_1: endpoint {
-> -                    clock-lanes = <0>;
-> -                    data-lanes = <1 2>;
-> -                    remote-endpoint = <&csi2_1>;
-> -                };
-> -            };
-> -        };
-> -    };
-> -
-> -    csi2: csi2@ffc90000 {
-> -        compatible = "renesas,sh-mobile-csi2";
-> -        reg = <0xffc90000 0x1000>;
-> -        interrupts = <0x17a0>;
-> -        #address-cells = <1>;
-> -        #size-cells = <0>;
-> -
-> -        port@1 {
-> -            compatible = "renesas,csi2c";  /* One of CSI2I and CSI2C. */
-> -            reg = <1>;      /* CSI-2 PHY #1 of 2: PHY_S,
-> -                       PHY_M has port address 0,
-> -                       is unused. */
-> -            csi2_1: endpoint {
-> -                clock-lanes = <0>;
-> -                data-lanes = <2 1>;
-> -                remote-endpoint = <&imx074_1>;
-> -            };
-> -        };
-> -        port@2 {
-> -            reg = <2>;      /* port 2: link to the CEU */
-> -
-> -            csi2_2: endpoint {
-> -                remote-endpoint = <&ceu0_0>;
-> -            };
-> -        };
-> -    };
-> -
-> -...
+> I hope to finish this later today (Wednesday) after getting some
+> sleep.
 
--- 
-Regards,
+I have submitted a patch that I _think_ removes the need for most
+of patch 3/5, _other_ than the yaml rule, which I would assume is
+still needed, though I did not examine it.
 
-Laurent Pinchart
+My patch is 
+https://lore.kernel.org/r/20210324223713.1334666-1-frowand.list@gmail.com
+
+Can you do a new patch with just the yaml rule (if Rob accepts my patch).
+
+-Frank
+
