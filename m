@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952EC34858B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC31734858F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239094AbhCXXur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:50:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235088AbhCXXub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:50:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A65A619B4;
-        Wed, 24 Mar 2021 23:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616629831;
-        bh=/cDQs2Wm+IJwdVfwGz/NvxfCVp4bq/H+IHnjqrO53Fk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HkQDdL96zAvUCO8Sa/jFnOc8wXMbH5/V6h4XNWGbomTXXsJ9Y9of6NwEkLdaBt1fu
-         Py+cqcfMUe2BpLZITLQiEN+JctYoBU5k0WUOmEVV5KyJpaAPUsuTf28UtG7Xk1q8CW
-         1hX0oPkJx9wzpnPQLUeo3zkv7MYdRImcKzs8s7ef7wtfGlF872rvDJcfeS3a0Y02Iy
-         yXPE8tAE2DYHgKiZ6tKyJPj1PidgD1qM676dpotE/WViCXOYP3E41tCTVexLpw4wiY
-         om24ZA6y/IHlNYg8g+YWw47iJPL8iFtGiTuTd09AtRgZ8P05Fu8BYrHPD/MoB+OOR2
-         813b7edMAifBw==
-Date:   Thu, 25 Mar 2021 08:50:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH] x86/kprobes: Remove dead code
-Message-Id: <20210325085026.22e615dc8d721610b77ec9ec@kernel.org>
-In-Reply-To: <20210325075654.98e4a89c1ce5d25f47b87b78@kernel.org>
-References: <20210324173641.GA404706@LEGION>
-        <5fcd5b04-0fab-3672-c5d2-6e8f73f93bbc@canonical.com>
-        <20210325075654.98e4a89c1ce5d25f47b87b78@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S238811AbhCXXvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239111AbhCXXvP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:51:15 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F68C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:51:13 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id d10so623472ils.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:51:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7XTK4pfMTsotcaP5+2Vj8/Qac6gMAPIaZt5ETGgCIFo=;
+        b=b7XZC/L+OqytHSKu0P7/BLgH65SL/j3EHuHAKaM8Q2xIXApeIK/eISqSYhC7OYPLfW
+         w9ZP4ora+/dt4DL0LXf6Q9B8+edU3OLylOuomnC6a0RJY6z72ODQRqxe/BPg+D1gw3AW
+         LCxMUvvfd6nKfkVyxzHRTHFiddUpWiWys8kpg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7XTK4pfMTsotcaP5+2Vj8/Qac6gMAPIaZt5ETGgCIFo=;
+        b=iz+a8pGanmFKQPXdGcwWyWfBQY3OCz3QQfKVkaZZoCTumGYLDDzTIiORziACs9Qcu0
+         RKLSOwSDHnT3ivQvDe4ru23w6/f7tkkV59sxkXdURXa7NX9+taO34HHdRBA8WqZoILZX
+         GN9eO3AqRPy0MoYxf45LnMtijVvbXjf2DPUP5bbVh50kIu5Hhi4ORQj7bFknbz1D3Zw5
+         ti1N8alGIDDP/0RLfCkGWldeeBTeXV8OWgGZ27LuK9It9rKQZYh5qCyKhh/sIiJrQdlr
+         F4FcRr4mrd4/uEMCcYuQzTsrHiTHn3ThAT1+ulA9vG495WJxrbI1V0UQciBkojjdpKEB
+         o/Dg==
+X-Gm-Message-State: AOAM530Usw2NGmPb6gGGpKTfPsqdHgt2/G1KCc2aE1GfME2FYLi0vbIX
+        C3iW74gaTp+uMa45b2ddf836imI1B5PW9A==
+X-Google-Smtp-Source: ABdhPJxmECCjjcag7/SmTMG9j5dECGFCG2N3hQHz+4de8wrTVbLP3j3X8C7g8snHvDhdX3s4l1W8Cw==
+X-Received: by 2002:a05:6e02:128e:: with SMTP id y14mr4494924ilq.239.1616629873367;
+        Wed, 24 Mar 2021 16:51:13 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s9sm1676981iob.33.2021.03.24.16.50.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 16:50:37 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] usbip: tools: add usage of device mode in
+ usbip_list.c
+To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Antonio Borneo <borneo.antonio@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <YFrwq75Uyef3c9gz@Sun>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <719c16e1-c220-3ff4-9389-bf2ae098e5dc@linuxfoundation.org>
+Date:   Wed, 24 Mar 2021 17:50:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <YFrwq75Uyef3c9gz@Sun>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 07:56:54 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> On Wed, 24 Mar 2021 17:50:16 +0000
-> Colin Ian King <colin.king@canonical.com> wrote:
+On 3/24/21 1:56 AM, Hongren Zheng (Zenithal) wrote:
+> The option '-d/--device' was implemented in 'usbip list' but not
+> shown in usage. Hence this commit adds this option to usage.
 > 
-> > On 24/03/2021 17:36, Muhammad Usama Anjum wrote:
-> > > The condition in switch statement `opcode & 0xf0` cannot evaluate to
-> > > 0xff. So this case statement will never execute. Remove it.
-> > > 
-> > > Fixes: 6256e668b7 ("x86/kprobes: Use int3 instead of debug trap for single-step")
-> > > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> > > ---
-> > >  arch/x86/kernel/kprobes/core.c | 3 ---
-> > >  1 file changed, 3 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> > > index 89d9f26785c7..3b7bcc077020 100644
-> > > --- a/arch/x86/kernel/kprobes/core.c
-> > > +++ b/arch/x86/kernel/kprobes/core.c
-> > > @@ -177,9 +177,6 @@ int can_boost(struct insn *insn, void *addr)
-> > >  	case 0xf0:
-> > >  		/* clear and set flags are boostable */
-> > >  		return (opcode == 0xf5 || (0xf7 < opcode && opcode < 0xfe));
-> > > -	case 0xff:
-> > > -		/* indirect jmp is boostable */
-> > > -		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
-> > >  	default:
-> > >  		/* CS override prefix and call are not boostable */
-> > >  		return (opcode != 0x2e && opcode != 0x9a);
-> > > 
-> > 
-> > The 0xff case was added with some form of intention to be executed so I
-> > suspect removing it is not an appropriate fix.
+> Signed-off-by: Hongren Zheng <i@zenithal.me>
+> ---
+>   tools/usb/usbip/src/usbip_list.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Right, it must be moved under the case 0xf0. Something like this.
+> PATCH v2:
+>       Add signed-off-by line
 > 
-> case 0xf0:
-> 	if (opcde == 0xff) {
-> 		/* indirect jmp is boostable */
-> 		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
-> 	}
+> PATCH v3:
+>       Move patch changelog after the marker line
+>       Remove nickname in signed-off-by line
+> 
+> PATCH v4:
+>       Use commit short hash and message instead of long hash only when
+>         referring to commit in the kernel
+> 
+> PATCH v5:
+>      Add documentation of `usbip port` and its usage in examples
+>      Add flow of detaching in examples
+>      Rephrase some description and add punctuations
+>      Fix typo of `usbip attach --ev-id` to `--dev-id`
+> 
+> diff --git a/tools/usb/usbip/src/usbip_list.c b/tools/usb/usbip/src/usbip_list.c
+> index 8625b0f514ee..3d810bcca02f 100644
+> --- a/tools/usb/usbip/src/usbip_list.c
+> +++ b/tools/usb/usbip/src/usbip_list.c
+> @@ -33,7 +33,8 @@ static const char usbip_list_usage_string[] =
+>   	"usbip list [-p|--parsable] <args>\n"
+>   	"    -p, --parsable         Parsable list format\n"
+>   	"    -r, --remote=<host>    List the exportable USB devices on <host>\n"
+> -	"    -l, --local            List the local USB devices\n";
+> +	"    -l, --local            List the local USB devices\n"
+> +	"    -d, --device           List the local USB gadgets bound to usbip-vudc\n";
+>   
+>   void usbip_list_usage(void)
+>   {
+> 
 
-Hmm, wait. I think there is no reason don't use range case.
-I think the root cause of this issue is using masked opcode for
-switching. Let me clean it up.
+Thank you. Looks good.
 
-Thank you,
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+thanks,
+-- Shuah
