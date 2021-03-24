@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1882A34822C
+	by mail.lfdr.de (Postfix) with ESMTP id 648F234822D
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237914AbhCXTuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35152 "EHLO
+        id S238044AbhCXTuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238014AbhCXTtg (ORCPT
+        with ESMTP id S237807AbhCXTuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:49:36 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAE0C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:49:36 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so1770409pjv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:49:36 -0700 (PDT)
+        Wed, 24 Mar 2021 15:50:01 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F14C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:50:01 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id b83so33766560lfd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=REq/3z6pobNdfYBuuoG456AWgVOTbPT0o3Axmb0eQnU=;
-        b=EQom7EY91nsoHrk6i+8Z4HSRLQUvIqpEXmT0vMrTK51fD2N4RreS32PXSNRAzz4R9I
-         HrRlXTZFEOGH0+ls+8Qt1eBAQ4u7UoEOsHaAwvVOfEu+dg6gd3POhtudd12XTwJyS3Jg
-         dYsnTdZukhlrYmuqkoegp0sdX0B5vT9MMvnEvvdXdjCaZXooe5V0wi5gwvvFCT2mYSTf
-         g48MWGkaWtfU6oIpM4MRfWbCEhuufEUbSOuVCXx6zHAZRWBuOS1jWig6x0UI9sZH+yQG
-         0yqiPwC8TnTMJdtEw6mExrlZiG2BUU9iGtf7h5KAIt+apl44NpMNrcidaWiwLJsJDgAH
-         uXrg==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=O8cBTKAdHJ0ckCRthe0qr0Y/0P1LRqCmcET2CZxqc7c=;
+        b=lr4xRl9TSCcUHHO5T39ojnZ/k0dwGVHT5yGCtsXyBtkK8xEctwhISxsiVnAYubdD8t
+         uepXFAoTP/5QoMevBO1N3fZayc9a8oEP+4esELAAaYPuJvLGEEy/XxlGWiCGFwM93Q1F
+         vnIjjGUFl+1584HRaHHhwG24dX8LTp/eTzk/kfECOpM7LEUdT51G5jOGmij7cppL3vJt
+         fpzqHQxO4cQupFKSlBzx6g0vFA/UJINMBDIuyvuVfSnrNOk7H50akSE7XrWqtX/kLvU2
+         ZOeIyonq2gzyMGjMKoSF8O/NgjdMsC5+PpQtf0ACtidU/Je+ff2qBXHNNoSOwbdtRWqm
+         REkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=REq/3z6pobNdfYBuuoG456AWgVOTbPT0o3Axmb0eQnU=;
-        b=gm1BpsMWtyFielNjV6QY2goPSag5BoSo4d7Kma5D1+BvCW1g/MN6rSXPsKE4ODYzKR
-         EDR5jgZP78i1c2o5YRITrqIQM4LDyGFX5m5DDi5I0Gg4s3kpP/NcU0fDqWUYJUoOt1+M
-         zCU03jZ1k1av8zK/VxjpBKtXRhuBrIrIWoFEQR3WZqkFLmILuvgvjCUJICV95dXdr0D3
-         N+0diOrYqd/vEq4w/5yyQe2lAO8mPFSHRnV0gJfIjfMd7Ki4VGsOeio87+0bHBCWJcWP
-         6NtGHWx5+D/SntQpnkZ/+kwhWlG5ygc1cqhD2ABMAm22nacFxycm7Q5mtk4Ao2nGcbFV
-         H2Ag==
-X-Gm-Message-State: AOAM532ZtE40rJU1/MJxjIfqVgwcZ3XVfWx66OGckpLEMCrQJrl/yVax
-        Czk/ir8PJu5B5ACABOvRLGE=
-X-Google-Smtp-Source: ABdhPJwhzepoIT3F1qAMeeqs+MljdVAM7ut/h3OckEKGP12PVKFk4ACW7o4mzdWAT/k5z38vEgl62Q==
-X-Received: by 2002:a17:90a:840a:: with SMTP id j10mr4840404pjn.97.1616615376345;
-        Wed, 24 Mar 2021 12:49:36 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id u24sm3620158pfm.214.2021.03.24.12.49.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 12:49:35 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 24 Mar 2021 12:49:32 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
-        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
-        willy@infradead.org
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O8cBTKAdHJ0ckCRthe0qr0Y/0P1LRqCmcET2CZxqc7c=;
+        b=A3Bzp+kZqQssTw1R8iDvsaBdbMl/ox9KbD+0HvXiOlOoh1elkZmEKYLPpMKnv7bLHd
+         Z5brsMLrJXGf1ldpo15wDYHc8pQnB+6JMTPyavwKxXBkjVcXZC2T9BPckUn9rp00sYwJ
+         18bT+oLoX3a3JUzMDGIswZnW+SKpmB7L0il5plpnB+gD2bdrEHP/TeYQSYOfvhfe2lr6
+         BrLTy8wAwG1Dr3OnjRxpImJ6V2HOiWeo+fA7lFX14jeYzT8tCp69SVphIHBpXI9xFIdd
+         wy4KBZG5tZtLUtAtBxYN6XxgY5lrYJ/WXdk0b9ojemRl4SgZhHtW09JG1B3+N7tVhkGS
+         oEVA==
+X-Gm-Message-State: AOAM530iwmpgBEs0sozO5HQfYIqwFATJw96sv7GJ/3T7D0uT9jrK3D8w
+        4byP0OPqtg/Pudn+5Ghm6Mc=
+X-Google-Smtp-Source: ABdhPJwP5pt79NE9N+S388jRM1JPamW66D8sTd20YsY8xlbOLEn3eUK39PCoeRTzgunt3hJ8CTk3fw==
+X-Received: by 2002:a19:b03:: with SMTP id 3mr2878904lfl.236.1616615399560;
+        Wed, 24 Mar 2021 12:49:59 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id y10sm332353lfl.240.2021.03.24.12.49.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 12:49:59 -0700 (PDT)
 Subject: Re: [PATCH] mm: cma: fix corruption cma_sysfs_alloc_pages_count
-Message-ID: <YFuXzC1cKqJzhwA4@google.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
+        jhubbard@nvidia.com, willy@infradead.org
 References: <20210324192044.1505747-1-minchan@kernel.org>
  <18ee5c3e-fba2-0d8d-bd93-5fb8d0dd7a01@gmail.com>
+Message-ID: <89ba4c7a-42d2-5412-2367-cc1cffc1117b@gmail.com>
+Date:   Wed, 24 Mar 2021 22:49:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <18ee5c3e-fba2-0d8d-bd93-5fb8d0dd7a01@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:43:49PM +0300, Dmitry Osipenko wrote:
+24.03.2021 22:43, Dmitry Osipenko пишет:
 > 24.03.2021 22:20, Minchan Kim пишет:
-> >  static int __init cma_sysfs_init(void)
-> >  {
-> > -	int i = 0;
-> > +	struct kobject *cma_kobj_root;
-> > +	struct cma_kobject *cma_kobj;
-> >  	struct cma *cma;
-> > +	unsigned int i;
+>>  static int __init cma_sysfs_init(void)
+>>  {
+>> -	int i = 0;
+>> +	struct kobject *cma_kobj_root;
+>> +	struct cma_kobject *cma_kobj;
+>>  	struct cma *cma;
+>> +	unsigned int i;
 > 
-> >  	while (--i >= 0) {
+>>  	while (--i >= 0) {
 > 
 > Do you realize that this doesn't work anymore?
 > 
-> >  		cma = &cma_areas[i];
-> > -		kobject_put(&cma->stat->kobj);
-> > -	}
-> >  
-> > -	kfree(cma_stats);
-> > -	kobject_put(cma_kobj);
-> > +		kobject_put(&cma->cma_kobj->kobj);
-> > +		kfree(cma->cma_kobj);
+>>  		cma = &cma_areas[i];
+>> -		kobject_put(&cma->stat->kobj);
+>> -	}
+>>  
+>> -	kfree(cma_stats);
+>> -	kobject_put(cma_kobj);
+>> +		kobject_put(&cma->cma_kobj->kobj);
+>> +		kfree(cma->cma_kobj);
 > 
 > Freeing a null pointer?
+> 
+>> +		cma->cma_kobj = NULL;
+>> +	}
+>> +	kobject_put(cma_kobj_root);
+> 
 
-Need coffee.
- 
-diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-index a670a80aad6f..73463be08df7 100644
---- a/mm/cma_sysfs.c
-+++ b/mm/cma_sysfs.c
-@@ -79,8 +79,7 @@ static int __init cma_sysfs_init(void)
-        struct kobject *cma_kobj_root;
-        struct cma_kobject *cma_kobj;
-        struct cma *cma;
--       unsigned int i;
--       int err;
-+       int i, err;
+Please try to simulate the errors and check that error path is working
+properly in the next version.
 
-        cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
-        if (!cma_kobj_root)
-@@ -108,10 +107,7 @@ static int __init cma_sysfs_init(void)
- out:
-        while (--i >= 0) {
-                cma = &cma_areas[i];
--
-                kobject_put(&cma->cma_kobj->kobj);
--               kfree(cma->cma_kobj);
--               cma->cma_kobj = NULL;
-        }
-        kobject_put(cma_kobj_root);
-
-
+Alternatively, we could remove the cma_kobj_release entirely, like Greg
+suggested previously, and then don't care about cleaning up at all.
