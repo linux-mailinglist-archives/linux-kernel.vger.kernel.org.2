@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C900F347F90
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5080C347F91
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237412AbhCXRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
+        id S237268AbhCXRfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237268AbhCXRe1 (ORCPT
+        with ESMTP id S237273AbhCXReb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:34:27 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96780C0613F0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:25 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u21so16273962ejo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:25 -0700 (PDT)
+        Wed, 24 Mar 2021 13:34:31 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CEBC06178A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:26 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id jy13so34221823ejc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GplnaeoWUVj8YBA4hvKiO7ws+s2Csp6NEYWiX1mt5gw=;
-        b=VHClLwAUzIb8iYeiAyEWXQru4R64ocooDxkmzS9YKD4aB311JjvITE3MmWSogieYag
-         hRpDGdiOkCUTx9cPzBhC71za1sKvJ7t0ZphkRRsFrIjQPPaXz7x5AlZmRSGy1c5vhqGs
-         kaAsZP4fqtKbuLLH7gYc83Gm+IZ7M5Icp7D/QqJrr2CmnfNtFAyyDskXEmRLAiADqw6i
-         FqRP/52eFpkYV9FFFh/TmOdbiWypa6c/8hWLjXWw1nIlDamHHxkvrCCphAs0qnSmJfOu
-         UPklZqyk98vshn1njj+OyITrLhuR8MTMYRWM/Kngvkc+s2vNrrPqtSzCmfZeyyI/oW8H
-         y6og==
+        bh=QyPG1WEqZFTBuDaWcANV4HkcWu30kB5AaRBOC44dMcU=;
+        b=x34RZDCkoRcSFIBBxVgvp+zHfS6nJJrdmtFvrYSb1iqICIoh6VlPMSgqm1epY4jDhD
+         QvZgdgquPJPb6Ry6SqX2sDNO//7WzUnOwXU41yX2Xbp7vI7bCmyC6UKbsgniS3hkiDwe
+         2DZRVPfs0FMdC31pWIKDHB8mOm6/GWeQ+jyknqeIT5fNY1vqtHLvGQn8L0yS6qlxrn9A
+         QKoBS9npWrI9cw0OOkwrdhJ15m/vg5dPpCLua01KkkpDV15EsGyQJI7E3LL6zE3QT2pz
+         VDnuKc5KOCvoFrnwOdeVB5tqJV7/3XAWFoAmnx94nvioCq/tvQjEZKe6OfhQhgoTxu1a
+         WNuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GplnaeoWUVj8YBA4hvKiO7ws+s2Csp6NEYWiX1mt5gw=;
-        b=aLF2ec0LJSfFRmTCCq7TAs0eMBPsOAdfZ0FzDtD93Fr4Y5cHrsvdUBlocpg0vai3et
-         oUbMNnu8++eyFy66EYCiTZ56oC0rbyyOx96M0XMpgUcN/2j4I9QrjH/fzT/hQt5AjFBU
-         pWPqIcHEAvRHnlhDZX0J5vSj6IZqrsTmgpFweerY4X7vjsDbLHNOM9VQ/6/auxY3H6cu
-         WxV4Pwg0qZaHuEUnpDAfio11UA7FgDSIqxZSYH44HSFjCviyfLUYPm50IIH7//TCSN/Q
-         3ScMLPm32r39InVyDtjYwb2tCafhL1WGgzfllulBiGLvrYPROitbwj2DJ2bOrzQh1/74
-         GbSg==
-X-Gm-Message-State: AOAM532POdsQx+5tjKJ2zd600+Fc5egmLZofpbcs9lZosDp+V925NyWg
-        bIxSZvKB+pcvoLJ5vBl6h3gq88E7lO22ww==
-X-Google-Smtp-Source: ABdhPJyYu4OfJkDB02jrt02iTBQ1rdz4gwaiw4naFpRztIkA+MXS3Kxc9cXKU1EuXCk8F2b2bXzHmw==
-X-Received: by 2002:a17:906:b297:: with SMTP id q23mr4986590ejz.315.1616607264319;
-        Wed, 24 Mar 2021 10:34:24 -0700 (PDT)
+        bh=QyPG1WEqZFTBuDaWcANV4HkcWu30kB5AaRBOC44dMcU=;
+        b=Nok9SbiTEXbnDQL8AjqRK/5JA5sPvxPfyfbggOpKRxwZ5HeGf/4Tari5OmesF0OHDw
+         8AI0pSM53XxhZaAj+32Rui89dNCzJYocrNbrwCSvMGWJ/xiPX/vEWBJ2jrsQcDH8VAZC
+         pM/ghy9wuYdmDEHpVHoaFGXQ3ms6jYIEXOK03hdAeCvnKzRlwfVAjQYeh7qj4lk+LXca
+         V+lqkLMOCiA2yHPxdefgXNX36AhfSa1V/F2aXccfkMGThDEXtyfHVJhPCK7kTxWtIbtn
+         MueVZE1knyJgN/4VDMFDHScbfIfACSYbe9oAmUu6vAhqXSdeng/5cd/9YilKA4ZztzLR
+         DpuQ==
+X-Gm-Message-State: AOAM531UkCxpvrDeBz3JIXvYybxQ9ZGsrhMGmRG+Xw8F62xPmeNusNj+
+        Q7N8GKp2YOaY7Ms3z1pUwZ+/Iw==
+X-Google-Smtp-Source: ABdhPJwRwrC8EEYenWLs4RGZ9Kg2dyDeJq/LMFkNo2BqT3C9pBFeEJizZTNkRQh0YmvZI4K++sB9AQ==
+X-Received: by 2002:a17:906:d114:: with SMTP id b20mr4911433ejz.449.1616607265313;
+        Wed, 24 Mar 2021 10:34:25 -0700 (PDT)
 Received: from dell.default ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id p19sm1466367edr.57.2021.03.24.10.34.23
+        by smtp.gmail.com with ESMTPSA id p19sm1466367edr.57.2021.03.24.10.34.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 10:34:23 -0700 (PDT)
+        Wed, 24 Mar 2021 10:34:24 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Lopez Casado <nlopezcasad@logitech.com>,
         linux-input@vger.kernel.org
-Subject: [PATCH 16/25] HID: hid-logitech-hidpp: Fix conformant kernel-doc header and demote abuses
-Date:   Wed, 24 Mar 2021 17:33:55 +0000
-Message-Id: <20210324173404.66340-17-lee.jones@linaro.org>
+Subject: [PATCH 17/25] HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
+Date:   Wed, 24 Mar 2021 17:33:56 +0000
+Message-Id: <20210324173404.66340-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210324173404.66340-1-lee.jones@linaro.org>
 References: <20210324173404.66340-1-lee.jones@linaro.org>
@@ -69,66 +67,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/hid/hid-logitech-hidpp.c:275: warning: Function parameter or member 'hidpp' not described in 'hidpp_send_message_sync'
- drivers/hid/hid-logitech-hidpp.c:275: warning: Function parameter or member 'message' not described in 'hidpp_send_message_sync'
- drivers/hid/hid-logitech-hidpp.c:275: warning: Function parameter or member 'response' not described in 'hidpp_send_message_sync'
- drivers/hid/hid-logitech-hidpp.c:275: warning: expecting prototype for and something else(). Prototype was for hidpp_send_message_sync() instead
- drivers/hid/hid-logitech-hidpp.c:427: warning: wrong kernel-doc identifier on line:
- drivers/hid/hid-logitech-hidpp.c:470: warning: Function parameter or member 'input_dev' not described in 'hidpp_scroll_counter_handle_scroll'
- drivers/hid/hid-logitech-hidpp.c:1894: warning: Function parameter or member 'hidpp' not described in 'hidpp_touchpad_fw_items_set'
- drivers/hid/hid-logitech-hidpp.c:1894: warning: Function parameter or member 'feature_index' not described in 'hidpp_touchpad_fw_items_set'
- drivers/hid/hid-logitech-hidpp.c:1894: warning: Function parameter or member 'items' not described in 'hidpp_touchpad_fw_items_set'
- drivers/hid/hid-logitech-hidpp.c:1894: warning: expecting prototype for send a set state command to the device by reading the current items(). Prototype was for hidpp_touchpad_fw_items_set() instead
+ drivers/hid/hid-uclogic-rdesc.c:645: warning: wrong kernel-doc identifier on line:
 
 Cc: Jiri Kosina <jikos@kernel.org>
 Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Henrik Rydberg <rydberg@bitmath.org>
-Cc: Lopez Casado <nlopezcasad@logitech.com>
 Cc: linux-input@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/hid/hid-logitech-hidpp.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/hid/hid-uclogic-rdesc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-index d459e2dbe6474..d598094dadd0c 100644
---- a/drivers/hid/hid-logitech-hidpp.c
-+++ b/drivers/hid/hid-logitech-hidpp.c
-@@ -261,7 +261,7 @@ static int __hidpp_send_report(struct hid_device *hdev,
- 	return ret == fields_count ? 0 : -1;
- }
+diff --git a/drivers/hid/hid-uclogic-rdesc.c b/drivers/hid/hid-uclogic-rdesc.c
+index bf5da6de7bba9..6dd6dcd09c8bc 100644
+--- a/drivers/hid/hid-uclogic-rdesc.c
++++ b/drivers/hid/hid-uclogic-rdesc.c
+@@ -641,7 +641,7 @@ const __u8 uclogic_rdesc_pen_v2_template_arr[] = {
+ const size_t uclogic_rdesc_pen_v2_template_size =
+ 			sizeof(uclogic_rdesc_pen_v2_template_arr);
  
 -/**
 +/*
-  * hidpp_send_message_sync() returns 0 in case of success, and something else
-  * in case of a failure.
-  * - If ' something else' is positive, that means that an error has been raised
-@@ -423,7 +423,7 @@ static inline bool hidpp_report_is_connect_event(struct hidpp_device *hidpp,
- 		(report->rap.sub_id == 0x41));
- }
- 
--/**
-+/*
-  * hidpp_prefix_name() prefixes the current given name with "Logitech ".
-  */
- static void hidpp_prefix_name(char **name, int name_length)
-@@ -454,6 +454,7 @@ static void hidpp_prefix_name(char **name, int name_length)
-  * hidpp_scroll_counter_handle_scroll() - Send high- and low-resolution scroll
-  *                                        events given a high-resolution wheel
-  *                                        movement.
-+ * @input_dev: Pointer to the input device
-  * @counter: a hid_scroll_counter struct describing the wheel.
-  * @hi_res_value: the movement of the wheel, in the mouse's high-resolution
-  *                units.
-@@ -1884,7 +1885,7 @@ struct hidpp_touchpad_fw_items {
- 	uint8_t persistent;
- };
- 
--/**
-+/*
-  * send a set state command to the device by reading the current items->state
-  * field. items is then filled with the current state.
-  */
+  * Expand to the contents of a generic buttonpad report descriptor.
+  *
+  * @_padding:	Padding from the end of button bits at bit 44, until
 -- 
 2.27.0
 
