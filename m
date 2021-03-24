@@ -2,70 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC6A347632
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C46347638
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbhCXKfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:35:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233398AbhCXKe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:34:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E3361A01;
-        Wed, 24 Mar 2021 10:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616582096;
-        bh=9Z2UIME5BPL9q3dzEzV84xwr0G+Ct4YPKT5HcX86PpE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OYjKAX2+aM0uhO5qQz0EdEf+Te7ComRwLmBsS2aTdvvnBX3xLOFY2Lp2DI9arPHPW
-         SpMgjEEAVfkQZ1yQzZaHZOm4J26olsj8Olr7nkAJ3v2/W5/vcwft/3HV+SDKgC9xBC
-         aDPoUz1j8pkGvCOPL+4l9X1Ta4y6tjuX2d8+39xNMO5YTuV3tpMPNpbaTfdxvcURrY
-         YiTTFjtneDk2z8OnoXnDtjtdtnUcTuNed5x24yIJpEKRRPmrhaIBzgN9C7+uDUANWY
-         SbfQJ3o8h0e6/xEkuDfhglpQsRPQ4QI+HYT7db4WSa3SZ9Bsk5pFtLns9iLL8omTef
-         rwH3SF+2UWgVg==
-Date:   Wed, 24 Mar 2021 12:34:52 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yejune@gmail.com
-Subject: Re: [PATCH 1/2] net: ipv4: route.c: add likely() statements
-Message-ID: <YFsVzP6P9l0aaIVo@unreal>
-References: <20210324030923.17203-1-yejune.deng@gmail.com>
+        id S233465AbhCXKgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233240AbhCXKgQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 06:36:16 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B09C0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:36:16 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id c8so10988539wrq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dEFFBRSXu0odutvmmG/Rwg2Sz2HimxEx+pN3ka/bnVc=;
+        b=DOZKukNzPwBLODbuM7S0fhx3nEbU8wUrLkI+akr9xvK/Gn2cEkrVU5mSaLlohKzWUM
+         IQkfJ4YQkOKMBazPQvbAWzdDFP3Pw6sQVJz5npSdYbHyY5D+97tiYkJ7sHJNebnH5qsm
+         0tl9dSCS/MCcNsWpo95djxWqsO64QF8ensbtsRQ+wiq5hwJ8ZBDySd8GUAFJFBxdGmvR
+         jEKykXmw1j4WN055zMGSRxaoUH0Mk1lSbDSTB67aaiipXHd9Df435ucMGT4YF0wFargI
+         i/kPWeaegH1BvjP03zxQGdMBRdPYrgta44l0928G9W3U65Nais46ChTzh4NwrxzMpihp
+         EVmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dEFFBRSXu0odutvmmG/Rwg2Sz2HimxEx+pN3ka/bnVc=;
+        b=dWPcCSEimvqRl8TVJHJYgKMjEUpgJPR883+olPmF83bljFW3tRLv3JCg9Vhdh1Ed/h
+         pYnv2PZHvLrpcYbGEvkWlwhd/R8Zw31n/d7WbpRVxsJ67SYKwaEIGXvHmRAgNEz/ur7z
+         ewcnPAfkgG6DHnToHO08B9KTB/KTHgQctiZQh2uDswO7B13+AUB1Vvhz9OqoV8PPUGDd
+         TE/sZ/mID0qMslhgK569OWES602dUAgYCMwgyh7YIyfOMCeG47pFLmcqAppemkGKI5Aw
+         +CF2GWc3LtdUcicllK2/rygYQX698nem+PKxiTt6uQ0MR/cczidz6J/rBVpsCVaA0fya
+         IwPQ==
+X-Gm-Message-State: AOAM530Curkg24bnLTvavyPK+YN3kPID0fkKmB6Z69llVOgZbxO6EFii
+        O2HyfTGSoG5nx5OBrvprglOLXRZ13cHAkg==
+X-Google-Smtp-Source: ABdhPJxI3r3iiWfvHOD+ErGz9Iu/oghrzTasZEnAeZqBD2lmagfmv90aTaU0jHjCwgR5t2MyzwXykw==
+X-Received: by 2002:a5d:6a81:: with SMTP id s1mr2725687wru.401.1616582174392;
+        Wed, 24 Mar 2021 03:36:14 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id l6sm2070476wrn.3.2021.03.24.03.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 03:36:14 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 10:36:11 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Jeremy Kolb <jkolb@brandeis.edu>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        nouveau@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [RESEND 00/19] Rid GPU from W=1 warnings
+Message-ID: <20210324103611.GJ2916463@dell>
+References: <20210319082428.3294591-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210324030923.17203-1-yejune.deng@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210319082428.3294591-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:09:22AM +0800, Yejune Deng wrote:
-> Add likely() statements in ipv4_confirm_neigh() for 'rt->rt_gw_family
-> == AF_INET'.
+Daniel,
 
-Why? Such macros are beneficial in only specific cases, most of the time,
-likely/unlikely is cargo cult.
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
+> 
+> This is a resend of the remaining patches.
+> 
+> All of these patches have been sent before.
 
+Are you still keen to 'hoover these up'?
+
+Just leave the one that requires work and take the rest perhaps?
+
+> Lee Jones (19):
+>   drm/nouveau/nvkm/subdev/bios/init: Demote obvious abuse of kernel-doc
+>   drm/nouveau/dispnv50/disp: Remove unused variable 'ret'
+>   drm/msm/dp/dp_display: Remove unused variable 'hpd'
+>   include: drm: drm_atomic: Make use of 'new_plane_state'
+>   drm/nouveau/nvkm/subdev/volt/gk20a: Demote non-conformant kernel-doc
+>     headers
+>   drm/amd/display/dc/calcs/dce_calcs: Move some large variables from the
+>     stack to the heap
+>   drm/amd/display/dc/calcs/dce_calcs: Remove some large variables from
+>     the stack
+>   drm/amd/display/dc/dce80/dce80_resource: Make local functions static
+>   drm/nouveau/nvkm/engine/gr/gf100: Demote non-conformant kernel-doc
+>     header
+>   drm/nouveau/nouveau_bo: Remove unused variables 'dev'
+>   drm/nouveau/nouveau_display: Remove set but unused variable 'width'
+>   drm/nouveau/dispnv04/crtc: Demote non-conforming kernel-doc headers
+>   drm/nouveau/dispnv50/disp: Remove unused variable 'ret' from function
+>     returning void
+>   drm/nouveau/dispnv50/headc57d: Make local function 'headc57d_olut'
+>     static
+>   drm/nouveau/nv50_display: Remove superfluous prototype for local
+>     static functions
+>   drm/nouveau/dispnv50/disp: Include header containing our prototypes
+>   drm/nouveau/nouveau_ioc32: File headers are not good candidates for
+>     kernel-doc
+>   drm/nouveau/nouveau_svm: Remove unused variable 'ret' from void
+>     function
+>   drm/nouveau/nouveau_ioc32: Demote kernel-doc abuse to standard comment
+>     block
 > 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  net/ipv4/route.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../gpu/drm/amd/display/dc/calcs/dce_calcs.c  | 1154 +++++++++--------
+>  .../drm/amd/display/dc/dce80/dce80_resource.c |   16 +-
+>  drivers/gpu/drm/msm/dp/dp_display.c           |    3 -
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c       |    4 +-
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c       |   10 +-
+>  drivers/gpu/drm/nouveau/dispnv50/headc57d.c   |    2 +-
+>  drivers/gpu/drm/nouveau/nouveau_bo.c          |    4 -
+>  drivers/gpu/drm/nouveau/nouveau_display.c     |    8 +-
+>  drivers/gpu/drm/nouveau/nouveau_ioc32.c       |    4 +-
+>  drivers/gpu/drm/nouveau/nouveau_svm.c         |    5 +-
+>  drivers/gpu/drm/nouveau/nv50_display.h        |    3 -
+>  .../gpu/drm/nouveau/nvkm/engine/gr/gf100.c    |    2 +-
+>  .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   |  204 +--
+>  .../gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c  |    4 +-
+>  include/drm/drm_atomic.h                      |    3 +-
+>  15 files changed, 692 insertions(+), 734 deletions(-)
 > 
-> diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-> index fa68c2612252..5762d9bc671c 100644
-> --- a/net/ipv4/route.c
-> +++ b/net/ipv4/route.c
-> @@ -440,7 +440,7 @@ static void ipv4_confirm_neigh(const struct dst_entry *dst, const void *daddr)
->  	struct net_device *dev = dst->dev;
->  	const __be32 *pkey = daddr;
->  
-> -	if (rt->rt_gw_family == AF_INET) {
-> +	if (likely(rt->rt_gw_family == AF_INET)) {
->  		pkey = (const __be32 *)&rt->rt_gw4;
->  	} else if (rt->rt_gw_family == AF_INET6) {
->  		return __ipv6_confirm_neigh_stub(dev, &rt->rt_gw6);
-> -- 
-> 2.29.0
-> 
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: Anthony Koo <Anthony.Koo@amd.com>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: Colin Ian King <colin.king@canonical.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: freedreno@lists.freedesktop.org
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Jeremy Kolb <jkolb@brandeis.edu>
+> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: nouveau@lists.freedesktop.org
+> Cc: Rob Clark <robdclark@gmail.com>
+> Cc: Sean Paul <sean@poorly.run>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
