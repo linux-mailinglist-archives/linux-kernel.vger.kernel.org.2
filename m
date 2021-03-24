@@ -2,83 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BA4347DDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2023B347DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236446AbhCXQjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:39:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20052 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235892AbhCXQif (ORCPT
+        id S236486AbhCXQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:39:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236364AbhCXQit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:38:35 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-273-ieJ6ILjUMhinNlWCciDQvA-1; Wed, 24 Mar 2021 16:38:31 +0000
-X-MC-Unique: ieJ6ILjUMhinNlWCciDQvA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 16:38:31 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 24 Mar 2021 16:38:31 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Robin Murphy' <robin.murphy@arm.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "guohanjun@huawei.com" <guohanjun@huawei.com>
-Subject: RE: [PATCH 2/3] arm64: lib: improve copy performance when size is ge
- 128 bytes
-Thread-Topic: [PATCH 2/3] arm64: lib: improve copy performance when size is ge
- 128 bytes
-Thread-Index: AQHXH915IdtKoxR55UKYkN65PW6keqqTVkuA
-Date:   Wed, 24 Mar 2021 16:38:31 +0000
-Message-ID: <62602598e7b742d09c581f3fc988e487@AcuMS.aculab.com>
-References: <20210323073432.3422227-1-yangyingliang@huawei.com>
- <20210323073432.3422227-3-yangyingliang@huawei.com>
- <03ac41af-c433-cd66-8195-afbf9c49554c@arm.com>
-In-Reply-To: <03ac41af-c433-cd66-8195-afbf9c49554c@arm.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 24 Mar 2021 12:38:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616603929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZF8HRT5IrNOvQL6Pz8F1OKHc43im4d3pUJ9N+IN8ny4=;
+        b=UiJFq3NNFtZk8hE/aMYV1npFi+OuCv5fKk0Si34cOwhsd7HcwzYCIGiZGAEMjwSS1FnPdM
+        LtsudrLKMcLMW5u83rnYMyFzwL0BlZBBhCo4ihHf45wL0uaDKqG1d8PcNtkx5bbLn5S9Xa
+        WodVokodO44l3zyizh36PuzhG97j2rA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-MDu9bpqvMROk8Kcpvhc9XQ-1; Wed, 24 Mar 2021 12:38:47 -0400
+X-MC-Unique: MDu9bpqvMROk8Kcpvhc9XQ-1
+Received: by mail-wr1-f72.google.com with SMTP id b6so1298991wrq.22
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:38:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZF8HRT5IrNOvQL6Pz8F1OKHc43im4d3pUJ9N+IN8ny4=;
+        b=L3mxm6v6vbcZuaI9a9gxw23EDniJNeljEKUMgXsHfgLund4honBfTDcgy8ez0pX7hE
+         xCX1UxRtXsgWihoHiXvzP1hwumlUO1wn+dGctWbvo65pCkXFLTOk7IdYII0LpWvJehXu
+         tejrHVRqqiudYMCEEn+zO2B+Ei752J0LifHbSXD9es3UnADzvKjpuoWRIR7PjlgkwKm5
+         9r+M30tVapf3NkOKHmSMCf5sShizNKdq9gfO8hI0RVX5Ue6wM+zn9eQcgur3ZnRLLkpB
+         z/8Dn+ViLOzStyyFd3st/Yc0Xmyes/j+mwpT1GxcUJ0F4dHZuH7DT1oh+KddeB/Fs/uV
+         Lgmg==
+X-Gm-Message-State: AOAM531qpgGiZvbbpimvgs1bZlsv2szfqZQhvgXr3xqstq6Vigvqu7af
+        4ma6w8GDgjPvsyF1498gG+gvuB183GafNrQfDz4cBybNKraLPkD4bVJgiBe4yrd+UFrUHREl6eZ
+        mppy2kyxBBdiggxBSrplkbyH4
+X-Received: by 2002:adf:e5c4:: with SMTP id a4mr4478186wrn.174.1616603926342;
+        Wed, 24 Mar 2021 09:38:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNX1S2tQyoRha/DwjTPN7h2LrSBGyzP5oxKR2eeHPyyIYZd4C89Eg+f14Opdl72aBTlPS3FQ==
+X-Received: by 2002:adf:e5c4:: with SMTP id a4mr4478163wrn.174.1616603926203;
+        Wed, 24 Mar 2021 09:38:46 -0700 (PDT)
+Received: from redhat.com (bzq-79-183-252-180.red.bezeqint.net. [79.183.252.180])
+        by smtp.gmail.com with ESMTPSA id c8sm4151618wrd.55.2021.03.24.09.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 09:38:45 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 12:38:40 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "Jason@zx2c4.com" <Jason@zx2c4.com>,
+        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "areber@redhat.com" <areber@redhat.com>,
+        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
+        "avagin@gmail.com" <avagin@gmail.com>,
+        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
+        "gil@azul.com" <gil@azul.com>,
+        "asmehra@redhat.com" <asmehra@redhat.com>,
+        "dgunigun@redhat.com" <dgunigun@redhat.com>,
+        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>
+Subject: Re: [PATCH v8] drivers/misc: sysgenid: add system generation id
+ driver
+Message-ID: <20210324123756-mutt-send-email-mst@kernel.org>
+References: <1615213083-29869-1-git-send-email-acatan@amazon.com>
+ <YEY2b1QU5RxozL0r@kroah.com>
+ <a61c976f-b362-bb60-50a5-04073360e702@amazon.com>
+ <YFnlZQZOasOwxUDn@kroah.com>
+ <E6E517FF-A37C-427C-B16F-066A965B8F42@amazon.com>
+ <YFoYwq/RadewiE8I@kroah.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFoYwq/RadewiE8I@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUm9iaW4gTXVycGh5DQo+IFNlbnQ6IDIzIE1hcmNoIDIwMjEgMTI6MDkNCj4gDQo+IE9u
-IDIwMjEtMDMtMjMgMDc6MzQsIFlhbmcgWWluZ2xpYW5nIHdyb3RlOg0KPiA+IFdoZW4gY29weSBv
-dmVyIDEyOCBieXRlcywgc3JjL2RzdCBpcyBhZGRlZCBhZnRlcg0KPiA+IGVhY2ggbGRwL3N0cCBp
-bnN0cnVjdGlvbiwgaXQgd2lsbCBjb3N0IG1vcmUgdGltZS4NCj4gPiBUbyBpbXByb3ZlIHRoaXMs
-IHdlIG9ubHkgYWRkIHNyYy9kc3QgYWZ0ZXIgbG9hZA0KPiA+IG9yIHN0b3JlIDY0IGJ5dGVzLg0K
-PiANCj4gVGhpcyBicmVha3MgdGhlIHJlcXVpcmVkIGJlaGF2aW91ciBmb3IgY29weV8qX3VzZXIo
-KSwgc2luY2UgdGhlIGZhdWx0DQo+IGhhbmRsZXIgZXhwZWN0cyB0aGUgYmFzZSBhZGRyZXNzIHRv
-IGJlIHVwLXRvLWRhdGUgYXQgYWxsIHRpbWVzLiBTYXkNCj4geW91J3JlIGNvcHlpbmcgMTI4IGJ5
-dGVzIGFuZCBmYXVsdCBvbiB0aGUgNHRoIHN0b3JlLCBpdCBzaG91bGQgcmV0dXJuIDgwDQo+IGJ5
-dGVzIG5vdCBjb3BpZWQ7IHRoZSBjb2RlIGJlbG93IHdvdWxkIHJldHVybiAxMjggYnl0ZXMgbm90
-IGNvcGllZCwgZXZlbg0KPiB0aG91Z2ggNDggYnl0ZXMgaGF2ZSBhY3R1YWxseSBiZWVuIHdyaXR0
-ZW4gdG8gdGhlIGRlc3RpbmF0aW9uLg0KDQpBcmUgdGhlcmUgYW55IG5vbi1zdXBlcnNjYWxlciBh
-bWQ2NCBjcHUgKHRoYXQgYW55b25lIGNhcmVzIGFib3V0KT8NCg0KSWYgdGhlIGNwdSBjYW4gZXhl
-Y3V0ZSBtdWx0aXBsZSBpbnN0cnVjdGlvbnMgaW4gb25lIGNsb2NrDQp0aGVuIGl0IGlzIHVzdWFs
-bHkgcG9zc2libGUgdG8gZ2V0IHRoZSBsb29wIGNvbnRyb2wgKGFsbW9zdCkgZnJlZS4NCg0KWW91
-IG1pZ2h0IG5lZWQgdG8gdW5yb2xsIG9uY2UgdG8gaW50ZXJsZWF2ZSByZWFkL3dyaXRlDQpidXQg
-YW55IG1vcmUgbWF5IGJlIHBvaW50bGVzcy4NClNvIHNvbWV0aGluZyBsaWtlOg0KCWEgPSAqc3Jj
-KysNCglkbyB7DQoJCWIgPSAqc3JjKys7DQoJCSpkc3QrKyA9IGE7DQoJCWEgPSAqc3JjKys7DQoJ
-CSpkc3QrKyA9IGI7DQoJfSB3aGlsZSAoc3JjICE9IGxpbSk7DQoJKmRzdCsrID0gYjsNCg0KICAg
-IERhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBN
-b3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAx
-Mzk3Mzg2IChXYWxlcykNCg==
+On Tue, Mar 23, 2021 at 05:35:14PM +0100, Greg KH wrote:
+> On Tue, Mar 23, 2021 at 04:10:27PM +0000, Catangiu, Adrian Costin wrote:
+> > Hi Greg,
+> > 
+> > After your previous reply on this thread we started considering to provide this interface and framework/functionality through a userspace service instead of a kernel interface.
+> > The latest iteration on this evolving patch-set doesn’t have strong reasons for living in the kernel anymore - the only objectively strong advantage would be easier driving of ecosystem integration; but I am not sure that's a good enough reason to create a new kernel interface.
+> > 
+> > I am now looking into adding this through Systemd. Either as a pluggable service or maybe even a systemd builtin offering.
+> > 
+> > What are your thoughts on it?
+> 
+> I'll gladly drop this patch if it's not needed in the kernel, thanks for
+> letting me know.
+> 
+> greg k-h
+
+Systemd sounds good to me too.
+
+-- 
+MST
 
