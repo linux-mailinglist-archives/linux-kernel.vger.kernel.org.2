@@ -2,286 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F79B34774C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1A8347755
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhCXL0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
+        id S229839AbhCXL2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbhCXLZs (ORCPT
+        with ESMTP id S235262AbhCXL1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:25:48 -0400
-Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514CAC0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 04:25:47 -0700 (PDT)
-Received: by mail-ej1-x649.google.com with SMTP id sa29so771330ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 04:25:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=SXHD/uvUmQlMKu8n5JwtEEFXBwNpAPsrMpvny8SPQ1E=;
-        b=vvCpa9HND78wqcF7JFp7r/2FIG3PfUY1b2aBiwcU/PUw5DgAtl0ApCtkZwymEMXk/3
-         Fgu4tvpHw83d23HMAg9Yze+0affNBKwI4WjfG8Gocxma86yk8NN7/mUI1osLwZXEl89Q
-         5vhkDgtzbtSOQZDoKqNzpuildjMay7AYwZjdv+Anol70e+aSrEvctY1VeAKnuDqR4DTJ
-         rQhqwKlBIwplNv9R/mR7JTtGoOzj8p9RlDLKmoJcaMmYPTgm61rP4Ll9vCTCK4zCsIUy
-         /ZoGoGZFfARImjVdqS6BWpfXvU68it7d6umbSXaE90K1d4+4KU8w8DVfGlT92xBDcdHZ
-         JCkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=SXHD/uvUmQlMKu8n5JwtEEFXBwNpAPsrMpvny8SPQ1E=;
-        b=I2bmM1GzpQBWKneolBirK+DFmrYjOj6xUO3tQFspjxKoLgjcR1PEVTW4lB1fNZwZsm
-         YinWxDyQa68k1zubJKup64yK7O59+f9g8GTxVbLgQ4y6LZno/PlLp7vEBnmAQ5vahFzW
-         UILgLTJWGHEYQDCyL7/kr5yVacu3HCJZjhQ/a37UMs/WnYWw8dXr67ElMDYql8M3I/3J
-         Jxs7Y16B1PwpZPyTG4dFq3xaPBqdMSDBqUDMyGHuc6iq7JII/Xc6xxUPmrOzZiN7m206
-         of0kExIK/atksYogpvfy7k5eYJ1UoqCYVNHQn0ISSMZBS8+TonGGMSIZdJpM9agxhzWt
-         B2bA==
-X-Gm-Message-State: AOAM533qB4vnLSfOVEf9zTi8GOLfoKg8+NEUVOr7SrSgPAbcOU2T03dO
-        gAVfWqXGPHE6mJ82uMkukn2NnjrnkA==
-X-Google-Smtp-Source: ABdhPJyZha8NDkWJdWXS93mUgqdBXoxsEhkLAwhgs2SpdkL5SBYnAeEXydgCyvOlLVAyR1sG9cBu9ttXHQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6489:b3f0:4af:af0])
- (user=elver job=sendgmr) by 2002:a17:906:ecb8:: with SMTP id
- qh24mr3238409ejb.162.1616585145705; Wed, 24 Mar 2021 04:25:45 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 12:25:03 +0100
-In-Reply-To: <20210324112503.623833-1-elver@google.com>
-Message-Id: <20210324112503.623833-12-elver@google.com>
-Mime-Version: 1.0
-References: <20210324112503.623833-1-elver@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v3 11/11] perf test: Add basic stress test for sigtrap handling
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, peterz@infradead.org,
-        alexander.shishkin@linux.intel.com, acme@kernel.org,
-        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, tglx@linutronix.de
-Cc:     glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        christian@brauner.io, dvyukov@google.com, jannh@google.com,
-        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
-        irogers@google.com, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 24 Mar 2021 07:27:01 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF42C0613E3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 04:26:33 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lP1ef-0000BZ-4o; Wed, 24 Mar 2021 12:26:29 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lP1ee-0001xW-Ih; Wed, 24 Mar 2021 12:26:28 +0100
+Date:   Wed, 24 Mar 2021 12:26:26 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Nobs <samuel.nobs@taitradio.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] serial: imx: drop workaround for forced irq threading
+Message-ID: <20210324112626.iqteqgfbkci3xmvh@pengutronix.de>
+References: <20210322111036.31966-1-johan@kernel.org>
+ <20210322113402.naqzgkoe2xesnw4b@pengutronix.de>
+ <20210322113918.ze52gq54cpsspgej@linutronix.de>
+ <20210322115536.knkea7i6vrfpotol@pengutronix.de>
+ <YFiZuXWYmxPIaQH9@hovoldconsulting.com>
+ <20210322134032.kmirudtnkd4akkgu@pengutronix.de>
+ <YFn9KenzUQl4KPRt@hovoldconsulting.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zi5o6fqsy3kf62o4"
+Content-Disposition: inline
+In-Reply-To: <YFn9KenzUQl4KPRt@hovoldconsulting.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic stress test for sigtrap handling as a perf tool built-in test.
-This allows sanity checking the basic sigtrap functionality from within
-the perf tool.
 
-Note: A more elaborate kselftest version of this test can also be found
-in tools/testing/selftests/perf_events/sigtrap_threads.c.
+--zi5o6fqsy3kf62o4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Marco Elver <elver@google.com>
----
-v3:
-* Added to series (per suggestion from Ian Rogers).
----
- tools/perf/tests/Build          |   1 +
- tools/perf/tests/builtin-test.c |   5 ++
- tools/perf/tests/sigtrap.c      | 148 ++++++++++++++++++++++++++++++++
- tools/perf/tests/tests.h        |   1 +
- 4 files changed, 155 insertions(+)
- create mode 100644 tools/perf/tests/sigtrap.c
+Hello Johan,
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 650aec19d490..a429c7a02b37 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -64,6 +64,7 @@ perf-y += parse-metric.o
- perf-y += pe-file-parsing.o
- perf-y += expand-cgroup.o
- perf-y += perf-time-to-tsc.o
-+perf-y += sigtrap.o
- 
- $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
- 	$(call rule_mkdir)
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index c4b888f18e9c..28a1cb5eaa77 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -359,6 +359,11 @@ static struct test generic_tests[] = {
- 		.func = test__perf_time_to_tsc,
- 		.is_supported = test__tsc_is_supported,
- 	},
-+	{
-+		.desc = "Sigtrap support",
-+		.func = test__sigtrap,
-+		.is_supported = test__wp_is_supported, /* uses wp for test */
-+	},
- 	{
- 		.func = NULL,
- 	},
-diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
-new file mode 100644
-index 000000000000..b3f4006c22fd
---- /dev/null
-+++ b/tools/perf/tests/sigtrap.c
-@@ -0,0 +1,148 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Basic test for sigtrap support.
-+ *
-+ * Copyright (C) 2021, Google LLC.
-+ */
-+
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <linux/hw_breakpoint.h>
-+#include <pthread.h>
-+#include <signal.h>
-+#include <sys/ioctl.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+
-+#include "cloexec.h"
-+#include "debug.h"
-+#include "event.h"
-+#include "tests.h"
-+#include "../perf-sys.h"
-+
-+#define NUM_THREADS 5
-+
-+static struct {
-+	int tids_want_signal;		/* Which threads still want a signal. */
-+	int signal_count;		/* Sanity check number of signals received. */
-+	volatile int iterate_on;	/* Variable to set breakpoint on. */
-+	siginfo_t first_siginfo;	/* First observed siginfo_t. */
-+} ctx;
-+
-+static struct perf_event_attr make_event_attr(void)
-+{
-+	struct perf_event_attr attr = {
-+		.type		= PERF_TYPE_BREAKPOINT,
-+		.size		= sizeof(attr),
-+		.sample_period	= 1,
-+		.disabled	= 1,
-+		.bp_addr	= (long)&ctx.iterate_on,
-+		.bp_type	= HW_BREAKPOINT_RW,
-+		.bp_len		= HW_BREAKPOINT_LEN_1,
-+		.inherit	= 1, /* Children inherit events ... */
-+		.inherit_thread = 1, /* ... but only cloned with CLONE_THREAD. */
-+		.remove_on_exec = 1, /* Required by sigtrap. */
-+		.sigtrap	= 1, /* Request synchronous SIGTRAP on event. */
-+	};
-+	return attr;
-+}
-+
-+static void
-+sigtrap_handler(int signum __maybe_unused, siginfo_t *info, void *ucontext __maybe_unused)
-+{
-+	if (!__atomic_fetch_add(&ctx.signal_count, 1, __ATOMIC_RELAXED))
-+		ctx.first_siginfo = *info;
-+	__atomic_fetch_sub(&ctx.tids_want_signal, syscall(SYS_gettid), __ATOMIC_RELAXED);
-+}
-+
-+static void *test_thread(void *arg)
-+{
-+	pthread_barrier_t *barrier = (pthread_barrier_t *)arg;
-+	pid_t tid = syscall(SYS_gettid);
-+	int i;
-+
-+	pthread_barrier_wait(barrier);
-+
-+	__atomic_fetch_add(&ctx.tids_want_signal, tid, __ATOMIC_RELAXED);
-+	for (i = 0; i < ctx.iterate_on - 1; i++)
-+		__atomic_fetch_add(&ctx.tids_want_signal, tid, __ATOMIC_RELAXED);
-+
-+	return NULL;
-+}
-+
-+static int run_test_threads(pthread_t *threads, pthread_barrier_t *barrier)
-+{
-+	int i;
-+
-+	pthread_barrier_wait(barrier);
-+	for (i = 0; i < NUM_THREADS; i++)
-+		TEST_ASSERT_EQUAL("pthread_join() failed", pthread_join(threads[i], NULL), 0);
-+
-+	return TEST_OK;
-+}
-+
-+static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrier)
-+{
-+	int ret;
-+
-+	ctx.iterate_on = 3000;
-+
-+	TEST_ASSERT_EQUAL("misfired signal?", ctx.signal_count, 0);
-+	TEST_ASSERT_EQUAL("enable failed", ioctl(fd, PERF_EVENT_IOC_ENABLE, 0), 0);
-+	ret = run_test_threads(threads, barrier);
-+	TEST_ASSERT_EQUAL("disable failed", ioctl(fd, PERF_EVENT_IOC_DISABLE, 0), 0);
-+
-+	TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_THREADS * ctx.iterate_on);
-+	TEST_ASSERT_EQUAL("missing signals or incorrectly delivered", ctx.tids_want_signal, 0);
-+	TEST_ASSERT_VAL("unexpected si_addr", ctx.first_siginfo.si_addr == &ctx.iterate_on);
-+	TEST_ASSERT_EQUAL("unexpected si_errno", ctx.first_siginfo.si_errno, PERF_TYPE_BREAKPOINT);
-+#if 0 /* FIXME: test build and enable when libc's signal.h has si_perf. */
-+	TEST_ASSERT_VAL("unexpected si_perf", ctx.first_siginfo.si_perf ==
-+			((HW_BREAKPOINT_LEN_1 << 16) | HW_BREAKPOINT_RW));
-+#endif
-+
-+	return ret;
-+}
-+
-+int test__sigtrap(struct test *test __maybe_unused, int subtest __maybe_unused)
-+{
-+	struct perf_event_attr attr = make_event_attr();
-+	struct sigaction action = {};
-+	struct sigaction oldact;
-+	pthread_t threads[NUM_THREADS];
-+	pthread_barrier_t barrier;
-+	int i, fd, ret = TEST_FAIL;
-+
-+	pthread_barrier_init(&barrier, NULL, NUM_THREADS + 1);
-+
-+	action.sa_flags = SA_SIGINFO | SA_NODEFER;
-+	action.sa_sigaction = sigtrap_handler;
-+	sigemptyset(&action.sa_mask);
-+	if (sigaction(SIGTRAP, &action, &oldact)) {
-+		pr_debug("FAILED sigaction()\n");
-+		goto out;
-+	}
-+
-+	fd = sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cloexec_flag());
-+	if (fd < 0) {
-+		pr_debug("FAILED sys_perf_event_open()\n");
-+		goto out_restore_sigaction;
-+	}
-+
-+	for (i = 0; i < NUM_THREADS; i++) {
-+		if (pthread_create(&threads[i], NULL, test_thread, &barrier)) {
-+			pr_debug("FAILED pthread_create()");
-+			goto out_close_perf_event;
-+		}
-+	}
-+
-+	ret = run_stress_test(fd, threads, &barrier);
-+
-+out_close_perf_event:
-+	close(fd);
-+out_restore_sigaction:
-+	sigaction(SIGTRAP, &oldact, NULL);
-+out:
-+	pthread_barrier_destroy(&barrier);
-+	return ret;
-+}
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index b85f005308a3..c3f2e2ecbfd6 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -127,6 +127,7 @@ int test__parse_metric(struct test *test, int subtest);
- int test__pe_file_parsing(struct test *test, int subtest);
- int test__expand_cgroup_events(struct test *test, int subtest);
- int test__perf_time_to_tsc(struct test *test, int subtest);
-+int test__sigtrap(struct test *test, int subtest);
- 
- bool test__bp_signal_is_supported(void);
- bool test__bp_account_is_supported(void);
--- 
-2.31.0.291.g576ba9dcdaf-goog
+On Tue, Mar 23, 2021 at 03:37:29PM +0100, Johan Hovold wrote:
+> On Mon, Mar 22, 2021 at 02:40:32PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Mon, Mar 22, 2021 at 02:20:57PM +0100, Johan Hovold wrote:
+> > > On Mon, Mar 22, 2021 at 12:55:36PM +0100, Uwe Kleine-K=F6nig wrote:
+> > > > On Mon, Mar 22, 2021 at 12:39:18PM +0100, Sebastian Andrzej Siewior=
+ wrote:
+> > > > > On 2021-03-22 12:34:02 [+0100], Uwe Kleine-K=F6nig wrote:
+> > > > > > On Mon, Mar 22, 2021 at 12:10:36PM +0100, Johan Hovold wrote:
+> > > > > > > Force-threaded interrupt handlers used to run with interrupts=
+ enabled,
+> > > > > > > something which could lead to deadlocks in case a threaded ha=
+ndler
+> > > > > > > shared a lock with code running in hard interrupt context (e.=
+g. timer
+> > > > > > > callbacks) and did not explicitly disable interrupts.
+> > > > > > >=20
+> > > > > > > This was specifically the case for serial drivers that take t=
+he port
+> > > > > > > lock in their console write path as printk can be called from=
+ hard
+> > > > > > > interrupt context also with forced threading ("threadirqs").
+> > > > > > >=20
+> > > > > > > Since commit 81e2073c175b ("genirq: Disable interrupts for fo=
+rce
+> > > > > > > threaded handlers") interrupt handlers always run with interr=
+upts
+> > > > > > > disabled on non-RT so that drivers no longer need to do handl=
+e this.
+> > > > > >=20
+> > > > > > So we're breaking RT knowingly here? If this is the case I'm no=
+t happy
+> > > > > > with your change. (And if RT is not affected a different wordin=
+g would
+> > > > > > be good.)
+> > > > >=20
+> > > > > Which wording, could you be more specific? It looks good from her=
+e and
+> > > > > no, RT is not affected.
+> > > >=20
+> > > > The commit log says essentially: "The change is fine on non-RT" whi=
+ch
+> > > > suggests there is a problem on RT.
+> > >=20
+> > > I don't think you can read that into the commit message.
+> >=20
+> > From a strictly logically point of view you indeed cannot. But if you go
+> > to the street and say to people there that they can park their car in
+> > this street free of charge between Monday and Friday, I expect that most
+> > of them will assume that they have to pay for parking on weekends.
+>=20
+> That analogy would almost seem to suggest bad intent on my side.
 
+That analogy's purpose was to put over my point that writing
+(paraphrased) "Since non-RT changed, this workaround isn't necessary any
+more" suggests to me that the change might be bad for RT. So again,
+there was no harm intended, this is just a call for clearing up either
+the commit log to make it obvious the change is right or to fix the
+problem on RT if there is any.
+
+> To say that this workaround is no longer needed on !RT does not imply
+> that it is needed on RT. If anything it suggests I have considered RT,
+> I'd say.
+
+The code in question was used for both RT and non-RT. You drop it for
+both cases and only justify one of them. OK, fine, you considered both
+cases. Just from reading the commit log I considered you didn't. It's
+completely ok for me to be wrong here, but I still think the chosen
+words are not optimal and stumbling as I did is easy. So I still see a
+potential to improve the wording.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--zi5o6fqsy3kf62o4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBbId8ACgkQwfwUeK3K
+7AmrPQf/ddQwQ54O9l7xV1/XHw8vOIwucKKyjYQahAx40PXG3l82aSNYFbEm2naq
+Skuiv/ZUYkuFgJplG45b5lSQCplanZ29bpfJJA6umGqNLU26U77BbscwG6Rw6DC0
+uJ6764kmQcQXgp9gn8+IAZUlmVw4FReNdvJcLqKgsU2Q1XUyoUAbLW8cF5Ijqliq
+5KvWHZcVw6srh3zGo1YYDqIWEfnyB/y18tcSrD5ywaGS6heFxJXNOeucvm2IxDZQ
+0dNLzqJuruItdbPN1foj3zaZwSQozrqhXkn81z0XG4H02ub7lkYPNjG9PE3095EI
+hkuQ8I5b5VWjg5BwyMY5QjbhtjSeOA==
+=Tj6B
+-----END PGP SIGNATURE-----
+
+--zi5o6fqsy3kf62o4--
