@@ -2,133 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2023B347DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBBF347DE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236486AbhCXQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:39:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236364AbhCXQit (ORCPT
+        id S236257AbhCXQjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236419AbhCXQi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:38:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616603929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZF8HRT5IrNOvQL6Pz8F1OKHc43im4d3pUJ9N+IN8ny4=;
-        b=UiJFq3NNFtZk8hE/aMYV1npFi+OuCv5fKk0Si34cOwhsd7HcwzYCIGiZGAEMjwSS1FnPdM
-        LtsudrLKMcLMW5u83rnYMyFzwL0BlZBBhCo4ihHf45wL0uaDKqG1d8PcNtkx5bbLn5S9Xa
-        WodVokodO44l3zyizh36PuzhG97j2rA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-MDu9bpqvMROk8Kcpvhc9XQ-1; Wed, 24 Mar 2021 12:38:47 -0400
-X-MC-Unique: MDu9bpqvMROk8Kcpvhc9XQ-1
-Received: by mail-wr1-f72.google.com with SMTP id b6so1298991wrq.22
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:38:47 -0700 (PDT)
+        Wed, 24 Mar 2021 12:38:58 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA43DC0613E2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:38:57 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id 124so11673552vsg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:38:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wNHiEG33VxCvMonOriWGNjj3ArhqwshcClwSjyhBeSM=;
+        b=aIdOLKogREItDPzd5A+jRjsMTc+xmHWs2f8DXYi4nKG1WB6O5apxTb0kST6RgOkHem
+         ghgvEZWjF8nRr4dbvSOuwWbwjFPuV/vbaRD3Z7CGoVZawIxEFV5mJsE5ZtJNXdRjxRPM
+         /pgQmlNT52f7FhktYcLYtuo6wxnQ3p+E5JGCLX8DI9PAwVPuYWrmoFrgkcQEOH3bWko1
+         yeUR3ZGC2yXuGY5z4MB6db/ziAwUVV0vGN+TjSPkoDw6IcyU8wT+LKtbwhYggLzRtOkn
+         QaW82SDYSI17mjm1c8GXof1fEQ8QDILZ6717zNSQ+sv7WNZgh0LtIzkVfeFDKEGTQ5cn
+         qx9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZF8HRT5IrNOvQL6Pz8F1OKHc43im4d3pUJ9N+IN8ny4=;
-        b=L3mxm6v6vbcZuaI9a9gxw23EDniJNeljEKUMgXsHfgLund4honBfTDcgy8ez0pX7hE
-         xCX1UxRtXsgWihoHiXvzP1hwumlUO1wn+dGctWbvo65pCkXFLTOk7IdYII0LpWvJehXu
-         tejrHVRqqiudYMCEEn+zO2B+Ei752J0LifHbSXD9es3UnADzvKjpuoWRIR7PjlgkwKm5
-         9r+M30tVapf3NkOKHmSMCf5sShizNKdq9gfO8hI0RVX5Ue6wM+zn9eQcgur3ZnRLLkpB
-         z/8Dn+ViLOzStyyFd3st/Yc0Xmyes/j+mwpT1GxcUJ0F4dHZuH7DT1oh+KddeB/Fs/uV
-         Lgmg==
-X-Gm-Message-State: AOAM531qpgGiZvbbpimvgs1bZlsv2szfqZQhvgXr3xqstq6Vigvqu7af
-        4ma6w8GDgjPvsyF1498gG+gvuB183GafNrQfDz4cBybNKraLPkD4bVJgiBe4yrd+UFrUHREl6eZ
-        mppy2kyxBBdiggxBSrplkbyH4
-X-Received: by 2002:adf:e5c4:: with SMTP id a4mr4478186wrn.174.1616603926342;
-        Wed, 24 Mar 2021 09:38:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNX1S2tQyoRha/DwjTPN7h2LrSBGyzP5oxKR2eeHPyyIYZd4C89Eg+f14Opdl72aBTlPS3FQ==
-X-Received: by 2002:adf:e5c4:: with SMTP id a4mr4478163wrn.174.1616603926203;
-        Wed, 24 Mar 2021 09:38:46 -0700 (PDT)
-Received: from redhat.com (bzq-79-183-252-180.red.bezeqint.net. [79.183.252.180])
-        by smtp.gmail.com with ESMTPSA id c8sm4151618wrd.55.2021.03.24.09.38.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 09:38:45 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 12:38:40 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Catangiu, Adrian Costin" <acatan@amazon.com>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "Jason@zx2c4.com" <Jason@zx2c4.com>,
-        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "areber@redhat.com" <areber@redhat.com>,
-        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>
-Subject: Re: [PATCH v8] drivers/misc: sysgenid: add system generation id
- driver
-Message-ID: <20210324123756-mutt-send-email-mst@kernel.org>
-References: <1615213083-29869-1-git-send-email-acatan@amazon.com>
- <YEY2b1QU5RxozL0r@kroah.com>
- <a61c976f-b362-bb60-50a5-04073360e702@amazon.com>
- <YFnlZQZOasOwxUDn@kroah.com>
- <E6E517FF-A37C-427C-B16F-066A965B8F42@amazon.com>
- <YFoYwq/RadewiE8I@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wNHiEG33VxCvMonOriWGNjj3ArhqwshcClwSjyhBeSM=;
+        b=XT5n92Sypxgh33TM49xEVc17OEy5FZj1dN8i5Z7nI6joExDlmUTJF/EY+6Ra+j8YWx
+         uhgITJL6DtfEPifhWY5F6A2xZZVcBfV/HwDelgFiUzAtwqakjOFCvEwsysLL9/lqacAo
+         dQjmApbc9FVqPqXIiAFNt5Dl/8LBNO/aPfq+OGY0RAW+W0h0+bz0FHJrouWZQ3UxvcJd
+         OpcjzcGkOv+5il4TPtsmKgygtY4TZarKU9QOjZHbyFsxU7CgftSZI3lJFEKyBEFetKkp
+         jr6mpYLU8njw+Nsm3ws3VB+vDpf0W/PlJaQsZAt8a4mCOoFBVi20RdUzLygt+mPx5CzO
+         cgsg==
+X-Gm-Message-State: AOAM532LHC9MPi5443MKUJEbfYAv9XVBrj206eU3k+CW/f2xA65MrJdL
+        QOsWVgip2ntV0RTrGwgTFkCiDFnWEn2OLICTpNlOrg==
+X-Google-Smtp-Source: ABdhPJyWiP2FO1YBFJh/0mu3kCEijgEQEuiJ4RCJ6qBqZ4V3CaaQ9VqbbV+Q52zSjlticSrKlbcWuV02zo+EVO7D8+4=
+X-Received: by 2002:a67:2803:: with SMTP id o3mr2580346vso.36.1616603936571;
+ Wed, 24 Mar 2021 09:38:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFoYwq/RadewiE8I@kroah.com>
+References: <20210323203946.2159693-1-samitolvanen@google.com>
+ <20210323203946.2159693-3-samitolvanen@google.com> <92afcbea-1415-2df1-5e78-4e9a7a4d364b@rasmusvillemoes.dk>
+In-Reply-To: <92afcbea-1415-2df1-5e78-4e9a7a4d364b@rasmusvillemoes.dk>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 24 Mar 2021 09:38:45 -0700
+Message-ID: <CABCJKudTZang_aUCnO63MFUc5mud3DKpHUgRFB-e04L__j_XHA@mail.gmail.com>
+Subject: Re: [PATCH v3 02/17] cfi: add __cficanonical
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 05:35:14PM +0100, Greg KH wrote:
-> On Tue, Mar 23, 2021 at 04:10:27PM +0000, Catangiu, Adrian Costin wrote:
-> > Hi Greg,
-> > 
-> > After your previous reply on this thread we started considering to provide this interface and framework/functionality through a userspace service instead of a kernel interface.
-> > The latest iteration on this evolving patch-set doesn’t have strong reasons for living in the kernel anymore - the only objectively strong advantage would be easier driving of ecosystem integration; but I am not sure that's a good enough reason to create a new kernel interface.
-> > 
-> > I am now looking into adding this through Systemd. Either as a pluggable service or maybe even a systemd builtin offering.
-> > 
-> > What are your thoughts on it?
-> 
-> I'll gladly drop this patch if it's not needed in the kernel, thanks for
-> letting me know.
-> 
-> greg k-h
+On Wed, Mar 24, 2021 at 8:31 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> On 23/03/2021 21.39, Sami Tolvanen wrote:
+> > With CONFIG_CFI_CLANG, the compiler replaces a function address taken
+> > in C code with the address of a local jump table entry, which passes
+> > runtime indirect call checks. However, the compiler won't replace
+> > addresses taken in assembly code, which will result in a CFI failure
+> > if we later jump to such an address in instrumented C code. The code
+> > generated for the non-canonical jump table looks this:
+> >
+> >   <noncanonical.cfi_jt>: /* In C, &noncanonical points here */
+> >       jmp noncanonical
+> >   ...
+> >   <noncanonical>:        /* function body */
+> >       ...
+> >
+> > This change adds the __cficanonical attribute, which tells the
+> > compiler to use a canonical jump table for the function instead. This
+> > means the compiler will rename the actual function to <function>.cfi
+> > and points the original symbol to the jump table entry instead:
+> >
+> >   <canonical>:           /* jump table entry */
+> >       jmp canonical.cfi
+> >   ...
+> >   <canonical.cfi>:       /* function body */
+> >       ...
+> >
+> > As a result, the address taken in assembly, or other non-instrumented
+> > code always points to the jump table and therefore, can be used for
+> > indirect calls in instrumented code without tripping CFI checks.
+>
+> Random ramblings, I'm trying to understand how this CFI stuff works.
+>
+> First, patch 1 and 2 explain the pros and cons of canonical vs
+> non-canonical jump tables, in either case, there's problems with stuff
+> implemented in assembly. But I don't understand why those pros and cons
+> then end up with using the non-canonical jump tables by default. IIUC,
+> with canonical jump tables, function pointer equality would keep working
+> for functions implemented in C, because &func would always refer to the
+> same stub "function" that lives in the same object file as func.cfi,
+> whereas with the non-canonical version, each TU (or maybe DSO) that
+> takes the address of func ends up with its own func.cfi_jt.
 
-Systemd sounds good to me too.
+Correct.
 
--- 
-MST
+> There are of course lots of direct calls of assembly functions, but
+> I don't think we take the address of such functions very often. So why
+> can't we instead equip the declarations of those with a
+> __cfi_noncanonical attribute?
 
+Clang doesn't support these attributes in function declarations,
+unfortunately. If it did, that would certainly help, until someone
+wants to compare addresses of assembly functions, in which case we
+would again have a problem.
+
+Another way to work around the issue with canonical CFI would be to
+add C wrappers for all address-taken assembly functions, but that's
+not quite ideal either. I think most indirect calls to assembly
+functions happen in the crypto code, which would have required so many
+changes that we decided to default to non-canonical CFI instead. This
+resulted in far fewer kernel changes despite the cross-module function
+address equality issue.
+
+Sami
