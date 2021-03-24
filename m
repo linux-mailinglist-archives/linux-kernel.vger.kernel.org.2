@@ -2,185 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E57B3476E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9549B3476E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 12:16:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234521AbhCXLOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 07:14:08 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:42147 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230307AbhCXLNf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 07:13:35 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 02025580097;
-        Wed, 24 Mar 2021 07:13:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 24 Mar 2021 07:13:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=o9oWdRzn1ukVQjFJLSfIzEKJeHo
-        GiQ2BllQeXFSqlYo=; b=pFJsH2+8lG0GWrQpNRVAr/Zi2fhmhsSLoYcjtvAjWWB
-        HCTsBGLdzJOSr20lKeO3YBjph3lYV0VwwZzUp18OqYfH1UP0Q/W4IAfwZ1bzaxvi
-        H/2Kp9jyiTyNRRe5LCdO5IvmmBGZ4n3yaQegX2dvssNgZ+aJUFSO1nqtg1Q2v3Ro
-        J+3t5VXbWK8fm5sZKRaO+bCl2rKPAnDyG6XJmxTBV5L8kMGafsEzcAhMV0czo9h+
-        OsydDWvirhBdeco/EAPm4PtnUnl25itZ30CJ2edV10gGmy1tgdCQGtYq9OkN/ifB
-        yK6ChaflyzjoccBLWFqaBbf9lWn7W9QgBdmavBhHVFA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=o9oWdR
-        zn1ukVQjFJLSfIzEKJeHoGiQ2BllQeXFSqlYo=; b=I3cbQl6/DVf/WTzM8g5wE4
-        N1/GROebfctLIN+vUQ+qWb/mFpYYEitrj80kexVmBmVZKZHsqkh9duafV9nfHdEq
-        qesnF3dZGQK88P5fMCWMfmJbzD8WIQSNqt2VSlkubllLJL4bZCSNExFX3CViJSd3
-        Qoj8Tj9nBlsOfQuJMD0TBtCRF5pd3OFXX+k2BE1t7OzjUz8u/oH2YJ/f3eOzSx3H
-        SDOG6Com1izuL2lfRZn6qEVDkUvUc+qn4mpVzcRmBk+rI9AnoUICdkHrU/UvD7U9
-        0DvHf469G4K/Yh7raS6QHLG8zYpiamn+bzKi/9Vex92nki9P+14O8Hb8xVZKcA+A
-        ==
-X-ME-Sender: <xms:zh5bYIiRfM6seLnsXAdo_-L6jGwCzxo1DqdgnpGrKlbF590t2BdmUQ>
-    <xme:zh5bYKrZvsqg7IhAsGKVH5WCm6qUUkPn3dYDGgg8jqx6R8hsIPSMkFzJbB00WRg7u
-    qUg02ur_BednRu-mdY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegkedgvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
-    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekle
-    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:zh5bYAFhW5FKRRwBTmc-Grqpfiik4NmOknU9-nganhNM1zuQzxad8Q>
-    <xmx:zh5bYMk7eXyFsQeUdUIkiAWIc_cB3WjWhBU73qxtlZuWJV6g1_XugQ>
-    <xmx:zh5bYDmOaz_x_6m8KFZeuNuJM5dsrjVewqFsx8eqwB6PZAqeO0JPmg>
-    <xmx:0B5bYA-q1Uc1-MGXk3gVg0t5k0Y-X-emSbQTV7rmTzCwvUF4v4x1CA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AB0A91080057;
-        Wed, 24 Mar 2021 07:13:18 -0400 (EDT)
-Date:   Wed, 24 Mar 2021 12:13:16 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, sean@poorly.run,
-        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        mark.rutland@arm.com, orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 5/6] dt-bindings: display: add Unisoc's mipi dsi
- controller bindings
-Message-ID: <20210324111316.ggo5deacaoecu27q@gilmour>
-References: <20210222132822.7830-1-kevin3.tang@gmail.com>
- <20210222132822.7830-6-kevin3.tang@gmail.com>
+        id S234581AbhCXLQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 07:16:18 -0400
+Received: from mail-mw2nam10on2063.outbound.protection.outlook.com ([40.107.94.63]:49057
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230307AbhCXLQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 07:16:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uqozw2z1I2pWE83sonkhvRR0tdrIJGDx5V1WcrW3nw7VCyeKYU8THbvI/qE+xGWeVdYUkgHcGb1FysYsRzA/c6OGartZYbnnYyaWLHe55bSIqlN9LB1Rbd3IMT8o1hJGSB2ThlSem26JcUgGaAxLS3sd9av+NpMY4nrVLccTBbFiPXP/6d4TszlN8rxuikzit/ix0Jdm8I9Nk2x2etvlYV4T2vUxGQKiGEPyukio06KMWYGFnIaOuiVrJPQ1YHUVH3zyKulpZejYzeDaVuIJA3kmccEc6ah9FrQk3SA5ov2MRezytOqBXsxa5N6xqOXt56NlQkEwwdfcL6JybGelyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mZAY0MdwfzELZ56oTWufNoSs6hDmqque8T8XCEU9vdM=;
+ b=RndzEOSF8yC6fz9MJRRp0Ef1CTUT1fc55VzjgZkFvpDxEOqz2EVZnqr8+lxrKIezyPjBhbVqv52Z/Plnlo5/Mbr3pnk441gRvF7OR9ehHlNUeKd0io7titNsjVE/0irDRWltB0IQIpghHl2yaIE4911JRBRkpvLOvdy0ZiuBQwrLAAAD3kHMsszfGG+TS+Ghm+RL/dQ2JziAkGyc+QNBcJyzXsgnWIOdP6GuapcsroVwvyjdkDpVGAqFY0Sll8/OQXfTwuikbM+iknjEonUb/BAr0RO4ZxkUZfle+VcyoQ9sXFzrqjRLCSmA31AYaIy/aRa65jK/iFue1yrnNtoxiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mZAY0MdwfzELZ56oTWufNoSs6hDmqque8T8XCEU9vdM=;
+ b=RVrE564FpztpB1MBQ/RNDCu/xnpOLKxIiMsYPPvdxAOzgSI/XrfYRwT3KQ6N4Le9MMtBRlOiFTU15LV9GpBLeVsnsAaoGSNpbSUcpCJsUvyGkuxpuNSJwK9LVBfOBBgArEwcOMAq4Bozkq9okmfo0OEPIcG5hR6+21fEUmWvI5Y=
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ (2603:10b6:910:45::21) by CY4PR1001MB2392.namprd10.prod.outlook.com
+ (2603:10b6:910:43::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 24 Mar
+ 2021 11:16:12 +0000
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79]) by CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79%5]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
+ 11:16:12 +0000
+From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To:     "ikjn@chromium.org" <ikjn@chromium.org>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.com" <tiwai@suse.com>
+CC:     "grpintar@gmail.com" <grpintar@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel" <linux-kernel@vger.kernel>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "dylan_robinson@motu.com" <dylan_robinson@motu.com>,
+        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+        "dmitry@d-systems.ee" <dmitry@d-systems.ee>,
+        "livvy@base.nu" <livvy@base.nu>,
+        "alexander@tsoy.me" <alexander@tsoy.me>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: usb-audio: Apply sample rate quirk to Logitech
+ Connect
+Thread-Topic: [PATCH] ALSA: usb-audio: Apply sample rate quirk to Logitech
+ Connect
+Thread-Index: AQHXIJu5KknmGOLeWU+zwJhqGFj8lKqS/PcA
+Date:   Wed, 24 Mar 2021 11:16:12 +0000
+Message-ID: <c21de867cf4ccbfcc8cf555c78dc70dd3a47dfe8.camel@infinera.com>
+References: <20210324105153.2322881-1-ikjn@chromium.org>
+In-Reply-To: <20210324105153.2322881-1-ikjn@chromium.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.39.3 
+authentication-results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=infinera.com;
+x-originating-ip: [88.131.87.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 964065bb-0e1e-43ca-b9ef-08d8eeb63b95
+x-ms-traffictypediagnostic: CY4PR1001MB2392:
+x-microsoft-antispam-prvs: <CY4PR1001MB23921F092030D8EBB7C3D841F4639@CY4PR1001MB2392.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CBxqBktL1y8SrfGpswbNsDXX3TM4K7DvXV8G1rsDy9Ywt07EP5mDVjunYRD0eaEWdBatMXGXJ2lpvlMzMziOUolIusfPmDXxUnvDLOIIfxmru7rr7d4b84wqhIDXNtKyKd69ZjSV6nt7bZSfBMGU53hHPon5tlIlDQaJ9ZyJaEENb4gfYFUJBzA2pYrAAPDjQpnCjqcHkjFK310SljRrKiBw/FytMeDPNZPOa95JTpjlTUVCXGrXEE/I56QkmBPbiJyFaYSutRl3dZyeC3/0yYc4Tx1Rr2WOsTPnyXHiyPE8l/wUvWCenFuk/us1xhB3XYw1+YztTDkyGvycLoXQu0SFozzelrzJulfaB6sZf/M0nOKOwx7EAgVuAnFE9hZYGKSPtzzthaFJ8gjgThJlUBZp3zwIDQXkEn2nSRar4g7LWFp40gYJ3eRnU8TJHB3Lp0GL0+2ZWOTlf5FCbSbzzkwVlf9GglGGZrf82iytDzFOQ3v88NnK1gUC/aNfQQW48HslzeOkdHVD63FeHKVPF1YGPsE6/i8Fhjc6i1jOJgZ1V+oB4NMcg8HxYz71IXIuabDouY0qjEoNW4ZOQ0uXeTwjvnlgDByUwpBdAp2UnajyfYFYDcsD5KXdtr9s3vCAdrspUa6FtreGO+m0fodcWxWhdvvXSQtFv8enZ+PAVt6DdsV/6adHTjSkTJJpbO7D9G+T518DG22AUWu0fEQSi2ircZbuUYTQ5JfNtglqjiw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(39860400002)(346002)(136003)(71200400001)(6512007)(83380400001)(4744005)(8676002)(478600001)(110136005)(76116006)(4326008)(54906003)(6506007)(966005)(2906002)(316002)(8936002)(38100700001)(7416002)(36756003)(26005)(86362001)(91956017)(66476007)(66556008)(5660300002)(64756008)(66446008)(66946007)(6486002)(2616005)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SG1uUHZXWFJWMnc0UU5MRUxwaERkMDhRWUpFNzg0ZU1kczhEU2VMUFg5MXBJ?=
+ =?utf-8?B?KzFXc3Z5ck11d3YzS1hZRDhCM2hyNEt2cG5uTVZ0OEdNYllrU0g4dEl0RVRk?=
+ =?utf-8?B?YUpNYnhBMXZNN3RJSnJjbWxmTk9IeFFnUU1ONi9wbDVYNzNCNnFwZkJ0VFY1?=
+ =?utf-8?B?N0xaYTJDSy92aWFKdEJyRVd0M3ltT2RVK25FTEc2NHJlQ25DeU1JMktzdXdM?=
+ =?utf-8?B?OUpiNDVNREsrcHJwR2xvN21NT01DRWhEQmJUTVZtUkFMRmRRQ0lyVTRDaVJU?=
+ =?utf-8?B?M1VUL0pURWhsSW1JdUlNZStWUmJlNEJ4UWd5VnNuUFlPc3phdEJjVmZhbVBz?=
+ =?utf-8?B?T3FZc0tZQnYzU1d1NXpWVC9oSlNCVUVlOG9rTU1BSGdnMW9nd2tQbk5uWTVr?=
+ =?utf-8?B?eDB5YmtXcjczUjlXVGdWRmxTNndITG12L1ZBQ0F2VElwY08rRzBqblY2Vjgz?=
+ =?utf-8?B?MlQxL1E4YjBidXgra05OaldVVEcyaitoL2owNzdJUGhTTzhHK21ES1dyenNB?=
+ =?utf-8?B?VmtNQmpRK3ZhSWVkcSt5R0l4UDBHS3NTSStLNzRaWmVxSUNYbXppK1RtbFhn?=
+ =?utf-8?B?K1VrNVE5V05KeWRJZ0lOUWhPRWdDdHpnSmdscFVPSkVUdUozMkx4RFFjN0Fi?=
+ =?utf-8?B?MUw1UzV5aERxY2gzYTB2TUxrV2pzbkNicU9jMkE5STNick1VRkRHQ1g4NXdz?=
+ =?utf-8?B?bVZtQ0c0WHcrcGJoZWIwSGx5ZFFNdlhKYStnN0ZkYnQ0RktTVEtpZkEyN0xj?=
+ =?utf-8?B?eDY3UTMzc0ZBdDlvYk8rblIyNFJ6ekxhTngydzdoNlVVTkJidmMwOFZCUzVn?=
+ =?utf-8?B?VXhtYlI5OHp5S1JWVE54WlJLdjk0bnBJQ0IxaU5iU1JrS0hpQ2x1NjhKMkx4?=
+ =?utf-8?B?WUJhSXpLbzdpeTlCdXUvWERsaHJwR1lzNklUQ0JLdnV4Rzd3VEhES05GRGpR?=
+ =?utf-8?B?UE9hcG95ZjBOY2ZqSFFmL0MwZjUxTnNpNmhFWGZMQjhGRU12QTNSMmlVNWhC?=
+ =?utf-8?B?VnFLL2xOdldEcFZacHRnV1k0OUswaE0xcHgzQmFXL2UvUDRlVm44aUgvVTV1?=
+ =?utf-8?B?UEFuaEpZMllQYU9SdWg3WlBpWmRreVNRK2VSRjlieHdOR2I0VmRoLy9iK0sz?=
+ =?utf-8?B?WW9FaEtaVGI0MGh2dWE1eEtOT2x4NmUyWGNnVFdNK21uRmF5RmdSb0NBQ1ZJ?=
+ =?utf-8?B?ZlRJbS9hY3Bwc2ZUdEltT3JrczhWWThHQnZITUQzSG5OTWxDSUFob0xocTBK?=
+ =?utf-8?B?MWVFZnZxU1RhLzJqMDVvUXBaaWVPUnBxaHFYcmdjRkJ1SnlMeSttWThpWHlS?=
+ =?utf-8?B?cmluVDNTNjgwN28vdDRZTDZCbDJhTDdiZ1dZdi8rL3VDMWVBN253REFiNVNG?=
+ =?utf-8?B?VGZaSkxwQ05LVU5TRkl6ejZnRXVzRVhKN1lqMCtFRXdVRnJnRFQxRUx6Zi9R?=
+ =?utf-8?B?NlU5WVBrR2NjaFBYVCtWV2x6d3Y4M2dYdFg0YUZuSmxqc1BXV3h1NEhmSm5E?=
+ =?utf-8?B?cHJyTVZXWGFoL0phc1NPU2Z2NlhYMEdjd0xtMUdrcjRlSGRkR25ZaTRMZVpi?=
+ =?utf-8?B?RkFLWjdoelZxM3VXL1lPc2pDQVcwNHRvbHJJQTk0S0I2cHlNTnBPMG5BbmVm?=
+ =?utf-8?B?RlRwNmhMZUh0b2dQUTBHM0ZvQzgwTmZ0a0ljNlhwK21wSjE0eHVudmtwbC9Y?=
+ =?utf-8?B?dFZob0FRREZIa3NWWGFteHdBb1Mrb05wYkZCTTJ6WmxTOVBoUFJ1SnpPNDVm?=
+ =?utf-8?Q?Au644AThlxKOfeDVVuaj9eKQ5PmVFXwWiGHY4NX?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D7EDB0973A9737449E149A4E14253906@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="d7arzn7bk7izxksl"
-Content-Disposition: inline
-In-Reply-To: <20210222132822.7830-6-kevin3.tang@gmail.com>
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 964065bb-0e1e-43ca-b9ef-08d8eeb63b95
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2021 11:16:12.2819
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: y0iXgm8vPGeicGF+SEzGlZ8w+ZYx13mSfx5e1Sxya7KWr09zm6zCH7yPTN35S+i7W7ltfM8XYMEiJlImiTAd+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2392
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---d7arzn7bk7izxksl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 22, 2021 at 09:28:21PM +0800, Kevin Tang wrote:
-> From: Kevin Tang <kevin.tang@unisoc.com>
->=20
-> Adds MIPI DSI Controller
-> support for Unisoc's display subsystem.
->=20
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../display/sprd/sprd,sharkl3-dsi-host.yaml   | 102 ++++++++++++++++++
->  1 file changed, 102 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,s=
-harkl3-dsi-host.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-=
-dsi-host.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3=
--dsi-host.yaml
-> new file mode 100644
-> index 000000000..d439f688f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-hos=
-t.yaml
-> @@ -0,0 +1,102 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/sprd/sprd,sharkl3-dsi-host.ya=
-ml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Unisoc MIPI DSI Controller
-> +
-> +maintainers:
-> +  - Kevin Tang <kevin.tang@unisoc.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: sprd,sharkl3-dsi-host
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 2
-> +
-> +  clocks:
-> +    minItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: clk_src_96m
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  ports:
-> +    type: object
-> +
-> +    properties:
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +      port@0:
-> +        type: object
-> +        description:
-> +          A port node with endpoint definitions as defined in
-> +          Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +          That port should be the input endpoint, usually coming from
-> +          the associated DPU.
-> +      port@1:
-> +        type: object
-> +        description:
-> +          A port node with endpoint definitions as defined in
-> +          Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +          That port should be the output endpoint, usually output to
-> +          the associated panel.
-
-The DSI generic binding asks that peripherals that are controlled
-through a DCS be a subnode of the MIPI-DSI bus, not through a port
-endpoint.
-
-Maxime
-
---d7arzn7bk7izxksl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYFsezAAKCRDj7w1vZxhR
-xTfqAP0R/ENVmkMPaplYpkicA6NmHxb4jEGSWiW4sNhQVOzUKwEAwqgd3fOhDSab
-NkYiJ+6NDuqVwcblxdamZBIJFpUZtQk=
-=U2Vq
------END PGP SIGNATURE-----
-
---d7arzn7bk7izxksl--
+T24gV2VkLCAyMDIxLTAzLTI0IGF0IDE4OjUxICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
+TG9naXRlY2ggQ29uZmVyZW5jZUNhbSBDb25uZWN0IGlzIGEgY29tcG91bmQgVVNCIGRldmljZSB3
+aXRoIFVWQyBhbmQNCj4gVUFDLiBOb3QgMTAwJSByZXByb2R1Y2libGUgYnV0IHNvbWV0aW1lcyBp
+dCBrZWVwcyByZXNwb25kaW5nIFNUQUxMIHRvDQo+IGV2ZXJ5IGNvbnRyb2wgdHJhbnNmZXIgb25j
+ZSBpdCByZWNlaXZlcyBnZXRfZnJlcSByZXF1ZXN0Lg0KPiANCj4gVGhpcyBwYXRjaCBhZGRzIDA0
+NmQ6MHgwODRjIHRvIGEgc25kX3VzYl9nZXRfc2FtcGxlX3JhdGVfcXVpcmsgbGlzdC4NCj4gDQo+
+IEJ1Z3ppbGxhOiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIw
+MzQxOQ0KPiBTaWduZWQtb2ZmLWJ5OiBJa2pvb24gSmFuZyA8aWtqbkBjaHJvbWl1bS5vcmc+DQoN
+Ck1vc3QgTG9naXRlY2ggVVNCIGhlYWRzZXQgSSBnb3QgbmVlZHMgYSBkZWxheSBpbiBzbmRfdXNi
+X2N0bF9tc2dfcXVpcmsoKQ0KSGF2ZSB5b3UgdHJpZWQgdG8gYWRkIHNheSAyMCBtcyBkZWxheSBp
+biB0aGVyZT8NCg0KIEpvY2tlDQoNCg==
