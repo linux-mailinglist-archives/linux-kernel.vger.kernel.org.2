@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C15347D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78846347D11
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236818AbhCXPzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
+        id S236817AbhCXPyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236820AbhCXPyp (ORCPT
+        with ESMTP id S236749AbhCXPyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:54:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F46FC061763;
-        Wed, 24 Mar 2021 08:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=I2xpReb+Q+Q1diYZpcjuJpGAG3Fdmg/zik0Wf8EL8a8=; b=nULHOq0vFVBfhvbxamQM8u7tp5
-        XhdoIrQ8EDQXNlEFI2P6Eb0IWiWTJNWZTgkZyJM9bHNsEr5fOlBjmvIpLiFLa6/XhSt8DjFGzOc5a
-        Ir+MTSN/CHEo7cbcd5v2kXo9JDkrzIgELxP7eZkHwihkxcaFEJWSCbHbJA3D+nlBhiyQNM8xf6xYT
-        i/nZZxpvrsED6GLZrCGDjRz5/BM99PCl2/2EyI0SJeUnfRHnTXDnMGY4JSZb+tL4hHupCo8DLXG2v
-        AFr8wh6djeB6UMWy588cc102g1Pj5J4e0gnir4BjyvA1GdTyb+iL+0IN7cciIwp9XoJk/xGMLeSs+
-        nB53gbWQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP5pq-00BY99-Ry; Wed, 24 Mar 2021 15:54:26 +0000
-Subject: Re: linux-next: Tree for Mar 24 (drivers/tty/serial/pch_uart.c)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-References: <20210324210718.0c2e6d62@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <635dac0e-a82c-d3d0-c03b-e9d87585b39a@infradead.org>
-Date:   Wed, 24 Mar 2021 08:54:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 24 Mar 2021 11:54:31 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A81CC0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:54:31 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id l22so11594089vsr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jvdMNpuLDTAr72CZhKMnuvvxwLSHQueODNwVd/tQkSw=;
+        b=fB+V4oDpRcxIY7NRezv/LgYAX+HS0KhU+rJZTEOffFFfAiDhycklq7vjJKyxwAyN6d
+         FwVooeLY/l/eF0g2TiN+AEb+pWaU9Yjy4oeAuL2EjKqlXuPDwvNse4NeL0O8VLQsYJrj
+         MduPgnhW4BoOEKm+9blk0AOlC9ZFe2MWNVdXg05XsLH8u13/F+l8TvAs/zdYNo204lOb
+         UO2ejvr4schD5aphabcQ/rkR6XZAgxxn8+gOR3cZyqZ26gf7fuyTuc2VNfchDyeH/tfJ
+         /ihpDMwEMU+3K5BBUlLCDwOe8gCAWXmR5ilixiAwXqQwXtxAH6TLPNups0PP1aS/TPeQ
+         E9eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jvdMNpuLDTAr72CZhKMnuvvxwLSHQueODNwVd/tQkSw=;
+        b=WQWVqJJ1nj1DaBd7C3e7oijQBOOQRnMmwM8T/qco2EVuZE3pN5ZCTKAvG4r9mAj8Zc
+         apfxtxT8phSWJ9xajovNF66mgwVSXo8Gs6ow+CyZ2T5pXWcD+Qfv3piqan4KPGLIDjlq
+         MSOmREy3z9zAvA2vEScmVujnRy+n8JdWT8NY/SY15uHQLWf595DShkIvudndu9ySXnst
+         qftEUfvsGoNJIXKtf3/ewXsmzaIcl/Pw9aefOjV2kX/GQbrKFjmhIlUkTyscinsB/5DE
+         DRIpRitz4sAf9XA2j/z5GcrO6L/plo1/+BRJEolcc+xT5Ry1ZLsa1nT6yoI4GuaCfNI1
+         eOxA==
+X-Gm-Message-State: AOAM531VA1FPYtrEfh6pFP5OWwtY5KSyb0heI8r8rWII35ln6p2vxeLE
+        kXhwkQtuTFkp7gTMyxFR7QLaHlpi4RIqVDKbnLtgIQ==
+X-Google-Smtp-Source: ABdhPJw/Tt5Eglhjkk3DSFJmZtQNB1612Zn3Mq7A5Is3NYScePeRKnpnTe64INtZMtYBNux7wDX2SFzRZ2Nc/eNRj+g=
+X-Received: by 2002:a67:b447:: with SMTP id c7mr2227327vsm.54.1616601270219;
+ Wed, 24 Mar 2021 08:54:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210324210718.0c2e6d62@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210323203946.2159693-1-samitolvanen@google.com>
+ <20210323203946.2159693-4-samitolvanen@google.com> <20210324071357.GB2639075@infradead.org>
+In-Reply-To: <20210324071357.GB2639075@infradead.org>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 24 Mar 2021 08:54:18 -0700
+Message-ID: <CABCJKufRHCb0sjr1tMGCoVMzV-5dKPPn-t8=+ihNFAgTr2k0DA@mail.gmail.com>
+Subject: Re: [PATCH v3 03/17] mm: add generic __va_function and __pa_function macros
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 3:07 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20210323:
-> 
+On Wed, Mar 24, 2021 at 12:14 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Tue, Mar 23, 2021 at 01:39:32PM -0700, Sami Tolvanen wrote:
+> > With CONFIG_CFI_CLANG, the compiler replaces function addresses
+> > in instrumented C code with jump table addresses. This means that
+> > __pa_symbol(function) returns the physical address of the jump table
+> > entry instead of the actual function, which may not work as the jump
+> > table code will immediately jump to a virtual address that may not be
+> > mapped.
+> >
+> > To avoid this address space confusion, this change adds generic
+> > definitions for __va_function and __pa_function, which architectures
+> > that support CFI can override. The typical implementation of the
+> > __va_function macro would use inline assembly to take the function
+> > address, which avoids compiler instrumentation.
+>
+> I think these helper are sensible, but shouldn't they have somewhat
+> less arcane names and proper documentation?
 
+Good point, I'll add comments in the next version. I thought
+__pa_function would be a fairly straightforward replacement for
+__pa_symbol, but I'm fine with renaming these. Any suggestions for
+less arcane names?
 
-on x86_64:
-# CONFIG_DEBUG_FS is not set
-
-
-../drivers/tty/serial/pch_uart.c: In function ‘pch_uart_init_port’:
-../drivers/tty/serial/pch_uart.c:1815:9: error: ‘port_regs_ops’ undeclared (first use in this function); did you mean ‘kobj_ns_ops’?
-        &port_regs_ops);
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Sami
