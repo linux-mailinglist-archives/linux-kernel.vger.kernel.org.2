@@ -2,117 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D023482DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A327D3482DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238156AbhCXUYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237868AbhCXUYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:24:31 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C577C06174A;
-        Wed, 24 Mar 2021 13:24:31 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id l4so35015048ejc.10;
-        Wed, 24 Mar 2021 13:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=+q8Gd1+pbo1oAawe9rmDsOu0NCdQjASjyNmuKAHwY/4=;
-        b=RIOzvg9ymCE0uJfI54wYuyV/8UDc9u3knm+uSsN0TbeeZqAaF98ooNjdeiJZnoDBgB
-         11BO25F1qP9tjGntYxMYxGU7ImduC5+0D0VXIrJhwJ0N4GtOReiOqIY4bag/wJzfsyYo
-         bZwA+v9D3Vx//tlbmp1fqlK5FAlKrxD8P4ngjFaMGsGNlHIqBmHAa2Ezv4h2mxzOu2z5
-         Z2r3wxc6gs7AlcOUMcRTV5FCLgOz139icPAe1rLXvOZ5oQNoFqRsfzkd0rN1BI8xoWve
-         wgTBO4DqlLxmAzYTQBI8x1b9ckvtybgoTV/jQbpXWiUAd3NA6kVUBFbCvSFSs+/9zPZb
-         Ntdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=+q8Gd1+pbo1oAawe9rmDsOu0NCdQjASjyNmuKAHwY/4=;
-        b=QN5mChEY95axsp6hhKJbEnmLL3t1lxULQdPAo9o6CJmfcidhF8Oz7lcZQZnrOkUv3c
-         y1SmXTFZDIZIk2cS5CKY/fIor0Hk6hSjPiBLvuIyNyi5aBRGs1w6kdxNSFsS+7AsIPcj
-         ISQVzPcrpdz9+XHWoMyac8Rcex6n933ycRJziptXPytqp+PCn/EMuj8spMzo/5d+oP7y
-         CN4bTxx22/8dJJszztoMXZzqeCqKBrhISxE4TBYHmff9WgxAP9ChQP6Wh6lxB0U+m7MM
-         P8Y8ao5rETqnNmkNgcU1D3DnuBZj8O8im8DxHklUP1IcxdhsHXnj4nQ7EsiQiFek2KGA
-         B1mA==
-X-Gm-Message-State: AOAM531QlZd2066lfN8e2rr9HEo9klExD0gOt2eXg66tQCmHLzBbD//e
-        9Uy/xnaxbmGxqUG2Iw1PrDc=
-X-Google-Smtp-Source: ABdhPJyYI3yjerlWh21l+V1Vqkxtk4mAP1KFJWD9PVTrNJeHNGzT1kNDfcJoaHaC+Y2d7wCROjB+oQ==
-X-Received: by 2002:a17:907:2093:: with SMTP id pv19mr5773430ejb.134.1616617469891;
-        Wed, 24 Mar 2021 13:24:29 -0700 (PDT)
-Received: from LEGION ([111.119.187.22])
-        by smtp.gmail.com with ESMTPSA id cw14sm1689338edb.8.2021.03.24.13.24.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 13:24:29 -0700 (PDT)
-Message-ID: <abc46d0ad37b9e59ac71288d04e43c9911f71072.camel@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix missing return assignment
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, colin.king@canonical.com
-Date:   Thu, 25 Mar 2021 01:24:23 +0500
-In-Reply-To: <20210324185047.GP1667@kadam>
-References: <20210324172604.GA380592@LEGION> <20210324185047.GP1667@kadam>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S238176AbhCXUZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:25:33 -0400
+Received: from mga06.intel.com ([134.134.136.31]:31075 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237915AbhCXUZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 16:25:20 -0400
+IronPort-SDR: A8TsE0G2JMafWDHBif8qqijHQlNFUYHip3gIC12ExzDx8BAEz+FGMQYVMZEvaZsAorsDZ4Kx6P
+ 79jzxeQjtkdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="252137674"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="252137674"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 13:25:19 -0700
+IronPort-SDR: DkxIkcQS1aplCf842JmmTOjsRbhODrdZ0d81i2iN12oSarFbprFut+XRf6QRx/PK3WhPf9xCu3
+ JcyAnUH2p/xg==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="443106741"
+Received: from chihjung-mobl.amr.corp.intel.com (HELO [10.213.191.210]) ([10.213.191.210])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 13:25:19 -0700
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+To:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+ <ec99146c7abc35d16b245816aba3e9d14862e624.camel@intel.com>
+ <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
+ <YFsNRIUYrwVQanVF@phenom.ffwll.local>
+ <a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org>
+ <75423f64-adef-a2c4-8e7d-2cb814127b18@intel.com>
+ <e5199438-9a0d-2801-f9f6-ceb13d7a9c61@shipmail.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <6b0de827-738d-b3c5-fc79-8ca9047bad35@intel.com>
+Date:   Wed, 24 Mar 2021 13:25:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e5199438-9a0d-2801-f9f6-ceb13d7a9c61@shipmail.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 21:50 +0300, Dan Carpenter wrote:
-> On Wed, Mar 24, 2021 at 10:26:04PM +0500, Muhammad Usama Anjum wrote:
-> > Return value of usb_driver_claim_interface should not be ignored.
-> > Instead it should be stored in err variable and returned from
-> > this function.
-> > 
-> > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> > ---
-> >  sound/usb/quirks.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> > index 9e5e37eff10e..dd32ceaef18a 100644
-> > --- a/sound/usb/quirks.c
-> > +++ b/sound/usb/quirks.c
-> > @@ -427,10 +427,10 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
-> >  
-> >  		err = create_autodetect_quirk(chip, iface, driver);
-> >  		if (err >= 0)
+On 3/24/21 1:22 PM, Thomas Hellström (Intel) wrote:
+>> We also have not been careful at *all* about how _PAGE_BIT_SOFTW* are
+>> used.  It's quite possible we can encode another use even in the
+>> existing bits.
+>>
+>> Personally, I'd just try:
+>>
+>> #define _PAGE_BIT_SOFTW5        57      /* available for programmer */
+>>
+> OK, I'll follow your advise here. FWIW I grepped for SW1 and it seems
+> used in a selftest, but only for PTEs AFAICT.
 > 
-> create_autodetect_quirk() never returns positive values.  Flip this
-> condition.  (Always do error handling, don't do success handling).
-> 
-> 		if (err)
-> 			continue;
+> Oh, and we don't care about 32-bit much anymore?
 
-Got it. I'll send a patch.
-> 
-> 
-> > -			usb_driver_claim_interface(driver, iface, (void *)-1L);
-> > +			err = usb_driver_claim_interface(driver, iface, (void *)-1L);
-> 
-> This is in a loop so only the last return value is used.  Which seems
-> sort of weird and pointless that the last value would matter more than
-> the others.
-> 
-Correct. Lets not store the return value. To stop the static analyzers
-to report the missing return assignment, can we add (void) in start of
-this function call? I've not seen use of (void) this way in the
-kernel. Is there any other way used in the kernel?
+On x86, we have 64-bit PTEs when running 32-bit kernels if PAE is
+enabled.  IOW, we can handle the majority of 32-bit CPUs out there.
 
-> >  	}
-> >  
-> > -	return 0;
-> > +	return err;
-> 
-> regards,
-> dan carpenter
-> 
-
+But, yeah, we don't care about 32-bit. :)
