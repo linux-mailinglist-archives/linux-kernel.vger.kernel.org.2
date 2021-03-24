@@ -2,123 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86D8346F09
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2B5346F0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhCXBtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:49:00 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3317 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231651AbhCXBsx (ORCPT
+        id S234649AbhCXBtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234526AbhCXBtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:48:53 -0400
-Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F4rfX5jh6z1476S;
-        Wed, 24 Mar 2021 09:45:40 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 24 Mar 2021 09:48:50 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Wed, 24 Mar 2021 09:48:50 +0800
-Subject: Re: [RFC PATCH v5 02/10] tools headers: Add a macro to get HUGETLB
- page sizes for mmap
-To:     Andrew Jones <drjones@redhat.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210323135231.24948-1-wangyanan55@huawei.com>
- <20210323135231.24948-3-wangyanan55@huawei.com>
- <20210323140341.nkikwolwzpu6ectp@kamzik.brq.redhat.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <4b4df379-4fe4-abf3-3756-448290309a1d@huawei.com>
-Date:   Wed, 24 Mar 2021 09:48:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 23 Mar 2021 21:49:18 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A105BC061765;
+        Tue, 23 Mar 2021 18:49:18 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so348024pjv.1;
+        Tue, 23 Mar 2021 18:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Kcc6sYOncKNza4pyjGfSR1hgCICN528qKEruGPFUaW0=;
+        b=i/K/lP2EMNf5mL/ks+jU5qNCAiaM+A4q5Dbzv8tWCoJNfyhniaLAG+lOI7DnGGOst8
+         E/cXZbjoQkNuMSz8fGShcDE5oyVMUfE/nxZ8uhcjhI+qwA5u2x9UUFXqzoEc3XclHswI
+         8eK8ukUX4NXRS+uvPtt7q91dDlMMo9U73FrLrIYDygxtdwgS2zOmzZxk4TQkqADUNQgA
+         AHMBAeG5P1uzR57lXRyXfoC8Yv09xGfjylKRafhs3/H8K1oHng2zTNoNbm+rvv/KYsao
+         Bnkwmgd6KGMgpVatkM/uCyQo52FUYJaarkVNahNbVv4+Gu2cqUSSYJ/RhT2UxDhVtNxh
+         Jg0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Kcc6sYOncKNza4pyjGfSR1hgCICN528qKEruGPFUaW0=;
+        b=okc/WnaoRRP7URWrL5jIDwcCF+dXJYvE5KQxt2+a4S3Y5bHqPlEGwipm2EbrY6bxGk
+         FK/KeMJizIffHaja6hrAQwiWILIFg7Hh39jLyW7rtHgCTBtbxV9T3zdjbI03EMSWrBXv
+         krP3EtUgjDK43kNkcWdnMv1TlwRnl2EgkuTznAHi5z6BizWYU8YwKq/TY+6SbDPc2ExZ
+         Z7jy/hDw9kBMNMgRCO8ryGrW7AOehjGPuWOByH7YWkvlKti+M4OqfcOFU8GqYSgmg0NJ
+         6lg1NDcoGC/NE2F7BA+qUatzX1F1nv7sv4fQdEBccNMRuV+hIH0YrOwIkLUEB9vKepiz
+         vWFA==
+X-Gm-Message-State: AOAM531uNhO3RK5dU/JKnNTxhk+Qy3ZRiWEoLj608MpxxNtL/TMk5hvl
+        8uiOrwUb/lnZWmD8JJleWECn8QaMTiUgVaqxOeM=
+X-Google-Smtp-Source: ABdhPJwSaV2t0JL7d34dMYVjA5vhuv0+uustAjzX/a1J/kIDwNGzbXYxD8SD9PUz9jzxjHc6LckTWoVTeiQmegxvwes=
+X-Received: by 2002:a17:90a:7061:: with SMTP id f88mr937998pjk.56.1616550557213;
+ Tue, 23 Mar 2021 18:49:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323140341.nkikwolwzpu6ectp@kamzik.brq.redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+References: <1615603667-22568-1-git-send-email-linyunsheng@huawei.com>
+ <1615777818-13969-1-git-send-email-linyunsheng@huawei.com>
+ <20210315115332.1647e92b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAM_iQpXvVZxBRHF6PBDOYSOSCj08nPyfcY0adKuuTg=cqffV+w@mail.gmail.com>
+ <87eegddhsj.fsf@toke.dk> <CAHmME9qDU7VRmBV+v0tzLiUpMJykjswSDwqc9P43ZwG1UD7mzw@mail.gmail.com>
+ <3bae7b26-9d7f-15b8-d466-ff5c26d08b35@huawei.com> <CAM_iQpVvR1eUQxgihWrZ==X=xQjaaeH_qkehvU0Y2R6i9eM-Qw@mail.gmail.com>
+ <9d045462-051e-0cde-24d0-349dd397e2b7@huawei.com>
+In-Reply-To: <9d045462-051e-0cde-24d0-349dd397e2b7@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 23 Mar 2021 18:49:06 -0700
+Message-ID: <CAM_iQpVgARDaUd3jdvSA11j=Q_K6KvcKfn7DQavGYXUWmvLZtw@mail.gmail.com>
+Subject: Re: [Linuxarm] Re: [RFC v2] net: sched: implement TCQ_F_CAN_BYPASS
+ for lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/3/23 22:03, Andrew Jones wrote:
-> $SUBJECT says "tools headers", but this is actually changing
-> a UAPI header and then copying the change to tools.
-Indeed. I think head of the subject should be "mm/hugetlb".
-I will fix it.
-
-Thanks,
-Yanan
-> Thanks,
-> drew
+On Sun, Mar 21, 2021 at 5:55 PM Yunsheng Lin <linyunsheng@huawei.com> wrote=
+:
 >
-> On Tue, Mar 23, 2021 at 09:52:23PM +0800, Yanan Wang wrote:
->> We know that if a system supports multiple hugetlb page sizes,
->> the desired hugetlb page size can be specified in bits [26:31]
->> of the flag arguments. The value in these 6 bits will be the
->> shift of each hugetlb page size.
->>
->> So add a macro to get the page size shift and then calculate the
->> corresponding hugetlb page size, using flag x.
->>
->> Cc: Ben Gardon <bgardon@google.com>
->> Cc: Ingo Molnar <mingo@kernel.org>
->> Cc: Adrian Hunter <adrian.hunter@intel.com>
->> Cc: Jiri Olsa <jolsa@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Suggested-by: Ben Gardon <bgardon@google.com>
->> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
->> Reviewed-by: Ben Gardon <bgardon@google.com>
->> ---
->>   include/uapi/linux/mman.h       | 2 ++
->>   tools/include/uapi/linux/mman.h | 2 ++
->>   2 files changed, 4 insertions(+)
->>
->> diff --git a/include/uapi/linux/mman.h b/include/uapi/linux/mman.h
->> index f55bc680b5b0..d72df73b182d 100644
->> --- a/include/uapi/linux/mman.h
->> +++ b/include/uapi/linux/mman.h
->> @@ -41,4 +41,6 @@
->>   #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
->>   #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
->>   
->> +#define MAP_HUGE_PAGE_SIZE(x) (1ULL << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
->> +
->>   #endif /* _UAPI_LINUX_MMAN_H */
->> diff --git a/tools/include/uapi/linux/mman.h b/tools/include/uapi/linux/mman.h
->> index f55bc680b5b0..d72df73b182d 100644
->> --- a/tools/include/uapi/linux/mman.h
->> +++ b/tools/include/uapi/linux/mman.h
->> @@ -41,4 +41,6 @@
->>   #define MAP_HUGE_2GB	HUGETLB_FLAG_ENCODE_2GB
->>   #define MAP_HUGE_16GB	HUGETLB_FLAG_ENCODE_16GB
->>   
->> +#define MAP_HUGE_PAGE_SIZE(x) (1ULL << ((x >> MAP_HUGE_SHIFT) & MAP_HUGE_MASK))
->> +
->>   #endif /* _UAPI_LINUX_MMAN_H */
->> -- 
->> 2.19.1
->>
-> .
+> On 2021/3/20 2:15, Cong Wang wrote:
+> > On Thu, Mar 18, 2021 at 12:33 AM Yunsheng Lin <linyunsheng@huawei.com> =
+wrote:
+> >>
+> >> On 2021/3/17 21:45, Jason A. Donenfeld wrote:
+> >>> On 3/17/21, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+> >>>> Cong Wang <xiyou.wangcong@gmail.com> writes:
+> >>>>
+> >>>>> On Mon, Mar 15, 2021 at 2:07 PM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+> >>>>>>
+> >>>>>> I thought pfifo was supposed to be "lockless" and this change
+> >>>>>> re-introduces a lock between producer and consumer, no?
+> >>>>>
+> >>>>> It has never been truly lockless, it uses two spinlocks in the ring
+> >>>>> buffer
+> >>>>> implementation, and it introduced a q->seqlock recently, with this =
+patch
+> >>>>> now we have priv->lock, 4 locks in total. So our "lockless" qdisc e=
+nds
+> >>>>> up having more locks than others. ;) I don't think we are going to =
+a
+> >>>>> right direction...
+> >>>>
+> >>>> Just a thought, have you guys considered adopting the lockless MSPC =
+ring
+> >>>> buffer recently introduced into Wireguard in commit:
+> >>>>
+> >>>> 8b5553ace83c ("wireguard: queueing: get rid of per-peer ring buffers=
+")
+> >>>>
+> >>>> Jason indicated he was willing to work on generalising it into a
+> >>>> reusable library if there was a use case for it. I haven't quite tho=
+ugh
+> >>>> through the details of whether this would be such a use case, but
+> >>>> figured I'd at least mention it :)
+> >>>
+> >>> That offer definitely still stands. Generalization sounds like a lot =
+of fun.
+> >>>
+> >>> Keep in mind though that it's an eventually consistent queue, not an
+> >>> immediately consistent one, so that might not match all use cases. It
+> >>> works with wg because we always trigger the reader thread anew when i=
+t
+> >>> finishes, but that doesn't apply to everyone's queueing setup.
+> >>
+> >> Thanks for mentioning this.
+> >>
+> >> "multi-producer, single-consumer" seems to match the lockless qdisc's
+> >> paradigm too, for now concurrent enqueuing/dequeuing to the pfifo_fast=
+'s
+> >> queues() is not allowed, it is protected by producer_lock or consumer_=
+lock.
+> >>
+> >> So it would be good to has lockless concurrent enqueuing, while dequeu=
+ing
+> >> can be protected by qdisc_lock() or q->seqlock, which meets the "multi=
+-producer,
+> >> single-consumer" paradigm.
+> >
+> > I don't think so. Usually we have one queue for each CPU so we can expe=
+ct
+> > each CPU has a lockless qdisc assigned, but we can not assume this in
+> > the code, so we still have to deal with multiple CPU's sharing a lockle=
+ss qdisc,
+> > and we usually enqueue and dequeue in process context, so it means we c=
+ould
+> > have multiple producers and multiple consumers.
+>
+> For lockless qdisc, dequeuing is always within the qdisc_run_begin() and
+> qdisc_run_end(), so multiple consumers is protected with each other by
+> q->seqlock .
+
+So are you saying you will never go lockless for lockless qdisc? I thought
+you really want to go lockless with Jason's proposal of MPMC ring buffer
+code.
+
+>
+> For enqueuing, multiple consumers is protected by producer_lock, see
+> pfifo_fast_enqueue() -> skb_array_produce() -> ptr_ring_produce().
+
+I think you seriously misunderstand how we classify MPMC or MPSC,
+it is not about how we lock them, it is about whether we truly have
+a single or multiple consumers regardless of locks used, because the
+goal is to go lockless.
+
+> I am not sure if lockless MSPC can work with the process context, but
+> even if not, the enqueuing is also protected by rcu_read_lock_bh(),
+> which provides some kind of atomicity, so that producer_lock can be
+> reomved when lockless MSPC is used.
+
+
+Not sure if I can even understand what you are saying here, Jason's
+code only disables preemption with busy wait, I can't see why it can
+not be used in the process context.
+
+Thanks.
