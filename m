@@ -2,129 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EFE347944
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90962347943
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhCXNHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:07:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234381AbhCXNHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:07:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E67B619F2;
-        Wed, 24 Mar 2021 13:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616591255;
-        bh=ipRkHJfSO7gbOj1+Zj4KAE72qEZRW4QoMykE1Mghsjk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aIu1IF6BxPI3ZLsSx8wcxgzU/yjCf/1AM9NW1GiG1k4hxH0JsER0b80LwZbhgdjrf
-         VZNMLqrf0M1n5pvx1NGxvr12ah9aXrKw4ELo0PtcCdeRK5ix2NjzOWkofkutFq2WIj
-         IVkeLd6x38+ijiCHKXw6hJZ+sBdFO+mGKoIzG4hHFb4scFpXWvgOIv4xHAxrydTFpl
-         QyilaMTk58IWbvEpUL9aybINMxVNztsmbVAs50Zk3MMwQRhUS3weNGGMbSjxhx18Wi
-         8h5Evy4SravyouqCKe2py+5vF1azderK9mUu/gLYgakX/Uwo+ijSnsfh6RsYU0oDjd
-         CVAKOrqJNDhkw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Bin Luo <luobin9@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] hinic: avoid gcc -Wrestrict warning
-Date:   Wed, 24 Mar 2021 14:07:22 +0100
-Message-Id: <20210324130731.1513798-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234669AbhCXNHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234072AbhCXNH2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:07:28 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F82EC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:07:26 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id e14so14537166ejz.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:07:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mV7IF4Zf53y3TdQylW1wrk3T3Y+1mcruUAtedXNvuTI=;
+        b=Z7qLIADCJ3buoLJiKDQpTX9oXPKCCJqZCjOn1TDuz5YfpiI+4DDOZHOGE5Y5KNpG3r
+         hZQsQZwIDf4BhYNItTSEcjX6BXZgYbGk8BiAlAgwiN5nH/ST3LTyxpfxFcJVoH/HFwu/
+         cn7QkEGd7kjUhkomL3QDNnbxnzp28+xpekbj48IuLFKXliZPD+nLiGtRad6KK+nfltiu
+         6Nrjb18I3HsS1hyVtGSXvp9EJuhvwKVOH7+YSVz6F+TJWpl2OEvBdyn3r4GQEIkdaNzL
+         sxlWgH+wnk/tR+8NuwOXaDHy2nCrOaEjBeN1NqMAvbtCL0fQysHBulq2yJWFKlIkxv7R
+         keMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mV7IF4Zf53y3TdQylW1wrk3T3Y+1mcruUAtedXNvuTI=;
+        b=DqnmGf3fKz1lxCbzOJUlmcmRjSJpZUN13/ZHioGCVhWFf535owmyfV4FvSzdaBHOod
+         oYR7HP5nOy8LOUIgG/LCSslYvs8YlMzSRtFWi6AcWU/fIoc9xltddTi5rgqRlrDarNZE
+         ktfbyGvpXLvkX2VttRRsRmhAVwS9lsFnnS0ehv3kalwdY5UFQkoG4QLad73IftWOGaxg
+         u713Xf7g26r/Min/uWbn8mqRcA1No1nMuxQF9JkmPVmI1r1AYF5BmdkZcQkF5Fxtl1Mf
+         JjypL5adCtiQjLQ0iHKYueldveKIbX46i42/o2JYD7OsY+HOh+xeuNOS2FwYXlSIx4GR
+         Gbhw==
+X-Gm-Message-State: AOAM533T+1Powx9Q602cotphyNdLB9wANdLvke/wGKaqUnL6dqyfz4so
+        iBo5PWzspi2k2j4jDznFl+GT+pQtr/0EWQ==
+X-Google-Smtp-Source: ABdhPJzrW9cXQCieJ9MyQWQ7DZcrzdK+g6LtX0IsZ3L48tXT1h32dboZmoAC5necVFGWa7VYA8NJug==
+X-Received: by 2002:a17:906:cb18:: with SMTP id lk24mr3485521ejb.70.1616591245249;
+        Wed, 24 Mar 2021 06:07:25 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id c20sm913675eja.22.2021.03.24.06.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 06:07:24 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 13:07:23 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
+Message-ID: <20210324130723.GN2916463@dell>
+References: <20210323123433.45371-1-andriy.shevchenko@linux.intel.com>
+ <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
+ <20210324102931.GH2916463@dell>
+ <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
+ <20210324104729.GL2916463@dell>
+ <YFsgf9J+hQjfrZCb@smile.fi.intel.com>
+ <20210324115033.GM2916463@dell>
+ <YFsv6DijMMiv3D10@smile.fi.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFsv6DijMMiv3D10@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, 24 Mar 2021, Andy Shevchenko wrote:
 
-With extra warnings enabled, gcc complains that snprintf should not
-take the same buffer as source and destination:
+> On Wed, Mar 24, 2021 at 11:50:33AM +0000, Lee Jones wrote:
+> > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+> > 
+> > > On Wed, Mar 24, 2021 at 10:47:29AM +0000, Lee Jones wrote:
+> > > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+> > > > > On Wed, Mar 24, 2021 at 10:29:31AM +0000, Lee Jones wrote:
+> > > > > > On Tue, 23 Mar 2021, Andy Shevchenko wrote:
+> > > 
+> > > ...
+> > > 
+> > > > Also, past acceptance does not guarantee ideal/correct usage.
+> > > 
+> > > In this case it's hardly can be misused. But I heard you.
+> > > 
+> > > ...
+> > > 
+> > > > > The semantic is min-max range and having two defines (*) here for these seems
+> > > > > to me as an utter overkill.
+> > > > > 
+> > > > > Of course, if you insist I may do it.
+> > > > > 
+> > > > > *) since value is the same, we might have one definition, but it will be even
+> > > > >    more confusion to have it as a min and max at the same time.
+> > > > 
+> > > > It's just tricky to decypher for people who do not know the API, which
+> > > > is most people, myself included.  For APIs like usleep_range() et al.,
+> > > > obviously this makes no sense at all.
+> > > 
+> > > Seem like you are insisting. Okay, I will define them. What do you prefer one
+> > > or two definitions?
+> > 
+> > Actually I'm not.  I'm just trying to get my head around where the
+> > data comes from and what the values actually mean.
+> > 
+> > > ...
+> > > 
+> > > > What defines a vector?
+> > > 
+> > > The combination is solely of the driver-hardware. Driver explicitly tells that
+> > > how many vectors it may consume (taking into account the range asked) and API
+> > > returns amount given or an error.
+> > 
+> > So, where does the information actually come from?
+> > 
+> > Information that comes from a datasheet is usually defined.
+> > 
+> > Information that comes from the F/W is usually read and popped into a
+> > variable.
+> 
+> It's a two way road:
+> a) driver states that it needs only 1 vector and it's enough to it
+> b) hardware must provide at least 1 vector to be served by this driver.
+> 
+> Look again into grepped output. Most of drivers that define it as an variable
+> may dynamically adapt to the different amount of IRQ vectors. When it's static,
+> usually drivers just hard code those values.
+> 
+> I'm really don't see a point to define them _in this driver_.
 
-drivers/net/ethernet/huawei/hinic/hinic_ethtool.c: In function 'hinic_set_settings_to_hw':
-drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:480:9: error: 'snprintf' argument 4 overlaps destination object 'set_link_str' [-Werror=restrict]
-  480 |   err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  481 |           "%sspeed %d ", set_link_str, speed);
-      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:464:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
-  464 |  char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
+That's fine.  I just felt like I had to ask.
 
-Rewrite this to avoid the nested sprintf and instead use separate
-buffers, which is simpler.
+Would you consider a comment that lets people unfamiliar with the API
+what the values mean?
 
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: rework according to feedback from Rasmus. This one could
-    easily avoid most of the pitfalls
----
- .../net/ethernet/huawei/hinic/hinic_ethtool.c | 25 ++++++++-----------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+Something to the tune of:
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-index c340d9acba80..d7e20dab6e48 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-@@ -34,7 +34,7 @@
- #include "hinic_rx.h"
- #include "hinic_dev.h"
- 
--#define SET_LINK_STR_MAX_LEN	128
-+#define SET_LINK_STR_MAX_LEN	16
- 
- #define GET_SUPPORTED_MODE	0
- #define GET_ADVERTISED_MODE	1
-@@ -462,24 +462,19 @@ static int hinic_set_settings_to_hw(struct hinic_dev *nic_dev,
- {
- 	struct hinic_link_ksettings_info settings = {0};
- 	char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
-+	const char *autoneg_str;
- 	struct net_device *netdev = nic_dev->netdev;
- 	enum nic_speed_level speed_level = 0;
- 	int err;
- 
--	err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN, "%s",
--		       (set_settings & HILINK_LINK_SET_AUTONEG) ?
--		       (autoneg ? "autong enable " : "autong disable ") : "");
--	if (err < 0 || err >= SET_LINK_STR_MAX_LEN) {
--		netif_err(nic_dev, drv, netdev, "Failed to snprintf link state, function return(%d) and dest_len(%d)\n",
--			  err, SET_LINK_STR_MAX_LEN);
--		return -EFAULT;
--	}
-+	autoneg_str = (set_settings & HILINK_LINK_SET_AUTONEG) ?
-+		      (autoneg ? "autong enable " : "autong disable ") : "";
- 
- 	if (set_settings & HILINK_LINK_SET_SPEED) {
- 		speed_level = hinic_ethtool_to_hw_speed_level(speed);
- 		err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
--			       "%sspeed %d ", set_link_str, speed);
--		if (err <= 0 || err >= SET_LINK_STR_MAX_LEN) {
-+			       "speed %d ", speed);
-+		if (err >= SET_LINK_STR_MAX_LEN) {
- 			netif_err(nic_dev, drv, netdev, "Failed to snprintf link speed, function return(%d) and dest_len(%d)\n",
- 				  err, SET_LINK_STR_MAX_LEN);
- 			return -EFAULT;
-@@ -494,11 +489,11 @@ static int hinic_set_settings_to_hw(struct hinic_dev *nic_dev,
- 	err = hinic_set_link_settings(nic_dev->hwdev, &settings);
- 	if (err != HINIC_MGMT_CMD_UNSUPPORTED) {
- 		if (err)
--			netif_err(nic_dev, drv, netdev, "Set %s failed\n",
--				  set_link_str);
-+			netif_err(nic_dev, drv, netdev, "Set %s%sfailed\n",
-+				  autoneg_str, set_link_str);
- 		else
--			netif_info(nic_dev, drv, netdev, "Set %s successfully\n",
--				   set_link_str);
-+			netif_info(nic_dev, drv, netdev, "Set %s%ssuccessfully\n",
-+				   autoneg_str, set_link_str);
- 
- 		return err;
- 	}
+  "This driver requests 1 (and only 1) IRQ vector"
+
 -- 
-2.29.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
