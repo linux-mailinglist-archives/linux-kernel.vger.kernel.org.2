@@ -2,171 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91971347008
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79F6347009
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhCXDOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:14:43 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:51052 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbhCXDOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:14:25 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D6B51580;
-        Wed, 24 Mar 2021 04:14:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616555664;
-        bh=sBJb6TLMoCXie6Cz1KwQP/tND9xgZh/+QqXpqwmXWOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=max4LQ1tsmmi+q0VA47yv0xGMVojlAwja6LVEHrlOSEmndQVeB7aIQ3pgKGvWXVVT
-         e4DUPuelaSftaEpkAzG+hJuL+9eemD/ws871eXW3nAl+g8OwmQOFemrQX8KC5TU4rL
-         Ds6vFytwO1AjhwNsxWlXH7/fPwbf/P301Ji+T94o=
-Date:   Wed, 24 Mar 2021 05:13:41 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     quanyang.wang@windriver.com
-Cc:     Hyun Kwon <hyun.kwon@xilinx.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [V2][PATCH] drm: xlnx: zynqmp: release reset to DP controller
- before accessing DP registers
-Message-ID: <YFquZaW4JTTM7ogS@pendragon.ideasonboard.com>
-References: <20210323025501.1568039-1-quanyang.wang@windriver.com>
+        id S232533AbhCXDPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:15:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:51073 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232136AbhCXDPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 23:15:04 -0400
+IronPort-SDR: DhZgdWW8ArjYg1b432Lixe9LPSsstxMwri191SxjXBY9nnSFJ64xnreSyVBj9J0zLZkpqxUe/e
+ JXacLLl7PI4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="170584401"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="170584401"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 20:15:04 -0700
+IronPort-SDR: 3p9tg3af0W5TyL5lS8A2Ca/RncKlDU0SfcTQYhiOzINQIgTSpeTV6Qcw1Xy55pSKP6DfCOHWGc
+ AfW6MrHSxFgg==
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="442014527"
+Received: from liujing-mobl.ccr.corp.intel.com (HELO [10.255.28.87]) ([10.255.28.87])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 20:15:00 -0700
+Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
+ first use of dynamic user state
+To:     Len Brown <lenb@kernel.org>, Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
+References: <20210221185637.19281-1-chang.seok.bae@intel.com>
+ <20210221185637.19281-15-chang.seok.bae@intel.com>
+ <87o8fda2ye.fsf@nanos.tec.linutronix.de>
+ <CALCETrVaCmG4jzLCSuy7WYP2K7r-MVZntfugWa8HiVxQ7LpF_A@mail.gmail.com>
+ <CAJvTdKmz7aePcpi4i+d3vnqLuNAJEuJCjpGDv5WTYcSUfuxoDg@mail.gmail.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <6ed9d725-a6cb-4147-9c8a-2fe240e4bb10@linux.intel.com>
+Date:   Wed, 24 Mar 2021 11:14:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210323025501.1568039-1-quanyang.wang@windriver.com>
+In-Reply-To: <CAJvTdKmz7aePcpi4i+d3vnqLuNAJEuJCjpGDv5WTYcSUfuxoDg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quanyang,
 
-Thank you for the patch.
 
-On Tue, Mar 23, 2021 at 10:55:01AM +0800, quanyang.wang@windriver.com wrote:
-> From: Quanyang Wang <quanyang.wang@windriver.com>
-> 
-> When insmod zynqmp-dpsub.ko after rmmod it, system will hang with the
-> error log as below:
-> 
-> root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
-> [   88.391289] [drm] Initialized zynqmp-dpsub 1.0.0 20130509 for fd4a0000.display on minor 0
-> [   88.529906] Console: switching to colour frame buffer device 128x48
-> [   88.549402] zynqmp-dpsub fd4a0000.display: [drm] fb0: zynqmp-dpsubdrm frame buffer device
-> [   88.571624] zynqmp-dpsub fd4a0000.display: ZynqMP DisplayPort Subsystem driver probed
-> root@xilinx-zynqmp:~# rmmod zynqmp_dpsub
-> [   94.023404] Console: switching to colour dummy device 80x25
-> root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
-> 	<hang here>
-> 
-> This is because that in zynqmp_dp_probe it tries to access some DP
-> registers while the DP controller is still in the reset state. When
-> running "rmmod zynqmp_dpsub", zynqmp_dp_reset(dp, true) in
-> zynqmp_dp_phy_exit is called to force the DP controller into the reset
-> state. Then insmod will call zynqmp_dp_probe to program the DP registers,
-> but at this moment the DP controller hasn't been brought out of the reset
-> state yet since the function zynqmp_dp_reset(dp, false) is called later and
-> this will result the system hang.
-> 
-> Releasing the reset to DP controller before any read/write operation to it
-> will fix this issue. And for symmetry, move zynqmp_dp_reset() call from
-> zynqmp_dp_phy_exit() to zynqmp_dp_remove().
-> 
-> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+On 3/24/2021 5:01 AM, Len Brown wrote:
+>> I have an obnoxious question: do we really want to use the XFD mechanism?
+> Obnoxious questions are often the most valuable! :-)
+>
+> [...]
+> cheers,
+> Len Brown, Intel Open Source Technology Center
+>
+> ps. I agree that un-necessary XINUSE=1 is possible.
+> Notwithstanding the issues initially deploying AVX512, I am skeptical
+> that it is common today.
+Sorry, I'm trying to understand from...
+> IMO, the problem with AVX512 state
+> is that we guaranteed it will be zero for XINUSE=0.
+> That means we have to write 0's on saves.
+why "we have to write 0's on saves" when XINUSE=0.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Since due to SDM, if XINUSE=0, the XSAVES will *not* save the data and
+xstate_bv bit is 0; if use XSAVE, it need save the state but
+xstate_bv bit is also 0.
+>   It would be better
+> to be able to skip the write -- even if we can't save the space
+> we can save the data transfer.  (This is what we did for AMX).
+With XFD feature that XFD=1, XSAVE command still has to save INIT state
+to the area. So it seems with XINUSE=0 and XFD=1, the XSAVE(S) commands
+do the same that both can help save the data transfer.
 
-> ---
-> 
-> V2:
-> According to Laurent's comments:
-> - add zynqmp_dp_reset(dp, true) in error path in zynqmp_dp_probe
-> - move the zynqmp_dp_reset() call from zynqmp_dp_phy_exit() to zynqmp_dp_remove() 
-> 
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_dp.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index 99158ee67d02..337adf0769ad 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -402,10 +402,6 @@ static int zynqmp_dp_phy_init(struct zynqmp_dp *dp)
->  		}
->  	}
->  
-> -	ret = zynqmp_dp_reset(dp, false);
-> -	if (ret < 0)
-> -		return ret;
-> -
->  	zynqmp_dp_clr(dp, ZYNQMP_DP_PHY_RESET, ZYNQMP_DP_PHY_RESET_ALL_RESET);
->  
->  	/*
-> @@ -441,8 +437,6 @@ static void zynqmp_dp_phy_exit(struct zynqmp_dp *dp)
->  				ret);
->  	}
->  
-> -	zynqmp_dp_reset(dp, true);
-> -
->  	for (i = 0; i < dp->num_lanes; i++) {
->  		ret = phy_exit(dp->phy[i]);
->  		if (ret)
-> @@ -1682,9 +1676,13 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
->  		return PTR_ERR(dp->reset);
->  	}
->  
-> +	ret = zynqmp_dp_reset(dp, false);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	ret = zynqmp_dp_phy_probe(dp);
->  	if (ret)
-> -		return ret;
-> +		goto err_reset;
->  
->  	/* Initialize the hardware. */
->  	zynqmp_dp_write(dp, ZYNQMP_DP_TX_PHY_POWER_DOWN,
-> @@ -1696,7 +1694,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
->  
->  	ret = zynqmp_dp_phy_init(dp);
->  	if (ret)
-> -		return ret;
-> +		goto err_reset;
->  
->  	zynqmp_dp_write(dp, ZYNQMP_DP_TRANSMITTER_ENABLE, 1);
->  
-> @@ -1708,15 +1706,18 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
->  					zynqmp_dp_irq_handler, IRQF_ONESHOT,
->  					dev_name(dp->dev), dp);
->  	if (ret < 0)
-> -		goto error;
-> +		goto err_phy_exit;
->  
->  	dev_dbg(dp->dev, "ZynqMP DisplayPort Tx probed with %u lanes\n",
->  		dp->num_lanes);
->  
->  	return 0;
->  
-> -error:
-> +err_phy_exit:
->  	zynqmp_dp_phy_exit(dp);
-> +err_reset:
-> +	zynqmp_dp_reset(dp, true);
-> +
->  	return ret;
->  }
->  
-> @@ -1734,4 +1735,5 @@ void zynqmp_dp_remove(struct zynqmp_dpsub *dpsub)
->  	zynqmp_dp_write(dp, ZYNQMP_DP_INT_DS, 0xffffffff);
->  
->  	zynqmp_dp_phy_exit(dp);
-> +	zynqmp_dp_reset(dp, true);
->  }
+The reason I'm interested in XINUSE denotation is that it might be helpful
+for the XFD MSRs context switch cost during vmexit and vmenter.
 
--- 
-Regards,
+Thanks,
+Jing
+>
+> pps. your idea of requiring the user to allocate their own signal stack
+> is interesting.   It isn't really about allocating the stack, though --
+> the stack of the task that uses the feature is generally fine already.
+> The opportunity is to allow tasks that do *not* use the new feature to
+> get away with minimal data transfer and stack size.  As we don't
+> have the 0's guarantee for AMX, we bought the important part
+> of that back.
 
-Laurent Pinchart
