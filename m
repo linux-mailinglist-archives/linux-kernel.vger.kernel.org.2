@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DC6346E57
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 01:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98505346E5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 01:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhCXAti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 20:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233897AbhCXAtS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 20:49:18 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131C8C0613D9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 17:49:18 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id s21so10856299pjq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 17:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pqlDAkfpFxPvtCYcs4rpRWhh2vQJErVgPPsfWn8QpKE=;
-        b=NMbztM4I619xLFkutZ9T3xKcbWtEQumZDAH4+TzP5UeHAXdbRCmG+ik1Gwrl+skzEh
-         4kheY1dwKvniJdmn3cmFutU2xCahjejs7pRg9M7leVP9nzua4+RoMi0oPOJ7RXVbqMj8
-         pyJvHHqmSYOliRyhTW08AmBGcFiXMc/L7X3Jc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pqlDAkfpFxPvtCYcs4rpRWhh2vQJErVgPPsfWn8QpKE=;
-        b=U4Y0L2qTCQebDV9Eu6OY+LtCeeWZHr1JUXJeOm7UD9WC4jXYwy7D4gIlsSH/Ce1jcu
-         tgfe/Yr2qrv67Kdqw7I3/InQ4H9CHoPI8dUrOGXsnUTYUJIZlYmt9ruTLyHTTzVIU7Px
-         57++BMjC5mv+jD7jbhO3KLmNXBlgGK4EzstiC8nHFJ3JFuen90d8iVP8O3A02DvBW3xa
-         lMiD8YQKDGcKsiy++MFrpxKGQcc8cl137/L48w8BVVS3m2Z4q5X2wE3bM4PrxjIey70c
-         iXZRiCkeBewAMsOjmjcZBUzEbqiX4NhgznjPCbrj2y3oR21Ad0XDPSKNzw1cUK5jI1nK
-         5BPg==
-X-Gm-Message-State: AOAM5300GqksjygM8aJBbTiy6LE3VeZjU0nlCARmt7gj3hq1w2XTkz9y
-        Yft+qhDM04ZSR3uX7r3EkSUJAg==
-X-Google-Smtp-Source: ABdhPJyvh4woIN16EDJ0HLxyAHCrRhNd5iy6Y6QmH6u4YlHQwt/o8oJwXx9AGorbf/T0wQ9vH02vaw==
-X-Received: by 2002:a17:903:30c3:b029:e6:5008:f7a7 with SMTP id s3-20020a17090330c3b02900e65008f7a7mr1017020plc.73.1616546957382;
-        Tue, 23 Mar 2021 17:49:17 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:40a3:9725:46c3:85f6])
-        by smtp.gmail.com with UTF8SMTPSA id w203sm344685pff.59.2021.03.23.17.49.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Mar 2021 17:49:16 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 17:49:14 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v5 3/4] usb: dwc3: qcom: Configure wakeup interrupts and
- set genpd active wakeup flag
-Message-ID: <YFqMivRlDllNuqu/@google.com>
-References: <1616434280-32635-1-git-send-email-sanm@codeaurora.org>
- <1616434280-32635-4-git-send-email-sanm@codeaurora.org>
- <YFna5mxrJAzR2s0g@kroah.com>
+        id S233584AbhCXAxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 20:53:47 -0400
+Received: from mga02.intel.com ([134.134.136.20]:7887 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230475AbhCXAxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 20:53:42 -0400
+IronPort-SDR: CYMrWmbvxZy44HCxByZFaFBFSK5TdUB6DCDzcrLsMx5nlihYx5GryCzUqslKOZJUr5Y+mKUeir
+ JSjYNQbvcZUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="177716282"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="177716282"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 17:53:41 -0700
+IronPort-SDR: AYUOOpG1XUognPuZnimdo4CPPCLZYHUifyfk2hiTiY9LSTG4F2iUFi/YfSHAzbNwsVCNuobBS5
+ 8XOkYFitOEpw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="441963415"
+Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Mar 2021 17:53:35 -0700
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <20210323090108.ygx76exdgzudeeqi@vireshk-i7>
+ <20210323093839.n7cq7f5poebqdwit@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <5a415dbe-8e3b-2731-cc52-19aeadda1a17@intel.com>
+Date:   Wed, 24 Mar 2021 08:53:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFna5mxrJAzR2s0g@kroah.com>
+In-Reply-To: <20210323093839.n7cq7f5poebqdwit@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:11:18PM +0100, Greg Kroah-Hartman wrote:
-> On Mon, Mar 22, 2021 at 11:01:19PM +0530, Sandeep Maheswaram wrote:
-> > Configure interrupts based on hs_phy_mode to avoid triggering of
-> > interrupts during system suspend and suspends successfully.
-> > Set genpd active wakeup flag for usb gdsc if wakeup capable devices
-> > are connected so that wake up happens without reenumeration.
-> > Add helper functions to enable,disable wake irqs.
-> 
-> That feels like a lot of different things all in one patch.
 
-Sandeep: one thing you could do to reduce the churn is to add
-dwc3_qcom_enable/disable_wakeup_irq() in a separate patch, without
-any functional changes. Then this patch would only add the different
-branches based on the PHY mode.
+On 2021/3/23 17:38, Viresh Kumar wrote:
+> On 23-03-21, 14:31, Viresh Kumar wrote:
+>> On 23-03-21, 22:19, Jie Deng wrote:
+>>> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+>>> +{
+>>> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+>>> +	struct virtqueue *vq = vi->vq;
+>>> +	struct virtio_i2c_req *reqs;
+>>> +	unsigned long time_left;
+>>> +	int ret, nr;
+>>> +
+>>> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+>>> +	if (!reqs)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	mutex_lock(&vi->lock);
+>>> +
+>>> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
+>>> +	if (ret == 0)
+>>> +		goto err_unlock_free;
+>>> +
+>>> +	nr = ret;
+>>> +	reinit_completion(&vi->completion);
+>> I think I may have found a possible bug here. This reinit_completion() must
+>> happen before we call virtio_i2c_send_reqs(). It is certainly possible (surely
+>> in corner cases) that virtio_i2c_msg_done() may get called right after
+>> virtio_i2c_send_reqs() and before we were able to call reinit_completion(). And
+>> in that case we will never see the completion happen at all.
+>>
+>>> +	virtqueue_kick(vq);
+> I may have misread this. Can the actually start before virtqueue_kick() is
+> called ?
 
-The handling of the power domain could probably also be done in a
-separate patch, if I recall correctly it is only an optimization.
+
+No. It starts when wait_for_completion_timeout is called.
+
+So it should be fine here.
+
+
+>   If not, then completion may be fine where it is.
+>
