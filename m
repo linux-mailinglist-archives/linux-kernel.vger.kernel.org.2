@@ -2,61 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1C5347463
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36317347469
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhCXJSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:18:31 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:36578 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234618AbhCXJSI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:18:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UT9hB1v_1616577484;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UT9hB1v_1616577484)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 24 Mar 2021 17:18:04 +0800
-Subject: Re: [PATCH v6] selftests/x86: Use getauxval() to simplify the code in
- sgx
-To:     Borislav Petkov <bp@alien8.de>, Shuah Khan <shuah@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-References: <20210314111621.68428-1-tianjia.zhang@linux.alibaba.com>
- <YE9ayBnFIpwGiVVr@kernel.org>
- <53c94119-bdc3-a24c-91be-6d0444c46d64@linux.alibaba.com>
- <20210323185125.GF4729@zn.tnic>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <54c62bc7-f52b-0a77-f0f9-974605ade55d@linux.alibaba.com>
-Date:   Wed, 24 Mar 2021 17:18:03 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S231956AbhCXJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:20:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38758 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231685AbhCXJU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:20:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616577628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7gLziUiladtyJd3p/ln2FmDe2g6zHX+KsW0OGVFj21E=;
+        b=VbHnPFE42SYJRuEFkhkWAHr4t4p5qxQJFsfZtY++E0e10Oi90jUMuP+zzxNFPz8a9B4/r5
+        03tb8a/woot6C3mA/isgfeHqnxPl2AYvprLiKqyKLbsAKxnFJUkqMiVlLv0bKVDUtwVFUC
+        UGcnOeyxadhb/QMMNWjhwTBfwijht1Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D1E0EAC16;
+        Wed, 24 Mar 2021 09:20:27 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 10:20:25 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix memsw uncharge for
+ root_mem_cgroup
+Message-ID: <YFsEWfzxB3iPc66Y@dhcp22.suse.cz>
+References: <20210323145653.25684-1-songmuchun@bytedance.com>
+ <CAMZfGtWT8XXDtg0Jcv=1qJpdLD6foJWE=kB_i1ZyHjvrku=vrw@mail.gmail.com>
+ <YFr5SrJ2iNGYwVNA@dhcp22.suse.cz>
+ <CAMZfGtVe6seRLA7Wo4TST0ApkaHdkDmv6sL5GZytK_4hvMbkXg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210323185125.GF4729@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtVe6seRLA7Wo4TST0ApkaHdkDmv6sL5GZytK_4hvMbkXg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 3/24/21 2:51 AM, Borislav Petkov wrote:
-> On Tue, Mar 23, 2021 at 11:08:25AM +0800, Tianjia Zhang wrote:
->> Take time to look at this.
+On Wed 24-03-21 16:50:41, Muchun Song wrote:
+> On Wed, Mar 24, 2021 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 24-03-21 12:11:35, Muchun Song wrote:
+> > > On Tue, Mar 23, 2021 at 11:04 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> > > >
+> > > > The pages aren't accounted at the root level, so we cannot uncharge the
+> > > > page to the memsw counter for the root memcg. Fix this.
+> > > >
+> > > > Fixes: 1f47b61fb407 ("mm: memcontrol: fix swap counter leak on swapout from offline cgroup")
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > >
+> > > I am very sorry. I should repent. I suddenly realise the fix is totally
+> > > wrong. Because the @memcg cannot be root memcg when
+> > > @memcg != @swap_memcg.
+> >
+> > I am probably blind but I do not see why this would be the case.
+> > We have memcg != swap_memcg in this branch but we do not know the
+> > neither of the two is root_mem_cgroup, no? If we did knot that we
+> > wouldn't have to check for swap_memcg != root_mem_cgroup. Or do I miss
+> > something?
 > 
-> A "please" wouldn't hurt.
-> 
+> I look at the mem_cgroup_id_get_online() closely. If memcg is root, this
+> function always returns root memcg. So memcg will equal swap_memcg.
 
-I'm very sorry that my mistake caused your hurt. Please take time to 
-look at this, which tree this should be picked?
-
-Best regards,
-Tianjia
+Ahh, I can see it now. I have completely missed that the swap_memcg is
+a parent of an offline memcg. I should have looked more closely.
+-- 
+Michal Hocko
+SUSE Labs
