@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5825348114
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7862134811D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237659AbhCXS7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237203AbhCXS70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:59:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C46CC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=S5c08tH94DbYnQq7ubCip4+4vB1dGbmIUGgd0vL4esY=; b=oqZZIo5N0eBy6O8OrtRF/DBDva
-        Dumskv2fuiudyaQYnfIUyXCfX3m6uEo7wgpTan3zTZG5PO8boMSelZzFH9ZY7Ai7Nc7rQ/Yh+KJiL
-        8EseYgIWFqIMKKzmtjI0BKV21t5t+cudxABVee1F0hZ6RPPxum8MhOZiD8pP35Svz7BWeaLlhoGqP
-        f/1qJ8MS2RtDwjDl/7Qbex8WQawEwDwAXPtxhoZ0ze7yqIFVsEBC/VNOuwViKs3WlJL75mWD6NfIY
-        cb7jkAwpwBBArKJW4gpvh9C0joyVTKTZp+yBwu5VNcgvqDpEQ9mJQP92lyCJVp8V1QRZQBbGH9xjf
-        d1vGh48Q==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP8iv-0005bz-W7; Wed, 24 Mar 2021 18:59:22 +0000
-Subject: Re: [PATCH] ARM: xen/mm.c: A mundane typo fix
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     linux@armlinux.org.uk, xen-devel@lists.xenproject.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jgross@suse.com, boris.ostrovsky@oracle.com
-References: <20210324133036.17665-1-unixbhaskar@gmail.com>
- <alpine.DEB.2.21.2103241154320.439@sstabellini-ThinkPad-T480s>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5e1b573a-6dc7-7f28-28ae-c509e6782fbf@infradead.org>
-Date:   Wed, 24 Mar 2021 11:59:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S237742AbhCXTAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:00:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:38094 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237571AbhCXS7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:59:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D21331474;
+        Wed, 24 Mar 2021 11:59:32 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.22.143])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 763F93F718;
+        Wed, 24 Mar 2021 11:59:27 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 18:59:21 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH v3 13/27] arm64: Add Apple vendor-specific system
+ registers
+Message-ID: <20210324185921.GA27297@C02TD0UTHF1T.local>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-14-marcan@marcan.st>
+ <20210324183818.GF13181@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2103241154320.439@sstabellini-ThinkPad-T480s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324183818.GF13181@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 11:55 AM, Stefano Stabellini wrote:
-> On Wed, 24 Mar 2021, Bhaskar Chowdhury wrote:
->> s/acrros/across/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Wed, Mar 24, 2021 at 06:38:18PM +0000, Will Deacon wrote:
+> On Fri, Mar 05, 2021 at 06:38:48AM +0900, Hector Martin wrote:
+> > Apple ARM64 SoCs have a ton of vendor-specific registers we're going to
+> > have to deal with, and those don't really belong in sysreg.h with all
+> > the architectural registers. Make a new home for them, and add some
+> > registers which are useful for early bring-up.
+> > 
+> > Signed-off-by: Hector Martin <marcan@marcan.st>
+> > ---
+> >  MAINTAINERS                           |  1 +
+> >  arch/arm64/include/asm/sysreg_apple.h | 69 +++++++++++++++++++++++++++
+> >  2 files changed, 70 insertions(+)
+> >  create mode 100644 arch/arm64/include/asm/sysreg_apple.h
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index aec14fbd61b8..3a352c687d4b 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1646,6 +1646,7 @@ B:	https://github.com/AsahiLinux/linux/issues
+> >  C:	irc://chat.freenode.net/asahi-dev
+> >  T:	git https://github.com/AsahiLinux/linux.git
+> >  F:	Documentation/devicetree/bindings/arm/apple.yaml
+> > +F:	arch/arm64/include/asm/sysreg_apple.h
 > 
-> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+> (this isn't needed with my suggestion below).
 > 
+> >  ARM/ARTPEC MACHINE SUPPORT
+> >  M:	Jesper Nilsson <jesper.nilsson@axis.com>
+> > diff --git a/arch/arm64/include/asm/sysreg_apple.h b/arch/arm64/include/asm/sysreg_apple.h
+> > new file mode 100644
+> > index 000000000000..48347a51d564
+> > --- /dev/null
+> > +++ b/arch/arm64/include/asm/sysreg_apple.h
 > 
+> I doubt apple are the only folks doing this, so can we instead have
+> sysreg-impdef.h please, and then have an Apple section in there for these
+> registers? That way, we could also have an imp_sys_reg() macro to limit
+> CRn to 11 or 15, which is the reserved encoding space for these registers.
+> 
+> We'll cc you for any patches touching the Apple parts, as we don't have
+> the first clue about what's hiding in there.
 
-Hi,
-It seems to me like some of those "page" should be "pages".
+For existing IMP-DEF sysregs (e.g. the Kryo L2 control registers), we've
+put the definitions in the drivers, rather than collating
+non-architectural bits under arch/arm64/.
 
->> ---
->>  arch/arm/xen/mm.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
->> index 467fa225c3d0..be7c942c74bf 100644
->> --- a/arch/arm/xen/mm.c
->> +++ b/arch/arm/xen/mm.c
->> @@ -105,7 +105,7 @@ bool xen_arch_need_swiotlb(struct device *dev,
->>  	 *	- The Linux page refers to foreign memory
->>  	 *	- The device doesn't support coherent DMA request
->>  	 *
->> -	 * The Linux page may be spanned acrros multiple Xen page, although>> +	 * The Linux page may be spanned across multiple Xen page, although
+So far we've kept arch/arm64/ largely devoid of IMP-DEF bits, and it
+seems a shame to add something with the sole purpose of collating that,
+especially given arch code shouldn't need to touch these if FW and
+bootloader have done their jobs right.
 
-	                                                     pages,
+Can we put the definitions in the relevant drivers? That would sidestep
+any pain with MAINTAINERS, too.
 
->>  	 * it's not possible to have a mix of local and foreign Xen page.
-
-	                                                            pages.
-
->>  	 * Furthermore, range_straddles_page_boundary is already checking
->>  	 * if buffer is physically contiguous in the host RAM.
->> --
-
-
--- 
-~Randy
-
+Thanks,
+Mark.
