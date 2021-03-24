@@ -2,119 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA781346FC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBEC346FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhCXDAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:00:17 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:16785 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbhCXC76 (ORCPT
+        id S234975AbhCXDBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:01:06 -0400
+Received: from mail-lf1-f44.google.com ([209.85.167.44]:46815 "EHLO
+        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231896AbhCXDAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:59:58 -0400
-X-AuditID: 0a580157-47bff70000021a79-65-605aa424663e
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id B3.73.06777.424AA506; Wed, 24 Mar 2021 10:29:56 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 24 Mar
- 2021 10:59:55 +0800
-Date:   Wed, 24 Mar 2021 10:59:50 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     <qemu-devel@nongnu.org>
-CC:     "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
-        <yaoaili@kingsoft.com>, <sunhao2@kingsoft.com>
-Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
- do_machine_check()
-Message-ID: <20210324105950.714fd8a6@alex-virtual-machine>
-In-Reply-To: <20210224103921.3dcf0b65@alex-virtual-machine>
-References: <20210222180819.3998fe33@alex-virtual-machine>
-        <20210222102206.GC29063@zn.tnic>
-        <20210222192146.76ffec84@alex-virtual-machine>
-        <20210222201723.0fcec589@alex-virtual-machine>
-        <20210222122241.GA10880@zn.tnic>
-        <20210222203549.0e54c26f@alex-virtual-machine>
-        <20210222124550.GB10880@zn.tnic>
-        <20210223102755.13cbdffd@alex-virtual-machine>
-        <20210223094300.GA26060@zn.tnic>
-        <20210223175640.5708c7ed@alex-virtual-machine>
-        <20210223100538.GB26060@zn.tnic>
-        <20210223192711.0b517745@alex-virtual-machine>
-        <9232988079334ab8801cccec6557f9c3@intel.com>
-        <20210224103921.3dcf0b65@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Tue, 23 Mar 2021 23:00:43 -0400
+Received: by mail-lf1-f44.google.com with SMTP id w37so29732419lfu.13;
+        Tue, 23 Mar 2021 20:00:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=d1dReRBrfstAdxcP61fTebHNjPiLX2kfp7/R/spgjuo=;
+        b=jf7tSXkr5wrIW10NcGesQlBbhOHBxYc/c1ngU5YAY+InOOQrp6bpSwnCIDrKB6BnMa
+         Fi2Zl88ljKCRlacHPhI6DE+QWoOm92JY4geACEqb3bumg1hSSUu+zFTYiwVg00lKWBk1
+         EWPe1zK78FQMwF8ZzfPXn5XtfQuyhj13w1m3Z2QOkdby25jhtKygAWztTfK1H/1c28CG
+         qZCLKCQX72oR9VTnbBNNn2OldnXZregt3GWE0U6x1GQebou6G3v5Eo5j1Ykjxxuf3AQK
+         cMoiCKgvcLW7jU+zO7W5dqj2yQzjNWl1M11ng2KBADYvgZApwgEPoVHbZyowU79ARqS6
+         FXqw==
+X-Gm-Message-State: AOAM532n+ksmZXuWsHYPPYuT3XauM+IsofXHVXVZkqeetgExiezjh1bq
+        Azq7so2fv/353CPdlPufg5F4tiybPWDwWQ==
+X-Google-Smtp-Source: ABdhPJxgdlUh9cqfPjsTXgVhR4loTDPlDV7/UZ0X+Syex3wC9IBWh16VYMijcaKi9GNL5+0Qx3zW1w==
+X-Received: by 2002:ac2:5e36:: with SMTP id o22mr664868lfg.525.1616554841761;
+        Tue, 23 Mar 2021 20:00:41 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id d8sm117738ljc.129.2021.03.23.20.00.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Mar 2021 20:00:41 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id f16so28370075ljm.1;
+        Tue, 23 Mar 2021 20:00:41 -0700 (PDT)
+X-Received: by 2002:a2e:1649:: with SMTP id 9mr648961ljw.74.1616554841085;
+ Tue, 23 Mar 2021 20:00:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKLMWRmVeSWpSXmKPExsXCFcGooKuyJCrBYN5iVYvPG/6xWUzbKG5x
-        edccNotLBxYwWRzv3cFisXnTVGaLNxfusVj82PCY1YHD43trH4vH4j0vmTw2repk83h37hy7
-        x5Nrm5k83u+7yubxeZOcx4mWL6wBHFFcNimpOZllqUX6dglcGfNub2UtmMJfcfP0f5YGxuvc
-        XYycHBICJhIrd01gArGFBKYzSdzYq93FyAVkv2KUmHnzIRtIgkVAVeJx7wYWEJsNyN51bxYr
-        iC0iIC3RP6edHaSBWaCDWWL9vqdARRwcwgKhEkumFYLU8ApYSbzc2A82h1PAWuLQkoeMEAve
-        s0hc23oEbCi/gJhE75X/TBAX2Uu0bVnECNEsKHFy5hOwGmYBHYkTq44xQ9jyEtvfzmGGuFpR
-        4vCSX+wQvUoSR7pnsEHYsRLL5r1incAoPAvJqFlIRs1CMmoBI/MqRpbi3HTDTYyQmAnfwTiv
-        6aPeIUYmDsZDjBIczEoivC3hEQlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEedW0gVIC6Yklqdmp
-        qQWpRTBZJg5OqQam5JKf/w7Ir9op8PfxxxTlnK1fFzy5amXneEj+nMjDd3WnQ1Zdv6Xf6Hf8
-        CL/aLIF1cYHyOXKcfHtvBXw5b5kx34ohL7ZCfsoZpzDLK722cySbP0+7dmlq6MYd2/dOOuKj
-        7MWrbLw+IGBWu2uPRUiunaHTBkNtVwu2k0YKQtlplz48W2zB03GgOH1FZN/sknunI7onPgl/
-        fdIiMm/ey8kfuPTNO6v3nz9VWvHo7YLrk6ucuM8zbJhnwu7E/mDRxYVzm45u6c3UyznkPJul
-        O2li9as0r1zNm7JJuVUTsp4sKV9xzoW1aWqIDONy1VXhF268Z/x3inGGnrapR7HBqctrfTqz
-        71oVbxMP0HaaOElQiaU4I9FQi7moOBEAmVMp0ggDAAA=
+References: <20210323204341.28825-1-jernej.skrabec@siol.net>
+In-Reply-To: <20210323204341.28825-1-jernej.skrabec@siol.net>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Wed, 24 Mar 2021 11:00:30 +0800
+X-Gmail-Original-Message-ID: <CAGb2v645M9rrQ_c9P8yBckxz8QsZW6-srhOeTyQkSc0cOo0Wug@mail.gmail.com>
+Message-ID: <CAGb2v645M9rrQ_c9P8yBckxz8QsZW6-srhOeTyQkSc0cOo0Wug@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v2] ARM: dts: sun8i: h3: beelink-x2: Add
+ power button
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 10:39:21 +0800
-Aili Yao <yaoaili@kingsoft.com> wrote:
+On Wed, Mar 24, 2021 at 4:44 AM Jernej Skrabec <jernej.skrabec@siol.net> wrote:
+>
+> Beelink X2 has power button. Add node for it.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-> On Tue, 23 Feb 2021 16:12:43 +0000
-> "Luck, Tony" <tony.luck@intel.com> wrote:
-> 
-> > > What I think is qemu has not an easy to get the MCE signature from host or currently no methods for this
-> > > So qemu treat all AR will be No RIPV, Do more is better than do less.    
-> > 
-> > RIPV would be important in the guest in the case where the guest can fix the problem that caused
-> > the machine check and return to the failed instruction to continue.
-> > 
-> > I think the only case where this happens is a fault in a read-only page mapped from a file (typically
-> > code page, but could be a data page). In this case memory-failure() unmaps the page with the posion
-> > but Linux can recover by reading data from the file into a new page.
-> > 
-> > Other cases we send SIGBUS (so go to the signal handler instead of to the faulting instruction).
-> > 
-> > So it would be good if the state of RIPV could be added to the signal state sent to qemu. If that
-> > isn't possible, then this full recovery case turns into another SIGBUS case.  
-> 
-> This KVM and VM case of failing recovery for SRAR is just one scenario I think,
-> If Intel guarantee that when memory SRAR is triggered, RIPV will always be set, then it's the job of qemu to
-> set the RIPV instead.
-> Or if When SRAR is triggered with RIPV cleared, the same issue will be true for host.
-> 
-> And I think it's better for VM to know the real RIPV value, It need more work in qemu and kernel if possible.
-> 
-> Thanks
-> Aili Yao
-
-ADD this topic to qemu list, this is really one bad issue.
-
-Issue report:
-when VM receive one SRAR memory failure from host, it all has RIPV cleared, and then vm process it and trigger one panic!
-
-Can any qemu maintainer fix this?
-
-Suggestion:
-qemu get the true value of RIPV from host, the inject it to VM accordingly.
-
-Thanks
-Aili Yao!
+Acked-by: Chen-Yu Tsai <wens@csie.org>
