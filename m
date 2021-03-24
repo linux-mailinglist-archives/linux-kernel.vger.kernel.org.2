@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D9534720B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D7F347211
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhCXHH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235692AbhCXHH3 (ORCPT
+        id S235681AbhCXHIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:08:53 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:55513 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235714AbhCXHI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:07:29 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98F2C061763;
-        Wed, 24 Mar 2021 00:07:28 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo557930wmq.4;
-        Wed, 24 Mar 2021 00:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LknztGgqkN///91+7Wug8dejmfXPPMToN8QWuG2wkMU=;
-        b=dgAtPKFUuWUjQ37dOc0OLRQ0W9XnjH6AH5XU+e3dkmMhR8GOQCP+fNdliZAZiSlf9Q
-         6VULApcmccdCtUVHvey5bDGWLcozs2T2kLB5K0suVa6Rxk4KCMfdgQhtzsnLIyGAbzXy
-         ccZ6FAg6rHsVUfTlG6/E7kTWzbnR+IQffaThyQH3U4k0Q8Wqkl1v31MMmFamw+HJ0Msy
-         XA+77Z/l7ctIY7ZCK7Kz6xqZx2IvGq56aBKu8A4QXEYVwMI6bOszq4b0WLhFRhMV5HoI
-         wt9+wjNbDoP6KBFVlhn/rAKoD5WQlQ3hfdVoGXHgpFlrNr2W6xiwR/5qEXCN7LxAv9DM
-         dsiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LknztGgqkN///91+7Wug8dejmfXPPMToN8QWuG2wkMU=;
-        b=ID3sI41Dk3JOkqzcR8RrlZTXcY65EzknE/4vFePnhbgbirVmeEAbx8PAzFfcnbBBGh
-         HYeOz5VSvVMgVygaGg0p23V9wyLSiSVn3lcr/qi+SwzPOp2ActfuNRvS2O6akR/Wajli
-         DeIa20/i/zqYNRewJ1y/NWN4s9KSz7ljfbMIXe02y55H48xpv67wqkA1If9WGPYdpF0N
-         3n8ezqEr4xKLoTEDIMJA07uNjS/n+xKEP4SoSqJsVkT6tLNwoXMMgKl/VXRAC5eceXR3
-         j+H4MdoWugvXg6Z341srE4nPNsRKpuP3SG15xx1Y07ktfOB5MY76k9JajYZ9rEUVsImh
-         xJnw==
-X-Gm-Message-State: AOAM5319hDQeEjwbhzvWwRglHhwOQ5DBKcaG5vwEwiffsuvRF0zP8hrt
-        jHJUa2rXjDBh4YTbZjNVeY3c1JlcEW276uKx+G3ESX7yYeM=
-X-Google-Smtp-Source: ABdhPJy0wnrY40S+myN8rvn+oXVBzTkCjecFMbUqih6KehEfQvOmvYIj8UWdYmlrUNybkx14OeUW0Xe9NcHgLb5GPQQ=
-X-Received: by 2002:a05:600c:47d7:: with SMTP id l23mr1421587wmo.155.1616569647596;
- Wed, 24 Mar 2021 00:07:27 -0700 (PDT)
+        Wed, 24 Mar 2021 03:08:29 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lOxcp-000TyT-2y; Wed, 24 Mar 2021 08:08:19 +0100
+Received: from p57bd9564.dip0.t-ipconnect.de ([87.189.149.100] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lOxco-002Ehe-Rv; Wed, 24 Mar 2021 08:08:19 +0100
+Subject: Re: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
+To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-ia64@vger.kernel.org, storagedev@microchip.com,
+        linux-scsi@vger.kernel.org, Joe Szczypek <jszczype@redhat.com>,
+        Scott Benesh <scott.benesh@microchip.com>,
+        Scott Teel <scott.teel@microchip.com>,
+        Tomas Henzl <thenzl@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Don Brace <don.brace@microchip.com>
+References: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
+ <20210312222718.4117508-1-slyfox@gentoo.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <f533ad03-9dcf-fa28-e76a-63fef33d523c@physik.fu-berlin.de>
+Date:   Wed, 24 Mar 2021 08:08:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210323123245.346491-1-colin.king@canonical.com>
-In-Reply-To: <20210323123245.346491-1-colin.king@canonical.com>
-From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
-Date:   Wed, 24 Mar 2021 12:37:15 +0530
-Message-ID: <CA+sq2CekDZgxec43sBOZ4nLJwVE=PdGdHwYogWAPvyCNwZ0Wnw@mail.gmail.com>
-Subject: Re: [PATCH] octeontx2-af: Fix memory leak of object buf
-To:     Colin King <colin.king@canonical.com>
-Cc:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rakesh Babu <rsaladi2@marvell.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210312222718.4117508-1-slyfox@gentoo.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.149.100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 6:07 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently the error return path when lfs fails to allocate is not free'ing
-> the memory allocated to buf. Fix this by adding the missing kfree.
->
-> Addresses-Coverity: ("Resource leak")
-> Fixes: f7884097141b ("octeontx2-af: Formatting debugfs entry rsrc_alloc.")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-> index 8ec17ee72b5d..9bf8eaabf9ab 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-> @@ -253,8 +253,10 @@ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
->                 return -ENOSPC;
->
->         lfs = kzalloc(lf_str_size, GFP_KERNEL);
-> -       if (!lfs)
-> +       if (!lfs) {
-> +               kfree(buf);
->                 return -ENOMEM;
-> +       }
->         off +=  scnprintf(&buf[off], buf_size - 1 - off, "%-*s", lf_str_size,
->                           "pcifunc");
->         for (index = 0; index < BLK_COUNT; index++)
-> --
-> 2.30.2
->
+Hello!
 
-Thanks for the fix,
-Acked-by: Sunil Goutham <sgoutham@marvell.com>
+On 3/12/21 11:27 PM, Sergei Trofimovich wrote:
+> The failure initially observed as boot failure on rx3600 ia64 machine
+> with RAID bus controller: Hewlett-Packard Company Smart Array P600:
+> 
+>     kernel unaligned access to 0xe000000105dd8b95, ip=0xa000000100b87551
+>     kernel unaligned access to 0xe000000105dd8e95, ip=0xa000000100b87551
+>     hpsa 0000:14:01.0: Controller reports max supported commands of 0 Using 16 instead. Ensure that firmware is up to date.
+>     swapper/0[1]: error during unaligned kernel access
+> 
+> Here unaligned access comes from 'struct CommandList' that happens
+> to be packed. The change f749d8b7a ("scsi: hpsa: Correct dev cmds
+> outstanding for retried cmds") introduced unexpected padding and
+> un-aligned atomic_t from natural alignment to something else.
+> 
+> This change does not remove packing annotation from struct but only
+> restores alignment of atomic variable.
+> 
+> The change is tested on the same rx3600 machine.
+> 
+> CC: linux-ia64@vger.kernel.org
+> CC: storagedev@microchip.com
+> CC: linux-scsi@vger.kernel.org
+> CC: Joe Szczypek <jszczype@redhat.com>
+> CC: Scott Benesh <scott.benesh@microchip.com>
+> CC: Scott Teel <scott.teel@microchip.com>
+> CC: Tomas Henzl <thenzl@redhat.com>
+> CC: "Martin K. Petersen" <martin.petersen@oracle.com>
+> CC: Don Brace <don.brace@microchip.com>
+> Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> Suggested-by: Don Brace <don.brace@microchip.com>
+> Fixes: f749d8b7a "scsi: hpsa: Correct dev cmds outstanding for retried cmds"
+> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+> ---
+>  drivers/scsi/hpsa_cmd.h | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/hpsa_cmd.h b/drivers/scsi/hpsa_cmd.h
+> index d126bb877250..617bdae9a7de 100644
+> --- a/drivers/scsi/hpsa_cmd.h
+> +++ b/drivers/scsi/hpsa_cmd.h
+> @@ -20,6 +20,9 @@
+>  #ifndef HPSA_CMD_H
+>  #define HPSA_CMD_H
+>  
+> +#include <linux/build_bug.h> /* static_assert */
+> +#include <linux/stddef.h> /* offsetof */
+> +
+>  /* general boundary defintions */
+>  #define SENSEINFOBYTES          32 /* may vary between hbas */
+>  #define SG_ENTRIES_IN_CMD	32 /* Max SG entries excluding chain blocks */
+> @@ -448,11 +451,20 @@ struct CommandList {
+>  	 */
+>  	struct hpsa_scsi_dev_t *phys_disk;
+>  
+> -	bool retry_pending;
+> +	int retry_pending;
+>  	struct hpsa_scsi_dev_t *device;
+>  	atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init() */
+>  } __aligned(COMMANDLIST_ALIGNMENT);
+>  
+> +/*
+> + * Make sure our embedded atomic variable is aligned. Otherwise we break atomic
+> + * operations on architectures that don't support unaligned atomics like IA64.
+> + *
+> + * Ideally this header should be cleaned up to only mark individual structs as
+> + * packed.
+> + */
+> +static_assert(offsetof(struct CommandList, refcount) % __alignof__(atomic_t) == 0);
+> +
+>  /* Max S/G elements in I/O accelerator command */
+>  #define IOACCEL1_MAXSGENTRIES           24
+>  #define IOACCEL2_MAXSGENTRIES		28
+
+I'm seeing this issue as well and without the patch, the kernel won't boot on multiple
+ia64 servers. Is there anything that speaks against fixing this?
+
+Thanks,
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
