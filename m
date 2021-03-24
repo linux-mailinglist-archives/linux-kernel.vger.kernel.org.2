@@ -2,236 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E38346E87
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2CD346E8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhCXBNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:13:10 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49200 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbhCXBMm (ORCPT
+        id S234135AbhCXBQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231704AbhCXBQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:12:42 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6D570580;
-        Wed, 24 Mar 2021 02:12:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616548360;
-        bh=vuJ0DJ9qBEKJ/rNxZ8TfWwwC3KkXweg/inkaD3SvBis=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l9u0FhdwnK7GE0kV+gqZ6kr1o5Sq808ZbOnOqFY0RCRXBISo7NsoT3pI48YDnbeAD
-         GxHaY/n6LYJhtPUz9GHf+vGmk1X4s4Oi9PNDelNGEbHdThXXPCd5fngGAFyvhnD0LR
-         fwtRzQHoE/oTWKWpGqieU103cK4dSwcfPCRFLo9w=
-Date:   Wed, 24 Mar 2021 03:11:58 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Samuel Holland <samuel@sholland.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amarula@amarulasolutions.com, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v4 3/4] drm: sun4i: dsi: Convert to bridge driver
-Message-ID: <YFqR3mcXFrM1PNWo@pendragon.ideasonboard.com>
-References: <20210322140152.101709-1-jagan@amarulasolutions.com>
- <20210322140152.101709-4-jagan@amarulasolutions.com>
+        Tue, 23 Mar 2021 21:16:24 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800C9C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:16:23 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id b7so30174088ejv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 18:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lmZtlOkzXKW+6Uymw8Z89AWwFd+oGjy+eP5xv5XjORQ=;
+        b=jEZFAO6PtEX45puN+a6V92NL3n6JxqQ68ZVmiZ595EgF3s7VxmKYxN/ehbcb/Ap9Uw
+         EsFnNdRsCPNW8kYTcmq5oTHWKW5kOEnEQULsmHpa/oc0QumzpRSmz4ll4FbAzUqI84RL
+         Zu1UDyjg5QlIpR2hTOBdUFXDzaFr3MhaGBWoiyUfjb+P1aKZeZxN+CNYqb3AVQRskTPr
+         Cn8bCmSg/Jc4AK5mt/ZIHBbTmDyPxOv4wfJAdFIUyBQRq+GJFErWR3O2tDLjZjJ5zfEo
+         BDG0Y0FoXiBZAy3UT8QTkstQW7COTJzd9QYzk5e/t5vpRqoRXZWeOXwT7l1q0OoJPM+L
+         08Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lmZtlOkzXKW+6Uymw8Z89AWwFd+oGjy+eP5xv5XjORQ=;
+        b=cCbjq+drJsbjhxDFn11MiBVa3gKKfB6URJAd6QynaNx3QuIjv26w6lQA4rmsVJHEX6
+         FMMGIqe7kVwmj4hfBoF6i1jJXtjM5baJnC2VDgYHIDDuo+LdQuUrPNvdlejXt2s9ySKs
+         23ongIZTohE+lhlOjCNudldmdUltND5xPxdJkKg7mqIOh0PFEEURYvFlGo+9to88+bCL
+         cWvdoRlJFytJo52zF2mLwlSPvpcGR1un3f/2ndIeNZDZmBZKSCKahyradM9r3wlJ2faf
+         uVUnivatIwsRV6ab6Ju0HhCQfXUBYzpJwisp1WrG7dvsrIpzHAtEF6VhVIPXxrEomNT8
+         8LXA==
+X-Gm-Message-State: AOAM530HtvTtM6824Rk/Ifpl2qktNZwWycC5Y/fHH73PVws0dZOPwAb/
+        rEbocfufUBHhTvbJAHKtZzLU7ilJ5MsEOL1SvVc=
+X-Google-Smtp-Source: ABdhPJzPlT93p22g0xEGPzonusBjb1xcTgpziEnVjBCeHKb30p1gDkf5S4cljaPUYc4jyqF75YlZken7f67/QV7OCI4=
+X-Received: by 2002:a17:906:bcfc:: with SMTP id op28mr990221ejb.238.1616548582221;
+ Tue, 23 Mar 2021 18:16:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210322140152.101709-4-jagan@amarulasolutions.com>
+References: <20210323135405.65059-1-linmiaohe@huawei.com> <20210323135405.65059-6-linmiaohe@huawei.com>
+ <CAHbLzkoSsPWSdyZQBR03NbU8i3AG_DTL4P-efYULvuYmWzyYbg@mail.gmail.com>
+In-Reply-To: <CAHbLzkoSsPWSdyZQBR03NbU8i3AG_DTL4P-efYULvuYmWzyYbg@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 23 Mar 2021 18:16:10 -0700
+Message-ID: <CAHbLzko11ygmDp3pRry8meo3PhdXwro1rid-aBomC=0+rm3u6Q@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] mm/migrate.c: fix potential deadlock in NUMA
+ balancing shared exec THP case
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
+On Tue, Mar 23, 2021 at 10:17 AM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Tue, Mar 23, 2021 at 6:55 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+> >
+> > Since commit c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA
+> > balancing"), the NUMA balancing would skip shared exec transhuge page.
+> > But this enhancement is not suitable for transhuge page. Because it's
+> > required that page_mapcount() must be 1 due to no migration pte dance
+> > is done here. On the other hand, the shared exec transhuge page will
+> > leave the migrate_misplaced_page() with pte entry untouched and page
+> > locked. Thus pagefault for NUMA will be triggered again and deadlock
+> > occurs when we start waiting for the page lock held by ourselves.
+>
+> Thanks for catching this. By relooking the code I think the other
+> important reason for removing this is
+> migrate_misplaced_transhuge_page() actually can't see shared exec file
+> THP at all since page_lock_anon_vma_read() is called before and if
+> page is not anonymous page it will just restore the PMD without
+> migrating anything.
+>
+> The pages for private mapped file vma may be anonymous pages due to
+> COW but they can't be THP so it won't trigger THP numa fault at all. I
+> think this is why no bug was reported. I overlooked this in the first
+> place.
+>
+> Your fix is correct, and please add the above justification to your commit log.
 
-Thank you for the patch.
+BTW, I think you can just undo or revert commit c77c5cbafe54 ("mm:
+migrate: skip shared exec THP for NUMA balancing").
 
-On Mon, Mar 22, 2021 at 07:31:51PM +0530, Jagan Teki wrote:
-> DRM bridge drivers have build-in handling of treating all display
-> pipeline components as bridges.
-> 
-> So, convert the existing to a drm bridge driver with a built-in
-> encoder support for compatibility with existing component drivers.
+Thanks,
+Yang
 
-It would be best if possible to move this patch before 2/4, to first
-convert to the bridge model, and then build on top of it.
-
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v4:
-> - none
-> Changes for v3:
-> - new patch
-> 
->  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 75 ++++++++++++++++----------
->  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h |  6 +++
->  2 files changed, 54 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-> index 39321299dc27..6f3c5330a468 100644
-> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-> @@ -714,10 +714,10 @@ static int sun6i_dsi_start(struct sun6i_dsi *dsi,
->  	return 0;
->  }
->  
-> -static void sun6i_dsi_encoder_enable(struct drm_encoder *encoder)
-> +static void sun6i_dsi_bridge_enable(struct drm_bridge *bridge)
->  {
-> -	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
-> -	struct sun6i_dsi *dsi = encoder_to_sun6i_dsi(encoder);
-> +	struct drm_display_mode *mode = &bridge->encoder->crtc->state->adjusted_mode;
-> +	struct sun6i_dsi *dsi = bridge_to_sun6i_dsi(bridge);
->  	struct mipi_dsi_device *device = dsi->device;
->  	union phy_configure_opts opts = { };
->  	struct phy_configure_opts_mipi_dphy *cfg = &opts.mipi_dphy;
-> @@ -801,9 +801,9 @@ static void sun6i_dsi_encoder_enable(struct drm_encoder *encoder)
->  	sun6i_dsi_start(dsi, DSI_START_HSD);
->  }
->  
-> -static void sun6i_dsi_encoder_disable(struct drm_encoder *encoder)
-> +static void sun6i_dsi_bridge_disable(struct drm_bridge *bridge)
->  {
-> -	struct sun6i_dsi *dsi = encoder_to_sun6i_dsi(encoder);
-> +	struct sun6i_dsi *dsi = bridge_to_sun6i_dsi(bridge);
->  
->  	DRM_DEBUG_DRIVER("Disabling DSI output\n");
->  
-> @@ -852,9 +852,40 @@ static const struct drm_connector_funcs sun6i_dsi_connector_funcs = {
->  	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
->  };
->  
-> -static const struct drm_encoder_helper_funcs sun6i_dsi_enc_helper_funcs = {
-> -	.disable	= sun6i_dsi_encoder_disable,
-> -	.enable		= sun6i_dsi_encoder_enable,
-> +static int sun6i_dsi_bridge_attach(struct drm_bridge *bridge,
-> +				   enum drm_bridge_attach_flags flags)
-> +{
-> +	struct sun6i_dsi *dsi = bridge_to_sun6i_dsi(bridge);
-> +	int ret;
-> +
-> +	if (dsi->panel_bridge)
-> +		return drm_bridge_attach(bridge->encoder, dsi->panel_bridge, NULL, 0);
-> +
-> +	if (dsi->panel) {
-> +		drm_connector_helper_add(&dsi->connector,
-> +					 &sun6i_dsi_connector_helper_funcs);
-> +		ret = drm_connector_init(bridge->dev, &dsi->connector,
-> +					 &sun6i_dsi_connector_funcs,
-> +					 DRM_MODE_CONNECTOR_DSI);
-> +		if (ret) {
-> +			dev_err(dsi->dev, "Couldn't initialise the DSI connector\n");
-> +			goto err_cleanup_connector;
-> +		}
-> +
-> +		drm_connector_attach_encoder(&dsi->connector, &dsi->encoder);
-> +	}
-> +
-> +	return 0;
-> +
-> +err_cleanup_connector:
-> +	drm_encoder_cleanup(&dsi->encoder);
-> +	return ret;
-> +}
-> +
-> +static const struct drm_bridge_funcs sun6i_dsi_bridge_funcs = {
-> +	.enable		= sun6i_dsi_bridge_enable,
-> +	.disable	= sun6i_dsi_bridge_disable,
-> +	.attach		= sun6i_dsi_bridge_attach,
->  };
->  
->  static u32 sun6i_dsi_dcs_build_pkt_hdr(struct sun6i_dsi *dsi,
-> @@ -1063,8 +1094,6 @@ static int sun6i_dsi_bind(struct device *dev, struct device *master,
->  	struct sun6i_dsi *dsi = dev_get_drvdata(dev);
->  	int ret;
->  
-> -	drm_encoder_helper_add(&dsi->encoder,
-> -			       &sun6i_dsi_enc_helper_funcs);
->  	ret = drm_simple_encoder_init(drm, &dsi->encoder,
->  				      DRM_MODE_ENCODER_DSI);
->  	if (ret) {
-> @@ -1073,27 +1102,12 @@ static int sun6i_dsi_bind(struct device *dev, struct device *master,
->  	}
->  	dsi->encoder.possible_crtcs = BIT(0);
->  
-> -	drm_connector_helper_add(&dsi->connector,
-> -				 &sun6i_dsi_connector_helper_funcs);
-> -	ret = drm_connector_init(drm, &dsi->connector,
-> -				 &sun6i_dsi_connector_funcs,
-> -				 DRM_MODE_CONNECTOR_DSI);
-> +	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL, 0);
->  	if (ret) {
-> -		dev_err(dsi->dev,
-> -			"Couldn't initialise the DSI connector\n");
-> +		dev_err(dsi->dev, "Couldn't attach drm bridge\n");
->  		goto err_cleanup_connector;
->  	}
->  
-> -	drm_connector_attach_encoder(&dsi->connector, &dsi->encoder);
-> -
-> -	if (dsi->panel_bridge) {
-> -		ret = drm_bridge_attach(&dsi->encoder, dsi->panel_bridge, NULL, 0);
-> -		if (ret) {
-> -			dev_err(dsi->dev, "Couldn't attach drm bridge\n");
-> -			goto err_cleanup_connector;
-> -		}
-> -	}
-> -
->  	return 0;
->  
->  err_cleanup_connector:
-> @@ -1199,6 +1213,12 @@ static int sun6i_dsi_probe(struct platform_device *pdev)
->  		goto err_unprotect_clk;
->  	}
->  
-> +	dsi->bridge.funcs = &sun6i_dsi_bridge_funcs;
-> +	dsi->bridge.of_node = dev->of_node;
-> +	dsi->bridge.type = DRM_MODE_CONNECTOR_DSI;
-> +
-> +	drm_bridge_add(&dsi->bridge);
-> +
->  	ret = component_add(&pdev->dev, &sun6i_dsi_ops);
->  	if (ret) {
->  		dev_err(dev, "Couldn't register our component\n");
-> @@ -1222,6 +1242,7 @@ static int sun6i_dsi_remove(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct sun6i_dsi *dsi = dev_get_drvdata(dev);
->  
-> +	drm_bridge_remove(&dsi->bridge);
->  	component_del(&pdev->dev, &sun6i_dsi_ops);
->  	mipi_dsi_host_unregister(&dsi->host);
->  	clk_rate_exclusive_put(dsi->mod_clk);
-> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h
-> index 370ecb356a63..5e70666089ad 100644
-> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h
-> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h
-> @@ -16,6 +16,7 @@
->  #define SUN6I_DSI_TCON_DIV	4
->  
->  struct sun6i_dsi {
-> +	struct drm_bridge	bridge;
->  	struct drm_connector	connector;
->  	struct drm_encoder	encoder;
-
-The drm_encoder should be dropped from this driver, the encoder should
-be created by the main display driver.
-
->  	struct mipi_dsi_host	host;
-> @@ -38,6 +39,11 @@ static inline struct sun6i_dsi *host_to_sun6i_dsi(struct mipi_dsi_host *host)
->  	return container_of(host, struct sun6i_dsi, host);
->  };
->  
-> +static inline struct sun6i_dsi *bridge_to_sun6i_dsi(struct drm_bridge *bridge)
-> +{
-> +	return container_of(bridge, struct sun6i_dsi, bridge);
-> +}
-> +
->  static inline struct sun6i_dsi *connector_to_sun6i_dsi(struct drm_connector *connector)
->  {
->  	return container_of(connector, struct sun6i_dsi, connector);
-
--- 
-Regards,
-
-Laurent Pinchart
+>
+> Reviewed-by: Yang Shi <shy828301@gmail.com>
+>
+> >
+> > Fixes: c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA balancing")
+> > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> > ---
+> >  mm/migrate.c | 4 ----
+> >  1 file changed, 4 deletions(-)
+> >
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index 5357a8527ca2..68bfa1625898 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -2192,9 +2192,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+> >         int page_lru = page_is_file_lru(page);
+> >         unsigned long start = address & HPAGE_PMD_MASK;
+> >
+> > -       if (is_shared_exec_page(vma, page))
+> > -               goto out;
+> > -
+> >         new_page = alloc_pages_node(node,
+> >                 (GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
+> >                 HPAGE_PMD_ORDER);
+> > @@ -2306,7 +2303,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+> >
+> >  out_unlock:
+> >         unlock_page(page);
+> > -out:
+> >         put_page(page);
+> >         return 0;
+> >  }
+> > --
+> > 2.19.1
+> >
