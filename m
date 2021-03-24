@@ -2,309 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A5F347995
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADF2347994
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235119AbhCXN2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:28:22 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:39904 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234494AbhCXN2A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:28:00 -0400
-Received: by mail-oi1-f172.google.com with SMTP id i81so19278578oif.6;
-        Wed, 24 Mar 2021 06:28:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wVtFOOqo3xe9yL6j51iSdtuw9qJvjjXH+Yk+HGXG5Qk=;
-        b=ROAyGghdRf1TRH8n4xO+I4NJqC7+j+eR782Joe9pDwbNrEPiifrZ/WO1gqqurOr25p
-         jxaYb7uE/di/VI9FgloIgZqVEUcaxD1cqO/fsAun1hMdkkSQPTXIn2aLyix04dFwf4Fi
-         oJjCOTdq/RYNxYTSGPMe/0iM/IPRGkryQyIBMfYoR05pq1M1m79SWOvx7nyBUWptFIyj
-         Fsqwee32bPNSMfBS3IwCf7PwzaZ2svR1hJvJJucH2hSstk1oR7KjcUyPnMpzIgf6dOjk
-         8I40HkFQhfj7QxpD8q1gkVOCxYMaweN8JT2E6b7yO2BTIghFkyr6SEJmM/IWLkSNQ0a2
-         d80A==
-X-Gm-Message-State: AOAM533aGCvvf9kVrO8Q8XWKv7HZhpUarCvMAKUeFQTmTMiRn73zaN5l
-        ZwgXk+Gcy8K9hBW1OxeRyzCxyljAZQE5ROeV3Xk=
-X-Google-Smtp-Source: ABdhPJxNK5hjEsGMlbXlbQEYDPkCopm/stI0iNLO0Lfgz8LmA527ZlaJjLKeOTCi2tfxdoz7gP158xia1laxXRqMCE0=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr2312470oib.69.1616592479613;
- Wed, 24 Mar 2021 06:27:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
- <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
- <3236337.DtqTXxM43S@kreacher> <YFMAdIVn2hpTHfBq@linux.ibm.com>
- <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com>
- <CAJZ5v0iump7nVKfyu7S23-n=gQFx5d2MKejrnT6yFak7L9V11g@mail.gmail.com>
- <YFWxbzN92XcXNl95@linux.ibm.com> <4650320.31r3eYUQgx@kreacher> <YFr3KMhW0ajHzeH4@linux.ibm.com>
-In-Reply-To: <YFr3KMhW0ajHzeH4@linux.ibm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 24 Mar 2021 14:27:48 +0100
-Message-ID: <CAJZ5v0gWWGx8dvtz2pnXcCoxz_Aswo8Yxp=vo-z=jYX1OzC3=Q@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: tables: x86: Reserve memory occupied by ACPI tables
-To:     Mike Rapoport <rppt@linux.ibm.com>,
-        George Kennedy <george.kennedy@oracle.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
+        id S234844AbhCXN2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:28:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38228 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234381AbhCXN14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:27:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 711FBAD71;
+        Wed, 24 Mar 2021 13:27:55 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 14:27:53 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         David Hildenbrand <david@redhat.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        x86 Maintainers <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <20210324132745.GA20676@linux>
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de>
+ <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux>
+ <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 9:24 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> On Tue, Mar 23, 2021 at 08:26:52PM +0100, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > The following problem has been reported by George Kennedy:
-> >
-> >  Since commit 7fef431be9c9 ("mm/page_alloc: place pages to tail
-> >  in __free_pages_core()") the following use after free occurs
-> >  intermittently when ACPI tables are accessed.
-> >
-> >  BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
-> >  Read of size 4 at addr ffff8880be453004 by task swapper/0/1
-> >  CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-7a7fd0d #1
-> >  Call Trace:
-> >   dump_stack+0xf6/0x158
-> >   print_address_description.constprop.9+0x41/0x60
-> >   kasan_report.cold.14+0x7b/0xd4
-> >   __asan_report_load_n_noabort+0xf/0x20
-> >   ibft_init+0x134/0xc49
-> >   do_one_initcall+0xc4/0x3e0
-> >   kernel_init_freeable+0x5af/0x66b
-> >   kernel_init+0x16/0x1d0
-> >   ret_from_fork+0x22/0x30
-> >
-> >  ACPI tables mapped via kmap() do not have their mapped pages
-> >  reserved and the pages can be "stolen" by the buddy allocator.
-> >
-> > Apparently, on the affected system, the ACPI table in question is
-> > not located in "reserved" memory, like ACPI NVS or ACPI Data, that
-> > will not be used by the buddy allocator, so the memory occupied by
-> > that table has to be explicitly reserved to prevent the buddy
-> > allocator from using it.
-> >
-> > In order to address this problem, rearrange the initialization of the
-> > ACPI tables on x86 to locate the initial tables earlier and reserve
-> > the memory occupied by them.
-> >
-> > The other architectures using ACPI should not be affected by this
-> > change.
-> >
-> > Link: https://lore.kernel.org/linux-acpi/1614802160-29362-1-git-send-email-george.kennedy@oracle.com/
-> > Reported-by: George Kennedy <george.kennedy@oracle.com>
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> FWIW:
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, Mar 24, 2021 at 01:03:29PM +0100, Michal Hocko wrote:
+> > Assume this:
+> > 
+> > - memory_block_size = 128MB
+> > - add_memory(256MB) : no uses altmap because size != memory_block_size
+> > - add_memory(128MB) : uses altmap
+> 
+> 256 are two memory blocks so why couldn't we split the operation and add
+> two altmaps each for its own memory block?
 
-Thank you!
+We could, but then the code just gets trickier. I find easier to define more
+simple semantics that must hold in order to opt-in the feature.
 
-George, can you please try this patch on the affected system?
+Moreover, what we get in return wrt. splitting sizes in memory_blocks is not
+really worth comparing to the simple check we have to fence off these kind
+of situations.
 
-> > ---
-> >  arch/x86/kernel/acpi/boot.c |   25 ++++++++++++-------------
-> >  arch/x86/kernel/setup.c     |    8 +++-----
-> >  drivers/acpi/tables.c       |   42 +++++++++++++++++++++++++++++++++++++++---
-> >  include/linux/acpi.h        |    9 ++++++++-
-> >  4 files changed, 62 insertions(+), 22 deletions(-)
-> >
-> > Index: linux-pm/arch/x86/kernel/acpi/boot.c
-> > ===================================================================
-> > --- linux-pm.orig/arch/x86/kernel/acpi/boot.c
-> > +++ linux-pm/arch/x86/kernel/acpi/boot.c
-> > @@ -1554,10 +1554,18 @@ void __init acpi_boot_table_init(void)
-> >       /*
-> >        * Initialize the ACPI boot-time table parser.
-> >        */
-> > -     if (acpi_table_init()) {
-> > +     if (acpi_locate_initial_tables())
-> >               disable_acpi();
-> > -             return;
-> > -     }
-> > +     else
-> > +             acpi_reserve_initial_tables();
-> > +}
-> > +
-> > +int __init early_acpi_boot_init(void)
-> > +{
-> > +     if (acpi_disabled)
-> > +             return 1;
-> > +
-> > +     acpi_table_init_complete();
-> >
-> >       acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
-> >
-> > @@ -1570,18 +1578,9 @@ void __init acpi_boot_table_init(void)
-> >               } else {
-> >                       printk(KERN_WARNING PREFIX "Disabling ACPI support\n");
-> >                       disable_acpi();
-> > -                     return;
-> > +                     return 1;
-> >               }
-> >       }
-> > -}
-> > -
-> > -int __init early_acpi_boot_init(void)
-> > -{
-> > -     /*
-> > -      * If acpi_disabled, bail out
-> > -      */
-> > -     if (acpi_disabled)
-> > -             return 1;
-> >
-> >       /*
-> >        * Process the Multiple APIC Description Table (MADT), if present
-> > Index: linux-pm/arch/x86/kernel/setup.c
-> > ===================================================================
-> > --- linux-pm.orig/arch/x86/kernel/setup.c
-> > +++ linux-pm/arch/x86/kernel/setup.c
-> > @@ -1045,6 +1045,9 @@ void __init setup_arch(char **cmdline_p)
-> >
-> >       cleanup_highmap();
-> >
-> > +     /* Look for ACPI tables and reserve memory occupied by them. */
-> > +     acpi_boot_table_init();
-> > +
-> >       memblock_set_current_limit(ISA_END_ADDRESS);
-> >       e820__memblock_setup();
-> >
-> > @@ -1136,11 +1139,6 @@ void __init setup_arch(char **cmdline_p)
-> >
-> >       early_platform_quirks();
-> >
-> > -     /*
-> > -      * Parse the ACPI tables for possible boot-time SMP configuration.
-> > -      */
-> > -     acpi_boot_table_init();
-> > -
-> >       early_acpi_boot_init();
-> >
-> >       initmem_init();
-> > Index: linux-pm/include/linux/acpi.h
-> > ===================================================================
-> > --- linux-pm.orig/include/linux/acpi.h
-> > +++ linux-pm/include/linux/acpi.h
-> > @@ -222,10 +222,14 @@ void __iomem *__acpi_map_table(unsigned
-> >  void __acpi_unmap_table(void __iomem *map, unsigned long size);
-> >  int early_acpi_boot_init(void);
-> >  int acpi_boot_init (void);
-> > +void acpi_boot_table_prepare (void);
-> >  void acpi_boot_table_init (void);
-> >  int acpi_mps_check (void);
-> >  int acpi_numa_init (void);
-> >
-> > +int acpi_locate_initial_tables (void);
-> > +void acpi_reserve_initial_tables (void);
-> > +void acpi_table_init_complete (void);
-> >  int acpi_table_init (void);
-> >  int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
-> >  int __init acpi_table_parse_entries(char *id, unsigned long table_size,
-> > @@ -814,9 +818,12 @@ static inline int acpi_boot_init(void)
-> >       return 0;
-> >  }
-> >
-> > +static inline void acpi_boot_table_prepare(void)
-> > +{
-> > +}
-> > +
-> >  static inline void acpi_boot_table_init(void)
-> >  {
-> > -     return;
-> >  }
-> >
-> >  static inline int acpi_mps_check(void)
-> > Index: linux-pm/drivers/acpi/tables.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/tables.c
-> > +++ linux-pm/drivers/acpi/tables.c
-> > @@ -780,7 +780,7 @@ acpi_status acpi_os_table_override(struc
-> >  }
-> >
-> >  /*
-> > - * acpi_table_init()
-> > + * acpi_locate_initial_tables()
-> >   *
-> >   * find RSDP, find and checksum SDT/XSDT.
-> >   * checksum all tables, print SDT/XSDT
-> > @@ -788,7 +788,7 @@ acpi_status acpi_os_table_override(struc
-> >   * result: sdt_entry[] is initialized
-> >   */
-> >
-> > -int __init acpi_table_init(void)
-> > +int __init acpi_locate_initial_tables(void)
-> >  {
-> >       acpi_status status;
-> >
-> > @@ -803,9 +803,45 @@ int __init acpi_table_init(void)
-> >       status = acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
-> >       if (ACPI_FAILURE(status))
-> >               return -EINVAL;
-> > -     acpi_table_initrd_scan();
-> >
-> > +     return 0;
-> > +}
-> > +
-> > +void __init acpi_reserve_initial_tables(void)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i = 0; i < ACPI_MAX_TABLES; i++) {
-> > +             struct acpi_table_desc *table_desc = &initial_tables[i];
-> > +             u64 start = table_desc->address;
-> > +             u64 size = table_desc->length;
-> > +
-> > +             if (!start || !size)
-> > +                     break;
-> > +
-> > +             pr_info("Reserving %4s table memory at [mem 0x%llx-0x%llx]\n",
-> > +                     table_desc->signature.ascii, start, start + size - 1);
-> > +
-> > +             memblock_reserve(start, size);
-> > +     }
-> > +}
-> > +
-> > +void __init acpi_table_init_complete(void)
-> > +{
-> > +     acpi_table_initrd_scan();
-> >       check_multiple_madt();
-> > +}
-> > +
-> > +int __init acpi_table_init(void)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = acpi_locate_initial_tables();
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     acpi_table_init_complete();
-> > +
-> >       return 0;
-> >  }
-> >
-> >
-> >
-> >
->
-> --
-> Sincerely yours,
-> Mike.
+So, IOW, we could do it conceptually, but I would like to keep it simple.
+
+> > But I do not think this is any better than make this scenario completely a NO-NO,
+> > because in the end, this is asking for trouble.
+> > And yes, normal qemu/barematal users does not have the hability to play these
+> > kind of tricks, as baremetal has HW limitations and qemu creates a device for
+> > every range you hot-add (so you are tied to that device when removing memory
+> > as well), but other users e.g: virtio-mem can do that.
+> 
+> I am not against reducing functionality for the initial version where it
+> makes sense. E.g. partial memory blocks. But if the overall hotplug
+> operation can be devided into multiple blocks then there shouldn't be
+> any real reason for restrictions IMHO.
+
+As I said, I think it can be done, but it would overcomplicate the picture
+at this moment, an I am not sure it is really worth it.
+Something to inspect fot the future? Sure, and it kinda sounds interesting,
+but putting that in place atm would be too much IMHO.
+
+> [...]
+> > > - online_pages for some reason needs to know about the reserved vmemmap
+> > >   space. Why? It already knows the intial pfn to online. Why cannot
+> > >   caller simply alter both start pfn and nr_pages to online everything
+> > >   after the vmemmap space? This is somehow conflating the mem block
+> > >   concept deeper into onlining.
+> > > - the same applies to offlining.
+> > 
+> > Because some counters need not only the buddy_nr_pages, but the complete
+> > range.
+> > 
+> > So, let us see what online_pages() do (offline_pages() as well but slightly
+> > different in some areas)
+> > 
+> > - move_pfn_range_to_zone():
+> >   1) Resize node and zone spanned pages
+> >      * If we were only to pass the nr_pages without the vmemmap pages,
+> >        node/zone's spanned pages would be wrong as vmemmap pages would not
+> >        be accounted in there.
+> 
+> Why is that a problem? That memory is not usable anyway.
+
+We account bootmem vemmamp memory as node/zone's spanned pages, why hotplug
+vmemmap should be any diferent? And we are talking about spanned pages here,
+which do not relate to usable memory.
+
+
+> >   2) Inits struct pages by memmap_init_range() and sets its migratetype
+> >      * If we were only to pass the nr_pages without the vmemmap pages,
+> >        vmemmap pages would be totally unitialized.
+> >        We also set its migratetype to MIGRATE_UNMOVABLE.
+> >        Previous versions initialize vmemmap pages in another place but
+> >        there was a consensus to do it here.
+> 
+> Migrate type for pages backing vmemmap?
+
+Since we initialize them, it made sense to mark them as UNMOVABLE, as that
+memory is self-hosted.
+More on that below.
+
+> > - Increment zone->present_pages
+> >   * We need to account buddy_pages + vmemmap_pages here
+> 
+> You can compensate for that by accounting present_pages where you
+> allocate them - when the memory is hot removed.
+
+Why compensate? We have the data handy, and as above, bootmem vmemmap pages
+get directly accounted to node/zone's present_pages. I do not see why
+hotplug vmemmap pages would be different in this regard.
+
+> > - zone->zone_pgdat->node_present_pages
+> >   * Same as above
+> > 
+> > - online_pages_range() (onlines the pages, __and__ the sections)
+> >   * Here do not only need the (buddy_pages, end_pages), but (vmemmap_pages, end_pages)
+> >     as well, because on one hand we do:
+> > 
+> >     online_pages_range()
+> >     {
+> >        for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
+> >                 (*online_page_callback)(pfn_to_page(pfn), MAX_ORDER - 1);
+> > 
+> >        online_mem_sections(start_pfn, end_pfn);
+> >    }
+> > 
+> >    For the call to online_mem_sections, we need to whole range (including the vmemmap
+> >    pages), otherwise, if a whole section only contains vmemmap pages, the section
+> >    might be left marked as offline, and that is troublesome.
+> 
+> I would like to hear much more about those troubles.
+
+In a previous discussion with David:
+
+   " Well, if the section holding vmemmap pages is offline, would it be bad
+    that pfn_to_online_page() returns NULL?
+    AFAICS, callers would know that there is nothing to do with such page,
+    and that is true since they only back other pages, and if
+    these other pages are offline, that is it."
+
+  "It's for example an issue with zone shrinking. But I recall it's also an
+   issue when hibernating/suspending, dumping memory and so on ."
+
+Moreover, sections containing bootmem vmemmap pages get also onlined, so it would
+special case something that it does not need to.
+
+> > As I said, the same applies to offline_pages(), but with slightly tweaks here and
+> > there because it handles somewhat different things.
+> > 
+> > I kind of understand to be reluctant to use vmemmap_pages terminology here, but
+> > unfortunately we need to know about it.
+> > We could rename nr_vmemmap_pages to offset_buddy_pages or something like that.
+> 
+> I am not convinced. It seems you are justr trying to graft the new
+> functionality in. But I still believe that {on,off}lining shouldn't care
+> about where their vmemmaps come from at all. It should be a
+> responsibility of the code which reserves that space to compansate for
+> accounting. Otherwise we will end up with a hard to maintain code
+> because expectations would be spread at way too many places. Not to
+> mention different pfns that the code should care about.
+...
+> > Back then, when removing the first vmemmap backing further sections, when
+> > then dereferencing those sections in free_pagetable(), we would crash because
+> > the mapping was not there anymore.
+> > This cannot longer happen.
+> 
+> OK, it would be great to outline that in the changelog because this is
+> an important detail.
+
+Will add it.
+
+> > This should not happen anymore as mhp_support_memmap_on_memory() does not let
+> > to use MHP_MEMMAP_ON_MEMORY if range is not pageblock_nr_pages.
+> 
+> My point was that even if this was still needed VM_BUG_ON is not the
+> right way to take care of it. If you have a way to gracefully handle an
+> unexpected input then this should always be done.
+
+Ok, I understand.
+
+> > Yes, on arm64 with large pages depending on HUGETLB support this can lead to
+> > one condition be true while the other not.
+> 
+> A comment would be helpful.
+
+Sure
+
+> > Quick summary of account:
+> > 
+> > - online_pages()->move_pfn_range_to_zone(): Accounts for node/zone's spanned pages
+> > - online_pages()->zone->present_pages += nr_pages;
+> > - zone->zone_pgdat->node_present_pages += nr_pages;
+> > - online_pages()->online_pages_range()->generic_online_page()->totalram_pages_add():
+> >   Accounts for totalram_pages
+> 
+> these should account vmemmap pages as well. Although I do not why it
+> would be a big problem to leave those out. Anyway, it should be quite
+> straightforward to account them at the time when the vmemmap space is
+> reserved as already mentioned above.
+> 
+> > - online_pages()->adjust_managed_page_count(): Accounts for zone->managed_pages
+> 
+> these are only managed by the allocator so vmemmap pages are off the
+> table.
+
+Yes, vmemmap pages are not accounted to managed_pages.
+
+Ok, it all boils down to:
+
+- online_pages/offline_pages __besides__ handing pages over to buddy or migrate them,
+  take care of onlining/offlining sections, the accounting of:
+  present_pages (node/zone)
+  spanned_pages (node/zone)
+  managed_pages  (zone)
+  (remember that bootmem vmemmap pages get directly accounted in those counters,
+   special casing vmemmap pages seems wrong tbh)
+
+  __and__ the initialization of pages.
+
+  vmemmap pages, as any other page, neeed to be properly initalized.
+  Since the initialization and accounting is carved in online_pages(), it makes
+  sense to pass the vmemmap pages in there.
+  
+I guess we could have some helpers to do that and try to call those helpers
+out of {online,offline}_pages(), but I think the end result would look more
+weird.
+
+As I said, vmemmap pages need to be initialized and accounted, and all that
+work is done in {offline,online}_pages.
+
+As I said, terminilogy could change (not sure it is any better), but we need to
+do some of the work those two function provides, and it seems quite straightforward
+do it there.
+
+
+-- 
+Oscar Salvador
+SUSE L3
