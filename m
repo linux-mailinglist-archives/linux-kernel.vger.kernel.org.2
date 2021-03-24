@@ -2,221 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF5F347BDD
+	by mail.lfdr.de (Postfix) with ESMTP id B9F68347BDE
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236515AbhCXPOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50888 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236542AbhCXPOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:14:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17312619CD;
-        Wed, 24 Mar 2021 15:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616598840;
-        bh=0gRZm+WIBbcZF9DMDRD/ls7vTIsweOK/2Y5PO8kAujc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IVAIoTTbrDkpxZY7oc/SGa2fP+8nBCDLOJMA2EsVmKcecyqWGXpqSKGEus/vi8mcZ
-         /A9gJlKeE+tefDJv3yxNr53MxQfVriW7D4bs7I/7JM8jK5OThFdH2gUsBPt+gT1Fdj
-         ANprcewk+T9q+ugQzfHvJ+v4XnGFvlh1FUcrVj8bXgyiM7NRvZTA7PxL9EbX6Wd4Uk
-         8mOU6O79gEorimwjekYsBK9lb6IDikNZhPMqoMRd/398j1OA9DdJX1W1x/F1P3Ii8s
-         YFHKSio6H3/3ryHBVhblJq980tcKC/f7jl+kg9Vylp12t2t+1Um2bSl60jkDYtbqvd
-         3/v85QeZUq2rQ==
-Date:   Wed, 24 Mar 2021 17:13:56 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFtXNF+t/0G26dwS@unreal>
-References: <YFOMShJAm4j/3vRl@unreal>
- <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
- <YFSgQ2RWqt4YyIV4@unreal>
- <20210319102313.179e9969@omen.home.shazbot.org>
- <YFW78AfbhYpn16H4@unreal>
- <20210320085942.3cefcc48@x1.home.shazbot.org>
- <YFcGlzbaSzQ5Qota@unreal>
- <20210322111003.50d64f2c@omen.home.shazbot.org>
- <YFsOVNM1zIqNUN8f@unreal>
- <20210324083743.791d6191@omen.home.shazbot.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S236548AbhCXPOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:14:22 -0400
+Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:42788 "EHLO
+        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236549AbhCXPOJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:14:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1616598848;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=wG4im1BTW2ovd2UN98LBR1DeI+7tH225IUFzOgweV5g=;
+  b=GKzyobrbu4toPJC/MhSEu7XXfmm61vOL2vs6Pr8JyGc7jnzOUFBRUKKY
+   s9vRNtnixTzCL6pw67nDGNOyk+V9CIjk/uHcVMVnAmApDYc7J/bAvf94Q
+   GWv/wwPRmD6OD+mpG+8gr3XL2AuxNXV0/jx0lAa2+D9EMC8uftY/zhKXL
+   I=;
+Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: WPgl8n6C1t9qqptT2KlYIcusDPet5S6aMpDU2n8dy3iid03VuoyjBToIx4kDSopOuQvyFDwxF3
+ 1AxeTRbFgHlolX61kz1IsHfkEzbwXkoDCDbc3UbO+G3q6cnbURy0iPgfjqZoPkf1OkGMfB5CcZ
+ ERcpJLiHGEz6LPrx9QeI7dv9PbWmTe9PcailXEMCHyZ6o0SQPFzqH16+xypp6HbPSp3qczFtRn
+ DoWP/WcfjQhuDQuR+Uue3CWfW6elF0ZIhJ1lPsTQ+ob5hTFwRuRPlcPbVqvJQuJD8gCofZhf/s
+ 3nM=
+X-SBRS: 5.2
+X-MesageID: 40034394
+X-Ironport-Server: esa2.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+IronPort-HdrOrdr: A9a23:yc9NWqNChxiPE8BcTxP155DYdL4zR+YMi2QD/1xtSBBTb8yTn9
+ 2vmvNe7hPvlDMNQhgb9OyoEqPoexPh3LRy5pQcOqrnYRn+tAKTXeVfxKbB4xmlIS3x8eZByb
+ xtGpIVNPTcBUV35PyU3CCWCNAlqePozImNpcPzi0hgVhtrbaYI1XYdNi++HldtTAdLQboVfa
+ DshfZvnDardXQJYsnTPBBsM9TrnNHXiIngJScPGh9P0mKzpAm14733GQXw5GZ9bxpzx94ZkF
+ TtokjCyYiI99q6zRLd0GG71eUqpPLRjuFtKebJpswcKjDHghulaoJ7S9S5zUwIidDq0nkGup
+ 3hpAohItRS5hrqDx6IiCqo4SbM+nIP7GLv0lCRi3eLm72GeBsKT/BvqKgcVzmx0TtGgPhMlJ
+ hl8kjcir9sSTTHpyj578igbWAQqmOE5UAMvMRWs2ZSSuIlGdlshL1axmx5OrEaEhn37Yg2ed
+ Medv301bJtfVSWY2uxhBgX/PWcGnA6HhKxSkMfoMCi0z9PgHBjz0cDrfZv5ks9yA==
+X-IronPort-AV: E=Sophos;i="5.81,274,1610427600"; 
+   d="scan'208";a="40034394"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RN40r+sN9kfv344l5vSEJ6OaOYPkby1+i+EDj9/SpDEyDl3kTIx8tSeqreKf5Ho+ne0pB13I0/fnBNkgvcpvV8OkoW48rNRMh4svK1flHMavv43Z6Ce6rdyAoUC+WvAAhHpeetVcYgdsKPi88Ed1jgMwTAueAGuFfDvOIe0FXugXp347EXxHJP8odlyoc0O6aGeudaDHFC11404LjJRqPaNMudMMNJhcdXmsyVM6XrNA81chTuQqsRhl9Vp06JZeUtWLsFzp0fYwOdKasWs+mrcahtDBLi3imJ7v44uHocLnvZPC6NhIICH6dObY3EHi0AhYXzUXKkHPvEQL6lucrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XrReSzt1viFtrrmsZHR21zzYTBDhjfiA/E7QWNDYML0=;
+ b=MA6gjzc9keGC+CQZkFTD3Ds+G4T4q0LsCSXT71w8VfltAkVU/Y+DM+saIwhSDB1ETQ6ozDHqY+JhKoziRP08wC5A1FHQPYhTdmyjpgQWmiL/kerj+N1YbtR/cvWU6yWGdNgkPSAu05b6y0g6VAmXfHvBwyO9X3GG4Xxp0CEU52b412lxnddO5/wPHNhvdRyzUCQdk0ZdWsvx8Ecah4Lez2vh5WMx22hpJ+R4yANxomJyHkxT/vUXhwlWYJab/ID58bsYcgmJTZgHjflfrdhsTGfllpW3hMqysLC09kUVjyqL8WlfYn3/OCnFsMk6feOEPmIoXCXRhHklmewAO1lfQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XrReSzt1viFtrrmsZHR21zzYTBDhjfiA/E7QWNDYML0=;
+ b=giu/EzXcUXgOTKUAkbxGRoHbGbKetEMrQvRNDZHd4EyOPxhpIaVfAyIRXDVTyf+Md0EZXllteM/AjNogcOKu2Nbp+RYn+flTKTSg1uwqUZHkK5OomSv7BN0/eF9VNvKR2p9EfDIine1b4E7DjCa197pNFGN03YtNHf/DK630DD8=
+Date:   Wed, 24 Mar 2021 16:13:59 +0100
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH RESEND] intel/pinctrl: check capability offset is between
+ MMIO region
+Message-ID: <YFtXNw8ZKkp82EIH@Air-de-Roger>
+References: <20210324123118.58865-1-roger.pau@citrix.com>
+ <YFs3XwOBRGAFyASY@smile.fi.intel.com> <YFtEw7qHQKE/4p8t@Air-de-Roger>
+ <YFtLNLTrR9wTO41W@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210324083743.791d6191@omen.home.shazbot.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFtLNLTrR9wTO41W@smile.fi.intel.com>
+X-ClientProxiedBy: MR2P264CA0174.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501::13)
+ To DS7PR03MB5608.namprd03.prod.outlook.com (2603:10b6:5:2c9::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7e662c5f-0f50-42d4-021b-08d8eed77690
+X-MS-TrafficTypeDiagnostic: DS7PR03MB5590:
+X-Microsoft-Antispam-PRVS: <DS7PR03MB55906D9F17705CFB2D1B96F88F639@DS7PR03MB5590.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SnnrdxuX5UCIOgYv80Hp35pCGLqC2enbOnbTOj6l66gFin8iIn4N/v/gHxWG54aBO6hkYy69wzMt4Ro72sUwyYNknu9mPX+BWd7NJksJKW8L4jOf+uJqYEBYeuoJ26y5GuUUJ1sCTccTg6/Hn6jIpnj8qWiqL1PqKoynHBylUBbv4tNCIN/YLKdhMxI/Lff2s8K3aW7ZjqO74S/teZ4ZRhx7s4cyVutYLrm4VIDVNq+6xPtyGusb9a+ntX75DsxHpitYOChpfhKPaIN9pGD761nGQtgUJRb2L35olA6uM19PRPg52YIjg3eIdTovHP3nxRZC6QqTTjArnrTAHbKXJJbKMJhamhgCmdxKS0UpmKcmUwlqwysdZ5/lCdzaKojRQkeLe/XPYlGVUcG/Z5dM9YESYQyY55KQH2kIx5ItybCm8e35m1Nxdg9ga0TRQHEoImXSPc0aOPZdGIFr5QfsSkIcK8q8s2amZkTo+cPOLHIqwdwju/f/wYxFRCc205ea01KJR0dFtP77cd58ilFMnJcTDJJhZ4dRH48M3yI3bU5fuXj7tq9z99QCDUTfMNebkbURgGVtXoBdrc5knfqt29ACCQExzJA8N2ziWIiHRs723VKRLp/VGzSzKyQUJb0eytILX7jEkO8Zs0B8lLWVo+eJkP5LIjuCiqYA4BQhqGQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(39860400002)(376002)(366004)(346002)(396003)(8676002)(26005)(956004)(8936002)(83380400001)(85182001)(6666004)(478600001)(186003)(16526019)(6486002)(54906003)(6496006)(4326008)(66946007)(2906002)(66556008)(66476007)(33716001)(6916009)(38100700001)(9686003)(5660300002)(86362001)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cC8yaGlzQkFOclhZMzY5YlhObDd5WnJoZ0s1VnZVdnVZdjJqaFhCdDNOOHFu?=
+ =?utf-8?B?a3ZyWEVZV3MzbjRVSlhaUnladys1M3gvdnk1ZmZrVUdYUXZ1UWFCZ2dzL2ZT?=
+ =?utf-8?B?NktROVpLdjF4cUx0b0pVYVRrWE9KMitVRStsc05Jc0dmUmpxNldLNHZIc3Fs?=
+ =?utf-8?B?bjBEc1dYdDVxdWRFUXIxcXlyK0VZeXNaM2JkL3JIdDhIV0pPY3BnWlhvaVZv?=
+ =?utf-8?B?MVE4K3R5bFd2anlYWmZLdzl4N3VOMGprcklMRUdVWmVkazc1RHdjaHczRTNs?=
+ =?utf-8?B?T2JHdDRRREI4Ky9iR1hwS3hLMEFvVzlpcCs0QytDcWRVMFpGSEhaWkdDN1Zz?=
+ =?utf-8?B?YVJOZ1FKZDQxVXdRcnRDZ2JXZGVpUzkvSSsxZDZRTlNxK29COER1bUpyNnls?=
+ =?utf-8?B?ajBYcXVlQVl3MzRLdHAxM21CRnBWb0pmV2JKekpWdTlYUmZ6ZDZMOFdzQThq?=
+ =?utf-8?B?U1lBRDIvNU5IMDlLUkxDdndtTmgveVhCdThNck1UL1k0SlFtMkdrb21TNS9Z?=
+ =?utf-8?B?TWJFWHc4MWJoOEVnSjVxazZ4VXljNVdXdXlHRGNubENadjI4NDI0dTVraFRt?=
+ =?utf-8?B?Z3EyVVo3QlF1eWFBNWJkSHRJak53OVlFV3laaVc3Mzdib3lJOWpsMnFjTDg3?=
+ =?utf-8?B?QmFEUVFNS2VsYUoxZU5ybWhTdXdLMU05SDVHZzVCd3JEazVlanhTRFdUeXR2?=
+ =?utf-8?B?bXJiV3ZVSDE4cjdTaHZMZnZvM2xDdnVwdnRCQzRmNTBCb21sQVJ4dUFacC85?=
+ =?utf-8?B?SjFtc201VldZWitTV3dxelh6czZaRHRQd0FNa2RpclVJWS9RNXE0SXJJbzVY?=
+ =?utf-8?B?RElsSG1vYjNZTjNQR0ppcUJicXRtbDgvMUx2WnJ6NzR1eDIzR1hsTVV6bkRy?=
+ =?utf-8?B?dFpGVGdSOXJzQXYrb1EvcUcrRTRvM2ZzOGE5Q3ZtUGpMb2s5d2dpazNqMEd4?=
+ =?utf-8?B?TmlVS04yWFNBUzFFeVB5U1hLMnh5OThYeis4WTA4VFV0Z1JLV09TTnl5ZkVW?=
+ =?utf-8?B?SnVEMnFoWHVxYWttQUF4cmJoSWtzN2xZUGIvaUhycXVQQjN3cGgrb3llTzB2?=
+ =?utf-8?B?WmtYRzNBenZuVzNmSTRQK3ltenVDbnNZTFY1SDVna21lL3Q2R0pocDR0V2t1?=
+ =?utf-8?B?aXNubWRxYVdEZm5YUXZRY3l1aHFlNFQweDJmTHBsbFo3Ny82clhzbHNWb0VN?=
+ =?utf-8?B?a2tKR0xOQkZBSU1KclYreXFVUlh0ZW5SSUxxd25FOWV3WEkxSmZ6MktzTDd1?=
+ =?utf-8?B?Z25HQUs1NkpyV3FJU2psTlRtNGU5cXBHTGFucHAxdUluTXpHcWYvcVllMDRE?=
+ =?utf-8?B?MmdMOUlXNEVxbXFKVHlkK2d2Ly9lRGhENWFsTWZkSkthYTVFc1BaaTFBZGJG?=
+ =?utf-8?B?cWZNeXl3MGFaQXFaVkQ1T3hTS0FqSG9DbHRSL1FWQjY1RGVxbCswc0NQM2JV?=
+ =?utf-8?B?NVdHNy9OSmJJM2d4RjN0MUhjMDhtVklXeE54WEQ3V0MrcjJLNXg2Y2pNRnV6?=
+ =?utf-8?B?TXl1a1ZocUZaemhteVdMcnFhN1ZaSTByYU9RWHBmcHBIM1NkTEhPZzZRcWlV?=
+ =?utf-8?B?QkxRb2pmbUpONkFGeTVlUjIzZWhEVzVjZGNWQ1BrdWN3eVRqTXNmejlYSzVT?=
+ =?utf-8?B?eFlKaHJJV0ZKOTBlWWxaMWtRd3RzdGY0cVBWZTdob1BiMlBra1ZtTlRxY3ZB?=
+ =?utf-8?B?Q2N6OXliaGZkYVpIbUZqczJQZkZqK0d1NkNiMTRGNDdFc0NXdDBlQktHQW1v?=
+ =?utf-8?Q?aeONHDALkbqRBbgucE+I4ocbqhbcVFA6MCibX60?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e662c5f-0f50-42d4-021b-08d8eed77690
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2021 15:14:04.9514
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LJfOFZxQ0N+3KqUI5VQh2IA/rpmg7T8i23m0Y0j5eolRcVLBc9EVuS8ec7hjqmwaHy9HvA+7RsUwKILgCpT9lw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR03MB5590
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 08:37:43AM -0600, Alex Williamson wrote:
-> On Wed, 24 Mar 2021 12:03:00 +0200
-> Leon Romanovsky <leon@kernel.org> wrote:
-> 
-> > On Mon, Mar 22, 2021 at 11:10:03AM -0600, Alex Williamson wrote:
-> > > On Sun, 21 Mar 2021 10:40:55 +0200
-> > > Leon Romanovsky <leon@kernel.org> wrote:
-> > >   
-> > > > On Sat, Mar 20, 2021 at 08:59:42AM -0600, Alex Williamson wrote:  
-> > > > > On Sat, 20 Mar 2021 11:10:08 +0200
-> > > > > Leon Romanovsky <leon@kernel.org> wrote:    
-> > > > > > On Fri, Mar 19, 2021 at 10:23:13AM -0600, Alex Williamson wrote:     
-> > > > > > > 
-> > > > > > > What if we taint the kernel or pci_warn() for cases where either all
-> > > > > > > the reset methods are disabled, ie. 'echo none > reset_method', or any
-> > > > > > > time a device specific method is disabled?      
-> > > > > > 
-> > > > > > What does it mean "none"? Does it mean nothing supported? If yes, I think that
-> > > > > > pci_warn() will be enough. At least for me, taint is usable during debug stages,
-> > > > > > probably if device doesn't crash no one will look to see /proc/sys/kernel/tainted.    
-> > > > > 
-> > > > > "none" as implemented in this patch, clearing the enabled function
-> > > > > reset methods.    
-> > > > 
-> > > > It is far from intuitive, the empty string will be easier to understand,
-> > > > because "none" means no reset at all.  
-> > > 
-> > > "No reset at all" is what "none" achieves, the
-> > > pci_dev.reset_methods_enabled bitmap is cleared.  We can use an empty
-> > > string, but I think we want a way to clear all enabled resets and a way
-> > > to return it to the default.  I could see arguments for an empty string
-> > > serving either purpose, so this version proposed explicitly using
-> > > "none" and "default", as included in the ABI update.  
+On Wed, Mar 24, 2021 at 04:22:44PM +0200, Andy Shevchenko wrote:
+> On Wed, Mar 24, 2021 at 02:55:15PM +0100, Roger Pau Monné wrote:
+> > On Wed, Mar 24, 2021 at 02:58:07PM +0200, Andy Shevchenko wrote:
+> > > On Wed, Mar 24, 2021 at 01:31:18PM +0100, Roger Pau Monne wrote:
+> > > Moreover, it seems you are bailing out and basically denying driver to load.
+> > > This does look that capability is simply the first register that blows the setup.
+> > > I think you have to fix something into Xen to avoid loading these drivers or
+> > > check with something like pci_device_is_present() approach.
 > > 
-> > I will stick with "default" only and leave "none" for something else.
+> > Is there a backing PCI device BAR for those MMIO regions that the
+> > pinctrl driver is trying to access? AFAICT those regions are only
+> > reported in the ACPI DSDT table on the _CRS method of the object (at
+> > least on my system).
 > 
-> Are you suggesting writing "default" restores the unmodified behavior
-> and writing an empty string clears all enabled reset methods?
->  
-> > > > > > > I'd almost go so far as to prevent disabling a device specific reset
-> > > > > > > altogether, but for example should a device specific reset that fixes
-> > > > > > > an aspect of FLR behavior prevent using a bus reset?  I'd prefer in that
-> > > > > > > case if direct FLR were disabled via a device flag introduced with the
-> > > > > > > quirk and the remaining resets can still be selected by preference.      
-> > > > > > 
-> > > > > > I don't know enough to discuss the PCI details, but you raised good point.
-> > > > > > This sysfs is user visible API that is presented as is from device point
-> > > > > > of view. It can be easily run into problems if PCI/core doesn't work with
-> > > > > > user's choice.
-> > > > > >     
-> > > > > > > 
-> > > > > > > Theoretically all the other reset methods work and are available, it's
-> > > > > > > only a policy decision which to use, right?      
-> > > > > > 
-> > > > > > But this patch was presented as a way to overcome situations where
-> > > > > > supported != working and user magically knows which reset type to set.    
-> > > > > 
-> > > > > It's not magic, the new sysfs attributes expose which resets are
-> > > > > enabled and the order that they're used, the user can simply select the
-> > > > > next one.  Being able to bypass a broken reset method is a helpful side
-> > > > > effect of getting to select a preferred reset method.    
-> > > > 
-> > > > Magic in a sense that user has no idea what those resets mean, the
-> > > > expectation is that he will blindly iterate till something works.  
-> > > 
-> > > Which ought to actually be a safe thing to do.  We should have quirks to
-> > > exclude resets that are known broken but still probe as present and I'd
-> > > be perfectly fine if we issue a warning if the user disables all resets
-> > > for a given device.
-> > >    
-> > > > > > If you want to take this patch to be policy decision tool,
-> > > > > > it will need to accept "reset_type1,reset_type2,..." sort of input,
-> > > > > > so fallback will work natively.    
-> > > > > 
-> > > > > I don't see that as a requirement.  We have fall-through support in the
-> > > > > kernel, but for a given device we're really only ever going to make use
-> > > > > of one of those methods.  If a user knows enough about a device to have
-> > > > > a preference, I think it can be singular.  That also significantly
-> > > > > simplifies the interface and supporting code.  Thanks,    
-> > > > 
-> > > > I'm struggling to get requirements from this thread. You talked about
-> > > > policy decision to overtake fallback mechanism, Amey wanted to avoid
-> > > > quirks.
-> > > > 
-> > > > Do you have an example of such devices or we are talking about
-> > > > theoretical case?  
-> > > 
-> > > Look at any device that already has a reset quirk and the process it
-> > > took to get there.  Those are more than just theoretical cases.  
-> > 
-> > So let's fix the process. The long standing kernel policy is that kernel
-> > bugs (and missing quirk can be seen as such bug) should be fixed in the
-> > kernel and not workaround by the users.
+> Unfortunately it does not expose PCI configuration space.
+
+Are those regions supposed to be marked as reserved in the memory map,
+or that's left to the discretion of the hardware vendor?
+
+> > Doing something like pci_device_is_present would require a register
+> > that we know will never return ~0 unless the device is not present. As
+> > said above, maybe we could use REVID to that end?
 > 
-> I don't see an actual proposal here to fix the process.  Allowing
-> specific reset methods to be trivially tested is a step towards fixing
-> the process.  Unfortunately we can't tell the difference between
-> someone setting a policy because they prefer a reset mechanism, are
-> testing a reset mechanism, or they're avoiding a broken reset mechanism.
-> We can't force participation if we've made it clear that the interface
-> should not be used long term for anything other than policy preference
-> and testing.
-
-Yes, and real testing/debugging almost always requires kernel rebuild.
-Everything else is waste of time.
-
+> Yes, that's good, see above.
 > 
-> > > For policy preference, I already described how I've configured QEMU to
-> > > prefer a bus reset rather than a PM reset due to lack of specification
-> > > regarding the scope of a PM "soft reset".  This interface would allow a
-> > > system policy to do that same thing.
-> > > 
-> > > I don't think anyone is suggesting this as a means to avoid quirks that
-> > > would resolve reset issues and create the best default general behavior.
-> > > This provides a mechanism to test various reset methods, and thereby
-> > > identify broken methods, and set a policy.  Sure, that policy might be
-> > > to avoid a broken reset in the interim before it gets quirked and
-> > > there's potential for abuse there, but I think the benefits outweigh
-> > > the risks.  
-> > 
-> > This interface is proposed as first class citizen in the general sysfs
-> > layout. Of course, it will be seen as a way to bypass the kernel.
-> > 
-> > At least, put it under CONFIG_EXPERT option, so no distro will enable it
-> > by default.
-> 
-> Of course we're proposing it to be accessible, it should also require
-> admin privileges to modify, sysfs has lots of such things.  If it's
-> relegated to non-default accessibility, it won't be used for testing
-> and it won't be available for system policy and it's pointless.
+> WRT capabilities, if we crash we will see the report immediately on the
+> hardware which has such an issue. (It's quite unlikely we will ever have one,
+> that's why I consider it's not critical)
 
-We probably have difference in view of what testing is. I expect from
-the users who experience issues with reset to do extra steps and one of
-them is to require from them to compile their kernel.
+I would rather prefer to not crash, because I think the kernel should
+only resort to crashing when there's no alternative, and here it's
+perfectly fine to just print an error message and don't load the
+driver. IMO I would rather boot without pinctrl than get a panic if
+it turns out pinctrl capabilities list is somehow corrupted. It's a
+long shot, but the check added in order to prevent this scenario is
+minimal.
 
-The root permissions doesn't protect from anything, SO lovers will use
-root without even thinking twice.
+In any case I will send a new version with the REVID check and this
+current patch.
 
->  
-> > > > And I don't see why simple line parser with loop iterator over strchr()
-> > > > suddenly becomes complicated code.  
-> > > 
-> > > Setting multiple bits in a bitmap is easy.  How do you then go on to
-> > > allow the user to specify an ordering preference?  If you have an
-> > > algorithm you'd like to propose that allows the user to manage the
-> > > ordering when enabling multiple methods without substantially
-> > > increasing the complexity, please share.  IMO, a given device will
-> > > generally use one reset method and it seems sufficient to restrict user
-> > > preference to achieve all the use cases I've noted.  Thanks,  
-> > 
-> > Linked list + iterator will do the trick.
-> 
-> So you're suggesting to add potentially multiple dynamic allocations per
-> device and list locking and management for an unspecified use case for
-> an interface you seem to be opposed to anyway.  It should be pretty
-> clear why the keep-it-simple approach was taken in this series.  Thanks,
-
-I'm trying to help you with your use case of providing reset policy
-mechanism, which can be without CONFIG_EXPERT. However if you want
-to continue path of having specific reset type only, please ensure
-that this is not taken to the "bypass kernel" direction.
-
-Thanks
-
-> 
-> Alex
-> 
+Thanks, Roger.
