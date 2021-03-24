@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D5734827D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E219F34827E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238128AbhCXUCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37924 "EHLO
+        id S238141AbhCXUDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237909AbhCXUCZ (ORCPT
+        with ESMTP id S238124AbhCXUCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:02:25 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284BFC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:02:24 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id h34so8244356uah.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:02:24 -0700 (PDT)
+        Wed, 24 Mar 2021 16:02:50 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B3BC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:02:49 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id u20so153557lja.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:02:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L71/S95zyMXln0afxkBYB5ecQb9oQgPfUTdLdtQNpqM=;
-        b=LCsBAiOC+y06xN3oDZidZ6bb6lX3Yx+f23Y5uftO1CK55yFBsI5/nl1jACgNP3pG+X
-         ok4YyEiZZGyWE2mn/s1jsasO3Ne+RqB+DEeiPbQfHWHpphR9qr14QWDBOnuREjFrCS9F
-         5asp3O1NORHpJlr3Cg4A11M/Oj8nuwNHLiLwGZ/M+JYv5S6Z8PGjutcQj5nrwRz7Z8C4
-         zMwbYUosBD+upB9muVU97vydBn7eHis5WSh6v/BHg5LZMFnQm8O/eJkS+7mk8WXAG+5f
-         2mWm5JXf97DKyr3aFv4NVlpoGLsGFsi7OIysv1HFejKGvBBcTefHwyHo1R3Ia0pd/0Nn
-         bLaw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ikmrD3MxT8nCwzKO4AmRgjhRiiwQzwvU+EZ+IDnfFKM=;
+        b=h5DEGUUhyd88y0rgTYeTGggvySv93LWZvXyaJh6Qs+I2KOLuydX1/hjqDNTzm0Xcbb
+         TtZPcafM7Tyqyslx7D+npdPvNKj2OaRm8PWLrvJ3hJIt3tzoNciYYNVB4SZ29gwdX0lI
+         eiR/BuOgBbuIMnMcnVmAT9vn9yct7NeA73VuAeawPEtUoJQvzVR52O2bjgKBg3EQAIN2
+         4ZPzXTcwe2LYcH6ZsNi0BkCl8we1Xfksf7Ik+0K1ULv6iWwl3vt+s6icQuF7iTxySHfc
+         ornzz7D/85Sf0hziblEhwbdkjuilLfVTwSQ1Qxt3giVM7sFyK8GrCb8AoeL5onl6dL09
+         FBgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L71/S95zyMXln0afxkBYB5ecQb9oQgPfUTdLdtQNpqM=;
-        b=e+iG/f3e01Rsqt7qn1s1N2r+HrDT5AJVYCQwIBDiBkcbtxo8D9/vJR+VJ+A4NVgZ1N
-         HPmbEoJXwOR0Pe05CUMmkVZ0Mumz3FsU7rZmVBa73PjTMl+gNPgjcS+1fP+2++860rXW
-         kXHaVMSo0W2b7xbm8peIGqk2MI94PfoaL9nYJVs+M9npDYAtPDw7gZHmfEuzE4SIrLSl
-         rQ+aIieOSwS7WA4449o2zff+EqT/XY8jlgmQXsrTXkVvms/X/nf1BYPsHyUsIBlr4dMN
-         VCvYUvZ4DclURV6SZbtISiQSAhofqWD3vFxiOuEb7uRPopPafdeQocxtuB4H5UrESq7n
-         vVIQ==
-X-Gm-Message-State: AOAM532wcd3imVHi/jWn2d8W+fQBUvECuWgP9BKmv1MiOKa99DtfBc3/
-        +GvMXaAxdIexIdeE8hIoX83EXtcRqdWyHNWqCdpPdA==
-X-Google-Smtp-Source: ABdhPJwJ5tqbbKkbNKAssimRu1mg50OYnYGjGxnnFswA4GlfmVCV27jhf+B+w0+kbm5rRm38C7W/01CfWNUnuhT1NdA=
-X-Received: by 2002:a9f:3d89:: with SMTP id c9mr3068324uai.65.1616616143142;
- Wed, 24 Mar 2021 13:02:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ikmrD3MxT8nCwzKO4AmRgjhRiiwQzwvU+EZ+IDnfFKM=;
+        b=loxxPJr2vtNYr5gPuZfQTOTcnFVn4C/fp1u11/CUPxTS1nfY7rqmEHDfOk19o2TGML
+         fyM3356axvCDS2pdiaeWMZRprHEQjUsIeTDkwJIsnURcriEmeh1IhTDWC8u6tpoeU/0o
+         b/fQm03H3XApBDtM/QGWlF/Th2/y6DuT9/i3eP18gnmq6EfYAQt3/3jZAbeaScdKlZvm
+         nd9a6I7Uy/z5SmYwOEOqr+0cOq+IaZbHRu+ABKOT77TMlU7z0baBzbYyMeqRkkXTT8lu
+         6Tam0vZZu/LGOAUaPzJlHcIcURSKyRutVrubhFcHlt2GNMT1ae4mhqedBY4RL+BMaRg2
+         24Lw==
+X-Gm-Message-State: AOAM530AuxbWPPkhSLDFKWp8P6nMrMq3eg3Qgh/P5qMIJlX7AdxKlmKZ
+        dPfkj7SJqP3L93kfrbz6LZI=
+X-Google-Smtp-Source: ABdhPJyzk04mqnF8+gSwtdRoq+8D5BwEafKIGONJqSVvP6IlW1SAK8J9Qi/oy17u8LCAeMyOy5V6iA==
+X-Received: by 2002:a2e:9244:: with SMTP id v4mr3273677ljg.196.1616616168389;
+        Wed, 24 Mar 2021 13:02:48 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id z64sm318457lfa.92.2021.03.24.13.02.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 13:02:48 -0700 (PDT)
+Subject: Re: [PATCH] mm: cma: fix corruption cma_sysfs_alloc_pages_count
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
+        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
+        willy@infradead.org
+References: <20210324192044.1505747-1-minchan@kernel.org>
+ <18ee5c3e-fba2-0d8d-bd93-5fb8d0dd7a01@gmail.com>
+ <89ba4c7a-42d2-5412-2367-cc1cffc1117b@gmail.com>
+ <YFuZua1TIEkXtqoL@google.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <900f5707-3352-e3d1-69e8-c1f8580c0fc4@gmail.com>
+Date:   Wed, 24 Mar 2021 23:02:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210311100313.3591254-1-badhri@google.com> <20210311100313.3591254-4-badhri@google.com>
- <20210324145042.GA3036037@robh.at.kernel.org>
-In-Reply-To: <20210324145042.GA3036037@robh.at.kernel.org>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Wed, 24 Mar 2021 13:01:46 -0700
-Message-ID: <CAPTae5KZGPz8jF_C=UjobDe_SotvtR1PecNinOQWUjnLMyF4rQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] dt-bindings: usb: Add chg-psy-name property Maxim
- 33359 binding
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kyle Tso <kyletso@google.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YFuZua1TIEkXtqoL@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+24.03.2021 22:57, Minchan Kim пишет:
+> On Wed, Mar 24, 2021 at 10:49:58PM +0300, Dmitry Osipenko wrote:
+>> 24.03.2021 22:43, Dmitry Osipenko пишет:
+>>> 24.03.2021 22:20, Minchan Kim пишет:
+>>>>  static int __init cma_sysfs_init(void)
+>>>>  {
+>>>> -	int i = 0;
+>>>> +	struct kobject *cma_kobj_root;
+>>>> +	struct cma_kobject *cma_kobj;
+>>>>  	struct cma *cma;
+>>>> +	unsigned int i;
+>>>
+>>>>  	while (--i >= 0) {
+>>>
+>>> Do you realize that this doesn't work anymore?
+>>>
+>>>>  		cma = &cma_areas[i];
+>>>> -		kobject_put(&cma->stat->kobj);
+>>>> -	}
+>>>>  
+>>>> -	kfree(cma_stats);
+>>>> -	kobject_put(cma_kobj);
+>>>> +		kobject_put(&cma->cma_kobj->kobj);
+>>>> +		kfree(cma->cma_kobj);
+>>>
+>>> Freeing a null pointer?
+>>>
+>>>> +		cma->cma_kobj = NULL;
+>>>> +	}
+>>>> +	kobject_put(cma_kobj_root);
+>>>
+>>
+>> Please try to simulate the errors and check that error path is working
+>> properly in the next version.
+>>
+>> Alternatively, we could remove the cma_kobj_release entirely, like Greg
+>> suggested previously, and then don't care about cleaning up at all.
+> 
+> Does he suggested it to remove cma_kobj_release?(Initially, I did but
+> was rejected from Greg)
+> 
 
-Thanks for the feedback !
-From the feedback that I received from the other patches in the stack,
-we have identified an alternate approach of doing this without
-introducing this device tree addition.
-So, for now this patch is no longer needed. While the alternate
-approach is still being validated, will resurface this patch if I
-identify any drawbacks of the alternate approach.
-
-Regards,
-Badhri
+Alright, I haven't followed the previous threads fully and only saw the
+reply where he suggested to removed it.
 
 
-On Wed, Mar 24, 2021 at 7:50 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, Mar 11, 2021 at 02:03:13AM -0800, Badhri Jagan Sridharan wrote:
-> > chg-psy-name is an optional string property used to indicate the
-> > power supply object for which the current/voltage_max limits have
-> > to be set.
-> >
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > ---
-> >  Documentation/devicetree/bindings/usb/maxim,max33359.yaml | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/usb/maxim,max33359.yaml b/Documentation/devicetree/bindings/usb/maxim,max33359.yaml
-> > index 93a19eda610b..3a278969109e 100644
-> > --- a/Documentation/devicetree/bindings/usb/maxim,max33359.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/maxim,max33359.yaml
-> > @@ -28,6 +28,11 @@ properties:
-> >      description:
-> >        Properties for usb c connector.
-> >
-> > +  chg-psy-name:
-> > +    description: Power supply whose current/voltage_max values to be
-> > +      configured.
-> > +    $ref: /schemas/types.yaml#definitions/string
->
-> If you want a non-vendor specific property, this needs to be documented
-> in a common binding. I think this needs a better explaination and
-> examples of multiple chargers.
->
-> Rob
