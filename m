@@ -2,212 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B86C346F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35859346F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbhCXCXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
+        id S232059AbhCXCWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234870AbhCXCXL (ORCPT
+        with ESMTP id S231502AbhCXCWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:23:11 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4B7C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:23:11 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id z2so22854792wrl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:23:11 -0700 (PDT)
+        Tue, 23 Mar 2021 22:22:25 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBD8C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:22:25 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id g15so16250707pfq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ypwDPCx98zAc5CG/YcMRqXN6R3Vb91xHH9Cz6NHtnOI=;
-        b=iDLjn7gTZTY+s7TP/pEr3EPixNk+TQ3wGwOFwHpqrk5nekqmtCPYCBpxYsRfGewwny
-         2uOS4rRvPCsg3OlAmIYKWgC2dgFYulA9soxfsjQ7BZ4lywo1dzFakVEwfqtXbMnR8Nym
-         dhWJkFEME69UNizkUI9FZTdGqDNiWX+2bOdMg=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=24qmeKyq+RHas/0nWkzkV/yI24iW9xTstvjT8SYVV4E=;
+        b=Z/cYUHiAg1doJjTTL9i5pzxTGBcMOwSFHfvXzdWI360hIUuuL+l/4Itd0NqBwrVq3m
+         JpNg1TbeLRgZx7/VHCob/VRq2QxVsDTWRa7GlmDMKrGrYSzi+hdtqb10NhgvShPeSiWS
+         HOQyDu00aY3ueYqPJ6vocPlj9PM+p5LpE4gjQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ypwDPCx98zAc5CG/YcMRqXN6R3Vb91xHH9Cz6NHtnOI=;
-        b=MevNo2/5UIsl19Hgft8trIKWyT3UgekX6Pz30DwMgixGr4L8ExbsXy2RYClF0/2NCB
-         1wJJY2gYSsyDKGVfJjZsW8/rChf8IPN060CAfdLtC2RQDzwIQK62lxth8a9GI/nWrmLi
-         hLeOoG+/okkMMo6nDf5c+VbNERRICR2y7rcD45bZCneS7F+9qnhYbC+Ty+ulImtD6eA2
-         meYohUHLeQ0MuyFhfiaRFy+r0UB8+cdiXzadnTZE6ozVHaj6UbabYBikjsLAbVldZjiC
-         ajlh4hxPZ5a/ZmkVIPjcT0rLgGU92ZAnehYLc+ORRTcTeD1ZF3OqYm4LwLmC70wv6Nb1
-         8Ixg==
-X-Gm-Message-State: AOAM530cQDUcK2QZyX19grw3iM9ixiD5cPWwbAnzGZCJVs9eb4Im4PZP
-        5JMzk1NIuZEq29ncJQ1x3yXS3Q==
-X-Google-Smtp-Source: ABdhPJydB+SkgWEXBQtVbBCDvs1Ah9fF+eIjKuI3a+Zqp1zcXFRq5HVQMcq67xzJGJS9jKk+wNASAw==
-X-Received: by 2002:adf:fec5:: with SMTP id q5mr810257wrs.43.1616552589900;
-        Tue, 23 Mar 2021 19:23:09 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:ccba:9601:929c:dbcb])
-        by smtp.gmail.com with ESMTPSA id n9sm74219wrx.46.2021.03.23.19.23.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=24qmeKyq+RHas/0nWkzkV/yI24iW9xTstvjT8SYVV4E=;
+        b=Q05U26tbjAxazCKXJi3KvONF94kSqEaPewtIJpmfSZam1yRiR7enTpKszcm+yanpYU
+         x2X2jz/1U3soQvhl2hbo8DB11abPLTpvZSseYs4ZH/U3/j1CPwCUWK85sJozkV7RKHVY
+         D8o4yOtrrhXZU5RWBYYdBazR2G6C99a2dG4AYMqawkM69v8mXc51jU/+pvIibx5C8YSF
+         0qLq5V+NAXetJ3AjlNTf1I5mgt74G/NGlCKpvOYMgvY/b4aKgrN+0FEa9DE5yV3ZaN8n
+         QPyBGphbHD736beWNNVcYxSDQUxhW5SLPzr4nRFcq5qIDYP7TGNkeaXcIX+7ciah/5zr
+         wVWA==
+X-Gm-Message-State: AOAM5328TYQ/YHoOA/4GzhqC7qDOuQ7/TDO+3vqPvQyP0+w4ruT1vQKC
+        rHpTU+MN+wqqk/TtkCTxH4Z1Wg==
+X-Google-Smtp-Source: ABdhPJxnk/W0wD4yXUfVCUeih3TUIWGMrPaANeh6c9Cpau3Dqf9YRsDnOkp2GPsr2Rbg8zwwigZIQg==
+X-Received: by 2002:a63:43c2:: with SMTP id q185mr993479pga.41.1616552544705;
+        Tue, 23 Mar 2021 19:22:24 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:bcf2:e05a:a993:9494])
+        by smtp.gmail.com with ESMTPSA id j3sm439947pfi.74.2021.03.23.19.22.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 19:23:09 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v2 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-Date:   Wed, 24 Mar 2021 03:22:11 +0100
-Message-Id: <20210324022211.1718762-7-revest@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-In-Reply-To: <20210324022211.1718762-1-revest@chromium.org>
-References: <20210324022211.1718762-1-revest@chromium.org>
+        Tue, 23 Mar 2021 19:22:23 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 11:22:18 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv3 3/6] media: v4l UAPI: add ROI auto-controls flags
+Message-ID: <YFqiWixqSuPMTwXz@google.com>
+References: <20210319055342.127308-1-senozhatsky@chromium.org>
+ <20210319055342.127308-4-senozhatsky@chromium.org>
+ <CANiDSCseJdKuPSZFDvc8VGp=PDqGEN42ZsLVGgkwhAz5hhVCQQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiDSCseJdKuPSZFDvc8VGp=PDqGEN42ZsLVGgkwhAz5hhVCQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This exercises most of the format specifiers when things go well.
+On (21/03/23 17:04), Ricardo Ribalda wrote:
+> On Fri, Mar 19, 2021 at 6:53 AM Sergey Senozhatsky
+> <senozhatsky@chromium.org> wrote:
+> >
+> > UVC 1.5 defines the following Region Of Interest auto controls:
+> >
+> > D0: Auto Exposure
+> > D1: Auto Iris
+> > D2: Auto White Balance
+> > D3: Auto Focus
+> > D4: Auto Face Detect
+> > D5: Auto Detect and Track
+> > D6: Image Stabilization
+> > D7: Higher Quality
+> > D8 – D15: Reserved, set to zero
+> >
+> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > ---
+> >  include/uapi/linux/v4l2-common.h | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
+> > index 3651ebb8cb23..34f1c262d6aa 100644
+> > --- a/include/uapi/linux/v4l2-common.h
+> > +++ b/include/uapi/linux/v4l2-common.h
+> > @@ -92,6 +92,16 @@
+> >  #define V4L2_SEL_FLAG_LE               (1 << 1)
+> >  #define V4L2_SEL_FLAG_KEEP_CONFIG      (1 << 2)
+> >
+> 
+> Are you sure that you do not want to start with 1<<3, there might be
+> some hardware that support LE/SE
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- .../selftests/bpf/prog_tests/snprintf.c       | 65 +++++++++++++++++++
- .../selftests/bpf/progs/test_snprintf.c       | 59 +++++++++++++++++
- 2 files changed, 124 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+How the hardware's going to support this? There is simply no way to
+pass these flags to the firmware, the values already overlap with
+auto-controls. So I guess these flags are for the driver (C code).
+uvcvideo driver is not doing any "lesser or equal rectangle" magic
+for ROI. No such thing is defined by UVC spec.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-new file mode 100644
-index 000000000000..948a05e6b2cb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <test_progs.h>
-+#include "test_snprintf.skel.h"
-+
-+#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-+#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-+
-+#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-+#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-+
-+/* The third specifier, %pB, depends on compiler inlining so don't check it */
-+#define EXP_SYM_OUT  "schedule schedule+0x0/"
-+#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-+
-+/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-+#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-+#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-+
-+#define EXP_STR_OUT  "str1 longstr"
-+#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-+
-+#define EXP_OVER_OUT "%over"
-+#define EXP_OVER_RET 10
-+
-+void test_snprintf(void)
-+{
-+	char exp_addr_out[] = EXP_ADDR_OUT;
-+	char exp_sym_out[]  = EXP_SYM_OUT;
-+	struct test_snprintf *skel;
-+
-+	skel = test_snprintf__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
-+	ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
-+
-+	ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
-+	ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
-+			 sizeof(exp_sym_out) - 1), "sym_out");
-+	ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
-+			 sizeof(exp_addr_out) - 1), "addr_out");
-+	ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
-+
-+	ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
-+	ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
-+
-+	ASSERT_STREQ(skel->bss->over_out, EXP_OVER_OUT, "over_out");
-+	ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
-+
-+cleanup:
-+	test_snprintf__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-new file mode 100644
-index 000000000000..e18709055fad
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char num_out[64] = {};
-+long num_ret = 0;
-+
-+char ip_out[64] = {};
-+long ip_ret = 0;
-+
-+char sym_out[64] = {};
-+long sym_ret = 0;
-+
-+char addr_out[64] = {};
-+long addr_ret = 0;
-+
-+char str_out[64] = {};
-+long str_ret = 0;
-+
-+char over_out[6] = {};
-+long over_ret = 0;
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	/* Convenient values to pretty-print */
-+	const __u8 ex_ipv4[] = {127, 0, 0, 1};
-+	const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-+	const char str1[] = "str1";
-+	const char longstr[] = "longstr";
-+	extern const void schedule __ksym;
-+
-+	/* Integer types */
-+	num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-+				"%d %u %x %li %llu %lX",
-+				-8, 9, 150, -424242, 1337, 0xDABBAD00);
-+	/* IP addresses */
-+	ip_ret   = BPF_SNPRINTF(ip_out, sizeof(ip_out), "%pi4 %pI6",
-+				&ex_ipv4, &ex_ipv6);
-+	/* Symbol lookup formatting */
-+	sym_ret  = BPF_SNPRINTF(sym_out,  sizeof(sym_out), "%ps %pS %pB",
-+				&schedule, &schedule, &schedule);
-+	/* Kernel pointers */
-+	addr_ret = BPF_SNPRINTF(addr_out, sizeof(addr_out), "%pK %px %p",
-+				0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55);
-+	/* Strings embedding */
-+	str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s %+05s",
-+				str1, longstr);
-+	/* Overflow */
-+	over_ret = BPF_SNPRINTF(over_out, sizeof(over_out), "%%overflow");
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.31.0.291.g576ba9dcdaf-goog
-
+I can move these flags to entirely different value range and do
+remapping to uvc auto-controls values in uvcvideo.
