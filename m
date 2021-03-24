@@ -2,115 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74B9346FCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5C9346FE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235005AbhCXDFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232312AbhCXDFO (ORCPT
+        id S235104AbhCXDG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:06:28 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:47617 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235020AbhCXDF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:05:14 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F099C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:05:14 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id h20so7172697plr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EhPV3KVrzkPHXSPWlu07vX6xVGTVkVHyIa1YY2b8Otw=;
-        b=JFUuXK6Tas6z7Evj0JZdtYJjiCfg7dti/qpuhyE8T3457+msCSfMN5TkdBHWI9gLX7
-         HwqE4GDarrYFO/9ra0rAqSZKBEktQ9rpXHatOpXW9o6UbPJyH3VhM7WftzhHBtTdmAv0
-         r5DWRZS3XsgV7ejdsg8ftEetrX2Szi8NAFowk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EhPV3KVrzkPHXSPWlu07vX6xVGTVkVHyIa1YY2b8Otw=;
-        b=ZqNqCAcbzmHD9JitobWOzq1O2MjiUf3UQtr11FuwriXlML0/w7dLVmJj1ugfoaMe1c
-         BWAOOojywZDVPzMkT0oJC6iNMdDPfKS30nEt4E4L1VwRiZ2oM+qlMwBnpSDj3jO5eDI4
-         EPYJYR+RqHbHaDrONc636cbWiKp7CVM8xVqz6eugvW4K9KSL3U+ijc5hu7lhFTyvQVZx
-         l3LkMZXH2vZXrvz70M2S7jSOF5zArEheLHk6BhsPLlyNKiq87q/FISMzh88pCVzunyAh
-         v3FIxq6xb08iobH4PD5JuDSRvoGka0VzoTUjH+MZPAYpFnkd9xFWOIB1CGvCum+PNV/e
-         eVgg==
-X-Gm-Message-State: AOAM533edIOD7DnRwK3XMnTDtufdOkZWg9NbVWN323cIeeSS5mi+fzzw
-        oKmh3SAG4fk1aLRmSb3SXcasRQ==
-X-Google-Smtp-Source: ABdhPJzFBNWkmTNIKtNNzlwKE5UR9znR+x2311GojQrFD6USVTuPrRTYw1IFXCjRT6OK8T0qr3wNSQ==
-X-Received: by 2002:a17:902:b7c5:b029:e6:1a9f:5f55 with SMTP id v5-20020a170902b7c5b02900e61a9f5f55mr1479501plz.57.1616555113706;
-        Tue, 23 Mar 2021 20:05:13 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:bcf2:e05a:a993:9494])
-        by smtp.gmail.com with ESMTPSA id j20sm470526pjn.27.2021.03.23.20.05.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 20:05:13 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 12:05:09 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv3 5/6] media: uvcvideo: add UVC 1.5 ROI control
-Message-ID: <YFqsZXUuQP9H+Cud@google.com>
-References: <20210319055342.127308-1-senozhatsky@chromium.org>
- <20210319055342.127308-6-senozhatsky@chromium.org>
- <CANiDSCt72o_E=gRBRhMWWmta-H2WGmDqg5_PBGHBrVCG4iepZw@mail.gmail.com>
- <YFqdaHCQak5ZM0Sf@google.com>
- <CAAFQd5DaDZA8==HPrL1v1M=1a5g3DgY58nuq7KnA8USQ6UuiTQ@mail.gmail.com>
- <YFqkaumASvjrYP/n@google.com>
- <CAAFQd5AdJfNLoXwDEgCf90cm5e30rT98SO5CRJ=oR8Do_T566A@mail.gmail.com>
- <YFqpcR60384JWbNP@google.com>
- <CAAFQd5CJBPtLo22u2dM-vOGmqaD2e=TU5Qv1eoKcHsxuumgXGw@mail.gmail.com>
+        Tue, 23 Mar 2021 23:05:58 -0400
+X-UUID: c62f28320405400ab7fadf4302979296-20210324
+X-UUID: c62f28320405400ab7fadf4302979296-20210324
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1386919649; Wed, 24 Mar 2021 11:05:52 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 24 Mar 2021 11:05:51 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 24 Mar 2021 11:05:50 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <sin_jieyang@mediatek.com>,
+        <drinkcat@chromium.org>, <Rex-BC.Chen@mediatek.com>,
+        <anson.chuang@mediatek.com>, Krzysztof Wilczyski <kw@linux.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [v9,6/7] PCI: mediatek-gen3: Add system PM support
+Date:   Wed, 24 Mar 2021 11:05:09 +0800
+Message-ID: <20210324030510.29177-7-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210324030510.29177-1-jianjun.wang@mediatek.com>
+References: <20210324030510.29177-1-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAFQd5CJBPtLo22u2dM-vOGmqaD2e=TU5Qv1eoKcHsxuumgXGw@mail.gmail.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/03/24 12:00), Tomasz Figa wrote:
-[..]
-> > I guess in our case we need to talk about rectangle,auto-controls tuple
-> > that we send to firmware
-> >
-> >         rect {
-> >                 (0, 0), (INT_MAX, INT_MAX)
-> >         }
-> >         auto-controls {
-> >                 INT_MAX
-> >         }
-> >
-> > For ROI user-space also must provide valid auto-controls value, which
-> > normally requires GET_MIN/GET_MAX discovery.
-> >
-> > v4l2 selection API mentions only rectangle adjustments and errnos like
-> > -ERANGE also mention "It is not possible to adjust struct v4l2_rect r
-> > rectangle to satisfy all constraints given in the flags argument".
-> >
-> > So in case when auto-controls is out of supported range (out of
-> > GET_MIN, GET_MAX range) there is no way for us to tell user-space that
-> > auto-controls is wrong. We probably need silently pick up the first
-> > supported value, but not sure how well this will work out in the end.
-> 
-> Shouldn't the autocontrol selection be done via a separate bitmask
-> control rather than some custom flags in the selection API?
+Add suspend_noirq and resume_noirq callback functions to implement PM
+system suspend and resume hooks for the MediaTek Gen3 PCIe controller.
 
-That selection must be done before we send ROI to the firmware.
-Firmware H that I have supports split controls - we can send
-ROI::rectangle and ROI::autocontrols separately. But other
-firmwares don't tolerate such a thing and by the time we issue
+When the system suspends, trigger the PCIe link to enter the L2 state
+and pull down the PERST# pin, gating the clocks of the MAC layer, and
+then power-off the physical layer to provide power-saving.
 
-	uvc_query_ctrl(stream->dev,
-	               UVC_SET_CUR
-	               UVC_CT_REGION_OF_INTEREST_CONTROL
-		       roi,
-+                      sizeof(struct uvc_roi_rect))
+When the system resumes, the PCIe link should be re-established and the
+related control register values should be restored.
 
-roi rectangle should be of size 5 * u16 and contain values that firmware
-will accept, including autocontrols.
+Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+---
+ drivers/pci/controller/pcie-mediatek-gen3.c | 113 ++++++++++++++++++++
+ 1 file changed, 113 insertions(+)
+
+diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+index ee1b51207d11..20165e4a75b2 100644
+--- a/drivers/pci/controller/pcie-mediatek-gen3.c
++++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+@@ -45,6 +45,9 @@
+ #define PCIE_PE_RSTB			BIT(3)
+ 
+ #define PCIE_LTSSM_STATUS_REG		0x150
++#define PCIE_LTSSM_STATE_MASK		GENMASK(28, 24)
++#define PCIE_LTSSM_STATE(val)		((val & PCIE_LTSSM_STATE_MASK) >> 24)
++#define PCIE_LTSSM_STATE_L2_IDLE	0x14
+ 
+ #define PCIE_LINK_STATUS_REG		0x154
+ #define PCIE_PORT_LINKUP		BIT(8)
+@@ -73,6 +76,9 @@
+ #define PCIE_MSI_SET_ADDR_HI_BASE	0xc80
+ #define PCIE_MSI_SET_ADDR_HI_OFFSET	0x04
+ 
++#define PCIE_ICMD_PM_REG		0x198
++#define PCIE_TURN_OFF_LINK		BIT(4)
++
+ #define PCIE_TRANS_TABLE_BASE_REG	0x800
+ #define PCIE_ATR_SRC_ADDR_MSB_OFFSET	0x4
+ #define PCIE_ATR_TRSL_ADDR_LSB_OFFSET	0x8
+@@ -95,10 +101,12 @@
+  * struct mtk_msi_set - MSI information for each set
+  * @base: IO mapped register base
+  * @msg_addr: MSI message address
++ * @saved_irq_state: IRQ enable state saved at suspend time
+  */
+ struct mtk_msi_set {
+ 	void __iomem *base;
+ 	phys_addr_t msg_addr;
++	u32 saved_irq_state;
+ };
+ 
+ /**
+@@ -112,6 +120,7 @@ struct mtk_msi_set {
+  * @clks: PCIe clocks
+  * @num_clks: PCIe clocks count for this port
+  * @irq: PCIe controller interrupt number
++ * @saved_irq_state: IRQ enable state saved at suspend time
+  * @irq_lock: lock protecting IRQ register access
+  * @intx_domain: legacy INTx IRQ domain
+  * @msi_domain: MSI IRQ domain
+@@ -131,6 +140,7 @@ struct mtk_pcie_port {
+ 	int num_clks;
+ 
+ 	int irq;
++	u32 saved_irq_state;
+ 	raw_spinlock_t irq_lock;
+ 	struct irq_domain *intx_domain;
+ 	struct irq_domain *msi_domain;
+@@ -894,6 +904,108 @@ static int mtk_pcie_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static void __maybe_unused mtk_pcie_irq_save(struct mtk_pcie_port *port)
++{
++	int i;
++
++	raw_spin_lock(&port->irq_lock);
++
++	port->saved_irq_state = readl_relaxed(port->base + PCIE_INT_ENABLE_REG);
++
++	for (i = 0; i < PCIE_MSI_SET_NUM; i++) {
++		struct mtk_msi_set *msi_set = &port->msi_sets[i];
++
++		msi_set->saved_irq_state = readl_relaxed(msi_set->base +
++					   PCIE_MSI_SET_ENABLE_OFFSET);
++	}
++
++	raw_spin_unlock(&port->irq_lock);
++}
++
++static void __maybe_unused mtk_pcie_irq_restore(struct mtk_pcie_port *port)
++{
++	int i;
++
++	raw_spin_lock(&port->irq_lock);
++
++	writel_relaxed(port->saved_irq_state, port->base + PCIE_INT_ENABLE_REG);
++
++	for (i = 0; i < PCIE_MSI_SET_NUM; i++) {
++		struct mtk_msi_set *msi_set = &port->msi_sets[i];
++
++		writel_relaxed(msi_set->saved_irq_state,
++			       msi_set->base + PCIE_MSI_SET_ENABLE_OFFSET);
++	}
++
++	raw_spin_unlock(&port->irq_lock);
++}
++
++static int __maybe_unused mtk_pcie_turn_off_link(struct mtk_pcie_port *port)
++{
++	u32 val;
++
++	val = readl_relaxed(port->base + PCIE_ICMD_PM_REG);
++	val |= PCIE_TURN_OFF_LINK;
++	writel_relaxed(val, port->base + PCIE_ICMD_PM_REG);
++
++	/* Check the link is L2 */
++	return readl_poll_timeout(port->base + PCIE_LTSSM_STATUS_REG, val,
++				  (PCIE_LTSSM_STATE(val) ==
++				   PCIE_LTSSM_STATE_L2_IDLE), 20,
++				   50 * USEC_PER_MSEC);
++}
++
++static int __maybe_unused mtk_pcie_suspend_noirq(struct device *dev)
++{
++	struct mtk_pcie_port *port = dev_get_drvdata(dev);
++	int err;
++	u32 val;
++
++	/* Trigger link to L2 state */
++	err = mtk_pcie_turn_off_link(port);
++	if (err) {
++		dev_err(port->dev, "cannot enter L2 state\n");
++		return err;
++	}
++
++	/* Pull down the PERST# pin */
++	val = readl_relaxed(port->base + PCIE_RST_CTRL_REG);
++	val |= PCIE_PE_RSTB;
++	writel_relaxed(val, port->base + PCIE_RST_CTRL_REG);
++
++	dev_dbg(port->dev, "entered L2 states successfully");
++
++	mtk_pcie_irq_save(port);
++	mtk_pcie_power_down(port);
++
++	return 0;
++}
++
++static int __maybe_unused mtk_pcie_resume_noirq(struct device *dev)
++{
++	struct mtk_pcie_port *port = dev_get_drvdata(dev);
++	int err;
++
++	err = mtk_pcie_power_up(port);
++	if (err)
++		return err;
++
++	err = mtk_pcie_startup_port(port);
++	if (err) {
++		mtk_pcie_power_down(port);
++		return err;
++	}
++
++	mtk_pcie_irq_restore(port);
++
++	return 0;
++}
++
++static const struct dev_pm_ops mtk_pcie_pm_ops = {
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mtk_pcie_suspend_noirq,
++				      mtk_pcie_resume_noirq)
++};
++
+ static const struct of_device_id mtk_pcie_of_match[] = {
+ 	{ .compatible = "mediatek,mt8192-pcie" },
+ 	{},
+@@ -905,6 +1017,7 @@ static struct platform_driver mtk_pcie_driver = {
+ 	.driver = {
+ 		.name = "mtk-pcie",
+ 		.of_match_table = mtk_pcie_of_match,
++		.pm = &mtk_pcie_pm_ops,
+ 	},
+ };
+ 
+-- 
+2.25.1
+
