@@ -2,116 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117CF346FAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDE5346FAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234933AbhCXCto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:49:44 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:36850 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232078AbhCXCtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:49:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616554164;
-  x=1648090164;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=FqYAXGat8wOi5xlTyUYf8sCt90mXXCBzUhow40r7ORM=;
-  b=nzC26m4YHXgL/Kl7zG9OEXOAYqIsCML15OprSSllzpV5FbIwY3rH767N
-   JhUanOYHpa2PXilMFznlHZgtO27WG/zmdIePP1u2kDVK00K4buu3wWz6N
-   CgyZqBOzHUf14kdCvuxMnm/JTFmhhZZ7XCYHJcECCCmqwDuNC+DGmIVnJ
-   P5TGTtmtmDrSmDtVxFEsXrsTb40lMFRxbMnnPtU0m89jW+7WcuKC5CmrO
-   ZVBfqllXjM84oRl9EFc1I2OgfG77EzF1rq64CJHHyEc2oyC6A8sJma5v0
-   SdbANUiD6Tr+558Jp+nCJdN00+oSq3gg/BuvCkme0suvelbOsrBGf8V1O
-   Q==;
-From:   Hermes Zhang <chenhui.zhang@axis.com>
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hermes Zhang <chenhuiz@axis.com>
-CC:     <kernel@axis.com>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
-Date:   Wed, 24 Mar 2021 10:48:43 +0800
-Message-ID: <20210324024844.15796-1-chenhui.zhang@axis.com>
-X-Mailer: git-send-email 2.20.1
+        id S232069AbhCXCs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:48:59 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42169 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231262AbhCXCs6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 22:48:58 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 19B4C15C4;
+        Tue, 23 Mar 2021 22:48:57 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 23 Mar 2021 22:48:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=S
+        9hVFXlHxFynIOxrNrduoTNoyxZE1kHVtXmwywd0EOI=; b=YZflfkGOYNjYarMU4
+        y+I3z1HYVbAPNVsrpmn1tlLj+rNQBYt3TZJpMFQ4jD01E0y4aYB1QpZQJMSKeSlO
+        GCmU5gQ4N89X/ZZ/ovNeLAlxRoTa1/0K6FG1PhB+1FR+WIF7/DYdIRp5xXz1S55l
+        gYOutV5tYzUecDCfkMFoid3XKLhMYz3n7jfApGV/fPaD3rIOCODOgXEKIcvWS6hk
+        yqHM/LRZb1ssrAajEvvTXE/h+c6vAi+eK8ixg+uihsGE07Cr8geX5tXNh/WOh6OK
+        lbHVQePdBSibzrIUhF0GnO+ulRUlZI4zFkfyhlBp2E5Cxe57QGrkpLPIQjta/y80
+        VuA/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=S9hVFXlHxFynIOxrNrduoTNoyxZE1kHVtXmwywd0E
+        OI=; b=N0ILWQj+oOVBkHETy0CDV/HFnn81ylEhsA5Jb/1XqMlcKjUUBdybTkNq2
+        T7t+YKib2XYRigswWzmnoxsZKjJyPWdzvu9QjbP9WoP6aTVe5yN6pD/nfG5XUPId
+        tMXOrqK0XPJn2DMxHSi+kgVHfJIAikn4NQdR1cmrzEAvbCveoh05VL1WLSRt23C7
+        5Jh7l5OW8coe2sXARkg1n0xj9F2f5LPQ2sI6ZzSssI+GYfyCwmjE194d7A/mKcK7
+        aKWZAF5FW7+tzv1WHHRi746mDQwJ4Ayr9bGziBWek2Su70e8INsIxFe5CV5Fqilu
+        xIPoGbIn+Tt/5ccrT0MMx1+Ujp2eg==
+X-ME-Sender: <xms:lqhaYGM8Plc9p5POMUi41FWfUW2XcWk10-QVyYeB0gptzOa2QqwldQ>
+    <xme:lqhaYE_E-tyo9a0uubro-MZc0TRmDTbHM5R7o9BBQY-3fNk4_gh25xeZ4o5A27QrB
+    SJzkkStqt0IKAk7PA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegjedgheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
+    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:lqhaYNTnWNVVznNNa40VTPKEZbBLa52HWaU_Riqtq2XJbnAACHc-WQ>
+    <xmx:lqhaYGuZdosSi3-hmGnAtvmEI-7HAglUvDtrCQI0U1hikhjMlRUueA>
+    <xmx:lqhaYOc4PWSTUrzH3-gKp_MwNzhMoR2a4Q-933NakVU_EFj6mb-2bg>
+    <xmx:mKhaYEsAapfB8RbPhUabbpBXT4PCwlwubnwwpJ9oVUcAUVhqnIiqKw>
+Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 36C7824033F;
+        Tue, 23 Mar 2021 22:48:54 -0400 (EDT)
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com, linux-sunxi@googlegroups.com
+References: <20210322140152.101709-1-jagan@amarulasolutions.com>
+ <20210322140152.101709-2-jagan@amarulasolutions.com>
+ <YFpxYpA+EIZm7sOf@pendragon.ideasonboard.com>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v4 1/4] drm: sun4i: dsi: Use drm_of_find_panel_or_bridge
+Message-ID: <f47bc0ad-dbd6-05b5-aaec-2e3256e3715a@sholland.org>
+Date:   Tue, 23 Mar 2021 21:48:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <YFpxYpA+EIZm7sOf@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hermes Zhang <chenhuiz@axis.com>
+On 3/23/21 5:53 PM, Laurent Pinchart wrote:
+> Hi Jagan,
+> 
+> Thank you for the patch.
+> 
+> On Mon, Mar 22, 2021 at 07:31:49PM +0530, Jagan Teki wrote:
+>> Replace of_drm_find_panel with drm_of_find_panel_or_bridge
+>> for finding panel, this indeed help to find the bridge if
+>> bridge support added.
+>>
+>> Added NULL in bridge argument, same will replace with bridge
+>> parameter once bridge supported.
+>>
+>> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> 
+> Looks good, there should be no functional change.
 
-Document the device tree bindings of the multiple GPIOs LED driver
-Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml.
+Actually this breaks all existing users of this driver, see below.
 
-Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
----
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+>> ---
+>> Changes for v4, v3:
+>> - none
+>>
+>>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 11 ++++++++---
+>>  1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+>> index 4f5efcace68e..2e9e7b2d4145 100644
+>> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+>> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+>> @@ -21,6 +21,7 @@
+>>  
+>>  #include <drm/drm_atomic_helper.h>
+>>  #include <drm/drm_mipi_dsi.h>
+>> +#include <drm/drm_of.h>
+>>  #include <drm/drm_panel.h>
+>>  #include <drm/drm_print.h>
+>>  #include <drm/drm_probe_helper.h>
+>> @@ -963,10 +964,14 @@ static int sun6i_dsi_attach(struct mipi_dsi_host *host,
+>>  			    struct mipi_dsi_device *device)
+>>  {
+>>  	struct sun6i_dsi *dsi = host_to_sun6i_dsi(host);
+>> -	struct drm_panel *panel = of_drm_find_panel(device->dev.of_node);
 
-Notes:
-    Add maxItems
+This is using the OF node of the DSI device, which is a direct child of
+the DSI host's OF node. There is no OF graph involved.
 
- .../bindings/leds/leds-multi-gpio.yaml        | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+>> +	struct drm_panel *panel;
+>> +	int ret;
+>> +
+>> +	ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 0, 0,
+>> +					  &panel, NULL);
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-new file mode 100644
-index 000000000000..6f2b47487b90
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-@@ -0,0 +1,50 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/leds-multi-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Multiple GPIOs LED driver
-+
-+maintainers:
-+  - Hermes Zhang <chenhuiz@axis.com>
-+
-+description:
-+  This will support some LED made of multiple GPIOs and the brightness of the
-+  LED could map to different states of the GPIOs.
-+
-+properties:
-+  compatible:
-+    const: multi-gpio-led
-+
-+  led-gpios:
-+    description: Array of one or more GPIOs pins used to control the LED.
-+    minItems: 1
-+    maxItems: 8  # Should be enough
-+
-+  led-states:
-+    description: |
-+      The array list the supported states here which will map to brightness
-+      from 0 to maximum. Each item in the array will present all the GPIOs
-+      value by bit.
-+    $ref: /schemas/types.yaml#/definitions/uint8-array
-+    minItems: 1
-+    maxItems: 16 # Should be enough
-+
-+required:
-+  - compatible
-+  - led-gpios
-+  - led-states
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpios-led {
-+      compatible = "multi-gpio-led";
-+
-+      led-gpios = <&gpio0 23 0x1>,
-+                  <&gpio0 24 0x1>;
-+      led-states = /bits/ 8 <0x00 0x01 0x02 0x03>;
-+    };
-+...
--- 
-2.20.1
+However, this function expects to find the panel using OF graph. This
+does not work with existing device trees (PinePhone, PineTab) which do
+not use OF graph to connect the panel. And it cannot work, because the
+DSI host's binding specifies a single port: the input port from the
+display engine.
+
+Regards,
+Samuel
+
+>> +	if (ret)
+>> +		return ret;
+>>  
+>> -	if (IS_ERR(panel))
+>> -		return PTR_ERR(panel);
+>>  	if (!dsi->drm || !dsi->drm->registered)
+>>  		return -EPROBE_DEFER;
+>>  
+> 
 
