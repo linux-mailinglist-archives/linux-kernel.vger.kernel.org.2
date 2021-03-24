@@ -2,110 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8432348522
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AB2348528
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhCXXPR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 19:15:17 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24291 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238989AbhCXXOp (ORCPT
+        id S239011AbhCXXSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239022AbhCXXRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:14:45 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-223-zjCwL4CNMgSnfl37WyP4uA-1; Wed, 24 Mar 2021 23:14:41 +0000
-X-MC-Unique: zjCwL4CNMgSnfl37WyP4uA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 23:14:41 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 24 Mar 2021 23:14:40 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] ARM: delay: avoid clang -Wtautological-constant warning
-Thread-Topic: [PATCH] ARM: delay: avoid clang -Wtautological-constant warning
-Thread-Index: AQHXH+dwZysyW/ACIU21groL09xJy6qTxo9A
-Date:   Wed, 24 Mar 2021 23:14:40 +0000
-Message-ID: <caf7e56984c347da9e342e89ce530748@AcuMS.aculab.com>
-References: <20210323132031.2858996-1-arnd@kernel.org>
-In-Reply-To: <20210323132031.2858996-1-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 24 Mar 2021 19:17:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5CFC06174A;
+        Wed, 24 Mar 2021 16:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=B9IH6Bm0/kSsdrM6qZIGkSgskCeTe3eOs2ebC18G4xk=; b=I9pvyFT7SGaMOckWRDIUkuRQ6h
+        zc9X56fajLFpQqlSCiB3ZkBNvDVyaeR08XJg97C/thMELzmLH/afH/EN+2hpwWOWvhJxH5WiPVsjr
+        xd+2GezB6NY1Rj60GB2vCqorV5iLk4iovY2DBYaLHvAM7f3w6rCUQQsbaED2vKmgo3VMDTBHtIu1V
+        d5qq7tIbqGDkN1VugJczq49BKfYcS+VvK0RRiVr0B45mo1GJC2zWbrTLhlXMAD+IuQ9IzxLnCW+X8
+        YxEdf2hqRijO2qfKUF3YpJlWYTGl7I22v7PNDzn7+wRSBb3uUFzLOpYn+HX867WFmtVvq7A2a6Fcp
+        fakzrhmg==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPCkj-000LE1-DV; Wed, 24 Mar 2021 23:17:29 +0000
+Subject: Re: [PATCH, -v2] perf tools: Fix various typos in comments
+To:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>
+References: <20210321113734.GA248990@gmail.com>
+ <20210323160915.GA61903@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <543bd87e-5059-002b-4cc4-a262fe5eb1ff@infradead.org>
+Date:   Wed, 24 Mar 2021 16:17:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210323160915.GA61903@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 23 March 2021 13:20
-> Passing an 8-bit constant into delay() triggers a warning when building
-> with 'make W=1' using clang:
+On 3/23/21 9:09 AM, Ingo Molnar wrote:
 > 
-> drivers/clk/actions/owl-pll.c:182:2: error: result of comparison of constant 2000 with expression of
-> type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->         udelay(pll_hw->delay);
->         ^~~~~~~~~~~~~~~~~~~~~
-> arch/arm/include/asm/delay.h:84:9: note: expanded from macro 'udelay'
->           ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :              \
->            ~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
-> arch/arm/mach-omap2/wd_timer.c:89:3: error: result of comparison of constant 2000 with expression of
-> type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->                 udelay(oh->class->sysc->srst_udelay);
->                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> * Ingo Molnar <mingo@kernel.org> wrote:
 > 
-> Shut up the warning by adding a cast to a 64-bit number. A cast to 'int'
-> would usually be sufficient, but would fail to cause a link-time error
-> for large 64-bit constants.
-
-Adding 0u probably has the desired effect - without any side effects of a cast.
-
-	David
-
-
+>> Fix ~81 single-word typos in the perf tooling code - accumulated over the years.
 > 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Found a few more:
+> 
+> =============>
+> From: Ingo Molnar <mingo@kernel.org>
+> Date: Sun, 21 Mar 2021 12:37:34 +0100
+> Subject: [PATCH] perf tools: Fix various typos in comments
+> 
+> Fix ~124 single-word typos and a few spelling errors in the perf tooling code,
+> accumulated over the years.
+> 
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Link: https://lore.kernel.org/r/20210321113734.GA248990@gmail.com
 > ---
->  arch/arm/include/asm/delay.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/perf/Documentation/perf-buildid-cache.txt        |  2 +-
+>  tools/perf/Documentation/perf-report.txt               |  2 +-
+>  tools/perf/Documentation/perf-top.txt                  |  2 +-
+>  tools/perf/arch/arm/util/cs-etm.c                      |  2 +-
+>  tools/perf/arch/arm64/util/machine.c                   |  8 ++++----
+>  tools/perf/arch/arm64/util/perf_regs.c                 |  2 +-
+>  tools/perf/arch/powerpc/util/kvm-stat.c                |  2 +-
+>  tools/perf/arch/powerpc/util/utils_header.h            |  2 +-
+>  tools/perf/arch/x86/tests/bp-modify.c                  |  2 +-
+>  tools/perf/arch/x86/util/perf_regs.c                   |  4 ++--
+>  tools/perf/bench/epoll-wait.c                          |  4 ++--
+>  tools/perf/bench/numa.c                                |  2 +-
+>  tools/perf/builtin-annotate.c                          |  2 +-
+>  tools/perf/builtin-diff.c                              |  2 +-
+>  tools/perf/builtin-lock.c                              |  2 +-
+>  tools/perf/builtin-sched.c                             |  2 +-
+>  tools/perf/builtin-script.c                            |  4 ++--
+>  tools/perf/builtin-stat.c                              |  4 ++--
+>  tools/perf/builtin-top.c                               |  2 +-
+>  tools/perf/examples/bpf/augmented_raw_syscalls.c       |  4 ++--
+>  tools/perf/jvmti/jvmti_agent.c                         |  4 ++--
+>  tools/perf/pmu-events/arch/powerpc/power8/metrics.json | 12 ++++++------
+>  tools/perf/pmu-events/arch/powerpc/power9/metrics.json |  2 +-
+>  tools/perf/pmu-events/jevents.c                        |  2 +-
+>  tools/perf/scripts/python/netdev-times.py              |  2 +-
+>  tools/perf/tests/bp_signal.c                           |  6 +++---
+>  tools/perf/tests/code-reading.c                        |  2 +-
+>  tools/perf/tests/hists_cumulate.c                      |  4 ++--
+>  tools/perf/tests/parse-events.c                        |  2 +-
+>  tools/perf/tests/parse-metric.c                        |  2 +-
+>  tools/perf/tests/topology.c                            |  2 +-
+>  tools/perf/trace/beauty/include/linux/socket.h         |  2 +-
+>  tools/perf/ui/browsers/annotate.c                      |  2 +-
+>  tools/perf/ui/browsers/hists.c                         |  2 +-
+>  tools/perf/util/bpf-loader.c                           |  2 +-
+>  tools/perf/util/call-path.h                            |  2 +-
+>  tools/perf/util/callchain.c                            |  2 +-
+>  tools/perf/util/config.c                               |  2 +-
+>  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c        |  2 +-
+>  tools/perf/util/cs-etm.c                               |  8 ++++----
+>  tools/perf/util/cs-etm.h                               |  5 +++--
+>  tools/perf/util/data-convert-bt.c                      |  2 +-
+>  tools/perf/util/demangle-java.c                        |  4 ++--
+>  tools/perf/util/dso.h                                  |  2 +-
+>  tools/perf/util/dwarf-aux.c                            |  6 +++---
+>  tools/perf/util/dwarf-aux.h                            |  2 +-
+>  tools/perf/util/events_stats.h                         |  2 +-
+>  tools/perf/util/evlist.c                               |  2 +-
+>  tools/perf/util/evsel.c                                |  4 ++--
+>  tools/perf/util/expr.h                                 |  2 +-
+>  tools/perf/util/header.c                               | 18 +++++++++---------
+>  tools/perf/util/intel-pt.c                             |  2 +-
+>  tools/perf/util/levenshtein.c                          |  2 +-
+>  tools/perf/util/libunwind/arm64.c                      |  2 +-
+>  tools/perf/util/libunwind/x86_32.c                     |  2 +-
+>  tools/perf/util/llvm-utils.c                           |  2 +-
+>  tools/perf/util/machine.c                              |  8 ++++----
+>  tools/perf/util/map.h                                  |  4 ++--
+>  tools/perf/util/mem-events.h                           |  2 +-
+>  tools/perf/util/metricgroup.c                          |  2 +-
+>  tools/perf/util/parse-events.c                         | 10 +++++-----
+>  tools/perf/util/pmu.c                                  |  4 ++--
+>  tools/perf/util/probe-event.c                          |  4 ++--
+>  tools/perf/util/probe-finder.c                         |  6 +++---
+>  tools/perf/util/s390-cpumsf.c                          | 10 +++++-----
+>  tools/perf/util/scripting-engines/trace-event-python.c |  2 +-
+>  tools/perf/util/session.c                              |  4 ++--
+>  tools/perf/util/strbuf.h                               |  2 +-
+>  tools/perf/util/strfilter.h                            |  4 ++--
+>  tools/perf/util/symbol-elf.c                           |  2 +-
+>  tools/perf/util/synthetic-events.c                     |  4 ++--
+>  tools/perf/util/unwind-libunwind-local.c               |  2 +-
+>  72 files changed, 125 insertions(+), 124 deletions(-)
 > 
-> diff --git a/arch/arm/include/asm/delay.h b/arch/arm/include/asm/delay.h
-> index 4f80b72372b4..1bb6417a3a83 100644
-> --- a/arch/arm/include/asm/delay.h
-> +++ b/arch/arm/include/asm/delay.h
-> @@ -81,7 +81,7 @@ extern void __bad_udelay(void);
-> 
->  #define udelay(n)							\
->  	(__builtin_constant_p(n) ?					\
-> -	  ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :		\
-> +	  ((u64)(n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :		\
->  			__const_udelay((n) * UDELAY_MULT)) :		\
->  	  __udelay(n))
-> 
-> --
-> 2.29.2
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> diff --git a/tools/perf/arch/arm64/util/machine.c b/tools/perf/arch/arm64/util/machine.c
+> index 40c5e0b5bda8..acdf8dc1189b 100644
+> --- a/tools/perf/arch/arm64/util/machine.c
+> +++ b/tools/perf/arch/arm64/util/machine.c
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> +/ SPDX-License-Identifier: GPL-2.0
+
+That is the only problem that I found, and I see that found
+that one.
+
+>  #include <inttypes.h>
+>  #include <stdio.h>
+
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+(yeah, I'm late)
+
+-- 
+~Randy
 
