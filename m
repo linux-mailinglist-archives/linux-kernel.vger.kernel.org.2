@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C34348278
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D5734827D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238143AbhCXUBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:01:11 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:33312 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238118AbhCXUBB (ORCPT
+        id S238128AbhCXUCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237909AbhCXUCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:01:01 -0400
-Received: by mail-io1-f51.google.com with SMTP id n198so22845926iod.0;
-        Wed, 24 Mar 2021 13:01:00 -0700 (PDT)
+        Wed, 24 Mar 2021 16:02:25 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284BFC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:02:24 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id h34so8244356uah.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L71/S95zyMXln0afxkBYB5ecQb9oQgPfUTdLdtQNpqM=;
+        b=LCsBAiOC+y06xN3oDZidZ6bb6lX3Yx+f23Y5uftO1CK55yFBsI5/nl1jACgNP3pG+X
+         ok4YyEiZZGyWE2mn/s1jsasO3Ne+RqB+DEeiPbQfHWHpphR9qr14QWDBOnuREjFrCS9F
+         5asp3O1NORHpJlr3Cg4A11M/Oj8nuwNHLiLwGZ/M+JYv5S6Z8PGjutcQj5nrwRz7Z8C4
+         zMwbYUosBD+upB9muVU97vydBn7eHis5WSh6v/BHg5LZMFnQm8O/eJkS+7mk8WXAG+5f
+         2mWm5JXf97DKyr3aFv4NVlpoGLsGFsi7OIysv1HFejKGvBBcTefHwyHo1R3Ia0pd/0Nn
+         bLaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pqHL5U4E7/yoY3sVYftQGMctv7Qfffc3iQESBPm0jD8=;
-        b=lvgMmbcWezTggoHtLiWmUmMmSJTPO6bxXodc2elF6tGvcbrzR1GdWF0XvrJ6tRg+qq
-         C2CM6uy00uzKwXaQl8BwesFc2fZEMyv2McXNW2uKNmhlwpZfYlCivqG5V2o8MGmz4vh9
-         dL3/RZzXvNn1mXkaECaadzs8FIJQMF2PMgEtAGFofAKLZBM3WCPqCfgAsdHTLzbYmk7c
-         DsMbHZyAoz3BEo+ocLAlpZ97mdM8mLrONY7tAVeBCvKMHOxr2q3I4a5GE4WKWHZIi3+T
-         0Y2nUTG7D0nesPOkns2X8fkQBVqVzUC7gF7mK0Jr3heaIzV00qiew1Wpqzj71nVlFzWC
-         n20A==
-X-Gm-Message-State: AOAM532ulnSamu8ptsXgclK+H9TeIKp8G0Y5Rr/XNziPWOhjSeeqwduO
-        um4bvnsOnB5IjBW0TYe3fw==
-X-Google-Smtp-Source: ABdhPJzeSNegfSJui5GdiprTN3lHHAOGbyP2O6um47G1egEiceAVSNtSw2sdZj21cuuvpuRoaseGZQ==
-X-Received: by 2002:a05:6602:2e95:: with SMTP id m21mr3817303iow.9.1616616060419;
-        Wed, 24 Mar 2021 13:01:00 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id w1sm1500392iom.53.2021.03.24.13.00.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 13:00:59 -0700 (PDT)
-Received: (nullmailer pid 3528653 invoked by uid 1000);
-        Wed, 24 Mar 2021 20:00:12 -0000
-Date:   Wed, 24 Mar 2021 14:00:12 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     linux-kernel@vger.kernel.org,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>, kbuild-all@lists.01.org
-Subject: Re: [PATCH] of: overlay: fix for_each_child.cocci warnings
-Message-ID: <20210324200012.GA3528542@robh.at.kernel.org>
-References: <alpine.DEB.2.22.394.2103221918450.2918@hadrien>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L71/S95zyMXln0afxkBYB5ecQb9oQgPfUTdLdtQNpqM=;
+        b=e+iG/f3e01Rsqt7qn1s1N2r+HrDT5AJVYCQwIBDiBkcbtxo8D9/vJR+VJ+A4NVgZ1N
+         HPmbEoJXwOR0Pe05CUMmkVZ0Mumz3FsU7rZmVBa73PjTMl+gNPgjcS+1fP+2++860rXW
+         kXHaVMSo0W2b7xbm8peIGqk2MI94PfoaL9nYJVs+M9npDYAtPDw7gZHmfEuzE4SIrLSl
+         rQ+aIieOSwS7WA4449o2zff+EqT/XY8jlgmQXsrTXkVvms/X/nf1BYPsHyUsIBlr4dMN
+         VCvYUvZ4DclURV6SZbtISiQSAhofqWD3vFxiOuEb7uRPopPafdeQocxtuB4H5UrESq7n
+         vVIQ==
+X-Gm-Message-State: AOAM532wcd3imVHi/jWn2d8W+fQBUvECuWgP9BKmv1MiOKa99DtfBc3/
+        +GvMXaAxdIexIdeE8hIoX83EXtcRqdWyHNWqCdpPdA==
+X-Google-Smtp-Source: ABdhPJwJ5tqbbKkbNKAssimRu1mg50OYnYGjGxnnFswA4GlfmVCV27jhf+B+w0+kbm5rRm38C7W/01CfWNUnuhT1NdA=
+X-Received: by 2002:a9f:3d89:: with SMTP id c9mr3068324uai.65.1616616143142;
+ Wed, 24 Mar 2021 13:02:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2103221918450.2918@hadrien>
+References: <20210311100313.3591254-1-badhri@google.com> <20210311100313.3591254-4-badhri@google.com>
+ <20210324145042.GA3036037@robh.at.kernel.org>
+In-Reply-To: <20210324145042.GA3036037@robh.at.kernel.org>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 24 Mar 2021 13:01:46 -0700
+Message-ID: <CAPTae5KZGPz8jF_C=UjobDe_SotvtR1PecNinOQWUjnLMyF4rQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] dt-bindings: usb: Add chg-psy-name property Maxim
+ 33359 binding
+To:     Rob Herring <robh@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kyle Tso <kyletso@google.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 19:21:39 +0100, Julia Lawall wrote:
-> From: kernel test robot <lkp@intel.com>
-> 
-> Function "for_each_child_of_node" should have of_node_put() before goto.
-> 
-> Generated by: scripts/coccinelle/iterators/for_each_child.cocci
-> 
-> Fixes: 82c2d81361ec ("coccinelle: iterators: Add for_each_child.cocci script")
-> CC: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-> ---
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   812da4d39463a060738008a46cfc9f775e4bfcf6
-> commit: 82c2d81361ecd142a54e84a9da1e287113314a4f coccinelle: iterators: Add for_each_child.cocci script
-> :::::: branch date: 13 hours ago
-> :::::: commit date: 5 months ago
-> 
->  overlay.c |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- a/drivers/of/overlay.c
-> +++ b/drivers/of/overlay.c
-> @@ -796,6 +796,7 @@ static int init_overlay_changeset(struct
->  		if (!fragment->target) {
->  			of_node_put(fragment->overlay);
->  			ret = -EINVAL;
-> +			of_node_put(node);
->  			goto err_free_fragments;
->  		}
-> 
-> 
-> 
+Hi Rob,
 
-Applied, thanks!
+Thanks for the feedback !
+From the feedback that I received from the other patches in the stack,
+we have identified an alternate approach of doing this without
+introducing this device tree addition.
+So, for now this patch is no longer needed. While the alternate
+approach is still being validated, will resurface this patch if I
+identify any drawbacks of the alternate approach.
+
+Regards,
+Badhri
+
+
+On Wed, Mar 24, 2021 at 7:50 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Mar 11, 2021 at 02:03:13AM -0800, Badhri Jagan Sridharan wrote:
+> > chg-psy-name is an optional string property used to indicate the
+> > power supply object for which the current/voltage_max limits have
+> > to be set.
+> >
+> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > ---
+> >  Documentation/devicetree/bindings/usb/maxim,max33359.yaml | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/usb/maxim,max33359.yaml b/Documentation/devicetree/bindings/usb/maxim,max33359.yaml
+> > index 93a19eda610b..3a278969109e 100644
+> > --- a/Documentation/devicetree/bindings/usb/maxim,max33359.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/maxim,max33359.yaml
+> > @@ -28,6 +28,11 @@ properties:
+> >      description:
+> >        Properties for usb c connector.
+> >
+> > +  chg-psy-name:
+> > +    description: Power supply whose current/voltage_max values to be
+> > +      configured.
+> > +    $ref: /schemas/types.yaml#definitions/string
+>
+> If you want a non-vendor specific property, this needs to be documented
+> in a common binding. I think this needs a better explaination and
+> examples of multiple chargers.
+>
+> Rob
