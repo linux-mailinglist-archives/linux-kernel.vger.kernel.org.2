@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23DB347D3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5183D347D41
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236940AbhCXQCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236923AbhCXQCe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:02:34 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53599C061763;
-        Wed, 24 Mar 2021 09:02:32 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id hq27so33749432ejc.9;
-        Wed, 24 Mar 2021 09:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p0h1I2tU40MVEe/iq0GPb6BvRGF0+jimshHBcD8Y96o=;
-        b=UYxL1aPIIPS7dZJFvNFh6Gi7rWcPCnq0LT08QW+F6/HZXq6mbwF8gr9DEQ2z8ZgO7r
-         dZ31Oe2JgNLZIf9KX+4S0UvQ7V8y9v2n7/jYvHfNHjm2k15HIuaVceJG3qkJg1EqLtPB
-         LkJ96zui76hJkuznZNalH0tvK4QFSp9k7YTqifqDGJAnCze1bamfgvt+N2oHMM8ldjPu
-         Ibf1rMbmngk1Gbhy79F6gTXVORnLsE2VieIu639CP+HpZeC19nu8SkRsMO9cIKc/fXhr
-         HaXgNOl1e9UXZKneUfj9dHbbQG9e7QOTVv8j6soU7b+hOIsDZOXsCYmgAqip8RCJmcy3
-         ZAGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p0h1I2tU40MVEe/iq0GPb6BvRGF0+jimshHBcD8Y96o=;
-        b=gfw81uvtx1dEaEV1PKTswviesaNawjfHlt+SNfYOmqpOOJOwHfFP6iQZAlOYC5Z1dO
-         oC7stNdbR20J6RRloF4jn7rjhYsywgxA0W9qxymbiBGXd1MiQz7m/Ktz+ikAoho+vo3n
-         yAToG1Wn5YhF/hq14d5/U6HKHcXbXqIOW1OT4rlJAD8KYGDLYs0ZZV8BQU8Wxf7H1x5X
-         8lNAeN73sHHg7pCFKwFq24sZV9iYuwYpU2RHkDvJuEaXjqQFfdl/Mi9lI7ghslvTg0yG
-         6fyLb0BrZ6kmKPVDtWVP9rRmfGBhwdzX4AAGIfnrfzCIC+VgUFQrbCOdEUzFfeh3yoD/
-         WcjA==
-X-Gm-Message-State: AOAM530uQpkOjUYIR7VDRr+ClzmYVUociimcfy+Kc6J/iVqqNUvz3lSK
-        TCeIrEaBr36HN+75vTwP5j4=
-X-Google-Smtp-Source: ABdhPJwpUavXt4EHnTzT+ae8zvQSOiy4MHaEHtHWR/X63xNd+NtmzaX78oG8X3nz4lj7OuTgsBJ6zQ==
-X-Received: by 2002:a17:906:9888:: with SMTP id zc8mr4575571ejb.310.1616601750960;
-        Wed, 24 Mar 2021 09:02:30 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id si7sm1131470ejb.84.2021.03.24.09.02.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 09:02:30 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 18:02:29 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net: bridge: Fix missing return assignment from
- br_vlan_replay_one call
-Message-ID: <20210324160229.cyzepir5fnfnfeox@skbuf>
-References: <20210324150950.253698-1-colin.king@canonical.com>
+        id S236930AbhCXQEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:04:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41932 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236916AbhCXQE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:04:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616601865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V9iPv8fbewkZMzGZxeZestui1eX3Pr0sLFCxpSUHIGA=;
+        b=SzXzWY6VpAKj6d9RwukPRmT/120eOmJvA7d+Ytlr7a8IQCgTXoYZ/Gtltj0JQADg/SHYQs
+        ugIWvf8CnRwu+oO3mDrG44qvXGveUg5BCjFL92i7rpiSuFfR7Xqpq8KKGwv3f15c0RcHFq
+        k+npGZqwYbZKkVHbQYhBtAeCOg5XZ44=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8CABDAD80;
+        Wed, 24 Mar 2021 16:04:25 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 17:04:24 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de>
+ <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux>
+ <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+ <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
+ <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324150950.253698-1-colin.king@canonical.com>
+In-Reply-To: <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 03:09:50PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed 24-03-21 15:52:38, David Hildenbrand wrote:
+> On 24.03.21 15:42, Michal Hocko wrote:
+> > On Wed 24-03-21 13:03:29, Michal Hocko wrote:
+> > > On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
+> > [...]
+> > > > I kind of understand to be reluctant to use vmemmap_pages terminology here, but
+> > > > unfortunately we need to know about it.
+> > > > We could rename nr_vmemmap_pages to offset_buddy_pages or something like that.
+> > > 
+> > > I am not convinced. It seems you are justr trying to graft the new
+> > > functionality in. But I still believe that {on,off}lining shouldn't care
+> > > about where their vmemmaps come from at all. It should be a
+> > > responsibility of the code which reserves that space to compansate for
+> > > accounting. Otherwise we will end up with a hard to maintain code
+> > > because expectations would be spread at way too many places. Not to
+> > > mention different pfns that the code should care about.
+> > 
+> > The below is a quick hack on top of this patch to illustrate my
+> > thinking. I have dug out all the vmemmap pieces out of the
+> > {on,off}lining and hooked all the accounting when the space is reserved.
+> > This just compiles without any deeper look so there are likely some
+> > minor problems but I haven't really encountered any major problems or
+> > hacks to introduce into the code. The separation seems to be possible.
+> > The diffstat also looks promising. Am I missing something fundamental in
+> > this?
+> > 
 > 
-> The call to br_vlan_replay_one is returning an error return value but
-> this is not being assigned to err and the following check on err is
-> currently always false because err was initialized to zero. Fix this
-> by assigning err.
+> From a quick glimpse, this touches on two things discussed in the past:
 > 
-> Addresses-Coverity: ("'Constant' variable guards dead code")
-> Fixes: 22f67cdfae6a ("net: bridge: add helper to replay VLANs installed on port")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+> 1. If the underlying memory block is offline, all sections are offline. Zone
+> shrinking code will happily skip over the vmemmap pages and you can end up
+> with out-of-zone pages assigned to the zone. Can happen in corner cases.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+You are right. But do we really care? Those pages should be of no
+interest to anybody iterating through zones/nodes anyway.
+
+> There is no way to know that the memmap of these pages was initialized and
+> is of value.
+> 
+> 2. You heavily fragment zone layout although you might end up with
+> consecutive zones (e.g., online all hotplugged memory movable)
+
+What would be consequences?
+
+-- 
+Michal Hocko
+SUSE Labs
