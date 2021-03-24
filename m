@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7862134811D
+	by mail.lfdr.de (Postfix) with ESMTP id E913F34811E
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237742AbhCXTAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:00:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:38094 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237571AbhCXS7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:59:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D21331474;
-        Wed, 24 Mar 2021 11:59:32 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.22.143])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 763F93F718;
-        Wed, 24 Mar 2021 11:59:27 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 18:59:21 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFT PATCH v3 13/27] arm64: Add Apple vendor-specific system
- registers
-Message-ID: <20210324185921.GA27297@C02TD0UTHF1T.local>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-14-marcan@marcan.st>
- <20210324183818.GF13181@willie-the-truck>
+        id S237752AbhCXTAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:00:06 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:52993 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237670AbhCXS7y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:59:54 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lP8jF-001pZc-3g; Wed, 24 Mar 2021 19:59:41 +0100
+Received: from p57bd9564.dip0.t-ipconnect.de ([87.189.149.100] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lP8jE-0004jc-St; Wed, 24 Mar 2021 19:59:41 +0100
+Subject: Re: [PATCH] ia64: Ensure proper NUMA distance and possible map
+ initialization
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        debian-ia64 <debian-ia64@lists.debian.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Anatoly Pugachev <matorola@gmail.com>
+References: <20210318130617.896309-1-valentin.schneider@arm.com>
+ <20210324115432.4102cd93d35a2edb1742dec7@linux-foundation.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <4e45a4a0-7611-a5cc-be8f-b43d6d5b2b0c@physik.fu-berlin.de>
+Date:   Wed, 24 Mar 2021 19:59:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324183818.GF13181@willie-the-truck>
+In-Reply-To: <20210324115432.4102cd93d35a2edb1742dec7@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.149.100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 06:38:18PM +0000, Will Deacon wrote:
-> On Fri, Mar 05, 2021 at 06:38:48AM +0900, Hector Martin wrote:
-> > Apple ARM64 SoCs have a ton of vendor-specific registers we're going to
-> > have to deal with, and those don't really belong in sysreg.h with all
-> > the architectural registers. Make a new home for them, and add some
-> > registers which are useful for early bring-up.
-> > 
-> > Signed-off-by: Hector Martin <marcan@marcan.st>
-> > ---
-> >  MAINTAINERS                           |  1 +
-> >  arch/arm64/include/asm/sysreg_apple.h | 69 +++++++++++++++++++++++++++
-> >  2 files changed, 70 insertions(+)
-> >  create mode 100644 arch/arm64/include/asm/sysreg_apple.h
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index aec14fbd61b8..3a352c687d4b 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -1646,6 +1646,7 @@ B:	https://github.com/AsahiLinux/linux/issues
-> >  C:	irc://chat.freenode.net/asahi-dev
-> >  T:	git https://github.com/AsahiLinux/linux.git
-> >  F:	Documentation/devicetree/bindings/arm/apple.yaml
-> > +F:	arch/arm64/include/asm/sysreg_apple.h
-> 
-> (this isn't needed with my suggestion below).
-> 
-> >  ARM/ARTPEC MACHINE SUPPORT
-> >  M:	Jesper Nilsson <jesper.nilsson@axis.com>
-> > diff --git a/arch/arm64/include/asm/sysreg_apple.h b/arch/arm64/include/asm/sysreg_apple.h
-> > new file mode 100644
-> > index 000000000000..48347a51d564
-> > --- /dev/null
-> > +++ b/arch/arm64/include/asm/sysreg_apple.h
-> 
-> I doubt apple are the only folks doing this, so can we instead have
-> sysreg-impdef.h please, and then have an Apple section in there for these
-> registers? That way, we could also have an imp_sys_reg() macro to limit
-> CRn to 11 or 15, which is the reserved encoding space for these registers.
-> 
-> We'll cc you for any patches touching the Apple parts, as we don't have
-> the first clue about what's hiding in there.
+Hi!
 
-For existing IMP-DEF sysregs (e.g. the Kryo L2 control registers), we've
-put the definitions in the drivers, rather than collating
-non-architectural bits under arch/arm64/.
+On 3/24/21 7:54 PM, Andrew Morton wrote:
+> On Thu, 18 Mar 2021 13:06:17 +0000 Valentin Schneider <valentin.schneider@arm.com> wrote:
+> 
+>> John Paul reported a warning about bogus NUMA distance values spurred by
+>> commit:
+>>
+>>   620a6dc40754 ("sched/topology: Make sched_init_numa() use a set for the deduplicating sort")
+>>
+>> In this case, the afflicted machine comes up with a reported 256 possible
+>> nodes, all of which are 0 distance away from one another. This was
+>> previously silently ignored, but is now caught by the aforementioned
+>> commit.
+>>
+>> The culprit is ia64's node_possible_map which remains unchanged from its
+>> initialization value of NODE_MASK_ALL. In John's case, the machine doesn't
+>> have any SRAT nor SLIT table, but AIUI the possible map remains untouched
+>> regardless of what ACPI tables end up being parsed. Thus, !online &&
+>> possible nodes remain with a bogus distance of 0 (distances \in [0, 9] are
+>> "reserved and have no meaning" as per the ACPI spec).
+>>
+>> Follow x86 / drivers/base/arch_numa's example and set the possible map to
+>> the parsed map, which in this case seems to be the online map.
+>>
+>> Link: http://lore.kernel.org/r/255d6b5d-194e-eb0e-ecdd-97477a534441@physik.fu-berlin.de
+>> Fixes: 620a6dc40754 ("sched/topology: Make sched_init_numa() use a set for the deduplicating sort")
+>> Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+>> ---
+>> This might need an earlier Fixes: tag, but all of this is quite old and
+>> dusty (the git blame rabbit hole leads me to ~2008/2007)
+>>
+> 
+> Thanks.  Is this worth a cc:stable tag?
 
-So far we've kept arch/arm64/ largely devoid of IMP-DEF bits, and it
-seems a shame to add something with the sole purpose of collating that,
-especially given arch code shouldn't need to touch these if FW and
-bootloader have done their jobs right.
+Looks like the regression was introduced 5.12-rc1, so no need for backporting.
 
-Can we put the definitions in the relevant drivers? That would sidestep
-any pain with MAINTAINERS, too.
+Adrian
 
-Thanks,
-Mark.
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
