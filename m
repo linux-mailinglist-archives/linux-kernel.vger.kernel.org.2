@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA824347F8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6087347F86
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237393AbhCXRfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        id S237330AbhCXReq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237259AbhCXReY (ORCPT
+        with ESMTP id S237232AbhCXReO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:34:24 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA59C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:13 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id w18so28631065edc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:13 -0700 (PDT)
+        Wed, 24 Mar 2021 13:34:14 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B513C0613E0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:14 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id h10so28530652edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:34:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Uk7zBDuxVird9hlwDlzfVR+OTGmQfb7Ta2eddUi7FDk=;
-        b=oMG1f/lilaXJuU+qkI5svIKpq2nZYEjtZdaiC7WToDBB3y0uP4crnOWItZmd5KHr5M
-         ppBNbO7xGEW0qeTEQOMaSVI/NxrQc9apoBqcvRZQskDcbbUdclF4xs3yQIqeSp1BlvXI
-         RLon93Usg8XWJgzObbNwpqiYQZhxnf8Mzx0Fe9+MLPXZSgyTMO2vJB3fwOtCjpw9ql3S
-         xg2KWjw5PGYNVlkfzDr0/tIIR1Nx3VwX68bC1omsXKzxxge0Ikrzizz5hioI2BbjOrUw
-         +ogMVa7xQSDpbXnAexotvhGqPai6VH9Jp9stvVdBDxfdhNFgSITW6aN5pafh0WKfGnrO
-         Bkdg==
+        bh=YX2rXBybL20wXzWEgbJFWLYt9DGgkwCmYeXkOpQbl+4=;
+        b=Bfp57e1lQCY5EFWX4luD5N2fEWYpccMVTLKliRDQiNa6NB9MeuKuVW/OnZAxt3gryp
+         87Myoc7DNQFoZSRfyQDVUc6ww4tJE7LQmZWMF7uBiQFF0zFIfruv5I0pTSvWtCWqkAme
+         Br+V0yd4e9SUTg2fPyk+z2nvqy+EeFUtkJdGHUyz7CtXqfBCF4uZkIyDkhQv145f7Q1T
+         5TjjYkcNVGcAEjJoTI+EnZFyqXZU/Gk0+38r2/geqhI20tLUZU1um5zEwsCnO0kgPAoB
+         +jobYECsruYUzK/2mZ3qRQURK3G4u2uezIik7Q8hsWPTJo0gEBNh8C5TvxICZBnwN75v
+         arSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Uk7zBDuxVird9hlwDlzfVR+OTGmQfb7Ta2eddUi7FDk=;
-        b=eUpHGt7PH1ozWhB1ncUXLXD0BCiPkfU54WzupumK4kTBEae1wQXr/H5Yz5MyfqH90q
-         lVl5mkFUha264U/VWO0+EexuLqO4oofwhKcBMCIRVwRhvrnTMcoBu15xRCaQJT0DS2Qu
-         qsVHt1jzjyRpU2J45V3lkNuOe+h1ZUjPKlIGoU21m/hYCrFuRkh8G84uLTfhBE2hZakT
-         K0AxIKnl3YWgOO6cA23idahpx7aISoHfXicGfNc7JkG1VZg/WhVbdb+WBZ3MEZXWMT6N
-         viK0ADV/gAIfCYewZX6oEnphx/FCiRCxnDg4hjyFdttSn/5n6AXzXnReojzBHnc19o0P
-         WrwA==
-X-Gm-Message-State: AOAM531LvGIu01jDWAhqJN8GMCLsSmVCQIWe3L29eSl6Xfu5nU3l3cow
-        bv7aZtvb1Wj0VIF88YSsrHfhfw==
-X-Google-Smtp-Source: ABdhPJzEcz7kA6LloIrNljqPtpYDplJZAPeUfdrb6FoajItVxIad1HesJK9UA1useQFk8yXszTAC9w==
-X-Received: by 2002:aa7:d54c:: with SMTP id u12mr4872746edr.234.1616607252099;
-        Wed, 24 Mar 2021 10:34:12 -0700 (PDT)
+        bh=YX2rXBybL20wXzWEgbJFWLYt9DGgkwCmYeXkOpQbl+4=;
+        b=tAyN5A5xvgDGqukZTa34b25RpRZ3ECDl9PH/msQde690Ne46TSKX4Wo3ukLtS1oNjz
+         U6hsnkcFr5YpqbukuIiRWdOao1d1P2zUx0SL0xA4hmQCVqmgovdOZw6pxlX1QlnFBP/c
+         oGTGCZ2NIQfTJsFb9iTJjRoRJkTIZbcZbdb+ymJJ38XCPxHmxwIXUziOcO96Vh0pGSJH
+         tOHBszxW38rrF5JQ+JO+BZzZXcagZ8VN+VzZBilLoavZo+BIWA7ebGOeOPDMtG2fcFU6
+         uQey/vKSQd3agj8+x1qr5QwSQKp+yfcDW0QqCgqDiuexde7BW9QGOkvNhCbgI6h72uGt
+         2UVA==
+X-Gm-Message-State: AOAM531C18XrwHF4IBuo2gYHLpe+aZFI9n7TMflE+TKGWT5W9OgqUREB
+        PNGAlscvXqN36VGjFtllJAz61Q==
+X-Google-Smtp-Source: ABdhPJwCPqXP3jqO62z9IUUGkbePEAMenKTIuU1I7W2tHc5o4gR44zrdACq+n9DNpRRywppISA6OkA==
+X-Received: by 2002:a05:6402:142:: with SMTP id s2mr4677887edu.2.1616607253067;
+        Wed, 24 Mar 2021 10:34:13 -0700 (PDT)
 Received: from dell.default ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id p19sm1466367edr.57.2021.03.24.10.34.11
+        by smtp.gmail.com with ESMTPSA id p19sm1466367edr.57.2021.03.24.10.34.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 10:34:11 -0700 (PDT)
+        Wed, 24 Mar 2021 10:34:12 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
         Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
         linux-input@vger.kernel.org
-Subject: [PATCH 04/25] HID: intel-ish: Supply some missing param descriptions
-Date:   Wed, 24 Mar 2021 17:33:43 +0000
-Message-Id: <20210324173404.66340-5-lee.jones@linaro.org>
+Subject: [PATCH 05/25] HID: intel-ish: Fix a naming disparity and a formatting error
+Date:   Wed, 24 Mar 2021 17:33:44 +0000
+Message-Id: <20210324173404.66340-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210324173404.66340-1-lee.jones@linaro.org>
 References: <20210324173404.66340-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,65 +69,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/hid/intel-ish-hid/ishtp/bus.c:173: warning: Function parameter or member 'fw_client' not described in 'ishtp_get_fw_client_id'
- drivers/hid/intel-ish-hid/ishtp/bus.c:845: warning: Function parameter or member 'device' not described in 'ishtp_device'
- drivers/hid/intel-ish-hid/ishtp/bus.c:858: warning: Function parameter or member 'device' not described in 'ishtp_get_pci_device'
- drivers/hid/intel-ish-hid/ishtp/bus.c:871: warning: Function parameter or member 'cl_device' not described in 'ishtp_trace_callback'
- drivers/hid/intel-ish-hid/ishtp/bus.c:884: warning: Function parameter or member 'dev' not described in 'ish_hw_reset'
+ drivers/hid/intel-ish-hid/ishtp/hbm.c:409: warning: expecting prototype for ishtp_client_disconnect_request(). Prototype was for ishtp_hbm_fw_disconnect_req() instead
+ drivers/hid/intel-ish-hid/ishtp/hbm.c:433: warning: wrong kernel-doc identifier on line:
 
 Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 Cc: Jiri Kosina <jikos@kernel.org>
 Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: "Uwe Kleine-König" <uwe@kleine-koenig.org>
 Cc: linux-input@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/hid/intel-ish-hid/ishtp/bus.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/hid/intel-ish-hid/ishtp/hbm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
-index ffc9ce5c86ee6..c1c7d5356208d 100644
---- a/drivers/hid/intel-ish-hid/ishtp/bus.c
-+++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
-@@ -164,6 +164,7 @@ EXPORT_SYMBOL(ishtp_fw_cl_get_client);
+diff --git a/drivers/hid/intel-ish-hid/ishtp/hbm.c b/drivers/hid/intel-ish-hid/ishtp/hbm.c
+index dbfae60f26216..9c031a06e4c40 100644
+--- a/drivers/hid/intel-ish-hid/ishtp/hbm.c
++++ b/drivers/hid/intel-ish-hid/ishtp/hbm.c
+@@ -398,7 +398,7 @@ static void ishtp_hbm_cl_connect_res(struct ishtp_device *dev,
+ }
  
  /**
-  * ishtp_get_fw_client_id() - Get fw client id
-+ * @fw_client:	firmware client used to fetch the ID
+- * ishtp_client_disconnect_request() - Receive disconnect request
++ * ishtp_hbm_fw_disconnect_req() - Receive disconnect request
+  * @dev: ISHTP device instance
+  * @disconnect_req: disconnect request structure
   *
-  * This interface is used to reset HW get FW client id.
-  *
-@@ -835,6 +836,7 @@ int ishtp_use_dma_transfer(void)
+@@ -430,7 +430,7 @@ static void ishtp_hbm_fw_disconnect_req(struct ishtp_device *dev,
+ }
  
  /**
-  * ishtp_device() - Return device pointer
-+ * @device: ISH-TP client device instance
-  *
-  * This interface is used to return device pointer from ishtp_cl_device
-  * instance.
-@@ -851,6 +853,7 @@ EXPORT_SYMBOL(ishtp_device);
-  * ishtp_get_pci_device() - Return PCI device dev pointer
-  * This interface is used to return PCI device pointer
-  * from ishtp_cl_device instance.
-+ * @device: ISH-TP client device instance
-  *
-  * Return: device *.
-  */
-@@ -862,6 +865,7 @@ EXPORT_SYMBOL(ishtp_get_pci_device);
- 
- /**
-  * ishtp_trace_callback() - Return trace callback
-+ * @cl_device: ISH-TP client device instance
-  *
-  * This interface is used to return trace callback function pointer.
-  *
-@@ -875,6 +879,7 @@ EXPORT_SYMBOL(ishtp_trace_callback);
- 
- /**
-  * ish_hw_reset() - Call HW reset IPC callback
-+ * @dev:	ISHTP device instance
-  *
-  * This interface is used to reset HW in case of error.
+- * ishtp_hbm_dma_xfer_ack(() - Receive transfer ACK
++ * ishtp_hbm_dma_xfer_ack() - Receive transfer ACK
+  * @dev: ISHTP device instance
+  * @dma_xfer: HBM transfer message
   *
 -- 
 2.27.0
