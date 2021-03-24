@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADC6348139
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC55334813C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237624AbhCXTHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:07:04 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10190 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237774AbhCXTGg (ORCPT
+        id S237542AbhCXTHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:07:08 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34412 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237793AbhCXTGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:06:36 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 12OJ1vnY029571
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:06:35 -0700
+        Wed, 24 Mar 2021 15:06:40 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12OJ4gnw013503
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:06:39 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=981pKgSo+LC/Mf3Xm+swjmvg5jsIj7ppALj3/zde3Ag=;
- b=cd4Gcco+nv3ez94MZ6gARvy8sCGAOUDJ/cCrqivDlRFEjHF/PAVntCHtqUMVHNeomK2R
- vsM8Laq2ojwA/zLSGSRXm0GmfwEBu2oudeJ+bqxvI5wyv0D+ypiSPJBLWv16Nza0UkSF
- NrMMnbsHzNtAAgZRMXbthYbnMePHh8zjj14= 
+ bh=PesfLSNqaSnZtUHwp3bX+VBIVffZ0kcnPolfYW+BQSc=;
+ b=T+oxbpDviEl0fIWV4bv5zE8Lxxf0+84pGTjkPgw3UjTqaXIzM8asm5g1Ri/HfBkZYYo+
+ 9MryB1lXbLJDYSaWYLvvXv/qNzpiQm48E8OmXPsTa23cnf+ZVgUHY5s+z2bQwzyy0Op2
+ adgJ8tSlKegNu2fTHSZU31/n/Amhr0gIH2A= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 37g173kq14-2
+        by mx0a-00082601.pphosted.com with ESMTP id 37g1wjbgnw-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:06:35 -0700
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:06:39 -0700
 Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 24 Mar 2021 12:06:34 -0700
+ 15.1.2176.2; Wed, 24 Mar 2021 12:06:37 -0700
 Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 8321E57ACF2A; Wed, 24 Mar 2021 12:06:33 -0700 (PDT)
+        id 888AA57ACF2C; Wed, 24 Mar 2021 12:06:33 -0700 (PDT)
 From:   Roman Gushchin <guro@fb.com>
 To:     Dennis Zhou <dennis@kernel.org>
 CC:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
         Roman Gushchin <guro@fb.com>
-Subject: [PATCH rfc 1/4] percpu: implement partial chunk depopulation
-Date:   Wed, 24 Mar 2021 12:06:23 -0700
-Message-ID: <20210324190626.564297-2-guro@fb.com>
+Subject: [PATCH rfc 2/4] percpu: split __pcpu_balance_workfn()
+Date:   Wed, 24 Mar 2021 12:06:24 -0700
+Message-ID: <20210324190626.564297-3-guro@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210324190626.564297-1-guro@fb.com>
 References: <20210324190626.564297-1-guro@fb.com>
@@ -50,145 +50,142 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-24_13:2021-03-24,2021-03-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxscore=0 adultscore=0 mlxlogscore=714 clxscore=1015 phishscore=0
- malwarescore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
+ clxscore=1015 adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2103240137
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch implements partial depopulation of percpu chunks.
+__pcpu_balance_workfn() became fairly big and hard to follow, but in
+fact it consists of two fully independent parts, responsible for
+the destruction of excessive free chunks and population of necessarily
+amount of free pages.
 
-As now, a chunk can be depopulated only as a part of the final
-destruction, when there are no more outstanding allocations. However
-to minimize a memory waste, it might be useful to depopulate a
-partially filed chunk, if a small number of outstanding allocations
-prevents the chunk from being reclaimed.
+In order to simplify the code and prepare for adding of a new
+functionality, split it in two functions:
 
-This patch implements the following depopulation process: it scans
-over the chunk pages, looks for a range of empty and populated pages
-and performs the depopulation. To avoid races with new allocations,
-the chunk is previously isolated. After the depopulation the chunk is
-returned to the original slot (but is appended to the tail of the list
-to minimize the chances of population).
+  1) pcpu_balance_free,
+  2) pcpu_balance_populated.
 
-Because the pcpu_lock is dropped while calling pcpu_depopulate_chunk(),
-the chunk can be concurrently moved to a different slot. So we need
-to isolate it again on each step. pcpu_alloc_mutex is held, so the
-chunk can't be populated/depopulated asynchronously.
+Move the taking/releasing of the pcpu_alloc_mutex to an upper level
+to keep the current synchronization in place.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
 ---
- mm/percpu.c | 90 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 90 insertions(+)
+ mm/percpu.c | 46 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
 
 diff --git a/mm/percpu.c b/mm/percpu.c
-index 6596a0a4286e..78c55c73fa28 100644
+index 78c55c73fa28..015d076893f5 100644
 --- a/mm/percpu.c
 +++ b/mm/percpu.c
-@@ -2055,6 +2055,96 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_=
-type type)
- 	mutex_unlock(&pcpu_alloc_mutex);
+@@ -1930,31 +1930,22 @@ void __percpu *__alloc_reserved_percpu(size_t siz=
+e, size_t align)
  }
 =20
-+/**
-+ * pcpu_shrink_populated - scan chunks and release unused pages to the s=
-ystem
-+ * @type: chunk type
-+ *
-+ * Scan over all chunks, find those marked with the depopulate flag and
-+ * try to release unused pages to the system. On every attempt clear the
-+ * chunk's depopulate flag to avoid wasting CPU by scanning the same
-+ * chunk again and again.
-+ */
-+static void pcpu_shrink_populated(enum pcpu_chunk_type type)
-+{
-+	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
-+	struct pcpu_chunk *chunk;
-+	int slot, i, off, start;
-+
-+	spin_lock_irq(&pcpu_lock);
-+	for (slot =3D pcpu_nr_slots - 1; slot >=3D 0; slot--) {
-+restart:
-+		list_for_each_entry(chunk, &pcpu_slot[slot], list) {
-+			bool isolated =3D false;
-+
-+			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH)
-+				break;
-+
-+			for (i =3D 0, start =3D -1; i < chunk->nr_pages; i++) {
-+				if (!chunk->nr_empty_pop_pages)
-+					break;
-+
-+				/*
-+				 * If the page is empty and populated, start or
-+				 * extend the [start, i) range.
-+				 */
-+				if (test_bit(i, chunk->populated)) {
-+					off =3D find_first_bit(
-+						pcpu_index_alloc_map(chunk, i),
-+						PCPU_BITMAP_BLOCK_BITS);
-+					if (off >=3D PCPU_BITMAP_BLOCK_BITS) {
-+						if (start =3D=3D -1)
-+							start =3D i;
-+						continue;
-+					}
-+				}
-+
-+				/*
-+				 * Otherwise check if there is an active range,
-+				 * and if yes, depopulate it.
-+				 */
-+				if (start =3D=3D -1)
-+					continue;
-+
-+				/*
-+				 * Isolate the chunk, so new allocations
-+				 * wouldn't be served using this chunk.
-+				 * Async releases can still happen.
-+				 */
-+				if (!list_empty(&chunk->list)) {
-+					list_del_init(&chunk->list);
-+					isolated =3D true;
-+				}
-+
-+				spin_unlock_irq(&pcpu_lock);
-+				pcpu_depopulate_chunk(chunk, start, i);
-+				cond_resched();
-+				spin_lock_irq(&pcpu_lock);
-+
-+				pcpu_chunk_depopulated(chunk, start, i);
-+
-+				/*
-+				 * Reset the range and continue.
-+				 */
-+				start =3D -1;
-+			}
-+
-+			if (isolated) {
-+				/*
-+				 * The chunk could have been moved while
-+				 * pcpu_lock wasn't held. Make sure we put
-+				 * the chunk back into the slot and restart
-+				 * the scanning.
-+				 */
-+				if (list_empty(&chunk->list))
-+					list_add_tail(&chunk->list,
-+						      &pcpu_slot[slot]);
-+				goto restart;
-+			}
-+		}
-+	}
-+	spin_unlock_irq(&pcpu_lock);
+ /**
+- * __pcpu_balance_workfn - manage the amount of free chunks and populate=
+d pages
++ * pcpu_balance_free - manage the amount of free chunks
+  * @type: chunk type
+  *
+- * Reclaim all fully free chunks except for the first one.  This is also
+- * responsible for maintaining the pool of empty populated pages.  Howev=
+er,
+- * it is possible that this is called when physical memory is scarce cau=
+sing
+- * OOM killer to be triggered.  We should avoid doing so until an actual
+- * allocation causes the failure as it is possible that requests can be
+- * serviced from already backed regions.
++ * Reclaim all fully free chunks except for the first one.
+  */
+-static void __pcpu_balance_workfn(enum pcpu_chunk_type type)
++static void pcpu_balance_free(enum pcpu_chunk_type type)
+ {
+-	/* gfp flags passed to underlying allocators */
+-	const gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+ 	LIST_HEAD(to_free);
+ 	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
+ 	struct list_head *free_head =3D &pcpu_slot[pcpu_nr_slots - 1];
+ 	struct pcpu_chunk *chunk, *next;
+-	int slot, nr_to_pop, ret;
+=20
+ 	/*
+ 	 * There's no reason to keep around multiple unused chunks and VM
+ 	 * areas can be scarce.  Destroy all free chunks except for one.
+ 	 */
+-	mutex_lock(&pcpu_alloc_mutex);
+ 	spin_lock_irq(&pcpu_lock);
+=20
+ 	list_for_each_entry_safe(chunk, next, free_head, list) {
+@@ -1982,6 +1973,25 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_=
+type type)
+ 		pcpu_destroy_chunk(chunk);
+ 		cond_resched();
+ 	}
 +}
 +
++/**
++ * pcpu_balance_populated - manage the amount of populated pages
++ * @type: chunk type
++ *
++ * Maintain a certain amount of populated pages to satisfy atomic alloca=
+tions.
++ * It is possible that this is called when physical memory is scarce cau=
+sing
++ * OOM killer to be triggered.  We should avoid doing so until an actual
++ * allocation causes the failure as it is possible that requests can be
++ * serviced from already backed regions.
++ */
++static void pcpu_balance_populated(enum pcpu_chunk_type type)
++{
++	/* gfp flags passed to underlying allocators */
++	const gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
++	struct list_head *pcpu_slot =3D pcpu_chunk_list(type);
++	struct pcpu_chunk *chunk;
++	int slot, nr_to_pop, ret;
+=20
+ 	/*
+ 	 * Ensure there are certain number of free populated pages for
+@@ -2051,8 +2061,6 @@ static void __pcpu_balance_workfn(enum pcpu_chunk_t=
+ype type)
+ 			goto retry_pop;
+ 		}
+ 	}
+-
+-	mutex_unlock(&pcpu_alloc_mutex);
+ }
+=20
  /**
+@@ -2149,14 +2157,18 @@ static void pcpu_shrink_populated(enum pcpu_chunk=
+_type type)
   * pcpu_balance_workfn - manage the amount of free chunks and populated =
 pages
   * @work: unused
+  *
+- * Call __pcpu_balance_workfn() for each chunk type.
++ * Call pcpu_balance_free() and pcpu_balance_populated() for each chunk =
+type.
+  */
+ static void pcpu_balance_workfn(struct work_struct *work)
+ {
+ 	enum pcpu_chunk_type type;
+=20
+-	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++)
+-		__pcpu_balance_workfn(type);
++	for (type =3D 0; type < PCPU_NR_CHUNK_TYPES; type++) {
++		mutex_lock(&pcpu_alloc_mutex);
++		pcpu_balance_free(type);
++		pcpu_balance_populated(type);
++		mutex_unlock(&pcpu_alloc_mutex);
++	}
+ }
+=20
+ /**
 --=20
 2.30.2
 
