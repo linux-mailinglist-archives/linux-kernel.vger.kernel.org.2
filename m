@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495F8346E98
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68930346EA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 02:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhCXBVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 21:21:44 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42141 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhCXBVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:21:40 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F4r6p1GBsz9sWV;
-        Wed, 24 Mar 2021 12:21:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616548898;
-        bh=CKifn0z86IKcRhsxJ3SNEoPSfhGODKU1yWl6/rCV2e0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=st+1XGjJboPmiNh3ngNoDeqcOCvYvOLUuUM4X0CiczPhPJtw47FaOot9wfj0Aefvx
-         f1vY4XJ4PcuxwLp+dHld+ThbAR+6+nd/SvTxY+D/ri/bQ734HwnxG/szva+OQ9206K
-         ZS+x00jC3E1ZUifiJD+y5yrJmFM/ZQMWkKlfW2LC0tEVnq7znvpXRf8UWBAynpXGmi
-         soTFoBQFe/BrQgAoE7JhPzzHX9UEWOSwbzFpRbfaZmxHv+nTLA9jk4CznMjbNhYg0g
-         +SzwiBhypbMYGXRIR2SSUa8hI7eeSP2ISCrKagqshDMgXtCLp42B8/UZyA8IGKo9pT
-         jRPmZG03Zv54g==
-Date:   Wed, 24 Mar 2021 12:21:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Wan Jiabing <wanjiabing@vivo.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210324122137.5ff8f0b2@canb.auug.org.au>
+        id S234440AbhCXBXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 21:23:53 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14511 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234404AbhCXBXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 21:23:34 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F4r646kJxzPlSH;
+        Wed, 24 Mar 2021 09:21:00 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
+ 2021 09:23:29 +0800
+Subject: Re: [PATCH] f2fs: fix to align to section for fallocate() on pinned
+ file
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>
+References: <20210305095601.96591-1-yuchao0@huawei.com>
+ <d9c118eb-45b3-7f35-70bd-cb016957e6e8@kernel.org>
+ <YFo0Tz1zl4tw7lUP@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <d08a10bb-d6ac-1dde-7e61-836030c96f34@huawei.com>
+Date:   Wed, 24 Mar 2021 09:23:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mQspNTZzRq=1d96KhQCGZS2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YFo0Tz1zl4tw7lUP@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mQspNTZzRq=1d96KhQCGZS2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2021/3/24 2:32, Jaegeuk Kim wrote:
+> On 03/23, Chao Yu wrote:
+>> On 2021/3/5 17:56, Chao Yu wrote:
+>>> Now, fallocate() on a pinned file only allocates blocks which aligns
+>>> to segment rather than section, so GC may try to migrate pinned file's
+>>> block, and after several times of failure, pinned file's block could
+>>> be migrated to other place, however user won't be aware of such
+>>> condition, and then old obsolete block address may be readed/written
+>>> incorrectly.
+>>>
+>>> To avoid such condition, let's try to allocate pinned file's blocks
+>>> with section alignment.
+>>>
+>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>
+>> Jaegeuk,
+>>
+>> Could you please check and apply below diff into original patch?
+>>
+>> ---
+>>   fs/f2fs/file.c | 10 +++++-----
+>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 236f3f69681a..24fa68fdcaa0 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -1648,13 +1648,13 @@ static int expand_inode_data(struct inode *inode, loff_t offset,
+>>   		return 0;
+>>
+>>   	if (f2fs_is_pinned_file(inode)) {
+>> -		block_t len = (map.m_len >> sbi->log_blocks_per_seg) <<
+>> -					sbi->log_blocks_per_seg;
+>> +		block_t sec_blks = BLKS_PER_SEC(sbi);
+>> +		block_t len = rounddown(map.m_len, sec_blks);
+> 
+> len is declared above, so let me rephrase this as well.
 
-Hi all,
+Oh, right.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+> 
+>>
+>> -		if (map.m_len % sbi->blocks_per_seg)
+>> -			len += sbi->blocks_per_seg;
+>> +		if (map.m_len % sec_blks)
+>> +			len += sec_blks;
+> 
+> is this roundup()?
 
-  drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
+More clean.
 
-between commit:
+> 
+> Could you check this?
+> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=e1175f02291141bbd924fc578299305fcde35855
 
-  7c1ef1959b6f ("net/mlx5: SF, do not use ecpu bit for vhca state processin=
-g")
+Looks good to me. :)
 
-from the net tree and commit:
+Thanks,
 
-  4c94fe88cde4 ("net: ethernet: Remove duplicate include of vhca_event.h")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-index a5a0f60bef66,3c8a00dd573a..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-@@@ -5,8 -5,7 +5,7 @@@
-  #include "priv.h"
-  #include "sf.h"
-  #include "mlx5_ifc_vhca_event.h"
-- #include "vhca_event.h"
- -#include "ecpf.h"
- +#include "mlx5_core.h"
- =20
-  struct mlx5_sf_hw {
-  	u32 usr_sfnum;
-
---Sig_/mQspNTZzRq=1d96KhQCGZS2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBalCEACgkQAVBC80lX
-0GxGhggAkcnlhlxZJSg3roN3rb7jKPsaYdFSTrYakDIcpM2Z2i4HX901XrTfbTr2
-ztOzYNfSQugxUnY6+yXxjUIdPUXaolVfXGApZF6yRPBZ7TksLR3QL2GUomcaWvOK
-5krEJMmmmOwT3qMsfJgo40IQt4LjQzuPRZz7Jr7WEa2g5aSwC4TDcXMBj6BVj1b8
-tzcTj1/7QOZbs+jXKtekirp6Aq0hPPHuyAu1wqvgTfPcullzziQ/IItqL0GuoUF7
-uLKj7l1LqOw0Sgj0mEo31agRRYh3x5F1KykR5+c78R4wslyWfdkSxuAC4TW8Dp3x
-kqbhPCfNcWgnHMzyad2MMql6Xv8SHw==
-=NSQ5
------END PGP SIGNATURE-----
-
---Sig_/mQspNTZzRq=1d96KhQCGZS2--
+> 
+>>
+>> -		map.m_len = sbi->blocks_per_seg;
+>> +		map.m_len = sec_blks;
+>>   next_alloc:
+>>   		if (has_not_enough_free_secs(sbi, 0,
+>>   			GET_SEC_FROM_SEG(sbi, overprovision_segments(sbi)))) {
+>> -- 
+>> 2.22.1
+>>
+> .
+> 
