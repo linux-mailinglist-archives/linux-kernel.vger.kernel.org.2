@@ -2,210 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70A5348128
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34B8348136
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237760AbhCXTDU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 15:03:20 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21735 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237772AbhCXTDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:03:02 -0400
-IronPort-SDR: cabSPKUyXvJu5GSeShXCm/n5wIaaMsU+keX7iUhEFEiw/D5TiZa7/wH6t/pIzQmfHiQqvuIqHk
- bdDLOlUx/GQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178324120"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="178324120"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 12:03:01 -0700
-IronPort-SDR: vEVuZEgytcldetjUfo6Sl5MqAEoBbiZloTVAaWxshrn8DYwryViiHiE4G3TH6o/qH6X0x6iK7x
- GHD4R+R+6rhw==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="525345239"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 12:03:01 -0700
-Date:   Wed, 24 Mar 2021 12:05:28 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210324120528.24d82dbd@jacob-builder>
-In-Reply-To: <20210322120300.GU2356281@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210318172234.3e8c34f7@jacob-builder>
-        <YFR10eeDVf5ZHV5l@myrica>
-        <20210319124645.GP2356281@nvidia.com>
-        <YFSqDNJ5yagk4eO+@myrica>
-        <20210319135432.GT2356281@nvidia.com>
-        <20210319112221.5123b984@jacob-builder>
-        <20210322120300.GU2356281@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S237764AbhCXTGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237703AbhCXTGW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 15:06:22 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7108EC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:06:22 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so3107359pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=jgwTIxb3kQfmGqGhW9clIE4XoyPxtgRgM44bNnHIRJA=;
+        b=jtx6m+XsWwynK5IrbYLlN/i1szBH5bcX8ipkJybFqKLbyXmDevTO3+5KsJuoCoCI6j
+         TnBWZsNV8EaPOnS5yqKSZpyhdjMxuwp2OYsCyfWnPpSRkU/93S0J/HV4Hh1w++AWSWoL
+         joN8SFKfNFy84lEyN1PVBsZNbBhQP9VRf25qU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=jgwTIxb3kQfmGqGhW9clIE4XoyPxtgRgM44bNnHIRJA=;
+        b=RpCxApAXTV2TnKxkxiocEDITRhifIVyYtoVocTBXTp8L18RoQwPyzmnHZg7iiqJiiW
+         GweOhB0HkeXzADjNUL5QOGaKDQj65CtoaJ2N4kxlwmrP5mtk3mGVAmTZqHBFYYT2PXUZ
+         aFsKiT1RXdVcmxoIh7wL8yVlynpNaCVsJ8ebXmpClEKRpqCZhUi//IV6IyxPIlm24FJd
+         YLAgTBPe+ylWxvph1HaYOzMEjr8rnhcXWhZgJiMFmK34YB8Dv1c/+pvgMhewK7dSXyRy
+         b0BZyXXmjGK1zOraJk1017cHQlTCNEqoHofx1v1BzSuN2mm4Hw2g3/X8EA2877EFnrkm
+         XsVg==
+X-Gm-Message-State: AOAM532FO/goCqCn6ArKvPkYFX/MDBOLtu8yrQITnfgD7uBi8BzNG4yu
+        SNGdojobcW5MuxZTsszhGh5jg4LNpntmGw==
+X-Google-Smtp-Source: ABdhPJx7ADilZ/U3c/pueKY9lgNEyG4MWQ3dh5d2nSFUDXA0PHmJ5XhEbCHiOjSZczWe1ktjsEvCGw==
+X-Received: by 2002:a17:90a:c797:: with SMTP id gn23mr4946489pjb.180.1616612781852;
+        Wed, 24 Mar 2021 12:06:21 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
+        by smtp.gmail.com with ESMTPSA id e65sm3215857pfe.9.2021.03.24.12.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 12:06:21 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <7ef21ff8-8056-3b07-31ac-bc2de89fa7a0@rasmusvillemoes.dk>
+References: <20210324020443.1815557-1-swboyd@chromium.org> <20210324020443.1815557-3-swboyd@chromium.org> <7ef21ff8-8056-3b07-31ac-bc2de89fa7a0@rasmusvillemoes.dk>
+Subject: Re: [PATCH v2 02/12] buildid: Add method to get running kernel's build ID
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Wed, 24 Mar 2021 12:06:17 -0700
+Message-ID: <161661277766.3012082.5402015164122526850@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+Quoting Rasmus Villemoes (2021-03-24 02:24:27)
+> On 24/03/2021 03.04, Stephen Boyd wrote:
+> > Add vmlinux_build_id() so that callers can print a hex format string
+> > representation of the running kernel's build ID. This will be used in
+> > the kdump and dump_stack code so that developers can easily locate the
+> > vmlinux debug symbols for a crash/stacktrace.
+> >=20
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Jessica Yu <jeyu@kernel.org>
+> > Cc: Evan Green <evgreen@chromium.org>
+> > Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+> > Cc: Dave Young <dyoung@redhat.com>
+> > Cc: Baoquan He <bhe@redhat.com>
+> > Cc: Vivek Goyal <vgoyal@redhat.com>
+> > Cc: <kexec@lists.infradead.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >  include/linux/buildid.h |  2 ++
+> >  lib/buildid.c           | 19 +++++++++++++++++++
+> >  2 files changed, 21 insertions(+)
+> >=20
+> > diff --git a/include/linux/buildid.h b/include/linux/buildid.h
+> > index ebce93f26d06..2ff6b1b7cc9b 100644
+> > --- a/include/linux/buildid.h
+> > +++ b/include/linux/buildid.h
+> > @@ -10,4 +10,6 @@ int build_id_parse(struct vm_area_struct *vma, unsign=
+ed char *build_id,
+> >                  __u32 *size);
+> >  int build_id_parse_buf(const void *buf, unsigned char *build_id, u32 b=
+uf_size);
+> > =20
+> > +const unsigned char *vmlinux_build_id(void);
+> > +
+> >  #endif
+> > diff --git a/lib/buildid.c b/lib/buildid.c
+> > index 010ab0674cb9..fa1b6466b4b8 100644
+> > --- a/lib/buildid.c
+> > +++ b/lib/buildid.c
+> > @@ -4,6 +4,7 @@
+> >  #include <linux/elf.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/pagemap.h>
+> > +#include <linux/string.h>
+> > =20
+> >  #define BUILD_ID 3
+> > =20
+> > @@ -171,3 +172,21 @@ int build_id_parse_buf(const void *buf, unsigned c=
+har *build_id, u32 buf_size)
+> >  {
+> >       return parse_build_id_buf(build_id, NULL, buf, buf_size);
+> >  }
+> > +
+> > +/**
+> > + * vmlinux_build_id - Get the running kernel's build ID
+> > + *
+> > + * Return: Running kernel's build ID
+> > + */
+> > +const unsigned char *vmlinux_build_id(void)
+> > +{
+> > +     extern const void __start_notes __weak;
+> > +     extern const void __stop_notes __weak;
+> > +     unsigned int size =3D &__stop_notes - &__start_notes;
+> > +     static unsigned char vmlinux_build_id[BUILD_ID_SIZE_MAX];
+> > +
+> > +     if (!memchr_inv(vmlinux_build_id, 0, BUILD_ID_SIZE_MAX))
+> > +             build_id_parse_buf(&__start_notes, vmlinux_build_id, size=
+);
+> > +
+> > +     return vmlinux_build_id;
+> > +}
+> >=20
+>=20
+> Hm, is there any reason to do that initialization lazily and thus need
+> an accessor? If the system is coming down hard, there's a (very very
+> small) risk that one thread starts finding the build id, is in the
+> middle of the memcpy, another thread also ends up wanting the vmlinux
+> build id, sees some non-nul byte, and proceeds to using the partially
+> written vmlinux_build_id.
+>=20
+> Perhaps consider just exposing the vmlinux_build_id[] array itself,
+> adding a init_vmlinux_build_id() call somewhere early in start_kernel().
+>=20
+> It could then also be made __ro_after_init.
+>=20
+> In any case, if you decide to keep the current way, please rename the
+> local variable (just "build_id" is fine) so that it doesn't shadow the
+> very function it resides in, that's very confusing.
+>=20
 
-On Mon, 22 Mar 2021 09:03:00 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Fri, Mar 19, 2021 at 11:22:21AM -0700, Jacob Pan wrote:
-> > Hi Jason,
-> > 
-> > On Fri, 19 Mar 2021 10:54:32 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > wrote: 
-> > > On Fri, Mar 19, 2021 at 02:41:32PM +0100, Jean-Philippe Brucker
-> > > wrote:  
-> > > > On Fri, Mar 19, 2021 at 09:46:45AM -0300, Jason Gunthorpe wrote:    
-> > > > > On Fri, Mar 19, 2021 at 10:58:41AM +0100, Jean-Philippe Brucker
-> > > > > wrote: 
-> > > > > > Although there is no use for it at the moment (only two upstream
-> > > > > > users and it looks like amdkfd always uses current too), I quite
-> > > > > > like the client-server model where the privileged process does
-> > > > > > bind() and programs the hardware queue on behalf of the client
-> > > > > > process.    
-> > > > > 
-> > > > > This creates a lot complexity, how do does process A get a secure
-> > > > > reference to B? How does it access the memory in B to setup the
-> > > > > HW?    
-> > > > 
-> > > > mm_access() for example, and passing addresses via IPC    
-> > > 
-> > > I'd rather the source process establish its own PASID and then pass
-> > > the rights to use it to some other process via FD passing than try to
-> > > go the other way. There are lots of security questions with something
-> > > like mm_access.
-> > >   
-> > 
-> > Thank you all for the input, it sounds like we are OK to remove mm
-> > argument from iommu_sva_bind_device() and iommu_sva_alloc_pasid() for
-> > now?
-> > 
-> > Let me try to summarize PASID allocation as below:
-> > 
-> > Interfaces	| Usage	|  Limit	| bind¹ |User visible
-> > /dev/ioasid²	| G-SVA/IOVA	|  cgroup	| No
-> > |Yes char dev³	| SVA		|  cgroup	|
-> > Yes	|No iommu driver	| default PASID|  no
-> > | No	|No kernel		| super SVA	| no
-> > 	| yes   |No
-> > 
-> > ¹ Allocated during SVA bind
-> > ² PASIDs allocated via /dev/ioasid are not bound to any mm. But its
-> >   ownership is assigned to the process that does the allocation.  
-> 
-> What does "not bound to a mm" mean?
-> 
-I meant, the IOASID allocated via /dev/ioasid is in a clean state (just a
-number). It's initial state is not bound to an mm. Unlike, sva_bind_device()
-where the IOASID is allocated during bind time.
-
-The use case is to support guest SVA bind, where allocation and bind are in
-two separate steps.
-
-> IMHO a use created PASID is either bound to a mm (current) at creation
-> time, or it will never be bound to a mm and its page table is under
-> user control via /dev/ioasid.
-> 
-True for PASID used in native SVA bind. But for binding with a guest mm,
-PASID is allocated first (VT-d virtual cmd interface Spec 10.4.44), the
-bind with the host IOMMU when vIOMMU PASID cache is invalidated.
-
-Our intention is to have two separate interfaces:
-1. /dev/ioasid (allocation/free only)
-2. /dev/sva (handles all SVA related activities including page tables)
-
-> I thought the whole point of something like a /dev/ioasid was to get
-> away from each and every device creating its own PASID interface?
-> 
-yes, but only for the use cases that need to expose PASID to the userspace.
-AFAICT, the cases are:
-1. guest SVA (bind guest mm)
-2. full PF/VF assignment(not mediated) where guest driver want to program
-the actual PASID onto the device.
-
-> It maybe somewhat reasonable that some devices could have some easy
-> 'make a SVA PASID on current' interface built in,
-I agree, this is the case PASID is hidden from the userspace, right? e.g.
-uacce.
-
-> but anything more
-> complicated should use /dev/ioasid, and anything consuming PASID
-> should also have an API to import and attach a PASID from /dev/ioasid.
-> 
-Would the above two use cases constitute the "complicated" criteria? Or we
-should say anything that need the explicit PASID value has to through
-/dev/ioasid?
-
-Could you give some highlevel hint on the APIs that hook up IOASID
-allocated from /dev/ioasid and use cases that combine device and domain
-information? Yi is working on /dev/sva RFC, it would be good to have a
-direction check.
-
-> > Currently, the proposed /dev/ioasid interface does not map individual
-> > PASID with an FD. The FD is at the ioasid_set granularity and bond to
-> > the current mm. We could extend the IOCTLs to cover individual PASID-FD
-> > passing case when use cases arise. Would this work?  
-> 
-> Is it a good idea that the FD is per ioasid_set ?
-We were thinking the allocation IOCTL is on a per set basis, then we know
-the ownership of between PASIDs and its set. If per PASID FD is needed, we
-can extend.
-
-> What is the set used
-> for?
-> 
-I tried to document the concept in
-https://lore.kernel.org/lkml/1614463286-97618-2-git-send-email-jacob.jun.pan@linux.intel.com/
-
-In terms of usage for guest SVA, an ioasid_set is mostly tied to a host mm,
-the use case is as the following:
-1. Identify a pool of PASIDs for permission checking (below to the same VM),
-e.g. only allow SVA binding for PASIDs allocated from the same set.
-
-2. Allow different PASID-aware kernel subsystems to associate, e.g. KVM,
-device drivers, and IOMMU driver. i.e. each KVM instance only cares about
-the ioasid_set associated with the VM. Events notifications are also within
-the ioasid_set to synchronize PASID states.
-
-3. Guest-Host PASID look up (each set has its own XArray to store the
-mapping)
-
-4. Quota control (going away once we have cgroup)
-
-> Usually kernel interfaces work nicer with a one fd/one object model.
-> 
-> But even if it is a set, you could pass the set between co-operating
-> processes and the PASID can be created in the correct 'current'. But
-> there is all kinds of security questsions as soon as you start doing
-> anything like this - is there really a use case?
-> 
-We don't see a use case for passing ioasid_set to another process. All the
-four use cases above are for the current process.
-
-> Jason
-
-
-Thanks,
-
-Jacob
+No particular reason to do it this way. I'll take that approach to
+initialize it early in start_kernel() and then expose the array instead.
+Thanks!
