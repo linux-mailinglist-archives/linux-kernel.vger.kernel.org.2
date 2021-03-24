@@ -2,126 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3A2348132
+	by mail.lfdr.de (Postfix) with ESMTP id C52F8348133
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237790AbhCXTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:04:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237641AbhCXTEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:04:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36CB3619B1;
-        Wed, 24 Mar 2021 19:04:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616612677;
-        bh=3QCrUi4hLzDRYFZDg+NEvYrrrdirK6b8d2l2R7Oezz4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ncVwdGNqeKq1W9b9rlLUWAStvLK2lkVj4gRYh2ReLX67sC0/f14x/6g63g809s3U/
-         VyBNjz2tNFAG3tWGToDJAbzIusqCqZBBioW8C3+DLs+Got3divf6k2Ue47icKFOjvL
-         ufWIrW6Jcer6K2xfngMVpH2wokF4bP2RPKuxgmnBX8/hsp7/AY0SYqOd+tTQrdlhxR
-         TXpC3iPBmPr046slX6jo4edSE1giarYPxVAdVy54qJWGoK5BqCB9pZmYkGPm/hmBLy
-         j+1YOqkwsOi7iAR04GLL5sxanzPcLOXi1ay31LVYOLUsFhnHOEGUyQsEx3mhEzFdka
-         657QSJXUALvrQ==
-Date:   Wed, 24 Mar 2021 19:04:30 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFT PATCH v3 13/27] arm64: Add Apple vendor-specific system
- registers
-Message-ID: <20210324190428.GG13181@willie-the-truck>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-14-marcan@marcan.st>
- <20210324183818.GF13181@willie-the-truck>
- <20210324185921.GA27297@C02TD0UTHF1T.local>
+        id S237691AbhCXTFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237726AbhCXTEs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 15:04:48 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79668C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:04:47 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x126so18049252pfc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:04:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=A6Nc9aMcq7+EQ6dTXC6K5AV/+r3Lw/sToxnXYeBBrHg=;
+        b=TG9ZdBbsC14dV/G8r6EC4apbfUONcaQ+4FikYf7V3wU5EHgnpwXTa3pqy3t5awCWPA
+         bq2xeScTiikkcJ5f8Ku/xPhKhNpsgodybG4FwG2kzuegE6NRv6EhgjwhRTgzWnNadewf
+         K1/UVIuvSI12YfcVELAtScF+GScUZqodT5LIjtA1conVZSTrXUX8BXpitefSL0a1hcW4
+         14hRGiu7qxZUpvKSrKx1EScWSeRjO6ERDl6vnUUmd3pmc6m/kcMxM2oKzRKCOrXtfGkd
+         dphpm8O9U8nk/NnvzMMKXVQ2ld/NyWa0RNMhAwTXEJCCnor3UT8wvHN6gTA+OuWKSBJd
+         Utrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=A6Nc9aMcq7+EQ6dTXC6K5AV/+r3Lw/sToxnXYeBBrHg=;
+        b=XY8DLv5LzGnnlvJbphGhShFXNrEesmv89baIMHigp35QQhkS4/gfWaBl0m5u44hXGq
+         wZuYxcyEwOl62o0xuVOv5uYClxlFFBUZouxHLVdG2w+SVBPkiqaEk3LIkHZYriWFFt5/
+         97S5v6rcFnPFJpKXb03IFup24DKeMiSjo8RnYBNqAinTxwR/XfcZt+HpKC6eRVaKn9mW
+         ddnoqiS7/3SYSrLfakiy6S6OLelowjxTVFxlVMenPwSyVMdFjHW24LwBjYOX9d/hZpLl
+         OgwEorwKyINJo0way0o6TsQa6JfjBf0dpDScfISAid3J08gdnRiWbCvrDckEFrRupBQN
+         5PYw==
+X-Gm-Message-State: AOAM532u2e6Oto/MEVjcM+AXY8PSYf3Vem6/2/psuyAYH7JUmQCM0CL6
+        AKWaj99ixWTiJgizy3+ApSwMiA==
+X-Google-Smtp-Source: ABdhPJxlGHQwXuLGkqxg81umxZd6iX089au/ES9PkkTU1JTdQlDXHcccm+lnM11MQ123uHAXPysWcA==
+X-Received: by 2002:a63:d449:: with SMTP id i9mr4121104pgj.227.1616612686794;
+        Wed, 24 Mar 2021 12:04:46 -0700 (PDT)
+Received: from [2620:15c:17:3:4192:718f:4827:be5] ([2620:15c:17:3:4192:718f:4827:be5])
+        by smtp.gmail.com with ESMTPSA id y24sm3225118pfn.213.2021.03.24.12.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 12:04:45 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 12:04:45 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 3/4] mm/vmalloc: Use kvmalloc to allocate the table
+ of pages
+In-Reply-To: <20210324150518.2734402-4-willy@infradead.org>
+Message-ID: <9e3d5e8a-4e47-d29a-8474-925036d8e5b@google.com>
+References: <20210324150518.2734402-1-willy@infradead.org> <20210324150518.2734402-4-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324185921.GA27297@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 06:59:21PM +0000, Mark Rutland wrote:
-> On Wed, Mar 24, 2021 at 06:38:18PM +0000, Will Deacon wrote:
-> > On Fri, Mar 05, 2021 at 06:38:48AM +0900, Hector Martin wrote:
-> > > Apple ARM64 SoCs have a ton of vendor-specific registers we're going to
-> > > have to deal with, and those don't really belong in sysreg.h with all
-> > > the architectural registers. Make a new home for them, and add some
-> > > registers which are useful for early bring-up.
-> > > 
-> > > Signed-off-by: Hector Martin <marcan@marcan.st>
-> > > ---
-> > >  MAINTAINERS                           |  1 +
-> > >  arch/arm64/include/asm/sysreg_apple.h | 69 +++++++++++++++++++++++++++
-> > >  2 files changed, 70 insertions(+)
-> > >  create mode 100644 arch/arm64/include/asm/sysreg_apple.h
-> > > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index aec14fbd61b8..3a352c687d4b 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -1646,6 +1646,7 @@ B:	https://github.com/AsahiLinux/linux/issues
-> > >  C:	irc://chat.freenode.net/asahi-dev
-> > >  T:	git https://github.com/AsahiLinux/linux.git
-> > >  F:	Documentation/devicetree/bindings/arm/apple.yaml
-> > > +F:	arch/arm64/include/asm/sysreg_apple.h
-> > 
-> > (this isn't needed with my suggestion below).
-> > 
-> > >  ARM/ARTPEC MACHINE SUPPORT
-> > >  M:	Jesper Nilsson <jesper.nilsson@axis.com>
-> > > diff --git a/arch/arm64/include/asm/sysreg_apple.h b/arch/arm64/include/asm/sysreg_apple.h
-> > > new file mode 100644
-> > > index 000000000000..48347a51d564
-> > > --- /dev/null
-> > > +++ b/arch/arm64/include/asm/sysreg_apple.h
-> > 
-> > I doubt apple are the only folks doing this, so can we instead have
-> > sysreg-impdef.h please, and then have an Apple section in there for these
-> > registers? That way, we could also have an imp_sys_reg() macro to limit
-> > CRn to 11 or 15, which is the reserved encoding space for these registers.
-> > 
-> > We'll cc you for any patches touching the Apple parts, as we don't have
-> > the first clue about what's hiding in there.
+On Wed, 24 Mar 2021, Matthew Wilcox (Oracle) wrote:
+
+> If we're trying to allocate 4MB of memory, the table will be 8KiB in size
+> (1024 pointers * 8 bytes per pointer), which can usually be satisfied
+> by a kmalloc (which is significantly faster).  Instead of changing this
+> open-coded implementation, just use kvmalloc().
 > 
-> For existing IMP-DEF sysregs (e.g. the Kryo L2 control registers), we've
-> put the definitions in the drivers, rather than collating
-> non-architectural bits under arch/arm64/.
-
-Yeah, but we could include those here as well.
-
-> So far we've kept arch/arm64/ largely devoid of IMP-DEF bits, and it
-> seems a shame to add something with the sole purpose of collating that,
-> especially given arch code shouldn't need to touch these if FW and
-> bootloader have done their jobs right.
+> This improves the allocation speed of vmalloc(4MB) by approximately
+> 5% in our benchmark.  It's still dominated by the 1024 calls to
+> alloc_pages_node(), which will be the subject of a later patch.
 > 
-> Can we put the definitions in the relevant drivers? That would sidestep
-> any pain with MAINTAINERS, too.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-If we can genuinely ignore these in arch code, then sure. I just don't know
-how long that is going to be the case, and ending up in a situation where
-these are scattered randomly throughout the tree sounds horrible to me.
-
-Will
+Acked-by: David Rientjes <rientjes@google.com>
