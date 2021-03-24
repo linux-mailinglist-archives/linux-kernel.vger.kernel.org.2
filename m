@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C201734800B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CD7348012
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237338AbhCXSIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237390AbhCXSIB (ORCPT
+        id S237393AbhCXSKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:10:42 -0400
+Received: from mail-il1-f180.google.com ([209.85.166.180]:42824 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237298AbhCXSKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:08:01 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B76C061763;
-        Wed, 24 Mar 2021 11:08:01 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id y6so28727536eds.1;
-        Wed, 24 Mar 2021 11:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=i6Nd1C9K3ZraC2/KtD2Rji9JytGeIDO3RPQibjjH3KY=;
-        b=czOt+2PIPQJVMPtYEWiwYuV5Dx2aEzpj+vkZZ/H82wcGE0PGXCddsSXzHpC5R3Ke+s
-         wZqiSYRIgHXspyeIGk5rqsWQnio7AEKxh1zrLgFAAQxhmzsblyhsc0tpGly6TYkRtU8U
-         kpINGKHCMr8aNehUwGCvHCGheUmdLhmkfaNVwQJKEXE4NDu6P4SpUPsVBy/LcN8/zUXu
-         S0D7WE2lppRjzoka+RYRdetDBkMZUvGST7TxfjkduHJTov2C1pO7z3/iBGjrI9S9sB/D
-         GUe9eHBklWEiy4q4aupLXcl1mQwNEwVPA3DIeXZpscwXdnwrcqSkqs3kc4reiog6hYul
-         9pwg==
+        Wed, 24 Mar 2021 14:10:40 -0400
+Received: by mail-il1-f180.google.com with SMTP id l5so22217293ilv.9;
+        Wed, 24 Mar 2021 11:10:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=i6Nd1C9K3ZraC2/KtD2Rji9JytGeIDO3RPQibjjH3KY=;
-        b=rg0DyRsMqzUPE2rQWc/xeD/BcjZo+rz1MYPxaOqTGHjCob67foEM5I1CdywOKIdSLw
-         0mmlxAjpFWgFhHiEDPgp6khu4fopOaokMPMNnMvb30YLFEMDmvKusmTppT/HFhh9Dfp8
-         CJxJETxjMfJwYBElot0EL7nlce1VYnd6UmsB9OHxahxF+/2sROnQOuj31n0E/PZ3wC7Z
-         YElGrYLthrsimNIaQVqmbO/qO7TNnjWjffD+kl9buDkWGd11EvehLMijv9VgfqQacNiy
-         wTi2rZfGud3S6sd6fRgkANmtEXsmkTCCEN6DJtO1UfXQQyeSOKf2PvyDvRn/FPPhZbFk
-         JzDQ==
-X-Gm-Message-State: AOAM530CCrPTEGA8LmBsHjHq9a9sKagwMwHPOqi/hxHstoqqd+kol/u3
-        OU548Ork3HMxF1UKOIv8sdtJ7G1oKNQz5w==
-X-Google-Smtp-Source: ABdhPJypkFPURoaW9FT3EuqK1fTNhl71D/FDAEiBXgnhBtr8dShMtXlMtAgHnS0mOezuAYGV6jurUg==
-X-Received: by 2002:aa7:c3c4:: with SMTP id l4mr4768865edr.335.1616609279776;
-        Wed, 24 Mar 2021 11:07:59 -0700 (PDT)
-Received: from LEGION ([111.119.187.57])
-        by smtp.gmail.com with ESMTPSA id r24sm1470489edw.11.2021.03.24.11.07.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RdLddjC+iEoz4u6jK63hDy1PT64QJ2geKnpXuxhai+o=;
+        b=YWWPMQViLkl9FQYdYnyR044N0GurX1P22Lm1cju9vf4CGc9lJDeUFgjBFHrdeU+xWl
+         RIiKPNXv77gpolW0y8oolLSItnc24ZnZSlP7L8aWH4k+kLcxmECHq3aYj3lvXijOc6mN
+         u123rpeIGUil6qVEEn2gO+1POSupQHm1fOs3mMOlfXUal62EPClj2u9ocsKrwsS8VtpC
+         HhOxQVbuAFuxleoMKobryU2bg92eWSC0l39c/dfmzI7ohk6fcAX9uvi8Iwk7WBvdv6DE
+         6Nvv+F6GURYE8eQ0LxqBmieKKXyK0PK2zvFvCLRHBA2/hIIzA95hugy4fxtA2um8cmBv
+         ySQg==
+X-Gm-Message-State: AOAM530cXiIMnrqOhKEHLScXOGzgyeuqK82a2rUL6HpRd+FZaa8eYty9
+        MboVKajWm0MY5uGe6yZzOQ==
+X-Google-Smtp-Source: ABdhPJwm0lu4eHHZUt2iJVbAnUdqjkeCxMGA0KTL4TLAcSjo5jjJ4hxUEVPPY6roCmHkoYeekofWyg==
+X-Received: by 2002:a92:c748:: with SMTP id y8mr1842248ilp.37.1616609440259;
+        Wed, 24 Mar 2021 11:10:40 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id b9sm1443474iof.54.2021.03.24.11.10.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 11:07:59 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 23:07:53 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "open list:EM28XX VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>
-Cc:     musamaanjum@gmail.com, syzkaller-bugs@googlegroups.com,
-        dvyukov@google.com
-Subject: [PATCH] media: em28xx: fix memory leak
-Message-ID: <20210324180753.GA410359@LEGION>
+        Wed, 24 Mar 2021 11:10:39 -0700 (PDT)
+Received: (nullmailer pid 3355529 invoked by uid 1000);
+        Wed, 24 Mar 2021 18:10:37 -0000
+Date:   Wed, 24 Mar 2021 12:10:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Kuldeep Singh <kuldeep.singh@nxp.com>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
+Message-ID: <20210324181037.GB3320002@robh.at.kernel.org>
+References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+ <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If some error occurs, URB buffers should also be freed. If they aren't
-freed with the dvb here, the em28xx_dvb_fini call doesn't frees the URB
-buffers as dvb is set to NULL. The function in which error occurs should
-do all the cleanup for the allocations it had done.
+On Tue, Mar 16, 2021 at 12:00:52AM +0530, Pratyush Yadav wrote:
+> +Cc mtd list
+> 
+> Hi,
+> 
+> On 15/03/21 05:45PM, Kuldeep Singh wrote:
+> > Convert the Freescale DSPI binding to DT schema format using json-schema.
+> > 
+> > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> > ---
+> > Hi Rob,
+> > This patch is checked with following commands with no warnings observed.
+> > make distclean; make allmodconfig;
+> > make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml;
+> > make dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.yaml
+> 
+> When I add the "fsl,spi-cs-sck-delay" property under the flash@0 node in 
+> the example and run dt_binding_check, I see the below error:
+> 
+>   /home/pratyush/src/linux/Documentation/devicetree/bindings/spi/fsl,spi-fsl-dspi.example.dt.yaml: flash@0: 'fsl,spi-cs-sck-delay' does not match any of the regexes: '^partition@', 'pinctrl-[0-9]+'
+>      From schema: /home/pratyush/src/lin/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> 
+> I am trying to solve a similar problem for the Cadence QSPI controller 
+> binding and I wonder what the best solution for this is. The obvious one 
+> would be to add these properties to jedec,spi-nor.yaml. I haven't 
+> managed to come up with any other solution to this problem.
+> 
+> Rob, all, any suggestions on how to best model this?
 
-Tested the patch with the reproducer provided by syzbot. This patch
-fixes the memleak.
+I'm aware of the issue, but I don't have a solution for this situation. 
+It's a problem anywhere we have a parent or bus binding defining 
+properties for child nodes. For now, I'd just avoid it in the examples 
+and we'll figure out how to deal with actual dts files later.
 
-Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
-Resending the same path as some email addresses were missing from the
-earlier email.
+For this one in particular, CS to clock timing isn't any FSL or 
+controller specific, but is device specific. So this probably should 
+have been a generic spi bus property (if not implicit). That's somewhat 
+easier to work-around than potentially adding controller specific 
+properties to every slave device schema.
 
-syzbot found the following issue on:
-
-HEAD commit:    1a4431a5 Merge tag 'afs-fixes-20210315' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11013a7cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ff6b8b2e9d5a1227
-dashboard link: https://syzkaller.appspot.com/bug?extid=889397c820fa56adf25d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1559ae3ad00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176985c6d00000
-
- drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 526424279637..471bd74667e3 100644
---- a/drivers/media/usb/em28xx/em28xx-dvb.c
-+++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-@@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
- 	return result;
- 
- out_free:
-+	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
- 	kfree(dvb);
- 	dev->dvb = NULL;
- 	goto ret;
--- 
-2.25.1
-
+Rob
