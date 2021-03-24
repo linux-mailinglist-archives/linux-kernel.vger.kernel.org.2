@@ -2,187 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A74A3479C2
+	by mail.lfdr.de (Postfix) with ESMTP id D81B23479C3
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbhCXNjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:39:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44122 "EHLO mx2.suse.de"
+        id S235436AbhCXNjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:39:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235433AbhCXNjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:39:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AAB34AB8A;
-        Wed, 24 Mar 2021 13:39:19 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 13:39:16 +0000
-From:   Mel Gorman <mgorman@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>, linux-doc@vger.kernel.org,
-        Paul Turner <pjt@google.com>
-Subject: Re: [PATCH v2] sched: Warn on long periods of pending need_resched
-Message-ID: <20210324133916.GQ15768@suse.de>
-References: <20210323035706.572953-1-joshdon@google.com>
- <YFsIZjhCFbxKyos3@hirez.programming.kicks-ass.net>
- <YFsaYBO/UqMHSpGS@hirez.programming.kicks-ass.net>
- <20210324114224.GP15768@suse.de>
- <YFssoD5NDl6dFfg/@hirez.programming.kicks-ass.net>
+        id S235453AbhCXNjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:39:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A32AA619D3;
+        Wed, 24 Mar 2021 13:39:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616593171;
+        bh=TDbk9xEQM/NcN2QhRpnkSsVocsPDGupHEqk6V2xz/P0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OYrEjsET7NCoin90ygo2054yk3Oiy1DlE005AhqydWAp4GrjcCBSz0PNaDPeGiIKK
+         SaqJggZTtup6IRRTOGClp4XotKvmY8N8SI50hDxzQ4HqlSeqA05ElIM1nrMc22NCrG
+         wYX7QrA6/b2NIwSQxrgMWxjIBWjhNmoOg02HgPofJFGyffcoYYszik7pMi/Es7sxvd
+         FeSvMx0/yXlXzjsi9DO6Oek4AynTIyTD5/rgOXg8IAT03+qacbVgkK1hh6Y3DE+VdY
+         ZHfz0TYVFibfFqFSfLbyCjEhzhJXF3XK8aZyQiHeFqJy3CesYwH64gK5YLvUvFyBkG
+         JYaWxEpnSwRWA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 69EDA40647; Wed, 24 Mar 2021 10:39:28 -0300 (-03)
+Date:   Wed, 24 Mar 2021 10:39:28 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf record: Fix memory leak in vDSO
+Message-ID: <YFtBEFY62MFKEhzx@kernel.org>
+References: <20210315045641.700430-1-namhyung@kernel.org>
+ <YE9g6VIZkEr8Hoyl@krava>
+ <CAM9d7cheph_kjRzfKQSnoowRTQ3p4TF7mHt_3niJWGceSwJPzA@mail.gmail.com>
+ <YFCq+sIS7M9GAcM2@kernel.org>
+ <YFC3uCHAuqr3NyPp@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFssoD5NDl6dFfg/@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFC3uCHAuqr3NyPp@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 01:12:16PM +0100, Peter Zijlstra wrote:
-> On Wed, Mar 24, 2021 at 11:42:24AM +0000, Mel Gorman wrote:
-> > On Wed, Mar 24, 2021 at 11:54:24AM +0100, Peter Zijlstra wrote:
-> > > On Wed, Mar 24, 2021 at 10:37:43AM +0100, Peter Zijlstra wrote:
-> > > > Should we perhaps take out all SCHED_DEBUG sysctls and move them to
-> > > > /debug/sched/ ? (along with the existing /debug/sched_{debug,features,preemp}
-> > > > files)
-> > > > 
-> > > > Having all that in sysctl and documented gives them far too much sheen
-> > > > of ABI.
-> > > 
-> > > ... a little something like this ...
-> > > 
+Em Tue, Mar 16, 2021 at 02:50:48PM +0100, Jiri Olsa escreveu:
+> On Tue, Mar 16, 2021 at 09:56:26AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Mar 16, 2021 at 11:28:12AM +0900, Namhyung Kim escreveu:
+> > > On Mon, Mar 15, 2021 at 10:28 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Mon, Mar 15, 2021 at 01:56:41PM +0900, Namhyung Kim wrote:
+> > > > > I got several memory leak reports from Asan with a simple command.  It
+> > > > > was because VDSO is not released due to the refcount.  Like in
+> > > > > __dsos_addnew_id(), it should put the refcount after adding to the list.
+> > > > >
+> > > > >   $ perf record true
+> > > > >   [ perf record: Woken up 1 times to write data ]
+> > > > >   [ perf record: Captured and wrote 0.030 MB perf.data (10 samples) ]
+> > > > >
+> > > > >   =================================================================
+> > > > >   ==692599==ERROR: LeakSanitizer: detected memory leaks
+> > > > >
+> > > > >   Direct leak of 439 byte(s) in 1 object(s) allocated from:
+> > > > >     #0 0x7fea52341037 in __interceptor_calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:154
+> > > > >     #1 0x559bce4aa8ee in dso__new_id util/dso.c:1256
+> > > > >     #2 0x559bce59245a in __machine__addnew_vdso util/vdso.c:132
+> > > > >     #3 0x559bce59245a in machine__findnew_vdso util/vdso.c:347
+> > > > >     #4 0x559bce50826c in map__new util/map.c:175
+> > > > >     #5 0x559bce503c92 in machine__process_mmap2_event util/machine.c:1787
+> > > > >     #6 0x559bce512f6b in machines__deliver_event util/session.c:1481
+> > > > >     #7 0x559bce515107 in perf_session__deliver_event util/session.c:1551
+> > > > >     #8 0x559bce51d4d2 in do_flush util/ordered-events.c:244
+> > > > >     #9 0x559bce51d4d2 in __ordered_events__flush util/ordered-events.c:323
+> > > > >     #10 0x559bce519bea in __perf_session__process_events util/session.c:2268
+> > > > >     #11 0x559bce519bea in perf_session__process_events util/session.c:2297
+> > > > >     #12 0x559bce2e7a52 in process_buildids /home/namhyung/project/linux/tools/perf/builtin-record.c:1017
+> > > > >     #13 0x559bce2e7a52 in record__finish_output /home/namhyung/project/linux/tools/perf/builtin-record.c:1234
+> > > > >     #14 0x559bce2ed4f6 in __cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2026
+> > > > >     #15 0x559bce2ed4f6 in cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2858
+> > > > >     #16 0x559bce422db4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
+> > > > >     #17 0x559bce2acac8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
+> > > > >     #18 0x559bce2acac8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
+> > > > >     #19 0x559bce2acac8 in main /home/namhyung/project/linux/tools/perf/perf.c:539
+> > > > >     #20 0x7fea51e76d09 in __libc_start_main ../csu/libc-start.c:308
+> > > > >
+> > > > >   Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+> > > > >     #0 0x7fea52341037 in __interceptor_calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:154
+> > > > >     #1 0x559bce520907 in nsinfo__copy util/namespaces.c:169
+> > > > >     #2 0x559bce50821b in map__new util/map.c:168
+> > > > >     #3 0x559bce503c92 in machine__process_mmap2_event util/machine.c:1787
+> > > > >     #4 0x559bce512f6b in machines__deliver_event util/session.c:1481
+> > > > >     #5 0x559bce515107 in perf_session__deliver_event util/session.c:1551
+> > > > >     #6 0x559bce51d4d2 in do_flush util/ordered-events.c:244
+> > > > >     #7 0x559bce51d4d2 in __ordered_events__flush util/ordered-events.c:323
+> > > > >     #8 0x559bce519bea in __perf_session__process_events util/session.c:2268
+> > > > >     #9 0x559bce519bea in perf_session__process_events util/session.c:2297
+> > > > >     #10 0x559bce2e7a52 in process_buildids /home/namhyung/project/linux/tools/perf/builtin-record.c:1017
+> > > > >     #11 0x559bce2e7a52 in record__finish_output /home/namhyung/project/linux/tools/perf/builtin-record.c:1234
+> > > > >     #12 0x559bce2ed4f6 in __cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2026
+> > > > >     #13 0x559bce2ed4f6 in cmd_record /home/namhyung/project/linux/tools/perf/builtin-record.c:2858
+> > > > >     #14 0x559bce422db4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
+> > > > >     #15 0x559bce2acac8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
+> > > > >     #16 0x559bce2acac8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
+> > > > >     #17 0x559bce2acac8 in main /home/namhyung/project/linux/tools/perf/perf.c:539
+> > > > >     #18 0x7fea51e76d09 in __libc_start_main ../csu/libc-start.c:308
+> > > > >
+> > > > >   SUMMARY: AddressSanitizer: 471 byte(s) leaked in 2 allocation(s).
+> > > > >
+> > > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > > > ---
+> > > > >  tools/perf/util/vdso.c | 2 ++
+> > > > >  1 file changed, 2 insertions(+)
+> > > > >
+> > > > > diff --git a/tools/perf/util/vdso.c b/tools/perf/util/vdso.c
+> > > > > index 3cc91ad048ea..43beb169631d 100644
+> > > > > --- a/tools/perf/util/vdso.c
+> > > > > +++ b/tools/perf/util/vdso.c
+> > > > > @@ -133,6 +133,8 @@ static struct dso *__machine__addnew_vdso(struct machine *machine, const char *s
+> > > > >       if (dso != NULL) {
+> > > > >               __dsos__add(&machine->dsos, dso);
+> > > > >               dso__set_long_name(dso, long_name, false);
+> > > > > +             /* Put dso here because __dsos_add already got it */
+> > > > > +             dso__put(dso);
+> > > >
+> > > > from quick look I don't understand why we take refcnt down
+> > > > right after adding to the list.. it would make sense to me
 > > 
-> > I did not read this particularly carefully or boot it to check but some
-> > of the sysctls moved are expected to exist and should never should have
-> > been under SCHED_DEBUG.
+> > That is the right pattern, i.e. the list has a reference to it, if it is
+> > removed outside the __dsos__add(), then list traversal may be corrupted.
 > > 
-> > For example, I'm surprised that numa_balancing is under the SCHED_DEBUG
-> > sysctl because there are legimiate reasons to disable that at runtime.
-> > For example, HPC clusters running various workloads may disable NUMA
-> > balancing globally for particular jobs without wanting to reboot and
-> > reenable it when finished.
+> > > > if dso is not stored elsewhere so we want dsos__exit to
+> > > > release it.. but it's still stored in map object
+> > > >
+> > > > I checked and we do extra dso__get in machine__findnew_vdso
+> > > > (and also in dsos__findnew_id) ... so that one seems to me
+> > > > like the one we should remove
+> > 
+> > findnew _needs_ to grab te refcount while holding the lock, so that what
+> > it returns won't go away in a different thread.
+> > 
+> > > > but I might be missing something, I'll try to check more
+> > > > deeply later on
+> >  
+> > > I think we assume the find/findnew APIs include increment of
+> > > the refcount, otherwise all callers should be converted to do it
+> > > explicitly.
+> > 
+> > The callers can't grab the reference safely, i.e. its outside the lock.
+> >  
+> > > Then the 'find' part should increase it but the 'new' part is not
+> > > (as it already has 2) and that's why we have that.
 > 
-> Yeah, lets say I was pleasantly surprised to find it there :-)
+> map__new
+> {
+>   machine__findnew_vdso
+>   {
+>     __machine__addnew_vdso
+>     {
+>       dso__new                      refcnt=1
+>       __dsos__add                   refcnt=2
+>       dso__put                      refcnt=1
+>     }
+>     dso__get                        refcnt=2
+>   }
+>   map__init                         refcnt=3
+>   dso__put                          refcnt=2
+> }
 > 
-
-Minimally, lets move that out before it gets kicked out. Patch below.
-
-> > Moving something like sched_min_granularity_ns will break a number of
-> > tuning guides as well as the "tuned" tool which ships by default with
-> > some distros and I believe some of the default profiles used for tuned
-> > tweak kernel.sched_min_granularity_ns
+> we end up with refcnt=2, which is fine, because there's
+> dsos list and map owners but the process is tricky ;-)
 > 
-> Yeah, can't say I care. I suppose some people with PREEMPT=n kernels
-> increase that to make their server workloads 'go fast'. But I'll
-> absolutely suck rock on anything desktop.
+> anyway I'm ok with the change
 > 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Broadly speaking yes and despite the lack of documentation, enough people
-think of that parameter when tuning for throughput vs latency depending on
-the expected use of the machine.  kernel.sched_wakeup_granularity_ns might
-get tuned if preemption is causing overscheduling. Same potentially with
-kernel.sched_min_granularity_ns and kernel.sched_latency_ns. That said, I'm
-struggling to think of an instance where I've seen tuning recommendations
-properly quantified other than the impact on microbenchmarks but I
-think there will be complaining if they disappear. I suspect that some
-recommended tuning is based on "I tried a number of different values and
-this seemed to work reasonably well".
+Thanks, applied.
 
-kernel.sched_schedstats probably should not depend in SCHED_DEBUG because
-it has value for workload analysis which is not necessarily about debugging
-per-se. It might simply be informing whether another variable should be
-tuned or useful for debugging applications rather than the kernel.
+- Arnaldo
 
-The others I'm less concerned with. kernel.sched_tunable_scaling is very
-specific. sysctl_sched_migration_cost is subtle because it affects lots
-of things including whether tasks are cache hot and load balancing and
-is best left alone. I wonder how many people can accurately predict how
-workloads will behave when that is tuned? sched_nr_migrate is also a hard
-one to tune in a sensible fashion.
-
-As an aside, I wonder how often SCHED_DEBUG has been enabled simply
-because LATENCYTOP selects it -- no idea offhand why LATENCYTOP even
-needs SCHED_DEBUG.
-
-> These knobs really shouldn't have been as widely available as they are.
-> 
-
-Probably not. Worse, some of the tuning is probably based on "this worked
-for workload X 10 years ago so I'll just keep doing that"
-
-> And guides, well, the writes have to earn a living too, right.
-> 
-
-For most of the guides I've seen they either specify values without
-explaining why or just describe roughly what the parameter does and it's
-not always that accurate a description.
-
-> > Whether there are legimiate reasons to modify those values or not,
-> > removing them may generate fun bug reports.
-> 
-> Which I'll close with -EDONTCARE, userspace has to cope with
-> SCHED_DEBUG=n in any case.
-
-True but removing the throughput vs latency parameters is likely to
-generate a lot of noise even if the reasons for tuning are bad ones.
-Some definitely should not be depending on SCHED_DEBUG, others may
-need to be moved to debugfs one patch at a time so they can be reverted
-individually if complaining is excessive and there is a legiminate reason
-why it should be tuned. It's possible that complaining will be based on
-a workload regression that really depended on tuned changing parameters.
-
-Anyway, I definitely want to save kernel.numa_balancing from the firing
-line so....
-
---8<--
-sched/numa: Allow runtime enabling/disabling of NUMA balance without SCHED_DEBUG
-
-From: Mel Gorman <mgorman@suse.de>
-
-The ability to enable/disable NUMA balancing is not a debugging feature
-and should not depend on CONFIG_SCHED_DEBUG.  For example, machines within
-a HPC cluster may disable NUMA balancing temporarily for some jobs and
-re-enable it for other jobs without needing to reboot.
-
-This patch removes the dependency on CONFIG_SCHED_DEBUG for
-kernel.numa_balancing sysctl. The other numa balancing related sysctls
-are left as-is because if they need to be tuned then it is more likely
-that NUMA balancing needs to be fixed instead.
-
-Signed-off-by: Mel Gorman <mgorman@suse.de>
----
- kernel/sysctl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 62fbd09b5dc1..8042098ae080 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1753,6 +1753,9 @@ static struct ctl_table kern_table[] = {
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ONE,
- 	},
-+#endif /* CONFIG_NUMA_BALANCING */
-+#endif /* CONFIG_SCHED_DEBUG */
-+#ifdef CONFIG_NUMA_BALANCING
- 	{
- 		.procname	= "numa_balancing",
- 		.data		= NULL, /* filled in by handler */
-@@ -1763,7 +1766,6 @@ static struct ctl_table kern_table[] = {
- 		.extra2		= SYSCTL_ONE,
- 	},
- #endif /* CONFIG_NUMA_BALANCING */
--#endif /* CONFIG_SCHED_DEBUG */
- 	{
- 		.procname	= "sched_rt_period_us",
- 		.data		= &sysctl_sched_rt_period,
