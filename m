@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B82347176
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3AB34716F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhCXGP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:15:58 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:60892 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233182AbhCXGP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:15:57 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 9AA3D3242;
-        Wed, 24 Mar 2021 07:15:55 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tl2f0L7LG2pZ; Wed, 24 Mar 2021 07:15:55 +0100 (CET)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id C67403374; Wed, 24 Mar 2021 07:15:53 +0100 (CET)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-Date:   Wed, 24 Mar 2021 07:15:47 +0100 (CET)
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Hermes Zhang <Hermes.Zhang@axis.com>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>
-Cc:     kernel <kernel@axis.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <395366948.12083.1616566547773@seven.thorsis.com>
-In-Reply-To: <cce4da5a92d9414e87b6ac6d1d167fac@XBOX01.axis.com>
-References: <20210324024844.15796-1-chenhui.zhang@axis.com>
- <558944059.12080.1616565502073@seven.thorsis.com>
- <cce4da5a92d9414e87b6ac6d1d167fac@XBOX01.axis.com>
-Subject: RE: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Originating-Client: open-xchange-appsuite
+        id S233152AbhCXGNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:13:46 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14137 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232833AbhCXGNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 02:13:34 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F4yYJ0xPPz19Gq5;
+        Wed, 24 Mar 2021 14:11:32 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Mar 2021
+ 14:13:26 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <borisp@nvidia.com>, <john.fastabend@gmail.com>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] net/tls: Fix a typo in tls_device.c
+Date:   Wed, 24 Mar 2021 14:16:22 +0800
+Message-ID: <20210324061622.8665-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+s/beggining/beginning/
 
-> Hermes Zhang <hermes.zhang@axis.com> hat am 24.03.2021 07:04 geschrieben:
-> 
->  
-> > >
-> > > Notes:
-> > >     Add maxItems
-> > 
-> > What about the other part of the series? I think you should send both
-> > patches together with an introduction message on both. If you only change
-> > one patch for a new version spin of the series, just send the other one
-> > unchanged.
-> > 
-> > (It makes no sense to merge the binding as long as the driver is not merged,
-> > otherwise you would end up with a binding without driver. So keeping them
-> > together should help reviewers and maintainers.)
-> > 
-> 
-> Hi Alexander,
-> 
-> The other part is here: https://lore.kernel.org/patchwork/patch/1399875/, so do you mean I need to combine these two as one commit? Or is there anyway to link them together? Thanks.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ net/tls/tls_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Two commits.
+diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+index f7fb7d2c1de1..89a5d4fad0a2 100644
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -601,7 +601,7 @@ struct tls_record_info *tls_get_record(struct tls_offload_context_tx *context,
+ 	if (!info ||
+ 	    before(seq, info->end_seq - info->len)) {
+ 		/* if retransmit_hint is irrelevant start
+-		 * from the beggining of the list
++		 * from the beginning of the list
+ 		 */
+ 		info = list_first_entry_or_null(&context->records_list,
+ 						struct tls_record_info, list);
+-- 
+2.17.1
 
-For sending more than one patch in a series call `git format-patch` with the option --cover-letter. Please have a look at documentation on `git format-patch` and `git send-email` again.
-
-You can see how it looks if you look out for other patch series on the from the past, especially those with subjects like "[PATCH 0/x] ...". An e-mail client supporting threaded view helps a lot.
-
-> I'm first time to commit a new driver, sorry for that.
-
-Thanks for trying. No need to be sorry, the tools are hard and expectations are high. In the end it's all about efficiency.
-
-Have a nice day
-Alex
