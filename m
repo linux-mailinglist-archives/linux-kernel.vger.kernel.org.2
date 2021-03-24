@@ -2,145 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8187347F66
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067EC347F9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237187AbhCXRdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        id S237463AbhCXRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237178AbhCXRdZ (ORCPT
+        with ESMTP id S237109AbhCXRgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:33:25 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6192EC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:33:25 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id k10so34266530ejg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0ia9XkGHN8cpyt/SNHTlV6h0g+8s/qDF70Hmi8JWq3o=;
-        b=SvtBKLat/CRx0Qu+JD4uXYjs0QfiZh3LK3TOczSV2qLDQGzU3O8i/2910n1VgWqb16
-         X4H57OUsl/jV3qzjYvAtlJELU6cNl2LCjyaMrxMt0cyBpC1UYQXxcRnQe2hk68AsQJmN
-         J0dX9sbv9I45DKriCBZBlC7i6LpnFC/htiw74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0ia9XkGHN8cpyt/SNHTlV6h0g+8s/qDF70Hmi8JWq3o=;
-        b=KhFCchFOIvbkSPLPd8Qrj1bUPuFYeqBxDVvm7O+sSuK+C+xzK+1mPGLQHWU6JOpzrJ
-         H/u1xjzRO907qjVYqZ64lbL3brRzC3Srg33SbOdr01dD3Tc261gnWTPdF8IdGZiawzT4
-         TsJbXcJCsRlij3JJQCIcP7+NBkz1F8AYlHPBtcUgz/SIjgI3lTsv2N4iBAVuZ5ldEZxs
-         u7/6aGBZYTPchwj4u1Qnbrtj96KBB9mUOYKkdhBXp28RCl8WFvsJEPv7xd+KpeVsUezA
-         SM7rG8+9LmQxKB8vb7TK5yMRclwj1I+bqssrnzVTsGzgWAgob9F2CiqCDUNa0zpiysdf
-         1ecw==
-X-Gm-Message-State: AOAM532PgG1Hjm6QxfjFuIm9IcK/sJgZGIu/DOGQ0ikqpuRD0TT9LSqt
-        5ZW/nurf2rR1JZw2QijZu3Nem15+HBJ/aJs2
-X-Google-Smtp-Source: ABdhPJzAvd1bvs+j7PzqB5nRnbeU7vt6/iMe8D4YVkWYBJ1ZPi+NFvO248ZS8JBhmHEYCGVPOPt52w==
-X-Received: by 2002:a17:906:39cf:: with SMTP id i15mr4954508eje.534.1616607203805;
-        Wed, 24 Mar 2021 10:33:23 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id hd8sm1212155ejc.92.2021.03.24.10.33.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 10:33:23 -0700 (PDT)
-Subject: Re: [RFC patch] vsprintf: Allow %pe to print non PTR_ERR %pe uses as
- decimal
-To:     Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
+        Wed, 24 Mar 2021 13:36:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADBFC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2NU6FPwrDnfXjj/zGjqnsj9oELpXyMIcySZnpRlsrj4=; b=k6L2iCNMo7jtezpMv5NlRBf+Y/
+        SwfrqRu9UpWB7o0QL5C+od/Dum1FBItYKsfmmji7UbmCLN3zhP6vvMCt9xmiRtMmKmBSeI6+DSxce
+        bLz+J633/2844gBO/knNa4/SsUZ7caQiQA9o/UAy4pN/lCiv8T5dvK/Bg+WlsPVHay0getESkacWd
+        iHWn+72oc2JCJ7vw/NJZz2+5CcBoiyqWqAj4DwbsrFX/QrqIfwWNLYamIkawn/vPwksQoussAUEdc
+        obKzcekmp7toQ7GUaVuGZSQLnIHMyO4V732Yj8NKs+4SIBY+pJYqKp6tAod6pjiM5ceVF3sauAxFK
+        H0BwfBuw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lP7O1-00BdaQ-08; Wed, 24 Mar 2021 17:34:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACC72306099;
+        Wed, 24 Mar 2021 18:33:39 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8D3F22CB17AFA; Wed, 24 Mar 2021 18:33:39 +0100 (CET)
+Date:   Wed, 24 Mar 2021 18:33:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liu Ying <victor.liu@nxp.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210324121832.3714570-1-arnd@kernel.org>
- <e1310273dcc577f3a772380ada7b6cc1906d680b.camel@perches.com>
- <CAK8P3a0JyoAtTYTi+M_mJ3_KtUJ6NeJB=FNWhzezqcXMac++mQ@mail.gmail.com>
- <810d36184b9fa2880d3ba7738a8f182e27f5107b.camel@perches.com>
- <3252fd83141aa9e0e6001acee1dd98e87c676b9a.camel@perches.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <9feab1e8-4dee-6b79-03f7-7b9f0cb24f6e@rasmusvillemoes.dk>
-Date:   Wed, 24 Mar 2021 18:33:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Subject: Re: [PATCH] static_call: fix function type mismatch
+Message-ID: <YFt382FImjQQ+10f@hirez.programming.kicks-ass.net>
+References: <20210322170711.1855115-1-arnd@kernel.org>
+ <20210322153214.25d869b1@gandalf.local.home>
+ <YFkCZuOwe37d2bV+@hirez.programming.kicks-ass.net>
+ <CAK8P3a2sz4emewH_HA+nsf0e5tP6qtAxhBOFucmzW4OPDJASdQ@mail.gmail.com>
+ <20210322172921.56350a69@gandalf.local.home>
+ <YFmdJlESrCh4iC9A@hirez.programming.kicks-ass.net>
+ <0f4679d6-44a4-d045-f249-a9cffb126fd4@rasmusvillemoes.dk>
+ <CABCJKuf1-GWda9_BiBO=nNP_drh3a8471G+LEqPzdVrLBhVqZQ@mail.gmail.com>
+ <b2d77e78-751e-283c-8cff-e9c4f16e27ef@prevas.dk>
 MIME-Version: 1.0
-In-Reply-To: <3252fd83141aa9e0e6001acee1dd98e87c676b9a.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2d77e78-751e-283c-8cff-e9c4f16e27ef@prevas.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 18.20, Joe Perches wrote:
-> On Wed, 2021-03-24 at 09:52 -0700, Joe Perches wrote:
->> On Wed, 2021-03-24 at 17:42 +0100, Arnd Bergmann wrote:
->>> On Wed, Mar 24, 2021 at 3:20 PM Joe Perches <joe@perches.com> wrote:
->> []
->>>>> diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
->>>> []
->>>>> @@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
->>>>>       int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
->>>>>       int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
->>>>>
->>>>> +     if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
->>>>> +             dev_warn(ldb->dev, "%s: invalid mux %d\n",
->>>>> +                      __func__, ERR_PTR(mux));
->>>>
->>>> This does not compile without warnings.
->>>>
->>>> drivers/gpu/drm/imx/imx-ldb.c: In function ‘imx_ldb_encoder_enable’:
->>>> drivers/gpu/drm/imx/imx-ldb.c:201:22: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘void *’ [-Wformat=]
->>>>   201 |   dev_warn(ldb->dev, "%s: invalid mux %d\n",
->>>>       |                      ^~~~~~~~~~~~~~~~~~~~~~
->>>>
->>>> If you want to use ERR_PTR, the %d should be %pe as ERR_PTR
->>>> is converting an int a void * to decode the error type and
->>>> emit it as a string.
->>>
->>> Sorry about that.
->>>
->>> I decided against using ERR_PTR() in order to also check for
->>> positive array overflow, but the version I tested was different from
->>> the version I sent.
->>>
->>> v3 coming.
->>
->> Thanks.  No worries.
->>
->> Up to you, vsprintf would emit the positive mux as a funky hashed
->> hex value by default if you use ERR_PTR with mux > ARRAY_SIZE so
->> perhaps %d without the ERR_PTR use makes the most sense.
->>
-
+On Wed, Mar 24, 2021 at 05:45:52PM +0100, Rasmus Villemoes wrote:
+> Sorry, I think I misread the code. The static calls are indeed
+> initialized with a function with the right prototype. Try adding
+> "preempt=full" on the command line so that we exercise these lines
 > 
-> Maybe it's better to output non PTR_ERR %pe uses as decimal so this
-> sort of code would work.
+>                static_call_update(cond_resched,
+> (typeof(&__cond_resched)) __static_call_return0);
+>                 static_call_update(might_resched,
+> (typeof(&__cond_resched)) __static_call_return0);
+> 
+> I would expect that to blow up, since we end up calling a long (*)(void)
+> function using a function pointer of type int (*)(void).
 
-No, because that would leak the pointer value when somebody has
-accidentally passed a real kernel pointer to %pe.
+Note that on x86 there won't actually be any calling of function
+pointers. See what arch/x86/kernel/static_call.c does :-)
 
-If the code wants a cute -EFOO string explaining what's wrong, what
-about "%pe", ERR_PTR(mux < 0 : mux : -ERANGE)? Or two separate error
-messages
+But I think some of this code might need some __va_function() love when
+combined with CFI.
 
-if (mux < 0)
-  ...
-else if (mux >= ARRAY_SIZE())
-  ...
+But yes, this is why I think something like -fcdecl might be a good
+idea, that ought to tell the compiler about the calling convention,
+which ought to be enough for the compiler to figure out that this magic
+really is ok.
 
-Rasmus
+Notable things we rely on:
+
+ - caller cleanup of stack; the function caller sets up any stack
+   arguments and is also responsible for cleanin up the stack once the
+   function returns.
+
+ - the return value is in a register.
+
+Per the first we can call a function that has a partial (empty per
+extremum) argument list. Per the second we can call a function with a
+different return type as long as they all fit in the same register.
+
+The calling of a 'long (*)()' function for a 'int (*)()' type then
+becomes idential to something like: 'int x = (long)y', and that is
+something C is perfectly fine with.
+
+We then slightly push things with the other __static_call_return0()
+usage in the kernel, where we basically end up with: 'void *x =
+(long)y', which is something C really rather would have a cast on.
