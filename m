@@ -2,162 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AA6347273
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B3D347276
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235974AbhCXHXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:23:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38668 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235827AbhCXHWc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:22:32 -0400
-Date:   Wed, 24 Mar 2021 07:22:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616570551;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FYoP+yIEd2EzATmw5tEvpCtNtEdbcj20/4tOjojdMy8=;
-        b=lgYxErPCxWNnH4WiL4Fidb3Wzmuorvt9nigNGhEWsrYFzRpiq/1tlgvICo2B0rCdu8pACy
-        WpztfP3qUVI45hTFsFlv/PVshEu6A4K7qEzw/5bnfMcLiVcJog6chX/Li7WH8VDuyOCzcV
-        ffIXMC9ebJ9iNeHLCOi9HbzVcuRd43EiP7USUvHqvZ+Ch7TQnonQlLE7gSfxlj78xJ8rsa
-        yMa+cZ5TdTddYrKUFd9ADMPxEi4fnJw8j68zEM9qtIvgZyvFgnB3DJlWAOYtHz0PmtWpHK
-        8ba8j1lgoeBdj8PTKO6e3cXfo7gs082LkalfG8um9Px7tXG/DwLAfv3TflQryQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616570551;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FYoP+yIEd2EzATmw5tEvpCtNtEdbcj20/4tOjojdMy8=;
-        b=ytcfDcNrh9IEjxCiLNCmGJ4SZMHD0j6zJSemIKucpBACyvQsrlxIWC6f+GkbAHaAeBl8AZ
-        HMxNxGCfdKbdsECA==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rtmutex: Remove rt_mutex_timed_lock()
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210323213707.465154098@linutronix.de>
-References: <20210323213707.465154098@linutronix.de>
+        id S235987AbhCXHXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:23:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235833AbhCXHWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 03:22:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D19BB619FA;
+        Wed, 24 Mar 2021 07:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616570564;
+        bh=A0pGJbn75arVdOD9b5IBCTpV/4uLDqxrD6Da79sVFnc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R4Rq5zuB3Z/Vfseh37K/cZNtdG7CkZTTjV8tzbmwqVjNNCZREy9jMM4hL57gfji30
+         9W96veE+jEaie8zu2sgf1c44Mcp8hTlaH/wdq1HNKXnBRhWu8667lhEwcBEVM1ejAL
+         C8BNQEfeKQP0mO4Cgy2lM758ALTtzS6UPKd/vd+8=
+Date:   Wed, 24 Mar 2021 08:22:40 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Catangiu, Adrian Costin" <acatan@amazon.com>
+Cc:     "Graf (AWS), Alexander" <graf@amazon.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "Jason@zx2c4.com" <Jason@zx2c4.com>,
+        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "areber@redhat.com" <areber@redhat.com>,
+        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
+        "avagin@gmail.com" <avagin@gmail.com>,
+        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
+        "gil@azul.com" <gil@azul.com>,
+        "asmehra@redhat.com" <asmehra@redhat.com>,
+        "dgunigun@redhat.com" <dgunigun@redhat.com>,
+        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>
+Subject: Re: [PATCH v8] drivers/misc: sysgenid: add system generation id
+ driver
+Message-ID: <YFrowKgcnozZyxKC@kroah.com>
+References: <1615213083-29869-1-git-send-email-acatan@amazon.com>
+ <YEY2b1QU5RxozL0r@kroah.com>
+ <a61c976f-b362-bb60-50a5-04073360e702@amazon.com>
+ <YFnlZQZOasOwxUDn@kroah.com>
+ <E6E517FF-A37C-427C-B16F-066A965B8F42@amazon.com>
 MIME-Version: 1.0
-Message-ID: <161657055130.398.14925466479432705109.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E6E517FF-A37C-427C-B16F-066A965B8F42@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+On Tue, Mar 23, 2021 at 04:10:27PM +0000, Catangiu, Adrian Costin wrote:
+> Hi Greg,
+> 
+> After your previous reply on this thread we started considering to provide this interface and framework/functionality through a userspace service instead of a kernel interface.
+> The latest iteration on this evolving patch-set doesn’t have strong reasons for living in the kernel anymore - the only objectively strong advantage would be easier driving of ecosystem integration; but I am not sure that's a good enough reason to create a new kernel interface.
+> 
+> I am now looking into adding this through Systemd. Either as a pluggable service or maybe even a systemd builtin offering.
+> 
+> What are your thoughts on it?
 
-Commit-ID:     ba8c437e7cf3c8cc92f4b68b32b6b2217d2036d9
-Gitweb:        https://git.kernel.org/tip/ba8c437e7cf3c8cc92f4b68b32b6b2217d2036d9
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Tue, 23 Mar 2021 22:30:20 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 24 Mar 2021 08:06:06 +01:00
+Now dropped from my char-misc-testing branch.  If you all decide you
+want this as a kernel driver, please resubmit it.
 
-locking/rtmutex: Remove rt_mutex_timed_lock()
+Also next time, you might give me a heads-up that you don't want a patch
+merged...
 
-rt_mutex_timed_lock() has no callers since commit:
+thanks,
 
-  c051b21f71d1f ("rtmutex: Confine deadlock logic to futex")
-
-Remove it.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210323213707.465154098@linutronix.de
----
- include/linux/rtmutex.h  |  3 +---
- kernel/locking/rtmutex.c | 46 +---------------------------------------
- 2 files changed, 49 deletions(-)
-
-diff --git a/include/linux/rtmutex.h b/include/linux/rtmutex.h
-index 6fd615a..32f4a35 100644
---- a/include/linux/rtmutex.h
-+++ b/include/linux/rtmutex.h
-@@ -115,9 +115,6 @@ extern void rt_mutex_lock(struct rt_mutex *lock);
- #endif
- 
- extern int rt_mutex_lock_interruptible(struct rt_mutex *lock);
--extern int rt_mutex_timed_lock(struct rt_mutex *lock,
--			       struct hrtimer_sleeper *timeout);
--
- extern int rt_mutex_trylock(struct rt_mutex *lock);
- 
- extern void rt_mutex_unlock(struct rt_mutex *lock);
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index db31bce..ca93e5d 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1395,21 +1395,6 @@ rt_mutex_fastlock(struct rt_mutex *lock, int state,
- }
- 
- static inline int
--rt_mutex_timed_fastlock(struct rt_mutex *lock, int state,
--			struct hrtimer_sleeper *timeout,
--			enum rtmutex_chainwalk chwalk,
--			int (*slowfn)(struct rt_mutex *lock, int state,
--				      struct hrtimer_sleeper *timeout,
--				      enum rtmutex_chainwalk chwalk))
--{
--	if (chwalk == RT_MUTEX_MIN_CHAINWALK &&
--	    likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
--		return 0;
--
--	return slowfn(lock, state, timeout, chwalk);
--}
--
--static inline int
- rt_mutex_fasttrylock(struct rt_mutex *lock,
- 		     int (*slowfn)(struct rt_mutex *lock))
- {
-@@ -1517,37 +1502,6 @@ int __sched __rt_mutex_futex_trylock(struct rt_mutex *lock)
- }
- 
- /**
-- * rt_mutex_timed_lock - lock a rt_mutex interruptible
-- *			the timeout structure is provided
-- *			by the caller
-- *
-- * @lock:		the rt_mutex to be locked
-- * @timeout:		timeout structure or NULL (no timeout)
-- *
-- * Returns:
-- *  0		on success
-- * -EINTR	when interrupted by a signal
-- * -ETIMEDOUT	when the timeout expired
-- */
--int
--rt_mutex_timed_lock(struct rt_mutex *lock, struct hrtimer_sleeper *timeout)
--{
--	int ret;
--
--	might_sleep();
--
--	mutex_acquire(&lock->dep_map, 0, 0, _RET_IP_);
--	ret = rt_mutex_timed_fastlock(lock, TASK_INTERRUPTIBLE, timeout,
--				       RT_MUTEX_MIN_CHAINWALK,
--				       rt_mutex_slowlock);
--	if (ret)
--		mutex_release(&lock->dep_map, _RET_IP_);
--
--	return ret;
--}
--EXPORT_SYMBOL_GPL(rt_mutex_timed_lock);
--
--/**
-  * rt_mutex_trylock - try to lock a rt_mutex
-  *
-  * @lock:	the rt_mutex to be locked
+greg k-h
