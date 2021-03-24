@@ -2,90 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF57347B37
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B793347CAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236423AbhCXOyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236331AbhCXOyo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:54:44 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714FAC061763;
-        Wed, 24 Mar 2021 07:54:44 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id g15so17506248pfq.3;
-        Wed, 24 Mar 2021 07:54:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CufDcifXJ/Uw1uQF2MtqEN59mHDmcpw3pDeu/OCHXuI=;
-        b=NMI/8mZsAFtn4rGLJDdt4uI60SXiuSobOtyQ1C3pPCL2dNlWeKjvSGFfJcqzXVlGmU
-         KCCuZTI27pUOPSLYJx5bNVTbz+m98LwlSHZJ22hXll0KxgtKbJBef7HChSkw/nLMYZ0P
-         rWuWvFI4c0by3k7hE/kWE2yK1VUsuvpZFDl1GIfaB935OW4E3vRrPZcAfZJRzPuBVlNg
-         RmhVxpboP3uOoABY6o0yjlGTKIIepna8NOLIKLEJP3oK95kUw7hdN/lH7wwYxP8JFWFV
-         //3msJI5OyLlRHDbSrqTB1ccaeTp1ihXLQChB6/gI+vo7++SWMppLuPBCJ6WyUGufMlX
-         lUfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CufDcifXJ/Uw1uQF2MtqEN59mHDmcpw3pDeu/OCHXuI=;
-        b=Fdqc6HzTsFHdvVSZYgH+xd9WjiF8jttElXcYAc63T5hYvu4h5o6nZvRU22ztoIk0OA
-         fWyBlCNRNEBAi2nWFOB+pyPRuAuYw7XlJo8YCkbPE70y7VVuZ2ugFfi9yzJHKLjPkL8E
-         Lnq9jyjsHMJdwnZhm5Mk5FjRDjJNIIfr5+IMFhRUJu0FnzqA0UOU1+jwCpZhSeBZ2pjL
-         /LzR0+k/xLUO4GFuWAK1FMi8tB7cpp5c3dwit9t3r//13q+xW3LX5Fv/Sxr5LN/lcxVe
-         vlXokls3DtrM6rGkLA1hOu4F67cdPNwqmGuwo1WZGF971S12XSpY+kJMXVCXJHrU4gJN
-         Hu+g==
-X-Gm-Message-State: AOAM532tF3zQseiejrdMbWh5PPCZM/94TloJoUW+BcwyP3YRsgS+sCkR
-        QGlhT0R+jAeIO4e4wkM+zNw=
-X-Google-Smtp-Source: ABdhPJzArfH3pudnKs7NPxDCX6a9ScNLeEL7DmmSPKaMZnxnu2VDKOHt2fGAmbYigt2mdZAkxoO/Pg==
-X-Received: by 2002:a63:4502:: with SMTP id s2mr3555241pga.94.1616597684005;
-        Wed, 24 Mar 2021 07:54:44 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id o1sm2770116pjp.4.2021.03.24.07.54.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 07:54:43 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] efi/fdt: fix panic when no valid fdt found
-Date:   Wed, 24 Mar 2021 22:54:35 +0800
-Message-Id: <20210324145435.19753-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S236756AbhCXPcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:32:17 -0400
+Received: from mga06.intel.com ([134.134.136.31]:6267 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236605AbhCXPcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:32:00 -0400
+IronPort-SDR: kNo4EsdNAWcf2VkGpWWzipDzoTc/e2+cGyXmZAYtZ3MUSsXEanjg/VUQqXAe+j44ZyJlMyoZX/
+ eaIOAoVXa3YA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="252087117"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="252087117"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:31:59 -0700
+IronPort-SDR: KvDCAb661kRGCW3L7DcBK0x4sJ9Z947z1JgdkPE/knlly8SVix+WP2nrSKT0N8y1p1ErDT4s3i
+ lw4TePEghKPA==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="608143679"
+Received: from mailunda-mobl.amr.corp.intel.com (HELO [10.209.33.48]) ([10.209.33.48])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:31:57 -0700
+Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     alsa-devel@alsa-project.org, vinod.koul@linaro.org,
+        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
+        vkoul@kernel.org, srinivas.kandagatla@linaro.org,
+        sanyog.r.kale@intel.com,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
+ <YFmatyAoMZmBmkuZ@kroah.com>
+ <777b4ca6-0d51-285d-549f-6ef768f2a523@linux.intel.com>
+ <YFo0WW8hOsHesSFC@kroah.com>
+ <35cc8d35-a778-d8b2-bee3-bb53f8a6c51e@linux.intel.com>
+ <YFsG00+iDV/A4i3y@kroah.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <357d9576-f79a-0ea6-eee4-292e27597565@linux.intel.com>
+Date:   Wed, 24 Mar 2021 09:55:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFsG00+iDV/A4i3y@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-setup_arch() would invoke efi_init()->efi_get_fdt_params(). If no
-valid fdt found then initial_boot_params will be null. So we
-should stop further fdt processing here. I encountered this
-issue on risc-v.
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- drivers/firmware/efi/fdtparams.c | 3 +++
- 1 file changed, 3 insertions(+)
+>>>>>> Note that the auxiliary bus API has separate init and add steps, which
+>>>>>> requires more attention in the error unwinding paths. The main loop
+>>>>>> needs to deal with kfree() and auxiliary_device_uninit() for the
+>>>>>> current iteration before jumping to the common label which releases
+>>>>>> everything allocated in prior iterations.
+>>>>>
+>>>>> The init/add steps can be moved together in the aux bus code if that
+>>>>> makes this usage simpler.  Please do that instead.
+>>>>
+>>>> IIRC the two steps were separated during the auxbus reviews to allow the
+>>>> parent to call kfree() on an init failure, and auxiliary_device_uninit()
+>>>> afterwards.
+>>>>
+>>>> https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#auxiliary-device
+>>>>
+>>>> With a single auxbus_register(), the parent wouldn't know whether to use
+>>>> kfree() or auxiliary_device_uinit() when an error is returned, would it?
+>>>>
+>>>
+>>> It should, you know the difference when you call device_register() vs.
+>>> device_initialize()/device_add(), for what to do, right?
+>>>
+>>> Should be no difference here either :)
+>>
+>> sorry, not following.
+>>
+>> with the regular devices, the errors can only happen on the second "add"
+>> stage.
+>>
+>> int device_register(struct device *dev)
+>> {
+>> 	device_initialize(dev);
+>> 	return device_add(dev);
+>> }
+>>
+>> that's not what is currently implemented for the auxiliary bus
+>>
+>> the current flow is
+>>
+>> ldev = kzalloc(..)
+>> some inits
+>> ret = auxiliary_device_init(&ldev->auxdev)
+>> if (ret < 0) {
+>>      kfree(ldev);
+>>      goto err1;
+>> }
+>>
+>> ret = auxiliary_device_add(&ldev->auxdev)
+>> if (ret < 0)
+>>      auxiliary_device_uninit(&ldev->auxdev)
+>>      goto err2;
+>> }
+>> ...
+>> err2:
+>> err1:
+>>
+>> How would I convert this to
+>>
+>> ldev = kzalloc(..)
+>> some inits
+>> ret = auxiliary_device_register()
+>> if (ret) {
+>>     kfree(ldev) or not?
+>>     unit or not?
+>> }
+>>
+>> IIRC during reviews there was an ask that the parent and name be checked,
+>> and that's why the code added the two checks below:
+>>
+>> int auxiliary_device_init(struct auxiliary_device *auxdev)
+>> {
+>> 	struct device *dev = &auxdev->dev;
+>>
+>> 	if (!dev->parent) {
+>> 		pr_err("auxiliary_device has a NULL dev->parent\n");
+>> 		return -EINVAL;
+>> 	}
+>>
+>> 	if (!auxdev->name) {
+>> 		pr_err("auxiliary_device has a NULL name\n");
+>> 		return -EINVAL;
+>> 	}
+>>
+>> 	dev->bus = &auxiliary_bus_type;
+>> 	device_initialize(&auxdev->dev);
+>> 	return 0;
+>> }
+>>
+>> does this clarify the sequence?
+> 
+> Yes, thanks, but I don't know the answer to your question, sorry.  This
+> feels more complex than it should be, but I do not have the time at the
+> moment to look into it, sorry.
+> 
+> Try getting the authors of this code to fix it up :)
 
-diff --git a/drivers/firmware/efi/fdtparams.c b/drivers/firmware/efi/fdtparams.c
-index bb042ab7c2be..e901f8564ca0 100644
---- a/drivers/firmware/efi/fdtparams.c
-+++ b/drivers/firmware/efi/fdtparams.c
-@@ -98,6 +98,9 @@ u64 __init efi_get_fdt_params(struct efi_memory_map_data *mm)
- 	BUILD_BUG_ON(ARRAY_SIZE(target) != ARRAY_SIZE(name));
- 	BUILD_BUG_ON(ARRAY_SIZE(target) != ARRAY_SIZE(dt_params[0].params));
- 
-+	if (!fdt)
-+		return 0;
-+
- 	for (i = 0; i < ARRAY_SIZE(dt_params); i++) {
- 		node = fdt_path_offset(fdt, dt_params[i].path);
- 		if (node < 0)
--- 
-2.30.2
+We can try to check why those two tests were added before initialize(), 
+I don't fully recall these details
+
+If we could move these tests after device_initialize() then we could add 
+a _register function.
+
+Note at this point it would mean an API change and impact the existing 
+Nvidia/Mellanox code, we are using the same sequence as them
+
+https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/mellanox/mlx5/core/dev.c#L262
 
