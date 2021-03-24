@@ -2,165 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2F234794C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D47A347953
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234586AbhCXNP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233465AbhCXNPK (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:15:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6445619B3;
-        Wed, 24 Mar 2021 13:15:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616591709;
-        bh=3JIpP2HYw5IxRD8oBaMuJQoHKlJG7St9R2h4CM87cos=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oTzT7pNAWHk20bOJQEG00mQbY2vMrzMKQXd1VtZ5KGcX50DuhvXoxyzjcYrQfTXvy
-         XIpOc5kYGbGAGHlTBFp/jLp3o4mNXc4RRCXA167zUJEU0BP6Tj+1RHK3haCFmiawZx
-         FHJ9/zAN8x2/4HEHjVNjiFTbnoNNVaEAL0RLwxiTQLEBmSYOjb51iHuABIm6Xb4bWX
-         8dVxpMMIlsGUuq5QlyLU2dhlJn4CkJuryhUMs8h54vUtnAWIpT1zUTl9SSqnjJDStm
-         r75HaRR9vaBoIhOoaK29WKsDjXJHlFo8u+Ml1XKyVThGUBrDcmRLt3eZV0lLNE7taA
-         9MfoFvu+VeTdw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9918640647; Wed, 24 Mar 2021 10:15:07 -0300 (-03)
-Date:   Wed, 24 Mar 2021 10:15:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 2/2] perf test: Add CVS summary test
-Message-ID: <YFs7W7CHNO7haeb0@kernel.org>
-References: <20210319070156.20394-1-yao.jin@linux.intel.com>
- <20210319070156.20394-2-yao.jin@linux.intel.com>
- <YFs5DvUwtwblghqc@kernel.org>
- <YFs6y8EW4yWpqBh+@kernel.org>
+        id S234934AbhCXNQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233465AbhCXNPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:15:32 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D821EC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:15:31 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id n198so21430170iod.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oPFA6rVxHKxBQf4a3Xn6w1bxyecBN3XKdCmIzpzW6iI=;
+        b=YUN+OMrgxvni1bhoTXWvikyICShXhRAcIYY65R2qWT8dKQ9C2LhB7m2uAovivNnWTS
+         mE6S/u3FzHduklf/WYV8yE9Y/OWri7YCehdUpiPcAPyyzropeRmcqJ8YSUwJ5A3p6sXB
+         Q3yXE+rQk05eziqAc5ysqpvmusGf0p9cEYQaSBeEWysugZ5t4b79osPH3aPebGwEGZO/
+         1rvnGlMV8vo+fCBl3E4ZZFWRw+nmC7nyy6kR1nehlMIunL2E9QA2f9QLnXmA/l7BgmiU
+         A3BrrqR9xxW05Sgq8JzuW/JyOF4JL+Wa37BpALJ0IMp7sr8odq2BEtDeHcFUQAODZ0Np
+         B/aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oPFA6rVxHKxBQf4a3Xn6w1bxyecBN3XKdCmIzpzW6iI=;
+        b=dyg5uO3LOI2MnBUhcGrU7tJOFgBNaM5uxPRDNe4M16tlNHSAnGGeDXEEqMFm+Rhw+1
+         Oj1s1CJF9G0+rc0UQn1g6jFKgCa8eZU4JABZ06JlHir87npwup15MewKe3BO3WyNNpXA
+         pSIQ349lpNKyyKDTUR83LTICJwccMmahut/pM78vnzEm4oLBPdw5tWnTWZJOCc9blADm
+         /wvPU2f4b2JTEa5+cSu4GGCNLzsJRnh34m5ozyV1abLh3hsxGLJKtRkCjGavl/w4ReiJ
+         ns7xvHhUwYVtWK6ibqQd48VPiRQSdtazQrl6XdynLDYeiuQwSiHrD676EcAdMM4oNUUD
+         eglQ==
+X-Gm-Message-State: AOAM533ayRnOkvmED3R6nIaw4hew67aNqztpUoFjepXPJjUbaQCZOgGK
+        wvnbqeB4ZYG7QhtvBeRcJlnkdVui7qhI9Uxo
+X-Google-Smtp-Source: ABdhPJw5nl75LHisWPGEDM7ykRNxz1p6iL7XlaPCh2TtwZVdsbyrweDkGyv7pUd9gGuTMW/4xNo7Eg==
+X-Received: by 2002:a02:ab94:: with SMTP id t20mr2883601jan.49.1616591731092;
+        Wed, 24 Mar 2021 06:15:31 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id n7sm1160486ile.12.2021.03.24.06.15.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 06:15:30 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/6] net: ipa: versions and registers
+Date:   Wed, 24 Mar 2021 08:15:22 -0500
+Message-Id: <20210324131528.2369348-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFs6y8EW4yWpqBh+@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Mar 24, 2021 at 10:12:43AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Mar 24, 2021 at 10:05:18AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Mar 19, 2021 at 03:01:56PM +0800, Jin Yao escreveu:
-> > > The patch "perf stat: Align CSV output for summary mode" aligned
-> > > CVS output and added "summary" to the first column of summary
-> > > lines.
-> > > 
-> > > Now we check if the "summary" string is added to the CVS output.
-> > > 
-> > > If we set '--no-cvs-summary' option, the "summary" string would
-> > > not be added, also check with this case.
-> > 
-> > You mixed up cvs with csv in various places, I'm fixing it up...
-> 
-> This, for the first patch, now fixing the second.
+Version 2 of this series adds kernel-doc descriptions for all
+members of the ipa_version enumerated type in patch 2.
 
-nah, there were some missing fixes:
+The original description of the series is below.
+
+					-Alex
+
+This series is sort of a mix of things, generally related to
+updating IPA versions and register definitions.
+
+The first patch fixes some version-related tests throughout the code
+so the conditions are valid for IPA versions other than the two that
+are currently supported.  Support for additional versions is
+forthcoming, and this is a preparatory step.
+
+The second patch adds to the set of defined IPA versions, to include
+all versions between 3.0 and 4.11.
+
+The next defines an endpoint initialization register that was
+previously not being configured.  We now initialize that register
+(so that NAT is explicitly disabled) on all AP endpoints.
+
+The fourth adds support for an extra bit in a field in a register,
+which is present starting at IPA v4.5.
+
+The last two are sort of standalone.  One just moves a function
+definition and makes it private.  The other increases the number of
+GSI channels and events supported by the driver, sufficient for IPA
+v4.5.
+
+					-Alex
 
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index e81a45cadd4a0bdb..6ec5960b08c3de21 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -482,14 +482,14 @@ convenient for post processing.
- --summary::
- Print summary for interval mode (-I).
- 
----no-cvs-summary::
-+--no-csv-summary::
- Don't print 'summary' at the first column for CVS summary output.
- This option must be used with -x and --summary.
- 
- This option can be enabled in perf config by setting the variable
--'stat.no-cvs-summary'.
-+'stat.no-csv-summary'.
- 
--$ perf config stat.no-cvs-summary=true
-+$ perf config stat.no-csv-summary=true
- 
- EXAMPLES
- --------
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 6daa090129a65c78..2a2c15cac80a3bee 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1093,9 +1093,9 @@ void perf_stat__set_big_num(int set)
- 	stat_config.big_num = (set != 0);
- }
- 
--void perf_stat__set_no_cvs_summary(int set)
-+void perf_stat__set_no_csv_summary(int set)
- {
--	stat_config.no_cvs_summary = (set != 0);
-+	stat_config.no_csv_summary = (set != 0);
- }
- 
- static int stat__set_big_num(const struct option *opt __maybe_unused,
-@@ -1254,8 +1254,8 @@ static struct option stat_options[] = {
- 		    "threads of same physical core"),
- 	OPT_BOOLEAN(0, "summary", &stat_config.summary,
- 		       "print summary for interval mode"),
--	OPT_BOOLEAN(0, "no-cvs-summary", &stat_config.no_cvs_summary,
--		       "don't print 'summary' for CVS summary output"),
-+	OPT_BOOLEAN(0, "no-csv-summary", &stat_config.no_csv_summary,
-+		       "don't print 'summary' for CSV summary output"),
- 	OPT_BOOLEAN(0, "quiet", &stat_config.quiet,
- 			"don't print output (useful with record)"),
- #ifdef HAVE_LIBPFM
-diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-index df78f11f6fb50a0b..6bcb5ef221f8c1be 100644
---- a/tools/perf/util/config.c
-+++ b/tools/perf/util/config.c
-@@ -457,8 +457,8 @@ static int perf_stat_config(const char *var, const char *value)
- 	if (!strcmp(var, "stat.big-num"))
- 		perf_stat__set_big_num(perf_config_bool(var, value));
- 
--	if (!strcmp(var, "stat.no-cvs-summary"))
--		perf_stat__set_no_cvs_summary(perf_config_bool(var, value));
-+	if (!strcmp(var, "stat.no-csv-summary"))
-+		perf_stat__set_no_csv_summary(perf_config_bool(var, value));
- 
- 	/* Add other config variables here. */
- 	return 0;
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 2e7fec0bd8f3f3bb..d3137bc1706548d4 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -440,7 +440,7 @@ static void printout(struct perf_stat_config *config, struct aggr_cpu_id id, int
- 			os.nfields++;
- 	}
- 
--	if (!config->no_cvs_summary && config->csv_output &&
-+	if (!config->no_csv_summary && config->csv_output &&
- 	    config->summary && !config->interval) {
- 		fprintf(config->output, "%16s%s", "summary", config->csv_sep);
- 	}
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index def0cdc841330210..48e6a06233faef8e 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -128,7 +128,7 @@ struct perf_stat_config {
- 	bool			 all_user;
- 	bool			 percore_show_thread;
- 	bool			 summary;
--	bool			 no_cvs_summary;
-+	bool			 no_csv_summary;
- 	bool			 metric_no_group;
- 	bool			 metric_no_merge;
- 	bool			 stop_read_counter;
-@@ -161,7 +161,7 @@ struct perf_stat_config {
- };
- 
- void perf_stat__set_big_num(int set);
--void perf_stat__set_no_cvs_summary(int set);
-+void perf_stat__set_no_csv_summary(int set);
- 
- void update_stats(struct stats *stats, u64 val);
- double avg_stats(struct stats *stats);
+Alex Elder (6):
+  net: ipa: reduce IPA version assumptions
+  net: ipa: update version definitions
+  net: ipa: define the ENDP_INIT_NAT register
+  net: ipa: limit local processing context address
+  net: ipa: move ipa_aggr_granularity_val()
+  net: ipa: increase channels and events
+
+ drivers/net/ipa/gsi.c          |  8 +++----
+ drivers/net/ipa/gsi.h          |  4 ++--
+ drivers/net/ipa/ipa_cmd.c      | 26 ++++++++++++---------
+ drivers/net/ipa/ipa_endpoint.c | 42 ++++++++++++++++++++++++----------
+ drivers/net/ipa/ipa_main.c     | 21 ++++++++++++++---
+ drivers/net/ipa/ipa_mem.c      |  6 +++--
+ drivers/net/ipa/ipa_qmi.c      |  2 +-
+ drivers/net/ipa/ipa_reg.h      | 40 ++++++++++++++++++++------------
+ drivers/net/ipa/ipa_version.h  | 29 +++++++++++++++++------
+ 9 files changed, 121 insertions(+), 57 deletions(-)
+
+-- 
+2.27.0
+
