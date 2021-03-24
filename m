@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101BA348006
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C201734800B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbhCXSH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:07:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236683AbhCXSHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:07:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1B161A24
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 18:07:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616609227;
-        bh=rntKfLiZjIJur0cJE9GfWsqklpTRAWKt+oAJMuQR90k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JLUte6mBidZkeN/akNI+rinyYjj1gEpTLC2YfAWVIvHBUAzaCZnPGjWUEHPm//jqb
-         JFOWMkLu+BQtDOZ7VWREkNc+gk4UYfVxqFppY6fGvnsz2iP5D7FhbxAw1s061Ps6wI
-         lipcm4BN7sFbqSwopH5Nllhxo8XeJzzxU4Me6qm+HJXjgr4L1bGfA4XW909ZRDEXBI
-         2SvPBqbSGF8BYQtJ8HJHoloN2CpEajQi0dwsi/4ilIf8CW1d8nhKzu2ldQwa/EYzsF
-         i9WZ4htR545gDIFtjLXejP6SZMQpkhVqx80LKSJBqb2PMbSstxqkaDYUlrmtniEGeU
-         jOvFtErrApokw==
-Received: by mail-ed1-f42.google.com with SMTP id z1so28745155edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:07:07 -0700 (PDT)
-X-Gm-Message-State: AOAM5312XmAMyaxv76OrEtg5rG8IYWFoYrLyzyrnWsQdahKz5MFfHLGB
-        JY7sdRJC2zGIexsY7xEaL7/PkbrmWOqZVZssH/sViQ==
-X-Google-Smtp-Source: ABdhPJwnCnWNhSCvq9avZ/yNEjkfbD+BzcJo4XPAGTCeaReeESXeH9KLLx+kOTzjAvQvpBbMMKfzBuwMJNpiw/zw+S0=
-X-Received: by 2002:aa7:da98:: with SMTP id q24mr5005159eds.84.1616609225868;
- Wed, 24 Mar 2021 11:07:05 -0700 (PDT)
+        id S237338AbhCXSIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237390AbhCXSIB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:08:01 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B76C061763;
+        Wed, 24 Mar 2021 11:08:01 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id y6so28727536eds.1;
+        Wed, 24 Mar 2021 11:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=i6Nd1C9K3ZraC2/KtD2Rji9JytGeIDO3RPQibjjH3KY=;
+        b=czOt+2PIPQJVMPtYEWiwYuV5Dx2aEzpj+vkZZ/H82wcGE0PGXCddsSXzHpC5R3Ke+s
+         wZqiSYRIgHXspyeIGk5rqsWQnio7AEKxh1zrLgFAAQxhmzsblyhsc0tpGly6TYkRtU8U
+         kpINGKHCMr8aNehUwGCvHCGheUmdLhmkfaNVwQJKEXE4NDu6P4SpUPsVBy/LcN8/zUXu
+         S0D7WE2lppRjzoka+RYRdetDBkMZUvGST7TxfjkduHJTov2C1pO7z3/iBGjrI9S9sB/D
+         GUe9eHBklWEiy4q4aupLXcl1mQwNEwVPA3DIeXZpscwXdnwrcqSkqs3kc4reiog6hYul
+         9pwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=i6Nd1C9K3ZraC2/KtD2Rji9JytGeIDO3RPQibjjH3KY=;
+        b=rg0DyRsMqzUPE2rQWc/xeD/BcjZo+rz1MYPxaOqTGHjCob67foEM5I1CdywOKIdSLw
+         0mmlxAjpFWgFhHiEDPgp6khu4fopOaokMPMNnMvb30YLFEMDmvKusmTppT/HFhh9Dfp8
+         CJxJETxjMfJwYBElot0EL7nlce1VYnd6UmsB9OHxahxF+/2sROnQOuj31n0E/PZ3wC7Z
+         YElGrYLthrsimNIaQVqmbO/qO7TNnjWjffD+kl9buDkWGd11EvehLMijv9VgfqQacNiy
+         wTi2rZfGud3S6sd6fRgkANmtEXsmkTCCEN6DJtO1UfXQQyeSOKf2PvyDvRn/FPPhZbFk
+         JzDQ==
+X-Gm-Message-State: AOAM530CCrPTEGA8LmBsHjHq9a9sKagwMwHPOqi/hxHstoqqd+kol/u3
+        OU548Ork3HMxF1UKOIv8sdtJ7G1oKNQz5w==
+X-Google-Smtp-Source: ABdhPJypkFPURoaW9FT3EuqK1fTNhl71D/FDAEiBXgnhBtr8dShMtXlMtAgHnS0mOezuAYGV6jurUg==
+X-Received: by 2002:aa7:c3c4:: with SMTP id l4mr4768865edr.335.1616609279776;
+        Wed, 24 Mar 2021 11:07:59 -0700 (PDT)
+Received: from LEGION ([111.119.187.57])
+        by smtp.gmail.com with ESMTPSA id r24sm1470489edw.11.2021.03.24.11.07.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 11:07:59 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 23:07:53 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:EM28XX VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>
+Cc:     musamaanjum@gmail.com, syzkaller-bugs@googlegroups.com,
+        dvyukov@google.com
+Subject: [PATCH] media: em28xx: fix memory leak
+Message-ID: <20210324180753.GA410359@LEGION>
 MIME-Version: 1.0
-References: <CALCETrUx10uHeD7bckVjL9x7S3LEdH3ZfzUbCMWj9j-=nYp8Wg@mail.gmail.com>
- <your-ad-here.call-01616607308-ext-0852@work.hours>
-In-Reply-To: <your-ad-here.call-01616607308-ext-0852@work.hours>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 24 Mar 2021 11:06:54 -0700
-X-Gmail-Original-Message-ID: <CALCETrXrj563KJP3p2+_GM=wARGDqM_BpRP-AACN8TXK8j4ypQ@mail.gmail.com>
-Message-ID: <CALCETrXrj563KJP3p2+_GM=wARGDqM_BpRP-AACN8TXK8j4ypQ@mail.gmail.com>
-Subject: Re: Is s390's new generic-using syscall code actually correct?
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>, X86 ML <x86@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:39 AM Vasily Gorbik <gor@linux.ibm.com> wrote:
->
-> Hi Andy,
->
-> On Sat, Mar 20, 2021 at 08:48:34PM -0700, Andy Lutomirski wrote:
-> > Hi all-
-> >
-> > I'm working on my kentry patchset, and I encountered:
-> >
-> > commit 56e62a73702836017564eaacd5212e4d0fa1c01d
-> > Author: Sven Schnelle <svens@linux.ibm.com>
-> > Date:   Sat Nov 21 11:14:56 2020 +0100
-> >
-> >     s390: convert to generic entry
-> >
-> > As part of this work, I was cleaning up the generic syscall helpers,
-> > and I encountered the goodies in do_syscall() and __do_syscall().
-> >
-> > I'm trying to wrap my head around the current code, and I'm rather confused.
-> >
-> > 1. syscall_exit_to_user_mode_work() does *all* the exit work, not just
-> > the syscall exit work.  So a do_syscall() that gets called twice will
-> > do the loopy part of the exit work (e.g. signal handling) twice.  Is
-> > this intentional?  If so, why?
-> >
-> > 2. I don't understand how this PIF_SYSCALL_RESTART thing is supposed
-> > to work.  Looking at the code in Linus' tree, if a signal is pending
-> > and a syscall returns -ERESTARTSYS, the syscall will return back to
-> > do_syscall().  The work (as in (1)) gets run, calling do_signal(),
-> > which will notice -ERESTARTSYS and set PIF_SYSCALL_RESTART.
-> > Presumably it will also push the signal frame onto the stack and aim
-> > the return address at the svc instruction mentioned in the commit
-> > message from "s390: convert to generic entry".  Then __do_syscall()
-> > will turn interrupts back on and loop right back into do_syscall().
-> > That seems incorrect.
-> >
-> > Can you enlighten me?  My WIP tree is here:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/log/?h=x86/kentry
-> >
->
-> For all the details to that change we'd have to wait for Sven, who is back
-> next week.
->
-> > Here are my changes to s390, and I don't think they're really correct:
-> >
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/diff/arch/s390/kernel/syscall.c?h=x86/kentry&id=58a459922be0fb8e0f17aeaebcb0ac8d0575a62c
->
-> Couple of things: syscall_exit_to_user_mode_prepare is static,
-> and there is another code path in arch/s390/kernel/traps.c using
-> enter_from_user_mode/exit_to_user_mode.
->
-> Anyhow I gave your branch a spin and got few new failures on strace test
-> suite, in particular on restart_syscall test. I'll try to find time to
-> look into details.
+If some error occurs, URB buffers should also be freed. If they aren't
+freed with the dvb here, the em28xx_dvb_fini call doesn't frees the URB
+buffers as dvb is set to NULL. The function in which error occurs should
+do all the cleanup for the allocations it had done.
 
-I refreshed the branch, but I confess I haven't compile tested it. :)
+Tested the patch with the reproducer provided by syzbot. This patch
+fixes the memleak.
 
-I would guess that the new test case failures are a result of the
-buggy syscall restart logic.  I think that all of the "restart" cases
-except execve() should just be removed.  Without my patch, I suspect
-that signal delivery with -ERESTARTSYS would create the signal frame,
-do an accidental "restarted" syscall that was a no-op, and then
-deliver the signal.  With my patch, it may simply repeat the original
-interrupted signal forever.
+Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+Resending the same path as some email addresses were missing from the
+earlier email.
 
---Andy
+syzbot found the following issue on:
+
+HEAD commit:    1a4431a5 Merge tag 'afs-fixes-20210315' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11013a7cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff6b8b2e9d5a1227
+dashboard link: https://syzkaller.appspot.com/bug?extid=889397c820fa56adf25d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1559ae3ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176985c6d00000
+
+ drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
+index 526424279637..471bd74667e3 100644
+--- a/drivers/media/usb/em28xx/em28xx-dvb.c
++++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+@@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
+ 	return result;
+ 
+ out_free:
++	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
+ 	kfree(dvb);
+ 	dev->dvb = NULL;
+ 	goto ret;
+-- 
+2.25.1
+
