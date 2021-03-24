@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36317347469
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7189347472
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhCXJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:20:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38758 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231685AbhCXJU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:20:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616577628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7gLziUiladtyJd3p/ln2FmDe2g6zHX+KsW0OGVFj21E=;
-        b=VbHnPFE42SYJRuEFkhkWAHr4t4p5qxQJFsfZtY++E0e10Oi90jUMuP+zzxNFPz8a9B4/r5
-        03tb8a/woot6C3mA/isgfeHqnxPl2AYvprLiKqyKLbsAKxnFJUkqMiVlLv0bKVDUtwVFUC
-        UGcnOeyxadhb/QMMNWjhwTBfwijht1Q=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D1E0EAC16;
-        Wed, 24 Mar 2021 09:20:27 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 10:20:25 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix memsw uncharge for
- root_mem_cgroup
-Message-ID: <YFsEWfzxB3iPc66Y@dhcp22.suse.cz>
-References: <20210323145653.25684-1-songmuchun@bytedance.com>
- <CAMZfGtWT8XXDtg0Jcv=1qJpdLD6foJWE=kB_i1ZyHjvrku=vrw@mail.gmail.com>
- <YFr5SrJ2iNGYwVNA@dhcp22.suse.cz>
- <CAMZfGtVe6seRLA7Wo4TST0ApkaHdkDmv6sL5GZytK_4hvMbkXg@mail.gmail.com>
+        id S234646AbhCXJVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:21:39 -0400
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:44916 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231685AbhCXJVG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:21:06 -0400
+Received: by mail-lj1-f173.google.com with SMTP id u9so1629363ljd.11;
+        Wed, 24 Mar 2021 02:21:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=KwtrWhf8f4Zw1shSmmFlqEB5Jch6Dst+BR5dO8pa4gc=;
+        b=o06AOP+sF7hA+9GiDBPnEPr6LooDSs6qjUBQh23+eBNXc0izFGn/fJUpwRi4zD4YgV
+         3WxXXoiM3e+L+U0leNr8rk7VWhrGKZAtuWfnN2jJhG6bF+blpS8hNXk0qz3fVma4E/bD
+         LaO59/HBLJejO3tANYLNhFKHDvQTYDyu2maNSGN3unJ2IEtTcIlRcs4XDo5CsOQfAMIl
+         0erbCaP+Q5RoJtgLpQZU+eLvlP15GWELlrrLWydHRPLFHBH0rcvGbIcJpv9+SyK9eafF
+         ZEBpd1SrszlLSuc6Mn3KHVLXxVfnZHLCxsvyojFSTsseosgf8cpNi/jBj6wO4fblHbcs
+         UefA==
+X-Gm-Message-State: AOAM5324JXVBGowQ/eCMxd35UFY7/Y14p/H4MtN9p10PjGTbiXZ2CYku
+        zehw2xLu8ZmWunvdkDbS2Y0=
+X-Google-Smtp-Source: ABdhPJxBkJvsvaGLG1uu/fgPF7N8/AvsHPfrH5IyWgXBN8+m4524ZIK961psKUHL3rPQGrGXA8bsMQ==
+X-Received: by 2002:a2e:98d2:: with SMTP id s18mr1454207ljj.412.1616577664762;
+        Wed, 24 Mar 2021 02:21:04 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id q26sm246954ljg.90.2021.03.24.02.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 02:21:04 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 11:20:58 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH 0/2] Fixes to device-managed work-queue series
+Message-ID: <cover.1616574973.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtVe6seRLA7Wo4TST0ApkaHdkDmv6sL5GZytK_4hvMbkXg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24-03-21 16:50:41, Muchun Song wrote:
-> On Wed, Mar 24, 2021 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 24-03-21 12:11:35, Muchun Song wrote:
-> > > On Tue, Mar 23, 2021 at 11:04 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > >
-> > > > The pages aren't accounted at the root level, so we cannot uncharge the
-> > > > page to the memsw counter for the root memcg. Fix this.
-> > > >
-> > > > Fixes: 1f47b61fb407 ("mm: memcontrol: fix swap counter leak on swapout from offline cgroup")
-> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > >
-> > > I am very sorry. I should repent. I suddenly realise the fix is totally
-> > > wrong. Because the @memcg cannot be root memcg when
-> > > @memcg != @swap_memcg.
-> >
-> > I am probably blind but I do not see why this would be the case.
-> > We have memcg != swap_memcg in this branch but we do not know the
-> > neither of the two is root_mem_cgroup, no? If we did knot that we
-> > wouldn't have to check for swap_memcg != root_mem_cgroup. Or do I miss
-> > something?
-> 
-> I look at the mem_cgroup_id_get_online() closely. If memcg is root, this
-> function always returns root memcg. So memcg will equal swap_memcg.
+The series "Add managed version of delayed work init" was applied to
+driver-core by Greg. Few issues were reported afterwards.
 
-Ahh, I can see it now. I have completely missed that the swap_memcg is
-a parent of an offline memcg. I should have looked more closely.
+Chen-Yu Tsai reported problem in axp20x_usb_power power-supply driver.
+Work-queue initialization and request IRQ ordering was wrong and
+work-queue was initialized twice. This was originated by my incorrect
+rebase where I missed a fixup done between my patch revisions.
+
+Additional print was reuqested on work-queue initialization error path
+at extcon-gpio.c by Chanwoo Choi.
+
+This series fixes both of these issues.
+
+Series is done based on driver-core-next.
+
+---
+
+Matti Vaittinen (2):
+  extcon: extcon-gpio: Log error if work-queue init fails
+  power: supply: axp20x_usb_power: fix work-queue init
+
+ drivers/extcon/extcon-gpio.c            |  4 +++-
+ drivers/power/supply/axp20x_usb_power.c | 10 +++++-----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+
+base-commit: a7d30f3f41cf40aad1c4557fa180fe320d5b7c74
 -- 
-Michal Hocko
-SUSE Labs
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
