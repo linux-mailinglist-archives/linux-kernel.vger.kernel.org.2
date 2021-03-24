@@ -2,241 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDE3348587
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9862B34858C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhCXXuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235038AbhCXXtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:49:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41324619FE;
-        Wed, 24 Mar 2021 23:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616629789;
-        bh=HAs0X9fe2pmLkFwHBxgmGC/MbFM09Ch0s0nXEufxLXQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RYGKbltSBxpDhcQZRcIn8VHUszSBc/YMTEOSMJEdQKLee4Ts4rATyTPBDy7csaSqY
-         R4/ck/Ep1I1Hp6uaaDFfdXLQJGtIuIDWk6BDVnh8bff6U6comuTpE2rpUfIdPQl5Xc
-         Gykr4U2EuY1G/pKWpgxAXpGEVzTWXZbdxdoN27/Af8NydYngSaFs7ALrQGtTT15472
-         q6AHzoOWEoTgVH+y7r0lK8vOC7cBwSarUsa6mDDnsw86rn6NIcYcOQHVEt1lG7RZ6q
-         sTSZQ2qLt49O+KN0lA9/yVoga+ywnCVOZ6pRltU7mAllpEseKc1cxQUOitYMSGPM6D
-         O2yHoTA6fzrvw==
-Date:   Wed, 24 Mar 2021 16:49:47 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v2] f2fs: fix to avoid touching checkpointed data in
- get_victim()
-Message-ID: <YFvQGxLbpmDjxEzR@google.com>
-References: <20210324031828.67133-1-yuchao0@huawei.com>
+        id S239072AbhCXXup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235038AbhCXXuQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:50:16 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04C9C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:50:14 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id v26so97811iox.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tWobKMGywN9lDYnqfuiTkENNe/3dGwwygiSKXOJYwE4=;
+        b=GsyGv4HFZeZhqfrxRLrVpErgSqZY8dpEvKhLp8XmfIzVf+d6wk24feKlpRNRdF8LM1
+         njfdG81yjyK2ZVgmmjqVef4oYbxaBRfte1v3fMLJ3b4N5HCjLQCPyB3T/eNef2vgJeXV
+         5rgimpDED7MXA27rUONVrs1rwX/O1M+fOI7Bg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tWobKMGywN9lDYnqfuiTkENNe/3dGwwygiSKXOJYwE4=;
+        b=kUFUz3SMoSC+56dM17+IJscTJpefsSn3Z4SCHrTFBC5Ub8tjfdR06/hLcavHhYUZ3k
+         9rEVbjLbeSFC/WJbj3eso29jF5rGiBGnaRZevpL38IWnd+9tyGkhzwv8lUlcbs6STD3S
+         JPKjyDLKm1tJcdwCkpc/NfILZw5j3rEMjMvXjH+ecdAveIolcTAbS8vJEz7Q9PiKr5t4
+         tSfOft1RBjADhMBEG8lFl/ujU8qvBU8310Z5x4NL0PwrI96JdWba5tLinPaxbDJgJ0QA
+         ZmRp/mg5AVZ6nVwf6j6mrfHMmyt0+oAOAB6kff/c6gkavJsQD49Z1ls65sbTUXy9ydEw
+         SErg==
+X-Gm-Message-State: AOAM530bwk0KzlWCD4AAeDY5DiFnNN4b0lcSqwKFxz/Xk1qoZ8WyWRHg
+        AHSiYHjZ2YUNueExxS/0Wt+ic8+fYsAXUw==
+X-Google-Smtp-Source: ABdhPJxqNLQeDkhxT42wTCPy1WEM8ZlhY3+7fg5XgBECeWHnTQGPwmWrwA+WcJAmAcdAQ3rE3wUegw==
+X-Received: by 2002:a05:6638:685:: with SMTP id i5mr5277100jab.109.1616629813977;
+        Wed, 24 Mar 2021 16:50:13 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n11sm1740515ioa.34.2021.03.24.16.50.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 16:50:13 -0700 (PDT)
+Subject: Re: [PATCH v5 1/2] usbip: tools: add options and examples in man page
+ related to device mode
+To:     "Hongren Zheng (Zenithal)" <i@zenithal.me>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Antonio Borneo <borneo.antonio@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        matt mooney <mfm@muteddisk.com>, linux-usb@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <YFrdyKKx1nx8bktm@Sun>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e2af75d1-8102-b0d9-3eab-0124f6b4dbe2@linuxfoundation.org>
+Date:   Wed, 24 Mar 2021 17:50:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324031828.67133-1-yuchao0@huawei.com>
+In-Reply-To: <YFrdyKKx1nx8bktm@Sun>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/24, Chao Yu wrote:
-> In CP disabling mode, there are two issues when using LFS or SSR | AT_SSR
-> mode to select victim:
+On 3/24/21 12:35 AM, Hongren Zheng (Zenithal) wrote:
+> The commit e0546fd8b748 ("usbip: tools: Start using VUDC backend in
+> usbip tools") implemented device mode for user space tools, however the
+> corresponding options are not documented in man page.
 > 
-> 1. LFS is set to find source section during GC, the victim should have
-> no checkpointed data, since after GC, section could not be set free for
-> reuse.
+> This commit documents the options and provides examples on device mode.
+> Also the command `usbip port` is documented.
 > 
-> Previously, we only check valid chpt blocks in current segment rather
-> than section, fix it.
-> 
-> 2. SSR | AT_SSR are set to find target segment for writes which can be
-> fully filled by checkpointed and newly written blocks, we should never
-> select such segment, otherwise it can cause panic or data corruption
-> during allocation, potential case is described as below:
-> 
->  a) target segment has 128 ckpt valid blocks
->  b) GC migrates 'n' (n < 512) valid blocks to other segment (segment is
->     still in dirty list)
->  c) GC migrates '512 - n' blocks to target segment (segment has 'n'
->     cp_vblocks and '512 - n' vblocks)
->  d) If GC selects target segment via {AT,}SSR allocator, however there
->     is no free space in targe segment.
-> 
-> Fixes: 4354994f097d ("f2fs: checkpoint disabling")
-> Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> Signed-off-by: Hongren Zheng <i@zenithal.me>
 > ---
-> v2:
-> - fix to check checkpointed data in section rather than segment for
-> LFS mode.
-> - update commit title and message.
->  fs/f2fs/f2fs.h    |  1 +
->  fs/f2fs/gc.c      | 28 ++++++++++++++++++++--------
->  fs/f2fs/segment.c | 39 ++++++++++++++++++++++++---------------
->  fs/f2fs/segment.h | 14 +++++++++++++-
->  4 files changed, 58 insertions(+), 24 deletions(-)
+>   tools/usb/usbip/doc/usbip.8  | 42 +++++++++++++++++++++++++++++++++++-
+>   tools/usb/usbip/doc/usbipd.8 | 26 ++++++++++++++++++++++
+>   2 files changed, 67 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index eb154d9cb063..29e634d08a27 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -3387,6 +3387,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi);
->  int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
->  void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
->  int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
-> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
->  void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
->  void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
->  void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
-> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> index d96acc6531f2..4d9616373a4a 100644
-> --- a/fs/f2fs/gc.c
-> +++ b/fs/f2fs/gc.c
-> @@ -392,10 +392,6 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
->  		if (p->gc_mode == GC_AT &&
->  			get_valid_blocks(sbi, segno, true) == 0)
->  			return;
-> -
-> -		if (p->alloc_mode == AT_SSR &&
-> -			get_seg_entry(sbi, segno)->ckpt_valid_blocks == 0)
-> -			return;
->  	}
->  
->  	for (i = 0; i < sbi->segs_per_sec; i++)
-> @@ -728,11 +724,27 @@ static int get_victim_by_default(struct f2fs_sb_info *sbi,
->  
->  		if (sec_usage_check(sbi, secno))
->  			goto next;
+> PATCH v2:
+>       Add signed-off-by line
+> 
+> PATCH v3:
+>       Move patch changelog after the marker line
+>       Remove nickname in signed-off-by line
+> 
+> PATCH v4:
+>       Use commit short hash and message instead of long hash only when
+>         referring to commit in the kernel
+> 
+> PATCH v5:
+>      Add documentation of `usbip port` and its usage in examples
+>      Add flow of detaching in examples
+>      Rephrase some description and add punctuations
+>      Fix typo of `usbip attach --ev-id` to `--dev-id`
+> 
+> diff --git a/tools/usb/usbip/doc/usbip.8 b/tools/usb/usbip/doc/usbip.8
+> index a15d20063b98..1f26e4a00638 100644
+> --- a/tools/usb/usbip/doc/usbip.8
+> +++ b/tools/usb/usbip/doc/usbip.8
+> @@ -49,10 +49,17 @@ then exit.
+>   Attach a remote USB device.
+>   .PP
+>   
+> +.HP
+> +\fBattach\fR \-\-remote=<\fIhost\fR> \-\-device=<\fIdev_id\fR>
+> +.IP
+> +Attach a remote USB gadget.
+> +Only used when the remote usbipd is in device mode.
+> +.PP
 > +
->  		/* Don't touch checkpointed data */
-> -		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED) &&
-> -					get_ckpt_valid_blocks(sbi, segno) &&
-> -					p.alloc_mode == LFS))
-> -			goto next;
-> +		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
-> +			if (p.alloc_mode == LFS) {
-> +				/*
-> +				 * LFS is set to find source section during GC.
-> +				 * The victim should have no checkpointed data.
-> +				 */
-> +				if (get_ckpt_valid_blocks(sbi, segno, true))
-> +					goto next;
-> +			} else {
-> +				/*
-> +				 * SSR | AT_SSR are set to find target segment
-> +				 * for writes which can be full by checkpointed
-> +				 * and newly written blocks.
-> +				 */
-> +				if (!segment_has_free_slot(sbi, segno))
-> +					goto next;
-> +			}
-> +		}
+>   .HP
+>   \fBdetach\fR \-\-port=<\fIport\fR>
+>   .IP
+> -Detach an imported USB device.
+> +Detach an imported USB device/gadget.
+>   .PP
+>   
+>   .HP
+> @@ -73,12 +80,26 @@ Stop exporting a device so it can be used by a local driver.
+>   List USB devices exported by a remote host.
+>   .PP
+>   
+> +.HP
+> +\fBlist\fR \-\-device
+> +.IP
+> +List USB gadgets of local usbip-vudc.
+> +Only used when the local usbipd is in device mode.
+> +Note that this can not list usbip-vudc USB gadgets of the remote device mode usbipd.
+> +.PP
 > +
->  		if (gc_type == BG_GC && test_bit(secno, dirty_i->victim_secmap))
->  			goto next;
->  
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 6e1a5f5657bf..f6a30856ceda 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -865,7 +865,7 @@ static void locate_dirty_segment(struct f2fs_sb_info *sbi, unsigned int segno)
->  	mutex_lock(&dirty_i->seglist_lock);
->  
->  	valid_blocks = get_valid_blocks(sbi, segno, false);
-> -	ckpt_valid_blocks = get_ckpt_valid_blocks(sbi, segno);
-> +	ckpt_valid_blocks = get_ckpt_valid_blocks(sbi, segno, false);
->  
->  	if (valid_blocks == 0 && (!is_sbi_flag_set(sbi, SBI_CP_DISABLED) ||
->  		ckpt_valid_blocks == usable_blocks)) {
-> @@ -950,7 +950,7 @@ static unsigned int get_free_segment(struct f2fs_sb_info *sbi)
->  	for_each_set_bit(segno, dirty_i->dirty_segmap[DIRTY], MAIN_SEGS(sbi)) {
->  		if (get_valid_blocks(sbi, segno, false))
->  			continue;
-> -		if (get_ckpt_valid_blocks(sbi, segno))
-> +		if (get_ckpt_valid_blocks(sbi, segno, false))
->  			continue;
->  		mutex_unlock(&dirty_i->seglist_lock);
->  		return segno;
-> @@ -2643,6 +2643,26 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
->  		seg->next_blkoff++;
->  }
->  
-> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
-> +{
-> +	struct sit_info *sit = SIT_I(sbi);
-> +	struct seg_entry *se = get_seg_entry(sbi, segno);
-> +	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
-> +	unsigned long *target_map = SIT_I(sbi)->tmp_map;
-> +	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
-> +	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
-> +	int i, pos;
+>   .HP
+>   \fBlist\fR \-\-local
+>   .IP
+>   List local USB devices.
+>   .PP
+>   
+> +.HP
+> +\fBport\fR
+> +.IP
+> +List imported devices/gadgets.
+> +.PP
 > +
-> +	down_write(&sit->sentry_lock);
+>   
+>   .SH EXAMPLES
+>   
+> @@ -90,8 +111,27 @@ List local USB devices.
+>       client:# usbip attach --remote=server --busid=1-2
+>           - Connect the remote USB device.
+>   
+> +    client:# usbip port
+> +        - List imported devices/gadgets.
+> +
+>       client:# usbip detach --port=0
+>           - Detach the usb device.
+>   
+> +The following example shows the usage of device mode
+> +
+> +    server:# usbip list --device
+> +        - List gadgets exported by local usbipd server.
+> +
+> +    client:# modprobe vhci-hcd
+> +
+> +    client:# usbip attach --remote=server --device=usbip-vudc.0
+> +        - Connect the remote USB gadget.
+> +
+> +    client:# usbip port
+> +        - List imported devices/gadgets.
+> +
+> +    client:# usbip detach --port=0
+> +        - Detach the usb gadget.
+> +
+>   .SH "SEE ALSO"
+>   \fBusbipd\fP\fB(8)\fB\fP
+> diff --git a/tools/usb/usbip/doc/usbipd.8 b/tools/usb/usbip/doc/usbipd.8
+> index fb62a756893b..d974394f86a1 100644
+> --- a/tools/usb/usbip/doc/usbipd.8
+> +++ b/tools/usb/usbip/doc/usbipd.8
+> @@ -29,6 +29,12 @@ Bind to IPv4. Default is both.
+>   Bind to IPv6. Default is both.
+>   .PP
+>   
+> +.HP
+> +\fB\-e\fR, \fB\-\-device\fR
+> +.IP
+> +Run in device mode. Rather than drive an attached device, create a virtual UDC to bind gadgets to.
+> +.PP
+> +
+>   .HP
+>   \fB\-D\fR, \fB\-\-daemon\fR
+>   .IP
+> @@ -86,6 +92,26 @@ USB/IP client can connect and use exported devices.
+>           - A usb device 1-2 is now exportable to other hosts!
+>           - Use 'usbip unbind --busid=1-2' when you want to shutdown exporting and use the device locally.
+>   
+> +The following example shows the usage of device mode
+> +
+> +    server:# modprobe usbip-vudc
+> +        - Use /sys/class/udc/ interface.
+> +        - usbip-host is independent of this module.
+> +
+> +    server:# usbipd -e -D
+> +        - Start usbip daemon in device mode.
+> +
+> +    server:# modprobe g_mass_storage file=/tmp/tmp.img
+> +        - Bind a gadget to usbip-vudc.
+> +        - in this example, a mass storage gadget is bound.
+> +
+> +    server:# usbip list --device
+> +        - List gadgets exported by local usbipd server.
+> +
+> +    server:# modprobe -r g_mass_storage
+> +        - Unbind a gadget from usbip-vudc.
+> +        - in this example, the previous mass storage gadget is unbound.
+> +
+>   .SH "SEE ALSO"
+>   \fBusbip\fP\fB(8)\fB\fP
+>   
+> 
 
-Should remove this lock.
-https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev
+Thank you. Looks good.
 
-> +	for (i = 0; i < entries; i++)
-> +		target_map[i] = ckpt_map[i] | cur_map[i];
-> +
-> +	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, 0);
-> +	up_write(&sit->sentry_lock);
-> +
-> +	return pos < sbi->blocks_per_seg;
-> +}
-> +
->  /*
->   * This function always allocates a used segment(from dirty seglist) by SSR
->   * manner, so it should recover the existing segment information of valid blocks
-> @@ -2913,19 +2933,8 @@ static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
->  		get_valid_blocks(sbi, curseg->segno, new_sec))
->  		goto alloc;
->  
-> -	if (new_sec) {
-> -		unsigned int segno = START_SEGNO(curseg->segno);
-> -		int i;
-> -
-> -		for (i = 0; i < sbi->segs_per_sec; i++, segno++) {
-> -			if (get_ckpt_valid_blocks(sbi, segno))
-> -				goto alloc;
-> -		}
-> -	} else {
-> -		if (!get_ckpt_valid_blocks(sbi, curseg->segno))
-> -			return;
-> -	}
-> -
-> +	if (!get_ckpt_valid_blocks(sbi, curseg->segno, new_sec))
-> +		return;
->  alloc:
->  	old_segno = curseg->segno;
->  	SIT_I(sbi)->s_ops->allocate_segment(sbi, type, true);
-> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-> index 144980b62f9e..dab87ecba2b5 100644
-> --- a/fs/f2fs/segment.h
-> +++ b/fs/f2fs/segment.h
-> @@ -359,8 +359,20 @@ static inline unsigned int get_valid_blocks(struct f2fs_sb_info *sbi,
->  }
->  
->  static inline unsigned int get_ckpt_valid_blocks(struct f2fs_sb_info *sbi,
-> -				unsigned int segno)
-> +				unsigned int segno, bool use_section)
->  {
-> +	if (use_section && __is_large_section(sbi)) {
-> +		unsigned int start_segno = START_SEGNO(segno);
-> +		unsigned int blocks = 0;
-> +		int i;
-> +
-> +		for (i = 0; i < sbi->segs_per_sec; i++, start_segno++) {
-> +			struct seg_entry *se = get_seg_entry(sbi, start_segno);
-> +
-> +			blocks += se->ckpt_valid_blocks;
-> +		}
-> +		return blocks;
-> +	}
->  	return get_seg_entry(sbi, segno)->ckpt_valid_blocks;
->  }
->  
-> -- 
-> 2.29.2
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
