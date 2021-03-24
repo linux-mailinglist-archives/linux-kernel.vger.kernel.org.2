@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8174347502
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031C5347506
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbhCXJsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhCXJse (ORCPT
+        id S232647AbhCXJtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:49:45 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:33367 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232684AbhCXJtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:48:34 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A361EC061763;
-        Wed, 24 Mar 2021 02:48:33 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a0800e1aaf92fe048fc85.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:800:e1aa:f92f:e048:fc85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 48E221EC03A0;
-        Wed, 24 Mar 2021 10:48:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616579312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=8+70UuYHrtyf1Q7By3CWyV+t024qxcDPftRTd1uPvT0=;
-        b=BXKECoTRJNUBrYHbGX5r/1TpodODEQBNNI6ReInhSttxqc3N1iC5tkTzYqoA02QLRGiAaR
-        LguhSARgiPFSj6zm8Hrr7tAST5TS3Ifwr8R0PdSZVSB6VmlUrEL+n3nTLuKg6uHeU2vd0K
-        Do/3O8MY+cEtaiPt+DadaQ3JaWOeHnA=
-Date:   Wed, 24 Mar 2021 10:48:35 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: Re: [PATCH v6] selftests/x86: Use getauxval() to simplify the code
- in sgx
-Message-ID: <20210324094835.GB5010@zn.tnic>
-References: <20210314111621.68428-1-tianjia.zhang@linux.alibaba.com>
- <YE9ayBnFIpwGiVVr@kernel.org>
- <53c94119-bdc3-a24c-91be-6d0444c46d64@linux.alibaba.com>
- <20210323185125.GF4729@zn.tnic>
- <54c62bc7-f52b-0a77-f0f9-974605ade55d@linux.alibaba.com>
+        Wed, 24 Mar 2021 05:49:19 -0400
+Received: by mail-vs1-f46.google.com with SMTP id a15so10979895vsi.0;
+        Wed, 24 Mar 2021 02:49:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vraXgvc1aXLo0BXYwPsNqedZ4dbSzT52cUPxrslm1MU=;
+        b=MDHttrfZW5ubuCKbIj5qq3gDSxSr2tKWk7eVsRecYEptnJQlUGitC0gRXUa9IiWem3
+         7wAMbTLCj5HxrtgYOSQYiBxQvNSxgBLxQkIAxXZEBt1gEzieHF7fycIEMkPxQHtLo2MA
+         gdGy+xGcOIVGsUOwukC8auOfQJlcxZ82aWKmxAra8BOhgartDFTTzq0NPOEk7pIHezXS
+         7yNo4kVKFsWaKl7Qm9dWhhJ7zBDsnDs8Y0Iy7zdapEnCG9YW6/DUXfQW6e1FD7FN5Gvj
+         BaIgl76OEHlNHaZTQv07i46CzWgCJHlFkSkHuv1fL2x/s8ccFcvbJs0ewS6kc/7DuCDu
+         HDkg==
+X-Gm-Message-State: AOAM533UnJYcbH5PV2FWMqWIYXXnCz+LJ7WpcY7Csj0cCQmlbxj17u0V
+        qDpFwL/iWiDmpxp7Lf1UlXeURNv1eoj3iUu/+CHvNmdRKG4=
+X-Google-Smtp-Source: ABdhPJwjlmczs6o4TiCoPKu2Bk3EL5Mvf4tmAt8E584vEb6atFpB0EKQD95jk3tD6JTYPbbdLHqmXpYcQtXkAUr5ZI4=
+X-Received: by 2002:a67:8883:: with SMTP id k125mr1067040vsd.18.1616579359195;
+ Wed, 24 Mar 2021 02:49:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <54c62bc7-f52b-0a77-f0f9-974605ade55d@linux.alibaba.com>
+References: <20181011204042.GA17125@embeddedor.com>
+In-Reply-To: <20181011204042.GA17125@embeddedor.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 24 Mar 2021 10:49:08 +0100
+Message-ID: <CAMuHMdWU-Xo5rpBmjHqjUQAUmQS7_XKYWkeaYbcoAFjeci_22Q@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: rzn1: remove unnecessary unsigned integer comparison
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 05:18:03PM +0800, Tianjia Zhang wrote:
-> I'm very sorry that my mistake caused your hurt.
+Hi Gustavo,
 
-You'd have to do a lot more to cause hurt. :-)
+On Thu, Oct 11, 2018 at 10:42 PM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> There is no need to compare ipctl->mdio_func[mdio] with => 0, because
+> such comparison is always true. Notice that *mdio_func* is of type
+> u32 (32 bits, unsigned).
+>
+> Fix this by removing such comparison.
+>
+> Addresses-Coverity-ID: 1474166 ("Unsigned compared against 0")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-> Please take time to look at this, which tree this should be picked?
+Thanks for your patch, which I somehow missed to review.
+Sorry for that.
 
-Sure.
+> --- a/drivers/pinctrl/pinctrl-rzn1.c
+> +++ b/drivers/pinctrl/pinctrl-rzn1.c
+> @@ -195,7 +195,7 @@ static void rzn1_hw_set_lock(struct rzn1_pinctrl *ipctl, u8 lock, u8 value)
+>  static void rzn1_pinctrl_mdio_select(struct rzn1_pinctrl *ipctl, int mdio,
+>                                      u32 func)
+>  {
+> -       if (ipctl->mdio_func[mdio] >= 0 && ipctl->mdio_func[mdio] != func)
+> +       if (ipctl->mdio_func[mdio] != func)
 
-Thx.
+Note that mdio_func is initialized to -1, hence the check.
+But the check indeed didn't work this way, so mdio_func was changed
+later to int in commit 8deaaa46d2de91e3 ("pinctrl: rzn1: Fix check for
+used MDIO bus").
+
+>                 dev_warn(ipctl->dev, "conflicting setting for mdio%d!\n", mdio);
+>         ipctl->mdio_func[mdio] = func;
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Regards/Gruss,
-    Boris.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-https://people.kernel.org/tglx/notes-about-netiquette
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
