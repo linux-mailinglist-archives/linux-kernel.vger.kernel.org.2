@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8884E347D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0D4347D57
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhCXQLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:11:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:35674 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhCXQK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:10:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79D35D6E;
-        Wed, 24 Mar 2021 09:10:58 -0700 (PDT)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F8BB3F7D7;
-        Wed, 24 Mar 2021 09:10:57 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 16:10:54 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v7 2/2] ARM: ftrace: Add MODULE_PLTS support
-Message-ID: <20210324161054.pg5272lh45n364ko@e107158-lin>
-References: <e726be33-bc03-0515-f430-c5a34ebc3619@nokia.com>
- <20210312172401.36awjh4hmj4cs6ot@e107158-lin.cambridge.arm.com>
- <134e1a2c-daac-7b00-c170-bcca434d08df@gmail.com>
- <20210314220217.4mexdide7sqjfved@e107158-lin>
- <20210321190611.d6a3hbqabts3qq5v@e107158-lin>
- <20210322110106.2bed3d50@gandalf.local.home>
- <20210322163248.id7qplbk6och6kuw@e107158-lin>
- <504d72ec-70a6-7e50-dbbb-16d693ce6150@nokia.com>
- <20210323222230.2d63hdcxq6strbug@e107158-lin>
- <2404ff10-7acc-3946-6592-31508f257f33@gmail.com>
+        id S231944AbhCXQLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhCXQLO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:11:14 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85838C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:11:13 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1lP667-0001Ly-SM; Wed, 24 Mar 2021 17:11:07 +0100
+Date:   Wed, 24 Mar 2021 17:11:07 +0100
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] staging: rtl8188eu: Fix null pointer dereference
+ on free_netdev call
+Message-ID: <20210324161107.m7gbexp4e7e5vf77@viti.kaiser.cx>
+References: <20210324152135.254152-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2404ff10-7acc-3946-6592-31508f257f33@gmail.com>
+In-Reply-To: <20210324152135.254152-1-colin.king@canonical.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian
+Hello Colin,
 
-On 03/23/21 20:37, Florian Fainelli wrote:
-> Hi Qais,
-> 
-> On 3/23/2021 3:22 PM, Qais Yousef wrote:
-> > Hi Alexander
-> > 
-> > On 03/22/21 18:02, Alexander Sverdlin wrote:
-> >> Hi Qais,
-> >>
-> >> On 22/03/2021 17:32, Qais Yousef wrote:
-> >>> Yes you're right. I was a bit optimistic on CONFIG_DYNAMIC_FTRACE will imply
-> >>> CONFIG_ARM_MODULE_PLTS is enabled too.
-> >>>
-> >>> It only has an impact on reducing ifdefery when calling
-> >>>
-> >>> 	ftrace_call_replace_mod(rec->arch.mod, ...)
-> >>>
-> >>> Should be easy to wrap rec->arch.mod with its own accessor that will return
-> >>> NULL if !CONFIG_ARM_MODULE_PLTS or just ifdef the functions.
-> >>>
-> >>> Up to Alexander to pick what he prefers :-)
-> >>
-> >> well, I of course prefer v7 as-is, because this review is running longer than two
-> >> years and I actually hope these patches to be finally merged at some point.
-> >> But you are welcome to optimize them with follow up patches :)
-> > 
-> > I appreciate that and thanks a lot for your effort. My attempt to review and
-> > test here is to help in getting this merged.
-> > 
-> > FWIW my main concern is about duplicating the range check in
-> > ftrace_call_replace() and using magic values that already exist in
-> > __arm_gen_branch_{arm, thumb2}() and better remain encapsulated there.
-> 
-> Your patch in addition to Alexander's patch work for me as well, so feel
-> free to add a:
-> 
-> Tested-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> FWIW, what is nice about Alexander's original patch is that it applies
-> relatively cleanly to older kernels as well where this is equally
+Thus wrote Colin King (colin.king@canonical.com):
 
-How old are we talking? Was the conflict that bad for the stable maintainers to
-deal with it? ie: would it require sending the backport separately?
+> From: Colin Ian King <colin.king@canonical.com>
 
-> needed. There is not currently any Fixes: tag being provided but maybe
-> we should amend the second patch with one?
+> An unregister_netdev call checks if pnetdev is null, hence a later
+> call to free_netdev can potentially be passing a null pointer, causing
+> a null pointer dereference. Avoid this by adding a null pointer check
+> on pnetdev before calling free_netdev.
 
-I'm not sure if this will be considered new feature or a bug fix. FWIW,
-tagging it for stable sounds reasonable to me.
+> Fixes: 1665c8fdffbb ("staging: rtl8188eu: use netdev routines for private data")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/staging/rtl8188eu/os_dep/usb_intf.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks!
+> diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+> index 518e9feb3f46..91a3d34a1050 100644
+> --- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+> +++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+> @@ -446,7 +446,8 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
+>  	pr_debug("+r871xu_dev_remove, hw_init_completed=%d\n",
+>  		 if1->hw_init_completed);
+>  	rtw_free_drv_sw(if1);
+> -	free_netdev(pnetdev);
+> +	if (pnetdev)
+> +		free_netdev(pnetdev);
+>  }
 
---
-Qais Yosuef
+>  static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device_id *pdid)
+> -- 
+> 2.30.2
+
+you're right. I removed the NULL check that was part of rtw_free_netdev.
+Sorry for the mistake and thanks for your fix.
+
+Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+
+Best regards,
+Martin
