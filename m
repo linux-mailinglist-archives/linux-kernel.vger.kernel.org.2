@@ -2,131 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904CC347150
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 06:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE9E347156
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233273AbhCXF6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 01:58:44 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:60596 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhCXF6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 01:58:31 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 0E49629BE;
-        Wed, 24 Mar 2021 06:58:30 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LEeRw9X82kpI; Wed, 24 Mar 2021 06:58:29 +0100 (CET)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id 3C5623362; Wed, 24 Mar 2021 06:58:28 +0100 (CET)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-Date:   Wed, 24 Mar 2021 06:58:21 +0100 (CET)
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Hermes Zhang <chenhui.zhang@axis.com>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Hermes Zhang <chenhuiz@axis.com>
-Cc:     kernel@axis.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <558944059.12080.1616565502073@seven.thorsis.com>
-In-Reply-To: <20210324024844.15796-1-chenhui.zhang@axis.com>
-References: <20210324024844.15796-1-chenhui.zhang@axis.com>
-Subject: Re: [PATCH v3] dt-binding: leds: Document leds-multi-gpio bindings
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Originating-Client: open-xchange-appsuite
+        id S235432AbhCXGCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:02:11 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:28094 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235232AbhCXGCG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 02:02:06 -0400
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 12O61oeT014303;
+        Wed, 24 Mar 2021 15:01:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 12O61oeT014303
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1616565711;
+        bh=MBCQP2zHL/sR0wxVV6u9u8KQ+iY7KyvPeLuDOS77YAY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rTGGM8xLlHv7+YjLe+AHrT3dctA8XOghpXbFDSefZnmVRgo94R/AQ1XacFpaS0W+W
+         GFrpaFTPPzBsoU+lJAEz4ePWWUqPd0SDlDEPIacMamnOvKGN2IYv4w4uFAl2JQ9RYA
+         +CFyF9Zk2KOwwtwLtk/TGPw9WYrFJ4VRCEdI4LcD9BPyn+p2TecYExtZ1EULqQ7EoY
+         OSZt4PtkdeMstIS2CXWmM7TPwPO/VaR2rH6mq1mhrq/8urk8IYCr7VodfUgcfRlvR6
+         lVPOLF+v5pu38avVEnmHhzSatvOhAvw31QZFDxZHCpV6EdHprXXTrDafGWCNyimSPo
+         E+mqAR8sdI0KA==
+X-Nifty-SrcIP: [209.85.216.48]
+Received: by mail-pj1-f48.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so591842pjb.0;
+        Tue, 23 Mar 2021 23:01:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531tfD1ruETJesbZnV+UXeDohXANLs4V8G2zEhxAHzlJhWCDiQFk
+        XbVIM1LnvLfqwohuR+T5qy680UqDTzCxwx4zjXk=
+X-Google-Smtp-Source: ABdhPJyxKIB14B60TFeQsEqKGx9oYMUa/Bcb3WTqmU+amtCX5fOD0+Zr2U4cqEladVwnZA0P4e58RvYdRgPjzDYQRNI=
+X-Received: by 2002:a17:902:8ec9:b029:e6:c5e:cf18 with SMTP id
+ x9-20020a1709028ec9b02900e60c5ecf18mr2071211plo.47.1616565710424; Tue, 23 Mar
+ 2021 23:01:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210322213806.089334551@goodmis.org> <20210322214032.293992979@goodmis.org>
+In-Reply-To: <20210322214032.293992979@goodmis.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 24 Mar 2021 15:01:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com>
+Message-ID: <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] streamline_config.pl: Add softtabstop=4 for vim users
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "John (Warthog9) Hawley" <warthog9@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Hermes,
+On Tue, Mar 23, 2021 at 6:40 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+>
+> The tab stop for Perl files is by default (at least in emacs) to be 4
+> spaces, where a tab is used for all 8 spaces. Add a local variable comment
+> to make vim do the same by default, and this will help keep the file
+> consistent in the future when others edit it via vim and not emacs.
+>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-> Hermes Zhang <chenhui.zhang@axis.com> hat am 24.03.2021 03:48 geschrieben:
-> 
->  
-> From: Hermes Zhang <chenhuiz@axis.com>
-> 
-> Document the device tree bindings of the multiple GPIOs LED driver
-> Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml.
-> 
-> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+
+Documentation/process/coding-style.rst says "do not do this".
+
+Rather, I want to remove this ugly stuff entirely.
+https://lore.kernel.org/patchwork/patch/1401439/
+
+Adding .editorconfig seems OK to me, but
+Doing this in individual files in an editor-specific
+manner is a horror.
+
+
+
+
+
 > ---
-> 
-> Notes:
->     Add maxItems
+>  scripts/kconfig/streamline_config.pl | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
+> index 059061b6daef..044829972ba5 100755
+> --- a/scripts/kconfig/streamline_config.pl
+> +++ b/scripts/kconfig/streamline_config.pl
+> @@ -702,3 +702,5 @@ foreach my $module (keys(%modules)) {
+>         print STDERR "\n";
+>      }
+>  }
+> +
+> +# vim: softtabstop=4
+> --
+> 2.30.1
+>
+>
 
-What about the other part of the series? I think you should send both patches together with an introduction message on both. If you only change one patch for a new version spin of the series, just send the other one unchanged.
 
-(It makes no sense to merge the binding as long as the driver is not merged, otherwise you would end up with a binding without driver. So keeping them together should help reviewers and maintainers.)
-
-Greets
-Alex
-
-> 
->  .../bindings/leds/leds-multi-gpio.yaml        | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> new file mode 100644
-> index 000000000000..6f2b47487b90
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-multi-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Multiple GPIOs LED driver
-> +
-> +maintainers:
-> +  - Hermes Zhang <chenhuiz@axis.com>
-> +
-> +description:
-> +  This will support some LED made of multiple GPIOs and the brightness of the
-> +  LED could map to different states of the GPIOs.
-> +
-> +properties:
-> +  compatible:
-> +    const: multi-gpio-led
-> +
-> +  led-gpios:
-> +    description: Array of one or more GPIOs pins used to control the LED.
-> +    minItems: 1
-> +    maxItems: 8  # Should be enough
-> +
-> +  led-states:
-> +    description: |
-> +      The array list the supported states here which will map to brightness
-> +      from 0 to maximum. Each item in the array will present all the GPIOs
-> +      value by bit.
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +    minItems: 1
-> +    maxItems: 16 # Should be enough
-> +
-> +required:
-> +  - compatible
-> +  - led-gpios
-> +  - led-states
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gpios-led {
-> +      compatible = "multi-gpio-led";
-> +
-> +      led-gpios = <&gpio0 23 0x1>,
-> +                  <&gpio0 24 0x1>;
-> +      led-states = /bits/ 8 <0x00 0x01 0x02 0x03>;
-> +    };
-> +...
-> -- 
-> 2.20.1
+-- 
+Best Regards
+Masahiro Yamada
