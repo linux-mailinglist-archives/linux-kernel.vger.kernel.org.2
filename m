@@ -2,140 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DC134757B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6BC34757F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236332AbhCXKJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:09:29 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39534 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235462AbhCXKI4 (ORCPT
+        id S236336AbhCXKKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:10:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25055 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235501AbhCXKJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:08:56 -0400
-Date:   Wed, 24 Mar 2021 10:08:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616580535;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Wed, 24 Mar 2021 06:09:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616580566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LQ7kZl8uWLHshQ+GVvakwbz3p2Znk4AUiQGf7YJBHXM=;
-        b=SiVjJiJjB/rtSCdGRyBp50sfW/BB/n6zPMSc+aRq1zNdTNY8SifL4+unu4CTgvpnqmecVQ
-        EgjCd74XnLBmG0jETjusAAaATqwwKLvuKhvCOY4cp0eHbvDeSsNIW7m4tqe+S+zaGVuciA
-        mTH+J5pEK0N7+TzbjCtcXou/RTdbK35cEFpSd0UHeKNQNDgs2NF1M3f0JwtSZ6/Xc+uVxw
-        Jqu6RhxNsuRJ4Ew6tdsYJLinQlkuTU4YWnXxTkXeeLdsnu8QrPVXMRjxkBsYZf6hJ/jcrB
-        Ik/Vu1j19D7VtJg0qNPt05qAjSjsr6cfcIxMBa+fMVsA+R3+2eC2FB5uueD4Jg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616580535;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LQ7kZl8uWLHshQ+GVvakwbz3p2Znk4AUiQGf7YJBHXM=;
-        b=CVfdg7ydhMDVUjHCHRZ2cenX6xtE5zwBBliGrTrhWU/5zjhVOLrkz0HEA2fKq4p3aKhCt+
-        c5H+f760IiqMUtDg==
-From:   "tip-bot2 for Tianjia Zhang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] selftests/sgx: Use getauxval() to simplify test code
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Borislav Petkov <bp@suse.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210314111621.68428-1-tianjia.zhang@linux.alibaba.com>
-References: <20210314111621.68428-1-tianjia.zhang@linux.alibaba.com>
+        bh=+BxpC3ZDfxmFtDdT2d7R9frgu/mhTDp3jIrR2QlPinw=;
+        b=JEFEyvc2Yvf5AIhs3n5I8uQLu/hiK9gfh/zIHZCVsN6iE5lTFJQK6P38TXAYxeQGbBMqzD
+        82J1MZ41cDOob2EoL0su0ZpfI+1huReLe7EGUoA+CRp9L+nyPzdAjkU1JgBCdYpMjUtWR/
+        pqdivCOgGUCoPNVqHcO45xcFCD+ADXI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-iJwX4MnmPbmHWXYBRBs8NA-1; Wed, 24 Mar 2021 06:09:24 -0400
+X-MC-Unique: iJwX4MnmPbmHWXYBRBs8NA-1
+Received: by mail-wm1-f71.google.com with SMTP id n22so234825wmo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:09:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+BxpC3ZDfxmFtDdT2d7R9frgu/mhTDp3jIrR2QlPinw=;
+        b=YosHQ4xhNMcE1I2s7dykyBmG8YB5QZcEKEitg5YLhbU/tI3LiehrpnK5dfXNuqw3XJ
+         IH3MGf3U35Idg4815eb09cQrcw4buwD4mmJJN+yD4S0UsPDxs2A8ykb+9ZBLKzhjGpR9
+         z0PRuaLfmcWDf4DF25WE08H8e0Q3uIrZ0+nFEM3WyFlQnEaPZ0xlgluyEufl4tDjwAwP
+         2u5gnmIhstlOx+WRUtPD7uAI1PceXJMCKr3Ft9ds7gkz91AZujOgPJPxzBRA7giJcuta
+         34aSce+4V9SH6kwpD9DP+QVyHqaz1XS4ccXL02WbNgwbrO6TkAEkDQDCiJFv4MVOyPSt
+         y3fg==
+X-Gm-Message-State: AOAM530lzMR1pjAwPbl22lgCSMgEVIzq1rxzpg8qo/pfdU4f55LQ4xUx
+        lk3AI7VxLoWQnIPRfeF5AueqY4D13BHSgcosZxprJbviLoMSYR/T2qbX0QqLKhwpQdZVOFz4Dgl
+        F5ZUYxSG0+U+zjbywulZfxivJ
+X-Received: by 2002:adf:f711:: with SMTP id r17mr2605305wrp.358.1616580563274;
+        Wed, 24 Mar 2021 03:09:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwhbNUzMrdZ/nYp6RmcFVhoHLDvcxw6XSTkNZNhDP+Yg0qhxax1ioWcfogIwOuawdIw+GBjdw==
+X-Received: by 2002:adf:f711:: with SMTP id r17mr2605269wrp.358.1616580563035;
+        Wed, 24 Mar 2021 03:09:23 -0700 (PDT)
+Received: from [192.168.1.124] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id a14sm2662399wrg.84.2021.03.24.03.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 03:09:22 -0700 (PDT)
+To:     Kai Huang <kai.huang@intel.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com
+References: <YFjoZQwB7e3oQW8l@google.com> <20210322191540.GH6481@zn.tnic>
+ <YFjx3vixDURClgcb@google.com> <20210322210645.GI6481@zn.tnic>
+ <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
+ <20210322223726.GJ6481@zn.tnic>
+ <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
+ <YFoNCvBYS2lIYjjc@google.com> <20210323160604.GB4729@zn.tnic>
+ <YFoVmxIFjGpqM6Bk@google.com> <20210323163258.GC4729@zn.tnic>
+ <b35f66a10ecc07a1eecb829912d5664886ca169b.camel@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <236c0aa9-92f2-97c8-ab11-d55b9a98c931@redhat.com>
+Date:   Wed, 24 Mar 2021 11:09:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Message-ID: <161658053435.398.3465850106748524657.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <b35f66a10ecc07a1eecb829912d5664886ca169b.camel@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On 24/03/21 10:38, Kai Huang wrote:
+> Hi Sean, Boris, Paolo,
+> 
+> Thanks for the discussion. I tried to digest all your conversations and
+> hopefully I have understood you correctly. I pasted the new patch here
+> (not full patch, but relevant part only). I modified the error msg, added
+> some writeup to Documentation/x86/sgx.rst, and put Sean's explanation of this
+> bug to the commit msg (per Paolo). I am terrible Documentation writer, so
+> please help to check and give comments. Thanks!
 
-Commit-ID:     f33dece70e11ce82a09cb1ea2d7c32347b82c67e
-Gitweb:        https://git.kernel.org/tip/f33dece70e11ce82a09cb1ea2d7c32347b82c67e
-Author:        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-AuthorDate:    Sun, 14 Mar 2021 19:16:21 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 24 Mar 2021 10:59:09 +01:00
+I have some phrasing suggestions below but that was actually pretty good.
 
-selftests/sgx: Use getauxval() to simplify test code
+> ---
+> commit 1e297a535bcb4f51a08343c40207520017d85efe (HEAD)
+> Author: Kai Huang <kai.huang@intel.com>
+> Date:   Wed Jan 20 03:40:53 2021 +0200
+> 
+>      x86/sgx: Wipe out EREMOVE from sgx_free_epc_page()
+>      
+>      EREMOVE takes a page and removes any association between that page and
+>      an enclave.  It must be run on a page before it can be added into
+>      another enclave.  Currently, EREMOVE is run as part of pages being freed
+>      into the SGX page allocator.  It is not expected to fail.
+>      
+>      KVM does not track how guest pages are used, which means that SGX
+>      virtualization use of EREMOVE might fail.  Specifically, it is
+>      legitimate that EREMOVE returns SGX_CHILD_PRESENT for EPC assigned to
+>      KVM guest, because KVM/kernel doesn't track SECS pages.
+>
+>      Break out the EREMOVE call from the SGX page allocator.  This will allow
+>      the SGX virtualization code to use the allocator directly.  (SGX/KVM
+>      will also introduce a more permissive EREMOVE helper).
 
-Use the library function getauxval() instead of a custom function to get
-the base address of the vDSO.
+Ok, I think I got the source of my confusion.  The part in parentheses
+is the key.  It was not clear that KVM can deal with EREMOVE failures
+*without printing the error*.  Good!
 
- [ bp: Massage commit message. ]
+>      Implement original sgx_free_epc_page() as sgx_encl_free_epc_page() to be
+>      more specific that it is used to free EPC page assigned host enclave.
+>      Replace sgx_free_epc_page() with sgx_encl_free_epc_page() in all call
+>      sites so there's no functional change.
+>      
+>      Improve error message when EREMOVE fails, and kernel is about to leak
+>      EPC page, which is likely a kernel bug.  This is effectively a kernel
+>      use-after-free of EPC, and due to the way SGX works, the bug is detected
+>      at freeing.  Rather than add the page back to the pool of available EPC,
+>      the kernel intentionally leaks the page to avoid additional errors in
+>      the future.
+>      
+>      Also add documentation to explain to user what is the bug and suggest
+>      user what to do when this bug happens, although extremely unlikely.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lkml.kernel.org/r/20210314111621.68428-1-tianjia.zhang@linux.alibaba.com
----
- tools/testing/selftests/sgx/main.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+Rewritten:
 
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index b117bb8..d304a40 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -15,6 +15,7 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <sys/types.h>
-+#include <sys/auxv.h>
- #include "defines.h"
- #include "main.h"
- #include "../kselftest.h"
-@@ -28,24 +29,6 @@ struct vdso_symtab {
- 	Elf64_Word *elf_hashtab;
- };
- 
--static void *vdso_get_base_addr(char *envp[])
--{
--	Elf64_auxv_t *auxv;
--	int i;
--
--	for (i = 0; envp[i]; i++)
--		;
--
--	auxv = (Elf64_auxv_t *)&envp[i + 1];
--
--	for (i = 0; auxv[i].a_type != AT_NULL; i++) {
--		if (auxv[i].a_type == AT_SYSINFO_EHDR)
--			return (void *)auxv[i].a_un.a_val;
--	}
--
--	return NULL;
--}
--
- static Elf64_Dyn *vdso_get_dyntab(void *addr)
- {
- 	Elf64_Ehdr *ehdr = addr;
-@@ -162,7 +145,7 @@ static int user_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r
- 	return 0;
- }
- 
--int main(int argc, char *argv[], char *envp[])
-+int main(int argc, char *argv[])
- {
- 	struct sgx_enclave_run run;
- 	struct vdso_symtab symtab;
-@@ -203,7 +186,8 @@ int main(int argc, char *argv[], char *envp[])
- 	memset(&run, 0, sizeof(run));
- 	run.tcs = encl.encl_base;
- 
--	addr = vdso_get_base_addr(envp);
-+	/* Get vDSO base address */
-+	addr = (void *)getauxval(AT_SYSINFO_EHDR);
- 	if (!addr)
- 		goto err;
- 
+EREMOVE takes a page and removes any association between that page and
+an enclave.  It must be run on a page before it can be added into
+another enclave.  Currently, EREMOVE is run as part of pages being freed
+into the SGX page allocator.  It is not expected to fail, as it would
+indicate a use-after-free of EPC.  Rather than add the page back to the
+pool of available EPC, the kernel intentionally leaks the page to avoid
+additional errors in the future.
+
+However, KVM does not track how guest pages are used, which means that SGX
+virtualization use of EREMOVE might fail.  Specifically, it is
+legitimate that EREMOVE returns SGX_CHILD_PRESENT for EPC assigned to
+KVM guest, because KVM/kernel doesn't track SECS pages.
+
+To allow SGX/KVM to introduce a more permissive EREMOVE helper and to
+let the SGX virtualization code use the allocator directly,
+break out the EREMOVE call from the SGX page allocator.  Rename the
+original sgx_free_epc_page() to sgx_encl_free_epc_page(),
+indicating that it is used to free EPC page assigned host enclave.
+Replace sgx_free_epc_page() with sgx_encl_free_epc_page() in all call
+sites so there's no functional change.
+
+At the same time improve error message when EREMOVE fails, and add
+documentation to explain to user what is the bug and suggest user what
+to do when this bug happens, although extremely unlikely.
+
+> +Although extremely unlikely, EPC leaks can happen if kernel SGX bug happens,
+> +when a WARNING with below message is shown in dmesg:
+
+Remove "Although extremely unlikely".
+
+> +"...EREMOVE returned ..., kernel bug likely.  EPC page leaked, SGX may become
+> +unusuable.  Please refer to Documentation/x86/sgx.rst for more information."
+> +
+> +This is effectively a kernel use-after-free of EPC, and due to the way SGX
+> +works, the bug is detected at freeing. Rather than add the page back to the pool
+> +of available EPC, the kernel intentionally leaks the page to avoid additional
+> +errors in the future.
+> +
+> +When this happens, kernel will likely soon leak majority of EPC pages, and SGX
+> +will likely become unusable. However while this may be fatal to SGX, other
+> +kernel functionalities are unlikely to be impacted, and should continue to work.
+> +
+> +As a result, when this happpens, user should stop running any new SGX workloads,
+> +(or just any new workloads), and migrate all valuable workloads, for instance,
+> +virtual machines, to other places.
+
+Remove everything starting with "for instance".
+
+  Although a machine reboot can recover all
+> +EPC, debugging and fixing this bug is appreciated.
+
+Replace the second part with "the bug should be reported to the Linux developers".
+The poor user is not expected to debug SGX. ;)
+
+> +/* Error message for EREMOVE failure, when kernel is about to leak EPC page */
+> +#define EREMOVE_ERROR_MESSAGE \
+> +       "EREMOVE returned %d (0x%x), kernel bug likely.  EPC page leaked, SGX may become
+> unusuable.  Please refer to Documentation/x86/sgx.rst for more information."
+
+Rewritten:
+
+EREMOVE returned %d and an EPC page was leaked; SGX may become unusable.
+This is a kernel bug, refer to Documentation/x86/sgx.rst for more information.
+
+Also please split it across multiple lines.
+
+Paolo
+
