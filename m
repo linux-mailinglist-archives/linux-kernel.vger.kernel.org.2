@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD4934856C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0A834856F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239081AbhCXXkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:40:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
+        id S239086AbhCXXkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:40:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239047AbhCXXj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:39:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88BE461A25;
-        Wed, 24 Mar 2021 23:39:55 +0000 (UTC)
+        id S239082AbhCXXkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:40:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E19DE61974;
+        Wed, 24 Mar 2021 23:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616629196;
-        bh=sE82qgo6DjUJmVvzp7IsDmSwvXE5yvUHIUem2fZuhbE=;
+        s=k20201202; t=1616629204;
+        bh=Nl01SowQJwZ86qcGJ3uYdr0vyyXeyCErJGFWOz8KNR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VQ+wU+lyP9CR7fqVu3PRXeHIlED38cpAQz38kOSLpgcmSZxOTXq0cAFXPgz82hONa
-         1hRlLEgKcO3OMOeNUyCz8IDWRl/gsJ3iznsk0KxBA85nFIj0zfcAYCgSupxKqMOsGq
-         V2t7JuobEhiwHPYN1eCaCvzUOsNwJxUku+o7/pWgQteUlwd805X773V2ysioR/i6jO
-         5eSwVxEef54bTvJFElMBW84edC49K5OaPq12XZ2oGYedWIij7C8Xir5Q7pZ569onc7
-         b8H/aP9aJt/16R52j4p2tPB2/pUBME7ppKZzuImbcROWQanU/wbQlclKOZ7D9aelN9
-         rNDuZolLpyEaA==
+        b=r57I8UJwzmA9Oft1VHqsob3vk/5rGVDMZ7U2fQK81RS5wINVAiNJzUpRDOFLugkRx
+         Pkjg6KGkuzuGB0uuNcm6H8n9/kjnnbknM8nwoX2HksPF99t9dgSJv7BNSjuuUSV4Cn
+         sTE1QSKpwPWWJNeivm4sZzC4XupytzwqIfi8UmBRu7BBMPLMxKpPbLoRlXFDF+XpQ1
+         sML2TqlnYuuRju/q3s0ybr+j7OtakfgP93Laeh4PoQ4aCvsVQcnDn3G6ho01FuAqGT
+         uKVWoWrIN4ccPYOo58jyBVHB3fTWShY8CZdVb3cDSRdN/AbcUw24yYF9c5jNqlhE38
+         3sUzQv+pvgG7g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, festevam@gmail.com,
-        Xiubo.Lee@gmail.com, timur@kernel.org, nicoleotsuka@gmail.com,
-        tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org
+To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 0/6] ASoC: fsl: Don't use devm_regmap_init_mmio_clk
-Date:   Wed, 24 Mar 2021 23:39:36 +0000
-Message-Id: <161662872375.51441.3639448957854720448.b4-ty@kernel.org>
+        patches@opensource.cirrus.com,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: (subset) [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec jack-detect support
+Date:   Wed, 24 Mar 2021 23:39:39 +0000
+Message-Id: <161662872374.51441.14272118872485811868.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20210307151807.35201-1-hdegoede@redhat.com>
+References: <20210307151807.35201-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,13 +50,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 17:58:42 +0800, Shengjiu Wang wrote:
-> When there is power domain bind with ipg clock,
+On Sun, 7 Mar 2021 16:17:54 +0100, Hans de Goede wrote:
+> Here is v4 of my series to rework the arizona codec jack-detect support
+> to use the snd_soc_jack helpers instead of direct extcon reporting.
 > 
-> The call flow:
-> devm_regmap_init_mmio_clk
->     - clk_prepare()
->         - clk_pm_runtime_get()
+> As discussed before here is a resend rebased on 5.12-rc2, making sure that
+> all patches this depends on are in place.
+> 
+> Lee, can you pick-up patches 1-6 through the MFD tree and then send a
+> pull-req to Mark so that Mark can merge the Asoc parts throught the ASoC
+> tree ?
 > 
 > [...]
 
@@ -58,18 +69,20 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: fsl_esai: Don't use devm_regmap_init_mmio_clk
-      commit: 203773e39347922b3923df6094324d430664466e
-[2/6] ASoC: fsl_spdif: Don't use devm_regmap_init_mmio_clk
-      commit: c2562572467a74fd637d2d22fb773b052512528c
-[3/6] ASoC: fsl_asrc: Don't use devm_regmap_init_mmio_clk
-      commit: cab04ab5900fea6655f2a49d1f94c37200b63a59
-[4/6] ASoC: fsl_easrc: Don't use devm_regmap_init_mmio_clk
-      commit: 069b24f22eb9dba2e0886b40ea3feaa98e3f4f9b
-[5/6] ASoC: fsl_audmix: Don't use devm_regmap_init_mmio_clk
-      commit: 3feaba79d8f701a774815483aa0e7f4edb15c880
-[6/6] ASoC: fsl_micfil: Don't use devm_regmap_init_mmio_clk
-      commit: b5cf28f7a890f3554ca15a43edbbb86dd1b9663c
+[07/13] ASoC: arizona-jack: Move jack-detect variables to struct arizona_priv
+        commit: bcda8cc4b868782c1a39d722d24f7d2598978389
+[08/13] ASoC: arizona-jack: Use arizona->dev for runtime-pm
+        commit: 688c8461a425623ca6f679e6ba8965719a98def5
+[09/13] ASoC: arizona-jack: convert into a helper library for codec drivers
+        commit: ffcc84b9e814c8654e15e08816d0078d521a2724
+[10/13] ASoC: arizona-jack: Use snd_soc_jack to report jack events
+        commit: 236b7285e95af5cb5a8b63283e573f433fb9b305
+[11/13] ASoC: arizona-jack: Cleanup logging
+        commit: 69c58eb61e9b649096a0ab8cbc3c6f8521efd303
+[12/13] ASoC: arizona: Make the wm5102, wm5110, wm8997 and wm8998 drivers use the new jack library
+        commit: 37dbabf14ff65510fa5aeecc1707ca390e608e00
+[13/13] ASoC: Intel: bytcr_wm5102: Add jack detect support
+        commit: ecd77d494ec995fb07102b408954c94f38374084
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
