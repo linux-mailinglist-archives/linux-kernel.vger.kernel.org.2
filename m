@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B203472E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8B73472E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhCXHnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:43:33 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:39429 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhCXHn0 (ORCPT
+        id S231754AbhCXHoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:44:03 -0400
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:36442 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhCXHnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:43:26 -0400
-Received: by mail-lj1-f181.google.com with SMTP id u4so28956514ljo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:43:25 -0700 (PDT)
+        Wed, 24 Mar 2021 03:43:40 -0400
+Received: by mail-lj1-f182.google.com with SMTP id z25so28952913lja.3;
+        Wed, 24 Mar 2021 00:43:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
          :content-transfer-encoding;
-        bh=cdqTVg+Ahm97YQBNHuCQzwsa15Gkq0Cek2B8TrxC8x8=;
-        b=Hw5Taoui0VLOIhl7qzwEhcb628VapwS8PyNZvsqAA8zGcV7iQHgweVL337QEx6swYu
-         tG6D115nDkzyrtc1jdWcNN7KXCphF1aFOldj5jWjEfo6B40PWJJAtOWMo73VXkIMJ1QI
-         yjzFckJoaOPsfIhWUoYaeDU9wuPaMuu45cqKpQp8yz6p76LfRKT+Dxm9hwmrdMxgvdHE
-         dur4myr8Ew2ifsOIlAaFGtEpD+SVEKsOefZ5m8/xVKnyO3DbTPqSwHE3KVKPx0y8GAQ0
-         OPquAG0CAmGROPwOq9HRCnQJNcEPQ+LLw7XXt3HD8ZJokDm6nWjyFRWkvICLMdHo4914
-         cocw==
-X-Gm-Message-State: AOAM530mXhXhTJGQTo3Ir7Cn4eFKKQ2IPTDE6y7I3JJG1E39XqV6OOj/
-        OXtmQ0jrQh9xxwBHg0C+gecEqP3CYz4akg==
-X-Google-Smtp-Source: ABdhPJzhqw7O1cTznOlG1TOhRnhqie4oQq7rnNiEpqFhQKU/KVbqDj709VUrCW/MuInHMQuRBWZr0Q==
-X-Received: by 2002:a2e:7007:: with SMTP id l7mr1271212ljc.436.1616571797449;
-        Wed, 24 Mar 2021 00:43:17 -0700 (PDT)
-Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id f4sm195108lja.69.2021.03.24.00.43.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 00:43:17 -0700 (PDT)
-Subject: Re: [PATCH] coccinelle: misc: update uninitialized_var.cocci
- documentation
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-References: <20210308073018.108487-1-efremov@linux.com>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <a32bb28c-878b-44b6-440e-274a6002dac6@linux.com>
-Date:   Wed, 24 Mar 2021 10:43:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=VxtNnj3/UL7oLhV4/T5M1JANhE4KKsYGM2Lhl6l/dI4=;
+        b=nxUydPLzWaY7RqIMqAeJNIX1mY9bqj2eBfv9dY8ZlVSTTcOh/He3rtNwFsPFziU10W
+         u7cbpfQ3G0eiusW8fEXTui2isgqJzxLsIL6qK+Hx5vVOhtL495LGs29FpAI0HovI2rxE
+         Tv0G+w+us9WHewQ4neIruq+9HxsOxhzRpcpbF6XoS/MtHlJxe1cS83HgISW2NwNdrGY5
+         tkHdJuU9NyqOrlAdduWZuyb8bgM9ipWFApQpNomJ0dJqQDV1B0POOo2FAE67dk3mCFfS
+         uzbwxVe4RED6zEVpls4AGMQxcdwvVKsRsyf/B9D5zb2RxC3hPh5QniL3qOmpWKdE3K94
+         24RA==
+X-Gm-Message-State: AOAM531tk4Ekxy9SVYArH10KpTjXX1Pp8ekaFdFtUMEYywoL2kYjGhw7
+        obxAha1CQr4A2uevRuVWAp0=
+X-Google-Smtp-Source: ABdhPJyun+swdu2/euwllY2kOmlsVWC3aDUQOA4jS8ERZ9zDXsgfOKlfh5B7zC0rSxbi1oam+GCisQ==
+X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr1357288ljf.18.1616571819157;
+        Wed, 24 Mar 2021 00:43:39 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id t11sm196032ljk.65.2021.03.24.00.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 00:43:38 -0700 (PDT)
+Message-ID: <d26f1e700b98ed9069e6508aefa8137675343b99.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v3 6/8] power: supply: Clean-up few drivers by using
+ managed work init
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     wens@csie.org
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+In-Reply-To: <CAGb2v67Jd6qFS-zmD+Hm4BJHA+-kx0nAxvDovUwW=WwZTEGYeg@mail.gmail.com>
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+         <e5b1b0380cdd1aa066c9ac6d7a8b1a86ba1ddbbe.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+         <CAGb2v67Jd6qFS-zmD+Hm4BJHA+-kx0nAxvDovUwW=WwZTEGYeg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-In-Reply-To: <20210308073018.108487-1-efremov@linux.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Date:   Wed, 24 Mar 2021 09:43:33 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping?
+Hello Chen-Yu, Hans, Greg,
 
-On 3/8/21 10:30 AM, Denis Efremov wrote:
-> Remove the documentation link from the warning message because commit
-> 3942ea7a10c9 ("deprecated.rst: Remove now removed uninitialized_var")
-> removed the section from documentation. Update the rule documentation
-> accordingly.
+On Tue, 2021-03-23 at 22:36 +0800, Chen-Yu Tsai wrote:
+> Hi,
 > 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
->  scripts/coccinelle/misc/uninitialized_var.cocci | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+> On Tue, Mar 23, 2021 at 9:58 PM Matti Vaittinen
+> <matti.vaittinen@fi.rohmeurope.com> wrote:
+> > Few drivers implement remove call-back only for ensuring a delayed
+> > work gets cancelled prior driver removal. Clean-up these by
+> > switching
+> > to use devm_delayed_work_autocancel() instead.
+> > 
+> > This change is compile-tested only. All testing is appreciated.
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> > ---
+> > Changelog from RFCv2:
+> >  - RFC dropped. No functional changes.
+> > 
+> >  drivers/power/supply/axp20x_usb_power.c      | 15 +++++----------
+> >  drivers/power/supply/bq24735-charger.c       | 18 ++++++--------
+> > ----
+> >  drivers/power/supply/ltc2941-battery-gauge.c | 20 +++++++---------
+> > ----
+> >  drivers/power/supply/sbs-battery.c           | 16 +++++-----------
+> >  4 files changed, 23 insertions(+), 46 deletions(-)
+> > 
+> > diff --git a/drivers/power/supply/axp20x_usb_power.c
+> > b/drivers/power/supply/axp20x_usb_power.c
+> > index 8933ae26c3d6..4259709e3491 100644
+> > --- a/drivers/power/supply/axp20x_usb_power.c
+> > +++ b/drivers/power/supply/axp20x_usb_power.c
+> > @@ -8,6 +8,7 @@
+> > 
+> >  #include <linux/bitops.h>
+> >  #include <linux/device.h>
+> > +#include <linux/devm-helpers.h>
+> >  #include <linux/init.h>
+> >  #include <linux/interrupt.h>
+> >  #include <linux/kernel.h>
+> > @@ -646,21 +647,16 @@ static int axp20x_usb_power_probe(struct
+> > platform_device *pdev)
+> >                 }
+> >         }
+> > 
+> > +       ret = devm_delayed_work_autocancel(&pdev->dev, &power-
+> > >vbus_detect,
+> > +                                          axp20x_usb_power_poll_vb
+> > us);
+> > +       if (ret)
+> > +               return ret;
 > 
-> diff --git a/scripts/coccinelle/misc/uninitialized_var.cocci b/scripts/coccinelle/misc/uninitialized_var.cocci
-> index 8fa845cefe11..69bbaae47e73 100644
-> --- a/scripts/coccinelle/misc/uninitialized_var.cocci
-> +++ b/scripts/coccinelle/misc/uninitialized_var.cocci
-> @@ -1,7 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  ///
->  /// Please, don't reintroduce uninitialized_var().
-> -/// From Documentation/process/deprecated.rst:
-> +///
-> +/// From Documentation/process/deprecated.rst,
-> +/// commit 4b19bec97c88 ("docs: deprecated.rst: Add uninitialized_var()"):
->  ///  For any compiler warnings about uninitialized variables, just add
->  ///  an initializer. Using warning-silencing tricks is dangerous as it
->  ///  papers over real bugs (or can in the future), and suppresses unrelated
-> @@ -11,6 +13,11 @@
->  ///  obviously redundant, the compiler's dead-store elimination pass will make
->  ///  sure there are no needless variable writes.
->  ///
-> +/// Later, commit 3942ea7a10c9 ("deprecated.rst: Remove now removed
-> +/// uninitialized_var") removed this section because all initializations of
-> +/// this kind were cleaned-up from the kernel. This cocci rule checks that
-> +/// the macro is not explicitly or implicitly reintroduced.
-> +///
->  // Confidence: High
->  // Copyright: (C) 2020 Denis Efremov ISPRAS
->  // Options: --no-includes --include-headers
-> @@ -40,12 +47,10 @@ position p;
->  p << r.p;
->  @@
->  
-> -coccilib.report.print_report(p[0],
-> -  "WARNING this kind of initialization is deprecated (https://www.kernel.org/doc/html/latest/process/deprecated.html#uninitialized-var)")
-> +coccilib.report.print_report(p[0], "WARNING this kind of initialization is deprecated")
->  
->  @script:python depends on org@
->  p << r.p;
->  @@
->  
-> -coccilib.org.print_todo(p[0],
-> -  "WARNING this kind of initialization is deprecated (https://www.kernel.org/doc/html/latest/process/deprecated.html#uninitialized-var)")
-> +coccilib.org.print_todo(p[0], "WARNING this kind of initialization is deprecated")
-> 
+> This doesn't look right. The IRQ is requested before this, and the
+> delayed_work
+> struct is initialized even earlier, so you'd be re-initializing the
+> struct,
+> with the work item potentially running or queued up already.
+
+Sigh. The company mail had redirected this to spam... :/
+I will check this and send appropriate follow-up fix(es) to Greg. Big
+thanks for the heads-up!
+
+--Matti
+
+
