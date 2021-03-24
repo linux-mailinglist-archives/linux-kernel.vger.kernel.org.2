@@ -2,89 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482C1347BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E9E347BD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:13:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236539AbhCXPMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59330 "EHLO
+        id S236391AbhCXPNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236507AbhCXPMd (ORCPT
+        with ESMTP id S236542AbhCXPMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:12:33 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBB8C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:12:32 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id h20so8097893plr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:12:32 -0700 (PDT)
+        Wed, 24 Mar 2021 11:12:44 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924DAC0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:12:43 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id k10so33508622ejg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:12:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=L8CGCu683ap3F7hcKSeSmXZu53NqyU2bsVETlec1vPY=;
-        b=Bgi5a04hjuwBhd4sezqjdOw3l2MpVDQReCtu5al6yx/kbKVgtebwvuacrAtD4t8S5O
-         Vg0DTfLNHUaHbursO58xzcS5gU2KXddaOVEBBO81pXIqShe7JseJX13Tkv2PQLnPtsQN
-         h13OHoYpINkNIt8LnZNh7GIrWvt+L5u6zLW2wawponkCOATN78ABAQxoiXGj8WCt6HPf
-         YHovZbRswV7FOlM2he0HfycUXMHfntbT1DBWlIStq9oYVJZDNbQLcPmTRaT+LUfTzUL3
-         fgyOIwfgfq+383iAD/kt5rM2tCGab4b7oAtX9Hjt9SWHKCIH/zeAPn8lO2UQxq0M8kvt
-         dzEg==
+        bh=rpBp7AJWNevm6XgUCf8It0J8VZS6BW6Ytb0WBwtBHdg=;
+        b=x11HJDqtbJl0RTpUhMaDPb+kNEbmK+x5fbaCoTlVUixv/5/HaAKw5Dd64BEzGfofMF
+         LsiqJbFAT9WHMm99hUYfuEDak85bttisRRf9s3bKL1BN0APkM6sylKDQXTjUA0Krl8Ru
+         CNoisLPabGDqyzctcBzGz4EvgUYvZqk2SWRCiURdFg9nCxJS8HTAaXAPUnlctXvSKYis
+         c7Y1J7evNK9i4fQ+v/G861QyFoaqXSjPTaDoaVmX0cxcbv4WL0Bc/l+UY96uQjb99cE/
+         JMlR8tw9iWKmc5qM/OEANq7az5sws7cbVpl3zl7rP3B3q7hxIGB489EQwO6da6fmjrlw
+         TkTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=L8CGCu683ap3F7hcKSeSmXZu53NqyU2bsVETlec1vPY=;
-        b=R+D+asGuC2T8kDZ9QXBpFDDw6DrGoxHg+/QHDfVQ+WbWMP/zt+UinMCXoqau5ZlRC/
-         phOuvoHnwMIk9sJZQbyoase9kRGT9syA/0nr1ftphw0de+tIFeBLXPnp9G0BNPL9+gZt
-         kkzUEPk6OkiE6JZQdp37NHKgyx603zMROFsH79I0iKdsKgmdwpuCIq7U+JhQUGW8WKAP
-         VMIzD9EbcEOOoPtvy3JLsrHdKNMiDG+tGXzx9LwZH+6CxB3b4Wu0Xnu3YgrJbwwrQl7A
-         h0mIUagXq1hMl6E4h1Hew9rIVNDb/5fah8o2S1U1VXuAZ99taF7xJukVmAcyYxvncAnq
-         0ojQ==
-X-Gm-Message-State: AOAM530thf2iOjf1TgoUZTZUQAdzwge9XqELwkbHnDis+6UG6qPnSvXR
-        tiP1hsBDus8JAU+U7r0UD5k=
-X-Google-Smtp-Source: ABdhPJx312Y2XyaQfPeo2zH0Y0TfpcUXUXSQiWQo93nuhBKMIpgS0MlEIA0GtuVDqQ/hZcQpKUdVrg==
-X-Received: by 2002:a17:903:4112:b029:e5:f79d:3eb1 with SMTP id r18-20020a1709034112b02900e5f79d3eb1mr4170507pld.48.1616598752488;
-        Wed, 24 Mar 2021 08:12:32 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id y20sm2985105pfo.210.2021.03.24.08.12.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=rpBp7AJWNevm6XgUCf8It0J8VZS6BW6Ytb0WBwtBHdg=;
+        b=jXstVV+nu8nKTP7B+6EgeYwnZnXdzLl/3MDuNUBWX6UvqDYdFyqJa4wyQFAgTAb/Cs
+         +JKpcCnT4jEUnAEhO0S+SHPNkj3yzvh0n5HIpIParX9AdKwrtS0Y1IBC4O9NMWWBgPbO
+         RxJnUaq7b5ur1ATvH+/oAiaDFJWdplq5RtYbVuAR9vEcI2n5fxtuEf2bu3dmV/Cuhd4E
+         uUPB9lOQj/b3BvgRAj9zDD1GcqxA1sYyZF/8z8MXSkzdlJZOOJOMmBS+qWKSQxWomr0Y
+         aOnQI8vcUdoee266ByrP9AhtF1GO0klzTX1cURzLdErMhtSm9L/5VTQz2MMJrmiIGhk7
+         wGOg==
+X-Gm-Message-State: AOAM532uc3cIjG3GVi0WE8S5YDLLg/wA8eaDsQJj0++AOlx1wb+agABl
+        TO/Q+pUE16Blg+B/d+MLqHBYeQ==
+X-Google-Smtp-Source: ABdhPJzg53S6lyQmMlD42NaqXRVBk89kv+dLjpRmEQhNsToTbn1tsv8VtnmWHHyP74tBd6ePTRJ0pw==
+X-Received: by 2002:a17:906:2a16:: with SMTP id j22mr4234588eje.247.1616598762069;
+        Wed, 24 Mar 2021 08:12:42 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id q12sm1064411ejy.91.2021.03.24.08.12.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 08:12:31 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 24 Mar 2021 08:12:29 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
-        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
-        willy@infradead.org
-Subject: Re: [PATCH v6] mm: cma: support sysfs
-Message-ID: <YFtW3XxE9mjl0n1+@google.com>
-References: <20210324010547.4134370-1-minchan@kernel.org>
- <3d90177b-e143-03b9-0f78-77740690266f@gmail.com>
+        Wed, 24 Mar 2021 08:12:41 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 15:12:39 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colin Cross <ccross@android.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Josh Cartwright <joshc@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        netdev <netdev@vger.kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH v2 00/10] Rid W=1 warnings from OF
+Message-ID: <20210324151239.GP2916463@dell>
+References: <20210318104036.3175910-1-lee.jones@linaro.org>
+ <CAL_JsqKueTWKbXNuN+74COR1LT6XLyw61GqCLpOgv-knNtEdKg@mail.gmail.com>
+ <20210323083631.GE2916463@dell>
+ <CAL_JsqL_V-BgZpSCLL4JQHF3OC-60RPeExkDLf-uSohnpcBdOA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d90177b-e143-03b9-0f78-77740690266f@gmail.com>
+In-Reply-To: <CAL_JsqL_V-BgZpSCLL4JQHF3OC-60RPeExkDLf-uSohnpcBdOA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 03:33:07PM +0300, Dmitry Osipenko wrote:
-> 24.03.2021 04:05, Minchan Kim пишет:
-> > +static struct kobject *cma_kobj_root;
-> 
-> This should be a local variable.
+On Wed, 24 Mar 2021, Rob Herring wrote:
 
-Sure.
-
+> On Tue, Mar 23, 2021 at 2:36 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Mon, 22 Mar 2021, Rob Herring wrote:
+> >
+> > > On Thu, Mar 18, 2021 at 4:40 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > This set is part of a larger effort attempting to clean-up W=1
+> > > > kernel builds, which are currently overwhelmingly riddled with
+> > > > niggly little warnings.
+> > > >
+> > > > v2:
+> > > >  - Provided some descriptions to exported functions
+> > > >
+> > > > Lee Jones (10):
+> > > >   of: device: Fix function name in header and provide missing
+> > > >     descriptions
+> > > >   of: dynamic: Fix incorrect parameter name and provide missing
+> > > >     descriptions
+> > > >   of: platform: Demote kernel-doc abuse
+> > > >   of: base: Fix some formatting issues and provide missing descriptions
+> > > >   of: property: Provide missing member description and remove excess
+> > > >     param
+> > > >   of: address: Provide descriptions for 'of_address_to_resource's params
+> > > >   of: fdt: Demote kernel-doc abuses and fix function naming
+> > > >   of: of_net: Provide function name and param description
+> > > >   of: overlay: Fix function name disparity
+> > > >   of: of_reserved_mem: Demote kernel-doc abuses
+> > > >
+> > > >  drivers/of/address.c         |  3 +++
+> > > >  drivers/of/base.c            | 16 +++++++++++-----
+> > > >  drivers/of/device.c          |  7 ++++++-
+> > > >  drivers/of/dynamic.c         |  4 +++-
+> > > >  drivers/of/fdt.c             | 23 ++++++++++++-----------
+> > > >  drivers/of/of_net.c          |  3 +++
+> > > >  drivers/of/of_reserved_mem.c |  6 +++---
+> > > >  drivers/of/overlay.c         |  2 +-
+> > > >  drivers/of/platform.c        |  2 +-
+> > > >  drivers/of/property.c        |  2 +-
+> > > >  10 files changed, 44 insertions(+), 24 deletions(-)
+> > >
+> > > I still see some warnings (note this is with DT files added to doc
+> > > build). Can you send follow-up patches:
+> > >
+> > > ../include/linux/of.h:1193: warning: Function parameter or member
+> > > 'output' not described in 'of_property_read_string_index'
+> > > ../include/linux/of.h:1193: warning: Excess function parameter
+> > > 'out_string' description in 'of_property_read_string_index'
+> > > ../include/linux/of.h:1461: warning: cannot understand function
+> > > prototype: 'enum of_overlay_notify_action '
+> > > ../drivers/of/base.c:1781: warning: Excess function parameter 'prob'
+> > > description in '__of_add_property'
+> > > ../drivers/of/base.c:1804: warning: Excess function parameter 'prob'
+> > > description in 'of_add_property'
+> > > ../drivers/of/base.c:1855: warning: Function parameter or member
+> > > 'prop' not described in 'of_remove_property'
+> > > ../drivers/of/base.c:1855: warning: Excess function parameter 'prob'
+> > > description in 'of_remove_property'
+> >
+> > You don't want much do you! ;)
 > 
-> > +static struct kobj_type cma_ktype = {
-> > +	.release = cma_kobj_release,
-> > +	.sysfs_ops = &kobj_sysfs_ops,
-> > +	.default_groups = cma_groups
-> 
-> I'd add a comma to the end, for consistency.
+> Hey, want to fix all the schema warnings for me? ;)
 
-Yub.
+Definitely not.  I've even gone to the trouble of disabling them. :D
+
+> > Sure, I plan to clean up all of the kernel with subsequent patches.
+> >
+> > > BTW, there some more which I guess W=1 doesn't find:
+> > >
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:906: WARNING: Block quote ends without a blank
+> > > line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1465: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1469: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1473: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1517: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1521: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1526: WARNING: Unexpected indentation.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1528: WARNING: Block quote ends without a blank
+> > > line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1529: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1533: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:19:
+> > > ../drivers/of/base.c:1705: WARNING: Definition list ends without a
+> > > blank line; unexpected unindent.
+> > > /home/rob/proj/git/linux-dt/Documentation/driver-api/devicetree:49:
+> > > ../drivers/of/overlay.c:1183: WARNING: Inline emphasis start-string
+> > > without end-string.
+> >
+> > What command did you use to find these?
+> 
+> make htmldocs
+> 
+> (with the DT files added to the docs)
+> 
+> These turn out to be the tip of the iceberg. There's all sorts of
+> formatting issues. Tabs are a problem and the 'Return' section is
+> wrong. These are only found looking at the output.
+
+Heh!  Depends how desperate I get. :'D
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
