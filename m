@@ -2,83 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E632D34857B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D324348582
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhCXXqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:46:25 -0400
-Received: from mga11.intel.com ([192.55.52.93]:28668 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231776AbhCXXqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:46:23 -0400
-IronPort-SDR: 0yg8jhW3/RFc/VbixZ+UKiADnCC3pIzA0qitYI9xlCfmcwEKgaicEKdbdeajQsZ11QVyC1PmCd
- ukLXgo4jiMLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="187510834"
-X-IronPort-AV: E=Sophos;i="5.81,276,1610438400"; 
-   d="scan'208";a="187510834"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 16:46:18 -0700
-IronPort-SDR: becDvmU/sSYGsrDcxsDl7XVDu+9fsoD3ntXwYljT3NnLts/iltaKLJpB26YfXpxhfweFL75bwR
- 0BGShzVGylpg==
-X-IronPort-AV: E=Sophos;i="5.81,276,1610438400"; 
-   d="scan'208";a="409080256"
-Received: from prdubey-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.255.230.226])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 16:46:14 -0700
-Date:   Thu, 25 Mar 2021 12:46:11 +1300
-From:   Kai Huang <kai.huang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-Id: <20210325124611.a9dce500b0bcbb1836580719@intel.com>
-In-Reply-To: <8e833f7c-ea24-1044-4c69-780a84b47ce1@redhat.com>
-References: <YFjoZQwB7e3oQW8l@google.com>
-        <20210322191540.GH6481@zn.tnic>
-        <YFjx3vixDURClgcb@google.com>
-        <20210322210645.GI6481@zn.tnic>
-        <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
-        <20210322223726.GJ6481@zn.tnic>
-        <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
-        <YFoNCvBYS2lIYjjc@google.com>
-        <20210323160604.GB4729@zn.tnic>
-        <YFoVmxIFjGpqM6Bk@google.com>
-        <20210323163258.GC4729@zn.tnic>
-        <b35f66a10ecc07a1eecb829912d5664886ca169b.camel@intel.com>
-        <236c0aa9-92f2-97c8-ab11-d55b9a98c931@redhat.com>
-        <20210325122343.008120ef70c1a1b16b5657ca@intel.com>
-        <8e833f7c-ea24-1044-4c69-780a84b47ce1@redhat.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S234926AbhCXXsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238797AbhCXXrg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:47:36 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94781C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=krp81/RbBROV9r7rw0KqbZnwuOxdnczzeQmdrTNXVdY=; b=k6oajFblnwqa9EVL51rb7Tep9P
+        cJov/75GWc6gpRlsldxRJ1amkXJ5Fuu6wM/XHuQV1iueic4L0FjafT+GgI9YY6J524n2qS4PYOTfA
+        wX5ZorbGk7K1FegaXKKhdEyqSpSpOXEUyRybpl+CoEtShyfNT4iJLoZ4V4hAgjEV0EJrLo2HKEaNo
+        JToQUJ+VvfqBvCocuGu9szQacFNvGlm+BNHRTvq8DSdDV9ru++TZc6vNaP5KKmonjLkqogm9iqggx
+        ut2QxHYlJGwL0rUNJAubB/vLDY1qkPdGzHLGjJIS/hSixQUirCe12t+vV8gX9sl77gotUEbp0mnqG
+        Skfcopdw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPDDo-000MYO-8x; Wed, 24 Mar 2021 23:47:33 +0000
+Subject: Re: [PATCH V2] mm/slub.c: Trivial typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210325044940.14516-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <79efaafd-01cd-f2da-a821-997999ef5fd9@infradead.org>
+Date:   Wed, 24 Mar 2021 16:47:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210325044940.14516-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 00:39:01 +0100 Paolo Bonzini wrote:
-> On 25/03/21 00:23, Kai Huang wrote:
-> > I changed to below (with slight modification on Paolo's):
-> > 
-> > /* Error message for EREMOVE failure, when kernel is about to leak EPC page */
-> > #define EREMOVE_ERROR_MESSAGE \
-> >          "EREMOVE returned %d (0x%x) and an EPC page was leaked.  SGX may become unusuable.  " \
-> >          "This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more information."
-> > 
-> > I got a checkpatch warning however:
-> > 
-> > WARNING: It's generally not useful to have the filename in the file
-> > #60: FILE: Documentation/x86/sgx.rst:223:
-> > +This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more
+On 3/24/21 9:49 PM, Bhaskar Chowdhury wrote:
+> s/operatios/operations/
+> s/Mininum/Minimum/
+> s/mininum/minimum/  ......two different places.
 > 
-> Yeah, this is more or less a false positive.
-> 
-> Paolo
-> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Thanks.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  Changes from V1:
+>   David's finding incorporated.i.e operation->operations
+>  mm/slub.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3021ce9bf1b3..75d103ad5d2e 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3,7 +3,7 @@
+>   * SLUB: A slab allocator that limits cache line use instead of queuing
+>   * objects in per cpu and per node lists.
+>   *
+> - * The allocator synchronizes using per slab locks or atomic operatios
+> + * The allocator synchronizes using per slab locks or atomic operations
+>   * and only uses a centralized lock to manage a pool of partial slabs.
+>   *
+>   * (C) 2007 SGI, Christoph Lameter
+> @@ -160,7 +160,7 @@ static inline bool kmem_cache_has_cpu_partial(struct kmem_cache *s)
+>  #undef SLUB_DEBUG_CMPXCHG
+> 
+>  /*
+> - * Mininum number of partial slabs. These will be left on the partial
+> + * Minimum number of partial slabs. These will be left on the partial
+>   * lists even if they are empty. kmem_cache_shrink may reclaim them.
+>   */
+>  #define MIN_PARTIAL 5
+> @@ -832,7 +832,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+>   *
+>   * 	A. Free pointer (if we cannot overwrite object on free)
+>   * 	B. Tracking data for SLAB_STORE_USER
+> - * 	C. Padding to reach required alignment boundary or at mininum
+> + * 	C. Padding to reach required alignment boundary or at minimum
+>   * 		one word if debugging is on to be able to detect writes
+>   * 		before the word boundary.
+>   *
+> @@ -3421,7 +3421,7 @@ static unsigned int slub_min_objects;
+>   *
+>   * Higher order allocations also allow the placement of more objects in a
+>   * slab and thereby reduce object handling overhead. If the user has
+> - * requested a higher mininum order then we start with that one instead of
+> + * requested a higher minimum order then we start with that one instead of
+>   * the smallest order which will fit the object.
+>   */
+>  static inline unsigned int slab_order(unsigned int size,
+> --
+
+
+-- 
+~Randy
+
