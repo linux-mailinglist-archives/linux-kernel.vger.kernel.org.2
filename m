@@ -2,91 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A32347581
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38374347588
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235505AbhCXKKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:10:34 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:56037 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhCXKKV (ORCPT
+        id S229991AbhCXKLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:11:35 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:52757 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229669AbhCXKLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:10:21 -0400
-Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 12OAAJeu030968;
-        Wed, 24 Mar 2021 19:10:19 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
- Wed, 24 Mar 2021 19:10:19 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 12OAAJhC030965
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 24 Mar 2021 19:10:19 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [RFC PATCH 2/2] integrity: double check iint_cache was
- initialized
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <20210319200358.22816-1-zohar@linux.ibm.com>
- <20210319200358.22816-2-zohar@linux.ibm.com>
- <8450c80a-104a-3f36-0963-0ae8fa69e0f2@i-love.sakura.ne.jp>
- <CACT4Y+bvakfNhVs29QvbY6Z8Pw0zmAUKGWM-DD5DcPZW5ny90A@mail.gmail.com>
- <1a2245c6-3cab-7085-83d3-55b083619303@i-love.sakura.ne.jp>
- <8039976be3df9bd07374fe4f1931b8ce28b89dab.camel@linux.ibm.com>
- <cde00350-2a18-1759-d53b-2e7489b6cc0e@i-love.sakura.ne.jp>
- <8a8763a7-eeeb-3578-d50c-c15919fbe1f9@i-love.sakura.ne.jp>
- <3ed2004413e0ac07c7bd6f10294d6b6fac6fdbf3.camel@linux.ibm.com>
- <cc01e7b7-d685-289c-a792-fc76fabba807@i-love.sakura.ne.jp>
- <721b4f8d38b014babb0f4ae829d76014bbf7734e.camel@linux.ibm.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <0a0c5cc5-0e1b-ef01-60c4-5247af2124f4@i-love.sakura.ne.jp>
-Date:   Wed, 24 Mar 2021 19:10:19 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 24 Mar 2021 06:11:17 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 12751D6D;
+        Wed, 24 Mar 2021 06:11:15 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 24 Mar 2021 06:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=+wQbldXodj/75p2l96uhI6Hek8z
+        qcssRoaEMguqNWGM=; b=TL21/JHiqptwbT7hJ3+/ZmItwMc3LKk7LrRBg3BiB+2
+        0oE/xykRj8ur8gwWgEy4Z7QwQU8kIGSoDqwIAdGY74mp3FkZQ2afaMLl3v1yUclX
+        5PnDYYD7EhivFmGYIEgCd3iUjPPdqK6/sjV+GHEzYFDjAvawO7V/29+qByntk5/q
+        IENXTFMgB2MyOmFriJlvCoiOYnAr9GgzRS/UlKaiC4iYVy8HFBBH3b51nod1LCsP
+        B7f23i+vSTu2yfWAfJl6399I5VaXiLeoJbtUXutEBDWmXusB8JumbAu1+wJg3vuF
+        7r4HZ4Zemhfmb47Q8Z7hzntl5DiUnWiBA1+JTFuh4Wg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+wQbld
+        Xodj/75p2l96uhI6Hek8zqcssRoaEMguqNWGM=; b=C20aS6qvips2PFG84xF/JZ
+        +siHrFDdTkoZvgqXUNtt3iGVEAIu8UtjzJL1ZmuGePHi81mNXTEtucVKm98beXMh
+        uV9+q/oZuEIOs2JYuuAtx/qbE8XbyHkXTbc7GCbVJivwEvDjRQZdA2pxrokWdKLc
+        D2VMDThyTcAJcHfpYdCH4ea3UlTkHZNuZIz33o8BQm0J7hy9fFci3hyms+Tcdf7h
+        Olr7pzBMBjqm+6tzP50US+8FZkqg73ki7a8TBSDB9AF8ZhuPB8yZnQqtPlJWwZMg
+        /rDKL8D5FrqMUrR8dEf0M2UgEb0M5TdQIqSpvDXBgLlYwEXE3fQY9MXcvChud1AA
+        ==
+X-ME-Sender: <xms:QBBbYLGRKXp7I9RXURuAAGVfUK4JYN7kr1ywmpyFPuTknkDensSszQ>
+    <xme:QBBbYIUqunFZqSme0dpncKyRWzPRVJtWEeWGmpghKg0EOTJUpeCo9wo76WrIP5Ie_
+    fUI_NfxYxnN7dL_mIY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegkedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
+    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledtrdekledrieekrd
+    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:QBBbYNLwcy4JR42FSnJG329UPefxRa_z_y4ZBMz_6xfAECL-UENFqA>
+    <xmx:QBBbYJGhNVQI2pHTpPDAMRMU1eWUXppWsiGw5g5h6kq6qWFbSZi4aw>
+    <xmx:QBBbYBXV7fWOL2Bdoi4cKVHg3Blq_tgmQZ62Phzm93_zEctFsBA0BQ>
+    <xmx:QhBbYAFgR2s7nMnwohLsO-8n2j52bh8caHecBi79ZBO2Y1voyq5hDw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 68161108005C;
+        Wed, 24 Mar 2021 06:11:12 -0400 (EDT)
+Date:   Wed, 24 Mar 2021 11:11:09 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: [PATCH v4 1/4] drm: sun4i: dsi: Use drm_of_find_panel_or_bridge
+Message-ID: <20210324101109.k46k3l7bksvxhll5@gilmour>
+References: <20210322140152.101709-1-jagan@amarulasolutions.com>
+ <20210322140152.101709-2-jagan@amarulasolutions.com>
+ <YFpxYpA+EIZm7sOf@pendragon.ideasonboard.com>
+ <f47bc0ad-dbd6-05b5-aaec-2e3256e3715a@sholland.org>
+ <CAMty3ZDOVeMeYTsuF8n4EQTG6eEbj6e33TuTPrFiMWG4RhRdSw@mail.gmail.com>
+ <YFsIkGH2cRgWk8z9@pendragon.ideasonboard.com>
+ <CAMty3ZBGnz_a4_HO_TZ-zPNJwHMcVJyrBi3kZX2=a6G47Ze-yw@mail.gmail.com>
+ <YFsMl2CB0ZmpJiKf@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <721b4f8d38b014babb0f4ae829d76014bbf7734e.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kp676o7nybn544nt"
+Content-Disposition: inline
+In-Reply-To: <YFsMl2CB0ZmpJiKf@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/03/24 1:13, Mimi Zohar wrote:
-> On Wed, 2021-03-24 at 00:14 +0900, Tetsuo Handa wrote:
->> On 2021/03/23 23:47, Mimi Zohar wrote:
->>> Initially I also questioned making "integrity" an LSM.  Perhaps it's
->>> time to reconsider.   For now, it makes sense to just fix the NULL
->>> pointer dereferencing.
->>
->> Do we think calling panic() as "fix the NULL pointer dereferencing" ?
-> 
-> Not supplying "integrity" as an "lsm=" option is a user error.  There
-> are only two options - allow or deny the caller to proceed.   If the
-> user is expecting the integrity subsystem to be properly working,
-> returning a NULL and allowing the system to boot (RFC patch version)
-> does not make sense.   Better to fail early.
 
-What does the "user" mean? Those who load the vmlinux?
-Only the "root" user (so called administrators)?
-Any users including other than "root" user?
+--kp676o7nybn544nt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If the user means those who load the vmlinux, that user is explicitly asking
-for disabling "integrity" for some reason. In that case, it is a bug if
-booting with "integrity" disabled is impossible.
+On Wed, Mar 24, 2021 at 11:55:35AM +0200, Laurent Pinchart wrote:
+> Hi Jagan,
+>=20
+> On Wed, Mar 24, 2021 at 03:19:10PM +0530, Jagan Teki wrote:
+> > On Wed, Mar 24, 2021 at 3:09 PM Laurent Pinchart wrote:
+> > > On Wed, Mar 24, 2021 at 02:44:57PM +0530, Jagan Teki wrote:
+> > > > On Wed, Mar 24, 2021 at 8:18 AM Samuel Holland wrote:
+> > > > > On 3/23/21 5:53 PM, Laurent Pinchart wrote:
+> > > > > > On Mon, Mar 22, 2021 at 07:31:49PM +0530, Jagan Teki wrote:
+> > > > > >> Replace of_drm_find_panel with drm_of_find_panel_or_bridge
+> > > > > >> for finding panel, this indeed help to find the bridge if
+> > > > > >> bridge support added.
+> > > > > >>
+> > > > > >> Added NULL in bridge argument, same will replace with bridge
+> > > > > >> parameter once bridge supported.
+> > > > > >>
+> > > > > >> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > > > >
+> > > > > > Looks good, there should be no functional change.
+> > > > >
+> > > > > Actually this breaks all existing users of this driver, see below.
+> > > > >
+> > > > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.co=
+m>
+> > > > > >
+> > > > > >> ---
+> > > > > >> Changes for v4, v3:
+> > > > > >> - none
+> > > > > >>
+> > > > > >>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 11 ++++++++---
+> > > > > >>  1 file changed, 8 insertions(+), 3 deletions(-)
+> > > > > >>
+> > > > > >> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/=
+gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > > > > >> index 4f5efcace68e..2e9e7b2d4145 100644
+> > > > > >> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > > > > >> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> > > > > >> @@ -21,6 +21,7 @@
+> > > > > >>
+> > > > > >>  #include <drm/drm_atomic_helper.h>
+> > > > > >>  #include <drm/drm_mipi_dsi.h>
+> > > > > >> +#include <drm/drm_of.h>
+> > > > > >>  #include <drm/drm_panel.h>
+> > > > > >>  #include <drm/drm_print.h>
+> > > > > >>  #include <drm/drm_probe_helper.h>
+> > > > > >> @@ -963,10 +964,14 @@ static int sun6i_dsi_attach(struct mipi_=
+dsi_host *host,
+> > > > > >>                          struct mipi_dsi_device *device)
+> > > > > >>  {
+> > > > > >>      struct sun6i_dsi *dsi =3D host_to_sun6i_dsi(host);
+> > > > > >> -    struct drm_panel *panel =3D of_drm_find_panel(device->dev=
+=2Eof_node);
+> > > > >
+> > > > > This is using the OF node of the DSI device, which is a direct ch=
+ild of
+> > > > > the DSI host's OF node. There is no OF graph involved.
+> > > > >
+> > > > > >> +    struct drm_panel *panel;
+> > > > > >> +    int ret;
+> > > > > >> +
+> > > > > >> +    ret =3D drm_of_find_panel_or_bridge(dsi->dev->of_node, 0,=
+ 0,
+> > > > > >> +                                      &panel, NULL);
+> > > > >
+> > > > > However, this function expects to find the panel using OF graph. =
+This
+> > > > > does not work with existing device trees (PinePhone, PineTab) whi=
+ch do
+> > > > > not use OF graph to connect the panel. And it cannot work, becaus=
+e the
+> > > > > DSI host's binding specifies a single port: the input port from t=
+he
+> > > > > display engine.
+> > > >
+> > > > Thanks for noticing this. I did understand your point and yes, I did
+> > > > mention the updated pipeline in previous versions and forgot to add=
+ it
+> > > > to this series.
+> > > >
+> > > > Here is the updated pipeline to make it work:
+> > > >
+> > > > https://patchwork.kernel.org/project/dri-devel/patch/20190524104252=
+=2E20236-1-jagan@amarulasolutions.com/
+> > > >
+> > > > Let me know your comments on this, so I will add a patch for the
+> > > > above-affected DTS files.
+> > >
+> > > DT is an ABI, we need to ensure backward compatibility. Changes in
+> > > kernel drivers can't break devices that have an old DT.
+> >=20
+> > Thanks for your point.
+> >=20
+> > So, we need to choose APIs that would compatible with the old DT and
+> > new DT changes. Am I correct?
+>=20
+> Yes, that's correct.
 
-If the user means something other than those who load the vmlinux,
-is there a possibility that that user (especially non "root" users) is
-allowed to try to use "integrity" ? If processes other than global init
-process can try to use "integrity", wouldn't it be a DoS attack vector?
-Please explain in the descripotion why calling panic() does not cause
-DoS attack vector.
+However, I see no particular reason to change the DT binding in this
+case. The DSI devices are supposed to be described through a subnode of
+their DSI controller, that's the generic binding and except for very odd
+devices (and a bridge like this one is certainly not one), I see no
+reason to deviate from that.
 
+Maxime
+
+--kp676o7nybn544nt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYFsQPQAKCRDj7w1vZxhR
+xTMWAPoCqODHVwflYc37O1/gdVmLbZhcAVai6G99UtzoYOo5ygEArcWtqJ+TiVFf
+Y9qWwugKta+xfxFuIgIPVB46nGBixA4=
+=NGvV
+-----END PGP SIGNATURE-----
+
+--kp676o7nybn544nt--
