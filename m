@@ -2,150 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C943474B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D98A3474B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhCXJbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:31:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234911AbhCXJbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:31:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B33461A02;
-        Wed, 24 Mar 2021 09:31:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616578261;
-        bh=SapQuvedMMoMFZ158PEwXuhwjVzD2GWWS+vzheIkBjo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RHJEdq1GkzcNicfCW1HMi6LL0POJi5GOw+2MiRFoYYI3Ynu/7d2Z1d+lDY1cZt8g2
-         6lUqLa3/7d/6BV+UVXe7brZgFR2Xak17D54z/uRl88G13A8TtAcRVrcMg7htGST2u7
-         CdHEQO8ikt0HwyvI48wBEYPYl2NMCoQbIS7oLkUM=
-Date:   Wed, 24 Mar 2021 10:30:59 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, vinod.koul@linaro.org,
-        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
-        vkoul@kernel.org, srinivas.kandagatla@linaro.org,
-        sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
-Message-ID: <YFsG00+iDV/A4i3y@kroah.com>
-References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
- <YFmatyAoMZmBmkuZ@kroah.com>
- <777b4ca6-0d51-285d-549f-6ef768f2a523@linux.intel.com>
- <YFo0WW8hOsHesSFC@kroah.com>
- <35cc8d35-a778-d8b2-bee3-bb53f8a6c51e@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35cc8d35-a778-d8b2-bee3-bb53f8a6c51e@linux.intel.com>
+        id S235003AbhCXJbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:31:55 -0400
+Received: from mail.synology.com ([211.23.38.101]:59258 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235004AbhCXJbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:31:45 -0400
+Received: from localhost.localdomain (unknown [10.17.32.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by synology.com (Postfix) with ESMTPSA id 6B46CCE781EE;
+        Wed, 24 Mar 2021 17:31:44 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1616578304; bh=ycjCGG+Ux6zuThGd3xuSA4cvVmyaodPS7cGN+rD28t0=;
+        h=From:To:Cc:Subject:Date;
+        b=eBNVQZApI1nVQ4+4osC1qG8/CpAYhaS/yColSxeB+GB4O+OhEYrcU4bjgYGMH4IRS
+         XHWGDRpaSgNjDzT7mWjDiwSesW/XQe/TPPUepV4btR4UZPZVVmFLiiZG/YVvYM4npz
+         eu1Xkqzt3JTzkO98516e6qi0QdqJ36j7NGSngzk8=
+From:   bingjingc <bingjingc@synology.com>
+To:     josef@toxicpanda.com, dsterba@suse.com, quwenruo@cn.fujitsu.com,
+        clm@fb.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     bingjingc@synology.com, cccheng@synology.com, robbieko@synology.com
+Subject: [PATCH] btrfs: fix a potential hole-punching failure
+Date:   Wed, 24 Mar 2021 17:31:10 +0800
+Message-Id: <1616578270-7365-1-git-send-email-bingjingc@synology.com>
+X-Mailer: git-send-email 2.7.4
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:14:18PM -0500, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 3/23/21 1:32 PM, Greg KH wrote:
-> > On Tue, Mar 23, 2021 at 01:04:49PM -0500, Pierre-Louis Bossart wrote:
-> > > 
-> > > > > Note that the auxiliary bus API has separate init and add steps, which
-> > > > > requires more attention in the error unwinding paths. The main loop
-> > > > > needs to deal with kfree() and auxiliary_device_uninit() for the
-> > > > > current iteration before jumping to the common label which releases
-> > > > > everything allocated in prior iterations.
-> > > > 
-> > > > The init/add steps can be moved together in the aux bus code if that
-> > > > makes this usage simpler.  Please do that instead.
-> > > 
-> > > IIRC the two steps were separated during the auxbus reviews to allow the
-> > > parent to call kfree() on an init failure, and auxiliary_device_uninit()
-> > > afterwards.
-> > > 
-> > > https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#auxiliary-device
-> > > 
-> > > With a single auxbus_register(), the parent wouldn't know whether to use
-> > > kfree() or auxiliary_device_uinit() when an error is returned, would it?
-> > > 
-> > 
-> > It should, you know the difference when you call device_register() vs.
-> > device_initialize()/device_add(), for what to do, right?
-> > 
-> > Should be no difference here either :)
-> 
-> sorry, not following.
-> 
-> with the regular devices, the errors can only happen on the second "add"
-> stage.
-> 
-> int device_register(struct device *dev)
-> {
-> 	device_initialize(dev);
-> 	return device_add(dev);
-> }
-> 
-> that's not what is currently implemented for the auxiliary bus
-> 
-> the current flow is
-> 
-> ldev = kzalloc(..)
-> some inits
-> ret = auxiliary_device_init(&ldev->auxdev)
-> if (ret < 0) {
->     kfree(ldev);
->     goto err1;
-> }
-> 
-> ret = auxiliary_device_add(&ldev->auxdev)
-> if (ret < 0)
->     auxiliary_device_uninit(&ldev->auxdev)
->     goto err2;
-> }
-> ...
-> err2:
-> err1:
-> 
-> How would I convert this to
-> 
-> ldev = kzalloc(..)
-> some inits
-> ret = auxiliary_device_register()
-> if (ret) {
->    kfree(ldev) or not?
->    unit or not?
-> }
-> 
-> IIRC during reviews there was an ask that the parent and name be checked,
-> and that's why the code added the two checks below:
-> 
-> int auxiliary_device_init(struct auxiliary_device *auxdev)
-> {
-> 	struct device *dev = &auxdev->dev;
-> 
-> 	if (!dev->parent) {
-> 		pr_err("auxiliary_device has a NULL dev->parent\n");
-> 		return -EINVAL;
-> 	}
-> 
-> 	if (!auxdev->name) {
-> 		pr_err("auxiliary_device has a NULL name\n");
-> 		return -EINVAL;
-> 	}
-> 
-> 	dev->bus = &auxiliary_bus_type;
-> 	device_initialize(&auxdev->dev);
-> 	return 0;
-> }
-> 
-> does this clarify the sequence?
+From: BingJing Chang <bingjingc@synology.com>
 
-Yes, thanks, but I don't know the answer to your question, sorry.  This
-feels more complex than it should be, but I do not have the time at the
-moment to look into it, sorry.
+In commit d77815461f04 ("btrfs: Avoid trucating page or punching hole in
+a already existed hole."), existed holes can be skipped by calling
+find_first_non_hole() to adjust *start and *len. However, if the given
+len is invalid and large, when an EXTENT_MAP_HOLE extent is found, the
+*len will not be set to zero because (em->start + em->len) is less than
+(*start + *len). Then the ret will be 1 but the *len will not be set to
+0. The propagated non-zero ret will result in fallocate failure.
 
-Try getting the authors of this code to fix it up :)
+In the while-loop of btrfs_replace_file_extents(), len is not updated
+every time before it calls find_first_non_hole(). That is, if the last
+file extent in the given hole-punching range has been dropped but
+btrfs_drop_extents() fails with -ENOSPC (btrfs_drop_extents() runs out
+of reserved space of the given transaction), the problem can happen.
+After it calls find_first_non_hole(), the cur_offset will be adjusted
+to be larger than or equal to end. However, since the len is not set to
+zero. The break-loop condition (ret && !len) will not meet. After it
+leaves the while-loop, uncleared ret will result in fallocate failure.
 
-thanks,
+We're not able to construct a reproducible way to let
+btrfs_drop_extents() fails with -ENOSPC after it drops the last file
+extent but with remaining holes. However, it's quite easy to fix. We
+just need to update and check the len every time before we call
+find_first_non_hole(). To make the while loop more readable, we also
+pull the variable updates to the bottom of loop like this:
+while (cur_offset < end) {
+        ...
+        // update cur_offset & len
+        // advance cur_offset & len in hole-punching case if needed
+}
 
-greg k-h
+Reported-by: Robbie Ko <robbieko@synology.com>
+Fixes: d77815461f04 ("btrfs: Avoid trucating page or punching hole in a
+already existed hole.")
+Reviewed-by: Robbie Ko <robbieko@synology.com>
+Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+Signed-off-by: BingJing Chang <bingjingc@synology.com>
+---
+ fs/btrfs/file.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 0e155f0..dccb017 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2735,8 +2735,6 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
+ 			extent_info->file_offset += replace_len;
+ 		}
+ 
+-		cur_offset = drop_args.drop_end;
+-
+ 		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
+ 		if (ret)
+ 			break;
+@@ -2756,7 +2754,9 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
+ 		BUG_ON(ret);	/* shouldn't happen */
+ 		trans->block_rsv = rsv;
+ 
+-		if (!extent_info) {
++		cur_offset = drop_args.drop_end;
++		len = end - cur_offset;
++		if (!extent_info && len) {
+ 			ret = find_first_non_hole(BTRFS_I(inode), &cur_offset,
+ 						  &len);
+ 			if (unlikely(ret < 0))
+-- 
+2.7.4
+
