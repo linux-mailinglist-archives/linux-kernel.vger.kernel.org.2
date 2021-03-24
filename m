@@ -2,257 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA5934701C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BFC34701E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbhCXD1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232568AbhCXD11 (ORCPT
+        id S235020AbhCXD2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:28:25 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14858 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234934AbhCXD2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:27:27 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33823C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:27:27 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f17so7193185plr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jqtueh3KoN49KTSBstyT2fS2WeP64rLOI7hS8K0Vek4=;
-        b=bZuYsqQodWT0uNeJFvyXuHOy9/s+dexsuV/kg3MmW2JkKblQFlTkqax14YflKb0eB+
-         rf7Ut3mlA1+GzJYF96Sg7eT0OtV8oSNJv1/9cH6erkPnNGH/u1PWC6KJ0BeygvCUXYgf
-         R6Y6IYMtMkBxvquhAImpClDjuIH2CO6NsT0Z8bfsuKxTxw0ze0rYZNrIylYvKo+eSdWb
-         jSxjVDHt6Z9z/WstB2cTkOJxxN844Yw/Cv2Kphl60C/gik64Y3RgjGqL7nAsE61bBdiA
-         74p7LVOq8Lt2kt8S61ish97LtxJuQCWvzBuNcpZFmffxgJ4BrkKBE8hk152kEOpk22ZH
-         k+Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jqtueh3KoN49KTSBstyT2fS2WeP64rLOI7hS8K0Vek4=;
-        b=c1sfHDRB4obpESactELAOK+PQCqiJpVg86hr9EX0KsSPEYV24nWk9WRemCnYf34u0w
-         XDCKyUQVyBDthsq4uQ1brwpfe6BpxTD3yuz/eDuzVJEehNUIWXsb91LrFsRdQ8uCAh6E
-         i6EoRgzjr8e6CPvx/nScUzMDphbqe7CGw9+7eLkTEveMXbJSUmYyzE6mi9EKDt38v2NU
-         6aMZniHxQV26JwPs0OB82T5epxcADMCNfxOF5noOgVIZ3rzapGqePBK636mZwOQanfqV
-         OuMLUE2VzAIEVXutWZn9YIIvm9uHxt4ZeY87eK31Izu+A0qarvGSbcPMlPTiOKIg2wVN
-         1HNg==
-X-Gm-Message-State: AOAM532Vz/nP1R2w6i4NvwK8FsnIG1mQ/NtIPJSfHp785ufhcrVKZDdh
-        JMqnFoWpt2oLfRn/bYE1Ruw=
-X-Google-Smtp-Source: ABdhPJxim1UvaXycZbLtKnyN3NyeBl6rOJ0elNbZm+YANxqbAtVQOnk4evdhGGe8hNwxXQUiHEReBA==
-X-Received: by 2002:a17:902:ee02:b029:e6:5397:d79c with SMTP id z2-20020a170902ee02b02900e65397d79cmr1609655plb.21.1616556446586;
-        Tue, 23 Mar 2021 20:27:26 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id a144sm555787pfd.200.2021.03.23.20.27.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 20:27:25 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 23 Mar 2021 20:27:23 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
-        surenb@google.com, joaodias@google.com, willy@infradead.org,
-        digetx@gmail.com
-Subject: Re: [PATCH v6] mm: cma: support sysfs
-Message-ID: <YFqxm7UQBtWqH6VU@google.com>
-References: <20210324010547.4134370-1-minchan@kernel.org>
- <cbe10402-6574-6e46-9fd9-98b503bd26a4@nvidia.com>
+        Tue, 23 Mar 2021 23:28:13 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4ttW0Gl3z93Cx;
+        Wed, 24 Mar 2021 11:26:11 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Mar
+ 2021 11:28:09 +0800
+Subject: Re: [PATCH RFC] f2fs: fix to avoid selecting full segment w/ {AT,}SSR
+ allocator
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210220094052.64905-1-yuchao0@huawei.com>
+ <YFOLNGo+/8sKQ7si@google.com>
+ <ec5cda53-d3f4-450c-7567-7bfc68e224f9@huawei.com>
+ <YFpy26JZRpZASB7R@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <0a2a17af-8719-6865-554a-f339f367485e@huawei.com>
+Date:   Wed, 24 Mar 2021 11:28:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cbe10402-6574-6e46-9fd9-98b503bd26a4@nvidia.com>
+In-Reply-To: <YFpy26JZRpZASB7R@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 07:34:12PM -0700, John Hubbard wrote:
-> On 3/23/21 6:05 PM, Minchan Kim wrote:
-> ...> diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-> > new file mode 100644
-> > index 000000000000..c3791a032dc5
-> > --- /dev/null
-> > +++ b/mm/cma_sysfs.c
-> > @@ -0,0 +1,107 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * CMA SysFS Interface
-> > + *
-> > + * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
-> > + */
-> > +
-> > +#include <linux/cma.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/slab.h>
-> > +
-> > +#include "cma.h"
-> > +
-> > +void cma_sysfs_account_success_pages(struct cma *cma, size_t count)
-> > +{
-> > +	atomic64_add(count, &cma->nr_pages_succeeded);
-> > +}
-> > +
-> > +void cma_sysfs_account_fail_pages(struct cma *cma, size_t count)
-> > +{
-> > +	atomic64_add(count, &cma->nr_pages_failed);
-> > +}
-> > +
-> > +#define CMA_ATTR_RO(_name) \
-> > +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
-> > +
-> > +#define to_cma_kobject(x) container_of(x, struct cma_kobject, kobj)
+On 2021/3/24 6:59, Jaegeuk Kim wrote:
+> On 03/19, Chao Yu wrote:
+>> On 2021/3/19 1:17, Jaegeuk Kim wrote:
+>>> On 02/20, Chao Yu wrote:
+>>>> In cp disabling mode, there could be a condition
+>>>> - target segment has 128 ckpt valid blocks
+>>>> - GC migrates 128 valid blocks to other segment (segment is still in
+>>>> dirty list)
+>>>> - GC migrates 384 blocks to target segment (segment has 128 cp_vblocks
+>>>> and 384 vblocks)
+>>>> - If GC selects target segment via {AT,}SSR allocator, however there is
+>>>> no free space in targe segment.
+>>>>
+>>>> Fixes: 4354994f097d ("f2fs: checkpoint disabling")
+>>>> Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
+>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>> ---
+>>>>    fs/f2fs/f2fs.h    |  1 +
+>>>>    fs/f2fs/gc.c      | 17 +++++++++++++----
+>>>>    fs/f2fs/segment.c | 20 ++++++++++++++++++++
+>>>>    3 files changed, 34 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>>> index ed7807103c8e..9c753eff0814 100644
+>>>> --- a/fs/f2fs/f2fs.h
+>>>> +++ b/fs/f2fs/f2fs.h
+>>>> @@ -3376,6 +3376,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi);
+>>>>    int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
+>>>>    void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
+>>>>    int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
+>>>> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
+>>>>    void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
+>>>>    void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
+>>>>    void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
+>>>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+>>>> index 86ba8ed0b8a7..a1d8062cdace 100644
+>>>> --- a/fs/f2fs/gc.c
+>>>> +++ b/fs/f2fs/gc.c
+>>>> @@ -392,10 +392,6 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
+>>>>    		if (p->gc_mode == GC_AT &&
+>>>>    			get_valid_blocks(sbi, segno, true) == 0)
+>>>>    			return;
+>>>> -
+>>>> -		if (p->alloc_mode == AT_SSR &&
+>>>> -			get_seg_entry(sbi, segno)->ckpt_valid_blocks == 0)
+>>>> -			return;
+>>>>    	}
+>>>>    	for (i = 0; i < sbi->segs_per_sec; i++)
+>>>> @@ -736,6 +732,19 @@ static int get_victim_by_default(struct f2fs_sb_info *sbi,
+>>>>    		if (gc_type == BG_GC && test_bit(secno, dirty_i->victim_secmap))
+>>>>    			goto next;
+>>>> +		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
+>>>> +			/*
+>>>> +			 * to avoid selecting candidate which has below valid
+>>>> +			 * block distribution:
+>>>> +			 * partial blocks are valid and all left ones are valid
+>>>> +			 * in previous checkpoint.
+>>>> +			 */
+>>>> +			if (p.alloc_mode == SSR || p.alloc_mode == AT_SSR) {
+>>>> +				if (!segment_has_free_slot(sbi, segno))
+>>>> +					goto next;
+>>>
+>>> Do we need to change this to check free_slot instead of get_ckpt_valid_blocks()?
+>>
+>> Jaegeuk,
+>>
+>> LFS was assigned only for GC case, in this case we are trying to select source
+>> section, rather than target segment for SSR/AT_SSR case, so we don't need to
+>> check free_slot.
+>>
+>> - f2fs_gc
+>>   - __get_victim
+>>    - get_victim(sbi, victim, gc_type, NO_CHECK_TYPE, LFS, 0);
+>>
+>>>
+>>>    732                 if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED) &&
+>>>    733                                         get_ckpt_valid_blocks(sbi, segno) &&
+>>>    734                                         p.alloc_mode == LFS))
+>>
+>> BTW, in LFS mode, GC wants to find source section rather than segment, so we
+>> should change to check valid ckpt blocks in every segment of targe section here?
 > 
-> I really don't think that helps. container_of() is so widely used and
-> understood that it is not a good move make people read one more wrapper
-> for it. Instead, see below...
+> Alright. I refactored a bit on this patch with new one. Could you please take a look?
 > 
-> > +
-> > +static ssize_t alloc_pages_success_show(struct kobject *kobj,
-> > +					struct kobj_attribute *attr, char *buf)
-> > +{
-> > +	struct cma_kobject *cma_kobj = to_cma_kobject(kobj);
-> > +	struct cma *cma = cma_kobj->cma;
-> 
-> ...if you're looking to get rid of the real code duplication, then you
-> could put *both* of those lines into a wrapper function, instead, like this:
-> 
-> static inline struct cma* cma_from_kobj(struct kobject *kobj)
-> {
-> 	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject,
-> 						    kobj);
-> 	struct cma *cma = cma_kobj->cma;
-> 
-> 	return cma;
-> }
-> 
-> static ssize_t alloc_pages_success_show(struct kobject *kobj,
-> 					struct kobj_attribute *attr, char *buf)
-> {
-> 	struct cma *cma = cma_from_kobj(kobj);
-> 
-> 	return sysfs_emit(buf, "%llu\n",
-> 			  atomic64_read(&cma->nr_pages_succeeded));
-> }
-> CMA_ATTR_RO(alloc_pages_success);
-> 
-> static ssize_t alloc_pages_fail_show(struct kobject *kobj,
-> 				     struct kobj_attribute *attr, char *buf)
-> {
-> 	struct cma *cma = cma_from_kobj(kobj);
-> 
-> 	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_failed));
-> }
-> CMA_ATTR_RO(alloc_pages_fail);
-> 
-> static void cma_kobj_release(struct kobject *kobj)
-> {
-> 	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject,
-> 						    kobj);
-> 	struct cma *cma = cma_kobj->cma;
-> 
-> 	kfree(cma_kobj);
-> 	cma->kobj = NULL;
-> }
-> 
-> ...isn't that nicer? Saves a little code, gets rid of a macro.
+> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=00152bd7cabd69b4615ebead823ff23887b0e0f7
 
-Yub.
+I see, newly added comment looks good to me.
 
-> 
-> > +
-> > +	return sysfs_emit(buf, "%llu\n",
-> > +			  atomic64_read(&cma->nr_pages_succeeded));
-> > +}
-> > +CMA_ATTR_RO(alloc_pages_success);
-> > +
-> > +static ssize_t alloc_pages_fail_show(struct kobject *kobj,
-> > +				     struct kobj_attribute *attr, char *buf)
-> > +{
-> > +	struct cma_kobject *cma_kobj = to_cma_kobject(kobj);
-> > +	struct cma *cma = cma_kobj->cma;
-> > +
-> > +	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_failed));
-> > +}
-> > +CMA_ATTR_RO(alloc_pages_fail);
-> > +
-> > +static void cma_kobj_release(struct kobject *kobj)
-> > +{
-> > +	struct cma_kobject *cma_kobj = to_cma_kobject(kobj);
-> > +	struct cma *cma = cma_kobj->cma;
-> > +
-> > +	kfree(cma_kobj);
-> > +	cma->kobj = NULL;
-> > +}
-> > +
-> > +static struct attribute *cma_attrs[] = {
-> > +	&alloc_pages_success_attr.attr,
-> > +	&alloc_pages_fail_attr.attr,
-> > +	NULL,
-> > +};
-> > +ATTRIBUTE_GROUPS(cma);
-> > +
-> > +static struct kobject *cma_kobj_root;
-> > +
-> > +static struct kobj_type cma_ktype = {
-> > +	.release = cma_kobj_release,
-> > +	.sysfs_ops = &kobj_sysfs_ops,
-> > +	.default_groups = cma_groups
-> > +};
-> > +
-> > +static int __init cma_sysfs_init(void)
-> > +{
-> > +	unsigned int i;
-> > +
-> > +	cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
-> > +	if (!cma_kobj_root)
-> > +		return -ENOMEM;
-> > +
-> > +	for (i = 0; i < cma_area_count; i++) {
-> > +		int err;
-> > +		struct cma *cma;
-> > +		struct cma_kobject *cma_kobj;
-> > +
-> > +		cma_kobj = kzalloc(sizeof(*cma_kobj), GFP_KERNEL);
-> > +		if (!cma_kobj) {
-> > +			kobject_put(cma_kobj_root);
-> > +			return -ENOMEM;
-> 
-> This leaks little cma_kobj's all over the floor. :)
+One more concern is commit title and commit message is out-of-update,
+I've revised it in v2:
 
-I thought kobject_put(cma_kobj_root) should deal with it. No?
+https://lore.kernel.org/linux-f2fs-devel/20210324031828.67133-1-yuchao0@huawei.com/T/#u
+
+Thanks,
 
 > 
-> What you might want here is a separate routine to clean up, because
-> it has to loop through and free whatever was allocated on previous
-> iterations of this loop here.
+> Thanks,
 > 
-> > +		}
-> > +
-> > +		cma = &cma_areas[i];
-> > +		cma->kobj = cma_kobj;
-> > +		cma_kobj->cma = cma;
-> > +		err = kobject_init_and_add(&cma_kobj->kobj, &cma_ktype,
-> > +					   cma_kobj_root, "%s", cma->name);
-> > +		if (err) {
-> > +			kobject_put(&cma_kobj->kobj);
-> > +			kobject_put(cma_kobj_root);
-> > +			return err;
+>>
+>> Thanks,
+>>
+>>>
+>>>
+>>>> +			}
+>>>> +		}
+>>>> +
+>>>>    		if (is_atgc) {
+>>>>    			add_victim_entry(sbi, &p, segno);
+>>>>    			goto next;
+>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>>> index 2d5a82c4ca15..deaf57e13125 100644
+>>>> --- a/fs/f2fs/segment.c
+>>>> +++ b/fs/f2fs/segment.c
+>>>> @@ -2650,6 +2650,26 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
+>>>>    		seg->next_blkoff++;
+>>>>    }
+>>>> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
+>>>> +{
+>>>> +	struct sit_info *sit = SIT_I(sbi);
+>>>> +	struct seg_entry *se = get_seg_entry(sbi, segno);
+>>>> +	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
+>>>> +	unsigned long *target_map = SIT_I(sbi)->tmp_map;
+>>>> +	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
+>>>> +	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
+>>>> +	int i, pos;
+>>>> +
+>>>> +	down_write(&sit->sentry_lock);
+>>>> +	for (i = 0; i < entries; i++)
+>>>> +		target_map[i] = ckpt_map[i] | cur_map[i];
+>>>> +
+>>>> +	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, 0);
+>>>> +	up_write(&sit->sentry_lock);
+>>>> +
+>>>> +	return pos < sbi->blocks_per_seg;
+>>>> +}
+>>>> +
+>>>>    /*
+>>>>     * This function always allocates a used segment(from dirty seglist) by SSR
+>>>>     * manner, so it should recover the existing segment information of valid blocks
+>>>> -- 
+>>>> 2.29.2
+>>> .
+>>>
+> .
 > 
-> Hopefully this little bit of logic could also go into the cleanup
-> routine.
-> 
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +subsys_initcall(cma_sysfs_init);
-> > 
-> 
-> thanks,
-> -- 
-> John Hubbard
-> NVIDIA
