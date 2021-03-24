@@ -2,178 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9A834798C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A5F347995
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235083AbhCXNZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234574AbhCXNYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:24:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D78961A0A;
-        Wed, 24 Mar 2021 13:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616592288;
-        bh=NzXsUnfCw/JYiRz9XIz92axHuxlDiwE+UNiz043kwt0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GJfDlO0jXPBXD6o4sDzmQNTPO6d9krSUc4QfgGhMmLBZF2NPlgS7C82mPIvbTzp56
-         ExgyDthrnjeMAOsEodVibR9m75QG2YzCaWYzLzSqzqK1HUSD2IQwOg3Mb2GRWPRKmz
-         +6jCFc2PMxnnAiVa6Ktt91iRs+i3R48dV9y5JRAO41uZcOOFanNPJ2ICy/eZEaGHwx
-         AuLWbM6mEnqhsgamkcpy2Zcz7dSaEJtzR5sRx0kCtOZrYhtIYasc4v1FUclbyxz3fo
-         jI86oiIu58Xxiqx85wkFkOmF+fNywqDROrLCVgX0j3YdJHs2A022FsWaYdCWX+LRmK
-         gezIbPvEC5tPA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 779F240647; Wed, 24 Mar 2021 10:24:46 -0300 (-03)
-Date:   Wed, 24 Mar 2021 10:24:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>
-Subject: Re: [PATCH 1/2] perf daemon: Force waipid for all session on SIGCHLD
- delivery
-Message-ID: <YFs9nkXP46Olg5mZ@kernel.org>
-References: <20210320221013.1619613-1-jolsa@kernel.org>
+        id S235119AbhCXN2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:28:22 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:39904 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234494AbhCXN2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 09:28:00 -0400
+Received: by mail-oi1-f172.google.com with SMTP id i81so19278578oif.6;
+        Wed, 24 Mar 2021 06:28:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wVtFOOqo3xe9yL6j51iSdtuw9qJvjjXH+Yk+HGXG5Qk=;
+        b=ROAyGghdRf1TRH8n4xO+I4NJqC7+j+eR782Joe9pDwbNrEPiifrZ/WO1gqqurOr25p
+         jxaYb7uE/di/VI9FgloIgZqVEUcaxD1cqO/fsAun1hMdkkSQPTXIn2aLyix04dFwf4Fi
+         oJjCOTdq/RYNxYTSGPMe/0iM/IPRGkryQyIBMfYoR05pq1M1m79SWOvx7nyBUWptFIyj
+         Fsqwee32bPNSMfBS3IwCf7PwzaZ2svR1hJvJJucH2hSstk1oR7KjcUyPnMpzIgf6dOjk
+         8I40HkFQhfj7QxpD8q1gkVOCxYMaweN8JT2E6b7yO2BTIghFkyr6SEJmM/IWLkSNQ0a2
+         d80A==
+X-Gm-Message-State: AOAM533aGCvvf9kVrO8Q8XWKv7HZhpUarCvMAKUeFQTmTMiRn73zaN5l
+        ZwgXk+Gcy8K9hBW1OxeRyzCxyljAZQE5ROeV3Xk=
+X-Google-Smtp-Source: ABdhPJxNK5hjEsGMlbXlbQEYDPkCopm/stI0iNLO0Lfgz8LmA527ZlaJjLKeOTCi2tfxdoz7gP158xia1laxXRqMCE0=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr2312470oib.69.1616592479613;
+ Wed, 24 Mar 2021 06:27:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210320221013.1619613-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <CAJZ5v0j3=82x1hV9SCdinJQPkDXmJd9BFoqvNxNHSb6iS8PHVQ@mail.gmail.com>
+ <YE5dJ6U3nPWsXY4D@linux.ibm.com> <CAJZ5v0g1H6hCVbAAFajhn0AYRMU4GkZOqggOB6LVdgFx_vfwOA@mail.gmail.com>
+ <3236337.DtqTXxM43S@kreacher> <YFMAdIVn2hpTHfBq@linux.ibm.com>
+ <CAJZ5v0g_y3X2Ps+ipBg702Q_RR3cm4gKBJoPqjazHXaisKGc4g@mail.gmail.com>
+ <CAJZ5v0iump7nVKfyu7S23-n=gQFx5d2MKejrnT6yFak7L9V11g@mail.gmail.com>
+ <YFWxbzN92XcXNl95@linux.ibm.com> <4650320.31r3eYUQgx@kreacher> <YFr3KMhW0ajHzeH4@linux.ibm.com>
+In-Reply-To: <YFr3KMhW0ajHzeH4@linux.ibm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 24 Mar 2021 14:27:48 +0100
+Message-ID: <CAJZ5v0gWWGx8dvtz2pnXcCoxz_Aswo8Yxp=vo-z=jYX1OzC3=Q@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: tables: x86: Reserve memory occupied by ACPI tables
+To:     Mike Rapoport <rppt@linux.ibm.com>,
+        George Kennedy <george.kennedy@oracle.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        x86 Maintainers <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Mar 20, 2021 at 11:10:12PM +0100, Jiri Olsa escreveu:
-> If we don't process SIGCHLD before another comes, we will
-> see just one SIGCHLD as a result. In this case current code
-> will miss exit notification for a session and wait forever.
-> 
-> Adding extra waitpid check for all sessions when SIGCHLD
-> is received, to make sure we don't miss any session exit.
-> 
-> Also fix close condition for signal_fd.
+On Wed, Mar 24, 2021 at 9:24 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+>
+> On Tue, Mar 23, 2021 at 08:26:52PM +0100, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > The following problem has been reported by George Kennedy:
+> >
+> >  Since commit 7fef431be9c9 ("mm/page_alloc: place pages to tail
+> >  in __free_pages_core()") the following use after free occurs
+> >  intermittently when ACPI tables are accessed.
+> >
+> >  BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
+> >  Read of size 4 at addr ffff8880be453004 by task swapper/0/1
+> >  CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1-7a7fd0d #1
+> >  Call Trace:
+> >   dump_stack+0xf6/0x158
+> >   print_address_description.constprop.9+0x41/0x60
+> >   kasan_report.cold.14+0x7b/0xd4
+> >   __asan_report_load_n_noabort+0xf/0x20
+> >   ibft_init+0x134/0xc49
+> >   do_one_initcall+0xc4/0x3e0
+> >   kernel_init_freeable+0x5af/0x66b
+> >   kernel_init+0x16/0x1d0
+> >   ret_from_fork+0x22/0x30
+> >
+> >  ACPI tables mapped via kmap() do not have their mapped pages
+> >  reserved and the pages can be "stolen" by the buddy allocator.
+> >
+> > Apparently, on the affected system, the ACPI table in question is
+> > not located in "reserved" memory, like ACPI NVS or ACPI Data, that
+> > will not be used by the buddy allocator, so the memory occupied by
+> > that table has to be explicitly reserved to prevent the buddy
+> > allocator from using it.
+> >
+> > In order to address this problem, rearrange the initialization of the
+> > ACPI tables on x86 to locate the initial tables earlier and reserve
+> > the memory occupied by them.
+> >
+> > The other architectures using ACPI should not be affected by this
+> > change.
+> >
+> > Link: https://lore.kernel.org/linux-acpi/1614802160-29362-1-git-send-email-george.kennedy@oracle.com/
+> > Reported-by: George Kennedy <george.kennedy@oracle.com>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> FWIW:
+> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Thanks, applied.
+Thank you!
 
-- Arnaldo
+George, can you please try this patch on the affected system?
 
- 
-> Reported-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/builtin-daemon.c | 50 +++++++++++++++++++++----------------
->  1 file changed, 28 insertions(+), 22 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-> index ace8772a4f03..4697493842f5 100644
-> --- a/tools/perf/builtin-daemon.c
-> +++ b/tools/perf/builtin-daemon.c
-> @@ -402,35 +402,42 @@ static pid_t handle_signalfd(struct daemon *daemon)
->  	int status;
->  	pid_t pid;
->  
-> +	/*
-> +	 * Take signal fd data as pure signal notification and check all
-> +	 * the sessions state. The reason is that multiple signals can get
-> +	 * coalesced in kernel and we can receive only single signal even
-> +	 * if multiple SIGCHLD were generated.
-> +	 */
->  	err = read(daemon->signal_fd, &si, sizeof(struct signalfd_siginfo));
-> -	if (err != sizeof(struct signalfd_siginfo))
-> +	if (err != sizeof(struct signalfd_siginfo)) {
-> +		pr_err("failed to read signal fd\n");
->  		return -1;
-> +	}
->  
->  	list_for_each_entry(session, &daemon->sessions, list) {
-> +		if (session->pid == -1)
-> +			continue;
->  
-> -		if (session->pid != (int) si.ssi_pid)
-> +		pid = waitpid(session->pid, &status, WNOHANG);
-> +		if (pid <= 0)
->  			continue;
->  
-> -		pid = waitpid(session->pid, &status, 0);
-> -		if (pid == session->pid) {
-> -			if (WIFEXITED(status)) {
-> -				pr_info("session '%s' exited, status=%d\n",
-> -					session->name, WEXITSTATUS(status));
-> -			} else if (WIFSIGNALED(status)) {
-> -				pr_info("session '%s' killed (signal %d)\n",
-> -					session->name, WTERMSIG(status));
-> -			} else if (WIFSTOPPED(status)) {
-> -				pr_info("session '%s' stopped (signal %d)\n",
-> -					session->name, WSTOPSIG(status));
-> -			} else {
-> -				pr_info("session '%s' Unexpected status (0x%x)\n",
-> -					session->name, status);
-> -			}
-> +		if (WIFEXITED(status)) {
-> +			pr_info("session '%s' exited, status=%d\n",
-> +				session->name, WEXITSTATUS(status));
-> +		} else if (WIFSIGNALED(status)) {
-> +			pr_info("session '%s' killed (signal %d)\n",
-> +				session->name, WTERMSIG(status));
-> +		} else if (WIFSTOPPED(status)) {
-> +			pr_info("session '%s' stopped (signal %d)\n",
-> +				session->name, WSTOPSIG(status));
-> +		} else {
-> +			pr_info("session '%s' Unexpected status (0x%x)\n",
-> +				session->name, status);
->  		}
->  
->  		session->state = KILL;
->  		session->pid = -1;
-> -		return pid;
->  	}
->  
->  	return 0;
-> @@ -443,7 +450,6 @@ static int daemon_session__wait(struct daemon_session *session, struct daemon *d
->  		.fd	= daemon->signal_fd,
->  		.events	= POLLIN,
->  	};
-> -	pid_t wpid = 0, pid = session->pid;
->  	time_t start;
->  
->  	start = time(NULL);
-> @@ -452,7 +458,7 @@ static int daemon_session__wait(struct daemon_session *session, struct daemon *d
->  		int err = poll(&pollfd, 1, 1000);
->  
->  		if (err > 0) {
-> -			wpid = handle_signalfd(daemon);
-> +			handle_signalfd(daemon);
->  		} else if (err < 0) {
->  			perror("failed: poll\n");
->  			return -1;
-> @@ -460,7 +466,7 @@ static int daemon_session__wait(struct daemon_session *session, struct daemon *d
->  
->  		if (start + secs < time(NULL))
->  			return -1;
-> -	} while (wpid != pid);
-> +	} while (session->pid != -1);
->  
->  	return 0;
->  }
-> @@ -1344,7 +1350,7 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->  		close(sock_fd);
->  	if (conf_fd != -1)
->  		close(conf_fd);
-> -	if (conf_fd != -1)
-> +	if (signal_fd != -1)
->  		close(signal_fd);
->  
->  	pr_info("daemon exited\n");
-> -- 
-> 2.30.2
-> 
-
--- 
-
-- Arnaldo
+> > ---
+> >  arch/x86/kernel/acpi/boot.c |   25 ++++++++++++-------------
+> >  arch/x86/kernel/setup.c     |    8 +++-----
+> >  drivers/acpi/tables.c       |   42 +++++++++++++++++++++++++++++++++++++++---
+> >  include/linux/acpi.h        |    9 ++++++++-
+> >  4 files changed, 62 insertions(+), 22 deletions(-)
+> >
+> > Index: linux-pm/arch/x86/kernel/acpi/boot.c
+> > ===================================================================
+> > --- linux-pm.orig/arch/x86/kernel/acpi/boot.c
+> > +++ linux-pm/arch/x86/kernel/acpi/boot.c
+> > @@ -1554,10 +1554,18 @@ void __init acpi_boot_table_init(void)
+> >       /*
+> >        * Initialize the ACPI boot-time table parser.
+> >        */
+> > -     if (acpi_table_init()) {
+> > +     if (acpi_locate_initial_tables())
+> >               disable_acpi();
+> > -             return;
+> > -     }
+> > +     else
+> > +             acpi_reserve_initial_tables();
+> > +}
+> > +
+> > +int __init early_acpi_boot_init(void)
+> > +{
+> > +     if (acpi_disabled)
+> > +             return 1;
+> > +
+> > +     acpi_table_init_complete();
+> >
+> >       acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
+> >
+> > @@ -1570,18 +1578,9 @@ void __init acpi_boot_table_init(void)
+> >               } else {
+> >                       printk(KERN_WARNING PREFIX "Disabling ACPI support\n");
+> >                       disable_acpi();
+> > -                     return;
+> > +                     return 1;
+> >               }
+> >       }
+> > -}
+> > -
+> > -int __init early_acpi_boot_init(void)
+> > -{
+> > -     /*
+> > -      * If acpi_disabled, bail out
+> > -      */
+> > -     if (acpi_disabled)
+> > -             return 1;
+> >
+> >       /*
+> >        * Process the Multiple APIC Description Table (MADT), if present
+> > Index: linux-pm/arch/x86/kernel/setup.c
+> > ===================================================================
+> > --- linux-pm.orig/arch/x86/kernel/setup.c
+> > +++ linux-pm/arch/x86/kernel/setup.c
+> > @@ -1045,6 +1045,9 @@ void __init setup_arch(char **cmdline_p)
+> >
+> >       cleanup_highmap();
+> >
+> > +     /* Look for ACPI tables and reserve memory occupied by them. */
+> > +     acpi_boot_table_init();
+> > +
+> >       memblock_set_current_limit(ISA_END_ADDRESS);
+> >       e820__memblock_setup();
+> >
+> > @@ -1136,11 +1139,6 @@ void __init setup_arch(char **cmdline_p)
+> >
+> >       early_platform_quirks();
+> >
+> > -     /*
+> > -      * Parse the ACPI tables for possible boot-time SMP configuration.
+> > -      */
+> > -     acpi_boot_table_init();
+> > -
+> >       early_acpi_boot_init();
+> >
+> >       initmem_init();
+> > Index: linux-pm/include/linux/acpi.h
+> > ===================================================================
+> > --- linux-pm.orig/include/linux/acpi.h
+> > +++ linux-pm/include/linux/acpi.h
+> > @@ -222,10 +222,14 @@ void __iomem *__acpi_map_table(unsigned
+> >  void __acpi_unmap_table(void __iomem *map, unsigned long size);
+> >  int early_acpi_boot_init(void);
+> >  int acpi_boot_init (void);
+> > +void acpi_boot_table_prepare (void);
+> >  void acpi_boot_table_init (void);
+> >  int acpi_mps_check (void);
+> >  int acpi_numa_init (void);
+> >
+> > +int acpi_locate_initial_tables (void);
+> > +void acpi_reserve_initial_tables (void);
+> > +void acpi_table_init_complete (void);
+> >  int acpi_table_init (void);
+> >  int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
+> >  int __init acpi_table_parse_entries(char *id, unsigned long table_size,
+> > @@ -814,9 +818,12 @@ static inline int acpi_boot_init(void)
+> >       return 0;
+> >  }
+> >
+> > +static inline void acpi_boot_table_prepare(void)
+> > +{
+> > +}
+> > +
+> >  static inline void acpi_boot_table_init(void)
+> >  {
+> > -     return;
+> >  }
+> >
+> >  static inline int acpi_mps_check(void)
+> > Index: linux-pm/drivers/acpi/tables.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/acpi/tables.c
+> > +++ linux-pm/drivers/acpi/tables.c
+> > @@ -780,7 +780,7 @@ acpi_status acpi_os_table_override(struc
+> >  }
+> >
+> >  /*
+> > - * acpi_table_init()
+> > + * acpi_locate_initial_tables()
+> >   *
+> >   * find RSDP, find and checksum SDT/XSDT.
+> >   * checksum all tables, print SDT/XSDT
+> > @@ -788,7 +788,7 @@ acpi_status acpi_os_table_override(struc
+> >   * result: sdt_entry[] is initialized
+> >   */
+> >
+> > -int __init acpi_table_init(void)
+> > +int __init acpi_locate_initial_tables(void)
+> >  {
+> >       acpi_status status;
+> >
+> > @@ -803,9 +803,45 @@ int __init acpi_table_init(void)
+> >       status = acpi_initialize_tables(initial_tables, ACPI_MAX_TABLES, 0);
+> >       if (ACPI_FAILURE(status))
+> >               return -EINVAL;
+> > -     acpi_table_initrd_scan();
+> >
+> > +     return 0;
+> > +}
+> > +
+> > +void __init acpi_reserve_initial_tables(void)
+> > +{
+> > +     int i;
+> > +
+> > +     for (i = 0; i < ACPI_MAX_TABLES; i++) {
+> > +             struct acpi_table_desc *table_desc = &initial_tables[i];
+> > +             u64 start = table_desc->address;
+> > +             u64 size = table_desc->length;
+> > +
+> > +             if (!start || !size)
+> > +                     break;
+> > +
+> > +             pr_info("Reserving %4s table memory at [mem 0x%llx-0x%llx]\n",
+> > +                     table_desc->signature.ascii, start, start + size - 1);
+> > +
+> > +             memblock_reserve(start, size);
+> > +     }
+> > +}
+> > +
+> > +void __init acpi_table_init_complete(void)
+> > +{
+> > +     acpi_table_initrd_scan();
+> >       check_multiple_madt();
+> > +}
+> > +
+> > +int __init acpi_table_init(void)
+> > +{
+> > +     int ret;
+> > +
+> > +     ret = acpi_locate_initial_tables();
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     acpi_table_init_complete();
+> > +
+> >       return 0;
+> >  }
+> >
+> >
+> >
+> >
+>
+> --
+> Sincerely yours,
+> Mike.
