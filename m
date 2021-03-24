@@ -2,140 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536B53480CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99DC34809C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237827AbhCXSjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:39:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:17741 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237691AbhCXSiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:38:52 -0400
-IronPort-SDR: Vry9XIMZyM3cYzJNDxsKdJxFQ1g7kQ1vUas7jclMGzpNDb7d3HrwMSaxuPJyw9UplxgA7ba9cB
- HyRX4x0UrR1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190859585"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="190859585"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 11:38:52 -0700
-IronPort-SDR: Ck0UDrK3J/KzAcuje5/Avfx+nteDZ2PA5dQgq2nPVJ2x97zXIVlBYd4rAaR5tkfU+4UvPbU25V
- m9Mxy25UQYuw==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="608203941"
-Received: from gna-dev.igk.intel.com ([10.102.80.34])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 11:38:49 -0700
-From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: [PATCH v2 13/13] intel_gna: add file operations to a 'misc' device
-Date:   Wed, 24 Mar 2021 19:36:10 +0100
-Message-Id: <20210324183610.4574-14-maciej.kwapulinski@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210324183610.4574-1-maciej.kwapulinski@linux.intel.com>
-References: <20210324183610.4574-1-maciej.kwapulinski@linux.intel.com>
+        id S237574AbhCXShw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:37:52 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:26363 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237181AbhCXShp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:37:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1616611067; x=1648147067;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=qac98krGbLr8jFZy1EBqQeq5HKqbFc8dK2iKkfQT77w=;
+  b=mnDzkANvw5aqu9EX1QRCKE6Vf8smAlMfVjCJEYUEzWkhIhLupdt3OMU0
+   56bGlSHC6ZKn14Obt2kfrAO/n7h24Obye6X4ttkUtytGADbFk6Y7yui69
+   SF8d7T2rc1yrcOU3JE8MaX6FwyPXd1Yqmm0ux36TYTGeS4tRTPaoV5zu9
+   Vy2Dkl+SdD7/1nBODqYZFdWBs3U4LiU+7Kb2+dLMZKKXYmgodkabpyOFh
+   ZoCwDapbqppHOuhsyvFF3vXppsc/hi5yYiqZvXjCiSwrDPMJcin5PNQ6x
+   l3VkoGtaRD5rqKJY2MwJNhUUGly/RFEpo10+2bnlkegxrR9+hz6vw29eh
+   Q==;
+IronPort-SDR: plwDcCOczkxyjBXDzxI0ZNcx7wTGeuJc0978UyfZYUz9iz5Vo2ZVvh5QPBdo9xG2F/M+SxRVdE
+ X8sFCVf/9hGHTfFWTWyCSDhkVpjTn5Sgw+bNuVn3ATXvO5WubXo5P6ouT1fOjiwdRlsVozG6OK
+ YpETKnU7ZOwQfgtj3Jk+r1dIzA3o2CAMRH4Lm4Uw+2Cfv4dM7/7Jo4ek4XKqJh1E/EIab9UDNO
+ nXz1HCOxFh+b43rL37wO8Nj43wi3JlM8+3TYD7TGJ0PRQ949FCIgy1MMULwpv7SCsdJBnsX0Ti
+ y9k=
+X-IronPort-AV: E=Sophos;i="5.81,275,1610434800"; 
+   d="scan'208";a="114011906"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Mar 2021 11:37:46 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 24 Mar 2021 11:37:45 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
+ Transport; Wed, 24 Mar 2021 11:37:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZtxD3n3fx9e1LiCEGSz/rj8uRG4dU0ERQE2V2FZfoW+MFIOOkOquE/fyrAKGz0uIP4tVLS5dYuZVwyNW2GMq4TaFTtLlQrUD9n6131MqDuN8LIqrxQRguawBM8i247NQfZdIqMiprkUgGKvb2bgsPWrjQTyxuYj/bn/lJRPPjMS3dHPq1wGhwvb5kSRAQVFM+5WdxX38tyoH0OcYiIg/q/zAguQ3VF6JH7y+WZDKYos+6+aWYFxbBoYikBtKv8i8uK1TDalfGJBG/KEi50PbH3W6L2XY3dEMVIBi262dvRw2CAH74aBIxLtHmHq+Jin+VnlZhlX101vGUukQ2VPO2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=94lIOSb1OKk/rST3m7500dXzNppX6LOY/V9H/JB7P5Q=;
+ b=OjI9bAHE0DI9knbjqjKAb2cGqlgB4VGY6s+ULRMlKhICxHTtw46dDe+XCWdPkO9pPYM9dd1pj9uBVRfnFZOEQRIGf1H2mgQyM46anXfnO1AD84CszAZr4LemwPNziZIraOah9YQi38BTR4iAhRbdzlZJbXgeQ+oeVb8c5SN7FPInV3MFpqcWyDqDG8EV7OD6ACXuOdJxY42yz+GbBaqntFXjm/1ZSv83AvUDYKYAyGcsF18MkoU03lSqfYJ3bx88ihGHcZoMvjsXBdWcSH3ssDvsSTKyeeaUX6lr0snuiRqmaIxq3Vm/WhLsk7yCRtM1xqvcu1tsyveT9ryL3W67Kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=94lIOSb1OKk/rST3m7500dXzNppX6LOY/V9H/JB7P5Q=;
+ b=O3gnXFu0N6UUs49ELV/vYJoRpeL/Doih/cCZ5qUea94+8eYnka60hcQuqPZE+/swoSk2ZbsB4cOVr9BRNnU8VPA2ZgO9tbIbK4AOe5Q7ECi2tjI1GCJqE/J3Mqw91GkEEfWXoD4m3qmpVQCNqR71qrQK3IhEgJvpQF5jcZEf2tY=
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com (2603:10b6:805:5d::20)
+ by SA2PR11MB5017.namprd11.prod.outlook.com (2603:10b6:806:11e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Wed, 24 Mar
+ 2021 18:37:43 +0000
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::a002:6253:12fe:2d2e]) by SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::a002:6253:12fe:2d2e%5]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
+ 18:37:42 +0000
+From:   <Don.Brace@microchip.com>
+To:     <slyfox@gentoo.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-ia64@vger.kernel.org>, <storagedev@microchip.com>,
+        <linux-scsi@vger.kernel.org>, <jszczype@redhat.com>,
+        <Scott.Benesh@microchip.com>, <Scott.Teel@microchip.com>,
+        <thenzl@redhat.com>, <martin.petersen@oracle.com>,
+        <glaubitz@physik.fu-berlin.de>
+Subject: RE: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
+Thread-Topic: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
+Thread-Index: AQHXF4722AqRbCqQukSHQNjL/VV846qTikpA
+Date:   Wed, 24 Mar 2021 18:37:42 +0000
+Message-ID: <SN6PR11MB2848C136F6CB4EA66D42FFAEE1639@SN6PR11MB2848.namprd11.prod.outlook.com>
+References: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
+ <20210312222718.4117508-1-slyfox@gentoo.org>
+In-Reply-To: <20210312222718.4117508-1-slyfox@gentoo.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gentoo.org; dkim=none (message not signed)
+ header.d=none;gentoo.org; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [76.30.208.15]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1a84527a-da55-4042-ab69-08d8eef3e91c
+x-ms-traffictypediagnostic: SA2PR11MB5017:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR11MB5017CBB98C97E8F470EE2346E1639@SA2PR11MB5017.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cKrdQKxZ30laKkLHyoIThbNsAjSivumReSXSKwelM5GTgtiOEERruerMv/oFEdytnjQmEHiz+wk48xBPvy7nLSqSAU+7WQWW1zrFdL+Q46xQo4mw/qwHxdSwcsstFTV303rLonAGB/x5STie3wATjILoZJ0Mz0T/Mchw7SZnMv3Y2nS8SVwm3De2zZA16eGdg5syHjONw4oXAL0dPN+FpwWosZIto+v3cH3llrmbwoDvSsZ0kDI8RkDWv3uMc5voL14hsfI3qtYqTvVR5srsKZ85oTxDPLU2WmisEeyajYdNzFxzOqPtFGj9JYEwjMsrJrP0/woVVFLTIX6WN5+B8RNSKLwjNxuCXXql+5tdz985p2gIUs8DxfSnGZQjdxHuuTOjxF+fGTVsjFGcOQlz5Q5ESqboRQ0LHOAGsanspo9VblKQUphErGZoJaZkyA5LREyOl/PTfuFOgL5EpW7XPkl5xn11bTWP2aK6CH66qEvZXXTpIA1DgiaGXtuLGv/B4Qq/OcIEhgxEqGJOAw83NXWPeOOExmbGqM7uLAujWz5dzWaZdkGy9LIVcAklRO0/6DrzXYW8xrqL+UgxU6bAFjlIxhGnExnSyNuRF+xZ3801XaIhizoquOBOgaV5K6mU5jtF+qOj9CYgHRvAB7ru2y3cCGkek+B2SOFQwpBNgYg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2848.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(39860400002)(136003)(376002)(6506007)(8936002)(8676002)(478600001)(7696005)(4326008)(54906003)(110136005)(316002)(38100700001)(86362001)(33656002)(26005)(66556008)(66946007)(66446008)(2906002)(71200400001)(9686003)(76116006)(55016002)(64756008)(5660300002)(83380400001)(52536014)(66476007)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?KQQnAwb/yWDJT/MWL6hWD4LslDOakwtcLigRxfj9sVUv4kuKak+7M2YqAr4h?=
+ =?us-ascii?Q?hbxfERaGhh+7GFs31n67uE5EwmHGwJpgdoZAOKVOGrZaIMiMzNrgVreLrxu0?=
+ =?us-ascii?Q?4jgeU6fkpeK9mb1YeCv4KeFKb42ua+S+gYBDkFbeJZ4jyPme7fMBIo0d1cKD?=
+ =?us-ascii?Q?YD6kk+dvREtJmVJlH2iRDwrZmKO8F44A+qyp+BT9smPW5wspJ7U4TF0LrlM2?=
+ =?us-ascii?Q?0ZM80IZ/gf8x21+H5vDhV/DezaWRXNgqyjh87qp9MfR4DfMRHB7QssFeDi0p?=
+ =?us-ascii?Q?Kt0a7cnmV2QclnxdN/ZYCwPfckwjzvWLwwOxgjNsuqxnp1rBYu4etmnnhoZ7?=
+ =?us-ascii?Q?kSvI+Hpeo+XdzVVI1H3QCy/s03P9js6KlP8UCpJM/NyR6ZJWiYn4T2G3wZCN?=
+ =?us-ascii?Q?xDEsWNtNNIulM/zvlXymmYrQ6tJ3aCj5MBHSbCc5RxT6flDwvhwlKBUDE0Mo?=
+ =?us-ascii?Q?uaxeoBoyML4dCw5drdSuZeaxtKgNzlU4ETrrxk0TUQm9f5+kvPaktCMa0UhB?=
+ =?us-ascii?Q?iGhMQOSMIlvtVVValu5coA0gzPy/oBPEt0fpjVhP98EYiV7URUHD51EtCqjd?=
+ =?us-ascii?Q?jXof+SJ/7SXNA52yy1XQD10vHbOHCPED07wL6OVoBqIXoROwSQLGx3eHdlno?=
+ =?us-ascii?Q?p1NEJk7YazaRPiq7fWItvxLiAcdasJ1CwgBJo/Lf+KnZ0MHYSZ26JgISvhKR?=
+ =?us-ascii?Q?2eASEuxFy2YgZAytG9m9IOJ47ZSaC6OeyUakc6LoP8m+ftohqoYeYsH6pxPK?=
+ =?us-ascii?Q?vUOwKmxgFrdzWjFMGSzU0I4mzXF9/SKe6/pl/VKF5LORG2tG+Cguzk0EKukO?=
+ =?us-ascii?Q?PN69at8LcK6AmA34zgY18ViiGf0h1YtxPZm8/oYFKJqd43rOzMNHjcRiRpYB?=
+ =?us-ascii?Q?Sr2CYMePCPOObjtT1nbHk/tF7VZh8vweAtrX8/22/QIpmf0fN8ARfGq7vBdK?=
+ =?us-ascii?Q?LgY5BBINMBQ6v050ZNxXYb7CQ5q25rleQJr8Ul2rC6m9rNh5FkvCWJWYIS0b?=
+ =?us-ascii?Q?BNE+HSj+7hQ2AgHyjLl+ncTU2Ctij+NTzFVMyYHliWOetiI/1Snu4TrJPopq?=
+ =?us-ascii?Q?1iPL8FtBaLnnxJnQkOskmzY2bqL+1fymUiTEcJlnIAHdYF5DQ8KGArfGLjpf?=
+ =?us-ascii?Q?mXfriC9KNhjPBO91IxBhh7jJTauVQedYAhHZhnK581Nnr/gBVIxSlN5QME7C?=
+ =?us-ascii?Q?RrUqhyQxgIQXs52IWSdO5Zz4hOiI3uWuyMagdvuQUA0WzTA7isrx9mL2kXHW?=
+ =?us-ascii?Q?XVp1LUXFw9qQJAe2bOm/M5Cs1XnL9nvQTLrCO4xYi2c83S42xHf00ZrcaRD1?=
+ =?us-ascii?Q?OOg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2848.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a84527a-da55-4042-ab69-08d8eef3e91c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2021 18:37:42.7179
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LnFQQiBfxgK/aeKXhzgpwN8lGwqUh/Ve8xV/TWISgfXwcBLo5mYD7Oc3xwBZbpPsnHBPMPtQYrtTIWo8z8RxxQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
+-----Original Message-----
+From: Sergei Trofimovich [mailto:slyfox@gentoo.org]=20
+Subject: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
 
-Signed-off-by: Tomasz Jankowski <tomasz1.jankowski@intel.com>
-Tested-by: Savo Novakovic <savox.novakovic@intel.com>
-Co-developed-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Signed-off-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Co-developed-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-Signed-off-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+The failure initially observed as boot failure on rx3600 ia64 machine with =
+RAID bus controller: Hewlett-Packard Company Smart Array P600:
+
+    kernel unaligned access to 0xe000000105dd8b95, ip=3D0xa000000100b87551
+    kernel unaligned access to 0xe000000105dd8e95, ip=3D0xa000000100b87551
+    hpsa 0000:14:01.0: Controller reports max supported commands of 0 Using=
+ 16 instead. Ensure that firmware is up to date.
+    swapper/0[1]: error during unaligned kernel access
+
+Here unaligned access comes from 'struct CommandList' that happens to be pa=
+cked. The change f749d8b7a ("scsi: hpsa: Correct dev cmds outstanding for r=
+etried cmds") introduced unexpected padding and un-aligned atomic_t from na=
+tural alignment to something else.
+
+This change does not remove packing annotation from struct but only restore=
+s alignment of atomic variable.
+
+The change is tested on the same rx3600 machine.
+
+CC: linux-ia64@vger.kernel.org
+CC: storagedev@microchip.com
+CC: linux-scsi@vger.kernel.org
+CC: Joe Szczypek <jszczype@redhat.com>
+CC: Scott Benesh <scott.benesh@microchip.com>
+CC: Scott Teel <scott.teel@microchip.com>
+CC: Tomas Henzl <thenzl@redhat.com>
+CC: "Martin K. Petersen" <martin.petersen@oracle.com>
+CC: Don Brace <don.brace@microchip.com>
+Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Suggested-by: Don Brace <don.brace@microchip.com>
+Fixes: f749d8b7a "scsi: hpsa: Correct dev cmds outstanding for retried cmds=
+"
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 ---
- drivers/misc/intel/gna/gna_device.c | 60 ++++++++++++++++++++++++++++-
- 1 file changed, 59 insertions(+), 1 deletion(-)
+ drivers/scsi/hpsa_cmd.h | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/intel/gna/gna_device.c b/drivers/misc/intel/gna/gna_device.c
-index 3f7f4c07d1a1..3f74a0a3bd30 100644
---- a/drivers/misc/intel/gna/gna_device.c
-+++ b/drivers/misc/intel/gna/gna_device.c
-@@ -93,12 +93,70 @@ MODULE_DEVICE_TABLE(pci, gna_pci_ids);
- 
- static int gna_open(struct inode *inode, struct file *f)
- {
--	return -EPERM;
-+	struct gna_file_private *file_priv;
-+	struct gna_private *gna_priv;
+diff --git a/drivers/scsi/hpsa_cmd.h b/drivers/scsi/hpsa_cmd.h index d126bb=
+877250..617bdae9a7de 100644
+--- a/drivers/scsi/hpsa_cmd.h
++++ b/drivers/scsi/hpsa_cmd.h
+@@ -20,6 +20,9 @@
+ #ifndef HPSA_CMD_H
+ #define HPSA_CMD_H
+
++#include <linux/build_bug.h> /* static_assert */ #include=20
++<linux/stddef.h> /* offsetof */
 +
-+	gna_priv = container_of(f->private_data, struct gna_private, misc);
+ /* general boundary defintions */
+ #define SENSEINFOBYTES          32 /* may vary between hbas */
+ #define SG_ENTRIES_IN_CMD      32 /* Max SG entries excluding chain blocks=
+ */
+@@ -448,11 +451,20 @@ struct CommandList {
+         */
+        struct hpsa_scsi_dev_t *phys_disk;
+
+-       bool retry_pending;
++       int retry_pending;
+        struct hpsa_scsi_dev_t *device;
+        atomic_t refcount; /* Must be last to avoid memset in hpsa_cmd_init=
+() */  } __aligned(COMMANDLIST_ALIGNMENT);
+
++/*
++ * Make sure our embedded atomic variable is aligned. Otherwise we=20
++break atomic
++ * operations on architectures that don't support unaligned atomics like I=
+A64.
++ *
++ * Ideally this header should be cleaned up to only mark individual=20
++structs as
++ * packed.
++ */
++static_assert(offsetof(struct CommandList, refcount) %=20
++__alignof__(atomic_t) =3D=3D 0);
 +
-+	file_priv = kzalloc(sizeof(*file_priv), GFP_KERNEL);
-+	if (!file_priv)
-+		return -ENOMEM;
-+
-+	file_priv->fd = f;
-+	file_priv->gna_priv = gna_priv;
-+
-+	mutex_init(&file_priv->memlist_lock);
-+	INIT_LIST_HEAD(&file_priv->memory_list);
-+
-+	mutex_lock(&gna_priv->flist_lock);
-+	list_add_tail(&file_priv->flist, &gna_priv->file_list);
-+	mutex_unlock(&gna_priv->flist_lock);
-+
-+	f->private_data = file_priv;
-+
-+	return 0;
-+}
-+
-+static int gna_release(struct inode *inode, struct file *f)
-+{
-+	struct gna_file_private *iter_file, *temp_file;
-+	struct gna_memory_object *iter_mo, *temp_mo;
-+	struct gna_file_private *file_priv;
-+	struct gna_private *gna_priv;
-+
-+	/* free all memory objects created by that file */
-+	file_priv = (struct gna_file_private *)f->private_data;
-+	gna_priv = file_priv->gna_priv;
-+
-+	mutex_lock(&file_priv->memlist_lock);
-+	list_for_each_entry_safe(iter_mo, temp_mo, &file_priv->memory_list, file_mem_list) {
-+		queue_work(gna_priv->request_wq, &iter_mo->work);
-+		wait_event(iter_mo->waitq, true);
-+		gna_memory_free(gna_priv, iter_mo);
-+	}
-+	mutex_unlock(&file_priv->memlist_lock);
-+
-+	gna_delete_file_requests(f, gna_priv);
-+
-+	mutex_lock(&gna_priv->flist_lock);
-+	list_for_each_entry_safe(iter_file, temp_file, &gna_priv->file_list, flist) {
-+		if (iter_file->fd == f) {
-+			list_del(&iter_file->flist);
-+			f->private_data = NULL;
-+			kfree(iter_file);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&gna_priv->flist_lock);
-+
-+	return 0;
- }
- 
- static const struct file_operations gna_file_ops = {
- 	.owner		=	THIS_MODULE,
- 	.open		=	gna_open,
-+	.release	=	gna_release,
-+	.unlocked_ioctl =	gna_ioctl,
- };
- 
- static void gna_dev_release(struct gna_private *gna_priv)
--- 
-2.28.0
+ /* Max S/G elements in I/O accelerator command */
+ #define IOACCEL1_MAXSGENTRIES           24
+ #define IOACCEL2_MAXSGENTRIES          28
+--
+2.30.2
+
+
+Acked-by: Don Brace <don.brace@microchip.com>
+
+Thanks for your patch and extra effort.
+
 
