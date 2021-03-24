@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788C834789F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0563478A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbhCXMhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhCXMhb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:37:31 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986B1C061763;
-        Wed, 24 Mar 2021 05:37:30 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id z2so24304125wrl.5;
-        Wed, 24 Mar 2021 05:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mt31SZR/o6YA2k4YRrLR3VTpnaJxsF0VK5o2je/XXYw=;
-        b=HeqpHWrQg+9WKd/M/HkkOepQ9pCfOPP7erzYnn5cvvTdI2Sj+qcIwQ4mJjkkuxG62P
-         HzuIJJGYmJIn/QADpwshwcD8o+BouFeovHH9Q1NCu6G0bB61IP10mB9BRLSAEP9quXfn
-         Yo9nLo59oqsPKn9MRV/WkYSKlDAhzsmVCHtm3pwyFEr8N5M4KBWIuuqGUb3qeJAtErtx
-         gE17I0782yWQPmHWgtz1AKgAn1sbZGBBRNFRFmAHwk5wOFnK3XEhArdofOE6lJ/J1Ip6
-         IvsEbMuHPs7aHdkjrh9rLEZy+doiEJQeukErlFFfJ9tUdj/TS1Hfy/7PgZPK7J56Yksl
-         wFIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Mt31SZR/o6YA2k4YRrLR3VTpnaJxsF0VK5o2je/XXYw=;
-        b=HslZpyus3aMXr9Lszj4j1UekQVGbyP5HKMYHRBeAHnLx9fXcGELkMj7UR7zK5hkS2J
-         YmM13Jd8wQXJI8q2gX383md8LAQPKeeK/kd0v/fSLQyb4G76ZBGYAuH/BskA7RiE+ReV
-         SK48Uu7VIEwqXGYcJA4w5yxWp6x2zok9D4isOGG+uQzDIhO3jfHawtWRYDOK4exrNMSW
-         iOiffI7WUJObYWTgVW2WoR2arsl9H8/79mX2mRq+Z649Ej2CVfpbTxU1aVdNQKIrSAj5
-         xdDR2JOvNRdqgGHwD9a2uA3W1VQUbT/ITbGrXxvT7gnE/2FJV2Vgg5DC1eNwVSTLeINU
-         jMuQ==
-X-Gm-Message-State: AOAM531hLl2T+D2QETzz+OHagbZs/OD1tEywY3DNaEFZIbfQhFWQoRi/
-        MhhEGJbGPfRngArZYy7F+kRie/tImLTmnQ==
-X-Google-Smtp-Source: ABdhPJwJSZtK2QyZG5pEslcyp3jo/3lnS7Itz0DzeXC8cikmyEC1jw6q0FQZllHunPrNBSi8F/goDQ==
-X-Received: by 2002:a05:6000:18cd:: with SMTP id w13mr3271926wrq.20.1616589448657;
-        Wed, 24 Mar 2021 05:37:28 -0700 (PDT)
-Received: from lorien (lorien.valinor.li. [2a01:4f8:192:61d5::2])
-        by smtp.gmail.com with ESMTPSA id m11sm3132366wri.44.2021.03.24.05.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 05:37:27 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Wed, 24 Mar 2021 13:37:27 +0100
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Len Brown <len.brown@intel.com>
-Cc:     Christian Kastner <ckk@debian.org>, Kurt Garloff <kurt@garloff.de>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org
-Subject: Re: turbostat: Fix Pkg Power on Zen
-Message-ID: <YFsyh5tEaiVNjqT1@lorien.valinor.li>
-References: <1f1fb01e-0616-34ea-ede6-dc7dd679c3d4@garloff.de>
- <c7074c16-5d64-e829-10f6-ef91f5f6222b@garloff.de>
- <f6143d7a-079d-3f3c-c947-47fc9858a2bb@debian.org>
+        id S234029AbhCXMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:38:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57930 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233111AbhCXMho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:37:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616589463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZtgFaOg9Su1Yf0TQH/ROrKjdESYBrkslJWw39nM9B8s=;
+        b=oioWrSvcZsBqeA2OHs+ANwAYR1Tq55BbrkzRcMM5VnRBNPdq3Tx2Q5GOWTkceHSz4Jt8lH
+        MpCmHE5QAAqNhjVZ/s+ynOHOThytklhkw5UB/Tlu0ATCiPZ7IhR1qHtYrT3jjTJA0ysL8E
+        mjMWhizBKYz8+vH1LxQhtp+R6TybYUg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E52F7AD38;
+        Wed, 24 Mar 2021 12:37:42 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 13:37:35 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFsydJNF63OEcCaY@dhcp22.suse.cz>
+References: <20210319092635.6214-1-osalvador@suse.de>
+ <20210319092635.6214-2-osalvador@suse.de>
+ <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+ <20210324101259.GB16560@linux>
+ <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+ <YFssRr7gZEPfHieA@dhcp22.suse.cz>
+ <c3ff7038-a694-d311-c246-b881a2f55be7@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f6143d7a-079d-3f3c-c947-47fc9858a2bb@debian.org>
+In-Reply-To: <c3ff7038-a694-d311-c246-b881a2f55be7@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Len,
-
-On Mon, Mar 15, 2021 at 10:54:24PM +0100, Christian Kastner wrote:
-> Hi,
-> 
-> On 01.02.21 10:01, Kurt Garloff wrote:
-> > Issue persists on Ryzen in 5.11-rc6:
-> > 
-> > kvmadmin@KurtSrv2018(//):~ [0]$ sudo /casa/src/linux-stable/tools/power/x86/turbostat/turbostat
+On Wed 24-03-21 13:23:47, David Hildenbrand wrote:
+> On 24.03.21 13:10, Michal Hocko wrote:
+> > On Wed 24-03-21 13:03:29, Michal Hocko wrote:
+> > > On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
 > > [...]
-> > kvmadmin@KurtSrv2018(//):~ [243]$
 > > 
-> > ?????????????????????????????????????????????????????? ^^^ Exit code
+> > an additional remark
 > > 
-> > With the patch:
+> > > > - online_pages()->move_pfn_range_to_zone(): Accounts for node/zone's spanned pages
+> > > > - online_pages()->zone->present_pages += nr_pages;
 > > 
-> > kvmadmin@KurtSrv2018(//):~ [243]$ sudo /casa/src/linux-stable/tools/power/x86/turbostat/turbostat??????
-> > [...]???????????????????????????????????? 
-> > Core?????? CPU???????? Avg_MHz Busy%???? Bzy_MHz TSC_MHz IRQ???????? POLL?????? C1?????????? C2?????????? POLL%???? C1%???????? C2%???????? CorWatt PkgWatt
-> > -???????????? -???????????? 27?????????? 1.04?????? 2562?????? 3411?????? 16046???? 33?????????? 2931?????? 12895???? 0.00?????? 0.85?????? 98.48???? 1.57?????? 18.81
-> > 0???????????? 0???????????? 12?????????? 0.55?????? 2193?????? 3400?????? 885???????? 1???????????? 111???????? 757???????? 0.00?????? 1.12?????? 98.42???? 0.04?????? 18.74
-> > 0???????????? 16?????????? 1???????????? 0.05?????? 2351?????? 3400?????? 53?????????? 0???????????? 3???????????? 54?????????? 0.00?????? 0.05?????? 99.92????????????
-> > 1???????????? 1???????????? 20?????????? 0.89?????? 2261?????? 3400?????? 478???????? 0???????????? 39?????????? 427???????? 0.00?????? 0.37?????? 98.80???? 0.06
-> > 1???????????? 17?????????? 9???????????? 0.40?????? 2329?????? 3400?????? 308???????? 0???????????? 38?????????? 282???????? 0.00?????? 0.35?????? 99.29????????????
-> > [...]
+> > I am pretty sure you shouldn't account vmmemmap pages to the target zone
+> > in some cases - e.g. vmemmap cannot be part of the movable zone, can it?
+> > So this would be yet another special casing. This patch has got it wrong
+> > unless I have missed some special casing.
+> > 
 > 
-> I was seeing the same issue (no stats, program just exits with 243), and
-> Kurt's simple patch resolved it for me.
+> It's a bit unfortunate that we have to discuss the very basic design
+> decisions again.
 
-Does Kurt's patch seems good to you and can be applied or is there
-anything missing?
+It would be great to have those basic design decisions layed out in the
+changelog.
 
-Regards,
-Salvatore
+> @Oscar, maybe you can share the links where we discussed all this and add
+> some of it to the patch description.
+> 
+> I think what we have right here is good enough for an initial version, from
+> where on we can improve things without having to modify calling code.
+
+I have to say I really dislike vmemmap proliferation into
+{on,off}lining. It just doesn't belong there from a layering POV. All
+this code should care about is to hand over pages to the allocator and
+make them visible.
+
+Is that a sufficient concern to nack the whole thing? No, I do not think
+so. But I do not see any particular rush to have this work needs to be
+merged ASAP.
+
+-- 
+Michal Hocko
+SUSE Labs
