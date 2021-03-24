@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5437F347F0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21867347EEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237096AbhCXROc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:14:32 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45976 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236428AbhCXROP (ORCPT
+        id S237066AbhCXRKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:10:13 -0400
+Received: from mail-il1-f179.google.com ([209.85.166.179]:37492 "EHLO
+        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237244AbhCXRJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:14:15 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12OH8xbn002400;
-        Wed, 24 Mar 2021 12:08:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616605739;
-        bh=+xl74nW14tlASuaYGR2l7ZDsHzZfrFL+BtukpRdGr00=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ADAOy5hkFA9/vSDY7lHwj9LeXaux9srPlstV0mxmA+pgzGhvx9Rd5AYlFh+pAcblz
-         m3+nsnGiD4g29M/4aO7PRwizqYKfy9tcwYlCeK3dW10vURdhCIBaKqeqI1aWU6LtkK
-         vUeFPaDLT67AFDPVSA2xgBKSlvULXmBKnVjObEJo=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12OH8xYc080356
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 24 Mar 2021 12:08:59 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 24
- Mar 2021 12:08:59 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 24 Mar 2021 12:08:59 -0500
-Received: from [10.250.33.213] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12OH8wpi125558;
-        Wed, 24 Mar 2021 12:08:58 -0500
-Subject: Re: [PATCH] remoteproc: pru: Fix firmware loading crashes on K3 SoCs
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210315205859.19590-1-s-anna@ti.com>
- <20210323232014.GA1782475@xps15>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <2f8bfc4f-e43d-5e38-fc6d-7045c69af364@ti.com>
-Date:   Wed, 24 Mar 2021 12:08:53 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 24 Mar 2021 13:09:00 -0400
+Received: by mail-il1-f179.google.com with SMTP id z9so22028638ilb.4;
+        Wed, 24 Mar 2021 10:09:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t5QlIofBT3IA5excy3udA7XEAyczBGmnESa+x6UIryc=;
+        b=elcYo2WtqJYSBzKYx+WUFOhUVLDogT+kqsAXlM6/KTZtBOahE3FMvN0eGFAdLMLfpd
+         +bxM4T0y/jdOGSWu8vDcxPVIdG4BsmJPEC5fhOYaPLCmtzFTOKGkZoVIAS/7O6GOD8B2
+         DuKJ3R5oThXCPBRfpGNAXOMkWZKaKNBNP6bTPpWlrcUkxw7eflS91y1dTbX0OOJupIhw
+         7w2hDuk9FnTl4L91Aq5vOOKcb0CVLNP7NXyJJ5dHz/ttcQt6qvXFFlxK7ijiwnBEQP09
+         hbnvdh3sy7gPH9fsGymyvVBiUa3ykRfeZXDgDKCpKnJLpFe8rMnkA8hO7/RGqifggQKP
+         Q+cA==
+X-Gm-Message-State: AOAM531mZWh8a4VadfBeEMuCJrFcmJHiMMMXUDuAm15LUJVS9vI/rE03
+        wB6UwhUmp9FTolPpwynwffusHfEAGQ==
+X-Google-Smtp-Source: ABdhPJwp4OYrDLyBQl+w9gceAyQdazHzh08A0HI5YhhfcX99A1SCgubvR3ehOHGKr4bhxf7vMkCMXQ==
+X-Received: by 2002:a92:cd8b:: with SMTP id r11mr3410755ilb.186.1616605739907;
+        Wed, 24 Mar 2021 10:08:59 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id j17sm1346015iok.37.2021.03.24.10.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 10:08:58 -0700 (PDT)
+Received: (nullmailer pid 3258475 invoked by uid 1000);
+        Wed, 24 Mar 2021 17:08:55 -0000
+Date:   Wed, 24 Mar 2021 11:08:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, martin.botka@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        angelogioacchino.delregno@somainline.org,
+        Taniya Das <tdas@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        marijn.suijten@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: clock: Add MDM9607 GCC clock bindings
+Message-ID: <20210324170855.GA3258412@robh.at.kernel.org>
+References: <20210313020310.386152-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <20210323232014.GA1782475@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210313020310.386152-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 6:20 PM, Mathieu Poirier wrote:
-> On Mon, Mar 15, 2021 at 03:58:59PM -0500, Suman Anna wrote:
->> The K3 PRUs are 32-bit processors and in general have some limitations
->> in using the standard ARMv8 memcpy function for loading firmware segments,
->> so the driver already uses a custom memcpy implementation. This added
->> logic however is limited to only IRAMs at the moment, but the loading
->> into Data RAMs is not completely ok either and does generate a kernel
->> crash for unaligned accesses.
->>
->> Fix these crashes by removing the existing IRAM logic limitation and
->> extending the custom memcpy usage to Data RAMs as well for all K3 SoCs.
->>
->> Fixes: 1d39f4d19921 ("remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs")
->> Signed-off-by: Suman Anna <s-anna@ti.com>
+On Sat, 13 Mar 2021 03:03:07 +0100, Konrad Dybcio wrote:
+> Add device tree bindings for global clock controller on MDM9607 SoC.
 > 
-> Probably a good idea to CC stable as well...
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  .../devicetree/bindings/clock/qcom,gcc.yaml   |   2 +
+>  include/dt-bindings/clock/qcom,gcc-mdm9607.h  | 104 ++++++++++++++++++
+>  2 files changed, 106 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-mdm9607.h
 > 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Thanks Mathieu. This patch is already staged on Bjorn's rproc-fixes branch
-though and part of linux-next since next-20210319. I have posted an additional
-3-patch series for some more PRU fixes. Do you want me to post a v2 for those
-with stable Cc'd?
-
-regards
-Suman
-
-> 
->> ---
->>  drivers/remoteproc/pru_rproc.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
->> index 2667919d76b3..16979c1cd2f4 100644
->> --- a/drivers/remoteproc/pru_rproc.c
->> +++ b/drivers/remoteproc/pru_rproc.c
->> @@ -585,7 +585,7 @@ pru_rproc_load_elf_segments(struct rproc *rproc, const struct firmware *fw)
->>  			break;
->>  		}
->>  
->> -		if (pru->data->is_k3 && is_iram) {
->> +		if (pru->data->is_k3) {
->>  			ret = pru_rproc_memcpy(ptr, elf_data + phdr->p_offset,
->>  					       filesz);
->>  			if (ret) {
->> -- 
->> 2.30.1
->>
-
+Acked-by: Rob Herring <robh@kernel.org>
