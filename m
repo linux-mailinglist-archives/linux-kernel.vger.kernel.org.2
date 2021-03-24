@@ -2,227 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E02348332
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEB334831E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238290AbhCXUv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:51:57 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37600 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238188AbhCXUvf (ORCPT
+        id S238222AbhCXUuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:50:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42388 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238108AbhCXUtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:51:35 -0400
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 7/7] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Date:   Wed, 24 Mar 2021 23:48:36 +0300
-Message-ID: <20210324204836.29668-8-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20210324204836.29668-1-Sergey.Semin@baikalelectronics.ru>
-References: <20210324204836.29668-1-Sergey.Semin@baikalelectronics.ru>
+        Wed, 24 Mar 2021 16:49:40 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12OKWpqh157879;
+        Wed, 24 Mar 2021 16:49:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=oSk4ZvpIFfpvGW9vz/hLhm3l5dMxtXS4oNfyPDLD3r8=;
+ b=X9C83N0V6kwHaDns3tPOXthGbKVrxbHgyJjF4T8Oz1lzzyv0C8n0N0yOrfSmAGhvUytg
+ ZMshhOamMXbkMAiZRw9ceA/zcNsbum0UBtI1OlCaLWrf+xF+HdpzSAQWSohskcFZedLs
+ WlyyCAOkzPV5ThH+ku1bEIFXl9nnlmLE+qnSViMaTiJ+51kGyge3X8RRHFVhGefWQenG
+ LhCYm33xF52xUJxKQkUwhVBpn1ur6HVotFQXa4LrOnOeD5wvwnB6uxhNPkGzHqe7UuN6
+ QGG8peL7VJLzWibEZ78gWlB91IJj+qR+2/CzO18IoCGRxnHsl46h/4bimUwy0BKHimQt jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37g865gaw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Mar 2021 16:49:17 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12OKXi6w161283;
+        Wed, 24 Mar 2021 16:49:17 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37g865gavk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Mar 2021 16:49:17 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12OKnF15028449;
+        Wed, 24 Mar 2021 20:49:15 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 37d9a62fn6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Mar 2021 20:49:15 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12OKnCc942860938
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Mar 2021 20:49:12 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BD3C7A404D;
+        Wed, 24 Mar 2021 20:49:12 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 54DF0A4059;
+        Wed, 24 Mar 2021 20:49:07 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.163.11.141])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Mar 2021 20:49:07 +0000 (GMT)
+Message-ID: <df118419f28a04d2e711a55678c0149115606071.camel@linux.ibm.com>
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     jejb@linux.ibm.com, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Horia =?UTF-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Pascal Van Leeuwen <pvanleeuwen@verimatrix.com>
+Date:   Wed, 24 Mar 2021 16:49:05 -0400
+In-Reply-To: <9ba89168d8c4f1e3d6797a0b3713e152ac6388fd.camel@linux.ibm.com>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+         <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+         <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
+         <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+         <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+         <9ba89168d8c4f1e3d6797a0b3713e152ac6388fd.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-24_13:2021-03-24,2021-03-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 clxscore=1011
+ spamscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103240150
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In accordance with the DWC USB3 bindings the corresponding node
-name is suppose to comply with the Generic USB HCD DT schema, which
-requires the USB nodes to have the name acceptable by the regexp:
-"^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-named.
+On Wed, 2021-03-24 at 09:14 -0700, James Bottomley wrote:
+> On Tue, 2021-03-23 at 14:07 -0400, Mimi Zohar wrote:
+> > On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
+> > > Hello Horia,
+> > > 
+> > > On 21.03.21 21:48, Horia Geantă wrote:
+> > > > On 3/16/2021 7:02 PM, Ahmad Fatoum wrote:
+> > > > [...]
+> > > > > +struct trusted_key_ops caam_trusted_key_ops = {
+> > > > > +	.migratable = 0, /* non-migratable */
+> > > > > +	.init = trusted_caam_init,
+> > > > > +	.seal = trusted_caam_seal,
+> > > > > +	.unseal = trusted_caam_unseal,
+> > > > > +	.exit = trusted_caam_exit,
+> > > > > +};
+> > > > caam has random number generation capabilities, so it's worth
+> > > > using that
+> > > > by implementing .get_random.
+> > > 
+> > > If the CAAM HWRNG is already seeding the kernel RNG, why not use
+> > > the kernel's?
+> > > 
+> > > Makes for less code duplication IMO.
+> > 
+> > Using kernel RNG, in general, for trusted keys has been discussed
+> > before.   Please refer to Dave Safford's detailed explanation for not
+> > using it [1].
+> > 
+> > [1] 
+> > https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A3C035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
+> 
+> I still don't think relying on one source of randomness to be
+> cryptographically secure is a good idea.  The fear of bugs in the
+> kernel entropy pool is reasonable, but since it's widely used they're
+> unlikely to persist very long.  Studies have shown that some TPMs
+> (notably the chinese manufactured ones) have suspicious failures in
+> their RNGs:
+> 
+> https://www.researchgate.net/publication/45934562_Benchmarking_the_True_Random_Number_Generator_of_TPM_Chips
+> 
+> And most cryptograhpers recommend using a TPM for entropy mixing rather
+> than directly:
+> 
+> https://blog.cryptographyengineering.com/category/rngs/
+> 
+> The TPMFail paper also shows that in spite of NIST certification
+> things can go wrong with a TPM:
+> 
+> https://tpm.fail/
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
- arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
- arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
- arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
- arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
- arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
- arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
- arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
- arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
- 9 files changed, 14 insertions(+), 14 deletions(-)
+We already had a lengthy discussion on replacing the TPM RNG with the
+kernel RNG for trusted keys, when TEE was being introduced [2,3].  I'm
+not interested in re-hashing that discussion here.   The only
+difference now is that CAAM is a new trust source.  I suspect the same
+concerns/issues persist, but at least in this case using the kernel RNG
+would not be a regression.
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index defcbd15edf9..34e97da98270 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -1064,7 +1064,7 @@ &usb2 {
- 	status = "okay";
- 	extcon = <&usb2_id>;
- 
--	dwc3@7600000 {
-+	usb@7600000 {
- 		extcon = <&usb2_id>;
- 		dr_mode = "otg";
- 		maximum-speed = "high-speed";
-@@ -1075,7 +1075,7 @@ &usb3 {
- 	status = "okay";
- 	extcon = <&usb3_id>;
- 
--	dwc3@6a00000 {
-+	usb@6a00000 {
- 		extcon = <&usb3_id>;
- 		dr_mode = "otg";
- 	};
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index a32e5e79ab0b..7df4eb710aae 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -427,7 +427,7 @@ usb_0: usb@8af8800 {
- 			resets = <&gcc GCC_USB0_BCR>;
- 			status = "disabled";
- 
--			dwc_0: dwc3@8a00000 {
-+			dwc_0: usb@8a00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x8a00000 0xcd00>;
- 				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-@@ -468,7 +468,7 @@ usb_1: usb@8cf8800 {
- 			resets = <&gcc GCC_USB1_BCR>;
- 			status = "disabled";
- 
--			dwc_1: dwc3@8c00000 {
-+			dwc_1: usb@8c00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x8c00000 0xcd00>;
- 				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index ce430ba9c118..9eb31b3e6ee7 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1772,7 +1772,7 @@ usb3: usb@6af8800 {
- 			power-domains = <&gcc USB30_GDSC>;
- 			status = "disabled";
- 
--			dwc3@6a00000 {
-+			usb@6a00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x06a00000 0xcc00>;
- 				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1983,7 +1983,7 @@ usb2: usb@76f8800 {
- 			power-domains = <&gcc USB30_GDSC>;
- 			status = "disabled";
- 
--			dwc3@7600000 {
-+			usb@7600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x07600000 0xcc00>;
- 				interrupts = <0 138 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index 1f2e93aa6553..9141c5d09b59 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -1962,7 +1962,7 @@ usb3: usb@a8f8800 {
- 
- 			resets = <&gcc GCC_USB_30_BCR>;
- 
--			usb3_dwc3: dwc3@a800000 {
-+			usb3_dwc3: usb@a800000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x0a800000 0xcd00>;
- 				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-index a80c578484ba..f8a55307b855 100644
---- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-@@ -337,7 +337,7 @@ &usb2_phy_sec {
- &usb3 {
- 	status = "okay";
- 
--	dwc3@7580000 {
-+	usb@7580000 {
- 		dr_mode = "host";
- 	};
- };
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index 339790ba585d..9c4be020d568 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -544,7 +544,7 @@ usb3: usb@7678800 {
- 			assigned-clock-rates = <19200000>, <200000000>;
- 			status = "disabled";
- 
--			dwc3@7580000 {
-+			usb@7580000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x07580000 0xcd00>;
- 				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-@@ -573,7 +573,7 @@ usb2: usb@79b8800 {
- 			assigned-clock-rates = <19200000>, <133333333>;
- 			status = "disabled";
- 
--			dwc3@78c0000 {
-+			usb@78c0000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x078c0000 0xcc00>;
- 				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 1ea3344ab62c..8b83ffbb5b2a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2869,7 +2869,7 @@ usb_1: usb@a6f8800 {
- 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xe000>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 454f794af547..809be2c67d7a 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3769,7 +3769,7 @@ usb_1: usb@a6f8800 {
- 					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_0 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xcd00>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-@@ -3817,7 +3817,7 @@ usb_2: usb@a8f8800 {
- 					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_1 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_2_dwc3: dwc3@a800000 {
-+			usb_2_dwc3: usb@a800000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a800000 0 0xcd00>;
- 				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index e5bb17bc2f46..e4c3edc13676 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -1719,7 +1719,7 @@ usb_1: usb@a6f8800 {
- 
- 			resets = <&gcc GCC_USB30_PRIM_BCR>;
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xcd00>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.30.1
+[2] Pascal Van Leeuwen on mixing different sources of entropy and certification -
+ https://lore.kernel.org/linux-integrity/MN2PR20MB29732A856A40131A671F949FCA950@MN2PR20MB2973.namprd20.prod.outlook.com/
+[3] Jarrko on "regression" and tpm_asym.c - 
+https://lore.kernel.org/linux-integrity/20191014190033.GA15552@linux.intel.com/ 
+
+Mimi
 
