@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABBB348245
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDA8348261
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238036AbhCXT5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238002AbhCXT5t (ORCPT
+        id S238106AbhCXT67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:58:59 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:38767 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238080AbhCXT63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:57:49 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB2DC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:57:48 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id j25so18190578pfe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6wje3u9/LXf+fY5O7zx9Tl/wzeXgMCXQSJ1thmeKKYE=;
-        b=UXnapM+uUzWVFHRiBlLLL1zWvGJKqjoZF2CvY3BY7ukyM1pwtw9wFyNYL/bugsIi5H
-         1fd+dM1XyXiniMl2xByDVLvLwUEALXjQ5RIr7lhx6bymj8e/i68g1k2Ojjg5e3/cVkai
-         92hByEyaYIfObfW/yEOAQGbVxV36E6HqKgePvZq17Ab1SIUFr6Smi/sL1/SoJXCAcntH
-         sokHXuZrupuVmCjDHXWJEAXzh/HDPTNLpgo52MtaW8359nAJiuF4BFOvcF/4mqyZAGmH
-         KJFaZt5VmGPDDDMQRkMykO2daw9YWHWayZ3J/YJXVwDY31VYa92jNpblNQIqkUj1Xnr3
-         wqJQ==
+        Wed, 24 Mar 2021 15:58:29 -0400
+Received: by mail-io1-f50.google.com with SMTP id e8so22839821iok.5;
+        Wed, 24 Mar 2021 12:58:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=6wje3u9/LXf+fY5O7zx9Tl/wzeXgMCXQSJ1thmeKKYE=;
-        b=UXsu2ZChiqDkGrkl+lq+GWMw+a32eCLYRMSrN1nd1iisqdYLCjV6sQDG7nZL2aNI+F
-         5q+PKRok8BQIVdLkhNHxThivYuSGE+OCEwzDii5UEiqcIDvaCyBwKipOrn7wlh0oYLyk
-         lUsFAJD84Of0m9tJGZVHYjiyIJohdclhVoQG6iVRO8SKG2wD/HUUVrRsS5qNxgpmbnb9
-         0Iv9Ti7eWU5Q6VlW0p03WK3KkUWgEgofqPs32lIFKgu65SrQLk74jLPVV5SuKrxUhLAV
-         zGHb53zsZVPv91vZcut1qQEzrcbDn4BXMzs43LnC3OyxpgGWO+l1Y4nb2gYxnB//Obwm
-         Xg4A==
-X-Gm-Message-State: AOAM532dt0y4ecv0Mjio0Fly9E8GjxF+/GHLTmfd7oTzg3VTCRlyGy+X
-        MDMoqEM6NvssN0FjULyDV7A=
-X-Google-Smtp-Source: ABdhPJyuSSTR7hFg4UxeOh1mBDNhBv6Kz8XMiQUHzSnDVQ8723pC26jcLbkhDhxaBOjWDHyaU6B40A==
-X-Received: by 2002:aa7:980a:0:b029:20c:5402:5de9 with SMTP id e10-20020aa7980a0000b029020c54025de9mr4708822pfl.18.1616615868433;
-        Wed, 24 Mar 2021 12:57:48 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id e8sm3314971pgb.35.2021.03.24.12.57.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ckz74ZkgmnFeD8eQMB4UJB/Am1mTvPA8wYzxy5HDh8g=;
+        b=kW+6JyfdpX3npOpH8Q1yUSwNEC55UisqWhoz8q7d7YfFuIA4xpfEvGocKDPjnLIqM5
+         lUUZI1ZF4J3kB4TDbS2RT94Eg5CYlDM5OjGavk30Sf1b/nOo2iuGmhXSA8+OSdEoYt+7
+         jbydmVA7yPZDZwoCWiK1WBv7x9EBhYRIB10akZYL/54HZdTNGQ7kpv8rNnksD2vvhMFJ
+         I73aSvNqgDcm0EQ/gDMhogVGAFAFfvee3qncrY2WsJwjtcYOd4rttqZDZIO35QJM2EOY
+         sUIHsMFt7pGiXBO2IB6KBiCcnDT56+nE1j/pEZw2nwnHsDp83q+pyr46LPIkNbcOg4t7
+         XE6Q==
+X-Gm-Message-State: AOAM532gUC6jQiVJpvB87slJSyjeozwiYUe10nya1Q2vasReQKXwjdWV
+        LkvfTfZcNFYA1cY0hZuSkA==
+X-Google-Smtp-Source: ABdhPJy1Icpeq/9CfPDN8APc8tPGVDrDk4uBbBlAilmuMzm4H8LSBAibB/0f7fhpZqajauZV/FGp6w==
+X-Received: by 2002:a02:c002:: with SMTP id y2mr4449322jai.107.1616615908972;
+        Wed, 24 Mar 2021 12:58:28 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z17sm1543306ilz.58.2021.03.24.12.58.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 12:57:47 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 24 Mar 2021 12:57:45 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, gregkh@linuxfoundation.org,
-        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
-        willy@infradead.org
-Subject: Re: [PATCH] mm: cma: fix corruption cma_sysfs_alloc_pages_count
-Message-ID: <YFuZua1TIEkXtqoL@google.com>
-References: <20210324192044.1505747-1-minchan@kernel.org>
- <18ee5c3e-fba2-0d8d-bd93-5fb8d0dd7a01@gmail.com>
- <89ba4c7a-42d2-5412-2367-cc1cffc1117b@gmail.com>
+        Wed, 24 Mar 2021 12:58:27 -0700 (PDT)
+Received: (nullmailer pid 3525447 invoked by uid 1000);
+        Wed, 24 Mar 2021 19:58:24 -0000
+Date:   Wed, 24 Mar 2021 13:58:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] dt-bindings: msm: Couple of spelling fixes
+Message-ID: <20210324195824.GA3523377@robh.at.kernel.org>
+References: <20210320192553.29922-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <89ba4c7a-42d2-5412-2367-cc1cffc1117b@gmail.com>
+In-Reply-To: <20210320192553.29922-1-unixbhaskar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:49:58PM +0300, Dmitry Osipenko wrote:
-> 24.03.2021 22:43, Dmitry Osipenko пишет:
-> > 24.03.2021 22:20, Minchan Kim пишет:
-> >>  static int __init cma_sysfs_init(void)
-> >>  {
-> >> -	int i = 0;
-> >> +	struct kobject *cma_kobj_root;
-> >> +	struct cma_kobject *cma_kobj;
-> >>  	struct cma *cma;
-> >> +	unsigned int i;
-> > 
-> >>  	while (--i >= 0) {
-> > 
-> > Do you realize that this doesn't work anymore?
-> > 
-> >>  		cma = &cma_areas[i];
-> >> -		kobject_put(&cma->stat->kobj);
-> >> -	}
-> >>  
-> >> -	kfree(cma_stats);
-> >> -	kobject_put(cma_kobj);
-> >> +		kobject_put(&cma->cma_kobj->kobj);
-> >> +		kfree(cma->cma_kobj);
-> > 
-> > Freeing a null pointer?
-> > 
-> >> +		cma->cma_kobj = NULL;
-> >> +	}
-> >> +	kobject_put(cma_kobj_root);
-> > 
+On Sun, Mar 21, 2021 at 12:55:53AM +0530, Bhaskar Chowdhury wrote:
 > 
-> Please try to simulate the errors and check that error path is working
-> properly in the next version.
+> s/Subsytem/Subsystem/
+> s/contoller/controller/
+
+Rather than worry about trivial fixes, please convert .txt bindings to 
+DT schema instead.
+
 > 
-> Alternatively, we could remove the cma_kobj_release entirely, like Greg
-> suggested previously, and then don't care about cleaning up at all.
-
-Does he suggested it to remove cma_kobj_release?(Initially, I did but
-was rejected from Greg)
-
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/display/msm/dpu.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/msm/dpu.txt b/Documentation/devicetree/bindings/display/msm/dpu.txt
+> index 551ae26f60da..586e6eac5b08 100644
+> --- a/Documentation/devicetree/bindings/display/msm/dpu.txt
+> +++ b/Documentation/devicetree/bindings/display/msm/dpu.txt
+> @@ -2,14 +2,14 @@ Qualcomm Technologies, Inc. DPU KMS
+> 
+>  Description:
+> 
+> -Device tree bindings for MSM Mobile Display Subsytem(MDSS) that encapsulates
+> +Device tree bindings for MSM Mobile Display Subsystem(MDSS) that encapsulates
+>  sub-blocks like DPU display controller, DSI and DP interfaces etc.
+>  The DPU display controller is found in SDM845 SoC.
+> 
+>  MDSS:
+>  Required properties:
+>  - compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss"
+> -- reg: physical base address and length of contoller's registers.
+> +- reg: physical base address and length of controller's registers.
+>  - reg-names: register region names. The following region is required:
+>    * "mdss"
+>  - power-domains: a power domain consumer specifier according to
+> --
+> 2.26.2
+> 
