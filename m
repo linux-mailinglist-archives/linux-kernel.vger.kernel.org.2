@@ -2,140 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745333481C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F913481D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237878AbhCXTS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
+        id S237803AbhCXTVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237929AbhCXTRO (ORCPT
+        with ESMTP id S237858AbhCXTUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:17:14 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD10C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:17:14 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id v11so25562324wro.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:17:14 -0700 (PDT)
+        Wed, 24 Mar 2021 15:20:39 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF71CC061763;
+        Wed, 24 Mar 2021 12:20:38 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id r17so15353145pgi.0;
+        Wed, 24 Mar 2021 12:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ks7ShY2KdqBCOa2qudGrTxafbstGO1KxoD94z5nmwd4=;
-        b=bjZoBOViVyL1mHLmUFR7BSZIMAluKI/kXY5E2/ztjZRSCxzbzqraymTeP/LQuXxMd6
-         5YPx58H1VAuhSW12/DzOC9BHGHgBV1J/hhCob2AhjQhBoGcMDaLPjYwGaOGrtjITgpiU
-         twnR7Di8AA6EdQ4WpfeSjtyjUfsAP9baelo+A=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BZVkLp1A4sxw0q9/qAve7LfdBGr1kHFGkqnNYCMOOvY=;
+        b=IqJtHOh/7Wok2sdGsGQyexiCwo2LiPzH8njBJBvmOzEuJFkmtJfPoI1bXyuM9sjjDI
+         j9H8FVxb52RnDc+nRNykq0KVAZveUuGVhcmNdUAzfkVSpAQbp7LuGpfJXhivhnb9bc4I
+         FcJUiQ7/n62IsnEkR4eFwMHpqueZO5AWm9P2S3rScnGiOnoilAX+P3fh2bbp5UJnx8sl
+         jp553cgCcdGREbdb767Htg6zaPJS2wzoHXF0XhKo6VgEQIjMRcj+kyiFGgdsvai2W/PA
+         gA4r3V2rWIt0msFH6BvGLnISctZQK4aAUFln3FGPKglOfY6VMnOOv62htzWSgMS7UFuT
+         wV3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ks7ShY2KdqBCOa2qudGrTxafbstGO1KxoD94z5nmwd4=;
-        b=Hy6pAo4w/7OkiYUtdDdaJ653auZQQY402Fd20GRTM7bvz4ya9iLRONxaeW2xHIQgAw
-         7Z8RYA+6uHDSdIzO0r4fydDCeSFeXiwSifk0brg1KE8+HPx++WH6BnUQ5eyzbc4wX0l2
-         ZyONbLc/JCI9gI/pUs0jQWRx+jM0Ytq1tmMB2U0c/l1Equv7t/ufclEb2GaMRlDK+yEp
-         na87xPHo5Sl0qdi912G6q11NDnHHMriDm7jXGUif+YtXTFAG3z/DQmuCQvzQTKc/r5fn
-         sf9RO5s8ZOtj5hBv7SYkZY9Y4aJ90cAqCmpE4xCgulgwUZkecfxsxvmEydNOcOplxiQG
-         4r7Q==
-X-Gm-Message-State: AOAM531DW1xPB4FliGxzh1sLfvLSXYND+WxIc8fG7CyNxLaxRQzAhJPp
-        fdVJY3D+29mtnUJcRDL1ttGyMmGJQKqteWQ8
-X-Google-Smtp-Source: ABdhPJz0jKYo0H/XBwWmbtO5rMA4MuyiBVo+Vi9lmrQcQ8si+ZT3Tkgf1DTxMp2/fnyfyvXSPQ76vg==
-X-Received: by 2002:a5d:6312:: with SMTP id i18mr5156957wru.149.1616613433126;
-        Wed, 24 Mar 2021 12:17:13 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f2sm3344574wmp.20.2021.03.24.12.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 12:17:12 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 20:17:10 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 3/3] mm: unexport follow_pfn
-Message-ID: <YFuQNj10P+uUHD4G@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
- <20210316153303.3216674-4-daniel.vetter@ffwll.ch>
- <20210324125211.GA2356281@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BZVkLp1A4sxw0q9/qAve7LfdBGr1kHFGkqnNYCMOOvY=;
+        b=FENA1OcrLLo6jPjzpkrJ4oaiuU/28KeA01owNPrOnd/Tk/vBHQUxb87jbhe2NEZqzr
+         udBOQdJN6MitnGZ+Yd94dghy0H+q4dFprHUyHQ9JJLB4AUsMH40Em4Wq1sZrnGOz9eCa
+         ZUgI/jZ/uJNh9Dl/IBSEZOU7RHft+brBrhAZlN2maxMxhIXcCfdkQ9gpoha6yrdV2F6J
+         DvwVWzNpC/5ICG8zJ8dIfy+Il0aHJmPTXybNZPIXnlYCOg4UoVd29ZPxga+fsd1XJNz2
+         YOoJR7f/ZclH5hM1zSxy6UEEJj1+eExFo4gHedPGsk3gWhEwXdXP7PUV8/Rdbx4HTcYU
+         pDog==
+X-Gm-Message-State: AOAM532PxWs8p30dFu7NQs/viDqV7KqUO+NdOcfZtcsTmp2L24L6Acqm
+        dkT9qxUn1ZUfG7eCxdQaBEuYjHo1kYLtrSVPVck=
+X-Google-Smtp-Source: ABdhPJzydEFxkIR8JwBYP+8K4cByS8+eH3m+v6+qcSZGQC6tzkKIj6dIANhuknpLazlZvg2yQf9Ay+lNpH5cyTLhRzg=
+X-Received: by 2002:a63:db02:: with SMTP id e2mr4359862pgg.18.1616613638397;
+ Wed, 24 Mar 2021 12:20:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324125211.GA2356281@nvidia.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <1616552677-39016-1-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1616552677-39016-1-git-send-email-linyunsheng@huawei.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 24 Mar 2021 12:20:27 -0700
+Message-ID: <CAM_iQpXAedg31hPx674u4Q4fj0DweADPSn0n_KghgRBWDoOOfw@mail.gmail.com>
+Subject: Re: [PATCH net v2] net: sched: fix packet stuck problem for lockless qdisc
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        bpf <bpf@vger.kernel.org>, Jonas Bonn <jonas.bonn@netrounds.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        Josh Hunt <johunt@akamai.com>, Jike Song <albcamus@gmail.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>, atenart@kernel.org,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 09:52:11AM -0300, Jason Gunthorpe wrote:
-> On Tue, Mar 16, 2021 at 04:33:03PM +0100, Daniel Vetter wrote:
-> > Both kvm (in bd2fae8da794 ("KVM: do not assume PTE is writable after
-> > follow_pfn")) and vfio (in 07956b6269d3 ("vfio/type1: Use
-> > follow_pte()")) have lost their callsites of follow_pfn(). All the
-> > other ones have been switched over to unsafe_follow_pfn because they
-> > cannot be fixed without breaking userspace api.
-> > 
-> > Argueably the vfio code is still racy, but that's kinda a bigger
-> > picture. But since it does leak the pte beyond where it drops the pt
-> > lock, without anything else like an mmu notifier guaranteeing
-> > coherence, the problem is at least clearly visible in the vfio code.
-> > So good enough with me.
-> > 
-> > I've decided to keep the explanation that after dropping the pt lock
-> > you must have an mmu notifier if you keep using the pte somehow by
-> > adjusting it and moving it into the kerneldoc for the new follow_pte()
-> > function.
-> > 
-> > Cc: 3pvd@google.com
-> > Cc: Jann Horn <jannh@google.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Jason Gunthorpe <jgg@nvidia.com>
-> > Cc: Cornelia Huck <cohuck@redhat.com>
-> > Cc: Peter Xu <peterx@redhat.com>
-> > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-samsung-soc@vger.kernel.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: kvm@vger.kernel.org
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > ---
-> >  include/linux/mm.h |  2 --
-> >  mm/memory.c        | 26 +++++---------------------
-> >  mm/nommu.c         | 13 +------------
-> >  3 files changed, 6 insertions(+), 35 deletions(-)
-> 
-> I think this is the right thing to do.
+On Tue, Mar 23, 2021 at 7:24 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> @@ -176,8 +207,23 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>  static inline void qdisc_run_end(struct Qdisc *qdisc)
+>  {
+>         write_seqcount_end(&qdisc->running);
+> -       if (qdisc->flags & TCQ_F_NOLOCK)
+> +       if (qdisc->flags & TCQ_F_NOLOCK) {
+>                 spin_unlock(&qdisc->seqlock);
+> +
+> +               /* qdisc_run_end() is protected by RCU lock, and
+> +                * qdisc reset will do a synchronize_net() after
+> +                * setting __QDISC_STATE_DEACTIVATED, so testing
+> +                * the below two bits separately should be fine.
 
-Was just about to smash this into the topic branch for testing in
-linux-next. Feel like an ack on the series, or at least the two mm
-patches?
--Daniel
+Hmm, why synchronize_net() after setting this bit is fine? It could
+still be flipped right after you test RESCHEDULE bit.
 
-> 
-> Alex is working on fixing VFIO and while kvm is still racy using
-> follow pte, I think they are working on it too?
-> 
-> Jason
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> +                * For qdisc_run() in net_tx_action() case, we
+> +                * really should provide rcu protection explicitly
+> +                * for document purposes or PREEMPT_RCU.
+> +                */
+> +               if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
+> +                                     &qdisc->state) &&
+> +                            !test_bit(__QDISC_STATE_DEACTIVATED,
+> +                                      &qdisc->state)))
+
+Why do you want to test __QDISC_STATE_DEACTIVATED bit at all?
+dev_deactivate_many() will wait for those scheduled but being
+deactivated, so what's the problem of scheduling it even with this bit?
+
+Thanks.
