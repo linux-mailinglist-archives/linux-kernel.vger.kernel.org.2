@@ -2,63 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE584347A48
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A08347A63
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236013AbhCXOK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:10:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14885 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236024AbhCXOJ6 (ORCPT
+        id S236092AbhCXON1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236110AbhCXONI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:09:58 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F597P2qTLzkfFC;
-        Wed, 24 Mar 2021 22:08:17 +0800 (CST)
-Received: from localhost (10.174.179.96) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Mar 2021
- 22:09:46 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] IB/srpt: Fix passing zero to 'PTR_ERR'
-Date:   Wed, 24 Mar 2021 22:09:39 +0800
-Message-ID: <20210324140939.7480-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Wed, 24 Mar 2021 10:13:08 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F9CC0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:13:08 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id g24so17599193qts.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1XohPHX9rWTqjJvRyYcCWXA2q1vwA5OihINXfd2z/zo=;
+        b=AuieUtcnBKgIlZBHY2MKXvJautp8rnH0/Zc3JfbrCzf4TZ/rkCzaCA+R+RmUvrIH1m
+         E4S/ubhyqRRoc1wlHeic5TQS6wicvYaXwOjwAcwbynBZ8V/eh7b8OnJI4JjrQ3gp/auj
+         zVni+ROSpwREgwKdrkLXequdeu3ax3xYqlF4ZdOTk9qAwTMz9EbW9WjZ3aYk4B+y1Mm7
+         zOJGAqkEWaoy5cTjKaEKmogGG1iuc60Kh4iioFap/Xz//fJLQwHzk2XUc/vrYgOMIWcb
+         JvNS96i/uzRwWCSWr3Q0/EGYKggxIJxNvHGEfid0i7V+xW3/NXdVqs5frh7Vyz20oGVI
+         43Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1XohPHX9rWTqjJvRyYcCWXA2q1vwA5OihINXfd2z/zo=;
+        b=qHHf6vgjZ6c17QfTJ0aihiPh0c75nlmVbfMHnqlyPtteB1/3hV01IvGuqu00NkSoBq
+         tgwT4h/zYa7ApJ1hupeCJjEUKS++2dX2NFUE8ZlJc3m3G7D0NmC1WkSUu0CeOuW2eeso
+         ooinqAv+993XFl6/d0g8EcTWVghlQcedAMOkaBKJvcvPMpyTXWkV1bDZMzrKokPChE0V
+         gm5GrWLWMGw7hEJMzH0UAm9uvsX6JQSTVrJe4q9wDerO6pOd3zOFqB6e3fKYLTyFsPHe
+         GgN6TG9IEDHsr1hNieYkmFyDTkx6foW5QUp0daAQo6Go7Ex826JvvjsC0TzS1aKnhE7E
+         DF2g==
+X-Gm-Message-State: AOAM533VSRulapujF3jU5MOPyVemPw2MIk+r8BF2rAcp7uGUNcmoIQGw
+        uvvuvWbGKMEGZMIQxf7Plk0sfAMvnYADDS41Oa9j5A==
+X-Google-Smtp-Source: ABdhPJzyooXz/NQhT+vi8P+u5nAIKlMdHjMTa2M9OF4QnEon669FPBFrYSdo99++4/nKZIEWLO6wULgnA8OT/OATrfc=
+X-Received: by 2002:ac8:6696:: with SMTP id d22mr3164170qtp.67.1616595187453;
+ Wed, 24 Mar 2021 07:13:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.96]
-X-CFilter-Loop: Reflected
+References: <20210324112503.623833-1-elver@google.com> <20210324112503.623833-8-elver@google.com>
+ <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net> <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
+ <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net> <YFtB+Ta9pkMg4C2h@hirez.programming.kicks-ass.net>
+ <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net> <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
+In-Reply-To: <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 24 Mar 2021 15:12:56 +0100
+Message-ID: <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com>
+Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on SIGTRAP
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix smatch warning:
+On Wed, Mar 24, 2021 at 3:05 PM Marco Elver <elver@google.com> wrote:
+>
+> On Wed, 24 Mar 2021 at 15:01, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > One last try, I'll leave it alone now, I promise :-)
+>
+> This looks like it does what you suggested, thanks! :-)
+>
+> I'll still need to think about it, because of the potential problem
+> with modify-signal-races and what the user's synchronization story
+> would look like then.
 
-drivers/infiniband/ulp/srpt/ib_srpt.c:2341 srpt_cm_req_recv() warn: passing zero to 'PTR_ERR'
+I agree that this looks inherently racy. The attr can't be allocated
+on stack, user synchronization may be tricky and expensive. The API
+may provoke bugs and some users may not even realize the race problem.
 
-Use PTR_ERR_OR_ZERO instead of PTR_ERR
+One potential alternative is use of an opaque u64 context (if we could
+shove it into the attr). A user can pass a pointer to the attr in
+there (makes it equivalent to this proposal), or bit-pack size/type
+(as we want), pass some sequence number or whatever.
 
-Fixes: 847462de3a0a ("IB/srpt: Fix srpt_cm_req_recv() error path (1/2)")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 6be60aa5ffe2..3ff24b5048ac 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -2338,7 +2338,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
- 
- 	if (IS_ERR_OR_NULL(ch->sess)) {
- 		WARN_ON_ONCE(ch->sess == NULL);
--		ret = PTR_ERR(ch->sess);
-+		ret = PTR_ERR_OR_ZERO(ch->sess);
- 		ch->sess = NULL;
- 		pr_info("Rejected login for initiator %s: ret = %d.\n",
- 			ch->sess_name, ret);
--- 
-2.22.0
 
+> > --- a/include/linux/perf_event.h
+> > +++ b/include/linux/perf_event.h
+> > @@ -778,6 +778,9 @@ struct perf_event {
+> >         void *security;
+> >  #endif
+> >         struct list_head                sb_list;
+> > +
+> > +       unsigned long                   si_uattr;
+> > +       unsigned long                   si_data;
+> >  #endif /* CONFIG_PERF_EVENTS */
+> >  };
+> >
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -5652,13 +5652,17 @@ static long _perf_ioctl(struct perf_even
+> >                 return perf_event_query_prog_array(event, (void __user *)arg);
+> >
+> >         case PERF_EVENT_IOC_MODIFY_ATTRIBUTES: {
+> > +               struct perf_event_attr __user *uattr;
+> >                 struct perf_event_attr new_attr;
+> > -               int err = perf_copy_attr((struct perf_event_attr __user *)arg,
+> > -                                        &new_attr);
+> > +               int err;
+> >
+> > +               uattr = (struct perf_event_attr __user *)arg;
+> > +               err = perf_copy_attr(uattr, &new_attr);
+> >                 if (err)
+> >                         return err;
+> >
+> > +               event->si_uattr = (unsigned long)uattr;
+> > +
+> >                 return perf_event_modify_attr(event,  &new_attr);
+> >         }
+> >         default:
+> > @@ -6399,7 +6403,12 @@ static void perf_sigtrap(struct perf_eve
+> >         clear_siginfo(&info);
+> >         info.si_signo = SIGTRAP;
+> >         info.si_code = TRAP_PERF;
+> > -       info.si_errno = event->attr.type;
+> > +       info.si_addr = (void *)event->si_data;
+> > +
+> > +       info.si_perf = event->si_uattr;
+> > +       if (event->parent)
+> > +               info.si_perf = event->parent->si_uattr;
+> > +
+> >         force_sig_info(&info);
+> >  }
+> >
+> > @@ -6414,8 +6423,8 @@ static void perf_pending_event_disable(s
+> >                 WRITE_ONCE(event->pending_disable, -1);
+> >
+> >                 if (event->attr.sigtrap) {
+> > -                       atomic_set(&event->event_limit, 1); /* rearm event */
+> >                         perf_sigtrap(event);
+> > +                       atomic_set_release(&event->event_limit, 1); /* rearm event */
+> >                         return;
+> >                 }
+> >
+> > @@ -9121,6 +9130,7 @@ static int __perf_event_overflow(struct
+> >         if (events && atomic_dec_and_test(&event->event_limit)) {
+> >                 ret = 1;
+> >                 event->pending_kill = POLL_HUP;
+> > +               event->si_data = data->addr;
+> >
+> >                 perf_event_disable_inatomic(event);
+> >         }
+> > @@ -12011,6 +12021,8 @@ SYSCALL_DEFINE5(perf_event_open,
+> >                 goto err_task;
+> >         }
+> >
+> > +       event->si_uattr = (unsigned long)attr_uptr;
+> > +
+> >         if (is_sampling_event(event)) {
+> >                 if (event->pmu->capabilities & PERF_PMU_CAP_NO_INTERRUPT) {
+> >                         err = -EOPNOTSUPP;
