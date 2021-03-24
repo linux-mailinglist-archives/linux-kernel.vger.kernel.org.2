@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4D33472D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A89B3472E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235810AbhCXHlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:41:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235625AbhCXHlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:41:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ED67619FA;
-        Wed, 24 Mar 2021 07:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616571678;
-        bh=h9+yg+LKCptBrIFFjhsjQQ4j1e01DH+GCFCab0dYLJU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iOXHzMPllBsdO7gKwWq2Irwgzm4lQ28XFJL2j98J9j6+stcfr2FB+oFfalDuF7wWd
-         fxijM+SNFfgi/pxtEfitL1jOeJF2AIKzWlBSsWddeQEUMIJGqR/MPpmcyRqGJNM/qz
-         Mna/EVX0bGV1sWIBFLclOSuSj1xgK2JNEay65xm0240E3AXNZ8nRQ/fu4rMvHCnGH2
-         LnnLU9aAELB3Hvl+JBoM1d10mNx8cHL4PTvbAFczBpR74JewkJH5V1WsXDiWsdF9Q1
-         GyFLz26/73D6TclhGbGDCbTHyDn1NtK1myl8VVfXeMgBxJHDroPQQuyU1eVqDpZSes
-         CGlcgNAn/EoVQ==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lOy8i-000umk-09; Wed, 24 Mar 2021 08:41:16 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Oliver Neukum <oneukum@suse.com>, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH v2 7/7] USB: cdc-acm: add other non-standard xr_serial models to ignore list
-Date:   Wed, 24 Mar 2021 08:41:11 +0100
-Message-Id: <5155887a764cbc11f8da0217fe08a24a77d120b4.1616571453.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1616571453.git.mchehab+huawei@kernel.org>
-References: <cover.1616571453.git.mchehab+huawei@kernel.org>
+        id S230423AbhCXHnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:43:31 -0400
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:40736 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhCXHnG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 03:43:06 -0400
+Received: by mail-lj1-f170.google.com with SMTP id u10so28987114lju.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:43:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FWlu5K9gEFDGnnILojK8GPw7KEusUZckkU+/bB/ppV0=;
+        b=mmp12Q6BdZj6QnhVDppl5IpUHKUETUjXjydcb/8W+2pK/78NNbH7lea31BBNYt3OjN
+         2CTzfQKSfSkc1GN0z8RBepjf+bA+gE3wqURG3u46OgTvGz/ZddVZ9qRhD1BJs0yk9En2
+         EWwHxYWWVcksCVi1UfKZ/ZBQvDQ/FENUjjvYNiPcygO7Pt1/KoowxkbZuStgdENVXY6i
+         IrdFnc54kOffQxjxsJwD89FTA9gGowW3bFCXiyw4B2gCz2KjLcMDC2GRbMwC5aXotLKL
+         zK+QE0jxGv6Z8sErZFkMKIIz4e1lQxFUy/iZbQlGrtzKVzFQ4cdTmLXZyK6ayZ7lSBsD
+         xYIQ==
+X-Gm-Message-State: AOAM530Qvrcmcn9Wym1lE+iUEUBN8Nol02oG7iCZYhjSzy1jHg66SLWy
+        3QbsbTmaXrYNCtuXjZyp2qYzfR1n8x1OpQ==
+X-Google-Smtp-Source: ABdhPJwjDQuxFJVLWCu2OKlUbV5OL1DIDnyrunEpVug2wlobpe5GVKE5RJ2DJrqm8MKxF31Q0qg4+Q==
+X-Received: by 2002:a05:651c:ca:: with SMTP id 10mr1252808ljr.63.1616571784781;
+        Wed, 24 Mar 2021 00:43:04 -0700 (PDT)
+Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id p10sm145901lfo.293.2021.03.24.00.43.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 00:43:04 -0700 (PDT)
+Subject: Re: [PATCH] coccinelle: misc: restrict patch mode in
+ flexible_array.cocci
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+References: <20210308191215.1362498-1-efremov@linux.com>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <212e0bf3-0807-e2f1-a6fc-23f9e03906b2@linux.com>
+Date:   Wed, 24 Mar 2021 10:43:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <20210308191215.1362498-1-efremov@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the xr_serial got support for other models, add their
-USB IDs as well, as those devices won't work with the standard
-CDC driver.
+Ping?
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/usb/class/cdc-acm.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 39ddb5585ded..839b80093478 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1902,9 +1902,20 @@ static const struct usb_device_id acm_ids[] = {
- #endif
- 
- #if IS_ENABLED(CONFIG_USB_SERIAL_XR)
--	{ USB_DEVICE(0x04e2, 0x1410),   /* Ignore XR21V141X USB to Serial converter */
--	.driver_info = IGNORE_DEVICE,
--	},
-+	/* Ignore MaxLinear/Exar USB UARTs and USB UART bridges */
-+	{ USB_DEVICE(0x04e2, 0x1400), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1401), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1402), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1403), .driver_info = IGNORE_DEVICE,},
-+
-+	{ USB_DEVICE(0x04e2, 0x1410), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1411), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1412), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1414), .driver_info = IGNORE_DEVICE,},
-+
-+	{ USB_DEVICE(0x04e2, 0x1420), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1422), .driver_info = IGNORE_DEVICE,},
-+	{ USB_DEVICE(0x04e2, 0x1424), .driver_info = IGNORE_DEVICE,},
- #endif
- 
- 	/*Samsung phone in firmware update mode */
--- 
-2.30.2
-
+On 3/8/21 10:12 PM, Denis Efremov wrote:
+> Skip patches generation for structs/unions with a single field.
+> Changing a zero-length array to a flexible array member in a struct
+> with no named members breaks the compilation. However, reporting
+> such cases is still valuable, e.g. commit 637464c59e0b
+> ("ACPI: NFIT: Fix flexible_array.cocci warnings").
+> 
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+>  scripts/coccinelle/misc/flexible_array.cocci | 23 ++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/coccinelle/misc/flexible_array.cocci b/scripts/coccinelle/misc/flexible_array.cocci
+> index 947fbaff82a9..f427fd68ed2d 100644
+> --- a/scripts/coccinelle/misc/flexible_array.cocci
+> +++ b/scripts/coccinelle/misc/flexible_array.cocci
+> @@ -51,21 +51,40 @@ position p : script:python() { relevant(p) };
+>    };
+>  )
+>  
+> +@only_field depends on patch@
+> +identifier name, array;
+> +type T;
+> +position q;
+> +@@
+> +
+> +(
+> +  struct name {@q
+> +    T array[0];
+> +  };
+> +|
+> +  struct {@q
+> +    T array[0];
+> +  };
+> +)
+> +
+>  @depends on patch@
+>  identifier name, array;
+>  type T;
+>  position p : script:python() { relevant(p) };
+> +// position @q with rule "only_field" simplifies
+> +// handling of bitfields, arrays, etc.
+> +position q != only_field.q;
+>  @@
+>  
+>  (
+> -  struct name {
+> +  struct name {@q
+>      ...
+>      T array@p[
+>  -       0
+>      ];
+>    };
+>  |
+> -  struct {
+> +  struct {@q
+>      ...
+>      T array@p[
+>  -       0
+> 
