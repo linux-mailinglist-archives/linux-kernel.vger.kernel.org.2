@@ -2,166 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F47B348338
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2268234833D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237729AbhCXUyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        id S238234AbhCXU4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238128AbhCXUxt (ORCPT
+        with ESMTP id S238239AbhCXUzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:53:49 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C63C0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:53:47 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id n138so34032188lfa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:53:47 -0700 (PDT)
+        Wed, 24 Mar 2021 16:55:09 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E05C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:55:09 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id r17so15574531pgi.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 13:55:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9IAjIh7gf44rR4epDI0vFAr+lh0+8IoyQ48EbdutPC4=;
-        b=X+i+XcHts81gTX2YQSoV3UFieH2kepMG7Wygr2n+8tt5NHgaQ+mstmTUI3J5ISoI7U
-         SUl3tiJvsbwRVOLXnmugaf7VxQxxdhAWYfBnAG00WyqH9bu/e4yNA5k3oEymKHyTzkLh
-         TTT+a8G71fKF6cc1A4Vkr/zD4HBlTVppNUf5AaI1iqxq87iXB7fbncGKeplOfgTH82ws
-         hdeCH/aQeXDSvTbv1qPdy2Lh7zjA6lcDs1+f+DHw1q7iu3l5yphxkZpMqeDxCa8CTxyZ
-         5VTmYNZSiJct4WOQqCy68/ZoK5rI3L/qFEYbBPrXDsH1QW2R7QyRDf07jo8vRTObrEez
-         ApCg==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vhkEm/SHJKStJUM0tBoJZDo4DIEM68CcqFjzc0CMZVs=;
+        b=GJSVohAgu/dyUFIqGQSzfZBFwM1stJN1/k4oOq1co35d4SV1TzkE1+W9O10ouBUKFa
+         RFwgFyhnhQPZNaLoJ3NIhZfYwBNgBV9m3/QbwSwGroA2/EDLMZGY5juUb6hjtKA/USE5
+         pqGmgO2mH13oTFHQYPSSi9v+tZbAn+qZ2hdIO5ifAXDJeYlvg65oKV72XOPV3c0KjeNN
+         kHHsQtMHp71f6oR7TSoix7O5ZXuumO1TcdX1J/Vn4siWTP7wDLY0DeiRLs0M+44BQfIE
+         42JjegQt4jwlSxpgNii0zhRYbtnGN+h7CqBC6CjPTqdj8PdsmY8QC9w3CqKldcvk7/6j
+         h0JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9IAjIh7gf44rR4epDI0vFAr+lh0+8IoyQ48EbdutPC4=;
-        b=KwEXZC9Nxn7csuezbhSxBb79MDOSmF8U9yP9gMlaCVaOe4BlFjGMuBP+Y7/d7RBVpi
-         T82KtUERMpXxXilTIGuw6fBrJ4G+4ZwJd0gS+eMdgccE/IGQERwPT3VrqcnVGhtP9/Vh
-         xEdkAwMf7Qkc0z07ytPhl69MUq0R2H23LTME7ejewSb9QT4xVFP4uiI5Lk120I+TfLqW
-         UWXr1sVNsWwZPMrGi6ZbPuJ2GsqzL2c2+Xtn3AzzZP6tGN+ZEHK9mN6F2gWooHgw6dGz
-         HfqSNG5Ac0SJSWyw0tEsQTtoKLEdVnFg39rdjcmyTGBDiXkenTLH4miVc25YNBMyJAb9
-         pv7g==
-X-Gm-Message-State: AOAM531NC/pqX3aMmixqyTqtFnQPu9gk7Y7+tVqSxsg8qjyOlzePfl3S
-        Jf0Y2frg8F9pqMfQJ+V/lEfp4tqav3HESnu3eWPScg==
-X-Google-Smtp-Source: ABdhPJw0lQ/lHICaIcFDzikDJKy0JhvudtbKraeVHNse46qud1jmkyD20uZNubiTW6uoYiF8GjRukNZVynWF7Og7DJA=
-X-Received: by 2002:a19:c14a:: with SMTP id r71mr2932916lff.358.1616619225992;
- Wed, 24 Mar 2021 13:53:45 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=vhkEm/SHJKStJUM0tBoJZDo4DIEM68CcqFjzc0CMZVs=;
+        b=ZBphWjrpxRhyFhulRJCcRV8+yIlRNyjHwowHWO09FM8dOJkmKeKYKrVZY9IWt6qLyI
+         cKEkDXUXD+wcjLxuJ9suHUetNSWFp/THMAWnsVYH6uF5iYEmy9FcVxd5fkLZw7vFs7g1
+         U8r2X2DVJLUXj8XcXQOlD6TGR/ilDsaLYSS7rlx69lYD9j28jib8H3V/KllMdLm8fm3h
+         th+qkzXN9u8wPAae86leRHGUHEH2GHDB7uXqlYF0yoZzZZY8YctOGlMFBkNUodcMOBSr
+         M7CTSFoF52WsE56KVjDETsx0K0sGVsuQp/cUl3g9Jh6+GhzxMhmXOUbV+uxmzASlfC8L
+         layg==
+X-Gm-Message-State: AOAM532x/ON7x5hgBOaEq0PvWH81+CLCnB0D+AEraWzcLoDhynvk224g
+        cQaA7ot8yFvPhKh8igwinzA=
+X-Google-Smtp-Source: ABdhPJyBO6pJIX9i425oyFhuwkuOh1xaqhVprtIprTyMQJGUqpvZYOWTuPYWyVzPn3uQlb9XxC2cDg==
+X-Received: by 2002:a65:5289:: with SMTP id y9mr3851683pgp.447.1616619308674;
+        Wed, 24 Mar 2021 13:55:08 -0700 (PDT)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
+        by smtp.gmail.com with ESMTPSA id z4sm3212448pgv.73.2021.03.24.13.55.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 13:55:07 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
+        jhubbard@nvidia.com, willy@infradead.org, digetx@gmail.com,
+        Minchan Kim <minchan@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: [PATCH v7] mm: cma: support sysfs
+Date:   Wed, 24 Mar 2021 13:55:03 -0700
+Message-Id: <20210324205503.2132082-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
- <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org> <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
- <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
- <YFsA78FfzICrnFf7@dhcp22.suse.cz> <CAOFY-A1+TT5EgT0oVEkGgHAaJavbLzbKp5fQx_uOrMtw-7VEiA@mail.gmail.com>
-In-Reply-To: <CAOFY-A1+TT5EgT0oVEkGgHAaJavbLzbKp5fQx_uOrMtw-7VEiA@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 24 Mar 2021 13:53:34 -0700
-Message-ID: <CALvZod6HQ=bG2K1YPofmD=7q3OX+FoRHbzLHcGAMSKOXtfn9dw@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Arjun Roy <arjunroy@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 1:39 PM Arjun Roy <arjunroy@google.com> wrote:
->
-> On Wed, Mar 24, 2021 at 2:12 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 23-03-21 11:47:54, Arjun Roy wrote:
-> > > On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
-> > > > [...]
-> > > > > Here is an idea of how it could work:
-> > > > >
-> > > > > struct page already has
-> > > > >
-> > > > >                 struct {        /* page_pool used by netstack */
-> > > > >                         /**
-> > > > >                          * @dma_addr: might require a 64-bit value even on
-> > > > >                          * 32-bit architectures.
-> > > > >                          */
-> > > > >                         dma_addr_t dma_addr;
-> > > > >                 };
-> > > > >
-> > > > > and as you can see from its union neighbors, there is quite a bit more
-> > > > > room to store private data necessary for the page pool.
-> > > > >
-> > > > > When a page's refcount hits zero and it's a networking page, we can
-> > > > > feed it back to the page pool instead of the page allocator.
-> > > > >
-> > > > > From a first look, we should be able to use the PG_owner_priv_1 page
-> > > > > flag for network pages (see how this flag is overloaded, we can add a
-> > > > > PG_network alias). With this, we can identify the page in __put_page()
-> > > > > and __release_page(). These functions are already aware of different
-> > > > > types of pages and do their respective cleanup handling. We can
-> > > > > similarly make network a first-class citizen and hand pages back to
-> > > > > the network allocator from in there.
-> > > >
-> > > > For compound pages we have a concept of destructors. Maybe we can extend
-> > > > that for order-0 pages as well. The struct page is heavily packed and
-> > > > compound_dtor shares the storage without other metadata
-> > > >                                         int    pages;    /*    16     4 */
-> > > >                         unsigned char compound_dtor;     /*    16     1 */
-> > > >                         atomic_t   hpage_pinned_refcount; /*    16     4 */
-> > > >                         pgtable_t  pmd_huge_pte;         /*    16     8 */
-> > > >                         void *     zone_device_data;     /*    16     8 */
-> > > >
-> > > > But none of those should really require to be valid when a page is freed
-> > > > unless I am missing something. It would really require to check their
-> > > > users whether they can leave the state behind. But if we can establish a
-> > > > contract that compound_dtor can be always valid when a page is freed
-> > > > this would be really a nice and useful abstraction because you wouldn't
-> > > > have to care about the specific type of page.
-> > > >
-> > > > But maybe I am just overlooking the real complexity there.
-> > > > --
-> > >
-> > > For now probably the easiest way is to have network pages be first
-> > > class with a specific flag as previously discussed and have concrete
-> > > handling for it, rather than trying to establish the contract across
-> > > page types.
-> >
-> > If you are going to claim a page flag then it would be much better to
-> > have it more generic. Flags are really scarce and if all you care about
-> > is PageHasDestructor() and provide one via page->dtor then the similar
-> > mechanism can be reused by somebody else. Or does anything prevent that?
->
-> The way I see it - the fundamental want here is, for some arbitrary
-> page that we are dropping a reference on, to be able to tell that the
-> provenance of the page is some network driver's page pool. If we added
-> an enum target to compound_dtor, if we examine that offset in the page
-> and look at that value, what guarantee do we have that the page isn't
-> instead some other kind of page, and the byte value there was just
-> coincidentally the one we were looking for (but it wasn't a network
-> driver pool page)?
->
-> Existing users of compound_dtor seem to check first that a
-> PageCompound() or PageHead() return true - the specific scenario here,
-> of receiving network packets, those pages will tend to not be compound
-> (and more specifically, compound pages are explicitly disallowed for
-> TCP receive zerocopy).
->
-> Given that's the case, the options seem to be:
-> 1) Use a page flag - with the downside that they are a severely
-> limited resource,
-> 2) Use some bits inside page->memcg_data - this I believe Johannes had
-> reasons against, and it isn't always the case that MEMCG support is
-> enabled.
-> 3) Use compound_dtor - but I think this would have problems for the
-> prior reasons.
+Since CMA is getting used more widely, it's more important to
+keep monitoring CMA statistics for system health since it's
+directly related to user experience.
 
-I don't think Michal is suggesting to use PageCompound() or
-PageHead(). He is suggesting to add a more general page flag
-(PageHasDestructor) and corresponding page->dtor, so other potential
-users can use it too.
+This patch introduces sysfs statistics for CMA, in order to provide
+some basic monitoring of the CMA allocator.
+
+ * the number of CMA page successful allocations
+ * the number of CMA page allocation failures
+
+These two values allow the user to calcuate the allocation
+failure rate for each CMA area.
+
+e.g.)
+  /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
+  /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
+  /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
+
+The cma_stat was intentionally allocated by dynamic allocation
+to harmonize with kobject lifetime management.
+https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
+
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Suggested-by: Dmitry Osipenko <digetx@gmail.com>
+Suggested-by: John Hubbard <jhubbard@nvidia.com>
+Suggested-by: Matthew Wilcox <willy@infradead.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Addresses-Coverity: ("Dereference after null check")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+Andrew, you could apply this patch after revering these patches:
+
+mm: cma: fix potential null dereference on pointer cma
+mm: cma: support sysfs
+
+From v6 - https://lore.kernel.org/linux-mm/20210324010547.4134370-1-minchan@kernel.org/
+From v5 - https://lore.kernel.org/linux-mm/20210323195050.2577017-1-minchan@kernel.org/
+From v4 - https://lore.kernel.org/linux-mm/20210309062333.3216138-1-minchan@kernel.org/
+ * fix corruption - digetx@
+ * refactoring - digetx@, jhubbard@, willy@
+
+From v3 - https://lore.kernel.org/linux-mm/20210303205053.2906924-1-minchan@kernel.org/
+ * fix ZERO_OR_NULL_PTR - kernel test robot
+ * remove prefix cma - david@
+ * resolve conflict with vmstat cma in mmotm - akpm@
+ * rename stat name with success|fail
+
+From v2 - https://lore.kernel.org/linux-mm/20210208180142.2765456-1-minchan@kernel.org/
+ * sysfs doc and description modification - jhubbard
+
+From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
+ * fix sysfs build and refactoring - willy
+ * rename and drop some attributes - jhubbard
+
+ Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
+ mm/Kconfig                                    |   7 ++
+ mm/Makefile                                   |   1 +
+ mm/cma.c                                      |   8 +-
+ mm/cma.h                                      |  23 ++++
+ mm/cma_sysfs.c                                | 116 ++++++++++++++++++
+ 6 files changed, 178 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
+ create mode 100644 mm/cma_sysfs.c
+
+diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+new file mode 100644
+index 000000000000..02b2bb60c296
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
+@@ -0,0 +1,25 @@
++What:		/sys/kernel/mm/cma/
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
++		heap name (also sometimes called CMA areas).
++
++		Each CMA heap subdirectory (that is, each
++		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
++		following items:
++
++			alloc_pages_success
++			alloc_pages_fail
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_success
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of pages CMA API succeeded to allocate
++
++What:		/sys/kernel/mm/cma/<cma-heap-name>/alloc_pages_fail
++Date:		Feb 2021
++Contact:	Minchan Kim <minchan@kernel.org>
++Description:
++		the number of pages CMA API failed to allocate
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 23a0e3c98ff0..3823a2314256 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -524,6 +524,13 @@ config CMA_DEBUGFS
+ 	help
+ 	  Turns on the DebugFS interface for CMA.
+ 
++config CMA_SYSFS
++	bool "CMA information through sysfs interface"
++	depends on CMA && SYSFS
++	help
++	  This option exposes some sysfs attributes to get information
++	  from CMA.
++
+ config CMA_AREAS
+ 	int "Maximum count of the CMA areas"
+ 	depends on CMA
+diff --git a/mm/Makefile b/mm/Makefile
+index 9e284dba50ef..788c5ce5c0ef 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -112,6 +112,7 @@ obj-$(CONFIG_CMA)	+= cma.o
+ obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
+ obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
+ obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
++obj-$(CONFIG_CMA_SYSFS) += cma_sysfs.o
+ obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
+ obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
+ obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
+diff --git a/mm/cma.c b/mm/cma.c
+index 0361e289c31a..08c45157911a 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -507,10 +507,14 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 
+ 	pr_debug("%s(): returned %p\n", __func__, page);
+ out:
+-	if (page)
++	if (page) {
+ 		count_vm_event(CMA_ALLOC_SUCCESS);
+-	else
++		cma_sysfs_account_success_pages(cma, count);
++	} else {
+ 		count_vm_event(CMA_ALLOC_FAIL);
++		if (cma)
++			cma_sysfs_account_fail_pages(cma, count);
++	}
+ 
+ 	return page;
+ }
+diff --git a/mm/cma.h b/mm/cma.h
+index 42ae082cb067..37b9b7858c8e 100644
+--- a/mm/cma.h
++++ b/mm/cma.h
+@@ -3,6 +3,12 @@
+ #define __MM_CMA_H__
+ 
+ #include <linux/debugfs.h>
++#include <linux/kobject.h>
++
++struct cma_kobject {
++	struct cma *cma;
++	struct kobject kobj;
++};
+ 
+ struct cma {
+ 	unsigned long   base_pfn;
+@@ -16,6 +22,14 @@ struct cma {
+ 	struct debugfs_u32_array dfs_bitmap;
+ #endif
+ 	char name[CMA_MAX_NAME];
++#ifdef CONFIG_CMA_SYSFS
++	/* the number of CMA page successful allocations */
++	atomic64_t nr_pages_succeeded;
++	/* the number of CMA page allocation failures */
++	atomic64_t nr_pages_failed;
++	/* kobject requires dynamic object */
++	struct cma_kobject *cma_kobj;
++#endif
+ };
+ 
+ extern struct cma cma_areas[MAX_CMA_AREAS];
+@@ -26,4 +40,13 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
+ 	return cma->count >> cma->order_per_bit;
+ }
+ 
++#ifdef CONFIG_CMA_SYSFS
++void cma_sysfs_account_success_pages(struct cma *cma, unsigned long nr_pages);
++void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages);
++#else
++static inline void cma_sysfs_account_success_pages(struct cma *cma,
++						   unsigned long nr_pages) {};
++static inline void cma_sysfs_account_fail_pages(struct cma *cma,
++						unsigned long nr_pages) {};
++#endif
+ #endif
+diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
+new file mode 100644
+index 000000000000..73463be08df7
+--- /dev/null
++++ b/mm/cma_sysfs.c
+@@ -0,0 +1,116 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * CMA SysFS Interface
++ *
++ * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
++ */
++
++#include <linux/cma.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++
++#include "cma.h"
++
++void cma_sysfs_account_success_pages(struct cma *cma, unsigned long nr_pages)
++{
++	atomic64_add(nr_pages, &cma->nr_pages_succeeded);
++}
++
++void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages)
++{
++	atomic64_add(nr_pages, &cma->nr_pages_failed);
++}
++
++#define CMA_ATTR_RO(_name) \
++	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
++
++static inline struct cma *cma_from_kobj(struct kobject *kobj)
++{
++	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject,
++						    kobj);
++	struct cma *cma = cma_kobj->cma;
++
++	return cma;
++}
++
++static ssize_t alloc_pages_success_show(struct kobject *kobj,
++					struct kobj_attribute *attr, char *buf)
++{
++	struct cma *cma = cma_from_kobj(kobj);
++
++	return sysfs_emit(buf, "%llu\n",
++			atomic64_read(&cma->nr_pages_succeeded));
++}
++CMA_ATTR_RO(alloc_pages_success);
++
++static ssize_t alloc_pages_fail_show(struct kobject *kobj,
++				     struct kobj_attribute *attr, char *buf)
++{
++	struct cma *cma = cma_from_kobj(kobj);
++
++	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_failed));
++}
++CMA_ATTR_RO(alloc_pages_fail);
++
++static void cma_kobj_release(struct kobject *kobj)
++{
++	struct cma *cma = cma_from_kobj(kobj);
++	struct cma_kobject *cma_kobj = cma->cma_kobj;
++
++	kfree(cma_kobj);
++	cma->cma_kobj = NULL;
++}
++
++static struct attribute *cma_attrs[] = {
++	&alloc_pages_success_attr.attr,
++	&alloc_pages_fail_attr.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(cma);
++
++static struct kobj_type cma_ktype = {
++	.release = cma_kobj_release,
++	.sysfs_ops = &kobj_sysfs_ops,
++	.default_groups = cma_groups,
++};
++
++static int __init cma_sysfs_init(void)
++{
++	struct kobject *cma_kobj_root;
++	struct cma_kobject *cma_kobj;
++	struct cma *cma;
++	int i, err;
++
++	cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
++	if (!cma_kobj_root)
++		return -ENOMEM;
++
++	for (i = 0; i < cma_area_count; i++) {
++		cma_kobj = kzalloc(sizeof(*cma_kobj), GFP_KERNEL);
++		if (!cma_kobj) {
++			err = -ENOMEM;
++			goto out;
++		}
++
++		cma = &cma_areas[i];
++		cma->cma_kobj = cma_kobj;
++		cma_kobj->cma = cma;
++		err = kobject_init_and_add(&cma_kobj->kobj, &cma_ktype,
++				cma_kobj_root, "%s", cma->name);
++		if (err) {
++			kobject_put(&cma_kobj->kobj);
++			goto out;
++		}
++	}
++
++	return 0;
++out:
++	while (--i >= 0) {
++		cma = &cma_areas[i];
++		kobject_put(&cma->cma_kobj->kobj);
++	}
++	kobject_put(cma_kobj_root);
++
++	return err;
++}
++subsys_initcall(cma_sysfs_init);
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
