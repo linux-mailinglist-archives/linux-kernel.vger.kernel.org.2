@@ -2,140 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283193473C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA1D3473CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbhCXIiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:38:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9426 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230259AbhCXIho (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:37:44 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12O8XMhQ092196;
-        Wed, 24 Mar 2021 04:37:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=1OZ/fA+EBHos3tuU4pNUhXs8bbZ7Kgb6qCis80GYINI=;
- b=W/Q+0KFeyVJY1b0kuceGFIZHoqPI9tPQyX7vaDYhHq7J9rvR36mB83vAaKTAsYbgz1nJ
- 3ZInvsba3J6xe4WyDhV2/4ECQ5Nhi7I9qh0Hh7FVszdbMtIUFjZkdsqu3NgARZdJr1Sa
- FoXRk+JbUoeRu/MCG8OYu5UrPDbmLCeO2/Epui5Ee6LOpW0j+GRv9l1VhVGvgZ5PuBnW
- 9fYq3q4iF+cPFu4lG/9t78Q3UZfBS+C8XSJnzrtlaQl3QUBedQlQievvNnLW3ie86WEV
- OwejsoJ2X4lrJJk9JuUi+mobibS2WStSDIu4r0auWRuY1e4qrWqlaHxbi+QNE+EREM0F Qw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37g1k6rtjk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 04:37:43 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12O8bFbU014695;
-        Wed, 24 Mar 2021 08:37:41 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 37d99rc4ef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Mar 2021 08:37:41 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12O8bcT740042778
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 08:37:38 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2CE0B4C04A;
-        Wed, 24 Mar 2021 08:37:38 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E262A4C046;
-        Wed, 24 Mar 2021 08:37:37 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Mar 2021 08:37:37 +0000 (GMT)
-From:   Thomas Richter <tmricht@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH] perf test: Remove perf sub test 42.4 BPF relocation checker
-Date:   Wed, 24 Mar 2021 09:37:34 +0100
-Message-Id: <20210324083734.1953123-1-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        id S233665AbhCXIlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:41:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41632 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233955AbhCXIkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 04:40:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616575252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MSeWI8SL/YcKLwp8y07WFlFzVGAJyujolNeghuzIIcE=;
+        b=anO1EMpBrzHoGfoq3gQgKvbkHisYvo012Mh6Sxx43scKdBFlm6O5Enp4KVWm/DKmvLS/fb
+        KWDL1gLDIOn7BZQvdxwJ6zVTAWSh9K4xw31o+xU70RkgXQRk/y8YwkYnDkPvHPJWnTrwrF
+        DU5Z2mfAANkmnNUMupNYsXmodpc0DZg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 59ECEAB9B;
+        Wed, 24 Mar 2021 08:40:52 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 09:40:49 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 5/8] hugetlb: change free_pool_huge_page to
+ remove_pool_huge_page
+Message-ID: <YFr7EbGx25KsYfVg@dhcp22.suse.cz>
+References: <20210319224209.150047-1-mike.kravetz@oracle.com>
+ <20210319224209.150047-6-mike.kravetz@oracle.com>
+ <YFiqJSGjMMG3diWp@dhcp22.suse.cz>
+ <fd723ea8-da7c-bd59-8d8a-e506be1b3af5@oracle.com>
+ <YFmfegQjCKuY05jy@dhcp22.suse.cz>
+ <d1fb9303-0053-947d-e714-c9414c456a08@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-24_05:2021-03-24,2021-03-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=999
- phishscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 bulkscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103240062
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1fb9303-0053-947d-e714-c9414c456a08@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some time now the perf test 42: BPF filter returns an error
-on bpf relocation subtest, at least on x86 and s390. This is caused by
+On Tue 23-03-21 18:03:07, Mike Kravetz wrote:
+[...]
+> Since you brought up cgroups ... what is your opinion on lock hold time
+> in hugetlb_cgroup_css_offline?  We could potentially be calling
+> hugetlb_cgroup_move_parent for every hugetlb page while holding the lock
+> with interrupts disabled.
 
-commit d859900c4c56 ("bpf, libbpf: support global data/bss/rodata sections")
-
-which introduces support for global variables in eBPF programs.
-
-Perf test 42.4 checks that the eBPF relocation fails when the eBPF program
-contains a global variable. It returns OK when the eBPF program
-could not be loaded and FAILED otherwise.
-
-With above commit the test logic for the eBPF relocation is obsolete.
-The loading of the eBPF now succeeds and the test always shows FAILED.
-
-This patch removes the sub test completely.
-Also a lot of eBPF program testing is done in the eBPF test suite,
-it also contains tests for global variables.
-
-Output before:
- 42: BPF filter                          :
- 42.1: Basic BPF filtering               : Ok
- 42.2: BPF pinning                       : Ok
- 42.3: BPF prologue generation           : Ok
- 42.4: BPF relocation checker            : Failed
- #
-
-Output after:
- # ./perf test -F 42
- 42: BPF filter                          :
- 42.1: Basic BPF filtering               : Ok
- 42.2: BPF pinning                       : Ok
- 42.3: BPF prologue generation           : Ok
- #
-
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
----
- tools/perf/tests/bpf.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-index f57e075b0ed2..c72adbd67386 100644
---- a/tools/perf/tests/bpf.c
-+++ b/tools/perf/tests/bpf.c
-@@ -86,7 +86,7 @@ static struct {
- 		.msg_load_fail	  = "check your vmlinux setting?",
- 		.target_func	  = &epoll_pwait_loop,
- 		.expect_result	  = (NR_ITERS + 1) / 2,
--		.pin 		  = true,
-+		.pin		  = true,
- 	},
- #ifdef HAVE_BPF_PROLOGUE
- 	{
-@@ -99,13 +99,6 @@ static struct {
- 		.expect_result	  = (NR_ITERS + 1) / 4,
- 	},
- #endif
--	{
--		.prog_id	  = LLVM_TESTCASE_BPF_RELOCATION,
--		.desc		  = "BPF relocation checker",
--		.name		  = "[bpf_relocation_test]",
--		.msg_compile_fail = "fix 'perf test LLVM' first",
--		.msg_load_fail	  = "libbpf error when dealing with relocation",
--	},
- };
- 
- static int do_test(struct bpf_object *obj, int (*func)(void),
+I am not familiar with hugetlb cgroup code TBH. But from a quick look
+there is not much of heavy lifting there. If we find out that this is
+really visible we can do the lock dance with cond_resched and retry with
+the iteration again. Or is there any strong reason to process the list
+in a single go?
 -- 
-2.30.2
-
+Michal Hocko
+SUSE Labs
