@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6748F34716B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB94D34716D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 07:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbhCXGJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 02:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S233068AbhCXGMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 02:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232833AbhCXGJK (ORCPT
+        with ESMTP id S232833AbhCXGLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 02:09:10 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82815C0613DA
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 23:09:10 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id l1so7361097plg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 23:09:10 -0700 (PDT)
+        Wed, 24 Mar 2021 02:11:42 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B81C061763;
+        Tue, 23 Mar 2021 23:11:41 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id i9so16984065qka.2;
+        Tue, 23 Mar 2021 23:11:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Bqt5VqMTy19a5DZTnPEjtlmJPD8x0Bwdpiw0tfEv6eY=;
-        b=vv70pojJKiEe8f6oTbQ0b0U7rlPeg4FpS9sahXr59+djPyVocj+4q/NZMhvOED9fp9
-         dgF43kz8Hb7kWXXV0JouEMCjqP8VGf5SaIEL6F3VzQxxTqHGeuYRlwz/sLUow95mL1Ae
-         nLcLHe8u0vzJgMJpqg93ZCI4DiPwE1oaihnxOkVHt59aVBknuAjryVE7iCEJ/tHqrz0E
-         KhnXIfCe9UC/FZ4Z6nWkN6rOAnb5IxN+7KmdUM7PowkZY7ygUwixs9mmRXGsnUGAyzlm
-         rJ+5LSKzbAt+IPimhF4YpYwsutIFe4QV2pF4TkEA/OWjkTr0q1TmeSBg5fQizcc4tm52
-         d6XQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KcC838RF/TN3pV7IC2FHIE1xfHNqpubjGGbGI/klA/U=;
+        b=k04RD2JMw0j2ErelTTY3RFlh05vhDtmtc1ZhVESD5nrGclc7S1/TTkFI8VgqwNHaeS
+         2wF8HLYmxGfcI6ro+KWWrU9aR1oSUqaxcn7zh4WQPzHPJ1Ip9X8Xrc8eXuDd/AMr9pjL
+         ZUgJ9T7J2cZt4VnDt7696Fgo95fdRXv5gOwFGpmjZ6KBc0X/T3vyc02/SsWi+PVMiJwM
+         SCZT4yiMk02Q5nZG0bozWWtcLXedAiHAfqrB7gJDatcXEzRF3L817d0/LCkQO6k/TRT3
+         qffkIR/2wMZmjM9bPMQaI3QOBaU0KOQtCZKdEhv8UGoHii2zFGWtRvzNkpmeP0xWAmjw
+         qXgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Bqt5VqMTy19a5DZTnPEjtlmJPD8x0Bwdpiw0tfEv6eY=;
-        b=YYmKESbNEfRqxobmCSLLzsPkuQyeMws+CO+rCjb/SxgKYQYqjZKdJwFUN7qA/25942
-         3zq4br6lP6sztpmLuI4FGWAdDkxLWiHNMCIFOl6L0U3fxSA5TMpAgQQMQUV8VvZiJOsg
-         L2cu+i+b6+0VnqZXV9UAjSNblCuW7daTSjoRB8uvN9meDOH1Pb9F2oNhzph16IBUhB3H
-         ifVAxY7mTjobij/uU9WEjlQzv1CUo/tyu0tYYT3xs4FSD+ksNY7iVW7G+FW0V9kz1iIs
-         m4lYB4aT0HevtwdGwZIgnp325mOmsFDIZmDvuGG5TqsuxLbOjVzFtC8frVSrbfujZFBi
-         DHiA==
-X-Gm-Message-State: AOAM532sOpHivXI4lKsov4AeS/3doEojfDNNLdZEVfy2m51GVt3n0KEr
-        LdZPyTuLx9RnqMp2wpqhnLwWmg==
-X-Google-Smtp-Source: ABdhPJz72V1Ehz5QzUYV0UwpfeeT8qryCamqR7SxQrI7hMZDMn/PcdRxmU/vtj99/9xVVf+mF+DSAw==
-X-Received: by 2002:a17:90b:3609:: with SMTP id ml9mr1906891pjb.142.1616566149898;
-        Tue, 23 Mar 2021 23:09:09 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id a15sm1030237pju.34.2021.03.23.23.09.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Mar 2021 23:09:09 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 11:39:07 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210324060907.nwilmghg2xcdz7nv@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210324042046.idkctj2t7cxi53jf@vireshk-i7>
- <70908366-c270-848e-0be3-c85fec7958ec@intel.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KcC838RF/TN3pV7IC2FHIE1xfHNqpubjGGbGI/klA/U=;
+        b=qyQ6fGOxXGLr3hcgHdCG38WevOx8GDiEkhcOzxz1za32Bim2YCE05RcA2du+368cjF
+         6Ke1GRLID6iYpBKqyycqf/jltnUjRaW1QaU1snlzDx5/rypD4VoVwDkdFRJ9lri9IUiJ
+         z5/ZmexMpeFWpyjjoMh+Jh+Mk+NbAsV6q0YusNExyw+lykWCk8knoV0PUSCImwUlNltw
+         WVO4wSFH4PknvRqzihuOPUH+806UabqL/bN2bNHAlXqbI8PIOTXPPwtKYaGgS2TCrAYg
+         nHv55xISKfB7UBaDg1WmGojqCwpDquJ6hFbQbguWbY+I5QdLbrkJRFpbE17KvEpA/8ES
+         /0RQ==
+X-Gm-Message-State: AOAM532l4LC0fODlFu4BTSvORaxW96vXV6GlIH2pQhEqf+DKdP1Ziwdx
+        ypx2B/fbS1kbiCl/i6NSBDA=
+X-Google-Smtp-Source: ABdhPJzc0UVZm4VniaSQlCMnj1ICJwguc4z5GqTbFHDq3jjJ63I1qROVLt3PAlJ+by7aMk6cp6BLEw==
+X-Received: by 2002:a05:620a:6a9:: with SMTP id i9mr1556104qkh.344.1616566301102;
+        Tue, 23 Mar 2021 23:11:41 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.37.194])
+        by smtp.gmail.com with ESMTPSA id v35sm833759qtd.56.2021.03.23.23.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 23:11:40 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] scsi: esp_scsi: Trivial typo fixes
+Date:   Wed, 24 Mar 2021 11:43:18 +0530
+Message-Id: <20210324061318.5744-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <70908366-c270-848e-0be3-c85fec7958ec@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-03-21, 14:05, Jie Deng wrote:
-> For simplicity, the original patch sent only 1 message to vq each time . I
-> changed the way to send
 
-I missed those earlier discussions :)
+s/conditon/condition/
+s/pecularity/peculiarity/
 
-> a batch of requests in one time in order to improve efficiency according to
-> Jason' suggestion.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/scsi/esp_scsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I agree.
+diff --git a/drivers/scsi/esp_scsi.c b/drivers/scsi/esp_scsi.c
+index 007ccef5d1e2..342535ac0570 100644
+--- a/drivers/scsi/esp_scsi.c
++++ b/drivers/scsi/esp_scsi.c
+@@ -647,7 +647,7 @@ static void esp_unmap_sense(struct esp *esp, struct esp_cmd_entry *ent)
+ 	ent->sense_ptr = NULL;
+ }
 
-> As we discussed in the previous emails, the device can raise interrupt when
-> some requests are still not completed
-> 
-> though this is not a good operation.  In this case, the remaining requests
-> in the vq will be ignored and
-> 
-> the i2c_algorithm. master_xfer will return 1 for your example. I will
-> clarify this in the specs.
+-/* When a contingent allegiance conditon is created, we force feed a
++/* When a contingent allegiance condition is created, we force feed a
+  * REQUEST_SENSE command to the device to fetch the sense data.  I
+  * tried many other schemes, relying on the scsi error handling layer
+  * to send out the REQUEST_SENSE automatically, but this was difficult
+@@ -1341,7 +1341,7 @@ static int esp_data_bytes_sent(struct esp *esp, struct esp_cmd_entry *ent,
+ 	bytes_sent -= esp->send_cmd_residual;
 
-Right, this needs to be clarified that the receiver shall generate the interrupt
-only once the virtqueue is empty, not in the middle of it.
+ 	/*
+-	 * The am53c974 has a DMA 'pecularity'. The doc states:
++	 * The am53c974 has a DMA 'peculiarity'. The doc states:
+ 	 * In some odd byte conditions, one residual byte will
+ 	 * be left in the SCSI FIFO, and the FIFO Flags will
+ 	 * never count to '0 '. When this happens, the residual
+--
+2.30.1
 
-Or, now that I think about it a bit more, another thing we can do here is see if
-virtqueue_get_buf() returns NULL, if it does then we should keep expecting more
-messages as it may be early interrupt. What do you say ?
-
-
--- 
-viresh
