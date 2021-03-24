@@ -2,167 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701A3347A23
+	by mail.lfdr.de (Postfix) with ESMTP id BBB32347A24
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbhCXOCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
+        id S235911AbhCXOCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235553AbhCXOCK (ORCPT
+        with ESMTP id S235859AbhCXOCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:02:10 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CA8C061763;
-        Wed, 24 Mar 2021 07:02:09 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so23107653otn.1;
-        Wed, 24 Mar 2021 07:02:09 -0700 (PDT)
+        Wed, 24 Mar 2021 10:02:30 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1750AC0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:02:30 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id 14so1343675wrz.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:02:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MVxQXDLo+TFM9ep9KeYmseAjJy7lefxBvzfXNcFgDeA=;
-        b=OOZ/wVDUD8gGxmywi34+GHR2KKFw0ucqb+uRDFPBkl+7FcpTi6mpvn1nT7Gs17Ve6T
-         DKJVU56HfvToMLGzxNOj3dKZrzOLi90Sc0CJI+cE/0i3520d8C1KHFjFqe/plrKulJso
-         5SZhGwknD5Hl7mDRPWq5tUpydPxgAuNXEadk8AhKgIFiiT4Wksvwzl02d8HZ1hDx+qM6
-         VTMJQrJzwY1R3G0gQQCvRteTDCsNvwZ2SB/6Gh1CaTbpn/JFtI0IwsMYsYVdXAwEIOyL
-         F+kI5vATvow0StTTUYrXvCQe1QyG3fX++az0NSeBZc8yK6qeXeIpGqoaB3MEzK123kqr
-         2Fog==
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9Srn0HCzRuEqmBIHGKCIDIj1QJnrtcGxEweWmfp41Hk=;
+        b=blJB3/bFvQgdsZFjA+/2zACn4ORPdcyIG+PyUh7o/pVWFmLyVnFIRI0DJxPPn3na3g
+         inpIOlx9DPXatv/jjh7lLKY/A2zld01pxkuerRfrZexXJsma2InqZjZL6YVamwojcRAb
+         ua/kXomby2Ter8CUenDlr7Imi9TUivVVp3AcbN2yIDi4sGya76j/l2u800HBGEnUW9E1
+         zIT3G5XkaT7Ir/8h7xHZ4levDa2Jym3IyRCiBSKR8cLWFLGGbAPwGAmbMpEZBzHZg76u
+         nsmafsfP1hdOBT9U8iQaHt9XtmplU5xBcglj2JwAmNAw7qRdJToR8NEBMayYrsvIxUhN
+         pogw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=MVxQXDLo+TFM9ep9KeYmseAjJy7lefxBvzfXNcFgDeA=;
-        b=KCUjAxK1+wO74lZDto7HogEfstRx0ygs1MKgUb2YbhUGvPVDdQ+3FBHYCgd0YM4j4o
-         aeD1jfYmryk2fMdkFJER50iXMRJ2P0OivVn1gi3pt1SvDce2Y7lqv86AP8v9o9N/l4gb
-         vAHjrviX5LM+JMsvZx4pso14Bz13n7Pr8SzC/bHWF6AbF+fwZRy5ItHXXAb08tt9mKTE
-         zc79Fe5Hei8HMy1dJPtp6S9OFx8Fg/l1wKF3A3ZKv2ii7gIX1F3YfM534u4Y/fn4WhAS
-         OFAp6wyHttfrfE9mkJyuwRyRZvFGVXGNNIlBJEB2wZKmR1Pg01zE7F1lTNCEQ3GdkQ3g
-         2aPA==
-X-Gm-Message-State: AOAM530C2LrrLvbtqLg7vzrtY3+k3KaVLXpNB+okQ6dhLHuw+Xz++U/2
-        araYuYyZcu1Vm7HTO4/mU0NGXVpaNKE=
-X-Google-Smtp-Source: ABdhPJzhjvB/2bAjZzu3cmXUOzwLcaosQF2Kc4NfZ6PUoDgkT4OKrKeqsH5+KloXa4KJljlTbSmRXg==
-X-Received: by 2002:a05:6830:1546:: with SMTP id l6mr3470335otp.139.1616594529139;
-        Wed, 24 Mar 2021 07:02:09 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r20sm562387otd.26.2021.03.24.07.01.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 07:01:47 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 7/9] watchdog: of_xilinx_wdt: Add Versal Window watchdog
- support
-To:     Srinivas Neeli <sneeli@xilinx.com>,
-        Michal Simek <michals@xilinx.com>,
-        Shubhrajyoti Datta <shubhraj@xilinx.com>,
-        Srinivas Goud <sgoud@xilinx.com>
-Cc:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>
-References: <1615805214-24857-1-git-send-email-srinivas.neeli@xilinx.com>
- <1615805214-24857-8-git-send-email-srinivas.neeli@xilinx.com>
- <ad8435c4-d344-fd0b-2c98-3bdd974f5175@roeck-us.net>
- <DM6PR02MB53866BB023B6B525D48B76F9AF639@DM6PR02MB5386.namprd02.prod.outlook.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <2241024e-3791-4733-4d4a-a4ea12582e92@roeck-us.net>
-Date:   Wed, 24 Mar 2021 07:01:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9Srn0HCzRuEqmBIHGKCIDIj1QJnrtcGxEweWmfp41Hk=;
+        b=KclrYeQMY1OhFuCqXzN/U0Y9eASkJ8THQ/74k9wZ+CFyO5ixw8V3Ztf/RgTjfepGAW
+         dOU53i+bRQkdpYA3qSIlBBwVXC1CYVuai0hQIGyCLsXYKKIsuhdV/bCjG+Cba5rB+JhQ
+         KXh72HIVtOqYGLLHgMN2GkcVO1NhxVRJ2kUYo3bIsnXBTaah0UoZeXTWBOsik2WpuZ1N
+         2z4Fpg1u1/mHGGwpIioYRXdbzsO0UFCC1fi0jrU029jwiEBmcWh3YVofURFO4lARzwdD
+         A/xxbZA6AhG6gj/4B72ODicijGarT8IfY8W+4YporDhSQUlO1DxhfoveUtGjp/co2oKg
+         +chQ==
+X-Gm-Message-State: AOAM533kulXkE4An0thrrWMaJpnGmKfoo1j6v2caZhiYtJRfNYzvdj5y
+        h2jv4QxCUhx2vHp5VNL2t2wHtw==
+X-Google-Smtp-Source: ABdhPJxXUx4T2aaNwAFsHs+0aPg0bqPsP3pOb4ZsustW1c+1HMynvIBq9hs4aHMZlVqiC73ovqvuGw==
+X-Received: by 2002:adf:e508:: with SMTP id j8mr3686199wrm.141.1616594548397;
+        Wed, 24 Mar 2021 07:02:28 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:e547:d6b6:59e3:4a81])
+        by smtp.gmail.com with ESMTPSA id b17sm3358310wrt.17.2021.03.24.07.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 07:02:27 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 14:02:26 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Rokudo Yan <wu-yan@tcl.com>
+Cc:     Alessio Balsini <balsini@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND V12 1/8] fs: Generic function to convert iocb to
+ rw flags
+Message-ID: <YFtGciOtz6ri9nYS@google.com>
+References: <24bb27b5804fb64238f2f9c1f3c860d5@sslemail.net>
+ <YA71ydLBbKmZg5/O@google.com>
+ <d136923d-dd50-3cb4-7771-b3c0dceabd24@tcl.com>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR02MB53866BB023B6B525D48B76F9AF639@DM6PR02MB5386.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d136923d-dd50-3cb4-7771-b3c0dceabd24@tcl.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 11:04 PM, Srinivas Neeli wrote:
-> Hi Guenter,
+On Wed, Mar 24, 2021 at 03:43:12PM +0800, Rokudo Yan wrote:
+> On 1/26/21 12:46 AM, Alessio Balsini wrote:
+> > On Mon, Jan 25, 2021 at 03:30:50PM +0000, Alessio Balsini wrote:
+> > > OverlayFS implements its own function to translate iocb flags into rw
+> > > flags, so that they can be passed into another vfs call.
+> > > With commit ce71bfea207b4 ("fs: align IOCB_* flags with RWF_* flags")
+> > > Jens created a 1:1 matching between the iocb flags and rw flags,
+> > > simplifying the conversion.
+> > > 
+> > > Reduce the OverlayFS code by making the flag conversion function generic
+> > > and reusable.
+> > > 
+> > > Signed-off-by: Alessio Balsini <balsini@android.com>
+> > > ---
+> > >   fs/overlayfs/file.c | 23 +++++------------------
+> > >   include/linux/fs.h  |  5 +++++
+> > >   2 files changed, 10 insertions(+), 18 deletions(-)
+> > > 
+> > > diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+> > > index bd9dd38347ae..56be2ffc5a14 100644
+> > > --- a/fs/overlayfs/file.c
+> > > +++ b/fs/overlayfs/file.c
+> > > @@ -15,6 +15,8 @@
+> > >   #include <linux/fs.h>
+> > >   #include "overlayfs.h"
+> > > +#define OVL_IOCB_MASK (IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
+> > > +
+> > >   struct ovl_aio_req {
+> > >   	struct kiocb iocb;
+> > >   	struct kiocb *orig_iocb;
+> > > @@ -236,22 +238,6 @@ static void ovl_file_accessed(struct file *file)
+> > >   	touch_atime(&file->f_path);
+> > >   }
+> > > -static rwf_t ovl_iocb_to_rwf(int ifl)
+> > > -{
+> > > -	rwf_t flags = 0;
+> > > -
+> > > -	if (ifl & IOCB_NOWAIT)
+> > > -		flags |= RWF_NOWAIT;
+> > > -	if (ifl & IOCB_HIPRI)
+> > > -		flags |= RWF_HIPRI;
+> > > -	if (ifl & IOCB_DSYNC)
+> > > -		flags |= RWF_DSYNC;
+> > > -	if (ifl & IOCB_SYNC)
+> > > -		flags |= RWF_SYNC;
+> > > -
+> > > -	return flags;
+> > > -}
+> > > -
+> > >   static void ovl_aio_cleanup_handler(struct ovl_aio_req *aio_req)
+> > >   {
+> > >   	struct kiocb *iocb = &aio_req->iocb;
+> > > @@ -299,7 +285,8 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+> > >   	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+> > >   	if (is_sync_kiocb(iocb)) {
+> > >   		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
+> > > -				    ovl_iocb_to_rwf(iocb->ki_flags));
+> > > +				    iocb_to_rw_flags(iocb->ki_flags,
+> > > +						     OVL_IOCB_MASK));
+> > >   	} else {
+> > >   		struct ovl_aio_req *aio_req;
+> > > @@ -356,7 +343,7 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
+> > >   	if (is_sync_kiocb(iocb)) {
+> > >   		file_start_write(real.file);
+> > >   		ret = vfs_iter_write(real.file, iter, &iocb->ki_pos,
+> > > -				     ovl_iocb_to_rwf(ifl));
+> > > +				     iocb_to_rw_flags(ifl, OVL_IOCB_MASK));
+> > >   		file_end_write(real.file);
+> > >   		/* Update size */
+> > >   		ovl_copyattr(ovl_inode_real(inode), inode);
+> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > > index fd47deea7c17..647c35423545 100644
+> > > --- a/include/linux/fs.h
+> > > +++ b/include/linux/fs.h
+> > > @@ -3275,6 +3275,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
+> > >   	return 0;
+> > >   }
+> > > +static inline rwf_t iocb_to_rw_flags(int ifl, int iocb_mask)
+> > > +{
+> > > +	return ifl & iocb_mask;
+> > > +}
+> > > +
+> > >   static inline ino_t parent_ino(struct dentry *dentry)
+> > >   {
+> > >   	ino_t res;
+> > > -- 
+> > > 2.30.0.280.ga3ce27912f-goog
+> > > 
+> > 
+> > For some reason lkml.org and lore.kernel.org are not showing this change
+> > as part of the thread.
+> > Let's see if replying to the email fixes the indexing.
+> > 
+> > Regards,
+> > Alessio
+> > 
 > 
-> Thanks for review
+> Hi, Alessio
 > 
->> -----Original Message-----
->> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
->> Sent: Tuesday, March 16, 2021 8:01 AM
->> To: Srinivas Neeli <sneeli@xilinx.com>; Michal Simek <michals@xilinx.com>;
->> Shubhrajyoti Datta <shubhraj@xilinx.com>; Srinivas Goud
->> <sgoud@xilinx.com>
->> Cc: wim@linux-watchdog.org; linux-watchdog@vger.kernel.org; linux-arm-
->> kernel@lists.infradead.org; linux-kernel@vger.kernel.org; git
->> <git@xilinx.com>
->> Subject: Re: [PATCH 7/9] watchdog: of_xilinx_wdt: Add Versal Window
->> watchdog support
->>
->> On 3/15/21 3:46 AM, Srinivas Neeli wrote:
->>> Versal watchdog driver uses Window watchdog mode. Window watchdog
->>> timer(WWDT) contains closed(first) and open(second) window with
->>> 32 bit width. WWDT will generate an interrupt after the first window
->>> timeout and reset signal after the second window timeout. Timeout and
->>> Pre-timeout configuration, Stop and Refresh trigger only in open
->>> window.
->>>
->>> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
->>
->> I think this should be a separate watchdog driver. There is pretty much no
->> overlap with the existing driver.
+> This change imply IOCB_* and RWF_* flags are properly aligned, which is not
+> true for kernel version 5.4/4.19/4.14. As the patch ("fs: align IOCB_* flags
+> with RWF_* flags") is not back-ported to these stable kernel branches. The
+> issue was found when applying these patches
+> to kernel-5.4(files open with passthrough enabled can't do append write). I
+> think the issue exists in AOSP common kernel too.
+> Could you please fix this?
 > 
-> Xilinx AXI Timebase Watchdog Timer supports two independent modes
-> 1)Timebase Watchdog Mode
-> 2)Window Watchdog Timer Mode.
-> Current of_xilinx_wdt.c driver already have support for Timebase Watchdog Mode, but Window watchdog timer Mode feature is missing.
-> Versal platform contains customized AXI Timebase Watchdog Timer, which supports Window Watchdog Timer Mode.
-> For that reason we are creating common driver for both the modes.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ce71bfea207b4d7c21d36f24ec37618ffcea1da8
 > 
+> https://android-review.googlesource.com/c/kernel/common/+/1556243
+> 
+> Thanks
+> yanwu
 
-That is not an argument. The two watchdogs are still completely different,
-and there is no value having a single driver.
+Hi yanwu,
 
-Guenter
+Correct, this change depends on commit ce71bfea207b ("fs: align IOCB_*
+flags with RWF_* flags"), and this dependency is satisfied upstream.
+Being FUSE passthrough a new feature and not a bugfix, I'm not planning
+to do any backporting to LTS kernels (and GregKH won't probably accept
+it).
+
+Android is a different story (and slightly out of topic here).
+We are looking forward to have FUSE passthrough enabled on Android as
+most of the user data is handled by FUSE. We liked the performance
+improvements and non-intrusiveness of the change both for the kernel and
+for userspace, so we started supporting this in android12-5.4+ kernel
+branches. We are not planning to maintain the feature to older kernels
+though (we can't add features to already released), and this is why FUSE
+passthrough is not merged there.
+To answer your question, in AOSP the officially supported kernels
+already have the flags alignment change merged, and a not supported
+backporting to older kernels (i.e., 4.14 and 4.19) is already available:
+
+https://android-review.googlesource.com/q/%2522BACKPORT:+fs:+align+IOCB_*+flags+with+RWF_*+flags%2522+-status:abandoned
+
+Thanks,
+Alessio
