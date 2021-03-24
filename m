@@ -2,71 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A9C34763F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8640334764A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235847AbhCXKg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
+        id S233476AbhCXKh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232877AbhCXKgU (ORCPT
+        with ESMTP id S232877AbhCXKht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:36:20 -0400
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C56C061763;
-        Wed, 24 Mar 2021 03:36:20 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4F54Qk6Ntjz1s9R5;
-        Wed, 24 Mar 2021 11:36:14 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4F54Qk4zn7z1qsjk;
-        Wed, 24 Mar 2021 11:36:14 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id SqtMt3mJbtmw; Wed, 24 Mar 2021 11:36:13 +0100 (CET)
-X-Auth-Info: olVaPxE3Iz+q50j6MfKSb11oZHIp3MyPaMLQ4Rr+sMkFhhkkUaAnHCx5VE8VTEsd
-Received: from igel.home (ppp-46-244-174-113.dynamic.mnet-online.de [46.244.174.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 24 Mar 2021 11:36:13 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 4C29D2C3716; Wed, 24 Mar 2021 11:36:13 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
-References: <20201209094916.17383-1-zong.li@sifive.com>
-        <87v99qyjaz.fsf@igel.home>
-        <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
-        <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
-        <87lfaj7cki.fsf@igel.home>
-X-Yow:  I just forgot my whole philosophy of life!!!
-Date:   Wed, 24 Mar 2021 11:36:13 +0100
-In-Reply-To: <87lfaj7cki.fsf@igel.home> (Andreas Schwab's message of "Fri, 19
-        Mar 2021 09:49:33 +0100")
-Message-ID: <871rc4on36.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Wed, 24 Mar 2021 06:37:49 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A6E9C061763;
+        Wed, 24 Mar 2021 03:37:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=PXF6JWSoPF
+        BH9Usr8tR+rlIy/zE3h2TbpQbzC+GbL0c=; b=S0rbtQqfTQjcT/uVujgUjkyHsG
+        subYYj47fDisdV53c8qKPSs3jf8xc7wJ59ZKECQvI2wr0r+vkcR7KhFKnFFCjQRa
+        YMDQDrBUgM4ucUFD5Za96Q7yigj14TPCaPJUMLFlWxCkzsSQuZMpKc+s4Ela9imA
+        DQT063mDD54cIyFek=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAXH09zFltgkvEyAA--.238S4;
+        Wed, 24 Mar 2021 18:37:39 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH v2] video: hyperv_fb: Fix a double free in hvfb_probe
+Date:   Wed, 24 Mar 2021 03:37:24 -0700
+Message-Id: <20210324103724.4189-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygAXH09zFltgkvEyAA--.238S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArWUuw4rXF13Xry8Zry8uFg_yoW8GFWUpF
+        4kJayqyrW8tw109w4kAF4vyF9Y9Fs3Kr9xuFy2ka4Fya13J3yUuryrAFyI9rZ5ArW3W3WY
+        vF1Ut34rCa45uFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUF0eHDUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Were you able to reproduce the problem?
+In function hvfb_probe in hyperv_fb.c, it calls hvfb_getmem(hdev, info)
+and return err when info->apertures is freed.
 
-Andreas.
+In the error1 label of hvfb_probe, info->apertures will be freed for the
+second time in framebuffer_release(info).
 
+My patch removes all kfree(info->apertures) instead of set info->apertures
+to NULL. It is because that let framebuffer_release() handle freeing the
+memory flows the fbdev pattern, and less code overall.
+
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/video/fbdev/hyperv_fb.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index c8b0ae676809..4dc9077dd2ac 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -1031,7 +1031,6 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 			PCI_DEVICE_ID_HYPERV_VIDEO, NULL);
+ 		if (!pdev) {
+ 			pr_err("Unable to find PCI Hyper-V video\n");
+-			kfree(info->apertures);
+ 			return -ENODEV;
+ 		}
+ 
+@@ -1129,7 +1128,6 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 	} else {
+ 		pci_dev_put(pdev);
+ 	}
+-	kfree(info->apertures);
+ 
+ 	return 0;
+ 
+@@ -1141,7 +1139,6 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ err1:
+ 	if (!gen2vm)
+ 		pci_dev_put(pdev);
+-	kfree(info->apertures);
+ 
+ 	return -ENOMEM;
+ }
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.25.1
+
+
