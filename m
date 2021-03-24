@@ -2,149 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9510D347C9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB960347CA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236653AbhCXP3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:29:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:35184 "EHLO foss.arm.com"
+        id S236528AbhCXPbA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 11:31:00 -0400
+Received: from mga09.intel.com ([134.134.136.24]:1310 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236528AbhCXP3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:29:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BC90D6E;
-        Wed, 24 Mar 2021 08:29:45 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC3053F7D7;
-        Wed, 24 Mar 2021 08:29:42 -0700 (PDT)
-Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
-To:     Sven Peter <sven@svenpeter.dev>, iommu@lists.linux-foundation.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Hector Martin <marcan@marcan.st>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210320151903.60759-1-sven@svenpeter.dev>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <9b9d771a-f6d4-2d27-7516-f5b8315909ed@arm.com>
-Date:   Wed, 24 Mar 2021 15:29:36 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236683AbhCXPaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:30:39 -0400
+IronPort-SDR: TDT8xas+TqaIoJVkNiEXLLro6tSxpW0oapG8TPTC6sWKawxhr1Y2bBwLEzL0ayTAGLvsVAhDyD
+ h+K9Yw2upJzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190823083"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="190823083"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:30:38 -0700
+IronPort-SDR: /4dqq/0JWisBWvhTbTEBIBwFyl3ZwxDSlbNQvn9KHdRvSPPQs9Sb14vUi+jgB7se4K1pbShwF/
+ LGKAbJDldGYw==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="415534424"
+Received: from hcarliss-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.54.166])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:30:27 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        Martin Sebor <msebor@gcc.gnu.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        Ning Sun <ning.sun@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        =?utf-8?Q?Jos=C3=A9?= Roberto de Souza <jose.souza@intel.com>,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Aditya Swarup <aditya.swarup@intel.com>
+Subject: Re: [PATCH 10/11] drm/i915: avoid stringop-overread warning on pri_latency
+In-Reply-To: <20210322160253.4032422-11-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-11-arnd@kernel.org>
+Date:   Wed, 24 Mar 2021 17:30:24 +0200
+Message-ID: <874kh04lin.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210320151903.60759-1-sven@svenpeter.dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-20 15:19, Sven Peter wrote:
-> Hi,
-> 
-> After Hector's initial work [1] to bring up Linux on Apple's M1 it's time to
-> bring up more devices. Most peripherals connected to the SoC are behind a iommu
-> which Apple calls "Device Address Resolution Table", or DART for short [2].
-> Unfortunately, it only shares the name with PowerPC's DART.
-> Configuring this iommu is mandatory if these peripherals require DMA access.
-> 
-> This patchset implements initial support for this iommu. The hardware itself
-> uses a pagetable format that's very similar to the one already implement in
-> io-pgtable.c. There are some minor modifications, namely some details of the
-> PTE format and that there are always three pagetable levels, which I've
-> implement as a new format variant.
-> 
-> I have mainly tested this with the USB controller in device mode which is
-> compatible with Linux's dwc3 driver. Some custom PHY initialization (which is
-> not yet ready or fully understood) is required though to bring up the ports,
-> see e.g. my patches to our m1n1 bootloader [3,4]. If you want to test the same
-> setup you will probably need that branch for now and add the nodes from
-> the DT binding specification example to your device tree.
-> 
-> Even though each DART instances could support up to 16 devices usually only
-> a single device is actually connected. Different devices generally just use
-> an entirely separate DART instance with a seperate MMIO range, IRQ, etc.
-> 
-> I have just noticed today though that at least the USB DWC3 controller in host
-> mode uses *two* darts at the same time. I'm not sure yet which parts seem to
-> require which DART instance.
-> 
-> This means that we might need to support devices attached to two iommus
-> simultaneously and just create the same iova mappings. Currently this only
-> seems to be required for USB according to Apple's Device Tree.
-> 
-> I see two options for this and would like to get feedback before
-> I implement either one:
-> 
->      1) Change #iommu-cells = <1>; to #iommu-cells = <2>; and use the first cell
->         to identify the DART and the second one to identify the master.
->         The DART DT node would then also take two register ranges that would
->         correspond to the two DARTs. Both instances use the same IRQ and the
->         same clocks according to Apple's device tree and my experiments.
->         This would keep a single device node and the DART driver would then
->         simply map iovas in both DARTs if required.
+On Mon, 22 Mar 2021, Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc-11 warns about what appears to be an out-of-range array access:
+>
+> In function ‘snb_wm_latency_quirk’,
+>     inlined from ‘ilk_setup_wm_latency’ at drivers/gpu/drm/i915/intel_pm.c:3108:3:
+> drivers/gpu/drm/i915/intel_pm.c:3057:9: error: ‘intel_print_wm_latency’ reading 16 bytes from a region of size 10 [-Werror=stringop-overread]
+>  3057 |         intel_print_wm_latency(dev_priv, "Primary", dev_priv->wm.pri_latency);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/i915/intel_pm.c: In function ‘ilk_setup_wm_latency’:
+> drivers/gpu/drm/i915/intel_pm.c:3057:9: note: referencing argument 3 of type ‘const u16 *’ {aka ‘const short unsigned int *’}
+> drivers/gpu/drm/i915/intel_pm.c:2994:13: note: in a call to function ‘intel_print_wm_latency’
+>  2994 | static void intel_print_wm_latency(struct drm_i915_private *dev_priv,
+>       |             ^~~~~~~~~~~~~~~~~~~~~~
+>
+> My guess is that this code is actually safe because the size of the
+> array depends on the hardware generation, and the function checks for
+> that, but at the same time I would not expect the compiler to work it
+> out correctly, and the code seems a little fragile with regards to
+> future changes. Simply increasing the size of the array should help.
 
-This is broadly similar to the approach used by rockchip-iommu and the 
-special arm-smmu-nvidia implementation, where there are multiple 
-instances which require programming identically, that are abstracted 
-behind a single "device". Your case is a little different since you're 
-not programming both *entirely* identically, although maybe that's a 
-possibility if each respective ID isn't used by anything else on the 
-"other" DART?
+Agreed, I don't think there's an issue, but the code could use a bunch
+of improvements.
 
-Overall I tend to view this approach as a bit of a hack because it's not 
-really describing the hardware truthfully - just because two distinct 
-functional blocks have their IRQ lines wired together doesn't suddenly 
-make them a single monolithic block with multiple interfaces - and tends 
-to be done for the sake of making the driver implementation easier in 
-terms of the Linux IOMMU API (which, note, hasn't evolved all that far 
-from its PCI-centric origins and isn't exactly great for arbitrary SoC 
-topologies).
+Like, we have intel_print_wm_latency() for debug logging and
+wm_latency_show() for debugfs, and there's a bunch of duplication and
+ugh.
 
->      2) Keep #iommu-cells as-is but support
->              iommus = <&usb_dart1a 1>, <&usb_dart1b 0>;
->         instead.
->         This would then require two devices nodes for the two DART instances and
->         some housekeeping in the DART driver to support mapping iovas in both
->         DARTs.
->         I believe omap-iommu.c supports this setup but I will have to read
->         more code to understand the details there and figure out how to implement
->         this in a sane way.
+But this seems like the easiest fix for the warning.
 
-This approach is arguably the most honest, and more robust in terms of 
-making fewer assumptions, and is used by at least exynos-iommu and 
-omap-iommu. In Linux it currently takes a little bit more housekeeping 
-to keep track of linked instances within the driver since the IOMMU API 
-holds the notion that any given client device is associated with "an 
-IOMMU", but that's always free to change at any time, unlike the design 
-of a DT binding.
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-There's also the funky "root" and "leaf" devices thing that ipmmu-vmsa 
-does, although I believe that represents genuine hardware differences 
-where the leaves are more like extra TLBs rather than fully-functional 
-IOMMU blocks in their own right, so that may not be a relevant model here.
 
-Robin.
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/i915/i915_drv.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+> index 26d69d06aa6d..3567602e0a35 100644
+> --- a/drivers/gpu/drm/i915/i915_drv.h
+> +++ b/drivers/gpu/drm/i915/i915_drv.h
+> @@ -1095,11 +1095,11 @@ struct drm_i915_private {
+>  		 * in 0.5us units for WM1+.
+>  		 */
+>  		/* primary */
+> -		u16 pri_latency[5];
+> +		u16 pri_latency[8];
+>  		/* sprite */
+> -		u16 spr_latency[5];
+> +		u16 spr_latency[8];
+>  		/* cursor */
+> -		u16 cur_latency[5];
+> +		u16 cur_latency[8];
+>  		/*
+>  		 * Raw watermark memory latency values
+>  		 * for SKL for all 8 levels
 
-> I currently prefer the first option but I don't understand enough details of
-> the iommu system to actually make an informed decision.
-> I'm obviously also open to more options :-)
-> 
-> 
-> Best regards,
-> 
-> 
-> Sven
-> 
-> [1] https://lore.kernel.org/linux-arch/20210304213902.83903-1-marcan@marcan.st/
-> [2] https://developer.apple.com/library/archive/documentation/DeviceDrivers/Conceptual/IOKitFundamentals/DataMgmt/DataMgmt.html
-> [3] https://github.com/svenpeter42/m1n1/commit/1e2661abf5ea2c820297b3ff591235c408d19a34
-> [4] https://github.com/svenpeter42/m1n1/tree/usb-uartproxy-console-wip
-> 
-> 
-> 
+-- 
+Jani Nikula, Intel Open Source Graphics Center
