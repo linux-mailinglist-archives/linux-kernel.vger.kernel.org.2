@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8623347499
+	by mail.lfdr.de (Postfix) with ESMTP id 68709347498
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhCXJ1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:27:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231853AbhCXJ1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:27:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B160619FF;
-        Wed, 24 Mar 2021 09:27:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616578028;
-        bh=oxpG75srpKd55D9h43W41NZwTiHebk84Xt19Ctgl830=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JbgVoipKJU0xRW4XXHjnjo7O8b5hHW6iIB1drH2Oq4v+vIglgOwdXnYeQxoGarPCC
-         yV7jDrBR1YWwjzExlBUxIJiWhSWW2qeZuSwp9lvPJ3dq82HjdfvzLIzt/hO0R4iyrY
-         jVnB1s5PiptLVRKxu4L0LLsIpcTG40eIS6ea6dEdIAWnYJq1k8J7SvdIg5aScQFqus
-         a52MB1wc/7/GT+IXnknPjwBMAJtPe6hrk/TwAC/r2COHEoqonoB53EGJh4XjCU12Kx
-         HCANn6KgiyAk+UsCiaJKmlUZsR/EzN0H3BT3Q1hLUjBHz9whSdm6pA4Y+Xa49mJ5v6
-         FNd3IsH94eZHg==
-Date:   Wed, 24 Mar 2021 11:26:37 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <YFsFzV58w/UdjP/P@kernel.org>
-References: <20210322181646.GG6481@zn.tnic>
- <YFjoZQwB7e3oQW8l@google.com>
- <20210322191540.GH6481@zn.tnic>
- <YFjx3vixDURClgcb@google.com>
- <20210322210645.GI6481@zn.tnic>
- <20210323110643.f29e214ebe8ec7a4a3d0bc2e@intel.com>
- <20210322223726.GJ6481@zn.tnic>
- <20210323121643.e06403a1bc7819bab7c15d95@intel.com>
- <YFoNCvBYS2lIYjjc@google.com>
- <20210323160604.GB4729@zn.tnic>
+        id S234741AbhCXJ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234738AbhCXJ1D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:27:03 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72729C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:27:03 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lOzmw-0001ez-Ls; Wed, 24 Mar 2021 10:26:54 +0100
+Message-ID: <ca22113963e9499ec47839c627840d7ffee157b3.camel@pengutronix.de>
+Subject: Re: [PATCH v2 1/3] dt-bindings: imx6q-pcie: add one regulator used
+ to power up pcie phy
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, andrew.smirnov@gmail.com,
+        shawnguo@kernel.org, kw@linux.com, bhelgaas@google.com,
+        stefan@agner.ch, lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Date:   Wed, 24 Mar 2021 10:26:52 +0100
+In-Reply-To: <1616564059-8713-2-git-send-email-hongxing.zhu@nxp.com>
+References: <1616564059-8713-1-git-send-email-hongxing.zhu@nxp.com>
+         <1616564059-8713-2-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323160604.GB4729@zn.tnic>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 05:06:04PM +0100, Borislav Petkov wrote:
-> On Tue, Mar 23, 2021 at 03:45:14PM +0000, Sean Christopherson wrote:
-> > Practically speaking, "basic" deployments of SGX VMs will be insulated from
-> > this bug.  KVM doesn't support EPC oversubscription, so even if all EPC is
-> > exhausted, new VMs will fail to launch, but existing VMs will continue to chug
-> > along with no ill effects....
-> 
-> Ok, so it sounds to me like *at* *least* there should be some writeup in
-> Documentation/ explaining to the user what to do when she sees such an
-> EREMOVE failure, perhaps the gist of this thread and then possibly the
-> error message should point to that doc.
-> 
-> We will of course have to revisit when this hits the wild and people
-> start (or not) hitting this. But judging by past experience, if it is
-> there, we will hit it. Murphy says so.
-> 
-> Thx.
+Hi Richard,
 
-We had recently a steady flush of bug reports about a WARN() in tpm_tis
-driver, from all levels of involvement with the kernel. Even people who
-don't know what kernel documentation is, got their message through.
-
-When a WARN() triggers anywhere in the kernel, what people tend to do is
-that they go to the distro bugzilla, and the issue is quickly escalated
-to the corresponding maintainer.
-
-So, what is the part missing from the equation that should be documented
-to the kernel documentation. This not a counter argument per se, I just
-don't fully understand what is the missing piece that should be put there.
-
-> -- 
-> Regards/Gruss,
->     Boris.
+Am Mittwoch, dem 24.03.2021 um 13:34 +0800 schrieb Richard Zhu:
+> Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
+> In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
+> sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
+> the VREG_BYPASS bits of GPR registers should be cleared from default
+> value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
+> turned on.
 > 
-> https://people.kernel.org/tglx/notes-about-netiquette
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+> index de4b2baf91e8..3248b7192ced 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+> @@ -38,6 +38,12 @@ Optional properties:
+>    The regulator will be enabled when initializing the PCIe host and
+>    disabled either as part of the init process or when shutting down the
+>    host.
+> +- vph-supply: Should specify the regulator in charge of PCIe PHY power.
+> +  On i.MX8MQ, both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe
+> +  PHY. In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
+> +  sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design, the
+> +  VREG_BYPASS bits of GPR registers should be cleared from default value 1b'1
+> +  to 1b'0.
 
-/Jarkko
+This description of the internal driver behavior does not belong into a
+DT binding description.
+Instead the binding should describe the function of the regulator
+exactly. From the datasheet I can see that there are actually 3
+supplies (VPH, VP, VPTX) going into the PCIe PHY, so "regulator in
+charge of PCIe PHY power" doesn't seem like a very accurate
+description.
+
+Regards,
+Lucas
+
