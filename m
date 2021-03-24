@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188BD3473A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16C73473A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbhCXI3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:29:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233472AbhCXI32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:29:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 918FD619F7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:29:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616574568;
-        bh=vlJ9js9b5fHVG8v7WcK4E//fEklX9BQWdi27y5hQum4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jbl05DxGc7eu5VEE2/O0UAF7/J1JeJxciE24kTfb+VlGWmJApyP+bARo8DDatOpxV
-         6wX63LF9Fh2uSqedSwrsj0FFq8/HOqgc5lwG0q6L1BSbIFGH5o/PZJ4//TzopW7s4B
-         Ry32n0BezAlUvSHNLi65EpoGhPt/przVtHzzTVNO9ct1QNkQw9kGQrczv4kCfkfwVT
-         TVAimwIgrpy/nxvtvSgWxRsTfyRSom2YfnwomtnaXIEr8Q/ciNx0AsEDBsxyZn2gUt
-         mlGmgK3tPTl8ZtBD+9BaVQOOZGXKFOAX1gsuup+5Pxpphn6gE+M8U0h654SKSZqP8o
-         f0+7xNOK35/rQ==
-Received: by mail-ot1-f45.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so22240391ote.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 01:29:28 -0700 (PDT)
-X-Gm-Message-State: AOAM5338e/6OxhPzBf/dmUEsI0BaURwANA7xD6I7YiaR1fLd/Ob1wJfP
-        F2RyAKUpUfA62Q4AJ+lX/bV66SK2CjlKaQv640w=
-X-Google-Smtp-Source: ABdhPJy63uDM7U/cXPe0XOmA1hgDO95OKcW62PlvXUdQW6ScL5ZAc2shBCcq1YoyPOki09FcGf4nAEGkyLtMXgJ6Fjw=
-X-Received: by 2002:a9d:12cb:: with SMTP id g69mr2155076otg.77.1616574567849;
- Wed, 24 Mar 2021 01:29:27 -0700 (PDT)
+        id S233665AbhCXIaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:30:03 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14883 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233644AbhCXI3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 04:29:53 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F51b04wnPzkdjt;
+        Wed, 24 Mar 2021 16:28:12 +0800 (CST)
+Received: from [10.67.110.136] (10.67.110.136) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 24 Mar 2021 16:29:45 +0800
+Subject: Re: [PATCH v2 -next] powerpc: kernel/time.c - cleanup warnings
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <a.zummo@towertech.it>, <npiggin@gmail.com>,
+        <msuchanek@suse.de>, <tglx@linutronix.de>, <peterz@infradead.org>,
+        <geert+renesas@glider.be>, <kernelfans@gmail.com>,
+        <frederic@kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>
+References: <20210323091257.90054-1-heying24@huawei.com>
+ <YFppJkpZRHMJFay0@piout.net> <YFp0Qc2P61V+3bm0@piout.net>
+ <95cd80c5-40ff-1316-9c89-2e8e7836fb6a@csgroup.eu>
+ <a30a94af-f551-c2a4-18df-a9488ba11d53@csgroup.eu>
+From:   "heying (H)" <heying24@huawei.com>
+Message-ID: <bd93a018-ad72-bff3-e7f9-f1396f770465@huawei.com>
+Date:   Wed, 24 Mar 2021 16:29:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <6c819e1944044bfa8f88574beb094ef5@huawei.com>
-In-Reply-To: <6c819e1944044bfa8f88574beb094ef5@huawei.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 24 Mar 2021 09:29:16 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH3BPi75h+OfLSr6S24fLD7pN=C=0tNMerXh9tY0whfEQ@mail.gmail.com>
-Message-ID: <CAMj1kXH3BPi75h+OfLSr6S24fLD7pN=C=0tNMerXh9tY0whfEQ@mail.gmail.com>
-Subject: Re: [question] insert ko failed because count_plts return 0 when
- CONFIG_RANDOMIZE_BASE is not set
-To:     "chenjun (AM)" <chenjun102@huawei.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
-        liuyanshi <liuyanshi@huawei.com>,
-        wuzengkun <wuzengkun@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a30a94af-f551-c2a4-18df-a9488ba11d53@csgroup.eu>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.136]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 at 08:27, chenjun (AM) <chenjun102@huawei.com> wrote:
->
-> Hi
->
-> I make a Image for arm64 (without CONFIG_RANDOMIZE_BASE). And a ko (13M)
-> can not be inserted.
->
-
-How many large modules have you loaded already? The module region is
-only 128 MB, so if your modules are huge, you may run out of space.
-
-Please check the kernel VA address and the load address of the module,
-and check whether they are more than 128 MB apart.
+Dear,
 
 
-> WARNING: CPU: 2 PID: 1998 at arch/arm64/kernel/module-plts.c:39
-> module_emit_plt_entry+0x100/0x118
-> ...
-> Call trace:
-> module_emit_plt_entry+0x100/0x118
-> apply_relocate_add+0x34c/0x570
-> ...
+在 2021/3/24 14:22, Christophe Leroy 写道:
 >
-> I think the problem is that:
-> in apply_relocate_add:
->                   case R_AARCH64_CALL26:
->                       ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 26,
->                                                AARCH64_INSN_IMM_26);
 >
->                       if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
->                           ovf == -ERANGE) {
->                               val = module_emit_plt_entry(me, sechdrs,
-> loc, &rel[i], sym); realoc_insn_imm return -ERANGE (because the ko is
-> too big?)
+> Le 24/03/2021 à 07:14, Christophe Leroy a écrit :
+>>
+>>
+>> Le 24/03/2021 à 00:05, Alexandre Belloni a écrit :
+>>> On 23/03/2021 23:18:17+0100, Alexandre Belloni wrote:
+>>>> Hello,
+>>>>
+>>>> On 23/03/2021 05:12:57-0400, He Ying wrote:
+>>>>> We found these warnings in arch/powerpc/kernel/time.c as follows:
+>>>>> warning: symbol 'decrementer_max' was not declared. Should it be 
+>>>>> static?
+>>>>> warning: symbol 'rtc_lock' was not declared. Should it be static?
+>>>>> warning: symbol 'dtl_consumer' was not declared. Should it be static?
+>>>>>
+>>>>> Declare 'decrementer_max' and 'rtc_lock' in powerpc asm/time.h.
+>>>>> Rename 'rtc_lock' in drviers/rtc/rtc-vr41xx.c to 'vr41xx_rtc_lock' to
+>>>>> avoid the conflict with the variable in powerpc asm/time.h.
+>>>>> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" 
+>>>>> because it
+>>>>> is declared there.
+>>>>>
+>>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>>>> Signed-off-by: He Ying <heying24@huawei.com>
+>>>>> ---
+>>>>> v2:
+>>>>> - Instead of including linux/mc146818rtc.h in powerpc 
+>>>>> kernel/time.c, declare
+>>>>>    rtc_lock in powerpc asm/time.h.
+>>>>>
+>>>>
+>>>> V1 was actually the correct thing to do. rtc_lock is there exactly
+>>>> because chrp and maple are using mc146818 compatible RTCs. This is 
+>>>> then
+>>>> useful because then drivers/char/nvram.c is enabled. The proper fix
+>>>> would be to scrap all of that and use rtc-cmos for those platforms as
+>>>> this drives the RTC properly and exposes the NVRAM for the mc146818.
+>>>>
+>>>> Or at least, if there are no users for the char/nvram driver on those
+>>>> two platforms, remove the spinlock and stop enabling CONFIG_NVRAM or
+>>>> more likely rename the symbol as it seems to be abused by both chrp 
+>>>> and
+>>>> powermac.
+>>>>
+>>>
+>>> Ok so rtc_lock is not even used by the char/nvram.c driver as it is
+>>> completely compiled out.
+>>>
+>>> I guess it is fine having it move to the individual platform as looking
+>>> very quickly at the Kconfig, it is not possible to select both
+>>> simultaneously. Tentative patch:
+>>>
+>>
+>> Looking at it once more, it looks like including linux/mc146818rtc.h 
+>> is the thing to do, at least for now. Several platforms are defining 
+>> the rtc_lock exactly the same way as powerpc does, and including 
+>> mc146818rtc.h
+>>
+>> I think that to get it clean, this change should go in a dedicated 
+>> patch and do a bit more and explain exactly what is being do and why. 
+>> I'll try to draft something for it.
+>>
+>> He Y., can you make a version v3 of your patch excluding the rtc_lock 
+>> change ?
+>>
 >
-> in module_emit_plt_entry:
-> WARN_ON(pltsec->plt_num_entries > pltsec->plt_max_entries)
-> pltsec->plt_max_entries is 0 if CONFIG_RANDOMIZE_BASE is not be set.
+> Finally, I think there is not enough changes to justify a separate patch.
 >
-> a257e02 arm64/kernel: don't ban ADRP to work around Cortex-A53 erratum
-> #843419
->    static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int
-> num,
-> -                              Elf64_Word dstidx)
-> +                              Elf64_Word dstidx, Elf_Shdr *dstsec)
->    {
-> ...
->                   switch (ELF64_R_TYPE(rela[i].r_info)) {
->                   case R_AARCH64_JUMP26:
->                   case R_AARCH64_CALL26:
-> +                       if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
-> +                               break;
-> +
->
-> Why we need break if !IS_ENABLED(CONFIG_RANDOMIZE_BASE)? or any
-> restrictions on ko?
->
-> I comment out this part of the code. the ko could be inserted, and seems
-> to work well. So is it a accepted way? or any solution for my case?
->
-> --
-> Regards
-> Chen Jun
->
+> So you can send a V3 based on your V1. In addition to the changes you 
+> had in V1, please remove the declaration of rfc_lock in 
+> arch/powerpc/platforms/chrp/chrp.h
+
+So glad to hear that. I'll do that and send my V3.
+
+
+Thanks.
+
