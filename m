@@ -2,639 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4459347629
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C10634762A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbhCXKdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbhCXKcx (ORCPT
+        id S235818AbhCXKdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:33:15 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:18537 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233316AbhCXKc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:32:53 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A0DC061763;
-        Wed, 24 Mar 2021 03:32:52 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id hq27so31976702ejc.9;
-        Wed, 24 Mar 2021 03:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Sj/ea3V/YpMC1iXDodeA/ZmB36C6uogmvsqWxwLk8yk=;
-        b=kVc4YQSlV//ys8LlB7p4iM8VbjOAIOJO3M5vjZ8xFRqf7W7daoKaJVLRQ10CGHy4GJ
-         SUfMy4/PiLBIzG4WQLWIqbjU7DxKcTinkY/CQgYf0pVZRrfNs+xq+uec1j1Y6Dgd0p79
-         a3dFodCnTP74YxOAy4lshtzF2RFGTiakMOU1WS5p7Oi9XDNypY2SrjM5fQGCXghlUrGy
-         devyKGB4QY6XOMOM/7hXIX6O7qXwxwtT1Wd5vWzZ8Ebqk6ZSRpc/qpDggdfJtuO9Tcv2
-         uW/ap0rSeVteLg0E7yX/mjpmC2rn30hCNcnmd55lEBL3KS/7xmCYTq3GGYfn5wiXL8li
-         iElA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sj/ea3V/YpMC1iXDodeA/ZmB36C6uogmvsqWxwLk8yk=;
-        b=V9FwLPsthricmkiLtvjVZk/Im3QGBdRxfTaMCP14s2wrVl+jzvVVwy6+dBfBu153Jw
-         8PBzTTbJyLwRO0QenHc5WmPaDjBxReVsXwub90ZLxV+9cgpiLkeEawPVG4K4ww7bWAeE
-         /29/Zc3JqVj+fUIwPOQRgAW8n/e71uKm75m82fjVJ5bd3c2+5AoAmXu4HWZedSUMF8Mf
-         lkDdoO3/MyMnFjUY6E1edAzcgm9a/kaHm/OgLDDoDPMWeP+5wgfAA9suq4G3NlT5/5HL
-         i9pEY1mT75BeiOVGoEg4lYURHZ6GxtNfS6pn3f5OuLfWMbFC0cQJWOwqUpJ8WNKpwyDR
-         3K8Q==
-X-Gm-Message-State: AOAM533FOMdLeEGWLUIwEG/W+9cCVDY60mxz19YulfIvAmbcHeE0mKRI
-        /n6a5gZnQOHePZLCiwLMO/A=
-X-Google-Smtp-Source: ABdhPJzmMt5Zr78g/vTIbr7X+TPBr3/gOih9v4s7G8DVdsGXvaYPSF+fFAmCUnrLMkRr2F17Ks5Lsw==
-X-Received: by 2002:a17:906:9bc5:: with SMTP id de5mr2922584ejc.284.1616581971296;
-        Wed, 24 Mar 2021 03:32:51 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id u16sm952906edq.4.2021.03.24.03.32.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 03:32:50 -0700 (PDT)
-Subject: Re: [PATCH v4 2/4] dt-bindings: power: rockchip: Convert to
- json-schema
-To:     "elaine.zhang" <zhangqing@rock-chips.com>, robh+dt@kernel.org,
-        heiko@sntech.de
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cl@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
-        finley.xiao@rock-chips.com,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-References: <20210324071609.7531-1-zhangqing@rock-chips.com>
- <20210324071609.7531-3-zhangqing@rock-chips.com>
- <be921bd8-a878-3131-15a7-27400786e67a@gmail.com>
- <42489358-8a3e-698e-7d10-816899de75cd@rock-chips.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <14aabf7b-7447-2a76-3b2f-a2f9d65df43f@gmail.com>
-Date:   Wed, 24 Mar 2021 11:32:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 24 Mar 2021 06:32:58 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210324103256euoutp02ee8f0f34833b4d56c1c0d7c6ba989c50~vQL4rBaKO1694116941euoutp02e
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:32:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210324103256euoutp02ee8f0f34833b4d56c1c0d7c6ba989c50~vQL4rBaKO1694116941euoutp02e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616581976;
+        bh=1vwwsv0Ed8WWxT+Oz5o018Cgy0cHlncF8+8K7kvUhPo=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=SdKaaMQ7Omi6krsKcBsKRVmd41qVy2gIW7KM0KKDLpEeFjdVen85lh2jQo8PFld/B
+         ylt478TcTJOFO2BhN2xIaesE3kMnfzyHZXZGe2zMmGE5KNpB9BcqBYE74RBhtgBT7w
+         xpKzwd+YEJm9biCCjTdXAHrvRf/Y0qlS6D/Sysbo=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210324103256eucas1p2163872c401443be61d2e6886cc76695c~vQL4NBpO33061230612eucas1p2h;
+        Wed, 24 Mar 2021 10:32:56 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 49.3E.09444.8551B506; Wed, 24
+        Mar 2021 10:32:56 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210324103255eucas1p275710cb9dc025443dbcaf090c9137bae~vQL3h7s_w3214332143eucas1p2L;
+        Wed, 24 Mar 2021 10:32:55 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210324103255eusmtrp199a1997aaf4fe4cc035d80b11de63b0b~vQL3hO1_X1074610746eusmtrp1h;
+        Wed, 24 Mar 2021 10:32:55 +0000 (GMT)
+X-AuditID: cbfec7f4-dd5ff700000024e4-0b-605b155854d3
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 53.31.08705.7551B506; Wed, 24
+        Mar 2021 10:32:55 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210324103254eusmtip216ef4a92fc99de2a811673eaa147a1f6~vQL3BE2m10123801238eusmtip2i;
+        Wed, 24 Mar 2021 10:32:54 +0000 (GMT)
+Subject: Re: [PATCH v3] usb: dwc3: gadget: Prevent EP queuing while stopping
+ transfers
+To:     Wesley Cheng <wcheng@codeaurora.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <c3cd3abb-ceaf-4752-5275-e8ff59d9f646@samsung.com>
+Date:   Wed, 24 Mar 2021 11:32:54 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <42489358-8a3e-698e-7d10-816899de75cd@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <eb91f1dc-d9ae-136d-4074-f1f70d666064@codeaurora.org>
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGKsWRmVeSWpSXmKPExsWy7djPc7oRotEJBtt2MFu8nHCY0eJY2xN2
+        i+bF69ksLu+aw2axaFkrs8XapllsDmwel/t6mTx2zrrL7rFpVSebx/65a9g9Pm+SC2CN4rJJ
+        Sc3JLEst0rdL4MpYcHI1U0GHb8XExVUNjE8duhg5OSQETCSmPXvM0sXIxSEksIJR4nz7EjYI
+        5wujRFfTclYI5zOjxJvZ+9hhWo7OOc8KYgsJLGeU2H24EKLoI6PE5j1f2EASwgIREo/2zQAr
+        EhEIl+hoWccEUsQssJlRomnqA0aQBJuAoUTX2y6wBl4BO4mJy68zgdgsAqoSbY3vgLZxcIgK
+        JElsOBQLUSIocXLmExYQm1PASeLXu39gBzELyEs0b53NDGGLS9x6Mh9sl4TABQ6JZU8vsIHM
+        kRBwkfi4OBziAWGJV8e3QD0jI3F6cg8LRH0zo8TDc2vZIZweRonLTTMYIaqsJe6c+wU2iFlA
+        U2L9Ln2ImY4SjTOKIUw+iRtvBSFO4JOYtG06M0SYV6KjTQhihprErOPr4LYevHCJeQKj0iwk
+        j81C8swsJM/MQli7gJFlFaN4amlxbnpqsVFearlecWJucWleul5yfu4mRmDSOf3v+JcdjMtf
+        fdQ7xMjEwXiIUYKDWUmEtyU8IkGINyWxsiq1KD++qDQntfgQozQHi5I4b9KWNfFCAumJJanZ
+        qakFqUUwWSYOTqkGpvAwnegy9oMrN62b1t1osMb7QXE4085gTedYdl9mz6snvcQ91nLE2vGy
+        hv5895NNq3bZa6mL2yVPJJ45sbj83eFP+dlTpvo/+XboiKBuQYG66OJ7P/aV309SM5mR9JBv
+        yVPtC5r7tnW+Fevsn/3EMZzrhc7s0ta/93ke5nK5zin9KH6RoX+fuISF1rYtVV/lVk1d/UIg
+        UyEqsYVVhUVmsmFTvCxXn+WN6L5FuTzKeX8Kw6NdapS8Hj6+2lFjPW3qH96l1xn3dRp5qOfW
+        5l0oPWNezVRWmzDLdM6Ra02Tua30mDU/qk402rJ3ZWO1c91y85a9HjkHnke+PvcrKc3k188F
+        ZV5JWW4Tv63+w6CnxFKckWioxVxUnAgAQNCwb6kDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsVy+t/xe7rhotEJBsf/iFm8nHCY0eJY2xN2
+        i+bF69ksLu+aw2axaFkrs8XapllsDmwel/t6mTx2zrrL7rFpVSebx/65a9g9Pm+SC2CN0rMp
+        yi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXSt7NJSc3JLEst0rdL0MtYcHI1U0GH
+        b8XExVUNjE8duhg5OSQETCSOzjnP2sXIxSEksJRRovndOiaIhIzEyWkNrBC2sMSfa11sEEXv
+        GSUWvV7PDpIQFoiQeLRvBliRiEC4xL9vd9hAbGaBrYwST0/wQTQcZJFY9vY+2FQ2AUOJrrdd
+        YEW8AnYSE5dfB4uzCKhKtDW+AxsqKpAkcXnJRFaIGkGJkzOfsIDYnAJOEr/e/WOHWGAmMW/z
+        Q2YIW16ieetsKFtc4taT+UwTGIVmIWmfhaRlFpKWWUhaFjCyrGIUSS0tzk3PLTbUK07MLS7N
+        S9dLzs/dxAiMtW3Hfm7ewTjv1Ue9Q4xMHIyHGCU4mJVEeFvCIxKEeFMSK6tSi/Lji0pzUosP
+        MZoC/TORWUo0OR8Y7Xkl8YZmBqaGJmaWBqaWZsZK4rxb566JFxJITyxJzU5NLUgtgulj4uCU
+        amBadNTUdsmCUJ0Lagt2vW55NKGOfUOPbNzKK2zblmlOf/y665eHDG9K359r9VVe5RViVctD
+        EpIb4nZtUttwpTq0wz386MHfC07oxaxef89J4FxHsldBWfT65I6HM6W/2aw9d81Rx0MjazXf
+        Yr3u4xGLWXK+Tqi9dyzQwfXIO7Of8xqPyi5aG/zOXVnps2r5ngS/Fc8YP8xgv+z+peNkm6jP
+        kaX/9+7Y1p858WR3v8fRgg0pPxue/VZyCw3hTpcRTypdy/V422mWTIuHf4orljhGfP/i8u/r
+        xwMdLT+ed6x+czGv/kWVQ55Q7CKB/7N9JkgqX/F/KjovKGzZcrvqGYvisyr3qKecVtIUTH96
+        jVFQiaU4I9FQi7moOBEASgfPVD4DAAA=
+X-CMS-MailID: 20210324103255eucas1p275710cb9dc025443dbcaf090c9137bae
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210324103255eucas1p275710cb9dc025443dbcaf090c9137bae
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210324103255eucas1p275710cb9dc025443dbcaf090c9137bae
+References: <1615507142-23097-1-git-send-email-wcheng@codeaurora.org>
+        <CAHp75VfUVCB4gzgOWf=bUpCjfyerQLPN_p-vOnVfxUKHi1WJkg@mail.gmail.com>
+        <716dca12-2bfc-789f-ca74-5555852e4c8b@codeaurora.org>
+        <CAHp75VeynZArUkrogdJdR9oh+6Ocuqz3ySeDoRBFWusm8F6NRQ@mail.gmail.com>
+        <39fdd3c8-9682-6109-f47d-7f7bffc4b85e@codeaurora.org>
+        <CAHp75Vexow3KLjAueNoPrEhXmWk_4AjUpWXOyWcFLZdfB-o2iA@mail.gmail.com>
+        <5252d085-bbd6-0409-a8ca-2b73fe269259@codeaurora.org>
+        <CAHp75VdR99vMOz-JPKKCfVvnsBd9SjGxhDtLsa_Zz2SKpWaZOQ@mail.gmail.com>
+        <eb91f1dc-d9ae-136d-4074-f1f70d666064@codeaurora.org>
+        <CGME20210324103255eucas1p275710cb9dc025443dbcaf090c9137bae@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Wesley,
 
-Could Heiko and Rob advise if all these power-controller dtsi subnode
-names should be changed?
-
-Thanks!
-
-On 3/24/21 11:14 AM, elaine.zhang wrote:
-> Hi, Johan:
-> 
-> 在 2021/3/24 下午5:17, Johan Jonker 写道:
->> Hi Elaine,
->>
->> >From Rob's build log it turns out that 2 more properties must be added.
->> Add these new properties in separate patch.
->> Retest with commands below.
->> ====
->> See rk3288.dtsi
->>
->>             assigned-clocks = <&cru SCLK_EDP_24M>;
->>             assigned-clock-parents = <&xin24m>;
-> This should not be in the power node.
-> It should be on the CRU node, or on the EDP's own node.
-> I could have added it just to solve dtbs_check .
-
-If this should not be in the power node then could you add a patch
-before the YAML conversion?
-
-example:
-
-- ARM: dts: Move assigned-clocks in rk3288.dtsi
-- dt-bindings: power: rockchip: Convert to json-schema
-- dt-bindings: power: rockchip: Add bindings for RK3568 Soc
-- soc: rockchip: power-domain: add rk3568 powerdomains
-
-When that regex must be changed then also change all dtsi files.... ;)
-
-- ARM: dts: rk3288: change power-controller sub nodenames.
-- etc...
-
->> ====
->> https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210324071609.7531-3-zhangqing@rock-chips.com/
->>
->>
->> make ARCH=arm dtbs_check
->> DT_SCHEMA_FILES=Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>
->>
->> make ARCH=arm64 dtbs_check
->> DT_SCHEMA_FILES=Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>
->>
->> On 3/24/21 8:16 AM, Elaine Zhang wrote:
->>> Convert the soc/rockchip/power_domain.txt binding document to
->>> json-schema and move to the power bindings directory.
+On 23.03.2021 22:53, Wesley Cheng wrote:
+> On 3/23/2021 10:27 AM, Andy Shevchenko wrote:
+>> On Tue, Mar 23, 2021 at 1:19 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
+>>> On 3/22/2021 2:14 PM, Andy Shevchenko wrote:
+>>>> On Mon, Mar 22, 2021 at 10:06 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
+>>>>> On 3/22/2021 12:34 PM, Andy Shevchenko wrote:
+>>>>>> On Mon, Mar 22, 2021 at 8:49 PM Wesley Cheng <wcheng@codeaurora.org> wrote:
+>>>>>>> On 3/22/2021 5:48 AM, Andy Shevchenko wrote:
+>>>>>>>> On Fri, Mar 12, 2021 at 2:01 AM Wesley Cheng <wcheng@codeaurora.org> wrote:
+>>>>>>>>> In the situations where the DWC3 gadget stops active transfers, once
+>>>>>>>>> calling the dwc3_gadget_giveback(), there is a chance where a function
+>>>>>>>>> driver can queue a new USB request in between the time where the dwc3
+>>>>>>>>> lock has been released and re-aquired.  This occurs after we've already
+>>>>>>>>> issued an ENDXFER command.  When the stop active transfers continues
+>>>>>>>>> to remove USB requests from all dep lists, the newly added request will
+>>>>>>>>> also be removed, while controller still has an active TRB for it.
+>>>>>>>>> This can lead to the controller accessing an unmapped memory address.
+>>>>>>>>>
+>>>>>>>>> Fix this by ensuring parameters to prevent EP queuing are set before
+>>>>>>>>> calling the stop active transfers API.
+>>>>>>>>
+>>>>>>>> commit f09ddcfcb8c569675066337adac2ac205113471f
+>>>>>>>> Author: Wesley Cheng <wcheng@codeaurora.org>
+>>>>>>>> Date:   Thu Mar 11 15:59:02 2021 -0800
+>>>>>>>>
+>>>>>>>>     usb: dwc3: gadget: Prevent EP queuing while stopping transfers
+>>>>>>>>
+>>>>>>>> effectively broke my gadget setup.
+>>>>>>>>
+>>>>>>>> The output of the kernel (followed by non responsive state of USB controller):
+>>>>>>>>
+>>>>>>>> [  195.228586] using random self ethernet address
+>>>>>>>> [  195.233104] using random host ethernet address
+>>>>>>>> [  195.245306] usb0: HOST MAC aa:bb:cc:dd:ee:f2
+>>>>>>>> [  195.249732] usb0: MAC aa:bb:cc:dd:ee:f1
+>>>>>>>> # [  195.773594] IPv6: ADDRCONF(NETDEV_CHANGE): usb0: link becomes ready
+>>>>>>>> [  195.780585] ------------[ cut here ]------------
+>>>>>>>> [  195.785217] dwc3 dwc3.0.auto: No resource for ep2in
+>>>>>>>> [  195.790162] WARNING: CPU: 0 PID: 217 at
+>>>>>>>> drivers/usb/dwc3/gadget.c:360 dwc3_send_gadget_ep_cmd+0x4b9/0x670
+>>>>>>>> [  195.799760] Modules linked in: usb_f_eem u_ether libcomposite
+>>>>>>>> brcmfmac brcmutil mmc_block pwm_lpss_pci pwm_lps
+>>>>>>>> s snd_sof_pci_intel_tng snd_sof_pci snd_sof_acpi_intel_byt
+>>>>>>>> snd_sof_intel_ipc snd_sof_acpi snd_sof snd_sof_nocodec
+>>>>>>>> spi_pxa2xx_platform snd_sof_xtensa_dsp spi_pxa2xx_pci
+>>>>>>>> extcon_intel_mrfld intel_mrfld_adc sdhci_pci cqhci sdhci m
+>>>>>>>> mc_core intel_mrfld_pwrbtn intel_soc_pmic_mrfld hci_uart btbcm btintel
+>>>>>>>> [  195.835604] CPU: 0 PID: 217 Comm: irq/16-dwc3 Not tainted 5.12.0-rc4+ #60
+>>>>>>>> [  195.842403] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
+>>>>>>>> BIOS 542 2015.01.21:18.19.48
+>>>>>>>> [  195.851191] RIP: 0010:dwc3_send_gadget_ep_cmd+0x4b9/0x670
+>>>>>>>> [  195.856608] Code: cd 00 00 00 44 89 44 24 20 48 89 4c 24 18 e8 ee
+>>>>>>>> f7 e4 ff 48 8b 4c 24 18 4c 89 f2 48 c7 c7 b9
+>>>>>>>> ed 4f a0 48 89 c6 e8 ef 24 43 00 <0f> 0b 41 be ea ff ff ff 44 8b 44 24
+>>>>>>>> 20 e9 80 fc ff ff 41 83 fe 92
+>>>>>>>> [  195.875381] RSP: 0000:ffffa53c00373ba8 EFLAGS: 00010086
+>>>>>>>> [  195.880617] RAX: 0000000000000000 RBX: 0000000000001387 RCX: 00000000ffffdfff
+>>>>>>>> [  195.887755] RDX: 00000000ffffdfff RSI: 00000000ffffffea RDI: 0000000000000000
+>>>>>>>> [  195.894893] RBP: ffff9ce8c8f2b028 R08: ffffffffa0732288 R09: 0000000000009ffb
+>>>>>>>> [  195.902034] R10: 00000000ffffe000 R11: 3fffffffffffffff R12: 0000000000041006
+>>>>>>>> [  195.909170] R13: ffffa53c00373c24 R14: ffff9ce8c11dadb0 R15: ffff9ce8c2861700
+>>>>>>>> [  195.916310] FS:  0000000000000000(0000) GS:ffff9ce8fe200000(0000)
+>>>>>>>> knlGS:0000000000000000
+>>>>>>>> [  195.924409] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>>>> [  195.930161] CR2: 00000000f7f694a0 CR3: 0000000038e0c000 CR4: 00000000001006f0
+>>>>>>>> [  195.937300] Call Trace:
+>>>>>>>> [  195.939755]  __dwc3_gadget_ep_enable+0x2d4/0x4e0
+>>>>>>>> [  195.944393]  ? dwc3_remove_requests.constprop.0+0x86/0x170
+>>>>>>> Odd that this change would affect the USB enablment path, as they were
+>>>>>>> focused on the pullup disable path.  Would you happen to have any
+>>>>>>> downstream changes on top of v5.12-rc4 we could review to see if they
+>>>>>>> are still required? (ie where is the dwc3_remove_requests() coming from
+>>>>>>> during ep enable)
+>>>>>> You may check my branch [1] on GH. Basically you may be interested in
+>>>>>> the commit:
+>>>>>> 0f86df1294ee7523060cc16eafaf4898c693eab0 REVERTME: usb: dwc3: gadget:
+>>>>>> skip endpoints ep[18]{in,out}
+>>>>>> Otherwise it's a clean v5.12-rc4 with a revert and another USB PHY
+>>>>>> suspend fix (which also shouldn't affect this).
+>>>>> Can you link your GH reference?
+>>>> Oops, sorry.
+>>>> Here we are:
+>>>>
+>>>> [1]: https://github.com/andy-shev/linux/tree/eds-acpi
+>>>>
+>>> Thanks, I took a look and even tried it on my device running 5.12-rc4,
+>>> but wasn't able to see the same problem.  Could you help collect the
+>>> ftrace after enabling the tracing KCONFIG and running the below sequence?
 >>>
->>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
->>> ---
->>>   .../power/rockchip,power-controller.yaml      | 284 ++++++++++++++++++
->>>   .../bindings/soc/rockchip/power_domain.txt    | 136 ---------
->>>   2 files changed, 284 insertions(+), 136 deletions(-)
->>>   create mode 100644
->>> Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>   delete mode 100644
->>> Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+>>> 1.  Mount debugfs
+>>> 2.  Set up tracing instance
 >>>
->>> diff --git
->>> a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>> b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>> new file mode 100644
->>> index 000000000000..a220322c5139
->>> --- /dev/null
->>> +++
->>> b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>> @@ -0,0 +1,284 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only
->>> +%YAML 1.2
->>> +---
->>> +$id:
->>> http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Rockchip Power Domains
->>> +
->>> +maintainers:
->>> +  - Elaine Zhang <zhangqing@rock-chips.com>
->>> +  - Rob Herring <robh+dt@kernel.org>
->>> +  - Heiko Stuebner <heiko@sntech.de>
->>> +
->>> +description: |
->>> +  Rockchip processors include support for multiple power domains
->>> which can be
->>> +  powered up/down by software based on different application
->>> scenarios to save power.
->>> +
->>> +  Power domains contained within power-controller node are generic
->>> power domain
->>> +  providers documented in
->>> Documentation/devicetree/bindings/power/power-domain.yaml.
->>> +
->>> +  IP cores belonging to a power domain should contain a "power-domains"
->>> +  property that is a phandle for the power domain node representing
->>> the domain.
->>> +
->>> +properties:
->>> +  $nodename:
->>> +    const: power-controller
->>> +
->>> +  compatible:
->>> +    enum:
->>> +      - rockchip,px30-power-controller
->>> +      - rockchip,rk3036-power-controller
->>> +      - rockchip,rk3066-power-controller
->>> +      - rockchip,rk3128-power-controller
->>> +      - rockchip,rk3188-power-controller
->>> +      - rockchip,rk3228-power-controller
->>> +      - rockchip,rk3288-power-controller
->>> +      - rockchip,rk3328-power-controller
->>> +      - rockchip,rk3366-power-controller
->>> +      - rockchip,rk3368-power-controller
->>> +      - rockchip,rk3399-power-controller
->>> +
->>> +  "#power-domain-cells":
->>> +    const: 1
->>> +
->>> +  "#address-cells":
->>> +    const: 1
->>> +
->>> +  "#size-cells":
->>> +    const: 0
->>
->> assigned-clocks:
->>    maxItems: 1
->>
->> assigned-clock-parents:
->>    maxItems: 1
->>
->>> +
->>> +patternProperties:
->>> +  "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
->>> +    type: object
->>> +    description: |
->>> +      Represents the power domains within the power controller node
->>> as documented
->>> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
->>> +
->>> +    properties:
->>> +
->>> +      "#power-domain-cells":
->>> +        description:
->>> +          Must be 0 for nodes representing a single PM domain and 1
->>> for nodes
->>> +          providing multiple PM domains.
->>> +
->>> +      "#address-cells":
->>> +        const: 1
->>> +
->>> +      "#size-cells":
->>> +        const: 0
->>> +
->>> +      reg:
->>> +        maxItems: 1
->>> +        description: |
->>> +          Power domain index. Valid values are defined in
->>> +          "include/dt-bindings/power/px30-power.h"
->>> +          "include/dt-bindings/power/rk3036-power.h"
->>> +          "include/dt-bindings/power/rk3066-power.h"
->>> +          "include/dt-bindings/power/rk3128-power.h"
->>> +          "include/dt-bindings/power/rk3188-power.h"
->>> +          "include/dt-bindings/power/rk3228-power.h"
->>> +          "include/dt-bindings/power/rk3288-power.h"
->>> +          "include/dt-bindings/power/rk3328-power.h"
->>> +          "include/dt-bindings/power/rk3366-power.h"
->>> +          "include/dt-bindings/power/rk3368-power.h"
->>> +          "include/dt-bindings/power/rk3399-power.h"
->>> +
->>> +      clocks:
->>> +        description: |
->>> +          A number of phandles to clocks that need to be enabled
->>> while power domain
->>> +          switches state.
->>> +
->>> +      pm_qos:
->>> +        description: |
->>> +          A number of phandles to qos blocks which need to be saved
->>> and restored
->>> +          while power domain switches state.
->>> +
->>> +    patternProperties:
->>> +      "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
->>> +        type: object
->>> +        description: |
->>> +          Represents a power domain child within a power domain
->>> parent node.
->>> +
->>> +        properties:
->>> +
->>> +          "#power-domain-cells":
->>> +            description:
->>> +              Must be 0 for nodes representing a single PM domain
->>> and 1 for nodes
->>> +              providing multiple PM domains.
->>> +
->>> +          "#address-cells":
->>> +            const: 1
->>> +
->>> +          "#size-cells":
->>> +            const: 0
->>> +
->>> +          reg:
->>> +            maxItems: 1
->>> +
->>> +          clocks:
->>> +            description: |
->>> +              A number of phandles to clocks that need to be enabled
->>> while power domain
->>> +              switches state.
->>> +
->>> +          pm_qos:
->>> +            description: |
->>> +              A number of phandles to qos blocks which need to be
->>> saved and restored
->>> +              while power domain switches state.
->>> +
->>> +        patternProperties:
->>> +          "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
->>> +            type: object
->>> +            description: |
->>> +              Represents a power domain child within a power domain
->>> parent node.
->>> +
->>> +            properties:
->>> +
->>> +              "#power-domain-cells":
->>> +                description:
->>> +                  Must be 0 for nodes representing a single PM
->>> domain and 1 for nodes
->>> +                  providing multiple PM domains.
->>> +
->>> +              "#address-cells":
->>> +                const: 1
->>> +
->>> +              "#size-cells":
->>> +                const: 0
->>> +
->>> +              reg:
->>> +                maxItems: 1
->>> +
->>> +              clocks:
->>> +                description: |
->>> +                  A number of phandles to clocks that need to be
->>> enabled while power domain
->>> +                  switches state.
->>> +
->>> +              pm_qos:
->>> +                description: |
->>> +                  A number of phandles to qos blocks which need to
->>> be saved and restored
->>> +                  while power domain switches state.
->>> +
->>> +            required:
->>> +              - reg
->>> +
->>> +            additionalProperties: false
->>> +
->>> +        required:
->>> +          - reg
->>> +
->>> +        additionalProperties: false
->>> +
->>> +    required:
->>> +      - reg
->>> +
->>> +    additionalProperties: false
->>> +
->>> +required:
->>> +  - compatible
->>> +  - "#power-domain-cells"
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    #include <dt-bindings/clock/rk3399-cru.h>
->>> +    #include <dt-bindings/power/rk3399-power.h>
->>> +
->>> +    soc {
->>> +        #address-cells = <2>;
->>> +        #size-cells = <2>;
->>> +
->>> +        qos_hdcp: qos@ffa90000 {
->>> +            compatible = "rockchip,rk3399-qos", "syscon";
->>> +            reg = <0x0 0xffa90000 0x0 0x20>;
->>> +        };
->>> +
->>> +        qos_iep: qos@ffa98000 {
->>> +            compatible = "rockchip,rk3399-qos", "syscon";
->>> +            reg = <0x0 0xffa98000 0x0 0x20>;
->>> +        };
->>> +
->>> +        qos_rga_r: qos@ffab0000 {
->>> +            compatible = "rockchip,rk3399-qos", "syscon";
->>> +            reg = <0x0 0xffab0000 0x0 0x20>;
->>> +        };
->>> +
->>> +        qos_rga_w: qos@ffab0080 {
->>> +            compatible = "rockchip,rk3399-qos", "syscon";
->>> +            reg = <0x0 0xffab0080 0x0 0x20>;
->>> +        };
->>> +
->>> +        qos_video_m0: qos@ffab8000 {
->>> +            compatible = "rockchip,rk3399-qos", "syscon";
->>> +            reg = <0x0 0xffab8000 0x0 0x20>;
->>> +        };
->>> +
->>> +        qos_video_m1_r: qos@ffac0000 {
->>> +            compatible = "rockchip,rk3399-qos", "syscon";
->>> +            reg = <0x0 0xffac0000 0x0 0x20>;
->>> +        };
->>> +
->>> +        qos_video_m1_w: qos@ffac0080 {
->>> +            compatible = "rockchip,rk3399-qos", "syscon";
->>> +            reg = <0x0 0xffac0080 0x0 0x20>;
->>> +        };
->>> +
->>> +        power-management@ff310000 {
->>> +            compatible = "rockchip,rk3399-pmu", "syscon", "simple-mfd";
->>> +            reg = <0x0 0xff310000 0x0 0x1000>;
->>> +
->>> +            power-controller {
->>> +                compatible = "rockchip,rk3399-power-controller";
->>> +                #power-domain-cells = <1>;
->>> +                #address-cells = <1>;
->>> +                #size-cells = <0>;
->>> +
->>> +                /* These power domains are grouped by VD_CENTER */
->>> +                pd_iep@RK3399_PD_IEP {
->>> +                    reg = <RK3399_PD_IEP>;
->>> +                    clocks = <&cru ACLK_IEP>,
->>> +                             <&cru HCLK_IEP>;
->>> +                    pm_qos = <&qos_iep>;
->>> +                    #power-domain-cells = <0>;
->>> +                };
->>> +                pd_rga@RK3399_PD_RGA {
->>> +                    reg = <RK3399_PD_RGA>;
->>> +                    clocks = <&cru ACLK_RGA>,
->>> +                             <&cru HCLK_RGA>;
->>> +                    pm_qos = <&qos_rga_r>,
->>> +                             <&qos_rga_w>;
->>> +                    #power-domain-cells = <0>;
->>> +                };
->>> +                pd_vcodec@RK3399_PD_VCODEC {
->>> +                    reg = <RK3399_PD_VCODEC>;
->>> +                    clocks = <&cru ACLK_VCODEC>,
->>> +                             <&cru HCLK_VCODEC>;
->>> +                    pm_qos = <&qos_video_m0>;
->>> +                    #power-domain-cells = <0>;
->>> +                };
->>> +                pd_vdu@RK3399_PD_VDU {
->>> +                    reg = <RK3399_PD_VDU>;
->>> +                    clocks = <&cru ACLK_VDU>,
->>> +                             <&cru HCLK_VDU>;
->>> +                    pm_qos = <&qos_video_m1_r>,
->>> +                             <&qos_video_m1_w>;
->>> +                    #power-domain-cells = <0>;
->>> +                };
->>> +                pd_vio@RK3399_PD_VIO {
->>> +                    reg = <RK3399_PD_VIO>;
->>> +                    #power-domain-cells = <1>;
->>> +                    #address-cells = <1>;
->>> +                    #size-cells = <0>;
->>> +
->>> +                    pd_hdcp@RK3399_PD_HDCP {
->>> +                        reg = <RK3399_PD_HDCP>;
->>> +                        clocks = <&cru ACLK_HDCP>,
->>> +                                 <&cru HCLK_HDCP>,
->>> +                                 <&cru PCLK_HDCP>;
->>> +                        pm_qos = <&qos_hdcp>;
->>> +                        #power-domain-cells = <0>;
->>> +                    };
->>> +                };
->>> +            };
->>> +        };
->>> +    };
->>> diff --git
->>> a/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
->>> b/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
->>> deleted file mode 100644
->>> index 8304eceb62e4..000000000000
->>> --- a/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
->>> +++ /dev/null
->>> @@ -1,136 +0,0 @@
->>> -* Rockchip Power Domains
->>> -
->>> -Rockchip processors include support for multiple power domains which
->>> can be
->>> -powered up/down by software based on different application scenes to
->>> save power.
->>> -
->>> -Required properties for power domain controller:
->>> -- compatible: Should be one of the following.
->>> -    "rockchip,px30-power-controller" - for PX30 SoCs.
->>> -    "rockchip,rk3036-power-controller" - for RK3036 SoCs.
->>> -    "rockchip,rk3066-power-controller" - for RK3066 SoCs.
->>> -    "rockchip,rk3128-power-controller" - for RK3128 SoCs.
->>> -    "rockchip,rk3188-power-controller" - for RK3188 SoCs.
->>> -    "rockchip,rk3228-power-controller" - for RK3228 SoCs.
->>> -    "rockchip,rk3288-power-controller" - for RK3288 SoCs.
->>> -    "rockchip,rk3328-power-controller" - for RK3328 SoCs.
->>> -    "rockchip,rk3366-power-controller" - for RK3366 SoCs.
->>> -    "rockchip,rk3368-power-controller" - for RK3368 SoCs.
->>> -    "rockchip,rk3399-power-controller" - for RK3399 SoCs.
->>> -- #power-domain-cells: Number of cells in a power-domain specifier.
->>> -    Should be 1 for multiple PM domains.
->>> -- #address-cells: Should be 1.
->>> -- #size-cells: Should be 0.
->>> -
->>> -Required properties for power domain sub nodes:
->>> -- reg: index of the power domain, should use macros in:
->>> -    "include/dt-bindings/power/px30-power.h" - for PX30 type power
->>> domain.
->>> -    "include/dt-bindings/power/rk3036-power.h" - for RK3036 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3066-power.h" - for RK3066 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3128-power.h" - for RK3128 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3188-power.h" - for RK3188 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3228-power.h" - for RK3228 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3288-power.h" - for RK3288 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3328-power.h" - for RK3328 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3366-power.h" - for RK3366 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3368-power.h" - for RK3368 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3399-power.h" - for RK3399 type
->>> power domain.
->>> -- clocks (optional): phandles to clocks which need to be enabled
->>> while power domain
->>> -    switches state.
->>> -- pm_qos (optional): phandles to qos blocks which need to be saved
->>> and restored
->>> -    while power domain switches state.
->>> -
->>> -Qos Example:
->>> -
->>> -    qos_gpu: qos_gpu@ffaf0000 {
->>> -        compatible ="syscon";
->>> -        reg = <0x0 0xffaf0000 0x0 0x20>;
->>> -    };
->>> -
->>> -Example:
->>> -
->>> -    power: power-controller {
->>> -        compatible = "rockchip,rk3288-power-controller";
->>> -        #power-domain-cells = <1>;
->>> -        #address-cells = <1>;
->>> -        #size-cells = <0>;
->>> -
->>> -        pd_gpu {
->>> -            reg = <RK3288_PD_GPU>;
->>> -            clocks = <&cru ACLK_GPU>;
->>> -            pm_qos = <&qos_gpu>;
->>> -        };
->>> -    };
->>> -
->>> -     power: power-controller {
->>> -                compatible = "rockchip,rk3368-power-controller";
->>> -                #power-domain-cells = <1>;
->>> -                #address-cells = <1>;
->>> -                #size-cells = <0>;
->>> -
->>> -                pd_gpu_1 {
->>> -                        reg = <RK3368_PD_GPU_1>;
->>> -                        clocks = <&cru ACLK_GPU_CFG>;
->>> -                };
->>> -        };
->>> -
->>> -Example 2:
->>> -        power: power-controller {
->>> -            compatible = "rockchip,rk3399-power-controller";
->>> -            #power-domain-cells = <1>;
->>> -            #address-cells = <1>;
->>> -            #size-cells = <0>;
->>> -
->>> -            pd_vio {
->>> -                #address-cells = <1>;
->>> -                #size-cells = <0>;
->>> -                reg = <RK3399_PD_VIO>;
->>> -
->>> -                pd_vo {
->>> -                    #address-cells = <1>;
->>> -                    #size-cells = <0>;
->>> -                    reg = <RK3399_PD_VO>;
->>> -
->>> -                    pd_vopb {
->>> -                        reg = <RK3399_PD_VOPB>;
->>> -                    };
->>> -
->>> -                    pd_vopl {
->>> -                        reg = <RK3399_PD_VOPL>;
->>> -                    };
->>> -                };
->>> -            };
->>> -        };
->>> -
->>> -Node of a device using power domains must have a power-domains
->>> property,
->>> -containing a phandle to the power device node and an index
->>> specifying which
->>> -power domain to use.
->>> -The index should use macros in:
->>> -    "include/dt-bindings/power/px30-power.h" - for px30 type power
->>> domain.
->>> -    "include/dt-bindings/power/rk3036-power.h" - for rk3036 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3128-power.h" - for rk3128 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3128-power.h" - for rk3228 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3288-power.h" - for rk3288 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3328-power.h" - for rk3328 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3366-power.h" - for rk3366 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3368-power.h" - for rk3368 type
->>> power domain.
->>> -    "include/dt-bindings/power/rk3399-power.h" - for rk3399 type
->>> power domain.
->>> -
->>> -Example of the node using power domain:
->>> -
->>> -    node {
->>> -        /* ... */
->>> -        power-domains = <&power RK3288_PD_GPU>;
->>> -        /* ... */
->>> -    };
->>> -
->>> -    node {
->>> -                /* ... */
->>> -                power-domains = <&power RK3368_PD_GPU_1>;
->>> -                /* ... */
->>> -        };
->>> -
->>> -    node {
->>> -        /* ... */
->>> -        power-domains = <&power RK3399_PD_VOPB>;
->>> -        /* ... */
->>> -    };
+>>> mkdir /sys/kernel/debug/tracing/instances/usb
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_complete_trb/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ctrl_req/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ep_dequeue/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_ep_queue/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_cmd/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_disable/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_ep_enable/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_gadget_giveback/enable
+>>> echo 1 >
+>>> /sys/kernel/debug/tracing/instances/usb/events/dwc3/dwc3_prepare_trb/enable
+>>> echo 1 > /sys/kernel/debug/tracing/instances/usb/tracing_on
 >>>
+>>> 3.  Run your test, which should include:
+>>>          - echo "" > /sys/kernel/config/usb_gadget/g1/UDC
+>>>          - echo <UDC name> > /sys/kernel/config/usb_gadget/g1/UDC
+>>>
+>>> 4.  Collect the trace output:
+>>> cat /sys/kernel/debug/tracing/instances/usb/trace
+>> Here we are (I cherry-picked again reverted patch, other stays the same) [2].
+>> On top I put a warning, so you may see timestamps.
 >>
+>> Dunno how long it will stay there, please confirm that you got it.
 >>
-> 
-> 
+>> [2]: https://paste.ubuntu.com/p/jNF565ypPp/
+>>
+> Hi Andy,
+>
+> Would you be able to give the below change a try?
+>
+> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> index 80606b8..cd58bd5 100644
+> --- a/drivers/usb/dwc3/gadget.c
+> +++ b/drivers/usb/dwc3/gadget.c
+> @@ -791,10 +791,6 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep
+> *dep)
+>       reg &= ~DWC3_DALEPENA_EP(dep->number);
+>       dwc3_writel(dwc->regs, DWC3_DALEPENA, reg);
+>
+> -    dep->stream_capable = false;
+> -    dep->type = 0;
+> -    dep->flags = 0;
+> -
+>       /* Clear out the ep descriptors for non-ep0 */
+>       if (dep->number > 1) {
+>           dep->endpoint.comp_desc = NULL;
+> @@ -803,6 +799,10 @@ static int __dwc3_gadget_ep_disable(struct dwc3_ep
+> *dep)
+>
+>       dwc3_remove_requests(dwc, dep);
+>
+> +    dep->stream_capable = false;
+> +    dep->type = 0;
+> +    dep->flags = 0;
+> +
+>       return 0;
+>   }
+
+Feel free to add my:
+
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+The above change fixed the issue I was about to complain, introduced (or 
+revealed?) by the $subject commit.
+
+Before applying the above fix I've observed following warning during 
+system power off:
+
+------------[ cut here ]------------
+dwc3 15400000.usb: No resource for ep2in
+WARNING: CPU: 0 PID: 162 at drivers/usb/dwc3/gadget.c:361 
+dwc3_send_gadget_ep_cmd+0x95c/0xae8
+Modules linked in: cpufreq_powersave cpufreq_conservative brcmfmac 
+brcmutil cfg80211 crct10dif_ce s3fwrn5_i2c s3fwrn5 nci nfc s5p_mfc 
+hci_uart s5p_jpeg btqca btbcm exynos_gsc v4l2_mem2mem 
+videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common 
+bluetooth videodev mc panfrost gpu_sched ecdh_generic ecc rfkill 
+ip_tables x_tables ipv6
+CPU: 0 PID: 162 Comm: irq/151-dwc3 Not tainted 5.12.0-rc3+ #2713
+Hardware name: Samsung TM2E board (DT)
+pstate: 40000085 (nZcv daIf -PAN -UAO -TCO BTYPE=--)
+pc : dwc3_send_gadget_ep_cmd+0x95c/0xae8
+...
+Call trace:
+  dwc3_send_gadget_ep_cmd+0x95c/0xae8
+  __dwc3_gadget_ep_enable+0x40c/0x578
+  dwc3_gadget_ep_enable+0x5c/0xf0
+  usb_ep_enable+0x40/0x1d0
+  ecm_set_alt+0xa8/0x1b8
+  composite_setup+0x8b8/0x1840
+  dwc3_ep0_delegate_req+0x38/0x58
+  dwc3_ep0_interrupt+0xd2c/0x1048
+  dwc3_thread_interrupt+0xe7c/0x10f8
+  irq_thread_fn+0x28/0x98
+  irq_thread+0x17c/0x298
+  kthread+0x134/0x160
+  ret_from_fork+0x10/0x18
+irq event stamp: 1220
+hardirqs last  enabled at (1219): [<ffff800010f96eac>] 
+_raw_spin_unlock_irq+0x3c/0x80
+hardirqs last disabled at (1220): [<ffff800010f97694>] 
+_raw_spin_lock_irqsave+0xb4/0x148
+softirqs last  enabled at (924): [<ffff8000100104e8>] _stext+0x4e8/0x614
+softirqs last disabled at (901): [<ffff800010095304>] irq_exit+0x19c/0x1a8
+---[ end trace 84804a1a38a2c9f7 ]---
+
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
