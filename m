@@ -2,74 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5F3347A7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A739347A81
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236115AbhCXOT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33558 "EHLO mail.kernel.org"
+        id S236170AbhCXOUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:20:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:64294 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236029AbhCXOTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C374C619D5;
-        Wed, 24 Mar 2021 14:19:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616595589;
-        bh=SqJk8IkxfEpl+NF3dJR2+tt7AFBJle3tFmyyydCRxDU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nsxBwiu820tX1DJ0Kt8I8l8D6Y9bGBu3wL9etC2Puv9mn5tMB/VluzKlms7udel5I
-         NecOfzGbJHCrgxjZGSnliPxEI9eRNbf+FWGwBGllBupQP8w1PYTQeMLKAK/ASVI24U
-         DjAbdn8MZ60wIwzRRJKkJrA1rlSg37yE/9/LpyfBnxqtw+/HOAdxDbGyodmscgRIYa
-         LVctF9egU5hh8BUdgGMxEroBJrMzbOjLK6+H0PqVwHsBCcq2vZ1aEztgdH4crKwwfB
-         5Uo0F3KRh6EZISwWHy7P2E3mUBqvtrrh6loD7rw91dAqOg+oGJlPp2l87ShgPn8vMB
-         WrEbkrz4ehC2A==
-Date:   Wed, 24 Mar 2021 16:19:45 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] IB/srpt: Fix passing zero to 'PTR_ERR'
-Message-ID: <YFtKgU17EwK22hdj@unreal>
-References: <20210324140939.7480-1-yuehaibing@huawei.com>
+        id S236110AbhCXOUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:20:23 -0400
+IronPort-SDR: 2F6HmT+9DYliSUoXyRss3ao0hzxL4kKuLpWwqFXeG4SMC4JGCmjPg/DtmFCBgA6Lni4z807TrU
+ uqzFgZRiztqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="177829549"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="177829549"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:20:23 -0700
+IronPort-SDR: 80dv7UvpNv1i8WG1lBlSw+Fv8hMmck+YI2sStRQkvtAL//Zh/58tt/rojbLhh4Xui1TOQ+3nhp
+ xDcmaWNfksoQ==
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="452611824"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:20:22 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lP4Mt-00FiAw-TE; Wed, 24 Mar 2021 16:20:19 +0200
+Date:   Wed, 24 Mar 2021 16:20:19 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
+Message-ID: <YFtKo4IrOGWoX6O3@smile.fi.intel.com>
+References: <20210323123433.45371-1-andriy.shevchenko@linux.intel.com>
+ <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
+ <20210324102931.GH2916463@dell>
+ <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
+ <20210324104729.GL2916463@dell>
+ <YFsgf9J+hQjfrZCb@smile.fi.intel.com>
+ <20210324115033.GM2916463@dell>
+ <YFsv6DijMMiv3D10@smile.fi.intel.com>
+ <20210324130723.GN2916463@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324140939.7480-1-yuehaibing@huawei.com>
+In-Reply-To: <20210324130723.GN2916463@dell>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:09:39PM +0800, YueHaibing wrote:
-> Fix smatch warning:
+On Wed, Mar 24, 2021 at 01:07:23PM +0000, Lee Jones wrote:
+> On Wed, 24 Mar 2021, Andy Shevchenko wrote:
 > 
-> drivers/infiniband/ulp/srpt/ib_srpt.c:2341 srpt_cm_req_recv() warn: passing zero to 'PTR_ERR'
+> > On Wed, Mar 24, 2021 at 11:50:33AM +0000, Lee Jones wrote:
+> > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+> > > 
+> > > > On Wed, Mar 24, 2021 at 10:47:29AM +0000, Lee Jones wrote:
+> > > > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+> > > > > > On Wed, Mar 24, 2021 at 10:29:31AM +0000, Lee Jones wrote:
+> > > > > > > On Tue, 23 Mar 2021, Andy Shevchenko wrote:
+> > > > 
+> > > > ...
+> > > > 
+> > > > > Also, past acceptance does not guarantee ideal/correct usage.
+> > > > 
+> > > > In this case it's hardly can be misused. But I heard you.
+> > > > 
+> > > > ...
+> > > > 
+> > > > > > The semantic is min-max range and having two defines (*) here for these seems
+> > > > > > to me as an utter overkill.
+> > > > > > 
+> > > > > > Of course, if you insist I may do it.
+> > > > > > 
+> > > > > > *) since value is the same, we might have one definition, but it will be even
+> > > > > >    more confusion to have it as a min and max at the same time.
+> > > > > 
+> > > > > It's just tricky to decypher for people who do not know the API, which
+> > > > > is most people, myself included.  For APIs like usleep_range() et al.,
+> > > > > obviously this makes no sense at all.
+> > > > 
+> > > > Seem like you are insisting. Okay, I will define them. What do you prefer one
+> > > > or two definitions?
+> > > 
+> > > Actually I'm not.  I'm just trying to get my head around where the
+> > > data comes from and what the values actually mean.
+> > > 
+> > > > ...
+> > > > 
+> > > > > What defines a vector?
+> > > > 
+> > > > The combination is solely of the driver-hardware. Driver explicitly tells that
+> > > > how many vectors it may consume (taking into account the range asked) and API
+> > > > returns amount given or an error.
+> > > 
+> > > So, where does the information actually come from?
+> > > 
+> > > Information that comes from a datasheet is usually defined.
+> > > 
+> > > Information that comes from the F/W is usually read and popped into a
+> > > variable.
+> > 
+> > It's a two way road:
+> > a) driver states that it needs only 1 vector and it's enough to it
+> > b) hardware must provide at least 1 vector to be served by this driver.
+> > 
+> > Look again into grepped output. Most of drivers that define it as an variable
+> > may dynamically adapt to the different amount of IRQ vectors. When it's static,
+> > usually drivers just hard code those values.
+> > 
+> > I'm really don't see a point to define them _in this driver_.
 > 
-> Use PTR_ERR_OR_ZERO instead of PTR_ERR
+> That's fine.  I just felt like I had to ask.
 > 
-> Fixes: 847462de3a0a ("IB/srpt: Fix srpt_cm_req_recv() error path (1/2)")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Would you consider a comment that lets people unfamiliar with the API
+> what the values mean?
 > 
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> index 6be60aa5ffe2..3ff24b5048ac 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -2338,7 +2338,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->  
->  	if (IS_ERR_OR_NULL(ch->sess)) {
->  		WARN_ON_ONCE(ch->sess == NULL);
-> -		ret = PTR_ERR(ch->sess);
-> +		ret = PTR_ERR_OR_ZERO(ch->sess);
+> Something to the tune of:
+> 
+>   "This driver requests 1 (and only 1) IRQ vector"
 
-It is crazy, in first line, we checked ch->sess and allowed it to be NULL,
-later caused to kernel panic and set ret to success.
 
->  		ch->sess = NULL;
->  		pr_info("Rejected login for initiator %s: ret = %d.\n",
->  			ch->sess_name, ret);
-> -- 
-> 2.22.0
-> 
+Rather
+
+    "This driver requests only 1 (and it's enough) IRQ vector"
+
+or something like this.
+
+Should I send a patch with the comment included? If so, please suggest if it's
+good from English grammar/style perspective.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
