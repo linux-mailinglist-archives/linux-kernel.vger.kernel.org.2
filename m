@@ -2,140 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A66347EE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8CF347EF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237310AbhCXRJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:09:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:36750 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237559AbhCXRHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:07:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BE88ED1;
-        Wed, 24 Mar 2021 10:07:01 -0700 (PDT)
-Received: from [10.57.51.32] (unknown [10.57.51.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4B8D3F7D7;
-        Wed, 24 Mar 2021 10:06:59 -0700 (PDT)
-Subject: Re: [PATCH v5 05/19] arm64: Add support for trace synchronization
- barrier
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, anshuman.khandual@arm.com,
-        Will Deacon <will.deacon@arm.com>
-References: <20210323120647.454211-1-suzuki.poulose@arm.com>
- <20210323120647.454211-6-suzuki.poulose@arm.com>
- <20210323182142.GA16080@arm.com>
- <7675ab71-c2ff-91e0-5728-fcb216ac1e0d@arm.com> <875z1gk6fo.wl-maz@kernel.org>
- <1b5e5bb2-b89f-fa35-0a8b-8c5476cb9ff6@arm.com> <871rc4jzn0.wl-maz@kernel.org>
- <17e57b01-840b-dbeb-c09f-1c04becb8749@arm.com> <87tup0ikf0.wl-maz@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <59aec851-e980-0a6d-8ba5-56a35fa5a7a9@arm.com>
-Date:   Wed, 24 Mar 2021 17:06:58 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        id S237252AbhCXRKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237495AbhCXRJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 13:09:57 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CA5C0613BF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:07:30 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id d2so22022206ilm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6DN4TKzVMHLbsDci9dBkcAM0aIpThQJXNnWpGIAbGlM=;
+        b=BixSbChJOh7tqog1NiBEy4XpTXU6z9qabBOn5XKDd7Czp9PiUljcH1qXqlqbpKf+JF
+         XZIRk9ivLe/yUNcr6LVZm8lXXEH/EpJrozLd31E/6vlRmOZ5ZDTNNPkMUv25vJHz2jSv
+         3x0DowRa9c95sAvOKHrqNK6822AJ7Tv95nou0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6DN4TKzVMHLbsDci9dBkcAM0aIpThQJXNnWpGIAbGlM=;
+        b=oJ40ycmCSqJQf20yY7lxvXWuOqwyUV6yf7bKK7mopu2Rb1AiLlVK85u1TLvjfhvNWh
+         W5F+m5VJMrYkdgy4fUN9H/DZqZOoD5AIf6VNIuTAlTldWRxIi7BKOLXlI14HWLhYegkn
+         SPsrywaNFktc9cDmckSQJrTsrMNFurrg2IulFAkln9Xm+eox1X0XenX8gm1oBhFX+/Cj
+         bY7NPemCEMFFng/S4EYPXcaoCpVFz+FRAgohAHW3cgQnJOh1Aa7LXsAzQZbbCXkOfWa0
+         u+mtMbMBhE3PBA0SD7gy9AkeHoNas5PHCB/+eGHOVFCDGOoYd7jLz63WP1gQbFPpo9G8
+         uUtQ==
+X-Gm-Message-State: AOAM5320K048PY3vc6nm3bWKO1BUx9GnpsVk7BESGpCDIz97R8GIDE+a
+        kUOEHxc28jGed41KQ7vKQX3a3F3ZNd3ZJy6T
+X-Google-Smtp-Source: ABdhPJzDRxca/4uFW98J12ak5RJBZNSQHUArVAUJUITgtcSHarjY3f9d+lWcBAL4Lnw9XFwMWbOVxQ==
+X-Received: by 2002:a05:6e02:4b2:: with SMTP id e18mr2777811ils.42.1616605649783;
+        Wed, 24 Mar 2021 10:07:29 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id b15sm1390660ilm.25.2021.03.24.10.07.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 10:07:28 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: ipa: avoid 64-bit modulus
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Alex Elder' <elder@linaro.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Cc:     "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "evgreen@chromium.org" <evgreen@chromium.org>,
+        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
+        "subashab@codeaurora.org" <subashab@codeaurora.org>,
+        "elder@kernel.org" <elder@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210323010505.2149882-1-elder@linaro.org>
+ <f77f12f117934e9d9e3b284ed37e87a7@AcuMS.aculab.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <fea8c425-2af0-0526-4ad7-73c523253e08@ieee.org>
+Date:   Wed, 24 Mar 2021 12:07:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <87tup0ikf0.wl-maz@kernel.org>
+In-Reply-To: <f77f12f117934e9d9e3b284ed37e87a7@AcuMS.aculab.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 16:30, Marc Zyngier wrote:
-> On Wed, 24 Mar 2021 16:25:12 +0000,
-> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+On 3/24/21 11:27 AM, David Laight wrote:
+> From: Alex Elder
+>> Sent: 23 March 2021 01:05
+>> It is possible for a 32 bit x86 build to use a 64 bit DMA address.
 >>
->> On 24/03/2021 16:16, Marc Zyngier wrote:
->>> On Wed, 24 Mar 2021 15:51:14 +0000,
->>> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>>>
->>>> On 24/03/2021 13:49, Marc Zyngier wrote:
->>>>> On Wed, 24 Mar 2021 09:39:13 +0000,
->>>>> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>>>>>
->>>>>> On 23/03/2021 18:21, Catalin Marinas wrote:
->>>>>>> Hi Suzuki?
->>>>>>>
->>>>>>> On Tue, Mar 23, 2021 at 12:06:33PM +0000, Suzuki K Poulose wrote:
->>>>>>>> tsb csync synchronizes the trace operation of instructions.
->>>>>>>> The instruction is a nop when FEAT_TRF is not implemented.
->>>>>>>>
->>>>>>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>>>>>> Cc: Mike Leach <mike.leach@linaro.org>
->>>>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>>>>>> Cc: Will Deacon <will.deacon@arm.com>
->>>>>>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>>>>
->>>>>>> How do you plan to merge these patches? If they go via the coresight
->>>>>>> tree:
->>>>>>>
->>>>>>
->>>>>> Ideally all of this should go via the CoreSight tree to have the
->>>>>> dependencies solved at one place. But there are some issues :
->>>>>>
->>>>>> If this makes to 5.13 queue for CoreSight,
->>>>>>
->>>>>> 1) CoreSight next is based on rc2 at the moment and we have fixes gone
->>>>>> into rc3 and later, which this series will depend on. (We could move
->>>>>> the next tree forward to a later rc to solve this).
->>>>>>
->>>>>> 2) There could be conflicts with the kvmarm tree for the KVM host
->>>>>> changes (That has dependency on the TRBE definitions patch).
->>>>>>
->>>>>> If it doesn't make to 5.13 queue, it would be good to have this patch,
->>>>>> the TRBE defintions and the KVM host patches queued for 5.13 (not sure
->>>>>> if this is acceptable) and we could rebase the CoreSight changes on 5.13
->>>>>> and push it to next release.
->>>>>>
->>>>>> I am open for other suggestions.
->>>>>>
->>>>>> Marc, Mathieu,
->>>>>>
->>>>>> Thoughts ?
->>>>>
->>>>> I was planning to take the first two patches in 5.12 as fixes (they
->>>>> are queued already, and would hopefully land in -rc5). If that doesn't
->>>>> fit with the plan, please let me know ASAP.
->>>>
->>>> Marc,
->>>>
->>>> I think it would be better to hold on pushing those patches until we
->>>> have a clarity on how things will go.
->>>
->>> OK. I thought there was a need for these patches to prevent guest
->>> access to the v8.4 self hosted tracing feature that went in 5.12
->>> though[1]... Did I get it wrong?
+>> There are two remaining spots where the IPA driver does a modulo
+>> operation to check alignment of a DMA address, and under certain
+>> conditions this can lead to a build error on i386 (at least).
 >>
->> Yes, that is correct. The guest could access the Trace Filter Control
->> register and fiddle with the host settings, without this patch.
->> e.g, it could disable tracing at EL0/EL1, without the host being
->> aware on nVHE host.
+>> The alignment checks we're doing are for power-of-2 values, and this
+>> means the lower 32 bits of the DMA address can be used.  This ensures
+>> both operands to the modulo operator are 32 bits wide.
+>>
+>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   drivers/net/ipa/gsi.c       | 11 +++++++----
+>>   drivers/net/ipa/ipa_table.c |  9 ++++++---
+>>   2 files changed, 13 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+>> index 7f3e338ca7a72..b6355827bf900 100644
+>> --- a/drivers/net/ipa/gsi.c
+>> +++ b/drivers/net/ipa/gsi.c
+>> @@ -1436,15 +1436,18 @@ static void gsi_evt_ring_rx_update(struct gsi_evt_ring *evt_ring, u32 index)
+>>   /* Initialize a ring, including allocating DMA memory for its entries */
+>>   static int gsi_ring_alloc(struct gsi *gsi, struct gsi_ring *ring, u32 count)
+>>   {
+>> -	size_t size = count * GSI_RING_ELEMENT_SIZE;
+>> +	u32 size = count * GSI_RING_ELEMENT_SIZE;
+>>   	struct device *dev = gsi->dev;
+>>   	dma_addr_t addr;
+>>
+>> -	/* Hardware requires a 2^n ring size, with alignment equal to size */
+>> +	/* Hardware requires a 2^n ring size, with alignment equal to size.
+>> +	 * The size is a power of 2, so we can check alignment using just
+>> +	 * the bottom 32 bits for a DMA address of any size.
+>> +	 */
+>>   	ring->virt = dma_alloc_coherent(dev, size, &addr, GFP_KERNEL);
 > 
-> OK, so we definitely do need these patches, don't we? Both? Just one?
-> Please have a look at kvmarm/fixes and tell me what I must keep.
+> Doesn't dma_alloc_coherent() guarantee that alignment?
+> I doubt anywhere else checks?
 
-Both of them are fixes.
+I normally wouldn't check something like this if it
+weren't guaranteed.  I'm not sure why I did it here.
 
-commit "KVM: arm64: Disable guest access to trace filter controls"
-  - This fixes guest fiddling with the trace filter control as described 
-above.
+I see it's "guaranteed to be aligned to the smallest
+PAGE_SIZE order which is greater than or equal to
+the requested size."  So I think the answer to your
+question is "yes, it does guarantee that."
 
-commit "KVM: arm64: Hide system instruction access to Trace registers"
-  - Fixes the Hypervisor to advertise what it doesn't support. i.e
-    stop advertising trace system instruction access to a guest.
-    Otherwise a guest which trusts the ID registers
-    (ID_AA64DFR0_EL1.TRACEVER == 1) can crash while trying to access the
-    trace register as we trap the accesses (CPTR_EL2.TTA == 1). On Linux,
-    the ETM drivers need a DT explicitly advertising the support. So,
-    this is not immediately impacted. And this fix goes a long way back
-    in the history, when the CPTR_EL2.TTA was added.
+I'll make a note to remove this check in a future
+patch, and will credit you with the suggestion.
 
-Now, the reason for asking you to hold on is the way this could create
-conflicts in merging the rest of the series.
+Thanks.
 
-Suzuki
+					-Alex
+
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
+
