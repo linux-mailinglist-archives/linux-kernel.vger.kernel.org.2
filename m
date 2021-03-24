@@ -2,181 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A08347A63
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFB6347A66
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbhCXON1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
+        id S235996AbhCXOPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236110AbhCXONI (ORCPT
+        with ESMTP id S235721AbhCXOOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:13:08 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F9CC0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:13:08 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id g24so17599193qts.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:13:08 -0700 (PDT)
+        Wed, 24 Mar 2021 10:14:40 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D713BC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:14:39 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u9so33122150ejj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 07:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1XohPHX9rWTqjJvRyYcCWXA2q1vwA5OihINXfd2z/zo=;
-        b=AuieUtcnBKgIlZBHY2MKXvJautp8rnH0/Zc3JfbrCzf4TZ/rkCzaCA+R+RmUvrIH1m
-         E4S/ubhyqRRoc1wlHeic5TQS6wicvYaXwOjwAcwbynBZ8V/eh7b8OnJI4JjrQ3gp/auj
-         zVni+ROSpwREgwKdrkLXequdeu3ax3xYqlF4ZdOTk9qAwTMz9EbW9WjZ3aYk4B+y1Mm7
-         zOJGAqkEWaoy5cTjKaEKmogGG1iuc60Kh4iioFap/Xz//fJLQwHzk2XUc/vrYgOMIWcb
-         JvNS96i/uzRwWCSWr3Q0/EGYKggxIJxNvHGEfid0i7V+xW3/NXdVqs5frh7Vyz20oGVI
-         43Xg==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FCHZXs+Na6H0beDmf/OCng/T5K6DKQZL7k9xPgulymE=;
+        b=CSmURK4SwSnVaLiGIPpo0hW0XaafR3WnY0Kktfn6Q8w2WAkQ2pI/vtZsaqDMr+Rrqm
+         3j9+izYQ4UqWXHMKZToSCUpFRjOnIXY8UJy2FWXpJpqMTZ1LwLqfqxHXjI3T7WuIhnJ3
+         rDX0OvQ/BcN4cPnIJD1S57p05tgOJZ1lraw5U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1XohPHX9rWTqjJvRyYcCWXA2q1vwA5OihINXfd2z/zo=;
-        b=qHHf6vgjZ6c17QfTJ0aihiPh0c75nlmVbfMHnqlyPtteB1/3hV01IvGuqu00NkSoBq
-         tgwT4h/zYa7ApJ1hupeCJjEUKS++2dX2NFUE8ZlJc3m3G7D0NmC1WkSUu0CeOuW2eeso
-         ooinqAv+993XFl6/d0g8EcTWVghlQcedAMOkaBKJvcvPMpyTXWkV1bDZMzrKokPChE0V
-         gm5GrWLWMGw7hEJMzH0UAm9uvsX6JQSTVrJe4q9wDerO6pOd3zOFqB6e3fKYLTyFsPHe
-         GgN6TG9IEDHsr1hNieYkmFyDTkx6foW5QUp0daAQo6Go7Ex826JvvjsC0TzS1aKnhE7E
-         DF2g==
-X-Gm-Message-State: AOAM533VSRulapujF3jU5MOPyVemPw2MIk+r8BF2rAcp7uGUNcmoIQGw
-        uvvuvWbGKMEGZMIQxf7Plk0sfAMvnYADDS41Oa9j5A==
-X-Google-Smtp-Source: ABdhPJzyooXz/NQhT+vi8P+u5nAIKlMdHjMTa2M9OF4QnEon669FPBFrYSdo99++4/nKZIEWLO6wULgnA8OT/OATrfc=
-X-Received: by 2002:ac8:6696:: with SMTP id d22mr3164170qtp.67.1616595187453;
- Wed, 24 Mar 2021 07:13:07 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FCHZXs+Na6H0beDmf/OCng/T5K6DKQZL7k9xPgulymE=;
+        b=M/LyLcQVNmSOiidj+ksqL/uTWnyOZu0LXHcFS/roseiW4GBM5nM2VbJMaGz5SPH0Uu
+         kHUPYbunByb0sedWFvTqr0a45LZ1V++eRZgtxUkY9FmrKxwoLqen7obB3K0Vw/82x4KZ
+         20Lj8nWIfD4MGw4q+vLnyCp4LyKvNfdNEGNQ8BsBqScMKvgLcDngX/qpiiiVl/l+8LQ0
+         5wESWX/7gn2QNlP+PBANwpb+xOOcUzvCK2U4yJ8wqrzlwKLxoqrdxWtl8XFbhE5B3bKN
+         TADP0kMVLSBTaZv6ZWNiQnxM9PcXmNN2z8EUNgSVQCiNcDb+WdngJX7Km6lOwelndH8s
+         mmWQ==
+X-Gm-Message-State: AOAM533Fm+I1HYOweZrt2LnC2vqMInpoJN5omPna+w8g3V09iNqmxel5
+        9pEVzjASsT2CNpqzTd2vuIkxy2rrkz+ybA3s
+X-Google-Smtp-Source: ABdhPJww1pdM64UL62x05vVdAART6xCBNzDfZeqUIHi/5inBRmV8dfVIuzHdABjEJtiJD1nhk3/fww==
+X-Received: by 2002:a17:906:8447:: with SMTP id e7mr3979848ejy.523.1616595278353;
+        Wed, 24 Mar 2021 07:14:38 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id c10sm1179885edt.64.2021.03.24.07.14.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 07:14:37 -0700 (PDT)
+Subject: Re: [PATCH] amdgpu: fix gcc -Wrestrict warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Huang Rui <ray.huang@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210323130430.2250052-1-arnd@kernel.org>
+ <f8cd5d0b-0c50-a2e9-a5a1-a2358419dd44@rasmusvillemoes.dk>
+ <CAK8P3a17=PdOqKrvemuP1OCzoxRZ0HLBje-tV4Ssc=kZeVbQRw@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <4e63dbbc-0aa3-2950-dda1-1e6aa19d7d5d@rasmusvillemoes.dk>
+Date:   Wed, 24 Mar 2021 15:14:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210324112503.623833-1-elver@google.com> <20210324112503.623833-8-elver@google.com>
- <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net> <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
- <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net> <YFtB+Ta9pkMg4C2h@hirez.programming.kicks-ass.net>
- <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net> <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
-In-Reply-To: <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 24 Mar 2021 15:12:56 +0100
-Message-ID: <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on SIGTRAP
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a17=PdOqKrvemuP1OCzoxRZ0HLBje-tV4Ssc=kZeVbQRw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 3:05 PM Marco Elver <elver@google.com> wrote:
->
-> On Wed, 24 Mar 2021 at 15:01, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > One last try, I'll leave it alone now, I promise :-)
->
-> This looks like it does what you suggested, thanks! :-)
->
-> I'll still need to think about it, because of the potential problem
-> with modify-signal-races and what the user's synchronization story
-> would look like then.
+On 24/03/2021 14.33, Arnd Bergmann wrote:
+> On Tue, Mar 23, 2021 at 4:57 PM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>> On 23/03/2021 14.04, Arnd Bergmann wrote:
+>>>                       if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS) {
+>>> +                             int pos = 0;
+>>>                               memset(i2c_output,  0, sizeof(i2c_output));
+>>>                               for (i = 0; i < TA_SECUREDISPLAY_I2C_BUFFER_SIZE; i++)
+>>> -                                     sprintf(i2c_output, "%s 0x%X", i2c_output,
+>>> +                                     pos += sprintf(i2c_output + pos, " 0x%X",
+>>>                                               securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+>>>                               dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is :%s\n", i2c_output);
+>>
+>> Eh, why not get rid of the 256 byte stack allocation and just replace
+>> all of this by
+>>
+>>   dev_info(adev->dev, ""SECUREDISPLAY: I2C buffer out put is: %*ph\n",
+>> TA_SECUREDISPLAY_I2C_BUFFER_SIZE,
+>> securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf);
+>>
+>> That's much less code (both in #LOC and .text), and avoids adding yet
+>> another place that will be audited over and over for "hm, yeah, that
+>> sprintf() is actually not gonna overflow".
+>>
+>> Yeah, it'll lose the 0x prefixes for each byte and use lowercase hex chars.
+> 
+> Ah, I didn't know the kernel's sprintf could do that, that's really nice.
 
-I agree that this looks inherently racy. The attr can't be allocated
-on stack, user synchronization may be tricky and expensive. The API
-may provoke bugs and some users may not even realize the race problem.
+If you're bored, you can "git grep -E -C4 '%[0.]2[xX]'" and find places
+that are inside a small loop, many can trivially be converted to %ph,
+though often with some small change in formatting. If you're lucky, you
+even get to fix real bugs when people pass a "char" to %02x and "know"
+that that will produce precisely two bytes of output, so they've sized
+their stack buffer accordingly - boom when "char" happens to be signed
+and one of the bytes have a value beyond ascii and %02x produces 0xffffffXX.
 
-One potential alternative is use of an opaque u64 context (if we could
-shove it into the attr). A user can pass a pointer to the attr in
-there (makes it equivalent to this proposal), or bit-pack size/type
-(as we want), pass some sequence number or whatever.
+%ph has a hard-coded upper bound of 64 bytes, I think that's silly
+because people instead do these inefficient and very verbose loops
+instead, wasting stack, .text and runtime.
 
-
-
-> > --- a/include/linux/perf_event.h
-> > +++ b/include/linux/perf_event.h
-> > @@ -778,6 +778,9 @@ struct perf_event {
-> >         void *security;
-> >  #endif
-> >         struct list_head                sb_list;
-> > +
-> > +       unsigned long                   si_uattr;
-> > +       unsigned long                   si_data;
-> >  #endif /* CONFIG_PERF_EVENTS */
-> >  };
-> >
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -5652,13 +5652,17 @@ static long _perf_ioctl(struct perf_even
-> >                 return perf_event_query_prog_array(event, (void __user *)arg);
-> >
-> >         case PERF_EVENT_IOC_MODIFY_ATTRIBUTES: {
-> > +               struct perf_event_attr __user *uattr;
-> >                 struct perf_event_attr new_attr;
-> > -               int err = perf_copy_attr((struct perf_event_attr __user *)arg,
-> > -                                        &new_attr);
-> > +               int err;
-> >
-> > +               uattr = (struct perf_event_attr __user *)arg;
-> > +               err = perf_copy_attr(uattr, &new_attr);
-> >                 if (err)
-> >                         return err;
-> >
-> > +               event->si_uattr = (unsigned long)uattr;
-> > +
-> >                 return perf_event_modify_attr(event,  &new_attr);
-> >         }
-> >         default:
-> > @@ -6399,7 +6403,12 @@ static void perf_sigtrap(struct perf_eve
-> >         clear_siginfo(&info);
-> >         info.si_signo = SIGTRAP;
-> >         info.si_code = TRAP_PERF;
-> > -       info.si_errno = event->attr.type;
-> > +       info.si_addr = (void *)event->si_data;
-> > +
-> > +       info.si_perf = event->si_uattr;
-> > +       if (event->parent)
-> > +               info.si_perf = event->parent->si_uattr;
-> > +
-> >         force_sig_info(&info);
-> >  }
-> >
-> > @@ -6414,8 +6423,8 @@ static void perf_pending_event_disable(s
-> >                 WRITE_ONCE(event->pending_disable, -1);
-> >
-> >                 if (event->attr.sigtrap) {
-> > -                       atomic_set(&event->event_limit, 1); /* rearm event */
-> >                         perf_sigtrap(event);
-> > +                       atomic_set_release(&event->event_limit, 1); /* rearm event */
-> >                         return;
-> >                 }
-> >
-> > @@ -9121,6 +9130,7 @@ static int __perf_event_overflow(struct
-> >         if (events && atomic_dec_and_test(&event->event_limit)) {
-> >                 ret = 1;
-> >                 event->pending_kill = POLL_HUP;
-> > +               event->si_data = data->addr;
-> >
-> >                 perf_event_disable_inatomic(event);
-> >         }
-> > @@ -12011,6 +12021,8 @@ SYSCALL_DEFINE5(perf_event_open,
-> >                 goto err_task;
-> >         }
-> >
-> > +       event->si_uattr = (unsigned long)attr_uptr;
-> > +
-> >         if (is_sampling_event(event)) {
-> >                 if (event->pmu->capabilities & PERF_PMU_CAP_NO_INTERRUPT) {
-> >                         err = -EOPNOTSUPP;
+Rasmus
