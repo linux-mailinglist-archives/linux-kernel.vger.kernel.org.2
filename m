@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB2B3474CC
+	by mail.lfdr.de (Postfix) with ESMTP id 54E5A3474CD
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbhCXJjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236161AbhCXJjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:39:12 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB63BC061763;
-        Wed, 24 Mar 2021 02:39:11 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id w37so30919893lfu.13;
-        Wed, 24 Mar 2021 02:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vuuMNZyMbynJyv9nWBiTXWKNpHBcQegClLmvv2elQDQ=;
-        b=rHg+uMJ/Jmtntx9B0U8Lky7O9aZtQ+iuLA8ivN7aEyeScg/4yXP5Wtuy35tQS975Kl
-         e4QA48kuyFs87+fN/6eVB8bz6plXXKglIAN7P1v1bg5i+NhiB6QJ4/h/eIgUea7Z49MG
-         DAnghQvlVU6shUkVPlNw043EDWj/Rw7uuE/nmD+/ReRBFEZG0BLTCa3F9ilHVJCnr9l9
-         S5SsXiidRXXXb1DA9IP4JFv3gPynTgZ47DcfcpBuxYbr61cfwaC7SFvHjfV1PHBncml0
-         Bg60W8KE+tmthQviV1B1quPNgJRkRAc6kjl4Le+oE1fhKAZQlfaKATKHMxVe4dT+epgu
-         gTFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=vuuMNZyMbynJyv9nWBiTXWKNpHBcQegClLmvv2elQDQ=;
-        b=iQK6fMFbuJiT1OIWzsznMTqAXdLTC6I4Ln1XpGa6rQ4UwMcld2wMUVTdqu1ecW5yjK
-         gc0nWRP9cisiU8hOkN4CHfTk1slkRaE62+/hprw1omVB5gwcfbR+yfbxEBfasynt4uuK
-         8xVmANE0tHQiCp5g6VoGfmoHjpnZctF1Kmy63QXFVN98PX72Zm95wPoHCDDKEC6y0VMy
-         lCJTuEz95JoFqv6HezxJMG6FL97RjhXjGR6XDBXYSgdTakUPsr5G8yIjRURbVU6rDByv
-         OhhGWV5cw95zDxdZaT/K6v9cHsS/IicOm1JbyVxC7LzfYihM+UTL8iqDus5htR3RC7X0
-         rVCA==
-X-Gm-Message-State: AOAM531ipqhI6mFNsYYTIH6/QEK75pcWn5Qxx3yN8RwpsRgEtgOXzSiv
-        nKtLQLCrFnXEO99CWbn1IRDM0rnVd7GLXA==
-X-Google-Smtp-Source: ABdhPJzGvZagKE62pBEOULPsNjpaf3bp1+vG+Uhs99091wPRLfeHlXZmpdTHu/ZZPBto2cnTQhK8fw==
-X-Received: by 2002:a19:c7d7:: with SMTP id x206mr1488565lff.403.1616578750194;
-        Wed, 24 Mar 2021 02:39:10 -0700 (PDT)
-Received: from [192.168.1.100] ([178.176.78.13])
-        by smtp.gmail.com with ESMTPSA id c27sm177829lfh.146.2021.03.24.02.39.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 02:39:09 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
-To:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <e6157db7-426b-04a8-3261-58b8674c9cda@gmail.com>
-Date:   Wed, 24 Mar 2021 12:39:00 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236256AbhCXJjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:39:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:59162 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236168AbhCXJjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:39:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09E301FB;
+        Wed, 24 Mar 2021 02:39:17 -0700 (PDT)
+Received: from [10.57.55.187] (unknown [10.57.55.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39BA73F718;
+        Wed, 24 Mar 2021 02:39:15 -0700 (PDT)
+Subject: Re: [PATCH v5 05/19] arm64: Add support for trace synchronization
+ barrier
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        anshuman.khandual@arm.com, maz@kernel.org,
+        Will Deacon <will.deacon@arm.com>
+References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+ <20210323120647.454211-6-suzuki.poulose@arm.com>
+ <20210323182142.GA16080@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <7675ab71-c2ff-91e0-5728-fcb216ac1e0d@arm.com>
+Date:   Wed, 24 Mar 2021 09:39:13 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
+In-Reply-To: <20210323182142.GA16080@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 23.03.2021 22:27, Sandeep Maheswaram wrote:
-
-> This patch adds a shutdown callback to USB DWC core driver to ensure that
-> it is properly shutdown in reboot/shutdown path. This is required
-> where SMMU address translation is enabled like on SC7180
-> SoC and few others. If the hardware is still accessing memory after
-> SMMU translation is disabled as part of SMMU shutdown callback in
-> system reboot or shutdown path, then IOVAs(I/O virtual address)
-
-   Space before (, please.
-
-> which it was using will go on the bus as the physical addresses which
-> might result in unknown crashes (NoC/interconnect errors).
+On 23/03/2021 18:21, Catalin Marinas wrote:
+> Hi Suzuki?
 > 
-> Previously this was added in dwc3 qcom glue driver.
-> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
-> But observed kernel panic as glue driver shutdown getting called after
-> iommu shutdown. As we are adding iommu nodes in dwc core node
-> in device tree adding shutdown callback in core driver seems correct.
+> On Tue, Mar 23, 2021 at 12:06:33PM +0000, Suzuki K Poulose wrote:
+>> tsb csync synchronizes the trace operation of instructions.
+>> The instruction is a nop when FEAT_TRF is not implemented.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will.deacon@arm.com>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->   drivers/usb/dwc3/core.c | 26 +++++++++++++++++++-------
->   1 file changed, 19 insertions(+), 7 deletions(-)
+> How do you plan to merge these patches? If they go via the coresight
+> tree:
 > 
-> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> index 94fdbe5..777b2b5 100644
-> --- a/drivers/usb/dwc3/core.c
-> +++ b/drivers/usb/dwc3/core.c
-[...]
-> @@ -1976,6 +1987,7 @@ MODULE_DEVICE_TABLE(acpi, dwc3_acpi_match);
->   static struct platform_driver dwc3_driver = {
->   	.probe		= dwc3_probe,
->   	.remove		= dwc3_remove,
-> +	.shutdown   = dwc3_shutdown,
 
-    Please indent = with tabs as above and below.
+Ideally all of this should go via the CoreSight tree to have the 
+dependencies solved at one place. But there are some issues :
 
->   	.driver		= {
->   		.name	= "dwc3",
->   		.of_match_table	= of_match_ptr(of_dwc3_match),
+If this makes to 5.13 queue for CoreSight,
 
-MBR, Sergei
+1) CoreSight next is based on rc2 at the moment and we have fixes gone
+into rc3 and later, which this series will depend on. (We could move
+the next tree forward to a later rc to solve this).
+
+2) There could be conflicts with the kvmarm tree for the KVM host 
+changes (That has dependency on the TRBE definitions patch).
+
+If it doesn't make to 5.13 queue, it would be good to have this patch, 
+the TRBE defintions and the KVM host patches queued for 5.13 (not sure
+if this is acceptable) and we could rebase the CoreSight changes on 5.13
+and push it to next release.
+
+I am open for other suggestions.
+
+Marc, Mathieu,
+
+Thoughts ?
+
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> 
+
+Thanks
+Suzuki
+
