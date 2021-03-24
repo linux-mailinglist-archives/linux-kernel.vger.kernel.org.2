@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F263474A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902063474AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhCXJ3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:29:46 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:38140 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234930AbhCXJ3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:29:37 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F52xp3WBlz9ty4B;
-        Wed, 24 Mar 2021 10:29:34 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id etXQYbBJHaU4; Wed, 24 Mar 2021 10:29:34 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F52xp2bBSz9ty41;
-        Wed, 24 Mar 2021 10:29:34 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 37A8A8B819;
-        Wed, 24 Mar 2021 10:29:35 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id VGE5p_vF_Sgc; Wed, 24 Mar 2021 10:29:35 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E25E8B817;
-        Wed, 24 Mar 2021 10:29:34 +0100 (CET)
-Subject: Re: [PATCH V3 -next] powerpc: kernel/time.c - cleanup warnings
-To:     He Ying <heying24@huawei.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, npiggin@gmail.com,
-        msuchanek@suse.de, tglx@linutronix.de, peterz@infradead.org,
-        geert@linux-m68k.org, geert+renesas@glider.be,
-        kernelfans@gmail.com, frederic@kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-References: <20210324090939.143477-1-heying24@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <1f819157-6f21-96ee-68cf-0e3b53865aef@csgroup.eu>
-Date:   Wed, 24 Mar 2021 10:29:32 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234890AbhCXJav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234911AbhCXJaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:30:23 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8BBC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:30:23 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lOzqB-0001u3-Bg; Wed, 24 Mar 2021 10:30:15 +0100
+Message-ID: <6d31825ab3c47bb2e3440445b1dad3f4f1c53c44.camel@pengutronix.de>
+Subject: Re: [PATCH v2 3/3] PCI: imx: clear vreg bypass when pcie vph
+ voltage is 3v3
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, andrew.smirnov@gmail.com,
+        shawnguo@kernel.org, kw@linux.com, bhelgaas@google.com,
+        stefan@agner.ch, lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Date:   Wed, 24 Mar 2021 10:30:13 +0100
+In-Reply-To: <1616564059-8713-4-git-send-email-hongxing.zhu@nxp.com>
+References: <1616564059-8713-1-git-send-email-hongxing.zhu@nxp.com>
+         <1616564059-8713-4-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210324090939.143477-1-heying24@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 24/03/2021 à 10:09, He Ying a écrit :
-> We found these warnings in arch/powerpc/kernel/time.c as follows:
-> warning: symbol 'decrementer_max' was not declared. Should it be static?
-> warning: symbol 'rtc_lock' was not declared. Should it be static?
-> warning: symbol 'dtl_consumer' was not declared. Should it be static?
+Am Mittwoch, dem 24.03.2021 um 13:34 +0800 schrieb Richard Zhu:
+> Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
+> In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
+> sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
+> the VREG_BYPASS bits of GPR registers should be cleared from default
+> value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
+> turned on.
 > 
-> Declare 'decrementer_max' in powerpc asm/time.h.
-> Include linux/mc146818rtc.h in powerpc kernel/time.c where 'rtc_lock'
-> is declared. And remove duplicated declaration of 'rtc_lock' in powerpc
-> platforms/chrp/time.c because it has included linux/mc146818rtc.h.
-> Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
-> is declared there.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: He Ying <heying24@huawei.com>
-
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 > ---
-> V2:
-> - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
->    rtc_lock in powerpc asm/time.h.
-> V3:
-> - Recover to V1, that is including linux/mc146818rtc.h in powerpc
->    kernel/time.c. And remove duplicated declaration of 'rtc_lock' in powerpc
->    platforms/chrp/time.c because it has included linux/mc146818rtc.h.
+>  drivers/pci/controller/dwc/pci-imx6.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
 > 
->   arch/powerpc/include/asm/time.h    | 1 +
->   arch/powerpc/kernel/time.c         | 9 ++++-----
->   arch/powerpc/platforms/chrp/time.c | 2 --
->   3 files changed, 5 insertions(+), 7 deletions(-)
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 853ea8e82952..beca085a9300 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -37,6 +37,7 @@
+>  #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
+>  #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE_EN	BIT(10)
+>  #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE	BIT(11)
+> +#define IMX8MQ_GPR_PCIE_VREG_BYPASS		BIT(12)
+>  #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE	GENMASK(11, 8)
+>  #define IMX8MQ_PCIE2_BASE_ADDR			0x33c00000
+>  
 > 
-> diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
-> index 8dd3cdb25338..2cd2b50bedda 100644
-> --- a/arch/powerpc/include/asm/time.h
-> +++ b/arch/powerpc/include/asm/time.h
-> @@ -22,6 +22,7 @@ extern unsigned long tb_ticks_per_jiffy;
->   extern unsigned long tb_ticks_per_usec;
->   extern unsigned long tb_ticks_per_sec;
->   extern struct clock_event_device decrementer_clockevent;
-> +extern u64 decrementer_max;
->   
->   
->   extern void generic_calibrate_decr(void);
-> diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-> index b67d93a609a2..ac81f043bf49 100644
-> --- a/arch/powerpc/kernel/time.c
-> +++ b/arch/powerpc/kernel/time.c
-> @@ -55,8 +55,9 @@
->   #include <linux/sched/cputime.h>
->   #include <linux/sched/clock.h>
->   #include <linux/processor.h>
-> -#include <asm/trace.h>
-> +#include <linux/mc146818rtc.h>
->   
-> +#include <asm/trace.h>
->   #include <asm/interrupt.h>
->   #include <asm/io.h>
->   #include <asm/nvram.h>
-> @@ -150,10 +151,6 @@ bool tb_invalid;
->   u64 __cputime_usec_factor;
->   EXPORT_SYMBOL(__cputime_usec_factor);
->   
-> -#ifdef CONFIG_PPC_SPLPAR
-> -void (*dtl_consumer)(struct dtl_entry *, u64);
-> -#endif
-> -
->   static void calc_cputime_factors(void)
->   {
->   	struct div_result res;
-> @@ -179,6 +176,8 @@ static inline unsigned long read_spurr(unsigned long tb)
->   
->   #include <asm/dtl.h>
->   
-> +void (*dtl_consumer)(struct dtl_entry *, u64);
+> 
+> 
+> @@ -80,6 +81,7 @@ struct imx6_pcie {
+>  	u32			tx_swing_full;
+>  	u32			tx_swing_low;
+>  	struct regulator	*vpcie;
+> +	struct regulator	*vph;
+>  	void __iomem		*phy_base;
+>  
+> 
+> 
+> 
+>  	/* power domain for pcie */
+> @@ -611,6 +613,8 @@ static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
+>  
+> 
+> 
+> 
+>  static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
+>  {
+> +	int phy_uv;
 > +
->   /*
->    * Scan the dispatch trace log and count up the stolen time.
->    * Should be called with interrupts disabled.
-> diff --git a/arch/powerpc/platforms/chrp/time.c b/arch/powerpc/platforms/chrp/time.c
-> index acde7bbe0716..b94dfd5090d8 100644
-> --- a/arch/powerpc/platforms/chrp/time.c
-> +++ b/arch/powerpc/platforms/chrp/time.c
-> @@ -30,8 +30,6 @@
->   
->   #include <platforms/chrp/chrp.h>
->   
-> -extern spinlock_t rtc_lock;
-> -
->   #define NVRAM_AS0  0x74
->   #define NVRAM_AS1  0x75
->   #define NVRAM_DATA 0x77
+No need for this variable...
+
+>  	switch (imx6_pcie->drvdata->variant) {
+>  	case IMX8MQ:
+>  		/*
+> @@ -621,6 +625,18 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
+>  				   imx6_pcie_grp_offset(imx6_pcie),
+>  				   IMX8MQ_GPR_PCIE_REF_USE_PAD,
+>  				   IMX8MQ_GPR_PCIE_REF_USE_PAD);
+> +		/*
+> +		 * Regarding to the datasheet, the PCIE_VPH is suggested
+> +		 * to be 1.8V. If the PCIE_VPH is supplied by 3.3V, the
+> +		 * VREG_BYPASS should be cleared to zero.
+> +		 */
+> +		if (imx6_pcie->vph)
+> +			phy_uv = regulator_get_voltage(imx6_pcie->vph);
+> +		if (phy_uv > 3000000)
+> +			regmap_update_bits(imx6_pcie->iomuxc_gpr,
+> +					   imx6_pcie_grp_offset(imx6_pcie),
+> +					   IMX8MQ_GPR_PCIE_VREG_BYPASS,
+> +					   0);
+
+...if you just fold this into a single condition. Right now phy_uv
+might be used uninitialized when the vph-supply is not specified in the
+DT. Better write this as:
+
+if (imx6_pcie->vph && regulator_get_voltage(imx6_pcie->vph) > 3000000)
+
+Regards,
+Lucas
+
+>  		break;
+>  	case IMX7D:
+>  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+> @@ -1130,6 +1146,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+>  		imx6_pcie->vpcie = NULL;
+>  	}
+>  
 > 
+> 
+> 
+> 
+> 
+> 
+> 
+> +	imx6_pcie->vph = devm_regulator_get_optional(&pdev->dev, "vph");
+> +	if (IS_ERR(imx6_pcie->vph)) {
+> +		if (PTR_ERR(imx6_pcie->vph) != -ENODEV)
+> +			return PTR_ERR(imx6_pcie->vph);
+> +		imx6_pcie->vph = NULL;
+> +	}
+> +
+>  	platform_set_drvdata(pdev, imx6_pcie);
+>  
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+>  	ret = imx6_pcie_attach_pd(dev);
+
+
