@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFE2347DB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BCC347DB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbhCXQ26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235844AbhCXQ2e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:28:34 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B829C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:28:34 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t20so8211453plr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 09:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=4FDhjn8F4kjGyuKc/8jnoebjpeHUlznny+1iTWmt3ik=;
-        b=TsY3yix9JYzH9w3GsTijlIfU1RaQvEgi29AWErS4Jf2CJ+LRh2RS5MRGum9KTPZeh5
-         n8Rgd7/OQWrK3EUcsmZGsxYj6SPrutAl8757HR/y91vPaLdSIR9ucCTRCChPPaKt2D8T
-         P1t8JOb8u8zBUa3QAgunbfIujMIWqdvvU5vzg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=4FDhjn8F4kjGyuKc/8jnoebjpeHUlznny+1iTWmt3ik=;
-        b=no9gwZmM60MEwlNubGt7YeM8fJnU2ni7nrkfuxyjL8AZG9lZX+CUUrtdpjmBBnwNcm
-         MXTZv3gM3ppb9MHhbhn4FYfvGVbEaFI667hRo9Wuua7tsZoKg4kjbLQTeSoshiakeJIb
-         Qdr1XiimpRQ2JBG2GBGZmk0QWgQGG1XIt45H2aN0JIzl/nMu1P1LISy9g/8QU+zAYSTr
-         VT8uwVihJL4KdPS9VseRZn7jXnjmt3kDMowaj+VuxslJpznEyV41NtsUd6hm3VR/rjI4
-         sSYZyLhO3/3/kw3l9ipGuQD8rBgjczgC5Rzj/eVlCv3fkcidx9xUtLK0Br8zaUH176pf
-         heyQ==
-X-Gm-Message-State: AOAM5310rM4Z4M5vp8H9R0Dzb2YnKzUyurqeFeMucZmkk8J+pAr+Ereh
-        IzWE55t+VmXK++cBwvpYQhtLfkz2iQ9Pfw==
-X-Google-Smtp-Source: ABdhPJxx95a8sKxKKG8ygLhnz44Vegp79a4ZrQl5c7JYQE9fIBD844QAoFXVlnijFAUrY29+54rBLQ==
-X-Received: by 2002:a17:902:d2c7:b029:e6:34e2:7a83 with SMTP id n7-20020a170902d2c7b02900e634e27a83mr4444859plc.60.1616603313667;
-        Wed, 24 Mar 2021 09:28:33 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
-        by smtp.gmail.com with ESMTPSA id c6sm2963022pfj.99.2021.03.24.09.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 09:28:33 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <161660145349.3012082.16210818967187877873@swboyd.mtv.corp.google.com>
-References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org> <161648289959.3012082.11356063123403968180@swboyd.mtv.corp.google.com> <363c5b7d9baca5a010552137f80a1cf4@codeaurora.org> <161660145349.3012082.16210818967187877873@swboyd.mtv.corp.google.com>
-Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     adrian.hunter@intel.com, robh+dt@kernel.org,
-        ulf.hansson@linaro.org, asutoshd@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        rampraka@codeaurora.org, sayalil@codeaurora.org,
-        sartgarg@codeaurora.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, sibis@codeaurora.org,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-To:     sbhanu@codeaurora.org
-Date:   Wed, 24 Mar 2021 09:28:31 -0700
-Message-ID: <161660331135.3012082.15196616622122288364@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S236103AbhCXQad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:30:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229653AbhCXQaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:30:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A18961A0E;
+        Wed, 24 Mar 2021 16:30:30 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lP6Oq-003Yav-Hd; Wed, 24 Mar 2021 16:30:28 +0000
+Date:   Wed, 24 Mar 2021 16:30:27 +0000
+Message-ID: <87tup0ikf0.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, mike.leach@linaro.org,
+        leo.yan@linaro.org, anshuman.khandual@arm.com,
+        Will Deacon <will.deacon@arm.com>
+Subject: Re: [PATCH v5 05/19] arm64: Add support for trace synchronization barrier
+In-Reply-To: <17e57b01-840b-dbeb-c09f-1c04becb8749@arm.com>
+References: <20210323120647.454211-1-suzuki.poulose@arm.com>
+        <20210323120647.454211-6-suzuki.poulose@arm.com>
+        <20210323182142.GA16080@arm.com>
+        <7675ab71-c2ff-91e0-5728-fcb216ac1e0d@arm.com>
+        <875z1gk6fo.wl-maz@kernel.org>
+        <1b5e5bb2-b89f-fa35-0a8b-8c5476cb9ff6@arm.com>
+        <871rc4jzn0.wl-maz@kernel.org>
+        <17e57b01-840b-dbeb-c09f-1c04becb8749@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: suzuki.poulose@arm.com, catalin.marinas@arm.com, mathieu.poirier@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, coresight@lists.linaro.org, mike.leach@linaro.org, leo.yan@linaro.org, anshuman.khandual@arm.com, will.deacon@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2021-03-24 08:57:33)
-> Quoting sbhanu@codeaurora.org (2021-03-24 08:23:55)
-> > On 2021-03-23 12:31, Stephen Boyd wrote:
-> > > Quoting Shaik Sajida Bhanu (2021-03-20 11:17:00)
-> > >> +
-> > >> +                       bus-width =3D <8>;
-> > >> +                       non-removable;
-> > >> +                       supports-cqe;
-> > >> +                       no-sd;
-> > >> +                       no-sdio;
-> > >> +
-> > >> +                       max-frequency =3D <192000000>;
-> > >=20
-> > > Is this necessary?
-> > yes, to avoid lower speed modes running with high clock rates.
->=20
-> Is it part of the DT binding? I don't see any mention of it.
+On Wed, 24 Mar 2021 16:25:12 +0000,
+Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+> 
+> On 24/03/2021 16:16, Marc Zyngier wrote:
+> > On Wed, 24 Mar 2021 15:51:14 +0000,
+> > Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+> >> 
+> >> On 24/03/2021 13:49, Marc Zyngier wrote:
+> >>> On Wed, 24 Mar 2021 09:39:13 +0000,
+> >>> Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+> >>>> 
+> >>>> On 23/03/2021 18:21, Catalin Marinas wrote:
+> >>>>> Hi Suzuki?
+> >>>>> 
+> >>>>> On Tue, Mar 23, 2021 at 12:06:33PM +0000, Suzuki K Poulose wrote:
+> >>>>>> tsb csync synchronizes the trace operation of instructions.
+> >>>>>> The instruction is a nop when FEAT_TRF is not implemented.
+> >>>>>> 
+> >>>>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >>>>>> Cc: Mike Leach <mike.leach@linaro.org>
+> >>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >>>>>> Cc: Will Deacon <will.deacon@arm.com>
+> >>>>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> >>>>> 
+> >>>>> How do you plan to merge these patches? If they go via the coresight
+> >>>>> tree:
+> >>>>> 
+> >>>> 
+> >>>> Ideally all of this should go via the CoreSight tree to have the
+> >>>> dependencies solved at one place. But there are some issues :
+> >>>> 
+> >>>> If this makes to 5.13 queue for CoreSight,
+> >>>> 
+> >>>> 1) CoreSight next is based on rc2 at the moment and we have fixes gone
+> >>>> into rc3 and later, which this series will depend on. (We could move
+> >>>> the next tree forward to a later rc to solve this).
+> >>>> 
+> >>>> 2) There could be conflicts with the kvmarm tree for the KVM host
+> >>>> changes (That has dependency on the TRBE definitions patch).
+> >>>> 
+> >>>> If it doesn't make to 5.13 queue, it would be good to have this patch,
+> >>>> the TRBE defintions and the KVM host patches queued for 5.13 (not sure
+> >>>> if this is acceptable) and we could rebase the CoreSight changes on 5.13
+> >>>> and push it to next release.
+> >>>> 
+> >>>> I am open for other suggestions.
+> >>>> 
+> >>>> Marc, Mathieu,
+> >>>> 
+> >>>> Thoughts ?
+> >>> 
+> >>> I was planning to take the first two patches in 5.12 as fixes (they
+> >>> are queued already, and would hopefully land in -rc5). If that doesn't
+> >>> fit with the plan, please let me know ASAP.
+> >> 
+> >> Marc,
+> >> 
+> >> I think it would be better to hold on pushing those patches until we
+> >> have a clarity on how things will go.
+> > 
+> > OK. I thought there was a need for these patches to prevent guest
+> > access to the v8.4 self hosted tracing feature that went in 5.12
+> > though[1]... Did I get it wrong?
+> 
+> Yes, that is correct. The guest could access the Trace Filter Control
+> register and fiddle with the host settings, without this patch.
+> e.g, it could disable tracing at EL0/EL1, without the host being
+> aware on nVHE host.
 
-Nevermind, found it in mmc-controller.yaml. But I think this is to work
-around some problem with the clk driver picking lower speeds than
-requested? That has been fixed on the clk driver side (see commit like
-148ddaa89d4a "clk: qcom: gcc-sc7180: Use floor ops for the correct sdcc1
-clk") so ideally this property can be omitted.
+OK, so we definitely do need these patches, don't we? Both? Just one?
+Please have a look at kvmarm/fixes and tell me what I must keep.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
