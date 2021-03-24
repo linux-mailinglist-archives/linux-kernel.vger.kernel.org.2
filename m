@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0563478A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0463478B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhCXMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:38:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57930 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhCXMho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:37:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616589463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZtgFaOg9Su1Yf0TQH/ROrKjdESYBrkslJWw39nM9B8s=;
-        b=oioWrSvcZsBqeA2OHs+ANwAYR1Tq55BbrkzRcMM5VnRBNPdq3Tx2Q5GOWTkceHSz4Jt8lH
-        MpCmHE5QAAqNhjVZ/s+ynOHOThytklhkw5UB/Tlu0ATCiPZ7IhR1qHtYrT3jjTJA0ysL8E
-        mjMWhizBKYz8+vH1LxQhtp+R6TybYUg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E52F7AD38;
-        Wed, 24 Mar 2021 12:37:42 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 13:37:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <YFsydJNF63OEcCaY@dhcp22.suse.cz>
-References: <20210319092635.6214-1-osalvador@suse.de>
- <20210319092635.6214-2-osalvador@suse.de>
- <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
- <20210324101259.GB16560@linux>
- <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
- <YFssRr7gZEPfHieA@dhcp22.suse.cz>
- <c3ff7038-a694-d311-c246-b881a2f55be7@redhat.com>
+        id S234350AbhCXMjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233111AbhCXMjU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:39:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C282C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RrFr490dFRvD+R99oCaLdve7Nm3IkFIKrRyx/bsnPjw=; b=pCjx6OdE08VvbOSiDs5kXJYRfY
+        lb6q5yV7oK21uCsJurgbts409+Y33BBPfIzSDl0cPL44qmR68W42PFq2xBQ0qGwVBugETmOVyaeot
+        w1eswJnqfkAWVwstGiKCTAVFlNDVrkleJvnT+XxAU5SsNRpEGhEzIIQ7A4599wb8UzDRMpkgdU1IG
+        AvWhv6UX1oD5IfuJZcBJk8R6ygN/zKr6YrqUgE+Uulzlozczzma83KFb7/s7Vi/mO81BfGLItSqux
+        DI9uia8RCVxcbJr4sI09MAhA8ZTK1v/saDTRqlhCiK/sSHYl67RXk3MXvixORZZXJ+bQBVH1AedNa
+        67chedKA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lP2lY-00BLAE-Vp; Wed, 24 Mar 2021 12:37:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 60B6B301A7A;
+        Wed, 24 Mar 2021 13:37:40 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4473E2BF5B73E; Wed, 24 Mar 2021 13:37:40 +0100 (CET)
+Date:   Wed, 24 Mar 2021 13:37:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock
+ implementation
+Message-ID: <YFsylL7cJqVtVqBI@hirez.programming.kicks-ass.net>
+References: <1616580892-80815-1-git-send-email-guoren@kernel.org>
+ <CAAhSdy2FPHX7Mhg5bRUOTk8SAw+jfWxhKquGZpC6YD0MPLSu0A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c3ff7038-a694-d311-c246-b881a2f55be7@redhat.com>
+In-Reply-To: <CAAhSdy2FPHX7Mhg5bRUOTk8SAw+jfWxhKquGZpC6YD0MPLSu0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24-03-21 13:23:47, David Hildenbrand wrote:
-> On 24.03.21 13:10, Michal Hocko wrote:
-> > On Wed 24-03-21 13:03:29, Michal Hocko wrote:
-> > > On Wed 24-03-21 11:12:59, Oscar Salvador wrote:
-> > [...]
-> > 
-> > an additional remark
-> > 
-> > > > - online_pages()->move_pfn_range_to_zone(): Accounts for node/zone's spanned pages
-> > > > - online_pages()->zone->present_pages += nr_pages;
-> > 
-> > I am pretty sure you shouldn't account vmmemmap pages to the target zone
-> > in some cases - e.g. vmemmap cannot be part of the movable zone, can it?
-> > So this would be yet another special casing. This patch has got it wrong
-> > unless I have missed some special casing.
-> > 
+On Wed, Mar 24, 2021 at 05:58:58PM +0530, Anup Patel wrote:
+> On Wed, Mar 24, 2021 at 3:45 PM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > This patch introduces a ticket lock implementation for riscv, along the
+> > same lines as the implementation for arch/arm & arch/csky.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will.deacon@arm.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  arch/riscv/Kconfig                      |   1 +
+> >  arch/riscv/include/asm/Kbuild           |   1 +
+> >  arch/riscv/include/asm/spinlock.h       | 158 ++++++++++++--------------------
+> >  arch/riscv/include/asm/spinlock_types.h |  19 ++--
 > 
-> It's a bit unfortunate that we have to discuss the very basic design
-> decisions again.
-
-It would be great to have those basic design decisions layed out in the
-changelog.
-
-> @Oscar, maybe you can share the links where we discussed all this and add
-> some of it to the patch description.
+> NACK from myside.
 > 
-> I think what we have right here is good enough for an initial version, from
-> where on we can improve things without having to modify calling code.
+> Linux ARM64 has moved away from ticket spinlock to qspinlock.
+> 
+> We should directly go for qspinlock.
 
-I have to say I really dislike vmemmap proliferation into
-{on,off}lining. It just doesn't belong there from a layering POV. All
-this code should care about is to hand over pages to the allocator and
-make them visible.
+I think it is a sensible intermediate step, even if you want to go
+qspinlock. Ticket locks are more or less trivial and get you fairness
+and all that goodness without the mind bending complexity of qspinlock.
 
-Is that a sufficient concern to nack the whole thing? No, I do not think
-so. But I do not see any particular rush to have this work needs to be
-merged ASAP.
+Once you have the ticket lock implementation solid (and qrwlock) and
+everything, *then* start to carefully look at qspinlock.
 
--- 
-Michal Hocko
-SUSE Labs
+Now, arguably arm64 did the heavy lifting of making qspinlock good on
+weak architectures, but if you want to do it right, you still have to
+analyze the whole thing for your own architecture.
+
