@@ -2,153 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1990347FBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DA1347FBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237199AbhCXRp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:45:57 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:45686 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236616AbhCXRpa (ORCPT
+        id S237238AbhCXRqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237207AbhCXRp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:45:30 -0400
-Received: by mail-io1-f53.google.com with SMTP id k8so22392558iop.12;
-        Wed, 24 Mar 2021 10:45:30 -0700 (PDT)
+        Wed, 24 Mar 2021 13:45:59 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B12C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:45:54 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id e7so28546202edu.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gGg9bkmQmUrJEoYO//o+38WT2vp4tDvJ1YauvHLK3w0=;
+        b=FvQlkmFH+tOQEZcfLr3Wsp0O5iLofV5GNtUxR5JyPoM5RLG5vHO0fVqWiayt+ShEiq
+         6fOcX+/MeA/YjC57p8CPqmLsGiGYJLmRra8KGCVinVIoroyCsik+dyIWDBQTzm+1KveI
+         3phrbMjz/WSkCRSI41RGGf+W0S888ZEPvbBpYLoK3GfRyXt5qIb2rnZx9IzUiipPH6jt
+         zozhTgF1kG6BbfK756qY10AQSO1h33cgsHI0KI8CSfl3kX3LQVP7SGifZKvRhMAeV4d9
+         n+fPrenlEA+w78JYAcQjAowrJAfquHk2wnR7aqBvBIpXV+h1NRlYakr+HiETBpvDrqwm
+         drfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WQOKKI3NBhlafu15L4AYHTsh8eoYcv2NYX3pxh4cbeY=;
-        b=fLcPi0nCP9Nb7SG8qkTXoUMNre4sg5jXl6cwa/jxpJPIiXed8Okr3gJXcls+Nx5SXm
-         bNq1KB1RL7QwgwVeQl2kQrojYjZUNxRVdtg0wvtRmNGllkQRvAYEJb2PfMp4JM7DFs5Z
-         1ZBuS1ycDYJkGlnKHHjI4OLHNbKdZKjK0boAR4NEkeaQZgL4cvNJwm9NKYeKCqOuoqxD
-         Xxc0/JyT55dGDnCvKkbDryXISxnaiGa7tRD2+ap+mydZ7DsSt+yp1yXRotYT03A4jsdo
-         nYP0wBZjGCmBMJjtsQQ+/8ClSWMhEck6emFVs89pgr1ZRyXVoRtQu0w4gOgC2piaVoI0
-         lGIw==
-X-Gm-Message-State: AOAM532ot5Ffod2oVEjIgMcNEA41KdkIXuid8JVkY/Jy2sgxre131Mk2
-        bHHqMEuMrcaQruQxGq/GcQaMX6eI16eK
-X-Google-Smtp-Source: ABdhPJykeeWlxXXZ603awX5WAKK6E91QipPknYAhmUz/+Kj3s31Ka3rSq1o62TNB0Nhkf4AldSTLRQ==
-X-Received: by 2002:a02:8801:: with SMTP id r1mr4013533jai.51.1616607929547;
-        Wed, 24 Mar 2021 10:45:29 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 14sm1439848ilt.54.2021.03.24.10.45.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 10:45:28 -0700 (PDT)
-Received: (nullmailer pid 3316165 invoked by uid 1000);
-        Wed, 24 Mar 2021 17:45:25 -0000
-Date:   Wed, 24 Mar 2021 11:45:25 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     dillon min <dillon.minfei@gmail.com>
-Cc:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        rong.a.chen@intel.com, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux@armlinux.org.uk, Vladimir Murzin <vladimir.murzin@arm.com>,
-        afzal.mohd.ma@gmail.com, gregkh@linuxfoundation.org,
-        erwan.leray@st.com, erwan.leray@foss.st.com,
-        linux-serial@vger.kernel.org, lkp@intel.com
-Subject: Re: [PATCH v3 9/9] dt-bindings: serial: stm32: add phandle
- 'bluetooth' to fix dtbs_check warrning
-Message-ID: <20210324174525.GA3309477@robh.at.kernel.org>
-References: <1615801436-3016-1-git-send-email-dillon.minfei@gmail.com>
- <1615801436-3016-10-git-send-email-dillon.minfei@gmail.com>
- <CAL9mu0Lfj+n4uk2rT8QnDtRveHn2gLx4ut6fLCByt0w9e08vwQ@mail.gmail.com>
- <01c9f635-7b2b-fc9c-3cf9-6d7f425d683e@foss.st.com>
- <CAL9mu0LaWyhb0=CdJgrfq8v08P2cgKSx8g=u3MJU=dRQc8bThw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gGg9bkmQmUrJEoYO//o+38WT2vp4tDvJ1YauvHLK3w0=;
+        b=V3oGgTMPT9H0G/qG37kE3NRfLyfDrpMsPTddlTglWDZEB2npnHSmQS9LrK5WEPymAC
+         82TZkZN47eMXGQkjKdO56WYikLJrSetFsb1XlYpzxXXJAtDg4EkMl0rLkaVJhwnI+PiG
+         ngJA8ddEgze+3K6PAyBpavEQFtUEV5Sxk2O8pa8+D6qdl0fhSV82+wq9eZe0vhi8fbm1
+         NEWKEyAx7GdT77uTfy1b2zIislBXCXMXdzi/rqIYVgYqJuOp/ZT20/guogc5u/r78tqx
+         P6zOfnpPfzIrFACcXOEeO32VtRGAfCBIegQYxetCQNqSZMjjiG20x4ZcJ4hil5FTu4Sf
+         cHCg==
+X-Gm-Message-State: AOAM53202w8RCBnDuse6P3xgwgoUh+m10h/tA+tn3OW5d4sTNT9ZzHTS
+        WZy2ZhKgM3LFgOUWjBvo1tOyBlUogAbl0rLQDtJKERP6JuJSPA==
+X-Google-Smtp-Source: ABdhPJzYwYdMUsSiaziQc4bOwaRP/eIf8tsvN1+MbwfleMPszchzvYZawTUvBNwx7NAPJcu1DDlQkg6IjQ7Aaw/eheI=
+X-Received: by 2002:aa7:dd05:: with SMTP id i5mr4696265edv.300.1616607953325;
+ Wed, 24 Mar 2021 10:45:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL9mu0LaWyhb0=CdJgrfq8v08P2cgKSx8g=u3MJU=dRQc8bThw@mail.gmail.com>
+References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
+In-Reply-To: <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 24 Mar 2021 10:45:42 -0700
+Message-ID: <CAPcyv4jidaz=33oWFMB_aBPtYDLe-AA_NP-k_pfGADVt=w5Vng@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm/devmap: Remove pgmap accounting in the
+ get_user_pages_fast() path
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 07:13:27PM +0800, dillon min wrote:
-> Hi Alexandre,
-> 
-> Thanks for the reply.
-> 
-> On Fri, Mar 19, 2021 at 4:38 PM Alexandre TORGUE
-> <alexandre.torgue@foss.st.com> wrote:
+On Thu, Mar 18, 2021 at 3:02 AM Joao Martins <joao.m.martins@oracle.com> wrote:
+>
+> On 3/18/21 4:08 AM, Dan Williams wrote:
+> > Now that device-dax and filesystem-dax are guaranteed to unmap all user
+> > mappings of devmap / DAX pages before tearing down the 'struct page'
+> > array, get_user_pages_fast() can rely on its traditional synchronization
+> > method "validate_pte(); get_page(); revalidate_pte()" to catch races with
+> > device shutdown. Specifically the unmap guarantee ensures that gup-fast
+> > either succeeds in taking a page reference (lock-less), or it detects a
+> > need to fall back to the slow path where the device presence can be
+> > revalidated with locks held.
+>
+> [...]
+>
+> > @@ -2087,21 +2078,26 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+> >  #endif /* CONFIG_ARCH_HAS_PTE_SPECIAL */
 > >
-> > Hi Dillon
+> >  #if defined(CONFIG_ARCH_HAS_PTE_DEVMAP) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
+> > +
+> >  static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+> >                            unsigned long end, unsigned int flags,
+> >                            struct page **pages, int *nr)
+> >  {
+> >       int nr_start = *nr;
+> > -     struct dev_pagemap *pgmap = NULL;
 > >
-> > On 3/19/21 5:28 AM, dillon min wrote:
-> > > No changes, Just loop lkp in.
-> > >
-> > >
-> > > Hi lkp,
-> > >
-> > > Sorry for the late reply, thanks for your report.
-> > > This patch is to fix the build warning message.
-> > >
-> > > Thanks.
-> > > Regards
-> > >
-> > > On Mon, Mar 15, 2021 at 5:45 PM <dillon.minfei@gmail.com> wrote:
-> > >>
-> > >> From: dillon min <dillon.minfei@gmail.com>
-> > >>
-> > >> when run make dtbs_check with 'bluetoothi brcm,bcm43438-bt'
-> > >> dts enabled on stm32h7, there is a warrning popup:
-> > >>
-> > >>>> arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800: 'bluetooth'
-> > >>     does not match any of the regexes: 'pinctrl-[0-9]+'
-> > >>
-> > >> to make dtbs_check happy, so add a phandle bluetooth
-> > >>
-> > >> Fixes: 500cdb23d608 ("ARM: dts: stm32: Add STM32H743 MCU and STM32H743i-EVAL board")
-> > >> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> > >> Reported-by: kernel test robot <lkp@intel.com>
-> > >> ---
-> > >>   Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 5 +++++
-> > >>   1 file changed, 5 insertions(+)
-> > >>
-> > >> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > >> index 8631678283f9..5e674840e62d 100644
-> > >> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > >> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > >> @@ -50,6 +50,11 @@ properties:
-> > >>       minItems: 1
-> > >>       maxItems: 2
-> > >>
-> > >> +  bluetooth:
-> > >> +    type: object
-> > >> +    description: |
-> > >> +      phandles to the usart controller and bluetooth
-> > >> +
+> >       do {
+> > -             struct page *page = pfn_to_page(pfn);
+> > +             struct page *page;
+> > +
+> > +             /*
+> > +              * Typically pfn_to_page() on a devmap pfn is not safe
+> > +              * without holding a live reference on the hosting
+> > +              * pgmap. In the gup-fast path it is safe because any
+> > +              * races will be resolved by either gup-fast taking a
+> > +              * reference or the shutdown path unmapping the pte to
+> > +              * trigger gup-fast to fall back to the slow path.
+> > +              */
+> > +             page = pfn_to_page(pfn);
 > >
-> > Do we really need to add this "generic" property here ? You could test
-> > without the "AditionalProperties:False".
-> Yes, indeed. we have no reason to add a generic 'bluetooth' property
-> into specific soc's interface yaml.
-> I can't just remove "AditionalProperties:False", else make
-> O=../kernel-art/ dtbs dtbs_check will run into
-> 
-> /home/fmin/linux/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml:
-> 'oneOf' conditional failed, one must be fixed:
-> 'unevaluatedProperties' is a required property
-> 'additionalProperties' is a required property
-> ...
-> 
-> So , i will replace "AditionalProperties:False". with
-> unevaluatedProperties: false, do you agree with this?
+> > -             pgmap = get_dev_pagemap(pfn, pgmap);
+> > -             if (unlikely(!pgmap)) {
+> > -                     undo_dev_pagemap(nr, nr_start, flags, pages);
+> > -                     return 0;
+> > -             }
+> >               SetPageReferenced(page);
+> >               pages[*nr] = page;
+> >               if (unlikely(!try_grab_page(page, flags))) {
+>
+> So for allowing FOLL_LONGTERM[0] would it be OK if we used page->pgmap after
+> try_grab_page() for checking pgmap type to see if we are in a device-dax
+> longterm pin?
 
-This is okay as long as 'serial.yaml' is referenced, but will eventually 
-fail if not (unevaluatedProperties isn't actually implemented yet).
+So, there is an effort to add a new pte bit p{m,u}d_special to disable
+gup-fast for huge pages [1]. I'd like to investigate whether we could
+use devmap + special as an encoding for "no longterm" and never
+consult the pgmap in the gup-fast path.
 
-> If so, i will send patch v4 later.
-
-Or you can do this:
-
-addtionalProperties:
-  type: object
-
-Which means any other property has to be a node.
-
-Rob
+[1]: https://lore.kernel.org/linux-mm/a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org/
