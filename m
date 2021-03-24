@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD3A347226
+	by mail.lfdr.de (Postfix) with ESMTP id ECA8E347227
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235744AbhCXHMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:12:42 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:51420 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235747AbhCXHMO (ORCPT
+        id S235753AbhCXHMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235749AbhCXHMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:12:14 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 12O7BVKu022145;
-        Wed, 24 Mar 2021 16:11:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 12O7BVKu022145
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1616569891;
-        bh=E24/Hi4hh0dLHOpU4tPgNkmKmpiDpZO+w1BHFp1aBEQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sK5TV14pjccbzlNGSwDQxOMJog2/cutWLa7DQ/9xDlb1Z7MYBXWeMZBbYHqQ5aeSr
-         J2eWZuQZQhUnpsJuwUR7tJjXkg9WLDScoPBtNJ/cyXh98mjHmATpKVB7J+4qGVC13q
-         beKX7X14+s5zK9ilmy/F392UQA3luT9Fmv5s7Zt2ZveM6YroK3GFNLj5zx0rlohR9Y
-         JuYZqh92lrrYKk3xshdUq7ii21IGeUpuEV/Pi3O33iCIxKl2MGXfJdy8R2Bk0AbIBy
-         H5El8PooQqXxcY9s7EnsdAlgzbmpGSNYc1SnnREBfUKC8LX/uq3j3EcCYQnt13NnIv
-         SUDQqAbSzm94w==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH] arm64: move --fix-cortex-a53-843419 linker test to Kconfig
-Date:   Wed, 24 Mar 2021 16:11:28 +0900
-Message-Id: <20210324071128.1723273-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 24 Mar 2021 03:12:17 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3465EC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:12:17 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id r8so20493813ilo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 00:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=wtPwCRqQ8DPy9FuKHe/XAab8ekCGoek7d/MJtDY4qNk=;
+        b=sF5oy0TCFrN6GbnafaPoynvj46/ukx7ac8iVs2cJJS0ILW5xLBu5WYxnCAOcPZben0
+         YBkvHnpR7AC11d3WXl1miZ/yY6TOIpOfZh7Z9nKCBRRBIQqHFPEjomZVnNJ/HprAbnm3
+         oKO3ApGtNyF6Mvjtg848Q7kfT3+4NNMu+3yFmPPn4Bs0esS7ivgBpbfeyC3lOxRQeHvP
+         CbHxavB4Uk0oz+CnlIxemHGLT4h+Mi5c/kiHa45XI+va6jcQO03UOOfLgxL+f3tXy8Bo
+         jTfla3fWn3FedEDBamEwyvtE59ciK26jIbjdw4I577/8sdGu2PH+P//undkiqpRgLYIE
+         33UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc;
+        bh=wtPwCRqQ8DPy9FuKHe/XAab8ekCGoek7d/MJtDY4qNk=;
+        b=aMnDTADqXhSSDZTz/cdgbpq9WpZULlrWinfUXN0ovb+seXRULWVrbl5G7OSzmESoGL
+         XBeorsiJTD2SMFdCCIZi6EYn/EW6njZXkMV49gdR+E1k44Bb7S+SwtJMq4KxrFoDGQ54
+         k+keRJCl0e0yz5hkidE7pTcHjImXDW1O1Qli9xOzuj2J6QXOfKQz0nXb3ganXu1PtGRv
+         BVJcFMfZGxDPsBSKg7F7GieNjXgv/NRfYscoUMN+ih+skacJmF+3oWs/MpWgPySbZhAH
+         1ZQpJoulxSk7BMBkRqIkus3/wgi9TQ0EIDDlM8BB7Zo5K51x0kgu1PgaLa8yl1Ley6sJ
+         T/Mg==
+X-Gm-Message-State: AOAM531qcBmZQuXPIomKAsF7qL8KRM/eaRn9UB76phMR8YTDx5aBtXjV
+        EONGAdaTN/hDcUNTCHYJcrMDU1b+fSlqniZnu7ARZQ==
+X-Received: by 2002:a05:6e02:156e:: with SMTP id k14mt1479077ilu.200.1616569936401;
+ Wed, 24 Mar 2021 00:12:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210308171049.3962577-1-gmouse@google.com>
+In-Reply-To: <20210308171049.3962577-1-gmouse@google.com>
+From:   Anton Kachalov <gmouse@google.com>
+Date:   Wed, 24 Mar 2021 08:12:05 +0100
+Message-ID: <CADVsX8_e9GNeceV-op5HwbxEnzUG_68izC11K=g46YWvCZE2Ag@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: nuvoton: Fix flash layout
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-$(call ld-option, --fix-cortex-a53-843419) in arch/arm64/Makefile is
-evaluated every time even for Make targets that do not need the linker,
-such as "make ARCH=arm64 install".
+Gently ping
 
-Recently, the Kbuild tree queued up a patch to avoid needless
-compiler/linker flag evaluation. I beleive it is a good improvement
-itself, but causing a false-positive warning for arm64 installation
-in linux-next. (Thanks to Nathan for the report)
-
-Kconfig can test the linker capability just once, and store it in the
-.config file. The build and installation steps that follow do not need
-to test the liniker over again.
-
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-I was not sure what the preferred CONFIG option name is.
-Please suggest a one if you have a better idea.
-
-
- arch/arm64/Kconfig  | 3 +++
- arch/arm64/Makefile | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5656e7aacd69..4a33428de8ac 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -521,6 +521,9 @@ config ARM64_ERRATUM_843419
- 
- 	  If unsure, say Y.
- 
-+config ARM64_LD_HAS_FIX_ERRATUM_843419
-+	def_bool $(ld-option,--fix-cortex-a53-843419)
-+
- config ARM64_ERRATUM_1024718
- 	bool "Cortex-A55: 1024718: Update of DBM/AP bits without break before make might result in incorrect update"
- 	default y
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 5b84aec31ed3..7ef44478560d 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -21,7 +21,7 @@ LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext \
- endif
- 
- ifeq ($(CONFIG_ARM64_ERRATUM_843419),y)
--  ifeq ($(call ld-option, --fix-cortex-a53-843419),)
-+  ifneq ($(CONFIG_ARM64_LD_HAS_FIX_ERRATUM_843419),y)
- $(warning ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum)
-   else
- LDFLAGS_vmlinux	+= --fix-cortex-a53-843419
--- 
-2.27.0
-
+On Mon, 8 Mar 2021 at 18:11, <gmouse@google.com> wrote:
+>
+> From: "Anton D. Kachalov" <gmouse@google.com>
+>
+> This change follows OpenBMC partitions' naming layout.
+>
+> Signed-off-by: Anton D. Kachalov <gmouse@google.com>
+> ---
+>  arch/arm/boot/dts/nuvoton-npcm750-evb.dts | 38 +++++++----------------
+>  1 file changed, 11 insertions(+), 27 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+> index 9f13d08f5804..55c5a89592d7 100644
+> --- a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+> +++ b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+> @@ -78,8 +78,8 @@ partitions@80000000 {
+>                         compatible = "fixed-partitions";
+>                         #address-cells = <1>;
+>                         #size-cells = <1>;
+> -                       bbuboot1@0 {
+> -                               label = "bb-uboot-1";
+> +                       u-boot@0 {
+> +                               label = "u-boot";
+>                                 reg = <0x0000000 0x80000>;
+>                                 read-only;
+>                                 };
+> @@ -88,38 +88,22 @@ bbuboot2@80000 {
+>                                 reg = <0x0080000 0x80000>;
+>                                 read-only;
+>                                 };
+> -                       envparam@100000 {
+> -                               label = "env-param";
+> +                       u-boot-env@100000 {
+> +                               label = "u-boot-env";
+>                                 reg = <0x0100000 0x40000>;
+>                                 read-only;
+>                                 };
+> -                       spare@140000 {
+> -                               label = "spare";
+> -                               reg = <0x0140000 0xC0000>;
+> -                               };
+>                         kernel@200000 {
+>                                 label = "kernel";
+> -                               reg = <0x0200000 0x400000>;
+> -                               };
+> -                       rootfs@600000 {
+> -                               label = "rootfs";
+> -                               reg = <0x0600000 0x700000>;
+> -                               };
+> -                       spare1@D00000 {
+> -                               label = "spare1";
+> -                               reg = <0x0D00000 0x200000>;
+> -                               };
+> -                       spare2@0F00000 {
+> -                               label = "spare2";
+> -                               reg = <0x0F00000 0x200000>;
+> +                               reg = <0x0200000 0x580000>;
+>                                 };
+> -                       spare3@1100000 {
+> -                               label = "spare3";
+> -                               reg = <0x1100000 0x200000>;
+> +                       rofs@780000 {
+> +                               label = "rofs";
+> +                               reg = <0x0780000 0x1680000>;
+>                                 };
+> -                       spare4@1300000 {
+> -                               label = "spare4";
+> -                               reg = <0x1300000 0x0>;
+> +                       rwfs@1e00000 {
+> +                               label = "rwfs";
+> +                               reg = <0x1e00000 0x200000>;
+>                         };
+>                 };
+>         };
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
+>
