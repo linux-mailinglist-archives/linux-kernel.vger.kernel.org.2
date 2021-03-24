@@ -2,61 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FED346FB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0597C346FBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 03:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbhCXCxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 22:53:06 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:34337 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231668AbhCXCwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:52:38 -0400
+        id S234959AbhCXC4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 22:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231876AbhCXCzg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 22:55:36 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74727C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:55:36 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so431646pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 19:55:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616554358;
-  x=1648090358;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Dg8oeMNDYycBgS5zf20SGi8YwA6Qx64E/aiSgxCBJzg=;
-  b=QXd154vWMvFteUBTq2tc7HOGRQkkbwfXMfUjMYSgRYBS1UskhYfrvic3
-   6UnkDyWq3jcgLPQhicVQkFHBsm6p65+NXV39ATIrpBfNcCi8BozDdx8wP
-   yABJLAO8wWnXThlDDVmZhiBXhJHiq6L8QwEdunQ4nxWzpBVsJ0px5VXiJ
-   R9cZPWxnL+LMMIdFYgfZcRYrlwlt4URvyXelOCG4igj5eF1+IJOQp7Gb6
-   h/JsH4vX2dRrP0dIV16BJBf6ts2e9RmAcHVuTH3k1ob8Ujg7X3owteBjc
-   MOYuti/0lKTiCx1peyXZ+UB2g3VvXkLgdFOrFVs3Z8CJn9vhRZMWwwldE
-   Q==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Pavel Machek <pavel@ucw.cz>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        kernel <kernel@axis.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
-Subject: RE: [PATCH v2] dt-binding: leds: Document leds-multi-gpio bindings
-Thread-Topic: [PATCH v2] dt-binding: leds: Document leds-multi-gpio bindings
-Thread-Index: AQHXHvxgm+r+aZrBek+AmH3Nb8cHlKqQNY0AgAC2GSCAAJ9XgIAA6EZw
-Date:   Wed, 24 Mar 2021 02:52:36 +0000
-Message-ID: <2f711d85081d4556acc5d8a658119868@XBOX01.axis.com>
-References: <20210322091819.29119-1-chenhui.zhang@axis.com>
- <1616434698.344402.2887754.nullmailer@robh.at.kernel.org>
- <424d3de97a154c6a9580f27347882413@XBOX01.axis.com>
- <CAL_JsqJYSNBHqdZbWTn76tTna+u=1rjiebTPDQjZFQQdTEkp4w@mail.gmail.com>
-In-Reply-To: <CAL_JsqJYSNBHqdZbWTn76tTna+u=1rjiebTPDQjZFQQdTEkp4w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VxX3jCU9gxpYCK5wxlC07dKnMnHlhcGJNIa5hTcYbHE=;
+        b=f40wFQdeT6npH+pw+HAc7cVoVM24lGjxsjvh9ss0IAFkeMdNXo3UsL/t0j43d2olss
+         FfsR86iQ9J9/5W27eztxDunvESkS1E7olyR/007Sm4fP6xQmoAc/IH2jSDK8VRvTZM/a
+         UGupzhmMml/m4ViNMWC1wJMjsbFj9Rq8avW+k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VxX3jCU9gxpYCK5wxlC07dKnMnHlhcGJNIa5hTcYbHE=;
+        b=dFsDMIMqbiXp5gskXbHzxpyfjocRZevU1iOT5DZXYX4r9MSfoONcsEBgeZIs5duMhg
+         n6Cc7Lb4SkG7cKm3QSJydmRHy+sCXU3n9GnH5I4EnjRkjxnPfZRDd/Su9sNuhd7sRWrM
+         yZJzVK856zz8IJ9VWzn4FGlGAmbKqcjnsyRrb68Vk24TjFgf5W0I7T3GK9e8uz1kiZhM
+         7oAwNXXB6BlAqORIVyiMOjiTxKtwty0yb4Hwev/aeO3YQeluls5VKF/jWfRhan+HK76Y
+         rH6EbnaCdteCcfwAF+KzwIBJ709Zi+QDF0iPoWm1YU7oIqI3AnK8nNukuVx7Mmy8YiwP
+         LhGA==
+X-Gm-Message-State: AOAM533XLaZ4J1A7DaAnQpH51W1FBCF4VjmpiA8nRh5SPyoYlWEN8ZR1
+        EzOe/eWlbuLSace3MRzxNPzSGA==
+X-Google-Smtp-Source: ABdhPJynwED2kc7VSNElAA7bTKcRRHocGbOuLARI0DW++dV5v5I4giF/PTHaV0dDpzmJNobxrQDgyA==
+X-Received: by 2002:a17:902:f547:b029:e4:6dbc:6593 with SMTP id h7-20020a170902f547b02900e46dbc6593mr1474686plf.4.1616554535976;
+        Tue, 23 Mar 2021 19:55:35 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
+        by smtp.gmail.com with ESMTPSA id t12sm468146pfe.203.2021.03.23.19.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 19:55:35 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] arm64: dts: qcom: trogdor: Add no-hpd to DSI bridge node
+Date:   Tue, 23 Mar 2021 19:55:34 -0700
+Message-Id: <20210324025534.1837405-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+DQo+ID4gSGkgUm9iLA0KPiA+DQo+ID4gVGhhbmtzLiBZZXMsIG5vdyBJIGNhbiBzZWUgdGhl
-IHdhcm5pbmcsIGJ1dCBJIGNvdWxkIG5vdCB1bmRlcnN0YW5kIHdoYXQNCj4gd2FzIHdyb25nPyBD
-b3VsZCB5b3UgZ2l2ZSBzb21lIGhpbnQ/DQo+IA0KPiBJIHRoaW5rIHlvdSBuZWVkICdtYXhJdGVt
-cycgaW4gYWRkaXRpb24gdG8gbWluSXRlbXMuDQoNCkV4YWN0bHkhIFRoYW5rcyBmb3IgdGhlIHN1
-Z2dlc3Rpb24uDQoNCkJlc3QgUmVnYXJkcywNCkhlcm1lcw0K
+We should indicate that we're not using the HPD pin on this device, per
+the binding document. Otherwise if code in the future wants to enable
+HPD in the bridge when this property is absent we'll be wasting power
+powering hpd when we don't use it on trogdor boards. We didn't notice
+this before because the kernel driver blindly disables hpd, but that
+won't be true for much longer.
+
+Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc: Douglas Anderson <dianders@chromium.org>
+Fixes: 7ec3e67307f8 ("arm64: dts: qcom: sc7180-trogdor: add initial trogdor and lazor dt")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 07c8b2c926c0..298af6d7fb4a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -595,6 +595,8 @@ sn65dsi86_bridge: bridge@2d {
+ 		clocks = <&rpmhcc RPMH_LN_BB_CLK3>;
+ 		clock-names = "refclk";
+ 
++		no-hpd;
++
+ 		ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-- 
+https://chromeos.dev
+
