@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE5C348520
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8432348522
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238995AbhCXXOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhCXXO1 (ORCPT
+        id S239001AbhCXXPR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 19:15:17 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24291 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238989AbhCXXOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:14:27 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E99D9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:14:26 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id y5so75463pfn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YyHzegzCKmX71L4a4ycrls9K9563QpXhhpNkT8KIV5U=;
-        b=WVb6OULb7d2h1TjLeoxHbmk9OorP+RZH5J0DpUfRz+zDpIHYebKd3NZBud+nKEsw+Q
-         MnDqAlA8iLhkwTrElzJJLiBzoqsdoq1Z5VwYhuXZZagGGRGp2ijKYrbGLG2E48h/Augm
-         n0EhXKvlvcOR7ErrCKPeMqEF7hYosr8qYp/Cg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YyHzegzCKmX71L4a4ycrls9K9563QpXhhpNkT8KIV5U=;
-        b=qgDMXjZ0lYOO2ImYZm1HkiJYvh/hOo+n2oqWaHwMYdJWXSOSsD3C6wcpxHTloxc5Ym
-         X3u5TToNU7OZ1qcZAGr1n4QQxB990Map9cTd5MnZP6o+kVnd9xq1ij8h5V9mFNi7XrTN
-         xgQ8Eecdre3p8C4snYZwZhIScqUghTZdInYnmQljKyvK2SKFOeJyx5pkQDmqchhhwAUy
-         QS6nVtFx4XOrxoeta8XombptC+Ze1p+06SbRHmZFHM5x0iCl6wXxVXwhjunxoKbiPqoO
-         bIHQDIVqqzpuuurFvj3C2MahOJT+R2c3rellmFY3KVUB0Yj4a4vwvptRNJFrYkwyWJQa
-         Foyw==
-X-Gm-Message-State: AOAM5320HiddFhruqWDuLE3VuKQuYvqg12wLVWQ56FWa2RPdVXqk7Yjk
-        dvsP9g/U10pQ8v0U0BBquMtaFZXhP2/niA==
-X-Google-Smtp-Source: ABdhPJwGJw+JcbwiJP4/piQ4MvZoACLFpP8UfoL2bC6oJj//Hmi4KIb3DoVNtZ4z3lGMAiRho979FQ==
-X-Received: by 2002:a63:ee4b:: with SMTP id n11mr4983845pgk.265.1616627666442;
-        Wed, 24 Mar 2021 16:14:26 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
-        by smtp.gmail.com with ESMTPSA id y9sm3396207pja.50.2021.03.24.16.14.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 16:14:25 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>
-Subject: [PATCH v2] arm64: dts: qcom: c630: Add no-hpd to DSI bridge node
-Date:   Wed, 24 Mar 2021 16:14:24 -0700
-Message-Id: <20210324231424.2890039-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        Wed, 24 Mar 2021 19:14:45 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-223-zjCwL4CNMgSnfl37WyP4uA-1; Wed, 24 Mar 2021 23:14:41 +0000
+X-MC-Unique: zjCwL4CNMgSnfl37WyP4uA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 23:14:41 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 24 Mar 2021 23:14:40 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: RE: [PATCH] ARM: delay: avoid clang -Wtautological-constant warning
+Thread-Topic: [PATCH] ARM: delay: avoid clang -Wtautological-constant warning
+Thread-Index: AQHXH+dwZysyW/ACIU21groL09xJy6qTxo9A
+Date:   Wed, 24 Mar 2021 23:14:40 +0000
+Message-ID: <caf7e56984c347da9e342e89ce530748@AcuMS.aculab.com>
+References: <20210323132031.2858996-1-arnd@kernel.org>
+In-Reply-To: <20210323132031.2858996-1-arnd@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should indicate that we're not using the HPD pin on this device, per
-the binding document. Otherwise if code in the future wants to enable
-HPD in the bridge when this property is absent we'll be enabling HPD
-when it isn't supposed to be used. Presumably this board isn't using hpd
-on the bridge.
+From: Arnd Bergmann
+> Sent: 23 March 2021 13:20
+> Passing an 8-bit constant into delay() triggers a warning when building
+> with 'make W=1' using clang:
+> 
+> drivers/clk/actions/owl-pll.c:182:2: error: result of comparison of constant 2000 with expression of
+> type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         udelay(pll_hw->delay);
+>         ^~~~~~~~~~~~~~~~~~~~~
+> arch/arm/include/asm/delay.h:84:9: note: expanded from macro 'udelay'
+>           ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :              \
+>            ~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+> arch/arm/mach-omap2/wd_timer.c:89:3: error: result of comparison of constant 2000 with expression of
+> type 'u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>                 udelay(oh->class->sysc->srst_udelay);
+>                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Shut up the warning by adding a cast to a 64-bit number. A cast to 'int'
+> would usually be sufficient, but would fail to cause a link-time error
+> for large 64-bit constants.
 
-Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Steev Klimaszewski <steev@kali.org>
-Fixes: 956e9c85f47b ("arm64: dts: qcom: c630: Define eDP bridge and panel")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 2 ++
- 1 file changed, 2 insertions(+)
+Adding 0u probably has the desired effect - without any side effects of a cast.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 140db2d5ba31..c2a709a384e9 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -376,6 +376,8 @@ sn65dsi86: bridge@2c {
- 		clocks = <&sn65dsi86_refclk>;
- 		clock-names = "refclk";
- 
-+		no-hpd;
-+
- 		ports {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--- 
-https://chromeos.dev
+	David
+
+
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arm/include/asm/delay.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/include/asm/delay.h b/arch/arm/include/asm/delay.h
+> index 4f80b72372b4..1bb6417a3a83 100644
+> --- a/arch/arm/include/asm/delay.h
+> +++ b/arch/arm/include/asm/delay.h
+> @@ -81,7 +81,7 @@ extern void __bad_udelay(void);
+> 
+>  #define udelay(n)							\
+>  	(__builtin_constant_p(n) ?					\
+> -	  ((n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :		\
+> +	  ((u64)(n) > (MAX_UDELAY_MS * 1000) ? __bad_udelay() :		\
+>  			__const_udelay((n) * UDELAY_MULT)) :		\
+>  	  __udelay(n))
+> 
+> --
+> 2.29.2
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
