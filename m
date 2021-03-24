@@ -2,86 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420A5347391
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7193634738D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233472AbhCXIWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:22:30 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60578 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233850AbhCXIVl (ORCPT
+        id S233674AbhCXIVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:21:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34707 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236297AbhCXIVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:21:41 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12O8KlL6013728;
-        Wed, 24 Mar 2021 08:21:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Apl7iBU+rkoAZbuqIafD2/G0po9c8kIFgEDAuBoBx9Y=;
- b=vj9JHeGzgCZLEkvspzvbVoHBN4Pkz1I4YljQPvE2qm1gR8tfrCDHDwnMF+072pkx+xvM
- sZVibBPZ/Q2L+cP7C+GMpbLD/7k6TeGEFb9HRAxoHoHvTAm5Jne4LsTEhuFC0EhGDLxX
- oDtWx0vDQaqe5I+Qo4cH7Rxia9858OCy8OcFys5mzV2K5Hg2hE88S6QEUo1lB3P7WVz9
- OzafDIsdjyUC8XHgwjSbQwSOLpcb+0X5oSAJRkPXqe9lidaL1sslKFqMiTesouEZcNj6
- A9quh2I8UNj6EU4gQX5QuYX6jjjeMALo4U8vC7H2ocKRGB0aAk4MnNfDjLzJ3f9az3Py qQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 37d9pn1rue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 08:21:17 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12O8LAQR110096;
-        Wed, 24 Mar 2021 08:21:15 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 37dtmqht7e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Mar 2021 08:21:15 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12O8L37j007580;
-        Wed, 24 Mar 2021 08:21:03 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 24 Mar 2021 08:21:03 +0000
-Date:   Wed, 24 Mar 2021 11:20:55 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     caizhichao <tomstomsczc@163.com>
-Cc:     mchehab@kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        gregkh@linuxfoundation.org, sakari.ailus@linux.intel.com,
-        Zhichao Cai <caizhichao@yulong.com>
-Subject: Re: [PATCH] drivers:staging: Simplify the if condition
-Message-ID: <20210324082055.GL1717@kadam>
-References: <20210324054535.1716-1-tomstomsczc@163.com>
+        Wed, 24 Mar 2021 04:21:09 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lOylI-0005kT-3r; Wed, 24 Mar 2021 08:21:08 +0000
+Date:   Wed, 24 Mar 2021 09:21:07 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, Al Viro <viro@ZenIV.linux.org.uk>,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 01/18] vfs: add miscattr ops
+Message-ID: <20210324082107.m5bz6rp2bkz7qont@wittgenstein>
+References: <20210322144916.137245-1-mszeredi@redhat.com>
+ <20210322144916.137245-2-mszeredi@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210324054535.1716-1-tomstomsczc@163.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103240065
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=989 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
- adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103240065
+In-Reply-To: <20210322144916.137245-2-mszeredi@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 01:45:35PM +0800, caizhichao wrote:
-> From: Zhichao Cai <caizhichao@yulong.com>
+On Mon, Mar 22, 2021 at 03:48:59PM +0100, Miklos Szeredi wrote:
+> There's a substantial amount of boilerplate in filesystems handling
+> FS_IOC_[GS]ETFLAGS/ FS_IOC_FS[GS]ETXATTR ioctls.
 > 
-> Fixes coccicheck warning:
-> drivers/staging/media/atomisp/pci/sh_css_params.c:4652:24-26: WARNING !A || A && B is equivalent to !A || B
+> Also due to userspace buffers being involved in the ioctl API this is
+> difficult to stack, as shown by overlayfs issues related to these ioctls.
 > 
+> Introduce a new internal API named "miscattr" (fsxattr can be confused with
+> xattr, xflags is inappropriate, since this is more than just flags).
+> 
+> There's significant overlap between flags and xflags and this API handles
+> the conversions automatically, so filesystems may choose which one to use.
+> 
+> In ->miscattr_get() a hint is provided to the filesystem whether flags or
+> xattr are being requested by userspace, but in this series this hint is
+> ignored by all filesystems, since generating all the attributes is cheap.
+> 
+> If a filesystem doesn't implemement the miscattr API, just fall back to
+> f_op->ioctl().  When all filesystems are converted, the fallback can be
+> removed.
+> 
+> 32bit compat ioctls are now handled by the generic code as well.
+> 
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> ---
 
-Thanks, but someone already did this.  Please work against linux-next.
+Fwiw, I think this is a good cleanup. Changing something like the
+miscattr_set() method to take a mnt_userns would've been less
+churn then having to audit all ioctls individually.
 
-regards,
-dan carpenter
+(Only one small comment below.)
 
+>  Documentation/filesystems/locking.rst |   5 +
+>  Documentation/filesystems/vfs.rst     |  15 ++
+>  fs/ioctl.c                            | 329 ++++++++++++++++++++++++++
+>  include/linux/fs.h                    |   4 +
+>  include/linux/miscattr.h              |  53 +++++
+>  5 files changed, 406 insertions(+)
+>  create mode 100644 include/linux/miscattr.h
+> 
+> diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> index b7dcc86c92a4..a5aa2046d48f 100644
+> --- a/Documentation/filesystems/locking.rst
+> +++ b/Documentation/filesystems/locking.rst
+> @@ -80,6 +80,9 @@ prototypes::
+>  				struct file *, unsigned open_flag,
+>  				umode_t create_mode);
+>  	int (*tmpfile) (struct inode *, struct dentry *, umode_t);
+> +	int (*miscattr_set)(struct user_namespace *mnt_userns,
+> +			    struct dentry *dentry, struct miscattr *ma);
+> +	int (*miscattr_get)(struct dentry *dentry, struct miscattr *ma);
+>  
+>  locking rules:
+>  	all may block
+> @@ -107,6 +110,8 @@ fiemap:		no
+>  update_time:	no
+>  atomic_open:	shared (exclusive if O_CREAT is set in open flags)
+>  tmpfile:	no
+> +miscattr_get:	no or exclusive
+> +miscattr_set:	exclusive
+>  ============	=============================================
+>  
+>  
+> diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
+> index 2049bbf5e388..f125ce6c3b47 100644
+> --- a/Documentation/filesystems/vfs.rst
+> +++ b/Documentation/filesystems/vfs.rst
+> @@ -441,6 +441,9 @@ As of kernel 2.6.22, the following members are defined:
+>  				   unsigned open_flag, umode_t create_mode);
+>  		int (*tmpfile) (struct user_namespace *, struct inode *, struct dentry *, umode_t);
+>  	        int (*set_acl)(struct user_namespace *, struct inode *, struct posix_acl *, int);
+> +		int (*miscattr_set)(struct user_namespace *mnt_userns,
+> +				    struct dentry *dentry, struct miscattr *ma);
+> +		int (*miscattr_get)(struct dentry *dentry, struct miscattr *ma);
+>  	};
+>  
+>  Again, all methods are called without any locks being held, unless
+> @@ -588,6 +591,18 @@ otherwise noted.
+>  	atomically creating, opening and unlinking a file in given
+>  	directory.
+>  
+> +``miscattr_get``
+> +	called on ioctl(FS_IOC_GETFLAGS) and ioctl(FS_IOC_FSGETXATTR) to
+> +	retrieve miscellaneous filesystem flags and attributes.  Also
+> +	called before the relevant SET operation to check what is being
+> +	changed (in this case with i_rwsem locked exclusive).  If unset,
+> +	then fall back to f_op->ioctl().
+> +
+> +``miscattr_set``
+> +	called on ioctl(FS_IOC_SETFLAGS) and ioctl(FS_IOC_FSSETXATTR) to
+> +	change miscellaneous filesystem flags and attributes.  Callers hold
+> +	i_rwsem exclusive.  If unset, then fall back to f_op->ioctl().
+> +
+>  
+>  The Address Space Object
+>  ========================
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 4e6cc0a7d69c..e5f3820809a4 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -19,6 +19,9 @@
+>  #include <linux/falloc.h>
+>  #include <linux/sched/signal.h>
+>  #include <linux/fiemap.h>
+> +#include <linux/mount.h>
+> +#include <linux/fscrypt.h>
+> +#include <linux/miscattr.h>
+>  
+>  #include "internal.h"
+>  
+> @@ -657,6 +660,311 @@ static int ioctl_file_dedupe_range(struct file *file,
+>  	return ret;
+>  }
+>  
+> +/**
+> + * miscattr_fill_xflags - initialize miscattr with xflags
+> + * @ma:		miscattr pointer
+> + * @xflags:	FS_XFLAG_* flags
+> + *
+> + * Set ->fsx_xflags, ->xattr_valid and ->flags (translated xflags).  All
+> + * other fields are zeroed.
+> + */
+> +void miscattr_fill_xflags(struct miscattr *ma, u32 xflags)
+> +{
+> +	memset(ma, 0, sizeof(*ma));
+> +	ma->xattr_valid = true;
+> +	ma->fsx_xflags = xflags;
+> +	if (ma->fsx_xflags & FS_XFLAG_IMMUTABLE)
+> +		ma->flags |= FS_IMMUTABLE_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_APPEND)
+> +		ma->flags |= FS_APPEND_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_SYNC)
+> +		ma->flags |= FS_SYNC_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_NOATIME)
+> +		ma->flags |= FS_NOATIME_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_NODUMP)
+> +		ma->flags |= FS_NODUMP_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_DAX)
+> +		ma->flags |= FS_DAX_FL;
+> +	if (ma->fsx_xflags & FS_XFLAG_PROJINHERIT)
+> +		ma->flags |= FS_PROJINHERIT_FL;
+> +}
+> +EXPORT_SYMBOL(miscattr_fill_xflags);
+> +
+> +/**
+> + * miscattr_fill_flags - initialize miscattr with flags
+> + * @ma:		miscattr pointer
+> + * @flags:	FS_*_FL flags
+> + *
+> + * Set ->flags, ->flags_valid and ->fsx_xflags (translated flags).
+> + * All other fields are zeroed.
+> + */
+> +void miscattr_fill_flags(struct miscattr *ma, u32 flags)
+> +{
+> +	memset(ma, 0, sizeof(*ma));
+> +	ma->flags_valid = true;
+> +	ma->flags = flags;
+> +	if (ma->flags & FS_SYNC_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_SYNC;
+> +	if (ma->flags & FS_IMMUTABLE_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_IMMUTABLE;
+> +	if (ma->flags & FS_APPEND_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_APPEND;
+> +	if (ma->flags & FS_NODUMP_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_NODUMP;
+> +	if (ma->flags & FS_NOATIME_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_NOATIME;
+> +	if (ma->flags & FS_DAX_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_DAX;
+> +	if (ma->flags & FS_PROJINHERIT_FL)
+> +		ma->fsx_xflags |= FS_XFLAG_PROJINHERIT;
+> +}
+> +EXPORT_SYMBOL(miscattr_fill_flags);
+> +
+> +/**
+> + * vfs_miscattr_get - retrieve miscellaneous inode attributes
+> + * @dentry:	the object to retrieve from
+> + * @ma:		miscattr pointer
+> + *
+> + * Call i_op->miscattr_get() callback, if exists.
+> + *
+> + * Returns 0 on success, or a negative error on failure.
+> + */
+> +int vfs_miscattr_get(struct dentry *dentry, struct miscattr *ma)
+> +{
+> +	struct inode *inode = d_inode(dentry);
+> +
+> +	if (d_is_special(dentry))
+> +		return -ENOTTY;
+> +
+> +	if (!inode->i_op->miscattr_get)
+> +		return -ENOIOCTLCMD;
+> +
+> +	return inode->i_op->miscattr_get(dentry, ma);
+> +}
+> +EXPORT_SYMBOL(vfs_miscattr_get);
+> +
+> +/**
+> + * fsxattr_copy_to_user - copy fsxattr to userspace.
+> + * @ma:		miscattr pointer
+> + * @ufa:	fsxattr user pointer
+> + *
+> + * Returns 0 on success, or -EFAULT on failure.
+> + */
+> +int fsxattr_copy_to_user(const struct miscattr *ma, struct fsxattr __user *ufa)
+> +{
+> +	struct fsxattr fa = {
+> +		.fsx_xflags	= ma->fsx_xflags,
+> +		.fsx_extsize	= ma->fsx_extsize,
+> +		.fsx_nextents	= ma->fsx_nextents,
+> +		.fsx_projid	= ma->fsx_projid,
+> +		.fsx_cowextsize	= ma->fsx_cowextsize,
+> +	};
+> +
+> +	if (copy_to_user(ufa, &fa, sizeof(fa)))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(fsxattr_copy_to_user);
+> +
+> +static int fsxattr_copy_from_user(struct miscattr *ma,
+> +				  struct fsxattr __user *ufa)
+> +{
+> +	struct fsxattr fa;
+> +
+> +	if (copy_from_user(&fa, ufa, sizeof(fa)))
+> +		return -EFAULT;
+> +
+> +	miscattr_fill_xflags(ma, fa.fsx_xflags);
+> +	ma->fsx_extsize = fa.fsx_extsize;
+> +	ma->fsx_nextents = fa.fsx_nextents;
+> +	ma->fsx_projid = fa.fsx_projid;
+> +	ma->fsx_cowextsize = fa.fsx_cowextsize;
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Generic function to check FS_IOC_FSSETXATTR/FS_IOC_SETFLAGS values and reject
+> + * any invalid configurations.
+> + *
+> + * Note: must be called with inode lock held.
+> + */
+> +static int miscattr_set_prepare(struct inode *inode,
+> +			      const struct miscattr *old_ma,
+> +			      struct miscattr *ma)
+> +{
+> +	int err;
+> +
+> +	/*
+> +	 * The IMMUTABLE and APPEND_ONLY flags can only be changed by
+> +	 * the relevant capability.
+> +	 */
+> +	if ((ma->flags ^ old_ma->flags) & (FS_APPEND_FL | FS_IMMUTABLE_FL) &&
+> +	    !capable(CAP_LINUX_IMMUTABLE))
+> +		return -EPERM;
+> +
+> +	err = fscrypt_prepare_setflags(inode, old_ma->flags, ma->flags);
+> +	if (err)
+> +		return err;
+> +
+> +	/*
+> +	 * Project Quota ID state is only allowed to change from within the init
+> +	 * namespace. Enforce that restriction only if we are trying to change
+> +	 * the quota ID state. Everything else is allowed in user namespaces.
+> +	 */
+> +	if (current_user_ns() != &init_user_ns) {
+> +		if (old_ma->fsx_projid != ma->fsx_projid)
+> +			return -EINVAL;
+> +		if ((old_ma->fsx_xflags ^ ma->fsx_xflags) &
+> +				FS_XFLAG_PROJINHERIT)
+> +			return -EINVAL;
+> +	}
+> +
+> +	/* Check extent size hints. */
+> +	if ((ma->fsx_xflags & FS_XFLAG_EXTSIZE) && !S_ISREG(inode->i_mode))
+> +		return -EINVAL;
+> +
+> +	if ((ma->fsx_xflags & FS_XFLAG_EXTSZINHERIT) &&
+> +			!S_ISDIR(inode->i_mode))
+> +		return -EINVAL;
+> +
+> +	if ((ma->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
+> +	    !S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * It is only valid to set the DAX flag on regular files and
+> +	 * directories on filesystems.
+> +	 */
+> +	if ((ma->fsx_xflags & FS_XFLAG_DAX) &&
+> +	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+> +		return -EINVAL;
+> +
+> +	/* Extent size hints of zero turn off the flags. */
+> +	if (ma->fsx_extsize == 0)
+> +		ma->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
+> +	if (ma->fsx_cowextsize == 0)
+> +		ma->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * vfs_miscattr_set - change miscellaneous inode attributes
 
+I think this misses to document the @mnt_userns argument probably just
+caused by the rebase.
+
+> + * @dentry:	the object to change
+> + * @ma:		miscattr pointer
+
+> + *
+> + * After verifying permissions, call i_op->miscattr_set() callback, if
+> + * exists.
+> + *
+> + * Verifying attributes involves retrieving current attributes with
+> + * i_op->miscattr_get(), this also allows initilaizing attributes that have
+> + * not been set by the caller to current values.  Inode lock is held
+> + * thoughout to prevent racing with another instance.
+> + *
+> + * Returns 0 on success, or a negative error on failure.
+
+Fwiw, just because Willy made me aware of this, adding a ":" after the
+Return will make kernel-doc generate a separate return value section. It
+might also complain otherwise.
+
+Christian
+
+> + */
+> +int vfs_miscattr_set(struct user_namespace *mnt_userns, struct dentry *dentry,
+> +		     struct miscattr *ma)
+> +{
+> +	struct inode *inode = d_inode(dentry);
+> +	struct miscattr old_ma = {};
+> +	int err;
+> +
+> +	if (d_is_special(dentry))
+> +		return -ENOTTY;
+> +
+> +	if (!inode->i_op->miscattr_set)
+> +		return -ENOIOCTLCMD;
+> +
+> +	if (!inode_owner_or_capable(mnt_userns, inode))
+> +		return -EPERM;
+> +
+> +	inode_lock(inode);
+> +	err = vfs_miscattr_get(dentry, &old_ma);
+> +	if (!err) {
+> +		/* initialize missing bits from old_ma */
+> +		if (ma->flags_valid) {
+> +			ma->fsx_xflags |= old_ma.fsx_xflags & ~FS_XFLAG_COMMON;
+> +			ma->fsx_extsize = old_ma.fsx_extsize;
+> +			ma->fsx_nextents = old_ma.fsx_nextents;
+> +			ma->fsx_projid = old_ma.fsx_projid;
+> +			ma->fsx_cowextsize = old_ma.fsx_cowextsize;
+> +		} else {
+> +			ma->flags |= old_ma.flags & ~FS_COMMON_FL;
+> +		}
+> +		err = miscattr_set_prepare(inode, &old_ma, ma);
+> +		if (!err)
+> +			err = inode->i_op->miscattr_set(mnt_userns, dentry, ma);
+> +	}
+> +	inode_unlock(inode);
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL(vfs_miscattr_set);
