@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B0B34835A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F2A348356
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbhCXVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:02:43 -0400
-Received: from mga03.intel.com ([134.134.136.65]:18808 "EHLO mga03.intel.com"
+        id S238256AbhCXVCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:02:13 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30382 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238191AbhCXVCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:02:12 -0400
-IronPort-SDR: GLoPmqQv2WZPD3A3MUCmOym1RZ/FoVkRZm6BbtEGY/VWuOWoje/EJYLDR55HZK0VAKg8ko40Bw
- /bqNGtF1anzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190812791"
+        id S238211AbhCXVBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 17:01:52 -0400
+IronPort-SDR: DqWSWnr3O4E05rBcm4l5E41h659Q43kQ9HDRpJZrWslCWbUvDu6XKqRvGJU/hJObsXOsHEeHYN
+ xi+3l6S12/KQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178339680"
 X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="190812791"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:48 -0700
-IronPort-SDR: wwhRyBjPPefLY4IAS+Rz3oLkuXqEtbueYf0s/cpm+RllwF+CrMA+N8zBJsUX+Xzj/SKGEeEM9W
- e3xD7zweg9RQ==
+   d="scan'208";a="178339680"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:51 -0700
+IronPort-SDR: +h+Qkwic+CIAtKQUJDKNTnT/xM+JK0uS140eNzAFR+lbYjtFgT+m82jaHIwXDWvlZKjXVhtj7p
+ ZRulJxBPkWNg==
 X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="415655947"
+   d="scan'208";a="409024171"
 Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:45 -0700
-Subject: [PATCH 0/4] cxl/mem: Fix memdev device setup
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 14:01:51 -0700
+Subject: [PATCH 1/4] cxl/mem: Use sysfs_emit() for attribute show routines
 From:   Dan Williams <dan.j.williams@intel.com>
 To:     linux-cxl@vger.kernel.org
 Cc:     Ben Widawsky <ben.widawsky@intel.com>,
         Jason Gunthorpe <jgg@nvidia.com>, ira.weiny@intel.com,
         vishal.l.verma@intel.com, alison.schofield@intel.com,
         linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 14:01:45 -0700
-Message-ID: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
+Date:   Wed, 24 Mar 2021 14:01:51 -0700
+Message-ID: <161661971101.1721612.16412318662284948582.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
 User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -41,26 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A small collection of fixes mostly inspired by Jason's recognition of
-dev_set_name() error handling mistakes on other driver review.
+While none the CXL sysfs attributes are threatening to overrun a
+PAGE_SIZE of output, it is good form to use the recommended helpers.
 
-dev_set_name() can fail and although device_add() might catch it that's
-not a reliable assumption. While fixing that I noticed that the unwind
-handling for cdev_device_add() failures leaked the device name.
-
-The sysfs_emit() fixup and unpublishing of device power management files
-are just sanity cleanups.
-
+Fixes: b39cb1052a5c ("cxl/mem: Register CXL memX devices")
+Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
+Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
+ drivers/cxl/mem.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Dan Williams (4):
-      cxl/mem: Use sysfs_emit() for attribute show routines
-      cxl/mem: Fix cdev_device_add() error handling
-      cxl/mem: Do not rely on device_add() side effects for dev_set_name() failures
-      cxl/mem: Disable cxl device power management
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index ecfc9ccdba8d..30bf4f0f3c17 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -1066,7 +1066,7 @@ static ssize_t firmware_version_show(struct device *dev,
+ 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+ 	struct cxl_mem *cxlm = cxlmd->cxlm;
+ 
+-	return sprintf(buf, "%.16s\n", cxlm->firmware_version);
++	return sysfs_emit(buf, "%.16s\n", cxlm->firmware_version);
+ }
+ static DEVICE_ATTR_RO(firmware_version);
+ 
+@@ -1076,7 +1076,7 @@ static ssize_t payload_max_show(struct device *dev,
+ 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+ 	struct cxl_mem *cxlm = cxlmd->cxlm;
+ 
+-	return sprintf(buf, "%zu\n", cxlm->payload_size);
++	return sysfs_emit(buf, "%zu\n", cxlm->payload_size);
+ }
+ static DEVICE_ATTR_RO(payload_max);
+ 
+@@ -1087,7 +1087,7 @@ static ssize_t ram_size_show(struct device *dev, struct device_attribute *attr,
+ 	struct cxl_mem *cxlm = cxlmd->cxlm;
+ 	unsigned long long len = range_len(&cxlm->ram_range);
+ 
+-	return sprintf(buf, "%#llx\n", len);
++	return sysfs_emit(buf, "%#llx\n", len);
+ }
+ 
+ static struct device_attribute dev_attr_ram_size =
+@@ -1100,7 +1100,7 @@ static ssize_t pmem_size_show(struct device *dev, struct device_attribute *attr,
+ 	struct cxl_mem *cxlm = cxlmd->cxlm;
+ 	unsigned long long len = range_len(&cxlm->pmem_range);
+ 
+-	return sprintf(buf, "%#llx\n", len);
++	return sysfs_emit(buf, "%#llx\n", len);
+ }
+ 
+ static struct device_attribute dev_attr_pmem_size =
 
-
- drivers/cxl/mem.c |   31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
-
-base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
