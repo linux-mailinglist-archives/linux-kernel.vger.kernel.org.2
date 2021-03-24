@@ -2,99 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A2634783C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C59347833
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhCXMT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:19:57 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55160 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233676AbhCXMTX (ORCPT
+        id S233743AbhCXMTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:19:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55378 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231661AbhCXMTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:19:23 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12OCJDSJ012494;
-        Wed, 24 Mar 2021 07:19:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1616588353;
-        bh=cowBO1dcfWlhVDX9uRu8VrJ6Mb2a92ZE4IRbCBJpBKo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=sTbKL1tlWI5F8XPGpDfHYCsupd8u88PTi3MsGp7tw4V+6AXZr6KaLvLo2zBnpFJ+k
-         X+N4uz9xmk7ncs4UCM8Bmwi8ze/945mX3mGzgvYmiz4GOGLBosucAjLr1PQcpFfd6M
-         v7O/AjvFq0P8QAgv8QnLt56wu+UEGNEphMciw1W8=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12OCJD1V021542
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 24 Mar 2021 07:19:13 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 24
- Mar 2021 07:19:12 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 24 Mar 2021 07:19:13 -0500
-Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12OCJ1Ci121061;
-        Wed, 24 Mar 2021 07:19:09 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>
-Subject: [PATCH 2/2] PCI: keystone: Add link up check in ks_child_pcie_ops.map_bus()
-Date:   Wed, 24 Mar 2021 17:49:01 +0530
-Message-ID: <20210324121901.1856-3-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210324121901.1856-1-kishon@ti.com>
-References: <20210324121901.1856-1-kishon@ti.com>
+        Wed, 24 Mar 2021 08:19:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616588355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cZiAAKs9ejvPZ3jXRcykVdCeorbUdVbH3T9vRLxzcWk=;
+        b=EdL2QkZlXABxz79tWoCb4Pm84ZgRYwE7HeywSXHONvx+1pRBi+957TWcaQOjbS5pLiE459
+        NgiKYSI4rpxC4RhJdT/KFrmLcNdFdCjuEsA5JIAb5I4MhLdAFwHbA3sRisHqlHbzhT5HRi
+        y81kiXVoGM6TbHkGTgY/2djlxCwSLOk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-Hm7IGxDZN-qvWY5AUTa2Iw-1; Wed, 24 Mar 2021 08:19:13 -0400
+X-MC-Unique: Hm7IGxDZN-qvWY5AUTa2Iw-1
+Received: by mail-wm1-f71.google.com with SMTP id m17so357246wml.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:19:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cZiAAKs9ejvPZ3jXRcykVdCeorbUdVbH3T9vRLxzcWk=;
+        b=Jw4Z4xCZ+S4w5rSoDcmgSOTaxKnP8ssDY25B06kR+HMbG0SiS3OOfw5kjD4uK8OPPp
+         E8pdLrvH12PshlROBUZ6vmipyAj7xa2vfx96Rpa+iwuJmt8HixeIMWcq1zShorfMfF59
+         zxT8j9cYjsLOhIbluc1+7j3UHUgFUFV9knk+TR1al6y/xLHIlbVRlChoWxCBSM8wPu4D
+         W5XbNVpWTufL+F3mF+i3DzGcdFPmLkIlL4pXu0vK2w1/7ombQUvYrLXBhJ/LvwiOUDhv
+         0hl0PnkfGNRtmY+oR/qGN+A6FJ2QI85/DTswx0I/08tjyYdkL8pZiLjfQfkgfZrF7DFg
+         bH1Q==
+X-Gm-Message-State: AOAM533JLbkv1PZL7NBs7SgfpOacXUlTBSvx5ess7KYNYElD+ZtnpdVK
+        xHByPDiXFWww3mAAN9uv8+/a3Ax0i9A2F5qedBF/3DLQl/K8874V7HpfmvF593nxe5TcfZLDpU0
+        kouspZkvDF7vOfsW2HTswWj1h
+X-Received: by 2002:adf:dd47:: with SMTP id u7mr3218964wrm.13.1616588351884;
+        Wed, 24 Mar 2021 05:19:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmTMhejcN6U3LW1m4Gy0NGVsHBhHf10k8b24Uu6SXwa0J/8lBL6q2Wqwxt4WNDnqXSItwvxA==
+X-Received: by 2002:adf:dd47:: with SMTP id u7mr3218925wrm.13.1616588351623;
+        Wed, 24 Mar 2021 05:19:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id g16sm3060902wrs.76.2021.03.24.05.19.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 05:19:11 -0700 (PDT)
+Subject: Re: [syzbot] possible deadlock in scheduler_tick
+To:     Wanpeng Li <kernellwp@gmail.com>,
+        syzbot <syzbot+b282b65c2c68492df769@syzkaller.appspotmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        syzkaller-bugs@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        David Woodhouse <dwmw@amazon.co.uk>
+References: <00000000000087f95b05be42a0c7@google.com>
+ <CANRm+CwLouTk7r_J=0OqJ80sXY+sCPTZKEr3FyLiXgGiS5304w@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f244df99-a063-af9d-d4a5-f23f906c4b9a@redhat.com>
+Date:   Wed, 24 Mar 2021 13:19:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CANRm+CwLouTk7r_J=0OqJ80sXY+sCPTZKEr3FyLiXgGiS5304w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-K2G forwardS the error triggered by a link-down state (e.g.,
-no connected endpoint device) on the system bus for PCI configuration
-transactions; these errors are reported as an SError at system level,
-which is fatal and hangs the system. So fix it similar to how
-it was done in designware core driver
-commit 15b23906347c ("PCI: dwc: Add link up check in
-dw_child_pcie_ops.map_bus()").
+On 24/03/21 12:34, Wanpeng Li wrote:
+> Cc David Woodhouse,
+> On Wed, 24 Mar 2021 at 18:11, syzbot
+> <syzbot+b282b65c2c68492df769@syzkaller.appspotmail.com> wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    1c273e10 Merge tag 'zonefs-5.12-rc4' of git://git.kernel.o..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=13c0414ed00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=6abda3336c698a07
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=b282b65c2c68492df769
+>> userspace arch: i386
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d86ad6d00000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17b8497cd00000
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+b282b65c2c68492df769@syzkaller.appspotmail.com
+>>
+>> =====================================================
+>> WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
+>> 5.12.0-rc3-syzkaller #0 Not tainted
+>> -----------------------------------------------------
+>> syz-executor030/8435 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
+>> ffffc90001a2a230 (&kvm->arch.pvclock_gtod_sync_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+>> ffffc90001a2a230 (&kvm->arch.pvclock_gtod_sync_lock){+.+.}-{2:2}, at: get_kvmclock_ns+0x25/0x390 arch/x86/kvm/x86.c:2587
+>>
+>> and this task is already holding:
+>> ffff8880b9d35198 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1321 [inline]
+>> ffff8880b9d35198 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x21c/0x21b0 kernel/sched/core.c:4990
+>> which would create a new lock dependency:
+>>   (&rq->lock){-.-.}-{2:2} -> (&kvm->arch.pvclock_gtod_sync_lock){+.+.}-{2:2}
+>>
+>> but this new dependency connects a HARDIRQ-irq-safe lock:
+>>   (&rq->lock){-.-.}-{2:2}
+>>
+>> ... which became HARDIRQ-irq-safe at:
+>>    lock_acquire kernel/locking/lockdep.c:5510 [inline]
+>>    lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+>>    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+>>    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+>>    rq_lock kernel/sched/sched.h:1321 [inline]
+>>    scheduler_tick+0xa4/0x4b0 kernel/sched/core.c:4538
+>>    update_process_times+0x191/0x200 kernel/time/timer.c:1801
+>>    tick_periodic+0x79/0x230 kernel/time/tick-common.c:100
+>>    tick_handle_periodic+0x41/0x120 kernel/time/tick-common.c:112
+>>    timer_interrupt+0x3f/0x60 arch/x86/kernel/time.c:57
+>>    __handle_irq_event_percpu+0x303/0x8f0 kernel/irq/handle.c:156
+>>    handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
+>>    handle_irq_event+0x102/0x290 kernel/irq/handle.c:213
+>>    handle_level_irq+0x256/0x6e0 kernel/irq/chip.c:650
+>>    generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
+>>    handle_irq arch/x86/kernel/irq.c:231 [inline]
+>>    __common_interrupt+0x9e/0x200 arch/x86/kernel/irq.c:250
+>>    common_interrupt+0x9f/0xd0 arch/x86/kernel/irq.c:240
+>>    asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:623
+>>    __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+>>    _raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
+>>    __setup_irq+0xc72/0x1ce0 kernel/irq/manage.c:1737
+>>    request_threaded_irq+0x28a/0x3b0 kernel/irq/manage.c:2127
+>>    request_irq include/linux/interrupt.h:160 [inline]
+>>    setup_default_timer_irq arch/x86/kernel/time.c:70 [inline]
+>>    hpet_time_init+0x28/0x42 arch/x86/kernel/time.c:82
+>>    x86_late_time_init+0x58/0x94 arch/x86/kernel/time.c:94
+>>    start_kernel+0x3ee/0x496 init/main.c:1028
+>>    secondary_startup_64_no_verify+0xb0/0xbb
+>>
+>> to a HARDIRQ-irq-unsafe lock:
+>>   (&kvm->arch.pvclock_gtod_sync_lock){+.+.}-{2:2}
+>>
+>> ... which became HARDIRQ-irq-unsafe at:
+>> ...
+>>    lock_acquire kernel/locking/lockdep.c:5510 [inline]
+>>    lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+>>    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+>>    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+>>    spin_lock include/linux/spinlock.h:354 [inline]
+>>    kvm_synchronize_tsc+0x459/0x1230 arch/x86/kvm/x86.c:2332
+>>    kvm_arch_vcpu_postcreate+0x73/0x180 arch/x86/kvm/x86.c:10183
+>>    kvm_vm_ioctl_create_vcpu arch/x86/kvm/../../../virt/kvm/kvm_main.c:3239 [inline]
+>>    kvm_vm_ioctl+0x1b2d/0x2800 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3839
+>>    kvm_vm_compat_ioctl+0x125/0x230 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4052
+>>    __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+>>    do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
+>>    __do_fast_syscall_32+0x56/0x90 arch/x86/entry/common.c:140
+>>    do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:165
+>>    entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+>>
+>> other info that might help us debug this:
+>>
+>>   Possible interrupt unsafe locking scenario:
+>>
+>>         CPU0                    CPU1
+>>         ----                    ----
+>>    lock(&kvm->arch.pvclock_gtod_sync_lock);
+>>                                 local_irq_disable();
+>>                                 lock(&rq->lock);
+>>                                 lock(&kvm->arch.pvclock_gtod_sync_lock);
+>>    <Interrupt>
+>>      lock(&rq->lock);
+>>
+> 
+> The offender is get_kvmclock_ns() which is called in the context
+> switch process. The bad commit is 30b5c851af7991ad0 ("KVM: x86/xen:
+> Add support for vCPU runstate information").
+> 
 
-Fixes: 10a797c6e54a ("PCI: dwc: keystone: Use pci_ops for config space accessors")
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: <stable@vger.kernel.org> # v5.10
----
- drivers/pci/controller/dwc/pci-keystone.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+I'll send a patch, thanks.
 
-diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-index 7171ea70da49..4de8c8e5e3f2 100644
---- a/drivers/pci/controller/dwc/pci-keystone.c
-+++ b/drivers/pci/controller/dwc/pci-keystone.c
-@@ -432,6 +432,17 @@ static void __iomem *ks_pcie_other_map_bus(struct pci_bus *bus,
- 	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
- 	u32 reg;
- 
-+	/*
-+	 * Checking whether the link is up here is a last line of defense
-+	 * against platforms that forward errors on the system bus as
-+	 * SError upon PCI configuration transactions issued when the link
-+	 * is down. This check is racy by definition and does not stop
-+	 * the system from triggering an SError if the link goes down
-+	 * after this check is performed.
-+	 */
-+	if (!dw_pcie_link_up(pci))
-+		return NULL;
-+
- 	reg = CFG_BUS(bus->number) | CFG_DEVICE(PCI_SLOT(devfn)) |
- 		CFG_FUNC(PCI_FUNC(devfn));
- 	if (!pci_is_root_bus(bus->parent))
--- 
-2.17.1
+Paolo
 
